@@ -1,0 +1,23 @@
+﻿# Build and Release Folders
+bin-debug/
+bin-release/
+[Oo]bj/
+[Bb]in/
+
+# Other files and folders
+*.csproj.user
+
+# Executables
+*.swf
+*.air
+*.ipa
+*.apk
+*.vcxproj.filters
+*.vcxproj.user
+*.pubxml.user
+
+# Projects
+/.vs
+/packages
+/Debug
+/Release
