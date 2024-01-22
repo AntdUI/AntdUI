@@ -1,0 +1,9 @@
+# SVG
+
+# c# 文件
+[*.cs]
+
+#### .NET 编码约定 ####
+
+# 组织 Using
+file_header_template = THIS FILE IS PART OF SVG PROJECT\nTHE SVG PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MS-PL License.\nCOPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.\nGITHUB: https://github.com/svg-net/SVG

@@ -1,0 +1,9 @@
+# AntdUI
+
+# c# 文件
+[*.cs]
+
+#### .NET 编码约定 ####
+
+# 组织 Using
+file_header_template = THIS FILE IS PART OF Vanara PROJECT\nTHE Vanara PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.\nCOPYRIGHT (C) dahall. ALL RIGHTS RESERVED.\nGITHUB: https://github.com/dahall/Vanara
