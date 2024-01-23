@@ -1304,16 +1304,40 @@ namespace AntdUI
 
         #region 自动大小
 
-        TAutoSize autoSize = TAutoSize.None;
+        /// <summary>
+        /// 自动大小
+        /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(TAutoSize.None)]
-        public new TAutoSize AutoSize
+        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        public override bool AutoSize
+        {
+            get => base.AutoSize;
+            set
+            {
+                if (base.AutoSize == value) return;
+                base.AutoSize = value;
+                if (value)
+                {
+                    if (autoSize == TAutoSize.None) autoSize = TAutoSize.Auto;
+                }
+                else autoSize = TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        TAutoSize autoSize = TAutoSize.None;
+        /// <summary>
+        /// 自动大小模式
+        /// </summary>
+        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        public TAutoSize AutoSizeMode
         {
             get => autoSize;
             set
             {
                 if (autoSize == value) return;
                 autoSize = value;
+                base.AutoSize = autoSize != TAutoSize.None;
                 BeforeAutoSize();
             }
         }
@@ -1377,14 +1401,15 @@ namespace AntdUI
             }
             switch (autoSize)
             {
-                case TAutoSize.Auto:
-                    Size = PSize;
-                    break;
                 case TAutoSize.Width:
                     Width = PSize.Width;
                     break;
                 case TAutoSize.Height:
                     Height = PSize.Height;
+                    break;
+                case TAutoSize.Auto:
+                default:
+                    Size = PSize;
                     break;
             }
             Invalidate();

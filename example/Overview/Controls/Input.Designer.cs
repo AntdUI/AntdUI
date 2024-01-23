@@ -190,7 +190,8 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.AutoSize = AntdUI.TAutoSize.Width;
+            button1.AutoSize = true;
+            button1.AutoSizeMode = AntdUI.TAutoSize.Width;
             button1.Dock = DockStyle.Left;
             button1.JoinRight = true;
             button1.Location = new Point(0, 0);
@@ -261,7 +262,8 @@ namespace Overview.Controls
             // 
             // button3
             // 
-            button3.AutoSize = AntdUI.TAutoSize.Width;
+            button3.AutoSize = true;
+            button3.AutoSizeMode = AntdUI.TAutoSize.Width;
             button3.Dock = DockStyle.Right;
             button3.JoinLeft = true;
             button3.Location = new Point(161, 0);

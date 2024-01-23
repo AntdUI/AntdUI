@@ -99,7 +99,7 @@ namespace Overview.Controls
             // 
             // checkbox8
             // 
-            checkbox8.AutoSize = AntdUI.TAutoSize.Width;
+            checkbox8.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox8.Checked = true;
             checkbox8.Fill = Color.FromArgb(100, 0, 0);
             checkbox8.Dock = DockStyle.Left;
@@ -112,7 +112,7 @@ namespace Overview.Controls
             // 
             // checkbox7
             // 
-            checkbox7.AutoSize = AntdUI.TAutoSize.Width;
+            checkbox7.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox7.Fill = Color.FromArgb(150, 0, 0);
             checkbox7.Dock = DockStyle.Left;
             checkbox7.Location = new Point(304, 0);
@@ -123,7 +123,7 @@ namespace Overview.Controls
             // 
             // checkbox6
             // 
-            checkbox6.AutoSize = AntdUI.TAutoSize.Width;
+            checkbox6.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox6.Fill = Color.FromArgb(200, 0, 0);
             checkbox6.Dock = DockStyle.Left;
             checkbox6.Location = new Point(153, 0);
@@ -134,7 +134,7 @@ namespace Overview.Controls
             // 
             // checkbox5
             // 
-            checkbox5.AutoSize = AntdUI.TAutoSize.Width;
+            checkbox5.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox5.Fill = Color.FromArgb(250, 0, 0);
             checkbox5.Dock = DockStyle.Left;
             checkbox5.Location = new Point(0, 0);
@@ -156,7 +156,7 @@ namespace Overview.Controls
             // 
             // checkbox4
             // 
-            checkbox4.AutoSize = AntdUI.TAutoSize.Width;
+            checkbox4.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox4.Dock = DockStyle.Left;
             checkbox4.Enabled = false;
             checkbox4.Location = new Point(450, 0);
@@ -167,7 +167,7 @@ namespace Overview.Controls
             // 
             // checkbox3
             // 
-            checkbox3.AutoSize = AntdUI.TAutoSize.Width;
+            checkbox3.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox3.Dock = DockStyle.Left;
             checkbox3.Location = new Point(300, 0);
             checkbox3.Name = "checkbox3";
@@ -177,7 +177,7 @@ namespace Overview.Controls
             // 
             // checkbox2
             // 
-            checkbox2.AutoSize = AntdUI.TAutoSize.Width;
+            checkbox2.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox2.Dock = DockStyle.Left;
             checkbox2.Location = new Point(150, 0);
             checkbox2.Name = "checkbox2";
@@ -187,7 +187,7 @@ namespace Overview.Controls
             // 
             // checkbox1
             // 
-            checkbox1.AutoSize = AntdUI.TAutoSize.Width;
+            checkbox1.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox1.Dock = DockStyle.Left;
             checkbox1.Location = new Point(0, 0);
             checkbox1.Name = "checkbox1";

@@ -81,7 +81,7 @@ namespace Overview.Controls
             // 
             // button7
             // 
-            button7.AutoSize = AntdUI.TAutoSize.Auto;
+            button7.AutoSize = true;
             button7.ForeColor = Color.White;
             button7.ImageSvg = Properties.Resources.icon_poweroff;
             button7.Items.AddRange(new object[] { "菜单1", "菜单2", "菜单3" });
@@ -122,7 +122,7 @@ namespace Overview.Controls
             // 
             // button4
             // 
-            button4.AutoSize = AntdUI.TAutoSize.Auto;
+            button4.AutoSize = true;
             button4.DropDownArrow = true;
             button4.ImageSvg = Properties.Resources.BR;
             button4.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
@@ -136,7 +136,7 @@ namespace Overview.Controls
             // 
             // button6
             // 
-            button6.AutoSize = AntdUI.TAutoSize.Auto;
+            button6.AutoSize = true;
             button6.DropDownArrow = true;
             button6.ImageSvg = Properties.Resources.Bottom;
             button6.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
@@ -150,7 +150,7 @@ namespace Overview.Controls
             // 
             // button2
             // 
-            button2.AutoSize = AntdUI.TAutoSize.Auto;
+            button2.AutoSize = true;
             button2.DropDownArrow = true;
             button2.ImageSvg = Properties.Resources.TR;
             button2.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
@@ -164,7 +164,7 @@ namespace Overview.Controls
             // 
             // button5
             // 
-            button5.AutoSize = AntdUI.TAutoSize.Auto;
+            button5.AutoSize = true;
             button5.DropDownArrow = true;
             button5.ImageSvg = Properties.Resources.Top;
             button5.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
@@ -178,7 +178,7 @@ namespace Overview.Controls
             // 
             // button3
             // 
-            button3.AutoSize = AntdUI.TAutoSize.Auto;
+            button3.AutoSize = true;
             button3.DropDownArrow = true;
             button3.ImageSvg = Properties.Resources.BL;
             button3.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
@@ -191,7 +191,7 @@ namespace Overview.Controls
             // 
             // button8
             // 
-            button8.AutoSize = AntdUI.TAutoSize.Auto;
+            button8.AutoSize = true;
             button8.DropDownArrow = true;
             button8.ImageSvg = Properties.Resources.TL;
             button8.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
@@ -228,7 +228,7 @@ namespace Overview.Controls
             // 
             // button17
             // 
-            button17.AutoSize = AntdUI.TAutoSize.Auto;
+            button17.AutoSize = true;
             button17.ForeColor = Color.White;
             button17.IsLink = true;
             button17.Items.AddRange(new object[] { "菜单1", "菜单2", "菜单3" });
@@ -242,7 +242,7 @@ namespace Overview.Controls
             // 
             // button19
             // 
-            button19.AutoSize = AntdUI.TAutoSize.Auto;
+            button19.AutoSize = true;
             button19.Items.AddRange(new object[] { "菜单1", "菜单2", "菜单3" });
             button19.ListAutoWidth = false;
             button19.Location = new Point(136, 3);
@@ -256,7 +256,7 @@ namespace Overview.Controls
             // 
             // dropdown1
             // 
-            dropdown1.AutoSize = AntdUI.TAutoSize.Auto;
+            dropdown1.AutoSize = true;
             dropdown1.ForeColor = Color.White;
             dropdown1.Location = new Point(280, 3);
             dropdown1.Name = "dropdown1";

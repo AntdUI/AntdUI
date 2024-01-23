@@ -78,7 +78,7 @@ namespace Overview.Controls
             // 
             // colorPicker3
             // 
-            colorPicker3.AutoSize = AntdUI.TAutoSize.Auto;
+            colorPicker3.AutoSize = true;
             colorPicker3.Location = new Point(3, 3);
             colorPicker3.Name = "colorPicker3";
             colorPicker3.Size = new Size(47, 47);
@@ -87,7 +87,7 @@ namespace Overview.Controls
             // 
             // colorPicker1
             // 
-            colorPicker1.AutoSize = AntdUI.TAutoSize.Auto;
+            colorPicker1.AutoSize = true;
             colorPicker1.Location = new Point(56, 3);
             colorPicker1.Name = "colorPicker1";
             colorPicker1.ShowText = true;

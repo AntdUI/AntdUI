@@ -135,7 +135,7 @@ namespace Demo
             // 
             // button1
             // 
-            button1.AutoSize = AntdUI.TAutoSize.Auto;
+            button1.AutoSize = true;
             button1.Location = new Point(40, 78);
             button1.Margin = new Padding(4);
             button1.Name = "button1";
@@ -147,7 +147,7 @@ namespace Demo
             // 
             // button2
             // 
-            button2.AutoSize = AntdUI.TAutoSize.Auto;
+            button2.AutoSize = true;
             button2.BorderWidth = 2F;
             button2.Location = new Point(210, 78);
             button2.Margin = new Padding(4);
@@ -159,7 +159,7 @@ namespace Demo
             // 
             // button3
             // 
-            button3.AutoSize = AntdUI.TAutoSize.Auto;
+            button3.AutoSize = true;
             button3.BorderWidth = 2F;
             button3.Ghost = true;
             button3.Location = new Point(380, 78);
@@ -173,7 +173,7 @@ namespace Demo
             // 
             // radio1
             // 
-            radio1.AutoSize = AntdUI.TAutoSize.Auto;
+            radio1.AutoSize = true;
             radio1.Location = new Point(40, 168);
             radio1.Name = "radio1";
             radio1.Size = new Size(117, 43);
@@ -182,7 +182,7 @@ namespace Demo
             // 
             // radio2
             // 
-            radio2.AutoSize = AntdUI.TAutoSize.Auto;
+            radio2.AutoSize = true;
             radio2.Location = new Point(210, 168);
             radio2.Name = "radio2";
             radio2.Size = new Size(115, 43);
@@ -191,7 +191,7 @@ namespace Demo
             // 
             // radio3
             // 
-            radio3.AutoSize = AntdUI.TAutoSize.Auto;
+            radio3.AutoSize = true;
             radio3.Checked = true;
             radio3.Location = new Point(380, 168);
             radio3.Name = "radio3";
@@ -201,7 +201,7 @@ namespace Demo
             // 
             // radio4
             // 
-            radio4.AutoSize = AntdUI.TAutoSize.Auto;
+            radio4.AutoSize = true;
             radio4.Enabled = false;
             radio4.Location = new Point(550, 168);
             radio4.Name = "radio4";
@@ -211,7 +211,7 @@ namespace Demo
             // 
             // radio5
             // 
-            radio5.AutoSize = AntdUI.TAutoSize.Auto;
+            radio5.AutoSize = true;
             radio5.Enabled = false;
             radio5.Location = new Point(720, 168);
             radio5.Name = "radio5";
@@ -221,7 +221,7 @@ namespace Demo
             // 
             // checkbox1
             // 
-            checkbox1.AutoSize = AntdUI.TAutoSize.Auto;
+            checkbox1.AutoSize = true;
             checkbox1.Location = new Point(40, 239);
             checkbox1.Name = "checkbox1";
             checkbox1.Size = new Size(117, 43);
@@ -230,7 +230,7 @@ namespace Demo
             // 
             // checkbox2
             // 
-            checkbox2.AutoSize = AntdUI.TAutoSize.Auto;
+            checkbox2.AutoSize = true;
             checkbox2.Location = new Point(210, 239);
             checkbox2.Name = "checkbox2";
             checkbox2.Size = new Size(115, 43);
@@ -239,7 +239,7 @@ namespace Demo
             // 
             // checkbox3
             // 
-            checkbox3.AutoSize = AntdUI.TAutoSize.Auto;
+            checkbox3.AutoSize = true;
             checkbox3.Checked = true;
             checkbox3.Location = new Point(380, 239);
             checkbox3.Name = "checkbox3";
@@ -249,7 +249,7 @@ namespace Demo
             // 
             // checkbox4
             // 
-            checkbox4.AutoSize = AntdUI.TAutoSize.Auto;
+            checkbox4.AutoSize = true;
             checkbox4.Enabled = false;
             checkbox4.Location = new Point(550, 239);
             checkbox4.Name = "checkbox4";
@@ -259,7 +259,7 @@ namespace Demo
             // 
             // checkbox5
             // 
-            checkbox5.AutoSize = AntdUI.TAutoSize.Auto;
+            checkbox5.AutoSize = true;
             checkbox5.Enabled = false;
             checkbox5.Location = new Point(720, 239);
             checkbox5.Name = "checkbox5";
@@ -333,7 +333,7 @@ namespace Demo
             // 
             // button4
             // 
-            button4.AutoSize = AntdUI.TAutoSize.Auto;
+            button4.AutoSize = true;
             button4.Location = new Point(550, 78);
             button4.Margin = new Padding(4);
             button4.Name = "button4";
@@ -857,7 +857,7 @@ namespace Demo
             // 
             // button5
             // 
-            button5.AutoSize = AntdUI.TAutoSize.Auto;
+            button5.AutoSize = true;
             button5.Back = Color.FromArgb(100, 22, 119, 255);
             button5.BackgroundImage = Properties.Resources.bg3;
             button5.BackgroundImageLayout = AntdUI.TFit.Cover;
@@ -874,7 +874,7 @@ namespace Demo
             // 
             // button6
             // 
-            button6.AutoSize = AntdUI.TAutoSize.Auto;
+            button6.AutoSize = true;
             button6.Back = Color.FromArgb(100, 22, 119, 255);
             button6.BackgroundImage = Properties.Resources.bg2;
             button6.BackgroundImageLayout = AntdUI.TFit.Cover;

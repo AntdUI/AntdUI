@@ -125,7 +125,7 @@ namespace Overview.Controls
             // 
             // tag15
             // 
-            tag15.AutoSize = AntdUI.TAutoSize.Auto;
+            tag15.AutoSize = true;
             tag15.BorderWidth = 0F;
             tag15.Location = new Point(265, 45);
             tag15.Name = "tag15";
@@ -135,7 +135,7 @@ namespace Overview.Controls
             // 
             // tag10
             // 
-            tag10.AutoSize = AntdUI.TAutoSize.Auto;
+            tag10.AutoSize = true;
             tag10.Location = new Point(265, 13);
             tag10.Name = "tag10";
             tag10.Size = new Size(65, 26);
@@ -144,7 +144,7 @@ namespace Overview.Controls
             // 
             // tag14
             // 
-            tag14.AutoSize = AntdUI.TAutoSize.Auto;
+            tag14.AutoSize = true;
             tag14.BorderWidth = 0F;
             tag14.Location = new Point(216, 45);
             tag14.Name = "tag14";
@@ -155,7 +155,7 @@ namespace Overview.Controls
             // 
             // tag9
             // 
-            tag9.AutoSize = AntdUI.TAutoSize.Auto;
+            tag9.AutoSize = true;
             tag9.Location = new Point(216, 13);
             tag9.Name = "tag9";
             tag9.Size = new Size(45, 26);
@@ -165,7 +165,7 @@ namespace Overview.Controls
             // 
             // tag13
             // 
-            tag13.AutoSize = AntdUI.TAutoSize.Auto;
+            tag13.AutoSize = true;
             tag13.BorderWidth = 0F;
             tag13.Location = new Point(139, 45);
             tag13.Name = "tag13";
@@ -176,7 +176,7 @@ namespace Overview.Controls
             // 
             // tag8
             // 
-            tag8.AutoSize = AntdUI.TAutoSize.Auto;
+            tag8.AutoSize = true;
             tag8.Location = new Point(139, 13);
             tag8.Name = "tag8";
             tag8.Size = new Size(72, 26);
@@ -186,7 +186,7 @@ namespace Overview.Controls
             // 
             // tag12
             // 
-            tag12.AutoSize = AntdUI.TAutoSize.Auto;
+            tag12.AutoSize = true;
             tag12.BorderWidth = 0F;
             tag12.Location = new Point(85, 45);
             tag12.Name = "tag12";
@@ -197,7 +197,7 @@ namespace Overview.Controls
             // 
             // tag7
             // 
-            tag7.AutoSize = AntdUI.TAutoSize.Auto;
+            tag7.AutoSize = true;
             tag7.Location = new Point(85, 13);
             tag7.Name = "tag7";
             tag7.Size = new Size(51, 26);
@@ -207,7 +207,7 @@ namespace Overview.Controls
             // 
             // tag11
             // 
-            tag11.AutoSize = AntdUI.TAutoSize.Auto;
+            tag11.AutoSize = true;
             tag11.BorderWidth = 0F;
             tag11.Location = new Point(13, 45);
             tag11.Name = "tag11";
@@ -218,7 +218,7 @@ namespace Overview.Controls
             // 
             // tag6
             // 
-            tag6.AutoSize = AntdUI.TAutoSize.Auto;
+            tag6.AutoSize = true;
             tag6.Location = new Point(13, 13);
             tag6.Name = "tag6";
             tag6.Size = new Size(68, 26);
@@ -260,7 +260,7 @@ namespace Overview.Controls
             // 
             // tag5
             // 
-            tag5.AutoSize = AntdUI.TAutoSize.Auto;
+            tag5.AutoSize = true;
             tag5.CloseIcon = true;
             tag5.Dock = DockStyle.Left;
             tag5.Location = new Point(148, 0);
@@ -272,7 +272,7 @@ namespace Overview.Controls
             // 
             // tag4
             // 
-            tag4.AutoSize = AntdUI.TAutoSize.Auto;
+            tag4.AutoSize = true;
             tag4.CloseIcon = true;
             tag4.Dock = DockStyle.Left;
             tag4.Location = new Point(74, 0);
@@ -284,7 +284,7 @@ namespace Overview.Controls
             // 
             // tag3
             // 
-            tag3.AutoSize = AntdUI.TAutoSize.Auto;
+            tag3.AutoSize = true;
             tag3.CloseIcon = true;
             tag3.Dock = DockStyle.Left;
             tag3.Location = new Point(0, 0);
@@ -296,7 +296,7 @@ namespace Overview.Controls
             // 
             // tag2
             // 
-            tag2.AutoSize = AntdUI.TAutoSize.Auto;
+            tag2.AutoSize = true;
             tag2.CloseIcon = true;
             tag2.Location = new Point(72, 13);
             tag2.Name = "tag2";
@@ -306,7 +306,7 @@ namespace Overview.Controls
             // 
             // tag1
             // 
-            tag1.AutoSize = AntdUI.TAutoSize.Auto;
+            tag1.AutoSize = true;
             tag1.Location = new Point(13, 13);
             tag1.Name = "tag1";
             tag1.Size = new Size(55, 26);
@@ -346,7 +346,7 @@ namespace Overview.Controls
             // 
             // tag16
             // 
-            tag16.AutoSize = AntdUI.TAutoSize.Auto;
+            tag16.AutoSize = true;
             tag16.Back = Color.FromArgb(59, 89, 153);
             tag16.Fore = Color.White;
             tag16.Image = Properties.Resources.img1;

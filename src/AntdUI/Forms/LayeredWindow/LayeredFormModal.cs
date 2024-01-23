@@ -46,7 +46,7 @@ namespace AntdUI
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
 
-            btn_ok.AutoSize = TAutoSize.Width;
+            btn_ok.AutoSizeMode = TAutoSize.Width;
             btn_ok.Dock = DockStyle.Right;
             btn_ok.Location = new Point(304, 0);
             btn_ok.Name = "btn_ok";
@@ -59,7 +59,7 @@ namespace AntdUI
             if (config.CancelText != null)
             {
                 btn_no = new Button();
-                btn_no.AutoSize = TAutoSize.Width;
+                btn_no.AutoSizeMode = TAutoSize.Width;
                 btn_no.BorderWidth = 1F;
                 btn_no.Dock = DockStyle.Right;
                 btn_no.Location = new Point(240, 0);
@@ -84,7 +84,7 @@ namespace AntdUI
                 {
                     var _btn = new Button
                     {
-                        AutoSize = TAutoSize.Width,
+                        AutoSizeMode = TAutoSize.Width,
                         Dock = DockStyle.Right,
                         Size = new Size(64, 38),
                         Name = btn.Name,

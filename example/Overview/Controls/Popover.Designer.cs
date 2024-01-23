@@ -271,7 +271,7 @@ namespace Overview.Controls
             // 
             // button2
             // 
-            button2.AutoSize = AntdUI.TAutoSize.Auto;
+            button2.AutoSize = true;
             button2.Location = new Point(145, 17);
             button2.Name = "button2";
             button2.Size = new Size(186, 50);
@@ -282,7 +282,7 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.AutoSize = AntdUI.TAutoSize.Auto;
+            button1.AutoSize = true;
             button1.Location = new Point(14, 17);
             button1.Name = "button1";
             button1.Size = new Size(104, 50);

@@ -104,7 +104,7 @@ namespace Overview.Controls
             // 
             // button5
             // 
-            button5.AutoSize = AntdUI.TAutoSize.Auto;
+            button5.AutoSize = true;
             button5.BorderWidth = 2F;
             button5.Ghost = true;
             button5.Location = new Point(546, 3);
@@ -117,7 +117,7 @@ namespace Overview.Controls
             // 
             // button16
             // 
-            button16.AutoSize = AntdUI.TAutoSize.Auto;
+            button16.AutoSize = true;
             button16.Location = new Point(448, 3);
             button16.Name = "button16";
             button16.Size = new Size(92, 46);
@@ -128,7 +128,7 @@ namespace Overview.Controls
             // 
             // button9
             // 
-            button9.AutoSize = AntdUI.TAutoSize.Auto;
+            button9.AutoSize = true;
             button9.ImageSvg = Properties.Resources.icon_search;
             button9.Location = new Point(56, 3);
             button9.Name = "button9";
@@ -140,7 +140,7 @@ namespace Overview.Controls
             // 
             // button7
             // 
-            button7.AutoSize = AntdUI.TAutoSize.Auto;
+            button7.AutoSize = true;
             button7.ImageSvg = Properties.Resources.icon_poweroff;
             button7.Location = new Point(3, 3);
             button7.Name = "button7";
@@ -194,7 +194,7 @@ namespace Overview.Controls
             // 
             // button10
             // 
-            button10.AutoSize = AntdUI.TAutoSize.Auto;
+            button10.AutoSize = true;
             button10.Back = Color.FromArgb(217, 217, 217);
             button10.BackColor = Color.Transparent;
             button10.BorderWidth = 2F;
@@ -209,7 +209,7 @@ namespace Overview.Controls
             // 
             // button15
             // 
-            button15.AutoSize = AntdUI.TAutoSize.Auto;
+            button15.AutoSize = true;
             button15.Back = Color.FromArgb(217, 217, 217);
             button15.BackColor = Color.Transparent;
             button15.BorderWidth = 2F;
@@ -225,7 +225,7 @@ namespace Overview.Controls
             // 
             // button2
             // 
-            button2.AutoSize = AntdUI.TAutoSize.Auto;
+            button2.AutoSize = true;
             button2.Back = Color.FromArgb(217, 217, 217);
             button2.BackColor = Color.Transparent;
             button2.BorderWidth = 2F;
@@ -335,7 +335,7 @@ namespace Overview.Controls
             // 
             // button23
             // 
-            button23.AutoSize = AntdUI.TAutoSize.Auto;
+            button23.AutoSize = true;
             button23.BorderWidth = 1F;
             button23.ImageSvg = Properties.Resources.icon_poweroff;
             button23.IsLink = true;
@@ -429,7 +429,7 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.AutoSize = AntdUI.TAutoSize.Auto;
+            button1.AutoSize = true;
             button1.BorderWidth = 1F;
             button1.ImageSvg = Properties.Resources.icon_poweroff;
             button1.Location = new Point(156, 3);
@@ -441,7 +441,7 @@ namespace Overview.Controls
             // 
             // button4
             // 
-            button4.AutoSize = AntdUI.TAutoSize.Auto;
+            button4.AutoSize = true;
             button4.BorderWidth = 1F;
             button4.Location = new Point(209, 3);
             button4.Name = "button4";
@@ -453,7 +453,7 @@ namespace Overview.Controls
             // 
             // button26
             // 
-            button26.AutoSize = AntdUI.TAutoSize.Auto;
+            button26.AutoSize = true;
             button26.BorderWidth = 2F;
             button26.ImageSvg = Properties.Resources.icon_search;
             button26.Location = new Point(282, 3);
@@ -466,7 +466,7 @@ namespace Overview.Controls
             // 
             // button6
             // 
-            button6.AutoSize = AntdUI.TAutoSize.Auto;
+            button6.AutoSize = true;
             button6.ImageSvg = Properties.Resources.icon_search;
             button6.Location = new Point(335, 3);
             button6.Name = "button6";
@@ -502,7 +502,7 @@ namespace Overview.Controls
             // 
             // button17
             // 
-            button17.AutoSize = AntdUI.TAutoSize.Auto;
+            button17.AutoSize = true;
             button17.Location = new Point(3, 3);
             button17.Name = "button17";
             button17.Size = new Size(152, 46);
@@ -513,7 +513,7 @@ namespace Overview.Controls
             // 
             // button18
             // 
-            button18.AutoSize = AntdUI.TAutoSize.Auto;
+            button18.AutoSize = true;
             button18.BorderWidth = 1F;
             button18.Location = new Point(161, 3);
             button18.Name = "button18";
@@ -524,7 +524,7 @@ namespace Overview.Controls
             // 
             // button19
             // 
-            button19.AutoSize = AntdUI.TAutoSize.Auto;
+            button19.AutoSize = true;
             button19.Ghost = true;
             button19.Location = new Point(317, 3);
             button19.Name = "button19";

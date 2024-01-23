@@ -882,12 +882,12 @@ namespace AntdUI
                     if (PARENT != null && PARENT.IsHandleCreated && Config.Animation)
                     {
                         ThreadExpand?.Dispose();
-                        var t = Animation.TotalFrames(10, 200);
                         float oldval = -1;
                         if (ThreadExpand?.Tag is float oldv) oldval = oldv;
                         ExpandThread = true;
                         if (value)
                         {
+                            var t = Animation.TotalFrames(10, ExpandCount(this) * 50);
                             ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
                             {
                                 ExpandProg = val;
@@ -903,6 +903,7 @@ namespace AntdUI
                         }
                         else
                         {
+                            var t = Animation.TotalFrames(10, 200);
                             ThreadExpand = new ITask(true, 10, t, oldval, AnimationType.Ball, (i, val) =>
                             {
                                 ExpandProg = val;
@@ -924,6 +925,20 @@ namespace AntdUI
                     }
                 }
             }
+        }
+
+        internal int ExpandCount(TreeItem it)
+        {
+            int count = 0;
+            if (it.Sub != null && it.Sub.Count > 0)
+            {
+                count += it.Sub.Count;
+                foreach (TreeItem item in it.Sub)
+                {
+                    if (item.Expand) count += ExpandCount(item);
+                }
+            }
+            return count;
         }
 
         [Description("是否可以展开"), Category("行为"), DefaultValue(false)]

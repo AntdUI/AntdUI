@@ -108,7 +108,7 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.AutoSize = AntdUI.TAutoSize.Auto;
+            button1.AutoSize = true;
             button1.Location = new Point(18, 10);
             button1.Name = "button1";
             button1.Size = new Size(77, 46);
@@ -131,7 +131,8 @@ namespace Overview.Controls
             // 
             // radio1
             // 
-            radio1.AutoSize = AntdUI.TAutoSize.Width;
+            radio1.AutoSize = true;
+            radio1.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio1.Dock = DockStyle.Left;
             radio1.Location = new Point(0, 0);
             radio1.Name = "radio1";
@@ -141,7 +142,8 @@ namespace Overview.Controls
             // 
             // radio2
             // 
-            radio2.AutoSize = AntdUI.TAutoSize.Width;
+            radio2.AutoSize = true;
+            radio2.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio2.Checked = true;
             radio2.Dock = DockStyle.Left;
             radio2.Location = new Point(256, 0);
@@ -152,7 +154,8 @@ namespace Overview.Controls
             // 
             // radio3
             // 
-            radio3.AutoSize = AntdUI.TAutoSize.Width;
+            radio3.AutoSize = true;
+            radio3.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio3.Dock = DockStyle.Left;
             radio3.Location = new Point(75, 0);
             radio3.Name = "radio3";
@@ -162,7 +165,8 @@ namespace Overview.Controls
             // 
             // radio4
             // 
-            radio4.AutoSize = AntdUI.TAutoSize.Width;
+            radio4.AutoSize = true;
+            radio4.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio4.Dock = DockStyle.Left;
             radio4.Location = new Point(182, 0);
             radio4.Name = "radio4";
