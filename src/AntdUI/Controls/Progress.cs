@@ -176,23 +176,25 @@ namespace AntdUI
             {
                 if (loading == value) return;
                 loading = value;
-                Invalidate();
                 ThreadLoading?.Dispose();
-                ThreadLoading = new ITask(this, () =>
+                if (loading)
                 {
-                    AnimationLoadingValue = AnimationLoadingValue.Calculate(0.01F);
-                    if (AnimationLoadingValue > 1)
+                    ThreadLoading = new ITask(this, () =>
                     {
-                        AnimationLoadingValue = 0;
+                        AnimationLoadingValue = AnimationLoadingValue.Calculate(0.01F);
+                        if (AnimationLoadingValue > 1)
+                        {
+                            AnimationLoadingValue = 0;
+                            Invalidate();
+                            Thread.Sleep(1000);
+                        }
                         Invalidate();
-                        Thread.Sleep(1000);
-                    }
-                    Invalidate();
-                    return true;
-                }, 10, () =>
-                {
-                    Invalidate();
-                });
+                        return loading;
+                    }, 10, () =>
+                    {
+                        Invalidate();
+                    });
+                }
             }
         }
 

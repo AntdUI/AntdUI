@@ -109,7 +109,6 @@ namespace Overview.Controls
             panel8.Controls.Add(label7);
             panel8.Location = new Point(3, 3);
             panel8.Name = "panel8";
-            panel8.Padding = new Padding(24);
             panel8.Radius = 10;
             panel8.Shadow = 24;
             panel8.ShadowOpacity = 0.18F;
@@ -160,7 +159,6 @@ namespace Overview.Controls
             panel1.Controls.Add(label3);
             panel1.Location = new Point(278, 3);
             panel1.Name = "panel1";
-            panel1.Padding = new Padding(24);
             panel1.Radius = 0;
             panel1.Shadow = 24;
             panel1.ShadowOpacity = 0.18F;
@@ -213,8 +211,7 @@ namespace Overview.Controls
             panel9.ForeColor = Color.White;
             panel9.Location = new Point(3, 230);
             panel9.Name = "panel9";
-            panel9.Padding = new Padding(38);
-            panel9.PaddingWidth = -12;
+            panel9.Padding = new Padding(14);
             panel9.Radius = 10;
             panel9.Shadow = 24;
             panel9.ShadowOpacity = 0.18F;
@@ -266,8 +263,7 @@ namespace Overview.Controls
             panel4.Controls.Add(panel5);
             panel4.Location = new Point(329, 230);
             panel4.Name = "panel4";
-            panel4.Padding = new Padding(38);
-            panel4.PaddingWidth = -12;
+            panel4.Padding = new Padding(14);
             panel4.Radius = 10;
             panel4.Shadow = 24;
             panel4.Size = new Size(320, 299);
@@ -318,7 +314,6 @@ namespace Overview.Controls
             panel5.Location = new Point(38, 221);
             panel5.Name = "panel5";
             panel5.Radius = 0;
-            panel5.Shadow = 0;
             panel5.Size = new Size(244, 40);
             panel5.TabIndex = 13;
             // 
@@ -345,6 +340,7 @@ namespace Overview.Controls
             button4.Size = new Size(73, 40);
             button4.TabIndex = 0;
             button4.Text = "OK";
+            button4.Type = AntdUI.TTypeMini.Primary;
             // 
             // Panel
             // 

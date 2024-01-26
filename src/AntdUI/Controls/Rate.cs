@@ -383,8 +383,8 @@ namespace AntdUI
 
         bool autoSize = false;
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
-        public new bool AutoSize
+        [Description("自动宽度"), Category("外观"), DefaultValue(false)]
+        public override bool AutoSize
         {
             get => autoSize;
             set

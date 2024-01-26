@@ -186,6 +186,7 @@ namespace AntdUI
 
         public static Graphics High(this Graphics g)
         {
+            Config.SetDpi(g.DpiX / 96F);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
@@ -413,74 +414,7 @@ namespace AntdUI
 
         #endregion
 
-        /// <summary>
-        /// 得到真实渲染区域
-        /// </summary>
-        /// <param name="rect">容器区域</param>
-        /// <param name="size">动画区域</param>
-        /// <param name="shape">形状</param>
-        /// <param name="joinLeft">连接左边</param>
-        /// <param name="joinRight">连接右边</param>
-        internal static Rectangle ReadRect(this Rectangle rect, int size, TShape shape, bool joinLeft, bool joinRight)
-        {
-            int s2 = size * 2;
-            if (shape == TShape.Circle)
-            {
-                if (rect.Width > rect.Height)
-                {
-                    int h = rect.Height - s2;
-                    return new Rectangle(rect.X + (rect.Width - h) / 2, rect.Y + size, h, h);
-                }
-                else
-                {
-                    int w = rect.Width - s2;
-                    return new Rectangle(rect.X + size, rect.Y + (rect.Height - w) / 2, w, w);
-                }
-            }
-
-            if (joinLeft && joinRight) return new Rectangle(rect.X, rect.Y + size, rect.Width, rect.Height - s2);
-            else if (joinLeft)
-            {
-                var r = new Rectangle(rect.X, rect.Y + size, rect.Width - size, rect.Height - s2);
-                rect.X = -size;
-                rect.Width += size;
-                return r;
-            }
-            else if (joinRight)
-            {
-                var r = new Rectangle(rect.Width - (rect.Width - size), rect.Y + size, rect.Width - size, rect.Height - s2);
-                rect.X = 0;
-                rect.Width += size;
-                return r;
-            }
-            return new Rectangle(rect.X + size, rect.Y + size, rect.Width - s2, rect.Height - s2);
-        }
-        internal static Rectangle ReadRect(this Rectangle rect, int size, bool joinLeft, bool joinRight)
-        {
-            int s2 = size * 2;
-            if (joinLeft && joinRight) return new Rectangle(rect.X, rect.Y + size, rect.Width, rect.Height - s2);
-            else if (joinLeft)
-            {
-                var r = new Rectangle(rect.X, rect.Y + size, rect.Width - size, rect.Height - s2);
-                rect.X = -size;
-                rect.Width += size;
-                return r;
-            }
-            else if (joinRight)
-            {
-                var r = new Rectangle(rect.Width - (rect.Width - size), rect.Y + size, rect.Width - size, rect.Height - s2);
-                rect.X = 0;
-                rect.Width += size;
-                return r;
-            }
-            return new Rectangle(rect.X + size, rect.Y + size, rect.Width - s2, rect.Height - s2);
-        }
-
-        internal static Rectangle ReadRect(this Rectangle rect, int size)
-        {
-            int s2 = size * 2;
-            return new Rectangle(size, size, rect.Width - s2, rect.Height - s2);
-        }
+        #region DisplayRectangle
 
         public static Rectangle DeflateRect(this Rectangle rect, Padding padding)
         {
@@ -491,19 +425,143 @@ namespace AntdUI
             return rect;
         }
 
-        public static Rectangle PaddingRect(this Rectangle rect, Padding padding)
+        public static Rectangle DeflateRect(this Rectangle rect, Padding padding, ShadowConfig config, float borderWidth = 0F)
         {
-            return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
+            if (config.Shadow > 0)
+            {
+                int shadow = (int)(config.Shadow * Config.Dpi), s2 = shadow * 2,
+                    shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * Config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * Config.Dpi));
+                int x = rect.X + padding.Left + shadow, y = rect.Y + padding.Top + shadow;
+                if (config.ShadowOffsetX < 0) x += shadowOffsetX;
+                if (config.ShadowOffsetY < 0) y += shadowOffsetY;
+                if (borderWidth > 0)
+                {
+                    int pr = (int)Math.Ceiling(borderWidth), pr2 = pr * 2;
+                    return new Rectangle(x + pr, y + pr,
+                        rect.Width - pr2 - shadowOffsetX - padding.Horizontal - s2,
+                        rect.Height - pr2 - shadowOffsetY - padding.Vertical - s2);
+                }
+                return new Rectangle(x, y,
+                    rect.Width - shadowOffsetX - padding.Horizontal - s2,
+                    rect.Height - shadowOffsetY - padding.Vertical - s2);
+            }
+            else
+            {
+                if (borderWidth > 0)
+                {
+                    int pr = (int)Math.Ceiling(borderWidth), pr2 = pr * 2;
+                    return new Rectangle(rect.X + padding.Left + pr, rect.Y + padding.Top + pr, rect.Width - padding.Horizontal - pr2, rect.Height - padding.Vertical - pr2);
+                }
+                return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
+            }
+        }
+
+        #endregion
+
+        public static Rectangle PaddingRect(this Rectangle rect, ShadowConfig config, float borderWidth = 0F)
+        {
+            if (config.Shadow > 0)
+            {
+                int shadow = (int)(config.Shadow * Config.Dpi), s2 = shadow * 2,
+                    shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * Config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * Config.Dpi));
+                int x = rect.X + shadow, y = rect.Y + shadow;
+                if (config.ShadowOffsetX < 0) x += shadowOffsetX;
+                if (config.ShadowOffsetY < 0) y += shadowOffsetY;
+                if (borderWidth > 0)
+                {
+                    int pr = (int)Math.Ceiling(borderWidth / 2F), pr2 = pr * 2;
+                    return new Rectangle(x + pr, y + pr,
+                        rect.Width - pr2 - shadowOffsetX - s2,
+                        rect.Height - pr2 - shadowOffsetY - s2);
+                }
+                return new Rectangle(x, y,
+                    rect.Width - shadowOffsetX - s2,
+                    rect.Height - shadowOffsetY - s2);
+            }
+            else
+            {
+                if (borderWidth > 0)
+                {
+                    int pr = (int)Math.Ceiling(borderWidth / 2F), pr2 = pr * 2;
+                    return new Rectangle(rect.X + pr, rect.Y + pr, rect.Width - pr2, rect.Height - pr2);
+                }
+                return rect;
+            }
         }
         public static Rectangle PaddingRect(this Rectangle rect, Padding padding, int x, int y, int r, int b)
         {
             return new Rectangle(rect.X + padding.Left + x, rect.Y + padding.Top + y, rect.Width - padding.Horizontal - r, rect.Height - padding.Vertical - b);
         }
 
-        public static Rectangle PaddingRect(this Rectangle rect, Padding padding, float paddingWidth)
+        /// <summary>
+        /// 获取边距
+        /// </summary>
+        /// <param name="rect">区域</param>
+        /// <param name="padding">边距</param>
+        /// <param name="size">边框</param>
+        public static Rectangle PaddingRect(this Rectangle rect, Padding padding, float size = 0F)
         {
-            int pr = (int)Math.Round(paddingWidth), pr2 = pr * 2;
-            return new Rectangle(rect.X + padding.Left + pr, rect.Y + padding.Top + pr, rect.Width - padding.Horizontal - pr2, rect.Height - padding.Vertical - pr2);
+            if (size > 0)
+            {
+                int pr = (int)Math.Round(size), pr2 = pr * 2;
+                return new Rectangle(rect.X + padding.Left + pr, rect.Y + padding.Top + pr, rect.Width - padding.Horizontal - pr2, rect.Height - padding.Vertical - pr2);
+            }
+            return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
+        }
+
+        /// <summary>
+        /// 得到真实渲染区域
+        /// </summary>
+        /// <param name="rect">容器区域</param>
+        /// <param name="size">动画区域</param>
+        /// <param name="shape">形状</param>
+        /// <param name="joinLeft">连接左边</param>
+        /// <param name="joinRight">连接右边</param>
+        internal static Rectangle ReadRect(this Rectangle rect, float size, TShape shape, bool joinLeft, bool joinRight)
+        {
+            if (shape == TShape.Circle)
+            {
+                int pr = (int)Math.Round(size), pr2 = pr * 2;
+                if (rect.Width > rect.Height)
+                {
+                    int h = rect.Height - pr2;
+                    return new Rectangle(rect.X + (rect.Width - h) / 2, rect.Y + pr, h, h);
+                }
+                else
+                {
+                    int w = rect.Width - pr2;
+                    return new Rectangle(rect.X + pr, rect.Y + (rect.Height - w) / 2, w, w);
+                }
+            }
+            return ReadRect(rect, size, joinLeft, joinRight);
+        }
+
+        /// <summary>
+        /// 得到真实渲染区域
+        /// </summary>
+        /// <param name="rect">容器区域</param>
+        /// <param name="size">动画区域</param>
+        /// <param name="joinLeft">连接左边</param>
+        /// <param name="joinRight">连接右边</param>
+        internal static Rectangle ReadRect(this Rectangle rect, float size, bool joinLeft, bool joinRight)
+        {
+            int pr = (int)Math.Round(size), pr2 = pr * 2;
+            if (joinLeft && joinRight) return new Rectangle(rect.X, rect.Y + pr, rect.Width, rect.Height - pr2);
+            else if (joinLeft)
+            {
+                var r = new Rectangle(rect.X, rect.Y + pr, rect.Width - pr, rect.Height - pr2);
+                rect.X = -pr;
+                rect.Width += pr;
+                return r;
+            }
+            else if (joinRight)
+            {
+                var r = new Rectangle(rect.Width - (rect.Width - pr), rect.Y + pr, rect.Width - pr, rect.Height - pr2);
+                rect.X = 0;
+                rect.Width += pr;
+                return r;
+            }
+            return new Rectangle(rect.X + pr, rect.Y + pr, rect.Width - pr2, rect.Height - pr2);
         }
 
         #endregion
@@ -1008,16 +1066,16 @@ namespace AntdUI
         }
         public static Bitmap PaintShadow(this GraphicsPath path, int width, int height, Color color, int range = 10)
         {
-            var shadow_temp = new Bitmap(width, height);
-            using (var g = Graphics.FromImage(shadow_temp))
+            var bmp_shadow = new Bitmap(width, height);
+            using (var g = Graphics.FromImage(bmp_shadow))
             {
                 using (var brush = new SolidBrush(color))
                 {
                     g.FillPath(brush, path);
                 }
-                Blur(shadow_temp, range);
+                Blur(bmp_shadow, range);
             }
-            return shadow_temp;
+            return bmp_shadow;
         }
 
         #endregion
@@ -1219,18 +1277,19 @@ namespace AntdUI
 
         public static void PaintShadow(this Graphics g, ShadowConfig config, Rectangle _rect, RectangleF rect, float radius, bool round)
         {
+            int shadow = (int)(config.Shadow * Config.Dpi), shadowOffsetX = (int)(config.ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(config.ShadowOffsetY * Config.Dpi);
             using (var bmp_shadow = new Bitmap(_rect.Width, _rect.Height))
             {
                 using (var g_shadow = Graphics.FromImage(bmp_shadow))
                 {
                     using (var path = RoundPath(rect, radius, round))
                     {
-                        using (var brush = new SolidBrush(config.ShadowColor))
+                        using (var brush = new SolidBrush(config.ShadowColor.HasValue ? config.ShadowColor.Value : Style.Db.TextBase))
                         {
                             g_shadow.FillPath(brush, path);
                         }
                     }
-                    Blur(bmp_shadow, config.Shadow);
+                    Blur(bmp_shadow, shadow);
                 }
                 using (var attributes = new ImageAttributes())
                 {
@@ -1239,7 +1298,7 @@ namespace AntdUI
                         Matrix33 = config.ShadowOpacity
                     };
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(bmp_shadow, new Rectangle(_rect.X + config.ShadowOffsetX, _rect.Y + config.ShadowOffsetY, _rect.Width, _rect.Height), 0, 0, _rect.Width, _rect.Height, GraphicsUnit.Pixel, attributes);
+                    g.DrawImage(bmp_shadow, new Rectangle(_rect.X + shadowOffsetX, _rect.Y + shadowOffsetY, _rect.Width, _rect.Height), 0, 0, _rect.Width, _rect.Height, GraphicsUnit.Pixel, attributes);
                 }
             }
         }

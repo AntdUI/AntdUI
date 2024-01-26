@@ -154,7 +154,6 @@ namespace AntdUI
             /// </summary>
             public Control Control { get; set; }
 
-
             /// <summary>
             /// 偏移量
             /// </summary>
@@ -171,6 +170,11 @@ namespace AntdUI
             public object Content { get; set; }
 
             /// <summary>
+            /// 字体
+            /// </summary>
+            public Font? Font { get; set; }
+
+            /// <summary>
             /// 控件显示后回调
             /// </summary>
             public Action? OnControlLoad { get; set; }
@@ -180,6 +184,9 @@ namespace AntdUI
             /// </summary>
             public int AutoClose { get; set; } = 0;
 
+            /// <summary>
+            /// 圆角
+            /// </summary>
             public int Radius { get; set; } = 6;
 
             /// <summary>

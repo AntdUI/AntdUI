@@ -30,6 +30,7 @@ namespace AntdUI
     /// <remarks>引导用户按照流程完成任务的导航条。</remarks>
     [Description("Steps 步骤条")]
     [ToolboxItem(true)]
+    [DefaultProperty("Current")]
     public class Steps : IControl
     {
         #region 属性
@@ -498,9 +499,9 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 与对象关联的用户定义数据
+        /// 用户定义数据
         /// </summary>
-        [Description("与对象关联的用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
         void Invalidates()

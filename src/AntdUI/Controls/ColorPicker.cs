@@ -30,6 +30,8 @@ namespace AntdUI
     /// <remarks>提供颜色选取的组件。</remarks>
     [Description("ColorPicker 颜色选择器")]
     [ToolboxItem(true)]
+    [DefaultProperty("Value")]
+    [DefaultEvent("ValueChanged")]
     public class ColorPicker : IControl, SubLayeredForm
     {
         #region 属性

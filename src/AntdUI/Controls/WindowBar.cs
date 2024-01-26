@@ -115,17 +115,17 @@ namespace AntdUI
             get => loading;
             set
             {
-                if (loading != value)
+                if (loading == value) return;
+                loading = value;
+                ThreadLoading?.Dispose();
+                if (loading)
                 {
-                    loading = value;
-                    Invalidate();
-                    ThreadLoading?.Dispose();
                     ThreadLoading = new ITask(this, () =>
                     {
                         AnimationLoadingValue += 6;
                         if (AnimationLoadingValue > 360) AnimationLoadingValue = 0;
                         Invalidate();
-                        return true;
+                        return loading;
                     }, 10, () =>
                     {
                         Invalidate();
@@ -198,6 +198,12 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 是否可以拖动位置
+        /// </summary>
+        [Description("是否可以拖动位置"), Category("行为"), DefaultValue(true)]
+        public bool DragMove { get; set; } = true;
+
         #endregion
 
         public override Rectangle DisplayRectangle
@@ -214,7 +220,7 @@ namespace AntdUI
             var rect = ClientRectangle.PaddingRect(Padding, UseLeft, 0, 0, 0);
             var g = e.Graphics.High();
 
-            var size = g.MeasureString(text, Font);
+            var size = g.MeasureString(text ?? Config.NullText, Font);
 
             bool showLeft = false;
             int icon_size = (int)size.Height, iocn_xy = (rect.Height - icon_size) / 2;
@@ -252,8 +258,7 @@ namespace AntdUI
                 {
                     using (var brushsub = new SolidBrush(Style.Db.TextSecondary))
                     {
-                        var sizetext = g.MeasureString(text, Font);
-                        g.DrawString(desc, Font, brushsub, new RectangleF(rect.X + sizetext.Width, rect.Y, rect.Width - sizetext.Width, rect.Height), stringLeft);
+                        g.DrawString(desc, Font, brushsub, new RectangleF(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
                     }
                 }
             }
@@ -435,6 +440,11 @@ namespace AntdUI
                 rect_min = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
                 hasr += btn_size;
             }
+            if (DragMove)
+            {
+                var form = FindPARENT(Parent);
+                if (form != null) IsMax = form.WindowState == FormWindowState.Maximized;
+            }
             base.OnSizeChanged(e);
         }
 
@@ -470,6 +480,7 @@ namespace AntdUI
 
         Form? FindPARENT(Control control)
         {
+            if (control == null) return null;
             if (control.Parent != null) return FindPARENT(control.Parent);
             else
             {
@@ -486,6 +497,31 @@ namespace AntdUI
                 hove_max.Down = rect_max.Contains(e.Location);
                 hove_min.Down = rect_min.Contains(e.Location);
                 if (hove_close.Down || hove_max.Down || hove_min.Down) return;
+                if (DragMove)
+                {
+                    var form = FindPARENT(Parent);
+                    if (form != null)
+                    {
+                        if (e.Clicks > 1)
+                        {
+                            if (form is BaseForm form_win) form_win.MaxRestore();
+                            else
+                            {
+                                if (form.WindowState == FormWindowState.Maximized) form.WindowState = FormWindowState.Normal;
+                                else form.WindowState = FormWindowState.Maximized;
+                            }
+                        }
+                        else
+                        {
+                            if (form is Window form_win) form_win.ControlMouseDown();
+                            else
+                            {
+                                Vanara.PInvoke.User32.ReleaseCapture();
+                                Vanara.PInvoke.User32.SendMessage(form.Handle, 0x0112, 61456 | 2, IntPtr.Zero);
+                            }
+                        }
+                    }
+                }
             }
             base.OnMouseDown(e);
         }

@@ -33,7 +33,7 @@ namespace AntdUI
         {
             maxalpha = 255;
             config = _config;
-            Font = _config.Form.Font;
+            Font = config.Font == null ? config.Form.Font : config.Font;
             using (var bmp = new Bitmap(1, 1))
             {
                 using (var g = Graphics.FromImage(bmp))

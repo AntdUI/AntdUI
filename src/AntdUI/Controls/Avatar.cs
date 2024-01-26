@@ -137,18 +137,18 @@ namespace AntdUI
 
         #region 边框
 
-        float borWidth = 0F;
+        float borderWidth = 0F;
         /// <summary>
         /// 边框宽度
         /// </summary>
         [Description("边框宽度"), Category("边框"), DefaultValue(0F)]
         public float BorderWidth
         {
-            get => borWidth;
+            get => borderWidth;
             set
             {
-                if (borWidth == value) return;
-                borWidth = value;
+                if (borderWidth == value) return;
+                borderWidth = value;
                 Invalidate();
             }
         }
@@ -165,7 +165,7 @@ namespace AntdUI
             {
                 if (borColor == value) return;
                 borColor = value;
-                if (borWidth > 0) Invalidate();
+                if (borderWidth > 0) Invalidate();
             }
         }
 
@@ -186,8 +186,8 @@ namespace AntdUI
             }
         }
 
-        [Description("阴影颜色"), Category("阴影"), DefaultValue(typeof(Color), "Black")]
-        public Color ShadowColor { get; set; } = Color.Black;
+        [Description("阴影颜色"), Category("阴影"), DefaultValue(null)]
+        public Color? ShadowColor { get; set; }
 
         float shadowOpacity = 0.3F;
         [Description("阴影透明度"), Category("阴影"), DefaultValue(0.3F)]
@@ -242,14 +242,14 @@ namespace AntdUI
             if (_rect.Width == 0 || _rect.Height == 0) return;
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
-            if (borWidth > 0)
+            if (borderWidth > 0)
             {
                 var rect = ReadRectangle;
                 if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
                 FillRect(g, rect, back, _radius, round);
                 if (image != null) g.PaintImg(rect, image, imageFit, _radius, round);
                 else PaintText(g, text, rect, stringCenter, Enabled);
-                DrawRect(g, rect, borColor, borWidth * Config.Dpi, _radius, round);
+                DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
             }
             else
             {
@@ -321,7 +321,7 @@ namespace AntdUI
         {
             get
             {
-                if (borWidth > 0) return ClientRectangle.PaddingRect(Padding, borWidth * Config.Dpi / 2F);
+                if (borderWidth > 0) return ClientRectangle.PaddingRect(Padding, borderWidth * Config.Dpi / 2F);
                 else return ClientRectangle.PaddingRect(Padding);
             }
         }
@@ -330,7 +330,7 @@ namespace AntdUI
         {
             get
             {
-                if (borWidth > 0)
+                if (borderWidth > 0)
                 {
                     var rect = ReadRectangle;
                     if (round)

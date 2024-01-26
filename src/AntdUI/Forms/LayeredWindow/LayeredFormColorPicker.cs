@@ -88,7 +88,6 @@ namespace AntdUI
             ArrowAlign = TAlign.BL;
             SetLocation(point.X + (int)rect_read.X - 10, point.Y + control.Height - 10 + ArrowSize);
 
-
             Location = TargetRect.Location;
             Size = TargetRect.Size;
         }

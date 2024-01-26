@@ -135,11 +135,11 @@ namespace Demo
             // 
             // button1
             // 
-            button1.AutoSize = true;
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.Location = new Point(40, 78);
             button1.Margin = new Padding(4);
             button1.Name = "button1";
-            button1.Size = new Size(145, 47);
+            button1.Size = new Size(145, 46);
             button1.TabIndex = 0;
             button1.Text = "Primary Button";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -147,25 +147,25 @@ namespace Demo
             // 
             // button2
             // 
-            button2.AutoSize = true;
+            button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button2.BorderWidth = 2F;
             button2.Location = new Point(210, 78);
             button2.Margin = new Padding(4);
             button2.Name = "button2";
-            button2.Size = new Size(141, 47);
+            button2.Size = new Size(141, 46);
             button2.TabIndex = 0;
             button2.Text = "Default Button";
             button2.Click += Button_Click;
             // 
             // button3
             // 
-            button3.AutoSize = true;
+            button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button3.BorderWidth = 2F;
             button3.Ghost = true;
             button3.Location = new Point(380, 78);
             button3.Margin = new Padding(4);
             button3.Name = "button3";
-            button3.Size = new Size(143, 47);
+            button3.Size = new Size(143, 46);
             button3.TabIndex = 0;
             button3.Text = "Danger Button";
             button3.Type = AntdUI.TTypeMini.Error;
@@ -173,7 +173,7 @@ namespace Demo
             // 
             // radio1
             // 
-            radio1.AutoSize = true;
+            radio1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio1.Location = new Point(40, 168);
             radio1.Name = "radio1";
             radio1.Size = new Size(117, 43);
@@ -182,7 +182,7 @@ namespace Demo
             // 
             // radio2
             // 
-            radio2.AutoSize = true;
+            radio2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio2.Location = new Point(210, 168);
             radio2.Name = "radio2";
             radio2.Size = new Size(115, 43);
@@ -191,7 +191,7 @@ namespace Demo
             // 
             // radio3
             // 
-            radio3.AutoSize = true;
+            radio3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio3.Checked = true;
             radio3.Location = new Point(380, 168);
             radio3.Name = "radio3";
@@ -201,7 +201,7 @@ namespace Demo
             // 
             // radio4
             // 
-            radio4.AutoSize = true;
+            radio4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio4.Enabled = false;
             radio4.Location = new Point(550, 168);
             radio4.Name = "radio4";
@@ -211,7 +211,7 @@ namespace Demo
             // 
             // radio5
             // 
-            radio5.AutoSize = true;
+            radio5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio5.Enabled = false;
             radio5.Location = new Point(720, 168);
             radio5.Name = "radio5";
@@ -221,7 +221,7 @@ namespace Demo
             // 
             // checkbox1
             // 
-            checkbox1.AutoSize = true;
+            checkbox1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox1.Location = new Point(40, 239);
             checkbox1.Name = "checkbox1";
             checkbox1.Size = new Size(117, 43);
@@ -230,7 +230,7 @@ namespace Demo
             // 
             // checkbox2
             // 
-            checkbox2.AutoSize = true;
+            checkbox2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox2.Location = new Point(210, 239);
             checkbox2.Name = "checkbox2";
             checkbox2.Size = new Size(115, 43);
@@ -239,7 +239,7 @@ namespace Demo
             // 
             // checkbox3
             // 
-            checkbox3.AutoSize = true;
+            checkbox3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox3.Checked = true;
             checkbox3.Location = new Point(380, 239);
             checkbox3.Name = "checkbox3";
@@ -249,7 +249,7 @@ namespace Demo
             // 
             // checkbox4
             // 
-            checkbox4.AutoSize = true;
+            checkbox4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox4.Enabled = false;
             checkbox4.Location = new Point(550, 239);
             checkbox4.Name = "checkbox4";
@@ -259,7 +259,7 @@ namespace Demo
             // 
             // checkbox5
             // 
-            checkbox5.AutoSize = true;
+            checkbox5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox5.Enabled = false;
             checkbox5.Location = new Point(720, 239);
             checkbox5.Name = "checkbox5";
@@ -333,7 +333,7 @@ namespace Demo
             // 
             // button4
             // 
-            button4.AutoSize = true;
+            button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button4.Location = new Point(550, 78);
             button4.Margin = new Padding(4);
             button4.Name = "button4";
@@ -605,7 +605,7 @@ namespace Demo
             panel_top.Dock = DockStyle.Top;
             panel_top.Location = new Point(0, 0);
             panel_top.Name = "panel_top";
-            panel_top.Size = new Size(1284, 40);
+            panel_top.Size = new Size(1300, 40);
             panel_top.TabIndex = 0;
             // 
             // label_title
@@ -614,7 +614,7 @@ namespace Demo
             label_title.Location = new Point(0, 0);
             label_title.Name = "label_title";
             label_title.Padding = new Padding(10, 0, 0, 0);
-            label_title.Size = new Size(1126, 40);
+            label_title.Size = new Size(1142, 40);
             label_title.TabIndex = 0;
             label_title.Text = "Ant Design 5.0";
             label_title.TextAlign = ContentAlignment.MiddleLeft;
@@ -626,12 +626,12 @@ namespace Demo
             btn_min.BackHover = Color.FromArgb(223, 223, 223);
             btn_min.Dock = DockStyle.Right;
             btn_min.Font = new Font("Microsoft YaHei UI Light", 18F, FontStyle.Regular, GraphicsUnit.Point);
+            btn_min.Ghost = true;
             btn_min.Image = Properties.Resources.app_minb;
-            btn_min.Location = new Point(1126, 0);
+            btn_min.Location = new Point(1142, 0);
             btn_min.Name = "btn_min";
             btn_min.Size = new Size(50, 40);
             btn_min.TabIndex = 3;
-            btn_min.Ghost = true;
             btn_min.Click += btn_min_Click;
             // 
             // btn_max
@@ -641,12 +641,12 @@ namespace Demo
             btn_max.BackHover = Color.FromArgb(223, 223, 223);
             btn_max.Dock = DockStyle.Right;
             btn_max.Font = new Font("Microsoft YaHei UI Light", 18F, FontStyle.Regular, GraphicsUnit.Point);
+            btn_max.Ghost = true;
             btn_max.Image = Properties.Resources.app_maxb;
-            btn_max.Location = new Point(1176, 0);
+            btn_max.Location = new Point(1192, 0);
             btn_max.Name = "btn_max";
             btn_max.Size = new Size(50, 40);
             btn_max.TabIndex = 2;
-            btn_max.Ghost = true;
             btn_max.Click += btn_max_Click;
             // 
             // btn_close
@@ -656,13 +656,13 @@ namespace Demo
             btn_close.BackHover = Color.FromArgb(196, 43, 28);
             btn_close.Dock = DockStyle.Right;
             btn_close.Font = new Font("Microsoft YaHei UI Light", 20F, FontStyle.Regular, GraphicsUnit.Point);
+            btn_close.Ghost = true;
             btn_close.Image = Properties.Resources.app_closeb;
             btn_close.ImageHover = Properties.Resources.app_close;
-            btn_close.Location = new Point(1226, 0);
+            btn_close.Location = new Point(1242, 0);
             btn_close.Name = "btn_close";
             btn_close.Size = new Size(58, 40);
             btn_close.TabIndex = 1;
-            btn_close.Ghost = true;
             btn_close.Click += btn_close_Click;
             // 
             // tooltipComponent1
@@ -695,7 +695,6 @@ namespace Demo
             panel8.Controls.Add(label7);
             panel8.Location = new Point(550, 319);
             panel8.Name = "panel8";
-            panel8.Padding = new Padding(24);
             panel8.Radius = 10;
             panel8.Shadow = 24;
             panel8.ShadowOpacity = 0.18F;
@@ -748,8 +747,7 @@ namespace Demo
             panel9.ForeColor = Color.White;
             panel9.Location = new Point(862, 318);
             panel9.Name = "panel9";
-            panel9.Padding = new Padding(38);
-            panel9.PaddingWidth = -12;
+            panel9.Padding = new Padding(14);
             panel9.Radius = 10;
             panel9.Shadow = 24;
             panel9.ShadowOpacity = 0.18F;
@@ -857,35 +855,37 @@ namespace Demo
             // 
             // button5
             // 
-            button5.AutoSize = true;
+            button5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button5.Back = Color.FromArgb(100, 22, 119, 255);
             button5.BackgroundImage = Properties.Resources.bg3;
             button5.BackgroundImageLayout = AntdUI.TFit.Cover;
             button5.BackHover = Color.FromArgb(100, 64, 150, 255);
             button5.Fore = Color.White;
+            button5.Ghost = true;
             button5.Image = Properties.Resources.search;
             button5.Location = new Point(887, 625);
             button5.Margin = new Padding(4);
             button5.Name = "button5";
-            button5.Size = new Size(165, 47);
+            button5.Size = new Size(166, 46);
             button5.TabIndex = 0;
             button5.Text = "Search Button";
             button5.Click += Button_Click;
             // 
             // button6
             // 
-            button6.AutoSize = true;
+            button6.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button6.Back = Color.FromArgb(100, 22, 119, 255);
             button6.BackgroundImage = Properties.Resources.bg2;
             button6.BackgroundImageLayout = AntdUI.TFit.Cover;
             button6.BackHover = Color.FromArgb(100, 64, 150, 255);
             button6.Fore = Color.White;
+            button6.Ghost = true;
             button6.Image = Properties.Resources.search;
             button6.Location = new Point(1080, 625);
             button6.Margin = new Padding(4);
             button6.Margins = 6;
             button6.Name = "button6";
-            button6.Size = new Size(167, 49);
+            button6.Size = new Size(170, 48);
             button6.TabIndex = 0;
             button6.Text = "Search Button";
             button6.Click += Button_Click;
@@ -893,7 +893,7 @@ namespace Demo
             // Main
             // 
             BackColor = Color.White;
-            ClientSize = new Size(1284, 681);
+            ClientSize = new Size(1300, 720);
             Controls.Add(input1);
             Controls.Add(badge3);
             Controls.Add(badge2);
@@ -960,6 +960,7 @@ namespace Demo
             panel8.ResumeLayout(false);
             panel9.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

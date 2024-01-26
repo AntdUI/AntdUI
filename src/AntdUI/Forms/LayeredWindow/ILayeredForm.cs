@@ -28,9 +28,6 @@ namespace AntdUI
         {
             SetStyle(
               ControlStyles.UserPaint |
-              ControlStyles.AllPaintingInWmPaint |
-              ControlStyles.OptimizedDoubleBuffer |
-              ControlStyles.ResizeRedraw |
               ControlStyles.DoubleBuffer, true);
             UpdateStyles();
             FormBorderStyle = FormBorderStyle.None;
@@ -204,6 +201,7 @@ namespace AntdUI
                         }));
                         return;
                     }
+                    Enabled = false;
                     Close();
                     if (isdispose) Dispose();
                 }

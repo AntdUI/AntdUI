@@ -104,7 +104,7 @@ namespace Overview.Controls
             // 
             // button5
             // 
-            button5.AutoSize = true;
+            button5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button5.BorderWidth = 2F;
             button5.Ghost = true;
             button5.Location = new Point(546, 3);
@@ -117,7 +117,7 @@ namespace Overview.Controls
             // 
             // button16
             // 
-            button16.AutoSize = true;
+            button16.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button16.Location = new Point(448, 3);
             button16.Name = "button16";
             button16.Size = new Size(92, 46);
@@ -128,7 +128,7 @@ namespace Overview.Controls
             // 
             // button9
             // 
-            button9.AutoSize = true;
+            button9.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button9.ImageSvg = Properties.Resources.icon_search;
             button9.Location = new Point(56, 3);
             button9.Name = "button9";
@@ -140,7 +140,7 @@ namespace Overview.Controls
             // 
             // button7
             // 
-            button7.AutoSize = true;
+            button7.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button7.ImageSvg = Properties.Resources.icon_poweroff;
             button7.Location = new Point(3, 3);
             button7.Name = "button7";
@@ -185,55 +185,57 @@ namespace Overview.Controls
             panel2.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
             panel2.Location = new Point(14, 10);
             panel2.Name = "panel2";
-            panel2.Padding = new Padding(20);
-            panel2.PaddingWidth = -10;
-            panel2.ShadowOpacity = 0.2F;
+            panel2.Padding = new Padding(4);
+            panel2.Shadow = 18;
             panel2.Size = new Size(417, 83);
             panel2.TabIndex = 0;
             panel2.Text = "panel2";
             // 
             // button10
             // 
-            button10.AutoSize = true;
+            button10.AutoSizeMode = AntdUI.TAutoSize.Width;
             button10.Back = Color.FromArgb(217, 217, 217);
             button10.BackColor = Color.Transparent;
             button10.BorderWidth = 2F;
-            button10.Dock = DockStyle.Fill;
+            button10.Dock = DockStyle.Left;
             button10.JoinLeft = true;
-            button10.Location = new Point(262, 20);
+            button10.Location = new Point(264, 22);
+            button10.Margin = new Padding(0);
             button10.Name = "button10";
-            button10.Size = new Size(121, 42);
+            button10.Size = new Size(121, 39);
             button10.TabIndex = 0;
             button10.Text = "Default Button";
             button10.Click += Btn;
             // 
             // button15
             // 
-            button15.AutoSize = true;
+            button15.AutoSizeMode = AntdUI.TAutoSize.Width;
             button15.Back = Color.FromArgb(217, 217, 217);
             button15.BackColor = Color.Transparent;
             button15.BorderWidth = 2F;
             button15.Dock = DockStyle.Left;
             button15.JoinLeft = true;
             button15.JoinRight = true;
-            button15.Location = new Point(141, 20);
+            button15.Location = new Point(143, 22);
+            button15.Margin = new Padding(0);
             button15.Name = "button15";
-            button15.Size = new Size(121, 42);
+            button15.Size = new Size(121, 39);
             button15.TabIndex = 0;
             button15.Text = "Default Button";
             button15.Click += Btn;
             // 
             // button2
             // 
-            button2.AutoSize = true;
+            button2.AutoSizeMode = AntdUI.TAutoSize.Width;
             button2.Back = Color.FromArgb(217, 217, 217);
             button2.BackColor = Color.Transparent;
             button2.BorderWidth = 2F;
             button2.Dock = DockStyle.Left;
             button2.JoinRight = true;
-            button2.Location = new Point(20, 20);
+            button2.Location = new Point(22, 22);
+            button2.Margin = new Padding(0);
             button2.Name = "button2";
-            button2.Size = new Size(121, 42);
+            button2.Size = new Size(121, 39);
             button2.TabIndex = 0;
             button2.Text = "Default Button";
             button2.Click += Btn;
@@ -335,7 +337,7 @@ namespace Overview.Controls
             // 
             // button23
             // 
-            button23.AutoSize = true;
+            button23.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button23.BorderWidth = 1F;
             button23.ImageSvg = Properties.Resources.icon_poweroff;
             button23.IsLink = true;
@@ -429,7 +431,7 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.AutoSize = true;
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.BorderWidth = 1F;
             button1.ImageSvg = Properties.Resources.icon_poweroff;
             button1.Location = new Point(156, 3);
@@ -441,22 +443,22 @@ namespace Overview.Controls
             // 
             // button4
             // 
-            button4.AutoSize = true;
+            button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button4.BorderWidth = 1F;
+            button4.ImageSvg = Properties.Resources.icon_search;
             button4.Location = new Point(209, 3);
             button4.Name = "button4";
-            button4.ImageSvg = Properties.Resources.icon_search;
-            button4.Size = new Size(67, 46);
+            button4.Size = new Size(94, 46);
             button4.TabIndex = 2;
             button4.Text = "搜索";
             button4.Click += Btn2;
             // 
             // button26
             // 
-            button26.AutoSize = true;
+            button26.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button26.BorderWidth = 2F;
             button26.ImageSvg = Properties.Resources.icon_search;
-            button26.Location = new Point(282, 3);
+            button26.Location = new Point(309, 3);
             button26.Name = "button26";
             button26.Shape = AntdUI.TShape.Circle;
             button26.Size = new Size(47, 47);
@@ -466,9 +468,9 @@ namespace Overview.Controls
             // 
             // button6
             // 
-            button6.AutoSize = true;
+            button6.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button6.ImageSvg = Properties.Resources.icon_search;
-            button6.Location = new Point(335, 3);
+            button6.Location = new Point(362, 3);
             button6.Name = "button6";
             button6.Size = new Size(94, 46);
             button6.TabIndex = 7;
@@ -502,7 +504,7 @@ namespace Overview.Controls
             // 
             // button17
             // 
-            button17.AutoSize = true;
+            button17.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button17.Location = new Point(3, 3);
             button17.Name = "button17";
             button17.Size = new Size(152, 46);
@@ -513,7 +515,7 @@ namespace Overview.Controls
             // 
             // button18
             // 
-            button18.AutoSize = true;
+            button18.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button18.BorderWidth = 1F;
             button18.Location = new Point(161, 3);
             button18.Name = "button18";
@@ -524,7 +526,7 @@ namespace Overview.Controls
             // 
             // button19
             // 
-            button19.AutoSize = true;
+            button19.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button19.Ghost = true;
             button19.Location = new Point(317, 3);
             button19.Name = "button19";
@@ -554,10 +556,14 @@ namespace Overview.Controls
             panel3.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             panel5.ResumeLayout(false);
             flowLayoutPanel2.ResumeLayout(false);
+            flowLayoutPanel2.PerformLayout();
             flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
             panel4.ResumeLayout(false);
+            panel4.PerformLayout();
             ResumeLayout(false);
         }
 

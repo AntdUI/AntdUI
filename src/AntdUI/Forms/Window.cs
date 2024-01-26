@@ -33,13 +33,6 @@ namespace AntdUI
     {
         public Window()
         {
-            SetStyle(
-                 ControlStyles.UserPaint |
-                 ControlStyles.AllPaintingInWmPaint |
-                 ControlStyles.OptimizedDoubleBuffer |
-                 ControlStyles.ResizeRedraw |
-                 ControlStyles.DoubleBuffer, true);
-            UpdateStyles();
             dark = Config.IsDark;
             _clientWidthField = typeof(Control).GetField("_clientWidth", BindingFlags.NonPublic | BindingFlags.Instance) ?? typeof(Control).GetField("clientWidth", BindingFlags.NonPublic | BindingFlags.Instance);
             _clientHeightField = typeof(Control).GetField("_clientHeight", BindingFlags.NonPublic | BindingFlags.Instance) ?? typeof(Control).GetField("clientHeight", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -142,6 +135,107 @@ namespace AntdUI
             }
             base.WndProc(ref m);
         }
+
+        #region 区域
+
+        /// <summary>
+        /// 获取或设置窗体的位置
+        /// </summary>
+        public new Point Location
+        {
+            get
+            {
+                if (winState == WState.Restore) return base.Location;
+                return ScreenRectangle.Location;
+            }
+            set { base.Location = value; }
+        }
+
+        /// <summary>
+        /// 控件的顶部坐标
+        /// </summary>
+        public new int Top
+        {
+            get => Location.X;
+            set { base.Top = value; }
+        }
+
+        /// <summary>
+        /// 控件的左侧坐标
+        /// </summary>
+        public new int Left
+        {
+            get => Location.Y;
+            set { base.Left = value; }
+        }
+
+        /// <summary>
+        /// 控件的右坐标
+        /// </summary>
+        public new int Right
+        {
+            get => ScreenRectangle.Right;
+        }
+
+        /// <summary>
+        /// 控件的底部坐标
+        /// </summary>
+        public new int Bottom
+        {
+            get => ScreenRectangle.Bottom;
+        }
+
+        /// <summary>
+        /// 获取或设置窗体的大小
+        /// </summary>
+        public new Size Size
+        {
+            get
+            {
+                if (winState == WState.Restore) return base.Size;
+                return ScreenRectangle.Size;
+            }
+            set { base.Size = value; }
+        }
+
+        /// <summary>
+        /// 控件的宽度
+        /// </summary>
+        public new int Width
+        {
+            get => Size.Width;
+            set { base.Width = value; }
+        }
+
+        /// <summary>
+        /// 控件的高度
+        /// </summary>
+        public new int Height
+        {
+            get => Size.Height;
+            set { base.Height = value; }
+        }
+
+        /// <summary>
+        /// 获取或设置窗体屏幕区域
+        /// </summary>
+        public Rectangle ScreenRectangle
+        {
+            get
+            {
+                if (winState == WState.Restore) return new Rectangle(base.Location, base.Size);
+                var rect = ClientRectangle;
+                var point = RectangleToScreen(Rectangle.Empty);
+                return new Rectangle(point.Location, rect.Size);
+            }
+            set
+            {
+                base.Location = value.Location;
+                base.Size = value.Size;
+            }
+        }
+
+        #endregion
 
         #region 交互
 
@@ -371,29 +465,18 @@ namespace AntdUI
 
         #region WindowMessage Handlers
 
+        const nint SIZE_RESTORED = 0;
+        const nint SIZE_MINIMIZED = 1;
+        const nint SIZE_MAXIMIZED = 2;
         void WmSize(ref System.Windows.Forms.Message m)
         {
-            const nint SIZE_RESTORED = 0;
-            const nint SIZE_MINIMIZED = 1;
-            const nint SIZE_MAXIMIZED = 2;
-            if (m.WParam == SIZE_MINIMIZED)
-            {
-                WinState = WState.Minimize;
-            }
+            if (m.WParam == SIZE_MINIMIZED) WinState = WState.Minimize;
             else if (m.WParam == SIZE_MAXIMIZED)
             {
                 WinState = WState.Maximize;
                 _shouldPerformMaximiazedState = true;
             }
-            else if (m.WParam == SIZE_RESTORED)
-            {
-                WinState = WState.Restore;
-                if (!IsZoomed(m.HWnd))
-                {
-                    Region?.Dispose();
-                    Region = null;
-                }
-            }
+            else if (m.WParam == SIZE_RESTORED) WinState = WState.Restore;
         }
 
         bool WmNCCalcSize(ref System.Windows.Forms.Message m)
@@ -444,10 +527,7 @@ namespace AntdUI
                 OnClientSizeChanged(EventArgs.Empty);
                 Size = SizeFromClientSize(new Size(x, y));
             }
-            else
-            {
-                base.SetClientSizeCore(x, y);
-            }
+            else base.SetClientSizeCore(x, y);
         }
 
         protected Padding GetNonClientMetrics()

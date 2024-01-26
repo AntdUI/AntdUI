@@ -27,8 +27,7 @@ namespace Overview.Controls
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal;
-            panel2.Height = button2.Height + panel2.Padding.Vertical;
+            panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
         }
         private void Btn(object sender, EventArgs e)
         {
@@ -38,7 +37,7 @@ namespace Overview.Controls
             if (btn.Parent == panel2)
             {
                 change = true;
-                panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal;
+                panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
             }
             Task.Run(() =>
             {
@@ -50,7 +49,7 @@ namespace Overview.Controls
                 {
                     panel2.Invoke(() =>
                     {
-                        panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal;
+                        panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
                     });
                 }
             });

@@ -346,7 +346,7 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(Color.FromArgb(close_button.Value, Style.Db.FillSecondary)))
                         {
-                            using (var path = rect_close.RoundPath(4))
+                            using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                             {
                                 g.FillPath(brush, path);
                             }
@@ -357,7 +357,7 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(Style.Db.FillSecondary))
                         {
-                            using (var path = rect_close.RoundPath(4))
+                            using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                             {
                                 g.FillPath(brush, path);
                             }
@@ -396,7 +396,7 @@ namespace AntdUI
         /// <param name="rect_read">真实区域</param>
         GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, RectangleF rect_read)
         {
-            var path = rect_read.RoundPath(config.Radius);
+            var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
             if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
             {
                 shadow_temp?.Dispose();

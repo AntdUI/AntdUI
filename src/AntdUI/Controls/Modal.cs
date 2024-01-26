@@ -214,6 +214,11 @@ namespace AntdUI
             public object Content { get; set; }
 
             /// <summary>
+            /// 字体
+            /// </summary>
+            public Font? Font { get; set; }
+
+            /// <summary>
             /// 是否支持键盘 esc 关闭
             /// </summary>
             public bool Keyboard { get; set; } = true;

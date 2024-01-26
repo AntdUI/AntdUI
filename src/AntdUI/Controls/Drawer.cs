@@ -31,18 +31,6 @@ namespace AntdUI
         /// Drawer 抽屉
         /// </summary>
         /// <param name="form">所属控件</param>
-        /// <param name="title">标题</param>
-        /// <param name="content">控件</param>
-        /// <param name="Align">方向</param>
-        public static Form? open(Form form, string title, Control content, TAlignMini Align = TAlignMini.Right)
-        {
-            return open(new Config(form, title, content) { Align = Align });
-        }
-
-        /// <summary>
-        /// Drawer 抽屉
-        /// </summary>
-        /// <param name="form">所属控件</param>
         /// <param name="content">控件</param>
         /// <param name="Align">方向</param>
         public static Form? open(Form form, Control content, TAlignMini Align = TAlignMini.Right)
@@ -51,18 +39,6 @@ namespace AntdUI
         }
 
         #region 配置
-
-        /// <summary>
-        /// Drawer 配置
-        /// </summary>
-        /// <param name="form">所属控件</param>
-        /// <param name="title">标题</param>
-        /// <param name="content">控件</param>
-        /// <param name="Align">方向</param>
-        public static Config config(Form form, string title, Control content, TAlignMini Align = TAlignMini.Right)
-        {
-            return new Config(form, title, content) { Align = Align };
-        }
 
         /// <summary>
         /// Drawer 配置
@@ -131,18 +107,6 @@ namespace AntdUI
             /// </summary>
             /// <param name="form">所属控件</param>
             /// <param name="content">控件</param>
-            public Config(Form form, string title, Control content)
-            {
-                Form = form;
-                Title = title;
-                Content = content;
-            }
-
-            /// <summary>
-            /// Drawer 配置
-            /// </summary>
-            /// <param name="form">所属控件</param>
-            /// <param name="content">控件</param>
             public Config(Form form, Control content)
             {
                 Form = form;
@@ -153,11 +117,6 @@ namespace AntdUI
             /// 所属窗口
             /// </summary>
             public Form Form { get; set; }
-
-            /// <summary>
-            /// 标题
-            /// </summary>
-            public string? Title { get; set; }
 
             /// <summary>
             /// 控件

@@ -187,7 +187,7 @@ namespace AntdUI
         /// <summary>
         /// 阴影颜色
         /// </summary>
-        Color ShadowColor { get; set; }
+        Color? ShadowColor { get; set; }
 
         /// <summary>
         /// 阴影透明度

@@ -34,7 +34,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Text")]
     [Designer(typeof(IControlDesigner))]
-    public class Panel : IControl, IMessageFilter
+    public class Panel : IControl, ShadowConfig, IMessageFilter, IEventListener
     {
         #region 属性
 
@@ -54,27 +54,13 @@ namespace AntdUI
             }
         }
 
-        int paddingWidth = 0;
-        /// <summary>
-        /// 边距
-        /// </summary>
-        [Description("边距"), Category("外观"), DefaultValue(0)]
-        public int PaddingWidth
-        {
-            get => paddingWidth;
-            set
-            {
-                if (paddingWidth == value) return;
-                paddingWidth = value;
-                Invalidate();
-            }
-        }
+        #region 阴影
 
-        int shadow = 10;
+        int shadow = 0;
         /// <summary>
-        /// 阴影
+        /// 阴影大小
         /// </summary>
-        [Description("阴影"), Category("外观"), DefaultValue(10)]
+        [Description("阴影"), Category("外观"), DefaultValue(0)]
         public int Shadow
         {
             get => shadow;
@@ -82,15 +68,71 @@ namespace AntdUI
             {
                 if (shadow == value) return;
                 shadow = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
+                OnSizeChanged(EventArgs.Empty);
+            }
+        }
+
+        Color? shadowColor;
+        /// <summary>
+        /// 阴影颜色
+        /// </summary>
+        [Description("阴影颜色"), Category("阴影"), DefaultValue(null)]
+        public Color? ShadowColor
+        {
+            get => shadowColor;
+            set
+            {
+                if (shadowColor == value) return;
+                shadowColor = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
                 Invalidate();
             }
         }
 
-        float shadowOpacity = 0F;
+        int shadowOffsetX = 0;
+        /// <summary>
+        /// 阴影偏移X
+        /// </summary>
+        [Description("阴影偏移X"), Category("阴影"), DefaultValue(0)]
+        public int ShadowOffsetX
+        {
+            get => shadowOffsetX;
+            set
+            {
+                if (shadowOffsetX == value) return;
+                shadowOffsetX = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
+                OnSizeChanged(EventArgs.Empty);
+            }
+        }
+
+        int shadowOffsetY = 0;
+        /// <summary>
+        /// 阴影偏移Y
+        /// </summary>
+        [Description("阴影偏移Y"), Category("阴影"), DefaultValue(0)]
+        public int ShadowOffsetY
+        {
+            get => shadowOffsetY;
+            set
+            {
+                if (shadowOffsetY == value) return;
+                shadowOffsetY = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
+                OnSizeChanged(EventArgs.Empty);
+            }
+        }
+
+        float shadowOpacity = 0.1F;
         /// <summary>
         /// 阴影透明度
         /// </summary>
-        [Description("阴影透明度"), Category("外观"), DefaultValue(0F)]
+        [Description("阴影透明度"), Category("阴影"), DefaultValue(0.1F)]
         public float ShadowOpacity
         {
             get => shadowOpacity;
@@ -100,6 +142,7 @@ namespace AntdUI
                 if (value < 0) value = 0;
                 else if (value > 1) value = 1;
                 shadowOpacity = value;
+                AnimationHoverValue = shadowOpacity;
                 Invalidate();
             }
         }
@@ -108,7 +151,7 @@ namespace AntdUI
         /// <summary>
         /// 悬停阴影后透明度
         /// </summary>
-        [Description("悬停阴影后透明度"), Category("外观"), DefaultValue(0.3F)]
+        [Description("悬停阴影后透明度"), Category("阴影"), DefaultValue(0.3F)]
         public float ShadowOpacityHover
         {
             get => shadowOpacityHover;
@@ -121,6 +164,8 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        #endregion
 
         Color? back;
         /// <summary>
@@ -178,7 +223,7 @@ namespace AntdUI
             {
                 if (borderWidth == value) return;
                 borderWidth = value;
-                Invalidate();
+                OnSizeChanged(EventArgs.Empty);
             }
         }
 
@@ -204,7 +249,7 @@ namespace AntdUI
 
         public override Rectangle DisplayRectangle
         {
-            get => ClientRectangle.DeflateRect(Padding);
+            get => ClientRectangle.DeflateRect(Padding, this, borderWidth * Config.Dpi);
         }
 
         #region 渲染
@@ -246,10 +291,11 @@ namespace AntdUI
             var path = rect_read.RoundPath(radius * Config.Dpi);
             if (shadow > 0)
             {
+                int shadow = (int)(Shadow * Config.Dpi), shadowOffsetX = (int)(ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(ShadowOffsetY * Config.Dpi);
                 if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
-                    shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height, shadow);
+                    shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height, shadowColor.HasValue ? shadowColor.Value : Style.Db.TextBase, shadow);
                 }
                 using (var attributes = new ImageAttributes())
                 {
@@ -258,7 +304,7 @@ namespace AntdUI
                     else if (ExtraMouseHover) matrix.Matrix33 = shadowOpacityHover;
                     else matrix.Matrix33 = shadowOpacity;
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(shadow_temp, rect_client, 0, 0, rect_client.Width, rect_client.Height, GraphicsUnit.Pixel, attributes);
+                    g.DrawImage(shadow_temp, new Rectangle(rect_client.X + shadowOffsetX, rect_client.Y + shadowOffsetY, rect_client.Width, rect_client.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                 }
             }
             return path;
@@ -266,7 +312,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle
         {
-            get => ClientRectangle.PaddingRect(Padding, paddingWidth);
+            get => ClientRectangle.PaddingRect(this, borderWidth * Config.Dpi);
         }
 
         public override GraphicsPath RenderRegion
@@ -278,7 +324,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        float AnimationHoverValue = 0F;
+        float AnimationHoverValue = 0.1F;
         bool AnimationHover = false;
         bool _mouseHover = false;
         bool ExtraMouseHover
@@ -303,7 +349,7 @@ namespace AntdUI
                                 if (AnimationHoverValue >= shadowOpacityHover) { AnimationHoverValue = shadowOpacityHover; return false; }
                                 Invalidate();
                                 return true;
-                            }, 10, () =>
+                            }, 20, () =>
                             {
                                 AnimationHover = false;
                                 Invalidate();
@@ -317,7 +363,7 @@ namespace AntdUI
                                 if (AnimationHoverValue <= shadowOpacity) { AnimationHoverValue = shadowOpacity; return false; }
                                 Invalidate();
                                 return true;
-                            }, 10, () =>
+                            }, 20, () =>
                             {
                                 AnimationHover = false;
                                 Invalidate();
@@ -337,6 +383,9 @@ namespace AntdUI
         {
             ThreadHover?.Dispose();
             Application.RemoveMessageFilter(this);
+            EventManager.Instance.RemoveListener(1, this);
+            shadow_temp?.Dispose();
+            shadow_temp = null;
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;
@@ -376,7 +425,23 @@ namespace AntdUI
         {
             base.CreateHandle();
             Application.AddMessageFilter(this);
+            EventManager.Instance.AddListener(1, this);
         }
+
+        #region 主题变化
+
+        public void HandleEvent(int eventId, IEventArgs? args)
+        {
+            switch (eventId)
+            {
+                case 1:
+                    shadow_temp?.Dispose();
+                    shadow_temp = null;
+                    break;
+            }
+        }
+
+        #endregion
     }
 
     internal class IControlDesigner : ParentControlDesigner

@@ -29,7 +29,6 @@ namespace AntdUI
     /// <remarks>区隔内容的分割线。</remarks>
     [Description("Divider 分割线")]
     [ToolboxItem(true)]
-    [DefaultProperty("Color")]
     [Designer(typeof(IControlDesigner))]
     public class Divider : IControl
     {

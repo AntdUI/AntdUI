@@ -128,6 +128,11 @@ namespace AntdUI
             public Form Form { get; set; }
 
             /// <summary>
+            /// 字体
+            /// </summary>
+            public Font? Font { get; set; }
+
+            /// <summary>
             /// 所属控件
             /// </summary>
             public Control? Control { get; set; }

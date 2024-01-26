@@ -397,16 +397,19 @@ namespace AntdUI
                 SetCursor(_mouseHover && Enabled && !value);
                 BeforeAutoSize();
                 ThreadLoading?.Dispose();
-                AnimationClickValue = 0;
-                ThreadLoading = new ITask(this, i =>
+                if (loading)
                 {
-                    AnimationLoadingValue = i;
-                    Invalidate();
-                    return loading;
-                }, 10, 360, 6, () =>
-                {
-                    Invalidate();
-                });
+                    AnimationClickValue = 0;
+                    ThreadLoading = new ITask(this, i =>
+                    {
+                        AnimationLoadingValue = i;
+                        Invalidate();
+                        return loading;
+                    }, 10, 360, 6, () =>
+                    {
+                        Invalidate();
+                    });
+                }
             }
         }
 

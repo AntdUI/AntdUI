@@ -26,7 +26,14 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
+    /// <summary>
+    /// DatePickerRange 日期范围选择框
+    /// </summary>
+    /// <remarks>输入或选择日期范围的控件。</remarks>
+    [Description("DatePickerRange 日期范围选择框")]
     [ToolboxItem(true)]
+    [DefaultProperty("Value")]
+    [DefaultEvent("ValueChanged")]
     public class DatePickerRange : IControl, IButtonControl, SubLayeredForm, IEventListener
     {
         #region 属性

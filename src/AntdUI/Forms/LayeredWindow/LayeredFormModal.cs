@@ -32,7 +32,6 @@ namespace AntdUI
             Resizable = false;
 
             config = _config;
-            fontTitle = new Font(_config.Form.Font.FontFamily, 13, FontStyle.Bold);
             close_button = new ITaskOpacity(this);
 
             #region InitializeComponent
@@ -41,7 +40,8 @@ namespace AntdUI
 
             BackColor = Style.Db.BgElevated;
             Size = new Size(416, 160);
-            Font = new Font(config.Form.Font.FontFamily, 11F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = config.Font == null ? config.Form.Font : config.Font;
+            fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold);
             ForeColor = Style.Db.TextBase;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
@@ -139,6 +139,7 @@ namespace AntdUI
                     panel1.Height = butt_h;
                     if (config.Content is Control control)
                     {
+                        rectsContent = new RectangleF[0];
                         w = (int)Math.Round(control.Width * dpi);
                         if (dpi != 1F)
                         {
@@ -236,6 +237,7 @@ namespace AntdUI
                     }
                     else
                     {
+                        rectsContent = new RectangleF[0];
                         rtext = true;
                         var content = config.Content.ToString();
                         if (_config.Icon == TType.None)
@@ -284,10 +286,8 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             close_button.Dispose();
-            if (config.Content is Control control)
-            {
-                control.Dispose();
-            }
+            if (config.Content is Control control) control.Dispose();
+            fontTitle.Dispose();
             base.Dispose(disposing);
         }
 
@@ -361,7 +361,7 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(close_button.Value, Style.Db.FillSecondary)))
                     {
-                        using (var path = rect_close.RoundPath(4))
+                        using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
                             g.FillPath(brush, path);
                         }
@@ -372,7 +372,7 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Style.Db.FillSecondary))
                     {
-                        using (var path = rect_close.RoundPath(4))
+                        using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
                             g.FillPath(brush, path);
                         }

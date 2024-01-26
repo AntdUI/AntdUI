@@ -30,6 +30,7 @@ namespace AntdUI
     /// <remarks>采用分页的形式分隔长列表，每次只加载一个页面。</remarks>
     [Description("Pagination 分页")]
     [ToolboxItem(true)]
+    [DefaultProperty("Current")]
     [DefaultEvent("ValueChanged")]
     public class Pagination : IControl
     {

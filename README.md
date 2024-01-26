@@ -87,8 +87,9 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Progress** 进度条 | ✅ | ❎ |
 :arrow_right: | **Spin** 加载中 | ✅ | ❎ |
 ||||
-:arrow_down: | 其他 `2` | 动画 | 禁用 |
+:arrow_down: | 其他 `3` | 动画 | 禁用 |
 :arrow_right: | **WindowBar** 窗口栏 | ✅ | ❎ |
+:arrow_right: | **ContextMenuStrip** 右键菜单 | ✅ | ❎ |
 :arrow_right: | **Image3D** 图片3D | ✅ | ❎ |
 
 ### 📢项目说明

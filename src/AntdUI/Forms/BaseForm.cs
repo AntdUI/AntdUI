@@ -24,6 +24,13 @@ namespace AntdUI
 {
     public class BaseForm : Form
     {
+        public BaseForm()
+        {
+            SetStyle(
+                 ControlStyles.UserPaint |
+                 ControlStyles.DoubleBuffer, true);
+            UpdateStyles();
+        }
         internal void SetCursor(bool val)
         {
             if (InvokeRequired)

@@ -29,7 +29,7 @@ namespace AntdUI
     {
         Control textBox;
         int MaxCount = 4;
-        internal float Radius = 10;
+        internal float Radius = 0;
         bool ClickEnd = false;
         object? selectedValue;
         int r_w = 0;
@@ -44,10 +44,10 @@ namespace AntdUI
             MaxCount = control.MaxCount;
             Font = control.Font;
             selectedValue = control.SelectedValue;
-            Radius = control.radius;
+            Radius = (int)(control.radius * Config.Dpi);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items);
         }
-        public LayeredFormSelectDown(Dropdown control, float radius, RectangleF rect_read, List<object> items)
+        public LayeredFormSelectDown(Dropdown control, int radius, RectangleF rect_read, List<object> items)
         {
             PARENT = control;
             ClickEnd = control.ClickEnd;
@@ -56,7 +56,7 @@ namespace AntdUI
             textBox = control;
             MaxCount = control.MaxCount;
             Font = control.Font;
-            Radius = radius;
+            Radius = (int)(radius * Config.Dpi);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items);
         }
 

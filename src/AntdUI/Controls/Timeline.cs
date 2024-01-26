@@ -367,9 +367,9 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 与对象关联的用户定义数据
+        /// 用户定义数据
         /// </summary>
-        [Description("与对象关联的用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
         void Invalidates()
