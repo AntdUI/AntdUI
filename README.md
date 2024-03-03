@@ -6,7 +6,7 @@ Winform UI library use Ant Design 5.0
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=for-the-badge&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
 [![NuGet](https://img.shields.io/nuget/v/AntdUI.svg?style=for-the-badge&label=AntdUI&logo=nuget)](https://www.nuget.org/packages/AntdUI)
 [![QQ群](https://img.shields.io/badge/QQ群-328884096-f74658?style=for-the-badge&logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
-[![License](https://img.shields.io/badge/license-GPL%203.0-4EB1BA.svg?style=for-the-badge)](https://gitee.com/antdui/AntdUI)
+[![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
 
 ---
 
@@ -42,8 +42,10 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Button** 按钮 | ✅ | ✅ |
 :arrow_right: | **FloatButton** 悬浮按钮 | ✅ | ❎ |
 ||||
-:arrow_down: | 布局 `1` | 动画 | 禁用 |
+:arrow_down: | 布局 `3` | 动画 | 禁用 |
 :arrow_right: | **Divider** 分割线 | ❎ | ❎ |
+:arrow_right: | **StackPanel** 堆栈布局 | ❎ | ❎ |
+:arrow_right: | **FlowPanel** 流动布局 | ❎ | ❎ |
 ||||
 :arrow_down: | 导航 `4` | 动画 | 禁用 |
 :arrow_right: | **Dropdown** 下拉菜单 | ✅ | ✅ |
@@ -90,13 +92,20 @@ Winform UI library use Ant Design 5.0
 :arrow_down: | 其他 `3` | 动画 | 禁用 |
 :arrow_right: | **WindowBar** 窗口栏 | ✅ | ❎ |
 :arrow_right: | **ContextMenuStrip** 右键菜单 | ✅ | ❎ |
-:arrow_right: | **Image3D** 图片3D | ✅ | ❎ |
+:arrow_right: | **Image3D** 图片3D | ✅ | ❎ |  
 
-### 📢项目说明
-- 个人学习交流免费，商业应用需要授权。个人承接外包项目、个人开发商业项目等，公司内部使用、开发项目等均属于商业应用范畴。联系QQ：**17379620** 咨询授权事宜。      
-- 禁止使用AntdUI控件库开发违法应用，或使用从事其他非法目的违法犯罪行为。因此产生的法律责任与AntdUI无关。  
+### 🐿️捐赠 🥣💲🐖👚
+![收款码](screenshot/Pre/Payment.png?raw=true)
 
 ### 🎨截图
+
+#### ChatUI
+
+> 纯GDI，不是TextBox等拖控件
+
+![ChatUI](screenshot/ChatUI.gif?raw=true)
+
+#### 控件
 
 | **Button** 按钮 | **Badge** 徽标数 |
 | :--: | :--: |
@@ -120,4 +129,4 @@ Winform UI library use Ant Design 5.0
 | **Switch** 开关 | **Table** 表格 |
 | ![开关](screenshot/Switch.gif?raw=true) | ![表格](screenshot/Table.gif?raw=true) |
 
-🦦 文档还在编写中
+🦦 文档还在编写中，招募小伙伴一起维护项目
