@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -32,7 +36,9 @@ namespace AntdUI
                 return true;
             }, 10, t, () =>
             {
-                SetAnimateValue(maxalpha);
+                bmp_tmp?.Dispose();
+                bmp_tmp = null;
+                SetAnimateValue(maxalpha, true);
                 LoadOK();
             });
             base.OnLoad(e);
@@ -40,12 +46,34 @@ namespace AntdUI
 
         #region 设置动画参数
 
-        void SetAnimateValue(byte _alpha)
+        System.Drawing.Bitmap? bmp_tmp = null;
+        void SetAnimateValue(byte _alpha, bool isrint = false)
         {
             if (alpha != _alpha)
             {
                 alpha = _alpha;
-                Print();
+                if (isrint)
+                {
+                    Print(); return;
+                }
+                if (IsHandleCreated && TargetRect.Width > 0 && TargetRect.Height > 0)
+                {
+                    try
+                    {
+                        if (bmp_tmp == null) bmp_tmp = PrintBit();
+                        if (bmp_tmp == null) return;
+                        if (InvokeRequired)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                Win32.SetBits(bmp_tmp, TargetRect, Handle, alpha);
+                            }));
+                        }
+                        else Win32.SetBits(bmp_tmp, TargetRect, Handle, alpha);
+                        GC.Collect();
+                    }
+                    catch { }
+                }
             }
         }
 
@@ -70,6 +98,8 @@ namespace AntdUI
                         return true;
                     }, 10, t, () =>
                     {
+                        bmp_tmp?.Dispose();
+                        bmp_tmp = null;
                         ok_end = true;
                         IClose(true);
                     });

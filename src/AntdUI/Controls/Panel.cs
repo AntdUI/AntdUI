@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -163,6 +167,8 @@ namespace AntdUI
 
         #endregion
 
+        #region 背景
+
         Color? back;
         /// <summary>
         /// 背景颜色
@@ -178,6 +184,40 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        Image? backImage = null;
+        /// <summary>
+        /// 背景图片
+        /// </summary>
+        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        public new Image? BackgroundImage
+        {
+            get => backImage;
+            set
+            {
+                if (backImage == value) return;
+                backImage = value;
+                Invalidate();
+            }
+        }
+
+        TFit backFit = TFit.Fill;
+        /// <summary>
+        /// 背景图片布局
+        /// </summary>
+        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        public new TFit BackgroundImageLayout
+        {
+            get => backFit;
+            set
+            {
+                if (backFit == value) return;
+                backFit = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
 
         #region 箭头
 
@@ -256,11 +296,13 @@ namespace AntdUI
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
             Color _back = back.HasValue ? back.Value : Style.Db.BgContainer;
+            float _radius = radius * Config.Dpi;
             using (var brush = new SolidBrush(_back))
             {
-                using (var path = DrawShadow(g, rect, rect_read))
+                using (var path = DrawShadow(g, _radius, rect, rect_read))
                 {
                     g.FillPath(brush, path);
+                    if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
                     if (borderWidth > 0)
                     {
                         using (var brush_bor = new Pen(borderColor.HasValue ? borderColor.Value : Style.Db.BorderColor, borderWidth * Config.Dpi))
@@ -282,9 +324,9 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, RectangleF rect_read)
+        GraphicsPath DrawShadow(Graphics g, float radius, Rectangle rect_client, RectangleF rect_read)
         {
-            var path = rect_read.RoundPath(radius * Config.Dpi);
+            var path = rect_read.RoundPath(radius);
             if (shadow > 0)
             {
                 int shadow = (int)(Shadow * Config.Dpi), shadowOffsetX = (int)(ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(ShadowOffsetY * Config.Dpi);

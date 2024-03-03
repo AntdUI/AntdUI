@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -280,49 +284,46 @@ namespace AntdUI
             if (_rect.Width == 0 || _rect.Height == 0) return;
             var rect = _rect.PaddingRect(Margin);
 
-            using (var bmp = new Bitmap(1, 1))
+            Helper.GDI(g =>
             {
-                using (var g = Graphics.FromImage(bmp))
+                var size_t = g.MeasureString(Config.NullText, Font);
+                float imgsize = size_t.Height * 1.8F, text_heigth = size_t.Height * 1.642F, gap = size_t.Height * 0.6F, gap2 = gap * 2F;
+
+                if (Full)
                 {
-                    var size_t = g.MeasureString(Config.NullText, Font);
-                    float imgsize = size_t.Height * 1.8F, text_heigth = size_t.Height * 1.642F, gap = size_t.Height * 0.6F, gap2 = gap * 2F;
+                    int len = Items.Count;
 
-                    if (Full)
+                    float widthone = rect.Width * 1F / len;
+
+                    float x = 0;
+                    foreach (SegmentedItem it in Items)
                     {
-                        int len = Items.Count;
-
-                        float widthone = rect.Width * 1F / len;
-
-                        float x = 0;
-                        foreach (SegmentedItem it in Items)
-                        {
-                            it.SetRect(new RectangleF(rect.X + x, rect.Y, widthone, rect.Height), imgsize, text_heigth, size_t.Height);
-                            x += widthone;
-                        }
-                        Rect = _rect;
+                        it.SetRect(new RectangleF(rect.X + x, rect.Y, widthone, rect.Height), imgsize, text_heigth, size_t.Height);
+                        x += widthone;
                     }
-                    else
-                    {
-                        float x = 0;
-                        foreach (SegmentedItem it in Items)
-                        {
-                            var size = g.MeasureString(it.Text, Font);
-                            it.SetRect(new RectangleF(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize, text_heigth, size_t.Height);
-                            x += it.Rect.Width;
-                        }
-                        Rect = new RectangleF(_rect.X, _rect.Y, x + Margin.Horizontal, _rect.Height);
-                        int width = (int)Math.Ceiling(Rect.Width + Padding.Horizontal);
-                        if (InvokeRequired)
-                        {
-                            Invoke(new Action(() =>
-                            {
-                                Width = width;
-                            }));
-                        }
-                        else Width = width;
-                    }
+                    Rect = _rect;
                 }
-            }
+                else
+                {
+                    float x = 0;
+                    foreach (SegmentedItem it in Items)
+                    {
+                        var size = g.MeasureString(it.Text, Font);
+                        it.SetRect(new RectangleF(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize, text_heigth, size_t.Height);
+                        x += it.Rect.Width;
+                    }
+                    Rect = new RectangleF(_rect.X, _rect.Y, x + Margin.Horizontal, _rect.Height);
+                    int width = (int)Math.Ceiling(Rect.Width + Padding.Horizontal);
+                    if (InvokeRequired)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            Width = width;
+                        }));
+                    }
+                    else Width = width;
+                }
+            });
 
             if (_select > -1)
             {

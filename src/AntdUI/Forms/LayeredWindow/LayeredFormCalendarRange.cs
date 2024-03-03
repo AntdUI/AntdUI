@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -53,7 +57,7 @@ namespace AntdUI
             }
             if (_control.Presets.Count > 0)
             {
-                left_buttons = new List<CalendarButton>();
+                left_buttons = new List<CalendarButton>(_control.Presets.Count);
                 int y = 0;
                 foreach (object it in _control.Presets)
                 {
@@ -190,7 +194,7 @@ namespace AntdUI
 
                 #region 添加月
 
-                var _calendar_month = new List<Calendari>();
+                var _calendar_month = new List<Calendari>(12);
                 int x_m = 0, y_m = 0;
                 for (int i = 0; i < 12; i++)
                 {
@@ -215,7 +219,7 @@ namespace AntdUI
                     string temp = value.Year.ToString();
                     syear = int.Parse(temp.Substring(0, temp.Length - 1) + "0") - 1;
                 }
-                var _calendar_year = new List<Calendari>();
+                var _calendar_year = new List<Calendari>(12);
                 int x_y = 0, y_y = 0;
                 if (syear < 1) syear = 1;
                 for (int i = 0; i < 12; i++)
@@ -265,7 +269,7 @@ namespace AntdUI
         bool sizeday = true, size_month = true, size_year = true;
         List<Calendari> GetCalendar(DateTime now)
         {
-            List<Calendari> calendaris = new List<Calendari>();
+            List<Calendari> calendaris = new List<Calendari>(28);
             int days = DateTime.DaysInMonth(now.Year, now.Month);
             var now1 = new DateTime(now.Year, now.Month, 1);
             int day_ = 0;
@@ -525,14 +529,12 @@ namespace AntdUI
                 t_width = t_x + t_one_width * 2;
                 if (calendar_day == null) EndHeight = 348 + 20;
                 else EndHeight = t_top * 2 + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
-
             }
             else
             {
                 t_width = t_x + t_one_width;
                 if (calendar_day == null) EndHeight = 348 + 20;
-                else EndHeight = t_top + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
-
+                else EndHeight = t_top * 2 + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
             }
             SetSize(t_width + 20, EndHeight);
 
@@ -695,18 +697,9 @@ namespace AntdUI
         {
             if (isend)
             {
-                if (oldtime == item.date)
-                {
-                    SelDate = new DateTime[] { item.date };
-                }
-                else if (oldtime < item.date)
-                {
-                    SelDate = new DateTime[] { oldtime, item.date };
-                }
-                else
-                {
-                    SelDate = new DateTime[] { item.date, oldtime };
-                }
+                if (oldtime == item.date) SelDate = new DateTime[] { item.date, item.date };
+                else if (oldtime < item.date) SelDate = new DateTime[] { oldtime, item.date };
+                else SelDate = new DateTime[] { item.date, oldtime };
                 action(SelDate);
                 isend = false;
                 return false;
@@ -1370,41 +1363,59 @@ namespace AntdUI
             {
                 using (var path = it.rect_read.RoundPath(Radius))
                 {
-                    if (it.t == 1 && SelDate != null && SelDate.Length > 1 && (SelDate[0] <= it.date && SelDate[1] >= it.date))
+                    bool hand = true;
+                    if (it.t == 1 && SelDate != null)
                     {
-                        //范围
-                        if (SelDate[0].ToString("yyyy-MM-dd") == it.date_str)
+                        if (SelDate.Length > 1)
                         {
-                            //前面
-                            g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect_read.Right, it.rect_read.Y, it.rect.Width - it.rect_read.Width, it.rect_read.Height));
-                            using (var path_l = it.rect_read.RoundPath(Radius, true, false, false, true))
+                            if (SelDate[0] == SelDate[1])
                             {
-                                g.FillPath(brush_bg_active, path_l);
+                                if (SelDate[0].ToString("yyyy-MM-dd") == it.date_str)
+                                {
+                                    g.FillPath(brush_bg_active, path);
+                                    g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
+                                    hand = false;
+                                }
                             }
-                            g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
-                        }
-                        else if (SelDate[1].ToString("yyyy-MM-dd") == it.date_str)
-                        {
-                            //后面
-                            g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect.X, it.rect_read.Y, it.rect_read.Width, it.rect_read.Height));
-                            using (var path_r = it.rect_read.RoundPath(Radius, false, true, true, false))
+                            else if (SelDate[0] <= it.date && SelDate[1] >= it.date)
                             {
-                                g.FillPath(brush_bg_active, path_r);
+                                //范围
+                                if (SelDate[0].ToString("yyyy-MM-dd") == it.date_str)
+                                {
+                                    //前面
+                                    g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect_read.Right, it.rect_read.Y, it.rect.Width - it.rect_read.Width, it.rect_read.Height));
+                                    using (var path_l = it.rect_read.RoundPath(Radius, true, false, false, true))
+                                    {
+                                        g.FillPath(brush_bg_active, path_l);
+                                    }
+                                    g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
+                                }
+                                else if (SelDate[1].ToString("yyyy-MM-dd") == it.date_str)
+                                {
+                                    //后面
+                                    g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect.X, it.rect_read.Y, it.rect_read.Width, it.rect_read.Height));
+                                    using (var path_r = it.rect_read.RoundPath(Radius, false, true, true, false))
+                                    {
+                                        g.FillPath(brush_bg_active, path_r);
+                                    }
+                                    g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
+                                }
+                                else
+                                {
+                                    g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect.X - 1F, it.rect_read.Y, it.rect.Width + 2F, it.rect_read.Height));
+                                    g.DrawString(it.v, Font, brush_fore, it.rect, stringFormatC);
+                                }
+                                hand = false;
                             }
-                            g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
                         }
-                        else
+                        else if (SelDate[0].ToString("yyyy-MM-dd") == it.date_str)
                         {
-                            g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect.X - 1F, it.rect_read.Y, it.rect.Width + 2F, it.rect_read.Height));
-                            g.DrawString(it.v, Font, brush_fore, it.rect, stringFormatC);
+                            g.FillPath(brush_bg_active, path);
+                            g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
+                            hand = false;
                         }
                     }
-                    else if (it.t == 1 && SelDate != null && SelDate[0].ToString("yyyy-MM-dd") == it.date_str)
-                    {
-                        g.FillPath(brush_bg_active, path);
-                        g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
-                    }
-                    else
+                    if (hand)
                     {
                         if (oldtime2.HasValue && it.date < oldtime)
                         {

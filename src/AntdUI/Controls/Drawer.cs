@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -82,12 +86,16 @@ namespace AntdUI
                     {
                         ifrm.IClose();
                     };
-                    frm.Show(ifrm);
+                    ITask.Run(() =>
+                    {
+                        System.Threading.Thread.Sleep(200);
+                        config.Form.BeginInvoke(new Action(() =>
+                        {
+                            frm.Show(ifrm);
+                        }));
+                    });
                 }
-                else
-                {
-                    frm.Show(config.Form);
-                }
+                else frm.Show(config.Form);
                 return frm;
             }
             return null;
@@ -129,10 +137,19 @@ namespace AntdUI
             /// </summary>
             public bool MaskClosable { get; set; } = true;
 
+            /// <summary>
+            /// 边距
+            /// </summary>
             public int Padding { get; set; } = 24;
 
+            /// <summary>
+            /// 方向
+            /// </summary>
             public TAlignMini Align { get; set; } = TAlignMini.Right;
 
+            /// <summary>
+            /// 用户定义数据
+            /// </summary>
             public object? Tag { get; set; }
         }
     }

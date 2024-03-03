@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -23,8 +27,11 @@ namespace AntdUI
         public ILayeredForm()
         {
             SetStyle(
-              ControlStyles.UserPaint |
-              ControlStyles.DoubleBuffer, true);
+                ControlStyles.UserPaint |
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw |
+                ControlStyles.DoubleBuffer, true);
             UpdateStyles();
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
@@ -120,18 +127,17 @@ namespace AntdUI
             {
                 try
                 {
-                    if (InvokeRequired)
-                    {
-                        Invoke(new Action(() =>
-                        {
-                            Print();
-                        }));
-                        return;
-                    }
                     using (var bmp = PrintBit())
                     {
                         if (bmp == null) return;
-                        Win32.SetBits(bmp, target_rect, Handle, alpha);
+                        if (InvokeRequired)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                Win32.SetBits(bmp, TargetRect, Handle, alpha);
+                            }));
+                        }
+                        else Win32.SetBits(bmp, target_rect, Handle, alpha);
                     }
                     GC.Collect();
                 }

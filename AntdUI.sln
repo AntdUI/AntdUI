@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "example\Demo\Demo.c
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overview", "example\Overview\Overview.csproj", "{2EFC67E4-34D0-4CE3-961C-7FB64AF965D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVGView", "example\SVGView\SVGView.csproj", "{48484E20-7B05-41D3-9E76-D59A95A70A80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{2EFC67E4-34D0-4CE3-961C-7FB64AF965D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EFC67E4-34D0-4CE3-961C-7FB64AF965D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EFC67E4-34D0-4CE3-961C-7FB64AF965D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48484E20-7B05-41D3-9E76-D59A95A70A80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48484E20-7B05-41D3-9E76-D59A95A70A80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48484E20-7B05-41D3-9E76-D59A95A70A80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48484E20-7B05-41D3-9E76-D59A95A70A80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{5C5FF08C-6B84-412E-8F92-74E152B677E5} = {5243A57B-3E12-49E1-BA51-CBB5D786193F}
 		{24C89E6C-0F23-4AFB-9D7F-6419239EE322} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
 		{2EFC67E4-34D0-4CE3-961C-7FB64AF965D8} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
+		{48484E20-7B05-41D3-9E76-D59A95A70A80} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B151716-3D07-4DA4-8C4D-2D2BBE164EAA}

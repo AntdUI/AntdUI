@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -18,7 +22,7 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    public class ScrollY
+    public class ScrollY : IScroll
     {
         IControl? control;
 
@@ -30,6 +34,16 @@ namespace AntdUI
                 _control.Invalidate();
             };
             control = _control;
+        }
+
+        public ScrollY(FlowLayoutPanel _control)
+        {
+            SIZE = SystemInformation.VerticalScrollBarWidth;
+            Invalidate = () =>
+            {
+                Change?.Invoke();
+                _control.Invalidate(Rect);
+            };
         }
         public ScrollY(Control _control)
         {
@@ -49,13 +63,29 @@ namespace AntdUI
             Gap = Back = false;
         }
 
+        public ScrollY(FlowPanel _control)
+        {
+            Invalidate = () =>
+            {
+                Change?.Invoke();
+            };
+            control = _control;
+        }
+        public ScrollY(StackPanel _control)
+        {
+            Invalidate = () =>
+            {
+                Change?.Invoke();
+            };
+            control = _control;
+        }
+
         Action Invalidate;
 
         internal Action? Change;
 
         public bool Back = true;
         public bool Gap = true;
-
 
         #region 属性
 
@@ -77,7 +107,7 @@ namespace AntdUI
         internal float SetValue(float value)
         {
             if (value < 0) return 0;
-            if (value > VrHeightI) return VrHeightI;
+            if (value > VrValueI) return VrValueI;
             return value;
         }
         /// <summary>
@@ -98,8 +128,8 @@ namespace AntdUI
         /// <summary>
         /// 虚拟高度
         /// </summary>
-        public float VrHeight { get; set; } = 0F;
-        public float VrHeightI { get; set; } = 0F;
+        public float VrValue { get; set; } = 0F;
+        public float VrValueI { get; set; } = 0F;
         public int Height { get; set; }
 
         /// <summary>
@@ -112,9 +142,9 @@ namespace AntdUI
             Height = height;
             if (len > 0 && len > height)
             {
-                VrHeightI = len - height;
-                VrHeight = len;
-                Show = VrHeight > height;
+                VrValueI = len - height;
+                VrValue = len;
+                Show = VrValue > height;
                 if (Show)
                 {
                     if (val > (len - height)) Value = (len - height);
@@ -122,16 +152,26 @@ namespace AntdUI
             }
             else
             {
-                VrHeight = VrHeightI = 0F;
+                VrValue = VrValueI = 0F;
                 Show = false;
             }
         }
 
+        /// <summary>
+        /// 设置容器虚拟高度
+        /// </summary>
+        /// <param name="len">总Y</param>
+        public void SetVrSize(float len)
+        {
+            SetVrSize(len, Rect.Height);
+        }
+
         #endregion
 
+        public int SIZE { get; set; } = 20;
         public virtual void SizeChange(Rectangle rect)
         {
-            Rect = new Rectangle(rect.Right - 20, rect.Y, 20, rect.Height);
+            Rect = new Rectangle(rect.Right - SIZE, rect.Y, SIZE, rect.Height);
         }
 
         /// <summary>
@@ -149,10 +189,10 @@ namespace AntdUI
                         g.FillRectangle(brush, Rect);
                     }
                 }
-                float height = (Rect.Height / VrHeight) * Rect.Height;
-                if (height < 20) height = 20;
+                float height = (Rect.Height / VrValue) * Rect.Height;
+                if (height < SIZE) height = SIZE;
                 if (Gap) height -= 12;
-                float y = val == 0 ? 0 : (val / (VrHeight - Rect.Height)) * (Rect.Height - height);
+                float y = val == 0 ? 0 : (val / (VrValue - Rect.Height)) * (Rect.Height - height);
                 if (Hover) Slider = new RectangleF(Rect.X + 6, Rect.Y + y, 8, height);
                 else Slider = new RectangleF(Rect.X + 7, Rect.Y + y, 6, height);
                 if (Gap)
@@ -170,7 +210,7 @@ namespace AntdUI
             }
         }
 
-        bool ShowDown = false;
+        public bool ShowDown = false;
         bool hover = false;
         bool Hover
         {
@@ -189,7 +229,23 @@ namespace AntdUI
                 if (!Slider.Contains(e))
                 {
                     float y = (e.Y - Slider.Height / 2F) / Rect.Height;
-                    Value = y * VrHeight;
+                    Value = y * VrValue;
+                }
+                ShowDown = true;
+                return false;
+            }
+            return true;
+        }
+        public virtual bool MouseDown(Point e, Action<float> cal)
+        {
+            if (Show && Rect.Contains(e))
+            {
+                if (!Slider.Contains(e))
+                {
+                    float y = (e.Y - Slider.Height / 2F) / Rect.Height;
+                    var old_value = val;
+                    Value = y * VrValue;
+                    if (old_value != val) cal(val);
                 }
                 ShowDown = true;
                 return false;
@@ -209,7 +265,28 @@ namespace AntdUI
             {
                 Hover = true;
                 float y = (e.Y - Slider.Height / 2F) / Rect.Height;
-                Value = y * VrHeight;
+                Value = y * VrValue;
+                return false;
+            }
+            else if (Show && Rect.Contains(e))
+            {
+                Hover = true;
+                control?.SetCursor(false);
+                return false;
+            }
+            else Hover = false;
+            return true;
+        }
+
+        public virtual bool MouseMove(Point e, Action<float> cal)
+        {
+            if (ShowDown)
+            {
+                Hover = true;
+                float y = (e.Y - Slider.Height / 2F) / Rect.Height;
+                var old_value = val;
+                Value = y * VrValue;
+                if (old_value != val) cal(val);
                 return false;
             }
             else if (Show && Rect.Contains(e))

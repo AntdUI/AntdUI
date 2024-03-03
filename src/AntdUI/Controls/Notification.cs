@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -199,30 +203,9 @@ namespace AntdUI
             public bool CloseIcon { get; set; } = true;
 
             /// <summary>
-            /// 超链接
+            /// 超链接回调
             /// </summary>
             public ConfigLink? Link { get; set; }
-
-            public void OK(string text)
-            {
-                Icon = TType.Success;
-                Title = text;
-            }
-            public void Error(string text)
-            {
-                Icon = TType.Error;
-                Title = text;
-            }
-            public void Warn(string text)
-            {
-                Icon = TType.Warn;
-                Title = text;
-            }
-            public void Info(string text)
-            {
-                Icon = TType.Info;
-                Title = text;
-            }
         }
 
         public class ConfigLink
@@ -407,66 +390,67 @@ namespace AntdUI
             return path;
         }
 
-        RectangleF rect_icon, rect_title, rect_txt, rect_close;
-        RectangleF rect_link_text, rect_links;
-        private Size RenderMeasure(Graphics g)
+        Rectangle rect_icon, rect_title, rect_txt, rect_close;
+        Rectangle rect_link_text, rect_links;
+        Size RenderMeasure(Graphics g)
         {
-            var dpi = Config.Dpi;
+            float dpi = g.DpiX / 96F;
+
             var size_title = g.MeasureString(config.Title, font_title);
-            var size_desc = g.MeasureString(config.Text, Font, (int)(400 * dpi));
-            float icon_size = size_title.Height * 1.2F, gap = icon_size * 0.5F;
+            int px = (int)(24 * dpi), py = (int)(20 * dpi), t_max_width = (int)Math.Ceiling(360 * dpi);
+            int sp = (int)(8 * dpi), close_size = (int)Math.Ceiling(22F * dpi), icon_size = (int)Math.Ceiling(size_title.Height * 1.14F);
+            if (size_title.Width > t_max_width)
+            {
+                t_max_width = (int)Math.Ceiling(size_title.Width);
+                if (config.CloseIcon) t_max_width += close_size + sp;
+            }
+            var size_desc = g.MeasureString(config.Text, Font, t_max_width);
+            float width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
+            int max_width = (int)Math.Ceiling(width_desc > width_title ? width_desc : width_title);
             if (config.Icon == TType.None)
             {
-                var gap_s = icon_size * 0.33F;
-                var max_width = ((size_desc.Width > size_title.Width ? size_desc.Width : size_title.Width)) + 20F + gap * 2;
-                if (config.CloseIcon && size_title.Width > size_desc.Width) max_width += 22F * dpi;
-                rect_title = new RectangleF(gap + 10F, gap + 10F, max_width - (gap * 3), size_title.Height);
-                var desc_y = rect_title.Bottom + gap_s;
-                rect_txt = new RectangleF(rect_title.X, desc_y, rect_title.Width, size_desc.Height);
+                int titleH = (int)Math.Ceiling(size_title.Height), descH = (int)Math.Ceiling(size_desc.Height); ;
 
-                if (config.CloseIcon)
-                {
-                    float close_size = 22F * dpi;
-                    rect_close = new RectangleF(rect_title.Right - close_size, rect_title.Y, close_size, close_size);
-                }
+                rect_title = new Rectangle(px, py, max_width, titleH);
 
-                float temp_height = rect_txt.Bottom;
+                if (config.CloseIcon) rect_close = new Rectangle(rect_title.Right - close_size, rect_title.Y, close_size, close_size);
+
+                int desc_y = rect_title.Bottom + sp;
+
+                rect_txt = new Rectangle(px, desc_y, rect_title.Width, descH);
+                int temp_height = rect_txt.Bottom;
                 if (config.Link != null)
                 {
                     var size_link = g.MeasureString(config.Link.Text, Font);
-                    rect_link_text = new RectangleF(rect_title.X, temp_height + gap_s, size_link.Width, size_link.Height);
-                    rect_links = new RectangleF(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
+                    int link_w = (int)Math.Ceiling(size_link.Width), link_h = (int)Math.Ceiling(size_link.Height);
+                    rect_link_text = new Rectangle(rect_title.X, temp_height + sp, link_w, link_h);
+                    rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
                     temp_height = rect_link_text.Bottom;
                 }
-
-                return new Size((int)Math.Ceiling(max_width), (int)Math.Ceiling(temp_height + gap + 10F));
+                return new Size(rect_title.Right + px, temp_height + py);
             }
             else
             {
-                var gap_s = icon_size * 0.2F;
-                var max_width = ((size_desc.Width > size_title.Width ? size_desc.Width : size_title.Width + icon_size + gap)) + 20F + gap * 2;
-                if (config.CloseIcon && size_title.Width > size_desc.Width) max_width += 22F * dpi;
-                rect_icon = new RectangleF(gap + 10F, gap + 10F, icon_size, icon_size);
-                rect_title = new RectangleF(rect_icon.X + rect_icon.Width + icon_size / 2F, rect_icon.Y, max_width - (rect_icon.Width + 20F + gap * 3), rect_icon.Height);
+                int descH = (int)Math.Ceiling(size_desc.Height);
 
-                var desc_y = rect_title.Bottom + gap_s;
-                rect_txt = new RectangleF(rect_title.X, desc_y, rect_title.Width, size_desc.Height);
-                if (config.CloseIcon)
-                {
-                    float close_size = 22F * dpi;
-                    rect_close = new RectangleF(rect_title.Right - close_size, rect_title.Y, close_size, close_size);
-                }
+                rect_icon = new Rectangle(px, px, icon_size, icon_size);
+                rect_title = new Rectangle(rect_icon.X + rect_icon.Width + icon_size / 2, px, max_width, icon_size);
 
-                float temp_height = rect_txt.Bottom;
+                var desc_y = rect_title.Bottom + sp;
+                rect_txt = new Rectangle(rect_title.X, desc_y, rect_title.Width, descH);
+                if (config.CloseIcon) rect_close = new Rectangle(rect_title.Right - close_size, rect_title.Y, close_size, close_size);
+
+                int temp_height = rect_txt.Bottom;
                 if (config.Link != null)
                 {
                     var size_link = g.MeasureString(config.Link.Text, Font);
-                    rect_link_text = new RectangleF(rect_title.X, temp_height + gap_s, size_link.Width, size_link.Height);
-                    rect_links = new RectangleF(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
+                    int link_w = (int)Math.Ceiling(size_link.Width), link_h = (int)Math.Ceiling(size_link.Height);
+                    rect_link_text = new Rectangle(rect_title.X, temp_height + sp, link_w, link_h);
+                    rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
                     temp_height = rect_link_text.Bottom;
                 }
 
-                return new Size((int)Math.Ceiling(max_width), (int)Math.Ceiling(temp_height + gap + 10F));
+                return new Size(rect_title.Right + px, temp_height + py);
             }
         }
 

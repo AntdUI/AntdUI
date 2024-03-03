@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -74,6 +78,110 @@ namespace AntdUI
         }
 
         #endregion
+
+        #region 静态方法
+
+        /// <summary>
+        /// Tooltip 文字提示
+        /// </summary>
+        /// <param name="control">所属控件</param>
+        /// <param name="text">文本</param>
+        /// <param name="ArrowAlign">箭头方向</param>
+        public static Form? open(Control control, string text, TAlign ArrowAlign = TAlign.Top)
+        {
+            return open(new Config(control, text) { ArrowAlign = ArrowAlign });
+        }
+
+        /// <summary>
+        /// Tooltip 文字提示
+        /// </summary>
+        /// <param name="control">所属控件</param>
+        /// <param name="text">文本</param>
+        /// <param name="rect">偏移量</param>
+        /// <param name="ArrowAlign">箭头方向</param>
+        public static Form? open(Control control, string text, Rectangle rect, TAlign ArrowAlign = TAlign.Top)
+        {
+            return open(new Config(control, text) { Offset = rect, ArrowAlign = ArrowAlign });
+        }
+
+        /// <summary>
+        /// Tooltip 文字提示
+        /// </summary>
+        /// <param name="config">配置</param>
+        public static Form? open(Config config)
+        {
+            if (config.Control.IsHandleCreated)
+            {
+                if (config.Control.InvokeRequired)
+                {
+                    Form? form = null;
+                    config.Control.Invoke(new Action(() =>
+                    {
+                        form = open(config);
+                    }));
+                    return form;
+                }
+                var popover = new TooltipForm(config.Control, config.Text, config);
+                popover.Show(config.Control);
+                return popover;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 配置
+        /// </summary>
+        public class Config : ITooltipConfig
+        {
+            /// <summary>
+            /// Tooltip 配置
+            /// </summary>
+            /// <param name="control">所属控件</param>
+            /// <param name="content">文本</param>
+            public Config(Control control, string text)
+            {
+                Font = control.Font;
+                Control = control;
+                Text = text;
+            }
+
+            /// <summary>
+            /// 所属控件
+            /// </summary>
+            public Control Control { get; set; }
+
+            /// <summary>
+            /// 偏移量
+            /// </summary>
+            public object? Offset { get; set; } = null;
+
+            /// <summary>
+            /// 字体
+            /// </summary>
+            public Font? Font { get; set; }
+
+            /// <summary>
+            /// 文本
+            /// </summary>
+            public string Text { get; set; }
+
+            /// <summary>
+            /// 圆角
+            /// </summary>
+            public int Radius { get; set; } = 6;
+
+            /// <summary>
+            /// 箭头大小
+            /// </summary>
+            public float ArrowSize { get; set; } = 8F;
+
+            /// <summary>
+            /// 箭头方向
+            /// </summary>
+            public TAlign ArrowAlign { get; set; } = TAlign.Top;
+        }
+
+        #endregion
     }
 
     internal class TooltipForm : ILayeredFormOpacity, ITooltip
@@ -94,7 +202,13 @@ namespace AntdUI
                 SetSize(this.RenderMeasure(g));
             }
             var point = control.PointToScreen(Point.Empty);
-            SetLocation(ArrowAlign.AlignPoint(point, control.Size, TargetRect.Width, TargetRect.Height));
+            if (component is Tooltip.Config config)
+            {
+                if (config.Offset is RectangleF rectf) SetLocation(ArrowAlign.AlignPoint(new Rectangle(point.X + (int)rectf.X, point.Y + (int)rectf.Y, (int)rectf.Width, (int)rectf.Height), TargetRect.Width, TargetRect.Height));
+                else if (config.Offset is Rectangle rect) SetLocation(ArrowAlign.AlignPoint(new Rectangle(point.X + rect.X, point.Y + rect.Y, rect.Width, rect.Height), TargetRect.Width, TargetRect.Height));
+                else SetLocation(ArrowAlign.AlignPoint(point, control.Size, TargetRect.Width, TargetRect.Height));
+            }
+            else SetLocation(ArrowAlign.AlignPoint(point, control.Size, TargetRect.Width, TargetRect.Height));
 
             control.LostFocus += Control_LostFocus;
             control.MouseLeave += Control_LostFocus;
@@ -176,7 +290,6 @@ namespace AntdUI
             ocontrol.MouseLeave -= Control_LostFocus;
         }
     }
-
 
     [ProvideProperty("Tip", typeof(Control)), Description("提示")]
     public partial class TooltipComponent : Component, IExtenderProvider, ITooltipConfig
@@ -365,17 +478,51 @@ namespace AntdUI
 
     internal interface ITooltipConfig
     {
+        /// <summary>
+        /// 字体
+        /// </summary>
         Font? Font { get; set; }
+
+        /// <summary>
+        /// 圆角
+        /// </summary>
         int Radius { get; set; }
+
+        /// <summary>
+        /// 箭头大小
+        /// </summary>
         float ArrowSize { get; set; }
+
+        /// <summary>
+        /// 箭头方向
+        /// </summary>
         TAlign ArrowAlign { get; set; }
     }
     internal interface ITooltip
     {
+        /// <summary>
+        /// 文本
+        /// </summary>
         string Text { get; set; }
+
+        /// <summary>
+        /// 字体
+        /// </summary>
         Font Font { get; set; }
+
+        /// <summary>
+        /// 圆角
+        /// </summary>
         int Radius { get; set; }
+
+        /// <summary>
+        /// 箭头大小
+        /// </summary>
         float ArrowSize { get; set; }
+
+        /// <summary>
+        /// 箭头方向
+        /// </summary>
         TAlign ArrowAlign { get; set; }
     }
 

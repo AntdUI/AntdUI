@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -26,6 +30,7 @@ namespace AntdUI
     /// <remarks>垂直展示的时间流信息。</remarks>
     [Description("Timeline 时间轴")]
     [ToolboxItem(true)]
+    [DefaultProperty("Items")]
     public class Timeline : IControl
     {
         #region 属性
@@ -47,7 +52,7 @@ namespace AntdUI
         }
 
         [Description("描述字体"), Category("外观"), DefaultValue(null)]
-        public Font? FontDescription { get; set; } = new Font("宋体", 13);
+        public Font? FontDescription { get; set; }
 
         TimelineItemCollection? items;
         /// <summary>
@@ -97,60 +102,57 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0) return rect;
 
             float y = rect.Y;
-            using (var bmp = new Bitmap(1, 1))
+            Helper.GDI(g =>
             {
-                using (var g = Graphics.FromImage(bmp))
+                var size_def = g.MeasureString(Config.NullText, Font);
+                float text_size = size_def.Height, pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F, gap = 8F * Config.Dpi;
+                int gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D),
+                    ico_size = (int)Math.Round(text_size * 0.636D);
+
+                int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
+                y += gap_x;
+                var _splits = new List<RectangleF>(Items.Count);
+                int i = 0;
+                var font_Description = FontDescription == null ? Font : FontDescription;
+                foreach (TimelineItem it in Items)
                 {
-                    var size_def = g.MeasureString(Config.NullText, Font);
-                    float text_size = size_def.Height, pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F, gap = 8F * Config.Dpi;
-                    int gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D),
-                        ico_size = (int)Math.Round(text_size * 0.636D);
+                    it.PARENT = this;
+                    it.pen_w = pen_w;
 
-                    int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
-                    y += gap_x;
-                    var _splits = new List<RectangleF>();
-                    int i = 0;
-                    var font_Description = FontDescription == null ? Font : FontDescription;
-                    foreach (TimelineItem it in Items)
+                    if (it.Visible)
                     {
-                        it.PARENT = this;
-                        it.pen_w = pen_w;
+                        var size = g.MeasureString(it.Text, Font, max_w);
 
-                        if (it.Visible)
+                        it.ico_rect = new RectangleF(rect.X + gap_x, y + (text_size - ico_size) / 2F, ico_size, ico_size);
+                        it.txt_rect = new RectangleF(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
+                        if (!string.IsNullOrEmpty(it.Description))
                         {
-                            var size = g.MeasureString(it.Text, Font, max_w);
+                            var DescriptionSize = g.MeasureString(it.Description, font_Description, max_w);
+                            it.description_rect = new RectangleF(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
+                            y += gap * 2 + DescriptionSize.Height;
+                        }
+                        y += size.Height + gap_y;
 
-                            it.ico_rect = new RectangleF(rect.X + gap_x, y + (text_size - ico_size) / 2F, ico_size, ico_size);
-                            it.txt_rect = new RectangleF(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
-                            if (!string.IsNullOrEmpty(it.Description))
+                        if (i > 0)
+                        {
+                            var old = Items[i - 1];
+                            if (old != null)
                             {
-                                var DescriptionSize = g.MeasureString(it.Description, font_Description, max_w);
-                                it.description_rect = new RectangleF(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
-                                y += gap * 2 + DescriptionSize.Height;
-                            }
-                            y += size.Height + gap_y;
-
-                            if (i > 0)
-                            {
-                                var old = Items[i - 1];
-                                if (old != null)
-                                {
-                                    _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
-                                }
+                                _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
                             }
                         }
-
-                        i++;
                     }
-                    splits = _splits;
-                    y = y - gap_y + gap_x;
+
+                    i++;
                 }
-            }
+                splits = _splits.ToArray();
+                y = y - gap_y + gap_x;
+            });
             scrollY.SetVrSize(y, rect.Height);
             return rect;
         }
 
-        List<RectangleF> splits = new List<RectangleF>();
+        RectangleF[] splits = new RectangleF[0];
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -343,7 +345,7 @@ namespace AntdUI
         [Description("颜色类型"), Category("外观"), DefaultValue(TTypeMini.Primary)]
         public TTypeMini Type { get; set; } = TTypeMini.Primary;
 
-        [Description("自定义填充颜色"), Category("外观"), DefaultValue(null)]
+        [Description("填充颜色"), Category("外观"), DefaultValue(null)]
         public Color? Fill { get; set; }
 
         bool visible = true;

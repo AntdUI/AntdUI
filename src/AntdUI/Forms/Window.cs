@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -109,6 +113,7 @@ namespace AntdUI
             handle = new HWND(Handle);
             base.OnHandleCreated(e);
             if (dark) DarkUI.UseImmersiveDarkMode(Handle, dark);
+            DisableProcessWindowsGhosting();
             HandMessage();
         }
 
@@ -125,9 +130,17 @@ namespace AntdUI
                         if (WmNCCalcSize(ref m)) return;
                     }
                     break;
+                case WindowMessage.WM_NCACTIVATE:
+                    {
+                        if (WmNCActivate(ref m)) return;
+                    }
+                    break;
                 case WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
+                case WindowMessage.WM_NCHITTEST:
+                    m.Result = TRUE;
+                    return;
             }
             base.WndProc(ref m);
         }
@@ -152,7 +165,7 @@ namespace AntdUI
         /// </summary>
         public new int Top
         {
-            get => Location.X;
+            get => Location.Y;
             set { base.Top = value; }
         }
 
@@ -161,7 +174,7 @@ namespace AntdUI
         /// </summary>
         public new int Left
         {
-            get => Location.Y;
+            get => Location.X;
             set { base.Left = value; }
         }
 
@@ -215,6 +228,9 @@ namespace AntdUI
         /// <summary>
         /// 获取或设置窗体屏幕区域
         /// </summary>
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Rectangle ScreenRectangle
         {
             get
@@ -508,6 +524,15 @@ namespace AntdUI
             public WINDOWPOS lppos;
         }
 
+        bool WmNCActivate(ref System.Windows.Forms.Message m)
+        {
+            if (m.HWnd == IntPtr.Zero) return false;
+            //IsWindowActivated = m.WParam != IntPtr.Zero;
+            if (IsIconic(m.HWnd)) return false;
+            m.Result = DefWindowProc(m.HWnd, (uint)m.Msg, m.WParam, new IntPtr(-1));
+            return true;
+        }
+
         #endregion
 
         #region Frameless Crack
@@ -584,7 +609,7 @@ namespace AntdUI
 
         Size PatchWindowSizeInRestoreWindowBoundsIfNecessary(int width, int height)
         {
-            if (base.WindowState == FormWindowState.Normal)
+            if (WindowState == FormWindowState.Normal)
             {
                 var restoredWindowBoundsSpecified = typeof(Form).GetField("restoredWindowBoundsSpecified", BindingFlags.NonPublic | BindingFlags.Instance) ?? typeof(Form).GetField("_restoredWindowBoundsSpecified", BindingFlags.NonPublic | BindingFlags.Instance);
                 var restoredSpecified = (BoundsSpecified)restoredWindowBoundsSpecified!.GetValue(this)!;

@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -73,36 +77,69 @@ namespace AntdUI
                     vertical = true;
                     start_H = 0;
                     end_H = (int)(config.Content.Height * Config.Dpi) + padding * 2 + 20;
-                    start_W = end_W = config.Form.Width;
-                    start_X = end_X = config.Form.Left;
-                    start_Y = end_Y = config.Form.Top;
+                    if (config.Form is Window windowT)
+                    {
+                        start_W = end_W = windowT.Width;
+                        start_X = end_X = windowT.Left;
+                        start_Y = end_Y = windowT.Top;
+                    }
+                    else
+                    {
+                        start_W = end_W = config.Form.Width;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = end_Y = config.Form.Top;
+                    }
                     break;
                 case TAlignMini.Bottom:
                     vertical = true;
                     start_H = 0;
                     end_H = (int)(config.Content.Height * Config.Dpi) + padding * 2 + 20;
-                    start_W = end_W = config.Form.Width;
-                    start_X = end_X = config.Form.Left;
-                    start_Y = config.Form.Top + config.Form.Height;
+                    if (config.Form is Window windowB)
+                    {
+                        start_W = end_W = windowB.Width;
+                        start_X = end_X = windowB.Left;
+                        start_Y = windowB.Top + windowB.Height;
+                    }
+                    else
+                    {
+                        start_W = end_W = config.Form.Width;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = config.Form.Top + config.Form.Height;
+                    }
                     end_Y = start_Y - end_H;
                     break;
                 case TAlignMini.Left:
                     start_W = 0;
                     end_W = (int)(config.Content.Width * Config.Dpi) + padding * 2 + 20;
-                    start_H = end_H = config.Form.Height;
-
-                    start_X = end_X = config.Form.Left;
-                    start_Y = end_Y = config.Form.Top;
+                    if (config.Form is Window windowL)
+                    {
+                        start_H = end_H = windowL.Height;
+                        start_X = end_X = windowL.Left;
+                        start_Y = end_Y = windowL.Top;
+                    }
+                    else
+                    {
+                        start_H = end_H = config.Form.Height;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = end_Y = config.Form.Top;
+                    }
                     break;
                 case TAlignMini.Right:
                 default:
                     start_W = 0;
                     end_W = (int)(config.Content.Width * Config.Dpi) + padding * 2 + 20;
-                    start_H = end_H = config.Form.Height;
-
-                    start_X = config.Form.Left + config.Form.Width;
-                    start_Y = end_Y = config.Form.Top;
-
+                    if (config.Form is Window windowR)
+                    {
+                        start_H = end_H = windowR.Height;
+                        start_X = windowR.Left + windowR.Width;
+                        start_Y = end_Y = windowR.Top;
+                    }
+                    else
+                    {
+                        start_H = end_H = config.Form.Height;
+                        start_X = config.Form.Left + config.Form.Width;
+                        start_Y = end_Y = config.Form.Top;
+                    }
                     end_X = start_X - end_W;
                     break;
             }
@@ -111,10 +148,68 @@ namespace AntdUI
         Bitmap? tempContent;
         private void Form_SizeChanged(object? sender, EventArgs e)
         {
-            end_X = config.Form.Left + config.Form.Width - end_W;
-            end_Y = config.Form.Top;
-
-            end_H = config.Form.Height;
+            switch (config.Align)
+            {
+                case TAlignMini.Top:
+                    if (config.Form is Window windowT)
+                    {
+                        start_W = end_W = windowT.Width;
+                        start_X = end_X = windowT.Left;
+                        start_Y = end_Y = windowT.Top;
+                    }
+                    else
+                    {
+                        start_W = end_W = config.Form.Width;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = end_Y = config.Form.Top;
+                    }
+                    break;
+                case TAlignMini.Bottom:
+                    if (config.Form is Window windowB)
+                    {
+                        start_W = end_W = windowB.Width;
+                        start_X = end_X = windowB.Left;
+                        start_Y = windowB.Top + windowB.Height;
+                    }
+                    else
+                    {
+                        start_W = end_W = config.Form.Width;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = config.Form.Top + config.Form.Height;
+                    }
+                    end_Y = start_Y - end_H;
+                    break;
+                case TAlignMini.Left:
+                    if (config.Form is Window windowL)
+                    {
+                        start_H = end_H = windowL.Height;
+                        start_X = end_X = windowL.Left;
+                        start_Y = end_Y = windowL.Top;
+                    }
+                    else
+                    {
+                        start_H = end_H = config.Form.Height;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = end_Y = config.Form.Top;
+                    }
+                    break;
+                case TAlignMini.Right:
+                default:
+                    if (config.Form is Window windowR)
+                    {
+                        start_H = end_H = windowR.Height;
+                        start_X = windowR.Left + windowR.Width;
+                        start_Y = end_Y = windowR.Top;
+                    }
+                    else
+                    {
+                        start_H = end_H = config.Form.Height;
+                        start_X = config.Form.Left + config.Form.Width;
+                        start_Y = end_Y = config.Form.Top;
+                    }
+                    end_X = start_X - end_W;
+                    break;
+            }
             if (task_start == null)
             {
                 SetLocation(end_X, end_Y);
@@ -131,8 +226,68 @@ namespace AntdUI
 
         private void Form_LocationChanged(object? sender, EventArgs e)
         {
-            end_X = config.Form.Left + config.Form.Width - end_W;
-            end_Y = config.Form.Top;
+            switch (config.Align)
+            {
+                case TAlignMini.Top:
+                    if (config.Form is Window windowT)
+                    {
+                        start_W = end_W = windowT.Width;
+                        start_X = end_X = windowT.Left;
+                        start_Y = end_Y = windowT.Top;
+                    }
+                    else
+                    {
+                        start_W = end_W = config.Form.Width;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = end_Y = config.Form.Top;
+                    }
+                    break;
+                case TAlignMini.Bottom:
+                    if (config.Form is Window windowB)
+                    {
+                        start_W = end_W = windowB.Width;
+                        start_X = end_X = windowB.Left;
+                        start_Y = windowB.Top + windowB.Height;
+                    }
+                    else
+                    {
+                        start_W = end_W = config.Form.Width;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = config.Form.Top + config.Form.Height;
+                    }
+                    end_Y = start_Y - end_H;
+                    break;
+                case TAlignMini.Left:
+                    if (config.Form is Window windowL)
+                    {
+                        start_H = end_H = windowL.Height;
+                        start_X = end_X = windowL.Left;
+                        start_Y = end_Y = windowL.Top;
+                    }
+                    else
+                    {
+                        start_H = end_H = config.Form.Height;
+                        start_X = end_X = config.Form.Left;
+                        start_Y = end_Y = config.Form.Top;
+                    }
+                    break;
+                case TAlignMini.Right:
+                default:
+                    if (config.Form is Window windowR)
+                    {
+                        start_H = end_H = windowR.Height;
+                        start_X = windowR.Left + windowR.Width;
+                        start_Y = end_Y = windowR.Top;
+                    }
+                    else
+                    {
+                        start_H = end_H = config.Form.Height;
+                        start_X = config.Form.Left + config.Form.Width;
+                        start_Y = end_Y = config.Form.Top;
+                    }
+                    end_X = start_X - end_W;
+                    break;
+            }
             if (task_start == null)
             {
                 SetLocation(end_X, end_Y);

@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -69,7 +73,7 @@ namespace AntdUI
                 {
                     var ifrm = new LayeredFormMask(config.Form);
                     ifrm.Show(config.Form);
-                    frm.Disposed += (s1, e1) =>
+                    frm.FormClosed += (s1, e1) =>
                     {
                         ifrm.IClose();
                     };
@@ -210,6 +214,11 @@ namespace AntdUI
             public object Content { get; set; }
 
             /// <summary>
+            /// 消息框宽度
+            /// </summary>
+            public int Width { get; set; } = 416;
+
+            /// <summary>
             /// 字体
             /// </summary>
             public Font? Font { get; set; }
@@ -258,6 +267,10 @@ namespace AntdUI
             /// 确定回调
             /// </summary>
             public Func<Config, bool>? OnOk { get; set; }
+
+            /// <summary>
+            /// 用户定义数据
+            /// </summary>
             public object? Tag { get; set; }
 
             #region 自定义按钮
@@ -324,7 +337,7 @@ namespace AntdUI
             public TTypeMini Type { get; set; }
 
             /// <summary>
-            /// 字体颜色
+            /// 文字颜色
             /// </summary>
             public Color? Fore { get; set; }
 
@@ -333,6 +346,9 @@ namespace AntdUI
             /// </summary>
             public Color? Back { get; set; }
 
+            /// <summary>
+            /// 用户定义数据
+            /// </summary>
             public object? Tag { get; set; }
         }
 

@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -33,7 +37,7 @@ namespace AntdUI
 
         #region 图片渲染
 
-        internal static void PaintImg(this Graphics g, RectangleF rect, Image image, TFit fit, float radius, bool round)
+        public static void PaintImg(this Graphics g, RectangleF rect, Image image, TFit fit, float radius, bool round)
         {
             if (round || radius > 0)
             {
@@ -80,8 +84,13 @@ namespace AntdUI
         }
         internal static void PaintImgCover(this Graphics g, Image image, RectangleF rect)
         {
-            float destWidth = rect.Width, destHeight = rect.Height;
             float originWidth = image.Width, originHeight = image.Height;
+            if (originWidth == originHeight)
+            {
+                g.DrawImage(image, rect);
+                return;
+            }
+            float destWidth = rect.Width, destHeight = rect.Height;
             float currentWidth, currentHeight;
             if ((originWidth * destHeight) > (originHeight * destWidth))
             {
@@ -97,8 +106,13 @@ namespace AntdUI
         }
         internal static void PaintImgContain(this Graphics g, Image image, RectangleF rect)
         {
-            float destWidth = rect.Width, destHeight = rect.Height;
             float originWidth = image.Width, originHeight = image.Height;
+            if (originWidth == originHeight)
+            {
+                g.DrawImage(image, rect);
+                return;
+            }
+            float destWidth = rect.Width, destHeight = rect.Height;
             float currentWidth, currentHeight;
             if ((originWidth * destHeight) > (originHeight * destWidth))
             {
@@ -182,12 +196,36 @@ namespace AntdUI
 
         public static Graphics High(this Graphics g)
         {
-            Config.SetDpi(g.DpiX / 96F);
+            Config.SetDpi(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             if (Config.TextRenderingHint.HasValue) g.TextRenderingHint = Config.TextRenderingHint.Value;
             return g;
+        }
+
+        public static void GDI(Action<Graphics> action)
+        {
+            using (var bmp = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    Config.SetDpi(g);
+                    action(g);
+                }
+            }
+        }
+
+        public static T GDI<T>(Func<Graphics, T> action)
+        {
+            using (var bmp = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    Config.SetDpi(g);
+                    return action(g);
+                }
+            }
         }
 
         #endregion
@@ -634,6 +672,25 @@ namespace AntdUI
             else if (align == TAlign.LT || align == TAlign.Left || align == TAlign.LB)
                 return TAlignMini.Left;
             return TAlignMini.None;
+        }
+
+        /// <summary>
+        /// 转换反向大致位置
+        /// </summary>
+        /// <param name="align">方向</param>
+        /// <param name="vertical">是否竖向</param>
+        internal static TAlign AlignMiniReverse(this TAlign align, bool vertical)
+        {
+            if (vertical)
+            {
+                if (align == TAlign.TL || align == TAlign.BL || align == TAlign.LB || align == TAlign.Left || align == TAlign.LT) return TAlign.Right;
+                return TAlign.Left;
+            }
+            else
+            {
+                if (align == TAlign.TL || align == TAlign.Top || align == TAlign.TR || align == TAlign.RT) return TAlign.Bottom;
+                return TAlign.Top;
+            }
         }
 
         #endregion
@@ -1306,6 +1363,24 @@ namespace AntdUI
             return (float)Math.Round(val + add, 3);
         }
 
+        /// <summary>
+        /// SizeF转Size（向上取整）
+        /// </summary>
+        /// <param name="size">SizeF</param>
+        public static Size Size(this SizeF size)
+        {
+            return new Size((int)Math.Ceiling(size.Width), (int)Math.Ceiling(size.Height));
+        }
+
+        /// <summary>
+        /// SizeF转Size（向上取整）
+        /// </summary>
+        /// <param name="size">SizeF</param>
+        public static Size Size(this SizeF size, float p)
+        {
+            return new Size((int)Math.Ceiling(size.Width + p), (int)Math.Ceiling(size.Height + p));
+        }
+
         #region DPI
 
         internal static Dictionary<Control, AnchorDock> DpiSuspend(Control.ControlCollection controls)
@@ -1378,6 +1453,17 @@ namespace AntdUI
             control.Margin = SetPadding(dpi, control.Margin);
             control.Size = size;
             control.Location = point;
+            if (control is TableLayoutPanel tableLayout)
+            {
+                foreach (ColumnStyle it in tableLayout.ColumnStyles)
+                {
+                    if (it.SizeType == SizeType.Absolute) it.Width = it.Width * dpi;
+                }
+                foreach (RowStyle it in tableLayout.RowStyles)
+                {
+                    if (it.SizeType == SizeType.Absolute) it.Height = it.Height * dpi;
+                }
+            }
             if (control.Controls.Count > 0)
             {
                 if (control is Pagination || control is Input) return;

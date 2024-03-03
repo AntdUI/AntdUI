@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -455,9 +459,10 @@ namespace AntdUI
 
             var rect_read = ReadRectangle;
 
-            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, radius, false);
-
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
+
+            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, radius, shape == TShape.Round);
+
             if (type == TTypeMini.Default)
             {
                 Color _fore = Style.Db.DefaultColor, _color = Style.Db.Primary, _back_hover, _back_active;
@@ -1356,28 +1361,25 @@ namespace AntdUI
         {
             get
             {
-                using (var bmp = new Bitmap(1, 1))
+                return Helper.GDI(g =>
                 {
-                    using (var g = Graphics.FromImage(bmp))
+                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
+                    float gap = 20 * Config.Dpi;
+                    if (shape == TShape.Circle)
                     {
-                        var font_size = g.MeasureString(text ?? Config.NullText, Font);
-                        float gap = 20 * Config.Dpi;
-                        if (shape == TShape.Circle)
-                        {
-                            int s = (int)Math.Ceiling(font_size.Height + margins + gap);
-                            return new Size(s, s);
-                        }
-                        else
-                        {
-                            int m = margins * 2;
-                            if (joinLeft || joinRight) m = 0;
-                            int count = 0;
-                            if (loading || HasImage) count++;
-                            if (showArrow) count++;
-                            return new Size((int)Math.Ceiling(font_size.Width + m + gap + (font_size.Height * 1.2F * count)), (int)(font_size.Height + margins + gap));
-                        }
+                        int s = (int)Math.Ceiling(font_size.Height + margins + gap);
+                        return new Size(s, s);
                     }
-                }
+                    else
+                    {
+                        int m = margins * 2;
+                        if (joinLeft || joinRight) m = 0;
+                        int count = 0;
+                        if (loading || HasImage) count++;
+                        if (showArrow) count++;
+                        return new Size((int)Math.Ceiling(font_size.Width + m + gap + (font_size.Height * 1.2F * count)), (int)(font_size.Height + margins + gap));
+                    }
+                });
             }
         }
 

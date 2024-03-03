@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -150,7 +154,7 @@ namespace AntdUI
         public static List<Color> GenerateColors(this Color primaryColor)
         {
             var hsv = primaryColor.ToHSV();
-            var colors = new List<Color>();
+            var colors = new List<Color>(lightColorCount + darkColorCount);
             // 主色前
             for (var i = lightColorCount; i > 0; i--)
             {
@@ -471,20 +475,5 @@ namespace AntdUI
         /// 明度
         /// </summary>
         public float v { get; set; }
-    }
-
-    /// <summary>
-    /// 事件参数
-    /// 可以是值类型，也可以是引用类型
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class StyleEventArgs : IEventArgs
-    {
-        public TMode mode;
-
-        public StyleEventArgs(TMode _mode)
-        {
-            mode = _mode;
-        }
     }
 }

@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -60,7 +64,7 @@ namespace AntdUI
 
             if (_control.Presets.Count > 0)
             {
-                left_buttons = new List<CalendarButton>();
+                left_buttons = new List<CalendarButton>(_control.Presets.Count);
                 int y = 0;
                 foreach (object it in _control.Presets)
                 {
@@ -202,7 +206,7 @@ namespace AntdUI
 
                 if (ShowTime && calendar_time == null)
                 {
-                    calendar_time = new List<CalendarT>();
+                    calendar_time = new List<CalendarT>(24 + 120);
                     for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(0, i, i));
                     for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(1, i, i));
                     for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(2, i, i));
@@ -212,7 +216,7 @@ namespace AntdUI
 
                 #region 添加月
 
-                var _calendar_month = new List<Calendari>();
+                var _calendar_month = new List<Calendari>(12);
                 int x_m = 0, y_m = 0;
                 for (int i = 0; i < 12; i++)
                 {
@@ -237,7 +241,7 @@ namespace AntdUI
                     string temp = value.Year.ToString();
                     syear = int.Parse(temp.Substring(0, temp.Length - 1) + "0") - 1;
                 }
-                var _calendar_year = new List<Calendari>();
+                var _calendar_year = new List<Calendari>(12);
                 int x_y = 0, y_y = 0;
                 if (syear < 1) syear = 1;
                 for (int i = 0; i < 12; i++)
@@ -287,7 +291,7 @@ namespace AntdUI
         bool sizeday = true, size_month = true, size_year = true;
         List<Calendari> GetCalendar(DateTime now)
         {
-            List<Calendari> calendaris = new List<Calendari>();
+            List<Calendari> calendaris = new List<Calendari>(28);
             int days = DateTime.DaysInMonth(now.Year, now.Month);
             var now1 = new DateTime(now.Year, now.Month, 1);
             int day_ = 0;

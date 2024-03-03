@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -37,9 +41,10 @@ namespace AntdUI
         /// <param name="height">高</param>
         /// <param name="color">颜色</param>
         /// <returns>Bitmap</returns>
-        public static Bitmap SvgToBmp(this string svg, int width, int height, Color? color)
+        public static Bitmap? SvgToBmp(this string svg, int width, int height, Color? color)
         {
             var doc = Svg.SvgDocument.FromSvg<Svg.SvgDocument>(svg);
+            if (doc == null) return null;
             if (color.HasValue) ((Svg.SvgColourServer)doc.Color).Colour = color.Value;
             doc.Width = width;
             doc.Height = height;
@@ -51,10 +56,11 @@ namespace AntdUI
         /// </summary>
         /// <param name="svg">代码</param>
         /// <returns>Bitmap</returns>
-        public static Bitmap SvgToBmp(this string svg)
+        public static Bitmap? SvgToBmp(this string svg)
         {
-            float dpi = Config.Dpi;
             var doc = Svg.SvgDocument.FromSvg<Svg.SvgDocument>(svg);
+            if (doc == null) return null;
+            float dpi = Config.Dpi;
             if (dpi != 1F)
             {
                 doc.Width = doc.Width * dpi;

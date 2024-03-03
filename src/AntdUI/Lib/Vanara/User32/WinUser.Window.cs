@@ -301,5 +301,24 @@ namespace Vanara.PInvoke
 
         [DllImport("user32.dll")]
         public static extern int EndPaint(HWND hwnd, ref PAINTSTRUCT lpPaint);
+
+        [DllImport("user32.dll", SetLastError = false, ExactSpelling = true)]
+        [PInvokeData("winuser.h", MSDNShortId = "isiconic")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsIconic(HWND hWnd);
+
+        [DllImport("user32.dll", SetLastError = false, CharSet = CharSet.Auto)]
+        [PInvokeData("winuser.h")]
+        public static extern IntPtr DefWindowProc(HWND hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true, ExactSpelling = true)]
+        [PInvokeData("winuser.h", MSDNShortId = "setwindowpos")]
+        [System.Security.SecurityCritical]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
+
+        [DllImport("user32.dll", SetLastError = false, ExactSpelling = true)]
+        [PInvokeData("winuser.h", MSDNShortId = "")]
+        public static extern void DisableProcessWindowsGhosting();
     }
 }

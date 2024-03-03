@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -290,6 +294,23 @@ namespace AntdUI
 
         #endregion
 
+        #region 事件
+
+        /// <summary>
+        /// Close事件
+        /// </summary>
+        /// <param name="sender">触发对象</param>
+        /// <param name="value">数值</param>
+        public delegate bool CloseEventHandler(object sender);
+
+        /// <summary>
+        /// Close时发生
+        /// </summary>
+        [Description("Close时发生"), Category("行为")]
+        public event CloseEventHandler? CloseChanged = null;
+
+        #endregion
+
         #region 渲染
 
         protected override void OnPaint(PaintEventArgs e)
@@ -531,7 +552,9 @@ namespace AntdUI
         {
             if (e.Button == MouseButtons.Left && closeIcon && rect_close.Contains(e.Location))
             {
-                if (Parent is Control control) control.Controls.Remove(this);
+                bool isclose = false;
+                if (CloseChanged == null || CloseChanged(this)) isclose = true;
+                if (isclose && Parent is Control control) control.Controls.Remove(this);
                 return;
             }
             base.OnMouseClick(e);
@@ -605,17 +628,14 @@ namespace AntdUI
         {
             get
             {
-                using (var bmp = new Bitmap(1, 1))
-                {
-                    using (var g = Graphics.FromImage(bmp))
-                    {
-                        var font_size = g.MeasureString(text ?? Config.NullText, Font);
-                        int count = 0;
-                        if (HasImage) count++;
-                        if (closeIcon) count++;
-                        return new Size((int)Math.Ceiling(font_size.Width + (14 * Config.Dpi) + (font_size.Height * count)), (int)(font_size.Height + (8 * Config.Dpi)));
-                    }
-                }
+                return Helper.GDI(g =>
+                 {
+                     var font_size = g.MeasureString(text ?? Config.NullText, Font);
+                     int count = 0;
+                     if (HasImage) count++;
+                     if (closeIcon) count++;
+                     return new Size((int)Math.Ceiling(font_size.Width + (14 * Config.Dpi) + (font_size.Height * count)), (int)(font_size.Height + (8 * Config.Dpi)));
+                 });
             }
         }
 

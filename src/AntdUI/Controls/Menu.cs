@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -26,6 +30,7 @@ namespace AntdUI
     /// <remarks>为页面和功能提供导航的菜单列表。</remarks>
     [Description("Menu 导航菜单")]
     [ToolboxItem(true)]
+    [DefaultProperty("Items")]
     [DefaultEvent("SelectChanged")]
     public class Menu : IControl
     {
@@ -235,17 +240,14 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0) return rect;
 
             float y = 0;
-            using (var bmp = new Bitmap(1, 1))
+            Helper.GDI(g =>
             {
-                using (var g = Graphics.FromImage(bmp))
-                {
-                    var size = g.MeasureString(Config.NullText, Font);
-                    float icon_size = size.Height * 1.2F, gap = icon_size * 0.5F;
-                    int height = (int)Math.Ceiling(size.Height + gap * 2);
-                    int gapI = (int)(gap / 2);
-                    ChangeList(rect, Items, ref y, height, icon_size, gap, gapI, 0);
-                }
-            }
+                var size = g.MeasureString(Config.NullText, Font);
+                float icon_size = size.Height * 1.2F, gap = icon_size * 0.5F;
+                int height = (int)Math.Ceiling(size.Height + gap * 2);
+                int gapI = (int)(gap / 2);
+                ChangeList(rect, Items, ref y, height, icon_size, gap, gapI, 0);
+            });
             scrollY.SetVrSize(y, rect.Height);
             return rect;
         }
@@ -427,10 +429,7 @@ namespace AntdUI
                 foreach (MenuItem it in Items)
                 {
                     var list = new List<MenuItem> { it };
-                    if (IMouseDown(it, list, e.Location))
-                    {
-                        return;
-                    }
+                    if (IMouseDown(it, list, e.Location)) return;
                 }
             }
         }
@@ -465,7 +464,7 @@ namespace AntdUI
             if (can && item.Expand)
                 foreach (MenuItem sub in item.Sub)
                 {
-                    var list_ = new List<MenuItem>();
+                    var list_ = new List<MenuItem>(list.Count + 1);
                     list_.AddRange(list);
                     list_.Add(sub);
                     if (IMouseDown(sub, list_, point)) return true;
@@ -594,7 +593,7 @@ namespace AntdUI
         }
     }
 
-    public class MenuItem : NotifyPropertyChanged
+    public class MenuItem : NotifyProperty
     {
         public MenuItem() { }
         public MenuItem(string text)
@@ -607,12 +606,12 @@ namespace AntdUI
             Icon = icon;
         }
 
-        Bitmap? icon = null;
+        Image? icon = null;
         /// <summary>
         /// 图标
         /// </summary>
         [Description("图标"), Category("外观"), DefaultValue(null)]
-        public Bitmap? Icon
+        public Image? Icon
         {
             get => icon;
             set
@@ -710,9 +709,10 @@ namespace AntdUI
             get => expand;
             set
             {
+                if (expand == value) return;
+                expand = value;
                 if (items != null && items.Count > 0)
                 {
-                    expand = value;
                     if (Config.Animation)
                     {
                         ThreadExpand?.Dispose();
@@ -876,7 +876,7 @@ namespace AntdUI
             rect = _rect;
             if (indent || depth > 1)
             {
-                ico_rect = new RectangleF(_rect.X + (gap * depth), _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
+                ico_rect = new RectangleF(_rect.X + (gap * (depth + 1)), _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
                 txt_rect = new RectangleF(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
             }
             else

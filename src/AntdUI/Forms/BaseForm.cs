@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -24,7 +28,8 @@ namespace AntdUI
         {
             SetStyle(
                  ControlStyles.UserPaint |
-                 ControlStyles.DoubleBuffer, true);
+                 ControlStyles.DoubleBuffer |
+                 ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
         }
         internal void SetCursor(bool val)
@@ -98,24 +103,18 @@ namespace AntdUI
         public float Dpi()
         {
             float dpi = 1F;
-#if NET40 || NET46
+#if NET40 || NET46 || NET48
             using (var bmp = new Bitmap(1, 1))
             {
                 using (var g = Graphics.FromImage(bmp))
                 {
-                    dpi = Dpi(g);
+                    Config.SetDpi(g);
+                    dpi = Config.Dpi;
                 }
             }
 #else
             dpi = DeviceDpi / 96F;
 #endif
-            Config.SetDpi(dpi);
-            return dpi;
-        }
-
-        public float Dpi(Graphics g)
-        {
-            float dpi = g.DpiX / 96F;
             Config.SetDpi(dpi);
             return dpi;
         }

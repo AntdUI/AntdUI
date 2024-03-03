@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema 
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="button2.ImageSvg" xml:space="preserve">
+    <value>&lt;svg viewBox="0 0 1024 1024"&gt;&lt;path d="M424.55 518.62c-2.9-5.81-9.23-9.12-15.68-8.21l-149.84 21.41c-3.24 0.47-6.23 1.97-8.56 4.28l-85.6 85.62c-5.92 5.92-5.92 15.5 0 21.41l64.2 64.22c5.92 5.9 15.5 5.9 21.41 0L421.71 536.1a15.169 15.169 0 0 0 2.84-17.48zM490.21 763l21.4-149.84c0.93-6.46-2.39-12.76-8.21-15.68a15.15 15.15 0 0 0-17.48 2.84L314.68 771.56c-5.9 5.9-5.9 15.48 0 21.41l64.22 64.22c5.92 5.9 15.5 5.9 21.41 0l85.62-85.62c2.32-2.32 3.81-5.33 4.28-8.57z" fill="#DA4453"&gt;&lt;/path&gt;&lt;path d="M650.05 297.22a15.09 15.09 0 0 0-10.47-10.76l-66.57-19.08c-5.28-1.51-10.98-0.05-14.86 3.86l-61.89 61.87c-3.7 3.7-5.24 9.07-4.02 14.17 0.64 2.79 2.06 5.28 4.02 7.23 1.64 1.64 3.66 2.91 5.92 3.66l64.22 21.41c5.43 1.82 11.45 0.4 15.48-3.66l64.22-64.22c3.79-3.79 5.3-9.29 3.95-14.48zM754.64 449.01l-19.06-66.55a15.151 15.151 0 0 0-10.76-10.49c-5.19-1.33-10.71 0.15-14.51 3.95l-64.22 64.22a15.143 15.143 0 0 0-3.66 15.48l21.41 64.22c0.75 2.26 2.02 4.28 3.66 5.92 1.95 1.95 4.44 3.37 7.23 4.04 5.1 1.2 10.47-0.33 14.17-4.04l61.89-61.87c3.89-3.9 5.36-9.58 3.85-14.88z" fill="#434A54"&gt;&lt;/path&gt;&lt;path d="M838.04 263.12c21.52-43.7 24.76-73.53 9.58-88.71-15.17-15.17-45.03-11.95-88.73 9.58-33.41 16.46-69.27 41.37-91.39 63.48L134.58 780.43a15.117 15.117 0 0 0 0 21.4l85.62 85.6c5.9 5.92 15.48 5.92 21.41 0L774.54 354.5c22.11-22.1 47.04-57.97 63.5-91.38z" fill="#E6E9ED"&gt;&lt;/path&gt;&lt;path d="M774.54 354.51c22.12-22.11 47.05-57.98 63.51-91.39 21.52-43.7 24.76-73.53 9.58-88.71-15.17-15.17-45.03-11.95-88.73 9.58-33.41 16.46-69.27 41.37-91.39 63.48l107.03 107.04z" fill="#ED5564"&gt;&lt;/path&gt;&lt;path d="M241.61 887.44l10.69-10.69-107.03-107.03-10.69 10.71a15.117 15.117 0 0 0 0 21.4l85.62 85.6c5.9 5.93 15.49 5.93 21.41 0.01z" fill="#FFCE54" p-id="7827"&gt;&lt;/path&gt;&lt;path d="M166.673 833.931l21.404-21.404 21.404 21.404-21.404 21.404z" fill="#F6BB42"&gt;&lt;/path&gt;&lt;path d="M271.87 750.15c-5.9-5.92-5.9-15.5 0-21.41L443.11 557.5c5.92-5.9 15.5-5.9 21.41 0 5.92 5.92 5.92 15.5 0 21.4L293.27 750.15c-5.9 5.9-15.48 5.9-21.4 0z" fill="#ED5564"&gt;&lt;/path&gt;&lt;path d="M688.91 333.11c-5.9-5.9-15.48-5.9-21.41 0l-85.62 85.62c-5.9 5.92-5.9 15.5 0 21.41 5.92 5.92 15.5 5.92 21.41 0l85.62-85.62c5.93-5.91 5.93-15.49 0-21.41z" fill="#656D78"&gt;&lt;/path&gt;&lt;path d="M838.04 263.12c21.52-43.7 24.76-73.53 9.58-88.71a29.056 29.056 0 0 0-6.08-4.66c9.49 16.44 4.75 44.19-14.22 82.67-16.46 33.41-41.39 69.27-63.49 91.39L230.9 876.75c-5.9 5.9-15.48 5.9-21.4 0l-42.81-42.81-32.1-32.12v0.02l85.62 85.6c5.9 5.92 15.48 5.92 21.41 0l532.93-532.93c22.1-22.11 47.03-57.98 63.49-91.39z" fill="#FFFFFF" opacity=".2"&gt;&lt;/path&gt;&lt;/svg&gt;</value>
+  </data>
+</root>

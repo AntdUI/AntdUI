@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -26,7 +30,8 @@ namespace AntdUI
     /// <remarks>多层次的结构列表。</remarks>
     [Description("Tree 树形控件")]
     [ToolboxItem(true)]
-    [DefaultEvent("SelectIndexChanged")]
+    [DefaultProperty("Items")]
+    [DefaultEvent("SelectChanged")]
     public class Tree : IControl
     {
         #region 属性
@@ -122,9 +127,9 @@ namespace AntdUI
 
         bool blockNode = false;
         /// <summary>
-        /// 是否节点占据一行
+        /// 节点占据一行
         /// </summary>
-        [Description("是否节点占据一行"), Category("外观"), DefaultValue(false)]
+        [Description("节点占据一行"), Category("外观"), DefaultValue(false)]
         public bool BlockNode
         {
             get => blockNode;
@@ -160,6 +165,10 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 获取所有选中项
+        /// </summary>
+        /// <returns></returns>
         public List<TreeItem> GetCheckeds()
         {
             var list = new List<TreeItem>();
@@ -183,7 +192,8 @@ namespace AntdUI
 
         #region 事件
 
-        public delegate void SelectEventHandler(object sender, TreeItem item);
+        public delegate void SelectEventHandler(object sender, TreeItem item, Rectangle rect);
+        public delegate void HoverEventHandler(object sender, TreeItem item, Rectangle rect, bool hover);
         /// <summary>
         /// Select 属性值更改时发生
         /// </summary>
@@ -198,28 +208,46 @@ namespace AntdUI
         public event CheckedEventHandler? CheckedChanged = null;
 
         /// <summary>
-        /// 点击事件
+        /// 点击项事件
         /// </summary>
-        [Description("点击事件"), Category("行为")]
+        [Description("点击项事件"), Category("行为")]
         public event SelectEventHandler? NodeMouseClick = null;
 
         /// <summary>
-        /// 双击事件
+        /// 双击项事件
         /// </summary>
-        [Description("双击事件"), Category("行为")]
+        [Description("双击项事件"), Category("行为")]
         public event SelectEventHandler? NodeMouseDoubleClick = null;
+
+        /// <summary>
+        /// 移动项事件
+        /// </summary>
+        [Description("移动项事件"), Category("行为")]
+        public event HoverEventHandler? NodeMouseMove = null;
+        internal void OnNodeMouseMove(TreeItem item, bool hover)
+        {
+            if (NodeMouseMove == null) return;
+            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            NodeMouseMove(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), hover);
+        }
 
         internal void OnSelectChanged(TreeItem item)
         {
-            SelectChanged?.Invoke(this, item);
+            if (SelectChanged == null) return;
+            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            SelectChanged(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
         internal void OnNodeMouseClick(TreeItem item)
         {
-            NodeMouseClick?.Invoke(this, item);
+            if (NodeMouseClick == null) return;
+            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            NodeMouseClick(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
         internal void OnNodeMouseDoubleClick(TreeItem item)
         {
-            NodeMouseDoubleClick?.Invoke(this, item);
+            if (NodeMouseDoubleClick == null) return;
+            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            NodeMouseDoubleClick(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
         internal void OnCheckedChanged(TreeItem item, bool value)
         {
@@ -282,43 +310,40 @@ namespace AntdUI
             if (pauseLayout || items == null || items.Count == 0) return rect;
             if (rect.Width == 0 || rect.Height == 0) return rect;
 
-            float x = 0, y = 0;
-            using (var bmp = new Bitmap(1, 1))
+            int x = 0, y = 0;
+            Helper.GDI(g =>
             {
-                using (var g = Graphics.FromImage(bmp))
-                {
-                    var size = g.MeasureString(Config.NullText, Font);
-                    float icon_size = size.Height, gap = icon_size / 2F;
-                    int height = (int)Math.Ceiling(size.Height + gap * 2);
-                    int gapI = (int)(gap / 2);
-                    ChangeList(g, rect, null, Items, ref x, ref y, height, icon_size, gap, gapI, 0);
-                }
-            }
+                var size = g.MeasureString(Config.NullText, Font);
+                int icon_size = (int)(size.Height), gap = icon_size / 2;
+                int height = (int)Math.Ceiling(size.Height + gap * 2);
+                int gapI = (int)(gap / 2);
+                ChangeList(g, rect, null, Items, ref x, ref y, height, icon_size, gap, gapI, 0);
+            });
             scrollX.SetVrSize(x + 20, rect.Width);
             scrollY.SetVrSize(y, rect.Height);
             return rect;
         }
-        void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, ref float x, ref float y, int height, float icon_size, float gap, int gapI, int depth)
+        void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth)
         {
             foreach (TreeItem it in items)
             {
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
-                it.SetRect(g, Font, depth, checkable, blockNode, new RectangleF(0, y, rect.Width, height), icon_size, gap);
+                it.SetRect(g, Font, depth, checkable, blockNode, new Rectangle(0, y, rect.Width, height), icon_size, gap);
                 if (it.txt_rect.Right > x) x = it.txt_rect.Right;
                 if (it.Show && it.Visible)
                 {
                     y += height + gapI;
                     if (it.CanExpand)
                     {
-                        float y_item = y;
+                        int y_item = y;
 
                         ChangeList(g, rect, it, it.Sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1);
 
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
                         {
                             it.ExpandHeight = y - y_item;
-                            y = y_item + it.ExpandHeight * it.ExpandProg;
+                            y = y_item + (int)(it.ExpandHeight * it.ExpandProg);
                         }
                         else if (!it.Expand) y = y_item;
                     }
@@ -405,7 +430,7 @@ namespace AntdUI
             }
             if (checkable)
             {
-                using (var path_check = item.check_rect.RoundPath(item.check_radius, false))
+                using (var path_check = Helper.RoundPath(item.check_rect, item.check_radius, false))
                 {
                     if (item.Enabled)
                     {
@@ -735,7 +760,6 @@ namespace AntdUI
         #endregion
     }
 
-
     public class TreeItemCollection : iCollection<TreeItem>
     {
         public TreeItemCollection(Tree it)
@@ -872,9 +896,10 @@ namespace AntdUI
             get => expand;
             set
             {
+                if (expand == value) return;
+                expand = value;
                 if (Sub != null && Sub.Count > 0)
                 {
-                    expand = value;
                     if (PARENT != null && PARENT.IsHandleCreated && Config.Animation)
                     {
                         ThreadExpand?.Dispose();
@@ -1060,6 +1085,7 @@ namespace AntdUI
             {
                 if (hover == value) return;
                 hover = value;
+                PARENT?.OnNodeMouseMove(this, value);
                 if (Config.Animation)
                 {
                     ThreadHover?.Dispose();
@@ -1104,40 +1130,40 @@ namespace AntdUI
         internal Tree? PARENT { get; set; }
         internal TreeItem? PARENTITEM { get; set; }
 
-        internal void SetRect(Graphics g, Font font, int depth, bool checkable, bool blockNode, RectangleF _rect, float icon_size, float gap)
+        internal void SetRect(Graphics g, Font font, int depth, bool checkable, bool blockNode, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;
             rect = _rect;
-            float x = _rect.X + gap + (icon_size * depth);
-            arr_rect = new RectangleF(x, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+            int x = _rect.X + gap + (icon_size * depth);
+            arr_rect = new Rectangle(x, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
             x += icon_size + gap;
 
             if (checkable)
             {
                 check_radius = arr_rect.Height * .2F;
-                check_rect = new RectangleF(x, arr_rect.Y, arr_rect.Width, arr_rect.Height);
+                check_rect = new Rectangle(x, arr_rect.Y, arr_rect.Width, arr_rect.Height);
                 x += icon_size + gap;
             }
 
             if (Icon != null)
             {
-                ico_rect = new RectangleF(x, arr_rect.Y, arr_rect.Width, arr_rect.Height);
+                ico_rect = new Rectangle(x, arr_rect.Y, arr_rect.Width, arr_rect.Height);
                 x += icon_size + gap;
             }
 
             var size = g.MeasureString(Text, font);
-            size.Width += gap;
-            size.Height += gap;
-            txt_rect = new RectangleF(x, _rect.Y + (_rect.Height - size.Height) / 2, size.Width, size.Height);
+            int width = (int)Math.Ceiling(size.Width += gap);
+            int height = (int)Math.Ceiling(size.Height += gap);
+            txt_rect = new Rectangle(x, _rect.Y + (_rect.Height - height) / 2, width, height);
             if (!blockNode) rect = txt_rect;
             Show = true;
         }
-        internal RectangleF rect { get; set; }
-        internal RectangleF arr_rect { get; set; }
+        internal Rectangle rect { get; set; }
+        internal Rectangle arr_rect { get; set; }
 
         internal int Contains(Point point, float x, float y, bool checkable)
         {
-            var p = new PointF(point.X + x, point.Y + y);
+            var p = new Point(point.X + (int)x, point.Y + (int)y);
             if (rect.Contains(p))
             {
                 Hover = true;
@@ -1164,9 +1190,9 @@ namespace AntdUI
         internal bool AnimationHover = false;
         ITask? ThreadHover = null;
 
-        internal RectangleF check_rect { get; set; }
+        internal Rectangle check_rect { get; set; }
         internal float check_radius { get; set; }
-        internal RectangleF txt_rect { get; set; }
-        internal RectangleF ico_rect { get; set; }
+        internal Rectangle txt_rect { get; set; }
+        internal Rectangle ico_rect { get; set; }
     }
 }

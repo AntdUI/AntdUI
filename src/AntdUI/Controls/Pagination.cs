@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -241,7 +245,7 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (buttons.Count < 2) return;
+            if (buttons.Length < 2) return;
             var g = e.Graphics.High();
             float border = borderWidth * Config.Dpi, _radius = radius * Config.Dpi;
             if (Enabled)
@@ -283,7 +287,7 @@ namespace AntdUI
                     using (var brush = new SolidBrush(fore))
                     {
                         if (showTotal != null) g.DrawString(showTotal, Font, brush, rect_text, Helper.stringFormatCenter2);
-                        for (int i = 2; i < buttons.Count; i++)
+                        for (int i = 2; i < buttons.Length; i++)
                         {
                             var btn = buttons[i];
                             if (btn.hover)
@@ -339,7 +343,7 @@ namespace AntdUI
                 using (var brush = new SolidBrush(Style.Db.TextQuaternary))
                 {
                     if (showTotal != null) g.DrawString(showTotal, Font, brush, rect_text, Helper.stringFormatCenter2);
-                    for (int i = 2; i < buttons.Count; i++)
+                    for (int i = 2; i < buttons.Length; i++)
                     {
                         var btn = buttons[i];
                         if (btn.prog > 0)
@@ -371,10 +375,10 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (buttons.Count > 0)
+            if (buttons.Length > 0)
             {
                 int count = 0, count_no = 0, count_hand = 0;
-                for (int i = 0; i < buttons.Count; i++)
+                for (int i = 0; i < buttons.Length; i++)
                 {
                     var btn = buttons[i];
                     var hover = false;
@@ -400,7 +404,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             SetCursor(false);
-            if (buttons.Count > 0)
+            if (buttons.Length > 0)
             {
                 int count = 0;
                 foreach (var btn in buttons)
@@ -418,9 +422,9 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (buttons.Count > 0)
+            if (buttons.Length > 0)
             {
-                for (int i = 0; i < buttons.Count; i++)
+                for (int i = 0; i < buttons.Length; i++)
                 {
                     var btn = buttons[i];
                     if (btn.enabled && btn.rect.Contains(e.Location))
@@ -451,7 +455,7 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
-        List<ButtonLoad> buttons = new List<ButtonLoad>();
+        ButtonLoad[] buttons = new ButtonLoad[0];
         internal string? showTotal = null;
         internal RectangleF rect_text;
 
@@ -470,7 +474,7 @@ namespace AntdUI
             int total_button = t_Width / rect.Height;//总共多少按钮
             if (total_button < 3)
             {
-                buttons.Clear();
+                buttons = new ButtonLoad[0];
                 return;
             }
             int total_page = (int)Math.Ceiling((total * 1.0) / pageSize);//总页数
@@ -479,179 +483,176 @@ namespace AntdUI
             if (textdesc == null) showTotal = ShowTotalChanged?.Invoke(current, total, pageSize, total_page);
             else showTotal = textdesc;
 
-            using (var bmp = new Bitmap(1, 1))
+            Helper.GDI(g =>
             {
-                using (var g = Graphics.FromImage(bmp))
+                var dir = new Dictionary<int, float>();
+                int min = 100;
+                float max_size = rect.Height;
+                for (int i = 0; i <= total_page; i++)
                 {
-                    var dir = new Dictionary<int, float>();
-                    int min = 100;
-                    float max_size = rect.Height;
-                    for (int i = 0; i <= total_page; i++)
+                    if (i == min)
                     {
-                        if (i == min)
+                        min = min * 10;
+                        var size_font = g.MeasureString((i + 1).ToString(), Font);
+                        if (size_font.Width > rect.Height)
                         {
-                            min = min * 10;
-                            var size_font = g.MeasureString((i + 1).ToString(), Font);
-                            if (size_font.Width > rect.Height)
-                            {
-                                max_size = size_font.Width;
-                                dir.Add(i.ToString().Length, size_font.Width);
-                            }
+                            max_size = size_font.Width;
+                            dir.Add(i.ToString().Length, size_font.Width);
                         }
                     }
-                    int x = 0;
-                    if (showTotal != null)
-                    {
-                        var size_font = g.MeasureString(showTotal, Font);
-                        x = (int)Math.Ceiling(size_font.Width);
-                        rect_text = new RectangleF(rect.X, rect.Y, x, rect.Height);
-                    }
+                }
+                int x = 0;
+                if (showTotal != null)
+                {
+                    var size_font = g.MeasureString(showTotal, Font);
+                    x = (int)Math.Ceiling(size_font.Width);
+                    rect_text = new RectangleF(rect.X, rect.Y, x, rect.Height);
+                }
 
-                    total_button = (int)Math.Floor((t_Width - x) / max_size);//总共多少按钮
-                    if (total_button < 3)
-                    {
-                        buttons.Clear();
-                        return;
-                    }
+                total_button = (int)Math.Floor((t_Width - x) / max_size);//总共多少按钮
+                if (total_button < 3)
+                {
+                    buttons = new ButtonLoad[0];
+                    return;
+                }
 
-                    if (MaxPageTotal > 0 && total_button > MaxPageTotal + 2) total_button = MaxPageTotal + 2;
+                if (MaxPageTotal > 0 && total_button > MaxPageTotal + 2) total_button = MaxPageTotal + 2;
 
-                    int total_page_button = total_button - 2;
+                int total_page_button = total_button - 2;
 
-                    PageTotal = total_page;
-                    bool has_previous = current > 1, has_next = total_page > current;//是否还有下一页
-                    var _buttons = new List<ButtonLoad> {
+                PageTotal = total_page;
+                bool has_previous = current > 1, has_next = total_page > current;//是否还有下一页
+                var _buttons = new List<ButtonLoad> {
                     new ButtonLoad(new RectangleF(x + rect.X, rect.Y, rect.Height, rect.Height))
                     {
                         enabled = has_previous
                     }
-                    };
-                    float n_x = _buttons[0].rect.Right;
-                    if (total_page > total_page_button)
+                };
+                float n_x = _buttons[0].rect.Right;
+                if (total_page > total_page_button)
+                {
+                    //大于
+                    int _tol = total_page_button;
+                    int center_page_button = (int)Math.Ceiling(total_page_button / 2F);
+                    if (current <= center_page_button)
                     {
-                        //大于
-                        int _tol = total_page_button;
-                        int center_page_button = (int)Math.Ceiling(total_page_button / 2F);
-                        if (current <= center_page_button)
+                        for (int i = 0; i < _tol - 2; i++)
                         {
-                            for (int i = 0; i < _tol - 2; i++)
-                            {
-                                n_x += AddButs(ref _buttons, dir, new ButtonLoad(i + 1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                                {
-                                    enabled = true
-                                });
-                            }
-                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(_tol - 2, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                            {
-                                enabled = true,
-                                prog = 1
-                            });
-                            //添加最后一页
-                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(total_page, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
+                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(i + 1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
                             {
                                 enabled = true
                             });
                         }
-                        else if (current > total_page - center_page_button)
+                        n_x += AddButs(ref _buttons, dir, new ButtonLoad(_tol - 2, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
                         {
-                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                            {
-                                enabled = true
-                            });
-                            int last_i = total_page - (_tol - 3);
-                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(last_i, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                            {
-                                enabled = true,
-                                prog = 2
-                            });
-                            for (int i = 0; i < _tol - 2; i++)
-                            {
-                                n_x += AddButs(ref _buttons, dir, new ButtonLoad(last_i + i, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                                {
-                                    enabled = true
-                                });
-                            }
-                        }
-                        else
+                            enabled = true,
+                            prog = 1
+                        });
+                        //添加最后一页
+                        n_x += AddButs(ref _buttons, dir, new ButtonLoad(total_page, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
                         {
-                            int last_i = total_page - (_tol - 3);
-
-                            #region 前
-
-                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                            {
-                                enabled = true
-                            });
-                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                            {
-                                enabled = true,
-                                prog = 2
-                            });
-
-                            #endregion
-
-                            int center_len = (_tol - 4);
-                            var start = current - center_len / 2;
-                            for (int i = 0; i < center_len; i++)
-                            {
-                                n_x += AddButs(ref _buttons, dir, new ButtonLoad(start + i, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                                {
-                                    enabled = true
-                                });
-                            }
-
-                            #region 后
-
-                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(last_i, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                            {
-                                enabled = true,
-                                prog = 1
-                            });
-                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(total_page, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
-                            {
-                                enabled = true
-                            });
-
-                            #endregion
-                        }
+                            enabled = true
+                        });
                     }
-                    else
+                    else if (current > total_page - center_page_button)
                     {
-                        //不够
-                        for (int i = 0; i < total_page; i++)
+                        n_x += AddButs(ref _buttons, dir, new ButtonLoad(1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
                         {
-                            AddButs(ref _buttons, dir, new ButtonLoad(i + 1, new RectangleF(x + rect.X + rect.Height * (i + 1), rect.Y, rect.Height, rect.Height))
+                            enabled = true
+                        });
+                        int last_i = total_page - (_tol - 3);
+                        n_x += AddButs(ref _buttons, dir, new ButtonLoad(last_i, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
+                        {
+                            enabled = true,
+                            prog = 2
+                        });
+                        for (int i = 0; i < _tol - 2; i++)
+                        {
+                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(last_i + i, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
                             {
                                 enabled = true
                             });
                         }
                     }
-                    _buttons.Insert(1, new ButtonLoad(new RectangleF(_buttons[_buttons.Count - 1].rect.Right, rect.Y, rect.Height, rect.Height))
+                    else
                     {
-                        enabled = has_next
-                    });
-                    if (RightToLeft == RightToLeft.Yes)
-                    {
-                        var py = rect.Right - _buttons[1].rect.Right;
-                        if (sizeChanger) py -= _SizeChangerWidth;
-                        foreach (var btn in _buttons)
+                        int last_i = total_page - (_tol - 3);
+
+                        #region 前
+
+                        n_x += AddButs(ref _buttons, dir, new ButtonLoad(1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
                         {
-                            btn._rect.Offset(py, 0);
-                        }
-                        rect_text.Offset(py, 0);
-                    }
-                    else if (sizeChanger)
-                    {
-                        int py = _SizeChangerWidth;
-                        foreach (var btn in _buttons)
+                            enabled = true
+                        });
+                        n_x += AddButs(ref _buttons, dir, new ButtonLoad(1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
                         {
-                            btn._rect.Offset(py, 0);
+                            enabled = true,
+                            prog = 2
+                        });
+
+                        #endregion
+
+                        int center_len = (_tol - 4);
+                        var start = current - center_len / 2;
+                        for (int i = 0; i < center_len; i++)
+                        {
+                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(start + i, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
+                            {
+                                enabled = true
+                            });
                         }
-                        rect_text.Offset(py, 0);
+
+                        #region 后
+
+                        n_x += AddButs(ref _buttons, dir, new ButtonLoad(last_i, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
+                        {
+                            enabled = true,
+                            prog = 1
+                        });
+                        n_x += AddButs(ref _buttons, dir, new ButtonLoad(total_page, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
+                        {
+                            enabled = true
+                        });
+
+                        #endregion
                     }
-                    buttons = _buttons;
                 }
-            }
+                else
+                {
+                    //不够
+                    for (int i = 0; i < total_page; i++)
+                    {
+                        AddButs(ref _buttons, dir, new ButtonLoad(i + 1, new RectangleF(x + rect.X + rect.Height * (i + 1), rect.Y, rect.Height, rect.Height))
+                        {
+                            enabled = true
+                        });
+                    }
+                }
+                _buttons.Insert(1, new ButtonLoad(new RectangleF(_buttons[_buttons.Count - 1].rect.Right, rect.Y, rect.Height, rect.Height))
+                {
+                    enabled = has_next
+                });
+                if (RightToLeft == RightToLeft.Yes)
+                {
+                    var py = rect.Right - _buttons[1].rect.Right;
+                    if (sizeChanger) py -= _SizeChangerWidth;
+                    foreach (var btn in _buttons)
+                    {
+                        btn._rect.Offset(py, 0);
+                    }
+                    rect_text.Offset(py, 0);
+                }
+                else if (sizeChanger)
+                {
+                    int py = _SizeChangerWidth;
+                    foreach (var btn in _buttons)
+                    {
+                        btn._rect.Offset(py, 0);
+                    }
+                    rect_text.Offset(py, 0);
+                }
+                buttons = _buttons.ToArray();
+            });
         }
         void InitSizeChanger(RectangleF rect, int SizeChangerWidth)
         {

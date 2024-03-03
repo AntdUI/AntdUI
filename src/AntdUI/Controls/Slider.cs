@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -167,6 +171,7 @@ namespace AntdUI
             {
                 if (vertical == value) return;
                 vertical = value;
+                OnSizeChanged(EventArgs.Empty);
                 Invalidate();
             }
         }
@@ -240,30 +245,29 @@ namespace AntdUI
             var g = e.Graphics.High();
             var _rect = ClientRectangle;
 
-            var rect = CRectF(_rect);
             var back = Style.Db.FillQuaternary;
             using (var brush = new SolidBrush(back))
             {
-                g.FillRectangle(brush, rect);
+                g.FillRectangle(brush, rect_read);
 
                 if (AnimationHover)
                 {
                     using (var brush2 = new SolidBrush(Color.FromArgb((int)(back.A * AnimationHoverValue), back)))
                     {
-                        g.FillRectangle(brush2, rect);
+                        g.FillRectangle(brush2, rect_read);
                     }
                 }
                 else if (ExtraMouseHover)
                 {
-                    g.FillRectangle(brush, rect);
+                    g.FillRectangle(brush, rect_read);
                 }
             }
-            float prog = CProg(_value, rect.Width, rect.Height);
-            if (_value > 0)
+            float prog = CProg(_value, rect_read.Width, rect_read.Height);
+            if (_value > _minValue)
             {
                 RectangleF rect_prog;
-                if (vertical) rect_prog = new RectangleF(rect.X, rect.Y, rect.Width, prog);
-                else rect_prog = new RectangleF(rect.X, rect.Y, prog, rect.Height);
+                if (vertical) rect_prog = new RectangleF(rect_read.X, rect_read.Y, rect_read.Width, prog);
+                else rect_prog = new RectangleF(rect_read.X, rect_read.Y, prog, rect_read.Height);
 
                 Color color = fill.HasValue ? fill.Value : Style.Db.InfoBorder, color_hover = FillHover.HasValue ? FillHover.Value : Style.Db.InfoHover;
                 if (AnimationHover)
@@ -285,7 +289,7 @@ namespace AntdUI
                     }
                 }
             }
-            PaintEllipse(g, _rect, rect, prog);
+            PaintEllipse(g, _rect, rect_read, prog);
             this.PaintBadge(g);
         }
 
@@ -293,32 +297,34 @@ namespace AntdUI
         {
             var color = fill.HasValue ? fill.Value : Style.Db.InfoBorder;
             var color_active = FillActive.HasValue ? FillActive.Value : Style.Db.Primary;
+            int DotSize = (int)(dotSize * Config.Dpi), DotSizeActive = (int)(dotSizeActive * Config.Dpi);
+
             using (var brush = new SolidBrush(Style.Db.BgBase))
             {
                 if (Dots != null && Dots.Length > 0)
                 {
                     foreach (var it in Dots)
                     {
-                        float size = dotSize * 0.9F;
+                        float size = DotSize * 0.9F;
                         float uks = CProg(it, rect.Width, rect.Height);
                         var rect_dot = CRect(_rect, rect, uks, size);
                         g.FillEllipse(brush, rect_dot);
                         PaintEllipse(g, rect_dot, color, 1);
                     }
                 }
-                var rect_ellipse_rl = CRect(_rect, rect, prog, dotSize);
+                var rect_ellipse_rl = CRect(_rect, rect, prog, DotSize);
                 if (ShowValue && _mouseHover) ShowTips(rect_ellipse_rl);
                 if (AnimationHover)
                 {
-                    int size2 = dotSizeActive - dotSize;
-                    var size = dotSize + size2 * AnimationHoverValue;
+                    int size2 = DotSizeActive - DotSize;
+                    var size = DotSize + size2 * AnimationHoverValue;
                     var rect_ellipse = CRect(_rect, rect, prog, size);
                     g.FillEllipse(brush, rect_ellipse);
                     PaintEllipse(g, rect_ellipse, color_active, 2 + 2 * AnimationHoverValue);
                 }
                 else if (ExtraMouseHover)
                 {
-                    var rect_ellipse = CRect(_rect, rect, prog, dotSizeActive);
+                    var rect_ellipse = CRect(_rect, rect, prog, DotSizeActive);
                     g.FillEllipse(brush, rect_ellipse);
                     PaintEllipse(g, rect_ellipse, color_active, 4);
                 }
@@ -334,22 +340,14 @@ namespace AntdUI
 
         internal float CProg(int val, float w, float h)
         {
-            if (val > 0)
-            {
-                if (vertical) return val >= _maxValue ? h : h * (val * 1F / _maxValue);
-                else return val >= _maxValue ? w : w * (val * 1F / _maxValue);
-            }
-            return 0;
+            int max = _maxValue - _minValue;
+            if (vertical) return val >= _maxValue ? h : h * ((val - _minValue) * 1F / max);
+            else return val >= _maxValue ? w : w * ((val - _minValue) * 1F / max);
         }
         internal RectangleF CRect(Rectangle _rect, RectangleF rect, float prog, float size)
         {
             if (vertical) return new RectangleF(_rect.X + (_rect.Width - size) / 2F, rect.Y + prog - size / 2, size, size);
             else return new RectangleF(rect.X + prog - size / 2, _rect.Y + (_rect.Height - size) / 2F, size, size);
-        }
-        internal RectangleF CRectF(Rectangle _rect)
-        {
-            if (vertical) return new RectangleF(_rect.Left + (_rect.Width - lineSize) / 2F, dotSizeActive, lineSize, _rect.Height - dotSizeActive * 2);
-            else return new RectangleF(dotSizeActive, _rect.Top + (_rect.Height - lineSize) / 2F, _rect.Width - dotSizeActive * 2, lineSize);
         }
 
         #endregion
@@ -364,6 +362,21 @@ namespace AntdUI
 
         #endregion
 
+        #region 坐标计算
+
+        Rectangle rect_read;
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            var _rect = ClientRectangle;
+            float dpi = Config.Dpi;
+            int LineSize = (int)(lineSize * dpi), DotSizeActive = (int)(dotSizeActive * dpi), DotSizeActive2 = DotSizeActive * 2;
+            if (vertical) rect_read = new Rectangle(_rect.Left + (_rect.Width - LineSize) / 2, DotSizeActive, LineSize, _rect.Height - DotSizeActive2);
+            else rect_read = new Rectangle(DotSizeActive, _rect.Top + (_rect.Height - LineSize) / 2, _rect.Width - DotSizeActive2, LineSize);
+            base.OnSizeChanged(e);
+        }
+
+        #endregion
+
         #region 鼠标
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -373,15 +386,16 @@ namespace AntdUI
             {
                 mouseFlat = true;
                 var _rect = ClientRectangle;
-                var rect = CRectF(_rect);
+                int max = _maxValue - _minValue;
                 if (vertical)
                 {
                     if (Dots != null && Dots.Length > 0)
                     {
+                        int DotSize = (int)(dotSize * Config.Dpi);
                         foreach (var it in Dots)
                         {
-                            float uks = CProg(it, rect.Width, rect.Height);
-                            var rect_dot = new RectangleF(_rect.X, rect.Y + uks - dotSize / 2, _rect.Width, dotSize);
+                            float uks = CProg(it, rect_read.Width, rect_read.Height);
+                            var rect_dot = new RectangleF(_rect.X, rect_read.Y + uks - DotSize / 2, _rect.Width, DotSize);
                             if (rect_dot.Contains(e.Location))
                             {
                                 Value = it;
@@ -390,18 +404,19 @@ namespace AntdUI
                         }
                     }
 
-                    float y = (e.Y - rect.Y) * 1.0F / rect.Height;
-                    if (y > 0) Value = (int)Math.Round(y * _maxValue);
+                    float y = (e.Y - rect_read.Y) * 1.0F / rect_read.Height;
+                    if (y > 0) Value = (int)Math.Round(y * max) + _minValue;
                     else Value = 0;
                 }
                 else
                 {
                     if (Dots != null && Dots.Length > 0)
                     {
+                        int DotSize = (int)(dotSize * Config.Dpi);
                         foreach (var it in Dots)
                         {
-                            float uks = CProg(it, rect.Width, rect.Height);
-                            var rect_dot = new RectangleF(rect.X + uks - dotSize / 2, _rect.Y, dotSize, _rect.Height);
+                            float uks = CProg(it, rect_read.Width, rect_read.Height);
+                            var rect_dot = new RectangleF(rect_read.X + uks - DotSize / 2, _rect.Y, DotSize, _rect.Height);
                             if (rect_dot.Contains(e.Location))
                             {
                                 Value = it;
@@ -409,9 +424,9 @@ namespace AntdUI
                             }
                         }
                     }
-                    float x = (e.X - rect.X) * 1.0F / rect.Width;
-                    if (x > 0) Value = (int)Math.Round(x * _maxValue);
-                    else Value = 0;
+                    float x = (e.X - rect_read.X) * 1.0F / rect_read.Width;
+                    if (x > 0) Value = (int)Math.Round(x * max) + _minValue;
+                    else Value = _minValue;
                 }
             }
         }
@@ -421,19 +436,18 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (mouseFlat)
             {
-                var _rect = ClientRectangle;
-                var rect = CRectF(_rect);
+                int max = _maxValue - _minValue;
                 if (vertical)
                 {
-                    float y = (e.Y - rect.Y) * 1.0F / rect.Height;
-                    if (y > 0) Value = (int)Math.Round(y * _maxValue);
-                    else Value = 0;
+                    float y = (e.Y - rect_read.Y) * 1.0F / rect_read.Height;
+                    if (y > 0) Value = (int)Math.Round(y * max) + _minValue;
+                    else Value = _minValue;
                 }
                 else
                 {
-                    float x = (e.X - rect.X) * 1.0F / rect.Width;
-                    if (x > 0) Value = (int)Math.Round(x * _maxValue);
-                    else Value = 0;
+                    float x = (e.X - rect_read.X) * 1.0F / rect_read.Width;
+                    if (x > 0) Value = (int)Math.Round(x * max) + _minValue;
+                    else Value = _minValue;
                 }
             }
         }

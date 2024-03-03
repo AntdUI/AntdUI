@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -393,29 +397,36 @@ namespace AntdUI
             return path;
         }
 
-        RectangleF rect_icon, rect_loading, rect_txt;
-        private Size RenderMeasure(Graphics g)
+        Rectangle rect_icon, rect_loading, rect_txt;
+        Size RenderMeasure(Graphics g)
         {
+            float dpi = g.DpiX / 96F;
             var size = g.MeasureString(config.Text, Font);
-            float width = size.Width + 20F, height = size.Height * 1.6F + 20F;
-            float icon_size = size.Height * 0.86F, gap = icon_size * 0.4F;
-            rect_icon = new RectangleF(10 + gap, (height - icon_size) / 2F, icon_size, icon_size);
+            int px = (int)(14 * dpi), sp = (int)(8 * dpi);
+            int width = (int)Math.Ceiling(size.Width), height = (int)Math.Ceiling(size.Height + (12 * dpi) * 2);
+
             if (loading)
             {
-                var loading_size = icon_size * 0.86F;
-                rect_loading = new RectangleF(rect_icon.X + (rect_icon.Width - loading_size) / 2, rect_icon.Y + (rect_icon.Height - loading_size) / 2, loading_size, loading_size);
-                rect_txt = new RectangleF(rect_icon.X + rect_icon.Width + gap, 0, width, height);
-                return new Size((int)Math.Ceiling(width + rect_icon.Width + gap * 3), (int)Math.Ceiling(height));
+                int icon_size = (int)(size.Height * 0.86F);
+                rect_icon = new Rectangle(px, (height - icon_size) / 2, icon_size, icon_size);
+                rect_txt = new Rectangle(rect_icon.Right + sp, 0, width, height);
+
+                int loading_size = (int)(icon_size * 0.86F);
+                rect_loading = new Rectangle(rect_icon.X + (rect_icon.Width - loading_size) / 2, rect_icon.Y + (rect_icon.Height - loading_size) / 2, loading_size, loading_size);
+
+                return new Size(width + icon_size + sp + px * 2, height);
             }
             else if (config.Icon == TType.None)
             {
-                rect_txt = new RectangleF(gap + 10, 0, width, height);
-                return new Size((int)Math.Ceiling(width + gap * 2), (int)Math.Ceiling(height));
+                rect_txt = new Rectangle(px, 0, width, height);
+                return new Size(width + px * 2, height);
             }
             else
             {
-                rect_txt = new RectangleF(rect_icon.X + rect_icon.Width + gap, 0, width, height);
-                return new Size((int)Math.Ceiling(width + rect_icon.Width + gap * 3), (int)Math.Ceiling(height));
+                int icon_size = (int)(size.Height * 0.86F);
+                rect_icon = new Rectangle(px, (height - icon_size) / 2, icon_size, icon_size);
+                rect_txt = new Rectangle(rect_icon.Right + sp, 0, width, height);
+                return new Size(width + icon_size + sp + px * 2, height);
             }
         }
 

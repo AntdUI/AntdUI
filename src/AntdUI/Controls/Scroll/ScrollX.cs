@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -17,7 +21,7 @@ using System.Drawing;
 
 namespace AntdUI
 {
-    public class ScrollX
+    public class ScrollX : IScroll
     {
         IControl? control;
         public ScrollX(IControl _control)
@@ -66,7 +70,7 @@ namespace AntdUI
         internal float SetValue(float value)
         {
             if (value < 0) return 0;
-            if (value > VrWidthI) return VrWidthI;
+            if (value > VrValueI) return VrValueI;
             return value;
         }
         /// <summary>
@@ -87,8 +91,9 @@ namespace AntdUI
         /// <summary>
         /// 虚拟宽度
         /// </summary>
-        public float VrWidth { get; set; } = 0F;
-        public float VrWidthI { get; set; } = 0F;
+        public float VrValue { get; set; } = 0F;
+        public float VrValueI { get; set; } = 0F;
+        public int Width { get; set; }
 
         /// <summary>
         /// 设置容器虚拟宽度
@@ -97,11 +102,12 @@ namespace AntdUI
         /// <param name="width">容器宽度</param>
         public void SetVrSize(float len, int width)
         {
+            Width = width;
             if (len > 0 && len > width)
             {
-                VrWidthI = len - width;
-                VrWidth = len;
-                Show = VrWidth > width;
+                VrValueI = len - width;
+                VrValue = len;
+                Show = VrValue > width;
                 if (Show)
                 {
                     if (val > (len - width)) Value = (len - width);
@@ -109,17 +115,27 @@ namespace AntdUI
             }
             else
             {
-                VrWidth = VrWidthI = 0F;
+                VrValue = VrValueI = 0F;
                 Show = false;
             }
+        }
+
+        /// <summary>
+        /// 设置容器虚拟宽度
+        /// </summary>
+        /// <param name="len">总X</param>
+        public void SetVrSize(float len)
+        {
+            SetVrSize(len, Rect.Width);
         }
 
 
         #endregion
 
+        public int SIZE { get; set; } = 20;
         public virtual void SizeChange(Rectangle rect)
         {
-            Rect = new Rectangle(rect.X, rect.Bottom - 20, rect.Width, 20);
+            Rect = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
         }
 
         /// <summary>
@@ -137,10 +153,10 @@ namespace AntdUI
                         g.FillRectangle(brush, Rect);
                     }
                 }
-                float width = (Rect.Width / VrWidth) * Rect.Width;
-                if (width < 20) width = 20;
+                float width = (Rect.Width / VrValue) * Rect.Width;
+                if (width < SIZE) width = SIZE;
                 if (Gap) width -= 12;
-                float x = val == 0 ? 0 : (val / (VrWidth - Rect.Width)) * (Rect.Width - width);
+                float x = val == 0 ? 0 : (val / (VrValue - Rect.Width)) * (Rect.Width - width);
                 if (Hover) Slider = new RectangleF(Rect.X + x, Rect.Y + 6, width, 8);
                 else Slider = new RectangleF(Rect.X + x, Rect.Y + 7, width, 6);
                 if (Gap)
@@ -177,7 +193,7 @@ namespace AntdUI
                 if (!Slider.Contains(e))
                 {
                     float x = (e.X - Slider.Width / 2F) / Rect.Width;
-                    Value = x * VrWidth;
+                    Value = x * VrValue;
                 }
                 ShowDown = true;
                 return false;
@@ -197,7 +213,7 @@ namespace AntdUI
             {
                 Hover = true;
                 float x = (e.X - Slider.Width / 2F) / Rect.Width;
-                Value = x * VrWidth;
+                Value = x * VrValue;
                 return false;
             }
             else if (Show && Rect.Contains(e))

@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -112,6 +116,12 @@ namespace AntdUI
             set => items = value.BindData(this);
         }
 
+        protected override void OnFontChanged(EventArgs e)
+        {
+            ChangeList();
+            base.OnFontChanged(e);
+        }
+
         protected override void OnSizeChanged(EventArgs e)
         {
             ChangeList();
@@ -140,107 +150,103 @@ namespace AntdUI
             var rect = ClientRectangle.DeflateRect(Padding);
             if (pauseLayout || items == null || items.Count == 0) return;
             if (rect.Width == 0 || rect.Height == 0) return;
-            using (var bmp = new Bitmap(1, 1))
+            Helper.GDI(g =>
             {
-                splits.Clear();
-                using (var g = Graphics.FromImage(bmp))
+                float gap = 8F * Config.Dpi, split = 1F * Config.Dpi;
+                var _splits = new List<RectangleF>(Items.Count);
+                using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                 {
-                    float gap = 8F * Config.Dpi, split = 1F * Config.Dpi;
-                    var _splits = new List<RectangleF>();
-                    using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
+                    if (vertical)
                     {
-                        if (vertical)
+                        var t_height_one = rect.Height / Items.Count;
+                        int i = 0;
+                        float split_gap = 8F * Config.Dpi;
+                        foreach (StepsItem it in Items)
                         {
-                            var t_height_one = rect.Height / Items.Count;
-                            int i = 0;
-                            float split_gap = 8F * Config.Dpi;
-                            foreach (StepsItem it in Items)
+                            it.PARENT = this;
+                            it.TitleSize = g.MeasureString(it.Title, Font);
+                            float ico_size = it.TitleSize.Height * 1.6F, pen_w = it.TitleSize.Height * 0.136F;
+                            it.pen_w = pen_w;
+                            float width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
+
+                            bool showSub = false, showDescription = false;
+                            if (!string.IsNullOrEmpty(it.SubTitle))
                             {
-                                it.PARENT = this;
-                                it.TitleSize = g.MeasureString(it.Title, Font);
-                                float ico_size = it.TitleSize.Height * 1.6F, pen_w = it.TitleSize.Height * 0.136F;
-                                it.pen_w = pen_w;
-                                float width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
-
-                                bool showSub = false, showDescription = false;
-                                if (!string.IsNullOrEmpty(it.SubTitle))
-                                {
-                                    it.SubTitleSize = g.MeasureString(it.SubTitle, Font);
-                                    showSub = true;
-                                    height_one += it.SubTitleSize.Height;
-                                }
-                                if (!string.IsNullOrEmpty(it.Description))
-                                {
-                                    showDescription = true;
-                                    it.DescriptionSize = g.MeasureString(it.Description, font_description);
-                                    width_ex = it.DescriptionSize.Width;
-                                }
-
-                                float centery = rect.Y + t_height_one * i + t_height_one / 2;//居中X
-                                it.title_rect = new RectangleF(rect.X + gap + ico_size, centery - height_one / 2, it.TitleSize.Width, height_one);
-                                float read_y = it.title_rect.Y - gap - ico_size;
-
-                                it.ico_rect = new RectangleF(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2F, ico_size, ico_size);
-                                if (showSub) it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
-                                if (showDescription) it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
-
-                                if (i > 0)
-                                {
-                                    var old = Items[i - 1];
-                                    if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
-                                }
-                                i++;
+                                it.SubTitleSize = g.MeasureString(it.SubTitle, Font);
+                                showSub = true;
+                                height_one += it.SubTitleSize.Height;
                             }
-                        }
-                        else
-                        {
-                            //横向
-                            var t_width_one = rect.Width / Items.Count;
-                            int i = 0;
-                            float has_x = rect.X, maxHeight = MaxHeight(g, font_description, gap);
-                            foreach (StepsItem it in Items)
+                            if (!string.IsNullOrEmpty(it.Description))
                             {
-                                it.PARENT = this;
-                                it.TitleSize = g.MeasureString(it.Title, Font);
-                                float icon_size = it.IconSize.HasValue ? it.IconSize.Value : it.TitleSize.Height * 1.6F, pen_w = it.TitleSize.Height * 0.136F;
-                                it.pen_w = pen_w;
-                                float width_one = it.TitleSize.Width + gap, width_sub = width_one, width_ex = 0;
-                                bool showSub = false, showDescription = false;
-                                if (!string.IsNullOrEmpty(it.SubTitle))
-                                {
-                                    it.SubTitleSize = g.MeasureString(it.SubTitle, Font);
-                                    showSub = true;
-                                    width_sub += it.SubTitleSize.Width;
-                                }
-                                if (!string.IsNullOrEmpty(it.Description))
-                                {
-                                    showDescription = true;
-                                    it.DescriptionSize = g.MeasureString(it.Description, font_description);
-                                    width_ex = it.DescriptionSize.Width;
-                                }
-                                if (width_ex > width_sub) width_one = width_ex;
-                                else width_one = width_sub;
-
-                                float centerx = rect.X + t_width_one * i + t_width_one / 2;//居中X
-                                it.title_rect = new RectangleF(centerx - width_one / 2, rect.Y + (rect.Height - maxHeight) / 2, it.TitleSize.Width, it.TitleSize.Height);
-                                float read_x = it.title_rect.X - gap - icon_size;
-                                it.ico_rect = new RectangleF(read_x, it.title_rect.Y + (it.title_rect.Height - icon_size) / 2F, icon_size, icon_size);
-                                if (showSub) it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
-                                if (showDescription) it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Bottom + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
-
-                                if (i > 0)
-                                {
-                                    var old = Items[i - 1];
-                                    if (old != null) _splits.Add(new RectangleF(has_x, it.ico_rect.Y + (it.ico_rect.Height - split) / 2F, read_x - gap - has_x, split));
-                                }
-                                has_x = it.title_rect.X + width_sub;
-                                i++;
+                                showDescription = true;
+                                it.DescriptionSize = g.MeasureString(it.Description, font_description);
+                                width_ex = it.DescriptionSize.Width;
                             }
+
+                            float centery = rect.Y + t_height_one * i + t_height_one / 2;//居中X
+                            it.title_rect = new RectangleF(rect.X + gap + ico_size, centery - height_one / 2, it.TitleSize.Width, height_one);
+                            float read_y = it.title_rect.Y - gap - ico_size;
+
+                            it.ico_rect = new RectangleF(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2F, ico_size, ico_size);
+                            if (showSub) it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
+                            if (showDescription) it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+
+                            if (i > 0)
+                            {
+                                var old = Items[i - 1];
+                                if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
+                            }
+                            i++;
                         }
                     }
-                    splits = _splits;
+                    else
+                    {
+                        //横向
+                        var t_width_one = rect.Width / Items.Count;
+                        int i = 0;
+                        float has_x = rect.X, maxHeight = MaxHeight(g, font_description, gap);
+                        foreach (StepsItem it in Items)
+                        {
+                            it.PARENT = this;
+                            it.TitleSize = g.MeasureString(it.Title, Font);
+                            float icon_size = it.IconSize.HasValue ? it.IconSize.Value : it.TitleSize.Height * 1.6F, pen_w = it.TitleSize.Height * 0.136F;
+                            it.pen_w = pen_w;
+                            float width_one = it.TitleSize.Width + gap, width_sub = width_one, width_ex = 0;
+                            bool showSub = false, showDescription = false;
+                            if (!string.IsNullOrEmpty(it.SubTitle))
+                            {
+                                it.SubTitleSize = g.MeasureString(it.SubTitle, Font);
+                                showSub = true;
+                                width_sub += it.SubTitleSize.Width;
+                            }
+                            if (!string.IsNullOrEmpty(it.Description))
+                            {
+                                showDescription = true;
+                                it.DescriptionSize = g.MeasureString(it.Description, font_description);
+                                width_ex = it.DescriptionSize.Width;
+                            }
+                            if (width_ex > width_sub) width_one = width_ex;
+                            else width_one = width_sub;
+
+                            float centerx = rect.X + t_width_one * i + t_width_one / 2;//居中X
+                            it.title_rect = new RectangleF(centerx - width_one / 2, rect.Y + (rect.Height - maxHeight) / 2, it.TitleSize.Width, it.TitleSize.Height);
+                            float read_x = it.title_rect.X - gap - icon_size;
+                            it.ico_rect = new RectangleF(read_x, it.title_rect.Y + (it.title_rect.Height - icon_size) / 2F, icon_size, icon_size);
+                            if (showSub) it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
+                            if (showDescription) it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Bottom + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+
+                            if (i > 0)
+                            {
+                                var old = Items[i - 1];
+                                if (old != null) _splits.Add(new RectangleF(has_x, it.ico_rect.Y + (it.ico_rect.Height - split) / 2F, read_x - gap - has_x, split));
+                            }
+                            has_x = it.title_rect.X + width_sub;
+                            i++;
+                        }
+                    }
                 }
-            }
+                splits = _splits.ToArray();
+            });
             return;
         }
 
@@ -264,7 +270,7 @@ namespace AntdUI
             return temp_t + temp;
         }
 
-        List<RectangleF> splits = new List<RectangleF>();
+        RectangleF[] splits = new RectangleF[0];
 
         #endregion
 
@@ -293,7 +299,7 @@ namespace AntdUI
             {
                 using (var brush_split = new SolidBrush(Style.Db.Split))
                 {
-                    for (int sp = 0; sp < splits.Count; sp++)
+                    for (int sp = 0; sp < splits.Length; sp++)
                     {
                         if (sp < current) g.FillRectangle(brush_primary, splits[sp]);
                         else g.FillRectangle(brush_split, splits[sp]);
@@ -438,18 +444,37 @@ namespace AntdUI
             SubTitle = subTitle;
             Description = description;
         }
-
+        Image? icon = null;
         /// <summary>
         /// 步骤图标的类型，可选
         /// </summary>
         [Description("步骤图标的类型，可选"), Category("外观"), DefaultValue(null)]
-        public Image? Icon { get; set; }
+        public Image? Icon
+        {
+            get => icon;
+            set
+            {
+                if (icon == value) return;
+                icon = value;
+                PARENT?.Invalidate();
+            }
+        }
 
+        int? iconsize = null;
         /// <summary>
         /// 步骤图标的大小，可选
         /// </summary>
         [Description("步骤图标的大小，可选"), Category("外观"), DefaultValue(null)]
-        public int? IconSize { get; set; }
+        public int? IconSize
+        {
+            get => iconsize;
+            set
+            {
+                if (iconsize == value) return;
+                iconsize = value;
+                Invalidate();
+            }
+        }
 
         /// <summary>
         /// 名称
@@ -457,25 +482,56 @@ namespace AntdUI
         [Description("名称"), Category("数据"), DefaultValue(null)]
         public string? Name { get; set; }
 
+        string title = "Title";
         /// <summary>
         /// 标题
         /// </summary>
         [Description("标题"), Category("外观"), DefaultValue("Title")]
-        public string Title { get; set; } = "Title";
+        public string Title
+        {
+            get => title;
+            set
+            {
+                if (title == value) return;
+                title = value;
+                Invalidate();
+            }
+        }
+
         internal SizeF TitleSize { get; set; }
 
+        string? subTitle = null;
         /// <summary>
         /// 子标题
         /// </summary>
         [Description("子标题"), Category("外观"), DefaultValue(null)]
-        public string? SubTitle { get; set; }
+        public string? SubTitle
+        {
+            get => subTitle;
+            set
+            {
+                if (subTitle == value) return;
+                subTitle = value;
+                Invalidate();
+            }
+        }
         internal SizeF SubTitleSize { get; set; }
 
+        string? description = null;
         /// <summary>
         /// 步骤的详情描述，可选
         /// </summary>
         [Description("步骤的详情描述，可选"), Category("外观"), DefaultValue(null)]
-        public string? Description { get; set; }
+        public string? Description
+        {
+            get => description;
+            set
+            {
+                if (description == value) return;
+                description = value;
+                Invalidate();
+            }
+        }
         internal SizeF DescriptionSize { get; set; }
 
         bool visible = true;
@@ -490,7 +546,7 @@ namespace AntdUI
             {
                 if (visible == value) return;
                 visible = value;
-                Invalidates();
+                Invalidate();
             }
         }
 
@@ -500,7 +556,7 @@ namespace AntdUI
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
-        void Invalidates()
+        void Invalidate()
         {
             if (PARENT != null)
             {

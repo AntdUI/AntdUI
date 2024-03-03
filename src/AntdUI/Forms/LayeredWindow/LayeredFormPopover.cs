@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -37,130 +41,127 @@ namespace AntdUI
             Font = config.Font == null ? config.Control.Font : config.Font;
             fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
 
-            using (var bmp = new Bitmap(1, 1))
+            Helper.GDI(g =>
             {
-                using (var g = Graphics.FromImage(bmp))
+                var dpi = Config.Dpi;
+
+                int sp = (int)Math.Round(8F * dpi), padding = (int)Math.Round(16 * dpi), padding2 = padding * 2;
+                Padding = new Padding(padding);
+
+                if (config.Content is Control control)
                 {
-                    float dpi = g.DpiX / 96F;
+                    control.BackColor = Style.Db.BgElevated;
+                    control.ForeColor = Style.Db.Text;
+                    int w = (int)Math.Round(control.Width * dpi) + 2;
+                    control.Width = w;
 
-                    int sp = (int)Math.Round(8F * dpi), padding = (int)Math.Round(16 * dpi), padding2 = padding * 2;
-                    Padding = new Padding(padding);
-
-                    if (config.Content is Control control)
+                    int h;
+                    if (_config.Title == null)
                     {
-                        control.BackColor = Style.Db.BgElevated;
-                        control.ForeColor = Style.Db.Text;
-                        int w = (int)Math.Round(control.Width * dpi) + 2;
-                        control.Width = w;
-
-                        int h;
-                        if (_config.Title == null)
-                        {
-                            h = control.Height;
-                            rectContent = new RectangleF(padding, padding, w, control.Height);
-                        }
-                        else
-                        {
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, w);
-
-                            h = (int)Math.Round(sizeTitle.Height + sp + control.Height);
-                            rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
-                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
-                        }
-                        tempContent = new Bitmap(control.Width, control.Height);
-                        if (Config.Dpi != 1F)
-                        {
-                            var dir = Helper.DpiSuspend(control.Controls);
-                            Helper.DpiLS(Config.Dpi, control);
-                            Helper.DpiResume(dir, control.Controls);
-                        }
-                        control.Size = new Size(tempContent.Width, tempContent.Height);
-                        control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
-                        SetSize(w + padding2, h + padding2);
-                    }
-                    else if (config.Content is IList<Popover.TextRow> list)
-                    {
-                        rtext = true;
-
-                        if (_config.Title == null)
-                        {
-                            var _texts = new List<float[]>();
-                            float has_x = 0, max_h = 0;
-                            foreach (var txt in list)
-                            {
-                                if (txt.Call != null) hasmouse = true;
-                                var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font);
-                                float txt_w = sizeContent.Width + txt.Gap * dpi;
-                                _texts.Add(new float[] { padding + has_x, padding, txt_w });
-                                if (max_h < sizeContent.Height) max_h = sizeContent.Height;
-                                has_x += txt_w;
-                            }
-                            var texts = new List<InRect>();
-                            for (int i = 0; i < _texts.Count; i++)
-                            {
-                                var txt = _texts[i];
-                                texts.Add(new InRect(list[i], new RectangleF(txt[0], txt[1], txt[2], max_h)));
-                            }
-                            rectsContent = texts.ToArray();
-                            rectContent = new RectangleF(padding, padding, has_x, max_h);
-                            SetSize((int)has_x + padding2, (int)max_h + padding2);
-                        }
-                        else
-                        {
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle);
-
-                            var _texts = new List<float[]>();
-                            float has_x = 0, max_h = 0;
-                            foreach (var txt in list)
-                            {
-                                if (txt.Call != null) hasmouse = true;
-                                var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font);
-                                float txt_w = sizeContent.Width + txt.Gap * dpi;
-                                _texts.Add(new float[] { padding + has_x, padding + sizeTitle.Height + sp, txt_w });
-                                if (max_h < sizeContent.Height) max_h = sizeContent.Height;
-                                has_x += txt_w;
-                            }
-                            var texts = new List<InRect>();
-                            for (int i = 0; i < _texts.Count; i++)
-                            {
-                                var txt = _texts[i];
-                                texts.Add(new InRect(list[i], new RectangleF(txt[0], txt[1], txt[2], max_h)));
-                            }
-                            rectsContent = texts.ToArray();
-
-                            int w = (int)Math.Ceiling(has_x > sizeTitle.Width ? has_x : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + max_h);
-
-                            rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
-                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, max_h);
-
-                            SetSize(w + padding2, h + padding2);
-                        }
+                        h = control.Height;
+                        rectContent = new RectangleF(padding, padding, w, control.Height);
                     }
                     else
                     {
-                        rtext = true;
-                        var content = config.Content.ToString();
+                        var sizeTitle = g.MeasureString(config.Title, fontTitle, w);
 
-                        if (_config.Title == null)
+                        h = (int)Math.Round(sizeTitle.Height + sp + control.Height);
+                        rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
+                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
+                    }
+                    tempContent = new Bitmap(control.Width, control.Height);
+                    if (Config.Dpi != 1F)
+                    {
+                        var dir = Helper.DpiSuspend(control.Controls);
+                        Helper.DpiLS(Config.Dpi, control);
+                        Helper.DpiResume(dir, control.Controls);
+                    }
+                    control.Size = new Size(tempContent.Width, tempContent.Height);
+                    control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
+                    SetSize(w + padding2, h + padding2);
+                }
+                else if (config.Content is IList<Popover.TextRow> list)
+                {
+                    rtext = true;
+
+                    if (_config.Title == null)
+                    {
+                        var _texts = new List<float[]>(list.Count);
+                        float has_x = 0, max_h = 0;
+                        foreach (var txt in list)
                         {
-                            var sizeContent = g.MeasureString(content, Font);
-                            int w = (int)Math.Ceiling(sizeContent.Width), h = (int)Math.Round(sizeContent.Height);
-                            rectContent = new RectangleF(padding, padding, w, h);
-                            SetSize(w + padding2, h + padding2);
+                            if (txt.Call != null) hasmouse = true;
+                            var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font);
+                            float txt_w = sizeContent.Width + txt.Gap * dpi;
+                            _texts.Add(new float[] { padding + has_x, padding, txt_w });
+                            if (max_h < sizeContent.Height) max_h = sizeContent.Height;
+                            has_x += txt_w;
                         }
-                        else
+                        var texts = new List<InRect>(_texts.Count);
+                        for (int i = 0; i < _texts.Count; i++)
                         {
-                            SizeF sizeTitle = g.MeasureString(config.Title, fontTitle), sizeContent = g.MeasureString(content, Font);
-                            int w = (int)Math.Ceiling(sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + sizeContent.Height);
-
-                            rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
-                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
-
-                            SetSize(w + padding2, h + padding2);
+                            var txt = _texts[i];
+                            texts.Add(new InRect(list[i], new RectangleF(txt[0], txt[1], txt[2], max_h)));
                         }
+                        rectsContent = texts.ToArray();
+                        rectContent = new RectangleF(padding, padding, has_x, max_h);
+                        SetSize((int)has_x + padding2, (int)max_h + padding2);
+                    }
+                    else
+                    {
+                        var sizeTitle = g.MeasureString(config.Title, fontTitle);
+
+                        var _texts = new List<float[]>(list.Count);
+                        float has_x = 0, max_h = 0;
+                        foreach (var txt in list)
+                        {
+                            if (txt.Call != null) hasmouse = true;
+                            var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font);
+                            float txt_w = sizeContent.Width + txt.Gap * dpi;
+                            _texts.Add(new float[] { padding + has_x, padding + sizeTitle.Height + sp, txt_w });
+                            if (max_h < sizeContent.Height) max_h = sizeContent.Height;
+                            has_x += txt_w;
+                        }
+                        var texts = new List<InRect>(_texts.Count);
+                        for (int i = 0; i < _texts.Count; i++)
+                        {
+                            var txt = _texts[i];
+                            texts.Add(new InRect(list[i], new RectangleF(txt[0], txt[1], txt[2], max_h)));
+                        }
+                        rectsContent = texts.ToArray();
+
+                        int w = (int)Math.Ceiling(has_x > sizeTitle.Width ? has_x : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + max_h);
+
+                        rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
+                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, max_h);
+
+                        SetSize(w + padding2, h + padding2);
                     }
                 }
-            }
+                else
+                {
+                    rtext = true;
+                    var content = config.Content.ToString();
+
+                    if (_config.Title == null)
+                    {
+                        var sizeContent = g.MeasureString(content, Font);
+                        int w = (int)Math.Ceiling(sizeContent.Width), h = (int)Math.Round(sizeContent.Height);
+                        rectContent = new RectangleF(padding, padding, w, h);
+                        SetSize(w + padding2, h + padding2);
+                    }
+                    else
+                    {
+                        SizeF sizeTitle = g.MeasureString(config.Title, fontTitle), sizeContent = g.MeasureString(content, Font);
+                        int w = (int)Math.Ceiling(sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + sizeContent.Height);
+
+                        rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
+                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
+
+                        SetSize(w + padding2, h + padding2);
+                    }
+                }
+            });
 
             var point = config.Control.PointToScreen(Point.Empty);
             if (config.Offset is RectangleF rectf) SetLocation(config.ArrowAlign.AlignPoint(new Rectangle(point.X + (int)rectf.X, point.Y + (int)rectf.Y, (int)rectf.Width, (int)rectf.Height), TargetRect.Width, TargetRect.Height));

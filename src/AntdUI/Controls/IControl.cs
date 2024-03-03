@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -63,8 +67,21 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
         public void Spin(Action action, Action? end = null)
         {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    Spin(action, end);
+                }));
+                return;
+            }
             var frm = new SpinForm(this, new Spin.Config());
             frm.Show(this);
             ITask.Run(() =>
@@ -80,6 +97,13 @@ namespace AntdUI
                 }));
             }, end);
         }
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="config">自定义配置</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
         public void Spin(Spin.Config config, Action action, Action? end = null)
         {
             var frm = new SpinForm(this, config);

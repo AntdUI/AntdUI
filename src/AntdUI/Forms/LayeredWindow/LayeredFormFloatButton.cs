@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -29,45 +33,44 @@ namespace AntdUI
         {
             maxalpha = 255;
             config = _config;
+            TopMost = config.TopMost;
             Font = config.Font == null ? config.Form.Font : config.Font;
-            using (var bmp = new Bitmap(1, 1))
+
+            Helper.GDI(g =>
             {
-                using (var g = Graphics.FromImage(bmp))
+                var dpi = Config.Dpi;
+                BadgeSize = (int)Math.Round(BadgeSize * dpi);
+                //ShadowXY = (int)Math.Round(ShadowXY * dpi);
+                //ShadowS = ShadowXY * 2;
+                _config.MarginX = (int)Math.Round(_config.MarginX * dpi);
+                _config.MarginY = (int)Math.Round(_config.MarginY * dpi);
+                _config.Size = (int)Math.Round(_config.Size * dpi);
+                int size = _config.Size, t_size = size + ShadowS;
+                float icon_size = size * 0.45F, xy = (size - icon_size) / 2F;
+                int hasx = 0, hasy = 0;
+                if (_config.Vertical)
                 {
-                    float dpi = g.DpiX / 96F;
-                    BadgeSize = (int)Math.Round(BadgeSize * dpi);
-                    //ShadowXY = (int)Math.Round(ShadowXY * dpi);
-                    //ShadowS = ShadowXY * 2;
-                    _config.MarginX = (int)Math.Round(_config.MarginX * dpi);
-                    _config.MarginY = (int)Math.Round(_config.MarginY * dpi);
-                    _config.Size = (int)Math.Round(_config.Size * dpi);
-                    int size = _config.Size, t_size = size + ShadowS;
-                    float icon_size = size * 0.45F, xy = (size - icon_size) / 2F;
-                    int hasx = 0, hasy = 0;
-                    if (_config.Vertical)
+                    foreach (var it in _config.Btns)
                     {
-                        foreach (var it in _config.Btns)
-                        {
-                            it.rect = new Rectangle(hasx, hasy, t_size, t_size);
-                            it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                            it.rect_icon = new RectangleF(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
-                            hasy += t_size;
-                        }
-                        SetSize(size + ShadowS, t_size * _config.Btns.Length);
+                        it.rect = new Rectangle(hasx, hasy, t_size, t_size);
+                        it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
+                        it.rect_icon = new RectangleF(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
+                        hasy += t_size;
                     }
-                    else
-                    {
-                        foreach (var it in _config.Btns)
-                        {
-                            it.rect = new Rectangle(hasx, hasy, t_size, t_size);
-                            it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                            it.rect_icon = new RectangleF(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
-                            hasx += t_size;
-                        }
-                        SetSize(t_size * _config.Btns.Length, size + ShadowS);
-                    }
+                    SetSize(size + ShadowS, t_size * _config.Btns.Length);
                 }
-            }
+                else
+                {
+                    foreach (var it in _config.Btns)
+                    {
+                        it.rect = new Rectangle(hasx, hasy, t_size, t_size);
+                        it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
+                        it.rect_icon = new RectangleF(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
+                        hasx += t_size;
+                    }
+                    SetSize(t_size * _config.Btns.Length, size + ShadowS);
+                }
+            });
             SetPoint();
             config.Form.LocationChanged += Form_LSChanged;
             config.Form.SizeChanged += Form_LSChanged;
@@ -321,13 +324,13 @@ namespace AntdUI
                         if (it.Tooltip != null)
                         {
                             var _rect = TargetRect;
-                            var rect = new Rectangle(_rect.X + ShadowXY + it.rect.X, _rect.Y + it.rect.Y, it.rect.Width, it.rect.Height);
+                            var rect = new Rectangle(_rect.X + it.rect.X, _rect.Y + it.rect.Y, it.rect.Width, it.rect.Height);
                             if (tooltipForm == null)
                             {
                                 tooltipForm = new TooltipForm(rect, it.Tooltip, new TooltipConfig
                                 {
                                     Font = Font,
-                                    ArrowAlign = TAlign.Left,
+                                    ArrowAlign = config.Align.AlignMiniReverse(config.Vertical),
                                 });
                                 tooltipForm.Show(this);
                             }

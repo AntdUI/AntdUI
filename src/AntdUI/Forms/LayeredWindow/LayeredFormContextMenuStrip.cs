@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -17,6 +21,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -63,68 +68,65 @@ namespace AntdUI
             SetLocation(point);
         }
 
+        bool has_subtext = false;
         InRect[] Init(IContextMenuStripItem[] Items)
         {
-            using (var bmp = new Bitmap(1, 1))
+            return Helper.GDI(g =>
             {
-                using (var g = Graphics.FromImage(bmp))
+                var dpi = Config.Dpi;
+                radius = (int)(config.Radius * dpi);
+                int split = (int)Math.Round(1F * dpi), sp = (int)Math.Round(8F * dpi), spm = sp / 2, padding = (int)Math.Round(16 * dpi), padding2 = padding * 2;
+                Padding = new Padding(padding);
+                var _rectsContent = new List<InRect>(Items.Length);
+                int usew = 0, useh = 0, has_icon = 0, has_checked = 0, has_sub = 0;
+                foreach (var it in Items)
                 {
-                    float dpi = g.DpiX / 96F;
-                    radius = (int)(config.Radius * dpi);
-                    int split = (int)Math.Round(1F * dpi), sp = (int)Math.Round(8F * dpi), spm = sp / 2, padding = (int)Math.Round(16 * dpi), padding2 = padding * 2;
-                    Padding = new Padding(padding);
-                    var _rectsContent = new List<InRect>();
-                    int usew = 0, useh = 0, has_icon = 0, has_checked = 0, has_sub = 0;
-                    bool has_subtext = false;
-                    foreach (var it in Items)
+                    if (it is ContextMenuStripItem item)
                     {
-                        if (it is ContextMenuStripItem item)
-                        {
-                            if (!has_subtext && item.SubText != null) has_subtext = true;
-                            var size = g.MeasureString(item.Text + item.SubText, Font);
-                            int w = (int)Math.Ceiling(size.Width), hc = (int)Math.Ceiling(size.Height), h = hc + sp;
-                            if (has_sub == 0 && (item.Sub != null && item.Sub.Length > 0)) has_sub = hc;
-                            if (has_icon == 0 && (item.Icon != null || item.IconSvg != null)) has_icon = (int)(hc * 0.68F);
-                            if (has_checked == 0 && item.Checked) has_checked = (int)(hc * 0.8F);
+                        if (!has_subtext && item.SubText != null) has_subtext = true;
+                        var size = g.MeasureString(item.Text + item.SubText, Font);
+                        int w = (int)Math.Ceiling(size.Width), hc = (int)Math.Ceiling(size.Height), h = hc + sp;
+                        if (has_sub == 0 && (item.Sub != null && item.Sub.Length > 0)) has_sub = hc;
+                        if (has_icon == 0 && (item.Icon != null || item.IconSvg != null)) has_icon = (int)(hc * 0.68F);
+                        if (has_checked == 0 && item.Checked) has_checked = (int)(hc * 0.8F);
 
-                            if (w > usew) usew = w;
-                            _rectsContent.Add(new InRect(item, padding + useh, h));
-                            useh += h + spm;
-                        }
-                        else if (it is ContextMenuStripItemDivider divider)
-                        {
-                            _rectsContent.Add(new InRect(padding + useh, sp));
-                            useh += sp;
-                        }
+                        if (w > usew) usew = w;
+                        _rectsContent.Add(new InRect(item, padding + useh, h));
+                        useh += h + spm;
                     }
-                    if (has_subtext) FontSub = new Font(FontSub.FontFamily, FontSub.Size * 0.8F);
-
-                    int sp2 = sp * 2, use_r = (has_icon > 0 ? has_icon + spm : 0) + (has_checked > 0 ? has_checked + spm : 0), x = padding + use_r;
-                    usew = usew + use_r;
-                    foreach (var it in _rectsContent)
+                    else if (it is ContextMenuStripItemDivider divider)
                     {
-                        if (it.Tag == null) it.Rect = new Rectangle(10, it.y + (it.h - split) / 2, usew + padding2 + sp2 - 20, split);
-                        else
-                        {
-                            it.Rect = new Rectangle(padding, it.y, usew + has_sub + sp2, it.h);
-                            it.RectT = new Rectangle(x + sp, it.y, usew - use_r, it.h);
-
-                            if (it.Tag.Sub != null && it.Tag.Sub.Length > 0) it.RectSub = new Rectangle(it.Rect.Right - spm - has_sub, it.y + (it.h - has_sub) / 2, has_sub, has_sub);
-
-                            int usex = padding + spm;
-                            if (has_checked > 0)
-                            {
-                                if (it.Tag.Checked) it.RectCheck = new Rectangle(usex + spm, it.y + (it.h - has_checked) / 2, has_checked, has_checked);
-                                usex += has_checked + sp;
-                            }
-                            if (has_icon > 0 && it.Tag.Icon != null || it.Tag.IconSvg != null) it.RectIcon = new Rectangle(usex + spm, it.y + (it.h - has_icon) / 2, has_icon, has_icon);
-                        }
+                        _rectsContent.Add(new InRect(padding + useh, sp));
+                        useh += sp;
                     }
-
-                    SetSize(usew + has_sub + padding2 + sp2, useh - spm + padding2);
-                    return _rectsContent.ToArray();
                 }
-            }
+                if (has_subtext) FontSub = new Font(FontSub.FontFamily, FontSub.Size * 0.8F);
+
+                int sp2 = sp * 2, use_r = (has_icon > 0 ? has_icon + spm : 0) + (has_checked > 0 ? has_checked + spm : 0), x = padding + use_r;
+                usew = usew + use_r;
+                foreach (var it in _rectsContent)
+                {
+                    if (it.Tag == null) it.Rect = new Rectangle(10, it.y + (it.h - split) / 2, usew + padding2 + sp2 - 20, split);
+                    else
+                    {
+                        it.Rect = new Rectangle(padding, it.y, usew + has_sub + sp2, it.h);
+                        it.RectT = new Rectangle(x + sp, it.y, usew - use_r, it.h);
+
+                        if (it.Tag.Sub != null && it.Tag.Sub.Length > 0) it.RectSub = new Rectangle(it.Rect.Right - spm - has_sub, it.y + (it.h - has_sub) / 2, has_sub, has_sub);
+
+                        int usex = padding + spm;
+                        if (has_checked > 0)
+                        {
+                            if (it.Tag.Checked) it.RectCheck = new Rectangle(usex + spm, it.y + (it.h - has_checked) / 2, has_checked, has_checked);
+                            usex += has_checked + sp;
+                        }
+                        if (has_icon > 0 && it.Tag.Icon != null || it.Tag.IconSvg != null) it.RectIcon = new Rectangle(usex + spm, it.y + (it.h - has_icon) / 2, has_icon, has_icon);
+                    }
+                }
+
+                SetSize(usew + has_sub + padding2 + sp2, useh - spm + padding2);
+                return _rectsContent.ToArray();
+            });
         }
 
         protected override void OnDeactivate(EventArgs e)
@@ -137,9 +139,12 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            FontSub.Dispose();
+            if (has_subtext) FontSub.Dispose();
             SubForm?.IClose();
             SubForm = null;
+            resetEvent?.Set();
+            resetEvent?.Dispose();
+            resetEvent = null;
             base.Dispose(disposing);
         }
 
@@ -300,6 +305,7 @@ namespace AntdUI
             base.OnMouseMove(e);
         }
 
+        ManualResetEvent? resetEvent;
         protected override void OnMouseClick(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -310,7 +316,6 @@ namespace AntdUI
                     {
                         if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
                         {
-                            config.Call(it.Tag);
                             IClose();
                             LayeredFormContextMenuStrip item = this;
                             while (item.PARENT is LayeredFormContextMenuStrip form)
@@ -318,6 +323,20 @@ namespace AntdUI
                                 form.IClose();
                                 item = form;
                             }
+                            resetEvent = new ManualResetEvent(false);
+                            ITask.Run(() =>
+                            {
+                                try
+                                {
+                                    resetEvent.WaitOne();
+                                }
+                                catch { }
+                                if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
+                                config.Control.BeginInvoke(new Action(() =>
+                                {
+                                    config.Call(it.Tag);
+                                }));
+                            });
                         }
                         return;
                     }

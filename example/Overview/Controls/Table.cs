@@ -1,7 +1,11 @@
 // COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -31,7 +35,7 @@ namespace Overview.Controls
                 new AntdUI.Column("btns","操作"){ Fixed=true},
             };// 添加表头，绑定模型名称
 
-            var list = new List<TestClass> {
+            var list = new List<TestClass>(10) {
                 new TestClass(1,"1","胡彦斌",32,"西湖区湖底公园1号"),
                 new TestClass(2,"2","胡彦祖",43,"西湖区湖底公园1号") {
                     tag=new AntdUI.CellTag[]{ new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) }
@@ -49,7 +53,7 @@ namespace Overview.Controls
                 new AntdUI.Column("tag","Tag")
             };
 
-            var list2 = new List<TestClass2>();
+            var list2 = new List<TestClass2>(100);
             for (int i = 0; i < 100; i++) list2.Add(new TestClass2(i, "王健林" + i, (i + 20), "西湖区湖底公园" + (i + 1) + "号"));
             table2.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
         }

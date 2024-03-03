@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -29,9 +33,9 @@ namespace AntdUI
         /// <param name="control">所属控件</param>
         /// <param name="call">点击回调</param>
         /// <param name="items">内容</param>
-        public static void open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items)
+        public static void open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
         {
-            open(new Config(control, call, items));
+            open(new Config(control, call, items, sleep));
         }
 
         /// <summary>
@@ -41,9 +45,9 @@ namespace AntdUI
         /// <param name="notifyIcon">托盘</param>
         /// <param name="call">点击回调</param>
         /// <param name="items">内容</param>
-        public static void open(Control control, NotifyIcon notifyIcon, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items)
+        public static void open(Control control, NotifyIcon notifyIcon, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
         {
-            open(new Config(control, call, items) { TopMost = true });
+            open(new Config(control, call, items, sleep) { TopMost = true });
         }
 
         /// <summary>
@@ -71,11 +75,12 @@ namespace AntdUI
         /// </summary>
         public class Config
         {
-            public Config(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items)
+            public Config(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
             {
                 Control = control;
                 Call = call;
                 Items = items;
+                CallSleep = sleep;
             }
 
             /// <summary>
@@ -102,6 +107,11 @@ namespace AntdUI
             /// 是否置顶
             /// </summary>
             public bool TopMost { get; set; }
+
+            /// <summary>
+            /// 延迟回调
+            /// </summary>
+            public int CallSleep { get; set; }
 
             /// <summary>
             /// 点击回调

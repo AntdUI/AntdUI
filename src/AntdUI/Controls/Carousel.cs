@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -327,7 +331,7 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
-        List<CarouselDotItem> dot_list = new List<CarouselDotItem>();
+        CarouselDotItem[] dot_list = new CarouselDotItem[0];
         internal void ChangeImg()
         {
             if (DotPosition == TAlignMini.None || items == null || items.Count == 0) return;
@@ -337,7 +341,7 @@ namespace AntdUI
             bmp = null;
             var rect = _rect.PaddingRect(Padding);
             int len = items.Count;
-            var list = new List<CarouselDotItem>();
+            var list = new List<CarouselDotItem>(len);
             if (DotPosition == TAlignMini.Top || DotPosition == TAlignMini.Bottom)
             {
                 int dot_size = DotSize.Width * len, y = DotPosition == TAlignMini.Bottom ? rect.Y + rect.Height - (DotMargin + DotSize.Height) : rect.Y + DotMargin,
@@ -373,7 +377,7 @@ namespace AntdUI
                     temp_y += DotSize.Width;
                 }
             }
-            dot_list = list;
+            dot_list = list.ToArray();
         }
 
         #endregion
@@ -406,7 +410,7 @@ namespace AntdUI
                 }
                 else g.PaintImg(rect, image, imageFit, _radius, round);
             }
-            if (dot_list.Count > 0)
+            if (dot_list.Length > 0)
             {
                 using (var brush = new SolidBrush(Style.Db.BgBase))
                 using (var brush2 = new SolidBrush(Color.FromArgb(77, brush.Color)))
@@ -485,9 +489,9 @@ namespace AntdUI
         {
             var r = new CarouselRectPanel
             {
-                list = new List<CarouselRect>()
+                list = new List<CarouselRect>(len)
             };
-            var indes = new List<int>();
+            var indes = new List<int>(len);
             int temp = 0;
             for (int i = 0; i < len; i++)
             {
@@ -532,7 +536,7 @@ namespace AntdUI
         }
         CarouselRect? SelectRangeOne(int len, Rectangle rect)
         {
-            var r = new List<CarouselRect>();
+            var r = new List<CarouselRect>(len);
             int temp = 0;
             for (int i = 0; i < len; i++)
             {
@@ -599,9 +603,9 @@ namespace AntdUI
         {
             if (e.Button == MouseButtons.Left && items != null)
             {
-                if (dot_list.Count > 0)
+                if (dot_list.Length > 0)
                 {
-                    for (int i = 0; i < dot_list.Count; i++)
+                    for (int i = 0; i < dot_list.Length; i++)
                     {
                         if (dot_list[i].rect_fill.Contains(e.Location))
                         {
@@ -688,14 +692,14 @@ namespace AntdUI
             return this;
         }
     }
-    public class CarouselItem : NotifyPropertyChanged
+    public class CarouselItem : NotifyProperty
     {
-        Bitmap? img;
+        Image? img;
         /// <summary>
         /// 图片
         /// </summary>
         [Description("图片"), Category("外观"), DefaultValue(null)]
-        public Bitmap? Img
+        public Image? Img
         {
             get => img;
             set

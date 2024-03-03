@@ -1,7 +1,11 @@
 ﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE GPL-3.0 License.
-// LICENSED UNDER THE GPL License, VERSION 3.0 (THE "License")
+// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
+// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
 // UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
 // DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -45,7 +49,7 @@ namespace Overview
             btn_back = new AntdUI.Button();
             btn_mode = new AntdUI.Button();
             divider2 = new AntdUI.Divider();
-            flowPanel = new FlowLayoutPanel();
+            flowPanel = new AntdUI.FlowPanel();
             windowBar = new AntdUI.WindowBar();
             colorPicker1 = new AntdUI.ColorPicker();
             windowBar.SuspendLayout();
@@ -138,7 +142,7 @@ namespace Overview
         #endregion
         private AntdUI.Button btn_mode;
         private AntdUI.Divider divider2;
-        private FlowLayoutPanel flowPanel;
+        private AntdUI.FlowPanel flowPanel;
         private AntdUI.Button btn_back;
         private AntdUI.WindowBar windowBar;
         private AntdUI.ColorPicker colorPicker1;
