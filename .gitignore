@@ -19,5 +19,3 @@ bin-release/
 # Projects
 /.vs
 /packages
-/Debug
-/Release
