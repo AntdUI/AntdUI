@@ -27,7 +27,6 @@ namespace AntdUI
     internal class LayeredFormModal : Window
     {
         Modal.Config config;
-        Font fontTitle;
         public LayeredFormModal(Modal.Config _config)
         {
             SetStyle(
@@ -41,6 +40,7 @@ namespace AntdUI
             Resizable = false;
 
             config = _config;
+            TopMost = config.Form.TopMost;
             close_button = new ITaskOpacity(this);
 
             #region InitializeComponent
@@ -50,7 +50,6 @@ namespace AntdUI
             BackColor = Style.Db.BgElevated;
             Size = new Size(416, 160);
             Font = config.Font == null ? config.Form.Font : config.Font;
-            fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold);
             ForeColor = Style.Db.TextBase;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
@@ -146,139 +145,143 @@ namespace AntdUI
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
 
                 panel1.Height = butt_h;
-                if (config.Content is Control control)
+
+                using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
-                    rectsContent = new RectangleF[0];
-                    w = (int)Math.Round(control.Width * dpi);
-                    if (dpi != 1F)
+                    if (config.Content is Control control)
                     {
-                        var dir = Helper.DpiSuspend(control.Controls);
-                        Helper.DpiLS(dpi, control);
-                        Helper.DpiResume(dir, control.Controls);
-                    }
-                    wp = w - paddingx * 2;
-                    control.Width = w;
-                    Controls.Add(control);
-                    if (_config.Icon == TType.None)
-                    {
-                        var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                        rectsContent = new RectangleF[0];
+                        w = (int)Math.Round(control.Width * dpi);
+                        if (dpi != 1F)
+                        {
+                            var dir = Helper.DpiSuspend(control.Controls);
+                            Helper.DpiLS(dpi, control);
+                            Helper.DpiResume(dir, control.Controls);
+                        }
+                        wp = w - paddingx * 2;
+                        control.Width = w;
+                        Controls.Add(control);
+                        if (_config.Icon == TType.None)
+                        {
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
 
-                        int h = (int)Math.Round(sizeTitle.Height + gap + control.Height + butt_h);
+                            int h = (int)Math.Round(sizeTitle.Height + gap + control.Height + butt_h);
 
-                        rectTitle = new RectangleF(paddingx, paddingy, wp, sizeTitle.Height + gap);
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
-                        MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
-                    }
-                    else
-                    {
-                        int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
-                        wp -= icon_size + icon_size_x;
-                        var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
-                        int h = (int)Math.Round(sizeTitle.Height + gap + control.Height + butt_h);
+                            rectTitle = new RectangleF(paddingx, paddingy, wp, sizeTitle.Height + gap);
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                        }
+                        else
+                        {
+                            int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
+                            wp -= icon_size + icon_size_x;
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            int h = (int)Math.Round(sizeTitle.Height + gap + control.Height + butt_h);
 
-                        rectTitle = new RectangleF(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+                            rectTitle = new RectangleF(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+                            control.Location = new Point((int)rectContent.X, (int)rectContent.Y);
+                            rectIcon = new RectangleF(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2F, icon_size, icon_size);
+
+                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                        }
                         control.Location = new Point((int)rectContent.X, (int)rectContent.Y);
-                        rectIcon = new RectangleF(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2F, icon_size, icon_size);
-
-                        MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                        control.Size = new Size((int)rectContent.Width, (int)rectContent.Height);
                     }
-                    control.Location = new Point((int)rectContent.X, (int)rectContent.Y);
-                    control.Size = new Size((int)rectContent.Width, (int)rectContent.Height);
-                }
-                else if (config.Content is IList<Modal.TextLine> list)
-                {
-                    rtext = true;
-                    var texts = new List<RectangleF>(list.Count);
-                    if (_config.Icon == TType.None)
+                    else if (config.Content is IList<Modal.TextLine> list)
                     {
-                        var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
-                        rectTitle = new RectangleF(paddingx, paddingy, wp, sizeTitle.Height + gap);
-
-                        float has_y = paddingy + sizeTitle.Height + gap;
-                        float h_temp = 0;
-                        foreach (var txt in list)
+                        rtext = true;
+                        var texts = new List<RectangleF>(list.Count);
+                        if (_config.Icon == TType.None)
                         {
-                            var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font, wp);
-                            float txt_h = sizeContent.Height + txt.Gap * dpi;
-                            texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
-                            has_y += txt_h;
-                            h_temp += txt_h;
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            rectTitle = new RectangleF(paddingx, paddingy, wp, sizeTitle.Height + gap);
+
+                            float has_y = paddingy + sizeTitle.Height + gap;
+                            float h_temp = 0;
+                            foreach (var txt in list)
+                            {
+                                var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font, wp);
+                                float txt_h = sizeContent.Height + txt.Gap * dpi;
+                                texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
+                                has_y += txt_h;
+                                h_temp += txt_h;
+                            }
+
+                            int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
+
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+
+                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
+                        else
+                        {
+                            int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
+                            wp -= icon_size + icon_size_x;
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            rectTitle = new RectangleF(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
+                            rectIcon = new RectangleF(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2F, icon_size, icon_size);
 
-                        int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
+                            float has_y = paddingy + sizeTitle.Height + gap;
+                            float h_temp = 0;
+                            foreach (var txt in list)
+                            {
+                                var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font, wp);
+                                float txt_h = sizeContent.Height + txt.Gap * dpi;
+                                texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
+                                has_y += txt_h;
+                                h_temp += txt_h;
+                            }
 
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+                            int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
 
-                        MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+
+                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                        }
+                        rectsContent = texts.ToArray();
+                        if (config.CloseIcon)
+                        {
+                            float close_size = 22F * dpi;
+                            rect_close = new RectangleF(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
+                        }
                     }
                     else
                     {
-                        int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
-                        wp -= icon_size + icon_size_x;
-                        var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
-                        rectTitle = new RectangleF(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
-                        rectIcon = new RectangleF(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2F, icon_size, icon_size);
-
-                        float has_y = paddingy + sizeTitle.Height + gap;
-                        float h_temp = 0;
-                        foreach (var txt in list)
+                        rectsContent = new RectangleF[0];
+                        rtext = true;
+                        var content = config.Content.ToString();
+                        if (_config.Icon == TType.None)
                         {
-                            var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font, wp);
-                            float txt_h = sizeContent.Height + txt.Gap * dpi;
-                            texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
-                            has_y += txt_h;
-                            h_temp += txt_h;
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            var sizeContent = g.MeasureString(content, Font, wp);
+                            int h = (int)Math.Round(sizeTitle.Height + gap + sizeContent.Height + butt_h);
+
+                            rectTitle = new RectangleF(paddingx, paddingy, wp, sizeTitle.Height + gap);
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+
+                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
+                        else
+                        {
+                            int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
+                            wp -= icon_size + icon_size_x;
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            var sizeContent = g.MeasureString(content, Font, wp);
+                            int h = (int)Math.Round(sizeTitle.Height + gap + sizeContent.Height + butt_h);
 
-                        int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
+                            rectTitle = new RectangleF(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
 
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+                            rectIcon = new RectangleF(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2F, icon_size, icon_size);
 
-                        MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
-                    }
-                    rectsContent = texts.ToArray();
-                    if (config.CloseIcon)
-                    {
-                        float close_size = 22F * dpi;
-                        rect_close = new RectangleF(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
-                    }
-                }
-                else
-                {
-                    rectsContent = new RectangleF[0];
-                    rtext = true;
-                    var content = config.Content.ToString();
-                    if (_config.Icon == TType.None)
-                    {
-                        var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
-                        var sizeContent = g.MeasureString(content, Font, wp);
-                        int h = (int)Math.Round(sizeTitle.Height + gap + sizeContent.Height + butt_h);
-
-                        rectTitle = new RectangleF(paddingx, paddingy, wp, sizeTitle.Height + gap);
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
-
-                        MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
-                    }
-                    else
-                    {
-                        int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
-                        wp -= icon_size + icon_size_x;
-                        var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
-                        var sizeContent = g.MeasureString(content, Font, wp);
-                        int h = (int)Math.Round(sizeTitle.Height + gap + sizeContent.Height + butt_h);
-
-                        rectTitle = new RectangleF(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
-
-                        rectIcon = new RectangleF(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2F, icon_size, icon_size);
-
-                        MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
-                    }
-                    if (config.CloseIcon)
-                    {
-                        float close_size = 22F * dpi;
-                        rect_close = new RectangleF(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
+                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                        }
+                        if (config.CloseIcon)
+                        {
+                            float close_size = 22F * dpi;
+                            rect_close = new RectangleF(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
+                        }
                     }
                 }
             });
@@ -296,7 +299,6 @@ namespace AntdUI
             base.OnClosing(e);
             close_button.Dispose();
             if (config.Content is Control control) control.Dispose();
-            fontTitle.Dispose();
         }
 
         protected override void DefWndProc(ref System.Windows.Forms.Message m)
@@ -388,7 +390,10 @@ namespace AntdUI
             }
             using (var brush = new SolidBrush(Style.Db.Text))
             {
-                g.DrawString(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
+                {
+                    g.DrawString(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                }
                 if (rtext)
                 {
                     if (config.Content is IList<Modal.TextLine> list)

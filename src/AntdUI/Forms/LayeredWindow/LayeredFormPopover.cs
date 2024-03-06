@@ -30,7 +30,6 @@ namespace AntdUI
     internal class LayeredFormPopover : ILayeredFormOpacity
     {
         Popover.Config config;
-        Font fontTitle;
         public override bool MessageClose => true;
         public override bool MessageCloseSub => true;
         Form? form = null;
@@ -39,7 +38,6 @@ namespace AntdUI
             maxalpha = 255;
             config = _config;
             Font = config.Font == null ? config.Control.Font : config.Font;
-            fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
 
             Helper.GDI(g =>
             {
@@ -63,11 +61,13 @@ namespace AntdUI
                     }
                     else
                     {
-                        var sizeTitle = g.MeasureString(config.Title, fontTitle, w);
-
-                        h = (int)Math.Round(sizeTitle.Height + sp + control.Height);
-                        rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
+                        using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                        {
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, w);
+                            h = (int)Math.Round(sizeTitle.Height + sp + control.Height);
+                            rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
+                        }
                     }
                     tempContent = new Bitmap(control.Width, control.Height);
                     if (Config.Dpi != 1F)
@@ -109,33 +109,36 @@ namespace AntdUI
                     }
                     else
                     {
-                        var sizeTitle = g.MeasureString(config.Title, fontTitle);
-
-                        var _texts = new List<float[]>(list.Count);
-                        float has_x = 0, max_h = 0;
-                        foreach (var txt in list)
+                        using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {
-                            if (txt.Call != null) hasmouse = true;
-                            var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font);
-                            float txt_w = sizeContent.Width + txt.Gap * dpi;
-                            _texts.Add(new float[] { padding + has_x, padding + sizeTitle.Height + sp, txt_w });
-                            if (max_h < sizeContent.Height) max_h = sizeContent.Height;
-                            has_x += txt_w;
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle);
+
+                            var _texts = new List<float[]>(list.Count);
+                            float has_x = 0, max_h = 0;
+                            foreach (var txt in list)
+                            {
+                                if (txt.Call != null) hasmouse = true;
+                                var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font);
+                                float txt_w = sizeContent.Width + txt.Gap * dpi;
+                                _texts.Add(new float[] { padding + has_x, padding + sizeTitle.Height + sp, txt_w });
+                                if (max_h < sizeContent.Height) max_h = sizeContent.Height;
+                                has_x += txt_w;
+                            }
+                            var texts = new List<InRect>(_texts.Count);
+                            for (int i = 0; i < _texts.Count; i++)
+                            {
+                                var txt = _texts[i];
+                                texts.Add(new InRect(list[i], new RectangleF(txt[0], txt[1], txt[2], max_h)));
+                            }
+                            rectsContent = texts.ToArray();
+
+                            int w = (int)Math.Ceiling(has_x > sizeTitle.Width ? has_x : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + max_h);
+
+                            rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, max_h);
+
+                            SetSize(w + padding2, h + padding2);
                         }
-                        var texts = new List<InRect>(_texts.Count);
-                        for (int i = 0; i < _texts.Count; i++)
-                        {
-                            var txt = _texts[i];
-                            texts.Add(new InRect(list[i], new RectangleF(txt[0], txt[1], txt[2], max_h)));
-                        }
-                        rectsContent = texts.ToArray();
-
-                        int w = (int)Math.Ceiling(has_x > sizeTitle.Width ? has_x : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + max_h);
-
-                        rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, max_h);
-
-                        SetSize(w + padding2, h + padding2);
                     }
                 }
                 else
@@ -152,13 +155,16 @@ namespace AntdUI
                     }
                     else
                     {
-                        SizeF sizeTitle = g.MeasureString(config.Title, fontTitle), sizeContent = g.MeasureString(content, Font);
-                        int w = (int)Math.Ceiling(sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + sizeContent.Height);
+                        using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                        {
+                            SizeF sizeTitle = g.MeasureString(config.Title, fontTitle), sizeContent = g.MeasureString(content, Font);
+                            int w = (int)Math.Ceiling(sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + sizeContent.Height);
 
-                        rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
-                        rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
+                            rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
+                            rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
 
-                        SetSize(w + padding2, h + padding2);
+                            SetSize(w + padding2, h + padding2);
+                        }
                     }
                 }
             });
@@ -238,7 +244,6 @@ namespace AntdUI
                 control.Dispose();
                 form?.Dispose();
             }
-            fontTitle.Dispose();
             base.Dispose(disposing);
         }
 
@@ -273,7 +278,10 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Style.Db.Text))
                     {
-                        g.DrawString(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                        using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                        {
+                            g.DrawString(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                        }
                         if (rtext)
                         {
                             if (config.Content is IList<Popover.TextRow> list && rectsContent != null)

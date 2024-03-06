@@ -3,7 +3,6 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using AntdUI.Svg.ExCSS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,33 +18,6 @@ namespace AntdUI.Svg
     /// </summary>
     internal class SvgElementFactory
     {
-        private Dictionary<string, ElementInfo> availableElements;
-        private Parser cssParser = new Parser();
-
-        /// <summary>
-        /// Gets a list of available types that can be used when creating an <see cref="SvgElement"/>.
-        /// </summary>
-        public Dictionary<string, ElementInfo> AvailableElements
-        {
-            get
-            {
-                if (availableElements == null)
-                {
-                    var svgTypes = from t in typeof(SvgDocument).Assembly.GetExportedTypes()
-                                   where t.GetCustomAttributes(typeof(SvgElementAttribute), true).Length > 0
-                                   && t.IsSubclassOf(typeof(SvgElement))
-                                   select new ElementInfo { ElementName = ((SvgElementAttribute)t.GetCustomAttributes(typeof(SvgElementAttribute), true)[0]).ElementName, ElementType = t };
-
-                    availableElements = (from t in svgTypes
-                                         where t.ElementName != "svg"
-                                         group t by t.ElementName into types
-                                         select types).ToDictionary(e => e.Key, e => e.SingleOrDefault());
-                }
-
-                return availableElements;
-            }
-        }
-
         /// <summary>
         /// Creates an <see cref="SvgDocument"/> from the current node in the specified <see cref="XmlTextReader"/>.
         /// </summary>
@@ -79,13 +51,12 @@ namespace AntdUI.Svg
             {
                 throw new ArgumentNullException("reader");
             }
-
             return CreateElement<SvgDocument>(reader, false, document);
         }
 
         private SvgElement CreateElement<T>(XmlReader reader, bool fragmentIsDocument, SvgDocument document) where T : SvgDocument, new()
         {
-            SvgElement createdElement = null;
+            SvgElement createdElement;
             string elementName = reader.LocalName;
             string elementNS = reader.NamespaceURI;
 
@@ -93,27 +64,140 @@ namespace AntdUI.Svg
 
             if (elementNS == SvgAttributeAttribute.SvgNamespace || string.IsNullOrEmpty(elementNS))
             {
-                if (elementName == "svg")
-                {
-                    createdElement = (fragmentIsDocument) ? new T() : new SvgFragment();
-                }
+                if (elementName == "svg") createdElement = (fragmentIsDocument) ? new T() : new SvgFragment();
                 else
                 {
-                    ElementInfo validType = null;
-                    if (AvailableElements.TryGetValue(elementName, out validType))
+                    switch (elementName)
                     {
-                        createdElement = (SvgElement)Activator.CreateInstance(validType.ElementType);
-                    }
-                    else
-                    {
-                        createdElement = new SvgUnknownElement(elementName);
+                        case "circle":
+                            createdElement = new SvgCircle();
+                            break;
+                        case "ellipse":
+                            createdElement = new SvgEllipse();
+                            break;
+                        case "image":
+                            createdElement = new SvgImage();
+                            break;
+                        case "line":
+                            createdElement = new SvgLine();
+                            break;
+                        case "polygon":
+                            createdElement = new SvgPolygon();
+                            break;
+                        case "polyline":
+                            createdElement = new SvgPolyline();
+                            break;
+                        case "rect":
+                            createdElement = new SvgRectangle();
+                            break;
+                        case "clipPath":
+                            createdElement = new SvgClipPath();
+                            break;
+                        case "defs":
+                            createdElement = new SvgDefinitionList();
+                            break;
+                        case "desc":
+                            createdElement = new SvgDescription();
+                            break;
+                        case "metadata":
+                            createdElement = new SvgDocumentMetadata();
+                            break;
+                        case "g":
+                            createdElement = new SvgGroup();
+                            break;
+                        case "switch":
+                            createdElement = new SvgSwitch();
+                            break;
+                        case "title":
+                            createdElement = new SvgTitle();
+                            break;
+                        case "use":
+                            createdElement = new SvgUse();
+                            break;
+                        case "foreignObject":
+                            createdElement = new SvgForeignObject();
+                            break;
+                        case "stop":
+                            createdElement = new SvgGradientStop();
+                            break;
+                        case "linearGradient":
+                            createdElement = new SvgLinearGradientServer();
+                            break;
+                        case "marker":
+                            createdElement = new SvgMarker();
+                            break;
+                        case "pattern":
+                            createdElement = new SvgPatternServer();
+                            break;
+                        case "radialGradient":
+                            createdElement = new SvgRadialGradientServer();
+                            break;
+                        case "path":
+                            createdElement = new SvgPath();
+                            break;
+                        case "font":
+                            createdElement = new SvgFont();
+                            break;
+                        case "font-face":
+                            createdElement = new SvgFontFace();
+                            break;
+                        case "font-face-src":
+                            createdElement = new SvgFontFaceSrc();
+                            break;
+                        case "font-face-uri":
+                            createdElement = new SvgFontFaceUri();
+                            break;
+                        case "glyph":
+                            createdElement = new SvgGlyph();
+                            break;
+                        case "vkern":
+                            createdElement = new SvgVerticalKern();
+                            break;
+                        case "hkern":
+                            createdElement = new SvgHorizontalKern();
+                            break;
+                        case "missing-glyph":
+                            createdElement = new SvgMissingGlyph();
+                            break;
+                        case "text":
+                            createdElement = new SvgText();
+                            break;
+                        case "textPath":
+                            createdElement = new SvgTextPath();
+                            break;
+                        case "tref":
+                            createdElement = new SvgTextRef();
+                            break;
+                        case "tspan":
+                            createdElement = new SvgTextSpan();
+                            break;
+                        case "feColorMatrix":
+                            createdElement = new FilterEffects.SvgColourMatrix();
+                            break;
+                        case "feGaussianBlur":
+                            createdElement = new FilterEffects.SvgGaussianBlur();
+                            break;
+                        case "feMerge":
+                            createdElement = new FilterEffects.SvgMerge();
+                            break;
+                        case "feMergeNode":
+                            createdElement = new FilterEffects.SvgMergeNode();
+                            break;
+                        case "feOffset":
+                            createdElement = new FilterEffects.SvgOffset();
+                            break;
+                        case "filter":
+                            createdElement = new FilterEffects.SvgFilter();
+                            break;
+                        case "symbol":
+                            createdElement = new Document_Structure.SvgSymbol();
+                            break;
+                        default:
+                            createdElement = new SvgUnknownElement(elementName);
+                            break;
                     }
                 }
-
-                if (createdElement != null)
-                {
-                    SetAttributes(createdElement, reader, document);
-                }
+                if (createdElement != null) SetAttributes(createdElement, reader, document);
             }
             else
             {
@@ -121,9 +205,6 @@ namespace AntdUI.Svg
                 createdElement = new NonSvgElement(elementName);
                 SetAttributes(createdElement, reader, document);
             }
-
-            //Trace.TraceInformation("End CreateElement");
-
             return createdElement;
         }
 
@@ -137,25 +218,8 @@ namespace AntdUI.Svg
 
             while (reader.MoveToNextAttribute())
             {
-                if (reader.LocalName.Equals("style") && !(element is NonSvgElement))
-                {
-                    var inlineSheet = cssParser.Parse("#a{" + reader.Value + "}");
-                    foreach (var rule in inlineSheet.StyleRules)
-                    {
-                        foreach (var decl in rule.Declarations)
-                        {
-                            element.AddStyle(decl.Name, decl.Term.ToString(), SvgElement.StyleSpecificity_InlineStyle);
-                        }
-                    }
-                }
-                else if (IsStyleAttribute(reader.LocalName))
-                {
-                    element.AddStyle(reader.LocalName, reader.Value, SvgElement.StyleSpecificity_PresAttribute);
-                }
-                else
-                {
-                    SetPropertyValue(element, reader.LocalName, reader.Value, document);
-                }
+                if (IsStyleAttribute(reader.LocalName)) element.AddStyle(reader.LocalName, reader.Value, SvgElement.StyleSpecificity_PresAttribute);
+                else SetPropertyValue(element, reader.LocalName, reader.Value, document);
             }
 
             //Trace.TraceInformation("End SetAttributes");
@@ -310,40 +374,6 @@ namespace AntdUI.Svg
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// Contains information about a type inheriting from <see cref="SvgElement"/>.
-        /// </summary>
-        [DebuggerDisplay("{ElementName}, {ElementType}")]
-        internal sealed class ElementInfo
-        {
-            /// <summary>
-            /// Gets the SVG name of the <see cref="SvgElement"/>.
-            /// </summary>
-            public string ElementName { get; set; }
-            /// <summary>
-            /// Gets the <see cref="Type"/> of the <see cref="SvgElement"/> subclass.
-            /// </summary>
-            public Type ElementType { get; set; }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ElementInfo"/> struct.
-            /// </summary>
-            /// <param name="elementName">Name of the element.</param>
-            /// <param name="elementType">Type of the element.</param>
-            public ElementInfo(string elementName, Type elementType)
-            {
-                this.ElementName = elementName;
-                this.ElementType = elementType;
-            }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ElementInfo"/> class.
-            /// </summary>
-            public ElementInfo()
-            {
-            }
         }
     }
 }

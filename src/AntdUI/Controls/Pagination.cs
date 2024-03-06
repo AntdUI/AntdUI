@@ -85,6 +85,8 @@ namespace AntdUI
             {
                 if (pageSize == value) return;
                 pageSize = value;
+                if(Math.Ceiling(total * 1.0 / pageSize) < current)
+                    current = (int)Math.Ceiling(total * 1.0 / pageSize);
                 ValueChanged?.Invoke(current, total, pageSize, PageTotal);
                 if (input_SizeChanger != null) input_SizeChanger.Text = value.ToString();
                 ButtonLayout();
@@ -218,7 +220,6 @@ namespace AntdUI
                 {
                     bool r = rightToLeft == RightToLeft.Yes;
                     input_SizeChanger.Dock = r ? DockStyle.Right : DockStyle.Left;
-                    input_SizeChanger.TextAlign = r ? HorizontalAlignment.Right : HorizontalAlignment.Left;
                 }
                 ButtonLayout();
                 Invalidate();
@@ -663,8 +664,8 @@ namespace AntdUI
                 {
                     Size = new Size(SizeChangerWidth, (int)rect.Height),
                     Dock = r ? DockStyle.Right : DockStyle.Left,
-                    TextAlign = r ? HorizontalAlignment.Right : HorizontalAlignment.Left,
                     Text = pageSize.ToString(),
+                    TextAlign = HorizontalAlignment.Center,
                     Font = Font,
                     BorderColor = fill,
                     BackColor = BackColor,
@@ -708,13 +709,10 @@ namespace AntdUI
         }
         private void Input_SizeChanger_KeyPress(object? sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == 13 && sender is TextBox input)
+            if (e.KeyChar == 13 && sender is Input input)
             {
                 e.Handled = true;
-                if (int.TryParse(input.Text, out var num))
-                {
-                    PageSize = num;
-                }
+                if (int.TryParse(input.Text, out var num)) PageSize = num;
             }
         }
 

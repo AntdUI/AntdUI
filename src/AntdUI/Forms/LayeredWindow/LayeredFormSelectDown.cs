@@ -36,11 +36,13 @@ namespace AntdUI
         readonly List<ObjectItem> Items = new List<ObjectItem>();
         public LayeredFormSelectDown(Select control, RectangleF rect_read, List<object> items)
         {
+            var form = control.Parent.FindPARENT();
+            if (form != null) TopMost = form.TopMost;
             PARENT = control;
             ClickEnd = control.ClickEnd;
             select_x = 0;
             scrollY = new ScrollY(this);
-            textBox = control.textBox;
+            textBox = control;
             MaxCount = control.MaxCount;
             Font = control.Font;
             selectedValue = control.SelectedValue;
@@ -49,6 +51,8 @@ namespace AntdUI
         }
         public LayeredFormSelectDown(Dropdown control, int radius, RectangleF rect_read, List<object> items)
         {
+            var form = control.Parent.FindPARENT();
+            if (form != null) TopMost = form.TopMost;
             PARENT = control;
             ClickEnd = control.ClickEnd;
             select_x = 0;
@@ -74,6 +78,8 @@ namespace AntdUI
 
         void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, RectangleF rect_read, List<object> items, int sel)
         {
+            var form = parent.Parent.FindPARENT();
+            if (form != null) TopMost = form.TopMost;
             select_x = sx;
             PARENT = parent;
             scrollY = new ScrollY(this);

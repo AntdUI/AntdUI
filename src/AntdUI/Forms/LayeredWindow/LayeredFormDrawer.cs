@@ -34,6 +34,7 @@ namespace AntdUI
         public LayeredFormDrawer(Drawer.Config _config)
         {
             config = _config;
+            TopMost = config.Form.TopMost;
             Font = config.Form.Font;
 
             padding = (int)Math.Round(config.Padding * Config.Dpi);

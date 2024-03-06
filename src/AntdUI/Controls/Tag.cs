@@ -629,13 +629,13 @@ namespace AntdUI
             get
             {
                 return Helper.GDI(g =>
-                 {
-                     var font_size = g.MeasureString(text ?? Config.NullText, Font);
-                     int count = 0;
-                     if (HasImage) count++;
-                     if (closeIcon) count++;
-                     return new Size((int)Math.Ceiling(font_size.Width + (14 * Config.Dpi) + (font_size.Height * count)), (int)(font_size.Height + (8 * Config.Dpi)));
-                 });
+                {
+                    var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+                    int count = 0;
+                    if (HasImage) count++;
+                    if (closeIcon) count++;
+                    return new Size(font_size.Width + (int)(14F * Config.Dpi) + (font_size.Height * count), font_size.Height + (int)(8F * Config.Dpi));
+                });
             }
         }
 

@@ -49,8 +49,8 @@ namespace AntdUI
             {
                 if (_list == value) return;
                 _list = value;
-                TextShow(!value);
-                Invalidate();
+                ReadShowCaret = value;
+                if (value) ShowCaret = false;
             }
         }
 
@@ -65,12 +65,6 @@ namespace AntdUI
         /// </summary>
         [Description("是否列表自动宽度"), Category("行为"), DefaultValue(false)]
         public bool ListAutoWidth { get; set; } = false;
-
-        /// <summary>
-        /// 支持清除
-        /// </summary>
-        [Description("支持清除"), Category("行为"), DefaultValue(false)]
-        public bool AllowClear { get; set; } = false;
 
         /// <summary>
         /// 列表最多显示条数
@@ -89,26 +83,6 @@ namespace AntdUI
         /// </summary>
         [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
         public bool ClickEnd { get; set; } = false;
-
-        internal override bool CanShow()
-        {
-            return !_list;
-        }
-        internal override void ShowTextBox()
-        {
-            if (Enabled)
-            {
-                if (_list) TextShow(false);
-                else if (showWater)
-                {
-                    //显示水印
-                    TextShow(textBox.Focused || !string.IsNullOrEmpty(textBox.Text));
-                }
-                else if (string.IsNullOrEmpty(textBox.Text)) TextShow(false);
-                else TextShow(true);
-            }
-            else TextShow(false);
-        }
 
         #region 数据
 
@@ -263,37 +237,43 @@ namespace AntdUI
 
         #region 渲染
 
-        internal override void PaintOther(Graphics g, RectangleF rect_read)
+        #region 自带图标
+
+        bool showicon = true;
+        /// <summary>
+        /// 是否显示图标
+        /// </summary>
+        [Description("是否显示图标"), Category("外观"), DefaultValue(true)]
+        public bool ShowIcon
         {
-            if (_list)
+            get => showicon;
+            set
             {
-                using (var brush = new SolidBrush(Fore.HasValue ? Fore.Value : Style.Db.Text))
-                {
-                    g.DrawString(textBox.Text, Font, brush, rect_text, textBox.Multiline ? stringTL : stringLeft);
-                }
+                if (showicon == value) return;
+                showicon = value;
+                CalculateRect();
+                Invalidate();
             }
-            if (AllowClear && _mouseHover && selectedIndex > -1)
-            {
-                using (var brush = new SolidBrush(hover_clear ? Style.Db.TextTertiary : Style.Db.TextQuaternary))
-                {
-                    g.FillEllipse(brush, rect_icon_r);
-                }
-                g.PaintIconError(rect_icon_r, Style.Db.BgBase);
-            }
-            else
+        }
+
+        public override bool HasSuffix
+        {
+            get => showicon;
+        }
+
+        internal override void PaintR(Graphics g, Rectangle rect_r)
+        {
+            if (showicon)
             {
                 using (var pen = new Pen(Style.Db.TextQuaternary, 2F))
                 {
                     pen.StartCap = pen.EndCap = LineCap.Round;
-                    g.DrawLines(pen, rect_icon_r.TriangleLines(ArrowProg));
+                    g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
                 }
             }
         }
 
-        internal override void RectTI()
-        {
-            GetRectTI(textBox.Height, HasImage, true);
-        }
+        #endregion
 
         #endregion
 
@@ -386,31 +366,38 @@ namespace AntdUI
                 }
             }
         }
-        internal override void TextGotFocus()
+
+        protected override void OnGotFocus(EventArgs e)
         {
+            if (ReadShowCaret)
+            {
+                base.OnGotFocus(e); return;
+            }
             TextFocus = true;
+            base.OnGotFocus(e);
         }
-        internal override void TextLostFocus()
+        protected override void OnLostFocus(EventArgs e)
         {
             TextFocus = false;
+            base.OnLostFocus(e);
         }
 
         #endregion
 
         #region 鼠标
 
+        internal override void OnClearValue()
+        {
+            if (selectedIndex > -1)
+            {
+                ChangeValueNULL();
+                Invalidate();
+            }
+            else ClickDown();
+        }
+
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && _mouseHover && rect_icon_r.Contains(e.Location))
-            {
-                if (selectedIndex > -1 && AllowClear)
-                {
-                    ChangeValueNULL();
-                    Invalidate();
-                }
-                else ClickDown();
-                return;
-            }
             ClickDown();
             base.OnMouseClick(e);
         }
@@ -424,35 +411,13 @@ namespace AntdUI
             }
             else
             {
-                if (textBox.Focused) TextFocus = !textFocus;
-                else
+                if (Focused)
                 {
-                    textBox.Visible = true; textBox.Focus();
+                    if (textFocus) return;
+                    TextFocus = !textFocus;
                 }
+                else Focus();
             }
-        }
-
-        protected override void OnLostFocus(EventArgs e)
-        {
-            if (_list) TextFocus = false;
-            base.OnLostFocus(e);
-        }
-
-        bool hover_clear = false;
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (AllowClear && _mouseHover && selectedIndex > -1)
-            {
-                var hover = rect_icon_r.Contains(e.Location);
-                if (hover_clear != hover)
-                {
-                    hover_clear = hover;
-                    SetCursor(hover);
-                    Invalidate();
-                }
-            }
-            else SetCursor(false);
-            base.OnMouseMove(e);
         }
 
         #endregion

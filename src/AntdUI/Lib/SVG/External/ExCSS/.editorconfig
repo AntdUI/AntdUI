@@ -1,9 +1,0 @@
-# ExCSS
-
-# c# 文件
-[*.cs]
-
-#### .NET 编码约定 ####
-
-# 组织 Using
-file_header_template = THIS FILE IS PART OF ExCSS PROJECT\nTHE ExCSS PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.\nCOPYRIGHT (C) TylerBrinks. ALL RIGHTS RESERVED.\nGITHUB: https://github.com/TylerBrinks/ExCSS

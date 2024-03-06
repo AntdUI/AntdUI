@@ -17,7 +17,6 @@
 // QQ: 17379620
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -104,9 +103,9 @@ namespace AntdUI
         {
             float dpi = 1F;
 #if NET40 || NET46 || NET48
-            using (var bmp = new Bitmap(1, 1))
+            using (var bmp = new System.Drawing.Bitmap(1, 1))
             {
-                using (var g = Graphics.FromImage(bmp))
+                using (var g = System.Drawing.Graphics.FromImage(bmp))
                 {
                     Config.SetDpi(g);
                     dpi = Config.Dpi;

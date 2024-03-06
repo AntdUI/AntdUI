@@ -151,7 +151,6 @@ namespace AntdUI
         protected override void CreateHandle()
         {
             Text = GetNumberText(currentValue);
-            textBox.Visible = true;
             base.CreateHandle();
         }
 
@@ -176,7 +175,6 @@ namespace AntdUI
             hover_button = new ITaskOpacity(this);
             hover_button_up = new ITaskOpacity(this);
             hover_button_bottom = new ITaskOpacity(this);
-            textBox.KeyPress += TextBox_KeyPress;
         }
 
         protected override void Dispose(bool disposing)
@@ -187,7 +185,7 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
-        private void TextBox_KeyPress(object? sender, KeyPressEventArgs e)
+        protected override void OnKeyPress(KeyPressEventArgs e)
         {
             NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
             string decimalSeparator = numberFormatInfo.NumberDecimalSeparator;
@@ -221,13 +219,14 @@ namespace AntdUI
                 e.Handled = true;
                 //User32.MessageBeep(User32.MB.OK);//发出嘟嘟声
             }
+            base.OnKeyPress(e);
         }
 
         internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color borColor, Color borderActive)
         {
             float radius = round ? rect_read.Height / 2F : _radius;
-            float gap = rect_read.Width - rect_icon_r.Right, gap2 = gap * 2;
-            rect_button = new RectangleF(rect_read.Right - (rect_icon_r.Width + gap2), rect_read.Y, rect_icon_r.Width + gap2, rect_read.Height);
+            float gap = rect_read.Width - rect_r.Right, gap2 = gap * 2;
+            rect_button = new RectangleF(rect_read.Right - (rect_r.Width + gap2), rect_read.Y, rect_r.Width + gap2, rect_read.Height);
             rect_button_up = new RectangleF(rect_button.X, rect_button.Y, rect_button.Width, rect_button.Height / 2);
             rect_button_bottom = new RectangleF(rect_button.X, rect_button_up.Bottom, rect_button.Width, rect_button_up.Height);
 
@@ -319,9 +318,9 @@ namespace AntdUI
             }
         }
 
-        internal override void RectTI()
+        public override bool HasSuffix
         {
-            GetRectTI(textBox.Height, HasImage, true);
+            get => true;
         }
 
         #endregion
@@ -405,7 +404,7 @@ namespace AntdUI
         {
             if (keyData == Keys.Enter)
             {
-                if (decimal.TryParse(textBox.Text, out var _d)) Value = _d;
+                if (decimal.TryParse(Text, out var _d)) Value = _d;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }

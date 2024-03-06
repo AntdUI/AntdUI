@@ -446,7 +446,7 @@ namespace AntdUI
                     }
                     edit_input.KeyPress += (a, b) =>
                     {
-                        if (b.KeyChar == 13 && a is TextBox input)
+                        if (b.KeyChar == 13 && a is Input input)
                         {
                             b.Handled = true;
                             bool isok_end = true;
@@ -580,7 +580,7 @@ namespace AntdUI
                             }
                             edit_input.KeyPress += (a, b) =>
                             {
-                                if (b.KeyChar == 13 && a is TextBox input)
+                                if (b.KeyChar == 13 && a is Input input)
                                 {
                                     b.Handled = true;
                                     bool isok_end = true;

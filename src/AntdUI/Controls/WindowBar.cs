@@ -322,7 +322,7 @@ namespace AntdUI
                     }
                     else if (showicon)
                     {
-                        var form = FindPARENT(Parent);
+                        var form = Parent.FindPARENT();
                         if (form != null && form.Icon != null)
                         {
                             g.DrawIcon(form.Icon, rect_icon);
@@ -527,7 +527,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle.PaddingRect(Padding);
-            int btn_size = (maximizeBox || minimizeBox) ? (int)(rect.Height * 1.32F) : rect.Height;
+            int btn_size = (maximizeBox || minimizeBox) ? (int)Math.Round(Font.Size * 6.06F) : (int)Math.Round(Font.Size * 4.6F);
 
             rect_close = new Rectangle(rect.Right - btn_size, rect.Y, btn_size, rect.Height);
             hasr = btn_size;
@@ -545,7 +545,7 @@ namespace AntdUI
             }
             if (DragMove)
             {
-                var form = FindPARENT(Parent);
+                var form = Parent.FindPARENT();
                 if (form != null) IsMax = form.WindowState == FormWindowState.Maximized;
             }
             base.OnSizeChanged(e);
@@ -585,14 +585,6 @@ namespace AntdUI
             base.OnMouseLeave(e);
         }
 
-        Form? FindPARENT(Control? control)
-        {
-            if (control == null) return null;
-            if (control is Form form) return form;
-            else if (control.Parent != null) return FindPARENT(control.Parent);
-            return null;
-        }
-
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -603,7 +595,7 @@ namespace AntdUI
                 if (hove_close.Down || hove_max.Down || hove_min.Down) return;
                 if (DragMove)
                 {
-                    var form = FindPARENT(Parent);
+                    var form = Parent.FindPARENT();
                     if (form != null)
                     {
                         if (e.Clicks > 1)
@@ -635,10 +627,10 @@ namespace AntdUI
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (hove_close.Down && rect_close.Contains(e.Location)) FindPARENT(Parent)?.Close();
+            if (hove_close.Down && rect_close.Contains(e.Location)) Parent.FindPARENT()?.Close();
             else if (hove_max.Down && rect_max.Contains(e.Location))
             {
-                var form = FindPARENT(Parent);
+                var form = Parent.FindPARENT();
                 if (form != null)
                 {
                     if (form.WindowState == FormWindowState.Maximized)
@@ -655,7 +647,7 @@ namespace AntdUI
             }
             else if (hove_min.Down && rect_min.Contains(e.Location))
             {
-                var form = FindPARENT(Parent);
+                var form = Parent.FindPARENT();
                 if (form != null)
                 {
                     IsMax = false;
@@ -703,7 +695,7 @@ namespace AntdUI
 
         public void PerformClick()
         {
-            FindPARENT(Parent)?.Close();
+            Parent.FindPARENT()?.Close();
         }
 
         #endregion

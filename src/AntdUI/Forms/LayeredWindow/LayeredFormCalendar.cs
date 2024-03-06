@@ -830,16 +830,6 @@ namespace AntdUI
                             }
                         }
                     }
-                    if (badge_list.Count > 0)
-                    {
-                        using (var font = new Font(control.Font.FontFamily, control.BadgeSize))
-                        {
-                            foreach (var it in datas)
-                            {
-                                if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, font, it.rect, g);
-                            }
-                        }
-                    }
 
                     foreach (var it in datas)
                     {
@@ -984,6 +974,17 @@ namespace AntdUI
                         }
                     }
                     else g.DrawString(button_text, Font, brush_active, rect_button, stringFormatC);
+
+                    if (badge_list.Count > 0)
+                    {
+                        using (var font = new Font(control.Font.FontFamily, control.BadgeSize))
+                        {
+                            foreach (var it in datas)
+                            {
+                                if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, font, it.rect, g);
+                            }
+                        }
+                    }
                 }
             }
         }

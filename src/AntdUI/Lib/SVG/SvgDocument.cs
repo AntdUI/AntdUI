@@ -3,9 +3,7 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using AntdUI.Svg.Css;
 using AntdUI.Svg.Exceptions;
-using AntdUI.Svg.ExCSS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -234,7 +232,6 @@ namespace AntdUI.Svg
             using (var strReader = new System.IO.StringReader(svg))
             {
                 var reader = new SvgTextReader(strReader, null);
-                reader.XmlResolver = new SvgDtdResolver();
                 reader.WhitespaceHandling = WhitespaceHandling.None;
                 return Open<T>(reader);
             }
@@ -255,7 +252,6 @@ namespace AntdUI.Svg
 
             // Don't close the stream via a dispose: that is the client's job.
             var reader = new SvgTextReader(stream, entities);
-            reader.XmlResolver = new SvgDtdResolver();
             reader.WhitespaceHandling = WhitespaceHandling.None;
             return Open<T>(reader);
         }
@@ -268,8 +264,6 @@ namespace AntdUI.Svg
             SvgElement parent;
             T svgDocument = null;
             var elementFactory = new SvgElementFactory();
-
-            var styles = new List<ISvgNode>();
 
             while (reader.Read())
             {
@@ -314,24 +308,10 @@ namespace AntdUI.Svg
 
                             break;
                         case XmlNodeType.EndElement:
-
                             // Pop the element out of the stack
                             element = elementStack.Pop();
-
-                            if (element.Nodes.OfType<SvgContentNode>().Any())
-                            {
-                                element.Content = (from e in element.Nodes select e.Content).Aggregate((p, c) => p + c);
-                            }
-                            else
-                            {
-                                element.Nodes.Clear(); // No sense wasting the space where it isn't needed
-                            }
-
-                            var unknown = element as SvgUnknownElement;
-                            if (unknown != null && unknown.ElementName == "style")
-                            {
-                                styles.Add(unknown);
-                            }
+                            if (element.Nodes.OfType<SvgContentNode>().Any()) element.Content = (from e in element.Nodes select e.Content).Aggregate((p, c) => p + c);
+                            else element.Nodes.Clear(); // No sense wasting the space where it isn't needed
                             break;
                         case XmlNodeType.CDATA:
                         case XmlNodeType.Text:
@@ -348,41 +328,6 @@ namespace AntdUI.Svg
                 catch (Exception exc)
                 {
                     Trace.TraceError(exc.Message);
-                }
-            }
-
-            if (styles.Any())
-            {
-                var cssTotal = styles.Select((s) => s.Content).Aggregate((p, c) => p + Environment.NewLine + c);
-                var cssParser = new Parser();
-                var sheet = cssParser.Parse(cssTotal);
-                AggregateSelectorList aggList;
-                IEnumerable<BaseSelector> selectors;
-                IEnumerable<SvgElement> elemsToStyle;
-
-                foreach (var rule in sheet.StyleRules)
-                {
-                    aggList = rule.Selector as AggregateSelectorList;
-                    if (aggList != null && aggList.Delimiter == ",")
-                    {
-                        selectors = aggList;
-                    }
-                    else
-                    {
-                        selectors = Enumerable.Repeat(rule.Selector, 1);
-                    }
-
-                    foreach (var selector in selectors)
-                    {
-                        elemsToStyle = svgDocument.QuerySelectorAll(rule.Selector.ToString(), elementFactory);
-                        foreach (var elem in elemsToStyle)
-                        {
-                            foreach (var decl in rule.Declarations)
-                            {
-                                elem.AddStyle(decl.Name, decl.Term.ToString(), rule.Selector.GetSpecificity());
-                            }
-                        }
-                    }
                 }
             }
 

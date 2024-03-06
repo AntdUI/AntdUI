@@ -37,12 +37,6 @@ namespace AntdUI
     {
         #region 属性
 
-        /// <summary>
-        /// 支持清除
-        /// </summary>
-        [Description("支持清除"), Category("行为"), DefaultValue(false)]
-        public bool AllowClear { get; set; } = false;
-
         string dateFormat = "yyyy-MM-dd";
         internal bool ShowTime = false;
 
@@ -73,7 +67,7 @@ namespace AntdUI
             {
                 _value = value;
                 ValueChanged?.Invoke(this, value);
-                Text = value.HasValue ? value.Value.ToString(Format) : "";
+                Text = value.HasValue ? value.Value.ToString(Format) : null;
             }
         }
 
@@ -113,13 +107,48 @@ namespace AntdUI
 
         protected override void CreateHandle()
         {
-            if (_value.HasValue)
-            {
-                Text = _value.Value.ToString(Format);
-                textBox.Visible = true;
-            }
+            if (_value.HasValue) Text = _value.Value.ToString(Format);
             base.CreateHandle();
         }
+
+        #region 自带图标
+
+        bool showicon = true;
+        /// <summary>
+        /// 是否显示图标
+        /// </summary>
+        [Description("是否显示图标"), Category("外观"), DefaultValue(true)]
+        public bool ShowIcon
+        {
+            get => showicon;
+            set
+            {
+                if (showicon == value) return;
+                showicon = value;
+                CalculateRect();
+                Invalidate();
+            }
+        }
+
+        public override bool HasSuffix
+        {
+            get => showicon;
+        }
+
+        string default_icon = "<svg viewBox=\"64 64 896 896\"><path d=\"M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z\"></path></svg>";
+        internal override void PaintR(Graphics g, Rectangle rect_r)
+        {
+            if (showicon)
+            {
+                using (var bmp = default_icon.SvgToBmp(rect_r.Width, rect_r.Height, Style.Db.TextQuaternary))
+                {
+                    if (bmp == null) return;
+                    g.DrawImage(bmp, rect_r);
+                }
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -131,47 +160,6 @@ namespace AntdUI
         /// </summary>
         [Description("预置点击时发生"), Category("行为")]
         public event ObjectNEventHandler? PresetsClickChanged = null;
-
-        #endregion
-
-        #region 渲染
-
-        internal override void PaintOther(Graphics g, RectangleF rect_read)
-        {
-            if (AllowClear && _mouseHover && _value.HasValue)
-            {
-                using (var brush = new SolidBrush(hover_clear ? Style.Db.TextTertiary : Style.Db.TextQuaternary))
-                {
-                    g.FillEllipse(brush, rect_icon_r);
-                }
-                g.PaintIconError(rect_icon_r, Style.Db.BgBase);
-            }
-            else
-            {
-                using (var pen = new Pen(Style.Db.TextQuaternary, 2F))
-                {
-                    var rect = new RectangleF(rect_icon_r.X - 1, rect_icon_r.Y, rect_icon_r.Width + 2, rect_icon_r.Height);
-                    g.DrawRectangles(pen, new RectangleF[] { rect });
-                    g.DrawLines(pen, new PointF[] {
-                        new PointF(rect.X+1F, rect.Y+5),
-                        new PointF(rect.Right-1F, rect.Y+5),
-                    });
-                    g.DrawLines(pen, new PointF[] {
-                        new PointF(rect.X+4, rect.Y-2.6F),
-                        new PointF(rect.X+4, rect.Y+2.6F),
-                    });
-                    g.DrawLines(pen, new PointF[] {
-                        new PointF(rect.Right-4, rect.Y-2.6F),
-                        new PointF(rect.Right-4, rect.Y+2.6F),
-                    });
-                }
-            }
-        }
-
-        internal override void RectTI()
-        {
-            GetRectTI(textBox.Height, HasImage, true);
-        }
 
         #endregion
 
@@ -210,53 +198,39 @@ namespace AntdUI
                 else subForm?.IClose();
             }
         }
-        internal override void TextGotFocus()
+
+        protected override void OnGotFocus(EventArgs e)
         {
             TextFocus = true;
+            base.OnGotFocus(e);
         }
-        internal override void TextLostFocus()
+        protected override void OnLostFocus(EventArgs e)
         {
             TextFocus = false;
+            base.OnLostFocus(e);
         }
 
         #endregion
 
         #region 鼠标
 
+        internal override void OnClearValue()
+        {
+            Value = null;
+        }
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && _mouseHover && rect_icon_r.Contains(e.Location))
+            if (e.Button == MouseButtons.Left && _mouseHover)
             {
-                if (_value.HasValue && AllowClear)
+                if (Focused)
                 {
-                    Value = null;
-                    Invalidate();
+                    if (textFocus) return;
+                    TextFocus = !textFocus;
                 }
-                else
-                {
-                    if (textBox.Focused) TextFocus = !textFocus;
-                    else textBox.Focus();
-                }
+                else Focus();
                 return;
             }
             base.OnMouseClick(e);
-        }
-
-        bool hover_clear = false;
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (AllowClear && _mouseHover && _value.HasValue)
-            {
-                var hover = rect_icon_r.Contains(e.Location);
-                if (hover_clear != hover)
-                {
-                    hover_clear = hover;
-                    SetCursor(hover);
-                    Invalidate();
-                }
-            }
-            else SetCursor(false);
-            base.OnMouseMove(e);
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
@@ -266,7 +240,7 @@ namespace AntdUI
                 subForm.IClose();
                 return true;
             }
-            else if (keyData == Keys.Enter && DateTime.TryParse(textBox.Text, out var _d))
+            else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d))
             {
                 Value = _d;
                 if (subForm is LayeredFormCalendar _SubForm)

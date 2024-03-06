@@ -30,6 +30,7 @@ namespace AntdUI
         public LayeredFormMask(Form _form)
         {
             form = _form;
+            TopMost = _form.TopMost;
             if (form.WindowState != FormWindowState.Maximized)
             {
                 var version = Environment.OSVersion.Version;

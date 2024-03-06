@@ -125,19 +125,20 @@ namespace AntdUI
         {
             if (IsHandleCreated && target_rect.Width > 0 && target_rect.Height > 0)
             {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        Print();
+                    }));
+                    return;
+                }
                 try
                 {
                     using (var bmp = PrintBit())
                     {
                         if (bmp == null) return;
-                        if (InvokeRequired)
-                        {
-                            Invoke(new Action(() =>
-                            {
-                                Win32.SetBits(bmp, TargetRect, Handle, alpha);
-                            }));
-                        }
-                        else Win32.SetBits(bmp, target_rect, Handle, alpha);
+                        Win32.SetBits(bmp, target_rect, Handle, alpha);
                     }
                     GC.Collect();
                 }

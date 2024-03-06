@@ -34,6 +34,7 @@ namespace AntdUI
             maxalpha = 255;
             config = _config;
             TopMost = config.TopMost;
+            if (!config.TopMost) TopMost = config.Form.TopMost;
             Font = config.Font == null ? config.Form.Font : config.Font;
 
             Helper.GDI(g =>

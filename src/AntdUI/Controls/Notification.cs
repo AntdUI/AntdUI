@@ -235,6 +235,7 @@ namespace AntdUI
         public NotificationFrm(Notification.Config _config)
         {
             config = _config;
+            TopMost = config.Form.TopMost;
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;
             font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style);

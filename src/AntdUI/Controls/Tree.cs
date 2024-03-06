@@ -404,6 +404,8 @@ namespace AntdUI
                 }
             }
         }
+
+        StringFormat sf_center = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter };
         void PaintItem(Graphics g, TreeItem item, Color fore, Color fore_active, Color hover, float radius)
         {
             if (item.Select)
@@ -412,7 +414,7 @@ namespace AntdUI
                 if (item.CanExpand) PanintArrow(g, item, fore_active);
                 using (var brush = new SolidBrush(fore_active))
                 {
-                    g.DrawString(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : Helper.stringFormatCenter4);
+                    g.DrawString(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
                 }
             }
             else
@@ -425,7 +427,7 @@ namespace AntdUI
                 if (item.CanExpand) PanintArrow(g, item, fore);
                 using (var brush = new SolidBrush(item.Enabled ? fore : Style.Db.TextQuaternary))
                 {
-                    g.DrawString(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : Helper.stringFormatCenter4);
+                    g.DrawString(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
                 }
             }
             if (checkable)

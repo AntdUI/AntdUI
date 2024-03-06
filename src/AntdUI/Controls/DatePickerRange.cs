@@ -482,25 +482,14 @@ namespace AntdUI
             }
             else
             {
-                using (var pen = new Pen(Style.Db.TextQuaternary, 2F))
+                using (var bmp = default_icon.SvgToBmp(rect_icon_r.Width, rect_icon_r.Height, Style.Db.TextQuaternary))
                 {
-                    var rect = new RectangleF(rect_icon_r.X - 1, rect_icon_r.Y, rect_icon_r.Width + 2, rect_icon_r.Height);
-                    g.DrawRectangles(pen, new RectangleF[] { rect });
-                    g.DrawLines(pen, new PointF[] {
-                        new PointF(rect.X+1F, rect.Y+5),
-                        new PointF(rect.Right-1F, rect.Y+5),
-                    });
-                    g.DrawLines(pen, new PointF[] {
-                        new PointF(rect.X+4, rect.Y-2.6F),
-                        new PointF(rect.X+4, rect.Y+2.6F),
-                    });
-                    g.DrawLines(pen, new PointF[] {
-                        new PointF(rect.Right-4, rect.Y-2.6F),
-                        new PointF(rect.Right-4, rect.Y+2.6F),
-                    });
+                    if (bmp == null) return;
+                    g.DrawImage(bmp, rect_icon_r);
                 }
             }
         }
+        string default_icon = "<svg viewBox=\"64 64 896 896\"><path d=\"M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z\"></path></svg>";
 
         internal GraphicsPath Path(RectangleF rect_read, float _radius)
         {

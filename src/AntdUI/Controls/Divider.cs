@@ -138,6 +138,7 @@ namespace AntdUI
 
         #endregion
 
+        StringFormat s_f = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter };
         protected override void OnPaint(PaintEventArgs e)
         {
             var _rect = ClientRectangle;
@@ -162,13 +163,13 @@ namespace AntdUI
                                     var font_irect = new RectangleF(rect.X + (rect.Width - size.Width) / 2F, rect.Y + f_margin + font_margin, size.Width, size.Height);
                                     g.FillRectangle(brush, new RectangleF(x, rect.Y, thickness, f_margin));
                                     g.FillRectangle(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, rect.Height - size.Height - f_margin - font_margin * 2F));
-                                    PaintText(g, text_, font_irect, Helper.stringFormatCenter3, Enabled);
+                                    PaintText(g, text_, font_irect, s_f, Enabled);
                                 }
                                 else
                                 {
                                     var font_irect = new RectangleF(rect.X + (rect.Width - size.Width) / 2F, rect.Y, size.Width, size.Height);
                                     g.FillRectangle(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, rect.Height - size.Height - font_margin));
-                                    PaintText(g, text_, font_irect, Helper.stringFormatCenter3, Enabled);
+                                    PaintText(g, text_, font_irect, s_f, Enabled);
                                 }
                                 break;
                             case TOrientation.Right:
@@ -177,20 +178,20 @@ namespace AntdUI
                                     var font_irect = new RectangleF(rect.X + (rect.Width - size.Width) / 2F, rect.Bottom - size.Height - f_margin - font_margin, size.Width, size.Height);
                                     g.FillRectangle(brush, new RectangleF(x, rect.Y, thickness, rect.Height - size.Height - f_margin - font_margin * 2F));
                                     g.FillRectangle(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, f_margin));
-                                    PaintText(g, text, font_irect, Helper.stringFormatCenter3, Enabled);
+                                    PaintText(g, text, font_irect, s_f, Enabled);
                                 }
                                 else
                                 {
                                     var font_irect = new RectangleF(rect.X + (rect.Width - size.Width) / 2F, rect.Bottom - size.Height, size.Width, size.Height);
                                     g.FillRectangle(brush, new RectangleF(x, rect.Y, thickness, rect.Height - size.Height - font_margin));
-                                    PaintText(g, text, font_irect, Helper.stringFormatCenter3, Enabled);
+                                    PaintText(g, text, font_irect, s_f, Enabled);
                                 }
                                 break;
                             default:
                                 float f_h = (rect.Height - size.Height) / 2F - f_margin - font_margin;
                                 g.FillRectangle(brush, new RectangleF(x, rect.Y, thickness, f_h));
                                 g.FillRectangle(brush, new RectangleF(x, rect.Y + f_h + size.Height + (f_margin + font_margin) * 2F, thickness, f_h));
-                                PaintText(g, text_, _rect, Helper.stringFormatCenter3, Enabled);
+                                PaintText(g, text_, _rect, s_f, Enabled);
                                 break;
                         }
                     }
