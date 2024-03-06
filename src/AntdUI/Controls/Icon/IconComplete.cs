@@ -67,7 +67,7 @@ namespace AntdUI.Icon
             var g = e.Graphics.High();
             float dot_size = rect.Width > rect.Height ? rect.Height : rect.Width;
             var rect_dot = new RectangleF((rect.Width - dot_size) / 2, (rect.Height - dot_size) / 2, dot_size, dot_size);
-            using (var brush = new SolidBrush(back.HasValue ? back.Value : Style.Db.Success))
+            using (var brush = back.Brush(Style.Db.Success))
             {
                 g.FillEllipse(brush, rect_dot);
             }

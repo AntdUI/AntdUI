@@ -183,6 +183,26 @@ namespace AntdUI
 
         #endregion
 
+        #region 主题
+
+        Color? rowSelectedBg;
+        /// <summary>
+        /// 表格行选中背景色
+        /// </summary>
+        [Description("表格行选中背景色"), Category("外观"), DefaultValue(null)]
+        public Color? RowSelectedBg
+        {
+            get => rowSelectedBg;
+            set
+            {
+                if (rowSelectedBg == value) return;
+                rowSelectedBg = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region 初始化

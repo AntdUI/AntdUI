@@ -177,7 +177,7 @@ namespace AntdUI
             PaintChecked(g, rect, enabled, icon_rect, right);
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
 
-            using (var brush = new SolidBrush(enabled ? (fore.HasValue ? fore.Value : Style.Db.Text) : Style.Db.TextQuaternary))
+            using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, enabled))
             {
                 g.DrawString(text, Font, brush, text_rect, stringFormat);
             }

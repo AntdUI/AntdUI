@@ -171,7 +171,7 @@ namespace AntdUI
                 {
                     if (_checked == value) return;
                     _checked = value;
-                    OnCheck();
+                    if (IsColumn) OnCheck();
                     CheckState = value ? CheckState.Checked : CheckState.Unchecked;
                 }
             }

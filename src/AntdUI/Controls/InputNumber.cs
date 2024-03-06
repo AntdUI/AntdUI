@@ -187,10 +187,8 @@ namespace AntdUI
 
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
-            string decimalSeparator = numberFormatInfo.NumberDecimalSeparator;
-            string groupSeparator = numberFormatInfo.NumberGroupSeparator;
-            string negativeSign = numberFormatInfo.NegativeSign;
+            var numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+            string decimalSeparator = numberFormatInfo.NumberDecimalSeparator, groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
 
             string keyInput = e.KeyChar.ToString();
             if (char.IsDigit(e.KeyChar))
@@ -209,17 +207,43 @@ namespace AntdUI
             {
                 // 十六进制数字可以
             }
-            else if ((ModifierKeys & (Keys.Control | Keys.Alt)) != 0)
-            {
-                // 让编辑控件处理控件和alt键组合
-            }
             else
             {
                 // 吃掉这个无效的钥匙
                 e.Handled = true;
+                return;
                 //User32.MessageBeep(User32.MB.OK);//发出嘟嘟声
             }
             base.OnKeyPress(e);
+        }
+
+        protected override bool VerifyImeResultStr(string strResult)
+        {
+            var numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+            string decimalSeparator = numberFormatInfo.NumberDecimalSeparator, groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
+
+            foreach (char key in strResult)
+            {
+                string keyInput = key.ToString();
+                if (char.IsDigit(key))
+                {
+                    // 数字可以
+                }
+                else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
+                {
+                    // 小数分隔符可以
+                }
+                else if (key == '\b')
+                {
+                    // Backspace键可以
+                }
+                else if (Hexadecimal && ((key >= 'a' && key <= 'f') || (key >= 'A' && key <= 'F')))
+                {
+                    // 十六进制数字可以
+                }
+                else return false;
+            }
+            return true;
         }
 
         internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color borColor, Color borderActive)

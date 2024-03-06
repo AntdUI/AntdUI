@@ -145,7 +145,7 @@ namespace AntdUI
             var rect = _rect.PaddingRect(Margin);
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            using (var brush = new SolidBrush(color.HasValue ? color.Value : Style.Db.Split))
+            using (var brush = color.Brush(Style.Db.Split))
             {
                 if (text != null)
                 {

@@ -266,6 +266,13 @@ namespace AntdUI
         }
         void PaintTableBg(Graphics g, RowTemplate row)
         {
+            if (row.Checked)
+            {
+                using (var brush = rowSelectedBg.Brush(Style.Db.PrimaryBg))
+                {
+                    g.FillRectangle(brush, row.RECT);
+                }
+            }
             if (row.AnimationHover)
             {
                 using (var brush = new SolidBrush(Color.FromArgb((int)(row.AnimationHoverValue * Style.Db.FillSecondary.A), Style.Db.FillSecondary)))

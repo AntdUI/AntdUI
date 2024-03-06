@@ -309,6 +309,7 @@ namespace AntdUI
                         if (checkCell.Contains(x, y))
                         {
                             checkCell.Checked = !checkCell.Checked;
+                            it.Checked = checkCell.Checked;
                             cell.PROPERTY?.SetValue(cell.VALUE, checkCell.Checked);
                             CheckedChanged?.Invoke(this, checkCell.Checked, it.RECORD, i_row, i_col);
                         }
@@ -795,6 +796,7 @@ namespace AntdUI
                     {
                         if (checkCell.Checked == value) continue;
                         checkCell.Checked = value;
+                        rows[i_row].Checked = value;
                         CheckedChanged?.Invoke(this, value, rows[i_row].RECORD, i_row, i_col);
                         item.PROPERTY?.SetValue(item.VALUE, checkCell.Checked);
                     }

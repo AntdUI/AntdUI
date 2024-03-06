@@ -1353,7 +1353,7 @@ namespace AntdUI
                 {
                     using (var path = RoundPath(rect, radius, round))
                     {
-                        using (var brush = new SolidBrush(config.ShadowColor.HasValue ? config.ShadowColor.Value : Style.Db.TextBase))
+                        using (var brush = config.ShadowColor.Brush(Style.Db.TextBase))
                         {
                             g_shadow.FillPath(brush, path);
                         }
@@ -1504,6 +1504,22 @@ namespace AntdUI
             if (control is Form form) return form;
             else if (control.Parent != null) return FindPARENT(control.Parent);
             return null;
+        }
+
+        public static SolidBrush Brush(this Color? color, Color default_color)
+        {
+            if (color.HasValue) return new SolidBrush(color.Value);
+            return new SolidBrush(default_color);
+        }
+
+        public static SolidBrush Brush(this Color? color, Color default_color, Color enabled_color, bool enabled)
+        {
+            if (enabled)
+            {
+                if (color.HasValue) return new SolidBrush(color.Value);
+                return new SolidBrush(default_color);
+            }
+            else return new SolidBrush(enabled_color);
         }
     }
 

@@ -994,7 +994,12 @@ namespace AntdUI
                 ptCurrentPos = CurrentCaret.Location
             };
             Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
-            EnterText(strResult);
+            if (VerifyImeResultStr(strResult)) EnterText(strResult);
+        }
+
+        protected virtual bool VerifyImeResultStr(string strResult)
+        {
+            return true;
         }
 
         #endregion
