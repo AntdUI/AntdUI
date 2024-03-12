@@ -152,8 +152,8 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat stringLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter };
-        readonly StringFormat stringRight = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far, Trimming = StringTrimming.EllipsisCharacter };
+        readonly StringFormat stringLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);
+        readonly StringFormat stringRight = Helper.SF_Ellipsis(lr: StringAlignment.Far);
 
         public override Bitmap PrintBit()
         {

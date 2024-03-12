@@ -340,9 +340,9 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        readonly StringFormat stringLTEllipsis = new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter };
-        readonly StringFormat stringCenter = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.None, FormatFlags = StringFormatFlags.NoWrap };
-        readonly StringFormat stringLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        readonly StringFormat stringLTEllipsis = Helper.SF_Ellipsis(tb: StringAlignment.Near, lr: StringAlignment.Near);
+        readonly StringFormat stringCenter = Helper.SF_NoWrap();
+        readonly StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
 
         /// <summary>
         /// 绘制图标

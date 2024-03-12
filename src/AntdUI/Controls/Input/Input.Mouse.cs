@@ -106,7 +106,7 @@ namespace AntdUI
 
         internal virtual void OnClearValue()
         {
-            Text = null;
+            Text = "";
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {

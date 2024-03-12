@@ -187,7 +187,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        readonly StringFormat stringFormat = Helper.SF_ALL(lr: StringAlignment.Near);
 
         protected override void OnPaint(PaintEventArgs e)
         {

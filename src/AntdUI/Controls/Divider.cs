@@ -138,7 +138,7 @@ namespace AntdUI
 
         #endregion
 
-        StringFormat s_f = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter };
+        StringFormat s_f = Helper.SF_Ellipsis();
         protected override void OnPaint(PaintEventArgs e)
         {
             var _rect = ClientRectangle;

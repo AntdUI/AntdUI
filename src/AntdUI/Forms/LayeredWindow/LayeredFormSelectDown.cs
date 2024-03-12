@@ -64,19 +64,19 @@ namespace AntdUI
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items);
         }
 
-        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, RectangleF rect_read, List<object> items, int sel = -1)
+        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, RectangleF rect_read, List<object>? items, int sel = -1)
         {
             ClickEnd = control.ClickEnd;
             selectedValue = control.SelectedValue;
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
-        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown ocontrol, float radius, RectangleF rect_read, List<object> items, int sel = -1)
+        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown ocontrol, float radius, RectangleF rect_read, List<object>? items, int sel = -1)
         {
             ClickEnd = control.ClickEnd;
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
 
-        void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, RectangleF rect_read, List<object> items, int sel)
+        void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, RectangleF rect_read, List<object>? items, int sel)
         {
             var form = parent.Parent.FindPARENT();
             if (form != null) TopMost = form.TopMost;
@@ -340,7 +340,7 @@ namespace AntdUI
                 return false;
             };
         }
-        StringFormat stringFormatLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
+        StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
 
         public void FocusItem(ObjectItem item)
         {
@@ -655,7 +655,7 @@ namespace AntdUI
                     }
                 }
             }
-            else if (selectedValue == it.Val)
+            else if (selectedValue == it.Val || it.Val is SelectItem item && item.Tag == selectedValue)
             {
                 using (var brush_back = new SolidBrush(Style.Db.PrimaryBg))
                 {

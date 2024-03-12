@@ -27,9 +27,58 @@ namespace AntdUI
 {
     public static class Helper
     {
-        internal readonly static StringFormat stringFormatCenter = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
-        internal readonly static StringFormat stringFormatCenter2 = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.None, FormatFlags = StringFormatFlags.NoWrap };
-        internal readonly static StringFormat stringFormatLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        internal readonly static StringFormat stringFormatCenter = SF_ALL();
+        internal readonly static StringFormat stringFormatCenter2 = SF_NoWrap();
+        internal readonly static StringFormat stringFormatLeft = SF_ALL(lr: StringAlignment.Near);
+
+        #region 文本布局
+
+        /// <summary>
+        /// 文本布局
+        /// </summary>
+        /// <param name="tb">垂直（上下）</param>
+        /// <param name="lr">水平（前后）</param>
+        public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
+        {
+            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
+        }
+
+        /// <summary>
+        /// 文本布局（不换行）
+        /// </summary>
+        /// <param name="tb">垂直（上下）</param>
+        /// <param name="lr">水平（前后）</param>
+        public static StringFormat SF_NoWrap(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
+        {
+            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, FormatFlags = StringFormatFlags.NoWrap };
+        }
+
+        /// <summary>
+        /// 文本布局（超出省略号）
+        /// </summary>
+        /// <param name="tb">垂直（上下）</param>
+        /// <param name="lr">水平（前后）</param>
+        public static StringFormat SF_Ellipsis(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
+        {
+            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
+        }
+
+        /// <summary>
+        /// 文本布局（超出省略号+不换行）
+        /// </summary>
+        /// <param name="tb">垂直（上下）</param>
+        /// <param name="lr">水平（前后）</param>
+        public static StringFormat SF_ALL(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
+        {
+            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        }
+
+        public static StringFormat SF_MEASURE_FONT()
+        {
+            return new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.MeasureTrailingSpaces };
+        }
+
+        #endregion
 
         #region 渲染帮助
 
@@ -49,6 +98,32 @@ namespace AntdUI
                     {
                         brush.TranslateTransform(rect.X, rect.Y);
                         if (round) g.FillEllipse(brush, rect);
+                        else
+                        {
+                            using (var path = rect.RoundPath(radius))
+                            {
+                                g.FillPath(brush, path);
+                            }
+                        }
+                    }
+                }
+            }
+            else PaintImg(g, rect, image, fit);
+        }
+        public static void PaintImg(this Graphics g, RectangleF rect, Image image, TFit fit, float radius, TShape shape)
+        {
+            if (shape == TShape.Circle || shape == TShape.Round || radius > 0)
+            {
+                using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
+                {
+                    using (var g2 = Graphics.FromImage(bmp).High())
+                    {
+                        PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
+                    }
+                    using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
+                    {
+                        brush.TranslateTransform(rect.X, rect.Y);
+                        if (shape == TShape.Circle) g.FillEllipse(brush, rect);
                         else
                         {
                             using (var path = rect.RoundPath(radius))

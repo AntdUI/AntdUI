@@ -85,6 +85,13 @@ namespace AntdUI
     public delegate void DateTimeNEventHandler(object sender, DateTime? value);
 
     /// <summary>
+    /// TimeSpan类型事件
+    /// </summary>
+    /// <param name="sender">触发对象</param>
+    /// <param name="value">数值</param>
+    public delegate void TimeSpanNEventHandler(object sender, TimeSpan value);
+
+    /// <summary>
     /// Color类型事件
     /// </summary>
     /// <param name="sender">触发对象</param>

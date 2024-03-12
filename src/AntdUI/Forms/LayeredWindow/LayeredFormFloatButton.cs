@@ -137,7 +137,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat stringCenter = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap };
+        readonly StringFormat stringCenter = Helper.SF_NoWrap();
 
         public override Bitmap PrintBit()
         {
@@ -216,7 +216,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        readonly StringFormat stringBadge = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.None, FormatFlags = StringFormatFlags.NoWrap };
+        readonly StringFormat stringBadge = Helper.SF_NoWrap();
 
         void PrintBadge(Graphics g, FloatButton.ConfigBtn it)
         {

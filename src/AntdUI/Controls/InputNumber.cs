@@ -35,6 +35,16 @@ namespace AntdUI
     {
         #region 属性
 
+        /// <summary>
+        /// 支持清除
+        /// </summary>
+        [Browsable(false), Description("支持清除"), Category("行为"), DefaultValue(false)]
+        public override bool AllowClear
+        {
+            get => false;
+            set { base.AllowClear = false; }
+        }
+
         decimal minimum = decimal.Zero;
         [Description("最小值"), Category("数据"), DefaultValue(typeof(decimal), "0")]
         public decimal Minimum
@@ -246,48 +256,51 @@ namespace AntdUI
             return true;
         }
 
-        internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color borColor, Color borderActive)
+        internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)
         {
-            float radius = round ? rect_read.Height / 2F : _radius;
-            float gap = rect_read.Width - rect_r.Right, gap2 = gap * 2;
-            rect_button = new RectangleF(rect_read.Right - (rect_r.Width + gap2), rect_read.Y, rect_r.Width + gap2, rect_read.Height);
-            rect_button_up = new RectangleF(rect_button.X, rect_button.Y, rect_button.Width, rect_button.Height / 2);
-            rect_button_bottom = new RectangleF(rect_button.X, rect_button_up.Bottom, rect_button.Width, rect_button_up.Height);
-
-            bool show = false;
-            if (hover_button.Animation)
+            if (hover_button.Animation || hover_button.Switch)
             {
-                show = true;
-                using (var pen = new Pen(Color.FromArgb(hover_button.Value, borColor), 1 * Config.Dpi))
+                float radius = round ? rect_read.Height / 2F : _radius;
+                int width = (int)(22 * Config.Dpi);
+                rect_button = new RectangleF(rect_read.Right - width, rect_read.Y, width, rect_read.Height);
+                rect_button_up = new RectangleF(rect_button.X, rect_button.Y, rect_button.Width, rect_button.Height / 2);
+                rect_button_bottom = new RectangleF(rect_button.X, rect_button_up.Bottom, rect_button.Width, rect_button_up.Height);
+
+                using (var path = rect_button.RoundPath(radius, false, true, true, false))
                 {
-                    using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
+                    using (var brush = new SolidBrush(back))
+                    { g.FillPath(brush, path); }
+                }
+
+                if (hover_button.Animation)
+                {
+                    using (var pen = new Pen(Color.FromArgb(hover_button.Value, borColor), 1 * Config.Dpi))
                     {
-                        g.DrawPath(pen, path);
-                    }
-                    using (var path = rect_button_bottom.RoundPath(radius, false, false, true, false))
-                    {
-                        g.DrawPath(pen, path);
+                        using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
+                        {
+                            g.DrawPath(pen, path);
+                        }
+                        using (var path = rect_button_bottom.RoundPath(radius, false, false, true, false))
+                        {
+                            g.DrawPath(pen, path);
+                        }
                     }
                 }
-            }
-            else if (hover_button.Switch)
-            {
-                show = true;
-                using (var pen = new Pen(borColor, 1 * Config.Dpi))
+                else if (hover_button.Switch)
                 {
-                    using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
+                    using (var pen = new Pen(borColor, 1 * Config.Dpi))
                     {
-                        g.DrawPath(pen, path);
-                    }
-                    using (var path = rect_button_bottom.RoundPath(radius, false, false, true, false))
-                    {
-                        g.DrawPath(pen, path);
+                        using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
+                        {
+                            g.DrawPath(pen, path);
+                        }
+                        using (var path = rect_button_bottom.RoundPath(radius, false, false, true, false))
+                        {
+                            g.DrawPath(pen, path);
+                        }
                     }
                 }
-            }
 
-            if (show)
-            {
                 if (hover_button_up.Animation)
                 {
                     using (var pen_def = new Pen(borColor, 1 * Config.Dpi))
@@ -342,11 +355,6 @@ namespace AntdUI
             }
         }
 
-        public override bool HasSuffix
-        {
-            get => true;
-        }
-
         #endregion
 
         #region 鼠标
@@ -371,6 +379,7 @@ namespace AntdUI
                     hover_button_bottom.Switch = true;
                 }
                 SetCursor(true);
+                return;
             }
             else
             {

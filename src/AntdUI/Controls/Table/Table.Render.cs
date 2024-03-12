@@ -25,9 +25,9 @@ namespace AntdUI
 {
     partial class Table
     {
-        static StringFormat stringLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.None, FormatFlags = StringFormatFlags.NoWrap };
-        static StringFormat stringCenter = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.None, FormatFlags = StringFormatFlags.NoWrap };
-        static StringFormat stringRight = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far, Trimming = StringTrimming.None, FormatFlags = StringFormatFlags.NoWrap };
+        static StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near);
+        static StringFormat stringCenter = Helper.SF_NoWrap();
+        static StringFormat stringRight = Helper.SF_NoWrap(lr: StringAlignment.Far);
 
         protected override void OnPaint(PaintEventArgs e)
         {

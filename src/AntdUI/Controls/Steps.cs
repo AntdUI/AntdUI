@@ -277,8 +277,8 @@ namespace AntdUI
         #region 渲染
 
 
-        readonly StringFormat stringLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
-        readonly StringFormat stringCenter = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap };
+        readonly StringFormat stringLeft = Helper.SF(lr: StringAlignment.Near);
+        readonly StringFormat stringCenter = Helper.SF_NoWrap();
 
         protected override void OnPaint(PaintEventArgs e)
         {

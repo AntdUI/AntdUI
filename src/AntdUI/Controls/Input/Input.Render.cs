@@ -26,9 +26,9 @@ namespace AntdUI
     {
         #region 渲染
 
-        StringFormat sf_font = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.MeasureTrailingSpaces };
-        StringFormat sf_center = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap };
-        StringFormat sf_placeholder = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        StringFormat sf_font = Helper.SF_MEASURE_FONT();
+        StringFormat sf_center = Helper.SF_NoWrap();
+        StringFormat sf_placeholder = Helper.SF_ALL(lr: StringAlignment.Near);
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -37,6 +37,8 @@ namespace AntdUI
             float _radius = round ? rect_read.Height : radius * Config.Dpi;
 
             bool enabled = Enabled;
+
+            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
 
             using (var path = Path(rect_read, _radius))
             {
@@ -73,8 +75,12 @@ namespace AntdUI
                     {
                         g.FillPath(brush, path);
                     }
-                    PaintOtherBor(g, rect_read, _radius, _border, _borderActive);
-                    //PaintOtherBor(g, rect_read, _radius, _border, _borderActive);
+                    PaintIcon(g, _fore);
+                    using (var bmp = PaintText(_fore, rect_read.Right, rect_read.Bottom))
+                    {
+                        g.DrawImage(bmp, rect_text, rect_text, GraphicsUnit.Pixel);
+                    }
+                    PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
                     if (borderWidth > 0)
                     {
                         if (AnimationHover)
@@ -109,11 +115,6 @@ namespace AntdUI
                                 g.DrawPath(brush, path);
                             }
                         }
-                    }
-                    PaintIcon(g, _fore);
-                    using (var bmp = PaintText(_fore, rect_read.Right, rect_read.Bottom))
-                    {
-                        g.DrawImage(bmp, rect_text, rect_text, GraphicsUnit.Pixel);
                     }
                 }
                 else
@@ -208,7 +209,7 @@ namespace AntdUI
                                 if (first.rect.Y != last.rect.Y || last.retun)
                                 {
                                     //先渲染上一行
-                                    g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, cache_font[i - 1].rect.Right - first.rect.X, first.rect.Height));
+                                    if (i > 0) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, cache_font[i - 1].rect.Right - first.rect.X, first.rect.Height));
                                     if (i == end) g.FillRectangle(brush, last.rect);
                                     first = last;
                                 }
@@ -257,7 +258,7 @@ namespace AntdUI
         internal virtual void PaintR(Graphics g, Rectangle rect)
         {
         }
-        internal virtual void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color borderColor, Color borderActive)
+        internal virtual void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
         }
 

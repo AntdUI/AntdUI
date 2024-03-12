@@ -167,7 +167,7 @@ namespace AntdUI
         ScrollY scrollY;
         public Timeline() { scrollY = new ScrollY(this); }
 
-        readonly StringFormat stringFormatLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
+        readonly StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
 
         protected override void OnPaint(PaintEventArgs e)
         {

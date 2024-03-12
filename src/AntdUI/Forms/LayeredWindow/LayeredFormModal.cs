@@ -313,15 +313,15 @@ namespace AntdUI
 
         void Window_MouseDown(object? sender, MouseEventArgs e)
         {
-            ControlMouseDown(sender, e);
+            DraggableMouseDown();
         }
 
         RectangleF rectIcon, rectTitle, rectContent;
         RectangleF[] rectsContent;
         bool rtext = false;
 
-        readonly StringFormat stringLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter };
-        readonly StringFormat stringTL = new StringFormat { Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter };
+        readonly StringFormat stringLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);
+        readonly StringFormat stringTL = Helper.SF_Ellipsis(StringAlignment.Near, StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
@@ -449,7 +449,7 @@ namespace AntdUI
                 base.OnMouseUp(e);
                 return;
             }
-            ControlMouseDown(this, e);
+            DraggableMouseDown();
             base.OnMouseDown(e);
         }
 

@@ -45,7 +45,7 @@ namespace AntdUI
             }
             public int SelectionStart { get; set; }
             public int SelectionLength { get; set; }
-            public string? Text { get; set; }
+            public string Text { get; set; }
         }
     }
 }

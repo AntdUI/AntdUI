@@ -269,7 +269,7 @@ namespace AntdUI
 
         #region 渲染
 
-        private readonly StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter };
+        private readonly StringFormat stringFormat = Helper.SF_Ellipsis(StringAlignment.Near, StringAlignment.Near);
 
         public override Bitmap PrintBit()
         {

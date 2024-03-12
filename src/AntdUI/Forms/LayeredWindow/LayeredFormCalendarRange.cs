@@ -755,10 +755,10 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat stringFormatC = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
-        StringFormat stringFormatL = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far };
-        StringFormat stringFormatLE = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter };
-        StringFormat stringFormatR = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
+        StringFormat stringFormatC = Helper.SF();
+        StringFormat stringFormatL = Helper.SF(lr: StringAlignment.Far);
+        StringFormat stringFormatLE = Helper.SF_Ellipsis(lr: StringAlignment.Near);
+        StringFormat stringFormatR = Helper.SF(lr: StringAlignment.Near);
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;

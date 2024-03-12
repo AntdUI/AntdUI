@@ -268,8 +268,7 @@ namespace AntdUI
             }
         }
 
-        StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.None, FormatFlags = StringFormatFlags.NoWrap };
-
+        StringFormat stringFormat = Helper.SF_NoWrap();
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>
         /// 文本位置
@@ -461,7 +460,7 @@ namespace AntdUI
 
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
 
-            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, radius, shape == TShape.Round);
+            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, shape);
 
             if (type == TTypeMini.Default)
             {

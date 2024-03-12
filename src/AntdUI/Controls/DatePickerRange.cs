@@ -332,7 +332,7 @@ namespace AntdUI
 
         #region 渲染
 
-        internal StringFormat stringLeft = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        internal StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
             RectangleF rect = ClientRectangle.PaddingRect(Padding);

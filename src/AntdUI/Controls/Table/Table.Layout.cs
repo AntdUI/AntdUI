@@ -71,6 +71,7 @@ namespace AntdUI
                         {
                             if (it.Width.EndsWith("%") && float.TryParse(it.Width.TrimEnd('%'), out var f)) col_width.Add(x, f / 100F);
                             else if (int.TryParse(it.Width, out var i)) col_width.Add(x, (int)(i * Config.Dpi));
+                            else col_width.Add(x, -1); //AUTO 
                         }
                         x++;
                     }
@@ -160,7 +161,11 @@ namespace AntdUI
                             if (col_width.ContainsKey(it.Key))
                             {
                                 var value = col_width[it.Key];
-                                if (value is int val_int) max_width += val_int;
+                                if (value is int val_int)
+                                {
+                                    if (val_int == -1) max_width += it.Value;
+                                    else max_width += val_int;
+                                }
                                 if (value is float val_float) max_width += rect.Width * val_float;
                             }
                             else if (it.Value == -1F) use_width -= check_size * 2;
@@ -168,7 +173,6 @@ namespace AntdUI
                         }
                         rect_read.Width = rect.Width;
                         rect_read.Height = rect.Height;
-
                         var width_cell = new Dictionary<int, int>();
                         if (max_width > rect.Width)
                         {
@@ -178,7 +182,11 @@ namespace AntdUI
                                 if (col_width.ContainsKey(it.Key))
                                 {
                                     var value = col_width[it.Key];
-                                    if (value is int val_int) width_cell.Add(it.Key, val_int);
+                                    if (value is int val_int)
+                                    {
+                                        if (val_int == -1) width_cell.Add(it.Key, (int)Math.Ceiling(it.Value));
+                                        else width_cell.Add(it.Key, val_int);
+                                    }
                                     else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
                                 }
                                 else if (it.Value == -1F)
@@ -200,7 +208,11 @@ namespace AntdUI
                                 if (col_width.ContainsKey(it.Key))
                                 {
                                     var value = col_width[it.Key];
-                                    if (value is int val_int) width_cell.Add(it.Key, val_int);
+                                    if (value is int val_int)
+                                    {
+                                        if (val_int == -1) width_cell.Add(it.Key, (int)Math.Ceiling(it.Value));
+                                        else width_cell.Add(it.Key, val_int);
+                                    }
                                     else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
                                 }
                                 else if (it.Value == -1F)

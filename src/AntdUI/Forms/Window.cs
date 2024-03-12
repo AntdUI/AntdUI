@@ -251,23 +251,37 @@ namespace AntdUI
 
         #region 交互
 
-        public void ControlMouseDown(object? sender, MouseEventArgs e)
+        #region 拖动窗口
+
+        /// <summary>
+        /// 拖动窗口（鼠标按下）
+        /// </summary>
+        public void DraggableMouseDown()
         {
-            ControlMouseDown();
+            ReleaseCapture();
+            SendMessage(handle, 0x0112, 61456 | 2, IntPtr.Zero);
         }
 
+        [Obsolete("请使用 DraggableMouseDown 来替代")]
+        public void ControlMouseDown(object? sender, MouseEventArgs e)
+        {
+            DraggableMouseDown();
+        }
+
+        [Obsolete("请使用 DraggableMouseDown 来替代")]
         public void ControlMouseDown()
         {
             ReleaseCapture();
             SendMessage(handle, 0x0112, 61456 | 2, IntPtr.Zero);
         }
 
+        #endregion
+
         #region 调整窗口大小
 
         /// <summary>
         /// 调整窗口大小（鼠标移动）
         /// </summary>
-        /// <param name="point">客户端坐标</param>
         /// <returns>可以调整</returns>
         public bool ResizableMouseMove()
         {

@@ -442,7 +442,7 @@ namespace AntdUI
                             BackColor = Color.Transparent,
                             Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                             Size = new Size(cell.RECT.Width, height),
-                            Text = value?.ToString()
+                            Text = value?.ToString() ?? ""
                         };
                     }
                     edit_input.KeyPress += (a, b) =>
@@ -565,7 +565,7 @@ namespace AntdUI
                                         BackColor = Color.Transparent,
                                         Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                                         Size = new Size(cell.RECT.Width, height),
-                                        Text = text2.Text
+                                        Text = text2.Text ?? ""
                                     };
                                 }
                                 else
@@ -575,7 +575,7 @@ namespace AntdUI
                                         BackColor = Color.Transparent,
                                         Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                                         Size = new Size(cell.RECT.Width, height),
-                                        Text = value?.ToString()
+                                        Text = value?.ToString() ?? ""
                                     };
                                 }
                             }

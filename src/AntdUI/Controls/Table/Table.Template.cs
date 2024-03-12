@@ -667,7 +667,7 @@ namespace AntdUI
             {
                 RECT = _rect;
                 int gap = _gap / 2, gap2 = _gap;
-                if (value.Count == 1)
+                if (value.Count == 1 && value[0] is TemplateText)
                 {
                     var it = value[0];
                     var size = SIZES[0];
@@ -681,7 +681,7 @@ namespace AntdUI
                         case ColumnAlign.Center: use_x = _rect.X + (_rect.Width - USE_Width) / 2; break;
                         case ColumnAlign.Right: use_x = _rect.Right - USE_Width; break;
                         case ColumnAlign.Left:
-                        default: use_x = _rect.X; break;
+                        default: use_x = _rect.X + gap2; break;
                     }
                     for (int i = 0; i < value.Count; i++)
                     {
@@ -716,7 +716,7 @@ namespace AntdUI
                 }
                 USE_Width = (int)Math.Ceiling(w);
                 SIZES = sizes.ToArray();
-                return new SizeF(USE_Width + (value.Count > 1 ? _gap2 : _gap), h);
+                return new SizeF(USE_Width + _gap2, h);
             }
             public bool MouseDown { get; set; }
 

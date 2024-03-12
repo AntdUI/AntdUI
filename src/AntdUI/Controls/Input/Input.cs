@@ -78,6 +78,38 @@ namespace AntdUI
             }
         }
 
+        Image? backImage = null;
+        /// <summary>
+        /// 背景图片
+        /// </summary>
+        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        public new Image? BackgroundImage
+        {
+            get => backImage;
+            set
+            {
+                if (backImage == value) return;
+                backImage = value;
+                Invalidate();
+            }
+        }
+
+        TFit backFit = TFit.Fill;
+        /// <summary>
+        /// 背景图片布局
+        /// </summary>
+        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        public new TFit BackgroundImageLayout
+        {
+            get => backFit;
+            set
+            {
+                if (backFit == value) return;
+                backFit = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region 边框
@@ -310,7 +342,7 @@ namespace AntdUI
         /// 支持清除
         /// </summary>
         [Description("支持清除"), Category("行为"), DefaultValue(false)]
-        public bool AllowClear
+        public virtual bool AllowClear
         {
             get => allowclear;
             set
@@ -336,19 +368,21 @@ namespace AntdUI
         #region 文本
 
         bool isempty = true;
-        string? _text = null;
-        [Description("文本"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        string _text = "";
+        [Description("文本"), Category("外观"), DefaultValue("")]
+        public override string Text
         {
             get => _text;
             set
             {
+                if (value is null) value = "";
                 if (_text == value) return;
                 _text = value;
                 isempty = string.IsNullOrEmpty(_text);
                 FixFontWidth();
                 OnAllowClear();
                 Invalidate();
+                OnTextChanged(EventArgs.Empty);
             }
         }
 
@@ -550,7 +584,7 @@ namespace AntdUI
         /// </summary>
         public void Clear()
         {
-            Text = null;
+            Text = "";
         }
 
         /// <summary>
@@ -703,7 +737,7 @@ namespace AntdUI
                     }
                     texts.Insert(start, text);
                     var tmp = string.Join("", texts);
-                    if (ismax && text.Length > MaxLength) tmp = text.Substring(0, MaxLength);
+                    if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
                     Text = tmp;
                     SelectionLength = 0;
                     SelectionStart = start + len;
@@ -715,7 +749,7 @@ namespace AntdUI
                     foreach (var it in cache_font) texts.Add(it.text);
                     texts.Insert(start + 1, text);
                     var tmp = string.Join("", texts);
-                    if (ismax && text.Length > MaxLength) tmp = text.Substring(0, MaxLength);
+                    if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
                     Text = tmp;
                     SelectionStart = start + 1 + len;
                 }

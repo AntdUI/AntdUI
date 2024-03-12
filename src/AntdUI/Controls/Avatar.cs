@@ -265,7 +265,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        readonly StringFormat stringCenter = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        readonly StringFormat stringCenter = Helper.SF_ALL();
 
         void FillRect(Graphics g, Rectangle rect, Color color, float radius, bool round)
         {

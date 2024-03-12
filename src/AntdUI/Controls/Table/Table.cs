@@ -980,7 +980,7 @@ namespace AntdUI
             }
         }
 
-        internal StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.None, FormatFlags = StringFormatFlags.NoWrap };
+        internal StringFormat stringFormat = Helper.SF_NoWrap();
 
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>

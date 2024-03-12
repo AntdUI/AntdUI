@@ -148,7 +148,7 @@ namespace AntdUI
         object? selectedValue = null;
         void ChangeValueNULL()
         {
-            Text = null;
+            Text = "";
             selectedValue = null;
             selectedIndex = -1;
             SelectedValueChanged?.Invoke(this, selectedValue);
@@ -166,7 +166,7 @@ namespace AntdUI
             else
             {
                 selectedValue = obj;
-                Text = obj.ToString();
+                Text = obj.ToString() ?? "";
             }
             SelectedValueChanged?.Invoke(this, selectedValue);
             SelectedIndexChanged?.Invoke(this, selectedIndex);
@@ -183,7 +183,7 @@ namespace AntdUI
             else
             {
                 selectedValue = obj;
-                Text = obj.ToString();
+                Text = obj.ToString() ?? "";
             }
             SelectedValueChanged?.Invoke(this, selectedValue);
             SelectedIndexsChanged?.Invoke(this, selectedIndexX, selectedIndex);
@@ -388,7 +388,7 @@ namespace AntdUI
 
         internal override void OnClearValue()
         {
-            if (selectedIndex > -1)
+            if (selectedIndex > -1 || selectedValue != null)
             {
                 ChangeValueNULL();
                 Invalidate();

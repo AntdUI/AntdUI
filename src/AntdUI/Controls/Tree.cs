@@ -405,7 +405,7 @@ namespace AntdUI
             }
         }
 
-        StringFormat sf_center = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter };
+        StringFormat sf_center = Helper.SF_Ellipsis();
         void PaintItem(Graphics g, TreeItem item, Color fore, Color fore_active, Color hover, float radius)
         {
             if (item.Select)
