@@ -246,6 +246,9 @@ namespace AntdUI
         [Description("是否可以拖动位置"), Category("行为"), DefaultValue(true)]
         public bool DragMove { get; set; } = true;
 
+        [Description("关闭按钮大小"), Category("行为"), DefaultValue(48)]
+        public int CloseSize { get; set; } = 48;
+
         #endregion
 
         public override Rectangle DisplayRectangle
@@ -528,8 +531,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle.PaddingRect(Padding);
-            int btn_size = (maximizeBox || minimizeBox) ? (int)Math.Round(Font.Size * 6.06F) : (int)Math.Round(Font.Size * 4.6F);
-
+            int btn_size = (maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Config.Dpi) : (int)Math.Round((CloseSize - 8) * Config.Dpi);
             rect_close = new Rectangle(rect.Right - btn_size, rect.Y, btn_size, rect.Height);
             hasr = btn_size;
             int left = rect_close.Left;

@@ -228,7 +228,8 @@ namespace AntdUI
                                     it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
                                     if (it.show)
                                     {
-                                        if (it.emoji) g.DrawString(it.text, font, fore, it.rect, sf_font);
+                                        if (IsPassWord) g.DrawString(PassWordChar, Font, fore, it.rect, sf_font);
+                                        else if (it.emoji) g.DrawString(it.text, font, fore, it.rect, sf_font);
                                         else g.DrawString(it.text, Font, fore, it.rect, sf_font);
                                     }
                                 }
@@ -239,7 +240,11 @@ namespace AntdUI
                             foreach (var it in cache_font)
                             {
                                 it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
-                                if (it.show) g.DrawString(it.text, Font, fore, it.rect, sf_font);
+                                if (it.show)
+                                {
+                                    if (IsPassWord) g.DrawString(PassWordChar, Font, fore, it.rect, sf_font);
+                                    else g.DrawString(it.text, Font, fore, it.rect, sf_font);
+                                }
                             }
                         }
                     }

@@ -59,7 +59,7 @@ namespace AntdUI
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
                             int w = (int)Math.Ceiling(sizefont.Width);
                             font_height = (int)Math.Ceiling(sizefont.Height);
-                            foreach (char it in _text) font_widths.Add(new CacheFont(PassWordChar, false, w));
+                            foreach (char it in _text) font_widths.Add(new CacheFont(it.ToString(), false, w));
                         }
                         else
                         {
@@ -145,7 +145,7 @@ namespace AntdUI
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
                             int w = (int)Math.Ceiling(sizefont.Width);
                             font_height = (int)Math.Ceiling(sizefont.Height);
-                            foreach (char it in _text) font_widths.Add(new CacheFont(PassWordChar, false, w));
+                            foreach (char it in _text) font_widths.Add(new CacheFont(it.ToString(), false, w));
                         }
                         else
                         {

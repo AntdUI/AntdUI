@@ -27,15 +27,9 @@ namespace SVGView
 
         private void button1_Click(object sender, MouseEventArgs e)
         {
-            string svg = input1.Text;
-            int i = svg.IndexOf(">") + 1;
-            string first = svg.Substring(0, i), last = svg.Substring(i);
-            ReIdOne(ref first, "t");
-            ReId(ref first, "class", "version", "xmlns", "width", "height");
-            svg = first + last;
-            if (e.Button == MouseButtons.Right) ReId(ref svg, "fill", "p-id");
-            else ReId(ref svg, "p-id");
-            input1.Text = svg.Replace(" >", ">");
+            var svg = input1.Text;
+            if (string.IsNullOrEmpty(svg)) return;
+            input1.Text = Hand(svg.Trim(), e.Button == MouseButtons.Right);
         }
 
         void ReId(ref string svg, params string[] ids)
@@ -44,23 +38,26 @@ namespace SVGView
         }
         void ReId(ref string svg, string id)
         {
-            int i = svg.IndexOf(id + "=\"");
-            while (i != -1)
+            if (svg.Contains(" " + id + "=\"") || svg.Contains("<" + id + "=\""))
             {
-                string first = svg.Substring(0, i), last = svg.Substring(i + id.Length + 2);
-                last = last.Substring(last.IndexOf("\"") + 1).Trim();
-                svg = first + last;
-                i = svg.IndexOf(id + "=\"");
+                int i = svg.IndexOf(id + "=\"");
+                while (i != -1)
+                {
+                    string first = svg.Substring(0, i), last = svg.Substring(i + id.Length + 3);
+                    last = last.Substring(last.IndexOf("\"") + 1).Trim();
+                    svg = first + last;
+                    i = svg.IndexOf(id + "=\"");
+                }
             }
         }
 
-        void ReIdOne(ref string svg, string id)
+        void ReNodeOne(ref string svg, string id)
         {
-            int i = svg.IndexOf(id + "=\"");
+            int i = svg.IndexOf("<" + id + ">");
             if (i > -1)
             {
                 string first = svg.Substring(0, i), last = svg.Substring(i + id.Length + 2);
-                last = last.Substring(last.IndexOf("\"") + 1).Trim();
+                last = last.Substring(last.IndexOf("</") + id.Length + 3).Trim();
                 svg = first + last;
             }
         }
@@ -69,7 +66,8 @@ namespace SVGView
         {
             try
             {
-                string svg = input1.Text;
+                var svg = input1.Text;
+                if (svg == null) return;
                 button1.ImageSvg = svg;
                 int size = (int)Math.Floor((pictureBox1.Width > pictureBox1.Height ? pictureBox1.Height : pictureBox1.Width) * 0.8F);
                 pictureBox1.Image = AntdUI.SvgExtend.SvgToBmp(svg, size, size, Color.Black);
@@ -81,18 +79,27 @@ namespace SVGView
         {
             try
             {
-                string svg = Clipboard.GetText();
-                int i = svg.IndexOf(">") + 1;
-                string first = svg.Substring(0, i), last = svg.Substring(i);
-                ReIdOne(ref first, "t");
-                ReId(ref first, "class", "version", "xmlns", "width", "height");
-                svg = first + last;
-                if (e.Button == MouseButtons.Right) ReId(ref svg, "fill", "p-id");
-                else ReId(ref svg, "p-id");
-                input1.Text = svg.Replace(" >", ">");
+                var svg = Clipboard.GetText();
+                if (string.IsNullOrEmpty(svg)) return;
+                input1.Text = Hand(svg.Trim(), e.Button == MouseButtons.Right);
                 Clipboard.SetText(input1.Text);
             }
             catch { }
+        }
+
+        string Hand(string svg, bool more = false)
+        {
+            if (svg.StartsWith("<?xml")) svg = svg.Substring(svg.IndexOf(">") + 1).Trim();
+            int i = svg.IndexOf(">") + 1;
+            string first = svg.Substring(0, i), last = svg.Substring(i);
+            ReId(ref first, "class", "version", "xmlns", "width", "height", "t");
+            ReNodeOne(ref last, "title");
+            svg = first + last;
+            if (more) ReId(ref svg, "fill");
+            ReId(ref svg, "p-id");
+            string _tmp = svg.Replace(" >", ">").Replace("\t", "").Replace("\r", "").Replace("\n", "");
+            while (_tmp.Contains("  ")) _tmp = _tmp.Replace("  ", " ");
+            return _tmp.Replace("> <", "><").Trim();
         }
     }
 }

@@ -238,6 +238,7 @@ namespace AntdUI
             TopMost = config.Form.TopMost;
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;
+            else Font = config.Form.Font;
             font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style);
             Icon = config.Form.Icon;
             using (var g = Graphics.FromHwnd(Handle).High())

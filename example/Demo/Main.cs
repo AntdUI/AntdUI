@@ -30,12 +30,12 @@ namespace Demo
 
         void Window_MouseDown(object? sender, MouseEventArgs e)
         {
-            ControlMouseDown(sender, e);
+            DraggableMouseDown();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            ControlMouseDown(this, e);
+            DraggableMouseDown();
             base.OnMouseDown(e);
         }
 

@@ -53,7 +53,7 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Pagination** 分页 | ✅ | ✅ |
 :arrow_right: | **Steps** 步骤条 | ❎ | ❎ |
 ||||
-:arrow_down: | 数据录入 `11` | 动画 | 禁用 |
+:arrow_down: | 数据录入 `12` | 动画 | 禁用 |
 :arrow_right: | **Checkbox** 多选框 | ✅ | ✅ |
 :arrow_right: | **ColorPicker** 颜色选择器 | ✅ | ✅ |
 :arrow_right: | **DatePicker** 日期选择框 | ✅ | ✅ |
@@ -65,6 +65,7 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Select** 选择器 | ✅ | ✅ |
 :arrow_right: | **Slider** 滑动输入条 | ✅ | ❎ |
 :arrow_right: | **Switch** 开关 | ✅ | ✅ |
+:arrow_right: | **TimePicker** 时间选择框 | ✅ | ✅ |
 ||||
 :arrow_down: | 数据展示 `12` | 动画 | 禁用 |
 :arrow_right: | **Avatar** 头像 | ❎ | ❎ |
