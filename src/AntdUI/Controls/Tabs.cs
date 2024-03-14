@@ -133,6 +133,36 @@ namespace AntdUI
 
         #endregion
 
+        #region 隐藏头
+
+        bool _tabMenuVisible = true;
+        [Description("是否显示头"), Category("外观"), DefaultValue(true)]
+        public bool TabMenuVisible
+        {
+            get => _tabMenuVisible;
+            set
+            {
+                _tabMenuVisible = value;
+                if (!value) ItemSize = new Size(1, 1);
+                Invalidate();
+            }
+        }
+
+        public override Rectangle DisplayRectangle
+        {
+            get
+            {
+                if (_tabMenuVisible) return base.DisplayRectangle;
+                else
+                {
+                    Rectangle rect = base.DisplayRectangle;
+                    return new Rectangle(rect.Left - 4, rect.Top - 5, rect.Width + 8, rect.Height + 9);
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region 渲染
@@ -185,7 +215,7 @@ namespace AntdUI
             set
             {
                 if (_select == value) return;
-                var old = _select;
+                int old = _select;
                 _select = value;
                 if (Type == TabType.Line) SetRect(old, _select);
                 else Invalidate();
@@ -210,79 +240,82 @@ namespace AntdUI
 
         void SetRect(int old, int value)
         {
-            if (old > -1)
+            if (value > -1)
             {
-                ThreadBar?.Dispose();
-                RectangleF OldValue, NewValue;
-                using (var g = Graphics.FromHwnd(Handle))
+                if (old > -1)
                 {
-                    OldValue = GetRect(g, GetTabRect(old), TabPages[old]);
-                    NewValue = GetRect(g, GetTabRect(value), TabPages[value]);
-                }
-                if (Config.Animation && OldValue.Y == NewValue.Y)
-                {
-                    AnimationBar = true;
-                    TabSelectRect = NewValue;
-                    float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
-                    ThreadBar = new ITask(this, () =>
+                    ThreadBar?.Dispose();
+                    RectangleF OldValue, NewValue;
+                    using (var g = Graphics.FromHwnd(Handle))
                     {
-                        if (AnimationBarValue.Width != NewValue.Width)
+                        OldValue = GetRect(g, GetTabRect(old), TabPages[old]);
+                        NewValue = GetRect(g, GetTabRect(value), TabPages[value]);
+                    }
+                    if (Config.Animation && OldValue.Y == NewValue.Y)
+                    {
+                        AnimationBar = true;
+                        TabSelectRect = NewValue;
+                        float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
+                        ThreadBar = new ITask(this, () =>
                         {
-                            if (NewValue.Width > OldValue.Width)
+                            if (AnimationBarValue.Width != NewValue.Width)
                             {
-                                AnimationBarValue.Width += p_w_val;
-                                if (AnimationBarValue.Width > NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                if (NewValue.Width > OldValue.Width)
+                                {
+                                    AnimationBarValue.Width += p_w_val;
+                                    if (AnimationBarValue.Width > NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                }
+                                else
+                                {
+                                    AnimationBarValue.Width -= p_w_val;
+                                    if (AnimationBarValue.Width < NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                }
+                            }
+                            if (NewValue.X > OldValue.X)
+                            {
+                                if (AnimationBarValue.X > p_val2)
+                                    AnimationBarValue.X += p_val / 2F;
+                                else AnimationBarValue.X += p_val;
+                                if (AnimationBarValue.X > NewValue.X)
+                                {
+                                    AnimationBarValue.X = NewValue.X;
+                                    Invalidate();
+                                    return false;
+                                }
                             }
                             else
                             {
-                                AnimationBarValue.Width -= p_w_val;
-                                if (AnimationBarValue.Width < NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                AnimationBarValue.X -= p_val;
+                                if (AnimationBarValue.X < NewValue.X)
+                                {
+                                    AnimationBarValue.X = NewValue.X;
+                                    Invalidate();
+                                    return false;
+                                }
                             }
-                        }
-                        if (NewValue.X > OldValue.X)
+                            Invalidate();
+                            return true;
+                        }, 10, () =>
                         {
-                            if (AnimationBarValue.X > p_val2)
-                                AnimationBarValue.X += p_val / 2F;
-                            else AnimationBarValue.X += p_val;
-                            if (AnimationBarValue.X > NewValue.X)
-                            {
-                                AnimationBarValue.X = NewValue.X;
-                                Invalidate();
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            AnimationBarValue.X -= p_val;
-                            if (AnimationBarValue.X < NewValue.X)
-                            {
-                                AnimationBarValue.X = NewValue.X;
-                                Invalidate();
-                                return false;
-                            }
-                        }
-                        Invalidate();
-                        return true;
-                    }, 10, () =>
+                            AnimationBarValue = NewValue;
+                            AnimationBar = false;
+                            Invalidate();
+                        });
+                        return;
+                    }
+                    else
                     {
-                        AnimationBarValue = NewValue;
-                        AnimationBar = false;
+                        TabSelectRect = AnimationBarValue = NewValue;
                         Invalidate();
-                    });
-                    return;
+                        return;
+                    }
                 }
                 else
                 {
-                    TabSelectRect = AnimationBarValue = NewValue;
-                    Invalidate();
-                    return;
-                }
-            }
-            else
-            {
-                using (var g = Graphics.FromHwnd(Handle))
-                {
-                    AnimationBarValue = TabSelectRect = GetRect(g, GetTabRect(value), TabPages[value]);
+                    using (var g = Graphics.FromHwnd(Handle))
+                    {
+                        AnimationBarValue = TabSelectRect = GetRect(g, GetTabRect(value), TabPages[value]);
+                    }
                 }
             }
         }
@@ -316,89 +349,40 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle;
-            var g = e.Graphics.High();
-            int selectedIndex = SelectValue, hover_i = Hover_i;
-            if (TabCount > 0)
+            if (_tabMenuVisible)
             {
-                Color _color = fill.HasValue ? fill.Value : Style.Db.Primary;
-                if (BarBackSize > 0)
+                var rect = ClientRectangle;
+                var g = e.Graphics.High();
+                int selectedIndex = SelectValue, hover_i = Hover_i;
+                if (TabCount > 0)
                 {
-                    var tab_rect_0 = GetTabRect(0);
-                    var top = new RectangleF(Margin.Left, tab_rect_0.Y + tab_rect_0.Height - BarBackSize, rect.Width - Margin.Horizontal, BarBackSize);
-                    using (var brush = new SolidBrush(BarBack.HasValue ? BarBack.Value : Style.Db.Fill))
+                    Color _color = fill.HasValue ? fill.Value : Style.Db.Primary;
+                    if (BarBackSize > 0)
                     {
-                        g.FillRectangle(brush, top);
-                    }
-                }
-                if (Type == TabType.Line)
-                {
-                    if (AnimationBar)
-                    {
-                        using (var brush = new SolidBrush(_color))
+                        var tab_rect_0 = GetTabRect(0);
+                        var top = new RectangleF(Margin.Left, tab_rect_0.Y + tab_rect_0.Height - BarBackSize, rect.Width - Margin.Horizontal, BarBackSize);
+                        using (var brush = new SolidBrush(BarBack.HasValue ? BarBack.Value : Style.Db.Fill))
                         {
-                            g.FillRectangle(brush, AnimationBarValue);
+                            g.FillRectangle(brush, top);
                         }
                     }
-                    for (int i = 0; i < TabCount; i++)
+                    if (Type == TabType.Line)
                     {
-                        var page = TabPages[i];
-                        var tab_rect = GetTabRect(i);
-                        if (selectedIndex == i)//是否选中
+                        if (AnimationBar)
                         {
-                            if (AnimationBar)
+                            using (var brush = new SolidBrush(_color))
                             {
-                                using (var brush = new SolidBrush(_color))
-                                {
-                                    g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
-                                }
-                            }
-                            else
-                            {
-                                using (var brush = new SolidBrush(_color))
-                                {
-                                    g.FillRectangle(brush, TabSelectRect);
-                                    g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
-                                }
+                                g.FillRectangle(brush, AnimationBarValue);
                             }
                         }
-                        else if (hover_i == i)
-                        {
-                            using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
-                            {
-                                g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
-                            }
-                        }
-                        else
-                        {
-                            using (var brush = new SolidBrush(ForeColor))
-                            {
-                                g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    using (var brush_bg = new SolidBrush(Style.Db.FillQuaternary))
-                    {
                         for (int i = 0; i < TabCount; i++)
                         {
                             var page = TabPages[i];
                             var tab_rect = GetTabRect(i);
-                            using (var path = Helper.RoundPath(tab_rect, 6 * Config.Dpi, true, true, false, false))
+                            if (selectedIndex == i)//是否选中
                             {
-                                if (selectedIndex == i)//是否选中
+                                if (AnimationBar)
                                 {
-                                    using (var brush_bgw = new SolidBrush(Style.Db.BgContainer))
-                                    {
-                                        g.FillPath(brush_bgw, path);
-                                        using (var pen_bg = new Pen(Style.Db.BorderSecondary, 1F * Config.Dpi))
-                                        {
-                                            g.DrawPath(pen_bg, path);
-                                            g.FillRectangle(brush_bgw, new RectangleF(tab_rect.X, tab_rect.Bottom - pen_bg.Width, tab_rect.Width, pen_bg.Width * 2));
-                                        }
-                                    }
                                     using (var brush = new SolidBrush(_color))
                                     {
                                         g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
@@ -406,37 +390,89 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    g.FillPath(brush_bg, path);
-                                    using (var pen_bg = new Pen(Style.Db.BorderSecondary, 1F * Config.Dpi))
+                                    using (var brush = new SolidBrush(_color))
                                     {
-                                        g.DrawPath(pen_bg, path);
+                                        g.FillRectangle(brush, TabSelectRect);
+                                        g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
                                     }
-                                    if (hover_i == i)
+                                }
+                            }
+                            else if (hover_i == i)
+                            {
+                                using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
+                                {
+                                    g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                }
+                            }
+                            else
+                            {
+                                using (var brush = new SolidBrush(ForeColor))
+                                {
+                                    g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (var brush_bg = new SolidBrush(Style.Db.FillQuaternary))
+                        {
+                            for (int i = 0; i < TabCount; i++)
+                            {
+                                var page = TabPages[i];
+                                var tab_rect = GetTabRect(i);
+                                using (var path = Helper.RoundPath(tab_rect, 6 * Config.Dpi, true, true, false, false))
+                                {
+                                    if (selectedIndex == i)//是否选中
                                     {
-                                        using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
+                                        using (var brush_bgw = new SolidBrush(Style.Db.BgContainer))
+                                        {
+                                            g.FillPath(brush_bgw, path);
+                                            using (var pen_bg = new Pen(Style.Db.BorderSecondary, 1F * Config.Dpi))
+                                            {
+                                                g.DrawPath(pen_bg, path);
+                                                g.FillRectangle(brush_bgw, new RectangleF(tab_rect.X, tab_rect.Bottom - pen_bg.Width, tab_rect.Width, pen_bg.Width * 2));
+                                            }
+                                        }
+                                        using (var brush = new SolidBrush(_color))
                                         {
                                             g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
                                         }
                                     }
                                     else
                                     {
-                                        using (var brush = new SolidBrush(ForeColor))
+                                        g.FillPath(brush_bg, path);
+                                        using (var pen_bg = new Pen(Style.Db.BorderSecondary, 1F * Config.Dpi))
                                         {
-                                            g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                            g.DrawPath(pen_bg, path);
+                                        }
+                                        if (hover_i == i)
+                                        {
+                                            using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
+                                            {
+                                                g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            using (var brush = new SolidBrush(ForeColor))
+                                            {
+                                                g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                if (badges.Count > 0)
-                {
-                    using (var font = new Font(Font.FontFamily, BadgeSize))
+                    if (badges.Count > 0)
                     {
-                        for (int i = 0; i < TabCount; i++)
+                        using (var font = new Font(Font.FontFamily, BadgeSize))
                         {
-                            if (badges.TryGetValue(i, out var find)) this.PaintBadge(find, GetTabRect(i), font, g);
+                            for (int i = 0; i < TabCount; i++)
+                            {
+                                if (badges.TryGetValue(i, out var find)) this.PaintBadge(find, GetTabRect(i), font, g);
+                            }
                         }
                     }
                 }

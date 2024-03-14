@@ -31,6 +31,9 @@ namespace AntdUI
                 case Keys.Back:
                     ProcessBackSpaceKey();
                     return true;
+                case Keys.Delete:
+                    ProcessDelete();
+                    return true;
                 //========================================================
                 case Keys.Left:
                     ProcessLeftKey();
@@ -126,6 +129,28 @@ namespace AntdUI
                     if (start != it.i) texts.Add(it.text);
                 }
                 Text = string.Join("", texts);
+                SelectionStart = start;
+            }
+        }
+
+        /// <summary>
+        /// 删除文本
+        /// </summary>
+        void ProcessDelete()
+        {
+            if (cache_font == null || ReadOnly) return;
+            if (selectionLength > 0)
+            {
+                int start = selectionStart, end = selectionLength;
+                AddHistoryRecord();
+                int end_temp = start + end;
+                var texts = new List<string>();
+                foreach (var it in cache_font)
+                {
+                    if (it.i < start || it.i >= end_temp) texts.Add(it.text);
+                }
+                Text = string.Join("", texts);
+                SelectionLength = 0;
                 SelectionStart = start;
             }
         }

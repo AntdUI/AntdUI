@@ -217,6 +217,7 @@ namespace AntdUI
             loading = _config.Call != null;
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;
+            else Font = config.Form.Font;
             Icon = config.Form.Icon;
             using (var g = Graphics.FromHwnd(Handle).High())
             {

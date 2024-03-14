@@ -132,6 +132,7 @@ namespace AntdUI
                 {
                     ScrollX = ScrollY = 0;
                     cache_font = null;
+                    CalculateRect();
                 }
                 else
                 {

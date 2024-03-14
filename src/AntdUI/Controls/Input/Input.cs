@@ -623,6 +623,7 @@ namespace AntdUI
         /// </summary>
         public void Paste()
         {
+            if (IsPassWord) return;
             string strText = Clipboard.GetText();
             if (string.IsNullOrEmpty(strText)) return;
             EnterText(strText, false);
