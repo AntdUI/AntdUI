@@ -443,6 +443,13 @@ namespace AntdUI
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (e.Delta > 0) Value = currentValue + Increment;
+            else Value = currentValue - Increment;
+            base.OnMouseWheel(e);
+        }
+
         #endregion
     }
 }

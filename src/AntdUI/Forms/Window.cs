@@ -81,24 +81,28 @@ namespace AntdUI
             }
         }
 
-        bool isaddMessage = false;
+        protected virtual bool UseMessageFilter { get => false; }
         void HandMessage()
         {
-            if (winState == WState.Restore && resizable)
+            ReadMessage = winState == WState.Restore && resizable;
+            if (UseMessageFilter) IsAddMessage = true;
+            else IsAddMessage = ReadMessage;
+        }
+
+        bool ReadMessage = false;
+        bool _isaddMessage = false;
+        bool IsAddMessage
+        {
+            get => _isaddMessage;
+            set
             {
-                if (!isaddMessage)
+                if (_isaddMessage == value) return;
+                _isaddMessage = value;
+                if (value)
                 {
                     Application.AddMessageFilter(this);
-                    isaddMessage = true;
                 }
-            }
-            else
-            {
-                if (isaddMessage)
-                {
-                    Application.RemoveMessageFilter(this);
-                    isaddMessage = false;
-                }
+                else Application.RemoveMessageFilter(this);
             }
         }
 
@@ -444,25 +448,30 @@ namespace AntdUI
 
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {
-            switch (m.Msg)
+            if (ReadMessage)
             {
-                case 0xa0:
-                case 0x200:
-                    if (isMe(m.HWnd))
-                    {
-                        if (ResizableMouseMove(PointToClient(MousePosition))) return true;
-                    }
-                    break;
-                case 0xa1:
-                case 0x201:
-                    if (isMe(m.HWnd))
-                    {
-                        if (ResizableMouseDownInternal()) return true;
-                    }
-                    break;
+                switch (m.Msg)
+                {
+                    case 0xa0:
+                    case 0x200:
+                        if (isMe(m.HWnd))
+                        {
+                            if (ResizableMouseMove(PointToClient(MousePosition))) return true;
+                        }
+                        break;
+                    case 0xa1:
+                    case 0x201:
+                        if (isMe(m.HWnd))
+                        {
+                            if (ResizableMouseDownInternal()) return true;
+                        }
+                        break;
+                }
             }
-            return false;
+            return OnPreFilterMessage(m);
         }
+
+        protected virtual bool OnPreFilterMessage(System.Windows.Forms.Message m) { return false; }
 
         bool isMe(IntPtr intPtr)
         {

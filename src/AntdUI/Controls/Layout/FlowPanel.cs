@@ -152,13 +152,17 @@ namespace AntdUI
             {
                 if (container is FlowPanel parent)
                 {
-                    if (parent.PauseLayout) return false;
-                    int val = HandLayout(parent);
-                    if (parent.scroll != null)
+                    if (parent.IsHandleCreated)
                     {
-                        bool old = parent.scroll.Show;
-                        parent.scroll.SetVrSize(val);
-                        if (old != parent.scroll.Show) parent.Invoke(new Action(() => { parent.OSizeChanged(); }));
+                        if (parent.PauseLayout) return false;
+                        int val = HandLayout(parent);
+                        if (parent.scroll != null)
+                        {
+                            bool old_show = parent.scroll.Show;
+                            float old_vr = parent.scroll.VrValue;
+                            parent.scroll.SetVrSize(val);
+                            if (old_show != parent.scroll.Show || old_vr != parent.scroll.VrValue) parent.BeginInvoke(new Action(() => { parent.OSizeChanged(); }));
+                        }
                     }
                 }
                 return false;
