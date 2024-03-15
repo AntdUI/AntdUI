@@ -1,11 +1,17 @@
-![横幅](screenshot/banner.png?raw=true)
+![banner](screenshot/banner.png?raw=true)
+
+<p align="center">
+    <a href="README.md">中文</a>
+    ❤
+    <a href="README-en.md">English</a>
+</p>
 
 # AntdUI
 Winform UI library use Ant Design 5.0
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=for-the-badge&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
 [![NuGet](https://img.shields.io/nuget/v/AntdUI.svg?style=for-the-badge&label=AntdUI&logo=nuget)](https://www.nuget.org/packages/AntdUI)
-[![QQ群](https://img.shields.io/badge/QQ群-328884096-f74658?style=for-the-badge&logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
+[![QQGroup](https://img.shields.io/badge/QQ群-328884096-f74658?style=for-the-badge&logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
 
 ---
@@ -30,10 +36,6 @@ Winform UI library use Ant Design 5.0
 - .NET 6.0及以上。
 - .NET Framework4.8及以上。
 - .NET Framework4.0及以上。
-
-
-> * **B站视频**: [https://www.bilibili.com/video/BV1ip4y1Z7xi](https://www.bilibili.com/video/BV1ip4y1Z7xi)
-> * **QQ群**: 328884096
 
 ### 🌴控件
 
@@ -96,7 +98,7 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Image3D** 图片3D | ✅ | ❎ |  
 
 ### 🐿️捐赠 🥣💲🐖👚
-![收款码](screenshot/Pre/Payment.png?raw=true)
+![Payment](screenshot/Pre/Payment.png?raw=true)
 
 ### 🎨截图
 
@@ -110,24 +112,24 @@ Winform UI library use Ant Design 5.0
 
 | **Button** 按钮 | **Badge** 徽标数 |
 | :--: | :--: |
-| ![按钮](screenshot/Button.gif?raw=true) | ![徽标数](screenshot/Badge.gif?raw=true) |
+| ![Button](screenshot/Button.gif?raw=true) | ![Badge](screenshot/Badge.gif?raw=true) |
 | **Carousel** 走马灯 | **Input** 输入框 |
-| ![走马灯](screenshot/Carousel.gif?raw=true) | ![输入框](screenshot/Input.gif?raw=true) |
+| ![Carousel](screenshot/Carousel.gif?raw=true) | ![Input](screenshot/Input.gif?raw=true) |
 | **Progress** 进度条 | **Avatar** 头像 |
-| ![进度条](screenshot/Progress.gif?raw=true) | ![头像](screenshot/Avatar.gif?raw=true) |
+| ![Progress](screenshot/Progress.gif?raw=true) | ![Avatar](screenshot/Avatar.gif?raw=true) |
 | **Checkbox** 多选框 | **Radio** 单选框 |
-| ![多选框](screenshot/Checkbox.gif?raw=true) | ![单选框](screenshot/Radio.gif?raw=true) |
+| ![Checkbox](screenshot/Checkbox.gif?raw=true) | ![Radio](screenshot/Radio.gif?raw=true) |
 | **Tooltip** 提示 | **Panel** 面板 |
-| ![提示](screenshot/Tooltip.gif?raw=true) | ![面板](screenshot/Panel.gif?raw=true) |
+| ![Tooltip](screenshot/Tooltip.gif?raw=true) | ![Panel](screenshot/Panel.gif?raw=true) |
 | **Tabs** 标签页 | **Alert** 警告提示 |
-| ![标签页](screenshot/Tabs.gif?raw=true) | ![警告提示](screenshot/Alert.gif?raw=true) |
+| ![Tabs](screenshot/Tabs.gif?raw=true) | ![Alert](screenshot/Alert.gif?raw=true) |
 | **Segmented** 分段控制器 | **Menu** 导航菜单 |
-| ![分段控制器](screenshot/Segmented.gif?raw=true) | ![导航菜单](screenshot/Menu.gif?raw=true) |
+| ![Segmented](screenshot/Segmented.gif?raw=true) | ![Menu](screenshot/Menu.gif?raw=true) |
 | **Divider** 分割线 | **Slider** 滑动条 |
-| ![分割线](screenshot/Divider.gif?raw=true) | ![滑动条](screenshot/Slider.gif?raw=true) |
+| ![Divider](screenshot/Divider.gif?raw=true) | ![Slider](screenshot/Slider.gif?raw=true) |
 | **Message** 全局提示 | **Notification** 通知提醒框 |
-| ![全局提示](screenshot/Message.gif?raw=true) | ![通知提醒框](screenshot/Notification.gif?raw=true) |
+| ![Message](screenshot/Message.gif?raw=true) | ![Notification](screenshot/Notification.gif?raw=true) |
 | **Switch** 开关 | **Table** 表格 |
-| ![开关](screenshot/Switch.gif?raw=true) | ![表格](screenshot/Table.gif?raw=true) |
+| ![Switch](screenshot/Switch.gif?raw=true) | ![Table](screenshot/Table.gif?raw=true) |
 
 🦦 文档还在编写中，招募小伙伴一起维护项目
