@@ -31,6 +31,7 @@ namespace AntdUI
     [Description("Steps 步骤条")]
     [ToolboxItem(true)]
     [DefaultProperty("Current")]
+    [DefaultEvent("ItemClick")]
     public class Steps : IControl
     {
         #region 属性
@@ -160,7 +161,7 @@ namespace AntdUI
                     {
                         var t_height_one = rect.Height / Items.Count;
                         int i = 0;
-                        float split_gap = 8F * Config.Dpi;
+                        float gap2 = gap * 2F;
                         foreach (StepsItem it in Items)
                         {
                             it.PARENT = this;
@@ -188,13 +189,31 @@ namespace AntdUI
                             float read_y = it.title_rect.Y - gap - ico_size;
 
                             it.ico_rect = new RectangleF(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2F, ico_size, ico_size);
-                            if (showSub) it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
-                            if (showDescription) it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+
+                            float tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
+
+                            if (showSub)
+                            {
+                                it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
+                                tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
+                                tmp_max_wr = it.subtitle_rect.Right;
+                            }
+                            if (showDescription)
+                            {
+                                it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+                                if (it.description_rect.Width > tmp_max_width)
+                                {
+                                    tmp_max_width = it.description_rect.Width;
+                                    tmp_max_wr = it.description_rect.Right;
+                                }
+                                tmp_max_height += it.DescriptionSize.Height;
+                            }
+                            it.rect = new RectangleF(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
 
                             if (i > 0)
                             {
                                 var old = Items[i - 1];
-                                if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
+                                if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + gap, split, it.ico_rect.Y - old.ico_rect.Bottom - gap2));
                             }
                             i++;
                         }
@@ -232,9 +251,26 @@ namespace AntdUI
                             it.title_rect = new RectangleF(centerx - width_one / 2, rect.Y + (rect.Height - maxHeight) / 2, it.TitleSize.Width, it.TitleSize.Height);
                             float read_x = it.title_rect.X - gap - icon_size;
                             it.ico_rect = new RectangleF(read_x, it.title_rect.Y + (it.title_rect.Height - icon_size) / 2F, icon_size, icon_size);
-                            if (showSub) it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
-                            if (showDescription) it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Bottom + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
 
+                            float tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
+                            if (showSub)
+                            {
+                                it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
+                                tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
+                                tmp_max_wr = it.subtitle_rect.Right;
+                            }
+                            if (showDescription)
+                            {
+                                it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Bottom + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+                                if (it.description_rect.Width > tmp_max_width)
+                                {
+                                    tmp_max_width = it.description_rect.Width;
+                                    tmp_max_wr = it.description_rect.Right;
+                                }
+                                tmp_max_height += it.DescriptionSize.Height;
+                            }
+                            float gap2 = gap * 2F;
+                            it.rect = new RectangleF(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
                             if (i > 0)
                             {
                                 var old = Items[i - 1];
@@ -275,7 +311,6 @@ namespace AntdUI
         #endregion
 
         #region 渲染
-
 
         readonly StringFormat stringLeft = Helper.SF(lr: StringAlignment.Near);
         readonly StringFormat stringCenter = Helper.SF_NoWrap();
@@ -403,6 +438,60 @@ namespace AntdUI
             }
             this.PaintBadge(g);
             base.OnPaint(e);
+        }
+
+        #endregion
+
+        #region 事件
+
+        /// <summary>
+        /// 点击项时发生
+        /// </summary>
+        [Description("点击项时发生"), Category("行为")]
+        public event ItemClickEventHandler? ItemClick = null;
+
+        /// <summary>
+        /// 点击项时发生
+        /// </summary>
+        /// <param name="sender">触发对象</param>
+        /// <param name="value">数值</param>
+        public delegate void ItemClickEventHandler(object sender, MouseEventArgs e, StepsItem value);
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            if (items == null || items.Count == 0 || ItemClick == null) return;
+            for (int i = 0; i < Items.Count; i++)
+            {
+                var it = Items[i];
+                if (it != null)
+                {
+                    if (it.rect.Contains(e.Location))
+                    {
+                        ItemClick(this, e, it);
+                        return;
+                    }
+                }
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (items == null || items.Count == 0 || ItemClick == null) return;
+            for (int i = 0; i < Items.Count; i++)
+            {
+                var it = Items[i];
+                if (it != null)
+                {
+                    if (it.rect.Contains(e.Location))
+                    {
+                        SetCursor(true);
+                        return;
+                    }
+                }
+            }
+            SetCursor(false);
         }
 
         #endregion
@@ -568,6 +657,7 @@ namespace AntdUI
         internal Steps? PARENT { get; set; }
 
         internal float pen_w { get; set; } = 3F;
+        internal RectangleF rect { get; set; }
         internal RectangleF title_rect { get; set; }
         internal RectangleF subtitle_rect { get; set; }
         internal RectangleF description_rect { get; set; }

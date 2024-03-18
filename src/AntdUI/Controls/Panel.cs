@@ -372,9 +372,9 @@ namespace AntdUI
             {
                 if (_mouseHover == value) return;
                 _mouseHover = value;
-                if (Enabled)
+                if (Enabled && shadow > 0 && shadowOpacityHover > 0 && shadowOpacityHover > shadowOpacity)
                 {
-                    if (Config.Animation && shadow > 0 && shadowOpacityHover > 0 && shadowOpacityHover > shadowOpacity)
+                    if (Config.Animation)
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

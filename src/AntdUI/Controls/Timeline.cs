@@ -31,6 +31,7 @@ namespace AntdUI
     [Description("Timeline 时间轴")]
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
+    [DefaultEvent("ItemClick")]
     public class Timeline : IControl
     {
         #region 属性
@@ -114,6 +115,7 @@ namespace AntdUI
                 var _splits = new List<RectangleF>(Items.Count);
                 int i = 0;
                 var font_Description = FontDescription == null ? Font : FontDescription;
+                float gap2 = gap * 2F;
                 foreach (TimelineItem it in Items)
                 {
                     it.PARENT = this;
@@ -131,6 +133,7 @@ namespace AntdUI
                             it.description_rect = new RectangleF(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
                             y += gap * 2 + DescriptionSize.Height;
                         }
+                        it.rect = new RectangleF(it.ico_rect.X - gap, y - gap, it.txt_rect.Width + ico_size + gap_x_icon + gap2, size.Height + gap2);
                         y += size.Height + gap_y;
 
                         if (i > 0)
@@ -259,7 +262,23 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            scrollY.MouseMove(e.Location);
+            if (scrollY.MouseMove(e.Location))
+            {
+                if (items == null || items.Count == 0 || ItemClick == null) return;
+                for (int i = 0; i < Items.Count; i++)
+                {
+                    var it = Items[i];
+                    if (it != null)
+                    {
+                        if (it.rect.Contains(e.X, e.Y + scrollY.val))
+                        {
+                            SetCursor(true);
+                            return;
+                        }
+                    }
+                }
+                SetCursor(false);
+            }
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -271,6 +290,41 @@ namespace AntdUI
         {
             base.OnLeave(e);
             scrollY.Leave();
+        }
+
+        #endregion
+
+        #region 事件
+
+        /// <summary>
+        /// 点击项时发生
+        /// </summary>
+        [Description("点击项时发生"), Category("行为")]
+        public event ItemClickEventHandler? ItemClick = null;
+
+        /// <summary>
+        /// 点击项时发生
+        /// </summary>
+        /// <param name="sender">触发对象</param>
+        /// <param name="value">数值</param>
+        public delegate void ItemClickEventHandler(object sender, MouseEventArgs e, TimelineItem value);
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            if (items == null || items.Count == 0 || ItemClick == null) return;
+            for (int i = 0; i < Items.Count; i++)
+            {
+                var it = Items[i];
+                if (it != null)
+                {
+                    if (it.rect.Contains(e.X, e.Y + scrollY.val))
+                    {
+                        ItemClick(this, e, it);
+                        return;
+                    }
+                }
+            }
         }
 
         #endregion
@@ -382,6 +436,7 @@ namespace AntdUI
         internal Timeline? PARENT { get; set; }
 
         internal float pen_w { get; set; } = 3F;
+        internal RectangleF rect { get; set; }
         internal RectangleF txt_rect { get; set; }
         internal RectangleF description_rect { get; set; }
         internal RectangleF ico_rect { get; set; }

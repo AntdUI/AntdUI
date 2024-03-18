@@ -301,14 +301,14 @@ namespace AntdUI
             if (config.Content is Control control) control.Dispose();
         }
 
-        protected override void DefWndProc(ref System.Windows.Forms.Message m)
+        protected override void WndProc(ref System.Windows.Forms.Message m)
         {
             if (config.MaskClosable && isclose && min && m.Msg == 0x86 && m.WParam == (IntPtr)1 && m.LParam == (IntPtr)0)
             {
                 DialogResult = DialogResult.No;
                 return;
             }
-            base.DefWndProc(ref m);
+            base.WndProc(ref m);
         }
 
         void Window_MouseDown(object? sender, MouseEventArgs e)

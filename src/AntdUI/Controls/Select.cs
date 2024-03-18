@@ -503,6 +503,7 @@ namespace AntdUI
             PYS = Pinyin.Pinyin.GetInitials(Text).ToLower();
             ID = _i;
         }
+
         public ObjectItem(SelectItem _val, int _i, RectangleF rect, int gap_y, float gap, RectangleF rect_text)
         {
             Sub = _val.Sub;

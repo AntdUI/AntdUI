@@ -112,9 +112,9 @@ namespace AntdUI
             r_w = w;
             using (var g = Graphics.FromHwnd(Handle).High())
             {
-                var size = g.MeasureString(Config.NullText, Font);
+                var size = g.MeasureString(Config.NullText, Font).Size(2);
                 int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
-                int font_size = (int)Math.Ceiling(size.Height) + gap_y * 2;
+                int font_size = size.Height + gap_y * 2;
                 var y2 = gap_y * 2;
                 y += gap_y;
 
@@ -155,7 +155,7 @@ namespace AntdUI
 
                 int selY = -1;
                 int item_count = 0, divider_count = 0;
-                float text_height = font_size - y2;
+                int text_height = font_size - y2;
                 float gap = (text_height - gap_y) / 2F;
                 for (int i = 0; i < items.Count; i++)
                 {
@@ -421,9 +421,9 @@ namespace AntdUI
                     int y = 10, w = r_w, list_count = 0;
                     using (var g = Graphics.FromHwnd(Handle).High())
                     {
-                        var size = g.MeasureString(Config.NullText, Font);
+                        var size = g.MeasureString(Config.NullText, Font).Size(2);
                         int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
-                        int font_size = (int)Math.Ceiling(size.Height) + gap_y * 2;
+                        int font_size = size.Height + gap_y * 2;
                         var y2 = gap_y * 2;
                         y += gap_y;
                         foreach (var it in Items)

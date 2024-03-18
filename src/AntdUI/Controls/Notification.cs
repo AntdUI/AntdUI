@@ -119,7 +119,8 @@ namespace AntdUI
                         }));
                         return;
                     }
-                    new NotificationFrm(config).Show(config.Form);
+                    if (config.TopMost) new NotificationFrm(config).Show();
+                    else new NotificationFrm(config).Show(config.Form);
                 }
                 catch { }
             }
@@ -203,6 +204,11 @@ namespace AntdUI
             public bool CloseIcon { get; set; } = true;
 
             /// <summary>
+            /// 是否置顶
+            /// </summary>
+            public bool TopMost { get; set; }
+
+            /// <summary>
             /// 超链接回调
             /// </summary>
             public ConfigLink? Link { get; set; }
@@ -235,7 +241,8 @@ namespace AntdUI
         public NotificationFrm(Notification.Config _config)
         {
             config = _config;
-            TopMost = config.Form.TopMost;
+            if (config.TopMost) TopMost = true;
+            else TopMost = config.Form.TopMost;
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;
             else Font = config.Form.Font;
