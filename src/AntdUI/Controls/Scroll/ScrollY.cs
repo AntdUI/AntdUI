@@ -180,11 +180,15 @@ namespace AntdUI
         /// <param name="g"></param>
         public virtual void Paint(Graphics g)
         {
+            Paint(g, Style.Db.TextBase);
+        }
+        public virtual void Paint(Graphics g, Color baseColor)
+        {
             if (Show)
             {
                 if (Back)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(10, Style.Db.TextBase)))
+                    using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
                     {
                         g.FillRectangle(brush, Rect);
                     }
@@ -200,7 +204,7 @@ namespace AntdUI
                     if (Slider.Y < 6) Slider.Y = 6;
                     else if (Slider.Y > Rect.Height - height - 6) Slider.Y = Rect.Height - height - 6;
                 }
-                using (var brush = new SolidBrush(Color.FromArgb(141, Style.Db.TextBase)))
+                using (var brush = new SolidBrush(Color.FromArgb(141, baseColor)))
                 {
                     using (var path = Slider.RoundPath(Slider.Width))
                     {

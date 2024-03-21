@@ -160,6 +160,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 行复制
+        /// </summary>
+        [Description("行复制"), Category("行为"), DefaultValue(true)]
+        public bool ClipboardCopy { get; set; } = true;
+
         #region 为空
 
         [Description("是否显示空样式"), Category("外观"), DefaultValue(true)]

@@ -144,8 +144,11 @@ namespace AntdUI
 
         #region 鼠标按下
 
+        internal int SelectIndex = -1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (ClipboardCopy) Focus();
+            SelectIndex = -1;
             if (scrollY.MouseDown(e.Location) && scrollX.MouseDown(e.Location))
             {
                 base.OnMouseDown(e);
@@ -233,6 +236,7 @@ namespace AntdUI
             {
                 if (e.Button == MouseButtons.Left && cell.Contains(x, y))
                 {
+                    SelectIndex = it.INDEX;
                     ChangeCheckOverall(rows, it, columnCheck, !columnCheck.Checked);
                     return true;
                 }
@@ -243,6 +247,7 @@ namespace AntdUI
         {
             if (cell.CONTAINS(x, y))
             {
+                SelectIndex = cell.ROW.INDEX;
                 cell.MouseDown = true;
                 if (cell is Template template && template.HasBtn && e.Button == MouseButtons.Left)
                 {

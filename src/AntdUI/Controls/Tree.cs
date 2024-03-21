@@ -274,22 +274,9 @@ namespace AntdUI
             set => items = value.BindData(this);
         }
 
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            var rect = ChangeList();
-            scrollX.SizeChange(rect);
-            if (scrollX.Show)
-            {
-                scrollX.SizeChange(new Rectangle(rect.X, rect.Y, rect.Width - 20, rect.Height));
-                scrollY.SizeChange(new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - 20));
-            }
-            else scrollY.SizeChange(rect);
-            base.OnSizeChanged(e);
-        }
-
 
         bool pauseLayout = false;
-        [Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -304,6 +291,24 @@ namespace AntdUI
                 }
             }
         }
+
+        #endregion
+
+        #region 布局
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            var rect = ChangeList();
+            scrollX.SizeChange(rect);
+            if (scrollX.Show)
+            {
+                scrollX.SizeChange(new Rectangle(rect.X, rect.Y, rect.Width - 20, rect.Height));
+                scrollY.SizeChange(new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - 20));
+            }
+            else scrollY.SizeChange(rect);
+            base.OnSizeChanged(e);
+        }
+
         internal Rectangle ChangeList()
         {
             var rect = ClientRectangle;
@@ -317,29 +322,27 @@ namespace AntdUI
                 int icon_size = (int)(size.Height), gap = icon_size / 2;
                 int height = (int)Math.Ceiling(size.Height + gap * 2);
                 int gapI = (int)(gap / 2);
-                ChangeList(g, rect, null, Items, ref x, ref y, height, icon_size, gap, gapI, 0);
+                ChangeList(g, rect, null, Items, ref x, ref y, height, icon_size, gap, gapI, 0, true);
             });
             scrollX.SetVrSize(x + 20, rect.Width);
             scrollY.SetVrSize(y, rect.Height);
             return rect;
         }
-        void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth)
+        void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
         {
             foreach (TreeItem it in items)
             {
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
                 it.SetRect(g, Font, depth, checkable, blockNode, new Rectangle(0, y, rect.Width, height), icon_size, gap);
-                if (it.txt_rect.Right > x) x = it.txt_rect.Right;
+                if (expand && it.txt_rect.Right > x) x = it.txt_rect.Right;
                 if (it.Show && it.Visible)
                 {
                     y += height + gapI;
                     if (it.CanExpand)
                     {
                         int y_item = y;
-
-                        ChangeList(g, rect, it, it.Sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1);
-
+                        ChangeList(g, rect, it, it.Sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
                         {
                             it.ExpandHeight = y - y_item;
@@ -349,12 +352,6 @@ namespace AntdUI
                     }
                 }
             }
-        }
-
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            scrollY.MouseWheel(e.Delta);
-            base.OnMouseWheel(e);
         }
 
         #endregion
@@ -390,7 +387,7 @@ namespace AntdUI
                 if (it.show)
                 {
                     PaintItem(g, it, fore, fore_active, hover, radius);
-                    if (it.Expand && it.Sub != null)
+                    if (it.Expand && it.Sub != null && it.Sub.Count > 0)
                     {
                         PaintItem(g, rect, sy, it.Sub, fore, fore_active, hover, radius);
                         if (it.ExpandThread)
@@ -720,6 +717,12 @@ namespace AntdUI
             ILeave();
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            scrollY.MouseWheel(e.Delta);
+            base.OnMouseWheel(e);
+        }
+
         void ILeave()
         {
             SetCursor(false);
@@ -943,9 +946,17 @@ namespace AntdUI
                     }
                     else
                     {
-                        ExpandProg = 1F; ArrowProg = value ? 90F : 0F;
+                        ExpandProg = 1F;
+                        ArrowProg = value ? 90F : 0F;
                         Invalidates();
                     }
+                }
+                else
+                {
+                    expand = false;
+                    ExpandProg = 1F;
+                    ArrowProg = 0F;
+                    Invalidates();
                 }
             }
         }

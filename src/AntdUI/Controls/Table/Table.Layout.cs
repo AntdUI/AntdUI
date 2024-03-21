@@ -80,13 +80,17 @@ namespace AntdUI
                 foreach (var row in data_temp.rows)
                 {
                     var cells = new List<TCell>(_columns.Count);
+                    int check = 0;
                     foreach (var column in _columns)
                     {
                         var value = row.cells[column.Key];
-                        if (value is PropertyDescriptor prop) AddRows(ref cells, ref processing, ref check_count, column, row.record, prop);
+                        if (value is PropertyDescriptor prop)
+                        {
+                            if (AddRows(ref cells, ref processing, ref check_count, column, row.record, prop)) check++;
+                        }
                         else cells.Add(new TCellText(this, null, value, column, value?.ToString()));
                     }
-                    if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record);
+                    if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record, check > 0);
                 }
 
                 if (_rows.Count > 0)
@@ -360,7 +364,7 @@ namespace AntdUI
         #endregion
 
         float check_radius = 0F, check_border = 2F;
-        void AddRows(ref List<TCell> cells, ref int processing, ref int check_count, Column column, object ov, PropertyDescriptor prop)
+        bool AddRows(ref List<TCell> cells, ref int processing, ref int check_count, Column column, object ov, PropertyDescriptor prop)
         {
             if (column is ColumnCheck)
             {
@@ -371,6 +375,7 @@ namespace AntdUI
                 {
                     check_count++;
                     AddRows(ref cells, new TCellCheck(this, prop, ov, true));
+                    return true;
                 }
                 else AddRows(ref cells, new TCellCheck(this, prop, ov, false));
             }
@@ -393,6 +398,7 @@ namespace AntdUI
                 else if (value is ICell icell) AddRows(ref cells, new Template(this, prop, ov, column, ref processing, new ICell[] { icell }));
                 else AddRows(ref cells, new TCellText(this, prop, ov, column, value?.ToString()));
             }
+            return false;
         }
 
         bool handcheck = false;
@@ -556,9 +562,9 @@ namespace AntdUI
                 else LoadLayout();
             }
         }
-        void AddRows(ref List<RowTemplate> rows, TCell[] cells, object Record)
+        void AddRows(ref List<RowTemplate> rows, TCell[] cells, object Record, bool check)
         {
-            var row = new RowTemplate(this, cells, Record);
+            var row = new RowTemplate(this, cells, Record, check);
             foreach (var it in row.cells) it.ROW = row;
             rows.Add(row);
         }

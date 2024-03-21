@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -166,147 +167,132 @@ namespace AntdUI
 
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
-                if (container is StackPanel parent)
+                if (container is StackPanel parent && parent.Controls.Count > 0)
                 {
-                    var rect = parent.DisplayRectangle;
-                    int val = 0;
-                    if (string.IsNullOrEmpty(ItemSize)) val = HandLayout(parent, rect);
-                    else
+                    var controls = new List<Control>(parent.Controls.Count);
+                    foreach (Control it in parent.Controls)
                     {
-                        if (ItemSize.EndsWith("%") && float.TryParse(ItemSize.TrimEnd('%'), out var f)) val = HandLayout(parent, rect, (int)Math.Round((Vertical ? rect.Height : rect.Width) * (f / 100F)));
-                        else if (int.TryParse(ItemSize, out var i)) val = HandLayout(parent, rect, (int)Math.Round(i * Config.Dpi));
-                        else val = HandLayoutFill(parent, rect);
+                        if (it.Visible) controls.Insert(0, it);
                     }
-                    if (parent.scroll != null)
+                    if (controls.Count > 0)
                     {
-                        bool old = parent.scroll.Show;
-                        parent.scroll.SetVrSize(val);
-                        if (old != parent.scroll.Show) parent.Invoke(new Action(() => { parent.OSizeChanged(); }));
+                        var rect = parent.DisplayRectangle;
+                        int val = 0;
+                        if (string.IsNullOrEmpty(ItemSize)) val = HandLayout(parent, controls, rect);
+                        else
+                        {
+                            if (ItemSize.EndsWith("%") && float.TryParse(ItemSize.TrimEnd('%'), out var f)) val = HandLayout(parent, controls, rect, (int)Math.Round((Vertical ? rect.Height : rect.Width) * (f / 100F)));
+                            else if (int.TryParse(ItemSize, out var i)) val = HandLayout(parent, controls, rect, (int)Math.Round(i * Config.Dpi));
+                            else val = HandLayoutFill(controls, rect);
+                        }
+                        if (parent.scroll != null)
+                        {
+                            bool old = parent.scroll.Show;
+                            parent.scroll.SetVrSize(val);
+                            if (old != parent.scroll.Show) parent.Invoke(new Action(() => { parent.OSizeChanged(); }));
+                        }
                     }
                 }
                 return false;
             }
 
-            int HandLayout(StackPanel parent, Rectangle rect)
+            int HandLayout(StackPanel parent, List<Control> controls, Rectangle rect)
             {
-                int count = parent.Controls.Count;
-                if (count > 0)
+                int count = controls.Count;
+                int offset = 0, use = 0, last_len = 0, gap = 0;
+                if (parent.scroll != null) offset = (int)parent.scroll.Value;
+                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
+                if (Vertical)
                 {
-                    int offset = 0, use = 0, last_len = 0, gap = 0;
-                    if (parent.scroll != null) offset = (int)parent.scroll.Value;
-                    if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
-                    if (Vertical)
+                    foreach (var control in controls)
                     {
-                        foreach (Control control in parent.Controls)
-                        {
-                            if (!control.Visible) continue;
+                        var point = rect.Location;
+                        point.Offset(control.Margin.Left, -offset + control.Margin.Top + use);
+                        control.Location = point;
+                        control.Width = rect.Width - control.Margin.Horizontal;
 
-                            var point = rect.Location;
-                            point.Offset(control.Margin.Left, -offset + control.Margin.Top + use);
-                            control.Location = point;
-                            control.Width = rect.Width - control.Margin.Horizontal;
-
-                            use += control.Height + gap + control.Margin.Vertical;
-                            last_len = point.Y + offset + control.Height;
-                        }
+                        use += control.Height + gap + control.Margin.Vertical;
+                        last_len = point.Y + offset + control.Height;
                     }
-                    else
-                    {
-                        foreach (Control control in parent.Controls)
-                        {
-                            if (!control.Visible) continue;
-
-                            Point point = rect.Location;
-                            point.Offset(-offset + control.Margin.Left + use, control.Margin.Top);
-                            control.Location = point;
-                            control.Height = rect.Height - control.Margin.Vertical;
-
-                            use += control.Width + gap + control.Margin.Horizontal;
-                            last_len = control.Left + offset + control.Width;
-                        }
-                    }
-                    return last_len;
                 }
-                return 0;
-            }
-            int HandLayout(StackPanel parent, Rectangle rect, int size)
-            {
-                int count = parent.Controls.Count;
-                if (count > 0)
+                else
                 {
-                    int offset = 0, use = 0, last_len = 0, gap = 0;
-                    if (parent.scroll != null) offset = (int)parent.scroll.Value;
-                    if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
-                    if (Vertical)
+                    foreach (var control in controls)
                     {
-                        foreach (Control control in parent.Controls)
-                        {
-                            if (!control.Visible) continue;
+                        Point point = rect.Location;
+                        point.Offset(-offset + control.Margin.Left + use, control.Margin.Top);
+                        control.Location = point;
+                        control.Height = rect.Height - control.Margin.Vertical;
 
-                            var point = rect.Location;
-                            point.Offset(control.Margin.Left, -offset + control.Margin.Top + use);
-                            control.Location = point;
-                            control.Size = new Size(rect.Width - control.Margin.Horizontal, size);
-
-                            use += control.Height + gap + control.Margin.Vertical;
-                            last_len = point.Y + offset + control.Height;
-                        }
+                        use += control.Width + gap + control.Margin.Horizontal;
+                        last_len = control.Left + offset + control.Width;
                     }
-                    else
-                    {
-                        foreach (Control control in parent.Controls)
-                        {
-                            if (!control.Visible) continue;
-
-                            Point point = rect.Location;
-                            point.Offset(-offset + control.Margin.Left + use, control.Margin.Top);
-                            control.Location = point;
-                            control.Size = new Size(size, rect.Height - control.Margin.Vertical);
-
-                            use += control.Width + gap + control.Margin.Horizontal;
-                            last_len = control.Left + offset + control.Width;
-                        }
-                    }
-                    return last_len;
                 }
-                return 0;
+                return last_len;
             }
-            int HandLayoutFill(StackPanel parent, Rectangle rect)
+            int HandLayout(StackPanel parent, List<Control> controls, Rectangle rect, int size)
             {
-                int count = parent.Controls.Count;
-                if (count > 0)
+                int count = controls.Count;
+                int offset = 0, use = 0, last_len = 0, gap = 0;
+                if (parent.scroll != null) offset = (int)parent.scroll.Value;
+                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
+                if (Vertical)
                 {
-                    int usex = 0, usey = 0, gap = 0;
-                    if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
-                    if (Vertical)
+                    foreach (var control in controls)
                     {
-                        int size = (rect.Height - (gap * (count - 1))) / count;
-                        foreach (Control control in parent.Controls)
-                        {
-                            if (!control.Visible) continue;
+                        var point = rect.Location;
+                        point.Offset(control.Margin.Left, -offset + control.Margin.Top + use);
+                        control.Location = point;
+                        control.Size = new Size(rect.Width - control.Margin.Horizontal, size);
 
-                            Point point = rect.Location;
-                            point.Offset(control.Margin.Left + usex, control.Margin.Top + usey);
-                            control.Location = point;
-                            control.Size = new Size(rect.Width - control.Margin.Horizontal, size - control.Margin.Vertical);
-
-                            usey += size + gap;
-                        }
+                        use += control.Height + gap + control.Margin.Vertical;
+                        last_len = point.Y + offset + control.Height;
                     }
-                    else
+                }
+                else
+                {
+                    foreach (var control in controls)
                     {
-                        int size = (rect.Width - (gap * (count - 1))) / count;
-                        foreach (Control control in parent.Controls)
-                        {
-                            if (!control.Visible) continue;
+                        Point point = rect.Location;
+                        point.Offset(-offset + control.Margin.Left + use, control.Margin.Top);
+                        control.Location = point;
+                        control.Size = new Size(size, rect.Height - control.Margin.Vertical);
 
-                            Point point = rect.Location;
-                            point.Offset(control.Margin.Left + usex, control.Margin.Top + usey);
-                            control.Location = point;
-                            control.Size = new Size(size - control.Margin.Horizontal, rect.Height - control.Margin.Vertical);
+                        use += control.Width + gap + control.Margin.Horizontal;
+                        last_len = control.Left + offset + control.Width;
+                    }
+                }
+                return last_len;
+            }
+            int HandLayoutFill(List<Control> controls, Rectangle rect)
+            {
+                int count = controls.Count;
+                int usex = 0, usey = 0, gap = 0;
+                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
+                if (Vertical)
+                {
+                    int size = (rect.Height - (gap * (count - 1))) / count;
+                    foreach (var control in controls)
+                    {
+                        Point point = rect.Location;
+                        point.Offset(control.Margin.Left + usex, control.Margin.Top + usey);
+                        control.Location = point;
+                        control.Size = new Size(rect.Width - control.Margin.Horizontal, size - control.Margin.Vertical);
 
-                            usex += size + gap;
-                        }
+                        usey += size + gap;
+                    }
+                }
+                else
+                {
+                    int size = (rect.Width - (gap * (count - 1))) / count;
+                    foreach (var control in controls)
+                    {
+                        Point point = rect.Location;
+                        point.Offset(control.Margin.Left + usex, control.Margin.Top + usey);
+                        control.Location = point;
+                        control.Size = new Size(size - control.Margin.Horizontal, rect.Height - control.Margin.Vertical);
+
+                        usex += size + gap;
                     }
                 }
                 return 0;

@@ -39,6 +39,15 @@ namespace AntdUI
                 cells = cell;
                 RECORD = value;
             }
+
+            public RowTemplate(Table table, TCell[] cell, object value, bool check)
+            {
+                PARENT = table;
+                cells = cell;
+                RECORD = value;
+                checkState = CheckState.Checked;
+                _checked = check;
+            }
             public RowTemplate(Table table, TCell[] cell, object value, CheckState check)
             {
                 PARENT = table;
@@ -369,6 +378,11 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+
+            public override string ToString()
+            {
+                return Checked.ToString();
+            }
         }
 
         /// <summary>
@@ -490,6 +504,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string ToString()
+            {
+                return Checked.ToString();
+            }
         }
 
         /// <summary>
@@ -541,6 +559,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string? ToString()
+            {
+                return value;
+            }
         }
 
         /// <summary>
@@ -598,6 +620,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string ToString()
+            {
+                return value;
+            }
         }
 
         internal interface TCell
@@ -726,6 +752,15 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string? ToString()
+            {
+                var vals = new List<string?>(value.Count);
+                foreach (var cell in value)
+                {
+                    vals.Add(cell.ToString());
+                }
+                return string.Join(" ", vals);
+            }
         }
 
         /// <summary>
@@ -774,6 +809,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string? ToString()
+            {
+                return Value.Text;
+            }
         }
 
         /// <summary>
@@ -878,6 +917,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string ToString()
+            {
+                return Value.Text;
+            }
         }
 
         /// <summary>
@@ -991,6 +1034,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string? ToString()
+            {
+                return Value.Text;
+            }
         }
 
         /// <summary>
@@ -1075,6 +1122,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string? ToString()
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -1294,6 +1345,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string? ToString()
+            {
+                return Value.Text;
+            }
         }
 
         /// <summary>
@@ -1397,6 +1452,10 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public override string? ToString()
+            {
+                return Math.Round(Value.Value * 100F) + "%";
+            }
         }
 
         interface ITemplate

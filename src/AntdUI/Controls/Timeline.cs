@@ -80,7 +80,7 @@ namespace AntdUI
 
 
         bool pauseLayout = false;
-        [Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;

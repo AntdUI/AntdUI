@@ -102,7 +102,7 @@ namespace AntdUI
         }
 
         bool pauseLayout = false;
-        [Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -150,12 +150,17 @@ namespace AntdUI
             public TAlignFlow Align { get; set; } = TAlignFlow.LeftCenter;
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
-                if (container is FlowPanel parent)
+                if (container is FlowPanel parent && parent.IsHandleCreated && parent.Controls.Count > 0)
                 {
-                    if (parent.IsHandleCreated)
+                    if (parent.PauseLayout) return false;
+                    var controls = new List<Control>(parent.Controls.Count);
+                    foreach (Control it in parent.Controls)
                     {
-                        if (parent.PauseLayout) return false;
-                        int val = HandLayout(parent);
+                        if (it.Visible) controls.Insert(0, it);
+                    }
+                    if (controls.Count > 0)
+                    {
+                        int val = HandLayout(parent, controls);
                         if (parent.scroll != null)
                         {
                             bool old_show = parent.scroll.Show;
@@ -168,105 +173,98 @@ namespace AntdUI
                 return false;
             }
 
-            int HandLayout(FlowPanel parent)
+            int HandLayout(FlowPanel parent, List<Control> controls)
             {
-                int count = parent.Controls.Count;
-                if (count > 0)
+                var rect = parent.DisplayRectangle;
+                int offset = 0, use_x = 0, use_y = 0, last_len = 0, gap = 0;
+                if (parent.scroll != null) offset = (int)parent.scroll.Value;
+                if (Gap > 0 && controls.Count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
+                var cps = new List<CP>();
+                var dir = new List<CP>(controls.Count);
+                int oldx = 0;
+                foreach (var control in controls)
                 {
-                    var rect = parent.DisplayRectangle;
-                    int offset = 0, use_x = 0, use_y = 0, last_len = 0, gap = 0;
-                    if (parent.scroll != null) offset = (int)parent.scroll.Value;
-                    if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
-                    var controls = new List<CP>();
-                    var dir = new List<CP>(count);
-                    int oldx = 0;
-                    foreach (Control control in parent.Controls)
+                    var point = rect.Location;
+                    if (use_x + control.Width > rect.Width)
                     {
-                        if (!control.Visible) continue;
+                        if (cps.Count > 0)
+                        {
+                            if (Align == TAlignFlow.LeftCenter || Align == TAlignFlow.Center || Align == TAlignFlow.RightCenter)
+                            {
+                                int x = ((rect.Width - use_x) / 2);
+                                oldx = x;
+                                foreach (var item in cps)
+                                {
+                                    item.Point = new Point(item.Point.X + x, item.Point.Y);
+                                }
+                            }
+                            else if (Align == TAlignFlow.Right)
+                            {
+                                int x = rect.Width - use_x;
+                                oldx = x;
+                                foreach (var item in cps)
+                                {
+                                    item.Point = new Point(item.Point.X + x, item.Point.Y);
+                                }
+                            }
+                        }
+                        cps.Clear();
+                        use_x = 0;
+                        use_y += control.Height + gap + control.Margin.Vertical;
+                    }
+                    point.Offset(control.Margin.Left + use_x, -offset + control.Margin.Top + use_y);
+                    var it = new CP(control, point);
+                    dir.Add(it);
+                    cps.Add(it);
+                    use_x += control.Width + gap + control.Margin.Horizontal;
 
-                        var point = rect.Location;
-                        if (use_x + control.Width > rect.Width)
-                        {
-                            if (controls.Count > 0)
-                            {
-                                if (Align == TAlignFlow.LeftCenter || Align == TAlignFlow.Center || Align == TAlignFlow.RightCenter)
-                                {
-                                    int x = ((rect.Width - use_x) / 2);
-                                    oldx = x;
-                                    foreach (var item in controls)
-                                    {
-                                        item.Point = new Point(item.Point.X + x, item.Point.Y);
-                                    }
-                                }
-                                else if (Align == TAlignFlow.Right)
-                                {
-                                    int x = rect.Width - use_x;
-                                    oldx = x;
-                                    foreach (var item in controls)
-                                    {
-                                        item.Point = new Point(item.Point.X + x, item.Point.Y);
-                                    }
-                                }
-                            }
-                            controls.Clear();
-                            use_x = 0;
-                            use_y += control.Height + gap + control.Margin.Vertical;
-                        }
-                        point.Offset(control.Margin.Left + use_x, -offset + control.Margin.Top + use_y);
-                        var it = new CP(control, point);
-                        dir.Add(it);
-                        controls.Add(it);
-                        use_x += control.Width + gap + control.Margin.Horizontal;
-
-                        last_len = point.Y + offset + control.Height;
-                    }
-                    if (controls.Count > 0)
-                    {
-                        if (Align == TAlignFlow.LeftCenter)
-                        {
-                            if (oldx > 0)
-                            {
-                                foreach (var item in controls)
-                                {
-                                    item.Point = new Point(item.Point.X + oldx, item.Point.Y);
-                                }
-                            }
-                        }
-                        else if (Align == TAlignFlow.RightCenter)
-                        {
-                            int x = rect.X + (rect.Width - use_x) - oldx;
-                            foreach (var item in controls)
-                            {
-                                item.Point = new Point(item.Point.X + x, item.Point.Y);
-                            }
-                        }
-                        else if (Align == TAlignFlow.Center)
-                        {
-                            int x = ((rect.Width - use_x) / 2);
-                            foreach (var item in controls)
-                            {
-                                item.Point = new Point(item.Point.X + x, item.Point.Y);
-                            }
-                        }
-                        else if (Align == TAlignFlow.Right)
-                        {
-                            int x = rect.Width - use_x;
-                            foreach (var item in controls)
-                            {
-                                item.Point = new Point(item.Point.X + x, item.Point.Y);
-                            }
-                        }
-                    }
-                    controls.Clear();
-                    parent.SuspendLayout();
-                    foreach (var it in dir)
-                    {
-                        it.Control.Location = it.Point;
-                    }
-                    parent.ResumeLayout();
-                    return last_len;
+                    last_len = point.Y + offset + control.Height;
                 }
-                return 0;
+                if (cps.Count > 0)
+                {
+                    if (Align == TAlignFlow.LeftCenter)
+                    {
+                        if (oldx > 0)
+                        {
+                            foreach (var item in cps)
+                            {
+                                item.Point = new Point(item.Point.X + oldx, item.Point.Y);
+                            }
+                        }
+                    }
+                    else if (Align == TAlignFlow.RightCenter)
+                    {
+                        int x = rect.X + (rect.Width - use_x) - oldx;
+                        foreach (var item in cps)
+                        {
+                            item.Point = new Point(item.Point.X + x, item.Point.Y);
+                        }
+                    }
+                    else if (Align == TAlignFlow.Center)
+                    {
+                        int x = ((rect.Width - use_x) / 2);
+                        foreach (var item in cps)
+                        {
+                            item.Point = new Point(item.Point.X + x, item.Point.Y);
+                        }
+                    }
+                    else if (Align == TAlignFlow.Right)
+                    {
+                        int x = rect.Width - use_x;
+                        foreach (var item in cps)
+                        {
+                            item.Point = new Point(item.Point.X + x, item.Point.Y);
+                        }
+                    }
+                }
+                cps.Clear();
+                parent.SuspendLayout();
+                foreach (var it in dir)
+                {
+                    it.Control.Location = it.Point;
+                }
+                parent.ResumeLayout();
+                return last_len;
             }
         }
 
