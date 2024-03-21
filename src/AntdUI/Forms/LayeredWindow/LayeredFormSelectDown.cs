@@ -667,7 +667,6 @@ namespace AntdUI
                 using (var brush_select = new SolidBrush(Style.Db.TextBase))
                 {
                     g.DrawString(it.Text, Font, brush_select, it.RectText, stringFormatLeft);
-                    g.DrawString(it.Text, Font, brush_select, it.RectText, stringFormatLeft);
                 }
             }
             else

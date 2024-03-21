@@ -44,10 +44,11 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Button** | ✅ | ✅ |
 :arrow_right: | **FloatButton** | ✅ | ❎ |
 ||||
-:arrow_down: | Layout `3` | Animation | Disable |
+:arrow_down: | Layout `4` | Animation | Disable |
 :arrow_right: | **Divider** | ❎ | ❎ |
 :arrow_right: | **StackPanel** | ❎ | ❎ |
 :arrow_right: | **FlowPanel** | ❎ | ❎ |
+:arrow_right: | **GridPanel** | ❎ | ❎ |
 ||||
 :arrow_down: | Navigation `4` | Animation | Disable |
 :arrow_right: | **Dropdown** | ✅ | ✅ |

@@ -32,7 +32,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("SelectChanged")]
-    public class Menu : IControl
+    public class Menu : IControl, SubLayeredForm
     {
         #region 属性
 
@@ -102,6 +102,22 @@ namespace AntdUI
             }
         }
 
+        TAMode mode = TAMode.Auto;
+        /// <summary>
+        /// 色彩模式
+        /// </summary>
+        [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
+        public TAMode Mode
+        {
+            get => mode;
+            set
+            {
+                if (mode == value) return;
+                mode = value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// 常规缩进
         /// </summary>
@@ -113,6 +129,29 @@ namespace AntdUI
         /// </summary>
         [Description("显示子菜单背景"), Category("外观"), DefaultValue(false)]
         public bool ShowSubBack { get; set; } = false;
+
+        /// <summary>
+        /// 自动折叠
+        /// </summary>
+        [Description("自动折叠"), Category("外观"), DefaultValue(true)]
+        public bool AutoCollapse { get; set; } = true;
+
+        bool collapsed = false;
+        /// <summary>
+        /// 是否折叠
+        /// </summary>
+        [Description("是否折叠"), Category("外观"), DefaultValue(false)]
+        public bool Collapsed
+        {
+            get => collapsed;
+            set
+            {
+                if (collapsed == value) return;
+                collapsed = value;
+                Width = value ? CollapseWidth : CollapsedWidth;
+                OnSizeChanged(EventArgs.Empty);
+            }
+        }
 
         #region 集合操作
 
@@ -209,15 +248,8 @@ namespace AntdUI
             set => items = value.BindData(this);
         }
 
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            var rect = ChangeList();
-            scrollY.SizeChange(rect);
-            base.OnSizeChanged(e);
-        }
-
         bool pauseLayout = false;
-        [Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -233,39 +265,70 @@ namespace AntdUI
             }
         }
 
+        #endregion
+
+        #region 布局
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            var rect = ChangeList();
+            scrollY.SizeChange(rect);
+            base.OnFontChanged(e);
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            var rect = ChangeList();
+            scrollY.SizeChange(rect);
+            base.OnSizeChanged(e);
+        }
+
+        internal int CollapseWidth = 0, CollapsedWidth = 0;
         internal Rectangle ChangeList()
         {
-            var rect = ClientRectangle;
-            if (pauseLayout || items == null || items.Count == 0) return rect;
-            if (rect.Width == 0 || rect.Height == 0) return rect;
+            var _rect = ClientRectangle;
+            if (pauseLayout || items == null || items.Count == 0) return _rect;
+            if (_rect.Width == 0 || _rect.Height == 0) return _rect;
+            var rect = _rect.PaddingRect(Padding);
 
             float y = 0;
+            int icon_count = 0;
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                float icon_size = size.Height * 1.2F, gap = icon_size * 0.5F;
-                int height = (int)Math.Ceiling(size.Height + gap * 2);
-                int gapI = (int)(gap / 2);
-                ChangeList(rect, Items, ref y, height, icon_size, gap, gapI, 0);
+                int icon_size = (int)Math.Ceiling(size.Height * 1.2F), gap = icon_size / 2, gapI = gap / 2, height = (int)Math.Ceiling(size.Height + gap * 2);
+                CollapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
+                CollapsedWidth = ChangeList(rect, g, Items, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
+                if (AutoCollapse)
+                {
+                    if (icon_count > 0) collapsed = CollapsedWidth > _rect.Width;
+                    else collapsed = false;
+                }
+                if (collapsed) ChangeUTitle(Items);
             });
-            scrollY.SetVrSize(y, rect.Height);
-            return rect;
+            scrollY.SetVrSize(y, _rect.Height);
+            return _rect;
         }
 
-        void ChangeList(Rectangle rect, MenuItemCollection items, ref float y, int height, float icon_size, float gap, int gapI, int depth)
+        int ChangeList(Rectangle rect, Graphics g, MenuItemCollection items, ref float y, ref int icon_count, int height, int icon_size, float gap, int gapI, int depth)
         {
+            int collapsedWidth = 0;
             foreach (MenuItem it in items)
             {
                 it.PARENT = this;
-                it.SetRect(depth, Indent, new RectangleF(0, y, rect.Width, height), icon_size, gap);
+                if (it.HasIcon) icon_count++;
+                it.SetRect(depth, Indent, new RectangleF(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
+                    int size = (int)Math.Ceiling(g.MeasureString(it.Text, Font).Width + it.txt_rect.Left + it.arr_rect.Width);
+                    if (size > collapsedWidth) collapsedWidth = size;
                     y += height + gapI;
-                    if (it.CanExpand)
+                    if (!collapsed && it.CanExpand)
                     {
                         float y_item = y;
 
-                        ChangeList(rect, it.Sub, ref y, height, icon_size, gap, gapI, depth + 1);
+                        int size2 = ChangeList(rect, g, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
+                        if (size2 > collapsedWidth) collapsedWidth = size2;
 
                         it.SubY = y_item - gapI / 2;
                         it.SubHeight = y - y_item;
@@ -279,12 +342,19 @@ namespace AntdUI
                     }
                 }
             }
+            return collapsedWidth;
         }
 
-        protected override void OnMouseWheel(MouseEventArgs e)
+        void ChangeUTitle(MenuItemCollection items)
         {
-            scrollY.MouseWheel(e.Delta);
-            base.OnMouseWheel(e);
+            foreach (MenuItem it in items)
+            {
+                it.ico_rect = new RectangleF(it.Rect.X + (it.Rect.Width - it.ico_rect.Width) / 2F, it.ico_rect.Y, it.ico_rect.Width, it.ico_rect.Height);
+                if (it.Visible)
+                {
+                    if (it.CanExpand) ChangeUTitle(it.Sub);
+                }
+            }
         }
 
         #endregion
@@ -301,31 +371,66 @@ namespace AntdUI
             var g = e.Graphics.High();
             float sy = scrollY.Value;
             g.TranslateTransform(0, -sy);
-            Color color_fore = fore.HasValue ? fore.Value : Style.Db.TextBase, color_fore_active = ForeActive.HasValue ? ForeActive.Value : Style.Db.Primary, color_hover = BackHover.HasValue ? BackHover.Value : Style.Db.FillSecondary;
+            Color scroll_color, color_fore, color_fore_active, fore_enabled, back_hover, back_active;
+
+            switch (mode)
+            {
+                case TAMode.Light:
+                    scroll_color = Color.Black;
+                    fore_enabled = Style.rgba(0, 0, 0, 0.25F);
+                    color_fore = fore.HasValue ? fore.Value : Color.Black;
+                    color_fore_active = ForeActive.HasValue ? ForeActive.Value : "#1677FF".ToColor();
+                    back_hover = BackHover.HasValue ? BackHover.Value : Style.rgba(0, 0, 0, 0.06F);
+                    back_active = BackActive.HasValue ? BackActive.Value : "#E6F4FF".ToColor();
+                    break;
+                case TAMode.Dark:
+                    scroll_color = Color.White;
+                    fore_enabled = Style.rgba(255, 255, 255, 0.25F);
+                    color_fore = fore.HasValue ? fore.Value : Style.rgba(255, 255, 255, 0.85F);
+                    back_hover = color_fore_active = ForeActive.HasValue ? ForeActive.Value : Color.White;
+                    back_active = BackActive.HasValue ? BackActive.Value : "#1668DC".ToColor();
+                    break;
+                default:
+                    scroll_color = Style.Db.TextBase;
+                    fore_enabled = Style.Db.TextQuaternary;
+                    if (Config.IsDark)
+                    {
+                        color_fore = fore.HasValue ? fore.Value : Style.Db.Text;
+                        back_hover = color_fore_active = ForeActive.HasValue ? ForeActive.Value : Style.Db.TextBase;
+                        back_active = BackActive.HasValue ? BackActive.Value : Style.Db.Primary;
+                    }
+                    else
+                    {
+                        color_fore = fore.HasValue ? fore.Value : Style.Db.TextBase;
+                        color_fore_active = ForeActive.HasValue ? ForeActive.Value : Style.Db.Primary;
+                        back_hover = BackHover.HasValue ? BackHover.Value : Style.Db.FillSecondary;
+                        back_active = BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg;
+                    }
+                    break;
+            }
             float _radius = radius * Config.Dpi;
             using (var sub_bg = new SolidBrush(Style.Db.FillQuaternary))
             {
-                PaintItem(g, rect, sy, Items, color_fore, color_fore_active, color_hover, _radius, sub_bg);
+                PaintItems(g, rect, sy, Items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
             g.ResetTransform();
-            scrollY.Paint(g);
+            scrollY.Paint(g, scroll_color);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
 
-        void PaintItem(Graphics g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color hover, float radius, SolidBrush sub_bg)
+        void PaintItems(Graphics g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
         {
             foreach (MenuItem it in items)
             {
                 it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scrollY.Value + scrollY.Height + it.rect.Height;
                 if (it.show)
                 {
-                    PaintItem(g, it, fore, fore_active, hover, radius);
-                    if (it.Expand && it.Sub != null)
+                    PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+                    if (!collapsed && it.Expand && it.Sub != null && it.Sub.Count > 0)
                     {
                         if (ShowSubBack) g.FillRectangle(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
-
-                        PaintItem(g, rect, sy, it.Sub, fore, fore_active, hover, radius);
+                        PaintItemExpand(g, rect, sy, it.Sub, fore, fore_active, fore_enabled, back_hover, back_active, radius);
                         if (it.ExpandThread)
                         {
                             using (var brush = new SolidBrush(BackColor))
@@ -337,17 +442,17 @@ namespace AntdUI
                 }
             }
         }
-        void PaintItem(Graphics g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color hover, float radius)
+        void PaintItemExpand(Graphics g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             foreach (MenuItem it in items)
             {
                 it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scrollY.Value + scrollY.Height + it.rect.Height;
                 if (it.show)
                 {
-                    PaintItem(g, it, fore, fore_active, hover, radius);
-                    if (it.Expand && it.Sub != null)
+                    PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+                    if (it.Expand && it.Sub != null && it.Sub.Count > 0)
                     {
-                        PaintItem(g, rect, sy, it.Sub, fore, fore_active, hover, radius);
+                        PaintItemExpand(g, rect, sy, it.Sub, fore, fore_active, fore_enabled, back_hover, back_active, radius);
                         if (it.ExpandThread)
                         {
                             using (var brush = new SolidBrush(BackColor))
@@ -359,46 +464,162 @@ namespace AntdUI
                 }
             }
         }
-        void PaintItem(Graphics g, MenuItem item, Color fore, Color fore_active, Color hover, float radius)
+        void PaintIt(Graphics g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
-            if (item.Select)
+            if (collapsed) PaintItemMini(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+            else PaintItem(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+        }
+
+        void PaintItemMini(Graphics g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        {
+            if (it.Enabled)
             {
-                if (item.CanExpand)
+                if (Config.IsDark || mode == TAMode.Dark)
                 {
-                    using (var pen = new Pen(fore_active, 2F))
+                    if (it.Select)
                     {
-                        pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, item.arr_rect.TriangleLines(item.ArrowProg, .4F));
+                        PaintBack(g, back_active, it.rect, radius);
+                        PaintIcon(g, it, fore_active);
+                    }
+                    else
+                    {
+                        if (it.AnimationHover)
+                        {
+                            PaintIcon(g, it, fore);
+                            PaintIcon(g, it, Color.FromArgb((int)(it.AnimationHoverValue * back_hover.A), back_hover));
+                        }
+                        else if (it.Hover) PaintIcon(g, it, back_hover);
+                        else PaintIcon(g, it, fore);
                     }
                 }
-                else PaintBack(g, BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg, item.rect, radius);
-
-                using (var brush = new SolidBrush(fore_active))
+                else
                 {
-                    g.DrawString(item.Text, Font, brush, item.txt_rect, Helper.stringFormatLeft);
+                    if (it.Select)
+                    {
+                        PaintBack(g, back_active, it.rect, radius);
+                        PaintIcon(g, it, fore_active);
+                    }
+                    else
+                    {
+                        if (it.AnimationHover) PaintBack(g, Color.FromArgb((int)(it.AnimationHoverValue * back_hover.A), back_hover), it.rect, radius);
+                        else if (it.Hover) PaintBack(g, back_hover, it.rect, radius);
+                        PaintIcon(g, it, fore);
+                    }
                 }
             }
             else
             {
-                if (item.AnimationHover)
+                if (it.Select) PaintBack(g, back_active, it.rect, radius);
+                PaintIcon(g, it, fore_enabled);
+            }
+        }
+
+        void PaintItem(Graphics g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        {
+            if (it.Enabled)
+            {
+                if (Config.IsDark || mode == TAMode.Dark)
                 {
-                    PaintBack(g, Color.FromArgb((int)(item.AnimationHoverValue * hover.A), hover), item.rect, radius);
-                }
-                else if (item.Hover) PaintBack(g, hover, item.rect, radius);
-                if (item.CanExpand)
-                {
-                    using (var pen = new Pen(fore, 2F))
+                    if (it.Select)
                     {
-                        pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, item.arr_rect.TriangleLines(item.ArrowProg, .4F));
+                        if (it.CanExpand) PaintTextIconExpand(g, it, fore_active);
+                        else
+                        {
+                            PaintBack(g, back_active, it.rect, radius);
+                            PaintTextIcon(g, it, fore_active);
+                        }
+                    }
+                    else
+                    {
+                        if (it.AnimationHover)
+                        {
+                            PaintTextIconExpand(g, it, fore);
+                            PaintTextIconExpand(g, it, Color.FromArgb((int)(it.AnimationHoverValue * back_hover.A), back_hover));
+                        }
+                        else if (it.Hover) PaintTextIconExpand(g, it, back_hover);
+                        else PaintTextIconExpand(g, it, fore);
                     }
                 }
-                using (var brush = new SolidBrush(item.Enabled ? fore : Style.Db.TextQuaternary))
+                else
                 {
-                    g.DrawString(item.Text, Font, brush, item.txt_rect, Helper.stringFormatLeft);
+                    if (it.Select)
+                    {
+                        if (it.CanExpand) PaintTextIconExpand(g, it, fore_active);
+                        else
+                        {
+                            PaintBack(g, back_active, it.rect, radius);
+                            PaintTextIcon(g, it, fore_active);
+                        }
+                    }
+                    else
+                    {
+                        if (it.AnimationHover) PaintBack(g, Color.FromArgb((int)(it.AnimationHoverValue * back_hover.A), back_hover), it.rect, radius);
+                        else if (it.Hover) PaintBack(g, back_hover, it.rect, radius);
+                        PaintTextIconExpand(g, it, fore);
+                    }
                 }
             }
-            if (item.Icon != null) g.DrawImage(item.Icon, item.ico_rect);
+            else
+            {
+                if (it.Select)
+                {
+                    if (it.CanExpand)
+                    {
+                        using (var pen = new Pen(fore_active, 2F))
+                        {
+                            pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                            g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
+                        }
+                    }
+                    else PaintBack(g, back_active, it.rect, radius);
+                }
+                else if (it.CanExpand)
+                {
+                    using (var pen = new Pen(fore_enabled, 2F))
+                    {
+                        pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                        g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
+                    }
+                }
+                PaintTextIcon(g, it, fore_enabled);
+            }
+        }
+
+        readonly StringFormat SL = Helper.SF_ALL(lr: StringAlignment.Near);
+        void PaintTextIcon(Graphics g, MenuItem it, Color fore)
+        {
+            using (var brush = new SolidBrush(fore))
+            {
+                g.DrawString(it.Text, Font, brush, it.txt_rect, SL);
+            }
+            PaintIcon(g, it, fore);
+        }
+        void PaintTextIconExpand(Graphics g, MenuItem it, Color fore)
+        {
+            if (it.CanExpand)
+            {
+                using (var pen = new Pen(fore, 2F))
+                {
+                    pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                    g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
+                }
+            }
+            using (var brush = new SolidBrush(fore))
+            {
+                g.DrawString(it.Text, Font, brush, it.txt_rect, SL);
+            }
+            PaintIcon(g, it, fore);
+        }
+        void PaintIcon(Graphics g, MenuItem it, Color fore)
+        {
+            if (it.Icon != null) g.DrawImage(it.Icon, it.ico_rect);
+            else if (it.IconSvg != null)
+            {
+                using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.ico_rect, fore))
+                {
+                    if (_bmp != null) g.DrawImage(_bmp, it.ico_rect);
+                }
+            }
         }
 
         void PaintBack(Graphics g, Color color, RectangleF rect, float radius)
@@ -472,6 +693,7 @@ namespace AntdUI
             return false;
         }
 
+        int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -479,9 +701,65 @@ namespace AntdUI
             {
                 if (items == null || items.Count == 0) return;
                 int count = 0, hand = 0;
-                foreach (MenuItem it in Items)
+                if (collapsed)
                 {
-                    IMouseMove(it, e.Location, ref count, ref hand);
+                    int i = 0, hoveindex = -1;
+                    foreach (MenuItem it in Items)
+                    {
+                        if (it.show)
+                        {
+                            if (it.Contains(e.Location, 0, scrollY.Value, out var change))
+                            {
+                                hoveindex = i;
+                                hand++;
+                            }
+                            if (change) count++;
+                        }
+                        i++;
+                    }
+                    if (hoveindex != hoveindexold)
+                    {
+                        hoveindexold = hoveindex;
+
+                        subForm?.Close();
+                        subForm = null;
+                        tooltipForm?.Close();
+                        tooltipForm = null;
+
+                        var _rect = RectangleToScreen(ClientRectangle);
+                        var it = Items[hoveindex];
+                        if (it == null) return;
+                        var rect = new Rectangle(_rect.X + (int)it.Rect.X / 2, _rect.Y + (int)it.Rect.Y, (int)it.Rect.Width, (int)it.Rect.Height);
+                        if (it.Sub != null && it.Sub.Count > 0)
+                        {
+                            select_x = 0;
+                            subForm = new LayeredFormMenuDown(this, radius, rect, it.Sub);
+                            subForm.Show(this);
+                        }
+                        else
+                        {
+                            if (it.Text != null)
+                            {
+                                if (tooltipForm == null)
+                                {
+                                    tooltipForm = new TooltipForm(rect, it.Text, new TooltipConfig
+                                    {
+                                        Font = Font,
+                                        ArrowAlign = TAlign.Right,
+                                    });
+                                    tooltipForm.Show(this);
+                                }
+                                else tooltipForm.SetText(rect, it.Text);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (MenuItem it in Items)
+                    {
+                        IMouseMove(it, e.Location, ref count, ref hand);
+                    }
                 }
                 SetCursor(hand > 0);
                 if (count > 0) Invalidate();
@@ -489,29 +767,29 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(MenuItem item, Point point, ref int count, ref int hand)
+        void IMouseMove(MenuItem it, Point point, ref int count, ref int hand)
         {
-            if (item.show)
+            if (it.show)
             {
-                if (item.Contains(point, 0, scrollY.Value, out var change))
+                if (it.Contains(point, 0, scrollY.Value, out var change))
                 {
                     hand++;
                 }
                 if (change) count++;
-                if (item.Sub != null)
-                    foreach (MenuItem sub in item.Sub)
-                    {
-                        IMouseMove(sub, point, ref count, ref hand);
-                    }
+                if (it.Sub != null && it.Sub.Count > 0) foreach (MenuItem sub in it.Sub) IMouseMove(sub, point, ref count, ref hand);
             }
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            hoveindexold = -1;
+            tooltipForm?.Close();
+            tooltipForm = null;
             scrollY.Leave();
             ILeave();
         }
+
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
@@ -519,44 +797,92 @@ namespace AntdUI
             ILeave();
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            scrollY.MouseWheel(e.Delta);
+            base.OnMouseWheel(e);
+        }
+
         void ILeave()
         {
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int count = 0;
-            foreach (MenuItem it in Items)
-            {
-                ILeave(it, ref count);
-            }
+            foreach (MenuItem it in Items) ILeave(it, ref count);
             if (count > 0) Invalidate();
         }
-        void ILeave(MenuItem item, ref int count)
+        void ILeave(MenuItem it, ref int count)
         {
-            if (item.Hover) count++;
-            item.Hover = false;
-            if (item.Sub != null)
-                foreach (MenuItem sub in item.Sub)
-                {
-                    ILeave(sub, ref count);
-                }
+            if (it.Hover) count++;
+            it.Hover = false;
+            if (it.Sub != null && it.Sub.Count > 0) foreach (MenuItem sub in it.Sub) ILeave(sub, ref count);
         }
 
         void IUSelect()
         {
+            foreach (MenuItem it in Items) IUSelect(it);
+        }
+        void IUSelect(MenuItem it)
+        {
+            it.Select = false;
+            if (it.Sub != null && it.Sub.Count > 0) foreach (MenuItem sub in it.Sub) IUSelect(sub);
+        }
+
+        #endregion
+
+        #region 子窗口
+
+        TooltipForm? tooltipForm = null;
+        ILayeredForm? subForm = null;
+        public ILayeredForm? SubForm() { return subForm; }
+        internal int select_x = 0;
+
+        internal void DropDownChange(MenuItem value)
+        {
+            select_x = 0;
+            subForm = null;
+            IUSelect();
+            if (items == null || items.Count == 0) return;
             foreach (MenuItem it in Items)
             {
-                IUSelect(it);
+                var list = new List<MenuItem> { it };
+                if (IDropDownChange(it, list, value)) return;
             }
+            Invalidate();
         }
-        void IUSelect(MenuItem item)
+        bool IDropDownChange(MenuItem item, List<MenuItem> list, MenuItem value)
         {
-            item.Select = false;
-            if (item.Sub != null)
+            bool can = item.CanExpand;
+            if (item.Enabled && item == value)
+            {
+                if (can) item.Expand = !item.Expand;
+                else
+                {
+                    IUSelect();
+                    if (list.Count > 1)
+                    {
+                        foreach (MenuItem it in list)
+                        {
+                            it.Select = true;
+                        }
+                    }
+                    item.Select = true;
+                    OnSelectIndexChanged(item);
+                    Invalidate();
+                }
+                return true;
+            }
+            if (can && item.Expand)
                 foreach (MenuItem sub in item.Sub)
                 {
-                    IUSelect(sub);
+                    var list_ = new List<MenuItem>(list.Count + 1);
+                    list_.AddRange(list);
+                    list_.Add(sub);
+                    if (IDropDownChange(sub, list_, value)) return true;
                 }
+            return false;
         }
+
 
         #endregion
     }
@@ -606,6 +932,8 @@ namespace AntdUI
             Icon = icon;
         }
 
+        #region 图标
+
         Image? icon = null;
         /// <summary>
         /// 图标
@@ -621,6 +949,32 @@ namespace AntdUI
                 OnPropertyChanged("Icon");
             }
         }
+
+        string? iconSvg = null;
+        /// <summary>
+        /// 图标
+        /// </summary>
+        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconSvg
+        {
+            get => iconSvg;
+            set
+            {
+                if (iconSvg == value) return;
+                iconSvg = value;
+                OnPropertyChanged("IconSvg");
+            }
+        }
+
+        /// <summary>
+        /// 是否包含图片
+        /// </summary>
+        internal bool HasIcon
+        {
+            get => iconSvg != null || icon != null;
+        }
+
+        #endregion
 
         string? text = null;
         /// <summary>
@@ -754,9 +1108,17 @@ namespace AntdUI
                     }
                     else
                     {
-                        ExpandProg = 1F; ArrowProg = value ? 1F : -1F;
+                        ExpandProg = 1F;
+                        ArrowProg = value ? 1F : -1F;
                         Invalidates();
                     }
+                }
+                else
+                {
+                    expand = false;
+                    ExpandProg = 1F;
+                    ArrowProg = -1F;
+                    Invalidates();
                 }
             }
         }

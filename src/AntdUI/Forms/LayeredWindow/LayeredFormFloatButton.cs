@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormFloatButton : ILayeredFormOpacity
+    internal class LayeredFormFloatButton : ILayeredFormOpacity, IEventListener
     {
         FloatButton.Config config;
         int BadgeSize = 6, ShadowXY = 20, ShadowS = 40;
@@ -53,6 +53,7 @@ namespace AntdUI
                 {
                     foreach (var it in _config.Btns)
                     {
+                        it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
                         it.rect_icon = new RectangleF(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
@@ -64,6 +65,7 @@ namespace AntdUI
                 {
                     foreach (var it in _config.Btns)
                     {
+                        it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
                         it.rect_icon = new RectangleF(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
@@ -75,6 +77,12 @@ namespace AntdUI
             SetPoint();
             config.Form.LocationChanged += Form_LSChanged;
             config.Form.SizeChanged += Form_LSChanged;
+        }
+
+        private void Notify_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (sender == null || e.PropertyName == null) return;
+            Print();
         }
 
         void SetPoint()
@@ -377,6 +385,35 @@ namespace AntdUI
                 }
             }
             base.OnMouseClick(e);
+        }
+
+        #endregion
+
+        #region 主题
+
+        protected override void CreateHandle()
+        {
+            base.CreateHandle();
+            EventManager.Instance.AddListener(1, this);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            EventManager.Instance.RemoveListener(1, this);
+            foreach (var it in config.Btns)
+            {
+                it.PropertyChanged -= Notify_PropertyChanged;
+            }
+            base.Dispose(disposing);
+        }
+
+        public void HandleEvent(int eventId, IEventArgs? args)
+        {
+            switch (eventId)
+            {
+                case 1:
+                    Print();
+                    break;
+            }
         }
 
         #endregion
