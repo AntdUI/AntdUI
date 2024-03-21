@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -33,6 +34,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            is_prefix_down = is_suffix_down = false;
             if (e.Button == MouseButtons.Left)
             {
                 if (cache_font != null && e.Clicks > 1)
@@ -54,6 +56,16 @@ namespace AntdUI
                 if (is_clear && rect_r.Contains(e.Location))
                 {
                     is_clear_down = true;
+                    return;
+                }
+                if (HasImage && rect_l.Contains(e.Location) && PrefixClick != null)
+                {
+                    is_prefix_down = true;
+                    return;
+                }
+                if (HasSuffix && rect_r.Contains(e.Location) && SuffixClick != null)
+                {
+                    is_suffix_down = true;
                     return;
                 }
                 mouseDownMove = false;
@@ -91,6 +103,14 @@ namespace AntdUI
                     }
                     if (hover) { Cursor = Cursors.Hand; return; }
                 }
+                if (HasImage && rect_l.Contains(e.Location) && PrefixClick != null)
+                {
+                    Cursor = Cursors.Hand; return;
+                }
+                if (HasSuffix && rect_r.Contains(e.Location) && SuffixClick != null)
+                {
+                    Cursor = Cursors.Hand; return;
+                }
                 if (ReadShowCaret)
                 {
                     if (rect_text.Contains(e.Location)) Cursor = Cursors.Hand;
@@ -115,6 +135,18 @@ namespace AntdUI
             {
                 if (rect_r.Contains(e.Location)) OnClearValue();
                 is_clear_down = false;
+            }
+            if (is_prefix_down && PrefixClick != null)
+            {
+                PrefixClick(this, e);
+                is_prefix_down = is_suffix_down = false;
+                return;
+            }
+            if (is_suffix_down && SuffixClick != null)
+            {
+                SuffixClick(this, e);
+                is_prefix_down = is_suffix_down = false;
+                return;
             }
             if (mouseDown && mouseDownMove && cache_font != null)
             {
@@ -295,6 +327,16 @@ namespace AntdUI
         }
 
         internal virtual void ChangeMouseHover(bool Hover, bool Focus) { }
+
+        #endregion
+
+        #region 事件
+
+        [Description("前缀 点击时发生"), Category("行为")]
+        public event MouseEventHandler? PrefixClick = null;
+
+        [Description("后缀 点击时发生"), Category("行为")]
+        public event MouseEventHandler? SuffixClick = null;
 
         #endregion
     }

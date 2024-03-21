@@ -181,7 +181,7 @@ namespace AntdUI
         /// <summary>
         /// 配置 按钮
         /// </summary>
-        public class ConfigBtn : BadgeConfig
+        public class ConfigBtn : NotifyProperty, BadgeConfig
         {
             /// <summary>
             /// 配置 按钮
@@ -212,15 +212,35 @@ namespace AntdUI
             /// </summary>
             public string Name { get; set; }
 
+            Bitmap? icon;
             /// <summary>
             /// 自定义图标
             /// </summary>
-            public Bitmap? Icon { get; set; }
+            public Bitmap? Icon
+            {
+                get => icon;
+                set
+                {
+                    if (icon == value) return;
+                    icon = value;
+                    OnPropertyChanged("Icon");
+                }
+            }
 
+            string? iconSvg;
             /// <summary>
             /// 自定义图标SVG
             /// </summary>
-            public string? IconSvg { get; set; }
+            public string? IconSvg
+            {
+                get => iconSvg;
+                set
+                {
+                    if (iconSvg == value) return;
+                    iconSvg = value;
+                    OnPropertyChanged("IconSvg");
+                }
+            }
 
             /// <summary>
             /// 文字及其它内容
@@ -232,25 +252,55 @@ namespace AntdUI
             /// </summary>
             public string? Tooltip { get; set; }
 
+            TTypeMini type = TTypeMini.Default;
             /// <summary>
             /// 设置按钮类型
             /// </summary>
-            public TTypeMini Type { get; set; } = TTypeMini.Default;
+            public TTypeMini Type
+            {
+                get => type;
+                set
+                {
+                    if (type == value) return;
+                    type = value;
+                    OnPropertyChanged("Type");
+                }
+            }
 
             /// <summary>
             /// 圆角
             /// </summary>
             public int Radius { get; set; } = 6;
 
+            TShape shape = TShape.Circle;
             /// <summary>
             /// 设置按钮形状
             /// </summary>
-            public TShape Shape { get; set; } = TShape.Circle;
+            public TShape Shape
+            {
+                get => shape;
+                set
+                {
+                    if (shape == value) return;
+                    shape = value;
+                    OnPropertyChanged("Shape");
+                }
+            }
 
+            string? badge;
             /// <summary>
             /// 徽标文本
             /// </summary>
-            public string? Badge { get; set; }
+            public string? Badge
+            {
+                get => badge;
+                set
+                {
+                    if (badge == value) return;
+                    badge = value;
+                    OnPropertyChanged("Badge");
+                }
+            }
 
             /// <summary>
             /// 徽标大小

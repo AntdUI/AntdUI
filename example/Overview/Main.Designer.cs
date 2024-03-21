@@ -48,10 +48,11 @@ namespace Overview
         {
             btn_back = new AntdUI.Button();
             btn_mode = new AntdUI.Button();
-            divider2 = new AntdUI.Divider();
+            divider_top = new AntdUI.Divider();
             flowPanel = new AntdUI.FlowPanel();
             windowBar = new AntdUI.WindowBar();
-            colorPicker1 = new AntdUI.ColorPicker();
+            txt_search = new AntdUI.Input();
+            colorTheme = new AntdUI.ColorPicker();
             windowBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -74,7 +75,7 @@ namespace Overview
             btn_mode.Font = new Font("Microsoft YaHei UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
             btn_mode.Ghost = true;
             btn_mode.ImageSvg = Properties.Resources.app_light;
-            btn_mode.Location = new Point(1094, 0);
+            btn_mode.Location = new Point(1106, 0);
             btn_mode.Margins = 0;
             btn_mode.Name = "btn_mode";
             btn_mode.Radius = 0;
@@ -82,13 +83,13 @@ namespace Overview
             btn_mode.TabIndex = 6;
             btn_mode.Click += btn_mode_Click;
             // 
-            // divider2
+            // divider_top
             // 
-            divider2.Dock = DockStyle.Top;
-            divider2.Location = new Point(0, 40);
-            divider2.Name = "divider2";
-            divider2.Size = new Size(1300, 4);
-            divider2.TabIndex = 0;
+            divider_top.Dock = DockStyle.Top;
+            divider_top.Location = new Point(0, 40);
+            divider_top.Name = "divider_top";
+            divider_top.Size = new Size(1300, 4);
+            divider_top.TabIndex = 0;
             // 
             // flowPanel
             // 
@@ -101,7 +102,8 @@ namespace Overview
             // 
             // windowBar
             // 
-            windowBar.Controls.Add(colorPicker1);
+            windowBar.Controls.Add(txt_search);
+            windowBar.Controls.Add(colorTheme);
             windowBar.Controls.Add(btn_mode);
             windowBar.Controls.Add(btn_back);
             windowBar.Dock = DockStyle.Top;
@@ -113,25 +115,39 @@ namespace Overview
             windowBar.TabIndex = 0;
             windowBar.Text = "Ant Design 5.0";
             // 
-            // colorPicker1
+            // txt_search
             // 
-            colorPicker1.Dock = DockStyle.Right;
-            colorPicker1.Location = new Point(1054, 0);
-            colorPicker1.Name = "colorPicker1";
-            colorPicker1.Padding = new Padding(5);
-            colorPicker1.Size = new Size(40, 40);
-            colorPicker1.TabIndex = 8;
-            colorPicker1.Value = Color.FromArgb(22, 119, 255);
+            txt_search.Dock = DockStyle.Right;
+            txt_search.ImageSvg = Properties.Resources.icon_search;
+            txt_search.Location = new Point(896, 0);
+            txt_search.Name = "txt_search";
+            txt_search.Padding = new Padding(0, 4, 0, 4);
+            txt_search.PlaceholderText = "输入关键字搜索...";
+            txt_search.Size = new Size(170, 40);
+            txt_search.TabIndex = 9;
+            txt_search.TextChanged += txt_search_TextChanged;
+            txt_search.PrefixClick += txt_search_PrefixClick;
+            // 
+            // colorTheme
+            // 
+            colorTheme.Dock = DockStyle.Right;
+            colorTheme.Location = new Point(1066, 0);
+            colorTheme.Name = "colorTheme";
+            colorTheme.Padding = new Padding(5);
+            colorTheme.Size = new Size(40, 40);
+            colorTheme.TabIndex = 8;
+            colorTheme.Value = Color.FromArgb(22, 119, 255);
             // 
             // Main
             // 
             BackColor = Color.White;
             ClientSize = new Size(1300, 720);
             Controls.Add(flowPanel);
-            Controls.Add(divider2);
+            Controls.Add(divider_top);
             Controls.Add(windowBar);
             Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             ForeColor = Color.Black;
+            MinimumSize = new Size(660, 400);
             Name = "Main";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Overview";
@@ -141,10 +157,11 @@ namespace Overview
 
         #endregion
         private AntdUI.Button btn_mode;
-        private AntdUI.Divider divider2;
+        private AntdUI.Divider divider_top;
         private AntdUI.FlowPanel flowPanel;
         private AntdUI.Button btn_back;
         private AntdUI.WindowBar windowBar;
-        private AntdUI.ColorPicker colorPicker1;
+        private AntdUI.ColorPicker colorTheme;
+        private AntdUI.Input txt_search;
     }
 }

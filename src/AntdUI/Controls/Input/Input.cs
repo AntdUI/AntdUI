@@ -40,6 +40,7 @@ namespace AntdUI
         {
             SetStyle(ControlStyles.Selectable, true);
             UpdateStyles();
+            CurrentCaret.Width = (int)(1 * Config.Dpi);
         }
 
         #region 属性
@@ -338,6 +339,7 @@ namespace AntdUI
         public bool JoinRight { get; set; } = false;
 
         bool allowclear = false, is_clear = false, is_clear_down = false;
+        bool is_prefix_down = false, is_suffix_down = false;
         /// <summary>
         /// 支持清除
         /// </summary>
@@ -803,16 +805,6 @@ namespace AntdUI
 
         #region 重写
 
-        #region DPI
-
-        protected override void CreateHandle()
-        {
-            CurrentCaret.Width = (int)(1 * Config.Dpi);
-            base.CreateHandle();
-        }
-
-        #endregion
-
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
@@ -881,22 +873,25 @@ namespace AntdUI
             {
                 if (showCaret == value) return;
                 showCaret = value;
-                if (showCaret)
+                if (IsHandleCreated)
                 {
-                    if (ReadShowCaret)
+                    if (showCaret)
                     {
-                        showCaret = false;
-                        return;
+                        if (ReadShowCaret)
+                        {
+                            showCaret = false;
+                            return;
+                        }
+                        Win32.CreateCaret(Handle, IntPtr.Zero, CurrentCaret.Width, CurrentCaret.Height);
+                        Win32.ShowCaret(Handle);
+                        SetCaretPostion(selectionStart);
                     }
-                    Win32.CreateCaret(Handle, IntPtr.Zero, CurrentCaret.Width, CurrentCaret.Height);
-                    Win32.ShowCaret(Handle);
-                    SetCaretPostion(selectionStart);
-                }
-                else
-                {
-                    Win32.HideCaret(Handle);
-                    Win32.DestroyCaret();
-                    Invalidate();
+                    else
+                    {
+                        Win32.HideCaret(Handle);
+                        Win32.DestroyCaret();
+                        Invalidate();
+                    }
                 }
             }
         }

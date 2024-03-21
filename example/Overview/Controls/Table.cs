@@ -32,7 +32,7 @@ namespace Overview.Controls
                 new AntdUI.Column("address","住址"),
                 new AntdUI.Column("tag","Tag"),
                 new AntdUI.Column("imgs","图片"),
-                new AntdUI.Column("btns","操作"){ Fixed=true},
+                new AntdUI.Column("btns","操作"){ Fixed=true,Width="auto"},
             };// 添加表头，绑定模型名称
 
             var list = new List<TestClass>(10) {
@@ -50,7 +50,7 @@ namespace Overview.Controls
                 new AntdUI.Column("name","姓名"),
                 new AntdUI.Column("age","年龄",AntdUI.ColumnAlign.Center),
                 new AntdUI.Column("address","住址"),
-                new AntdUI.Column("tag","Tag")
+                new AntdUI.Column("tag","Tag"){ Width="auto"}
             };
 
             var list2 = new List<TestClass2>(100);
