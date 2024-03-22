@@ -45,9 +45,8 @@ namespace AntdUI
         void LoadLayout()
         {
             var rect = ChangeLayout();
-            if (scrollX.Show) scrollX.SizeChange(new Rectangle(rect.X, rect.Y, rect.Width - 20, rect.Height));
-            else scrollX.SizeChange(rect);
             scrollY.SizeChange(rect);
+            scrollX.SizeChange(rect);
         }
         bool has_check = false;
         Rectangle rect_read, rect_divider;

@@ -114,7 +114,27 @@ namespace AntdUI
                                 if (!string.IsNullOrEmpty(row))
                                 {
                                     var cels = row.Split(' ', ',');
-                                    var cel_tmp = new List<int>(cels.Length);
+                                    var cels_tmp = new List<object>(cels.Length);
+                                    int use_width = 0;
+                                    foreach (string it in cels)
+                                    {
+                                        var cel = it.Trim();
+                                        if (cel.EndsWith("%") && float.TryParse(cel.TrimEnd('%'), out var f)) cels_tmp.Add(f / 100F);
+                                        else if (int.TryParse(cel, out var i))
+                                        {
+                                            int uw = (int)Math.Round(i * Config.Dpi);
+                                            cels_tmp.Add(uw);
+                                            use_width += uw;
+                                        }
+                                        else if (float.TryParse(cel, out float f2)) cels_tmp.Add(f2);
+                                    }
+                                    int read_width = rect.Width - use_width;
+                                    var cel_tmp = new List<int>(cels_tmp.Count);
+                                    foreach (var it in cels_tmp)
+                                    {
+                                        if (it is float f) cel_tmp.Add((int)Math.Round(read_width * f));
+                                        else if (it is int i) cel_tmp.Add(i);
+                                    }
                                     foreach (string _cel in cels)
                                     {
                                         var cel = _cel.Trim();

@@ -320,7 +320,7 @@ namespace AntdUI
                 it.SetRect(depth, Indent, new RectangleF(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
-                    int size = (int)Math.Ceiling(g.MeasureString(it.Text, Font).Width + it.txt_rect.Left + it.arr_rect.Width);
+                    int size = (int)Math.Ceiling(g.MeasureString(it.Text, Font).Width + gap * 4 + icon_size + it.arr_rect.Width);
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + gapI;
                     if (!collapsed && it.CanExpand)

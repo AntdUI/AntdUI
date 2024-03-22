@@ -133,6 +133,7 @@ namespace AntdUI
         #endregion
 
         public int SIZE { get; set; } = 20;
+        public bool ShowY { get; set; }
         public virtual void SizeChange(Rectangle rect)
         {
             Rect = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
@@ -150,13 +151,14 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(10, Style.Db.TextBase)))
                     {
-                        g.FillRectangle(brush, Rect);
+                        if (ShowY) g.FillRectangle(brush, new Rectangle(Rect.X, Rect.Y, Rect.Width - SIZE, Rect.Height));
+                        else g.FillRectangle(brush, Rect);
                     }
                 }
                 float width = (Rect.Width / VrValue) * Rect.Width;
                 if (width < SIZE) width = SIZE;
                 if (Gap) width -= 12;
-                float x = val == 0 ? 0 : (val / (VrValue - Rect.Width)) * (Rect.Width - width);
+                float x = val == 0 ? 0 : (val / (VrValue - Rect.Width)) * ((ShowY ? (Rect.Width - SIZE) : Rect.Width) - width);
                 if (Hover) Slider = new RectangleF(Rect.X + x, Rect.Y + 6, width, 8);
                 else Slider = new RectangleF(Rect.X + x, Rect.Y + 7, width, 6);
                 if (Gap)

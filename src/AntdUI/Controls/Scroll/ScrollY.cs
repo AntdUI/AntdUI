@@ -26,8 +26,12 @@ namespace AntdUI
     {
         IControl? control;
 
-        public ScrollY(IControl _control)
+        public ScrollY(IControl _control, ScrollX scroll)
         {
+            show_action = show =>
+            {
+                scroll.ShowY = show;
+            };
             Invalidate = () =>
             {
                 Change?.Invoke();
@@ -97,9 +101,12 @@ namespace AntdUI
             {
                 if (show == value) return;
                 show = value;
+                show_action?.Invoke(value);
                 if (!value) val = 0;
             }
         }
+        public Action<bool>? show_action;
+
         public Rectangle Rect;
         public RectangleF Slider;
 

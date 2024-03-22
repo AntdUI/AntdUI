@@ -92,7 +92,7 @@ namespace SVGView
             if (svg.StartsWith("<?xml")) svg = svg.Substring(svg.IndexOf(">") + 1).Trim();
             int i = svg.IndexOf(">") + 1;
             string first = svg.Substring(0, i), last = svg.Substring(i);
-            ReId(ref first, "class", "version", "xmlns", "width", "height", "t");
+            ReId(ref first, "class", "version", "xmlns", "width", "height", "focusable", "data-icon", "aria-hidden", "t");
             ReNodeOne(ref last, "title");
             svg = first + last;
             if (more) ReId(ref svg, "fill");

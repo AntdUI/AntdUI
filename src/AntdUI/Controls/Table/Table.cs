@@ -215,7 +215,7 @@ namespace AntdUI
 
         ScrollX scrollX;
         ScrollY scrollY;
-        public Table() { scrollX = new ScrollX(this); scrollY = new ScrollY(this); }
+        public Table() { scrollX = new ScrollX(this); scrollY = new ScrollY(this, scrollX); }
 
         protected override void Dispose(bool disposing)
         {
