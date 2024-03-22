@@ -75,9 +75,6 @@ namespace AntdUI.Svg
                         case "ellipse":
                             createdElement = new SvgEllipse();
                             break;
-                        case "image":
-                            createdElement = new SvgImage();
-                            break;
                         case "line":
                             createdElement = new SvgLine();
                             break;

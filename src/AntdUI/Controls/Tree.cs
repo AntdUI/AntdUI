@@ -337,7 +337,7 @@ namespace AntdUI
                     if (it.CanExpand)
                     {
                         int y_item = y;
-                        ChangeList(g, rect, it, it.Sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
+                        ChangeList(g, rect, it, it.Sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1, expand && it.Expand);
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
                         {
                             it.ExpandHeight = y - y_item;
@@ -367,7 +367,7 @@ namespace AntdUI
             var g = e.Graphics.High();
             float sx = scrollX.Value, sy = scrollY.Value;
             g.TranslateTransform(-sx, -sy);
-            Color color_fore = fore.HasValue ? fore.Value : Style.Db.TextBase, color_fore_active = ForeActive.HasValue ? ForeActive.Value : Style.Db.Primary, color_hover = BackHover.HasValue ? BackHover.Value : Style.Db.FillSecondary;
+            Color color_fore = fore ?? Style.Db.TextBase, color_fore_active = ForeActive ?? Style.Db.Primary, color_hover = BackHover ?? Style.Db.FillSecondary;
             float _radius = radius * Config.Dpi;
             PaintItem(g, rect, sx, sy, Items, color_fore, color_fore_active, color_hover, _radius);
             g.ResetTransform();
@@ -400,7 +400,7 @@ namespace AntdUI
             }
         }
 
-        StringFormat sf_center = Helper.SF_Ellipsis();
+        readonly StringFormat sf_center = Helper.SF_Ellipsis();
         void PaintItem(Graphics g, TreeItem item, Color fore, Color fore_active, Color hover, float radius, float sx, float sy)
         {
             if (item.Select)
@@ -409,10 +409,10 @@ namespace AntdUI
                 {
                     g.ResetTransform();
                     g.TranslateTransform(0, -sy);
-                    PaintBack(g, BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg, item.rect, radius);
+                    PaintBack(g, BackActive ?? Style.Db.PrimaryBg, item.rect, radius);
                     g.TranslateTransform(-sx, 0);
                 }
-                else PaintBack(g, BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg, item.rect, radius);
+                else PaintBack(g, BackActive ?? Style.Db.PrimaryBg, item.rect, radius);
                 if (item.CanExpand) PanintArrow(g, item, fore_active, sx, sy);
                 using (var brush = new SolidBrush(fore_active))
                 {
@@ -627,7 +627,7 @@ namespace AntdUI
         bool IMouseDown(MouseEventArgs e, TreeItem item, TreeItem? fitem)
         {
             bool can = item.CanExpand;
-            int down = item.Contains(e.Location, scrollX.Value, scrollY.Value, checkable);
+            int down = item.Contains(e.Location, blockNode ? 0 : scrollX.Value, scrollY.Value, checkable);
             if (down > 0)
             {
                 if (e.Button == MouseButtons.Left)
@@ -712,7 +712,7 @@ namespace AntdUI
         {
             if (item.show)
             {
-                if (item.Contains(point, scrollX.Value, scrollY.Value, checkable) > 0) hand++;
+                if (item.Contains(point, blockNode ? 0 : scrollX.Value, scrollY.Value, checkable) > 0) hand++;
                 if (item.Sub != null)
                     foreach (TreeItem sub in item.Sub)
                     {

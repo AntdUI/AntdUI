@@ -72,7 +72,6 @@ namespace AntdUI
         WState winState = WState.Restore;
         WState WinState
         {
-            get => winState;
             set
             {
                 if (winState == value) return;
@@ -93,7 +92,6 @@ namespace AntdUI
         bool _isaddMessage = false;
         bool IsAddMessage
         {
-            get => _isaddMessage;
             set
             {
                 if (_isaddMessage == value) return;
@@ -336,7 +334,7 @@ namespace AntdUI
             {
                 SetCursorHit(mode);
                 ReleaseCapture();
-                PostMessage(handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM((ushort)pointScreen.X, (ushort)pointScreen.Y));
+                PostMessage(handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
                 return true;
             }
             return false;
@@ -354,7 +352,7 @@ namespace AntdUI
             {
                 SetCursorHit(mode);
                 ReleaseCapture();
-                PostMessage(handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM((ushort)pointScreen.X, (ushort)pointScreen.Y));
+                PostMessage(handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
                 if (down)
                 {
                     down = false;
@@ -480,7 +478,7 @@ namespace AntdUI
             return false;
         }
 
-        Control? GetParent(Control control)
+        static Control? GetParent(Control? control)
         {
             try
             {

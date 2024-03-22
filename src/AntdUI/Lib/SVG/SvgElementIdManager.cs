@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text.RegularExpressions;
 
 namespace AntdUI.Svg
@@ -35,23 +34,17 @@ namespace AntdUI.Svg
                     id = id.TrimEnd('\"');
                 }
             }
-            if (id.StartsWith("#"))
-            {
-                id = id.Substring(1);
-            }
-
-            SvgElement element = null;
-            this._idValueMap.TryGetValue(id, out element);
-
+            if (id.StartsWith("#")) id = id.Substring(1);
+            _idValueMap.TryGetValue(id, out var element);
             return element;
         }
 
         public virtual SvgElement GetElementById(Uri uri)
         {
             if (uri.ToString().StartsWith("url(")) uri = new Uri(uri.ToString().Substring(4).TrimEnd(')'), UriKind.Relative);
-            if (!uri.IsAbsoluteUri && this._document.BaseUri != null && !uri.ToString().StartsWith("#"))
+            if (!uri.IsAbsoluteUri && _document.BaseUri != null && !uri.ToString().StartsWith("#"))
             {
-                var fullUri = new Uri(this._document.BaseUri, uri);
+                var fullUri = new Uri(_document.BaseUri, uri);
                 var hash = fullUri.OriginalString.Substring(fullUri.OriginalString.LastIndexOf('#'));
                 SvgDocument doc;
                 switch (fullUri.Scheme.ToLowerInvariant())
@@ -59,20 +52,11 @@ namespace AntdUI.Svg
                     case "file":
                         doc = SvgDocument.Open<SvgDocument>(fullUri.LocalPath.Substring(0, fullUri.LocalPath.Length - hash.Length));
                         return doc.IdManager.GetElementById(hash);
-                    case "http":
-                    case "https":
-                        var httpRequest = WebRequest.Create(uri);
-                        using (WebResponse webResponse = httpRequest.GetResponse())
-                        {
-                            doc = SvgDocument.Open<SvgDocument>(webResponse.GetResponseStream());
-                            return doc.IdManager.GetElementById(hash);
-                        }
-                    default:
-                        throw new NotSupportedException();
+                    default: throw new NotSupportedException();
                 }
 
             }
-            return this.GetElementById(uri.ToString());
+            return GetElementById(uri.ToString());
         }
 
         /// <summary>
@@ -98,7 +82,7 @@ namespace AntdUI.Svg
             var result = false;
             if (!string.IsNullOrEmpty(element.ID))
             {
-                var newID = this.EnsureValidId(element.ID, autoForceUniqueID);
+                var newID = EnsureValidId(element.ID, autoForceUniqueID);
                 if (autoForceUniqueID && newID != element.ID)
                 {
                     if (logElementOldIDNewID != null)
@@ -106,7 +90,7 @@ namespace AntdUI.Svg
                     element.ForceUniqueID(newID);
                     result = true;
                 }
-                this._idValueMap.Add(element.ID, element);
+                _idValueMap.Add(element.ID, element);
             }
 
             OnAdded(element);
@@ -121,7 +105,7 @@ namespace AntdUI.Svg
         {
             if (!string.IsNullOrEmpty(element.ID))
             {
-                this._idValueMap.Remove(element.ID);
+                _idValueMap.Remove(element.ID);
             }
 
             OnRemoved(element);
@@ -153,7 +137,7 @@ namespace AntdUI.Svg
                 throw new SvgIDWrongFormatException("ID cannot start with a digit: '" + id + "'.");
             }
 
-            if (this._idValueMap.ContainsKey(id))
+            if (_idValueMap.ContainsKey(id))
             {
                 if (autoForceUniqueID)
                 {
@@ -184,8 +168,8 @@ namespace AntdUI.Svg
         /// <param name="document">The <see cref="SvgDocument"/> containing the <see cref="SvgElement"/>s to manage.</param>
         public SvgElementIdManager(SvgDocument document)
         {
-            this._document = document;
-            this._idValueMap = new Dictionary<string, SvgElement>();
+            _document = document;
+            _idValueMap = new Dictionary<string, SvgElement>();
         }
 
         public event EventHandler<SvgElementEventArgs> ElementAdded;
@@ -196,7 +180,7 @@ namespace AntdUI.Svg
             var handler = ElementAdded;
             if (handler != null)
             {
-                handler(this._document, new SvgElementEventArgs { Element = element });
+                handler(_document, new SvgElementEventArgs { Element = element });
             }
         }
 
@@ -205,7 +189,7 @@ namespace AntdUI.Svg
             var handler = ElementRemoved;
             if (handler != null)
             {
-                handler(this._document, new SvgElementEventArgs { Element = element });
+                handler(_document, new SvgElementEventArgs { Element = element });
             }
         }
 

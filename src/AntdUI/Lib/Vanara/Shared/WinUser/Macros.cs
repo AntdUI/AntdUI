@@ -10,47 +10,6 @@ namespace Vanara.PInvoke
     /// <summary>Platform invokable enumerated types, constants and functions from windows.h</summary>
     public static partial class Macros
     {
-        /// <summary>Retrieves the signed x-coordinate from the specified <c>LPARAM</c> value.</summary>
-        /// <param name="lp">The value to be converted.</param>
-        /// <returns>The signed x-coordinate.</returns>
-        // https://docs.microsoft.com/en-us/windows/win32/api/windowsx/nf-windowsx-get_x_lparam
-        // void GET_X_LPARAM( lp );
-        [PInvokeData("windowsx.h")]
-        public static int GET_X_LPARAM(IntPtr lp) => unchecked((short)(long)lp);
-
-        /// <summary>Retrieves the signed y-coordinate from the given <c>LPARAM</c> value.</summary>
-        /// <param name="lp">The value to be converted.</param>
-        /// <returns>The signed y-coordinate.</returns>
-        // https://docs.microsoft.com/en-us/windows/win32/api/windowsx/nf-windowsx-get_y_lparam
-        // void GET_Y_LPARAM( lp );
-        [PInvokeData("windowsx.h")]
-        public static int GET_Y_LPARAM(IntPtr lp) => unchecked((short)((long)lp >> 16));
-
-        /// <summary>Retrieves the high-order byte from the given 16-bit value.</summary>
-        /// <param name="wValue">The value to be converted.</param>
-        /// <returns>The return value is the high-order byte of the specified value.</returns>
-        public static byte HIBYTE(ushort wValue) => (byte)((wValue >> 8) & 0xff);
-
-        /// <summary>Gets the high 8-bytes from a <see cref="long"/> value.</summary>
-        /// <param name="lValue">The <see cref="long"/> value.</param>
-        /// <returns>The high 8-bytes as a <see cref="int"/>.</returns>
-        public static int HighPart(this long lValue) => unchecked((int)(lValue >> 32));
-
-        /// <summary>Retrieves the high-order word from the specified 32-bit value.</summary>
-        /// <param name="dwValue">The value to be converted.</param>
-        /// <returns>The return value is the high-order word of the specified value.</returns>
-        public static ushort HIWORD(uint dwValue) => (ushort)((dwValue >> 16) & 0xffff);
-
-        /// <summary>Retrieves the high-order word from the specified 32-bit value.</summary>
-        /// <param name="dwValue">The value to be converted.</param>
-        /// <returns>The return value is the high-order word of the specified value.</returns>
-        public static ushort HIWORD(IntPtr dwValue) => unchecked((ushort)((long)dwValue >> 16));
-
-        /// <summary>Retrieves the high-order word from the specified 32-bit value.</summary>
-        /// <param name="dwValue">The value to be converted.</param>
-        /// <returns>The return value is the high-order word of the specified value.</returns>
-        public static ushort HIWORD(UIntPtr dwValue) => unchecked((ushort)((ulong)dwValue >> 16));
-
         /// <summary>Determines whether a value is an integer identifier for a resource.</summary>
         /// <param name="ptr">The pointer to be tested whether it contains an integer resource identifier.</param>
         /// <returns>If the value is a resource identifier, the return value is TRUE. Otherwise, the return value is FALSE.</returns>
@@ -82,15 +41,6 @@ namespace Vanara.PInvoke
         /// <returns>The return value is the low-order word of the specified value.</returns>
         public static ushort LOWORD(UIntPtr dwValue) => unchecked((ushort)(ulong)dwValue);
 
-        /// <summary>Converts the specified atom into a pointer, so it can be passed to functions which accept either atoms or strings.</summary>
-        /// <param name="i">The numeric value to be made into an integer atom. This parameter can be either an integer atom or a string atom.</param>
-        /// <returns>A pointer with the atom as the low-order word.</returns>
-        /// <remarks>Although the return value of the <c>MAKEINTATOM</c> macro is cast as an <c>LPTSTR</c> value, it cannot be used as a string pointer except when it is passed to atom-management functions that require an <c>LPTSTR</c> argument.</remarks>
-        // https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-makeintatom
-        // void MAKEINTATOM( i );
-        [PInvokeData("winbase.h", MSDNShortId = "NF:winbase.MAKEINTATOM")]
-        public static IntPtr MAKEINTATOM(ushort i) => new IntPtr(unchecked((int)MAKELONG(i, 0)));
-
         /// <summary>
         /// Converts an integer value to a resource type compatible with the resource-management functions. This macro is used in place of a
         /// string containing the name of the resource.
@@ -104,50 +54,18 @@ namespace Vanara.PInvoke
         /// <param name="wLow">The low-order word of the new value.</param>
         /// <param name="wHigh">The high-order word of the new value.</param>
         /// <returns>The return value is a LONG value.</returns>
-        public static uint MAKELONG(ushort wLow, ushort wHigh) => ((uint)wHigh << 16) | ((uint)wLow & 0xffff);
+        public static int MAKELONG(int wLow, int wHigh) => (wHigh << 16) | (wLow & 0xffff);
 
         /// <summary>Creates a LONG64 value by concatenating the specified values.</summary>
         /// <param name="dwLow">The low-order double word of the new value.</param>
         /// <param name="dwHigh">The high-order double word of the new value.</param>
         /// <returns>The return value is a LONG64 value.</returns>
-        public static ulong MAKELONG64(uint dwLow, uint dwHigh) => ((ulong)dwHigh << 32) | ((ulong)dwLow & 0xffffffff);
-
-        /// <summary>Creates a LONG64 value by concatenating the specified values.</summary>
-        /// <param name="dwLow">The low-order double word of the new value.</param>
-        /// <param name="dwHigh">The high-order double word of the new value.</param>
-        /// <returns>The return value is a LONG64 value.</returns>
-        public static long MAKELONG64(uint dwLow, int dwHigh) => ((long)dwHigh << 32) | ((long)dwLow & 0xffffffff);
+        public static long MAKELONG64(long dwLow, long dwHigh) => (dwHigh << 32) | (dwLow & 0xffffffff);
 
         /// <summary>Creates a value for use as an lParam parameter in a message. The macro concatenates the specified values.</summary>
         /// <param name="wLow">The low-order word of the new value.</param>
         /// <param name="wHigh">The high-order word of the new value.</param>
         /// <returns>The return value is an LPARAM value.</returns>
-        public static IntPtr MAKELPARAM(ushort wLow, ushort wHigh) => new IntPtr(MAKELONG(wLow, wHigh));
-
-        /// <summary>Creates a WORD value by concatenating the specified values.</summary>
-        /// <param name="bLow">The low-order byte of the new value.</param>
-        /// <param name="bHigh">The high-order byte of the new value.</param>
-        /// <returns>The return value is a WORD value.</returns>
-        public static ushort MAKEWORD(byte bLow, byte bHigh) => (ushort)(bHigh << 8 | bLow & 0xff);
-
-        /// <summary>Retrieves the high-order 16-bit value from the specified 32-bit value.</summary>
-        /// <param name="iValue">The value to be converted.</param>
-        /// <returns>The return value is the high-order 16-bit value of the specified value.</returns>
-        public static short SignedHIWORD(int iValue) => (short)((iValue >> 16) & 0xffff);
-
-        /// <summary>Retrieves the high-order 16-bit value from the specified 32-bit value.</summary>
-        /// <param name="iValue">The value to be converted.</param>
-        /// <returns>The return value is the high-order 16-bit value of the specified value.</returns>
-        public static short SignedHIWORD(IntPtr iValue) => SignedHIWORD(unchecked((int)iValue.ToInt64()));
-
-        /// <summary>Retrieves the low-order 16-bit value from the specified 32-bit value.</summary>
-        /// <param name="iValue">The value to be converted.</param>
-        /// <returns>The return value is the low-order 16-bit value of the specified value.</returns>
-        public static short SignedLOWORD(int iValue) => (short)(iValue & 0xffff);
-
-        /// <summary>Retrieves the low-order 16-bit value from the specified 32-bit value.</summary>
-        /// <param name="iValue">The value to be converted.</param>
-        /// <returns>The return value is the low-order 16-bit value of the specified value.</returns>
-        public static short SignedLOWORD(IntPtr iValue) => SignedLOWORD(unchecked((int)iValue.ToInt64()));
+        public static IntPtr MAKELPARAM(int wLow, int wHigh) => new IntPtr(MAKELONG(wLow, wHigh));
     }
 }
