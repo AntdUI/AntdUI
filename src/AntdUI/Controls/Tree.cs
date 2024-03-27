@@ -227,26 +227,26 @@ namespace AntdUI
         internal void OnNodeMouseMove(TreeItem item, bool hover)
         {
             if (NodeMouseMove == null) return;
-            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             NodeMouseMove(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), hover);
         }
 
         internal void OnSelectChanged(TreeItem item)
         {
             if (SelectChanged == null) return;
-            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             SelectChanged(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
         internal void OnNodeMouseClick(TreeItem item)
         {
             if (NodeMouseClick == null) return;
-            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             NodeMouseClick(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
         internal void OnNodeMouseDoubleClick(TreeItem item)
         {
             if (NodeMouseDoubleClick == null) return;
-            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             NodeMouseDoubleClick(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
         internal void OnCheckedChanged(TreeItem item, bool value)
@@ -299,8 +299,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scrollY.SizeChange(rect);
-            scrollX.SizeChange(rect);
+            scrollBar.SizeChange(rect);
             base.OnSizeChanged(e);
         }
 
@@ -319,8 +318,7 @@ namespace AntdUI
                 int gapI = (int)(gap / 2);
                 ChangeList(g, rect, null, Items, ref x, ref y, height, icon_size, gap, gapI, 0, true);
             });
-            scrollX.SetVrSize(x, rect.Width);
-            scrollY.SetVrSize(y, rect.Height);
+            scrollBar.SetVrSize(x, y);
             return rect;
         }
         void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
@@ -337,7 +335,7 @@ namespace AntdUI
                     if (it.CanExpand)
                     {
                         int y_item = y;
-                        ChangeList(g, rect, it, it.Sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1, expand && it.Expand);
+                        ChangeList(g, rect, it, it.Sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
                         {
                             it.ExpandHeight = y - y_item;
@@ -353,11 +351,10 @@ namespace AntdUI
 
         #region 渲染
 
-        ScrollX scrollX;
-        ScrollY scrollY;
+        ScrollBar scrollBar;
         public Tree()
         {
-            scrollX = new ScrollX(this); scrollY = new ScrollY(this, scrollX);
+            scrollBar = new ScrollBar(this, true, true);
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -365,23 +362,22 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            float sx = scrollX.Value, sy = scrollY.Value;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
-            Color color_fore = fore ?? Style.Db.TextBase, color_fore_active = ForeActive ?? Style.Db.Primary, color_hover = BackHover ?? Style.Db.FillSecondary;
+            Color color_fore = fore.HasValue ? fore.Value : Style.Db.TextBase, color_fore_active = ForeActive.HasValue ? ForeActive.Value : Style.Db.Primary, color_hover = BackHover.HasValue ? BackHover.Value : Style.Db.FillSecondary;
             float _radius = radius * Config.Dpi;
             PaintItem(g, rect, sx, sy, Items, color_fore, color_fore_active, color_hover, _radius);
             g.ResetTransform();
-            scrollX.Paint(g);
-            scrollY.Paint(g);
+            scrollBar.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
 
-        void PaintItem(Graphics g, Rectangle rect, float sx, float sy, TreeItemCollection items, Color fore, Color fore_active, Color hover, float radius)
+        void PaintItem(Graphics g, Rectangle rect, int sx, int sy, TreeItemCollection items, Color fore, Color fore_active, Color hover, float radius)
         {
             foreach (TreeItem it in items)
             {
-                it.show = it.Show && it.Visible && it.rect.Y > sy - it.rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scrollY.Value + scrollY.Height + it.rect.Height;
+                it.show = it.Show && it.Visible && it.rect.Y > sy - it.rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scrollBar.ValueY + rect.Height + it.rect.Height;
                 if (it.show)
                 {
                     PaintItem(g, it, fore, fore_active, hover, radius, sx, sy);
@@ -400,8 +396,8 @@ namespace AntdUI
             }
         }
 
-        readonly StringFormat sf_center = Helper.SF_Ellipsis();
-        void PaintItem(Graphics g, TreeItem item, Color fore, Color fore_active, Color hover, float radius, float sx, float sy)
+        StringFormat sf_center = Helper.SF_Ellipsis();
+        void PaintItem(Graphics g, TreeItem item, Color fore, Color fore_active, Color hover, float radius, int sx, int sy)
         {
             if (item.Select)
             {
@@ -409,10 +405,10 @@ namespace AntdUI
                 {
                     g.ResetTransform();
                     g.TranslateTransform(0, -sy);
-                    PaintBack(g, BackActive ?? Style.Db.PrimaryBg, item.rect, radius);
+                    PaintBack(g, BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg, item.rect, radius);
                     g.TranslateTransform(-sx, 0);
                 }
-                else PaintBack(g, BackActive ?? Style.Db.PrimaryBg, item.rect, radius);
+                else PaintBack(g, BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg, item.rect, radius);
                 if (item.CanExpand) PanintArrow(g, item, fore_active, sx, sy);
                 using (var brush = new SolidBrush(fore_active))
                 {
@@ -569,7 +565,7 @@ namespace AntdUI
             };
         }
 
-        void PanintArrow(Graphics g, TreeItem item, Color color, float sx, float sy)
+        void PanintArrow(Graphics g, TreeItem item, Color color, int sx, int sy)
         {
             float size = item.arr_rect.Width, size2 = size / 2F;
             g.TranslateTransform(item.arr_rect.X + size2, item.arr_rect.Y + size2);
@@ -605,7 +601,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (scrollY.MouseDown(e.Location) && scrollX.MouseDown(e.Location))
+            if (scrollBar.MouseDownY(e.Location) && scrollBar.MouseDownX(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 if (e.Button == MouseButtons.Left)
@@ -620,14 +616,14 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scrollX.MouseUp(e.Location);
-            scrollY.MouseUp(e.Location);
+            scrollBar.MouseUpY();
+            scrollBar.MouseUpX();
         }
 
         bool IMouseDown(MouseEventArgs e, TreeItem item, TreeItem? fitem)
         {
             bool can = item.CanExpand;
-            int down = item.Contains(e.Location, blockNode ? 0 : scrollX.Value, scrollY.Value, checkable);
+            int down = item.Contains(e.Location, blockNode ? 0 : scrollBar.ValueX, scrollBar.ValueY, checkable);
             if (down > 0)
             {
                 if (e.Button == MouseButtons.Left)
@@ -695,7 +691,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scrollY.MouseMove(e.Location) && scrollX.MouseMove(e.Location))
+            if (scrollBar.MouseMoveY(e.Location) && scrollBar.MouseMoveX(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 int hand = 0;
@@ -712,7 +708,7 @@ namespace AntdUI
         {
             if (item.show)
             {
-                if (item.Contains(point, blockNode ? 0 : scrollX.Value, scrollY.Value, checkable) > 0) hand++;
+                if (item.Contains(point, blockNode ? 0 : scrollBar.ValueX, scrollBar.ValueY, checkable) > 0) hand++;
                 if (item.Sub != null)
                     foreach (TreeItem sub in item.Sub)
                     {
@@ -724,21 +720,19 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scrollX.Leave();
-            scrollY.Leave();
+            scrollBar.Leave();
             ILeave();
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scrollX.Leave();
-            scrollY.Leave();
+            scrollBar.Leave();
             ILeave();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scrollY.MouseWheel(e.Delta);
+            scrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 
@@ -1193,9 +1187,9 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle arr_rect { get; set; }
 
-        internal int Contains(Point point, float x, float y, bool checkable)
+        internal int Contains(Point point, int x, int y, bool checkable)
         {
-            var p = new Point(point.X + (int)x, point.Y + (int)y);
+            var p = new Point(point.X + x, point.Y + y);
             if (rect.Contains(p))
             {
                 Hover = true;

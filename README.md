@@ -70,7 +70,7 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Switch** 开关 | ✅ | ✅ |
 :arrow_right: | **TimePicker** 时间选择框 | ✅ | ✅ |
 ||||
-:arrow_down: | 数据展示 `12` | 动画 | 禁用 |
+:arrow_down: | 数据展示 `13` | 动画 | 禁用 |
 :arrow_right: | **Avatar** 头像 | ❎ | ❎ |
 :arrow_right: | **Badge** 徽标数 | ✅ | ❎ |
 :arrow_right: | **Panel** 面板 | ✅ | ❎ |
@@ -83,6 +83,7 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Timeline** 时间轴 | ❎ | ❎ |
 :arrow_right: | **Tooltip** 文字提示 | ✅ | ❎ |
 :arrow_right: | **Tree** 树形控件 | ✅ | ✅ |
+:arrow_right: | **Lable** 标签 | ✅ | ❎ |
 ||||
 :arrow_down: | 反馈 `7` | 动画 | 禁用 |
 :arrow_right: | **Alert** 警告提示 | ✅ | ❎ |
@@ -133,4 +134,4 @@ Winform UI library use Ant Design 5.0
 | **Switch** 开关 | **Table** 表格 |
 | ![Switch](screenshot/Switch.gif?raw=true) | ![Table](screenshot/Table.gif?raw=true) |
 
-🦦 文档还在编写中，招募小伙伴一起维护项目
+🦦 [文档](https://gitee.com/antdui/AntdUI/wikis) 在Wiki，请查看后再提问，招募小伙伴一起维护项目

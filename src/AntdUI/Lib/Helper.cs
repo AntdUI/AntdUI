@@ -17,7 +17,6 @@
 // QQ: 17379620
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -1474,40 +1473,6 @@ namespace AntdUI
 
         #region DPI
 
-        internal static Dictionary<Control, AnchorDock> DpiSuspend(Control.ControlCollection controls)
-        {
-            var dir = new Dictionary<Control, AnchorDock>();
-            foreach (Control control in controls)
-            {
-                dir.Add(control, new AnchorDock(control));
-                if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
-            }
-            return dir;
-        }
-        internal static void DpiSuspend(ref Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
-        {
-            foreach (Control control in controls)
-            {
-                dir.Add(control, new AnchorDock(control));
-                if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
-            }
-        }
-
-
-        internal static void DpiResume(Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
-        {
-            foreach (Control control in controls)
-            {
-                if (dir.TryGetValue(control, out var find))
-                {
-                    control.Dock = find.Dock;
-                    control.Anchor = find.Anchor;
-                }
-                if (controls.Count > 0) DpiResume(dir, control.Controls);
-            }
-        }
-
-
         internal static void DpiLS(float dpi, Control control)
         {
             var size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
@@ -1596,19 +1561,6 @@ namespace AntdUI
             }
             else return new SolidBrush(enabled_color);
         }
-    }
-
-    internal class AnchorDock
-    {
-        public AnchorDock(Control control)
-        {
-            Dock = control.Dock;
-            Anchor = control.Anchor;
-            control.Dock = DockStyle.None;
-            control.Anchor = AnchorStyles.Left | AnchorStyles.Top;
-        }
-        public DockStyle Dock { get; set; }
-        public AnchorStyles Anchor { get; set; }
     }
 
     public class RectTextLR

@@ -95,9 +95,17 @@ namespace AntdUI
 
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            base.OnKeyPress(e);
-            if (e.KeyChar < 32) return;
-            EnterText(e.KeyChar.ToString());
+            if (e.KeyChar < 32)
+            {
+                base.OnKeyPress(e);
+                return;
+            }
+            if (Verify(e.KeyChar, out var change))
+            {
+                EnterText((change ?? e.KeyChar).ToString());
+                base.OnKeyPress(e);
+            }
+            else e.Handled = true;
         }
 
         /// <summary>

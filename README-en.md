@@ -70,7 +70,7 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Switch** | ✅ | ✅ |
 :arrow_right: | **TimePicker** | ✅ | ✅ |
 ||||
-:arrow_down: | Data Display `12` | Animation | Disable |
+:arrow_down: | Data Display `13` | Animation | Disable |
 :arrow_right: | **Avatar** | ❎ | ❎ |
 :arrow_right: | **Badge** | ✅ | ❎ |
 :arrow_right: | **Panel** | ✅ | ❎ |
@@ -83,6 +83,7 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Timeline** | ❎ | ❎ |
 :arrow_right: | **Tooltip** | ✅ | ❎ |
 :arrow_right: | **Tree** | ✅ | ✅ |
+:arrow_right: | **Lable** | ✅ | ❎ |
 ||||
 :arrow_down: | Feedback `7` | Animation | Disable |
 :arrow_right: | **Alert** | ✅ | ❎ |
@@ -132,3 +133,5 @@ Winform UI library use Ant Design 5.0
 | ![Message](screenshot/Message.gif?raw=true) | ![Notification](screenshot/Notification.gif?raw=true) |
 | **Switch** | **Table** |
 | ![Switch](screenshot/Switch.gif?raw=true) | ![Table](screenshot/Table.gif?raw=true) |
+
+🦦 [Document](https://gitee.com/antdui/AntdUI/wikis) on Wiki，Please review before asking a question

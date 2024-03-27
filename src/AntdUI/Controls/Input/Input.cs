@@ -1024,11 +1024,20 @@ namespace AntdUI
                 ptCurrentPos = CurrentCaret.Location
             };
             Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
-            if (VerifyImeResultStr(strResult)) EnterText(strResult);
+            if (!string.IsNullOrEmpty(strResult))
+            {
+                var chars = new List<char>(strResult.Length);
+                foreach (char key in strResult)
+                {
+                    if (Verify(key, out var change)) chars.Add(change ?? key);
+                }
+                if (chars.Count > 0) EnterText(string.Join("", chars));
+            }
         }
 
-        protected virtual bool VerifyImeResultStr(string strResult)
+        protected virtual bool Verify(char key, out char? change)
         {
+            change = null;
             return true;
         }
 

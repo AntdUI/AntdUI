@@ -41,7 +41,7 @@ namespace AntdUI
             if (dataSource == null)
             {
                 // 空数据
-                scrollX.val = scrollY.val = 0;
+                scrollBar.ValueX = scrollBar.ValueY = 0;
                 return;
             }
             if (dataSource is DataTable table)

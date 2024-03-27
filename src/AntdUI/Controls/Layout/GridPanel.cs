@@ -135,13 +135,6 @@ namespace AntdUI
                                         if (it is float f) cel_tmp.Add((int)Math.Round(read_width * f));
                                         else if (it is int i) cel_tmp.Add(i);
                                     }
-                                    foreach (string _cel in cels)
-                                    {
-                                        var cel = _cel.Trim();
-                                        if (cel.EndsWith("%") && float.TryParse(cel.TrimEnd('%'), out var f)) cel_tmp.Add((int)Math.Round(rect.Width * (f / 100F)));
-                                        else if (int.TryParse(cel, out var i)) cel_tmp.Add((int)Math.Round(i * Config.Dpi));
-                                        else if (float.TryParse(cel, out float f2)) cel_tmp.Add((int)Math.Round(rect.Width * f2));
-                                    }
                                     if (cel_tmp.Count > 0)
                                     {
                                         data_count += cel_tmp.Count;

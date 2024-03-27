@@ -57,12 +57,7 @@ namespace AntdUI
             SetLocation(start_X, start_Y);
             if (vertical) tempContent = new Bitmap(end_W - padding * 2, end_H - 20 - padding * 2);
             else tempContent = new Bitmap(end_W - 20 - padding * 2, end_H - padding * 2);
-            if (Config.Dpi != 1F)
-            {
-                var dir = Helper.DpiSuspend(config.Content.Controls);
-                Helper.DpiLS(Config.Dpi, config.Content);
-                Helper.DpiResume(dir, config.Content.Controls);
-            }
+            if (Config.Dpi != 1F) Helper.DpiLS(Config.Dpi, config.Content);
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
             config.Form.LocationChanged += Form_LocationChanged;

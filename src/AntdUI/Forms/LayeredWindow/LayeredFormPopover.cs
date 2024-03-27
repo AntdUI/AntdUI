@@ -70,12 +70,7 @@ namespace AntdUI
                         }
                     }
                     tempContent = new Bitmap(control.Width, control.Height);
-                    if (Config.Dpi != 1F)
-                    {
-                        var dir = Helper.DpiSuspend(control.Controls);
-                        Helper.DpiLS(Config.Dpi, control);
-                        Helper.DpiResume(dir, control.Controls);
-                    }
+                    if (Config.Dpi != 1F) Helper.DpiLS(Config.Dpi, control);
                     control.Size = new Size(tempContent.Width, tempContent.Height);
                     control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
                     SetSize(w + padding2, h + padding2);

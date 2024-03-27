@@ -35,7 +35,7 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class FlowPanel : IControl
     {
-        internal ScrollY? scroll;
+        internal ScrollBar? scroll;
 
         bool autoscroll = false;
         /// <summary>
@@ -49,16 +49,9 @@ namespace AntdUI
             {
                 if (autoscroll == value) return;
                 autoscroll = value;
-                if (autoscroll)
-                {
-                    var action = new Action(() =>
-                    {
-                        OSizeChanged();
-                    });
-                    scroll = new ScrollY(this) { Change = action };
-                }
+                if (autoscroll) scroll = new ScrollBar(this);
                 else scroll = null;
-                OSizeChanged();
+                IOnSizeChanged();
             }
         }
         public override Rectangle DisplayRectangle
@@ -82,7 +75,7 @@ namespace AntdUI
             {
                 if (layoutengine.Align == value) return;
                 layoutengine.Align = value;
-                OSizeChanged();
+                IOnSizeChanged();
             }
         }
 
@@ -97,7 +90,7 @@ namespace AntdUI
             {
                 if (layoutengine.Gap == value) return;
                 layoutengine.Gap = value;
-                OSizeChanged();
+                IOnSizeChanged();
             }
         }
 
@@ -113,7 +106,7 @@ namespace AntdUI
                 if (!value)
                 {
                     Invalidate();
-                    OSizeChanged();
+                    IOnSizeChanged();
                 }
             }
         }
@@ -132,11 +125,6 @@ namespace AntdUI
             var rect = ClientRectangle;
             scroll?.SizeChange(rect);
             base.OnSizeChanged(e);
-        }
-
-        internal void OSizeChanged()
-        {
-            OnSizeChanged(EventArgs.Empty);
         }
 
         FlowLayout layoutengine = new FlowLayout();
@@ -164,9 +152,9 @@ namespace AntdUI
                         if (parent.scroll != null)
                         {
                             bool old_show = parent.scroll.Show;
-                            float old_vr = parent.scroll.VrValue;
+                            float old_vr = parent.scroll.Max;
                             parent.scroll.SetVrSize(val);
-                            if (old_show != parent.scroll.Show || old_vr != parent.scroll.VrValue) parent.BeginInvoke(new Action(() => { parent.OSizeChanged(); }));
+                            if (old_show != parent.scroll.Show || old_vr != parent.scroll.Max) parent.BeginInvoke(new Action(() => { parent.IOnSizeChanged(); }));
                         }
                     }
                 }
@@ -297,7 +285,7 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scroll?.MouseUp(e.Location);
+            scroll?.MouseUp();
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -314,7 +302,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (scroll is ScrollY scrollY) scrollY.MouseWheel(e.Delta);
+            scroll?.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 

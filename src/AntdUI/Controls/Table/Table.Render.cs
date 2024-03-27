@@ -54,7 +54,7 @@ namespace AntdUI
                 base.OnPaint(e);
                 return;
             }
-            float sx = scrollX.Value, sy = scrollY.Value;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             using (var fore = new SolidBrush(Style.Db.Text))
             using (var brush_split = new SolidBrush(Style.Db.BorderColor))
             {
@@ -64,7 +64,7 @@ namespace AntdUI
                 {
                     foreach (var it in rows)
                     {
-                        it.SHOW = !it.IsColumn && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + scrollY.Height + it.RECT.Height;
+                        it.SHOW = !it.IsColumn && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
                         if (it.SHOW)
                         {
                             shows.Add(it);
@@ -95,7 +95,7 @@ namespace AntdUI
                 {
                     foreach (var it in rows)
                     {
-                        it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + scrollY.Height + it.RECT.Height;
+                        it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
                         if (it.SHOW)
                         {
                             shows.Add(it);
@@ -163,7 +163,7 @@ namespace AntdUI
                         }
                     }
                     else showFixedColumnL = false;
-                    if (fixedColumnR != null && scrollX.Show)
+                    if (fixedColumnR != null && scrollBar.ShowX)
                     {
                         var rect = ClientRectangle;
                         var lastrow = shows[shows.Count - 1];
@@ -240,10 +240,7 @@ namespace AntdUI
                     }
                 }
             }
-
-            scrollX.Paint(g);
-            scrollY.Paint(g);
-
+            scrollBar.Paint(g);
             base.OnPaint(e);
         }
         void PaintTableBgHeader(Graphics g, RowTemplate row)

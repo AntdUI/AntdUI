@@ -272,14 +272,14 @@ namespace AntdUI
         protected override void OnFontChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scrollY.SizeChange(rect);
+            scroll.SizeChange(rect);
             base.OnFontChanged(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scrollY.SizeChange(rect);
+            scroll.SizeChange(rect);
             base.OnSizeChanged(e);
         }
 
@@ -291,7 +291,7 @@ namespace AntdUI
             if (_rect.Width == 0 || _rect.Height == 0) return _rect;
             var rect = _rect.PaddingRect(Padding);
 
-            float y = 0;
+            int y = 0;
             int icon_count = 0;
             Helper.GDI(g =>
             {
@@ -306,11 +306,11 @@ namespace AntdUI
                 }
                 if (collapsed) ChangeUTitle(Items);
             });
-            scrollY.SetVrSize(y, _rect.Height);
+            scroll.SetVrSize(y);
             return _rect;
         }
 
-        int ChangeList(Rectangle rect, Graphics g, MenuItemCollection items, ref float y, ref int icon_count, int height, int icon_size, float gap, int gapI, int depth)
+        int ChangeList(Rectangle rect, Graphics g, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, float gap, int gapI, int depth)
         {
             int collapsedWidth = 0;
             foreach (MenuItem it in items)
@@ -325,7 +325,7 @@ namespace AntdUI
                     y += height + gapI;
                     if (!collapsed && it.CanExpand)
                     {
-                        float y_item = y;
+                        int y_item = y;
 
                         int size2 = ChangeList(rect, g, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
                         if (size2 > collapsedWidth) collapsedWidth = size2;
@@ -336,7 +336,7 @@ namespace AntdUI
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
                         {
                             it.ExpandHeight = y - y_item;
-                            y = y_item + it.ExpandHeight * it.ExpandProg;
+                            y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
                         }
                         else if (!it.Expand) y = y_item;
                     }
@@ -361,15 +361,15 @@ namespace AntdUI
 
         #region 渲染
 
-        internal ScrollY scrollY;
-        public Menu() { scrollY = new ScrollY(this); }
+        internal ScrollBar scroll;
+        public Menu() { scroll = new ScrollBar(this); }
         protected override void OnPaint(PaintEventArgs e)
         {
             if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            float sy = scrollY.Value;
+            float sy = scroll.Value;
             g.TranslateTransform(0, -sy);
             Color scroll_color, color_fore, color_fore_active, fore_enabled, back_hover, back_active;
 
@@ -414,7 +414,7 @@ namespace AntdUI
                 PaintItems(g, rect, sy, Items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
             g.ResetTransform();
-            scrollY.Paint(g, scroll_color);
+            scroll.Paint(g, scroll_color);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
@@ -423,7 +423,7 @@ namespace AntdUI
         {
             foreach (MenuItem it in items)
             {
-                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scrollY.Value + scrollY.Height + it.rect.Height;
+                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scroll.Value + scroll.ReadSize + it.rect.Height;
                 if (it.show)
                 {
                     PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
@@ -446,7 +446,7 @@ namespace AntdUI
         {
             foreach (MenuItem it in items)
             {
-                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scrollY.Value + scrollY.Height + it.rect.Height;
+                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scroll.Value + scroll.ReadSize + it.rect.Height;
                 if (it.show)
                 {
                     PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
@@ -644,7 +644,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (scrollY.MouseDown(e.Location))
+            if (scroll.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 foreach (MenuItem it in Items)
@@ -657,13 +657,13 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scrollY.MouseUp(e.Location);
+            scroll.MouseUp();
         }
 
         bool IMouseDown(MenuItem item, List<MenuItem> list, Point point)
         {
             bool can = item.CanExpand;
-            if (item.Enabled && item.Contains(point, 0, scrollY.Value, out _))
+            if (item.Enabled && item.Contains(point, 0, scroll.Value, out _))
             {
                 if (can) item.Expand = !item.Expand;
                 else
@@ -697,7 +697,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scrollY.MouseMove(e.Location))
+            if (scroll.MouseMove(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 int count = 0, hand = 0;
@@ -708,7 +708,7 @@ namespace AntdUI
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.Location, 0, scrollY.Value, out var change))
+                            if (it.Contains(e.Location, 0, scroll.Value, out var change))
                             {
                                 hoveindex = i;
                                 hand++;
@@ -771,7 +771,7 @@ namespace AntdUI
         {
             if (it.show)
             {
-                if (it.Contains(point, 0, scrollY.Value, out var change))
+                if (it.Contains(point, 0, scroll.Value, out var change))
                 {
                     hand++;
                 }
@@ -786,20 +786,20 @@ namespace AntdUI
             hoveindexold = -1;
             tooltipForm?.Close();
             tooltipForm = null;
-            scrollY.Leave();
+            scroll.Leave();
             ILeave();
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scrollY.Leave();
+            scroll.Leave();
             ILeave();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scrollY.MouseWheel(e.Delta);
+            scroll.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 
@@ -1151,7 +1151,7 @@ namespace AntdUI
             get
             {
                 if (PARENT == null) return rect;
-                float y = PARENT.scrollY.Value;
+                float y = PARENT.scroll.Value;
                 if (y != 0F) return new RectangleF(rect.X, rect.Y - y, rect.Width, rect.Height);
                 return rect;
             }
@@ -1175,7 +1175,7 @@ namespace AntdUI
         internal float SubY { get; set; }
         internal float SubHeight { get; set; }
 
-        internal float ExpandHeight { get; set; }
+        internal int ExpandHeight { get; set; }
         internal float ExpandProg { get; set; }
         internal bool ExpandThread { get; set; }
         internal bool show { get; set; }

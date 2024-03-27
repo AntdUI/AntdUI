@@ -219,9 +219,9 @@ namespace AntdUI
         internal float ArrowProg = -1F;
         bool showArrow = false;
         /// <summary>
-        /// 下拉框箭头是否显示
+        /// 显示箭头
         /// </summary>
-        [Description("下拉框箭头是否显示"), Category("行为"), DefaultValue(false)]
+        [Description("显示箭头"), Category("行为"), DefaultValue(false)]
         public bool ShowArrow
         {
             get => showArrow;
@@ -235,9 +235,9 @@ namespace AntdUI
 
         bool isLink = false;
         /// <summary>
-        /// 下拉框箭头是否链接样式
+        /// 箭头链接样式
         /// </summary>
-        [Description("下拉框箭头是否链接样式"), Category("行为"), DefaultValue(false)]
+        [Description("箭头链接样式"), Category("行为"), DefaultValue(false)]
         public bool IsLink
         {
             get => isLink;

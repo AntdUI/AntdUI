@@ -213,9 +213,8 @@ namespace AntdUI
 
         #region 初始化
 
-        ScrollX scrollX;
-        ScrollY scrollY;
-        public Table() { scrollX = new ScrollX(this); scrollY = new ScrollY(this, scrollX); }
+        ScrollBar scrollBar;
+        public Table() { scrollBar = new ScrollBar(this, true, true); }
 
         protected override void Dispose(bool disposing)
         {

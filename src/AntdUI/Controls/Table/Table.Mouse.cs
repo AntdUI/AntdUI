@@ -30,7 +30,7 @@ namespace AntdUI
         {
             base.OnMouseClick(e);
             if (rows == null || CellClick == null) return;
-            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             int px = e.X + sx, py = e.Y + sy;
             for (int i_row = 0; i_row < rows.Length; i_row++)
             {
@@ -79,7 +79,7 @@ namespace AntdUI
         {
             base.OnMouseDoubleClick(e);
             if (rows == null) return;
-            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             int px = e.X + sx, py = e.Y + sy;
             for (int i_row = 0; i_row < rows.Length; i_row++)
             {
@@ -149,11 +149,11 @@ namespace AntdUI
         {
             if (ClipboardCopy) Focus();
             SelectIndex = -1;
-            if (scrollY.MouseDown(e.Location) && scrollX.MouseDown(e.Location))
+            if (scrollBar.MouseDownY(e.Location) && scrollBar.MouseDownX(e.Location))
             {
                 base.OnMouseDown(e);
                 if (rows == null) return;
-                int px = e.X + (int)scrollX.Value, py = e.Y + (int)scrollY.Value;
+                int px = e.X + scrollBar.ValueX, py = e.Y + scrollBar.ValueY;
                 for (int i_row = 0; i_row < rows.Length; i_row++)
                 {
                     var it = rows[i_row];
@@ -278,26 +278,27 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scrollY.MouseUp(e.Location);
-            scrollX.MouseUp(e.Location);
-            if (rows == null) return;
-            int sx = (int)scrollX.Value, sy = (int)scrollY.Value;
-            int px = e.X + sx, py = e.Y + sy;
-            for (int i_row = 0; i_row < rows.Length; i_row++)
+            if (scrollBar.MouseUpY() && scrollBar.MouseUpX())
             {
-                var it = rows[i_row];
-                if (showFixedColumnL && fixedColumnL != null)
+                if (rows == null) return;
+                int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+                int px = e.X + sx, py = e.Y + sy;
+                for (int i_row = 0; i_row < rows.Length; i_row++)
                 {
-                    foreach (var i in fixedColumnL) if (MouseUpRow(it, it.cells[i], e, i_row, i, e.X, py, 0, sy)) return;
-                }
-                if (showFixedColumnR && fixedColumnR != null)
-                {
-                    foreach (var i in fixedColumnR) if (MouseUpRow(it, it.cells[i], e, i_row, i, e.X + sFixedR, py, sFixedR, sy)) return;
-                }
-                for (int i_col = 0; i_col < it.cells.Length; i_col++)
-                {
-                    var item = it.cells[i_col];
-                    if (MouseUpRow(it, item, e, i_row, i_col, px, py, sx, sy)) return;
+                    var it = rows[i_row];
+                    if (showFixedColumnL && fixedColumnL != null)
+                    {
+                        foreach (var i in fixedColumnL) if (MouseUpRow(it, it.cells[i], e, i_row, i, e.X, py, 0, sy)) return;
+                    }
+                    if (showFixedColumnR && fixedColumnR != null)
+                    {
+                        foreach (var i in fixedColumnR) if (MouseUpRow(it, it.cells[i], e, i_row, i, e.X + sFixedR, py, sFixedR, sy)) return;
+                    }
+                    for (int i_col = 0; i_col < it.cells.Length; i_col++)
+                    {
+                        var item = it.cells[i_col];
+                        if (MouseUpRow(it, item, e, i_row, i_col, px, py, sx, sy)) return;
+                    }
                 }
             }
         }
@@ -379,7 +380,7 @@ namespace AntdUI
         {
             if (edit_input != null)
             {
-                scrollX.Change = scrollY.Change = null;
+                scrollBar.OnInvalidate = null;
                 edit_input?.Dispose();
                 edit_input = null;
             }
@@ -399,7 +400,7 @@ namespace AntdUI
                 if (!isok) return;
                 inEditMode = true;
 
-                scrollX.Change = scrollY.Change = () => EditModeClose();
+                scrollBar.OnInvalidate = () => EditModeClose();
                 BeginInvoke(new Action(() =>
                 {
                     for (int i = 0; i < rows.Length; i++)
@@ -520,7 +521,7 @@ namespace AntdUI
                         if (!isok) return;
                         inEditMode = true;
 
-                        scrollX.Change = scrollY.Change = () => EditModeClose();
+                        scrollBar.OnInvalidate = () => EditModeClose();
                         BeginInvoke(new Action(() =>
                         {
                             for (int i = 0; i < rows.Length; i++)
@@ -657,11 +658,11 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scrollY.MouseMove(e.Location) && scrollX.MouseMove(e.Location))
+            if (scrollBar.MouseMoveY(e.Location) && scrollBar.MouseMoveX(e.Location))
             {
                 if (rows == null || inEditMode) return;
                 int hand = 0;
-                int px = e.X + (int)scrollX.Value, py = e.Y + (int)scrollY.Value;
+                int px = e.X + scrollBar.ValueX, py = e.Y + scrollBar.ValueY;
                 foreach (RowTemplate it in rows)
                 {
                     if (it.IsColumn)
@@ -815,15 +816,13 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scrollX.Leave();
-            scrollY.Leave();
+            scrollBar.Leave();
             ILeave();
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scrollX.Leave();
-            scrollY.Leave();
+            scrollBar.Leave();
             ILeave();
         }
 
@@ -849,7 +848,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scrollY.MouseWheel(e.Delta);
+            scrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
     }

@@ -45,8 +45,7 @@ namespace AntdUI
         void LoadLayout()
         {
             var rect = ChangeLayout();
-            scrollY.SizeChange(rect);
-            scrollX.SizeChange(rect);
+            scrollBar.SizeChange(rect);
         }
         bool has_check = false;
         Rectangle rect_read, rect_divider;
@@ -113,7 +112,7 @@ namespace AntdUI
 
                     #region 计算坐标
 
-                    float x = 0, y = 0;
+                    int x = 0, y = 0;
                     bool is_exceed = false;
 
                     var rect = ClientRectangle.PaddingRect(Padding);
@@ -324,8 +323,7 @@ namespace AntdUI
 
                     #endregion
 
-                    scrollX.SetVrSize(is_exceed ? x : 0, rect.Width);
-                    scrollY.SetVrSize(y, rect.Height);
+                    scrollBar.SetVrSize(is_exceed ? x : 0, y);
 
                     if (processing == 0) { ThreadState?.Dispose(); ThreadState = null; }
                     else
@@ -345,9 +343,7 @@ namespace AntdUI
                 else
                 {
                     ThreadState?.Dispose(); ThreadState = null;
-
-                    scrollX.SetVrSize(0, 0);
-                    scrollY.SetVrSize(0, 0);
+                    scrollBar.SetVrSize(0, 0);
                     dividers = new Rectangle[0];
                     rows = null;
                 }

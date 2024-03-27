@@ -196,65 +196,34 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
-        protected override void OnKeyPress(KeyPressEventArgs e)
-        {
-            var numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
-            string decimalSeparator = numberFormatInfo.NumberDecimalSeparator, groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
+        static NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+        static string decimalSeparator = numberFormatInfo.NumberDecimalSeparator, groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
 
-            string keyInput = e.KeyChar.ToString();
-            if (char.IsDigit(e.KeyChar))
+        protected override bool Verify(char key, out char? change)
+        {
+            change = null;
+            string keyInput = key.ToString();
+            if (char.IsDigit(key))
             {
                 // 数字可以
+                return true;
             }
             else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
             {
                 // 小数分隔符可以
+                return true;
             }
-            else if (e.KeyChar == '\b')
+            else if (key == '\b')
             {
                 // Backspace键可以
+                return true;
             }
-            else if (Hexadecimal && ((e.KeyChar >= 'a' && e.KeyChar <= 'f') || (e.KeyChar >= 'A' && e.KeyChar <= 'F')))
+            else if (Hexadecimal && ((key >= 'a' && key <= 'f') || (key >= 'A' && key <= 'F')))
             {
                 // 十六进制数字可以
+                return true;
             }
-            else
-            {
-                // 吃掉这个无效的钥匙
-                e.Handled = true;
-                return;
-                //User32.MessageBeep(User32.MB.OK);//发出嘟嘟声
-            }
-            base.OnKeyPress(e);
-        }
-
-        protected override bool VerifyImeResultStr(string strResult)
-        {
-            var numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
-            string decimalSeparator = numberFormatInfo.NumberDecimalSeparator, groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
-
-            foreach (char key in strResult)
-            {
-                string keyInput = key.ToString();
-                if (char.IsDigit(key))
-                {
-                    // 数字可以
-                }
-                else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
-                {
-                    // 小数分隔符可以
-                }
-                else if (key == '\b')
-                {
-                    // Backspace键可以
-                }
-                else if (Hexadecimal && ((key >= 'a' && key <= 'f') || (key >= 'A' && key <= 'F')))
-                {
-                    // 十六进制数字可以
-                }
-                else return false;
-            }
-            return true;
+            return false;
         }
 
         internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)

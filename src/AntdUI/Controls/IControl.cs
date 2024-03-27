@@ -143,6 +143,8 @@ namespace AntdUI
         {
             get => ClientRectangle.PaddingRect(Padding);
         }
+        internal void IOnSizeChanged() { OnSizeChanged(EventArgs.Empty); }
+
 
         internal void SetCursor(bool val)
         {

@@ -117,12 +117,12 @@ namespace AntdUI
                 }
             }
             Controls.Add(panel1);
-            Controls.Add(new System.Windows.Forms.Panel
+            var tmp = new System.Windows.Forms.Panel
             {
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
                 Location = new Point(386, 100),
                 Size = new Size(60, 90)
-            });
+            };
+            Controls.Add(tmp);
 
             if (config.Keyboard)
             {
@@ -152,12 +152,7 @@ namespace AntdUI
                     {
                         rectsContent = new RectangleF[0];
                         w = (int)Math.Round(control.Width * dpi);
-                        if (dpi != 1F)
-                        {
-                            var dir = Helper.DpiSuspend(control.Controls);
-                            Helper.DpiLS(dpi, control);
-                            Helper.DpiResume(dir, control.Controls);
-                        }
+                        if (dpi != 1F) Helper.DpiLS(dpi, control);
                         wp = w - paddingx * 2;
                         control.Width = w;
                         Controls.Add(control);
@@ -285,7 +280,7 @@ namespace AntdUI
                     }
                 }
             });
-
+            tmp.Location = new Point(Width - 30, Height - 30);
             ResumeLayout();
             panel1.MouseMove += Window_MouseDown;
         }

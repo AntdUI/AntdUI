@@ -36,9 +36,9 @@ namespace AntdUI
         #region 属性
 
         /// <summary>
-        /// 是否列表自动宽度
+        /// 列表自动宽度
         /// </summary>
-        [Description("是否列表自动宽度"), Category("行为"), DefaultValue(true)]
+        [Description("列表自动宽度"), Category("行为"), DefaultValue(true)]
         public bool ListAutoWidth { get; set; } = true;
 
         /// <summary>

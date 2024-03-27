@@ -74,7 +74,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scrollY.SizeChange(rect);
+            scroll.SizeChange(rect);
             base.OnSizeChanged(e);
         }
 
@@ -102,12 +102,12 @@ namespace AntdUI
             if (pauseLayout || items == null || items.Count == 0) return rect;
             if (rect.Width == 0 || rect.Height == 0) return rect;
 
-            float y = rect.Y;
+            int y = rect.Y;
             Helper.GDI(g =>
             {
                 var size_def = g.MeasureString(Config.NullText, Font);
-                float text_size = size_def.Height, pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F, gap = 8F * Config.Dpi;
-                int gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D),
+                float text_size = size_def.Height, pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
+                int gap = (int)Math.Round(8F * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D),
                     ico_size = (int)Math.Round(text_size * 0.636D);
 
                 int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
@@ -123,13 +123,13 @@ namespace AntdUI
 
                     if (it.Visible)
                     {
-                        var size = g.MeasureString(it.Text, Font, max_w);
+                        var size = g.MeasureString(it.Text, Font, max_w).Size();
 
                         it.ico_rect = new RectangleF(rect.X + gap_x, y + (text_size - ico_size) / 2F, ico_size, ico_size);
                         it.txt_rect = new RectangleF(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
                         if (!string.IsNullOrEmpty(it.Description))
                         {
-                            var DescriptionSize = g.MeasureString(it.Description, font_Description, max_w);
+                            var DescriptionSize = g.MeasureString(it.Description, font_Description, max_w).Size();
                             it.description_rect = new RectangleF(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
                             y += gap * 2 + DescriptionSize.Height;
                         }
@@ -151,7 +151,7 @@ namespace AntdUI
                 splits = _splits.ToArray();
                 y = y - gap_y + gap_x;
             });
-            scrollY.SetVrSize(y, rect.Height);
+            scroll.SetVrSize(y);
             return rect;
         }
 
@@ -159,7 +159,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scrollY.MouseWheel(e.Delta);
+            scroll.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 
@@ -167,8 +167,8 @@ namespace AntdUI
 
         #region 渲染
 
-        ScrollY scrollY;
-        public Timeline() { scrollY = new ScrollY(this); }
+        ScrollBar scroll;
+        public Timeline() { scroll = new ScrollBar(this); }
 
         readonly StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
 
@@ -178,7 +178,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            g.TranslateTransform(0, -scrollY.Value);
+            g.TranslateTransform(0, -scroll.Value);
             Color color_fore = fore.HasValue ? fore.Value : Style.Db.Text;
             using (var brush_split = new SolidBrush(Style.Db.Split))
             {
@@ -239,7 +239,7 @@ namespace AntdUI
                 }
             }
             g.ResetTransform();
-            scrollY.Paint(g);
+            scroll.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
@@ -251,18 +251,18 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            scrollY.MouseDown(e.Location);
+            scroll.MouseDown(e.Location);
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scrollY.MouseUp(e.Location);
+            scroll.MouseUp();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scrollY.MouseMove(e.Location))
+            if (scroll.MouseMove(e.Location))
             {
                 if (items == null || items.Count == 0 || ItemClick == null) return;
                 for (int i = 0; i < Items.Count; i++)
@@ -270,7 +270,7 @@ namespace AntdUI
                     var it = Items[i];
                     if (it != null)
                     {
-                        if (it.rect.Contains(e.X, e.Y + scrollY.val))
+                        if (it.rect.Contains(e.X, e.Y + scroll.Value))
                         {
                             SetCursor(true);
                             return;
@@ -284,12 +284,12 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scrollY.Leave();
+            scroll.Leave();
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scrollY.Leave();
+            scroll.Leave();
         }
 
         #endregion
@@ -318,7 +318,7 @@ namespace AntdUI
                 var it = Items[i];
                 if (it != null)
                 {
-                    if (it.rect.Contains(e.X, e.Y + scrollY.val))
+                    if (it.rect.Contains(e.X, e.Y + scroll.Value))
                     {
                         ItemClick(this, e, it);
                         return;
