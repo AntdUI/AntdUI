@@ -1,7 +1,7 @@
 name: 使用疑问
 description: 当你不明白某个功能如何使用时，可以提交该Issue。
-title:
 labels: ["问题"]
+assignees: []
 body:
   - type: input
     attributes:

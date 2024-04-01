@@ -1,7 +1,7 @@
 name: 问题反馈
 description: 当你中发现了一个 Bug，导致应用崩溃或抛出异常，或者有一个组件存在问题，或者某些地方看起来不对劲。
-title:
 labels: ["BUG"]
+assignees: []
 body:
   - type: input
     attributes:
@@ -69,7 +69,7 @@ body:
     attributes:
       label: Demo 地址（Git/网盘/SVN）
       description: 请提供复现错误的 Demo 下载
-      placeholder: https://gitee.com/your_id/your_test_project.git
+      placeholder: https://github.com/your_id/your_test_project.git
   - type: checkboxes
     attributes:
       label: 友好承诺
