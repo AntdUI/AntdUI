@@ -62,7 +62,7 @@ namespace AntdUI
         void Init(Control control, Rectangle rect_read, MenuItemCollection items)
         {
             int y = 10, w = rect_read.Width;
-            using (var g = Graphics.FromHwnd(Handle).High())
+            Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font).Size(2);
                 int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
@@ -99,8 +99,7 @@ namespace AntdUI
                 }
                 var vr = (font_size * item_count) + (gap_y * divider_count);
                 y = 10 + gap_y * 2 + vr;
-            }
-
+            });
             SetSizeW(w + 20);
             EndHeight = y + 10;
             if (control is LayeredFormMenuDown)

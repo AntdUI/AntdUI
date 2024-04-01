@@ -234,9 +234,9 @@ namespace AntdUI
 #endif
             }
 #if NET40
-            return Task.Factory.StartNew(action).ContinueWith(action => end);
+            return Task.Factory.StartNew(action).ContinueWith(action => { end(); });
 #else
-            return Task.Run(action).ContinueWith(action => end);
+            return Task.Run(action).ContinueWith(action => { end(); });
 #endif
         }
     }

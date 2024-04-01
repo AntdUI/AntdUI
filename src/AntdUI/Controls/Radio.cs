@@ -463,12 +463,12 @@ namespace AntdUI
         {
             get
             {
-                using (var g = Graphics.FromHwnd(Handle))
+                return Helper.GDI(g =>
                 {
                     var font_size = g.MeasureString(text ?? Config.NullText, Font);
                     float gap = 20 * Config.Dpi;
                     return new Size((int)Math.Ceiling(font_size.Width + font_size.Height + gap), (int)Math.Ceiling(font_size.Height + gap));
-                }
+                });
             }
         }
 

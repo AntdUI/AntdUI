@@ -28,19 +28,17 @@ namespace AntdUI
         internal byte maxalpha = 240;
         protected override void OnLoad(EventArgs e)
         {
-            var t = Animation.TotalFrames(10, 80);
-            task_start = new ITask((i) =>
+            if (Config.Animation)
             {
-                var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                SetAnimateValue((byte)(maxalpha * val));
-                return true;
-            }, 10, t, () =>
-            {
-                bmp_tmp?.Dispose();
-                bmp_tmp = null;
-                SetAnimateValue(maxalpha, true);
-                LoadOK();
-            });
+                var t = Animation.TotalFrames(10, 80);
+                task_start = new ITask((i) =>
+                {
+                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                    SetAnimateValue((byte)(maxalpha * val));
+                    return true;
+                }, 10, t, IStart);
+            }
+            else IStart();
             base.OnLoad(e);
         }
 
@@ -87,26 +85,43 @@ namespace AntdUI
             if (!ok_end)
             {
                 e.Cancel = true;
-                if (!run_end)
+                if (Config.Animation)
                 {
-                    run_end = true;
-                    var t = Animation.TotalFrames(10, 80);
-                    new ITask((i) =>
+                    if (!run_end)
                     {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        SetAnimateValue((byte)(maxalpha * (1F - val)));
-                        return true;
-                    }, 10, t, () =>
-                    {
-                        bmp_tmp?.Dispose();
-                        bmp_tmp = null;
-                        ok_end = true;
-                        IClose(true);
-                    });
+                        run_end = true;
+                        var t = Animation.TotalFrames(10, 80);
+                        new ITask((i) =>
+                        {
+                            var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            SetAnimateValue((byte)(maxalpha * (1F - val)));
+                            return true;
+                        }, 10, t, IEnd);
+                    }
                 }
+                else IEnd();
             }
             base.OnClosing(e);
         }
+
+        #region 启动/结束
+
+        void IStart()
+        {
+            bmp_tmp?.Dispose();
+            bmp_tmp = null;
+            SetAnimateValue(maxalpha, true);
+            LoadOK();
+        }
+        void IEnd()
+        {
+            bmp_tmp?.Dispose();
+            bmp_tmp = null;
+            ok_end = true;
+            IClose(true);
+        }
+
+        #endregion
 
         protected override void Dispose(bool disposing)
         {

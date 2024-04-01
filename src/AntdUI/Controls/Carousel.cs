@@ -269,8 +269,8 @@ namespace AntdUI
             }
             else
             {
-                AnimationChangeValue = selectIndex * width;
                 selectIndex = value;
+                AnimationChangeValue = value * width;
                 Invalidate();
             }
         }

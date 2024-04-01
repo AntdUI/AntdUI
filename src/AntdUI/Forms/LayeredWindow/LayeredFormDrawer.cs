@@ -300,31 +300,40 @@ namespace AntdUI
         bool run_end = false, ok_end = false;
         protected override void OnLoad(EventArgs e)
         {
-            var t = Animation.TotalFrames(10, 100);
-            task_start = new ITask(vertical ? i =>
+            if (Config.Animation)
             {
-                var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                SetAnimateValueY(start_Y + (int)((end_Y - start_Y) * val), (int)(end_H * val), (byte)(255 * val));
-                return true;
-            }
-            : i =>
-            {
-                var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                SetAnimateValueX(start_X + (int)((end_X - start_X) * val), (int)(end_W * val), (byte)(255 * val));
-                return true;
-            }, 10, t, () =>
-            {
-                if (IsHandleCreated)
+                var t = Animation.TotalFrames(10, 100);
+                task_start = new ITask(vertical ? i =>
                 {
-                    BeginInvoke(new Action(() =>
-                    {
-                        LoadContent(config.Content);
-                    }));
+                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                    SetAnimateValueY(start_Y + (int)((end_Y - start_Y) * val), (int)(end_H * val), (byte)(255 * val));
+                    return true;
                 }
+                : i =>
+                {
+                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                    SetAnimateValueX(start_X + (int)((end_X - start_X) * val), (int)(end_W * val), (byte)(255 * val));
+                    return true;
+                }, 10, t, () =>
+                {
+                    if (IsHandleCreated)
+                    {
+                        BeginInvoke(new Action(() =>
+                        {
+                            LoadContent(config.Content);
+                        }));
+                    }
+                    SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
+                    task_start = null;
+                });
+                base.OnLoad(e);
+            }
+            else
+            {
                 SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
-                task_start = null;
-            });
-            base.OnLoad(e);
+                base.OnLoad(e);
+                LoadContent(config.Content);
+            }
         }
 
         #region 控件
@@ -410,26 +419,34 @@ namespace AntdUI
                 config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
                 form?.Hide();
                 e.Cancel = true;
-                if (!run_end)
+                if (Config.Animation)
                 {
-                    run_end = true;
-                    var t = Animation.TotalFrames(10, 100);
-                    new ITask(vertical ? (i) =>
+                    if (!run_end)
                     {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        SetAnimateValueY(end_Y - (int)((end_Y - start_Y) * val), (int)(end_H * (1F - val)), (byte)(255 * (1F - val)));
-                        return true;
+                        run_end = true;
+                        var t = Animation.TotalFrames(10, 100);
+                        new ITask(vertical ? (i) =>
+                        {
+                            var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            SetAnimateValueY(end_Y - (int)((end_Y - start_Y) * val), (int)(end_H * (1F - val)), (byte)(255 * (1F - val)));
+                            return true;
+                        }
+                        : (i) =>
+                        {
+                            var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            SetAnimateValueX(end_X - (int)((end_X - start_X) * val), (int)(end_W * (1F - val)), (byte)(255 * (1F - val)));
+                            return true;
+                        }, 10, t, () =>
+                        {
+                            ok_end = true;
+                            IClose(true);
+                        });
                     }
-                    : (i) =>
-                    {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        SetAnimateValueX(end_X - (int)((end_X - start_X) * val), (int)(end_W * (1F - val)), (byte)(255 * (1F - val)));
-                        return true;
-                    }, 10, t, () =>
-                    {
-                        ok_end = true;
-                        IClose(true);
-                    });
+                }
+                else
+                {
+                    ok_end = true;
+                    IClose(true);
                 }
             }
             base.OnClosing(e);

@@ -220,22 +220,26 @@ namespace AntdUI
         bool run_end = false, ok_end = false;
         protected override void OnLoad(EventArgs e)
         {
-            var t = Animation.TotalFrames(10, 200);
-            task_start = new ITask(start_X == end_X ? i =>
+            if (Config.Animation)
             {
-                var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                SetAnimateValueY(start_Y + (int)((end_Y - start_Y) * val), (byte)(240 * val));
-                return true;
+                var t = Animation.TotalFrames(10, 200);
+                task_start = new ITask(start_X == end_X ? i =>
+                {
+                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                    SetAnimateValueY(start_Y + (int)((end_Y - start_Y) * val), (byte)(240 * val));
+                    return true;
+                }
+                : i =>
+                {
+                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                    SetAnimateValueX(start_X + (int)((end_X - start_X) * val), (byte)(240 * val));
+                    return true;
+                }, 10, t, () =>
+                {
+                    SetAnimateValue(end_X, end_Y, 240);
+                });
             }
-            : i =>
-            {
-                var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                SetAnimateValueX(start_X + (int)((end_X - start_X) * val), (byte)(240 * val));
-                return true;
-            }, 10, t, () =>
-            {
-                SetAnimateValue(end_X, end_Y, 240);
-            });
+            else SetAnimateValue(end_X, end_Y, 240);
             base.OnLoad(e);
         }
 
@@ -278,26 +282,35 @@ namespace AntdUI
             if (!ok_end)
             {
                 e.Cancel = true;
-                if (!run_end)
+
+                if (Config.Animation)
                 {
-                    run_end = true;
-                    var t = Animation.TotalFrames(10, 200);
-                    new ITask(start_X == end_X ? (i) =>
+                    if (!run_end)
                     {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        SetAnimateValueY(end_Y - (int)((end_Y - start_Y) * val), (byte)(240 * (1F - val)));
-                        return true;
+                        run_end = true;
+                        var t = Animation.TotalFrames(10, 200);
+                        new ITask(start_X == end_X ? (i) =>
+                        {
+                            var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            SetAnimateValueY(end_Y - (int)((end_Y - start_Y) * val), (byte)(240 * (1F - val)));
+                            return true;
+                        }
+                        : (i) =>
+                        {
+                            var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            SetAnimateValueX(end_X - (int)((end_X - start_X) * val), (byte)(240 * (1F - val)));
+                            return true;
+                        }, 10, t, () =>
+                        {
+                            ok_end = true;
+                            IClose(true);
+                        });
                     }
-                    : (i) =>
-                    {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        SetAnimateValueX(end_X - (int)((end_X - start_X) * val), (byte)(240 * (1F - val)));
-                        return true;
-                    }, 10, t, () =>
-                    {
-                        ok_end = true;
-                        IClose(true);
-                    });
+                }
+                else
+                {
+                    ok_end = true;
+                    IClose(true);
                 }
             }
             base.OnClosing(e);

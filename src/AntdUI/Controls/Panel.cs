@@ -293,27 +293,30 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect = ClientRectangle;
-            var g = e.Graphics.High();
-            var rect_read = ReadRectangle;
-            Color _back = back.HasValue ? back.Value : Style.Db.BgContainer;
-            float _radius = radius * Config.Dpi;
-            using (var brush = new SolidBrush(_back))
+            if (rect.Width > 0 && rect.Height > 0)
             {
-                using (var path = DrawShadow(g, _radius, rect, rect_read))
+                var g = e.Graphics.High();
+                var rect_read = ReadRectangle;
+                Color _back = back.HasValue ? back.Value : Style.Db.BgContainer;
+                float _radius = radius * Config.Dpi;
+                using (var brush = new SolidBrush(_back))
                 {
-                    g.FillPath(brush, path);
-                    if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
-                    if (borderWidth > 0)
+                    using (var path = DrawShadow(g, _radius, rect, rect_read))
                     {
-                        using (var brush_bor = new Pen(borderColor.HasValue ? borderColor.Value : Style.Db.BorderColor, borderWidth * Config.Dpi))
+                        g.FillPath(brush, path);
+                        if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
+                        if (borderWidth > 0)
                         {
-                            g.DrawPath(brush_bor, path);
+                            using (var brush_bor = new Pen(borderColor.HasValue ? borderColor.Value : Style.Db.BorderColor, borderWidth * Config.Dpi))
+                            {
+                                g.DrawPath(brush_bor, path);
+                            }
                         }
                     }
+                    if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                 }
-                if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
+                this.PaintBadge(g);
             }
-            this.PaintBadge(g);
             base.OnPaint(e);
         }
 

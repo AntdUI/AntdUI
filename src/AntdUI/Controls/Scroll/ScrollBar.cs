@@ -308,7 +308,7 @@ namespace AntdUI
         public void SetVrSize(int x, int y)
         {
             int width = RectX.Width, height = RectY.Height;
-            if (x > 0 && x > width)
+            if (width > 0 && x > 0 && x > width)
             {
                 MaxX = x;
                 ShowX = maxX > width;
@@ -324,7 +324,7 @@ namespace AntdUI
                 ShowX = false;
             }
 
-            if (y > 0 && y > height)
+            if (height > 0 && y > 0 && y > height)
             {
                 MaxY = y;
                 ShowY = maxY > height;

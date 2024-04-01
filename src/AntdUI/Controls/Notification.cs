@@ -248,10 +248,10 @@ namespace AntdUI
             else Font = config.Form.Font;
             font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style);
             Icon = config.Form.Icon;
-            using (var g = Graphics.FromHwnd(Handle).High())
+            Helper.GDI(g =>
             {
                 SetSize(RenderMeasure(g));
-            }
+            });
             close_button = new ITaskOpacity(this);
             IInit();
         }

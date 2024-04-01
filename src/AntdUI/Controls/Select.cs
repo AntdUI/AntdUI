@@ -578,6 +578,8 @@ namespace AntdUI
         public bool Hover { get; set; }
         public bool Show { get; set; }
 
+        internal bool ShowAndID { get => ID == -1 || !Show; }
+
         internal RectangleF arr_rect { get; set; }
 
         public RectangleF Rect { get; set; }

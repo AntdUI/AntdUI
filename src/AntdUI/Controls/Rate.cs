@@ -282,7 +282,6 @@ namespace AntdUI
                 half = _half;
                 if (Config.Animation)
                 {
-                    //System.Diagnostics.Debug.WriteLine(i + " [active_old]=" + active_old + " [hover_old]=" + hover_old + "[active]=" + active + " [hover]=" + hover);
                     ThreadActive?.Dispose();
                     AnimationActive = true;
                     var t = Animation.TotalFrames(10, 100);

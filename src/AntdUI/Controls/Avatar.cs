@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -32,13 +33,38 @@ namespace AntdUI
     [DefaultProperty("Image")]
     public class Avatar : IControl, ShadowConfig
     {
+        public Avatar()
+        {
+            base.BackColor = Color.Transparent;
+        }
+
         #region 属性
+
+        #region 系统
+
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        [Description("背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        public new Color BackColor
+        {
+            get => back;
+            set
+            {
+                if (back == value) return;
+                back = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
 
         Color back = Color.Transparent;
         /// <summary>
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
         public Color Back
         {
             get => back;

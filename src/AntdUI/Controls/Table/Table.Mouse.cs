@@ -415,7 +415,6 @@ namespace AntdUI
                     {
                         edit_input = new InputNumber
                         {
-                            BackColor = Color.Transparent,
                             Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                             Size = new Size(cell.RECT.Width, height),
                             Value = val_int
@@ -425,7 +424,6 @@ namespace AntdUI
                     {
                         edit_input = new InputNumber
                         {
-                            BackColor = Color.Transparent,
                             Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                             Size = new Size(cell.RECT.Width, height),
                             Value = new decimal(val_double)
@@ -435,7 +433,6 @@ namespace AntdUI
                     {
                         edit_input = new InputNumber
                         {
-                            BackColor = Color.Transparent,
                             Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                             Size = new Size(cell.RECT.Width, height),
                             Value = new decimal(val_float)
@@ -445,7 +442,6 @@ namespace AntdUI
                     {
                         edit_input = new Input
                         {
-                            BackColor = Color.Transparent,
                             Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                             Size = new Size(cell.RECT.Width, height),
                             Text = value?.ToString() ?? ""
@@ -536,7 +532,6 @@ namespace AntdUI
                             {
                                 edit_input = new InputNumber
                                 {
-                                    BackColor = Color.Transparent,
                                     Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                                     Size = new Size(cell.RECT.Width, height),
                                     Value = val_int
@@ -546,7 +541,6 @@ namespace AntdUI
                             {
                                 edit_input = new InputNumber
                                 {
-                                    BackColor = Color.Transparent,
                                     Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                                     Size = new Size(cell.RECT.Width, height),
                                     Value = new decimal(val_double)
@@ -556,7 +550,6 @@ namespace AntdUI
                             {
                                 edit_input = new InputNumber
                                 {
-                                    BackColor = Color.Transparent,
                                     Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                                     Size = new Size(cell.RECT.Width, height),
                                     Value = new decimal(val_float)
@@ -568,7 +561,6 @@ namespace AntdUI
                                 {
                                     edit_input = new Input
                                     {
-                                        BackColor = Color.Transparent,
                                         Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                                         Size = new Size(cell.RECT.Width, height),
                                         Text = text2.Text ?? ""
@@ -578,7 +570,6 @@ namespace AntdUI
                                 {
                                     edit_input = new Input
                                     {
-                                        BackColor = Color.Transparent,
                                         Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                                         Size = new Size(cell.RECT.Width, height),
                                         Text = value?.ToString() ?? ""

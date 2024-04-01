@@ -34,13 +34,53 @@ namespace AntdUI
     [DefaultProperty("Text")]
     public class Button : IControl, IButtonControl
     {
+        public Button()
+        {
+            base.BackColor = Color.Transparent;
+        }
+
         #region 属性
+
+        #region 系统
+
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        public new Color? BackColor
+        {
+            get => back;
+            set
+            {
+                if (back == value) return;
+                back = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        public new Color? ForeColor
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) fore = value;
+                fore = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
 
         Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
         public Color? Fore
         {
             get => fore;
@@ -59,6 +99,7 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
         public Color? Back
         {
             get => back;
@@ -215,6 +256,12 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        /// <summary>
+        /// 响应真实区域
+        /// </summary>
+        [Description("响应真实区域"), Category("行为"), DefaultValue(false)]
+        public bool RespondRealAreas { get; set; }
 
         internal float ArrowProg = -1F;
         bool showArrow = false;
@@ -491,6 +538,11 @@ namespace AntdUI
                     if (AnimationClick)
                     {
                         float maxw = rect_read.Width + ((rect.Width - rect_read.Width) * AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * AnimationClickValue);
+                        if (shape == TShape.Circle)
+                        {
+                            if (maxw > maxh) maxw = maxh;
+                            else maxh = maxw;
+                        }
                         int a = (int)(100 * (1f - AnimationClickValue));
                         using (var brush = new SolidBrush(Color.FromArgb(a, _color)))
                         {
@@ -664,6 +716,11 @@ namespace AntdUI
                     if (AnimationClick)
                     {
                         float maxw = rect_read.Width + ((rect.Width - rect_read.Width) * AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * AnimationClickValue);
+                        if (shape == TShape.Circle)
+                        {
+                            if (maxw > maxh) maxw = maxh;
+                            else maxh = maxw;
+                        }
                         int a = (int)(100 * (1f - AnimationClickValue));
                         using (var brush = new SolidBrush(Color.FromArgb(a, _back)))
                         {
@@ -1458,16 +1515,33 @@ namespace AntdUI
 
         #endregion
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (RespondRealAreas)
+            {
+                var rect_read = ReadRectangle;
+                using (var path = Path(rect_read, radius * Config.Dpi))
+                {
+                    ExtraMouseHover = path.IsVisible(e.Location);
+                }
+            }
+            base.OnMouseMove(e);
+
+        }
+
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
+            if (RespondRealAreas) return;
             ExtraMouseHover = true;
         }
+
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
             ExtraMouseHover = false;
         }
+
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
@@ -1476,19 +1550,19 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (!loading)
+            if (CanClick(e.Location))
             {
                 Focus();
                 base.OnMouseDown(e);
+                ExtraMouseDown = true;
             }
-            ExtraMouseDown = true;
         }
 
         bool AnimationClick = false;
         float AnimationClickValue = 0;
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (!loading)
+            if (CanClick(e.Location))
             {
                 base.OnMouseUp(e);
                 if (ExtraMouseDown && margins > 0 && Config.Animation && e.Button == MouseButtons.Left)
@@ -1648,19 +1722,53 @@ namespace AntdUI
 
         protected override void OnClick(EventArgs e)
         {
-            if (!loading) base.OnClick(e);
+            if (CanClick()) base.OnClick(e);
         }
         protected override void OnDoubleClick(EventArgs e)
         {
-            if (!loading) base.OnDoubleClick(e);
+            if (CanClick()) base.OnDoubleClick(e);
         }
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (!loading) base.OnMouseClick(e);
+            if (CanClick(e.Location)) base.OnMouseClick(e);
         }
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
-            if (!loading) base.OnMouseDoubleClick(e);
+            if (CanClick(e.Location)) base.OnMouseDoubleClick(e);
+        }
+
+        bool CanClick()
+        {
+            if (loading) return false;
+            else
+            {
+                if (RespondRealAreas)
+                {
+                    var e = PointToClient(MousePosition);
+                    var rect_read = ReadRectangle;
+                    using (var path = Path(rect_read, radius * Config.Dpi))
+                    {
+                        return path.IsVisible(e);
+                    }
+                }
+                else return true;
+            }
+        }
+        bool CanClick(Point e)
+        {
+            if (loading) return false;
+            else
+            {
+                if (RespondRealAreas)
+                {
+                    var rect_read = ReadRectangle;
+                    using (var path = Path(rect_read, radius * Config.Dpi))
+                    {
+                        return path.IsVisible(e);
+                    }
+                }
+                else return true;
+            }
         }
 
         #endregion

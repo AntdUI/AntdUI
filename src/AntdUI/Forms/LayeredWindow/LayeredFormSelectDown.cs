@@ -110,7 +110,7 @@ namespace AntdUI
         {
             int y = 10, w = (int)rect_read.Width;
             r_w = w;
-            using (var g = Graphics.FromHwnd(Handle).High())
+            Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font).Size(2);
                 int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
@@ -195,8 +195,7 @@ namespace AntdUI
                     if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap_y);
                 }
                 else y = 10 + gap_y * 2 + vr;
-            }
-
+            });
             SetSizeW(w + 20);
             EndHeight = y + 10;
             var point = control.PointToScreen(Point.Empty);
@@ -284,7 +283,7 @@ namespace AntdUI
                     {
                         hoveindex--;
                         if (hoveindex < 0) hoveindex = Items.Count - 1;
-                        while (Items[hoveindex].ID == -1)
+                        while (Items[hoveindex].ShowAndID)
                         {
                             hoveindex--;
                             if (hoveindex < 0) hoveindex = Items.Count - 1;
@@ -300,7 +299,7 @@ namespace AntdUI
                         {
                             hoveindex++;
                             if (hoveindex > Items.Count - 1) hoveindex = 0;
-                            while (Items[hoveindex].ID == -1)
+                            while (Items[hoveindex].ShowAndID)
                             {
                                 hoveindex++;
                                 if (hoveindex > Items.Count - 1) hoveindex = 0;
@@ -387,13 +386,20 @@ namespace AntdUI
             {
                 val = val.ToLower();
                 int showcount = 0;
-                foreach (var it in Items)
+                for (int i = 0; i < Items.Count; i++)
                 {
+                    var it = Items[i];
                     if (it.ID > -1)
                     {
                         if (it.Contains(val))
                         {
                             showcount++;
+                            if (it.Text.ToLower() == val)
+                            {
+                                it.Hover = true;
+                                hoveindex = i;
+                                count++;
+                            }
                             if (!it.Show)
                             {
                                 it.Show = true;
@@ -419,7 +425,7 @@ namespace AntdUI
                 {
                     scrollY.val = 0;
                     int y = 10, w = r_w, list_count = 0;
-                    using (var g = Graphics.FromHwnd(Handle).High())
+                    Helper.GDI(g =>
                     {
                         var size = g.MeasureString(Config.NullText, Font).Size(2);
                         int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
@@ -452,7 +458,7 @@ namespace AntdUI
                             scrollY.Show = false;
                         }
                         SetSizeH(y + 10);
-                    }
+                    });
                 }
                 Print();
             }

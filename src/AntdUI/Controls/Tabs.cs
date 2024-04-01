@@ -200,7 +200,6 @@ namespace AntdUI
 
         protected override void OnCreateControl()
         {
-            SelectValue = SelectedIndex;
             base.OnCreateControl();
             if (UpDownButtonHandle != IntPtr.Zero)
             {
@@ -209,7 +208,9 @@ namespace AntdUI
         }
 
         int _select = -1;
-        int SelectValue
+        [Browsable(false)]
+        [Description("选中序号"), Category("数据"), DefaultValue(-1)]
+        public new int SelectedIndex
         {
             get => _select;
             set
@@ -221,9 +222,10 @@ namespace AntdUI
                 else Invalidate();
             }
         }
+
         protected override void OnSelectedIndexChanged(EventArgs e)
         {
-            SelectValue = SelectedIndex;
+            SelectedIndex = base.SelectedIndex;
             base.OnSelectedIndexChanged(e);
         }
 
@@ -236,8 +238,6 @@ namespace AntdUI
         RectangleF AnimationBarValue;
         ITask? ThreadBar = null;
 
-        RectangleF TabSelectRect;
-
         void SetRect(int old, int value)
         {
             if (value > -1)
@@ -245,77 +245,75 @@ namespace AntdUI
                 if (old > -1)
                 {
                     ThreadBar?.Dispose();
-                    RectangleF OldValue, NewValue;
-                    using (var g = Graphics.FromHwnd(Handle))
+                    Helper.GDI(g =>
                     {
-                        OldValue = GetRect(g, GetTabRect(old), TabPages[old]);
-                        NewValue = GetRect(g, GetTabRect(value), TabPages[value]);
-                    }
-                    if (Config.Animation && OldValue.Y == NewValue.Y)
-                    {
-                        AnimationBar = true;
-                        TabSelectRect = NewValue;
-                        float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
-                        ThreadBar = new ITask(this, () =>
+                        RectangleF OldValue = GetRect(g, GetTabRect(old), TabPages[old]), NewValue = GetRect(g, GetTabRect(value), TabPages[value]);
+
+                        if (Config.Animation && OldValue.Y == NewValue.Y)
                         {
-                            if (AnimationBarValue.Width != NewValue.Width)
+                            AnimationBarValue.Y = OldValue.Y;
+                            AnimationBar = true;
+                            float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
+                            ThreadBar = new ITask(this, () =>
                             {
-                                if (NewValue.Width > OldValue.Width)
+                                if (AnimationBarValue.Width != NewValue.Width)
                                 {
-                                    AnimationBarValue.Width += p_w_val;
-                                    if (AnimationBarValue.Width > NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                    if (NewValue.Width > OldValue.Width)
+                                    {
+                                        AnimationBarValue.Width += p_w_val;
+                                        if (AnimationBarValue.Width > NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                    }
+                                    else
+                                    {
+                                        AnimationBarValue.Width -= p_w_val;
+                                        if (AnimationBarValue.Width < NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                    }
+                                }
+                                if (NewValue.X > OldValue.X)
+                                {
+                                    if (AnimationBarValue.X > p_val2) AnimationBarValue.X += p_val / 2F;
+                                    else AnimationBarValue.X += p_val;
+                                    if (AnimationBarValue.X > NewValue.X)
+                                    {
+                                        AnimationBarValue.X = NewValue.X;
+                                        Invalidate();
+                                        return false;
+                                    }
                                 }
                                 else
                                 {
-                                    AnimationBarValue.Width -= p_w_val;
-                                    if (AnimationBarValue.Width < NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                    AnimationBarValue.X -= p_val;
+                                    if (AnimationBarValue.X < NewValue.X)
+                                    {
+                                        AnimationBarValue.X = NewValue.X;
+                                        Invalidate();
+                                        return false;
+                                    }
                                 }
-                            }
-                            if (NewValue.X > OldValue.X)
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
                             {
-                                if (AnimationBarValue.X > p_val2)
-                                    AnimationBarValue.X += p_val / 2F;
-                                else AnimationBarValue.X += p_val;
-                                if (AnimationBarValue.X > NewValue.X)
-                                {
-                                    AnimationBarValue.X = NewValue.X;
-                                    Invalidate();
-                                    return false;
-                                }
-                            }
-                            else
-                            {
-                                AnimationBarValue.X -= p_val;
-                                if (AnimationBarValue.X < NewValue.X)
-                                {
-                                    AnimationBarValue.X = NewValue.X;
-                                    Invalidate();
-                                    return false;
-                                }
-                            }
-                            Invalidate();
-                            return true;
-                        }, 10, () =>
+                                AnimationBarValue = NewValue;
+                                AnimationBar = false;
+                                Invalidate();
+                            });
+                            return;
+                        }
+                        else
                         {
                             AnimationBarValue = NewValue;
-                            AnimationBar = false;
                             Invalidate();
-                        });
-                        return;
-                    }
-                    else
-                    {
-                        TabSelectRect = AnimationBarValue = NewValue;
-                        Invalidate();
-                        return;
-                    }
+                            return;
+                        }
+                    });
                 }
                 else
                 {
-                    using (var g = Graphics.FromHwnd(Handle))
+                    Helper.GDI(g =>
                     {
-                        AnimationBarValue = TabSelectRect = GetRect(g, GetTabRect(value), TabPages[value]);
-                    }
+                        AnimationBarValue = GetRect(g, GetTabRect(value), TabPages[value]);
+                    });
                 }
             }
         }
@@ -353,7 +351,7 @@ namespace AntdUI
             {
                 var rect = ClientRectangle;
                 var g = e.Graphics.High();
-                int selectedIndex = SelectValue, hover_i = Hover_i;
+                int selectedIndex = _select, hover_i = Hover_i;
                 if (TabCount > 0)
                 {
                     Color _color = fill.HasValue ? fill.Value : Style.Db.Primary;
@@ -374,41 +372,60 @@ namespace AntdUI
                             {
                                 g.FillRectangle(brush, AnimationBarValue);
                             }
-                        }
-                        for (int i = 0; i < TabCount; i++)
-                        {
-                            var page = TabPages[i];
-                            var tab_rect = GetTabRect(i);
-                            if (selectedIndex == i)//是否选中
+                            for (int i = 0; i < TabCount; i++)
                             {
-                                if (AnimationBar)
+                                var page = TabPages[i];
+                                var tab_rect = GetTabRect(i);
+                                if (selectedIndex == i)//是否选中
                                 {
                                     using (var brush = new SolidBrush(_color))
+                                    {
+                                        g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                    }
+                                }
+                                else if (hover_i == i)
+                                {
+                                    using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
                                     {
                                         g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
                                     }
                                 }
                                 else
                                 {
-                                    using (var brush = new SolidBrush(_color))
+                                    using (var brush = new SolidBrush(ForeColor))
                                     {
-                                        g.FillRectangle(brush, TabSelectRect);
                                         g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
                                     }
                                 }
                             }
-                            else if (hover_i == i)
+                        }
+                        else
+                        {
+                            for (int i = 0; i < TabCount; i++)
                             {
-                                using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
+                                var page = TabPages[i];
+                                var tab_rect = GetTabRect(i);
+                                if (selectedIndex == i)//是否选中
                                 {
-                                    g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                    using (var brush = new SolidBrush(_color))
+                                    {
+                                        g.FillRectangle(brush, GetRect(g, GetTabRect(i), TabPages[i]));
+                                        g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                using (var brush = new SolidBrush(ForeColor))
+                                else if (hover_i == i)
                                 {
-                                    g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                    using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
+                                    {
+                                        g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                    }
+                                }
+                                else
+                                {
+                                    using (var brush = new SolidBrush(ForeColor))
+                                    {
+                                        g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
+                                    }
                                 }
                             }
                         }
@@ -546,10 +563,10 @@ namespace AntdUI
             {
                 var mouse = owner.PointToClient(MousePosition);
                 bool mouseOver = clipRect.Contains(mouse);
-                using (var g = Graphics.FromHwnd(Handle))
+                Helper.GDI(g =>
                 {
                     owner.OnPaintUpDownButton(new PaintEventArgs(g, clipRect));
-                }
+                });
             }
 
 

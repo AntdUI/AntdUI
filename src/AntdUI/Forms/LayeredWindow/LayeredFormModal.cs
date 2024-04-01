@@ -99,8 +99,8 @@ namespace AntdUI
                         Name = btn.Name,
                         Text = btn.Text,
                         Type = btn.Type,
-                        Back = btn.Back,
-                        Fore = btn.Fore,
+                        BackColor = btn.Back,
+                        ForeColor = btn.Fore,
                         Tag = btn.Tag
                     };
                     panel1.Controls.Add(_btn);

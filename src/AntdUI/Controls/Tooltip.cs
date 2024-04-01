@@ -198,11 +198,10 @@ namespace AntdUI
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
-
-            using (var g = Graphics.FromHwnd(Handle).High())
+            Helper.GDI(g =>
             {
                 SetSize(this.RenderMeasure(g));
-            }
+            });
             var point = control.PointToScreen(Point.Empty);
             if (component is Tooltip.Config config)
             {
@@ -223,21 +222,20 @@ namespace AntdUI
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
-
-            using (var g = Graphics.FromHwnd(Handle).High())
+            Helper.GDI(g =>
             {
                 SetSize(this.RenderMeasure(g));
-            }
+            });
             SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
         }
 
         public void SetText(Rectangle rect, string text)
         {
             Text = text;
-            using (var g = Graphics.FromHwnd(Handle).High())
+            Helper.GDI(g =>
             {
                 SetSize(this.RenderMeasure(g));
-            }
+            });
             SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
             Print();
         }

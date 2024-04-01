@@ -219,10 +219,10 @@ namespace AntdUI
             else if (Config.Font != null) Font = Config.Font;
             else Font = config.Form.Font;
             Icon = config.Form.Icon;
-            using (var g = Graphics.FromHwnd(Handle).High())
+            Helper.GDI(g =>
             {
                 SetSize(RenderMeasure(g));
-            }
+            });
             IInit();
         }
         internal override TAlignFrom Align => TAlignFrom.Top;
@@ -286,13 +286,10 @@ namespace AntdUI
             var oldw = TargetRect.Width;
             if (IsHandleCreated)
             {
-                Invoke(new Action(() =>
+                Helper.GDI(g =>
                 {
-                    using (var g = Graphics.FromHwnd(Handle).High())
-                    {
-                        SetSize(RenderMeasure(g));
-                    }
-                }));
+                    SetSize(RenderMeasure(g));
+                });
                 SetPositionCenter(oldw);
                 return false;
             }

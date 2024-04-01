@@ -74,28 +74,18 @@ namespace AntdUI
         /// <param name="end">运行结束后的回调</param>
         public void Spin(Action action, Action? end = null)
         {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action(() =>
-                {
-                    Spin(action, end);
-                }));
-                return;
-            }
-            var frm = new SpinForm(this, new Spin.Config());
-            frm.Show(this);
-            ITask.Run(() =>
-            {
-                try
-                {
-                    action();
-                }
-                catch { }
-                frm.Invoke(new Action(() =>
-                {
-                    frm.Dispose();
-                }));
-            }, end);
+            Spin(new Spin.Config(), action, end);
+        }
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="text">加载文本</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        public void Spin(string text, Action action, Action? end = null)
+        {
+            Spin(new Spin.Config { Text = text }, action, end);
         }
 
         /// <summary>
@@ -106,6 +96,14 @@ namespace AntdUI
         /// <param name="end">运行结束后的回调</param>
         public void Spin(Spin.Config config, Action action, Action? end = null)
         {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    Spin(config, action, end);
+                }));
+                return;
+            }
             var frm = new SpinForm(this, config);
             frm.Show(this);
             ITask.Run(() =>

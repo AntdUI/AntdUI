@@ -82,10 +82,13 @@ namespace AntdUI
                 var frm = new LayeredFormModal(config);
                 if (config.Mask)
                 {
+                    bool isclose = false;
                     var ifrm = new LayeredFormMask(config.Form);
                     ifrm.Show(config.Form);
                     frm.FormClosed += (s1, e1) =>
                     {
+                        if (isclose) return;
+                        isclose = true;
                         ifrm.IClose();
                     };
                     return frm.ShowDialog(ifrm);

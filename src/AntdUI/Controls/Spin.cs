@@ -91,10 +91,10 @@ namespace AntdUI
         /// </summary>
         public class Config
         {
-            ///// <summary>
-            ///// 文本
-            ///// </summary>
-            //public string? Text { get; set; }
+            /// <summary>
+            /// 文本
+            /// </summary>
+            public string? Text { get; set; }
             /// <summary>
             /// 背景颜色
             /// </summary>
@@ -235,6 +235,7 @@ namespace AntdUI
             var original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                 using (var brush = new SolidBrush(config.Back.HasValue ? config.Back.Value : Color.FromArgb(100, Style.Db.TextBase)))
                 {
                     if (gpath != null)
@@ -247,7 +248,7 @@ namespace AntdUI
                     }
                     else g.FillRectangle(brush, rect);
                 }
-                spin_core.Paint(g, rect, null, config.Color.HasValue ? config.Color.Value : Style.Db.Primary, this);
+                spin_core.Paint(g, rect, config.Text, config.Color.HasValue ? config.Color.Value : Style.Db.Primary, this);
             }
             return original_bmp;
         }

@@ -33,34 +33,48 @@ namespace AntdUI
 
         protected override void OnLoad(EventArgs e)
         {
-            var t = Animation.TotalFrames(10, 100);
-            if (Inverted)
+            if (Config.Animation)
             {
-                int endY = TargetRect.Y;
-                task_start = new ITask((i) =>
+                var t = Animation.TotalFrames(10, 100);
+                if (Inverted)
                 {
-                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                    int height = (int)(EndHeight * val);
-                    SetAnimateValue(endY + (EndHeight - height), height, val);
-                    return true;
-                }, 10, t, () =>
+                    int endY = TargetRect.Y;
+                    task_start = new ITask((i) =>
+                    {
+                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                        int height = (int)(EndHeight * val);
+                        SetAnimateValue(endY + (EndHeight - height), height, val);
+                        return true;
+                    }, 10, t, () =>
+                    {
+                        SetAnimateValue(endY, EndHeight, 255);
+                        LoadOK();
+                    });
+                }
+                else
                 {
-                    SetAnimateValue(endY, EndHeight, 255);
-                    LoadOK();
-                });
+                    task_start = new ITask((i) =>
+                    {
+                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                        SetAnimateValue((int)(EndHeight * val), val);
+                        return true;
+                    }, 10, t, () =>
+                    {
+                        SetAnimateValue(EndHeight, 255);
+                        LoadOK();
+                    });
+                }
             }
             else
             {
-                task_start = new ITask((i) =>
+                if (Inverted)
                 {
-                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                    SetAnimateValue((int)(EndHeight * val), val);
-                    return true;
-                }, 10, t, () =>
-                {
-                    SetAnimateValue(EndHeight, 255);
+                    int endY = TargetRect.Y;
+                    SetAnimateValue(endY, EndHeight, 255);
                     LoadOK();
-                });
+                }
+                else SetAnimateValue(EndHeight, 255);
+                LoadOK();
             }
             base.OnLoad(e);
         }
@@ -105,38 +119,46 @@ namespace AntdUI
             if (!ok_end)
             {
                 e.Cancel = true;
-                if (!run_end)
+                if (Config.Animation)
                 {
-                    run_end = true;
-                    var t = Animation.TotalFrames(10, 100);
-                    if (Inverted)
+                    if (!run_end)
                     {
-                        int y = TargetRect.Y;
-                        new ITask(i =>
+                        run_end = true;
+                        var t = Animation.TotalFrames(10, 100);
+                        if (Inverted)
                         {
-                            var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            int height = (int)(EndHeight * val);
-                            SetAnimateValue(y + (EndHeight - height), height, val);
-                            return true;
-                        }, 10, t, () =>
+                            int y = TargetRect.Y;
+                            new ITask(i =>
+                            {
+                                var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                int height = (int)(EndHeight * val);
+                                SetAnimateValue(y + (EndHeight - height), height, val);
+                                return true;
+                            }, 10, t, () =>
+                            {
+                                ok_end = true;
+                                IClose(true);
+                            });
+                        }
+                        else
                         {
-                            ok_end = true;
-                            IClose(true);
-                        });
+                            new ITask(i =>
+                            {
+                                var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                SetAnimateValue((int)(EndHeight * val), val);
+                                return true;
+                            }, 10, t, () =>
+                            {
+                                ok_end = true;
+                                IClose(true);
+                            });
+                        }
                     }
-                    else
-                    {
-                        new ITask(i =>
-                        {
-                            var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            SetAnimateValue((int)(EndHeight * val), val);
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            ok_end = true;
-                            IClose(true);
-                        });
-                    }
+                }
+                else
+                {
+                    ok_end = true;
+                    IClose(true);
                 }
             }
             base.OnClosing(e);

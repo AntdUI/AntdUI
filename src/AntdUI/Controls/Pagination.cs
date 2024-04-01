@@ -666,26 +666,12 @@ namespace AntdUI
                     Text = pageSize.ToString(),
                     TextAlign = HorizontalAlignment.Center,
                     Font = Font,
-                    BorderColor = fill,
-                    BackColor = BackColor,
-                    ForeColor = ForeColor
+                    BorderColor = fill
                 };
                 Controls.Add(input_SizeChanger);
                 input_SizeChanger.KeyPress += Input_SizeChanger_KeyPress;
             }
             else input_SizeChanger.Width = SizeChangerWidth;
-        }
-
-        protected override void OnBackColorChanged(EventArgs e)
-        {
-            base.OnBackColorChanged(e);
-            if (input_SizeChanger != null) input_SizeChanger.BackColor = BackColor;
-        }
-
-        protected override void OnForeColorChanged(EventArgs e)
-        {
-            base.OnForeColorChanged(e);
-            if (input_SizeChanger != null) input_SizeChanger.ForeColor = ForeColor;
         }
 
         protected override void OnFontChanged(EventArgs e)
