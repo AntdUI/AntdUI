@@ -16,7 +16,7 @@ namespace AntdUI.Svg
         public ISvgNode DeepCopy()
         {
             // Since strings are immutable in C#, we can just use the same reference here.
-            return new SvgContentNode { Content = this.Content };
+            return new SvgContentNode { Content = Content };
         }
     }
 }

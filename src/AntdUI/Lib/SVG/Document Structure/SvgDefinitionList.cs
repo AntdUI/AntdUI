@@ -8,9 +8,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// Represents a list of re-usable SVG components.
     /// </summary>
-    [SvgElement("defs")]
     public class SvgDefinitionList : SvgElement
     {
+        public override string ClassName { get => "defs"; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SvgDefinitionList"/> class.
         /// </summary>
@@ -26,11 +27,5 @@ namespace AntdUI.Svg
         {
             // Do nothing. Children should NOT be rendered.
         }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgDefinitionList>();
-        }
-
     }
 }

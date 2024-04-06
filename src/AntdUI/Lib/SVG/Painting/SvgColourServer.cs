@@ -19,22 +19,21 @@ namespace AntdUI.Svg
         /// </summary>
         public static readonly SvgPaintServer Inherit = new SvgColourServer();
 
-        public SvgColourServer()
-            : this(System.Drawing.Color.Black)
+        public SvgColourServer() : this(System.Drawing.Color.Black)
         {
         }
 
         public SvgColourServer(Color colour)
         {
-            this._colour = colour;
+            _colour = colour;
         }
 
         private Color _colour;
 
         public Color Colour
         {
-            get { return this._colour; }
-            set { this._colour = value; }
+            get { return _colour; }
+            set { _colour = value; }
         }
 
         public override Brush GetBrush(SvgVisualElement styleOwner, ISvgRenderer renderer, float opacity, bool forStroke = false)
@@ -45,8 +44,8 @@ namespace AntdUI.Svg
             // default fill color is black, default stroke color is none
             if (this == SvgColourServer.NotSet && forStroke) return new SolidBrush(System.Drawing.Color.Transparent);
 
-            int alpha = (int)Math.Round((opacity * (this.Colour.A / 255.0)) * 255);
-            Color colour = System.Drawing.Color.FromArgb(alpha, this.Colour);
+            int alpha = (int)Math.Round((opacity * (Colour.A / 255.0)) * 255);
+            Color colour = System.Drawing.Color.FromArgb(alpha, Colour);
 
             return new SolidBrush(colour);
         }
@@ -60,7 +59,7 @@ namespace AntdUI.Svg
             else if (this == SvgColourServer.Inherit)
                 return "inherit";
 
-            Color c = this.Colour;
+            Color c = Colour;
 
             // Return the name if it exists
             if (c.IsKnownColor)
@@ -68,19 +67,6 @@ namespace AntdUI.Svg
 
             // Return the hex value
             return String.Format("#{0}", c.ToArgb().ToString("x").Substring(2));
-        }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgColourServer>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgColourServer;
-            newObj.Colour = this.Colour;
-            return newObj;
         }
 
         public override bool Equals(object obj)
@@ -96,7 +82,7 @@ namespace AntdUI.Svg
                 (this == SvgColourServer.Inherit && obj != SvgColourServer.Inherit) ||
                 (this != SvgColourServer.Inherit && obj == SvgColourServer.Inherit)) return false;
 
-            return this.GetHashCode() == objColor.GetHashCode();
+            return GetHashCode() == objColor.GetHashCode();
         }
 
         public override int GetHashCode()

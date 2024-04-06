@@ -20,17 +20,17 @@ namespace AntdUI.Svg
             _rect = new RectangleF(x, y, width, height);
         }
 
-        public System.Drawing.PointF Location
+        public PointF Location
         {
             get { return _rect.Location; }
         }
 
-        public System.Drawing.SizeF Size
+        public SizeF Size
         {
             get { return _rect.Size; }
         }
 
-        public System.Drawing.RectangleF Bounds
+        public RectangleF Bounds
         {
             get { return _rect; }
         }

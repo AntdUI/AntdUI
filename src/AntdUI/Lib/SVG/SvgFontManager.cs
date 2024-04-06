@@ -3,11 +3,8 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Text;
-using System.IO;
 using System.Linq;
 
 namespace AntdUI.Svg
@@ -21,23 +18,9 @@ namespace AntdUI.Svg
     public static class SvgFontManager
     {
         private static readonly Dictionary<string, FontFamily> SystemFonts;
-        public static Func<string, FontFamily> FontLoaderCallback;
         static SvgFontManager()
         {
             SystemFonts = FontFamily.Families.ToDictionary(ff => ff.Name.ToLower());
-        }
-
-        /// <summary>
-        /// Loads a font from the given path.
-        /// </summary>
-        /// <param name="path">A <see cref="string"/> containing the full path to the font file.</param>
-        /// <returns>An <see cref="FontFamily"/> of the loaded font.</returns>
-        public static FontFamily LoadFontFamily(string path)
-        {
-            var pfc = new PrivateFontCollection();
-            var fp = Path.GetFullPath(path);
-            pfc.AddFontFile(fp);
-            return pfc.Families.Length == 0 ? null : pfc.Families[0];
         }
 
         /// <summary>
@@ -49,15 +32,12 @@ namespace AntdUI.Svg
         /// </summary>
         /// <param name="name">A <see cref="string"/> containing the FamilyName of the font.</param>
         /// <returns>An <see cref="FontFamily"/> of the loaded font or null is not located.</returns>
-        public static FontFamily FindFont(string name)
+        public static FontFamily? FindFont(string name)
         {
             if (name == null) return null;
-            FontFamily ff = null;
-            if (SystemFonts.TryGetValue(name.ToLower(), out ff)) return ff;
-            if (FontLoaderCallback == null) return null;
-            var ff2 = FontLoaderCallback(name);
-            SystemFonts.Add(name.ToLower(), ff2);
-            return ff2;
+            string key = name.ToLower();
+            if (SystemFonts.TryGetValue(key, out var ff)) return ff;
+            return null;
         }
     }
 }

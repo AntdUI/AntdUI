@@ -36,7 +36,7 @@ namespace AntdUI.Svg
         /// </summary>
         public bool IsEmpty
         {
-            get { return this._isEmpty; }
+            get { return _isEmpty; }
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace AntdUI.Svg
         /// </summary>
         public float Value
         {
-            get { return this._value; }
+            get { return _value; }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace AntdUI.Svg
         /// </summary>
         public SvgUnitType Type
         {
-            get { return this._type; }
+            get { return _type; }
         }
 
         /// <summary>
@@ -70,25 +70,25 @@ namespace AntdUI.Svg
         public float ToDeviceValue(ISvgRenderer renderer, UnitRenderingType renderType, SvgElement owner)
         {
             // If it's already been calculated
-            if (this._deviceValue.HasValue)
+            if (_deviceValue.HasValue)
             {
-                return this._deviceValue.Value;
+                return _deviceValue.Value;
             }
 
-            if (this._value == 0.0f)
+            if (_value == 0.0f)
             {
-                this._deviceValue = 0.0f;
-                return this._deviceValue.Value;
+                _deviceValue = 0.0f;
+                return _deviceValue.Value;
             }
 
             // http://www.w3.org/TR/CSS21/syndata.html#values
             // http://www.w3.org/TR/SVG11/coords.html#Units
 
             const float cmInInch = 2.54f;
-            int ppi = SvgDocument.PointsPerInch;
+            int ppi = SvgDocument.Ppi;
 
-            var type = this.Type;
-            var value = this.Value;
+            var type = Type;
+            var value = Value;
 
             float points;
 
@@ -182,7 +182,7 @@ namespace AntdUI.Svg
                     _deviceValue = value;
                     break;
             }
-            return this._deviceValue.Value;
+            return _deviceValue.Value;
         }
 
         private IFontDefn GetFont(ISvgRenderer renderer, SvgElement owner)
@@ -198,12 +198,12 @@ namespace AntdUI.Svg
         /// <returns>An <see cref="SvgUnit"/> of type <see cref="SvgUnitType.Percentage"/>.</returns>
         public SvgUnit ToPercentage()
         {
-            switch (this.Type)
+            switch (Type)
             {
                 case SvgUnitType.Percentage:
                     return this;
                 case SvgUnitType.User:
-                    return new SvgUnit(SvgUnitType.Percentage, this.Value * 100);
+                    return new SvgUnit(SvgUnitType.Percentage, Value * 100);
                 default:
                     throw new NotImplementedException();
             }
@@ -216,12 +216,12 @@ namespace AntdUI.Svg
             if (!(obj.GetType() == typeof(SvgUnit))) return false;
 
             var unit = (SvgUnit)obj;
-            return (unit.Value == this.Value && unit.Type == this.Type);
+            return (unit.Value == Value && unit.Type == Type);
         }
 
         public bool Equals(SvgUnit other)
         {
-            return this._type == other._type && (this._value == other._value);
+            return _type == other._type && (_value == other._value);
         }
 
         public override int GetHashCode()
@@ -252,7 +252,7 @@ namespace AntdUI.Svg
         {
             string type = string.Empty;
 
-            switch (this.Type)
+            switch (Type)
             {
                 case SvgUnitType.None:
                     return "none";
@@ -279,7 +279,7 @@ namespace AntdUI.Svg
                     break;
             }
 
-            return string.Concat(this.Value.ToString(CultureInfo.InvariantCulture), type);
+            return string.Concat(Value.ToString(CultureInfo.InvariantCulture), type);
         }
 
         /// <summary>
@@ -309,10 +309,10 @@ namespace AntdUI.Svg
         /// <param name="value">The value.</param>
         public SvgUnit(SvgUnitType type, float value)
         {
-            this._isEmpty = false;
-            this._type = type;
-            this._value = value;
-            this._deviceValue = null;
+            _isEmpty = false;
+            _type = type;
+            _value = value;
+            _deviceValue = null;
         }
 
         /// <summary>
@@ -321,10 +321,10 @@ namespace AntdUI.Svg
         /// <param name="value">The value.</param>
         public SvgUnit(float value)
         {
-            this._isEmpty = false;
-            this._value = value;
-            this._type = SvgUnitType.User;
-            this._deviceValue = null;
+            _isEmpty = false;
+            _value = value;
+            _type = SvgUnitType.User;
+            _deviceValue = null;
         }
 
         public static System.Drawing.PointF GetDevicePoint(SvgUnit x, SvgUnit y, ISvgRenderer renderer, SvgElement owner)

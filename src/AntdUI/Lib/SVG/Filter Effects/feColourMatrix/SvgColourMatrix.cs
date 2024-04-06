@@ -13,9 +13,9 @@ namespace AntdUI.Svg.FilterEffects
     /// <summary>
     /// Note: this is not used in calculations to bitmap - used only to allow for svg xml output
     /// </summary>
-    [SvgElement("feColorMatrix")]
     public class SvgColourMatrix : SvgFilterPrimitive
     {
+        public override string ClassName { get => "feColorMatrix"; }
 
         /// <summary>
         /// matrix | saturate | hueRotate | luminanceToAlpha
@@ -37,17 +37,17 @@ namespace AntdUI.Svg.FilterEffects
 
         public override void Process(ImageBuffer buffer)
         {
-            var inputImage = buffer[this.Input];
+            var inputImage = buffer[Input];
 
             if (inputImage == null)
                 return;
 
             float[][] colorMatrixElements;
             float value;
-            switch (this.Type)
+            switch (Type)
             {
                 case SvgColourMatrixType.HueRotate:
-                    value = (string.IsNullOrEmpty(this.Values) ? 0 : float.Parse(this.Values));
+                    value = (string.IsNullOrEmpty(Values) ? 0 : float.Parse(Values));
                     colorMatrixElements = new float[][] {
                         new float[] {(float)(0.213 + Math.Cos(value) * +0.787 + Math.Sin(value) * -0.213),
                                      (float)(0.715 + Math.Cos(value) * -0.715 + Math.Sin(value) * -0.715),
@@ -72,7 +72,7 @@ namespace AntdUI.Svg.FilterEffects
                     };
                     break;
                 case SvgColourMatrixType.Saturate:
-                    value = (string.IsNullOrEmpty(this.Values) ? 1 : float.Parse(this.Values));
+                    value = (string.IsNullOrEmpty(Values) ? 1 : float.Parse(Values));
                     colorMatrixElements = new float[][] {
                         new float[] {(float)(0.213+0.787*value), (float)(0.715-0.715*value), (float)(0.072-0.072*value), 0, 0},
                         new float[] {(float)(0.213-0.213*value), (float)(0.715+0.285*value), (float)(0.072-0.072*value), 0, 0},
@@ -82,7 +82,7 @@ namespace AntdUI.Svg.FilterEffects
                     };
                     break;
                 default: // Matrix
-                    var parts = this.Values.Replace("  ", " ").Split(new char[] { ' ', '\t', '\n', '\r', ',' });
+                    var parts = Values.Replace("  ", " ").Split(new char[] { ' ', '\t', '\n', '\r', ',' });
                     colorMatrixElements = new float[5][];
                     for (int i = 0; i < 4; i++)
                     {
@@ -104,25 +104,8 @@ namespace AntdUI.Svg.FilterEffects
                                 0, 0, inputImage.Width, inputImage.Height, GraphicsUnit.Pixel, imageAttrs);
                     g.Flush();
                 }
-                buffer[this.Result] = result;
+                buffer[Result] = result;
             }
         }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgColourMatrix>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgColourMatrix;
-            newObj.Type = this.Type;
-            newObj.Values = this.Values;
-
-            return newObj;
-        }
-
-
     }
 }

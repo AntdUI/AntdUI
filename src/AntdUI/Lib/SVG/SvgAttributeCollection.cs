@@ -21,7 +21,7 @@ namespace AntdUI.Svg
         /// <param name="owner">The <see cref="SvgElement"/> owner of the collection.</param>
         public SvgAttributeCollection(SvgElement owner)
         {
-            this._owner = owner;
+            _owner = owner;
         }
 
         /// <summary>
@@ -32,12 +32,12 @@ namespace AntdUI.Svg
         /// <returns>The attribute value if available; otherwise the default value of <typeparamref name="TAttributeType"/>.</returns>
         public TAttributeType GetAttribute<TAttributeType>(string attributeName)
         {
-            if (this.ContainsKey(attributeName) && base[attributeName] != null)
+            if (ContainsKey(attributeName) && base[attributeName] != null)
             {
                 return (TAttributeType)base[attributeName];
             }
 
-            return this.GetAttribute<TAttributeType>(attributeName, default(TAttributeType));
+            return GetAttribute<TAttributeType>(attributeName, default(TAttributeType));
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace AntdUI.Svg
         /// <returns>The attribute value if available; otherwise the default value of <typeparamref name="T"/>.</returns>
         public T GetAttribute<T>(string attributeName, T defaultValue)
         {
-            if (this.ContainsKey(attributeName) && base[attributeName] != null)
+            if (ContainsKey(attributeName) && base[attributeName] != null)
             {
                 return (T)base[attributeName];
             }
@@ -65,7 +65,7 @@ namespace AntdUI.Svg
         /// <returns>The attribute value if available; otherwise the ancestors value for the same attribute; otherwise the default value of <typeparamref name="TAttributeType"/>.</returns>
         public TAttributeType GetInheritedAttribute<TAttributeType>(string attributeName)
         {
-            if (this.ContainsKey(attributeName) && !IsInheritValue(base[attributeName]))
+            if (ContainsKey(attributeName) && !IsInheritValue(base[attributeName]))
             {
                 var result = (TAttributeType)base[attributeName];
                 var deferred = result as SvgDeferredPaintServer;
@@ -73,9 +73,9 @@ namespace AntdUI.Svg
                 return result;
             }
 
-            if (this._owner.Parent != null)
+            if (_owner.Parent != null)
             {
-                var parentAttribute = this._owner.Parent.Attributes[attributeName];
+                var parentAttribute = _owner.Parent.Attributes[attributeName];
                 if (parentAttribute != null)
                 {
                     return (TAttributeType)parentAttribute;
@@ -109,7 +109,7 @@ namespace AntdUI.Svg
         /// <returns>The attribute value associated with the specified name; If there is no attribute the parent's value will be inherited.</returns>
         public new object this[string attributeName]
         {
-            get { return this.GetInheritedAttribute<object>(attributeName); }
+            get { return GetInheritedAttribute<object>(attributeName); }
             set
             {
                 if (base.ContainsKey(attributeName))
@@ -172,7 +172,7 @@ namespace AntdUI.Svg
             var handler = AttributeChanged;
             if (handler != null)
             {
-                handler(this._owner, new AttributeEventArgs { Attribute = attribute, Value = value });
+                handler(_owner, new AttributeEventArgs { Attribute = attribute, Value = value });
             }
         }
     }
@@ -191,7 +191,7 @@ namespace AntdUI.Svg
         /// <param name="owner">The <see cref="SvgElement"/> owner of the collection.</param>
         public SvgCustomAttributeCollection(SvgElement owner)
         {
-            this._owner = owner;
+            _owner = owner;
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace AntdUI.Svg
             var handler = AttributeChanged;
             if (handler != null)
             {
-                handler(this._owner, new AttributeEventArgs { Attribute = attribute, Value = value });
+                handler(_owner, new AttributeEventArgs { Attribute = attribute, Value = value });
             }
         }
     }

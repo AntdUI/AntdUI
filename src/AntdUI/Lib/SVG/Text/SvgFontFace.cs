@@ -5,14 +5,15 @@
 
 namespace AntdUI.Svg
 {
-    [SvgElement("font-face")]
     public class SvgFontFace : SvgElement
     {
+        public override string ClassName { get => "font-face"; }
+
         [SvgAttribute("alphabetic")]
         public float Alphabetic
         {
-            get { return (this.Attributes["alphabetic"] == null ? 0 : (float)this.Attributes["alphabetic"]); }
-            set { this.Attributes["alphabetic"] = value; }
+            get { return (Attributes["alphabetic"] == null ? 0 : (float)Attributes["alphabetic"]); }
+            set { Attributes["alphabetic"] = value; }
         }
 
         [SvgAttribute("ascent")]
@@ -20,24 +21,24 @@ namespace AntdUI.Svg
         {
             get
             {
-                if (this.Attributes["ascent"] == null)
+                if (Attributes["ascent"] == null)
                 {
-                    var font = this.Parent as SvgFont;
-                    return (font == null ? 0 : this.UnitsPerEm - font.VertOriginY);
+                    var font = Parent as SvgFont;
+                    return (font == null ? 0 : UnitsPerEm - font.VertOriginY);
                 }
                 else
                 {
-                    return (float)this.Attributes["ascent"];
+                    return (float)Attributes["ascent"];
                 }
             }
-            set { this.Attributes["ascent"] = value; }
+            set { Attributes["ascent"] = value; }
         }
 
         [SvgAttribute("ascent-height")]
         public float AscentHeight
         {
-            get { return (this.Attributes["ascent-height"] == null ? this.Ascent : (float)this.Attributes["ascent-height"]); }
-            set { this.Attributes["ascent-height"] = value; }
+            get { return (Attributes["ascent-height"] == null ? Ascent : (float)Attributes["ascent-height"]); }
+            set { Attributes["ascent-height"] = value; }
         }
 
         [SvgAttribute("descent")]
@@ -45,17 +46,17 @@ namespace AntdUI.Svg
         {
             get
             {
-                if (this.Attributes["descent"] == null)
+                if (Attributes["descent"] == null)
                 {
-                    var font = this.Parent as SvgFont;
+                    var font = Parent as SvgFont;
                     return (font == null ? 0 : font.VertOriginY);
                 }
                 else
                 {
-                    return (float)this.Attributes["descent"];
+                    return (float)Attributes["descent"];
                 }
             }
-            set { this.Attributes["descent"] = value; }
+            set { Attributes["descent"] = value; }
         }
 
         /// <summary>
@@ -64,8 +65,8 @@ namespace AntdUI.Svg
         [SvgAttribute("font-family")]
         public override string FontFamily
         {
-            get { return this.Attributes["font-family"] as string; }
-            set { this.Attributes["font-family"] = value; }
+            get { return Attributes["font-family"] as string; }
+            set { Attributes["font-family"] = value; }
         }
 
         /// <summary>
@@ -74,8 +75,8 @@ namespace AntdUI.Svg
         [SvgAttribute("font-size")]
         public override SvgUnit FontSize
         {
-            get { return (this.Attributes["font-size"] == null) ? SvgUnit.Empty : (SvgUnit)this.Attributes["font-size"]; }
-            set { this.Attributes["font-size"] = value; }
+            get { return (Attributes["font-size"] == null) ? SvgUnit.Empty : (SvgUnit)Attributes["font-size"]; }
+            set { Attributes["font-size"] = value; }
         }
 
         /// <summary>
@@ -84,8 +85,8 @@ namespace AntdUI.Svg
         [SvgAttribute("font-style")]
         public override SvgFontStyle FontStyle
         {
-            get { return (this.Attributes["font-style"] == null) ? SvgFontStyle.All : (SvgFontStyle)this.Attributes["font-style"]; }
-            set { this.Attributes["font-style"] = value; }
+            get { return (Attributes["font-style"] == null) ? SvgFontStyle.All : (SvgFontStyle)Attributes["font-style"]; }
+            set { Attributes["font-style"] = value; }
         }
 
         /// <summary>
@@ -94,8 +95,8 @@ namespace AntdUI.Svg
         [SvgAttribute("font-variant")]
         public override SvgFontVariant FontVariant
         {
-            get { return (this.Attributes["font-variant"] == null) ? SvgFontVariant.Inherit : (SvgFontVariant)this.Attributes["font-variant"]; }
-            set { this.Attributes["font-variant"] = value; }
+            get { return (Attributes["font-variant"] == null) ? SvgFontVariant.Inherit : (SvgFontVariant)Attributes["font-variant"]; }
+            set { Attributes["font-variant"] = value; }
         }
 
         /// <summary>
@@ -104,35 +105,29 @@ namespace AntdUI.Svg
         [SvgAttribute("font-weight")]
         public override SvgFontWeight FontWeight
         {
-            get { return (this.Attributes["font-weight"] == null) ? SvgFontWeight.Inherit : (SvgFontWeight)this.Attributes["font-weight"]; }
-            set { this.Attributes["font-weight"] = value; }
+            get { return (Attributes["font-weight"] == null) ? SvgFontWeight.Inherit : (SvgFontWeight)Attributes["font-weight"]; }
+            set { Attributes["font-weight"] = value; }
         }
 
         [SvgAttribute("panose-1")]
         public string Panose1
         {
-            get { return this.Attributes["panose-1"] as string; }
-            set { this.Attributes["panose-1"] = value; }
+            get { return Attributes["panose-1"] as string; }
+            set { Attributes["panose-1"] = value; }
         }
 
         [SvgAttribute("units-per-em")]
         public float UnitsPerEm
         {
-            get { return (this.Attributes["units-per-em"] == null ? 1000 : (float)this.Attributes["units-per-em"]); }
-            set { this.Attributes["units-per-em"] = value; }
+            get { return (Attributes["units-per-em"] == null ? 1000 : (float)Attributes["units-per-em"]); }
+            set { Attributes["units-per-em"] = value; }
         }
 
         [SvgAttribute("x-height")]
         public float XHeight
         {
-            get { return (this.Attributes["x-height"] == null ? float.MinValue : (float)this.Attributes["x-height"]); }
-            set { this.Attributes["x-height"] = value; }
-        }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return base.DeepCopy<SvgFontFace>();
+            get { return (Attributes["x-height"] == null ? float.MinValue : (float)Attributes["x-height"]); }
+            set { Attributes["x-height"] = value; }
         }
     }
 }

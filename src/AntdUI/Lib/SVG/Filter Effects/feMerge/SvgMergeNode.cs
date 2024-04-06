@@ -3,25 +3,17 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System;
-
 namespace AntdUI.Svg.FilterEffects
 {
-
-    [SvgElement("feMergeNode")]
     public class SvgMergeNode : SvgElement
     {
+        public override string ClassName { get => "feMergeNode"; }
+
         [SvgAttribute("in")]
         public string Input
         {
             get { return this.Attributes.GetAttribute<string>("in"); }
             set { this.Attributes["in"] = value; }
         }
-
-        public override SvgElement DeepCopy()
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

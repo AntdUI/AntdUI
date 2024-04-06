@@ -22,38 +22,22 @@ namespace AntdUI.Svg
         /// <summary>
         /// Gets or sets the position where the viewport starts horizontally.
         /// </summary>
-        public float MinX
-        {
-            get;
-            set;
-        }
+        public float MinX { get; set; }
 
         /// <summary>
         /// Gets or sets the position where the viewport starts vertically.
         /// </summary>
-        public float MinY
-        {
-            get;
-            set;
-        }
+        public float MinY { get; set; }
 
         /// <summary>
         /// Gets or sets the width of the viewport.
         /// </summary>
-        public float Width
-        {
-            get;
-            set;
-        }
+        public float Width { get; set; }
 
         /// <summary>
         /// Gets or sets the height of the viewport.
         /// </summary>
-        public float Height
-        {
-            get;
-            set;
-        }
+        public float Height { get; set; }
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="Svg.SvgViewBox"/> to <see cref="System.Drawing.RectangleF"/>.
@@ -84,10 +68,10 @@ namespace AntdUI.Svg
         /// <param name="height">The height.</param>
         public SvgViewBox(float minX, float minY, float width, float height) : this()
         {
-            this.MinX = minX;
-            this.MinY = minY;
-            this.Width = width;
-            this.Height = height;
+            MinX = minX;
+            MinY = minY;
+            Width = width;
+            Height = height;
         }
 
         #region Equals and GetHashCode implementation
@@ -98,10 +82,10 @@ namespace AntdUI.Svg
 
         public bool Equals(SvgViewBox other)
         {
-            return this.MinX == other.MinX
-                && this.MinY == other.MinY
-                && this.Width == other.Width
-                && this.Height == other.Height;
+            return MinX == other.MinX
+                && MinY == other.MinY
+                && Width == other.Width
+                && Height == other.Height;
         }
 
         public override int GetHashCode()
@@ -133,19 +117,19 @@ namespace AntdUI.Svg
             var x = (frag == null ? 0 : frag.X.ToDeviceValue(renderer, UnitRenderingType.Horizontal, frag));
             var y = (frag == null ? 0 : frag.Y.ToDeviceValue(renderer, UnitRenderingType.Vertical, frag));
 
-            if (this.Equals(SvgViewBox.Empty))
+            if (Equals(SvgViewBox.Empty))
             {
                 renderer.TranslateTransform(x, y, MatrixOrder.Prepend);
                 return;
             }
 
-            var width = (frag == null ? this.Width : frag.Width.ToDeviceValue(renderer, UnitRenderingType.Horizontal, frag));
-            var height = (frag == null ? this.Height : frag.Height.ToDeviceValue(renderer, UnitRenderingType.Vertical, frag));
+            var width = (frag == null ? Width : frag.Width.ToDeviceValue(renderer, UnitRenderingType.Horizontal, frag));
+            var height = (frag == null ? Height : frag.Height.ToDeviceValue(renderer, UnitRenderingType.Vertical, frag));
 
-            var fScaleX = width / this.Width;
-            var fScaleY = height / this.Height; //(this.MinY < 0 ? -1 : 1) * 
-            var fMinX = -this.MinX * fScaleX;
-            var fMinY = -this.MinY * fScaleY;
+            var fScaleX = width / Width;
+            var fScaleY = height / Height; //(MinY < 0 ? -1 : 1) * 
+            var fMinX = -MinX * fScaleX;
+            var fMinY = -MinY * fScaleY;
 
             if (aspectRatio == null) aspectRatio = new SvgAspectRatio(SvgPreserveAspectRatio.xMidYMid, false);
             if (aspectRatio.Align != SvgPreserveAspectRatio.none)
@@ -160,12 +144,12 @@ namespace AntdUI.Svg
                     fScaleX = Math.Min(fScaleX, fScaleY);
                     fScaleY = Math.Min(fScaleX, fScaleY);
                 }
-                float fViewMidX = (this.Width / 2) * fScaleX;
-                float fViewMidY = (this.Height / 2) * fScaleY;
+                float fViewMidX = (Width / 2) * fScaleX;
+                float fViewMidY = (Height / 2) * fScaleY;
                 float fMidX = width / 2;
                 float fMidY = height / 2;
-                fMinX = -this.MinX * fScaleX;
-                fMinY = -this.MinY * fScaleY;
+                fMinX = -MinX * fScaleX;
+                fMinY = -MinY * fScaleY;
 
                 switch (aspectRatio.Align)
                 {
@@ -175,7 +159,7 @@ namespace AntdUI.Svg
                         fMinX += fMidX - fViewMidX;
                         break;
                     case SvgPreserveAspectRatio.xMaxYMin:
-                        fMinX += width - this.Width * fScaleX;
+                        fMinX += width - Width * fScaleX;
                         break;
                     case SvgPreserveAspectRatio.xMinYMid:
                         fMinY += fMidY - fViewMidY;
@@ -185,19 +169,19 @@ namespace AntdUI.Svg
                         fMinY += fMidY - fViewMidY;
                         break;
                     case SvgPreserveAspectRatio.xMaxYMid:
-                        fMinX += width - this.Width * fScaleX;
+                        fMinX += width - Width * fScaleX;
                         fMinY += fMidY - fViewMidY;
                         break;
                     case SvgPreserveAspectRatio.xMinYMax:
-                        fMinY += height - this.Height * fScaleY;
+                        fMinY += height - Height * fScaleY;
                         break;
                     case SvgPreserveAspectRatio.xMidYMax:
                         fMinX += fMidX - fViewMidX;
-                        fMinY += height - this.Height * fScaleY;
+                        fMinY += height - Height * fScaleY;
                         break;
                     case SvgPreserveAspectRatio.xMaxYMax:
-                        fMinX += width - this.Width * fScaleX;
-                        fMinY += height - this.Height * fScaleY;
+                        fMinX += width - Width * fScaleX;
+                        fMinY += height - Height * fScaleY;
                         break;
                     default:
                         break;

@@ -31,6 +31,5 @@ namespace AntdUI.Svg.Pathing
         {
             return "z";
         }
-
     }
 }

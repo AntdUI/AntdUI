@@ -30,32 +30,20 @@ namespace AntdUI.Svg
 
         public SvgAspectRatio(SvgPreserveAspectRatio align, bool slice, bool defer)
         {
-            this.Align = align;
-            this.Slice = slice;
-            this.Defer = defer;
+            Align = align;
+            Slice = slice;
+            Defer = defer;
         }
 
-        public SvgPreserveAspectRatio Align
-        {
-            get;
-            set;
-        }
+        public SvgPreserveAspectRatio Align { get; set; }
 
-        public bool Slice
-        {
-            get;
-            set;
-        }
+        public bool Slice { get; set; }
 
-        public bool Defer
-        {
-            get;
-            set;
-        }
+        public bool Defer { get; set; }
 
         public override string ToString()
         {
-            return TypeDescriptor.GetConverter(typeof(SvgPreserveAspectRatio)).ConvertToString(this.Align) + (Slice ? " slice" : "");
+            return TypeDescriptor.GetConverter(typeof(SvgPreserveAspectRatio)).ConvertToString(Align) + (Slice ? " slice" : "");
         }
 
     }

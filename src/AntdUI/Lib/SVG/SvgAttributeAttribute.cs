@@ -61,7 +61,7 @@ namespace AntdUI.Svg
             if (indicator.Name == String.Empty)
                 return false;
 
-            return String.Compare(indicator.Name, this.Name) == 0;
+            return String.Compare(indicator.Name, Name) == 0;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace AntdUI.Svg
         /// </summary>
         public string Name
         {
-            get { return this._name; }
+            get { return _name; }
         }
 
         /// <summary>
@@ -91,12 +91,12 @@ namespace AntdUI.Svg
         /// </summary>
         public string NameSpace
         {
-            get { return this._namespace; }
+            get { return _namespace; }
         }
 
         public bool InAttributeDictionary
         {
-            get { return this._inAttrDictionary; }
+            get { return _inAttrDictionary; }
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace AntdUI.Svg
         /// </summary>
         internal SvgAttributeAttribute()
         {
-            this._name = String.Empty;
+            _name = String.Empty;
         }
 
         /// <summary>
@@ -113,15 +113,15 @@ namespace AntdUI.Svg
         /// <param name="name">The name of the SVG attribute.</param>
         internal SvgAttributeAttribute(string name)
         {
-            this._name = name;
-            this._namespace = SvgNamespace;
+            _name = name;
+            _namespace = SvgNamespace;
         }
 
         internal SvgAttributeAttribute(string name, bool inAttrDictionary)
         {
-            this._name = name;
-            this._namespace = SvgNamespace;
-            this._inAttrDictionary = inAttrDictionary;
+            _name = name;
+            _namespace = SvgNamespace;
+            _inAttrDictionary = inAttrDictionary;
         }
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace AntdUI.Svg
         /// <param name="nameSpace">The namespace of the SVG attribute (e.g. http://www.w3.org/2000/svg).</param>
         public SvgAttributeAttribute(string name, string nameSpace)
         {
-            this._name = name;
-            this._namespace = nameSpace;
+            _name = name;
+            _namespace = nameSpace;
         }
     }
 }

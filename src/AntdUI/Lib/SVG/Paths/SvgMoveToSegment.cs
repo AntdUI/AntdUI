@@ -11,8 +11,8 @@ namespace AntdUI.Svg.Pathing
     {
         public SvgMoveToSegment(PointF moveTo)
         {
-            this.Start = moveTo;
-            this.End = moveTo;
+            Start = moveTo;
+            End = moveTo;
         }
 
         public override void AddToPath(System.Drawing.Drawing2D.GraphicsPath graphicsPath)
@@ -22,8 +22,7 @@ namespace AntdUI.Svg.Pathing
 
         public override string ToString()
         {
-            return "M" + this.Start.ToSvgString();
+            return "M" + Start.ToSvgString();
         }
-
     }
 }

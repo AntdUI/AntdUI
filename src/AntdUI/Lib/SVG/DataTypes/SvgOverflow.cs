@@ -3,8 +3,6 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     /// <summary>The ‘overflow’ property applies to elements that establish new viewports (e.g., ‘svg’ elements), ‘pattern’ elements and ‘marker’ elements. For all other elements, the property has no effect (i.e., a clipping rectangle is not created).</summary>
@@ -19,7 +17,6 @@ namespace AntdUI.Svg
     ///     <para>The initial value for ‘overflow’ as defined in [CSS2-overflow] is 'visible', and this applies also to the root ‘svg’ element; however, for child elements of an SVG document, SVG's user agent style sheet overrides this initial value and sets the ‘overflow’ property on elements that establish new viewports (e.g., ‘svg’ elements), ‘pattern’ elements and ‘marker’ elements to the value 'hidden'.</para>
     ///     <para>As a result of the above, the default behavior of SVG user agents is to establish a clipping path to the bounds of the initial viewport and to establish a new clipping path for each element which establishes a new viewport and each ‘pattern’ and ‘marker’ element.</para>
     /// </remarks>
-    [TypeConverter(typeof(SvgOverflowConverter))]
     public enum SvgOverflow
     {
         /// <summary>Overflow is not rendered.</summary>

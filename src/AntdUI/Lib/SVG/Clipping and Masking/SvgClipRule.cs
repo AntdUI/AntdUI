@@ -3,8 +3,6 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace AntdUI.Svg
     ///     that point to infinity in any direction and then examining the places where a segment of the 
     ///     shape crosses the ray.</para>
     /// </remarks>
-    [TypeConverter(typeof(SvgClipRuleConverter))]
     public enum SvgClipRule
     {
         /// <summary>

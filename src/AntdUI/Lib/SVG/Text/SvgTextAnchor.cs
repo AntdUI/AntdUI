@@ -3,14 +3,11 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     /// <summary>
     /// Text anchor is used to align (start-, middle- or end-alignment) a string of text relative to a given point.
     /// </summary>
-    [TypeConverter(typeof(SvgTextAnchorConverter))]
     public enum SvgTextAnchor
     {
         /// <summary>The value is inherited from the parent element.</summary>

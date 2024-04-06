@@ -9,9 +9,10 @@ using System.Linq;
 
 namespace AntdUI.Svg
 {
-    [SvgElement("glyph")]
     public class SvgGlyph : SvgPathBasedElement
     {
+        public override string ClassName { get => "glyph"; }
+
         private GraphicsPath _path;
 
         /// <summary>
@@ -20,45 +21,45 @@ namespace AntdUI.Svg
         [SvgAttribute("d", true)]
         public SvgPathSegmentList PathData
         {
-            get { return this.Attributes.GetAttribute<SvgPathSegmentList>("d"); }
-            set { this.Attributes["d"] = value; }
+            get { return Attributes.GetAttribute<SvgPathSegmentList>("d"); }
+            set { Attributes["d"] = value; }
         }
 
         [SvgAttribute("glyph-name", true)]
         public virtual string GlyphName
         {
-            get { return this.Attributes["glyph-name"] as string; }
-            set { this.Attributes["glyph-name"] = value; }
+            get { return Attributes["glyph-name"] as string; }
+            set { Attributes["glyph-name"] = value; }
         }
         [SvgAttribute("horiz-adv-x", true)]
         public float HorizAdvX
         {
-            get { return (this.Attributes["horiz-adv-x"] == null ? this.Parents.OfType<SvgFont>().First().HorizAdvX : (float)this.Attributes["horiz-adv-x"]); }
-            set { this.Attributes["horiz-adv-x"] = value; }
+            get { return (Attributes["horiz-adv-x"] == null ? Parents.OfType<SvgFont>().First().HorizAdvX : (float)Attributes["horiz-adv-x"]); }
+            set { Attributes["horiz-adv-x"] = value; }
         }
         [SvgAttribute("unicode", true)]
         public string Unicode
         {
-            get { return this.Attributes["unicode"] as string; }
-            set { this.Attributes["unicode"] = value; }
+            get { return Attributes["unicode"] as string; }
+            set { Attributes["unicode"] = value; }
         }
         [SvgAttribute("vert-adv-y", true)]
         public float VertAdvY
         {
-            get { return (this.Attributes["vert-adv-y"] == null ? this.Parents.OfType<SvgFont>().First().VertAdvY : (float)this.Attributes["vert-adv-y"]); }
-            set { this.Attributes["vert-adv-y"] = value; }
+            get { return (Attributes["vert-adv-y"] == null ? Parents.OfType<SvgFont>().First().VertAdvY : (float)Attributes["vert-adv-y"]); }
+            set { Attributes["vert-adv-y"] = value; }
         }
         [SvgAttribute("vert-origin-x", true)]
         public float VertOriginX
         {
-            get { return (this.Attributes["vert-origin-x"] == null ? this.Parents.OfType<SvgFont>().First().VertOriginX : (float)this.Attributes["vert-origin-x"]); }
-            set { this.Attributes["vert-origin-x"] = value; }
+            get { return (Attributes["vert-origin-x"] == null ? Parents.OfType<SvgFont>().First().VertOriginX : (float)Attributes["vert-origin-x"]); }
+            set { Attributes["vert-origin-x"] = value; }
         }
         [SvgAttribute("vert-origin-y", true)]
         public float VertOriginY
         {
-            get { return (this.Attributes["vert-origin-y"] == null ? this.Parents.OfType<SvgFont>().First().VertOriginY : (float)this.Attributes["vert-origin-y"]); }
-            set { this.Attributes["vert-origin-y"] = value; }
+            get { return (Attributes["vert-origin-y"] == null ? Parents.OfType<SvgFont>().First().VertOriginY : (float)Attributes["vert-origin-y"]); }
+            set { Attributes["vert-origin-y"] = value; }
         }
 
 
@@ -67,16 +68,16 @@ namespace AntdUI.Svg
         /// </summary>
         public override GraphicsPath Path(ISvgRenderer renderer)
         {
-            if (this._path == null || this.IsPathDirty)
+            if (_path == null || IsPathDirty)
             {
                 _path = new GraphicsPath();
 
-                foreach (SvgPathSegment segment in this.PathData)
+                foreach (SvgPathSegment segment in PathData)
                 {
                     segment.AddToPath(_path);
                 }
 
-                this.IsPathDirty = false;
+                IsPathDirty = false;
             }
             return _path;
         }
@@ -87,21 +88,7 @@ namespace AntdUI.Svg
         public SvgGlyph()
         {
             var pathData = new SvgPathSegmentList();
-            this.Attributes["d"] = pathData;
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgGlyph>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgGlyph;
-            foreach (var pathData in this.PathData)
-                newObj.PathData.Add(pathData.Clone());
-            return newObj;
-
+            Attributes["d"] = pathData;
         }
     }
 }

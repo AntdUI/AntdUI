@@ -15,12 +15,9 @@ namespace AntdUI.Svg.FilterEffects
     /// <summary>
     /// A filter effect consists of a series of graphics operations that are applied to a given source graphic to produce a modified graphical result.
     /// </summary>
-    [SvgElement("filter")]
     public sealed class SvgFilter : SvgElement
     {
-        private Bitmap sourceGraphic;
-        private Bitmap sourceAlpha;
-
+        public override string ClassName { get => "filter"; }
 
         /// <summary>
         /// Gets or sets the position where the left point of the filter.
@@ -28,8 +25,8 @@ namespace AntdUI.Svg.FilterEffects
         [SvgAttribute("x")]
         public SvgUnit X
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("x"); }
-            set { this.Attributes["x"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("x"); }
+            set { Attributes["x"] = value; }
         }
 
         /// <summary>
@@ -38,8 +35,8 @@ namespace AntdUI.Svg.FilterEffects
         [SvgAttribute("y")]
         public SvgUnit Y
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("y"); }
-            set { this.Attributes["y"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("y"); }
+            set { Attributes["y"] = value; }
         }
 
 
@@ -49,8 +46,8 @@ namespace AntdUI.Svg.FilterEffects
         [SvgAttribute("width")]
         public SvgUnit Width
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("width"); }
-            set { this.Attributes["width"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("width"); }
+            set { Attributes["width"] = value; }
         }
 
         /// <summary>
@@ -59,8 +56,8 @@ namespace AntdUI.Svg.FilterEffects
         [SvgAttribute("height")]
         public SvgUnit Height
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("height"); }
-            set { this.Attributes["height"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("height"); }
+            set { Attributes["height"] = value; }
         }
 
 
@@ -71,8 +68,8 @@ namespace AntdUI.Svg.FilterEffects
         [SvgAttribute("color-interpolation-filters")]
         public SvgColourInterpolation ColorInterpolationFilters
         {
-            get { return this.Attributes.GetAttribute<SvgColourInterpolation>("color-interpolation-filters"); }
-            set { this.Attributes["color-interpolation-filters"] = value; }
+            get { return Attributes.GetAttribute<SvgColourInterpolation>("color-interpolation-filters"); }
+            set { Attributes["color-interpolation-filters"] = value; }
         }
 
         /// <summary>
@@ -99,7 +96,7 @@ namespace AntdUI.Svg.FilterEffects
         /// </returns>
         public override object Clone()
         {
-            return (SvgFilter)this.MemberwiseClone();
+            return (SvgFilter)MemberwiseClone();
         }
 
         private Matrix GetTransform(SvgVisualElement element)
@@ -118,8 +115,7 @@ namespace AntdUI.Svg.FilterEffects
             var pts = new PointF[] { bounds.Location, new PointF(bounds.Right, bounds.Bottom) };
             transform.TransformPoints(pts);
 
-            return new RectangleF(Math.Min(pts[0].X, pts[1].X), Math.Min(pts[0].Y, pts[1].Y),
-                                  Math.Abs(pts[0].X - pts[1].X), Math.Abs(pts[0].Y - pts[1].Y));
+            return new RectangleF(Math.Min(pts[0].X, pts[1].X), Math.Min(pts[0].Y, pts[1].Y), Math.Abs(pts[0].X - pts[1].X), Math.Abs(pts[0].Y - pts[1].Y));
         }
 
         public void ApplyFilter(SvgVisualElement element, ISvgRenderer renderer, Action<ISvgRenderer> renderMethod)
@@ -133,7 +129,7 @@ namespace AntdUI.Svg.FilterEffects
 
             var buffer = new ImageBuffer(bounds, inflate, renderer, renderMethod) { Transform = transform };
 
-            IEnumerable<SvgFilterPrimitive> primitives = this.Children.OfType<SvgFilterPrimitive>();
+            IEnumerable<SvgFilterPrimitive> primitives = Children.OfType<SvgFilterPrimitive>();
 
             if (primitives.Count() > 0)
             {
@@ -151,45 +147,6 @@ namespace AntdUI.Svg.FilterEffects
                 renderer.DrawImage(bufferImg, imgDraw, new RectangleF(bounds.X, bounds.Y, imgDraw.Width, imgDraw.Height), GraphicsUnit.Pixel);
                 renderer.SetClip(prevClip);
             }
-        }
-
-
-        #region Defaults
-
-        private void ResetDefaults()
-        {
-            if (this.sourceGraphic != null)
-            {
-                this.sourceGraphic.Dispose();
-                this.sourceGraphic = null;
-            }
-
-            if (this.sourceAlpha != null)
-            {
-                this.sourceAlpha.Dispose();
-                this.sourceAlpha = null;
-            }
-        }
-
-
-        #endregion
-
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgFilter>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgFilter;
-            newObj.Height = this.Height;
-            newObj.Width = this.Width;
-            newObj.X = this.X;
-            newObj.Y = this.Y;
-            newObj.ColorInterpolationFilters = this.ColorInterpolationFilters;
-            return newObj;
         }
     }
 }

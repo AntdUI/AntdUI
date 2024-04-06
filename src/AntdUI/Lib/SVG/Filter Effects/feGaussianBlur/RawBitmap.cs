@@ -23,7 +23,7 @@ namespace AntdUI.Svg.FilterEffects
             _originBitmap = originBitmap;
             _bitmapData = _originBitmap.LockBits(new Rectangle(0, 0, _originBitmap.Width, _originBitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             _ptr = _bitmapData.Scan0;
-            _bytes = this.Stride * _originBitmap.Height;
+            _bytes = Stride * _originBitmap.Height;
             _argbValues = new byte[_bytes];
             Marshal.Copy(_ptr, _argbValues, 0, _bytes);
         }
@@ -69,6 +69,5 @@ namespace AntdUI.Svg.FilterEffects
                 return _originBitmap;
             }
         }
-
     }
 }

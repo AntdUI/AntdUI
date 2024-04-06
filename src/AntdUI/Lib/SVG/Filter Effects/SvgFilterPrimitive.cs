@@ -17,20 +17,20 @@ namespace AntdUI.Svg.FilterEffects
         [SvgAttribute("in")]
         public string Input
         {
-            get { return this.Attributes.GetAttribute<string>("in"); }
-            set { this.Attributes["in"] = value; }
+            get { return Attributes.GetAttribute<string>("in"); }
+            set { Attributes["in"] = value; }
         }
 
         [SvgAttribute("result")]
         public string Result
         {
-            get { return this.Attributes.GetAttribute<string>("result"); }
-            set { this.Attributes["result"] = value; }
+            get { return Attributes.GetAttribute<string>("result"); }
+            set { Attributes["result"] = value; }
         }
 
         protected SvgFilter Owner
         {
-            get { return (SvgFilter)this.Parent; }
+            get { return (SvgFilter)Parent; }
         }
 
         public abstract void Process(ImageBuffer buffer);

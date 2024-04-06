@@ -26,9 +26,9 @@ namespace AntdUI.Svg
         /// </summary>
         internal SvgGradientServer()
         {
-            this.GradientUnits = SvgCoordinateUnits.ObjectBoundingBox;
-            this.SpreadMethod = SvgGradientSpreadMethod.Pad;
-            this._stops = new List<SvgGradientStop>();
+            GradientUnits = SvgCoordinateUnits.ObjectBoundingBox;
+            SpreadMethod = SvgGradientSpreadMethod.Pad;
+            _stops = new List<SvgGradientStop>();
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace AntdUI.Svg
         {
             if (child is SvgGradientStop)
             {
-                this.Stops.Add((SvgGradientStop)child);
+                Stops.Add((SvgGradientStop)child);
             }
 
             base.AddElement(child, index);
@@ -56,7 +56,7 @@ namespace AntdUI.Svg
         {
             if (child is SvgGradientStop)
             {
-                this.Stops.Remove((SvgGradientStop)child);
+                Stops.Remove((SvgGradientStop)child);
             }
 
             base.RemoveElement(child);
@@ -67,7 +67,7 @@ namespace AntdUI.Svg
         /// </summary>
         public List<SvgGradientStop> Stops
         {
-            get { return this._stops; }
+            get { return _stops; }
         }
 
         /// <summary>
@@ -76,8 +76,8 @@ namespace AntdUI.Svg
         [SvgAttribute("spreadMethod")]
         public SvgGradientSpreadMethod SpreadMethod
         {
-            get { return this._spreadMethod; }
-            set { this._spreadMethod = value; }
+            get { return _spreadMethod; }
+            set { _spreadMethod = value; }
         }
 
         /// <summary>
@@ -86,8 +86,8 @@ namespace AntdUI.Svg
         [SvgAttribute("gradientUnits")]
         public SvgCoordinateUnits GradientUnits
         {
-            get { return this._gradientUnits; }
-            set { this._gradientUnits = value; }
+            get { return _gradientUnits; }
+            set { _gradientUnits = value; }
         }
 
         /// <summary>
@@ -96,18 +96,18 @@ namespace AntdUI.Svg
         [SvgAttribute("href", SvgAttributeAttribute.XLinkNamespace)]
         public SvgPaintServer InheritGradient
         {
-            get { return this._inheritGradient; }
+            get { return _inheritGradient; }
             set
             {
-                this._inheritGradient = value;
+                _inheritGradient = value;
             }
         }
 
         [SvgAttribute("gradientTransform")]
         public SvgTransformCollection GradientTransform
         {
-            get { return (this.Attributes.GetAttribute<SvgTransformCollection>("gradientTransform")); }
-            set { this.Attributes["gradientTransform"] = value; }
+            get { return (Attributes.GetAttribute<SvgTransformCollection>("gradientTransform")); }
+            set { Attributes["gradientTransform"] = value; }
         }
 
         protected Matrix EffectiveGradientTransform
@@ -132,7 +132,7 @@ namespace AntdUI.Svg
         /// <param name="radial">True if it's a radial gradiant.</param>
         protected ColorBlend GetColorBlend(ISvgRenderer renderer, float opacity, bool radial)
         {
-            int colourBlends = this.Stops.Count;
+            int colourBlends = Stops.Count;
             bool insertStart = false;
             bool insertEnd = false;
 
@@ -144,7 +144,7 @@ namespace AntdUI.Svg
             // E.g. 0.5 - 0.8 isn't valid therefore the rest need to be calculated.
 
             // If the first stop doesn't start at zero
-            if (this.Stops[0].Offset.Value > 0)
+            if (Stops[0].Offset.Value > 0)
             {
                 colourBlends++;
 
@@ -159,7 +159,7 @@ namespace AntdUI.Svg
             }
 
             // If the last stop doesn't end at 1 a stop
-            float lastValue = this.Stops[this.Stops.Count - 1].Offset.Value;
+            float lastValue = Stops[Stops.Count - 1].Offset.Value;
             if (lastValue < 100 || lastValue < 1)
             {
                 colourBlends++;
@@ -183,7 +183,7 @@ namespace AntdUI.Svg
 
             for (int i = 0; i < colourBlends; i++)
             {
-                var currentStop = this.Stops[radial ? this.Stops.Count - 1 - actualStops : actualStops];
+                var currentStop = Stops[radial ? Stops.Count - 1 - actualStops : actualStops];
                 var boundWidth = renderer.GetBoundable().Bounds.Width;
 
                 mergedOpacity = opacity * currentStop.Opacity;
@@ -224,7 +224,7 @@ namespace AntdUI.Svg
         protected void LoadStops(SvgVisualElement parent)
         {
             var core = SvgDeferredPaintServer.TryGet<SvgGradientServer>(_inheritGradient, parent);
-            if (this.Stops.Count == 0 && core != null)
+            if (Stops.Count == 0 && core != null)
             {
                 _stops.AddRange(core.Stops);
             }
@@ -238,18 +238,6 @@ namespace AntdUI.Svg
         protected static float CalculateLength(PointF vector)
         {
             return (float)Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Y, 2));
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgGradientServer;
-
-            newObj.SpreadMethod = this.SpreadMethod;
-            newObj.GradientUnits = this.GradientUnits;
-            newObj.InheritGradient = this.InheritGradient;
-            newObj.GradientTransform = this.GradientTransform;
-
-            return newObj;
         }
 
         public SvgCoordinateUnits GetUnits()

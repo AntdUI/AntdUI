@@ -7,14 +7,9 @@ using AntdUI.Svg.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using System.Xml;
 
 namespace AntdUI.Svg
@@ -24,28 +19,9 @@ namespace AntdUI.Svg
     /// </summary>
     public class SvgDocument : SvgFragment, ITypeDescriptorContext
     {
-        public static readonly int PointsPerInch = GetSystemDpi();
         private SvgElementIdManager _idManager;
 
         private Dictionary<string, IEnumerable<SvgFontFace>> _fontDefns = null;
-
-        private static int GetSystemDpi()
-        {
-            IntPtr hDC = GetDC(IntPtr.Zero);
-            const int LOGPIXELSY = 90;
-            int result = GetDeviceCaps(hDC, LOGPIXELSY);
-            ReleaseDC(IntPtr.Zero, hDC);
-            return result;
-        }
-
-        [DllImport("gdi32.dll")]
-        private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetDC(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         internal Dictionary<string, IEnumerable<SvgFontFace>> FontDefns()
         {
@@ -56,14 +32,6 @@ namespace AntdUI.Svg
                               select family).ToDictionary(f => f.Key, f => (IEnumerable<SvgFontFace>)f);
             }
             return _fontDefns;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SvgDocument"/> class.
-        /// </summary>
-        public SvgDocument()
-        {
-            Ppi = PointsPerInch;
         }
 
         public Uri BaseUri { get; set; }
@@ -98,7 +66,7 @@ namespace AntdUI.Svg
         /// <summary>
         /// Gets or sets the Pixels Per Inch of the rendered image.
         /// </summary>
-        public int Ppi { get; set; }
+        public static int Ppi { get => (int)(Config.Dpi * 96); }
 
         /// <summary>
         /// Gets or sets an external Cascading Style Sheet (CSS)
@@ -156,29 +124,7 @@ namespace AntdUI.Svg
         /// <returns>An <see cref="SvgElement"/> of one exists with the specified ID; otherwise false.</returns>
         public virtual TSvgElement GetElementById<TSvgElement>(string id) where TSvgElement : SvgElement
         {
-            return (this.GetElementById(id) as TSvgElement);
-        }
-
-        /// <summary>
-        /// Opens the document at the specified path and loads the SVG contents.
-        /// </summary>
-        /// <param name="path">A <see cref="string"/> containing the path of the file to open.</param>
-        /// <returns>An <see cref="SvgDocument"/> with the contents loaded.</returns>
-        /// <exception cref="FileNotFoundException">The document at the specified <paramref name="path"/> cannot be found.</exception>
-        public static SvgDocument Open(string path)
-        {
-            return Open<SvgDocument>(path, null);
-        }
-
-        /// <summary>
-        /// Opens the document at the specified path and loads the SVG contents.
-        /// </summary>
-        /// <param name="path">A <see cref="string"/> containing the path of the file to open.</param>
-        /// <returns>An <see cref="SvgDocument"/> with the contents loaded.</returns>
-        /// <exception cref="FileNotFoundException">The document at the specified <paramref name="path"/> cannot be found.</exception>
-        public static T Open<T>(string path) where T : SvgDocument, new()
-        {
-            return Open<T>(path, null);
+            return (GetElementById(id) as TSvgElement);
         }
 
         /// <summary>
@@ -188,7 +134,7 @@ namespace AntdUI.Svg
         /// <param name="entities">A dictionary of custom entity definitions to be used when resolving XML entities within the document.</param>
         /// <returns>An <see cref="SvgDocument"/> with the contents loaded.</returns>
         /// <exception cref="FileNotFoundException">The document at the specified <paramref name="path"/> cannot be found.</exception>
-        public static T Open<T>(string path, Dictionary<string, string> entities) where T : SvgDocument, new()
+        public static T Open<T>(string path) where T : SvgDocument, new()
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -202,19 +148,10 @@ namespace AntdUI.Svg
 
             using (var stream = File.OpenRead(path))
             {
-                var doc = Open<T>(stream, entities);
+                var doc = Open<T>(stream);
                 doc.BaseUri = new Uri(System.IO.Path.GetFullPath(path));
                 return doc;
             }
-        }
-
-        /// <summary>
-        /// Attempts to open an SVG document from the specified <see cref="Stream"/>.
-        /// </summary>
-        /// <param name="stream">The <see cref="Stream"/> containing the SVG document to open.</param>
-        public static T Open<T>(Stream stream) where T : SvgDocument, new()
-        {
-            return Open<T>(stream, null);
         }
 
 
@@ -231,7 +168,7 @@ namespace AntdUI.Svg
 
             using (var strReader = new System.IO.StringReader(svg))
             {
-                var reader = new SvgTextReader(strReader, null);
+                var reader = new SvgTextReader(strReader);
                 reader.WhitespaceHandling = WhitespaceHandling.None;
                 return Open<T>(reader);
             }
@@ -243,7 +180,7 @@ namespace AntdUI.Svg
         /// <param name="stream">The <see cref="Stream"/> containing the SVG document to open.</param>
         /// <param name="entities">Custom entity definitions.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="stream"/> parameter cannot be <c>null</c>.</exception>
-        public static T Open<T>(Stream stream, Dictionary<string, string> entities) where T : SvgDocument, new()
+        public static T Open<T>(Stream stream) where T : SvgDocument, new()
         {
             if (stream == null)
             {
@@ -251,23 +188,22 @@ namespace AntdUI.Svg
             }
 
             // Don't close the stream via a dispose: that is the client's job.
-            var reader = new SvgTextReader(stream, entities);
+            var reader = new SvgTextReader(stream);
             reader.WhitespaceHandling = WhitespaceHandling.None;
             return Open<T>(reader);
         }
 
-        private static T Open<T>(XmlReader reader) where T : SvgDocument, new()
+        private static T? Open<T>(XmlReader reader) where T : SvgDocument, new()
         {
             var elementStack = new Stack<SvgElement>();
             bool elementEmpty;
-            SvgElement element = null;
-            SvgElement parent;
-            T svgDocument = null;
+            SvgElement element, parent;
+            T? svgDocument = null;
             var elementFactory = new SvgElementFactory();
 
-            while (reader.Read())
+            try
             {
-                try
+                while (reader.Read())
                 {
                     switch (reader.NodeType)
                     {
@@ -325,11 +261,9 @@ namespace AntdUI.Svg
                             break;
                     }
                 }
-                catch (Exception exc)
-                {
-                    Trace.TraceError(exc.Message);
-                }
             }
+            catch
+            { }
 
             if (svgDocument != null) FlushStyles(svgDocument);
             return svgDocument;
@@ -344,36 +278,10 @@ namespace AntdUI.Svg
             }
         }
 
-        /// <summary>
-        /// Opens an SVG document from the specified <see cref="XmlDocument"/>.
-        /// </summary>
-        /// <param name="document">The <see cref="XmlDocument"/> containing the SVG document XML.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="document"/> parameter cannot be <c>null</c>.</exception>
-        public static SvgDocument Open(XmlDocument document)
-        {
-            if (document == null)
-            {
-                throw new ArgumentNullException("document");
-            }
-
-            var reader = new SvgNodeReader(document.DocumentElement, null);
-            return Open<SvgDocument>(reader);
-        }
-
-        public static Bitmap OpenAsBitmap(string path)
-        {
-            return null;
-        }
-
-        public static Bitmap OpenAsBitmap(XmlDocument document)
-        {
-            return null;
-        }
-
         private void Draw(ISvgRenderer renderer, ISvgBoundable boundable)
         {
             renderer.SetBoundable(boundable);
-            this.Render(renderer);
+            Render(renderer);
         }
 
         /// <summary>
@@ -388,7 +296,7 @@ namespace AntdUI.Svg
                 throw new ArgumentNullException("renderer");
             }
 
-            this.Draw(renderer, this);
+            Draw(renderer, this);
         }
 
         /// <summary>
@@ -398,7 +306,7 @@ namespace AntdUI.Svg
         /// <exception cref="ArgumentNullException">The <paramref name="graphics"/> parameter cannot be <c>null</c>.</exception>
         public void Draw(Graphics graphics)
         {
-            this.Draw(graphics, null);
+            Draw(graphics, null);
         }
 
         /// <summary>
@@ -417,7 +325,7 @@ namespace AntdUI.Svg
             using (var renderer = SvgRenderer.FromGraphics(graphics))
             {
                 var boundable = size.HasValue ? (ISvgBoundable)new GenericBoundable(0, 0, size.Value.Width, size.Value.Height) : this;
-                this.Draw(renderer, boundable);
+                Draw(renderer, boundable);
             }
         }
 
@@ -427,8 +335,6 @@ namespace AntdUI.Svg
         /// <returns>A <see cref="Bitmap"/> containing the rendered document.</returns>
         public virtual Bitmap Draw()
         {
-            //Trace.TraceInformation("Begin Render");
-
             Bitmap bitmap = null;
             try
             {
@@ -445,7 +351,7 @@ namespace AntdUI.Svg
 
                 //bitmap.SetResolution(300, 300);
 
-                this.Draw(bitmap);
+                Draw(bitmap);
             }
             catch
             {
@@ -468,10 +374,10 @@ namespace AntdUI.Svg
             using (var renderer = SvgRenderer.FromImage(bitmap))
             {
                 // EO, 2014-12-05: Requested to ensure proper zooming out (reduce size). Otherwise it clip the image.
-                this.Overflow = SvgOverflow.Auto;
+                Overflow = SvgOverflow.Auto;
 
                 var boundable = new GenericBoundable(0, 0, bitmap.Width, bitmap.Height);
-                this.Draw(renderer, boundable);
+                Draw(renderer, boundable);
             }
 
             //Trace.TraceInformation("End Render");
@@ -487,7 +393,7 @@ namespace AntdUI.Svg
         {
             var imageSize = GetDimensions();
             var bitmapSize = imageSize;
-            this.RasterizeDimensions(ref bitmapSize, rasterWidth, rasterHeight);
+            RasterizeDimensions(ref bitmapSize, rasterWidth, rasterHeight);
 
             if (bitmapSize.Width == 0 || bitmapSize.Height == 0)
                 return null;
@@ -509,7 +415,7 @@ namespace AntdUI.Svg
                 {
                     renderer.ScaleTransform(bitmapSize.Width / imageSize.Width, bitmapSize.Height / imageSize.Height);
                     var boundable = new GenericBoundable(0, 0, imageSize.Width, imageSize.Height);
-                    this.Draw(renderer, boundable);
+                    Draw(renderer, boundable);
                 }
             }
             catch
@@ -547,47 +453,6 @@ namespace AntdUI.Svg
             else if (rasterHeight > 0 && rasterWidth == 0)
             {
                 size.Width = (int)(rasterHeight / ratio);
-            }
-        }
-
-        public override void Write(XmlTextWriter writer)
-        {
-            //Save previous culture and switch to invariant for writing
-            var previousCulture = Thread.CurrentThread.CurrentCulture;
-            try
-            {
-                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-                base.Write(writer);
-            }
-            finally
-            {
-                // Make sure to set back the old culture even an error occurred.
-                //Switch culture back
-                Thread.CurrentThread.CurrentCulture = previousCulture;
-            }
-        }
-
-        public void Write(Stream stream, bool useBom = true)
-        {
-
-            var xmlWriter = new XmlTextWriter(stream, useBom ? Encoding.UTF8 : new System.Text.UTF8Encoding(false));
-            xmlWriter.Formatting = Formatting.Indented;
-            xmlWriter.WriteStartDocument();
-            xmlWriter.WriteDocType("svg", "-//W3C//DTD SVG 1.1//EN", "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd", null);
-
-            if (!String.IsNullOrEmpty(this.ExternalCSSHref))
-                xmlWriter.WriteProcessingInstruction("xml-stylesheet", String.Format("type=\"text/css\" href=\"{0}\"", this.ExternalCSSHref));
-
-            this.Write(xmlWriter);
-
-            xmlWriter.Flush();
-        }
-
-        public void Write(string path, bool useBom = true)
-        {
-            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            {
-                this.Write(fs, useBom);
             }
         }
     }

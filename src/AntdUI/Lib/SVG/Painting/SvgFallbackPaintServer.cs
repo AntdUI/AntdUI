@@ -36,17 +36,5 @@ namespace AntdUI.Svg
                 _primary.GetCallback = null;
             }
         }
-
-        public override SvgElement DeepCopy()
-        {
-            return base.DeepCopy<SvgFallbackPaintServer>();
-        }
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgFallbackPaintServer;
-            newObj._fallbacks = this._fallbacks;
-            newObj._primary = this._primary;
-            return newObj;
-        }
     }
 }

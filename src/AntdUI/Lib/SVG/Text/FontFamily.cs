@@ -217,28 +217,4 @@ namespace AntdUI.Svg.Text
             return buf;
         }
     }
-
-    class Program
-    {
-        //static void Main(string[] args)
-        //{
-        //    System.Drawing.FontFamily fam;
-        //    var allInstalledFonts = from e in Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts", false).GetValueNames()
-        //                            select Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts").GetValue(e);
-
-        //    var ttfFonts = from e in allInstalledFonts.Where(e => (e.ToString().EndsWith(".ttf") || e.ToString().EndsWith(".otf"))) select e;
-        //    var ttfFontsPaths = from e in ttfFonts.Select(e => (Path.GetPathRoot(e.ToString()) == "") ? Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\" + e.ToString() : e.ToString()) select e;
-        //    var fonts = from e in ttfFontsPaths.Select(e => GetFontDetails(e.ToString())) select e;
-
-        //    foreach (InstalledFont f in fonts)
-        //    {
-        //        if (f != null)
-        //            Console.WriteLine("Name: " + f.FontName + ", SubFamily: " + f.FontSubFamily + ", Path: " + f.FontPath);
-        //    }
-
-        //    Console.ReadLine();
-        //}
-
-
-    }
 }

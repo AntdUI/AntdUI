@@ -18,14 +18,14 @@ namespace AntdUI.Svg.Transforms
 
         public float X
         {
-            get { return this.shearFactorX; }
-            set { this.shearFactorX = value; }
+            get { return shearFactorX; }
+            set { shearFactorX = value; }
         }
 
         public float Y
         {
-            get { return this.shearFactorY; }
-            set { this.shearFactorY = value; }
+            get { return shearFactorY; }
+            set { shearFactorY = value; }
         }
 
         public override Matrix Matrix
@@ -33,28 +33,28 @@ namespace AntdUI.Svg.Transforms
             get
             {
                 Matrix matrix = new Matrix();
-                matrix.Shear(this.X, this.Y);
+                matrix.Shear(X, Y);
                 return matrix;
             }
         }
 
         public override string WriteToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "shear({0}, {1})", this.X, this.Y);
+            return string.Format(CultureInfo.InvariantCulture, "shear({0}, {1})", X, Y);
         }
 
         public SvgShear(float x) : this(x, x) { }
 
         public SvgShear(float x, float y)
         {
-            this.shearFactorX = x;
-            this.shearFactorY = y;
+            shearFactorX = x;
+            shearFactorY = y;
         }
 
 
         public override object Clone()
         {
-            return new SvgShear(this.X, this.Y);
+            return new SvgShear(X, Y);
         }
     }
 }

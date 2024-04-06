@@ -10,37 +10,38 @@ namespace AntdUI.Svg
     /// <summary>
     /// Represents and SVG ellipse element.
     /// </summary>
-    [SvgElement("ellipse")]
     public class SvgEllipse : SvgPathBasedElement
     {
+        public override string ClassName { get => "ellipse"; }
+
         private GraphicsPath _path;
 
         [SvgAttribute("cx")]
         public virtual SvgUnit CenterX
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("cx"); }
-            set { this.Attributes["cx"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("cx"); }
+            set { Attributes["cx"] = value; IsPathDirty = true; }
         }
 
         [SvgAttribute("cy")]
         public virtual SvgUnit CenterY
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("cy"); }
-            set { this.Attributes["cy"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("cy"); }
+            set { Attributes["cy"] = value; IsPathDirty = true; }
         }
 
         [SvgAttribute("rx")]
         public virtual SvgUnit RadiusX
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("rx"); }
-            set { this.Attributes["rx"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("rx"); }
+            set { Attributes["rx"] = value; IsPathDirty = true; }
         }
 
         [SvgAttribute("ry")]
         public virtual SvgUnit RadiusY
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("ry"); }
-            set { this.Attributes["ry"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("ry"); }
+            set { Attributes["ry"] = value; IsPathDirty = true; }
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace AntdUI.Svg
         /// <value></value>
         public override GraphicsPath Path(ISvgRenderer renderer)
         {
-            if (this._path == null || this.IsPathDirty)
+            if (_path == null || IsPathDirty)
             {
                 var halfStrokeWidth = base.StrokeWidth / 2;
 
@@ -58,14 +59,14 @@ namespace AntdUI.Svg
                 if (renderer != null)
                 {
                     halfStrokeWidth = 0;
-                    this.IsPathDirty = false;
+                    IsPathDirty = false;
                 }
 
-                var center = SvgUnit.GetDevicePoint(this.CenterX, this.CenterY, renderer, this);
-                var radiusX = this.RadiusX.ToDeviceValue(renderer, UnitRenderingType.Other, this) + halfStrokeWidth;
-                var radiusY = this.RadiusY.ToDeviceValue(renderer, UnitRenderingType.Other, this) + halfStrokeWidth;
+                var center = SvgUnit.GetDevicePoint(CenterX, CenterY, renderer, this);
+                var radiusX = RadiusX.ToDeviceValue(renderer, UnitRenderingType.Other, this) + halfStrokeWidth;
+                var radiusY = RadiusY.ToDeviceValue(renderer, UnitRenderingType.Other, this) + halfStrokeWidth;
 
-                this._path = new GraphicsPath();
+                _path = new GraphicsPath();
                 _path.StartFigure();
                 _path.AddEllipse(center.X - radiusX, center.Y - radiusY, 2 * radiusX, 2 * radiusY);
                 _path.CloseFigure();
@@ -79,26 +80,10 @@ namespace AntdUI.Svg
         /// <param name="renderer">The <see cref="ISvgRenderer"/> object used for rendering.</param>
         protected override void Render(ISvgRenderer renderer)
         {
-            if (this.RadiusX.Value > 0.0f && this.RadiusY.Value > 0.0f)
+            if (RadiusX.Value > 0.0f && RadiusY.Value > 0.0f)
             {
                 base.Render(renderer);
             }
-        }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgEllipse>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgEllipse;
-            newObj.CenterX = this.CenterX;
-            newObj.CenterY = this.CenterY;
-            newObj.RadiusX = this.RadiusX;
-            newObj.RadiusY = this.RadiusY;
-            return newObj;
         }
     }
 }

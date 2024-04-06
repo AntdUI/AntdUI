@@ -38,11 +38,11 @@ namespace AntdUI.Svg
         /// </summary>
         public float Angle
         {
-            get { return this._angle; }
+            get { return _angle; }
             set
             {
-                this._angle = value;
-                this._isAuto = false;
+                _angle = value;
+                _isAuto = false;
             }
         }
 
@@ -52,11 +52,11 @@ namespace AntdUI.Svg
         /// </summary>
         public bool IsAuto
         {
-            get { return this._isAuto; }
+            get { return _isAuto; }
             set
             {
-                this._isAuto = value;
-                this._angle = 0f;
+                _isAuto = value;
+                _angle = 0f;
             }
         }
 
@@ -74,7 +74,7 @@ namespace AntdUI.Svg
             if (!(obj.GetType() == typeof(SvgOrient))) return false;
 
             var unit = (SvgOrient)obj;
-            return (unit.IsAuto == this.IsAuto && unit.Angle == this.Angle);
+            return (unit.IsAuto == IsAuto && unit.Angle == Angle);
         }
 
         public override int GetHashCode()
@@ -84,23 +84,9 @@ namespace AntdUI.Svg
 
         public override string ToString()
         {
-            string type = string.Empty;
-
-            if (this.IsAuto)
-                return "auto";
-            else
-                return this.Angle.ToString();
+            if (IsAuto) return "auto";
+            else return Angle.ToString();
         }
-
-        ///// <summary>
-        ///// Performs an implicit conversion from <see cref="Svg.SvgUnit"/> to <see cref="System.Single"/>.
-        ///// </summary>
-        ///// <param name="value">The value.</param>
-        ///// <returns>The result of the conversion.</returns>
-        //public static implicit operator float(SvgOrient value)
-        //{
-        //    return this.Angle;
-        //}
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="System.Single"/> to <see cref="Svg.SvgOrient"/>.
@@ -111,7 +97,5 @@ namespace AntdUI.Svg
         {
             return new SvgOrient(value);
         }
-
     }
-
 }

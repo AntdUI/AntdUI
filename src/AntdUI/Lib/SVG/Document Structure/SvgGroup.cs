@@ -11,9 +11,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// An element used to group SVG shapes.
     /// </summary>
-    [SvgElement("g")]
     public class SvgGroup : SvgMarkerElement
     {
+        public override string ClassName { get => "g"; }
+
         bool markersSet = false;
 
         /// <summary>
@@ -24,23 +25,23 @@ namespace AntdUI.Svg
         {
             if (!markersSet)
             {
-                if (this.MarkerStart != null || this.MarkerMid != null || this.MarkerEnd != null)
+                if (MarkerStart != null || MarkerMid != null || MarkerEnd != null)
                 {
-                    foreach (var c in this.Children)
+                    foreach (var c in Children)
                     {
                         if (c is SvgMarkerElement)
                         {
-                            if (this.MarkerStart != null && ((SvgMarkerElement)c).MarkerStart == null)
+                            if (MarkerStart != null && ((SvgMarkerElement)c).MarkerStart == null)
                             {
-                                ((SvgMarkerElement)c).MarkerStart = this.MarkerStart;
+                                ((SvgMarkerElement)c).MarkerStart = MarkerStart;
                             }
-                            if (this.MarkerMid != null && ((SvgMarkerElement)c).MarkerMid == null)
+                            if (MarkerMid != null && ((SvgMarkerElement)c).MarkerMid == null)
                             {
-                                ((SvgMarkerElement)c).MarkerMid = this.MarkerMid;
+                                ((SvgMarkerElement)c).MarkerMid = MarkerMid;
                             }
-                            if (this.MarkerEnd != null && ((SvgMarkerElement)c).MarkerEnd == null)
+                            if (MarkerEnd != null && ((SvgMarkerElement)c).MarkerEnd == null)
                             {
-                                ((SvgMarkerElement)c).MarkerEnd = this.MarkerEnd;
+                                ((SvgMarkerElement)c).MarkerEnd = MarkerEnd;
                             }
                         }
                     }
@@ -78,7 +79,7 @@ namespace AntdUI.Svg
             get
             {
                 var r = new RectangleF();
-                foreach (var c in this.Children)
+                foreach (var c in Children)
                 {
                     if (c is SvgVisualElement)
                     {
@@ -103,18 +104,5 @@ namespace AntdUI.Svg
         }
 
         protected override bool Renderable { get { return false; } }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgGroup>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgGroup;
-            if (this.Fill != null)
-                newObj.Fill = this.Fill.DeepCopy() as SvgPaintServer;
-            return newObj;
-        }
     }
 }

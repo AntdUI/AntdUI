@@ -10,16 +10,17 @@ using System.Drawing.Drawing2D;
 
 namespace AntdUI.Svg
 {
-    [SvgElement("use")]
     public class SvgUse : SvgVisualElement
     {
+        public override string ClassName { get => "use"; }
+
         private Uri _referencedElement;
 
         [SvgAttribute("href", SvgAttributeAttribute.XLinkNamespace)]
         public virtual Uri ReferencedElement
         {
-            get { return this._referencedElement; }
-            set { this._referencedElement = value; }
+            get { return _referencedElement; }
+            set { _referencedElement = value; }
         }
 
         private bool ElementReferencesUri(SvgElement element, List<Uri> elementUris)
@@ -32,7 +33,7 @@ namespace AntdUI.Svg
                     return true;
                 }
                 // also detect cycles in referenced elements
-                var refElement = this.OwnerDocument.IdManager.GetElementById(useElement.ReferencedElement);
+                var refElement = OwnerDocument.IdManager.GetElementById(useElement.ReferencedElement);
                 if (refElement is SvgUse)
                 {
                     elementUris.Add(useElement.ReferencedElement);
@@ -55,7 +56,7 @@ namespace AntdUI.Svg
 
         private bool ReferencedElementReferencesUri(List<Uri> elementUris)
         {
-            var refElement = this.OwnerDocument.IdManager.GetElementById(ReferencedElement);
+            var refElement = OwnerDocument.IdManager.GetElementById(ReferencedElement);
             return ElementReferencesUri(refElement, elementUris);
         }
 
@@ -66,7 +67,7 @@ namespace AntdUI.Svg
         /// <returns>True if any recursions are found.</returns>
         private bool HasRecursiveReference()
         {
-            var refElement = this.OwnerDocument.IdManager.GetElementById(ReferencedElement);
+            var refElement = OwnerDocument.IdManager.GetElementById(ReferencedElement);
             var uris = new List<Uri>() { ReferencedElement };
             return ElementReferencesUri(refElement, uris);
         }
@@ -74,30 +75,30 @@ namespace AntdUI.Svg
         [SvgAttribute("x")]
         public virtual SvgUnit X
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("x"); }
-            set { this.Attributes["x"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("x"); }
+            set { Attributes["x"] = value; }
         }
 
         [SvgAttribute("y")]
         public virtual SvgUnit Y
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("y"); }
-            set { this.Attributes["y"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("y"); }
+            set { Attributes["y"] = value; }
         }
 
 
         [SvgAttribute("width")]
         public virtual SvgUnit Width
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("width"); }
-            set { this.Attributes["width"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("width"); }
+            set { Attributes["width"] = value; }
         }
 
         [SvgAttribute("height")]
         public virtual SvgUnit Height
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("height"); }
-            set { this.Attributes["height"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("height"); }
+            set { Attributes["height"] = value; }
         }
 
         /// <summary>
@@ -107,8 +108,8 @@ namespace AntdUI.Svg
         protected internal override bool PushTransforms(ISvgRenderer renderer)
         {
             if (!base.PushTransforms(renderer)) return false;
-            renderer.TranslateTransform(this.X.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this),
-                                        this.Y.ToDeviceValue(renderer, UnitRenderingType.Vertical, this),
+            renderer.TranslateTransform(X.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this),
+                                        Y.ToDeviceValue(renderer, UnitRenderingType.Vertical, this),
                                         MatrixOrder.Prepend);
             return true;
         }
@@ -118,16 +119,16 @@ namespace AntdUI.Svg
         /// </summary>
         public SvgUse()
         {
-            this.X = 0;
-            this.Y = 0;
-            this.Width = 0;
-            this.Height = 0;
+            X = 0;
+            Y = 0;
+            Width = 0;
+            Height = 0;
         }
 
-        public override System.Drawing.Drawing2D.GraphicsPath Path(ISvgRenderer renderer)
+        public override GraphicsPath Path(ISvgRenderer renderer)
         {
-            SvgVisualElement element = (SvgVisualElement)this.OwnerDocument.IdManager.GetElementById(this.ReferencedElement);
-            return (element != null && !this.HasRecursiveReference()) ? element.Path(renderer) : null;
+            SvgVisualElement element = (SvgVisualElement)OwnerDocument.IdManager.GetElementById(ReferencedElement);
+            return (element != null && !HasRecursiveReference()) ? element.Path(renderer) : null;
         }
 
         /// <summary>
@@ -142,22 +143,22 @@ namespace AntdUI.Svg
         /// Gets the bounds of the element.
         /// </summary>
         /// <value>The bounds.</value>
-        public override System.Drawing.RectangleF Bounds
+        public override RectangleF Bounds
         {
             get
             {
-                var ew = this.Width.ToDeviceValue(null, UnitRenderingType.Horizontal, this);
-                var eh = this.Height.ToDeviceValue(null, UnitRenderingType.Vertical, this);
+                var ew = Width.ToDeviceValue(null, UnitRenderingType.Horizontal, this);
+                var eh = Height.ToDeviceValue(null, UnitRenderingType.Vertical, this);
                 if (ew > 0 && eh > 0)
-                    return TransformedBounds(new RectangleF(this.Location.ToDeviceValue(null, this),
+                    return TransformedBounds(new RectangleF(Location.ToDeviceValue(null, this),
                         new SizeF(ew, eh)));
-                var element = this.OwnerDocument.IdManager.GetElementById(this.ReferencedElement) as SvgVisualElement;
+                var element = OwnerDocument.IdManager.GetElementById(ReferencedElement) as SvgVisualElement;
                 if (element != null)
                 {
                     return element.Bounds;
                 }
 
-                return new System.Drawing.RectangleF();
+                return new RectangleF();
             }
         }
 
@@ -165,11 +166,11 @@ namespace AntdUI.Svg
 
         protected override void Render(ISvgRenderer renderer)
         {
-            if (this.Visible && this.Displayable && this.ReferencedElement != null && !this.HasRecursiveReference() && this.PushTransforms(renderer))
+            if (Visible && Displayable && ReferencedElement != null && !HasRecursiveReference() && PushTransforms(renderer))
             {
-                this.SetClip(renderer);
+                SetClip(renderer);
 
-                var element = this.OwnerDocument.IdManager.GetElementById(this.ReferencedElement) as SvgVisualElement;
+                var element = OwnerDocument.IdManager.GetElementById(ReferencedElement) as SvgVisualElement;
                 if (element != null)
                 {
                     var ew = Width.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this);
@@ -194,26 +195,9 @@ namespace AntdUI.Svg
                     element._parent = origParent;
                 }
 
-                this.ResetClip(renderer);
-                this.PopTransforms(renderer);
+                ResetClip(renderer);
+                PopTransforms(renderer);
             }
         }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgUse>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgUse;
-            newObj.ReferencedElement = this.ReferencedElement;
-            newObj.X = this.X;
-            newObj.Y = this.Y;
-
-            return newObj;
-        }
-
     }
 }

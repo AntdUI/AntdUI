@@ -15,24 +15,24 @@ namespace AntdUI.Svg
 
         public SvgUnit X
         {
-            get { return this.x; }
-            set { this.x = value; }
+            get { return x; }
+            set { x = value; }
         }
 
         public SvgUnit Y
         {
-            get { return this.y; }
-            set { this.y = value; }
+            get { return y; }
+            set { y = value; }
         }
 
         public PointF ToDeviceValue(ISvgRenderer renderer, SvgElement owner)
         {
-            return SvgUnit.GetDevicePoint(this.X, this.Y, renderer, owner);
+            return SvgUnit.GetDevicePoint(X, Y, renderer, owner);
         }
 
         public bool IsEmpty()
         {
-            return (this.X.Value == 0.0f && this.Y.Value == 0.0f);
+            return (X.Value == 0.0f && Y.Value == 0.0f);
         }
 
         public override bool Equals(object obj)
@@ -42,7 +42,7 @@ namespace AntdUI.Svg
             if (!(obj.GetType() == typeof(SvgPoint))) return false;
 
             var point = (SvgPoint)obj;
-            return (point.X.Equals(this.X) && point.Y.Equals(this.Y));
+            return (point.X.Equals(X) && point.Y.Equals(Y));
         }
 
         public override int GetHashCode()
@@ -50,18 +50,18 @@ namespace AntdUI.Svg
             return base.GetHashCode();
         }
 
-        public SvgPoint(string x, string y)
+        public SvgPoint(string _x, string _y)
         {
             TypeConverter converter = TypeDescriptor.GetConverter(typeof(SvgUnit));
 
-            this.x = (SvgUnit)converter.ConvertFrom(x);
-            this.y = (SvgUnit)converter.ConvertFrom(y);
+            x = (SvgUnit)converter.ConvertFrom(_x);
+            y = (SvgUnit)converter.ConvertFrom(_y);
         }
 
-        public SvgPoint(SvgUnit x, SvgUnit y)
+        public SvgPoint(SvgUnit _x, SvgUnit _y)
         {
-            this.x = x;
-            this.y = y;
+            x = _x;
+            y = _y;
         }
     }
 }

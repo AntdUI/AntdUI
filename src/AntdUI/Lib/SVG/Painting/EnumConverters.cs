@@ -92,8 +92,8 @@ namespace AntdUI.Svg
         /// <param name="caseHandling">Specified the case.</param>
         public EnumBaseConverter(T defaultValue, CaseHandling caseHandling = CaseHandling.CamelCase)
         {
-            this.DefaultValue = defaultValue;
-            this.CaseHandlingMode = caseHandling;
+            DefaultValue = defaultValue;
+            CaseHandlingMode = caseHandling;
         }
 
         /// <summary>Attempts to convert the provided value to <typeparamref name="T"/>.</summary>
@@ -101,8 +101,8 @@ namespace AntdUI.Svg
         {
             if (value == null)
             {
-                if (this.DefaultValue.HasValue)
-                    return this.DefaultValue.Value;
+                if (DefaultValue.HasValue)
+                    return DefaultValue.Value;
 
                 return Activator.CreateInstance(typeof(T));
             }
@@ -121,7 +121,7 @@ namespace AntdUI.Svg
             if (destinationType == typeof(string) && value is T)
             {
                 //If the value id the default value, no need to write the attribute.
-                if (this.DefaultValue.HasValue && Enum.Equals(value, this.DefaultValue.Value))
+                if (DefaultValue.HasValue && Enum.Equals(value, DefaultValue.Value))
                     return null;
                 else
                 {

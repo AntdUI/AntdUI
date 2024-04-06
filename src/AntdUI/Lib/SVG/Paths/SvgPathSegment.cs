@@ -15,14 +15,14 @@ namespace AntdUI.Svg.Pathing
 
         public PointF Start
         {
-            get { return this._start; }
-            set { this._start = value; }
+            get { return _start; }
+            set { _start = value; }
         }
 
         public PointF End
         {
-            get { return this._end; }
-            set { this._end = value; }
+            get { return _end; }
+            set { _end = value; }
         }
 
         protected SvgPathSegment()
@@ -31,15 +31,15 @@ namespace AntdUI.Svg.Pathing
 
         protected SvgPathSegment(PointF start, PointF end)
         {
-            this.Start = start;
-            this.End = end;
+            Start = start;
+            End = end;
         }
 
         public abstract void AddToPath(GraphicsPath graphicsPath);
 
         public SvgPathSegment Clone()
         {
-            return this.MemberwiseClone() as SvgPathSegment;
+            return MemberwiseClone() as SvgPathSegment;
         }
     }
 }

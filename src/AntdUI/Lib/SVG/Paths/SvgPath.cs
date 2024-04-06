@@ -11,9 +11,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// Represents an SVG path element.
     /// </summary>
-    [SvgElement("path")]
     public class SvgPath : SvgMarkerElement
     {
+        public override string ClassName { get => "path"; }
+
         private GraphicsPath _path;
 
         /// <summary>
@@ -22,12 +23,12 @@ namespace AntdUI.Svg
         [SvgAttribute("d", true)]
         public SvgPathSegmentList PathData
         {
-            get { return this.Attributes.GetAttribute<SvgPathSegmentList>("d"); }
+            get { return Attributes.GetAttribute<SvgPathSegmentList>("d"); }
             set
             {
-                this.Attributes["d"] = value;
+                Attributes["d"] = value;
                 value._owner = this;
-                this.IsPathDirty = true;
+                IsPathDirty = true;
             }
         }
 
@@ -37,8 +38,8 @@ namespace AntdUI.Svg
         [SvgAttribute("pathLength", true)]
         public float PathLength
         {
-            get { return this.Attributes.GetAttribute<float>("pathLength"); }
-            set { this.Attributes["pathLength"] = value; }
+            get { return Attributes.GetAttribute<float>("pathLength"); }
+            set { Attributes["pathLength"] = value; }
         }
 
         /// <summary>
@@ -46,38 +47,38 @@ namespace AntdUI.Svg
         /// </summary>
         public override GraphicsPath Path(ISvgRenderer renderer)
         {
-            if (this._path == null || this.IsPathDirty)
+            if (_path == null || IsPathDirty)
             {
-                this._path = new GraphicsPath();
+                _path = new GraphicsPath();
 
-                foreach (var segment in this.PathData)
+                foreach (var segment in PathData)
                 {
                     segment.AddToPath(_path);
                 }
 
                 if (_path.PointCount == 0)
                 {
-                    if (this.PathData.Count > 0)
+                    if (PathData.Count > 0)
                     {
                         // special case with one move command only, see #223
-                        var segment = this.PathData.Last;
+                        var segment = PathData.Last;
                         _path.AddLine(segment.End, segment.End);
-                        this.Fill = SvgPaintServer.None;
+                        Fill = SvgPaintServer.None;
                     }
                     else
                     {
                         _path = null;
                     }
                 }
-                this.IsPathDirty = false;
+                IsPathDirty = false;
             }
             return _path;
         }
 
         internal void OnPathUpdated()
         {
-            this.IsPathDirty = true;
-            OnAttributeChanged(new AttributeEventArgs { Attribute = "d", Value = this.Attributes.GetAttribute<SvgPathSegmentList>("d") });
+            IsPathDirty = true;
+            OnAttributeChanged(new AttributeEventArgs { Attribute = "d", Value = Attributes.GetAttribute<SvgPathSegmentList>("d") });
         }
 
         /// <summary>
@@ -86,7 +87,7 @@ namespace AntdUI.Svg
         /// <value>The bounds.</value>
         public override System.Drawing.RectangleF Bounds
         {
-            get { return this.Path(null).GetBounds(); }
+            get { return Path(null).GetBounds(); }
         }
 
         /// <summary>
@@ -95,24 +96,8 @@ namespace AntdUI.Svg
         public SvgPath()
         {
             var pathData = new SvgPathSegmentList();
-            this.Attributes["d"] = pathData;
+            Attributes["d"] = pathData;
             pathData._owner = this;
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgPath>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgPath;
-            foreach (var pathData in this.PathData)
-                newObj.PathData.Add(pathData.Clone());
-            newObj.PathLength = this.PathLength;
-            newObj.MarkerStart = this.MarkerStart;
-            newObj.MarkerEnd = this.MarkerEnd;
-            return newObj;
         }
     }
 }

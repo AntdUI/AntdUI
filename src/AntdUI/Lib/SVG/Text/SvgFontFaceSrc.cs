@@ -5,12 +5,8 @@
 
 namespace AntdUI.Svg
 {
-    [SvgElement("font-face-src")]
     public class SvgFontFaceSrc : SvgElement
     {
-        public override SvgElement DeepCopy()
-        {
-            return base.DeepCopy<SvgFontFaceSrc>();
-        }
+        public override string ClassName { get => "font-face-src"; }
     }
 }

@@ -6,16 +6,16 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Xml;
 
 namespace AntdUI.Svg
 {
     /// <summary>
     /// An <see cref="SvgFragment"/> represents an SVG fragment that can be the root element or an embedded fragment of an SVG document.
     /// </summary>
-    [SvgElement("svg")]
     public class SvgFragment : SvgElement, ISvgViewPort, ISvgBoundable
     {
+        public override string ClassName { get => "svg"; }
+
         /// <summary>
         /// Gets the SVG namespace string.
         /// </summary>
@@ -89,8 +89,8 @@ namespace AntdUI.Svg
         [SvgAttribute("width")]
         public SvgUnit Width
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("width"); }
-            set { this.Attributes["width"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("width"); }
+            set { Attributes["width"] = value; }
         }
 
         /// <summary>
@@ -100,15 +100,15 @@ namespace AntdUI.Svg
         [SvgAttribute("height")]
         public SvgUnit Height
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("height"); }
-            set { this.Attributes["height"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("height"); }
+            set { Attributes["height"] = value; }
         }
 
         [SvgAttribute("overflow")]
         public virtual SvgOverflow Overflow
         {
-            get { return this.Attributes.GetAttribute<SvgOverflow>("overflow"); }
-            set { this.Attributes["overflow"] = value; }
+            get { return Attributes.GetAttribute<SvgOverflow>("overflow"); }
+            set { Attributes["overflow"] = value; }
         }
 
         /// <summary>
@@ -118,8 +118,8 @@ namespace AntdUI.Svg
         [SvgAttribute("viewBox")]
         public SvgViewBox ViewBox
         {
-            get { return this.Attributes.GetAttribute<SvgViewBox>("viewBox"); }
-            set { this.Attributes["viewBox"] = value; }
+            get { return Attributes.GetAttribute<SvgViewBox>("viewBox"); }
+            set { Attributes["viewBox"] = value; }
         }
 
         /// <summary>
@@ -129,8 +129,8 @@ namespace AntdUI.Svg
         [SvgAttribute("preserveAspectRatio")]
         public SvgAspectRatio AspectRatio
         {
-            get { return this.Attributes.GetAttribute<SvgAspectRatio>("preserveAspectRatio"); }
-            set { this.Attributes["preserveAspectRatio"] = value; }
+            get { return Attributes.GetAttribute<SvgAspectRatio>("preserveAspectRatio"); }
+            set { Attributes["preserveAspectRatio"] = value; }
         }
 
         /// <summary>
@@ -139,8 +139,8 @@ namespace AntdUI.Svg
         [SvgAttribute("font-size")]
         public override SvgUnit FontSize
         {
-            get { return (this.Attributes["font-size"] == null) ? SvgUnit.Empty : (SvgUnit)this.Attributes["font-size"]; }
-            set { this.Attributes["font-size"] = value; }
+            get { return (Attributes["font-size"] == null) ? SvgUnit.Empty : (SvgUnit)Attributes["font-size"]; }
+            set { Attributes["font-size"] = value; }
         }
 
         /// <summary>
@@ -149,8 +149,8 @@ namespace AntdUI.Svg
         [SvgAttribute("font-family")]
         public override string FontFamily
         {
-            get { return this.Attributes["font-family"] as string; }
-            set { this.Attributes["font-family"] = value; }
+            get { return Attributes["font-family"] as string; }
+            set { Attributes["font-family"] = value; }
         }
 
         /// <summary>
@@ -160,13 +160,13 @@ namespace AntdUI.Svg
         protected internal override bool PushTransforms(ISvgRenderer renderer)
         {
             if (!base.PushTransforms(renderer)) return false;
-            this.ViewBox.AddViewBoxTransform(this.AspectRatio, renderer, this);
+            ViewBox.AddViewBoxTransform(AspectRatio, renderer, this);
             return true;
         }
 
         protected override void Render(ISvgRenderer renderer)
         {
-            switch (this.Overflow)
+            switch (Overflow)
             {
                 case SvgOverflow.Auto:
                 case SvgOverflow.Visible:
@@ -177,10 +177,8 @@ namespace AntdUI.Svg
                     var prevClip = renderer.GetClip();
                     try
                     {
-                        var size = (this.Parent == null ? renderer.GetBoundable().Bounds.Size : GetDimensions());
-                        var clip = new RectangleF(this.X.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this),
-                                                  this.Y.ToDeviceValue(renderer, UnitRenderingType.Vertical, this),
-                                                  size.Width, size.Height);
+                        var size = (Parent == null ? renderer.GetBoundable().Bounds.Size : GetDimensions());
+                        var clip = new RectangleF(X.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this), Y.ToDeviceValue(renderer, UnitRenderingType.Vertical, this), size.Width, size.Height);
                         renderer.SetClip(new Region(clip), CombineMode.Intersect);
                         base.Render(renderer);
                     }
@@ -217,7 +215,7 @@ namespace AntdUI.Svg
             get
             {
                 var bounds = new RectangleF();
-                foreach (var child in this.Children)
+                foreach (var child in Children)
                 {
                     RectangleF childBounds = new RectangleF();
                     if (child is SvgFragment)
@@ -254,10 +252,10 @@ namespace AntdUI.Svg
         {
             _x = 0.0f;
             _y = 0.0f;
-            this.Height = new SvgUnit(SvgUnitType.Percentage, 100.0f);
-            this.Width = new SvgUnit(SvgUnitType.Percentage, 100.0f);
-            this.ViewBox = SvgViewBox.Empty;
-            this.AspectRatio = new SvgAspectRatio(SvgPreserveAspectRatio.xMidYMid);
+            Height = new SvgUnit(SvgUnitType.Percentage, 100.0f);
+            Width = new SvgUnit(SvgUnitType.Percentage, 100.0f);
+            ViewBox = SvgViewBox.Empty;
+            AspectRatio = new SvgAspectRatio(SvgPreserveAspectRatio.xMidYMid);
         }
 
         public SizeF GetDimensions()
@@ -275,7 +273,7 @@ namespace AntdUI.Svg
                 }
                 else
                 {
-                    bounds = this.Bounds; //do just one call to the recursive bounds property
+                    bounds = Bounds; //do just one call to the recursive bounds property
                 }
             }
 
@@ -297,38 +295,6 @@ namespace AntdUI.Svg
             }
 
             return new SizeF(w, h);
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgFragment>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgFragment;
-            newObj.Height = this.Height;
-            newObj.Width = this.Width;
-            newObj.Overflow = this.Overflow;
-            newObj.ViewBox = this.ViewBox;
-            newObj.AspectRatio = this.AspectRatio;
-            return newObj;
-        }
-
-        //Override the default behavior, writing out the namespaces.
-        protected override void WriteStartElement(XmlTextWriter writer)
-        {
-            base.WriteStartElement(writer);
-
-            foreach (var ns in SvgAttributeAttribute.Namespaces)
-            {
-                if (string.IsNullOrEmpty(ns.Key))
-                    writer.WriteAttributeString("xmlns", ns.Value);
-                else
-                    writer.WriteAttributeString("xmlns:" + ns.Key, ns.Value);
-            }
-
-            writer.WriteAttributeString("version", "1.1");
         }
     }
 }

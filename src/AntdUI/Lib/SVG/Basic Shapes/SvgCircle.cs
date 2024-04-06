@@ -10,9 +10,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// An SVG element to render circles to the document.
     /// </summary>
-    [SvgElement("circle")]
     public class SvgCircle : SvgPathBasedElement
     {
+        public override string ClassName { get => "circle"; }
+
         private GraphicsPath _path;
 
         /// <summary>
@@ -21,28 +22,28 @@ namespace AntdUI.Svg
         /// <value>The center.</value>
         public SvgPoint Center
         {
-            get { return new SvgPoint(this.CenterX, this.CenterY); }
+            get { return new SvgPoint(CenterX, CenterY); }
         }
 
         [SvgAttribute("cx")]
         public virtual SvgUnit CenterX
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("cx"); }
-            set { this.Attributes["cx"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("cx"); }
+            set { Attributes["cx"] = value; IsPathDirty = true; }
         }
 
         [SvgAttribute("cy")]
         public virtual SvgUnit CenterY
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("cy"); }
-            set { this.Attributes["cy"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("cy"); }
+            set { Attributes["cy"] = value; IsPathDirty = true; }
         }
 
         [SvgAttribute("r")]
         public virtual SvgUnit Radius
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("r"); }
-            set { this.Attributes["r"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("r"); }
+            set { Attributes["r"] = value; IsPathDirty = true; }
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace AntdUI.Svg
         /// </summary>
         public override GraphicsPath Path(ISvgRenderer renderer)
         {
-            if (this._path == null || this.IsPathDirty)
+            if (_path == null || IsPathDirty)
             {
                 var halfStrokeWidth = base.StrokeWidth / 2;
 
@@ -59,13 +60,13 @@ namespace AntdUI.Svg
                 if (renderer != null)
                 {
                     halfStrokeWidth = 0;
-                    this.IsPathDirty = false;
+                    IsPathDirty = false;
                 }
 
                 _path = new GraphicsPath();
                 _path.StartFigure();
-                var center = this.Center.ToDeviceValue(renderer, this);
-                var radius = this.Radius.ToDeviceValue(renderer, UnitRenderingType.Other, this) + halfStrokeWidth;
+                var center = Center.ToDeviceValue(renderer, this);
+                var radius = Radius.ToDeviceValue(renderer, UnitRenderingType.Other, this) + halfStrokeWidth;
                 _path.AddEllipse(center.X - radius, center.Y - radius, 2 * radius, 2 * radius);
                 _path.CloseFigure();
             }
@@ -79,25 +80,10 @@ namespace AntdUI.Svg
         protected override void Render(ISvgRenderer renderer)
         {
             // Don't draw if there is no radius set
-            if (this.Radius.Value > 0.0f)
+            if (Radius.Value > 0.0f)
             {
                 base.Render(renderer);
             }
-        }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgCircle>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgCircle;
-            newObj.CenterX = this.CenterX;
-            newObj.CenterY = this.CenterY;
-            newObj.Radius = this.Radius;
-            return newObj;
         }
     }
 }

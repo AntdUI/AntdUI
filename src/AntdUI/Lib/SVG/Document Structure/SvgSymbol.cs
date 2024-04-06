@@ -10,9 +10,10 @@ namespace AntdUI.Svg.Document_Structure
     /// <summary>
     /// An element used to group SVG shapes.
     /// </summary>
-    [SvgElement("symbol")]
     public class SvgSymbol : SvgVisualElement
     {
+        public override string ClassName { get => "symbol"; }
+
 
         /// <summary>
         /// Gets or sets the viewport of the element.
@@ -21,8 +22,8 @@ namespace AntdUI.Svg.Document_Structure
         [SvgAttribute("viewBox")]
         public SvgViewBox ViewBox
         {
-            get { return this.Attributes.GetAttribute<SvgViewBox>("viewBox"); }
-            set { this.Attributes["viewBox"] = value; }
+            get { return Attributes.GetAttribute<SvgViewBox>("viewBox"); }
+            set { Attributes["viewBox"] = value; }
         }
 
         /// <summary>
@@ -32,8 +33,8 @@ namespace AntdUI.Svg.Document_Structure
         [SvgAttribute("preserveAspectRatio")]
         public SvgAspectRatio AspectRatio
         {
-            get { return this.Attributes.GetAttribute<SvgAspectRatio>("preserveAspectRatio"); }
-            set { this.Attributes["preserveAspectRatio"] = value; }
+            get { return Attributes.GetAttribute<SvgAspectRatio>("preserveAspectRatio"); }
+            set { Attributes["preserveAspectRatio"] = value; }
         }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace AntdUI.Svg.Document_Structure
             get
             {
                 var r = new RectangleF();
-                foreach (var c in this.Children)
+                foreach (var c in Children)
                 {
                     if (c is SvgVisualElement)
                     {
@@ -88,7 +89,7 @@ namespace AntdUI.Svg.Document_Structure
         protected internal override bool PushTransforms(ISvgRenderer renderer)
         {
             if (!base.PushTransforms(renderer)) return false;
-            this.ViewBox.AddViewBoxTransform(this.AspectRatio, renderer, null);
+            ViewBox.AddViewBoxTransform(AspectRatio, renderer, null);
             return true;
         }
 
@@ -96,19 +97,6 @@ namespace AntdUI.Svg.Document_Structure
         protected override void Render(ISvgRenderer renderer)
         {
             if (_parent is SvgUse) base.Render(renderer);
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgSymbol>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgSymbol;
-            if (this.Fill != null)
-                newObj.Fill = this.Fill.DeepCopy() as SvgPaintServer;
-            return newObj;
         }
     }
 }

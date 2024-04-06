@@ -3,8 +3,6 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     /// <summary>
@@ -14,7 +12,6 @@ namespace AntdUI.Svg
     /// <remarks>
     /// Default is <see cref="Inherit"/>. That means the value comes from the parent element. If parents are also not set, then the value is <see cref="Auto"/>.
     /// </remarks>
-    [TypeConverter(typeof(SvgShapeRenderingConverter))]
     public enum SvgShapeRendering
     {
         /// <summary>
@@ -54,7 +51,6 @@ namespace AntdUI.Svg
     /// </summary>
     /// <references>https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-rendering</references>
     /// <remarks>Not Implemented yet.</remarks>
-    [TypeConverter(typeof(SvgTextRenderingConverter))]
     public enum SvgTextRendering
     {
         /// <summary>
@@ -89,7 +85,6 @@ namespace AntdUI.Svg
     /// </summary>
     /// <references>https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/image-rendering</references>
     /// <remarks>Not Implemented yet.</remarks>
-    [TypeConverter(typeof(SvgImageRenderingConverter))]
     public enum SvgImageRendering
     {
         /// <summary>

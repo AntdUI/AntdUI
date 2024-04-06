@@ -14,9 +14,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// A pattern is used to fill or stroke an object using a pre-defined graphic object which can be replicated ("tiled") at fixed intervals in x and y to cover the areas to be painted.
     /// </summary>
-    [SvgElement("pattern")]
     public sealed class SvgPatternServer : SvgPaintServer, ISvgViewPort, ISvgSupportsCoordinateUnits
     {
+        public override string ClassName => "pattern";
+
         private SvgUnit _width;
         private SvgUnit _height;
         private SvgUnit _x;
@@ -29,8 +30,8 @@ namespace AntdUI.Svg
         [SvgAttribute("overflow")]
         public SvgOverflow Overflow
         {
-            get { return this.Attributes.GetAttribute<SvgOverflow>("overflow"); }
-            set { this.Attributes["overflow"] = value; }
+            get { return Attributes.GetAttribute<SvgOverflow>("overflow"); }
+            set { Attributes["overflow"] = value; }
         }
 
 
@@ -41,8 +42,8 @@ namespace AntdUI.Svg
         [SvgAttribute("viewBox")]
         public SvgViewBox ViewBox
         {
-            get { return this._viewBox; }
-            set { this._viewBox = value; }
+            get { return _viewBox; }
+            set { _viewBox = value; }
         }
 
         /// <summary>
@@ -62,8 +63,8 @@ namespace AntdUI.Svg
         [SvgAttribute("width")]
         public SvgUnit Width
         {
-            get { return this._width; }
-            set { this._width = value; }
+            get { return _width; }
+            set { _width = value; }
         }
 
         /// <summary>
@@ -72,8 +73,8 @@ namespace AntdUI.Svg
         [SvgAttribute("patternUnits")]
         public SvgCoordinateUnits PatternUnits
         {
-            get { return this._patternUnits; }
-            set { this._patternUnits = value; }
+            get { return _patternUnits; }
+            set { _patternUnits = value; }
         }
 
         /// <summary>
@@ -82,8 +83,8 @@ namespace AntdUI.Svg
         [SvgAttribute("patternContentUnits")]
         public SvgCoordinateUnits PatternContentUnits
         {
-            get { return this._patternContentUnits; }
-            set { this._patternContentUnits = value; }
+            get { return _patternContentUnits; }
+            set { _patternContentUnits = value; }
         }
 
         /// <summary>
@@ -92,8 +93,8 @@ namespace AntdUI.Svg
         [SvgAttribute("height")]
         public SvgUnit Height
         {
-            get { return this._height; }
-            set { this._height = value; }
+            get { return _height; }
+            set { _height = value; }
         }
 
         /// <summary>
@@ -102,8 +103,8 @@ namespace AntdUI.Svg
         [SvgAttribute("x")]
         public SvgUnit X
         {
-            get { return this._x; }
-            set { this._x = value; }
+            get { return _x; }
+            set { _x = value; }
         }
 
         /// <summary>
@@ -112,8 +113,8 @@ namespace AntdUI.Svg
         [SvgAttribute("y")]
         public SvgUnit Y
         {
-            get { return this._y; }
-            set { this._y = value; }
+            get { return _y; }
+            set { _y = value; }
         }
 
         /// <summary>
@@ -122,18 +123,18 @@ namespace AntdUI.Svg
         [SvgAttribute("href", SvgAttributeAttribute.XLinkNamespace)]
         public SvgPaintServer InheritGradient
         {
-            get { return this._inheritGradient; }
+            get { return _inheritGradient; }
             set
             {
-                this._inheritGradient = value;
+                _inheritGradient = value;
             }
         }
 
         [SvgAttribute("patternTransform")]
         public SvgTransformCollection PatternTransform
         {
-            get { return (this.Attributes.GetAttribute<SvgTransformCollection>("patternTransform")); }
-            set { this.Attributes["patternTransform"] = value; }
+            get { return (Attributes.GetAttribute<SvgTransformCollection>("patternTransform")); }
+            set { Attributes["patternTransform"] = value; }
         }
 
         private Matrix EffectivePatternTransform
@@ -155,15 +156,15 @@ namespace AntdUI.Svg
         /// </summary>
         public SvgPatternServer()
         {
-            this._x = SvgUnit.None;
-            this._y = SvgUnit.None;
-            this._width = SvgUnit.None;
-            this._height = SvgUnit.None;
+            _x = SvgUnit.None;
+            _y = SvgUnit.None;
+            _width = SvgUnit.None;
+            _height = SvgUnit.None;
         }
 
         private SvgUnit NormalizeUnit(SvgUnit orig)
         {
-            return (orig.Type == SvgUnitType.Percentage && this.PatternUnits == SvgCoordinateUnits.ObjectBoundingBox ?
+            return (orig.Type == SvgUnitType.Percentage && PatternUnits == SvgCoordinateUnits.ObjectBoundingBox ?
                     new SvgUnit(SvgUnitType.User, orig.Value / 100) :
                     orig);
         }
@@ -231,9 +232,7 @@ namespace AntdUI.Svg
                         iRenderer.SetBoundable((_patternContentUnits == SvgCoordinateUnits.ObjectBoundingBox) ? new GenericBoundable(0, 0, width, height) : renderer.GetBoundable());
                         iRenderer.Transform = patternMatrix;
                         iRenderer.SmoothingMode = SmoothingMode.AntiAlias;
-                        iRenderer.SetClip(new Region(new RectangleF(0, 0,
-                            viewBox.Width > 0 ? viewBox.Width : width,
-                            viewBox.Height > 0 ? viewBox.Height : height)));
+                        iRenderer.SetClip(new Region(new RectangleF(0, 0, viewBox.Width > 0 ? viewBox.Width : width, viewBox.Height > 0 ? viewBox.Height : height)));
 
                         foreach (SvgElement child in childElem.Children)
                         {
@@ -250,28 +249,8 @@ namespace AntdUI.Svg
             }
             finally
             {
-                if (this.PatternUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.PopBoundable();
+                if (PatternUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.PopBoundable();
             }
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgPatternServer>();
-        }
-
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgPatternServer;
-            newObj.Overflow = this.Overflow;
-            newObj.ViewBox = this.ViewBox;
-            newObj.AspectRatio = this.AspectRatio;
-            newObj.X = this.X;
-            newObj.Y = this.Y;
-            newObj.Width = this.Width;
-            newObj.Height = this.Height;
-            return newObj;
-
         }
 
         public SvgCoordinateUnits GetUnits()

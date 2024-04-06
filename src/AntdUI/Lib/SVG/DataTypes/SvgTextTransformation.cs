@@ -4,12 +4,10 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System;
-using System.ComponentModel;
 
 namespace AntdUI.Svg
 {
     /// <summary>This property describes transformations that are added to the text of an element.</summary>
-    [TypeConverter(typeof(SvgTextTransformationConverter))]
     [Flags]
     public enum SvgTextTransformation
     {

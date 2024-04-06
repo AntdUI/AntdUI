@@ -22,7 +22,7 @@ namespace AntdUI.Svg.Transforms
             if (other == null)
                 return false;
 
-            var thisMatrix = this.Matrix.Elements;
+            var thisMatrix = Matrix.Elements;
             var otherMatrix = other.Matrix.Elements;
 
             for (int i = 0; i < 6; i++)
@@ -36,7 +36,7 @@ namespace AntdUI.Svg.Transforms
 
         public override int GetHashCode()
         {
-            int hashCode = this.Matrix.GetHashCode();
+            int hashCode = Matrix.GetHashCode();
             return hashCode;
         }
 

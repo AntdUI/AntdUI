@@ -16,13 +16,13 @@ namespace AntdUI.Svg.Transforms
         public float X
         {
             get { return x; }
-            set { this.x = value; }
+            set { x = value; }
         }
 
         public float Y
         {
             get { return y; }
-            set { this.y = value; }
+            set { y = value; }
         }
 
         public override System.Drawing.Drawing2D.Matrix Matrix
@@ -30,32 +30,28 @@ namespace AntdUI.Svg.Transforms
             get
             {
                 Matrix matrix = new Matrix();
-                matrix.Translate(this.X, this.Y);
+                matrix.Translate(X, Y);
                 return matrix;
             }
         }
 
         public override string WriteToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "translate({0}, {1})", this.X, this.Y);
+            return string.Format(CultureInfo.InvariantCulture, "translate({0}, {1})", X, Y);
         }
 
-        public SvgTranslate(float x, float y)
+        public SvgTranslate(float _x, float _y)
         {
-            this.x = x;
-            this.y = y;
+            x = _x;
+            y = _y;
         }
 
-        public SvgTranslate(float x)
-            : this(x, 0.0f)
-        {
-        }
-
+        public SvgTranslate(float x) : this(x, 0.0f)
+        { }
 
         public override object Clone()
         {
-            return new SvgTranslate(this.x, this.y);
+            return new SvgTranslate(x, y);
         }
-
     }
 }

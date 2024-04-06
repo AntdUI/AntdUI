@@ -11,9 +11,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// The <see cref="SvgText"/> element defines a graphics element consisting of text.
     /// </summary>
-    [SvgElement("textPath")]
     public class SvgTextPath : SvgTextBase
     {
+        public override string ClassName { get => "textPath"; }
+
         private Uri _referencedPath;
 
         public override SvgUnitCollection Dx
@@ -42,27 +43,27 @@ namespace AntdUI.Svg
         [SvgAttribute("method")]
         public virtual SvgTextPathMethod Method
         {
-            get { return (this.Attributes["method"] == null ? SvgTextPathMethod.Align : (SvgTextPathMethod)this.Attributes["method"]); }
-            set { this.Attributes["method"] = value; }
+            get { return (Attributes["method"] == null ? SvgTextPathMethod.Align : (SvgTextPathMethod)Attributes["method"]); }
+            set { Attributes["method"] = value; }
         }
 
         [SvgAttribute("spacing")]
         public virtual SvgTextPathSpacing Spacing
         {
-            get { return (this.Attributes["spacing"] == null ? SvgTextPathSpacing.Exact : (SvgTextPathSpacing)this.Attributes["spacing"]); }
-            set { this.Attributes["spacing"] = value; }
+            get { return (Attributes["spacing"] == null ? SvgTextPathSpacing.Exact : (SvgTextPathSpacing)Attributes["spacing"]); }
+            set { Attributes["spacing"] = value; }
         }
 
         [SvgAttribute("href", SvgAttributeAttribute.XLinkNamespace)]
         public virtual Uri ReferencedPath
         {
-            get { return this._referencedPath; }
-            set { this._referencedPath = value; }
+            get { return _referencedPath; }
+            set { _referencedPath = value; }
         }
 
         protected override GraphicsPath GetBaselinePath(ISvgRenderer renderer)
         {
-            var path = this.OwnerDocument.IdManager.GetElementById(this.ReferencedPath) as SvgVisualElement;
+            var path = OwnerDocument.IdManager.GetElementById(ReferencedPath) as SvgVisualElement;
             if (path == null) return null;
             var pathData = (GraphicsPath)path.Path(renderer).Clone();
             if (path.Transforms.Count > 0)
@@ -80,18 +81,9 @@ namespace AntdUI.Svg
         }
         protected override float GetAuthorPathLength()
         {
-            var path = this.OwnerDocument.IdManager.GetElementById(this.ReferencedPath) as SvgPath;
+            var path = OwnerDocument.IdManager.GetElementById(ReferencedPath) as SvgPath;
             if (path == null) return 0;
             return path.PathLength;
         }
-
-        public override SvgElement DeepCopy()
-        {
-            return base.DeepCopy<SvgTextPath>();
-        }
-
-
-
-
     }
 }

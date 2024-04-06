@@ -32,13 +32,13 @@ namespace AntdUI.Svg.Transforms
 
         public override string WriteToString()
         {
-            if (this.AngleY == 0)
+            if (AngleY == 0)
             {
-                return string.Format(CultureInfo.InvariantCulture, "skewX({0})", this.AngleX);
+                return string.Format(CultureInfo.InvariantCulture, "skewX({0})", AngleX);
             }
             else
             {
-                return string.Format(CultureInfo.InvariantCulture, "skewY({0})", this.AngleY);
+                return string.Format(CultureInfo.InvariantCulture, "skewY({0})", AngleY);
             }
         }
 
@@ -51,7 +51,7 @@ namespace AntdUI.Svg.Transforms
 
         public override object Clone()
         {
-            return new SvgSkew(this.AngleX, this.AngleY);
+            return new SvgSkew(AngleX, AngleY);
         }
     }
 }

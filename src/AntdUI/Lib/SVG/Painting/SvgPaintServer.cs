@@ -55,10 +55,7 @@ namespace AntdUI.Svg
         /// </returns>
         public override string ToString()
         {
-            return String.Format("url(#{0})", this.ID);
+            return string.Format("url(#{0})", ID);
         }
-
-
-
     }
 }

@@ -4,12 +4,10 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System;
-using System.ComponentModel;
 
 namespace AntdUI.Svg
 {
     /// <summary>This is the descriptor for the style of a font and takes the same values as the 'font-style' property, except that a comma-separated list is permitted.</summary>
-    [TypeConverter(typeof(SvgFontStyleConverter))]
     [Flags]
     public enum SvgFontStyle
     {

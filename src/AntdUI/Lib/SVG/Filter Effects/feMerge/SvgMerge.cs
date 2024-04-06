@@ -8,12 +8,13 @@ using System.Linq;
 
 namespace AntdUI.Svg.FilterEffects
 {
-    [SvgElement("feMerge")]
     public class SvgMerge : SvgFilterPrimitive
     {
+        public override string ClassName { get => "feMerge"; }
+
         public override void Process(ImageBuffer buffer)
         {
-            var children = this.Children.OfType<SvgMergeNode>().ToList();
+            var children = Children.OfType<SvgMergeNode>().ToList();
             var inputImage = buffer[children.First().Input];
             var result = new Bitmap(inputImage.Width, inputImage.Height);
             using (var g = Graphics.FromImage(result))
@@ -25,13 +26,7 @@ namespace AntdUI.Svg.FilterEffects
                 }
                 g.Flush();
             }
-            buffer[this.Result] = result;
+            buffer[Result] = result;
         }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgMerge>();
-        }
-
     }
 }

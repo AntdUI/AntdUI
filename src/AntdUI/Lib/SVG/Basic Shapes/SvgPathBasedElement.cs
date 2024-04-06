@@ -16,7 +16,7 @@ namespace AntdUI.Svg
         {
             get
             {
-                var path = this.Path(null);
+                var path = Path(null);
                 if (path != null)
                 {
                     if (Transforms != null && Transforms.Count > 0)

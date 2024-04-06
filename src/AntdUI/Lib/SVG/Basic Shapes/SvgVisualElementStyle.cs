@@ -3,8 +3,6 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     public abstract partial class SvgVisualElement
@@ -12,12 +10,11 @@ namespace AntdUI.Svg
         /// <summary>
         /// Gets or sets a value to determine whether the element will be rendered.
         /// </summary>
-        [TypeConverter(typeof(SvgBoolConverter))]
         [SvgAttribute("visibility")]
         public virtual bool Visible
         {
-            get { return (this.Attributes["visibility"] == null) ? true : (bool)this.Attributes["visibility"]; }
-            set { this.Attributes["visibility"] = value; }
+            get { return (Attributes["visibility"] == null) ? true : (bool)Attributes["visibility"]; }
+            set { Attributes["visibility"] = value; }
         }
 
         /// <summary>
@@ -27,8 +24,8 @@ namespace AntdUI.Svg
         [SvgAttribute("display")]
         public virtual string Display
         {
-            get { return this.Attributes["display"] as string; }
-            set { this.Attributes["display"] = value; }
+            get { return Attributes["display"] as string; }
+            set { Attributes["display"] = value; }
         }
 
         // Displayable - false if attribute display="none", true otherwise
@@ -36,7 +33,7 @@ namespace AntdUI.Svg
         {
             get
             {
-                string checkForDisplayNone = this.Attributes["display"] as string;
+                string checkForDisplayNone = Attributes["display"] as string;
                 if ((!string.IsNullOrEmpty(checkForDisplayNone)) && (checkForDisplayNone == "none"))
                     return false;
                 else
@@ -50,9 +47,8 @@ namespace AntdUI.Svg
         [SvgAttribute("enable-background")]
         public virtual string EnableBackground
         {
-            get { return this.Attributes["enable-background"] as string; }
-            set { this.Attributes["enable-background"] = value; }
+            get { return Attributes["enable-background"] as string; }
+            set { Attributes["enable-background"] = value; }
         }
-
     }
 }

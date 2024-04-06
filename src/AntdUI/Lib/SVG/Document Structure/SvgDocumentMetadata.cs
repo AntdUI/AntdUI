@@ -10,9 +10,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// Represents a list of re-usable SVG components.
     /// </summary>
-    [SvgElement("metadata")]
     public class SvgDocumentMetadata : SvgElement
     {
+        public override string ClassName { get => "metadata"; }
+
         //	private string _metadata; 
 
 
@@ -41,17 +42,6 @@ namespace AntdUI.Svg
             // Do nothing. Children should NOT be rendered.
         }
 
-        protected override void WriteChildren(XmlTextWriter writer)
-        {
-            writer.WriteRaw(this.Content); //write out metadata as is
-        }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgDocumentMetadata>();
-        }
-
         public override void InitialiseFromXML(XmlTextReader reader, SvgDocument document)
         {
             base.InitialiseFromXML(reader, document);
@@ -59,6 +49,5 @@ namespace AntdUI.Svg
             //read in the metadata just as a string ready to be written straight back out again
             Content = reader.ReadInnerXml();
         }
-
     }
 }

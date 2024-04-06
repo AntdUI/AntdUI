@@ -4,12 +4,10 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System;
-using System.ComponentModel;
 
 namespace AntdUI.Svg
 {
     /// <summary>This property describes decorations that are added to the text of an element. Conforming SVG Viewers are not required to support the blink value.</summary>
-    [TypeConverter(typeof(SvgTextDecorationConverter))]
     [Flags]
     public enum SvgTextDecoration
     {

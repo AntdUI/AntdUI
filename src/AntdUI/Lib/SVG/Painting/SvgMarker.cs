@@ -11,9 +11,10 @@ using System.Linq;
 
 namespace AntdUI.Svg
 {
-    [SvgElement("marker")]
     public class SvgMarker : SvgPathBasedElement, ISvgViewPort
     {
+        public override string ClassName => "marker";
+
         private SvgOrient _svgOrient = new SvgOrient();
         private SvgVisualElement _markerElement = null;
 
@@ -26,7 +27,7 @@ namespace AntdUI.Svg
             {
                 if (_markerElement == null)
                 {
-                    _markerElement = (SvgVisualElement)this.Children.FirstOrDefault(x => x is SvgVisualElement);
+                    _markerElement = (SvgVisualElement)Children.FirstOrDefault(x => x is SvgVisualElement);
                 }
                 return _markerElement;
             }
@@ -35,15 +36,15 @@ namespace AntdUI.Svg
         [SvgAttribute("refX")]
         public virtual SvgUnit RefX
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("refX"); }
-            set { this.Attributes["refX"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("refX"); }
+            set { Attributes["refX"] = value; }
         }
 
         [SvgAttribute("refY")]
         public virtual SvgUnit RefY
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("refY"); }
-            set { this.Attributes["refY"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("refY"); }
+            set { Attributes["refY"] = value; }
         }
 
 
@@ -58,46 +59,46 @@ namespace AntdUI.Svg
         [SvgAttribute("overflow")]
         public virtual SvgOverflow Overflow
         {
-            get { return this.Attributes.GetAttribute<SvgOverflow>("overflow"); }
-            set { this.Attributes["overflow"] = value; }
+            get { return Attributes.GetAttribute<SvgOverflow>("overflow"); }
+            set { Attributes["overflow"] = value; }
         }
 
 
         [SvgAttribute("viewBox")]
         public virtual SvgViewBox ViewBox
         {
-            get { return this.Attributes.GetAttribute<SvgViewBox>("viewBox"); }
-            set { this.Attributes["viewBox"] = value; }
+            get { return Attributes.GetAttribute<SvgViewBox>("viewBox"); }
+            set { Attributes["viewBox"] = value; }
         }
 
 
         [SvgAttribute("preserveAspectRatio")]
         public virtual SvgAspectRatio AspectRatio
         {
-            get { return this.Attributes.GetAttribute<SvgAspectRatio>("preserveAspectRatio"); }
-            set { this.Attributes["preserveAspectRatio"] = value; }
+            get { return Attributes.GetAttribute<SvgAspectRatio>("preserveAspectRatio"); }
+            set { Attributes["preserveAspectRatio"] = value; }
         }
 
 
         [SvgAttribute("markerWidth")]
         public virtual SvgUnit MarkerWidth
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("markerWidth"); }
-            set { this.Attributes["markerWidth"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("markerWidth"); }
+            set { Attributes["markerWidth"] = value; }
         }
 
         [SvgAttribute("markerHeight")]
         public virtual SvgUnit MarkerHeight
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("markerHeight"); }
-            set { this.Attributes["markerHeight"] = value; }
+            get { return Attributes.GetAttribute<SvgUnit>("markerHeight"); }
+            set { Attributes["markerHeight"] = value; }
         }
 
         [SvgAttribute("markerUnits")]
         public virtual SvgMarkerUnits MarkerUnits
         {
-            get { return this.Attributes.GetAttribute<SvgMarkerUnits>("markerUnits"); }
-            set { this.Attributes["markerUnits"] = value; }
+            get { return Attributes.GetAttribute<SvgMarkerUnits>("markerUnits"); }
+            set { Attributes["markerUnits"] = value; }
         }
 
         /// <summary>
@@ -134,29 +135,11 @@ namespace AntdUI.Svg
             Overflow = SvgOverflow.Hidden;
         }
 
-        public override System.Drawing.Drawing2D.GraphicsPath Path(ISvgRenderer renderer)
+        public override GraphicsPath Path(ISvgRenderer renderer)
         {
             if (MarkerElement != null)
                 return MarkerElement.Path(renderer);
             return null;
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgMarker>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgMarker;
-            newObj.RefX = this.RefX;
-            newObj.RefY = this.RefY;
-            newObj.Orient = this.Orient;
-            newObj.ViewBox = this.ViewBox;
-            newObj.Overflow = this.Overflow;
-            newObj.AspectRatio = this.AspectRatio;
-
-            return newObj;
         }
 
         /// <summary>
@@ -261,7 +244,7 @@ namespace AntdUI.Svg
                         markerPath.Transform(transMatrix);
                         if (pRenderPen != null) pRenderer.DrawPath(pRenderPen, markerPath);
 
-                        SvgPaintServer pFill = this.Children.First().Fill;
+                        SvgPaintServer pFill = Children.First().Fill;
                         SvgFillRule pFillRule = FillRule;								// TODO: What do we use the fill rule for?
                         float fOpacity = FillOpacity;
 
@@ -283,8 +266,8 @@ namespace AntdUI.Svg
         /// <returns></returns>
         private Pen CreatePen(SvgVisualElement pPath, ISvgRenderer renderer)
         {
-            if (this.Stroke == null) return null;
-            Brush pBrush = this.Stroke.GetBrush(this, renderer, Opacity);
+            if (Stroke == null) return null;
+            Brush pBrush = Stroke.GetBrush(this, renderer, Opacity);
             switch (MarkerUnits)
             {
                 case SvgMarkerUnits.StrokeWidth:

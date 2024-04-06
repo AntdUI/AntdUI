@@ -180,7 +180,6 @@ namespace AntdUI.Svg.FilterEffects
         }
 
 
-
         bool ICollection<KeyValuePair<string, Bitmap>>.IsReadOnly
         {
             get { return false; }

@@ -5,14 +5,15 @@
 
 namespace AntdUI.Svg
 {
-    [SvgElement("missing-glyph")]
     public class SvgMissingGlyph : SvgGlyph
     {
+        public override string ClassName { get => "missing-glyph"; }
+
         [SvgAttribute("glyph-name")]
         public override string GlyphName
         {
-            get { return this.Attributes["glyph-name"] as string ?? "__MISSING_GLYPH__"; }
-            set { this.Attributes["glyph-name"] = value; }
+            get { return Attributes["glyph-name"] as string ?? "__MISSING_GLYPH__"; }
+            set { Attributes["glyph-name"] = value; }
         }
     }
 }

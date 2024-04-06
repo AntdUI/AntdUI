@@ -12,15 +12,16 @@ using System.Linq;
 
 namespace AntdUI.Svg
 {
-    [SvgElement("linearGradient")]
     public sealed class SvgLinearGradientServer : SvgGradientServer
     {
+        public override string ClassName => "linearGradient";
+
         [SvgAttribute("x1")]
         public SvgUnit X1
         {
             get
             {
-                return this.Attributes.GetAttribute<SvgUnit>("x1");
+                return Attributes.GetAttribute<SvgUnit>("x1");
             }
             set
             {
@@ -33,11 +34,11 @@ namespace AntdUI.Svg
         {
             get
             {
-                return this.Attributes.GetAttribute<SvgUnit>("y1");
+                return Attributes.GetAttribute<SvgUnit>("y1");
             }
             set
             {
-                this.Attributes["y1"] = value;
+                Attributes["y1"] = value;
             }
         }
 
@@ -46,7 +47,7 @@ namespace AntdUI.Svg
         {
             get
             {
-                return this.Attributes.GetAttribute<SvgUnit>("x2");
+                return Attributes.GetAttribute<SvgUnit>("x2");
             }
             set
             {
@@ -59,11 +60,11 @@ namespace AntdUI.Svg
         {
             get
             {
-                return this.Attributes.GetAttribute<SvgUnit>("y2");
+                return Attributes.GetAttribute<SvgUnit>("y2");
             }
             set
             {
-                this.Attributes["y2"] = value;
+                Attributes["y2"] = value;
             }
         }
 
@@ -72,7 +73,7 @@ namespace AntdUI.Svg
             get
             {
                 // Need at least 2 colours to do the gradient fill
-                return this.Stops.Count < 2;
+                return Stops.Count < 2;
             }
         }
 
@@ -88,10 +89,10 @@ namespace AntdUI.Svg
         {
             LoadStops(renderingElement);
 
-            if (this.Stops.Count < 1) return null;
-            if (this.Stops.Count == 1)
+            if (Stops.Count < 1) return null;
+            if (Stops.Count == 1)
             {
-                var stopColor = this.Stops[0].GetColor(renderingElement);
+                var stopColor = Stops[0].GetColor(renderingElement);
                 int alpha = (int)Math.Round((opacity * (stopColor.A / 255.0f)) * 255);
                 Color colour = System.Drawing.Color.FromArgb(alpha, stopColor);
                 return new SolidBrush(colour);
@@ -99,17 +100,17 @@ namespace AntdUI.Svg
 
             try
             {
-                if (this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.SetBoundable(renderingElement);
+                if (GradientUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.SetBoundable(renderingElement);
 
                 var points = new PointF[] {
-                    SvgUnit.GetDevicePoint(NormalizeUnit(this.X1), NormalizeUnit(this.Y1), renderer, this),
-                    SvgUnit.GetDevicePoint(NormalizeUnit(this.X2), NormalizeUnit(this.Y2), renderer, this)
+                    SvgUnit.GetDevicePoint(NormalizeUnit(X1), NormalizeUnit(Y1), renderer, this),
+                    SvgUnit.GetDevicePoint(NormalizeUnit(X2), NormalizeUnit(Y2), renderer, this)
                 };
 
                 var bounds = renderer.GetBoundable().Bounds;
                 if (bounds.Width <= 0 || bounds.Height <= 0 || ((points[0].X == points[1].X) && (points[0].Y == points[1].Y)))
                 {
-                    if (this.GetCallback != null) return GetCallback().GetBrush(renderingElement, renderer, opacity, forStroke);
+                    if (GetCallback != null) return GetCallback().GetBrush(renderingElement, renderer, opacity, forStroke);
                     return null;
                 }
 
@@ -117,7 +118,7 @@ namespace AntdUI.Svg
                 {
                     var midPoint = new PointF((points[0].X + points[1].X) / 2, (points[0].Y + points[1].Y) / 2);
                     transform.Translate(bounds.X, bounds.Y, MatrixOrder.Prepend);
-                    if (this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox)
+                    if (GradientUnits == SvgCoordinateUnits.ObjectBoundingBox)
                     {
                         // Transform a normal (i.e. perpendicular line) according to the transform
                         transform.Scale(bounds.Width, bounds.Height, MatrixOrder.Prepend);
@@ -126,7 +127,7 @@ namespace AntdUI.Svg
                     transform.TransformPoints(points);
                 }
 
-                if (this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox)
+                if (GradientUnits == SvgCoordinateUnits.ObjectBoundingBox)
                 {
                     // Transform the normal line back to a line such that the gradient still starts in the correct corners, but
                     // has the proper normal vector based on the transforms.  If you work out the geometry, these formulas should work.
@@ -175,13 +176,13 @@ namespace AntdUI.Svg
             }
             finally
             {
-                if (this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.PopBoundable();
+                if (GradientUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.PopBoundable();
             }
         }
 
         private SvgUnit NormalizeUnit(SvgUnit orig)
         {
-            return (orig.Type == SvgUnitType.Percentage && this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox ?
+            return (orig.Type == SvgUnitType.Percentage && GradientUnits == SvgCoordinateUnits.ObjectBoundingBox ?
                     new SvgUnit(SvgUnitType.User, orig.Value / 100) :
                     orig);
         }
@@ -218,8 +219,8 @@ namespace AntdUI.Svg
 
             public GradientPoints(PointF startPoint, PointF endPoint)
             {
-                this.StartPoint = startPoint;
-                this.EndPoint = endPoint;
+                StartPoint = startPoint;
+                EndPoint = endPoint;
             }
         }
 
@@ -444,47 +445,12 @@ namespace AntdUI.Svg
             return start + new SizeF(unitVector.X * distance, unitVector.Y * distance);
         }
 
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgLinearGradientServer>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgLinearGradientServer;
-            newObj.X1 = this.X1;
-            newObj.Y1 = this.Y1;
-            newObj.X2 = this.X2;
-            newObj.Y2 = this.Y2;
-            return newObj;
-
-        }
-
         private sealed class LineF
         {
-            private float X1
-            {
-                get;
-                set;
-            }
-
-            private float Y1
-            {
-                get;
-                set;
-            }
-
-            private float X2
-            {
-                get;
-                set;
-            }
-
-            private float Y2
-            {
-                get;
-                set;
-            }
+            private float X1 { get; set; }
+            private float Y1 { get; set; }
+            private float X2 { get; set; }
+            private float Y2 { get; set; }
 
             public LineF(float x1, float y1, float x2, float y2)
             {

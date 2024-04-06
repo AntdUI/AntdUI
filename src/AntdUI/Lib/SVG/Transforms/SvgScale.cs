@@ -14,14 +14,14 @@ namespace AntdUI.Svg.Transforms
 
         public float X
         {
-            get { return this.scaleFactorX; }
-            set { this.scaleFactorX = value; }
+            get { return scaleFactorX; }
+            set { scaleFactorX = value; }
         }
 
         public float Y
         {
-            get { return this.scaleFactorY; }
-            set { this.scaleFactorY = value; }
+            get { return scaleFactorY; }
+            set { scaleFactorY = value; }
         }
 
         public override System.Drawing.Drawing2D.Matrix Matrix
@@ -29,28 +29,28 @@ namespace AntdUI.Svg.Transforms
             get
             {
                 var matrix = new System.Drawing.Drawing2D.Matrix();
-                matrix.Scale(this.X, this.Y);
+                matrix.Scale(X, Y);
                 return matrix;
             }
         }
 
         public override string WriteToString()
         {
-            if (this.X == this.Y) return string.Format(CultureInfo.InvariantCulture, "scale({0})", this.X);
-            return string.Format(CultureInfo.InvariantCulture, "scale({0}, {1})", this.X, this.Y);
+            if (X == Y) return string.Format(CultureInfo.InvariantCulture, "scale({0})", X);
+            return string.Format(CultureInfo.InvariantCulture, "scale({0}, {1})", X, Y);
         }
 
         public SvgScale(float x) : this(x, x) { }
 
         public SvgScale(float x, float y)
         {
-            this.scaleFactorX = x;
-            this.scaleFactorY = y;
+            scaleFactorX = x;
+            scaleFactorY = y;
         }
 
         public override object Clone()
         {
-            return new SvgScale(this.X, this.Y);
+            return new SvgScale(X, Y);
         }
     }
 }

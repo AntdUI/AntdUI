@@ -3,12 +3,9 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     /// <summary>Indicates how the user agent should determine the spacing between glyphs that are to be rendered along a path.</summary>
-    [TypeConverter(typeof(SvgTextPathSpacingConverter))]
     public enum SvgTextPathSpacing
     {
         /// <summary>Indicates that the glyphs should be rendered exactly according to the spacing rules as specified in Text on a path layout rules.</summary>

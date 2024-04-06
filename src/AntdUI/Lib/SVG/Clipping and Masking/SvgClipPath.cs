@@ -12,9 +12,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// Defines a path that can be used by other <see cref="ISvgClipable"/> elements.
     /// </summary>
-    [SvgElement("clipPath")]
     public sealed class SvgClipPath : SvgElement
     {
+        public override string ClassName { get => "clipPath"; }
+
         private bool _pathDirty = true;
 
         /// <summary>
@@ -28,7 +29,7 @@ namespace AntdUI.Svg
         /// </summary>
         public SvgClipPath()
         {
-            this.ClipPathUnits = SvgCoordinateUnits.Inherit;
+            ClipPathUnits = SvgCoordinateUnits.Inherit;
         }
 
         private GraphicsPath cachedClipPath = null;
@@ -39,16 +40,16 @@ namespace AntdUI.Svg
         /// <returns>A new <see cref="Region"/> containing the <see cref="Region"/> to be used for clipping.</returns>
         public Region GetClipRegion(SvgVisualElement owner)
         {
-            if (cachedClipPath == null || this._pathDirty)
+            if (cachedClipPath == null || _pathDirty)
             {
                 cachedClipPath = new GraphicsPath();
 
-                foreach (SvgElement element in this.Children)
+                foreach (SvgElement element in Children)
                 {
-                    this.CombinePaths(cachedClipPath, element);
+                    CombinePaths(cachedClipPath, element);
                 }
 
-                this._pathDirty = false;
+                _pathDirty = false;
             }
 
             var result = cachedClipPath;
@@ -95,7 +96,7 @@ namespace AntdUI.Svg
 
             foreach (SvgElement child in element.Children)
             {
-                this.CombinePaths(path, child);
+                CombinePaths(path, child);
             }
         }
 
@@ -108,7 +109,7 @@ namespace AntdUI.Svg
         protected override void AddElement(SvgElement child, int index)
         {
             base.AddElement(child, index);
-            this._pathDirty = true;
+            _pathDirty = true;
         }
 
         /// <summary>
@@ -119,7 +120,7 @@ namespace AntdUI.Svg
         protected override void RemoveElement(SvgElement child)
         {
             base.RemoveElement(child);
-            this._pathDirty = true;
+            _pathDirty = true;
         }
 
         /// <summary>
@@ -129,19 +130,6 @@ namespace AntdUI.Svg
         protected override void Render(ISvgRenderer renderer)
         {
             // Do nothing
-        }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgClipPath>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgClipPath;
-            newObj.ClipPathUnits = this.ClipPathUnits;
-            return newObj;
         }
     }
 }

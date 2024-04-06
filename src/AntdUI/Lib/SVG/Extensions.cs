@@ -15,20 +15,7 @@ namespace AntdUI.Svg
             if (source == null) throw new ArgumentNullException("source");
             return GetDescendants<T>(source, false);
         }
-        private static IEnumerable<SvgElement> GetAncestors<T>(IEnumerable<T> source, bool self) where T : SvgElement
-        {
-            foreach (var start in source)
-            {
-                if (start != null)
-                {
-                    for (var elem = (self ? start : start.Parent) as SvgElement; elem != null; elem = (elem.Parent as SvgElement))
-                    {
-                        yield return elem;
-                    }
-                }
-            }
-            yield break;
-        }
+
         private static IEnumerable<SvgElement> GetDescendants<T>(IEnumerable<T> source, bool self) where T : SvgElement
         {
             var positons = new Stack<int>();

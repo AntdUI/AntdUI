@@ -41,8 +41,8 @@ namespace AntdUI.Svg
         public float Ascent(ISvgRenderer renderer)
         {
             float ascent = _font.Descendants().OfType<SvgFontFace>().First().Ascent;
-            float baselineOffset = this.SizeInPoints * (_emScale / _size) * ascent;
-            return SvgDocument.PointsPerInch / 72f * baselineOffset;
+            float baselineOffset = SizeInPoints * (_emScale / _size) * ascent;
+            return SvgDocument.Ppi / 72f * baselineOffset;
         }
 
         public IList<System.Drawing.RectangleF> MeasureCharacters(ISvgRenderer renderer, string text)

@@ -23,15 +23,15 @@ namespace AntdUI.Svg
         public SvgDeferredPaintServer() { }
         public SvgDeferredPaintServer(SvgDocument document, string id)
         {
-            this.Document = document;
-            this.DeferredId = id;
+            Document = document;
+            DeferredId = id;
         }
 
         public void EnsureServer(SvgElement styleOwner)
         {
             if (!_serverLoaded)
             {
-                if (this.DeferredId == "currentColor" && styleOwner != null)
+                if (DeferredId == "currentColor" && styleOwner != null)
                 {
                     var colorElement = (from e in styleOwner.ParentsAndSelf.OfType<SvgElement>()
                                         where e.Color != SvgPaintServer.None && e.Color != SvgColourServer.NotSet &&
@@ -41,7 +41,7 @@ namespace AntdUI.Svg
                 }
                 else
                 {
-                    _concreteServer = this.Document.IdManager.GetElementById(this.DeferredId) as SvgPaintServer;
+                    _concreteServer = Document.IdManager.GetElementById(DeferredId) as SvgPaintServer;
                 }
                 _serverLoaded = true;
             }
@@ -53,43 +53,30 @@ namespace AntdUI.Svg
             return _concreteServer.GetBrush(styleOwner, renderer, opacity, forStroke);
         }
 
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgDeferredPaintServer>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgDeferredPaintServer;
-            newObj.Document = this.Document;
-            newObj.DeferredId = this.DeferredId;
-            return newObj;
-        }
-
         public override bool Equals(object obj)
         {
             var other = obj as SvgDeferredPaintServer;
             if (other == null)
                 return false;
 
-            return this.Document == other.Document && this.DeferredId == other.DeferredId;
+            return Document == other.Document && DeferredId == other.DeferredId;
         }
 
         public override int GetHashCode()
         {
-            if (this.Document == null || this.DeferredId == null) return 0;
-            return this.Document.GetHashCode() ^ this.DeferredId.GetHashCode();
+            if (Document == null || DeferredId == null) return 0;
+            return Document.GetHashCode() ^ DeferredId.GetHashCode();
         }
 
         public override string ToString()
         {
-            if (this.DeferredId == "currentColor")
+            if (DeferredId == "currentColor")
             {
-                return this.DeferredId;
+                return DeferredId;
             }
             else
             {
-                return string.Format("url({0})", this.DeferredId);
+                return string.Format("url({0})", DeferredId);
             }
         }
 

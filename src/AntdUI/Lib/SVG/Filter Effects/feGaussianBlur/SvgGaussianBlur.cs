@@ -15,9 +15,10 @@ namespace AntdUI.Svg.FilterEffects
         VerticalOnly,
     }
 
-    [SvgElement("feGaussianBlur")]
     public class SvgGaussianBlur : SvgFilterPrimitive
     {
+        public override string ClassName { get => "feGaussianBlur"; }
+
         private float _stdDeviation;
         private BlurType _blurType;
 
@@ -259,24 +260,9 @@ namespace AntdUI.Svg.FilterEffects
 
         public override void Process(ImageBuffer buffer)
         {
-            var inputImage = buffer[this.Input];
+            var inputImage = buffer[Input];
             var result = Apply(inputImage);
-            buffer[this.Result] = result;
-        }
-
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgGaussianBlur>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgGaussianBlur;
-            newObj.StdDeviation = this.StdDeviation;
-            newObj.BlurType = this.BlurType;
-            return newObj;
+            buffer[Result] = result;
         }
     }
 }

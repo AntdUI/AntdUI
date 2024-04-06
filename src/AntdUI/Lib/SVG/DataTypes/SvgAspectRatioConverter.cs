@@ -25,7 +25,6 @@ namespace AntdUI.Svg.DataTypes
                 throw new ArgumentOutOfRangeException("value must be a string.");
             }
 
-            SvgPreserveAspectRatio eAlign = SvgPreserveAspectRatio.none;
             bool bDefer = false;
             bool bSlice = false;
 
@@ -38,14 +37,7 @@ namespace AntdUI.Svg.DataTypes
                 if (sParts.Length < 2)
                     throw new ArgumentOutOfRangeException("value is not a member of SvgPreserveAspectRatio");
             }
-
-#if Net4
-            if (!Enum.TryParse<SvgPreserveAspectRatio>(sParts[nAlignIndex], out eAlign))
-                throw new ArgumentOutOfRangeException("value is not a member of SvgPreserveAspectRatio");
-#else
-            eAlign = (SvgPreserveAspectRatio)Enum.Parse(typeof(SvgPreserveAspectRatio), sParts[nAlignIndex]);
-#endif
-
+            var eAlign = (SvgPreserveAspectRatio)Enum.Parse(typeof(SvgPreserveAspectRatio), sParts[nAlignIndex]);
             nAlignIndex++;
 
             if (sParts.Length > nAlignIndex)
@@ -70,21 +62,13 @@ namespace AntdUI.Svg.DataTypes
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string))
-            {
-                return true;
-            }
-
+            if (sourceType == typeof(string)) { return true; }
             return base.CanConvertFrom(context, sourceType);
         }
 
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if (destinationType == typeof(string))
-            {
-                return true;
-            }
-
+            if (destinationType == typeof(string)) { return true; }
             return base.CanConvertTo(context, destinationType);
         }
 

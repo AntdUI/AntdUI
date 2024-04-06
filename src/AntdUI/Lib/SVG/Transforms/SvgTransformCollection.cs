@@ -52,10 +52,7 @@ namespace AntdUI.Svg.Transforms
             var transformMatrix = new Matrix();
 
             // Return if there are no transforms
-            if (this.Count == 0)
-            {
-                return transformMatrix;
-            }
+            if (Count == 0) return transformMatrix;
 
             foreach (SvgTransform transformation in this)
             {
@@ -67,7 +64,7 @@ namespace AntdUI.Svg.Transforms
 
         public override bool Equals(object obj)
         {
-            if (this.Count == 0 && this.Count == base.Count) //default will be an empty list 
+            if (Count == 0 && Count == base.Count) //default will be an empty list 
                 return true;
             return base.Equals(obj);
         }
@@ -100,7 +97,7 @@ namespace AntdUI.Svg.Transforms
             if (handler != null)
             {
                 //make a copy of the current value to avoid collection changed exceptions
-                handler(this, new AttributeEventArgs { Attribute = "transform", Value = this.Clone() });
+                handler(this, new AttributeEventArgs { Attribute = "transform", Value = Clone() });
             }
         }
 
@@ -116,7 +113,7 @@ namespace AntdUI.Svg.Transforms
 
         public override string ToString()
         {
-            if (this.Count < 1) return string.Empty;
+            if (Count < 1) return string.Empty;
             return (from t in this select t.ToString()).Aggregate((p, c) => p + " " + c);
         }
     }

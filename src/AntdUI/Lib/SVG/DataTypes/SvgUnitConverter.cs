@@ -13,15 +13,9 @@ namespace AntdUI.Svg
     {
         public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
         {
-            if (value == null)
-            {
-                return new SvgUnit(SvgUnitType.User, 0.0f);
-            }
+            if (value == null) return new SvgUnit(SvgUnitType.User, 0.0f);
 
-            if (!(value is string))
-            {
-                throw new ArgumentOutOfRangeException("value must be a string.");
-            }
+            if (!(value is string)) throw new ArgumentOutOfRangeException("value must be a string.");
 
             // http://www.w3.org/TR/CSS21/syndata.html#values
             // http://www.w3.org/TR/SVG11/coords.html#Units
@@ -29,8 +23,7 @@ namespace AntdUI.Svg
             string unit = (string)value;
             int identifierIndex = -1;
 
-            if (unit == "none")
-                return SvgUnit.None;
+            if (unit == "none") return SvgUnit.None;
 
             // Note: these are ad-hoc values based on a factor of about 1.2 between adjacent values
             // see https://www.w3.org/TR/CSS2/fonts.html#value-def-absolute-size for more information
@@ -59,13 +52,9 @@ namespace AntdUI.Svg
                 }
             }
 
-            float val = 0.0f;
-            float.TryParse((identifierIndex > -1) ? unit.Substring(0, identifierIndex) : unit, NumberStyles.Float, CultureInfo.InvariantCulture, out val);
+            float.TryParse((identifierIndex > -1) ? unit.Substring(0, identifierIndex) : unit, NumberStyles.Float, CultureInfo.InvariantCulture, out var val);
 
-            if (identifierIndex == -1)
-            {
-                return new SvgUnit(val);
-            }
+            if (identifierIndex == -1) return new SvgUnit(val);
 
             switch (unit.Substring(identifierIndex).Trim().ToLower())
             {
@@ -94,31 +83,19 @@ namespace AntdUI.Svg
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string))
-            {
-                return true;
-            }
-
+            if (sourceType == typeof(string)) return true;
             return base.CanConvertFrom(context, sourceType);
         }
 
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if (destinationType == typeof(string))
-            {
-                return true;
-            }
-
+            if (destinationType == typeof(string)) return true;
             return base.CanConvertTo(context, destinationType);
         }
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(string))
-            {
-                return ((SvgUnit)value).ToString();
-            }
-
+            if (destinationType == typeof(string)) return ((SvgUnit)value).ToString();
             return base.ConvertTo(context, culture, value, destinationType);
         }
     }

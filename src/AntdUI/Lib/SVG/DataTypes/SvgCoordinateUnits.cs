@@ -3,15 +3,12 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     //TODO Need to split this enum into separate inherited enums for GradientCoordinateUnits, ClipPathCoordinateUnits, etc. as each should have its own converter since they have different defaults.
     /// <summary>
     /// Defines the various coordinate units certain SVG elements may use.
     /// </summary>
-    [TypeConverter(typeof(SvgCoordinateUnitsConverter))]
     public enum SvgCoordinateUnits
     {
         //TODO Inherit is not actually valid

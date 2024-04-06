@@ -9,21 +9,22 @@ using System.Linq;
 
 namespace AntdUI.Svg
 {
-    [SvgElement("tref")]
     public class SvgTextRef : SvgTextBase
     {
+        public override string ClassName { get => "tref"; }
+
         private Uri _referencedElement;
 
         [SvgAttribute("href", SvgAttributeAttribute.XLinkNamespace)]
         public virtual Uri ReferencedElement
         {
-            get { return this._referencedElement; }
-            set { this._referencedElement = value; }
+            get { return _referencedElement; }
+            set { _referencedElement = value; }
         }
 
         internal override IEnumerable<ISvgNode> GetContentNodes()
         {
-            var refText = this.OwnerDocument.IdManager.GetElementById(this.ReferencedElement) as SvgTextBase;
+            var refText = OwnerDocument.IdManager.GetElementById(ReferencedElement) as SvgTextBase;
             IEnumerable<ISvgNode> contentNodes = null;
 
             if (refText == null)
@@ -39,25 +40,5 @@ namespace AntdUI.Svg
 
             return contentNodes;
         }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgTextRef>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgTextRef;
-            newObj.X = this.X;
-            newObj.Y = this.Y;
-            newObj.Dx = this.Dx;
-            newObj.Dy = this.Dy;
-            newObj.Text = this.Text;
-            newObj.ReferencedElement = this.ReferencedElement;
-
-            return newObj;
-        }
-
-
     }
 }

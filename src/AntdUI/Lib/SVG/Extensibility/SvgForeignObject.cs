@@ -11,9 +11,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// The 'foreignObject' element allows for inclusion of a foreign namespace which has its graphical content drawn by a different user agent
     /// </summary>
-    [SvgElement("foreignObject")]
     public class SvgForeignObject : SvgVisualElement
     {
+        public override string ClassName { get => "foreignObject"; }
+
         public SvgForeignObject()
         {
         }
@@ -22,7 +23,7 @@ namespace AntdUI.Svg
         /// Gets the <see cref="GraphicsPath"/> for this element.
         /// </summary>
         /// <value></value>
-        public override System.Drawing.Drawing2D.GraphicsPath Path(ISvgRenderer renderer)
+        public override GraphicsPath Path(ISvgRenderer renderer)
         {
             return GetPaths(this, renderer);
         }
@@ -31,12 +32,12 @@ namespace AntdUI.Svg
         /// Gets the bounds of the element.
         /// </summary>
         /// <value>The bounds.</value>
-        public override System.Drawing.RectangleF Bounds
+        public override RectangleF Bounds
         {
             get
             {
                 var r = new RectangleF();
-                foreach (var c in this.Children)
+                foreach (var c in Children)
                 {
                     if (c is SvgVisualElement)
                     {
@@ -62,34 +63,5 @@ namespace AntdUI.Svg
         }
 
         protected override bool Renderable { get { return false; } }
-
-        ///// <summary>
-        ///// Renders the <see cref="SvgElement"/> and contents to the specified <see cref="Graphics"/> object.
-        ///// </summary>
-        ///// <param name="renderer">The <see cref="Graphics"/> object to render to.</param>
-        //protected override void Render(SvgRenderer renderer)
-        //{
-        //    if (!Visible || !Displayable)
-        //        return;
-
-        //    this.PushTransforms(renderer);
-        //    this.SetClip(renderer);
-        //    base.RenderChildren(renderer);
-        //    this.ResetClip(renderer);
-        //    this.PopTransforms(renderer);
-        //}
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgForeignObject>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgForeignObject;
-            if (this.Fill != null)
-                newObj.Fill = this.Fill.DeepCopy() as SvgPaintServer;
-            return newObj;
-        }
     }
 }

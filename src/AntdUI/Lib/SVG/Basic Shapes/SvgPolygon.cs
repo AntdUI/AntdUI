@@ -11,9 +11,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// SvgPolygon defines a closed shape consisting of a set of connected straight line segments.
     /// </summary>
-    [SvgElement("polygon")]
     public class SvgPolygon : SvgMarkerElement
     {
+        public override string ClassName { get => "polygon"; }
+
         private GraphicsPath _path;
 
         /// <summary>
@@ -22,20 +23,20 @@ namespace AntdUI.Svg
         [SvgAttribute("points")]
         public SvgPointCollection Points
         {
-            get { return this.Attributes.GetAttribute<SvgPointCollection>("points"); }
-            set { this.Attributes["points"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgPointCollection>("points"); }
+            set { Attributes["points"] = value; IsPathDirty = true; }
         }
 
         public override GraphicsPath Path(ISvgRenderer renderer)
         {
-            if (this._path == null || this.IsPathDirty)
+            if (_path == null || IsPathDirty)
             {
-                this._path = new GraphicsPath();
-                this._path.StartFigure();
+                _path = new GraphicsPath();
+                _path.StartFigure();
 
                 try
                 {
-                    var points = this.Points;
+                    var points = Points;
                     for (int i = 2; (i + 1) < points.Count; i += 2)
                     {
                         var endPoint = SvgUnit.GetDevicePoint(points[i], points[i + 1], renderer, this);
@@ -65,25 +66,11 @@ namespace AntdUI.Svg
                     Trace.TraceError("Error parsing points");
                 }
 
-                this._path.CloseFigure();
+                _path.CloseFigure();
                 if (renderer != null)
-                    this.IsPathDirty = false;
+                    IsPathDirty = false;
             }
-            return this._path;
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgPolygon>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgPolygon;
-            newObj.Points = new SvgPointCollection();
-            foreach (var pt in this.Points)
-                newObj.Points.Add(pt);
-            return newObj;
+            return _path;
         }
     }
 }

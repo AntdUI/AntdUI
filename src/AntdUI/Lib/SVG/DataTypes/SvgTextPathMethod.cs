@@ -3,12 +3,9 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     /// <summary>Indicates the method by which text should be rendered along the path.</summary>
-    [TypeConverter(typeof(SvgTextPathMethodConverter))]
     public enum SvgTextPathMethod
     {
         /// <summary>Indicates that the glyphs should be rendered using simple 2x3 transformations such that there is no stretching/warping of the glyphs. Typically, supplemental rotation, scaling and translation transformations are done for each glyph to be rendered. As a result, with align, fonts where the glyphs are designed to be connected (e.g., cursive fonts), the connections may not align properly when text is rendered along a path.</summary>

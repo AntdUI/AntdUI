@@ -11,19 +11,20 @@ using System.Linq;
 
 namespace AntdUI.Svg
 {
-    [SvgElement("radialGradient")]
     public sealed class SvgRadialGradientServer : SvgGradientServer
     {
+        public override string ClassName => "radialGradient";
+
         [SvgAttribute("cx")]
         public SvgUnit CenterX
         {
             get
             {
-                return this.Attributes.GetAttribute<SvgUnit>("cx");
+                return Attributes.GetAttribute<SvgUnit>("cx");
             }
             set
             {
-                this.Attributes["cx"] = value;
+                Attributes["cx"] = value;
             }
         }
 
@@ -32,11 +33,11 @@ namespace AntdUI.Svg
         {
             get
             {
-                return this.Attributes.GetAttribute<SvgUnit>("cy");
+                return Attributes.GetAttribute<SvgUnit>("cy");
             }
             set
             {
-                this.Attributes["cy"] = value;
+                Attributes["cy"] = value;
             }
         }
 
@@ -45,11 +46,11 @@ namespace AntdUI.Svg
         {
             get
             {
-                return this.Attributes.GetAttribute<SvgUnit>("r");
+                return Attributes.GetAttribute<SvgUnit>("r");
             }
             set
             {
-                this.Attributes["r"] = value;
+                Attributes["r"] = value;
             }
         }
 
@@ -58,18 +59,18 @@ namespace AntdUI.Svg
         {
             get
             {
-                var value = this.Attributes.GetAttribute<SvgUnit>("fx");
+                var value = Attributes.GetAttribute<SvgUnit>("fx");
 
                 if (value.IsEmpty || value.IsNone)
                 {
-                    value = this.CenterX;
+                    value = CenterX;
                 }
 
                 return value;
             }
             set
             {
-                this.Attributes["fx"] = value;
+                Attributes["fx"] = value;
             }
         }
 
@@ -78,18 +79,18 @@ namespace AntdUI.Svg
         {
             get
             {
-                var value = this.Attributes.GetAttribute<SvgUnit>("fy");
+                var value = Attributes.GetAttribute<SvgUnit>("fy");
 
                 if (value.IsEmpty || value.IsNone)
                 {
-                    value = this.CenterY;
+                    value = CenterY;
                 }
 
                 return value;
             }
             set
             {
-                this.Attributes["fy"] = value;
+                Attributes["fy"] = value;
             }
         }
 
@@ -104,7 +105,7 @@ namespace AntdUI.Svg
 
         private SvgUnit NormalizeUnit(SvgUnit orig)
         {
-            return (orig.Type == SvgUnitType.Percentage && this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox ?
+            return (orig.Type == SvgUnitType.Percentage && GradientUnits == SvgCoordinateUnits.ObjectBoundingBox ?
                     new SvgUnit(SvgUnitType.User, orig.Value / 100) :
                     orig);
         }
@@ -115,7 +116,7 @@ namespace AntdUI.Svg
 
             try
             {
-                if (this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.SetBoundable(renderingElement);
+                if (GradientUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.SetBoundable(renderingElement);
 
                 // Calculate the path and transform it appropriately
                 var center = new PointF(NormalizeUnit(CenterX).ToDeviceValue(renderer, UnitRenderingType.Horizontal, this),
@@ -133,7 +134,7 @@ namespace AntdUI.Svg
                 {
                     var bounds = renderer.GetBoundable().Bounds;
                     transform.Translate(bounds.X, bounds.Y, MatrixOrder.Prepend);
-                    if (this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox)
+                    if (GradientUnits == SvgCoordinateUnits.ObjectBoundingBox)
                     {
                         transform.Scale(bounds.Width, bounds.Height, MatrixOrder.Prepend);
                     }
@@ -205,7 +206,7 @@ namespace AntdUI.Svg
             }
             finally
             {
-                if (this.GradientUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.PopBoundable();
+                if (GradientUnits == SvgCoordinateUnits.ObjectBoundingBox) renderer.PopBoundable();
             }
         }
 
@@ -340,7 +341,7 @@ namespace AntdUI.Svg
             outScale = scale;
             if (scale > 1)
             {
-                switch (this.SpreadMethod)
+                switch (SpreadMethod)
                 {
                     case SvgGradientSpreadMethod.Reflect:
                         newScale = (float)Math.Ceiling(scale);
@@ -401,24 +402,6 @@ namespace AntdUI.Svg
             }
 
             return colorBlend;
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgRadialGradientServer>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgRadialGradientServer;
-
-            newObj.CenterX = this.CenterX;
-            newObj.CenterY = this.CenterY;
-            newObj.Radius = this.Radius;
-            newObj.FocalX = this.FocalX;
-            newObj.FocalY = this.FocalY;
-
-            return newObj;
         }
     }
 }

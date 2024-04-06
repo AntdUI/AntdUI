@@ -4,13 +4,11 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System;
-using System.ComponentModel;
 
 namespace AntdUI.Svg
 {
     //TODO This should be split out to define an enum for the font face element and text element.
     /// <summary>The weight of a face relative to others in the same font family.</summary>
-    [TypeConverter(typeof(SvgFontWeightConverter))]
     [Flags]
     public enum SvgFontWeight
     {

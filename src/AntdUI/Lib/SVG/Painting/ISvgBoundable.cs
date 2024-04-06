@@ -9,19 +9,10 @@ namespace AntdUI.Svg
 {
     public interface ISvgBoundable
     {
-        PointF Location
-        {
-            get;
-        }
+        PointF Location { get; }
 
-        SizeF Size
-        {
-            get;
-        }
+        SizeF Size { get; }
 
-        RectangleF Bounds
-        {
-            get;
-        }
+        RectangleF Bounds { get; }
     }
 }

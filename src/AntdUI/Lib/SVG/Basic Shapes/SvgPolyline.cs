@@ -13,16 +13,16 @@ namespace AntdUI.Svg
     /// <summary>
     /// SvgPolyline defines a set of connected straight line segments. Typically, <see cref="SvgPolyline"/> defines open shapes.
     /// </summary>
-    [SvgElement("polyline")]
     public class SvgPolyline : SvgPolygon
     {
+        public override string ClassName { get => "polyline"; }
+
         private GraphicsPath _Path;
         public override GraphicsPath Path(ISvgRenderer renderer)
         {
-            if ((_Path == null || this.IsPathDirty) && base.StrokeWidth > 0)
+            if ((_Path == null || IsPathDirty) && base.StrokeWidth > 0)
             {
                 _Path = new GraphicsPath();
-
                 try
                 {
                     for (int i = 0; (i + 1) < Points.Count; i += 2)
@@ -53,7 +53,7 @@ namespace AntdUI.Svg
                     Trace.TraceError("Error rendering points: " + exc.Message);
                 }
                 if (renderer != null)
-                    this.IsPathDirty = false;
+                    IsPathDirty = false;
             }
             return _Path;
         }

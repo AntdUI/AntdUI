@@ -12,9 +12,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// Represents a colour stop in a gradient.
     /// </summary>
-    [SvgElement("stop")]
     public class SvgGradientStop : SvgElement
     {
+        public override string ClassName => "stop";
+
         private SvgUnit _offset;
 
         /// <summary>
@@ -23,7 +24,7 @@ namespace AntdUI.Svg
         [SvgAttribute("offset")]
         public SvgUnit Offset
         {
-            get { return this._offset; }
+            get { return _offset; }
             set
             {
                 SvgUnit unit = value;
@@ -51,7 +52,7 @@ namespace AntdUI.Svg
                     }
                 }
 
-                this._offset = unit.ToPercentage();
+                _offset = unit.ToPercentage();
             }
         }
 
@@ -64,11 +65,11 @@ namespace AntdUI.Svg
         {
             get
             {
-                var direct = this.Attributes.GetAttribute<SvgPaintServer>("stop-color", SvgColourServer.NotSet);
-                if (direct == SvgColourServer.Inherit) return this.Attributes["stop-color"] as SvgPaintServer ?? SvgColourServer.NotSet;
+                var direct = Attributes.GetAttribute<SvgPaintServer>("stop-color", SvgColourServer.NotSet);
+                if (direct == SvgColourServer.Inherit) return Attributes["stop-color"] as SvgPaintServer ?? SvgColourServer.NotSet;
                 return direct;
             }
-            set { this.Attributes["stop-color"] = value; }
+            set { Attributes["stop-color"] = value; }
         }
 
         /// <summary>
@@ -77,8 +78,8 @@ namespace AntdUI.Svg
         [SvgAttribute("stop-opacity")]
         public override float Opacity
         {
-            get { return (this.Attributes["stop-opacity"] == null) ? 1.0f : (float)this.Attributes["stop-opacity"]; }
-            set { this.Attributes["stop-opacity"] = FixOpacityValue(value); }
+            get { return (Attributes["stop-opacity"] == null) ? 1.0f : (float)Attributes["stop-opacity"]; }
+            set { Attributes["stop-opacity"] = FixOpacityValue(value); }
         }
 
         /// <summary>
@@ -86,7 +87,7 @@ namespace AntdUI.Svg
         /// </summary>
         public SvgGradientStop()
         {
-            this._offset = new SvgUnit(0.0f);
+            _offset = new SvgUnit(0.0f);
         }
 
         /// <summary>
@@ -96,26 +97,14 @@ namespace AntdUI.Svg
         /// <param name="colour">The colour.</param>
         public SvgGradientStop(SvgUnit offset, Color colour)
         {
-            this._offset = offset;
+            _offset = offset;
         }
 
         public Color GetColor(SvgElement parent)
         {
-            var core = SvgDeferredPaintServer.TryGet<SvgColourServer>(this.StopColor, parent);
+            var core = SvgDeferredPaintServer.TryGet<SvgColourServer>(StopColor, parent);
             if (core == null) throw new InvalidOperationException("Invalid paint server for gradient stop detected.");
             return core.Colour;
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgGradientStop>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgGradientStop;
-            newObj.Offset = this.Offset;
-            return newObj;
         }
     }
 }

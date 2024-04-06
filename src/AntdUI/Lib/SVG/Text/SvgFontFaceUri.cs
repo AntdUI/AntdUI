@@ -7,29 +7,17 @@ using System;
 
 namespace AntdUI.Svg
 {
-    [SvgElement("font-face-uri")]
     public class SvgFontFaceUri : SvgElement
     {
+        public override string ClassName { get => "font-face-uri"; }
+
         private Uri _referencedElement;
 
         [SvgAttribute("href", SvgAttributeAttribute.XLinkNamespace)]
         public virtual Uri ReferencedElement
         {
-            get { return this._referencedElement; }
-            set { this._referencedElement = value; }
-        }
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgFontFaceUri>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgFontFaceUri;
-            newObj.ReferencedElement = this.ReferencedElement;
-
-            return newObj;
+            get { return _referencedElement; }
+            set { _referencedElement = value; }
         }
     }
 }

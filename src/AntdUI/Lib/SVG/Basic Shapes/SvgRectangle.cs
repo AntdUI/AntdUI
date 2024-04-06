@@ -12,9 +12,10 @@ namespace AntdUI.Svg
     /// <summary>
     /// Represents an SVG rectangle that could also have rounded edges.
     /// </summary>
-    [SvgElement("rect")]
     public class SvgRectangle : SvgPathBasedElement
     {
+        public override string ClassName { get => "rect"; }
+
         private GraphicsPath _path;
 
         /// <summary>
@@ -31,8 +32,8 @@ namespace AntdUI.Svg
         [SvgAttribute("x")]
         public SvgUnit X
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("x"); }
-            set { this.Attributes["x"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("x"); }
+            set { Attributes["x"] = value; IsPathDirty = true; }
         }
 
         /// <summary>
@@ -41,8 +42,8 @@ namespace AntdUI.Svg
         [SvgAttribute("y")]
         public SvgUnit Y
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("y"); }
-            set { this.Attributes["y"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("y"); }
+            set { Attributes["y"] = value; IsPathDirty = true; }
         }
 
         /// <summary>
@@ -51,8 +52,8 @@ namespace AntdUI.Svg
         [SvgAttribute("width")]
         public SvgUnit Width
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("width"); }
-            set { this.Attributes["width"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("width"); }
+            set { Attributes["width"] = value; IsPathDirty = true; }
         }
 
         /// <summary>
@@ -61,8 +62,8 @@ namespace AntdUI.Svg
         [SvgAttribute("height")]
         public SvgUnit Height
         {
-            get { return this.Attributes.GetAttribute<SvgUnit>("height"); }
-            set { this.Attributes["height"] = value; this.IsPathDirty = true; }
+            get { return Attributes.GetAttribute<SvgUnit>("height"); }
+            set { Attributes["height"] = value; IsPathDirty = true; }
         }
 
         /// <summary>
@@ -74,11 +75,11 @@ namespace AntdUI.Svg
             get
             {
                 // If ry has been set and rx hasn't, use it's value
-                var rx = this.Attributes.GetAttribute<SvgUnit>("rx");
-                var ry = this.Attributes.GetAttribute<SvgUnit>("ry");
+                var rx = Attributes.GetAttribute<SvgUnit>("rx");
+                var ry = Attributes.GetAttribute<SvgUnit>("ry");
                 return (rx.Value == 0.0f && ry.Value > 0.0f) ? ry : rx;
             }
-            set { this.Attributes["rx"] = value; this.IsPathDirty = true; }
+            set { Attributes["rx"] = value; IsPathDirty = true; }
         }
 
         /// <summary>
@@ -90,11 +91,11 @@ namespace AntdUI.Svg
             get
             {
                 // If rx has been set and ry hasn't, use it's value
-                var rx = this.Attributes.GetAttribute<SvgUnit>("rx");
-                var ry = this.Attributes.GetAttribute<SvgUnit>("ry");
+                var rx = Attributes.GetAttribute<SvgUnit>("rx");
+                var ry = Attributes.GetAttribute<SvgUnit>("ry");
                 return (ry.Value == 0.0f && rx.Value > 0.0f) ? rx : ry;
             }
-            set { this.Attributes["ry"] = value; this.IsPathDirty = true; }
+            set { Attributes["ry"] = value; IsPathDirty = true; }
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace AntdUI.Svg
                 if (renderer != null)
                 {
                     halfStrokeWidth = 0;
-                    this.IsPathDirty = false;
+                    IsPathDirty = false;
                 }
 
                 // If the corners aren't to be rounded just create a rectangle
@@ -136,8 +137,8 @@ namespace AntdUI.Svg
                     // Starting location which take consideration of stroke width
                     SvgPoint strokedLocation = new SvgPoint(loc_x - halfStrokeWidth, loc_y - halfStrokeWidth);
 
-                    var width = this.Width.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this) + halfStrokeWidth * 2;
-                    var height = this.Height.ToDeviceValue(renderer, UnitRenderingType.Vertical, this) + halfStrokeWidth * 2;
+                    var width = Width.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this) + halfStrokeWidth * 2;
+                    var height = Height.ToDeviceValue(renderer, UnitRenderingType.Vertical, this) + halfStrokeWidth * 2;
 
                     var rectangle = new RectangleF(strokedLocation.ToDeviceValue(renderer, this), new SizeF(width, height));
 
@@ -223,24 +224,6 @@ namespace AntdUI.Svg
             {
                 base.Render(renderer);
             }
-        }
-
-
-        public override SvgElement DeepCopy()
-        {
-            return DeepCopy<SvgRectangle>();
-        }
-
-        public override SvgElement DeepCopy<T>()
-        {
-            var newObj = base.DeepCopy<T>() as SvgRectangle;
-            newObj.CornerRadiusX = this.CornerRadiusX;
-            newObj.CornerRadiusY = this.CornerRadiusY;
-            newObj.Height = this.Height;
-            newObj.Width = this.Width;
-            newObj.X = this.X;
-            newObj.Y = this.Y;
-            return newObj;
         }
     }
 }
