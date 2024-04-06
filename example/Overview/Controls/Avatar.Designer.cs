@@ -94,7 +94,7 @@ namespace Overview.Controls
             // 
             // avatar6
             // 
-            avatar6.Back = Color.FromArgb(253, 227, 207);
+            avatar6.BackColor = Color.FromArgb(253, 227, 207);
             avatar6.Badge = "1";
             avatar6.ForeColor = Color.FromArgb(245, 106, 0);
             avatar6.Location = new Point(128, 6);
@@ -106,7 +106,7 @@ namespace Overview.Controls
             // 
             // avatar9
             // 
-            avatar9.Back = Color.FromArgb(135, 208, 104);
+            avatar9.BackColor = Color.FromArgb(135, 208, 104);
             avatar9.Badge = "99+";
             avatar9.ForeColor = Color.White;
             avatar9.Location = new Point(188, 6);
@@ -118,7 +118,7 @@ namespace Overview.Controls
             // 
             // avatar10
             // 
-            avatar10.Back = Color.FromArgb(0, 144, 255);
+            avatar10.BackColor = Color.FromArgb(0, 144, 255);
             avatar10.Badge = "0";
             avatar10.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
             avatar10.ForeColor = Color.White;
@@ -149,7 +149,7 @@ namespace Overview.Controls
             // 
             // avatar11
             // 
-            avatar11.Back = Color.FromArgb(0, 144, 255);
+            avatar11.BackColor = Color.FromArgb(0, 144, 255);
             avatar11.ForeColor = Color.White;
             avatar11.Location = new Point(248, 75);
             avatar11.Name = "avatar11";
@@ -180,7 +180,7 @@ namespace Overview.Controls
             // 
             // avatar12
             // 
-            avatar12.Back = Color.FromArgb(135, 208, 104);
+            avatar12.BackColor = Color.FromArgb(135, 208, 104);
             avatar12.Badge = "999+";
             avatar12.ForeColor = Color.White;
             avatar12.Location = new Point(8, 141);
@@ -204,7 +204,7 @@ namespace Overview.Controls
             // 
             // avatar7
             // 
-            avatar7.Back = Color.FromArgb(253, 227, 207);
+            avatar7.BackColor = Color.FromArgb(253, 227, 207);
             avatar7.Badge = "1";
             avatar7.ForeColor = Color.FromArgb(245, 106, 0);
             avatar7.Location = new Point(415, 6);

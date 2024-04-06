@@ -36,11 +36,46 @@ namespace AntdUI
     {
         #region 属性
 
-        internal Color? fore;
+        #region 系统
+
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        public new Color? BackColor
+        {
+            get => back;
+            set
+            {
+                if (back == value) return;
+                back = value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        public new Color? ForeColor
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) fore = value;
+                fore = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
+
+        Color? fore;
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
         public Color? Fore
         {
             get => fore;
@@ -59,6 +94,7 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
         public Color? Back
         {
             get => back;

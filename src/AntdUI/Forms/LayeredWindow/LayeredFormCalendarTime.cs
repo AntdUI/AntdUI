@@ -222,9 +222,8 @@ namespace AntdUI
                     using (var bmp = new Bitmap(t_width + 20, t_height + 20))
                     using (var brush_bg = new SolidBrush(Style.Db.PrimaryBg))
                     {
-                        using (var g2 = Graphics.FromImage(bmp).High())
+                        using (var g2 = Graphics.FromImage(bmp).HighLay())
                         {
-                            g2.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                             g2.TranslateTransform(0, -scrollY_h.Value);
                             for (int i = 0; i < calendar_time.Count; i++)
                             {

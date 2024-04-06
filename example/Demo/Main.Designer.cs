@@ -621,7 +621,7 @@ namespace Demo
             // 
             // btn_min
             // 
-            btn_min.Back = Color.Transparent;
+            btn_min.BackColor = Color.Transparent;
             btn_min.BackActive = Color.FromArgb(172, 172, 172);
             btn_min.BackHover = Color.FromArgb(223, 223, 223);
             btn_min.Dock = DockStyle.Right;
@@ -636,7 +636,7 @@ namespace Demo
             // 
             // btn_max
             // 
-            btn_max.Back = Color.Transparent;
+            btn_max.BackColor = Color.Transparent;
             btn_max.BackActive = Color.FromArgb(172, 172, 172);
             btn_max.BackHover = Color.FromArgb(223, 223, 223);
             btn_max.Dock = DockStyle.Right;
@@ -651,7 +651,7 @@ namespace Demo
             // 
             // btn_close
             // 
-            btn_close.Back = Color.Transparent;
+            btn_close.BackColor = Color.Transparent;
             btn_close.BackActive = Color.FromArgb(145, 31, 20);
             btn_close.BackHover = Color.FromArgb(196, 43, 28);
             btn_close.Dock = DockStyle.Right;
@@ -835,7 +835,7 @@ namespace Demo
             // 
             // avatar3
             // 
-            avatar3.Back = Color.FromArgb(0, 144, 255);
+            avatar3.BackColor = Color.FromArgb(0, 144, 255);
             avatar3.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
             avatar3.ForeColor = Color.White;
             avatar3.Location = new Point(795, 79);
@@ -856,11 +856,11 @@ namespace Demo
             // button5
             // 
             button5.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button5.Back = Color.FromArgb(100, 22, 119, 255);
+            button5.BackColor = Color.FromArgb(100, 22, 119, 255);
             button5.BackgroundImage = Properties.Resources.bg3;
             button5.BackgroundImageLayout = AntdUI.TFit.Cover;
             button5.BackHover = Color.FromArgb(100, 64, 150, 255);
-            button5.Fore = Color.White;
+            button5.ForeColor = Color.White;
             button5.Ghost = true;
             button5.Image = Properties.Resources.search;
             button5.Location = new Point(887, 625);
@@ -874,11 +874,11 @@ namespace Demo
             // button6
             // 
             button6.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button6.Back = Color.FromArgb(100, 22, 119, 255);
+            button6.BackColor = Color.FromArgb(100, 22, 119, 255);
             button6.BackgroundImage = Properties.Resources.bg2;
             button6.BackgroundImageLayout = AntdUI.TFit.Cover;
             button6.BackHover = Color.FromArgb(100, 64, 150, 255);
-            button6.Fore = Color.White;
+            button6.ForeColor = Color.White;
             button6.Ghost = true;
             button6.Image = Properties.Resources.search;
             button6.Location = new Point(1080, 625);

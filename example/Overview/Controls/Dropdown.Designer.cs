@@ -82,7 +82,6 @@ namespace Overview.Controls
             // button7
             // 
             button7.AutoSize = true;
-            button7.ForeColor = Color.White;
             button7.ImageSvg = Properties.Resources.icon_poweroff;
             button7.Items.AddRange(new object[] { "菜单1", "菜单2", "菜单3" });
             button7.Location = new Point(386, 3);
@@ -229,7 +228,6 @@ namespace Overview.Controls
             // button17
             // 
             button17.AutoSize = true;
-            button17.ForeColor = Color.White;
             button17.IsLink = true;
             button17.Items.AddRange(new object[] { "菜单1", "菜单2", "菜单3" });
             button17.Location = new Point(3, 3);
@@ -257,7 +255,6 @@ namespace Overview.Controls
             // dropdown1
             // 
             dropdown1.AutoSize = true;
-            dropdown1.ForeColor = Color.White;
             dropdown1.Location = new Point(280, 3);
             dropdown1.Name = "dropdown1";
             dropdown1.Size = new Size(100, 50);

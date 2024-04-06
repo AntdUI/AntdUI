@@ -27,7 +27,7 @@ namespace AntdUI
         #region 渲染
 
         StringFormat sf_font = Helper.SF_MEASURE_FONT();
-        StringFormat sf_center = Helper.SF_NoWrap();
+        internal StringFormat sf_center = Helper.SF_NoWrap();
         StringFormat sf_placeholder = Helper.SF_ALL(lr: StringAlignment.Near);
 
         protected override void OnPaint(PaintEventArgs e)
@@ -78,11 +78,9 @@ namespace AntdUI
                             g.FillPath(brush, path);
                         }
                         PaintIcon(g, _fore);
-                        using (var bmp = PaintText(_fore, rect_read.Right, rect_read.Bottom))
-                        {
-                            g.DrawImage(bmp, rect_text, rect_text, GraphicsUnit.Pixel);
-                        }
+                        PaintText(g, path, _fore, rect_read.Right, rect_read.Bottom);
                         PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
+                        g.ResetClip();
                         if (borderWidth > 0)
                         {
                             if (AnimationHover)
@@ -125,6 +123,10 @@ namespace AntdUI
                         {
                             g.FillPath(brush, path);
                         }
+                        PaintIcon(g, Style.Db.TextQuaternary);
+                        PaintText(g, path, Style.Db.TextQuaternary, rect_read.Right, rect_read.Bottom);
+                        PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
+                        g.ResetClip();
                         if (borderWidth > 0)
                         {
                             using (var brush = new Pen(_border, borderWidth))
@@ -132,13 +134,9 @@ namespace AntdUI
                                 g.DrawPath(brush, path);
                             }
                         }
-                        PaintIcon(g, Style.Db.TextQuaternary);
-                        using (var bmp = PaintText(Style.Db.TextQuaternary, rect_read.Right, rect_read.Bottom))
-                        {
-                            g.DrawImage(bmp, rect_text, rect_text, GraphicsUnit.Pixel);
-                        }
                     }
                 }
+
             }
             base.OnPaint(e);
         }
@@ -186,58 +184,41 @@ namespace AntdUI
                 }
             }
             else if (suffix != null) g.DrawImage(suffix, rect_r);
-            else PaintR(g, rect_r);
+            else PaintRIcon(g, rect_r);
         }
 
-        Bitmap PaintText(Color _fore, int w, int h)
+        void PaintText(Graphics g, GraphicsPath path, Color _fore, int w, int h)
         {
-            var bmp = new Bitmap(w, h);
-            using (var g = Graphics.FromImage(bmp).High())
+            g.SetClip(path);
+            if (cache_font != null)
             {
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                if (cache_font != null)
+                g.TranslateTransform(-ScrollX, -ScrollY);
+                if (selectionLength > 0)
                 {
-                    g.TranslateTransform(-ScrollX, -ScrollY);
-                    if (selectionLength > 0)
+                    int end = selectionStartTemp + selectionLength - 1;
+                    if (end > cache_font.Length - 1) end = cache_font.Length - 1;
+                    var first = cache_font[selectionStartTemp];
+                    using (var brush = new SolidBrush(Color.FromArgb(173, 214, 255)))
                     {
-                        int end = selectionStartTemp + selectionLength - 1;
-                        if (end > cache_font.Length - 1) end = cache_font.Length - 1;
-                        var first = cache_font[selectionStartTemp];
-                        using (var brush = new SolidBrush(Color.FromArgb(173, 214, 255)))
+                        for (int i = selectionStartTemp; i <= end; i++)
                         {
-                            for (int i = selectionStartTemp; i <= end; i++)
+                            var last = cache_font[i];
+                            if (first.rect.Y != last.rect.Y || last.retun)
                             {
-                                var last = cache_font[i];
-                                if (first.rect.Y != last.rect.Y || last.retun)
-                                {
-                                    //先渲染上一行
-                                    if (i > 0) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, cache_font[i - 1].rect.Right - first.rect.X, first.rect.Height));
-                                    if (i == end) g.FillRectangle(brush, last.rect);
-                                    first = last;
-                                }
-                                else if (i == end) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
+                                //先渲染上一行
+                                if (i > 0) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, cache_font[i - 1].rect.Right - first.rect.X, first.rect.Height));
+                                if (i == end) g.FillRectangle(brush, last.rect);
+                                first = last;
                             }
+                            else if (i == end) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
                         }
                     }
-                    using (var fore = new SolidBrush(_fore))
+                }
+                using (var fore = new SolidBrush(_fore))
+                {
+                    if (HasEmoji)
                     {
-                        if (HasEmoji)
-                        {
-                            using (var font = new Font(EmojiFont, Font.Size))
-                            {
-                                foreach (var it in cache_font)
-                                {
-                                    it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
-                                    if (it.show)
-                                    {
-                                        if (IsPassWord) g.DrawString(PassWordChar, Font, fore, it.rect, sf_font);
-                                        else if (it.emoji) g.DrawString(it.text, font, fore, it.rect, sf_font);
-                                        else g.DrawString(it.text, Font, fore, it.rect, sf_font);
-                                    }
-                                }
-                            }
-                        }
-                        else
+                        using (var font = new Font(EmojiFont, Font.Size))
                         {
                             foreach (var it in cache_font)
                             {
@@ -245,29 +226,39 @@ namespace AntdUI
                                 if (it.show)
                                 {
                                     if (IsPassWord) g.DrawString(PassWordChar, Font, fore, it.rect, sf_font);
+                                    else if (it.emoji) g.DrawString(it.text, font, fore, it.rect, sf_font);
                                     else g.DrawString(it.text, Font, fore, it.rect, sf_font);
                                 }
                             }
                         }
                     }
-                }
-                else if (placeholderText != null)
-                {
-                    using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                    else
                     {
-                        g.DrawString(placeholderText, Font, fore, rect_text, sf_placeholder);
+                        foreach (var it in cache_font)
+                        {
+                            it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
+                            if (it.show)
+                            {
+                                if (IsPassWord) g.DrawString(PassWordChar, Font, fore, it.rect, sf_font);
+                                else g.DrawString(it.text, Font, fore, it.rect, sf_font);
+                            }
+                        }
                     }
                 }
+                g.ResetTransform();
             }
-            return bmp;
+            else if (placeholderText != null)
+            {
+                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                {
+                    g.DrawString(placeholderText, Font, fore, rect_text, sf_placeholder);
+                }
+            }
         }
 
-        internal virtual void PaintR(Graphics g, Rectangle rect)
-        {
-        }
-        internal virtual void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
-        {
-        }
+        internal virtual void PaintRIcon(Graphics g, Rectangle rect) { }
+
+        internal virtual void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive) { }
 
         #region 点击动画
 

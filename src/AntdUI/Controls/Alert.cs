@@ -188,19 +188,9 @@ namespace AntdUI
                 if (loop)
                 {
                     if (font_size == null) font_size = g.MeasureString(text, Font);
-                    if (rect.X > 0)
-                    {
-                        using (var bmp = new Bitmap(rect.Width, rect.Height))
-                        {
-                            using (var g2 = Graphics.FromImage(bmp).High())
-                            {
-                                g2.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                                PaintText(g2, new Rectangle(0, 0, rect.Width, rect.Height), font_size.Value, ForeColor);
-                            }
-                            g.DrawImage(bmp, rect);
-                        }
-                    }
-                    else PaintText(g, rect, font_size.Value, ForeColor);
+                    g.SetClip(rect);
+                    PaintText(g, rect, font_size.Value, ForeColor);
+                    g.ResetClip();
                 }
                 else
                 {
@@ -269,22 +259,14 @@ namespace AntdUI
                     {
                         g.FillPath(brush, path);
                     }
+                    g.SetClip(path);
                     if (loop)
                     {
                         if (font_size == null) font_size = g.MeasureString(text, Font);
-
-                        using (var bmp = new Bitmap(rect.Width, rect.Height))
-                        {
-                            using (var g2 = Graphics.FromImage(bmp).High())
-                            {
-                                g2.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                                float icon_size = font_size.Value.Height * 0.86F, gap = icon_size * 0.4F;
-                                var rect_icon = new RectangleF(gap, rect.Y + (rect.Height - icon_size) / 2F, icon_size, icon_size);
-                                PaintText(g2, new Rectangle(0, 0, rect.Width, rect.Height), font_size.Value, color, back, _radius);
-                                PaintIcon(g2, rect_icon);
-                            }
-                            g.DrawImage(bmp, rect);
-                        }
+                        float icon_size = font_size.Value.Height * 0.86F, gap = icon_size * 0.4F;
+                        var rect_icon = new RectangleF(gap, rect.Y + (rect.Height - icon_size) / 2F, icon_size, icon_size);
+                        PaintText(g, rect, font_size.Value, color, back, _radius);
+                        PaintIcon(g, rect_icon);
                     }
                     else
                     {
@@ -325,6 +307,7 @@ namespace AntdUI
                         }
                     }
 
+                    g.ResetClip();
                     if (borWidth > 0)
                     {
                         using (var brush_bor = new Pen(bor_color, borWidth * Config.Dpi))
@@ -435,42 +418,20 @@ namespace AntdUI
                     }
                 }
             }
-            if (radius > 0)
+            var rect_icon_l = new RectangleF(rect.X, rect.Y, size.Height * 2, rect.Height);
+            using (var brush = new LinearGradientBrush(rect_icon_l, back, Color.Transparent, 0F))
             {
-                var rect_icon_l = new RectangleF(rect.X, rect.Y, size.Height * 2, rect.Height);
-                using (var path = rect_icon_l.RoundPath(radius, true, false, false, true))
-                {
-                    using (var brush = new LinearGradientBrush(rect_icon_l, back, Color.Transparent, 0F))
-                    {
-                        g.FillPath(brush, path);
-                        g.FillPath(brush, path);
-                    }
-                }
-                var rect_icon_r = new RectangleF(rect.Right - rect_icon_l.Width, rect_icon_l.Y, rect_icon_l.Width, rect_icon_l.Height);
-                using (var path = rect_icon_r.RoundPath(radius, false, true, true, false))
-                {
-                    using (var brush = new LinearGradientBrush(rect_icon_r, Color.Transparent, back, 0F))
-                    {
-                        g.FillPath(brush, path);
-                        g.FillPath(brush, path);
-                    }
-                }
+                rect_icon_l.Width -= 1F;
+                g.FillRectangle(brush, rect_icon_l);
+                g.FillRectangle(brush, rect_icon_l);
             }
-            else
+            var rect_icon_r = new RectangleF(rect.Right - rect_icon_l.Width, rect_icon_l.Y, rect_icon_l.Width, rect_icon_l.Height);
+            using (var brush = new LinearGradientBrush(rect_icon_r, Color.Transparent, back, 0F))
             {
-                var rect_icon_l = new RectangleF(rect.X, rect.Y + (rect.Height - size.Height) / 2F, size.Height * 2, size.Height);
-                using (var brush = new LinearGradientBrush(rect_icon_l, back, Color.Transparent, 0F))
-                {
-                    g.FillRectangle(brush, rect_icon_l);
-                }
-                var rect_icon_r = new RectangleF(rect.Right - rect_icon_l.Width, rect_icon_l.Y, rect_icon_l.Width, rect_icon_l.Height);
-                using (var path = rect_icon_r.RoundPath(radius, false, true, true, false))
-                {
-                    using (var brush = new LinearGradientBrush(rect_icon_r, Color.Transparent, back, 0F))
-                    {
-                        g.FillRectangle(brush, rect_icon_r);
-                    }
-                }
+                rect_icon_r.X += 1F;
+                rect_icon_r.Width -= 1F;
+                g.FillRectangle(brush, rect_icon_r);
+                g.FillRectangle(brush, rect_icon_r);
             }
         }
 

@@ -14,6 +14,8 @@ Winform UI library use Ant Design 5.0
 [![QQGroup](https://img.shields.io/badge/QQ%20Group-328884096-f74658?style=for-the-badge&logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
 
+**[Document Wiki](https://gitee.com/antdui/AntdUI/wikis)** 👈 Click Go，Please review before asking a question
+
 ---
 
 ![DEMO](screenshot/Pre/Demo.png?raw=true)
@@ -134,4 +136,4 @@ Winform UI library use Ant Design 5.0
 | **Switch** | **Table** |
 | ![Switch](screenshot/Switch.gif?raw=true) | ![Table](screenshot/Table.gif?raw=true) |
 
-🦦 [Document](https://gitee.com/antdui/AntdUI/wikis) on Wiki，Please review before asking a question
+🦦

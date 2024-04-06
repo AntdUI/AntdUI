@@ -194,8 +194,7 @@ namespace Overview.Controls
             // button10
             // 
             button10.AutoSizeMode = AntdUI.TAutoSize.Width;
-            button10.Back = Color.FromArgb(217, 217, 217);
-            button10.BackColor = Color.Transparent;
+            button10.BackColor = Color.FromArgb(217, 217, 217);
             button10.BorderWidth = 2F;
             button10.Dock = DockStyle.Left;
             button10.JoinLeft = true;
@@ -210,8 +209,7 @@ namespace Overview.Controls
             // button15
             // 
             button15.AutoSizeMode = AntdUI.TAutoSize.Width;
-            button15.Back = Color.FromArgb(217, 217, 217);
-            button15.BackColor = Color.Transparent;
+            button15.BackColor = Color.FromArgb(217, 217, 217);
             button15.BorderWidth = 2F;
             button15.Dock = DockStyle.Left;
             button15.JoinLeft = true;
@@ -227,8 +225,7 @@ namespace Overview.Controls
             // button2
             // 
             button2.AutoSizeMode = AntdUI.TAutoSize.Width;
-            button2.Back = Color.FromArgb(217, 217, 217);
-            button2.BackColor = Color.Transparent;
+            button2.BackColor = Color.FromArgb(217, 217, 217);
             button2.BorderWidth = 2F;
             button2.Dock = DockStyle.Left;
             button2.JoinRight = true;
@@ -252,7 +249,7 @@ namespace Overview.Controls
             // 
             // button8
             // 
-            button8.Back = Color.FromArgb(17, 24, 39);
+            button8.BackColor = Color.FromArgb(17, 24, 39);
             button8.BackActive = Color.FromArgb(17, 24, 39);
             button8.BackHover = Color.FromArgb(17, 24, 39);
             button8.Dock = DockStyle.Fill;
@@ -268,7 +265,7 @@ namespace Overview.Controls
             // 
             // button20
             // 
-            button20.Back = Color.FromArgb(168, 85, 247);
+            button20.BackColor = Color.FromArgb(168, 85, 247);
             button20.BackActive = Color.FromArgb(147, 51, 234);
             button20.BackHover = Color.FromArgb(147, 51, 234);
             button20.Dock = DockStyle.Left;

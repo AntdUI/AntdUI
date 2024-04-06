@@ -35,11 +35,31 @@ namespace AntdUI
     {
         #region 属性
 
+        #region 系统
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        public new Color? ForeColor
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) fore = value;
+                fore = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
+
         Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
         public Color? Fore
         {
             get => fore;

@@ -226,7 +226,6 @@ namespace Overview.Controls
             // 
             // button2
             // 
-            button2.BackColor = Color.Transparent;
             button2.Dock = DockStyle.Right;
             button2.ImageSvg = Properties.Resources.icon_search;
             button2.JoinLeft = true;

@@ -131,7 +131,6 @@ namespace Overview.Controls
             // 
             // button9
             // 
-            button9.Back = Color.FromArgb(217, 217, 217);
             button9.BorderWidth = 2F;
             button9.Location = new Point(343, 147);
             button9.Name = "button9";
@@ -142,7 +141,6 @@ namespace Overview.Controls
             // 
             // button6
             // 
-            button6.Back = Color.FromArgb(217, 217, 217);
             button6.BorderWidth = 2F;
             button6.Location = new Point(51, 147);
             button6.Name = "button6";
@@ -153,7 +151,6 @@ namespace Overview.Controls
             // 
             // button8
             // 
-            button8.Back = Color.FromArgb(217, 217, 217);
             button8.BorderWidth = 2F;
             button8.Location = new Point(343, 101);
             button8.Name = "button8";
@@ -164,7 +161,6 @@ namespace Overview.Controls
             // 
             // button5
             // 
-            button5.Back = Color.FromArgb(217, 217, 217);
             button5.BorderWidth = 2F;
             button5.Location = new Point(25, 101);
             button5.Name = "button5";
@@ -175,7 +171,6 @@ namespace Overview.Controls
             // 
             // button7
             // 
-            button7.Back = Color.FromArgb(217, 217, 217);
             button7.BorderWidth = 2F;
             button7.Location = new Point(343, 55);
             button7.Name = "button7";
@@ -186,7 +181,6 @@ namespace Overview.Controls
             // 
             // button2
             // 
-            button2.Back = Color.FromArgb(217, 217, 217);
             button2.BorderWidth = 2F;
             button2.Location = new Point(51, 55);
             button2.Name = "button2";
@@ -197,7 +191,6 @@ namespace Overview.Controls
             // 
             // button12
             // 
-            button12.Back = Color.FromArgb(217, 217, 217);
             button12.BorderWidth = 2F;
             button12.Location = new Point(283, 193);
             button12.Name = "button12";
@@ -208,7 +201,6 @@ namespace Overview.Controls
             // 
             // button4
             // 
-            button4.Back = Color.FromArgb(217, 217, 217);
             button4.BorderWidth = 2F;
             button4.Location = new Point(283, 13);
             button4.Name = "button4";
@@ -219,7 +211,6 @@ namespace Overview.Controls
             // 
             // button11
             // 
-            button11.Back = Color.FromArgb(217, 217, 217);
             button11.BorderWidth = 2F;
             button11.Location = new Point(177, 193);
             button11.Name = "button11";
@@ -230,7 +221,6 @@ namespace Overview.Controls
             // 
             // button3
             // 
-            button3.Back = Color.FromArgb(217, 217, 217);
             button3.BorderWidth = 2F;
             button3.Location = new Point(177, 13);
             button3.Name = "button3";
@@ -241,7 +231,6 @@ namespace Overview.Controls
             // 
             // button10
             // 
-            button10.Back = Color.FromArgb(217, 217, 217);
             button10.BorderWidth = 2F;
             button10.Location = new Point(111, 193);
             button10.Name = "button10";
@@ -252,7 +241,6 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.Back = Color.FromArgb(217, 217, 217);
             button1.BorderWidth = 2F;
             button1.Location = new Point(111, 13);
             button1.Name = "button1";

@@ -859,9 +859,8 @@ namespace AntdUI
                         {
                             using (var bmp = new Bitmap(left_button, rect_read.Height))
                             {
-                                using (var g2 = Graphics.FromImage(bmp).High())
+                                using (var g2 = Graphics.FromImage(bmp).HighLay())
                                 {
-                                    g2.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                                     g2.TranslateTransform(0, -scrollY_left.Value);
                                     foreach (var it in left_buttons)
                                     {
@@ -888,9 +887,8 @@ namespace AntdUI
                             using (var bmp = new Bitmap(t_time * 3, rect_read.Height - t_button))
                             using (var brush_bg = new SolidBrush(Style.Db.PrimaryBg))
                             {
-                                using (var g2 = Graphics.FromImage(bmp).High())
+                                using (var g2 = Graphics.FromImage(bmp).HighLay())
                                 {
-                                    g2.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                                     g2.TranslateTransform(0, -scrollY_h.Value);
                                     for (int i = 0; i < calendar_time.Count; i++)
                                     {

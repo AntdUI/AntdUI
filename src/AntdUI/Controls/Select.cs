@@ -261,7 +261,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        internal override void PaintR(Graphics g, Rectangle rect_r)
+        internal override void PaintRIcon(Graphics g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -388,7 +388,7 @@ namespace AntdUI
 
         internal override void OnClearValue()
         {
-            if (selectedIndex > -1 || selectedValue != null)
+            if (selectedIndex > -1 || selectedValue != null || !isempty)
             {
                 ChangeValueNULL();
                 Invalidate();
@@ -494,44 +494,19 @@ namespace AntdUI
     {
         public ObjectItem(object _val, int _i, RectangleF rect, RectangleF rect_text)
         {
-            Rect = rect;
-            RectText = rect_text;
             Show = true;
             Val = _val;
             Text = _val.ToString() ?? string.Empty;
             PY = Pinyin.Pinyin.GetPinyin(Text).ToLower();
             PYS = Pinyin.Pinyin.GetInitials(Text).ToLower();
             ID = _i;
+            SetRect(rect, rect_text);
         }
 
         public ObjectItem(SelectItem _val, int _i, RectangleF rect, int gap_y, float gap, RectangleF rect_text)
         {
             Sub = _val.Sub;
             if (Sub != null && Sub.Count > 0) has_sub = true;
-            Rect = rect;
-            if (_val.Online > -1 || _val.Icon != null)
-            {
-                if (_val.Online > -1 && _val.Icon != null)
-                {
-                    float h2 = rect_text.Height * 0.7F;
-                    RectOnline = new RectangleF(rect_text.X + (h2 - gap_y) / 2F, rect_text.Y + gap, gap_y, gap_y);
-                    RectIcon = new RectangleF(rect_text.X + h2, rect_text.Y, rect_text.Height, rect_text.Height);
-                    RectText = new RectangleF(rect_text.X + h2 + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - h2, rect_text.Height);
-                }
-                else if (_val.Online > -1)
-                {
-                    RectOnline = new RectangleF(rect_text.X + gap, rect_text.Y + gap, gap_y, gap_y);
-                    RectText = new RectangleF(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
-                }
-                else
-                {
-                    RectIcon = new RectangleF(rect_text.X, rect_text.Y, rect_text.Height, rect_text.Height);
-                    RectText = new RectangleF(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
-                }
-            }
-            else RectText = rect_text;
-            arr_rect = new RectangleF(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
-
             Show = true;
             Val = _val;
             Online = _val.Online;
@@ -540,13 +515,13 @@ namespace AntdUI
             PY = Pinyin.Pinyin.GetPinyin(_val.Text).ToLower();
             PYS = Pinyin.Pinyin.GetInitials(_val.Text).ToLower();
             ID = _i;
+            SetRect(rect, rect_text, gap, gap_y);
         }
 
         public ObjectItem(RectangleF rect)
         {
             ID = -1;
             Rect = rect;
-            //RectIcon = RectOnline = RectText = Rectangle.Empty;
             Show = true;
         }
         public object Val { get; set; }
@@ -583,6 +558,45 @@ namespace AntdUI
         internal RectangleF arr_rect { get; set; }
 
         public RectangleF Rect { get; set; }
+
+        internal void SetRect(RectangleF rect, RectangleF rect_text, float gap, float gap_y)
+        {
+            Rect = rect;
+            if (Val is SelectItem)
+            {
+                if (Online > -1 || Icon != null)
+                {
+                    if (Online > -1 && Icon != null)
+                    {
+                        float h2 = rect_text.Height * 0.7F;
+                        RectOnline = new RectangleF(rect_text.X + (h2 - gap_y) / 2F, rect_text.Y + gap, gap_y, gap_y);
+                        RectIcon = new RectangleF(rect_text.X + h2, rect_text.Y, rect_text.Height, rect_text.Height);
+                        RectText = new RectangleF(rect_text.X + h2 + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - h2, rect_text.Height);
+                    }
+                    else if (Online > -1)
+                    {
+                        RectOnline = new RectangleF(rect_text.X + gap, rect_text.Y + gap, gap_y, gap_y);
+                        RectText = new RectangleF(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
+                    }
+                    else
+                    {
+                        RectIcon = new RectangleF(rect_text.X, rect_text.Y, rect_text.Height, rect_text.Height);
+                        RectText = new RectangleF(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
+                    }
+                }
+                else RectText = rect_text;
+
+                arr_rect = new RectangleF(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
+            }
+            else RectText = rect_text;
+        }
+
+        internal void SetRect(RectangleF rect, RectangleF rect_text)
+        {
+            Rect = rect;
+            RectText = rect_text;
+        }
+
         internal bool SetHover(bool val)
         {
             bool change = false;

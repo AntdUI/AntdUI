@@ -159,7 +159,6 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.BackColor = Color.Transparent;
             button1.Dock = DockStyle.Right;
             button1.ImageSvg = Properties.Resources.icon_search;
             button1.JoinLeft = true;
@@ -195,7 +194,6 @@ namespace Overview.Controls
             // 
             // button4
             // 
-            button4.BackColor = Color.Transparent;
             button4.Dock = DockStyle.Right;
             button4.ImageSvg = Properties.Resources.icon_search;
             button4.JoinLeft = true;

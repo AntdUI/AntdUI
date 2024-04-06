@@ -233,9 +233,8 @@ namespace AntdUI
         {
             var rect = TargetRectXY;
             var original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            using (var g = Graphics.FromImage(original_bmp).HighLay())
             {
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                 using (var brush = new SolidBrush(config.Back.HasValue ? config.Back.Value : Color.FromArgb(100, Style.Db.TextBase)))
                 {
                     if (gpath != null)

@@ -64,6 +64,13 @@ namespace AntdUI
     public delegate void ObjectNEventHandler(object sender, object? value);
 
     /// <summary>
+    /// Object类型事件
+    /// </summary>
+    /// <param name="sender">触发对象</param>
+    /// <param name="value">数值</param>
+    public delegate void ObjectsEventHandler(object sender, object[] value);
+
+    /// <summary>
     /// Bool类型事件
     /// </summary>
     /// <param name="sender">触发对象</param>

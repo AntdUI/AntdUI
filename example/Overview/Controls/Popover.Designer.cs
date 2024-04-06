@@ -118,7 +118,6 @@ namespace Overview.Controls
             // 
             // buttonRB
             // 
-            buttonRB.Back = Color.FromArgb(217, 217, 217);
             buttonRB.BorderWidth = 2F;
             buttonRB.Location = new Point(347, 149);
             buttonRB.Name = "buttonRB";
@@ -129,7 +128,6 @@ namespace Overview.Controls
             // 
             // buttonLB
             // 
-            buttonLB.Back = Color.FromArgb(217, 217, 217);
             buttonLB.BorderWidth = 2F;
             buttonLB.Location = new Point(55, 149);
             buttonLB.Name = "buttonLB";
@@ -140,7 +138,6 @@ namespace Overview.Controls
             // 
             // buttonRight
             // 
-            buttonRight.Back = Color.FromArgb(217, 217, 217);
             buttonRight.BorderWidth = 2F;
             buttonRight.Location = new Point(347, 103);
             buttonRight.Name = "buttonRight";
@@ -151,7 +148,6 @@ namespace Overview.Controls
             // 
             // buttonLeft
             // 
-            buttonLeft.Back = Color.FromArgb(217, 217, 217);
             buttonLeft.BorderWidth = 2F;
             buttonLeft.Location = new Point(29, 103);
             buttonLeft.Name = "buttonLeft";
@@ -162,7 +158,6 @@ namespace Overview.Controls
             // 
             // buttonRT
             // 
-            buttonRT.Back = Color.FromArgb(217, 217, 217);
             buttonRT.BorderWidth = 2F;
             buttonRT.Location = new Point(347, 57);
             buttonRT.Name = "buttonRT";
@@ -173,7 +168,6 @@ namespace Overview.Controls
             // 
             // buttonLT
             // 
-            buttonLT.Back = Color.FromArgb(217, 217, 217);
             buttonLT.BorderWidth = 2F;
             buttonLT.Location = new Point(55, 57);
             buttonLT.Name = "buttonLT";
@@ -184,7 +178,6 @@ namespace Overview.Controls
             // 
             // buttonBR
             // 
-            buttonBR.Back = Color.FromArgb(217, 217, 217);
             buttonBR.BorderWidth = 2F;
             buttonBR.Location = new Point(287, 195);
             buttonBR.Name = "buttonBR";
@@ -195,7 +188,6 @@ namespace Overview.Controls
             // 
             // buttonTR
             // 
-            buttonTR.Back = Color.FromArgb(217, 217, 217);
             buttonTR.BorderWidth = 2F;
             buttonTR.Location = new Point(287, 15);
             buttonTR.Name = "buttonTR";
@@ -206,7 +198,6 @@ namespace Overview.Controls
             // 
             // buttonBottom
             // 
-            buttonBottom.Back = Color.FromArgb(217, 217, 217);
             buttonBottom.BorderWidth = 2F;
             buttonBottom.Location = new Point(181, 195);
             buttonBottom.Name = "buttonBottom";
@@ -217,7 +208,6 @@ namespace Overview.Controls
             // 
             // buttonTop
             // 
-            buttonTop.Back = Color.FromArgb(217, 217, 217);
             buttonTop.BorderWidth = 2F;
             buttonTop.Location = new Point(181, 15);
             buttonTop.Name = "buttonTop";
@@ -228,7 +218,6 @@ namespace Overview.Controls
             // 
             // buttonBL
             // 
-            buttonBL.Back = Color.FromArgb(217, 217, 217);
             buttonBL.BorderWidth = 2F;
             buttonBL.Location = new Point(115, 195);
             buttonBL.Name = "buttonBL";
@@ -239,7 +228,6 @@ namespace Overview.Controls
             // 
             // buttonTL
             // 
-            buttonTL.Back = Color.FromArgb(217, 217, 217);
             buttonTL.BorderWidth = 2F;
             buttonTL.Location = new Point(115, 15);
             buttonTL.Name = "buttonTL";

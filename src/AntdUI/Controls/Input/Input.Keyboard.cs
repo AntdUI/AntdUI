@@ -113,7 +113,12 @@ namespace AntdUI
         /// </summary>
         void ProcessBackSpaceKey()
         {
-            if (cache_font == null || ReadOnly) return;
+            if (ReadOnly) return;
+            if (cache_font == null)
+            {
+                IBackSpaceKey();
+                return;
+            }
             if (selectionLength > 0)
             {
                 int start = selectionStart, end = selectionLength;
@@ -140,6 +145,8 @@ namespace AntdUI
                 SelectionStart = start;
             }
         }
+
+        internal virtual void IBackSpaceKey() { }
 
         /// <summary>
         /// 删除文本

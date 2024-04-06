@@ -244,7 +244,6 @@ namespace Overview.Controls
             // 
             // avatar2
             // 
-            avatar2.BackColor = Color.Transparent;
             avatar2.Dock = DockStyle.Top;
             avatar2.Image = Properties.Resources.img1;
             avatar2.Location = new Point(38, 38);
@@ -295,7 +294,6 @@ namespace Overview.Controls
             // 
             // avatar1
             // 
-            avatar1.BackColor = Color.Transparent;
             avatar1.Dock = DockStyle.Top;
             avatar1.Image = Properties.Resources.img1;
             avatar1.Location = new Point(38, 38);
@@ -319,11 +317,10 @@ namespace Overview.Controls
             // 
             // button3
             // 
-            button3.Back = Color.FromArgb(217, 217, 217);
+            button3.BackColor = Color.FromArgb(217, 217, 217);
             button3.BorderWidth = 1.4F;
             button3.Dock = DockStyle.Right;
             button3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            button3.ForeColor = Color.Black;
             button3.Location = new Point(98, 0);
             button3.Name = "button3";
             button3.Size = new Size(73, 40);
@@ -334,7 +331,6 @@ namespace Overview.Controls
             // 
             button4.Dock = DockStyle.Right;
             button4.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            button4.ForeColor = Color.White;
             button4.Location = new Point(171, 0);
             button4.Name = "button4";
             button4.Size = new Size(73, 40);

@@ -411,93 +411,50 @@ namespace AntdUI
                     {
                         return height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
                     });
-                    if (value is int val_int)
+                    edit_input = ShowInput(cell, sx, sy, height, value, _value =>
                     {
-                        edit_input = new InputNumber
+                        bool isok_end = true;
+                        if (CellEndEdit != null) isok_end = CellEndEdit(this, _value, it.RECORD, i_row, i_col);
+                        if (isok_end)
                         {
-                            Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                            Size = new Size(cell.RECT.Width, height),
-                            Value = val_int
-                        };
-                    }
-                    else if (value is double val_double)
-                    {
-                        edit_input = new InputNumber
-                        {
-                            Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                            Size = new Size(cell.RECT.Width, height),
-                            Value = new decimal(val_double)
-                        };
-                    }
-                    else if (value is float val_float)
-                    {
-                        edit_input = new InputNumber
-                        {
-                            Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                            Size = new Size(cell.RECT.Width, height),
-                            Value = new decimal(val_float)
-                        };
-                    }
-                    else
-                    {
-                        edit_input = new Input
-                        {
-                            Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                            Size = new Size(cell.RECT.Width, height),
-                            Text = value?.ToString() ?? ""
-                        };
-                    }
-                    edit_input.KeyPress += (a, b) =>
-                    {
-                        if (b.KeyChar == 13 && a is Input input)
-                        {
-                            b.Handled = true;
-                            bool isok_end = true;
-                            if (CellEndEdit != null) isok_end = CellEndEdit(this, input.Text, it.RECORD, i_row, i_col);
-                            if (isok_end)
+                            cellText.value = _value;
+                            if (cell.PROPERTY != null)
                             {
-                                cellText.value = edit_input.Text;
-                                if (cell.PROPERTY != null)
+                                if (value is int)
                                 {
-                                    if (value is int)
-                                    {
-                                        if (int.TryParse(edit_input.Text, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                    }
-                                    else if (value is double)
-                                    {
-                                        if (double.TryParse(edit_input.Text, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                    }
-                                    else if (value is float)
-                                    {
-                                        if (float.TryParse(edit_input.Text, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                    }
-                                    else cell.PROPERTY.SetValue(cell.VALUE, edit_input.Text);
+                                    if (int.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
                                 }
-                                else if (it.RECORD is DataRow datarow)
+                                else if (value is double)
                                 {
-                                    if (value is int)
-                                    {
-                                        if (int.TryParse(edit_input.Text, out var value)) datarow[i_col] = value;
-                                    }
-                                    else if (value is double)
-                                    {
-                                        if (double.TryParse(edit_input.Text, out var value)) datarow[i_col] = value;
-                                    }
-                                    else if (value is float)
-                                    {
-                                        if (float.TryParse(edit_input.Text, out var value)) datarow[i_col] = value;
-                                    }
-                                    else datarow[i_col] = edit_input.Text;
+                                    if (double.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
                                 }
-                                EditModeClose();
+                                else if (value is float)
+                                {
+                                    if (float.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
+                                }
+                                else cell.PROPERTY.SetValue(cell.VALUE, _value);
                             }
+                            else if (it.RECORD is DataRow datarow)
+                            {
+                                if (value is int)
+                                {
+                                    if (int.TryParse(_value, out var value)) datarow[i_col] = value;
+                                }
+                                else if (value is double)
+                                {
+                                    if (double.TryParse(_value, out var value)) datarow[i_col] = value;
+                                }
+                                else if (value is float)
+                                {
+                                    if (float.TryParse(_value, out var value)) datarow[i_col] = value;
+                                }
+                                else datarow[i_col] = _value;
+                            }
+                            EditModeClose();
                         }
-                    };
-                    edit_input.LostFocus += (a, b) =>
-                    {
-                        EditModeClose();
-                    };
+                    });
                     Controls.Add(edit_input);
+                    edit_input.Focus();
                 }));
             }
             else if (cell is Template templates)
@@ -509,9 +466,6 @@ namespace AntdUI
                         object? value = null;
                         if (cell.PROPERTY != null && cell.VALUE != null) value = cell.PROPERTY.GetValue(cell.VALUE);
                         else value = cell.VALUE;
-
-                        //if (value is CellText text2) value=text2.Text;
-
                         bool isok = true;
                         if (CellBeginEdit != null) isok = CellBeginEdit(this, value, it.RECORD, i_row, i_col);
                         if (!isok) return;
@@ -528,118 +482,129 @@ namespace AntdUI
                             {
                                 return height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
                             });
-                            if (value is int val_int)
+                            edit_input = ShowInput(cell, sx, sy, height, value, _value =>
                             {
-                                edit_input = new InputNumber
+                                bool isok_end = true;
+                                if (CellEndEdit != null) isok_end = CellEndEdit(this, _value, it.RECORD, i_row, i_col);
+                                if (isok_end)
                                 {
-                                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                                    Size = new Size(cell.RECT.Width, height),
-                                    Value = val_int
-                                };
-                            }
-                            else if (value is double val_double)
-                            {
-                                edit_input = new InputNumber
-                                {
-                                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                                    Size = new Size(cell.RECT.Width, height),
-                                    Value = new decimal(val_double)
-                                };
-                            }
-                            else if (value is float val_float)
-                            {
-                                edit_input = new InputNumber
-                                {
-                                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                                    Size = new Size(cell.RECT.Width, height),
-                                    Value = new decimal(val_float)
-                                };
-                            }
-                            else
-                            {
-                                if (value is CellText text2)
-                                {
-                                    edit_input = new Input
+                                    if (value is CellText text2)
                                     {
-                                        Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                                        Size = new Size(cell.RECT.Width, height),
-                                        Text = text2.Text ?? ""
-                                    };
-                                }
-                                else
-                                {
-                                    edit_input = new Input
-                                    {
-                                        Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                                        Size = new Size(cell.RECT.Width, height),
-                                        Text = value?.ToString() ?? ""
-                                    };
-                                }
-                            }
-                            edit_input.KeyPress += (a, b) =>
-                            {
-                                if (b.KeyChar == 13 && a is Input input)
-                                {
-                                    b.Handled = true;
-                                    bool isok_end = true;
-                                    if (CellEndEdit != null) isok_end = CellEndEdit(this, input.Text, it.RECORD, i_row, i_col);
-                                    if (isok_end)
-                                    {
-                                        if (value is CellText text2)
-                                        {
-                                            text2.Text = edit_input.Text;
-                                            if (cell.PROPERTY != null) cell.PROPERTY.SetValue(cell.VALUE, text2);
-                                        }
-                                        else
-                                        {
-                                            text.Value.Text = edit_input.Text;
-                                            if (cell.PROPERTY != null)
-                                            {
-                                                if (value is int)
-                                                {
-                                                    if (int.TryParse(edit_input.Text, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                                }
-                                                else if (value is double)
-                                                {
-                                                    if (double.TryParse(edit_input.Text, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                                }
-                                                else if (value is float)
-                                                {
-                                                    if (float.TryParse(edit_input.Text, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                                }
-                                                else cell.PROPERTY.SetValue(cell.VALUE, edit_input.Text);
-                                            }
-                                            else if (it.RECORD is DataRow datarow)
-                                            {
-                                                if (value is int)
-                                                {
-                                                    if (int.TryParse(edit_input.Text, out var value)) datarow[i_col] = value;
-                                                }
-                                                else if (value is double)
-                                                {
-                                                    if (double.TryParse(edit_input.Text, out var value)) datarow[i_col] = value;
-                                                }
-                                                else if (value is float)
-                                                {
-                                                    if (float.TryParse(edit_input.Text, out var value)) datarow[i_col] = value;
-                                                }
-                                                else datarow[i_col] = edit_input.Text;
-                                            }
-                                        }
-                                        EditModeClose();
+                                        text2.Text = _value;
+                                        if (cell.PROPERTY != null) cell.PROPERTY.SetValue(cell.VALUE, text2);
                                     }
+                                    else
+                                    {
+                                        text.Value.Text = _value;
+                                        if (cell.PROPERTY != null)
+                                        {
+                                            if (value is int)
+                                            {
+                                                if (int.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
+                                            }
+                                            else if (value is double)
+                                            {
+                                                if (double.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
+                                            }
+                                            else if (value is float)
+                                            {
+                                                if (float.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
+                                            }
+                                            else cell.PROPERTY.SetValue(cell.VALUE, _value);
+                                        }
+                                        else if (it.RECORD is DataRow datarow)
+                                        {
+                                            if (value is int)
+                                            {
+                                                if (int.TryParse(_value, out var value)) datarow[i_col] = value;
+                                            }
+                                            else if (value is double)
+                                            {
+                                                if (double.TryParse(_value, out var value)) datarow[i_col] = value;
+                                            }
+                                            else if (value is float)
+                                            {
+                                                if (float.TryParse(_value, out var value)) datarow[i_col] = value;
+                                            }
+                                            else datarow[i_col] = _value;
+                                        }
+                                    }
+                                    EditModeClose();
                                 }
-                            };
-                            edit_input.LostFocus += (a, b) =>
-                            {
-                                EditModeClose();
-                            };
+                            });
                             Controls.Add(edit_input);
+                            edit_input.Focus();
                         }));
                         return;
                     }
                 }
             }
+        }
+
+        Input ShowInput(TCell cell, int sx, int sy, int height, object? value, Action<string> call)
+        {
+            Input input;
+            if (value is int val_int)
+            {
+                input = new InputNumber
+                {
+                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
+                    Size = new Size(cell.RECT.Width, height),
+                    Value = val_int
+                };
+            }
+            else if (value is double val_double)
+            {
+                input = new InputNumber
+                {
+                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
+                    Size = new Size(cell.RECT.Width, height),
+                    Value = new decimal(val_double)
+                };
+            }
+            else if (value is float val_float)
+            {
+                input = new InputNumber
+                {
+                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
+                    Size = new Size(cell.RECT.Width, height),
+                    Value = new decimal(val_float)
+                };
+            }
+            else
+            {
+                if (value is CellText text2)
+                {
+                    input = new Input
+                    {
+                        Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
+                        Size = new Size(cell.RECT.Width, height),
+                        Text = text2.Text ?? ""
+                    };
+                }
+                else
+                {
+                    input = new Input
+                    {
+                        Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
+                        Size = new Size(cell.RECT.Width, height),
+                        Text = value?.ToString() ?? ""
+                    };
+                }
+            }
+            input.KeyPress += (a, b) =>
+            {
+                if (b.KeyChar == 13 && a is Input input)
+                {
+                    b.Handled = true;
+                    call(input.Text);
+                }
+            };
+            input.LostFocus += (a, b) =>
+            {
+                EditModeClose();
+            };
+            return input;
         }
 
         #endregion

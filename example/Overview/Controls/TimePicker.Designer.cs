@@ -94,7 +94,6 @@ namespace Overview.Controls
             // datePicker3
             // 
             datePicker3.AllowClear = true;
-            datePicker3.BackColor = Color.Transparent;
             datePicker3.DropDownArrow = true;
             datePicker3.Location = new Point(19, 56);
             datePicker3.Name = "datePicker3";
@@ -105,7 +104,6 @@ namespace Overview.Controls
             // datePicker2
             // 
             datePicker2.AllowClear = true;
-            datePicker2.BackColor = Color.Transparent;
             datePicker2.Location = new Point(162, 6);
             datePicker2.Name = "datePicker2";
             datePicker2.Placement = AntdUI.TAlignFrom.BR;
@@ -114,7 +112,6 @@ namespace Overview.Controls
             // 
             // datePicker1
             // 
-            datePicker1.BackColor = Color.Transparent;
             datePicker1.Location = new Point(19, 6);
             datePicker1.Name = "datePicker1";
             datePicker1.PlaceholderText = "请选择日期";

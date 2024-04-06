@@ -128,9 +128,8 @@ namespace AntdUI
                         var last = shows[shows.Count - 1].cells[fixedColumnL[fixedColumnL.Length - 1]];
                         using (var bmp = new Bitmap(last.RECT.Right, last.RECT.Bottom))
                         {
-                            using (var g2 = Graphics.FromImage(bmp).High())
+                            using (var g2 = Graphics.FromImage(bmp).HighLay())
                             {
-                                g2.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                                 g2.Clear(Style.Db.BgBase);
                                 g2.TranslateTransform(0, -sy);
                                 foreach (var row in shows)
@@ -176,9 +175,8 @@ namespace AntdUI
                             int w = last.RECT.Right - first.RECT.Left;
                             using (var bmp = new Bitmap(w, last.RECT.Bottom))
                             {
-                                using (var g2 = Graphics.FromImage(bmp).High())
+                                using (var g2 = Graphics.FromImage(bmp).HighLay())
                                 {
-                                    g2.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                                     g2.Clear(Style.Db.BgBase);
                                     g2.TranslateTransform(0, -sy);
                                     foreach (var row in shows)

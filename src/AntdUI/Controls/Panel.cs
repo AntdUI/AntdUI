@@ -38,6 +38,25 @@ namespace AntdUI
     {
         #region 属性
 
+        #region 系统
+
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        public new Color? BackColor
+        {
+            get => back;
+            set
+            {
+                if (back == value) return;
+                back = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
+
         int radius = 6;
         /// <summary>
         /// 圆角
@@ -174,6 +193,7 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
         public Color? Back
         {
             get => back;

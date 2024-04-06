@@ -68,6 +68,7 @@ namespace AntdUI
                     is_suffix_down = true;
                     return;
                 }
+                if (IMouseDown(e.Location)) return;
                 mouseDownMove = false;
                 Select();
                 oldMouseDown = e.Location;
@@ -75,6 +76,11 @@ namespace AntdUI
                 SelectionLength = 0;
                 if (cache_font != null) mouseDown = true;
             }
+        }
+
+        internal virtual bool IMouseDown(Point e)
+        {
+            return false;
         }
 
         bool hover_clear = false;
@@ -111,7 +117,8 @@ namespace AntdUI
                 {
                     Cursor = Cursors.Hand; return;
                 }
-                if (ReadShowCaret)
+                if (IMouseMove(e.Location)) Cursor = Cursors.Hand;
+                else if (ReadShowCaret)
                 {
                     if (rect_text.Contains(e.Location)) Cursor = Cursors.Hand;
                     else Cursor = DefaultCursor;
@@ -122,6 +129,11 @@ namespace AntdUI
                     else Cursor = DefaultCursor;
                 }
             }
+        }
+
+        internal virtual bool IMouseMove(Point e)
+        {
+            return false;
         }
 
         internal virtual void OnClearValue()

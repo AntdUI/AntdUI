@@ -261,6 +261,12 @@ namespace AntdUI
         internal void CalculateRect()
         {
             var rect = ReadRectangle;
+            int useLeft = UseLeft(rect);
+            if (useLeft > 0)
+            {
+                rect.X += useLeft;
+                rect.Width -= useLeft;
+            }
             int sps = (int)(CurrentCaret.Height * .4F), sps2 = sps * 2;
             RectAuto(rect, sps, sps2);
             if (cache_font == null) CurrentCaret.Location = rect_text.Location;
@@ -412,6 +418,7 @@ namespace AntdUI
             }
             SetCaretPostion();
         }
+        internal virtual int UseLeft(Rectangle rect) { return 0; }
 
         #region 最终区域计算
 

@@ -275,6 +275,15 @@ namespace AntdUI
             if (Config.TextRenderingHint.HasValue) g.TextRenderingHint = Config.TextRenderingHint.Value;
             return g;
         }
+        public static Graphics HighLay(this Graphics g)
+        {
+            Config.SetDpi(g);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            return g;
+        }
 
         public static void GDI(Action<Graphics> action)
         {
