@@ -376,6 +376,21 @@ namespace AntdUI
             _fore = fore;
         }
 
+        Color? _back;
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        public Color? Back
+        {
+            get => _back;
+            set
+            {
+                if (_back == value) return;
+                _back = value;
+                OnPropertyChanged("Back");
+            }
+        }
+
         Color? _fore;
         /// <summary>
         /// 字体颜色

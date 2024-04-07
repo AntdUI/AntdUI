@@ -668,7 +668,12 @@ namespace AntdUI
             if (IsPassWord) return;
             string strText = Clipboard.GetText();
             if (string.IsNullOrEmpty(strText)) return;
-            EnterText(strText, false);
+            var chars = new List<char>(strText.Length);
+            foreach (char key in strText)
+            {
+                if (Verify(key, out var change)) chars.Add(change ?? key);
+            }
+            if (chars.Count > 0) EnterText(string.Join("", chars), false);
         }
 
         /// <summary>

@@ -774,6 +774,17 @@ namespace AntdUI
                 PARENT = template;
             }
 
+            public void PaintBack(Graphics g, TCell it)
+            {
+                if (Value.Back.HasValue)
+                {
+                    using (var brush = new SolidBrush(Value.Back.Value))
+                    {
+                        g.FillRectangle(brush, it.RECT);
+                    }
+                }
+            }
+
             public void Paint(Graphics g, TCell it, Font font, SolidBrush fore)
             {
                 if (Value.Fore.HasValue)
@@ -825,6 +836,8 @@ namespace AntdUI
                 Value = value;
                 PARENT = template;
             }
+
+            public void PaintBack(Graphics g, TCell it) { }
 
             public void Paint(Graphics g, TCell it, Font font, SolidBrush fore)
             {
@@ -933,6 +946,8 @@ namespace AntdUI
                 Value = value;
                 PARENT = template;
             }
+
+            public void PaintBack(Graphics g, TCell it) { }
 
             public void Paint(Graphics g, TCell it, Font font, SolidBrush fore)
             {
@@ -1051,6 +1066,8 @@ namespace AntdUI
                 PARENT = template;
             }
 
+            public void PaintBack(Graphics g, TCell it) { }
+
             public void Paint(Graphics g, TCell it, Font font, SolidBrush fore)
             {
                 float radius = Value.Radius * Config.Dpi;
@@ -1138,6 +1155,8 @@ namespace AntdUI
                 Value = value;
                 PARENT = template;
             }
+
+            public void PaintBack(Graphics g, TCell it) { }
 
             public void Paint(Graphics g, TCell it, Font font, SolidBrush fore)
             {
@@ -1362,6 +1381,8 @@ namespace AntdUI
                 PARENT = template;
             }
 
+            public void PaintBack(Graphics g, TCell it) { }
+
             public void Paint(Graphics g, TCell it, Font font, SolidBrush fore)
             {
                 Color _color = Value.Fill.HasValue ? Value.Fill.Value : Style.Db.Primary, _back = Value.Back.HasValue ? Value.Back.Value : Style.Db.FillSecondary;
@@ -1490,6 +1511,7 @@ namespace AntdUI
             /// <param name="gap2">边距2</param>
             void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2);
 
+            void PaintBack(Graphics g, TCell it);
             void Paint(Graphics g, TCell it, Font font, SolidBrush fore);
 
 #if NET40 || NET46 || NET48

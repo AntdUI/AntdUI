@@ -115,7 +115,7 @@ namespace AntdUI
                     int x = 0, y = 0;
                     bool is_exceed = false;
 
-                    var rect = ClientRectangle.PaddingRect(Padding);
+                    var rect = ClientRectangle;
 
                     rect_read.X = rect.X;
                     rect_read.Y = rect.Y;

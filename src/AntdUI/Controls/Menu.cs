@@ -343,22 +343,32 @@ namespace AntdUI
                     int size = (int)Math.Ceiling(g.MeasureString(it.Text, Font).Width + gap * 4 + icon_size + it.arr_rect.Width);
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + gapI;
-                    if (!collapsed && it.CanExpand)
+                    if (it.CanExpand)
                     {
-                        int y_item = y;
-
-                        int size2 = ChangeList(rect, g, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
-                        if (size2 > collapsedWidth) collapsedWidth = size2;
-
-                        it.SubY = y_item - gapI / 2;
-                        it.SubHeight = y - y_item;
-
-                        if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                        if (!collapsed)
                         {
-                            it.ExpandHeight = y - y_item;
-                            y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
+                            int y_item = y;
+
+                            int size2 = ChangeList(rect, g, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
+                            if (size2 > collapsedWidth) collapsedWidth = size2;
+
+                            it.SubY = y_item - gapI / 2;
+                            it.SubHeight = y - y_item;
+
+                            if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                            {
+                                it.ExpandHeight = y - y_item;
+                                y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
+                            }
+                            else if (!it.Expand) y = y_item;
                         }
-                        else if (!it.Expand) y = y_item;
+                        else
+                        {
+                            int oldy = y;
+                            int size2 = ChangeList(rect, g, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
+                            if (size2 > collapsedWidth) collapsedWidth = size2;
+                            y = oldy;
+                        }
                     }
                 }
             }

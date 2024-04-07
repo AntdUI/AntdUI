@@ -25,21 +25,6 @@ namespace AntdUI
     {
         #region 属性
 
-        public ScrollBar(ILayeredForm _form, bool enabledY = true, bool enabledX = false)
-        {
-            Gap = Back = false;
-            Invalidate = rect =>
-            {
-                OnInvalidate?.Invoke();
-                _form.Print();
-            };
-            EnabledX = enabledX;
-            EnabledY = enabledY;
-            SIZE = (int)(SIZE * Config.Dpi);
-            SIZE_NORMAL = (int)(SIZE_NORMAL * Config.Dpi);
-            SIZE_MOVE = (int)(SIZE_MOVE * Config.Dpi);
-        }
-
         #region 布局容器
 
         public ScrollBar(FlowPanel control, bool enabledY = true, bool enabledX = false)
@@ -130,11 +115,6 @@ namespace AntdUI
         /// 悬浮下滚动条大小
         /// </summary>
         public int SIZE_MOVE { get; set; } = 8;
-
-        /// <summary>
-        /// 是否显示间隔
-        /// </summary>
-        public bool Gap { get; set; } = true;
 
         #endregion
 
@@ -300,51 +280,71 @@ namespace AntdUI
         {
             RectX = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
             RectY = new Rectangle(rect.Right - SIZE, rect.Top, SIZE, rect.Height);
+            SetShow(oldx, oldy);
         }
 
+        int oldx = 0, oldy = 0;
         /// <summary>
         /// 设置容器虚拟宽度
         /// </summary>
         public void SetVrSize(int x, int y)
         {
-            int width = RectX.Width, height = RectY.Height;
-            if (width > 0 && x > 0 && x > width)
+            oldx = x; oldy = y;
+            SetShow(oldx, oldy);
+        }
+
+        #region 设置是否显示
+
+        string show_oldx = "", show_oldy = "";
+        void SetShow(int x, int y)
+        {
+            SetShow(x, RectX.Width, y, RectY.Height);
+        }
+        void SetShow(int x, int x2, int y, int y2)
+        {
+            string show_x = x + "_" + x2, show_y = y + "_" + y2;
+            if (show_oldx == show_x && show_oldy == show_y) return;
+            show_oldx = show_x;
+            show_oldy = show_y;
+            if (x2 > 0 && x > 0 && x > x2)
             {
-                MaxX = x;
-                ShowX = maxX > width;
+                maxX = x;
+                ShowX = maxX > x2;
                 if (ShowX)
                 {
-                    int valueI = x - width;
+                    int valueI = x - x2;
                     if (valueX > valueI) ValueX = valueI;
                 }
             }
             else
             {
-                MaxX = 0;
+                maxX = valueX = 0;
                 ShowX = false;
             }
-
-            if (height > 0 && y > 0 && y > height)
+            if (y2 > 0 && y > 0 && y > y2)
             {
-                MaxY = y;
-                ShowY = maxY > height;
+                maxY = y;
+                ShowY = maxY > y2;
                 if (ShowY)
                 {
-                    int valueI = y - height;
+                    int valueI = y - y2;
                     if (valueY > valueI) ValueY = valueI;
                 }
             }
             else
             {
-                MaxY = 0;
+                maxY = valueY = 0;
                 ShowY = false;
             }
+
             if (showX && showY)
             {
                 maxX += SIZE;
                 maxY += SIZE;
             }
         }
+
+        #endregion
 
         #endregion
 
@@ -426,19 +426,14 @@ namespace AntdUI
             var slider = new RectangleF(RectX.X + x, RectX.Y, width, RectX.Height);
             if (full) return slider;
             float gap = (RectX.Height - SIZE_NORMAL) / 2F;
+            width -= gap * 2;
+            slider.X += gap;
+            slider.Width = width;
+
             int size = SIZE_NORMAL;
             if (hoverX) size = SIZE_MOVE;
             slider.Y = slider.Y + (slider.Height - size) / 2F;
             slider.Height = size;
-            if (Gap)
-            {
-                if (slider.X < gap) slider.X = gap;
-                else
-                {
-                    if (showY) width += SIZE;
-                    if (slider.X > RectX.Width - width - gap) slider.X = RectX.Width - width - gap;
-                }
-            }
             return slider;
         }
 
@@ -450,19 +445,14 @@ namespace AntdUI
             var slider = new RectangleF(RectY.X, RectY.Y + y, RectY.Width, height);
             if (full) return slider;
             float gap = (RectY.Width - SIZE_NORMAL) / 2F;
+            height -= gap * 2;
+            slider.Y += gap;
+            slider.Height = height;
+
             int size = SIZE_NORMAL;
             if (hoverY) size = SIZE_MOVE;
             slider.X = slider.X + (slider.Width - size) / 2F;
             slider.Width = size;
-            if (Gap)
-            {
-                if (slider.Y < gap) slider.Y = gap;
-                else
-                {
-                    if (showX) height += SIZE;
-                    if (slider.Y > RectY.Height - height - gap) slider.Y = RectY.Height - height - gap;
-                }
-            }
             return slider;
         }
 
@@ -667,8 +657,8 @@ namespace AntdUI
         /// </summary>
         public void SetVrSize(int len)
         {
-            if (EnabledY) SetVrSize(0, len);
-            else SetVrSize(len, 0);
+            if (EnabledY) SetVrSize(oldx, len);
+            else SetVrSize(len, oldy);
         }
 
         public bool MouseDown(Point e)
