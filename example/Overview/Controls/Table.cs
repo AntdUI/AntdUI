@@ -28,8 +28,12 @@ namespace Overview.Controls
                 new AntdUI.ColumnCheck("check"){ Fixed=true},
                 new AntdUI.Column("name","姓名"){ Fixed=true},
                 new AntdUI.Column("online","状态",AntdUI.ColumnAlign.Center),
+                new AntdUI.ColumnSwitch("enable","启用",AntdUI.ColumnAlign.Center){ Call=(value,record, i_row, i_col)=>{
+                    Thread.Sleep(2000);
+                    return value;
+                } },
                 new AntdUI.Column("age","年龄",AntdUI.ColumnAlign.Center),
-                new AntdUI.Column("address","住址"),
+                new AntdUI.Column("address","住址"){ Width="120", LineBreak=true},
                 new AntdUI.Column("tag","Tag"),
                 new AntdUI.Column("imgs","图片"),
                 new AntdUI.Column("btns","操作"){ Fixed=true,Width="auto"},
@@ -44,7 +48,7 @@ namespace Overview.Controls
             for (int i = 2; i < 10; i++) list.Add(new TestClass(i, i.ToString(), "胡彦斌", 100, "西湖区湖底公园" + (i + 10) + "号"));
 
             table1.DataSource = list;
-
+            table1.CellClick += Table1_CellClick;
 
             table2.Columns = new AntdUI.Column[] {
                 new AntdUI.Column("name","姓名"),
@@ -57,6 +61,12 @@ namespace Overview.Controls
             for (int i = 0; i < 100; i++) list2.Add(new TestClass2(i, "王健林" + i, (i + 20), "西湖区湖底公园" + (i + 1) + "号"));
             table2.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
         }
+
+        private void Table1_CellClick(object sender, MouseEventArgs args, object record, int rowIndex, int columnIndex, Rectangle rect)
+        {
+            if (rowIndex > 0 && columnIndex == 4) AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "演示一下能弹出自定义") { Offset = rect });
+        }
+
         object GetPageData(int current, int pageSize)
         {
             var list2 = new List<TestClass2>();
@@ -103,6 +113,7 @@ namespace Overview.Controls
                 _name = name;
                 _age = age;
                 _address = address;
+                _enable = i % 2 == 0;
                 if (i == 1)
                 {
                     _imgs = new AntdUI.CellImage[] {
@@ -176,6 +187,19 @@ namespace Overview.Controls
                 {
                     _online = value;
                     OnPropertyChanged("online");
+                }
+            }
+
+
+            bool _enable = false;
+            public bool enable
+            {
+                get => _enable;
+                set
+                {
+                    if (_enable == value) return;
+                    _enable = value;
+                    OnPropertyChanged("enable");
                 }
             }
 
@@ -309,6 +333,15 @@ namespace Overview.Controls
                     OkType = AntdUI.TTypeMini.Error,
                     OkText = "删除"
                 });
+
+                table1.Spin("正在加载中...", () =>
+                {
+                    Thread.Sleep(2000);
+                },
+                    () =>
+                    {
+
+                    });
             }
         }
     }
