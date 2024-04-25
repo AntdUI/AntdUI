@@ -344,6 +344,23 @@ namespace AntdUI
                             CheckedChanged?.Invoke(this, radioCell.Checked, it.RECORD, i_row, i_col);
                         }
                     }
+                    else if (cell is TCellSwitch switchCell)
+                    {
+                        if (switchCell.Contains(x, y) && !switchCell.Loading && switchCell.column.Call != null)
+                        {
+                            switchCell.Loading = true;
+                            ITask.Run(() =>
+                            {
+                                var value = switchCell.column.Call(!switchCell.Checked, it.RECORD, i_row, i_col);
+                                if (switchCell.Checked == value) return;
+                                switchCell.Checked = value;
+                                cell.PROPERTY?.SetValue(cell.VALUE, value);
+                            }).ContinueWith(action =>
+                            {
+                                switchCell.Loading = false;
+                            });
+                        }
+                    }
                     else if (cell is Template template && template.HasBtn)
                     {
                         foreach (var item in template.value)
@@ -723,6 +740,16 @@ namespace AntdUI
             else if (cel is TCellRadio radioCell)
             {
                 if (radioCell.Contains(x, y)) hand++;
+            }
+            else if (cel is TCellSwitch switchCell)
+            {
+                if (switchCell.column.Call == null) return;
+                if (switchCell.Contains(x, y))
+                {
+                    hand++;
+                    switchCell.ExtraMouseHover = true;
+                }
+                else switchCell.ExtraMouseHover = false;
             }
             else if (cel is Template template && template.HasBtn)
             {

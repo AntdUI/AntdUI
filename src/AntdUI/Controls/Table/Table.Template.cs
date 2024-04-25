@@ -365,7 +365,7 @@ namespace AntdUI
                 return rect.Contains(x, y);
             }
 
-            public SizeF GetSize(Graphics g, Font font, int gap, int gap2)
+            public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
                 return g.MeasureString(Config.NullText, font);
             }
@@ -491,7 +491,233 @@ namespace AntdUI
                 return rect.Contains(x, y);
             }
 
-            public SizeF GetSize(Graphics g, Font font, int gap, int gap2)
+            public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
+            {
+                return g.MeasureString(Config.NullText, font);
+            }
+
+            public bool MouseDown { get; set; }
+
+#if NET40 || NET46 || NET48
+            public bool CONTAINS(int x, int y)
+            {
+                return RECT.Contains(x, y);
+            }
+#endif
+            public override string ToString()
+            {
+                return Checked.ToString();
+            }
+        }
+
+        /// <summary>
+        /// 开关
+        /// </summary>
+        class TCellSwitch : TCell
+        {
+            public TCellSwitch(Table table, PropertyDescriptor prop, object ov, ColumnSwitch _column, bool value)
+            {
+                PARENT = table;
+                PROPERTY = prop;
+                VALUE = ov;
+                column = _column;
+                _checked = value;
+                AnimationCheckValue = _checked ? 1F : 0F;
+            }
+            public ColumnSwitch column { get; set; }
+
+            #region 选中状态
+
+            internal bool AnimationCheck = false;
+            internal float AnimationCheckValue = 0;
+
+            ITask? ThreadCheck = null;
+
+            bool _checked = false;
+            [Description("选中状态"), Category("行为"), DefaultValue(false)]
+            public bool Checked
+            {
+                get => _checked;
+                set
+                {
+                    if (_checked == value) return;
+                    _checked = value;
+                    OnCheck();
+                }
+            }
+
+            void OnCheck()
+            {
+                ThreadCheck?.Dispose();
+                if (ROW.SHOW && PARENT.IsHandleCreated)
+                {
+                    if (Config.Animation)
+                    {
+                        AnimationCheck = true;
+                        if (_checked)
+                        {
+                            ThreadCheck = new ITask(PARENT, () =>
+                            {
+                                AnimationCheckValue = AnimationCheckValue.Calculate(0.1F);
+                                if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
+                                PARENT.Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationCheck = false;
+                                PARENT.Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            ThreadCheck = new ITask(PARENT, () =>
+                            {
+                                AnimationCheckValue = AnimationCheckValue.Calculate(-0.1F);
+                                if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
+                                PARENT.Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationCheck = false;
+                                PARENT.Invalidate();
+                            });
+                        }
+                    }
+                    else
+                    {
+                        AnimationCheckValue = _checked ? 1F : 0F;
+                        PARENT.Invalidate();
+                    }
+                }
+            }
+
+            #endregion
+
+            #region 悬浮
+
+            ITask? ThreadHover = null;
+            internal float AnimationHoverValue = 0;
+            internal bool AnimationHover = false;
+            internal bool _mouseHover = false;
+            internal bool ExtraMouseHover
+            {
+                get => _mouseHover;
+                set
+                {
+                    if (_mouseHover == value) return;
+                    _mouseHover = value;
+                    if (ROW.SHOW && PARENT.IsHandleCreated && Config.Animation)
+                    {
+                        ThreadHover?.Dispose();
+                        AnimationHover = true;
+                        if (value)
+                        {
+                            ThreadHover = new ITask(PARENT, () =>
+                            {
+                                AnimationHoverValue = AnimationHoverValue.Calculate(0.1F);
+                                if (AnimationHoverValue > 1) { AnimationHoverValue = 1F; return false; }
+                                PARENT.Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationHover = false;
+                                PARENT.Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            ThreadHover = new ITask(PARENT, () =>
+                            {
+                                AnimationHoverValue = AnimationHoverValue.Calculate(-0.1F);
+                                if (AnimationHoverValue <= 0) { AnimationHoverValue = 0F; return false; }
+                                PARENT.Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationHover = false;
+                                PARENT.Invalidate();
+                            });
+                        }
+                    }
+                    else AnimationHoverValue = 255;
+                    PARENT.Invalidate();
+                }
+            }
+
+            #endregion
+
+            #region 加载中
+
+            bool loading = false;
+            public bool Loading
+            {
+                get => loading;
+                set
+                {
+                    if (loading == value) return;
+                    loading = value;
+                    if (ROW.SHOW && PARENT.IsHandleCreated)
+                    {
+                        if (loading)
+                        {
+                            bool ProgState = false;
+                            ThreadLoading = new ITask(PARENT, () =>
+                            {
+                                if (ProgState)
+                                {
+                                    LineAngle = LineAngle.Calculate(9F);
+                                    LineWidth = LineWidth.Calculate(0.6F);
+                                    if (LineWidth > 75) ProgState = false;
+                                }
+                                else
+                                {
+                                    LineAngle = LineAngle.Calculate(9.6F);
+                                    LineWidth = LineWidth.Calculate(-0.6F);
+                                    if (LineWidth < 6) ProgState = true;
+                                }
+                                if (LineAngle >= 360) LineAngle = 0;
+                                PARENT.Invalidate();
+                                return true;
+                            }, 10);
+                        }
+                        else ThreadLoading?.Dispose();
+                    }
+                    PARENT.Invalidate();
+                }
+            }
+
+            ITask? ThreadLoading = null;
+            internal float LineWidth = 6, LineAngle = 0;
+
+            #endregion
+
+            /// <summary>
+            /// 区域
+            /// </summary>
+            public Rectangle rect { get; set; }
+
+            public void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2)
+            {
+            }
+            internal void SetSize(Rectangle _rect, int check_size)
+            {
+                int check_size2 = check_size * 2;
+                RECT = _rect;
+                rect = new Rectangle(_rect.X + (_rect.Width - check_size2) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size2, check_size);
+            }
+            public Table PARENT { get; set; }
+            public RowTemplate ROW { get; set; }
+            public PropertyDescriptor? PROPERTY { get; set; }
+            public int INDEX { get; set; }
+            public object VALUE { get; set; }
+            public Rectangle RECT { get; set; }
+
+            internal bool Contains(int x, int y)
+            {
+                return rect.Contains(x, y);
+            }
+
+            public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
                 return g.MeasureString(Config.NullText, font);
             }
@@ -515,12 +741,12 @@ namespace AntdUI
         /// </summary>
         class TCellText : TCell
         {
-            public TCellText(Table table, PropertyDescriptor? prop, object ov, Column column, string? _value)
+            public TCellText(Table table, PropertyDescriptor? prop, object ov, Column _column, string? _value)
             {
                 PARENT = table;
                 PROPERTY = prop;
                 VALUE = ov;
-                align = column.Align;
+                column = _column;
                 value = _value;
             }
 
@@ -537,7 +763,7 @@ namespace AntdUI
                 RECT = _rect;
                 rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
             }
-            public ColumnAlign align { get; set; }
+            public Column column { get; set; }
             public Table PARENT { get; set; }
             public RowTemplate ROW { get; set; }
             public PropertyDescriptor? PROPERTY { get; set; }
@@ -545,8 +771,24 @@ namespace AntdUI
             public object VALUE { get; set; }
             public Rectangle RECT { get; set; }
 
-            public SizeF GetSize(Graphics g, Font font, int gap, int gap2)
+            public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
+                if (column.LineBreak)
+                {
+                    if (column.Width != null)
+                    {
+                        if (column.Width.EndsWith("%") && float.TryParse(column.Width.TrimEnd('%'), out var f))
+                        {
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)));
+                            return new SizeF(size2.Width + gap2, size2.Height);
+                        }
+                        else if (int.TryParse(column.Width, out var i))
+                        {
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi));
+                            return new SizeF(size2.Width + gap2, size2.Height);
+                        }
+                    }
+                }
                 var size = g.MeasureString(value, font);
                 return new SizeF(size.Width + gap2, size.Height);
             }
@@ -606,7 +848,7 @@ namespace AntdUI
                 return rect.Contains(x, y);
             }
 
-            public SizeF GetSize(Graphics g, Font font, int gap, int gap2)
+            public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
                 var size = g.MeasureString(value, font);
                 return new SizeF(size.Width + gap2, size.Height);
@@ -635,7 +877,7 @@ namespace AntdUI
             RowTemplate ROW { get; set; }
             Rectangle RECT { get; set; }
             void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2);
-            SizeF GetSize(Graphics g, Font font, int gap, int gap2);
+            SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2);
 
             bool MouseDown { get; set; }
 
@@ -656,12 +898,12 @@ namespace AntdUI
         /// </summary>
         class Template : TCell
         {
-            public Template(Table table, PropertyDescriptor prop, object ov, Column column, ref int processing, IList<ICell> _value)
+            public Template(Table table, PropertyDescriptor prop, object ov, Column _column, ref int processing, IList<ICell> _value)
             {
                 PARENT = table;
                 PROPERTY = prop;
                 VALUE = ov;
-                align = column.Align;
+                column = _column;
                 var list = new List<ITemplate>();
                 foreach (var it in _value)
                 {
@@ -702,7 +944,7 @@ namespace AntdUI
                 else
                 {
                     int use_x;
-                    switch (align)
+                    switch (column.Align)
                     {
                         case ColumnAlign.Center: use_x = _rect.X + (_rect.Width - USE_Width) / 2; break;
                         case ColumnAlign.Right: use_x = _rect.Right - USE_Width; break;
@@ -718,7 +960,7 @@ namespace AntdUI
                     }
                 }
             }
-            public ColumnAlign align { get; set; }
+            public Column column { get; set; }
             public Table PARENT { get; set; }
             public RowTemplate ROW { get; set; }
             public PropertyDescriptor? PROPERTY { get; set; }
@@ -728,7 +970,7 @@ namespace AntdUI
 
             Size[] SIZES;
             int USE_Width = 0;
-            public SizeF GetSize(Graphics g, Font font, int _gap, int _gap2)
+            public SizeF GetSize(Graphics g, Font font, int width, int _gap, int _gap2)
             {
                 int gap = _gap / 2, gap2 = _gap;
                 float w = 0, h = 0;
@@ -791,10 +1033,10 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Value.Fore.Value))
                     {
-                        g.DrawString(Value.Text, Value.Font == null ? font : Value.Font, brush, Rect, StringF(PARENT.align));
+                        g.DrawString(Value.Text, Value.Font == null ? font : Value.Font, brush, Rect, StringF(PARENT.column));
                     }
                 }
-                else g.DrawString(Value.Text, Value.Font == null ? font : Value.Font, fore, Rect, StringF(PARENT.align));
+                else g.DrawString(Value.Text, Value.Font == null ? font : Value.Font, fore, Rect, StringF(PARENT.column));
             }
 
             public Size GetSize(Graphics g, Font font, int gap, int gap2)
@@ -910,7 +1152,7 @@ namespace AntdUI
             public Size GetSize(Graphics g, Font font, int gap, int gap2)
             {
                 var size = g.MeasureString(Value.Text, font);
-                return new Size((int)Math.Ceiling(size.Width) + gap2, (int)Math.Ceiling(size.Height));
+                return new Size((int)Math.Ceiling(size.Width) + gap2 * 2, (int)Math.Ceiling(size.Height) + gap);
             }
 
             Rectangle Rect;
@@ -987,10 +1229,10 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Value.Fore.Value))
                     {
-                        g.DrawString(Value.Text, font, brush, Rect, StringF(PARENT.align));
+                        g.DrawString(Value.Text, font, brush, Rect, StringF(PARENT.column));
                     }
                 }
-                else g.DrawString(Value.Text, font, fore, Rect, StringF(PARENT.align));
+                else g.DrawString(Value.Text, font, fore, Rect, StringF(PARENT.column));
             }
 
             public Size GetSize(Graphics g, Font font, int gap, int gap2)
@@ -1021,7 +1263,7 @@ namespace AntdUI
                 else
                 {
                     Rect = new RectangleF(rect.X + gap + size.Height, rect.Y, rect.Width - size.Height - gap2, rect.Height);
-                    switch (PARENT.align)
+                    switch (PARENT.column.Align)
                     {
                         case ColumnAlign.Center:
                             var sizec = g.MeasureString(Value.Text, font);

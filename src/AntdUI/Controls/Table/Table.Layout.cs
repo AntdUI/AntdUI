@@ -148,7 +148,7 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    var text_size = it.GetSize(g, Font, gap, gap2);
+                                    var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
                                     if (max_height < text_size.Height) max_height = text_size.Height;
                                     if (temp_width_cell[cel_i] < text_size.Width) temp_width_cell[cel_i] = text_size.Width;
                                 }
@@ -251,6 +251,7 @@ namespace AntdUI
                                 var _rect = new Rectangle(use_x, use_y, width_cell[i], row.RECT.Height);
                                 if (it is TCellCheck check) check.SetSize(_rect, check_size);
                                 else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
+                                else if (it is TCellSwitch _switch) _switch.SetSize(_rect, check_size);
                                 else if (it is TCellColumn column)
                                 {
                                     it.SetSize(g, Font, _rect, gap, gap2);
@@ -386,6 +387,13 @@ namespace AntdUI
                 }
                 else AddRows(ref cells, new TCellRadio(this, prop, ov, false));
             }
+            else if (column is ColumnSwitch columnSwitch)
+            {
+                //开关
+                var value = prop.GetValue(ov);
+                if (value is bool check && check) AddRows(ref cells, new TCellSwitch(this, prop, ov, columnSwitch, true));
+                else AddRows(ref cells, new TCellSwitch(this, prop, ov, columnSwitch, false));
+            }
             else
             {
                 var value = prop.GetValue(ov);
@@ -512,6 +520,7 @@ namespace AntdUI
                             else rows[0].CheckState = CheckState.Unchecked;
                             check.SetCheckState(rows[0].CheckState);
                         }
+                        else if (it is ColumnSwitch _switch) { }
                         else
                         {
                             foreach (var row in rows)

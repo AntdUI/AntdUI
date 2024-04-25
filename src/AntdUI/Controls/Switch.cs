@@ -118,6 +118,9 @@ namespace AntdUI
         [Description("边距，用于激活动画"), Category("外观"), DefaultValue(4)]
         public int Margins { get; set; } = 4;
 
+        [Description("间距"), Category("外观"), DefaultValue(2)]
+        public int Gap { get; set; } = 2;
+
         #endregion
 
         #region 事件
@@ -154,11 +157,9 @@ namespace AntdUI
                             g.FillPath(brush2, path);
                         }
                     }
-                    else if (ExtraMouseHover)
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    else if (ExtraMouseHover) g.FillPath(brush, path);
                 }
+                float gap = (int)(Gap * Config.Dpi), gap2 = gap * 2F;
                 if (AnimationCheck)
                 {
                     int a = (int)(255 * AnimationCheckValue);
@@ -166,7 +167,7 @@ namespace AntdUI
                     {
                         g.FillPath(brush, path);
                     }
-                    var dot_rect = new RectangleF(rect_read.X + 2F + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + 2F, rect_read.Height - 4F, rect_read.Height - 4F);
+                    var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                     using (var brush = new SolidBrush(enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
                     {
                         g.FillEllipse(brush, dot_rect);
@@ -194,7 +195,7 @@ namespace AntdUI
                             g.FillPath(brush, path);
                         }
                     }
-                    var dot_rect = new RectangleF(rect_read.X + 2F + rect_read.Width - rect_read.Height, rect_read.Y + 2F, rect_read.Height - 4F, rect_read.Height - 4F);
+                    var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                     using (var brush = new SolidBrush(enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
                     {
                         g.FillEllipse(brush, dot_rect);
@@ -202,7 +203,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    var dot_rect = new RectangleF(rect_read.X + 2F, rect_read.Y + 2F, rect_read.Height - 4F, rect_read.Height - 4F);
+                    var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                     using (var brush = new SolidBrush(enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
                     {
                         g.FillEllipse(brush, dot_rect);

@@ -25,9 +25,9 @@ namespace AntdUI
 {
     partial class Table
     {
-        static StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near);
-        static StringFormat stringCenter = Helper.SF_NoWrap();
-        static StringFormat stringRight = Helper.SF_NoWrap(lr: StringAlignment.Far);
+        static StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near), stringCenter = Helper.SF_NoWrap(), stringRight = Helper.SF_NoWrap(lr: StringAlignment.Far);
+        static StringFormat stringLeftEllipsis = Helper.SF_ALL(lr: StringAlignment.Near), stringCenterEllipsis = Helper.SF_ALL(), stringRightEllipsis = Helper.SF_ALL(lr: StringAlignment.Far);
+        static StringFormat stringLeftN = Helper.SF(lr: StringAlignment.Near), stringCenterN = Helper.SF(), stringRightN = Helper.SF(lr: StringAlignment.Far);
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -209,11 +209,12 @@ namespace AntdUI
         {
             if (it is TCellCheck check) PaintCheck(g, check);
             else if (it is TCellRadio radio) PaintRadio(g, radio);
+            else if (it is TCellSwitch _switch) PaintSwitch(g, _switch);
             else if (it is Template obj)
             {
                 foreach (var o in obj.value) o.Paint(g, it, Font, fore);
             }
-            else if (it is TCellText text) g.DrawString(text.value, Font, fore, text.rect, StringF(text.align));
+            else if (it is TCellText text) g.DrawString(text.value, Font, fore, text.rect, StringF(text.column));
         }
 
         void PaintFixedColumnL(Graphics g, Rectangle rect, RowTemplate[] rows, List<RowTemplate> shows, SolidBrush fore, SolidBrush brush_split, int sx, int sy)
@@ -979,6 +980,101 @@ namespace AntdUI
 
         #endregion
 
+        #region 单选框
+
+        void PaintSwitch(Graphics g, TCellSwitch _switch)
+        {
+            var color = Style.Db.Primary;
+            using (var path = _switch.rect.RoundPath(_switch.rect.Height))
+            {
+                using (var brush = new SolidBrush(Style.Db.TextQuaternary))
+                {
+                    g.FillPath(brush, path);
+                    if (_switch.AnimationHover)
+                    {
+                        int a = (int)(brush.Color.A * _switch.AnimationHoverValue);
+                        using (var brush2 = new SolidBrush(Color.FromArgb(a, brush.Color)))
+                        {
+                            g.FillPath(brush2, path);
+                        }
+                    }
+                    else if (_switch.ExtraMouseHover) g.FillPath(brush, path);
+                }
+                float gap = (int)(2 * Config.Dpi), gap2 = gap * 2F;
+                if (_switch.AnimationCheck)
+                {
+                    int a = (int)(255 * _switch.AnimationCheckValue);
+                    using (var brush = new SolidBrush(Color.FromArgb(a, color)))
+                    {
+                        g.FillPath(brush, path);
+                    }
+                    var dot_rect = new RectangleF(_switch.rect.X + gap + (_switch.rect.Width - _switch.rect.Height) * _switch.AnimationCheckValue, _switch.rect.Y + gap, _switch.rect.Height - gap2, _switch.rect.Height - gap2);
+                    using (var brush = new SolidBrush(Style.Db.BgBase))
+                    {
+                        g.FillEllipse(brush, dot_rect);
+                    }
+                }
+                else if (_switch.Checked)
+                {
+                    var colorhover = Style.Db.PrimaryHover;
+                    using (var brush = new SolidBrush(color))
+                    {
+                        g.FillPath(brush, path);
+                    }
+                    if (_switch.AnimationHover)
+                    {
+                        int a = (int)(colorhover.A * _switch.AnimationHoverValue);
+                        using (var brush2 = new SolidBrush(Color.FromArgb(a, colorhover)))
+                        {
+                            g.FillPath(brush2, path);
+                        }
+                    }
+                    else if (_switch.ExtraMouseHover)
+                    {
+                        using (var brush = new SolidBrush(colorhover))
+                        {
+                            g.FillPath(brush, path);
+                        }
+                    }
+                    var dot_rect = new RectangleF(_switch.rect.X + gap + _switch.rect.Width - _switch.rect.Height, _switch.rect.Y + gap, _switch.rect.Height - gap2, _switch.rect.Height - gap2);
+                    using (var brush = new SolidBrush(Style.Db.BgBase))
+                    {
+                        g.FillEllipse(brush, dot_rect);
+                    }
+                    if (_switch.Loading)
+                    {
+                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                        float size = _switch.rect.Height * .1F;
+                        using (var brush = new Pen(color, size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
+                        }
+                    }
+                }
+                else
+                {
+                    var dot_rect = new RectangleF(_switch.rect.X + gap, _switch.rect.Y + gap, _switch.rect.Height - gap2, _switch.rect.Height - gap2);
+                    using (var brush = new SolidBrush(Style.Db.BgBase))
+                    {
+                        g.FillEllipse(brush, dot_rect);
+                    }
+                    if (_switch.Loading)
+                    {
+                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                        float size = _switch.rect.Height * .1F;
+                        using (var brush = new Pen(color, size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
+
         RectangleF PaintBlock(RectangleF rect)
         {
             float size = rect.Height * 0.2F, size2 = size * 2F;
@@ -996,6 +1092,39 @@ namespace AntdUI
 
         #endregion
 
+        static StringFormat StringF(Column column)
+        {
+            if (column.LineBreak)
+            {
+                switch (column.Align)
+                {
+                    case ColumnAlign.Center: return stringCenterN;
+                    case ColumnAlign.Right: return stringRightN;
+                    case ColumnAlign.Left:
+                    default: return stringLeftN;
+                }
+            }
+            else if (column.Ellipsis)
+            {
+                switch (column.Align)
+                {
+                    case ColumnAlign.Center: return stringCenterEllipsis;
+                    case ColumnAlign.Right: return stringRightEllipsis;
+                    case ColumnAlign.Left:
+                    default: return stringLeftEllipsis;
+                }
+            }
+            else
+            {
+                switch (column.Align)
+                {
+                    case ColumnAlign.Center: return stringCenter;
+                    case ColumnAlign.Right: return stringRight;
+                    case ColumnAlign.Left:
+                    default: return stringLeft;
+                }
+            }
+        }
         static StringFormat StringF(ColumnAlign align)
         {
             switch (align)

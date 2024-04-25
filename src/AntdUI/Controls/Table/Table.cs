@@ -364,6 +364,29 @@ namespace AntdUI
     }
 
     /// <summary>
+    /// 开关表头
+    /// </summary>
+    public class ColumnSwitch : Column
+    {
+        /// <summary>
+        /// 开关表头
+        /// </summary>
+        /// <param name="key">绑定名称</param>
+        /// <param name="title">显示文字</param>
+        public ColumnSwitch(string key, string title) : base(key, title) { }
+
+        /// <summary>
+        /// 开关表头
+        /// </summary>
+        /// <param name="key">绑定名称</param>
+        /// <param name="title">显示文字</param>
+        /// <param name="align">对齐方式</param>
+        public ColumnSwitch(string key, string title, ColumnAlign align) : base(key, title, align) { }
+
+        public Func<bool, object, int, int, bool>? Call { get; set; }
+    }
+
+    /// <summary>
     /// 表头
     /// </summary>
     public class Column
@@ -415,6 +438,11 @@ namespace AntdUI
         /// 超过宽度将自动省略
         /// </summary>
         public bool Ellipsis { get; set; }
+
+        /// <summary>
+        /// 自动换行
+        /// </summary>
+        public bool LineBreak { get; set; }
 
         /// <summary>
         /// 列是否固定
