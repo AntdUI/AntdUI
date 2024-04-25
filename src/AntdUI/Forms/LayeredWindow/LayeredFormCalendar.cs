@@ -73,7 +73,7 @@ namespace AntdUI
                 }
                 t_x = left_button;
             }
-            if (ShowTime) { t_width = t_x + t_one_width + t_time * 3; button_text = "此刻"; }
+            if (ShowTime) { t_width = t_x + t_one_width + t_time * 3; button_text = Localization.Provider?.GetLocalizedString("Now") ?? "此刻"; }
             else t_width = t_x + t_one_width;
 
             rect_lefts = new RectangleF(t_x + 10, 10, t_top, t_top);
@@ -170,7 +170,18 @@ namespace AntdUI
         int year_width = 60, year2_width = 88, month_width = 40;
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
-        string button_text = "今天";
+        string button_text = Localization.Provider?.GetLocalizedString("ToDay") ?? "今天",
+            OKButton = Localization.Provider?.GetLocalizedString("OK") ?? "确定",
+            YearButton = Localization.Provider?.GetLocalizedString("Year") ?? "年",
+            MonthButton = Localization.Provider?.GetLocalizedString("Month") ?? "月",
+            MondayButton = Localization.Provider?.GetLocalizedString("Mon") ?? "一",
+            TuesdayButton = Localization.Provider?.GetLocalizedString("Tue") ?? "二",
+            WednesdayButton = Localization.Provider?.GetLocalizedString("Wed") ?? "三",
+            ThursdayButton = Localization.Provider?.GetLocalizedString("Thu") ?? "四",
+            FridayButton = Localization.Provider?.GetLocalizedString("Fri") ?? "五",
+            SaturdayButton = Localization.Provider?.GetLocalizedString("Sat") ?? "六",
+            SundayButton = Localization.Provider?.GetLocalizedString("Sun") ?? "日";
+
         ScrollY scrollY_left, scrollY_h, scrollY_m, scrollY_s;
         List<CalendarButton>? left_buttons = null;
 
@@ -221,7 +232,7 @@ namespace AntdUI
                 for (int i = 0; i < 12; i++)
                 {
                     var d_m = new DateTime(value.Year, i + 1, 1);
-                    _calendar_month.Add(new Calendari(0, x_m, y_m, d_m.ToString("MM") + "月", d_m, d_m.ToString("yyyy-MM")));
+                    _calendar_month.Add(new Calendari(0, x_m, y_m, d_m.ToString("MM") + MonthButton, d_m, d_m.ToString("yyyy-MM")));
                     x_m++;
                     if (x_m > 2)
                     {
@@ -603,20 +614,20 @@ namespace AntdUI
 
                     if (hover_year.Animation)
                     {
-                        g.DrawString(_Date.ToString("yyyy") + "年", font, brush_fore, rect_l, stringFormatC);
+                        g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, stringFormatC);
                         using (var brush_hove = new SolidBrush(Color.FromArgb(hover_year.Value, Style.Db.Primary)))
                         {
-                            g.DrawString(_Date.ToString("yyyy") + "年", font, brush_hove, rect_l, stringFormatC);
+                            g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, stringFormatC);
                         }
                     }
                     else if (hover_year.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawString(_Date.ToString("yyyy") + "年", font, brush_hove, rect_l, stringFormatC);
+                            g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, stringFormatC);
                         }
                     }
-                    else g.DrawString(_Date.ToString("yyyy") + "年", font, brush_fore, rect_l, stringFormatC);
+                    else g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, stringFormatC);
                 }
 
                 float size_w = (rect_read.Width - 16) / 3F, size_h = (rect_read.Width - 16) / 7F * 2F;
@@ -691,37 +702,37 @@ namespace AntdUI
 
                     if (hover_year.Animation)
                     {
-                        g.DrawString(_Date.ToString("yyyy") + "年", font, brush_fore, rect_l, stringFormatL);
+                        g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, stringFormatL);
                         using (var brush_hove = new SolidBrush(Color.FromArgb(hover_year.Value, Style.Db.Primary)))
                         {
-                            g.DrawString(_Date.ToString("yyyy") + "年", font, brush_hove, rect_l, stringFormatL);
+                            g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, stringFormatL);
                         }
                     }
                     else if (hover_year.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawString(_Date.ToString("yyyy") + "年", font, brush_hove, rect_l, stringFormatL);
+                            g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, stringFormatL);
                         }
                     }
-                    else g.DrawString(_Date.ToString("yyyy") + "年", font, brush_fore, rect_l, stringFormatL);
+                    else g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, stringFormatL);
 
                     if (hover_month.Animation)
                     {
-                        g.DrawString(_Date.ToString("MM") + "月", font, brush_fore, rect_r, stringFormatR);
+                        g.DrawString(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_r, stringFormatR);
                         using (var brush_hove = new SolidBrush(Color.FromArgb(hover_month.Value, Style.Db.Primary)))
                         {
-                            g.DrawString(_Date.ToString("MM") + "月", font, brush_hove, rect_r, stringFormatR);
+                            g.DrawString(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_r, stringFormatR);
                         }
                     }
                     else if (hover_month.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawString(_Date.ToString("MM") + "月", font, brush_hove, rect_r, stringFormatR);
+                            g.DrawString(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_r, stringFormatR);
                         }
                     }
-                    else g.DrawString(_Date.ToString("MM") + "月", font, brush_fore, rect_r, stringFormatR);
+                    else g.DrawString(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_r, stringFormatR);
                 }
 
                 using (var brush_split = new SolidBrush(Style.Db.Split))
@@ -735,13 +746,13 @@ namespace AntdUI
                 float size = (t_one_width - 16) / 7F;
                 using (var brush = new SolidBrush(Style.Db.Text))
                 {
-                    g.DrawString("一", Font, brush, new RectangleF(t_x + rect_read.X + 8F, y, size, size), stringFormatC);
-                    g.DrawString("二", Font, brush, new RectangleF(t_x + rect_read.X + 8F + size, y, size, size), stringFormatC);
-                    g.DrawString("三", Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 2F, y, size, size), stringFormatC);
-                    g.DrawString("四", Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 3F, y, size, size), stringFormatC);
-                    g.DrawString("五", Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 4F, y, size, size), stringFormatC);
-                    g.DrawString("六", Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 5F, y, size, size), stringFormatC);
-                    g.DrawString("日", Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 6F, y, size, size), stringFormatC);
+                    g.DrawString(MondayButton, Font, brush, new RectangleF(t_x + rect_read.X + 8F, y, size, size), stringFormatC);
+                    g.DrawString(TuesdayButton, Font, brush, new RectangleF(t_x + rect_read.X + 8F + size, y, size, size), stringFormatC);
+                    g.DrawString(WednesdayButton, Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 2F, y, size, size), stringFormatC);
+                    g.DrawString(ThursdayButton, Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 3F, y, size, size), stringFormatC);
+                    g.DrawString(FridayButton, Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 4F, y, size, size), stringFormatC);
+                    g.DrawString(SaturdayButton, Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 5F, y, size, size), stringFormatC);
+                    g.DrawString(SundayButton, Font, brush, new RectangleF(t_x + rect_read.X + 8F + size * 6F, y, size, size), stringFormatC);
                 }
                 y += size;
                 if (sizeday)
@@ -940,20 +951,20 @@ namespace AntdUI
 
                             if (hover_buttonok.Animation)
                             {
-                                g.DrawString("确定", Font, brush_active, rect_buttonok, stringFormatC);
+                                g.DrawString(OKButton, Font, brush_active, rect_buttonok, stringFormatC);
                                 using (var brush_hove = new SolidBrush(Color.FromArgb(hover_buttonok.Value, Style.Db.PrimaryActive)))
                                 {
-                                    g.DrawString("确定", Font, brush_hove, rect_buttonok, stringFormatC);
+                                    g.DrawString(OKButton, Font, brush_hove, rect_buttonok, stringFormatC);
                                 }
                             }
                             else if (hover_buttonok.Switch)
                             {
                                 using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                                 {
-                                    g.DrawString("确定", Font, brush_hove, rect_buttonok, stringFormatC);
+                                    g.DrawString(OKButton, Font, brush_hove, rect_buttonok, stringFormatC);
                                 }
                             }
-                            else g.DrawString("确定", Font, brush_active, rect_buttonok, stringFormatC);
+                            else g.DrawString(OKButton, Font, brush_active, rect_buttonok, stringFormatC);
                         }
                     }
                     if (hover_button.Animation)

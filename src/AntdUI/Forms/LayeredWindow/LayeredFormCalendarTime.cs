@@ -199,6 +199,8 @@ namespace AntdUI
 
         #region 渲染
 
+        string button_text = Localization.Provider?.GetLocalizedString("Now") ?? "此刻";
+        string OKButton = Localization.Provider?.GetLocalizedString("OK") ?? "确定";
         StringFormat stringFormatC = Helper.SF();
         public override Bitmap PrintBit()
         {
@@ -273,37 +275,37 @@ namespace AntdUI
                     {
                         if (hover_button.Animation)
                         {
-                            g.DrawString("此刻", Font, brush_active, rect_button, stringFormatC);
+                            g.DrawString(button_text, Font, brush_active, rect_button, stringFormatC);
                             using (var brush_hove = new SolidBrush(Color.FromArgb(hover_button.Value, Style.Db.PrimaryActive)))
                             {
-                                g.DrawString("此刻", Font, brush_hove, rect_button, stringFormatC);
+                                g.DrawString(button_text, Font, brush_hove, rect_button, stringFormatC);
                             }
                         }
                         else if (hover_button.Switch)
                         {
                             using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                             {
-                                g.DrawString("此刻", Font, brush_hove, rect_button, stringFormatC);
+                                g.DrawString(button_text, Font, brush_hove, rect_button, stringFormatC);
                             }
                         }
-                        else g.DrawString("此刻", Font, brush_active, rect_button, stringFormatC);
+                        else g.DrawString(button_text, Font, brush_active, rect_button, stringFormatC);
 
                         if (hover_buttonok.Animation)
                         {
-                            g.DrawString("确定", Font, brush_active, rect_buttonok, stringFormatC);
+                            g.DrawString(OKButton, Font, brush_active, rect_buttonok, stringFormatC);
                             using (var brush_hove = new SolidBrush(Color.FromArgb(hover_buttonok.Value, Style.Db.PrimaryActive)))
                             {
-                                g.DrawString("确定", Font, brush_hove, rect_buttonok, stringFormatC);
+                                g.DrawString(OKButton, Font, brush_hove, rect_buttonok, stringFormatC);
                             }
                         }
                         else if (hover_buttonok.Switch)
                         {
                             using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                             {
-                                g.DrawString("确定", Font, brush_hove, rect_buttonok, stringFormatC);
+                                g.DrawString(OKButton, Font, brush_hove, rect_buttonok, stringFormatC);
                             }
                         }
-                        else g.DrawString("确定", Font, brush_active, rect_buttonok, stringFormatC);
+                        else g.DrawString(OKButton, Font, brush_active, rect_buttonok, stringFormatC);
                     }
                 }
             }

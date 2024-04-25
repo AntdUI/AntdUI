@@ -39,15 +39,16 @@ namespace AntdUI
                 {
                     using (var fore = new SolidBrush(Style.Db.Text))
                     {
-                        if (EmptyImage == null) g.DrawString(EmptyText, Font, fore, rect, stringCenter);
+                        string emptytext = EmptyText ?? Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
+                        if (EmptyImage == null) g.DrawString(emptytext, Font, fore, rect, stringCenter);
                         else
                         {
                             int gap = (int)(_gap * Config.Dpi);
-                            var size = g.MeasureString(EmptyText, Font);
+                            var size = g.MeasureString(emptytext, Font);
                             RectangleF rect_img = new RectangleF(rect.X + (rect.Width - EmptyImage.Width) / 2F, rect.Y + (rect.Height - EmptyImage.Height) / 2F - size.Height, EmptyImage.Width, EmptyImage.Height),
                                 rect_font = new RectangleF(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                             g.DrawImage(EmptyImage, rect_img);
-                            g.DrawString(EmptyText, Font, fore, rect_font, stringCenter);
+                            g.DrawString(emptytext, Font, fore, rect_font, stringCenter);
                         }
                     }
                 }
