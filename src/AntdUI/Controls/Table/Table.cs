@@ -29,6 +29,7 @@ namespace AntdUI
     /// </summary>
     /// <remarks>展示行列数据。</remarks>
     [Description("Table 表格")]
+    [DefaultEvent("CellClick")]
     [ToolboxItem(true)]
     public partial class Table : IControl
     {
@@ -220,6 +221,77 @@ namespace AntdUI
         {
             ThreadState?.Dispose();
             base.Dispose(disposing);
+        }
+
+        #endregion
+
+        #region 方法
+
+        /// <summary>
+        /// 滚动到指定行
+        /// </summary>
+        /// <param name="i"></param>
+        public void ScrollLine(int i)
+        {
+            if (rows == null || !scrollBar.ShowY) return;
+            scrollBar.ValueY = rows[i].RECT.Y;
+        }
+
+        /// <summary>
+        /// 复制表格数据
+        /// </summary>
+        /// <param name="row">行</param>
+        public bool CopyData(int row)
+        {
+            if (rows != null)
+            {
+                try
+                {
+                    var _row = rows[row];
+                    var vals = new List<string?>(_row.cells.Length);
+                    foreach (var cell in _row.cells) vals.Add(cell.ToString());
+                    if (InvokeRequired)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            Clipboard.SetText(string.Join("\t", vals));
+                        }));
+                    }
+                    else Clipboard.SetText(string.Join("\t", vals));
+                    return true;
+                }
+                catch { }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 复制表格数据
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <param name="column">列</param>
+        public bool CopyData(int row, int column)
+        {
+            if (rows != null)
+            {
+                try
+                {
+                    var _row = rows[row];
+                    var vals = _row.cells[column].ToString();
+                    if (vals == null) return false;
+                    if (InvokeRequired)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            Clipboard.SetText(vals);
+                        }));
+                    }
+                    else Clipboard.SetText(vals);
+                    return true;
+                }
+                catch { }
+            }
+            return false;
         }
 
         #endregion

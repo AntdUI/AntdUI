@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -28,17 +27,7 @@ namespace AntdUI
             switch (keyData)
             {
                 case Keys.Control | Keys.C:
-                    if (ClipboardCopy && rows != null && SelectIndex > -1)
-                    {
-                        var row = rows[SelectIndex];
-                        var vals = new List<string?>(row.cells.Length);
-                        foreach (var cell in row.cells)
-                        {
-                            vals.Add(cell.ToString());
-                        }
-                        Clipboard.SetText(string.Join("\t", vals));
-                        return true;
-                    }
+                    if (ClipboardCopy && rows != null && SelectIndex > -1) return CopyData(SelectIndex);
                     return base.ProcessCmdKey(ref msg, keyData);
             }
             return base.ProcessCmdKey(ref msg, keyData);

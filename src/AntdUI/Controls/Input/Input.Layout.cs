@@ -63,37 +63,24 @@ namespace AntdUI
                         }
                         else
                         {
-                            bool iseone = false;
-                            foreach (char it in _text)
+                            GraphemeSplitter.Each(_text, 0, (str, nStart, nLen) =>
                             {
-                                string txt = it.ToString();
-                                var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it);
+                                string txt = str.Substring(nStart, nLen);
+                                var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(txt[0]);
                                 if (IsEmoji(unicodeInfo))
                                 {
                                     HasEmoji = true;
-                                    if (unicodeInfo == UnicodeCategory.Surrogate)
-                                    {
-                                        if (iseone)
-                                        {
-                                            iseone = false;
-                                            font_widths[font_widths.Count - 1].text += txt;
-                                            continue;
-                                        }
-                                        else iseone = true;
-                                    }
-                                    else iseone = false;
                                     font_widths.Add(new CacheFont(txt, true, 0));
                                 }
                                 else
                                 {
-                                    iseone = false;
-                                    if (it == '\t')
+                                    if (txt == "\t")
                                     {
                                         var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
                                         if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
                                         font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
                                     }
-                                    else if (it == '\n') font_widths.Add(new CacheFont(txt, false, 0));
+                                    else if (txt == "\n") font_widths.Add(new CacheFont(txt, false, 0));
                                     else
                                     {
                                         var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
@@ -101,7 +88,10 @@ namespace AntdUI
                                         font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
                                     }
                                 }
-                            }
+
+
+                                return true;
+                            });
 
                             if (HasEmoji)
                             {
@@ -136,6 +126,7 @@ namespace AntdUI
                 }
                 else
                 {
+                    sf_font.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
                     Helper.GDI(g =>
                     {
                         int font_height = 0;
@@ -155,31 +146,18 @@ namespace AntdUI
                             {
                                 foreach (var it in cache_font) if (!it.emoji && !font_dir.ContainsKey(it.text)) font_dir.Add(it.text, it);
                             }
-                            bool iseone = false;
-                            foreach (char it in _text)
+                            GraphemeSplitter.Each(_text, 0, (str, nStart, nLen) =>
                             {
-                                string txt = it.ToString();
+                                string txt = str.Substring(nStart, nLen);
+                                var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(txt[0]);
 
-                                var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it);
                                 if (IsEmoji(unicodeInfo))
                                 {
                                     HasEmoji = true;
-                                    if (unicodeInfo == UnicodeCategory.Surrogate)
-                                    {
-                                        if (iseone)
-                                        {
-                                            iseone = false;
-                                            font_widths[font_widths.Count - 1].text += txt;
-                                            continue;
-                                        }
-                                        else iseone = true;
-                                    }
-                                    else iseone = false;
                                     font_widths.Add(new CacheFont(txt, true, 0));
                                 }
                                 else
                                 {
-                                    iseone = false;
                                     if (font_dir.TryGetValue(txt, out var find))
                                     {
                                         if (font_height < find.rect.Height) font_height = find.rect.Height;
@@ -187,13 +165,13 @@ namespace AntdUI
                                     }
                                     else
                                     {
-                                        if (it == '\t')
+                                        if (txt == "\t")
                                         {
                                             var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
                                             if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
                                             font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
                                         }
-                                        else if (it == '\n') font_widths.Add(new CacheFont(txt, false, 0));
+                                        else if (txt == "\n") font_widths.Add(new CacheFont(txt, false, 0));
                                         else
                                         {
                                             var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
@@ -202,7 +180,58 @@ namespace AntdUI
                                         }
                                     }
                                 }
-                            }
+
+
+                                return true;
+                            });
+
+                            //foreach (char it in _text)
+                            //{
+                            //    string txt = it.ToString();
+
+                            //    var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it);
+                            //    if (IsEmoji(unicodeInfo))
+                            //    {
+                            //        HasEmoji = true;
+                            //        if (unicodeInfo == UnicodeCategory.Surrogate)
+                            //        {
+                            //            if (iseone)
+                            //            {
+                            //                iseone = false;
+                            //                font_widths[font_widths.Count - 1].text += txt;
+                            //                continue;
+                            //            }
+                            //            else iseone = true;
+                            //        }
+                            //        else iseone = false;
+                            //        font_widths.Add(new CacheFont(txt, true, 0));
+                            //    }
+                            //    else
+                            //    {
+                            //        iseone = false;
+                            //        if (font_dir.TryGetValue(txt, out var find))
+                            //        {
+                            //            if (font_height < find.rect.Height) font_height = find.rect.Height;
+                            //            font_widths.Add(new CacheFont(txt, false, find.width));
+                            //        }
+                            //        else
+                            //        {
+                            //            if (it == '\t')
+                            //            {
+                            //                var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
+                            //                if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
+                            //                font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
+                            //            }
+                            //            else if (it == '\n') font_widths.Add(new CacheFont(txt, false, 0));
+                            //            else
+                            //            {
+                            //                var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
+                            //                if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
+                            //                font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
+                            //            }
+                            //        }
+                            //    }
+                            //}
 
                             if (HasEmoji)
                             {

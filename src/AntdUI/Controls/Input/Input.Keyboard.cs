@@ -168,6 +168,17 @@ namespace AntdUI
                 SelectionLength = 0;
                 SelectionStart = start;
             }
+            else if (selectionStart < cache_font.Length)
+            {
+                int start = selectionStart;
+                var texts = new List<string>();
+                foreach (var it in cache_font)
+                {
+                    if (start != it.i) texts.Add(it.text);
+                }
+                Text = string.Join("", texts);
+                SelectionStart = start;
+            }
         }
 
         void ProcessLeftKey()
