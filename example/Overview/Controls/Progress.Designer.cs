@@ -62,18 +62,16 @@ namespace Overview.Controls
             panel8 = new System.Windows.Forms.Panel();
             progress4 = new AntdUI.Progress();
             progress5 = new AntdUI.Progress();
-            iComplete1 = new AntdUI.Icon.IconComplete();
             progress6 = new AntdUI.Progress();
-            iError2 = new AntdUI.Icon.IconError();
             panel7 = new System.Windows.Forms.Panel();
             progress7 = new AntdUI.Progress();
             progress9 = new AntdUI.Progress();
             progress8 = new AntdUI.Progress();
             panel9 = new System.Windows.Forms.Panel();
-            divider1 = new AntdUI.Divider();
-            panel10 = new System.Windows.Forms.Panel();
-            divider2 = new AntdUI.Divider();
             divider3 = new AntdUI.Divider();
+            divider2 = new AntdUI.Divider();
+            panel10 = new System.Windows.Forms.Panel();
+            divider1 = new AntdUI.Divider();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
@@ -81,8 +79,6 @@ namespace Overview.Controls
             panel5.SuspendLayout();
             panel6.SuspendLayout();
             panel8.SuspendLayout();
-            progress5.SuspendLayout();
-            progress6.SuspendLayout();
             panel7.SuspendLayout();
             panel9.SuspendLayout();
             panel10.SuspendLayout();
@@ -122,8 +118,8 @@ namespace Overview.Controls
             // 
             // progress1
             // 
-            progress1.Fill = Color.FromArgb(0, 144, 255);
             progress1.Dock = DockStyle.Fill;
+            progress1.Fill = Color.FromArgb(0, 144, 255);
             progress1.Loading = true;
             progress1.Location = new Point(0, 10);
             progress1.Name = "progress1";
@@ -165,8 +161,8 @@ namespace Overview.Controls
             // 
             // progress2
             // 
-            progress2.Fill = Color.FromArgb(0, 204, 0);
             progress2.Dock = DockStyle.Fill;
+            progress2.Fill = Color.FromArgb(0, 204, 0);
             progress2.Location = new Point(0, 4);
             progress2.Name = "progress2";
             progress2.Size = new Size(563, 10);
@@ -205,8 +201,8 @@ namespace Overview.Controls
             // 
             // progress3
             // 
-            progress3.Fill = Color.FromArgb(255, 79, 87);
             progress3.Dock = DockStyle.Fill;
+            progress3.Fill = Color.FromArgb(255, 79, 87);
             progress3.Location = new Point(0, 4);
             progress3.Name = "progress3";
             progress3.Size = new Size(563, 10);
@@ -251,8 +247,8 @@ namespace Overview.Controls
             // progress5
             // 
             progress5.Fill = Color.FromArgb(0, 204, 0);
-            progress5.Controls.Add(iComplete1);
             progress5.Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            progress5.Icon = AntdUI.TType.Success;
             progress5.Location = new Point(158, 7);
             progress5.Name = "progress5";
             progress5.Radius = 5;
@@ -261,21 +257,11 @@ namespace Overview.Controls
             progress5.TabIndex = 14;
             progress5.Value = 1F;
             // 
-            // iComplete1
-            // 
-            iComplete1.Anchor = AnchorStyles.None;
-            iComplete1.Back = Color.Transparent;
-            iComplete1.Color = Color.FromArgb(0, 204, 0);
-            iComplete1.Location = new Point(25, 25);
-            iComplete1.Name = "iComplete1";
-            iComplete1.Size = new Size(40, 40);
-            iComplete1.TabIndex = 11;
-            // 
             // progress6
             // 
             progress6.Fill = Color.FromArgb(255, 79, 87);
-            progress6.Controls.Add(iError2);
             progress6.Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            progress6.Icon = AntdUI.TType.Error;
             progress6.Location = new Point(306, 7);
             progress6.Name = "progress6";
             progress6.Radius = 5;
@@ -284,17 +270,6 @@ namespace Overview.Controls
             progress6.TabIndex = 12;
             progress6.Value = 0.7F;
             progress6.Click += Progress_Red;
-            // 
-            // iError2
-            // 
-            iError2.Anchor = AnchorStyles.None;
-            iError2.Back = Color.Transparent;
-            iError2.Color = Color.FromArgb(255, 79, 87);
-            iError2.Location = new Point(25, 25);
-            iError2.Name = "iError2";
-            iError2.Size = new Size(40, 40);
-            iError2.TabIndex = 11;
-            iError2.Click += Progress_Red;
             // 
             // panel7
             // 
@@ -362,29 +337,17 @@ namespace Overview.Controls
             panel9.Size = new Size(650, 333);
             panel9.TabIndex = 7;
             // 
-            // divider1
+            // divider3
             // 
-            divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            divider1.Location = new Point(0, 0);
-            divider1.Margin = new Padding(10);
-            divider1.Name = "divider1";
-            divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(633, 22);
-            divider1.TabIndex = 1;
-            divider1.Text = "标准的进度条";
-            // 
-            // panel10
-            // 
-            panel10.Controls.Add(panel5);
-            panel10.Controls.Add(panel3);
-            panel10.Controls.Add(panel1);
-            panel10.Dock = DockStyle.Top;
-            panel10.Location = new Point(0, 22);
-            panel10.Name = "panel10";
-            panel10.Padding = new Padding(10, 0, 10, 0);
-            panel10.Size = new Size(633, 105);
-            panel10.TabIndex = 2;
+            divider3.Dock = DockStyle.Top;
+            divider3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider3.Location = new Point(0, 269);
+            divider3.Margin = new Padding(10);
+            divider3.Name = "divider3";
+            divider3.Orientation = AntdUI.TOrientation.Left;
+            divider3.Size = new Size(633, 22);
+            divider3.TabIndex = 19;
+            divider3.Text = "响应式进度圈";
             // 
             // divider2
             // 
@@ -398,17 +361,29 @@ namespace Overview.Controls
             divider2.TabIndex = 3;
             divider2.Text = "圈形的进度";
             // 
-            // divider3
+            // panel10
             // 
-            divider3.Dock = DockStyle.Top;
-            divider3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            divider3.Location = new Point(0, 269);
-            divider3.Margin = new Padding(10);
-            divider3.Name = "divider3";
-            divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(633, 22);
-            divider3.TabIndex = 19;
-            divider3.Text = "响应式进度圈";
+            panel10.Controls.Add(panel5);
+            panel10.Controls.Add(panel3);
+            panel10.Controls.Add(panel1);
+            panel10.Dock = DockStyle.Top;
+            panel10.Location = new Point(0, 22);
+            panel10.Name = "panel10";
+            panel10.Padding = new Padding(10, 0, 10, 0);
+            panel10.Size = new Size(633, 105);
+            panel10.TabIndex = 2;
+            // 
+            // divider1
+            // 
+            divider1.Dock = DockStyle.Top;
+            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Location = new Point(0, 0);
+            divider1.Margin = new Padding(10);
+            divider1.Name = "divider1";
+            divider1.Orientation = AntdUI.TOrientation.Left;
+            divider1.Size = new Size(633, 22);
+            divider1.TabIndex = 1;
+            divider1.Text = "标准的进度条";
             // 
             // Progress
             // 
@@ -424,8 +399,6 @@ namespace Overview.Controls
             panel5.ResumeLayout(false);
             panel6.ResumeLayout(false);
             panel8.ResumeLayout(false);
-            progress5.ResumeLayout(false);
-            progress6.ResumeLayout(false);
             panel7.ResumeLayout(false);
             panel9.ResumeLayout(false);
             panel10.ResumeLayout(false);
@@ -448,10 +421,8 @@ namespace Overview.Controls
         private Label label1;
         private AntdUI.Progress progress9;
         private AntdUI.Progress progress6;
-        private AntdUI.Icon.IconError iError2;
         private AntdUI.Progress progress8;
         private AntdUI.Progress progress5;
-        private AntdUI.Icon.IconComplete iComplete1;
         private AntdUI.Progress progress7;
         private AntdUI.Progress progress4;
         private System.Windows.Forms.Panel panel8;

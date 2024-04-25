@@ -91,7 +91,7 @@ namespace Overview.Controls
 
         private void Progress_Red(object sender, EventArgs e)
         {
-            iError2.Visible = false;
+            progress6.Icon = AntdUI.TType.None;
             progress3.Value = progress6.Value = progress9.Value = 0F;
             progress6.Text = "0%";
             progress3.Fill = progress6.Fill = progress1.Fill;
@@ -108,10 +108,7 @@ namespace Overview.Controls
                             progress3.Value = progress6.Value = progress9.Value = 0.7F;
                             progress3.Fill = progress6.Fill = progress9.Fill;
                             progress6.Text = null;
-                            Invoke(new Action(() =>
-                            {
-                                iError2.Visible = true;
-                            }));
+                            progress6.Icon = AntdUI.TType.Error;
                             return;
                         }
                         Thread.Sleep(10);
