@@ -212,6 +212,11 @@ namespace AntdUI
             /// 超链接回调
             /// </summary>
             public ConfigLink? Link { get; set; }
+
+            /// <summary>
+            /// 关闭回调
+            /// </summary>
+            public Action? OnClose { get; set; }
         }
 
         public class ConfigLink
@@ -257,6 +262,8 @@ namespace AntdUI
         }
         protected override void Dispose(bool disposing)
         {
+            config.OnClose?.Invoke();
+            config.OnClose = null;
             close_button.Dispose();
             base.Dispose(disposing);
         }

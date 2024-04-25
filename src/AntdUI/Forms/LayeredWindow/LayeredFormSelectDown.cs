@@ -27,14 +27,13 @@ namespace AntdUI
 {
     internal class LayeredFormSelectDown : ILayeredFormOpacityDown
     {
-        Control textBox;
         int MaxCount = 4;
         internal float Radius = 0;
         bool ClickEnd = false;
         object? selectedValue;
         int r_w = 0;
         readonly List<ObjectItem> Items = new List<ObjectItem>();
-        public LayeredFormSelectDown(Select control, RectangleF rect_read, List<object> items)
+        public LayeredFormSelectDown(Select control, RectangleF rect_read, List<object> items, string filtertext)
         {
             var form = control.Parent.FindPARENT();
             if (form != null) TopMost = form.TopMost;
@@ -42,12 +41,11 @@ namespace AntdUI
             ClickEnd = control.ClickEnd;
             select_x = 0;
             scrollY = new ScrollY(this);
-            textBox = control;
             MaxCount = control.MaxCount;
             Font = control.Font;
             selectedValue = control.SelectedValue;
             Radius = (int)(control.radius * Config.Dpi);
-            Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items);
+            Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items, filtertext);
         }
         public LayeredFormSelectDown(Dropdown control, int radius, RectangleF rect_read, List<object> items)
         {
@@ -57,7 +55,6 @@ namespace AntdUI
             ClickEnd = control.ClickEnd;
             select_x = 0;
             scrollY = new ScrollY(this);
-            textBox = control;
             MaxCount = control.MaxCount;
             Font = control.Font;
             Radius = (int)(radius * Config.Dpi);
@@ -83,7 +80,6 @@ namespace AntdUI
             select_x = sx;
             PARENT = parent;
             scrollY = new ScrollY(this);
-            textBox = control;
             MaxCount = items.Count;
             Font = control.Font;
             Radius = radius;
@@ -106,7 +102,7 @@ namespace AntdUI
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
         internal LayeredFormSelectDown? SubForm = null;
-        void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, RectangleF rect_read, List<object> items)
+        void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, RectangleF rect_read, List<object> items, string? filtertext = null)
         {
             int y = 10, w = (int)rect_read.Width;
             r_w = w;
@@ -148,10 +144,7 @@ namespace AntdUI
                     if (ui_arrow) b_w += (int)Math.Ceiling(font_size * 0.6F);
                     if (b_w > w || control is LayeredFormSelectDown) w = r_w = b_w + gap_y;
                 }
-                else
-                {
-                    stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter; stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
-                }
+                else stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter; stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
 
                 int selY = -1;
                 int item_count = 0, divider_count = 0;
@@ -197,7 +190,8 @@ namespace AntdUI
                 else y = 10 + gap_y * 2 + vr;
             });
             SetSizeW(w + 20);
-            EndHeight = y + 10;
+            if (filtertext == null) EndHeight = y + 10;
+            else EndHeight = TextChangeCore(filtertext);
             var point = control.PointToScreen(Point.Empty);
             if (control is LayeredFormSelectDown) SetLocation(point.X + (int)rect_read.Width, point.Y + (int)rect_read.Y - 10);
             else
@@ -299,11 +293,11 @@ namespace AntdUI
                         {
                             hoveindex++;
                             if (hoveindex > Items.Count - 1) hoveindex = 0;
-                            while (Items[hoveindex].ShowAndID)
-                            {
-                                hoveindex++;
-                                if (hoveindex > Items.Count - 1) hoveindex = 0;
-                            }
+                        }
+                        while (Items[hoveindex].ShowAndID)
+                        {
+                            hoveindex++;
+                            if (hoveindex > Items.Count - 1) hoveindex = 0;
                         }
                         foreach (var it in Items) it.Hover = false;
                         FocusItem(Items[hoveindex]);
@@ -345,7 +339,7 @@ namespace AntdUI
         {
             if (item.SetHover(true))
             {
-                scrollY.Value = item.Rect.Y - item.Rect.Height;
+                if (scrollY.Show) scrollY.Value = item.Rect.Y - item.Rect.Height;
                 Print();
             }
         }
@@ -354,22 +348,9 @@ namespace AntdUI
 
         #region 筛选
 
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            textBox.TextChanged += TextBox_TextChanged;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            textBox.TextChanged -= TextBox_TextChanged;
-            base.Dispose(disposing);
-        }
-
-        void TextBox_TextChanged(object? sender, EventArgs e)
+        internal void TextChange(string val)
         {
             int count = 0;
-            var val = textBox.Text;
             if (string.IsNullOrEmpty(val))
             {
                 nodata = false;
@@ -463,6 +444,80 @@ namespace AntdUI
                     });
                 }
                 Print();
+            }
+        }
+        internal int TextChangeCore(string val)
+        {
+            if (string.IsNullOrEmpty(val))
+            {
+                nodata = false;
+                foreach (var it in Items) it.Show = true;
+            }
+            else
+            {
+                val = val.ToLower();
+                int showcount = 0;
+                for (int i = 0; i < Items.Count; i++)
+                {
+                    var it = Items[i];
+                    if (it.ID > -1)
+                    {
+                        if (it.Contains(val))
+                        {
+                            showcount++;
+                            if (it.Text.ToLower() == val)
+                            {
+                                it.Hover = true;
+                                hoveindex = i;
+                            }
+                            it.Show = true;
+                        }
+                        else it.Show = false;
+                    }
+                }
+                nodata = showcount == 0;
+            }
+            if (nodata) return 80;
+            else
+            {
+                scrollY.val = 0;
+                int y = 10, w = r_w, list_count = 0;
+                Helper.GDI(g =>
+                {
+                    var size = g.MeasureString(Config.NullText, Font).Size(2);
+                    int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
+                    int font_size = size.Height + gap_y * 2;
+                    var y2 = gap_y * 2;
+                    y += gap_y;
+
+                    int text_height = font_size - y2;
+                    float gap = (text_height - gap_y) / 2F;
+                    foreach (var it in Items)
+                    {
+                        if (it.Show)
+                        {
+                            list_count++;
+                            var rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size);
+                            it.SetRect(rect_bg, new RectangleF(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, rect_bg.Height - y2), gap, gap_y);
+                            y += font_size;
+                        }
+                    }
+
+                    var vr = font_size * list_count;
+                    if (list_count > MaxCount)
+                    {
+                        y = 10 + gap_y * 2 + (font_size * MaxCount);
+                        scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
+                        scrollY.Show = true;
+                        scrollY.SetVrSize(vr, scrollY.Rect.Height);
+                    }
+                    else
+                    {
+                        y = 10 + gap_y * 2 + vr;
+                        scrollY.Show = false;
+                    }
+                });
+                return y + 10;
             }
         }
 

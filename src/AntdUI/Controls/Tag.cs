@@ -583,7 +583,11 @@ namespace AntdUI
         #region 鼠标
 
         ITaskOpacity hover_close;
-        public Tag() { hover_close = new ITaskOpacity(this); }
+        public Tag()
+        {
+            base.BackColor = Color.Transparent;
+            hover_close = new ITaskOpacity(this);
+        }
 
         RectangleF rect_close;
         protected override void OnMouseClick(MouseEventArgs e)

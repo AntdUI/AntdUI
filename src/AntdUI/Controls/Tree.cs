@@ -185,30 +185,48 @@ namespace AntdUI
             }
         }
 
+        #region 获取项
+
         /// <summary>
         /// 获取所有选中项
         /// </summary>
-        /// <returns></returns>
-        public List<TreeItem> GetCheckeds()
+        /// <param name="Indeterminate">是否包含 Indeterminate</param>
+        public List<TreeItem> GetCheckeds(bool Indeterminate = true)
+        {
+            if (items == null) return new List<TreeItem>(0);
+            return GetCheckeds(items, Indeterminate);
+        }
+        List<TreeItem> GetCheckeds(TreeItemCollection items, bool Indeterminate)
         {
             var list = new List<TreeItem>();
-            if (items == null) return list;
-            foreach (TreeItem it in items)
+            if (Indeterminate)
             {
-                if (it.Checked) list.Add(it);
-                if (it.Sub != null && it.Sub.Count > 0) GetCheckeds(ref list, it.Sub);
+                foreach (TreeItem it in items)
+                {
+                    if (it.CheckState != CheckState.Unchecked) list.Add(it);
+                    if (it.Sub != null && it.Sub.Count > 0)
+                    {
+                        var list_sub = GetCheckeds(it.Sub, Indeterminate);
+                        if (list_sub.Count > 0) list.AddRange(list_sub);
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeItem it in items)
+                {
+                    if (it.Checked) list.Add(it);
+                    if (it.Sub != null && it.Sub.Count > 0)
+                    {
+                        var list_sub = GetCheckeds(it.Sub, Indeterminate);
+                        if (list_sub.Count > 0) list.AddRange(list_sub);
+                    }
+                }
             }
             return list;
         }
-        void GetCheckeds(ref List<TreeItem> list, TreeItemCollection items)
-        {
-            if (items == null) return;
-            foreach (TreeItem it in list)
-            {
-                if (it.Checked) list.Add(it);
-                if (it.Sub != null && it.Sub.Count > 0) GetCheckeds(ref list, it.Sub);
-            }
-        }
+
+        #endregion
 
         #region 事件
 
@@ -1169,12 +1187,14 @@ namespace AntdUI
                 else Invalidate();
             }
         }
-        internal bool Select { get; set; }
+
+        [Description("激活状态"), Category("行为"), DefaultValue(false)]
+        public bool Select { get; set; }
 
         public int Depth { get; private set; }
         internal float ArrowProg { get; set; } = 0F;
         internal Tree? PARENT { get; set; }
-        internal TreeItem? PARENTITEM { get; set; }
+        public TreeItem? PARENTITEM { get; set; }
 
         internal void SetRect(Graphics g, Font font, int depth, bool checkable, bool blockNode, Rectangle _rect, int icon_size, int gap)
         {

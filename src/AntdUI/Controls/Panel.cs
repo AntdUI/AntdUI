@@ -36,6 +36,11 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class Panel : IControl, ShadowConfig, IMessageFilter, IEventListener
     {
+        public Panel()
+        {
+            base.BackColor = Color.Transparent;
+        }
+
         #region 属性
 
         #region 系统

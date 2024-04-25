@@ -34,6 +34,11 @@ namespace AntdUI
     [DefaultEvent("ValueChanged")]
     public class ColorPicker : IControl, SubLayeredForm
     {
+        public ColorPicker()
+        {
+            base.BackColor = Color.Transparent;
+        }
+
         #region 属性
 
         #region 系统
