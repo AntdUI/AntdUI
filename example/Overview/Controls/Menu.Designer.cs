@@ -48,6 +48,7 @@ namespace Overview.Controls
         {
             AntdUI.MenuItem menuItem1 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem2 = new AntdUI.MenuItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Menu));
             AntdUI.MenuItem menuItem3 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem4 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem5 = new AntdUI.MenuItem();
@@ -76,26 +77,18 @@ namespace Overview.Controls
             // 
             menu1.Dock = DockStyle.Left;
             menu1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            menuItem1.Expand = true;
-            menuItem2.Expand = true;
-            menuItem2.Icon = Properties.Resources.bg1;
+            menuItem2.IconSvg = resources.GetString("menuItem2.IconSvg");
             menuItem2.Text = "Option 1";
-            menuItem3.Expand = true;
-            menuItem3.Icon = Properties.Resources.bg6;
-            menuItem4.Expand = true;
-            menuItem4.Icon = Properties.Resources.bg4;
+            menuItem3.IconSvg = resources.GetString("menuItem3.IconSvg");
+            menuItem4.IconSvg = resources.GetString("menuItem4.IconSvg");
             menuItem4.Text = "Sub2 1";
-            menuItem5.Expand = true;
             menuItem5.Text = "Sub2 2";
-            menuItem6.Expand = true;
             menuItem6.Text = "Sub2 3";
             menuItem3.Sub.AddRange(new AntdUI.MenuItem[] { menuItem4, menuItem5, menuItem6 });
             menuItem3.Text = "Option 2";
-            menuItem7.Expand = true;
             menuItem7.Text = "Option 3";
             menuItem1.Sub.AddRange(new AntdUI.MenuItem[] { menuItem2, menuItem3, menuItem7 });
             menuItem1.Text = "Navigation One";
-            menuItem8.Expand = true;
             menuItem8.Text = "Navigation Two";
             menu1.Items.AddRange(new AntdUI.MenuItem[] { menuItem1, menuItem8 });
             menu1.Location = new Point(0, 79);
@@ -108,11 +101,11 @@ namespace Overview.Controls
             // menu2
             // 
             menu2.Dock = DockStyle.Left;
+            menu2.Indent = true;
             menu2.Location = new Point(304, 79);
             menu2.Name = "menu2";
             menu2.Size = new Size(278, 597);
             menu2.TabIndex = 11;
-            menu2.Indent = true;
             menu2.Text = "menu2";
             // 
             // divider1
