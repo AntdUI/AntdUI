@@ -303,6 +303,7 @@ namespace AntdUI
             {
                 if (multiline)
                 {
+                    int lineHeight = CurrentCaret.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
                     int usex = 0, usey = 0;
                     foreach (var it in cache_font)
                     {
@@ -316,14 +317,14 @@ namespace AntdUI
                         else if (it.text == "\n")
                         {
                             it.retun = true;
-                            usey += CurrentCaret.Height;
+                            usey += lineHeight;
                             usex = 0;
                             it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
                             continue;
                         }
                         else if (usex + it.width > rect_text.Width)
                         {
-                            usey += CurrentCaret.Height;
+                            usey += lineHeight;
                             usex = 0;
                         }
                         it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);

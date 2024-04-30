@@ -399,10 +399,23 @@ namespace AntdUI
         internal virtual bool HasValue { get => false; }
         void OnAllowClear()
         {
-            bool _is_clear = allowclear && _mouseHover && (!isempty || HasValue);
+            bool _is_clear = !ReadOnly && allowclear && _mouseHover && (!isempty || HasValue);
             if (is_clear == _is_clear) return;
             is_clear = _is_clear;
             CalculateRect();
+        }
+
+        bool autoscroll = false;
+        [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        public bool AutoScroll
+        {
+            get => autoscroll;
+            set
+            {
+                if (autoscroll == value) return;
+                autoscroll = value;
+                Invalidate();
+            }
         }
 
         #endregion
@@ -493,7 +506,7 @@ namespace AntdUI
         /// 只读
         /// </summary>
         [Description("只读"), Category("行为"), DefaultValue(false)]
-        public bool ReadOnly { get; set; } = false;
+        public bool ReadOnly { get; set; }
 
         bool multiline = false;
         /// <summary>
@@ -508,6 +521,20 @@ namespace AntdUI
                 if (multiline == value) return;
                 multiline = value;
                 sf_placeholder.LineAlignment = multiline ? StringAlignment.Near : StringAlignment.Center;
+                CalculateRect();
+                Invalidate();
+            }
+        }
+
+        int lineheight = 0;
+        [Description("多行行高"), Category("行为"), DefaultValue(0)]
+        public int LineHeight
+        {
+            get => lineheight;
+            set
+            {
+                if (lineheight == value) return;
+                lineheight = value;
                 CalculateRect();
                 Invalidate();
             }
@@ -590,6 +617,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 密码可以复制
+        /// </summary>
+        [Description("密码可以复制"), Category("行为"), DefaultValue(false)]
+        public bool PasswordCopy { get; set; }
+
         void SetPassWord()
         {
             if (passwordChar != '\0')
@@ -603,7 +636,7 @@ namespace AntdUI
                 IsPassWord = true;
             }
             else IsPassWord = false;
-            FixFontWidth();
+            FixFontWidth(true);
             Invalidate();
         }
 
@@ -645,7 +678,7 @@ namespace AntdUI
         /// </summary>
         public void Copy()
         {
-            if (IsPassWord) return;
+            if (IsPassWord && !PasswordCopy) return;
             var text = GetSelectionText();
             if (text == null) return;
             Clipboard.SetText(text);
@@ -656,7 +689,7 @@ namespace AntdUI
         /// </summary>
         public void Cut()
         {
-            if (IsPassWord) return;
+            if (IsPassWord && !PasswordCopy) return;
             var text = GetSelectionText();
             if (text == null) return;
             Clipboard.SetText(text);
@@ -668,7 +701,7 @@ namespace AntdUI
         /// </summary>
         public void Paste()
         {
-            if (IsPassWord) return;
+            if (IsPassWord && !PasswordCopy) return;
             string strText = Clipboard.GetText();
             if (string.IsNullOrEmpty(strText)) return;
             var chars = new List<char>(strText.Length);
@@ -692,7 +725,7 @@ namespace AntdUI
         /// </summary>
         public void Undo()
         {
-            if (IsPassWord) return;
+            if (IsPassWord && !PasswordCopy) return;
             if (history_Log.Count > 0)
             {
                 int index;
@@ -718,7 +751,7 @@ namespace AntdUI
         /// </summary>
         public void Redo()
         {
-            if (IsPassWord) return;
+            if (IsPassWord && !PasswordCopy) return;
             if (history_Log.Count > 0 && history_I > -1)
             {
                 int index = history_I + 1;
@@ -983,16 +1016,57 @@ namespace AntdUI
         /// </summary>
         CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font)
         {
-            double minDistance = int.MaxValue;
+            var findy = FindNearestFontY(y, cache_font);
+            CacheFont? result = null;
+            if (findy == null)
+            {
+                double minDistance = int.MaxValue;
+                for (int i = 0; i < cache_font.Length; i++)
+                {
+                    var it = cache_font[i];
+                    // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
+                    int distanceToLeft = Math.Abs(x - (it.rect.X + it.rect.Width / 2)),
+                        distanceToTop = Math.Abs(y - (it.rect.Y + it.rect.Height / 2));
+                    double currentMinDistance = new int[] { distanceToLeft, distanceToTop }.Average();
+
+                    // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                    if (currentMinDistance < minDistance)
+                    {
+                        minDistance = currentMinDistance;
+                        result = it;
+                    }
+                }
+            }
+            else
+            {
+                int minDistance = int.MaxValue;
+                for (int i = 0; i < cache_font.Length; i++)
+                {
+                    var it = cache_font[i];
+                    if (it.rect.Y == findy.rect.Y)
+                    {
+                        // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
+                        int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
+                        // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                        if (currentMinDistance < minDistance)
+                        {
+                            minDistance = currentMinDistance;
+                            result = it;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font)
+        {
+            int minDistance = int.MaxValue;
             CacheFont? result = null;
             for (int i = 0; i < cache_font.Length; i++)
             {
                 var it = cache_font[i];
                 // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
-                int distanceToLeft = Math.Abs(x - (it.rect.Left + it.rect.Width / 2)),
-                    distanceToTop = Math.Abs(y - (it.rect.Top + it.rect.Height / 2));
-                double currentMinDistance = new int[] { distanceToLeft, distanceToTop }.Average();
-
+                int currentMinDistance = Math.Abs(y - (it.rect.Y + it.rect.Height / 2));
                 // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
                 if (currentMinDistance < minDistance)
                 {

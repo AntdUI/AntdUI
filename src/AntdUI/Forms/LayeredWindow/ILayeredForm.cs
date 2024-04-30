@@ -166,7 +166,6 @@ namespace AntdUI
             get
             {
                 var cp = base.CreateParams;
-                //cp.Style |= 0x40000000;
                 cp.ExStyle |= 0x08000000 | 0x00080000;
                 cp.Parent = IntPtr.Zero;
                 return cp;
@@ -182,7 +181,7 @@ namespace AntdUI
         {
             if (UFocus && m.Msg == 0x21)
             {
-                m.Result = new IntPtr(0x03);
+                m.Result = new IntPtr(3);
                 return;
             }
             base.WndProc(ref m);

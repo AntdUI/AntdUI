@@ -37,6 +37,7 @@ namespace AntdUI
         {
             maxalpha = 255;
             config = _config;
+            config.Control.SetTopMost(Handle);
             Font = config.Font == null ? config.Control.Font : config.Font;
 
             Helper.GDI(g =>

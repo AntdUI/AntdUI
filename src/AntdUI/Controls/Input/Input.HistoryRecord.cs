@@ -29,7 +29,7 @@ namespace AntdUI
                 history_Log.RemoveRange(history_I + 1, history_Log.Count - (history_I + 1));
                 history_I = -1;
             }
-            if (IsPassWord) return;
+            if (IsPassWord && !PasswordCopy) return;
             history_Log.Add(new TextHistoryRecord(this));
         }
 

@@ -355,7 +355,7 @@ namespace AntdUI
                 }
                 if (value)
                 {
-                    if (items != null && items.Count > 0)
+                    if (!ReadOnly && items != null && items.Count > 0)
                     {
                         if (subForm == null)
                         {

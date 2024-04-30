@@ -35,8 +35,7 @@ namespace AntdUI
         readonly List<ObjectItem> Items = new List<ObjectItem>();
         public LayeredFormSelectDown(Select control, RectangleF rect_read, List<object> items, string filtertext)
         {
-            var form = control.Parent.FindPARENT();
-            if (form != null) TopMost = form.TopMost;
+            control.Parent.SetTopMost(Handle);
             PARENT = control;
             ClickEnd = control.ClickEnd;
             select_x = 0;
@@ -49,8 +48,7 @@ namespace AntdUI
         }
         public LayeredFormSelectDown(Dropdown control, int radius, RectangleF rect_read, List<object> items)
         {
-            var form = control.Parent.FindPARENT();
-            if (form != null) TopMost = form.TopMost;
+            control.Parent.SetTopMost(Handle);
             PARENT = control;
             ClickEnd = control.ClickEnd;
             select_x = 0;
@@ -75,8 +73,7 @@ namespace AntdUI
 
         void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, RectangleF rect_read, List<object>? items, int sel)
         {
-            var form = parent.Parent.FindPARENT();
-            if (form != null) TopMost = form.TopMost;
+            parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
             scrollY = new ScrollY(this);
@@ -190,7 +187,7 @@ namespace AntdUI
                 else y = 10 + gap_y * 2 + vr;
             });
             SetSizeW(w + 20);
-            if (filtertext == null) EndHeight = y + 10;
+            if (string.IsNullOrEmpty(filtertext)) EndHeight = y + 10;
             else EndHeight = TextChangeCore(filtertext);
             var point = control.PointToScreen(Point.Empty);
             if (control is LayeredFormSelectDown) SetLocation(point.X + (int)rect_read.Width, point.Y + (int)rect_read.Y - 10);
@@ -418,7 +415,7 @@ namespace AntdUI
                         float gap = (text_height - gap_y) / 2F;
                         foreach (var it in Items)
                         {
-                            if (it.Show)
+                            if (it.ID > -1 && it.Show)
                             {
                                 list_count++;
                                 var rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size);
@@ -494,7 +491,7 @@ namespace AntdUI
                     float gap = (text_height - gap_y) / 2F;
                     foreach (var it in Items)
                     {
-                        if (it.Show)
+                        if (it.ID > -1 && it.Show)
                         {
                             list_count++;
                             var rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size);

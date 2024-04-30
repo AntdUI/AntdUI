@@ -36,6 +36,7 @@ namespace AntdUI
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config)
         {
             TopMost = _config.TopMost;
+            if (!_config.TopMost) _config.Control.SetTopMost(Handle);
             var point = MousePosition;
             point.Offset(-10, -10);
             maxalpha = 250;

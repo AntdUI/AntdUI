@@ -69,6 +69,14 @@ namespace AntdUI
                     return;
                 }
                 if (IMouseDown(e.Location)) return;
+
+                if (ScrollYShow && autoscroll && ScrollHover)
+                {
+                    float y = (e.Y - ScrollSlider.Height / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
+                    ScrollY = (int)(y * VrValue);
+                    ScrollYDown = true;
+                    return;
+                }
                 mouseDownMove = false;
                 Select();
                 oldMouseDown = e.Location;
@@ -87,7 +95,13 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (mouseDown && cache_font != null)
+            if (ScrollYDown)
+            {
+                float y = (e.Y - ScrollSlider.Height / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
+                ScrollY = (int)(y * VrValue);
+                return;
+            }
+            else if (mouseDown && cache_font != null)
             {
                 mouseDownMove = true;
                 Cursor = Cursors.IBeam;
@@ -99,6 +113,7 @@ namespace AntdUI
             }
             else
             {
+                if (ScrollYShow && autoscroll) ScrollHover = ScrollRect.Contains(e.Location);
                 if (is_clear)
                 {
                     var hover = rect_r.Contains(e.Location);
@@ -131,6 +146,12 @@ namespace AntdUI
             }
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (ScrollYShow && autoscroll && e.Delta != 0) ScrollY -= e.Delta;
+            base.OnMouseWheel(e);
+        }
+
         internal virtual bool IMouseMove(Point e)
         {
             return false;
@@ -143,6 +164,7 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            ScrollYDown = false;
             if (is_clear_down)
             {
                 if (rect_r.Contains(e.Location)) OnClearValue();

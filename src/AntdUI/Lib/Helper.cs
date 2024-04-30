@@ -1558,6 +1558,16 @@ namespace AntdUI
             else if (control.Parent != null) return FindPARENT(control.Parent);
             return null;
         }
+        public static bool SetTopMost(this Control? control, IntPtr hand)
+        {
+            var form = control.FindPARENT();
+            if (form != null && form.TopMost)
+            {
+                Vanara.PInvoke.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Vanara.PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
+                return true;
+            }
+            return false;
+        }
 
         public static SolidBrush Brush(this Color? color, Color default_color)
         {

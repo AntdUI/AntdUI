@@ -393,19 +393,9 @@ namespace AntdUI
             {
                 if (hex != null && hex.Length > 5)
                 {
-                    if (hex.StartsWith("#"))
-                    {
-                        hex = hex.Substring(1);
-                    }
-
-                    if (hex.Length == 6)
-                    {
-                        return Color.FromArgb(hex.Substring(0, 2).HexToInt(), hex.Substring(2, 2).HexToInt(), hex.Substring(4, 2).HexToInt());
-                    }
-                    else if (hex.Length == 8)
-                    {
-                        return Color.FromArgb(hex.Substring(6, 2).HexToInt(), hex.Substring(0, 2).HexToInt(), hex.Substring(2, 2).HexToInt(), hex.Substring(4, 2).HexToInt());
-                    }
+                    if (hex.StartsWith("#")) hex = hex.Substring(1);
+                    if (hex.Length == 6) return Color.FromArgb(hex.Substring(0, 2).HexToInt(), hex.Substring(2, 2).HexToInt(), hex.Substring(4, 2).HexToInt());
+                    else if (hex.Length == 8) return Color.FromArgb(hex.Substring(6, 2).HexToInt(), hex.Substring(0, 2).HexToInt(), hex.Substring(2, 2).HexToInt(), hex.Substring(4, 2).HexToInt());
                 }
             }
             catch

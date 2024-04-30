@@ -91,239 +91,21 @@ namespace AntdUI
                     if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record, check > 0);
                 }
 
-                if (_rows.Count > 0)
+                if (EmptyHeader && _rows.Count == 0)
                 {
-                    #region 添加表头
-
-                    var _cols = new List<TCellColumn>(_columns.Count);
-                    CheckState checkState = CheckState.Unchecked;
-                    foreach (var it in _columns)
-                    {
-                        if (check_count > 0 && it is ColumnCheck check)
-                        {
-                            checkState = check_count == _rows.Count ? CheckState.Checked : CheckState.Indeterminate;
-                            check.CheckState = checkState;
-                        }
-                        _cols.Add(new TCellColumn(this, it));
-                    }
-                    AddRowsColumn(ref _rows, _cols.ToArray(), dataSource, checkState);
-
-                    #endregion
-
-                    #region 计算坐标
-
-                    int x = 0, y = 0;
-                    bool is_exceed = false;
-
                     var rect = ClientRectangle;
 
-                    rect_read.X = rect.X;
-                    rect_read.Y = rect.Y;
+                    rows = ChangeLayoutCore(rect, _rows, _columns, check_count, col_width, out int x, out int y, out bool is_exceed);
+                    scrollBar.SetVrSize(is_exceed ? x : 0, y);
 
-                    Helper.GDI(g =>
-                    {
-                        var dpi = Config.Dpi;
-                        check_radius = _checksize * 0.25F * dpi;
-                        check_border = _checksize * 0.125F * dpi;
-                        int check_size = (int)(_checksize * dpi), gap = (int)(_gap * dpi), gap2 = gap * 2,
-                        split = (int)(1F * dpi), split2 = split / 2;
+                    ThreadState?.Dispose(); ThreadState = null;
 
-                        #region 布局高宽
-
-                        var temp_width_cell = new Dictionary<int, float>();
-                        for (int row_i = 0; row_i < _rows.Count; row_i++)
-                        {
-                            var row = _rows[row_i];
-                            row.INDEX = row_i;
-                            float max_height = 0;
-                            for (int cel_i = 0; cel_i < row.cells.Length; cel_i++)
-                            {
-                                if (!temp_width_cell.ContainsKey(cel_i)) temp_width_cell.Add(cel_i, 0F);
-                                var it = row.cells[cel_i];
-                                it.INDEX = cel_i;
-                                if (it is TCellCheck check)
-                                {
-                                    if (max_height < gap2) max_height = gap2;
-                                    temp_width_cell[cel_i] = -1F;
-                                }
-                                else
-                                {
-                                    var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
-                                    if (max_height < text_size.Height) max_height = text_size.Height;
-                                    if (temp_width_cell[cel_i] < text_size.Width) temp_width_cell[cel_i] = text_size.Width;
-                                }
-                            }
-                            row.Height = (int)Math.Round(max_height) + gap2;
-                        }
-
-                        int use_width = rect.Width;
-                        float max_width = 0;
-                        foreach (var it in temp_width_cell)
-                        {
-                            if (col_width.ContainsKey(it.Key))
-                            {
-                                var value = col_width[it.Key];
-                                if (value is int val_int)
-                                {
-                                    if (val_int == -1) max_width += it.Value;
-                                    else max_width += val_int;
-                                }
-                                if (value is float val_float) max_width += rect.Width * val_float;
-                            }
-                            else if (it.Value == -1F) use_width -= check_size * 2;
-                            else max_width += it.Value;
-                        }
-                        rect_read.Width = rect.Width;
-                        rect_read.Height = rect.Height;
-                        var width_cell = new Dictionary<int, int>();
-                        if (max_width > rect.Width)
-                        {
-                            is_exceed = true;
-                            foreach (var it in temp_width_cell)
-                            {
-                                if (col_width.ContainsKey(it.Key))
-                                {
-                                    var value = col_width[it.Key];
-                                    if (value is int val_int)
-                                    {
-                                        if (val_int == -1) width_cell.Add(it.Key, (int)Math.Ceiling(it.Value));
-                                        else width_cell.Add(it.Key, val_int);
-                                    }
-                                    else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
-                                }
-                                else if (it.Value == -1F)
-                                {
-                                    int _check_size = check_size * 2;
-                                    width_cell.Add(it.Key, _check_size);
-                                }
-                                else
-                                {
-                                    int value = (int)Math.Ceiling(it.Value);
-                                    width_cell.Add(it.Key, value);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (var it in temp_width_cell)
-                            {
-                                if (col_width.ContainsKey(it.Key))
-                                {
-                                    var value = col_width[it.Key];
-                                    if (value is int val_int)
-                                    {
-                                        if (val_int == -1) width_cell.Add(it.Key, (int)Math.Ceiling(it.Value));
-                                        else width_cell.Add(it.Key, val_int);
-                                    }
-                                    else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
-                                }
-                                else if (it.Value == -1F)
-                                {
-                                    int _check_size = check_size * 2;
-                                    width_cell.Add(it.Key, _check_size);
-                                }
-                                else
-                                {
-                                    int value = (int)Math.Ceiling(use_width * (it.Value / max_width));
-                                    width_cell.Add(it.Key, value);
-                                }
-                            }
-                            int sum_wi = 0;
-                            foreach (var it in width_cell)
-                            {
-                                sum_wi += it.Value;
-                            }
-                            if (rect_read.Width > sum_wi) rect_read.Width = sum_wi;
-                        }
-
-                        #endregion
-
-                        #region 最终坐标
-
-                        int use_y = rect.Y;
-                        foreach (var row in _rows)
-                        {
-                            int use_x = rect.X;
-                            row.RECT = new Rectangle(rect.X, use_y, rect_read.Width, row.Height);
-                            for (int i = 0; i < row.cells.Length; i++)
-                            {
-                                var it = row.cells[i];
-                                var _rect = new Rectangle(use_x, use_y, width_cell[i], row.RECT.Height);
-                                if (it is TCellCheck check) check.SetSize(_rect, check_size);
-                                else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
-                                else if (it is TCellSwitch _switch) _switch.SetSize(_rect, check_size);
-                                else if (it is TCellColumn column)
-                                {
-                                    it.SetSize(g, Font, _rect, gap, gap2);
-                                    if (column.tag is ColumnCheck columnCheck)
-                                    {
-                                        columnCheck.PARENT = this;
-                                        //全选
-                                        column.rect = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
-                                    }
-                                    else
-                                    {
-                                        column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
-                                        if (x < column.rect.Right) x = column.rect.Right;
-                                    }
-                                }
-                                else it.SetSize(g, Font, _rect, gap, gap2);
-
-                                if (x < _rect.Right) x = _rect.Right;
-                                if (y < _rect.Bottom) y = _rect.Bottom;
-                                use_x += width_cell[i];
-                            }
-                            use_y += row.Height;
-                        }
-
-                        #endregion
-
-                        List<Rectangle> _dividerHs = new List<Rectangle>(), _dividers = new List<Rectangle>();
-
-                        var last_row = _rows[_rows.Count - 1];
-                        var last = last_row.cells[last_row.cells.Length - 1];
-
-                        if ((rect.Y + rect.Height) > last.RECT.Bottom) rect_read.Height = last.RECT.Bottom - rect.Y;
-
-                        int sp2 = split * 2;
-                        rect_divider = new Rectangle(rect_read.X + split, rect_read.Y + split, rect_read.Width - sp2, rect_read.Height - sp2);
-                        foreach (var row in _rows)
-                        {
-                            if (row.IsColumn)
-                            {
-                                if (bordered)
-                                {
-                                    for (int i = 0; i < row.cells.Length - 1; i++)
-                                    {
-                                        var it = (TCellColumn)row.cells[i];
-                                        _dividerHs.Add(new Rectangle(it.rect.Right + gap - split2, rect.Y, split, rect_read.Height));
-                                    }
-                                    _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < row.cells.Length - 1; i++)
-                                    {
-                                        var it = (TCellColumn)row.cells[i];
-                                        _dividerHs.Add(new Rectangle(it.rect.Right + gap - split2, it.rect.Y, split, it.rect.Height));
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (bordered) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
-                                else _dividers.Add(new Rectangle(row.RECT.X, row.RECT.Bottom - split2, row.RECT.Width, split));
-                            }
-                        }
-                        if (bordered) _dividers.RemoveAt(_dividers.Count - 1);
-                        dividerHs = _dividerHs.ToArray();
-                        dividers = _dividers.ToArray();
-                    });
-
-                    rows = _rows.ToArray();
-
-                    #endregion
-
+                    return rect;
+                }
+                else if (_rows.Count > 0)
+                {
+                    var rect = ClientRectangle;
+                    rows = ChangeLayoutCore(rect, _rows, _columns, check_count, col_width, out int x, out int y, out bool is_exceed);
                     scrollBar.SetVrSize(is_exceed ? x : 0, y);
 
                     if (processing == 0) { ThreadState?.Dispose(); ThreadState = null; }
@@ -350,6 +132,241 @@ namespace AntdUI
                 }
             }
             return Rectangle.Empty;
+        }
+
+        RowTemplate[] ChangeLayoutCore(Rectangle rect, List<RowTemplate> _rows, List<Column> _columns, int check_count, Dictionary<int, object> col_width, out int _x, out int _y, out bool _is_exceed)
+        {
+            #region 添加表头
+
+            var _cols = new List<TCellColumn>(_columns.Count);
+            CheckState checkState = CheckState.Unchecked;
+            foreach (var it in _columns)
+            {
+                if (check_count > 0 && it is ColumnCheck check)
+                {
+                    checkState = check_count == _rows.Count ? CheckState.Checked : CheckState.Indeterminate;
+                    check.CheckState = checkState;
+                }
+                _cols.Add(new TCellColumn(this, it));
+            }
+            AddRowsColumn(ref _rows, _cols.ToArray(), dataSource, checkState);
+
+            #endregion
+
+            #region 计算坐标
+
+            int x = 0, y = 0;
+            bool is_exceed = false;
+
+            rect_read.X = rect.X;
+            rect_read.Y = rect.Y;
+
+            Helper.GDI(g =>
+            {
+                var dpi = Config.Dpi;
+                check_radius = _checksize * 0.25F * dpi;
+                check_border = _checksize * 0.125F * dpi;
+                int check_size = (int)(_checksize * dpi), gap = (int)(_gap * dpi), gap2 = gap * 2,
+                split = (int)(1F * dpi), split2 = split / 2;
+
+                #region 布局高宽
+
+                var temp_width_cell = new Dictionary<int, float>();
+                for (int row_i = 0; row_i < _rows.Count; row_i++)
+                {
+                    var row = _rows[row_i];
+                    row.INDEX = row_i;
+                    float max_height = 0;
+                    for (int cel_i = 0; cel_i < row.cells.Length; cel_i++)
+                    {
+                        if (!temp_width_cell.ContainsKey(cel_i)) temp_width_cell.Add(cel_i, 0F);
+                        var it = row.cells[cel_i];
+                        it.INDEX = cel_i;
+                        if (it is TCellCheck check)
+                        {
+                            if (max_height < gap2) max_height = gap2;
+                            temp_width_cell[cel_i] = -1F;
+                        }
+                        else
+                        {
+                            var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
+                            if (max_height < text_size.Height) max_height = text_size.Height;
+                            if (temp_width_cell[cel_i] < text_size.Width) temp_width_cell[cel_i] = text_size.Width;
+                        }
+                    }
+                    row.Height = (int)Math.Round(max_height) + gap2;
+                }
+
+                int use_width = rect.Width;
+                float max_width = 0;
+                foreach (var it in temp_width_cell)
+                {
+                    if (col_width.ContainsKey(it.Key))
+                    {
+                        var value = col_width[it.Key];
+                        if (value is int val_int)
+                        {
+                            if (val_int == -1) max_width += it.Value;
+                            else max_width += val_int;
+                        }
+                        if (value is float val_float) max_width += rect.Width * val_float;
+                    }
+                    else if (it.Value == -1F) use_width -= check_size * 2;
+                    else max_width += it.Value;
+                }
+                rect_read.Width = rect.Width;
+                rect_read.Height = rect.Height;
+                var width_cell = new Dictionary<int, int>();
+                if (max_width > rect.Width)
+                {
+                    is_exceed = true;
+                    foreach (var it in temp_width_cell)
+                    {
+                        if (col_width.ContainsKey(it.Key))
+                        {
+                            var value = col_width[it.Key];
+                            if (value is int val_int)
+                            {
+                                if (val_int == -1) width_cell.Add(it.Key, (int)Math.Ceiling(it.Value));
+                                else width_cell.Add(it.Key, val_int);
+                            }
+                            else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
+                        }
+                        else if (it.Value == -1F)
+                        {
+                            int _check_size = check_size * 2;
+                            width_cell.Add(it.Key, _check_size);
+                        }
+                        else
+                        {
+                            int value = (int)Math.Ceiling(it.Value);
+                            width_cell.Add(it.Key, value);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var it in temp_width_cell)
+                    {
+                        if (col_width.ContainsKey(it.Key))
+                        {
+                            var value = col_width[it.Key];
+                            if (value is int val_int)
+                            {
+                                if (val_int == -1) width_cell.Add(it.Key, (int)Math.Ceiling(it.Value));
+                                else width_cell.Add(it.Key, val_int);
+                            }
+                            else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
+                        }
+                        else if (it.Value == -1F)
+                        {
+                            int _check_size = check_size * 2;
+                            width_cell.Add(it.Key, _check_size);
+                        }
+                        else
+                        {
+                            int value = (int)Math.Ceiling(use_width * (it.Value / max_width));
+                            width_cell.Add(it.Key, value);
+                        }
+                    }
+                    int sum_wi = 0;
+                    foreach (var it in width_cell)
+                    {
+                        sum_wi += it.Value;
+                    }
+                    if (rect_read.Width > sum_wi) rect_read.Width = sum_wi;
+                }
+
+                #endregion
+
+                #region 最终坐标
+
+                int use_y = rect.Y;
+                foreach (var row in _rows)
+                {
+                    int use_x = rect.X;
+                    row.RECT = new Rectangle(rect.X, use_y, rect_read.Width, row.Height);
+                    for (int i = 0; i < row.cells.Length; i++)
+                    {
+                        var it = row.cells[i];
+                        var _rect = new Rectangle(use_x, use_y, width_cell[i], row.RECT.Height);
+                        if (it is TCellCheck check) check.SetSize(_rect, check_size);
+                        else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
+                        else if (it is TCellSwitch _switch) _switch.SetSize(_rect, check_size);
+                        else if (it is TCellColumn column)
+                        {
+                            it.SetSize(g, Font, _rect, gap, gap2);
+                            if (column.tag is ColumnCheck columnCheck)
+                            {
+                                columnCheck.PARENT = this;
+                                //全选
+                                column.rect = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
+                            }
+                            else
+                            {
+                                column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                                if (x < column.rect.Right) x = column.rect.Right;
+                            }
+                        }
+                        else it.SetSize(g, Font, _rect, gap, gap2);
+
+                        if (x < _rect.Right) x = _rect.Right;
+                        if (y < _rect.Bottom) y = _rect.Bottom;
+                        use_x += width_cell[i];
+                    }
+                    use_y += row.Height;
+                }
+
+                #endregion
+
+                List<Rectangle> _dividerHs = new List<Rectangle>(), _dividers = new List<Rectangle>();
+
+                var last_row = _rows[_rows.Count - 1];
+                var last = last_row.cells[last_row.cells.Length - 1];
+
+                if ((rect.Y + rect.Height) > last.RECT.Bottom) rect_read.Height = last.RECT.Bottom - rect.Y;
+
+                int sp2 = split * 2;
+                rect_divider = new Rectangle(rect_read.X + split, rect_read.Y + split, rect_read.Width - sp2, rect_read.Height - sp2);
+                foreach (var row in _rows)
+                {
+                    if (row.IsColumn)
+                    {
+                        if (bordered)
+                        {
+                            for (int i = 0; i < row.cells.Length - 1; i++)
+                            {
+                                var it = (TCellColumn)row.cells[i];
+                                _dividerHs.Add(new Rectangle(it.rect.Right + gap - split2, rect.Y, split, rect_read.Height));
+                            }
+                            _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
+                        }
+                        else
+                        {
+                            for (int i = 0; i < row.cells.Length - 1; i++)
+                            {
+                                var it = (TCellColumn)row.cells[i];
+                                _dividerHs.Add(new Rectangle(it.rect.Right + gap - split2, it.rect.Y, split, it.rect.Height));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (bordered) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
+                        else _dividers.Add(new Rectangle(row.RECT.X, row.RECT.Bottom - split2, row.RECT.Width, split));
+                    }
+                }
+                if (bordered) _dividers.RemoveAt(_dividers.Count - 1);
+                dividerHs = _dividerHs.ToArray();
+                dividers = _dividers.ToArray();
+            });
+
+            #endregion
+
+            _x = x;
+            _y = y;
+            _is_exceed = is_exceed;
+            return _rows.ToArray();
         }
 
         #region 动画
@@ -572,7 +589,7 @@ namespace AntdUI
             foreach (var it in row.cells) it.ROW = row;
             rows.Add(row);
         }
-        void AddRowsColumn(ref List<RowTemplate> rows, TCell[] cells, object Record, CheckState check)
+        void AddRowsColumn(ref List<RowTemplate> rows, TCell[] cells, object? Record, CheckState check)
         {
             var row = new RowTemplate(this, cells, Record, check);
             foreach (var it in row.cells) it.ROW = row;

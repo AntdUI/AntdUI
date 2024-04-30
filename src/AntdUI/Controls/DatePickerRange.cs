@@ -900,7 +900,7 @@ namespace AntdUI
             {
                 if (textFocus == value) return;
                 textFocus = value;
-                if (value)
+                if (!ReadOnly && value)
                 {
                     subForm?.IClose();
                     subForm = new LayeredFormCalendarRange(this, ReadRectangle, _value, date =>

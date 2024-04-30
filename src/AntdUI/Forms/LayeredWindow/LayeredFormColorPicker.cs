@@ -35,8 +35,7 @@ namespace AntdUI
         Action<Color> action;
         public LayeredFormColorPicker(ColorPicker control, RectangleF rect_read, Action<Color> _action)
         {
-            var form = control.Parent.FindPARENT();
-            if (form != null) TopMost = form.TopMost;
+            control.Parent.SetTopMost(Handle);
             color_alpha = Value = control.Value;
             ValueNAlpha = Color.FromArgb(255, Value);
             var hsv = ValueNAlpha.ToHSV();

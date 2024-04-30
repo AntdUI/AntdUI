@@ -48,7 +48,7 @@ namespace AntdUI
                 checkState = CheckState.Checked;
                 _checked = check;
             }
-            public RowTemplate(Table table, TCell[] cell, object value, CheckState check)
+            public RowTemplate(Table table, TCell[] cell, object? value, CheckState check)
             {
                 PARENT = table;
                 cells = cell;
@@ -71,7 +71,7 @@ namespace AntdUI
             /// <summary>
             /// 原始行数据
             /// </summary>
-            public object RECORD { get; set; }
+            public object? RECORD { get; set; }
             public int INDEX { get; set; }
 
             /// <summary>
@@ -935,7 +935,7 @@ namespace AntdUI
             {
                 RECT = _rect;
                 int gap = _gap / 2, gap2 = _gap;
-                if (value.Count == 1 && value[0] is TemplateText)
+                if (value.Count == 1 && (value[0] is TemplateText || value[0] is TemplateProgress))
                 {
                     var it = value[0];
                     var size = SIZES[0];
@@ -1671,9 +1671,20 @@ namespace AntdUI
                             }
                             else
                             {
-                                using (var brush = new SolidBrush(_color))
+                                using (var bmp = new Bitmap(Rect.Width, Rect.Height))
                                 {
-                                    g.FillEllipse(brush, new RectangleF(Rect.X, Rect.Y, _w, Rect.Height));
+                                    using (var g2 = Graphics.FromImage(bmp).High())
+                                    {
+                                        using (var brush = new SolidBrush(_color))
+                                        {
+                                            g2.FillEllipse(brush, new RectangleF(0, 0, _w, Rect.Height));
+                                        }
+                                    }
+                                    using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
+                                    {
+                                        brush.TranslateTransform(Rect.X, Rect.Y);
+                                        g.FillPath(brush, path);
+                                    }
                                 }
                             }
                         }
@@ -1685,8 +1696,12 @@ namespace AntdUI
             public void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
             {
                 RECT = rect;
-                int w = size.Width - gap2, h = size.Height;
-                if (Value.Shape == TShape.Circle) h = size.Height - gap2;
+                int w = rect.Width - gap2, h = size.Height;
+                if (Value.Shape == TShape.Circle)
+                {
+                    w = size.Width - gap2;
+                    h = size.Height - gap2;
+                }
                 Rect = new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + (rect.Height - h) / 2, w, h);
             }
 
@@ -1701,7 +1716,7 @@ namespace AntdUI
                 else
                 {
                     int size = gap2 + height;
-                    return new Size(size * 2, height / 2);
+                    return new Size(size, height / 2);
                 }
             }
 

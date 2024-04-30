@@ -32,7 +32,7 @@ namespace AntdUI
         /// <param name="record">原始行</param>
         /// <param name="rowIndex">行序号</param>
         /// <param name="columnIndex">列序号</param>
-        public delegate void CheckEventHandler(object sender, bool value, object record, int rowIndex, int columnIndex);
+        public delegate void CheckEventHandler(object sender, bool value, object? record, int rowIndex, int columnIndex);
 
         /// <summary>
         /// 点击事件
@@ -43,7 +43,7 @@ namespace AntdUI
         /// <param name="rowIndex">行序号</param>
         /// <param name="columnIndex">列序号</param>
         /// <param name="rect">表格区域</param>
-        public delegate void ClickEventHandler(object sender, MouseEventArgs args, object record, int rowIndex, int columnIndex, Rectangle rect);
+        public delegate void ClickEventHandler(object sender, MouseEventArgs args, object? record, int rowIndex, int columnIndex, Rectangle rect);
 
         /// <summary>
         /// 按钮点击事件
@@ -53,7 +53,7 @@ namespace AntdUI
         /// <param name="record">原始行</param>
         /// <param name="rowIndex">行序号</param>
         /// <param name="columnIndex">列序号</param>
-        public delegate void ClickButtonEventHandler(object sender, CellLink btn, MouseEventArgs args, object record, int rowIndex, int columnIndex);
+        public delegate void ClickButtonEventHandler(object sender, CellLink btn, MouseEventArgs args, object? record, int rowIndex, int columnIndex);
 
         /// <summary>
         /// Checked 属性值更改时发生
@@ -108,7 +108,7 @@ namespace AntdUI
         /// <param name="record">原始行</param>
         /// <param name="rowIndex">行序号</param>
         /// <param name="columnIndex">列序号</param>
-        public delegate bool BeginEditEventHandler(object sender, object? value, object record, int rowIndex, int columnIndex);
+        public delegate bool BeginEditEventHandler(object sender, object? value, object? record, int rowIndex, int columnIndex);
 
         /// <summary>
         /// 编辑后事件
@@ -118,7 +118,7 @@ namespace AntdUI
         /// <param name="record">原始行</param>
         /// <param name="rowIndex">行序号</param>
         /// <param name="columnIndex">列序号</param>
-        public delegate bool EndEditEventHandler(object sender, string value, object record, int rowIndex, int columnIndex);
+        public delegate bool EndEditEventHandler(object sender, string value, object? record, int rowIndex, int columnIndex);
 
         /// <summary>
         /// 编辑前发生

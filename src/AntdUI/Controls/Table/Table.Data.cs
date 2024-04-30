@@ -40,6 +40,11 @@ namespace AntdUI
             }
             if (dataSource == null)
             {
+                if (EmptyHeader)
+                {
+                    var columns = new List<TempiColumn>();
+                    data_temp = new TempTable(columns.ToArray(), new TempiRow[0]);
+                }
                 // 空数据
                 scrollBar.ValueX = scrollBar.ValueY = 0;
                 return;

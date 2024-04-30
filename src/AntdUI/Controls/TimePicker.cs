@@ -136,7 +136,7 @@ namespace AntdUI
             {
                 if (textFocus == value) return;
                 textFocus = value;
-                if (value)
+                if (!ReadOnly && value)
                 {
                     if (subForm == null)
                     {

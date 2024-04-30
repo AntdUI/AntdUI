@@ -28,6 +28,7 @@ namespace AntdUI
     {
         public LayeredFormCalendarRange(DatePickerRange _control, RectangleF rect_read, DateTime[]? date, Action<DateTime[]> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
         {
+            _control.Parent.SetTopMost(Handle);
             control = _control;
             badge_action = _badge_action;
             PARENT = _control;

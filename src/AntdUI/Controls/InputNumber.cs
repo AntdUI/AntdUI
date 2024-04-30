@@ -331,12 +331,12 @@ namespace AntdUI
 
         internal override void ChangeMouseHover(bool Hover, bool Focus)
         {
-            hover_button.Switch = Hover || Focus;
+            hover_button.Switch = !ReadOnly && (Hover || Focus);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (rect_button.Contains(e.Location))
+            if (!ReadOnly && rect_button.Contains(e.Location))
             {
                 if (rect_button_up.Contains(e.Location))
                 {
@@ -363,7 +363,7 @@ namespace AntdUI
         int downid = 0, temp_old = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (rect_button.Contains(e.Location))
+            if (!ReadOnly && rect_button.Contains(e.Location))
             {
                 if (rect_button_up.Contains(e.Location))
                 {

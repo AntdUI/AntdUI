@@ -28,6 +28,7 @@ namespace AntdUI
     {
         public LayeredFormCalendarTime(TimePicker _control, RectangleF rect_read, TimeSpan date, Action<TimeSpan> _action)
         {
+            _control.Parent.SetTopMost(Handle);
             control = _control;
             PARENT = _control;
             action = _action;

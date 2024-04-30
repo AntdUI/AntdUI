@@ -35,8 +35,7 @@ namespace AntdUI
         readonly List<ObjectItem> Items = new List<ObjectItem>();
         public LayeredFormSelectMultiple(SelectMultiple control, RectangleF rect_read, List<object> items)
         {
-            var form = control.Parent.FindPARENT();
-            if (form != null) TopMost = form.TopMost;
+            control.Parent.SetTopMost(Handle);
             PARENT = control;
             scrollY = new ScrollY(this);
             textBox = control;

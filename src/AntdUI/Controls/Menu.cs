@@ -340,7 +340,7 @@ namespace AntdUI
                 it.SetRect(depth, Indent, new RectangleF(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
-                    int size = (int)Math.Ceiling(g.MeasureString(it.Text, Font).Width + gap * 4 + icon_size + it.arr_rect.Width);
+                    int size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width);
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + gapI;
                     if (it.CanExpand)
@@ -399,7 +399,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            float sy = scroll.Value;
+            int sy = scroll.Value;
             g.TranslateTransform(0, -sy);
             Color scroll_color, color_fore, color_fore_active, fore_enabled, back_hover, back_active;
 
@@ -453,7 +453,7 @@ namespace AntdUI
         {
             foreach (MenuItem it in items)
             {
-                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scroll.Value + scroll.ReadSize + it.rect.Height;
+                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
                 if (it.show)
                 {
                     PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
@@ -476,7 +476,7 @@ namespace AntdUI
         {
             foreach (MenuItem it in items)
             {
-                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.ExpandHeight : 0) && it.rect.Bottom < scroll.Value + scroll.ReadSize + it.rect.Height;
+                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
                 if (it.show)
                 {
                     PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
@@ -494,6 +494,7 @@ namespace AntdUI
                 }
             }
         }
+
         void PaintIt(Graphics g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             if (collapsed) PaintItemMini(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
@@ -620,7 +621,7 @@ namespace AntdUI
         {
             using (var brush = new SolidBrush(fore))
             {
-                g.DrawString(it.Text, Font, brush, it.txt_rect, SL);
+                g.DrawString(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }
@@ -636,7 +637,7 @@ namespace AntdUI
             }
             using (var brush = new SolidBrush(fore))
             {
-                g.DrawString(it.Text, Font, brush, it.txt_rect, SL);
+                g.DrawString(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }
@@ -774,7 +775,7 @@ namespace AntdUI
                                 {
                                     tooltipForm = new TooltipForm(rect, it.Text, new TooltipConfig
                                     {
-                                        Font = Font,
+                                        Font = it.Font ?? Font,
                                         ArrowAlign = TAlign.Right,
                                     });
                                     tooltipForm.Show(this);
@@ -1021,6 +1022,12 @@ namespace AntdUI
                 OnPropertyChanged("Text");
             }
         }
+
+        /// <summary>
+        /// 自定义字体
+        /// </summary>
+        [Description("自定义字体"), Category("外观"), DefaultValue(null)]
+        public Font? Font { get; set; }
 
         bool visible = true;
         /// <summary>

@@ -308,7 +308,6 @@ namespace AntdUI
                 {
                     float _radius = radius * Config.Dpi;
                     if (shape == TShape.Round) _radius = rect.Height;
-
                     using (var path = rect.RoundPath(_radius))
                     {
                         using (var brush = new SolidBrush(_back))
@@ -327,7 +326,6 @@ namespace AntdUI
                                         g.FillPath(brush, path_prog);
                                     }
                                 }
-
                                 if (loading && AnimationLoadingValue > 0)
                                 {
                                     int a = (int)(60 * (1f - AnimationLoadingValue));
@@ -342,9 +340,28 @@ namespace AntdUI
                             }
                             else
                             {
-                                using (var brush = new SolidBrush(_color))
+                                using (var bmp = new Bitmap(rect.Right, rect.Bottom))
                                 {
-                                    g.FillEllipse(brush, new RectangleF(rect.X, rect.Y, _w, rect.Height));
+                                    using (var g2 = Graphics.FromImage(bmp).High())
+                                    {
+                                        using (var brush = new SolidBrush(_color))
+                                        {
+                                            g2.FillEllipse(brush, new RectangleF(rect.X, rect.Y, _w, rect.Height));
+                                        }
+                                        if (loading && AnimationLoadingValue > 0)
+                                        {
+                                            int a = (int)(60 * (1f - AnimationLoadingValue));
+                                            using (var brush = new SolidBrush(Color.FromArgb(a, Style.Db.BgBase)))
+                                            {
+                                                g2.FillEllipse(brush, new RectangleF(rect.X, rect.Y, _w * AnimationLoadingValue, rect.Height));
+                                            }
+                                        }
+                                    }
+                                    using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
+                                    {
+                                        brush.TranslateTransform(rect.X, rect.Y);
+                                        g.FillPath(brush, path);
+                                    }
                                 }
                             }
                         }

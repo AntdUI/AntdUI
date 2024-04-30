@@ -78,9 +78,11 @@ namespace AntdUI
                             g.FillPath(brush, path);
                         }
                         PaintIcon(g, _fore);
-                        PaintText(g, path, _fore, rect_read.Right, rect_read.Bottom);
-                        PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
+                        PaintText(g, _fore, rect_read.Right, rect_read.Bottom);
                         g.ResetClip();
+                        g.SetClip(path);
+                        PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
+                        PaintScroll(g, rect_read, _radius);
                         if (borderWidth > 0)
                         {
                             if (AnimationHover)
@@ -124,9 +126,12 @@ namespace AntdUI
                             g.FillPath(brush, path);
                         }
                         PaintIcon(g, Style.Db.TextQuaternary);
-                        PaintText(g, path, Style.Db.TextQuaternary, rect_read.Right, rect_read.Bottom);
+                        PaintText(g, Style.Db.TextQuaternary, rect_read.Right, rect_read.Bottom);
+                        g.ResetClip();
+                        g.SetClip(path);
                         PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
                         g.ResetClip();
+                        PaintScroll(g, rect_read, _radius);
                         if (borderWidth > 0)
                         {
                             using (var brush = new Pen(_border, borderWidth))
@@ -138,6 +143,44 @@ namespace AntdUI
                 }
             }
             base.OnPaint(e);
+        }
+
+        void PaintScroll(Graphics g, Rectangle rect_read, float _radius)
+        {
+            if (ScrollYShow && autoscroll)
+            {
+                int SIZE = 20;
+
+                ScrollRect = new Rectangle(rect_read.Right - SIZE, rect_read.Y, SIZE, rect_read.Height);
+                using (var brush = new SolidBrush(Color.FromArgb(10, Style.Db.TextBase)))
+                {
+                    if (JoinRight) g.FillRectangle(brush, ScrollRect);
+                    else
+                    {
+                        using (var pathScroll = Helper.RoundPath(ScrollRect, _radius, false, true, true, false))
+                        {
+                            g.FillPath(brush, pathScroll);
+                        }
+                    }
+                }
+
+                float val = scrolly, VrValue = ScrollYMax + ScrollRect.Height;
+                float height = (ScrollRect.Height / VrValue) * ScrollRect.Height;
+                if (height < SIZE) height = SIZE;
+                height -= 20;
+                float y = val == 0 ? 0 : (val / (VrValue - ScrollRect.Height)) * (ScrollRect.Height - height);
+                if (ScrollHover) ScrollSlider = new RectangleF(ScrollRect.X + 6, ScrollRect.Y + y, 8, height);
+                else ScrollSlider = new RectangleF(ScrollRect.X + 7, ScrollRect.Y + y, 6, height);
+                if (ScrollSlider.Y < 10) ScrollSlider.Y = 10;
+                else if (ScrollSlider.Y > ScrollRect.Height - height - 6) ScrollSlider.Y = ScrollRect.Height - height - 6;
+                using (var brush = new SolidBrush(Color.FromArgb(141, Style.Db.TextBase)))
+                {
+                    using (var path = ScrollSlider.RoundPath(ScrollSlider.Width))
+                    {
+                        g.FillPath(brush, path);
+                    }
+                }
+            }
         }
 
         #region 渲染帮助
@@ -186,9 +229,9 @@ namespace AntdUI
             else PaintRIcon(g, rect_r);
         }
 
-        void PaintText(Graphics g, GraphicsPath path, Color _fore, int w, int h)
+        void PaintText(Graphics g, Color _fore, int w, int h)
         {
-            g.SetClip(path);
+            g.SetClip(rect_text);
             if (cache_font != null)
             {
                 g.TranslateTransform(-ScrollX, -ScrollY);
@@ -323,6 +366,19 @@ namespace AntdUI
 
         #region 滚动条
 
+        Rectangle ScrollRect;
+        RectangleF ScrollSlider;
+        bool scrollhover = false;
+        bool ScrollHover
+        {
+            get => scrollhover;
+            set
+            {
+                if (scrollhover == value) return;
+                scrollhover = value;
+                Invalidate();
+            }
+        }
         int scrollx = 0, scrolly = 0, ScrollXMin = 0, ScrollXMax = 0, ScrollYMax = 0;
         int ScrollX
         {
@@ -351,7 +407,7 @@ namespace AntdUI
             }
         }
 
-        bool ScrollXShow = false, ScrollYShow = false;
+        bool ScrollXShow = false, ScrollYShow = false, ScrollYDown = false;
         void ScrollTo(Rectangle r)
         {
             if (ScrollYShow)
