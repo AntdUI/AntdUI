@@ -208,6 +208,7 @@ namespace AntdUI
             Font = control.Font;
             config = _config;
             ocontrol = control;
+            control.SetTopMost(Handle);
             SetSize(control.Size);
             SetLocation(control.PointToScreen(Point.Empty));
             if (_config.Radius.HasValue) Radius = _config.Radius.Value;

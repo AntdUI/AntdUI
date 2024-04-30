@@ -419,6 +419,21 @@ namespace AntdUI.Svg
                         svgVisual.EnableBackground = attributeValue;
                         return true;
                     }
+                    else if (attributeName == "filter")
+                    {
+                        svgVisual.Filter = new Uri(attributeValue, UriKind.RelativeOrAbsolute);
+                        return true;
+                    }
+                    else if (attributeName == "clip-path")
+                    {
+                        svgVisual.ClipPath = new Uri(attributeValue, UriKind.RelativeOrAbsolute);
+                        return true;
+                    }
+                    else if (attributeName == "clip-rule")
+                    {
+                        svgVisual.ClipRule = (SvgClipRule)Enum.Parse(typeof(SvgClipRule), attributeValue, true);
+                        return true;
+                    }
                 }
 
                 #region »ù´¡
@@ -714,6 +729,11 @@ namespace AntdUI.Svg
                         use.Height = SvgUnitConverter.Parse(attributeValue);
                         return true;
                     }
+                    else if (attributeName == "href")
+                    {
+                        use.ReferencedElement = new Uri(attributeValue, UriKind.RelativeOrAbsolute);
+                        return true;
+                    }
                 }
                 //else if (element is SvgForeignObject foreignObject)
                 //{
@@ -733,6 +753,29 @@ namespace AntdUI.Svg
                     else if (attributeName == "stop-opacity")
                     {
                         stop.Opacity = float.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgGradientServer gradient)
+                {
+                    if (attributeName == "spreadMethod")
+                    {
+                        gradient.SpreadMethod = (SvgGradientSpreadMethod)Enum.Parse(typeof(SvgGradientSpreadMethod), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "gradientUnits")
+                    {
+                        gradient.GradientUnits = (SvgCoordinateUnits)Enum.Parse(typeof(SvgCoordinateUnits), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "href")
+                    {
+                        gradient.InheritGradient = SvgPaintServerConverter.Parse(attributeValue, document);
+                        return true;
+                    }
+                    else if (attributeName == "gradientTransform")
+                    {
+                        gradient.GradientTransform = SvgTransformConverter.Parse(attributeValue);
                         return true;
                     }
                 }
@@ -844,11 +887,6 @@ namespace AntdUI.Svg
                 }
                 else if (element is SvgLinearGradientServer linearGradient)
                 {
-                    if (attributeName == "id")
-                    {
-                        linearGradient.ID = attributeValue;
-                        return true;
-                    }
                     if (attributeName == "x1")
                     {
                         linearGradient.X1 = SvgUnitConverter.Parse(attributeValue);
@@ -1033,6 +1071,34 @@ namespace AntdUI.Svg
                     else if (attributeName == "vert-origin-y")
                     {
                         glyph.VertOriginY = float.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgKern kern)
+                {
+                    if (attributeName == "g1")
+                    {
+                        kern.Glyph1 = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "g2")
+                    {
+                        kern.Glyph2 = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "u1")
+                    {
+                        kern.Unicode1 = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "u2")
+                    {
+                        kern.Unicode2 = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "k")
+                    {
+                        kern.Kerning = float.Parse(attributeValue);
                         return true;
                     }
                 }

@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -88,7 +89,7 @@ namespace AntdUI
             {
                 if (currentValue == value) return;
                 currentValue = Constrain(value);
-                Text = GetNumberText(currentValue);
+                SetText(currentValue);
                 ValueChanged?.Invoke(this, currentValue);
             }
         }
@@ -105,7 +106,7 @@ namespace AntdUI
             {
                 if (decimalPlaces == value) return;
                 decimalPlaces = value;
-                Text = GetNumberText(currentValue);
+                SetText(currentValue);
             }
         }
 
@@ -121,7 +122,7 @@ namespace AntdUI
             {
                 if (thousandsSeparator == value) return;
                 thousandsSeparator = value;
-                Text = GetNumberText(currentValue);
+                SetText(currentValue);
             }
         }
 
@@ -137,7 +138,7 @@ namespace AntdUI
             {
                 if (hexadecimal == value) return;
                 hexadecimal = value;
-                Text = GetNumberText(currentValue);
+                SetText(currentValue);
             }
         }
 
@@ -159,10 +160,17 @@ namespace AntdUI
         [Description("每次单击箭头键时增加/减少的数量"), Category("数据"), DefaultValue(typeof(decimal), "1")]
         public decimal Increment { get; set; } = 1;
 
+        bool setvalue = true;
         protected override void CreateHandle()
         {
-            Text = GetNumberText(currentValue);
+            SetText(currentValue);
             base.CreateHandle();
+        }
+        void SetText(decimal value)
+        {
+            setvalue = false;
+            Text = GetNumberText(value);
+            setvalue = true;
         }
 
         #endregion
@@ -410,6 +418,12 @@ namespace AntdUI
                 if (decimal.TryParse(Text, out var _d)) Value = _d;
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            if (IsHandleCreated && setvalue && decimal.TryParse(Text, out var _d)) Value = _d;
+            base.OnTextChanged(e);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
