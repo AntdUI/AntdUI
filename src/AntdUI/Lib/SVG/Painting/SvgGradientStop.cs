@@ -4,7 +4,6 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System;
-using System.ComponentModel;
 using System.Drawing;
 
 namespace AntdUI.Svg
@@ -60,7 +59,6 @@ namespace AntdUI.Svg
         /// Gets or sets the colour of the gradient stop.
         /// </summary>
         [SvgAttribute("stop-color")]
-        [TypeConverter(typeof(SvgPaintServerFactory))]
         public override SvgPaintServer StopColor
         {
             get

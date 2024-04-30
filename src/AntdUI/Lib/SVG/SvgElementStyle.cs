@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 
@@ -143,7 +142,6 @@ namespace AntdUI.Svg
         /// </summary>
         /// <remarks>Apparently this can be set on non-sensical elements.  Don't ask; just check the tests.</remarks>
         [SvgAttribute("stop-color", true)]
-        [TypeConverter(typeof(SvgPaintServerFactory))]
         public virtual SvgPaintServer StopColor
         {
             get { return Attributes["stop-color"] as SvgPaintServer; }
@@ -318,7 +316,7 @@ namespace AntdUI.Svg
                                 sizes = part.Split('/');
                                 try
                                 {
-                                    fontSize = (SvgUnit)(new SvgUnitConverter().ConvertFromInvariantString(sizes[0]));
+                                    fontSize = SvgUnitConverter.Parse(sizes[0]);
                                     success = true;
                                     FontSize = fontSize;
                                 }

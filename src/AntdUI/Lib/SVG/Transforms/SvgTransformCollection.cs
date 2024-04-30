@@ -5,13 +5,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace AntdUI.Svg.Transforms
 {
-    [TypeConverter(typeof(SvgTransformConverter))]
     public class SvgTransformCollection : List<SvgTransform>, ICloneable
     {
         private void AddItem(SvgTransform item)

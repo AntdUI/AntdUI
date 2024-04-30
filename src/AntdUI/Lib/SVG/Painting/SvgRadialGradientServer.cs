@@ -101,8 +101,6 @@ namespace AntdUI.Svg
             Radius = new SvgUnit(SvgUnitType.Percentage, 50F);
         }
 
-        private object _lockObj = new Object();
-
         private SvgUnit NormalizeUnit(SvgUnit orig)
         {
             return (orig.Type == SvgUnitType.Percentage && GradientUnits == SvgCoordinateUnits.ObjectBoundingBox ?

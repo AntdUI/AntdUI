@@ -4,7 +4,6 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -197,9 +196,8 @@ namespace AntdUI.Svg
                     {
                         ((FilterEffects.SvgFilter)element).ApplyFilter(this, renderer, (r) => Render(r, false));
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        Debug.Print(ex.ToString());
                     }
                     rendered = true;
                 }

@@ -199,9 +199,7 @@ namespace AntdUI.Svg
             get
             {
                 var path = new GraphicsPath();
-
                 AddPaths(this, path);
-
                 return path;
             }
         }
@@ -223,24 +221,14 @@ namespace AntdUI.Svg
                         childBounds = ((SvgFragment)child).Bounds;
                         childBounds.Offset(((SvgFragment)child).X, ((SvgFragment)child).Y);
                     }
-                    else if (child is SvgVisualElement)
-                    {
-                        childBounds = ((SvgVisualElement)child).Bounds;
-                    }
+                    else if (child is SvgVisualElement) childBounds = ((SvgVisualElement)child).Bounds;
 
                     if (!childBounds.IsEmpty)
                     {
-                        if (bounds.IsEmpty)
-                        {
-                            bounds = childBounds;
-                        }
-                        else
-                        {
-                            bounds = RectangleF.Union(bounds, childBounds);
-                        }
+                        if (bounds.IsEmpty) bounds = childBounds;
+                        else bounds = RectangleF.Union(bounds, childBounds);
                     }
                 }
-
                 return TransformedBounds(bounds);
             }
         }
@@ -267,33 +255,14 @@ namespace AntdUI.Svg
             RectangleF bounds = new RectangleF();
             if (isWidthperc || isHeightperc)
             {
-                if (ViewBox.Width > 0 && ViewBox.Height > 0)
-                {
-                    bounds = new RectangleF(ViewBox.MinX, ViewBox.MinY, ViewBox.Width, ViewBox.Height);
-                }
-                else
-                {
-                    bounds = Bounds; //do just one call to the recursive bounds property
-                }
+                if (ViewBox.Width > 0 && ViewBox.Height > 0) bounds = new RectangleF(ViewBox.MinX, ViewBox.MinY, ViewBox.Width, ViewBox.Height);
+                else bounds = Bounds; //do just one call to the recursive bounds property
             }
 
-            if (isWidthperc)
-            {
-                w = (bounds.Width + bounds.X) * (Width.Value * 0.01f);
-            }
-            else
-            {
-                w = Width.ToDeviceValue(null, UnitRenderingType.Horizontal, this);
-            }
-            if (isHeightperc)
-            {
-                h = (bounds.Height + bounds.Y) * (Height.Value * 0.01f);
-            }
-            else
-            {
-                h = Height.ToDeviceValue(null, UnitRenderingType.Vertical, this);
-            }
-
+            if (isWidthperc) w = (bounds.Width + bounds.X) * (Width.Value * 0.01f);
+            else w = Width.ToDeviceValue(null, UnitRenderingType.Horizontal, this);
+            if (isHeightperc) h = (bounds.Height + bounds.Y) * (Height.Value * 0.01f);
+            else h = Height.ToDeviceValue(null, UnitRenderingType.Vertical, this);
             return new SizeF(w, h);
         }
     }

@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -227,21 +226,13 @@ namespace AntdUI.Svg
         private GradientPoints ExpandGradient(ISvgBoundable boundable, PointF specifiedStart, PointF specifiedEnd)
         {
             var pointsToMove = PointsToMove(boundable, specifiedStart, specifiedEnd);
-            if (pointsToMove == LinePoints.None)
-            {
-                Debug.Fail("Unexpectedly expanding gradient when not needed!");
-                return new GradientPoints(specifiedStart, specifiedEnd);
-            }
-
+            if (pointsToMove == LinePoints.None) return new GradientPoints(specifiedStart, specifiedEnd);
             var bounds = boundable.Bounds;
             var effectiveStart = specifiedStart;
             var effectiveEnd = specifiedEnd;
             var intersectionPoints = CandidateIntersections(bounds, specifiedStart, specifiedEnd);
 
-            Debug.Assert(intersectionPoints.Count == 2, "Unanticipated number of intersection points");
-
-            if (!(Math.Sign(intersectionPoints[1].X - intersectionPoints[0].X) == Math.Sign(specifiedEnd.X - specifiedStart.X) &&
-                  Math.Sign(intersectionPoints[1].Y - intersectionPoints[0].Y) == Math.Sign(specifiedEnd.Y - specifiedStart.Y)))
+            if (!(Math.Sign(intersectionPoints[1].X - intersectionPoints[0].X) == Math.Sign(specifiedEnd.X - specifiedStart.X) && Math.Sign(intersectionPoints[1].Y - intersectionPoints[0].Y) == Math.Sign(specifiedEnd.Y - specifiedStart.Y)))
             {
                 intersectionPoints = intersectionPoints.Reverse().ToList();
             }
@@ -431,13 +422,6 @@ namespace AntdUI.Svg
             }
 
             return colorBlend;
-        }
-
-        private static PointF CalculateClosestIntersectionPoint(PointF sourcePoint, IList<PointF> targetPoints)
-        {
-            Debug.Assert(targetPoints.Count == 2, "Unexpected number of intersection points!");
-
-            return CalculateDistance(sourcePoint, targetPoints[0]) < CalculateDistance(sourcePoint, targetPoints[1]) ? targetPoints[0] : targetPoints[1];
         }
 
         private static PointF MovePointAlongVector(PointF start, PointF unitVector, float distance)

@@ -94,7 +94,7 @@ namespace AntdUI.Svg
         {
         }
 
-        public override System.Drawing.Drawing2D.GraphicsPath Path(ISvgRenderer renderer)
+        public override GraphicsPath Path(ISvgRenderer renderer)
         {
             if ((_path == null || IsPathDirty) && base.StrokeWidth > 0)
             {

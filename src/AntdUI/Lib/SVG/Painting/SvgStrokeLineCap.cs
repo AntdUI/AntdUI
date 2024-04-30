@@ -3,12 +3,9 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     /// <summary>Specifies the shape to be used at the end of open subpaths when they are stroked.</summary>
-    [TypeConverter(typeof(SvgStrokeLineCapConverter))]
     public enum SvgStrokeLineCap
     {
         /// <summary>The value is inherited from the parent element.</summary>

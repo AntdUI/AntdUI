@@ -637,8 +637,7 @@ namespace AntdUI.Svg
                                 baselineShift = -1 * new SvgUnit(SvgUnitType.Ex, 1).ToDeviceValue(Renderer, UnitRenderingType.Vertical, Element);
                                 break;
                             default:
-                                var convert = new SvgUnitConverter();
-                                var shiftUnit = (SvgUnit)convert.ConvertFromInvariantString(baselineShiftText);
+                                var shiftUnit = SvgUnitConverter.Parse(baselineShiftText);
                                 baselineShift = -1 * shiftUnit.ToDeviceValue(Renderer, UnitRenderingType.Vertical, Element);
                                 break;
                         }

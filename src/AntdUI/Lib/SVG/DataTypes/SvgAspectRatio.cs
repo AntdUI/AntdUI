@@ -3,7 +3,6 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using AntdUI.Svg.DataTypes;
 using System.ComponentModel;
 
 namespace AntdUI.Svg
@@ -11,7 +10,6 @@ namespace AntdUI.Svg
     /// <summary>
     /// Description of SvgAspectRatio.
     /// </summary>
-    [TypeConverter(typeof(SvgPreserveAspectRatioConverter))]
     public class SvgAspectRatio
     {
         public SvgAspectRatio() : this(SvgPreserveAspectRatio.none)
@@ -48,7 +46,6 @@ namespace AntdUI.Svg
 
     }
 
-    [TypeConverter(typeof(SvgPreserveAspectRatioConverter))]
     public enum SvgPreserveAspectRatio
     {
         xMidYMid, //default

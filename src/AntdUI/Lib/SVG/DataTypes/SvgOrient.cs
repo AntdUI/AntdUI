@@ -3,15 +3,11 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using AntdUI.Svg.DataTypes;
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
     /// <summary>
     /// Represents an orientation in an Scalable Vector Graphics document.
     /// </summary>
-	[TypeConverter(typeof(SvgOrientConverter))]
     public class SvgOrient
     {
         private bool _isAuto = true;

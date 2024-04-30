@@ -4,11 +4,9 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace AntdUI.Svg.Pathing
 {
-    [TypeConverter(typeof(SvgPathBuilder))]
     public sealed class SvgPathSegmentList : IList<SvgPathSegment>
     {
         internal SvgPath _owner;

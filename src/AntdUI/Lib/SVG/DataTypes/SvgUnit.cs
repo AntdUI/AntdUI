@@ -4,7 +4,6 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
@@ -13,7 +12,6 @@ namespace AntdUI.Svg
     /// <summary>
     /// Represents a unit in an Scalable Vector Graphics document.
     /// </summary>
-    [TypeConverter(typeof(SvgUnitConverter))]
     public struct SvgUnit
     {
         private SvgUnitType _type;

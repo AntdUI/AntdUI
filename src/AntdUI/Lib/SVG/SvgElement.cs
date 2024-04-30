@@ -27,7 +27,6 @@ namespace AntdUI.Svg
         private SvgAttributeCollection _attributes;
         private EventHandlerList _eventHandlers;
         private SvgElementCollection _children;
-        private static readonly object _loadEventKey = new object();
         private Region _graphicsClip;
         private Matrix _graphicsMatrix;
         private SvgCustomAttributeCollection _customAttributes;
@@ -124,15 +123,6 @@ namespace AntdUI.Svg
         protected virtual EventHandlerList Events
         {
             get { return _eventHandlers; }
-        }
-
-        /// <summary>
-        /// Occurs when the element is loaded.
-        /// </summary>
-        public event EventHandler Load
-        {
-            add { Events.AddHandler(_loadEventKey, value); }
-            remove { Events.RemoveHandler(_loadEventKey, value); }
         }
 
         /// <summary>

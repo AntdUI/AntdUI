@@ -3,11 +3,8 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.ComponentModel;
-
 namespace AntdUI.Svg
 {
-    [TypeConverter(typeof(SvgFillRuleConverter))]
     public enum SvgFillRule
     {
         NonZero,

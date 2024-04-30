@@ -4,7 +4,6 @@
 // GITHUB: https://github.com/svg-net/SVG
 
 using System;
-using System.ComponentModel;
 using System.Drawing;
 
 namespace AntdUI.Svg
@@ -12,7 +11,6 @@ namespace AntdUI.Svg
     /// <summary>
     /// Represents the base class for all paint servers that are intended to be used as a fill or stroke.
     /// </summary>
-    [TypeConverter(typeof(SvgPaintServerFactory))]
     public abstract class SvgPaintServer : SvgElement
     {
         public Func<SvgPaintServer> GetCallback { get; set; }

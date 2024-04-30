@@ -3,10 +3,11 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
+using AntdUI.Svg.DataTypes;
+using AntdUI.Svg.Transforms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -298,6 +299,908 @@ namespace AntdUI.Svg
 
         internal static bool SetPropertyValue(SvgElement element, string attributeName, string attributeValue, SvgDocument document, bool isStyle = false)
         {
+            try
+            {
+                if (element is SvgFragment doc)
+                {
+                    if (attributeName == "viewBox")
+                    {
+                        doc.ViewBox = SvgViewBoxConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "x")
+                    {
+                        doc.X = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y")
+                    {
+                        doc.Y = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "width")
+                    {
+                        doc.Width = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "height")
+                    {
+                        doc.Height = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "overflow")
+                    {
+                        doc.Overflow = (SvgOverflow)Enum.Parse(typeof(SvgOverflow), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "preserveAspectRatio")
+                    {
+                        doc.AspectRatio = SvgPreserveAspectRatioConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "focusable" || attributeName == "data-icon" || attributeName == "aria-hidden" || attributeName == "xlink" || attributeName == "xmlns" || attributeName == "t" || attributeName == "class" || attributeName == "version" || attributeName == "p-id")
+                    {
+                        return SetPropertyValueNULL(element, attributeName, attributeValue);
+                    }
+                }
+                if (element is SvgTextBase textBase)
+                {
+                    if (attributeName == "x")
+                    {
+                        textBase.X = SvgUnitCollectionConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y")
+                    {
+                        textBase.Y = SvgUnitCollectionConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "dx")
+                    {
+                        textBase.Dx = SvgUnitCollectionConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "dx")
+                    {
+                        textBase.Dy = SvgUnitCollectionConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "rotate")
+                    {
+                        textBase.Rotate = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "textLength")
+                    {
+                        textBase.TextLength = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "lengthAdjust")
+                    {
+                        textBase.LengthAdjust = (SvgTextLengthAdjust)Enum.Parse(typeof(SvgTextLengthAdjust), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "letter-spacing")
+                    {
+                        textBase.LetterSpacing = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "word-spacing")
+                    {
+                        textBase.WordSpacing = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "display")
+                    {
+                        textBase.Display = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "visibility")
+                    {
+                        textBase.Visible = bool.Parse(attributeValue);
+                        return true;
+                    }
+
+                }
+                if (element is SvgVisualElement svgVisual)
+                {
+                    if (attributeName == "display")
+                    {
+                        svgVisual.Display = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "visibility")
+                    {
+                        svgVisual.Visible = bool.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "enable-background")
+                    {
+                        svgVisual.EnableBackground = attributeValue;
+                        return true;
+                    }
+                }
+
+                #region »ù´¡
+
+                if (attributeName == "id")
+                {
+                    element.ID = attributeValue;
+                    return true;
+                }
+                else if (attributeName == "fill")
+                {
+                    element.Fill = SvgPaintServerConverter.Parse(attributeValue, document);
+                    return true;
+                }
+                else if (attributeName == "fill-rule")
+                {
+                    element.FillRule = (SvgFillRule)Enum.Parse(typeof(SvgFillRule), attributeValue, true);
+                    return true;
+                }
+                else if (attributeName == "stroke")
+                {
+                    element.Stroke = SvgPaintServerConverter.Parse(attributeValue, document);
+                    return true;
+                }
+                else if (attributeName == "opacity")
+                {
+                    if (attributeValue == "undefined") element.Opacity = 1;
+                    else element.Opacity = float.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "fill-opacity")
+                {
+                    if (attributeValue == "undefined") element.FillOpacity = 1;
+                    else element.FillOpacity = float.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "stroke-width")
+                {
+                    element.StrokeWidth = SvgUnitConverter.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "stroke-linecap")
+                {
+                    element.StrokeLineCap = (SvgStrokeLineCap)Enum.Parse(typeof(SvgStrokeLineCap), attributeValue, true);
+                    return true;
+                }
+                else if (attributeName == "stroke-linejoin")
+                {
+                    try
+                    {
+                        element.StrokeLineJoin = (SvgStrokeLineJoin)Enum.Parse(typeof(SvgStrokeLineJoin), attributeValue, true);
+                    }
+                    catch { }
+                    return true;
+                }
+                else if (attributeName == "stroke-miterlimit")
+                {
+                    element.StrokeMiterLimit = float.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "stroke-dasharray")
+                {
+                    element.StrokeDashArray = SvgUnitCollectionConverter.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "stroke-dashoffset")
+                {
+                    element.StrokeDashOffset = SvgUnitConverter.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "stroke-opacity")
+                {
+                    if (attributeValue == "undefined") element.StrokeOpacity = 1;
+                    else element.StrokeOpacity = float.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "stop-color")
+                {
+                    element.StopColor = SvgPaintServerConverter.Parse(attributeValue, document);
+                    return true;
+                }
+                else if (attributeName == "shape-rendering")
+                {
+                    element.ShapeRendering = (SvgShapeRendering)Enum.Parse(typeof(SvgShapeRendering), attributeValue, true);
+                    return true;
+                }
+                else if (attributeName == "text-anchor")
+                {
+                    element.TextAnchor = (SvgTextAnchor)Enum.Parse(typeof(SvgTextAnchor), attributeValue, true);
+                    return true;
+                }
+                else if (attributeName == "transform")
+                {
+                    element.Transforms = SvgTransformConverter.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "font-family")
+                {
+                    element.FontFamily = attributeValue;
+                    return true;
+                }
+                else if (attributeName == "font-size")
+                {
+                    element.FontSize = SvgUnitConverter.Parse(attributeValue);
+                    return true;
+                }
+                else if (attributeName == "font-style")
+                {
+                    element.FontStyle = (SvgFontStyle)Enum.Parse(typeof(SvgFontStyle), attributeValue, true);
+                    return true;
+                }
+                else if (attributeName == "font-variant")
+                {
+                    element.FontVariant = (SvgFontVariant)Enum.Parse(typeof(SvgFontVariant), attributeValue, true);
+                    return true;
+                }
+                else if (attributeName == "text-decoration")
+                {
+                    element.TextDecoration = (SvgTextDecoration)Enum.Parse(typeof(SvgTextDecoration), attributeValue, true);
+                    return true;
+                }
+                else if (attributeName == "font-weight")
+                {
+                    element.FontWeight = (SvgFontWeight)Enum.Parse(typeof(SvgFontWeight), attributeValue, true);
+                    return true;
+                }
+                else if (attributeName == "text-transform")
+                {
+                    element.TextTransformation = (SvgTextTransformation)Enum.Parse(typeof(SvgTextTransformation), attributeValue, true);
+                    return true;
+                }
+
+                #endregion
+
+                else if (element is SvgCircle circle)
+                {
+                    if (attributeName == "cx")
+                    {
+                        circle.CenterX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "cy")
+                    {
+                        circle.CenterY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "r")
+                    {
+                        circle.Radius = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgEllipse ellipse)
+                {
+                    if (attributeName == "cx")
+                    {
+                        ellipse.CenterX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "cy")
+                    {
+                        ellipse.CenterY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "rx")
+                    {
+                        ellipse.RadiusX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "ry")
+                    {
+                        ellipse.RadiusY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgLine line)
+                {
+                    if (attributeName == "x1")
+                    {
+                        line.StartX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y1")
+                    {
+                        line.StartY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "x2")
+                    {
+                        line.EndX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y2")
+                    {
+                        line.EndY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgPolygon polygon)
+                {
+                    if (attributeName == "points")
+                    {
+                        polygon.Points = SvgPointCollectionConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgPolyline polyline)
+                {
+                    if (attributeName == "points")
+                    {
+                        polyline.Points = SvgPointCollectionConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgRectangle rect)
+                {
+                    if (attributeName == "x")
+                    {
+                        rect.X = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y")
+                    {
+                        rect.Y = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "width")
+                    {
+                        rect.Width = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "height")
+                    {
+                        rect.Height = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "rx")
+                    {
+                        rect.CornerRadiusX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "ry")
+                    {
+                        rect.CornerRadiusY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgClipPath clipPath)
+                {
+                    if (attributeName == "clipPathUnits")
+                    {
+                        clipPath.ClipPathUnits = (SvgCoordinateUnits)Enum.Parse(typeof(SvgCoordinateUnits), attributeValue, true);
+                        return true;
+                    }
+                }
+                //else if (element is SvgDefinitionList defs)
+                //{
+                //}
+                //else if (element is SvgDescription desc)
+                //{
+                //}
+                //else if (element is SvgDocumentMetadata metadata)
+                //{
+                //}
+                //else if (element is SvgGroup group)
+                //{
+                //}
+                //else if (element is SvgSwitch _switch)
+                //{
+                //}
+                //else if (element is SvgTitle title)
+                //{
+                //}
+                else if (element is SvgUse use)
+                {
+                    if (attributeName == "x")
+                    {
+                        use.X = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y")
+                    {
+                        use.Y = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "width")
+                    {
+                        use.Width = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "height")
+                    {
+                        use.Height = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                //else if (element is SvgForeignObject foreignObject)
+                //{
+                //}
+                else if (element is SvgGradientStop stop)
+                {
+                    if (attributeName == "offset")
+                    {
+                        stop.Offset = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "stop-color")
+                    {
+                        stop.StopColor = SvgPaintServerConverter.Parse(attributeValue, document);
+                        return true;
+                    }
+                    else if (attributeName == "stop-opacity")
+                    {
+                        stop.Opacity = float.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgMarker marker)
+                {
+                    if (attributeName == "refX")
+                    {
+                        marker.RefX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "refY")
+                    {
+                        marker.RefY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "orient")
+                    {
+                        marker.Orient = SvgOrientConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "overflow")
+                    {
+                        marker.Overflow = (SvgOverflow)Enum.Parse(typeof(SvgOverflow), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "viewBox")
+                    {
+                        marker.ViewBox = SvgViewBoxConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "preserveAspectRatio")
+                    {
+                        marker.AspectRatio = SvgPreserveAspectRatioConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "markerWidth")
+                    {
+                        marker.MarkerWidth = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "markerHeight")
+                    {
+                        marker.MarkerHeight = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "markerUnits")
+                    {
+                        marker.MarkerUnits = (SvgMarkerUnits)Enum.Parse(typeof(SvgMarkerUnits), attributeValue, true);
+                        return true;
+                    }
+                }
+                else if (element is SvgPatternServer pattern)
+                {
+                    if (attributeName == "overflow")
+                    {
+                        pattern.Overflow = (SvgOverflow)Enum.Parse(typeof(SvgOverflow), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "viewBox")
+                    {
+                        pattern.ViewBox = SvgViewBoxConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "preserveAspectRatio")
+                    {
+                        pattern.AspectRatio = SvgPreserveAspectRatioConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "x")
+                    {
+                        pattern.X = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y")
+                    {
+                        pattern.Y = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "width")
+                    {
+                        pattern.Width = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "height")
+                    {
+                        pattern.Height = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "patternUnits")
+                    {
+                        pattern.PatternUnits = (SvgCoordinateUnits)Enum.Parse(typeof(SvgCoordinateUnits), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "patternContentUnits")
+                    {
+                        pattern.PatternContentUnits = (SvgCoordinateUnits)Enum.Parse(typeof(SvgCoordinateUnits), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "href")
+                    {
+                        pattern.InheritGradient = SvgPaintServerConverter.Parse(attributeValue, document);
+                        return true;
+                    }
+                    else if (attributeName == "patternTransform")
+                    {
+                        pattern.PatternTransform = SvgTransformConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgLinearGradientServer linearGradient)
+                {
+                    if (attributeName == "id")
+                    {
+                        linearGradient.ID = attributeValue;
+                        return true;
+                    }
+                    if (attributeName == "x1")
+                    {
+                        linearGradient.X1 = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y1")
+                    {
+                        linearGradient.Y1 = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "x2")
+                    {
+                        linearGradient.X2 = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y2")
+                    {
+                        linearGradient.Y2 = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "gradientTransform")
+                    {
+                        linearGradient.GradientTransform = SvgTransformConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgRadialGradientServer radialGradient)
+                {
+                    if (attributeName == "cx")
+                    {
+                        radialGradient.CenterX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "cy")
+                    {
+                        radialGradient.CenterY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "r")
+                    {
+                        radialGradient.Radius = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "fx")
+                    {
+                        radialGradient.FocalX = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "fy")
+                    {
+                        radialGradient.FocalY = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "gradientTransform")
+                    {
+                        radialGradient.GradientTransform = SvgTransformConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgPath path)
+                {
+                    if (attributeName == "d")
+                    {
+                        path.PathData = SvgPathConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "pathLength")
+                    {
+                        path.PathLength = float.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgFont font)
+                {
+                    if (attributeName == "horiz-adv-x")
+                    {
+                        font.HorizAdvX = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "horiz-origin-x")
+                    {
+                        font.HorizOriginX = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "horiz-origin-y")
+                    {
+                        font.HorizOriginY = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "vert-adv-y")
+                    {
+                        font.VertAdvY = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "vert-origin-x")
+                    {
+                        font.VertOriginX = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "vert-origin-y")
+                    {
+                        font.VertOriginY = float.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                else if (element is SvgFontFace fontface)
+                {
+                    if (attributeName == "alphabetic")
+                    {
+                        fontface.Alphabetic = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "ascent")
+                    {
+                        fontface.Ascent = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "ascent-height")
+                    {
+                        fontface.AscentHeight = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "descent")
+                    {
+                        fontface.Descent = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "panose-1")
+                    {
+                        fontface.Panose1 = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "units-per-em")
+                    {
+                        fontface.UnitsPerEm = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "x-height")
+                    {
+                        fontface.XHeight = float.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                //else if (element is SvgFontFaceSrc fontfacesrc)
+                //{
+                //}
+                //else if (element is SvgFontFaceUri fontfaceuri)
+                //{
+                //}
+                else if (element is SvgGlyph glyph)
+                {
+                    if (attributeName == "d")
+                    {
+                        glyph.PathData = SvgPathConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "glyph-name")
+                    {
+                        glyph.GlyphName = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "unicode")
+                    {
+                        glyph.Unicode = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "horiz-adv-x")
+                    {
+                        glyph.HorizAdvX = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "vert-adv-y")
+                    {
+                        glyph.VertAdvY = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "vert-origin-x")
+                    {
+                        glyph.VertOriginX = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "vert-origin-y")
+                    {
+                        glyph.VertOriginY = float.Parse(attributeValue);
+                        return true;
+                    }
+                }
+                //else if (element is SvgMissingGlyph missingglyph)
+                //{
+                //}
+                //else if (element is SvgVerticalKern vkern)
+                //{
+                //}
+                //else if (element is SvgHorizontalKern hkern)
+                //{
+                //}
+                //else if (element is SvgText text)
+                //{
+                //}
+                else if (element is SvgTextPath textPath)
+                {
+                    if (attributeName == "startOffset")
+                    {
+                        textPath.StartOffset = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "method")
+                    {
+                        textPath.Method = (SvgTextPathMethod)Enum.Parse(typeof(SvgTextPathMethod), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "spacing")
+                    {
+                        textPath.Spacing = (SvgTextPathSpacing)Enum.Parse(typeof(SvgTextPathSpacing), attributeValue, true);
+                        return true;
+                    }
+                }
+                //else if (element is SvgTextRef tref)
+                //{
+                //}
+                //else if (element is SvgTextSpan tspan)
+                //{
+                //}
+                else if (element is FilterEffects.SvgColourMatrix feColorMatrix)
+                {
+                    if (attributeName == "values")
+                    {
+                        feColorMatrix.Values = attributeValue;
+                        return true;
+                    }
+                    if (attributeName == "type")
+                    {
+                        feColorMatrix.Type = (FilterEffects.SvgColourMatrixType)Enum.Parse(typeof(FilterEffects.SvgColourMatrixType), attributeValue, true);
+                        return true;
+                    }
+                    else if (attributeName == "in")
+                    {
+                        feColorMatrix.Input = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "result")
+                    {
+                        feColorMatrix.Result = attributeValue;
+                        return true;
+                    }
+                }
+                else if (element is FilterEffects.SvgGaussianBlur feGaussianBlur)
+                {
+                    if (attributeName == "stdDeviation")
+                    {
+                        feGaussianBlur.StdDeviation = float.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "in")
+                    {
+                        feGaussianBlur.Input = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "result")
+                    {
+                        feGaussianBlur.Result = attributeValue;
+                        return true;
+                    }
+                }
+                else if (element is FilterEffects.SvgMerge feMerge)
+                {
+                    if (attributeName == "in")
+                    {
+                        feMerge.Input = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "result")
+                    {
+                        feMerge.Result = attributeValue;
+                        return true;
+                    }
+                }
+                else if (element is FilterEffects.SvgMergeNode feMergeNode)
+                {
+                    if (attributeName == "in")
+                    {
+                        feMergeNode.Input = attributeValue;
+                        return true;
+                    }
+                }
+                else if (element is FilterEffects.SvgOffset feOffset)
+                {
+                    if (attributeName == "dx")
+                    {
+                        feOffset.Dx = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "dy")
+                    {
+                        feOffset.Dy = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "in")
+                    {
+                        feOffset.Input = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "result")
+                    {
+                        feOffset.Result = attributeValue;
+                        return true;
+                    }
+                }
+                else if (element is FilterEffects.SvgFilter filter)
+                {
+                    if (attributeName == "x")
+                    {
+                        filter.X = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y")
+                    {
+                        filter.Y = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "width")
+                    {
+                        filter.Width = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "height")
+                    {
+                        filter.Height = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "color-interpolation-filters")
+                    {
+                        filter.ColorInterpolationFilters = (SvgColourInterpolation)Enum.Parse(typeof(SvgColourInterpolation), attributeValue, true);
+                        return true;
+                    }
+                }
+                else if (element is Document_Structure.SvgSymbol symbol)
+                {
+                    if (attributeName == "viewBox")
+                    {
+                        symbol.ViewBox = SvgViewBoxConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "preserveAspectRatio")
+                    {
+                        symbol.AspectRatio = SvgPreserveAspectRatioConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
+            }
+            catch { }
+
             var elementType = element.GetType();
 
             PropertyDescriptorCollection properties;
@@ -330,45 +1233,43 @@ namespace AntdUI.Svg
 
                 try
                 {
-                    if (attributeName == "opacity" && attributeValue == "undefined")
-                    {
-                        attributeValue = "1";
-                    }
-                    descriptor.SetValue(element, descriptor.Converter.ConvertFrom(document, CultureInfo.InvariantCulture, attributeValue));
+                    var value = descriptor.Converter.ConvertFrom(document, CultureInfo.InvariantCulture, attributeValue);
+                    descriptor.SetValue(element, value);
                 }
                 catch
+                { }
+            }
+            else return SetPropertyValueNULL(element, attributeName, attributeValue);
+            return true;
+        }
+
+        internal static bool SetPropertyValueNULL(SvgElement element, string attributeName, string attributeValue, bool isStyle = false)
+        {
+            //check for namespace declaration in svg element
+            if (string.Equals(element.ElementName, "svg", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(attributeName, "xmlns", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(attributeName, "xlink", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(attributeName, "xmlns:xlink", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(attributeName, "version", StringComparison.OrdinalIgnoreCase))
                 {
-                    Trace.TraceWarning(string.Format("Attribute '{0}' cannot be set - type '{1}' cannot convert from string '{2}'.", attributeName, descriptor.PropertyType.FullName, attributeValue));
+                    //nothing to do
+                }
+                else
+                {
+                    //attribute is not a svg attribute, store it in custom attributes
+                    element.CustomAttributes[attributeName] = attributeValue;
                 }
             }
             else
             {
-                //check for namespace declaration in svg element
-                if (string.Equals(element.ElementName, "svg", StringComparison.OrdinalIgnoreCase))
+                if (isStyle)
                 {
-                    if (string.Equals(attributeName, "xmlns", StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(attributeName, "xlink", StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(attributeName, "xmlns:xlink", StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(attributeName, "version", StringComparison.OrdinalIgnoreCase))
-                    {
-                        //nothing to do
-                    }
-                    else
-                    {
-                        //attribute is not a svg attribute, store it in custom attributes
-                        element.CustomAttributes[attributeName] = attributeValue;
-                    }
+                    // custom styles shall remain as style
+                    return false;
                 }
-                else
-                {
-                    if (isStyle)
-                    {
-                        // custom styles shall remain as style
-                        return false;
-                    }
-                    //attribute is not a svg attribute, store it in custom attributes
-                    element.CustomAttributes[attributeName] = attributeValue;
-                }
+                //attribute is not a svg attribute, store it in custom attributes
+                element.CustomAttributes[attributeName] = attributeValue;
             }
             return true;
         }
