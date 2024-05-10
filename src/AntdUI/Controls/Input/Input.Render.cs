@@ -80,7 +80,6 @@ namespace AntdUI
                         PaintIcon(g, _fore);
                         PaintText(g, _fore, rect_read.Right, rect_read.Bottom);
                         g.ResetClip();
-                        g.SetClip(path);
                         PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
                         PaintScroll(g, rect_read, _radius);
                         if (borderWidth > 0)
@@ -128,9 +127,7 @@ namespace AntdUI
                         PaintIcon(g, Style.Db.TextQuaternary);
                         PaintText(g, Style.Db.TextQuaternary, rect_read.Right, rect_read.Bottom);
                         g.ResetClip();
-                        g.SetClip(path);
                         PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
-                        g.ResetClip();
                         PaintScroll(g, rect_read, _radius);
                         if (borderWidth > 0)
                         {
@@ -165,9 +162,8 @@ namespace AntdUI
                 }
 
                 float val = scrolly, VrValue = ScrollYMax + ScrollRect.Height;
-                float height = (ScrollRect.Height / VrValue) * ScrollRect.Height;
+                float height = ((ScrollRect.Height / VrValue) * ScrollRect.Height) - 20;
                 if (height < SIZE) height = SIZE;
-                height -= 20;
                 float y = val == 0 ? 0 : (val / (VrValue - ScrollRect.Height)) * (ScrollRect.Height - height);
                 if (ScrollHover) ScrollSlider = new RectangleF(ScrollRect.X + 6, ScrollRect.Y + y, 8, height);
                 else ScrollSlider = new RectangleF(ScrollRect.X + 7, ScrollRect.Y + y, 6, height);

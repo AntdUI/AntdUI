@@ -33,8 +33,8 @@ namespace AntdUI
         readonly List<OMenuItem> Items = new List<OMenuItem>();
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, MenuItemCollection items)
         {
-            isauto = control.Mode == TAMode.Auto;
-            isdark = Config.IsDark || control.Mode == TAMode.Dark;
+            isauto = control.Theme == TAMode.Auto;
+            isdark = Config.IsDark || control.Theme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             select_x = 0;
@@ -45,8 +45,8 @@ namespace AntdUI
 
         public LayeredFormMenuDown(Menu parent, int sx, LayeredFormMenuDown control, float radius, Rectangle rect_read, MenuItemCollection items)
         {
-            isauto = parent.Mode == TAMode.Auto;
-            isdark = Config.IsDark || parent.Mode == TAMode.Dark;
+            isauto = parent.Theme == TAMode.Auto;
+            isdark = Config.IsDark || parent.Theme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
@@ -82,7 +82,7 @@ namespace AntdUI
                 int b_w = (int)Math.Ceiling(size3.Width) + 42;
                 if (ui_icon) b_w += font_size;
                 if (ui_arrow) b_w += (int)Math.Ceiling(font_size * 0.6F);
-                if (b_w > w || control is LayeredFormMenuDown) w = b_w + gap_y;
+                w = b_w + gap_y;
 
                 #endregion
 
@@ -103,9 +103,13 @@ namespace AntdUI
             if (control is LayeredFormMenuDown)
             {
                 var point = control.PointToScreen(Point.Empty);
-                SetLocation(point.X + (int)rect_read.Width, point.Y + (int)rect_read.Y - 10);
+                SetLocation(point.X + rect_read.Width, point.Y + rect_read.Y - 10);
             }
-            else SetLocation(rect_read.Right, rect_read.Y);
+            else
+            {
+                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) SetLocation(rect_read.X + rect_read.Width / 2, rect_read.Bottom);
+                else SetLocation(rect_read.Right, rect_read.Y);
+            }
             KeyCall = keys =>
             {
                 int _select_x = -1;

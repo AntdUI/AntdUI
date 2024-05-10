@@ -64,7 +64,7 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Enter:
-                    if (multiline && AcceptsTab)
+                    if (multiline && AcceptsReturn)
                     {
                         EnterText(Environment.NewLine);
                         return true;

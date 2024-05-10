@@ -80,7 +80,7 @@ namespace AntdUI
                                         if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
                                         font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
                                     }
-                                    else if (txt == "\n") font_widths.Add(new CacheFont(txt, false, 0));
+                                    else if (txt == "\n" || txt == "\r\n") font_widths.Add(new CacheFont(txt, false, 0));
                                     else
                                     {
                                         var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
@@ -171,7 +171,7 @@ namespace AntdUI
                                             if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
                                             font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
                                         }
-                                        else if (txt == "\n") font_widths.Add(new CacheFont(txt, false, 0));
+                                        else if (txt == "\n" || txt == "\r\n") font_widths.Add(new CacheFont(txt, false, 0));
                                         else
                                         {
                                             var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
@@ -314,7 +314,7 @@ namespace AntdUI
                             it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
                             continue;
                         }
-                        else if (it.text == "\n")
+                        else if (it.text == "\n" || it.text == "\r\n")
                         {
                             it.retun = true;
                             usey += lineHeight;

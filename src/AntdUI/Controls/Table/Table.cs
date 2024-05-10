@@ -129,6 +129,18 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 手动调整列头宽度
+        /// </summary>
+        [Description("手动调整列头宽度"), Category("行为"), DefaultValue(false)]
+        public bool EnableHeaderResizing { get; set; }
+
+        /// <summary>
+        /// 焦点离开清空选中
+        /// </summary>
+        [Description("焦点离开清空选中"), Category("行为"), DefaultValue(false)]
+        public bool LostFocusClearSelection { get; set; }
+
         bool bordered = false;
         /// <summary>
         /// 显示列边框
@@ -215,6 +227,28 @@ namespace AntdUI
         }
 
         #endregion
+
+        int selectedIndex = -1;
+        /// <summary>
+        /// 选中行
+        /// </summary>
+        [Description("选中行"), Category("外观"), DefaultValue(-1)]
+        public int SelectedIndex
+        {
+            get => selectedIndex;
+            set
+            {
+                if (selectedIndex == value) return;
+                selectedIndex = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 省略文字提示
+        /// </summary>
+        [Description("省略文字提示"), Category("行为"), DefaultValue(true)]
+        public bool ShowTip { get; set; } = true;
 
         #endregion
 
@@ -366,6 +400,7 @@ namespace AntdUI
         /// <param name="title">显示文字</param>
         public ColumnRadio(string key, string title) : base(key, title)
         {
+            Align = ColumnAlign.Center;
         }
     }
 

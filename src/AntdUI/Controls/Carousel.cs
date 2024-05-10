@@ -168,7 +168,7 @@ namespace AntdUI
                 if (selectIndex == value) return;
                 if (items != null)
                 {
-                    if (items.Count <= selectIndex || selectIndex < 0)
+                    if (items.Count <= value || value < 0)
                     {
                         selectIndex = 0;
                         return;
@@ -654,22 +654,28 @@ namespace AntdUI
                 var val = x - e.Location.X;
                 var select_range = SelectRangeOne(len, rect);
                 AnimationChange = false;
-                if (select_range != null)
-                {
-                    SetSelectIndex(select_range.i);
-                }
-                else if (val > AnimationChangeMax - width)
-                {
-                    SetSelectIndex(Image.Count - 1);
-                }
-                else if (val < 0)
-                {
-                    SetSelectIndex(0);
-                }
+                if (select_range != null) SetSelectIndex(select_range.i);
+                else if (val > AnimationChangeMax - width) SetSelectIndex(Image.Count - 1);
+                else if (val < 0) SetSelectIndex(0);
                 Invalidate();
             }
             down = false;
             base.OnMouseUp(e);
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                if (selectIndex <= 0) return;
+                SetSelectIndex(selectIndex - 1);
+            }
+            else
+            {
+                if (items == null || selectIndex >= items.count - 1) return;
+                SetSelectIndex(selectIndex + 1);
+            }
+            base.OnMouseWheel(e);
         }
 
         #endregion

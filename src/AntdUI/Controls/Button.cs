@@ -309,6 +309,7 @@ namespace AntdUI
             get => text;
             set
             {
+                if (string.IsNullOrEmpty(value)) value = null;
                 if (text == value) return;
                 text = value;
                 if (BeforeAutoSize()) Invalidate();

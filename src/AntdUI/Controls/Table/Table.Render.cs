@@ -156,6 +156,7 @@ namespace AntdUI
             scrollBar.Paint(g);
             base.OnPaint(e);
         }
+
         void PaintTableBgHeader(Graphics g, RowTemplate row)
         {
             using (var brush = new SolidBrush(Style.Db.TagDefaultBg))
@@ -176,11 +177,26 @@ namespace AntdUI
         }
         void PaintTableBg(Graphics g, RowTemplate row)
         {
-            if (row.Checked)
+            var style = SetRowStyle?.Invoke(this, row.RECORD, row.INDEX);
+            if (style != null)
+            {
+                using (var brush = new SolidBrush(style.BackColor))
+                {
+                    g.FillRectangle(brush, row.RECT);
+                }
+            }
+            if (selectedIndex == row.INDEX || row.Checked)
             {
                 using (var brush = rowSelectedBg.Brush(Style.Db.PrimaryBg))
                 {
                     g.FillRectangle(brush, row.RECT);
+                }
+                if (selectedIndex == row.INDEX && row.Checked)
+                {
+                    using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                    {
+                        g.FillRectangle(brush, row.RECT);
+                    }
                 }
             }
             if (row.AnimationHover)

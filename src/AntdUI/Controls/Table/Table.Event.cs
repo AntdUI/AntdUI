@@ -132,5 +132,19 @@ namespace AntdUI
         public event EndEditEventHandler? CellEndEdit;
 
         #endregion
+
+        public delegate CellStyleInfo? SetRowStyleEventHandler(object sender, object? record, int rowIndex);
+        /// <summary>
+        /// 设置行样式
+        /// </summary>
+        public event SetRowStyleEventHandler? SetRowStyle;
+
+        public class CellStyleInfo
+        {
+            /// <summary>
+            /// 背景颜色
+            /// </summary>
+            public Color BackColor { get; set; }
+        }
     }
 }

@@ -173,54 +173,51 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0) return;
             Helper.GDI(g =>
             {
-                float gap = 8F * Config.Dpi, split = 1F * Config.Dpi;
+                int gap = (int)(8F * Config.Dpi), split = (int)(1F * Config.Dpi);
                 var _splits = new List<RectangleF>(Items.Count);
                 using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                 {
+                    int gap2 = gap * 2;
                     if (vertical)
                     {
-                        var t_height_one = rect.Height / Items.Count;
+                        int t_height_one = rect.Height / Items.Count;
                         int i = 0;
-                        float gap2 = gap * 2F;
                         foreach (StepsItem it in Items)
                         {
                             it.PARENT = this;
-                            it.TitleSize = g.MeasureString(it.Title, Font);
-                            float ico_size = it.TitleSize.Height * 1.6F, pen_w = it.TitleSize.Height * 0.136F;
-                            it.pen_w = pen_w;
-                            float width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
+                            it.TitleSize = g.MeasureString(it.Title, Font).Size();
+                            int ico_size = (int)(it.TitleSize.Height * 1.6F);
+                            it.pen_w = it.TitleSize.Height * 0.136F;
+                            int width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
 
-                            bool showSub = false, showDescription = false;
-                            if (!string.IsNullOrEmpty(it.SubTitle))
+                            if (it.showSub)
                             {
-                                it.SubTitleSize = g.MeasureString(it.SubTitle, Font);
-                                showSub = true;
+                                it.SubTitleSize = g.MeasureString(it.SubTitle, Font).Size();
                                 height_one += it.SubTitleSize.Height;
                             }
-                            if (!string.IsNullOrEmpty(it.Description))
+                            if (it.showDescription)
                             {
-                                showDescription = true;
-                                it.DescriptionSize = g.MeasureString(it.Description, font_description);
+                                it.DescriptionSize = g.MeasureString(it.Description, font_description).Size();
                                 width_ex = it.DescriptionSize.Width;
                             }
 
-                            float centery = rect.Y + t_height_one * i + t_height_one / 2;//居中X
-                            it.title_rect = new RectangleF(rect.X + gap + ico_size, centery - height_one / 2, it.TitleSize.Width, height_one);
-                            float read_y = it.title_rect.Y - gap - ico_size;
+                            int centery = rect.Y + t_height_one * i + t_height_one / 2;//居中X
+                            it.title_rect = new Rectangle(rect.X + gap + ico_size, centery - height_one / 2, it.TitleSize.Width, height_one);
+                            int read_y = it.title_rect.Y - gap - ico_size;
 
-                            it.ico_rect = new RectangleF(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2F, ico_size, ico_size);
+                            it.ico_rect = new Rectangle(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2, ico_size, ico_size);
 
-                            float tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
+                            int tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
 
-                            if (showSub)
+                            if (it.showSub)
                             {
-                                it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
+                                it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
                                 tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
                                 tmp_max_wr = it.subtitle_rect.Right;
                             }
-                            if (showDescription)
+                            if (it.showDescription)
                             {
-                                it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+                                it.description_rect = new Rectangle(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
                                 if (it.description_rect.Width > tmp_max_width)
                                 {
                                     tmp_max_width = it.description_rect.Width;
@@ -228,7 +225,7 @@ namespace AntdUI
                                 }
                                 tmp_max_height += it.DescriptionSize.Height;
                             }
-                            it.rect = new RectangleF(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
+                            it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
 
                             if (i > 0)
                             {
@@ -241,62 +238,32 @@ namespace AntdUI
                     else
                     {
                         //横向
-                        var t_width_one = rect.Width / Items.Count;
+                        int read_width = MaxHeight(g, font_description, gap, out var maxHeight);
                         int i = 0;
-                        float has_x = rect.X, maxHeight = MaxHeight(g, font_description, gap);
+                        int count = Items.Count;
+                        int sp = (rect.Width - read_width) / count, spline = sp - gap;
+                        int has_x = rect.X + sp / 2;
+                        count -= 1;
                         foreach (StepsItem it in Items)
                         {
-                            it.PARENT = this;
-                            it.TitleSize = g.MeasureString(it.Title, Font);
-                            float icon_size = it.IconSize.HasValue ? it.IconSize.Value : it.TitleSize.Height * 1.6F, pen_w = it.TitleSize.Height * 0.136F;
-                            it.pen_w = pen_w;
-                            float width_one = it.TitleSize.Width + gap, width_sub = width_one, width_ex = 0;
-                            bool showSub = false, showDescription = false;
-                            if (!string.IsNullOrEmpty(it.SubTitle))
-                            {
-                                it.SubTitleSize = g.MeasureString(it.SubTitle, Font);
-                                showSub = true;
-                                width_sub += it.SubTitleSize.Width;
-                            }
-                            if (!string.IsNullOrEmpty(it.Description))
-                            {
-                                showDescription = true;
-                                it.DescriptionSize = g.MeasureString(it.Description, font_description);
-                                width_ex = it.DescriptionSize.Width;
-                            }
-                            if (width_ex > width_sub) width_one = width_ex;
-                            else width_one = width_sub;
+                            //it.SubTitle = it.Description = null;
+                            int icon_size = it.IconSize.HasValue ? it.IconSize.Value : (int)(it.TitleSize.Height * 1.6F);
+                            int y = rect.Y + (rect.Height - maxHeight) / 2;
+                            it.ico_rect = new Rectangle(has_x, y + (it.TitleSize.Height - icon_size) / 2, icon_size, icon_size);
+                            it.title_rect = new Rectangle(it.ico_rect.Right + gap, y, it.TitleSize.Width, it.TitleSize.Height);
 
-                            float centerx = rect.X + t_width_one * i + t_width_one / 2;//居中X
-                            it.title_rect = new RectangleF(centerx - width_one / 2, rect.Y + (rect.Height - maxHeight) / 2, it.TitleSize.Width, it.TitleSize.Height);
-                            float read_x = it.title_rect.X - gap - icon_size;
-                            it.ico_rect = new RectangleF(read_x, it.title_rect.Y + (it.title_rect.Height - icon_size) / 2F, icon_size, icon_size);
+                            int tmp_max_height = it.ico_rect.Height;
+                            if (it.showSub) it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
 
-                            float tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
-                            if (showSub)
+                            if (it.showDescription)
                             {
-                                it.subtitle_rect = new RectangleF(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
-                                tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
-                                tmp_max_wr = it.subtitle_rect.Right;
-                            }
-                            if (showDescription)
-                            {
-                                it.description_rect = new RectangleF(it.title_rect.X, it.title_rect.Bottom + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
-                                if (it.description_rect.Width > tmp_max_width)
-                                {
-                                    tmp_max_width = it.description_rect.Width;
-                                    tmp_max_wr = it.description_rect.Right;
-                                }
+                                it.description_rect = new Rectangle(it.title_rect.X, it.title_rect.Bottom + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
                                 tmp_max_height += it.DescriptionSize.Height;
                             }
-                            float gap2 = gap * 2F;
-                            it.rect = new RectangleF(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
-                            if (i > 0)
-                            {
-                                var old = Items[i - 1];
-                                if (old != null) _splits.Add(new RectangleF(has_x, it.ico_rect.Y + (it.ico_rect.Height - split) / 2F, read_x - gap - has_x, split));
-                            }
-                            has_x = it.title_rect.X + width_sub;
+
+                            it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, it.ReadWidth + gap2, tmp_max_height + gap2);
+                            if (spline > 0 && i != count) _splits.Add(new RectangleF(it.rect.Right - gap, it.ico_rect.Y + (it.ico_rect.Height - split) / 2F, spline, split));
+                            has_x += it.ReadWidth + sp;
                             i++;
                         }
                     }
@@ -306,24 +273,33 @@ namespace AntdUI
             return;
         }
 
-        float MaxHeight(Graphics g, Font font_description, float gap)
+        int MaxHeight(Graphics g, Font font_description, int gap, out int height)
         {
-            float temp_t = 0, temp = 0;
+            int w = 0, temp_t = 0, temp = 0;
             foreach (StepsItem it in Items)
             {
-                if (temp_t == 0)
-                {
-                    it.TitleSize = g.MeasureString(it.Title, Font);
-                    temp_t = it.TitleSize.Height;
-                }
-                if (temp == 0 && !string.IsNullOrEmpty(it.Description))
-                {
-                    it.DescriptionSize = g.MeasureString(it.Description, font_description);
-                    temp = it.DescriptionSize.Height + gap / 2;
-                }
-                if (temp_t > 0 && temp > 0) return temp_t + temp;
+                it.PARENT = this;
+
+                #region 计算
+
+                it.TitleSize = g.MeasureString(it.Title, Font).Size();
+                if (it.showSub) it.SubTitleSize = g.MeasureString(it.SubTitle, Font).Size();
+                if (it.showDescription) it.DescriptionSize = g.MeasureString(it.Description, font_description).Size();
+
+                int icon_size = it.IconSize.HasValue ? it.IconSize.Value : (int)(it.TitleSize.Height * 1.6F);
+                int width_top = it.TitleSize.Width + (it.showSub ? it.SubTitleSize.Width : 0), width_buttom = (it.showDescription ? it.DescriptionSize.Width : 0);
+
+                it.ReadWidth = icon_size + gap + (width_top > width_buttom ? width_top : width_buttom);
+
+                #endregion
+
+                it.pen_w = it.TitleSize.Height * 0.136F;
+                w += it.ReadWidth;
+                if (temp_t == 0) temp_t = it.TitleSize.Height;
+                if (temp == 0 && it.showDescription) temp = it.DescriptionSize.Height + gap / 2;
             }
-            return temp_t + temp;
+            height = temp_t + temp;
+            return w;
         }
 
         RectangleF[] splits = new RectangleF[0];
@@ -585,6 +561,8 @@ namespace AntdUI
             }
         }
 
+        internal int ReadWidth { get; set; }
+
         /// <summary>
         /// 名称
         /// </summary>
@@ -607,9 +585,10 @@ namespace AntdUI
             }
         }
 
-        internal SizeF TitleSize { get; set; }
+        internal Size TitleSize { get; set; }
 
         string? subTitle = null;
+        internal bool showSub = false;
         /// <summary>
         /// 子标题
         /// </summary>
@@ -619,14 +598,17 @@ namespace AntdUI
             get => subTitle;
             set
             {
+                if (string.IsNullOrEmpty(value)) value = null;
                 if (subTitle == value) return;
                 subTitle = value;
+                showSub = subTitle != null;
                 Invalidate();
             }
         }
-        internal SizeF SubTitleSize { get; set; }
+        internal Size SubTitleSize { get; set; }
 
         string? description = null;
+        internal bool showDescription = false;
         /// <summary>
         /// 步骤的详情描述，可选
         /// </summary>
@@ -636,12 +618,14 @@ namespace AntdUI
             get => description;
             set
             {
+                if (string.IsNullOrEmpty(value)) value = null;
                 if (description == value) return;
                 description = value;
+                showDescription = description != null;
                 Invalidate();
             }
         }
-        internal SizeF DescriptionSize { get; set; }
+        internal Size DescriptionSize { get; set; }
 
         bool visible = true;
         /// <summary>
@@ -677,10 +661,10 @@ namespace AntdUI
         internal Steps? PARENT { get; set; }
 
         internal float pen_w { get; set; } = 3F;
-        internal RectangleF rect { get; set; }
-        internal RectangleF title_rect { get; set; }
-        internal RectangleF subtitle_rect { get; set; }
-        internal RectangleF description_rect { get; set; }
-        internal RectangleF ico_rect { get; set; }
+        internal Rectangle rect { get; set; }
+        internal Rectangle title_rect { get; set; }
+        internal Rectangle subtitle_rect { get; set; }
+        internal Rectangle description_rect { get; set; }
+        internal Rectangle ico_rect { get; set; }
     }
 }

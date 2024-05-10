@@ -371,6 +371,7 @@ namespace AntdUI
             }
 
             public bool MouseDown { get; set; }
+            public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
             public bool CONTAINS(int x, int y)
@@ -497,6 +498,7 @@ namespace AntdUI
             }
 
             public bool MouseDown { get; set; }
+            public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
             public bool CONTAINS(int x, int y)
@@ -723,6 +725,7 @@ namespace AntdUI
             }
 
             public bool MouseDown { get; set; }
+            public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
             public bool CONTAINS(int x, int y)
@@ -794,6 +797,7 @@ namespace AntdUI
             }
 
             public bool MouseDown { get; set; }
+            public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
             public bool CONTAINS(int x, int y)
@@ -855,6 +859,7 @@ namespace AntdUI
             }
 
             public bool MouseDown { get; set; }
+            public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
             public bool CONTAINS(int x, int y)
@@ -878,6 +883,8 @@ namespace AntdUI
             Rectangle RECT { get; set; }
             void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2);
             SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2);
+
+            int MinWidth { get; set; }
 
             bool MouseDown { get; set; }
 
@@ -986,7 +993,9 @@ namespace AntdUI
                 SIZES = sizes.ToArray();
                 return new SizeF(USE_Width + _gap2, h);
             }
+
             public bool MouseDown { get; set; }
+            public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
             public bool CONTAINS(int x, int y)

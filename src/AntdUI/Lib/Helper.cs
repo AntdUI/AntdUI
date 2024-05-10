@@ -540,31 +540,74 @@ namespace AntdUI
             return rect;
         }
 
-        public static Rectangle DeflateRect(this Rectangle rect, Padding padding, ShadowConfig config, float borderWidth = 0F)
+        public static Rectangle DeflateRect(this Rectangle rect, Padding padding, ShadowConfig config, TAlignMini align, float borderWidth = 0F)
         {
             if (config.Shadow > 0)
             {
-                int shadow = (int)(config.Shadow * Config.Dpi), s2 = shadow * 2,
-                    shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * Config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * Config.Dpi));
-                int x = rect.X + padding.Left + shadow, y = rect.Y + padding.Top + shadow;
-                if (config.ShadowOffsetX < 0) x += shadowOffsetX;
-                if (config.ShadowOffsetY < 0) y += shadowOffsetY;
+                int shadow = (int)(config.Shadow * Config.Dpi), s2 = shadow * 2, shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * Config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * Config.Dpi));
+                int x, y, w, h;
+                switch (align)
+                {
+                    case TAlignMini.Top:
+                        x = rect.X + padding.Left;
+                        w = rect.Width - padding.Horizontal;
+
+                        y = rect.Y + padding.Top + shadow;
+                        h = rect.Height - padding.Vertical - shadow;
+                        break;
+                    case TAlignMini.Bottom:
+                        x = rect.X + padding.Left;
+                        w = rect.Width - padding.Horizontal;
+
+                        y = rect.Y + padding.Top;
+                        h = rect.Height - padding.Vertical - shadow;
+                        break;
+                    case TAlignMini.Left:
+                        y = rect.Y + padding.Top;
+                        h = rect.Height - padding.Vertical;
+
+                        x = rect.X + padding.Left + shadow;
+                        w = rect.Width - padding.Horizontal - shadow;
+                        break;
+                    case TAlignMini.Right:
+                        y = rect.Y + padding.Top;
+                        h = rect.Height - padding.Vertical;
+
+                        x = rect.X + padding.Left;
+                        w = rect.Width - padding.Horizontal - shadow;
+                        break;
+                    case TAlignMini.None:
+                    default:
+                        x = rect.X + padding.Left + shadow;
+                        y = rect.Y + padding.Top + shadow;
+                        w = rect.Width - padding.Horizontal - s2;
+                        h = rect.Height - padding.Vertical - s2;
+                        break;
+                }
+
+                if (config.ShadowOffsetX < 0)
+                {
+                    x += shadowOffsetX;
+                    w -= shadowOffsetX;
+                }
+                if (config.ShadowOffsetY < 0)
+                {
+                    y += shadowOffsetY;
+                    h -= shadowOffsetY;
+                }
+
                 if (borderWidth > 0)
                 {
-                    int pr = (int)Math.Ceiling(borderWidth), pr2 = pr * 2;
-                    return new Rectangle(x + pr, y + pr,
-                        rect.Width - pr2 - shadowOffsetX - padding.Horizontal - s2,
-                        rect.Height - pr2 - shadowOffsetY - padding.Vertical - s2);
+                    int pr = (int)Math.Ceiling(borderWidth * Config.Dpi), pr2 = pr * 2;
+                    return new Rectangle(x + pr, y + pr, w - pr2, h - pr2);
                 }
-                return new Rectangle(x, y,
-                    rect.Width - shadowOffsetX - padding.Horizontal - s2,
-                    rect.Height - shadowOffsetY - padding.Vertical - s2);
+                return new Rectangle(x, y, w, h);
             }
             else
             {
                 if (borderWidth > 0)
                 {
-                    int pr = (int)Math.Ceiling(borderWidth), pr2 = pr * 2;
+                    int pr = (int)Math.Ceiling(borderWidth * Config.Dpi), pr2 = pr * 2;
                     return new Rectangle(rect.X + padding.Left + pr, rect.Y + padding.Top + pr, rect.Width - padding.Horizontal - pr2, rect.Height - padding.Vertical - pr2);
                 }
                 return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
@@ -573,31 +616,75 @@ namespace AntdUI
 
         #endregion
 
-        public static Rectangle PaddingRect(this Rectangle rect, ShadowConfig config, float borderWidth = 0F)
+        public static Rectangle PaddingRect(this Rectangle rect, ShadowConfig config, TAlignMini align, float borderWidth = 0F)
         {
             if (config.Shadow > 0)
             {
-                int shadow = (int)(config.Shadow * Config.Dpi), s2 = shadow * 2,
-                    shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * Config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * Config.Dpi));
-                int x = rect.X + shadow, y = rect.Y + shadow;
-                if (config.ShadowOffsetX < 0) x += shadowOffsetX;
-                if (config.ShadowOffsetY < 0) y += shadowOffsetY;
+                int shadow = (int)(config.Shadow * Config.Dpi), s2 = shadow * 2, shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * Config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * Config.Dpi));
+
+                int x, y, w, h;
+                switch (align)
+                {
+                    case TAlignMini.Top:
+                        x = rect.X;
+                        w = rect.Width;
+
+                        y = rect.Y + shadow;
+                        h = rect.Height - shadow;
+                        break;
+                    case TAlignMini.Bottom:
+                        x = rect.X;
+                        w = rect.Width;
+
+                        y = rect.Y;
+                        h = rect.Height - shadow;
+                        break;
+                    case TAlignMini.Left:
+                        y = rect.Y;
+                        h = rect.Height;
+
+                        x = rect.X + shadow;
+                        w = rect.Width - shadow;
+                        break;
+                    case TAlignMini.Right:
+                        y = rect.Y;
+                        h = rect.Height;
+
+                        x = rect.X;
+                        w = rect.Width - shadow;
+                        break;
+                    case TAlignMini.None:
+                    default:
+                        x = rect.X + shadow;
+                        y = rect.Y + shadow;
+                        w = rect.Width - s2;
+                        h = rect.Height - s2;
+                        break;
+                }
+
+                if (config.ShadowOffsetX < 0)
+                {
+                    x += shadowOffsetX;
+                    w -= shadowOffsetX;
+                }
+                if (config.ShadowOffsetY < 0)
+                {
+                    y += shadowOffsetY;
+                    h -= shadowOffsetY;
+                }
+
                 if (borderWidth > 0)
                 {
-                    int pr = (int)Math.Ceiling(borderWidth / 2F), pr2 = pr * 2;
-                    return new Rectangle(x + pr, y + pr,
-                        rect.Width - pr2 - shadowOffsetX - s2,
-                        rect.Height - pr2 - shadowOffsetY - s2);
+                    int pr = (int)Math.Ceiling(borderWidth * Config.Dpi / 2F), pr2 = pr * 2;
+                    return new Rectangle(x + pr, y + pr, w - pr2, h - pr2);
                 }
-                return new Rectangle(x, y,
-                    rect.Width - shadowOffsetX - s2,
-                    rect.Height - shadowOffsetY - s2);
+                return new Rectangle(x, y, w, h);
             }
             else
             {
                 if (borderWidth > 0)
                 {
-                    int pr = (int)Math.Ceiling(borderWidth / 2F), pr2 = pr * 2;
+                    int pr = (int)Math.Ceiling((borderWidth * Config.Dpi) / 2F), pr2 = pr * 2;
                     return new Rectangle(rect.X + pr, rect.Y + pr, rect.Width - pr2, rect.Height - pr2);
                 }
                 return rect;
@@ -938,6 +1025,19 @@ namespace AntdUI
         public static GraphicsPath RoundPath(this RectangleF rect, float radius)
         {
             return RoundPathCore(rect, radius);
+        }
+
+        internal static GraphicsPath RoundPath(this RectangleF rect, float radius, TAlignMini shadowAlign)
+        {
+            switch (shadowAlign)
+            {
+                case TAlignMini.Top: return RoundPath(rect, radius, true, true, false, false);
+                case TAlignMini.Bottom: return RoundPath(rect, radius, false, false, true, true);
+                case TAlignMini.Left: return RoundPath(rect, radius, true, false, false, true);
+                case TAlignMini.Right: return RoundPath(rect, radius, false, true, true, false);
+                case TAlignMini.None:
+                default: return RoundPathCore(rect, radius);
+            }
         }
 
         /// <summary>

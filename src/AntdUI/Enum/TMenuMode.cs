@@ -16,21 +16,24 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.Windows.Forms;
-
 namespace AntdUI
 {
-    partial class Table
+    /// <summary>
+    /// 菜单模式
+    /// </summary>
+    public enum TMenuMode
     {
-        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
-        {
-            switch (keyData)
-            {
-                case Keys.Control | Keys.C:
-                    if (ClipboardCopy && rows != null && selectedIndex > -1) return CopyData(selectedIndex);
-                    return base.ProcessCmdKey(ref msg, keyData);
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
+        /// <summary>
+        /// 内嵌模式
+        /// </summary>
+        Inline,
+        /// <summary>
+        /// 垂直模式
+        /// </summary>
+        Vertical,
+        /// <summary>
+        /// 水平模式
+        /// </summary>
+        Horizontal
     }
 }

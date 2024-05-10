@@ -122,18 +122,35 @@ namespace AntdUI
             }
         }
 
-        TAMode mode = TAMode.Auto;
+        TAMode theme = TAMode.Auto;
         /// <summary>
         /// 色彩模式
         /// </summary>
         [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
-        public TAMode Mode
+        public TAMode Theme
+        {
+            get => theme;
+            set
+            {
+                if (theme == value) return;
+                theme = value;
+                Invalidate();
+            }
+        }
+
+        TMenuMode mode = TMenuMode.Inline;
+        /// <summary>
+        /// 菜单类型
+        /// </summary>
+        [Description("菜单类型"), Category("外观"), DefaultValue(TMenuMode.Inline)]
+        public TMenuMode Mode
         {
             get => mode;
             set
             {
                 if (mode == value) return;
                 mode = value;
+                ChangeList();
                 Invalidate();
             }
         }
@@ -317,14 +334,18 @@ namespace AntdUI
             {
                 var size = g.MeasureString(Config.NullText, Font);
                 int icon_size = (int)Math.Ceiling(size.Height * 1.2F), gap = icon_size / 2, gapI = gap / 2, height = (int)Math.Ceiling(size.Height + gap * 2);
-                CollapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
-                CollapsedWidth = ChangeList(rect, g, Items, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
-                if (AutoCollapse)
+                if (mode == TMenuMode.Horizontal) ChangeListHorizontal(rect, g, Items, 0, icon_size, gap, gapI);
+                else
                 {
-                    if (icon_count > 0) collapsed = CollapsedWidth > _rect.Width;
-                    else collapsed = false;
+                    CollapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
+                    CollapsedWidth = ChangeList(rect, g, Items, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
+                    if (AutoCollapse)
+                    {
+                        if (icon_count > 0) collapsed = CollapsedWidth > _rect.Width;
+                        else collapsed = false;
+                    }
+                    if (collapsed) ChangeUTitle(Items);
                 }
-                if (collapsed) ChangeUTitle(Items);
             });
             scroll.SetVrSize(y);
             return _rect;
@@ -343,7 +364,7 @@ namespace AntdUI
                     int size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width);
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + gapI;
-                    if (it.CanExpand)
+                    if (mode == TMenuMode.Inline && it.CanExpand)
                     {
                         if (!collapsed)
                         {
@@ -374,16 +395,25 @@ namespace AntdUI
             }
             return collapsedWidth;
         }
+        void ChangeListHorizontal(Rectangle rect, Graphics g, MenuItemCollection items, int x, int icon_size, float gap, int gapI)
+        {
+            foreach (MenuItem it in items)
+            {
+                it.PARENT = this;
+                int size;
+                if (it.HasIcon) size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size);
+                else size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 2);
+                it.SetRectNoArr(0, new RectangleF(rect.X + x, rect.Y, size, rect.Height), icon_size, gap);
+                if (it.Visible) x += size;
+            }
+        }
 
         void ChangeUTitle(MenuItemCollection items)
         {
             foreach (MenuItem it in items)
             {
                 it.ico_rect = new RectangleF(it.Rect.X + (it.Rect.Width - it.ico_rect.Width) / 2F, it.ico_rect.Y, it.ico_rect.Width, it.ico_rect.Height);
-                if (it.Visible)
-                {
-                    if (it.CanExpand) ChangeUTitle(it.Sub);
-                }
+                if (it.Visible && it.CanExpand) ChangeUTitle(it.Sub);
             }
         }
 
@@ -403,7 +433,7 @@ namespace AntdUI
             g.TranslateTransform(0, -sy);
             Color scroll_color, color_fore, color_fore_active, fore_enabled, back_hover, back_active;
 
-            switch (mode)
+            switch (theme)
             {
                 case TAMode.Light:
                     scroll_color = Color.Black;
@@ -505,7 +535,7 @@ namespace AntdUI
         {
             if (it.Enabled)
             {
-                if (Config.IsDark || mode == TAMode.Dark)
+                if (Config.IsDark || theme == TAMode.Dark)
                 {
                     if (it.Select)
                     {
@@ -549,7 +579,7 @@ namespace AntdUI
         {
             if (it.Enabled)
             {
-                if (Config.IsDark || mode == TAMode.Dark)
+                if (Config.IsDark || theme == TAMode.Dark)
                 {
                     if (it.Select)
                     {
@@ -629,10 +659,21 @@ namespace AntdUI
         {
             if (it.CanExpand)
             {
-                using (var pen = new Pen(fore, 2F))
+                if (mode == TMenuMode.Inline)
                 {
-                    pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                    g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
+                    using (var pen = new Pen(fore, 2F))
+                    {
+                        pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                        g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
+                    }
+                }
+                else if (mode == TMenuMode.Vertical)
+                {
+                    using (var pen = new Pen(fore, 2F))
+                    {
+                        pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.arr_rect, .4F));
+                    }
                 }
             }
             using (var brush = new SolidBrush(fore))
@@ -785,11 +826,45 @@ namespace AntdUI
                         }
                     }
                 }
+                else if (mode == TMenuMode.Inline)
+                {
+                    foreach (MenuItem it in Items) IMouseMove(it, e.Location, ref count, ref hand);
+                }
                 else
                 {
+                    int i = 0, hoveindex = -1;
                     foreach (MenuItem it in Items)
                     {
-                        IMouseMove(it, e.Location, ref count, ref hand);
+                        if (it.show)
+                        {
+                            if (it.Contains(e.Location, 0, scroll.Value, out var change))
+                            {
+                                hoveindex = i;
+                                hand++;
+                            }
+                            if (change) count++;
+                        }
+                        i++;
+                    }
+                    if (hoveindex != hoveindexold)
+                    {
+                        hoveindexold = hoveindex;
+
+                        subForm?.Close();
+                        subForm = null;
+                        tooltipForm?.Close();
+                        tooltipForm = null;
+
+                        var _rect = RectangleToScreen(ClientRectangle);
+                        var it = Items[hoveindex];
+                        if (it == null) return;
+                        var rect = new Rectangle(_rect.X + (int)it.Rect.X / 2, _rect.Y + (int)it.Rect.Y, (int)it.Rect.Width, (int)it.Rect.Height);
+                        if (it.Sub != null && it.Sub.Count > 0)
+                        {
+                            select_x = 0;
+                            subForm = new LayeredFormMenuDown(this, radius, rect, it.Sub);
+                            subForm.Show(this);
+                        }
                     }
                 }
                 SetCursor(hand > 0);
@@ -977,7 +1052,7 @@ namespace AntdUI
             {
                 if (icon == value) return;
                 icon = value;
-                OnPropertyChanged("Icon");
+                Invalidates();
             }
         }
 
@@ -993,7 +1068,7 @@ namespace AntdUI
             {
                 if (iconSvg == value) return;
                 iconSvg = value;
-                OnPropertyChanged("IconSvg");
+                Invalidates();
             }
         }
 
@@ -1273,17 +1348,38 @@ namespace AntdUI
         {
             Depth = depth;
             rect = _rect;
-            if (indent || depth > 1)
+            if (HasIcon)
             {
-                ico_rect = new RectangleF(_rect.X + (gap * (depth + 1)), _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
-                txt_rect = new RectangleF(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
+                if (indent || depth > 1)
+                {
+                    ico_rect = new RectangleF(_rect.X + (gap * (depth + 1)), _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
+                    txt_rect = new RectangleF(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
+                }
+                else
+                {
+                    ico_rect = new RectangleF(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
+                    txt_rect = new RectangleF(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
+                }
+                arr_rect = new RectangleF(_rect.Right - ico_rect.Height - (ico_rect.Height * 0.9F), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
             }
             else
+            {
+                if (indent || depth > 1) txt_rect = new RectangleF(_rect.X + (gap * (depth + 1)), _rect.Y, _rect.Width - (gap * 2), _rect.Height);
+                else txt_rect = new RectangleF(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
+                arr_rect = new RectangleF(_rect.Right - icon_size - (icon_size * 0.9F), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+            }
+            Show = true;
+        }
+        internal void SetRectNoArr(int depth, RectangleF _rect, float icon_size, float gap)
+        {
+            Depth = depth;
+            rect = _rect;
+            if (HasIcon)
             {
                 ico_rect = new RectangleF(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
                 txt_rect = new RectangleF(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
             }
-            arr_rect = new RectangleF(_rect.Right - ico_rect.Height - (ico_rect.Height * 0.9F), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
+            else txt_rect = new RectangleF(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
             Show = true;
         }
         internal RectangleF rect { get; set; }
