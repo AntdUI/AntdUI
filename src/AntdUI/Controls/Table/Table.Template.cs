@@ -1042,23 +1042,73 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Value.Fore.Value))
                     {
-                        g.DrawString(Value.Text, Value.Font == null ? font : Value.Font, brush, Rect, StringF(PARENT.column));
+                        g.DrawString(Value.Text, Value.Font ?? font, brush, Rect, StringF(PARENT.column));
                     }
                 }
-                else g.DrawString(Value.Text, Value.Font == null ? font : Value.Font, fore, Rect, StringF(PARENT.column));
+                else g.DrawString(Value.Text, Value.Font ?? font, fore, Rect, StringF(PARENT.column));
+
+                if (Value.PrefixSvg != null)
+                {
+                    using (var _bmp = SvgExtend.GetImgExtend(Value.PrefixSvg, RectL, Value.Fore ?? fore.Color))
+                    {
+                        if (_bmp != null) g.DrawImage(_bmp, RectL);
+                    }
+                }
+                else if (Value.Prefix != null) g.DrawImage(Value.Prefix, RectL);
+
+                if (Value.SuffixSvg != null)
+                {
+                    using (var _bmp = SvgExtend.GetImgExtend(Value.SuffixSvg, RectR, Value.Fore ?? fore.Color))
+                    {
+                        if (_bmp != null) g.DrawImage(_bmp, RectR);
+                    }
+                }
+                else if (Value.Suffix != null) g.DrawImage(Value.Suffix, RectR);
             }
 
             public Size GetSize(Graphics g, Font font, int gap, int gap2)
             {
-                var size = g.MeasureString(Value.Text, Value.Font == null ? font : Value.Font);
+                var size = g.MeasureString(Value.Text, Value.Font ?? font);
+                bool has_prefix = Value.HasPrefix, has_suffix = Value.HasSuffix;
+                if (has_prefix && has_suffix)
+                {
+                    int icon_size = (int)(size.Height * Value.IconRatio);
+                    return new Size((icon_size * 2) + gap2 + (int)Math.Ceiling(size.Width) + gap2, (int)Math.Ceiling(size.Height));
+                }
+                else if (has_prefix || has_suffix)
+                {
+                    int icon_size = (int)(size.Height * Value.IconRatio);
+                    return new Size(icon_size + gap + (int)Math.Ceiling(size.Width) + gap2, (int)Math.Ceiling(size.Height));
+                }
                 return new Size((int)Math.Ceiling(size.Width) + gap2, (int)Math.Ceiling(size.Height));
             }
 
-            Rectangle Rect;
+            Rectangle Rect, RectL, RectR;
             public void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
             {
                 RECT = rect;
-                Rect = new Rectangle(rect.X + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - gap2, size.Height);
+                bool has_prefix = Value.HasPrefix, has_suffix = Value.HasSuffix;
+                if (has_prefix && has_suffix)
+                {
+                    int icon_size = (int)(size.Height * Value.IconRatio);
+                    RectL = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
+                    RectR = new Rectangle(rect.Right - gap - icon_size, RectL.Y, icon_size, icon_size);
+
+                    Rect = new Rectangle(RectL.Right + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - gap2 - (icon_size * 2 + gap2), size.Height);
+                }
+                else if (has_prefix)
+                {
+                    int icon_size = (int)(size.Height * Value.IconRatio);
+                    RectL = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
+                    Rect = new Rectangle(RectL.Right + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - gap2 - icon_size - gap, size.Height);
+                }
+                else if (has_suffix)
+                {
+                    int icon_size = (int)(size.Height * Value.IconRatio);
+                    RectR = new Rectangle(rect.Right - gap - icon_size, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
+                    Rect = new Rectangle(rect.X + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - gap2 - icon_size - gap, size.Height);
+                }
+                else Rect = new Rectangle(rect.X + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - gap2, size.Height);
             }
 
             public CellText Value { get; set; }
@@ -1636,7 +1686,7 @@ namespace AntdUI
 
             public void Paint(Graphics g, TCell it, Font font, SolidBrush fore)
             {
-                Color _color = Value.Fill.HasValue ? Value.Fill.Value : Style.Db.Primary, _back = Value.Back.HasValue ? Value.Back.Value : Style.Db.FillSecondary;
+                Color _color = Value.Fill ?? Style.Db.Primary, _back = Value.Back ?? Style.Db.FillSecondary;
                 if (Value.Shape == TShape.Circle)
                 {
                     float w = Value.Radius * Config.Dpi;

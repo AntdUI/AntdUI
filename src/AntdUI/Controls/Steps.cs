@@ -246,8 +246,7 @@ namespace AntdUI
                         count -= 1;
                         foreach (StepsItem it in Items)
                         {
-                            //it.SubTitle = it.Description = null;
-                            int icon_size = it.IconSize.HasValue ? it.IconSize.Value : (int)(it.TitleSize.Height * 1.6F);
+                            int icon_size = it.IconSize ?? (int)(it.TitleSize.Height * 1.6F);
                             int y = rect.Y + (rect.Height - maxHeight) / 2;
                             it.ico_rect = new Rectangle(has_x, y + (it.TitleSize.Height - icon_size) / 2, icon_size, icon_size);
                             it.title_rect = new Rectangle(it.ico_rect.Right + gap, y, it.TitleSize.Width, it.TitleSize.Height);
@@ -286,7 +285,7 @@ namespace AntdUI
                 if (it.showSub) it.SubTitleSize = g.MeasureString(it.SubTitle, Font).Size();
                 if (it.showDescription) it.DescriptionSize = g.MeasureString(it.Description, font_description).Size();
 
-                int icon_size = it.IconSize.HasValue ? it.IconSize.Value : (int)(it.TitleSize.Height * 1.6F);
+                int icon_size = it.IconSize ?? (int)(it.TitleSize.Height * 1.6F);
                 int width_top = it.TitleSize.Width + (it.showSub ? it.SubTitleSize.Width : 0), width_buttom = (it.showDescription ? it.DescriptionSize.Width : 0);
 
                 it.ReadWidth = icon_size + gap + (width_top > width_buttom ? width_top : width_buttom);
@@ -317,7 +316,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            Color color_fore = fore.HasValue ? fore.Value : Style.Db.Text;
+            Color color_fore = fore ?? Style.Db.Text;
             using (var brush_fore = new SolidBrush(color_fore))
             using (var brush_primarybg = new SolidBrush(Style.Db.PrimaryBg))
             using (var brush_primary = new SolidBrush(Style.Db.Primary))

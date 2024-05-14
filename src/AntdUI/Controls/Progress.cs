@@ -141,6 +141,22 @@ namespace AntdUI
             }
         }
 
+        float iconratio = .7F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                Invalidate();
+            }
+        }
+
         #region 进度条
 
         float _value = 0F;
@@ -195,6 +211,7 @@ namespace AntdUI
                         Invalidate();
                     });
                 }
+                else Invalidate();
             }
         }
 
@@ -218,11 +235,12 @@ namespace AntdUI
             var rect = ClientRectangle.PaddingRect(Padding);
             var g = e.Graphics.High();
             bool enabled = Enabled;
-            Color _color = fill.HasValue ? fill.Value : Style.Db.Primary, _back = back.HasValue ? back.Value : Style.Db.FillSecondary;
+            Color _color = fill ?? Style.Db.Primary, _back = back ?? Style.Db.FillSecondary;
             if (Mini)
             {
                 var font_size = g.MeasureString(text, Font);
-                rect.IconRectL(font_size, out var icon_rect, out var text_rect, .7F);
+                rect.IconRectL(font_size, out var icon_rect, out var text_rect, iconratio);
+                if (icon_rect.Width == 0 || icon_rect.Height == 0) return;
                 PaintText(g, text, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), Helper.stringFormatLeft, enabled);
 
                 float w = radius * Config.Dpi;

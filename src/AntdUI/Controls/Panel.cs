@@ -36,31 +36,7 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class Panel : IControl, ShadowConfig, IMessageFilter, IEventListener
     {
-        public Panel()
-        {
-            base.BackColor = Color.Transparent;
-        }
-
         #region 属性
-
-        #region 系统
-
-        /// <summary>
-        /// 背景颜色
-        /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        public new Color? BackColor
-        {
-            get => back;
-            set
-            {
-                if (back == value) return;
-                back = value;
-                Invalidate();
-            }
-        }
-
-        #endregion
 
         int radius = 6;
         /// <summary>
@@ -213,7 +189,6 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
         public Color? Back
         {
             get => back;
@@ -337,7 +312,7 @@ namespace AntdUI
             {
                 var g = e.Graphics.High();
                 var rect_read = ReadRectangle;
-                Color _back = back.HasValue ? back.Value : Style.Db.BgContainer;
+                Color _back = back ?? Style.Db.BgContainer;
                 float _radius = radius * Config.Dpi;
                 using (var brush = new SolidBrush(_back))
                 {
@@ -347,7 +322,7 @@ namespace AntdUI
                         if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
                         if (borderWidth > 0)
                         {
-                            using (var brush_bor = new Pen(borderColor.HasValue ? borderColor.Value : Style.Db.BorderColor, borderWidth * Config.Dpi))
+                            using (var brush_bor = new Pen(borderColor ?? Style.Db.BorderColor, borderWidth * Config.Dpi))
                             {
                                 g.DrawPath(brush_bor, path);
                             }
@@ -376,7 +351,7 @@ namespace AntdUI
                 if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
-                    shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height, shadowColor.HasValue ? shadowColor.Value : Style.Db.TextBase, shadow);
+                    shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height, shadowColor ?? Style.Db.TextBase, shadow);
                 }
                 using (var attributes = new ImageAttributes())
                 {

@@ -144,7 +144,7 @@ namespace AntdUI
             bool enabled = Enabled;
             using (var path = rect_read.RoundPath(rect_read.Height))
             {
-                Color _color = fill.HasValue ? fill.Value : Style.Db.Primary;
+                Color _color = fill ?? Style.Db.Primary;
                 PaintClick(g, path, rect, rect_read, _color);
                 using (var brush = new SolidBrush(Style.Db.TextQuaternary))
                 {
@@ -175,7 +175,7 @@ namespace AntdUI
                 }
                 else if (_checked)
                 {
-                    var colorhover = FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover;
+                    var colorhover = FillHover ?? Style.Db.PrimaryHover;
                     using (var brush = new SolidBrush(enabled ? _color : Color.FromArgb(200, _color)))
                     {
                         g.FillPath(brush, path);

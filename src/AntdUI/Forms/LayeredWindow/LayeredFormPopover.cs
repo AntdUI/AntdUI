@@ -38,7 +38,7 @@ namespace AntdUI
             maxalpha = 255;
             config = _config;
             config.Control.SetTopMost(Handle);
-            Font = config.Font == null ? config.Control.Font : config.Font;
+            Font = config.Font ?? config.Control.Font;
 
             Helper.GDI(g =>
             {
@@ -87,7 +87,7 @@ namespace AntdUI
                         foreach (var txt in list)
                         {
                             if (txt.Call != null) hasmouse = true;
-                            var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font);
+                            var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font);
                             float txt_w = sizeContent.Width + txt.Gap * dpi;
                             _texts.Add(new float[] { padding + has_x, padding, txt_w });
                             if (max_h < sizeContent.Height) max_h = sizeContent.Height;
@@ -114,7 +114,7 @@ namespace AntdUI
                             foreach (var txt in list)
                             {
                                 if (txt.Call != null) hasmouse = true;
-                                var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font);
+                                var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font);
                                 float txt_w = sizeContent.Width + txt.Gap * dpi;
                                 _texts.Add(new float[] { padding + has_x, padding + sizeTitle.Height + sp, txt_w });
                                 if (max_h < sizeContent.Height) max_h = sizeContent.Height;
@@ -289,10 +289,10 @@ namespace AntdUI
                                     {
                                         using (var fore = new SolidBrush(txt.Fore.Value))
                                         {
-                                            g.DrawString(txt.Text, txt.Font == null ? Font : txt.Font, fore, rectsContent[i].Rect, stringCenter);
+                                            g.DrawString(txt.Text, txt.Font ?? Font, fore, rectsContent[i].Rect, stringCenter);
                                         }
                                     }
-                                    else g.DrawString(txt.Text, txt.Font == null ? Font : txt.Font, brush, rectsContent[i].Rect, stringCenter);
+                                    else g.DrawString(txt.Text, txt.Font ?? Font, brush, rectsContent[i].Rect, stringCenter);
                                 }
                             }
                             else g.DrawString(config.Content.ToString(), Font, brush, rectContent, stringLeft);

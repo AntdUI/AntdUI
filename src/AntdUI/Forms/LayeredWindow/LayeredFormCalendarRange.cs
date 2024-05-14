@@ -1425,7 +1425,7 @@ namespace AntdUI
 
             if (badge_list.Count > 0)
             {
-                using (var font = new Font(control.Font.FontFamily, control.BadgeSize))
+                using (var font = new Font(control.Font.FontFamily, control.Font.Size * control.BadgeSize))
                 {
                     foreach (var it in datas)
                     {

@@ -230,7 +230,7 @@ namespace AntdUI
         {
             if (it.Badge != null)
             {
-                var color = it.BadgeBack.HasValue ? it.BadgeBack.Value : Style.Db.Error;
+                var color = it.BadgeBack ?? Style.Db.Error;
 
                 using (var brush_fore = new SolidBrush(Style.Db.ErrorColor))
                 {

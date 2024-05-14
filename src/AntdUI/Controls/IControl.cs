@@ -57,11 +57,62 @@ namespace AntdUI
             }
         }
 
-        [Description("徽标大小"), Category("徽标"), DefaultValue(9F)]
-        public float BadgeSize { get; set; } = 9F;
+        float badgeSize = .6F;
+        [Description("徽标比例"), Category("徽标"), DefaultValue(.6F)]
+        public float BadgeSize
+        {
+            get => badgeSize;
+            set
+            {
+                if (badgeSize != value)
+                {
+                    badgeSize = value;
+                    if (badge != null) Invalidate();
+                }
+            }
+        }
 
+        bool badgeMode = false;
+        [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
+        public bool BadgeMode
+        {
+            get => badgeMode;
+            set
+            {
+                if (badgeMode != value)
+                {
+                    badgeMode = value;
+                    if (badge != null) Invalidate();
+                }
+            }
+        }
+
+        Color? badgeback = null;
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
-        public Color? BadgeBack { get; set; }
+        public Color? BadgeBack
+        {
+            get => badgeback;
+            set
+            {
+                if (badgeback != value)
+                {
+                    badgeback = value;
+                    if (badge != null) Invalidate();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        [Description("徽标偏移X"), Category("徽标"), DefaultValue(1)]
+        public int BadgeOffsetX { get; set; } = 1;
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        [Description("徽标偏移Y"), Category("徽标"), DefaultValue(1)]
+        public int BadgeOffsetY { get; set; } = 1;
 
         #endregion
 

@@ -219,7 +219,7 @@ namespace AntdUI
             bool right = rightToLeft == RightToLeft.Yes;
             PaintChecked(g, rect, enabled, icon_rect, right);
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
-            using (var brush = new SolidBrush(enabled ? (fore.HasValue ? fore.Value : Style.Db.Text) : Style.Db.TextQuaternary))
+            using (var brush = new SolidBrush(enabled ? (fore ?? Style.Db.Text) : Style.Db.TextQuaternary))
             {
                 g.DrawString(text, Font, brush, text_rect, stringFormat);
             }
@@ -235,7 +235,7 @@ namespace AntdUI
             if (right) icon_rect.X = rect.Width - icon_rect.X - icon_rect.Width;
             if (enabled)
             {
-                var color = fill.HasValue ? fill.Value : Style.Db.Primary;
+                var color = fill ?? Style.Db.Primary;
                 if (AnimationCheck)
                 {
                     float dot = dot_size * 0.3F;

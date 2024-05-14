@@ -546,7 +546,6 @@ namespace AntdUI
         bool WmNCActivate(ref System.Windows.Forms.Message m)
         {
             if (m.HWnd == IntPtr.Zero) return false;
-            //IsWindowActivated = m.WParam != IntPtr.Zero;
             if (IsIconic(m.HWnd)) return false;
             m.Result = DefWindowProc(m.HWnd, (uint)m.Msg, m.WParam, new IntPtr(-1));
             return true;

@@ -576,6 +576,101 @@ namespace AntdUI
                 OnPropertyChanged("Text");
             }
         }
+
+        #region 图标
+
+        float iconratio = .7F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                OnPropertyChanged("IconRatio");
+            }
+        }
+
+        Image? prefix = null;
+        /// <summary>
+        /// 前缀
+        /// </summary>
+        public Image? Prefix
+        {
+            get => prefix;
+            set
+            {
+                if (prefix == value) return;
+                prefix = value;
+                OnPropertyChanged("Prefix");
+            }
+        }
+
+        string? prefixSvg = null;
+        /// <summary>
+        /// 前缀SVG
+        /// </summary>
+        public string? PrefixSvg
+        {
+            get => prefixSvg;
+            set
+            {
+                if (prefixSvg == value) return;
+                prefixSvg = value;
+                OnPropertyChanged("PrefixSvg");
+            }
+        }
+
+        /// <summary>
+        /// 是否包含前缀
+        /// </summary>
+        public bool HasPrefix
+        {
+            get => prefixSvg != null || prefix != null;
+        }
+
+        Image? suffix = null;
+        /// <summary>
+        /// 后缀
+        /// </summary>
+        public Image? Suffix
+        {
+            get => suffix;
+            set
+            {
+                if (suffix == value) return;
+                suffix = value;
+                OnPropertyChanged("Suffix");
+            }
+        }
+
+        string? suffixSvg = null;
+        /// <summary>
+        /// 后缀SVG
+        /// </summary>
+        public string? SuffixSvg
+        {
+            get => suffixSvg;
+            set
+            {
+                if (suffixSvg == value) return;
+                suffixSvg = value;
+                OnPropertyChanged("SuffixSvg");
+            }
+        }
+
+        /// <summary>
+        /// 是否包含后缀
+        /// </summary>
+        public bool HasSuffix
+        {
+            get => suffixSvg != null || suffix != null;
+        }
+
+        #endregion
     }
 
     /// <summary>

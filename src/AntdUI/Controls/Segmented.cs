@@ -705,7 +705,7 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             using (var path = Rect.RoundPath(_radius, Round))
             {
-                using (var brush = new SolidBrush(back.HasValue ? back.Value : Style.Db.BgLayout))
+                using (var brush = new SolidBrush(back ?? Style.Db.BgLayout))
                 {
                     g.FillPath(brush, path);
                 }
@@ -720,7 +720,7 @@ namespace AntdUI
                 {
                     using (var path = TabSelectRect.RoundPath(_radius, Round))
                     {
-                        using (var brush = new SolidBrush(backactive.HasValue ? backactive.Value : Style.Db.BgElevated))
+                        using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
                         {
                             g.FillPath(brush, path);
                         }
@@ -731,7 +731,7 @@ namespace AntdUI
                     _hover = i;
                     using (var path = it.Rect.RoundPath(_radius, Round))
                     {
-                        using (var brush = new SolidBrush(BackHover.HasValue ? BackHover.Value : Style.Db.HoverBg))
+                        using (var brush = new SolidBrush(BackHover ?? Style.Db.HoverBg))
                         {
                             g.FillPath(brush, path);
                         }
@@ -743,20 +743,20 @@ namespace AntdUI
             {
                 using (var path = AnimationBarValue.RoundPath(_radius, Round))
                 {
-                    using (var brush = new SolidBrush(backactive.HasValue ? backactive.Value : Style.Db.BgElevated))
+                    using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
                     {
                         g.FillPath(brush, path);
                     }
                 }
             }
-            using (var brush = new SolidBrush(fore.HasValue ? fore.Value : Style.Db.TextSecondary))
+            using (var brush = new SolidBrush(fore ?? Style.Db.TextSecondary))
             {
                 for (int i = 0; i < item_text.Count; i++)
                 {
                     var it = item_text[i];
                     if (i == _select)
                     {
-                        using (var brush_active = new SolidBrush(foreactive.HasValue ? foreactive.Value : Style.Db.Text))
+                        using (var brush_active = new SolidBrush(foreactive ?? Style.Db.Text))
                         {
                             if (PaintImg(g, it, brush_active.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
                             g.DrawString(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
@@ -766,7 +766,7 @@ namespace AntdUI
                     {
                         if (i == _hover)
                         {
-                            using (var brush_active = new SolidBrush(ForeHover.HasValue ? ForeHover.Value : Style.Db.HoverColor))
+                            using (var brush_active = new SolidBrush(ForeHover ?? Style.Db.HoverColor))
                             {
                                 PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
                                 g.DrawString(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);

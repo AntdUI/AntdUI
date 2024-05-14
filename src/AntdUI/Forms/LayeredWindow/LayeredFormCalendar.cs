@@ -89,7 +89,7 @@ namespace AntdUI
             Font = new Font(_control.Font.FontFamily, 11.2F);
 
             SelDate = date;
-            Date = date.HasValue ? date.Value : DateNow;
+            Date = date ?? DateNow;
 
             var point = _control.PointToScreen(Point.Empty);
             if (calendar_day == null) EndHeight = 348 + 20;
@@ -987,7 +987,7 @@ namespace AntdUI
 
                     if (badge_list.Count > 0)
                     {
-                        using (var font = new Font(control.Font.FontFamily, control.BadgeSize))
+                        using (var font = new Font(control.Font.FontFamily, control.Font.Size * control.BadgeSize))
                         {
                             foreach (var it in datas)
                             {

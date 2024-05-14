@@ -64,7 +64,6 @@ namespace AntdUI
             Font = new Font(_control.Font.FontFamily, 11.2F);
 
             SelDate = date;
-            //Date = date.HasValue ? date.Value : DateNow;
 
             var point = _control.PointToScreen(Point.Empty);
             EndHeight = t_height + t_button + 20;

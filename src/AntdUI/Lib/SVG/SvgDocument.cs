@@ -159,13 +159,9 @@ namespace AntdUI.Svg
         /// Attempts to create an SVG document from the specified string data.
         /// </summary>
         /// <param name="svg">The SVG data.</param>
-        public static T FromSvg<T>(string svg) where T : SvgDocument, new()
+        public static T? FromSvg<T>(string svg) where T : SvgDocument, new()
         {
-            if (string.IsNullOrEmpty(svg))
-            {
-                throw new ArgumentNullException("svg");
-            }
-
+            if (string.IsNullOrEmpty(svg)) return null;
             using (var strReader = new System.IO.StringReader(svg))
             {
                 var reader = new SvgTextReader(strReader);

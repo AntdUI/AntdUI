@@ -438,33 +438,33 @@ namespace AntdUI
                 case TAMode.Light:
                     scroll_color = Color.Black;
                     fore_enabled = Style.rgba(0, 0, 0, 0.25F);
-                    color_fore = fore.HasValue ? fore.Value : Color.Black;
-                    color_fore_active = ForeActive.HasValue ? ForeActive.Value : "#1677FF".ToColor();
-                    back_hover = BackHover.HasValue ? BackHover.Value : Style.rgba(0, 0, 0, 0.06F);
-                    back_active = BackActive.HasValue ? BackActive.Value : "#E6F4FF".ToColor();
+                    color_fore = fore ?? Color.Black;
+                    color_fore_active = ForeActive ?? "#1677FF".ToColor();
+                    back_hover = BackHover ?? Style.rgba(0, 0, 0, 0.06F);
+                    back_active = BackActive ?? "#E6F4FF".ToColor();
                     break;
                 case TAMode.Dark:
                     scroll_color = Color.White;
                     fore_enabled = Style.rgba(255, 255, 255, 0.25F);
-                    color_fore = fore.HasValue ? fore.Value : Style.rgba(255, 255, 255, 0.85F);
-                    back_hover = color_fore_active = ForeActive.HasValue ? ForeActive.Value : Color.White;
-                    back_active = BackActive.HasValue ? BackActive.Value : "#1668DC".ToColor();
+                    color_fore = fore ?? Style.rgba(255, 255, 255, 0.85F);
+                    back_hover = color_fore_active = ForeActive ?? Color.White;
+                    back_active = BackActive ?? "#1668DC".ToColor();
                     break;
                 default:
                     scroll_color = Style.Db.TextBase;
                     fore_enabled = Style.Db.TextQuaternary;
                     if (Config.IsDark)
                     {
-                        color_fore = fore.HasValue ? fore.Value : Style.Db.Text;
-                        back_hover = color_fore_active = ForeActive.HasValue ? ForeActive.Value : Style.Db.TextBase;
-                        back_active = BackActive.HasValue ? BackActive.Value : Style.Db.Primary;
+                        color_fore = fore ?? Style.Db.Text;
+                        back_hover = color_fore_active = ForeActive ?? Style.Db.TextBase;
+                        back_active = BackActive ?? Style.Db.Primary;
                     }
                     else
                     {
-                        color_fore = fore.HasValue ? fore.Value : Style.Db.TextBase;
-                        color_fore_active = ForeActive.HasValue ? ForeActive.Value : Style.Db.Primary;
-                        back_hover = BackHover.HasValue ? BackHover.Value : Style.Db.FillSecondary;
-                        back_active = BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg;
+                        color_fore = fore ?? Style.Db.TextBase;
+                        color_fore_active = ForeActive ?? Style.Db.Primary;
+                        back_hover = BackHover ?? Style.Db.FillSecondary;
+                        back_active = BackActive ?? Style.Db.PrimaryBg;
                     }
                     break;
             }

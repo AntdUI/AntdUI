@@ -259,43 +259,98 @@ namespace AntdUI
 
         #region 图标
 
-        Image? image = null;
+        float iconratio = .7F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                CalculateRect();
+                Invalidate();
+            }
+        }
+
+        Image? prefix = null;
+        /// <summary>
+        /// 前缀
+        /// </summary>
+        [Description("前缀"), Category("外观"), DefaultValue(null)]
+        public Image? Prefix
+        {
+            get => prefix;
+            set
+            {
+                if (prefix == value) return;
+                prefix = value;
+                CalculateRect();
+                Invalidate();
+            }
+        }
+
+        string? prefixSvg = null;
+        /// <summary>
+        /// 前缀SVG
+        /// </summary>
+        [Description("前缀SVG"), Category("外观"), DefaultValue(null)]
+        public string? PrefixSvg
+        {
+            get => prefixSvg;
+            set
+            {
+                if (prefixSvg == value) return;
+                prefixSvg = value;
+                CalculateRect();
+                Invalidate();
+            }
+        }
+
+        #region 旧的
+
         /// <summary>
         /// 图标
         /// </summary>
         [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 Prefix 属性替代"), Browsable(false)]
         public Image? Image
         {
-            get => image;
+            get => prefix;
             set
             {
-                if (image == value) return;
-                image = value;
+                if (prefix == value) return;
+                prefix = value;
                 CalculateRect();
                 Invalidate();
             }
         }
 
-        string? imageSvg = null;
         [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 PrefixSvg 属性替代"), Browsable(false)]
         public string? ImageSvg
         {
-            get => imageSvg;
+            get => prefixSvg;
             set
             {
-                if (imageSvg == value) return;
-                imageSvg = value;
+                if (prefixSvg == value) return;
+                prefixSvg = value;
                 CalculateRect();
                 Invalidate();
             }
         }
 
+        #endregion
+
         /// <summary>
-        /// 是否包含图片
+        /// 是否包含前缀
         /// </summary>
-        public bool HasImage
+        public bool HasPrefix
         {
-            get => imageSvg != null || image != null;
+            get => prefixSvg != null || prefix != null;
         }
 
         Image? suffix = null;
@@ -316,6 +371,9 @@ namespace AntdUI
         }
 
         string? suffixSvg = null;
+        /// <summary>
+        /// 后缀SVG
+        /// </summary>
         [Description("后缀SVG"), Category("外观"), DefaultValue(null)]
         public string? SuffixSvg
         {
@@ -965,7 +1023,7 @@ namespace AntdUI
                         }
                         Win32.CreateCaret(Handle, IntPtr.Zero, CurrentCaret.Width, CurrentCaret.Height);
                         Win32.ShowCaret(Handle);
-                        SetCaretPostion(selectionStart);
+                        SetCaretPostion();
                     }
                     else
                     {
@@ -997,7 +1055,7 @@ namespace AntdUI
                         else return it.i;
                     }
                 }
-                var nearest = FindNearestFont(x, y, cache_font);
+                var nearest = FindNearestFont(x, y, cache_font, out bool isold);
                 if (nearest == null)
                 {
                     if (x > cache_font[cache_font.Length - 1].rect.Right) return cache_font.Length;
@@ -1005,7 +1063,8 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (x > nearest.rect.X + nearest.rect.Width / 2) return nearest.i + 1;
+                    if (isold) return nearest.i;
+                    else if (x > nearest.rect.X + nearest.rect.Width / 2) return nearest.i + 1;
                     else return nearest.i;
                 }
             }
@@ -1014,9 +1073,9 @@ namespace AntdUI
         /// <summary>
         /// 寻找最近的矩形和距离的辅助方法
         /// </summary>
-        CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font)
+        CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font, out bool isold)
         {
-            var findy = FindNearestFontY(y, cache_font);
+            var findy = FindNearestFontY(y, cache_font, out isold);
             CacheFont? result = null;
             if (findy == null)
             {
@@ -1039,11 +1098,12 @@ namespace AntdUI
             }
             else
             {
+                int ry = isold ? findy.rect_old.Y : findy.rect.Y;
                 int minDistance = int.MaxValue;
                 for (int i = 0; i < cache_font.Length; i++)
                 {
                     var it = cache_font[i];
-                    if (it.rect.Y == findy.rect.Y)
+                    if (it.rect.Y == ry || (it.retun == 1 && it.rect_old.Y == ry))
                     {
                         // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
                         int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
@@ -1056,12 +1116,14 @@ namespace AntdUI
                     }
                 }
             }
+            if (result == null) return result;
             return result;
         }
-        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font)
+        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font, out bool old)
         {
             int minDistance = int.MaxValue;
             CacheFont? result = null;
+            old = false;
             for (int i = 0; i < cache_font.Length; i++)
             {
                 var it = cache_font[i];
@@ -1070,8 +1132,19 @@ namespace AntdUI
                 // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
                 if (currentMinDistance < minDistance)
                 {
+                    old = false;
                     minDistance = currentMinDistance;
                     result = it;
+                }
+                if (it.retun == 1)
+                {
+                    int currentMinDistance2 = Math.Abs(y - (it.rect_old.Y + it.rect_old.Height / 2));
+                    if (currentMinDistance2 < minDistance)
+                    {
+                        old = true;
+                        minDistance = currentMinDistance2;
+                        result = it;
+                    }
                 }
             }
             return result;
@@ -1084,9 +1157,9 @@ namespace AntdUI
         {
             SetCaretPostion(CurrentPosIndex);
         }
-        void SetCaretPostion(int selectionStart)
+        void SetCaretPostion(int PosIndex)
         {
-            CurrentPosIndex = selectionStart;
+            CurrentPosIndex = PosIndex;
             if (showCaret)
             {
                 if (cache_font == null)
@@ -1098,17 +1171,38 @@ namespace AntdUI
                 else
                 {
                     Rectangle r;
-                    if (selectionStart >= cache_font.Length)
+                    if (PosIndex >= cache_font.Length)
                     {
-                        r = cache_font[cache_font.Length - 1].rect;
-                        CurrentCaret.X = r.Right - 1;
+                        var it = cache_font[cache_font.Length - 1];
+                        r = it.rect;
+                        CurrentCaret.X = r.Right;
                         CurrentCaret.Y = r.Y;
                     }
                     else
                     {
-                        r = cache_font[selectionStart].rect;
-                        CurrentCaret.X = r.X;
-                        CurrentCaret.Y = r.Y;
+                        var it = cache_font[PosIndex];
+                        if (it.retun == 1)
+                        {
+                            if (PosIndex > 0)
+                            {
+                                it = cache_font[PosIndex - 1];
+                                r = it.rect;
+                                CurrentCaret.X = r.Right;
+                                CurrentCaret.Y = r.Y;
+                            }
+                            else
+                            {
+                                r = it.rect_old;
+                                CurrentCaret.X = r.X;
+                                CurrentCaret.Y = r.Y;
+                            }
+                        }
+                        else
+                        {
+                            r = it.rect;
+                            CurrentCaret.X = r.X;
+                            CurrentCaret.Y = r.Y;
+                        }
                     }
                     Win32.SetCaretPos(CurrentCaret.X - scrollx, CurrentCaret.Y - scrolly);
                     ScrollTo(r);

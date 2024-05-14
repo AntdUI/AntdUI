@@ -196,7 +196,7 @@ namespace AntdUI
                             float h_temp = 0;
                             foreach (var txt in list)
                             {
-                                var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font, wp);
+                                var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font, wp);
                                 float txt_h = sizeContent.Height + txt.Gap * dpi;
                                 texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
                                 has_y += txt_h;
@@ -221,7 +221,7 @@ namespace AntdUI
                             float h_temp = 0;
                             foreach (var txt in list)
                             {
-                                var sizeContent = g.MeasureString(txt.Text, txt.Font == null ? Font : txt.Font, wp);
+                                var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font, wp);
                                 float txt_h = sizeContent.Height + txt.Gap * dpi;
                                 texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
                                 has_y += txt_h;
@@ -400,10 +400,10 @@ namespace AntdUI
                             {
                                 using (var fore = new SolidBrush(txt.Fore.Value))
                                 {
-                                    g.DrawString(txt.Text, txt.Font == null ? Font : txt.Font, fore, rectsContent[i], stringLeft);
+                                    g.DrawString(txt.Text, txt.Font ?? Font, fore, rectsContent[i], stringLeft);
                                 }
                             }
-                            else g.DrawString(txt.Text, txt.Font == null ? Font : txt.Font, brush, rectsContent[i], stringLeft);
+                            else g.DrawString(txt.Text, txt.Font ?? Font, brush, rectsContent[i], stringLeft);
                         }
                     }
                     else g.DrawString(config.Content.ToString(), Font, brush, rectContent, stringTL);

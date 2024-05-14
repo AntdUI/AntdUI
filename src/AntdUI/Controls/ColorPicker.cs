@@ -284,10 +284,10 @@ namespace AntdUI
 
             using (var path = Path(rect_read, _radius))
             {
-                Color _fore = fore.HasValue ? fore.Value : Style.Db.Text, _back = back.HasValue ? back.Value : Style.Db.BgContainer,
-                    _border = borderColor.HasValue ? borderColor.Value : Style.Db.BorderColor,
-                    _borderHover = BorderHover.HasValue ? BorderHover.Value : Style.Db.PrimaryHover,
-                _borderActive = BorderActive.HasValue ? BorderActive.Value : Style.Db.Primary;
+                Color _fore = fore ?? Style.Db.Text, _back = back ?? Style.Db.BgContainer,
+                    _border = borderColor ?? Style.Db.BorderColor,
+                    _borderHover = BorderHover ?? Style.Db.PrimaryHover,
+                _borderActive = BorderActive ?? Style.Db.Primary;
                 PaintClick(g, path, rect, _borderActive, radius);
                 float size_color = rect_read.Height * 0.75F;
                 if (enabled)

@@ -77,7 +77,7 @@ namespace AntdUI
         {
             var rect = ClientRectangle.PaddingRect(Padding);
             if (rect.Width == 0 || rect.Height == 0) return;
-            spin_core.Paint(e.Graphics.High(), rect, text, Fill.HasValue ? Fill.Value : Style.Db.Primary, this);
+            spin_core.Paint(e.Graphics.High(), rect, text, Fill ?? Style.Db.Primary, this);
         }
 
         protected override void Dispose(bool disposing)
@@ -236,7 +236,7 @@ namespace AntdUI
             var original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).HighLay())
             {
-                using (var brush = new SolidBrush(config.Back.HasValue ? config.Back.Value : Color.FromArgb(100, Style.Db.TextBase)))
+                using (var brush = new SolidBrush(config.Back ?? Color.FromArgb(100, Style.Db.TextBase)))
                 {
                     if (gpath != null)
                     {
@@ -248,7 +248,7 @@ namespace AntdUI
                     }
                     else g.FillRectangle(brush, rect);
                 }
-                spin_core.Paint(g, rect, config.Text, config.Color.HasValue ? config.Color.Value : Style.Db.Primary, this);
+                spin_core.Paint(g, rect, config.Text, config.Color ?? Style.Db.Primary, this);
             }
             return original_bmp;
         }

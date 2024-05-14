@@ -354,12 +354,12 @@ namespace AntdUI
                 int selectedIndex = _select, hover_i = Hover_i;
                 if (TabCount > 0)
                 {
-                    Color _color = fill.HasValue ? fill.Value : Style.Db.Primary;
+                    Color _color = fill ?? Style.Db.Primary;
                     if (BarBackSize > 0)
                     {
                         var tab_rect_0 = GetTabRect(0);
                         var top = new RectangleF(Margin.Left, tab_rect_0.Y + tab_rect_0.Height - BarBackSize, rect.Width - Margin.Horizontal, BarBackSize);
-                        using (var brush = new SolidBrush(BarBack.HasValue ? BarBack.Value : Style.Db.Fill))
+                        using (var brush = new SolidBrush(BarBack ?? Style.Db.Fill))
                         {
                             g.FillRectangle(brush, top);
                         }
@@ -385,7 +385,7 @@ namespace AntdUI
                                 }
                                 else if (hover_i == i)
                                 {
-                                    using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
+                                    using (var brush = new SolidBrush(FillHover ?? Style.Db.PrimaryHover))
                                     {
                                         g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
                                     }
@@ -415,7 +415,7 @@ namespace AntdUI
                                 }
                                 else if (hover_i == i)
                                 {
-                                    using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
+                                    using (var brush = new SolidBrush(FillHover ?? Style.Db.PrimaryHover))
                                     {
                                         g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
                                     }
@@ -465,7 +465,7 @@ namespace AntdUI
                                         }
                                         if (hover_i == i)
                                         {
-                                            using (var brush = new SolidBrush(FillHover.HasValue ? FillHover.Value : Style.Db.PrimaryHover))
+                                            using (var brush = new SolidBrush(FillHover ?? Style.Db.PrimaryHover))
                                             {
                                                 g.DrawString(page.Text, Font, brush, tab_rect, Helper.stringFormatCenter2);
                                             }
@@ -511,7 +511,7 @@ namespace AntdUI
             if (BarBackSize > 0)
             {
                 var top = new RectangleF(0, rect.Height - BarBackSize, rect.Width - Margin.Horizontal, BarBackSize);
-                using (var brush = new SolidBrush(BarBack.HasValue ? BarBack.Value : Style.Db.Fill))
+                using (var brush = new SolidBrush(BarBack ?? Style.Db.Fill))
                 {
                     g.FillRectangle(brush, top);
                 }

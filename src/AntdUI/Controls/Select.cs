@@ -486,6 +486,10 @@ namespace AntdUI
         /// 在线状态
         /// </summary>
         public int? Online { get; set; }
+        /// <summary>
+        /// 在线自定义颜色
+        /// </summary>
+        public Color? OnlineCustom { get; set; }
         public Image? Icon { get; set; }
         public string Text { get; set; }
 
@@ -523,6 +527,7 @@ namespace AntdUI
             Show = true;
             Val = _val;
             Online = _val.Online;
+            OnlineCustom = _val.OnlineCustom;
             Icon = _val.Icon;
             Text = _val.Text;
             PY = Pinyin.Pinyin.GetPinyin(_val.Text).ToLower();
@@ -549,6 +554,11 @@ namespace AntdUI
         /// 在线状态
         /// </summary>
         public int? Online { get; set; }
+        /// <summary>
+        /// 在线自定义颜色
+        /// </summary>
+        public Color? OnlineCustom { get; set; }
+
         public Image? Icon { get; set; }
         public RectangleF RectIcon { get; set; }
         public RectangleF RectOnline { get; set; }

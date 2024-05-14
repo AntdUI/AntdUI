@@ -1345,36 +1345,52 @@ namespace AntdUI
 
         public static void PaintBadge(this IControl control, RectangleF rect, Graphics g)
         {
-            var color = control.BadgeBack.HasValue ? control.BadgeBack.Value : Style.Db.Error;
+            var color = control.BadgeBack ?? Style.Db.Error;
             if (control.Badge != null)
             {
                 using (var brush_fore = new SolidBrush(Style.Db.ErrorColor))
                 {
-                    if (control.Badge == " ")
+                    float borsize = 1F * Config.Dpi;
+                    using (var font = new Font(control.Font.FontFamily, control.Font.Size * control.BadgeSize))
                     {
-                        var rect_badge = new RectangleF(rect.Right - 7F, 1F, 6, 6);
-                        using (var brush = new SolidBrush(color))
+                        if (string.IsNullOrEmpty(control.Badge) || control.Badge == "" || control.Badge == " ")
                         {
-                            g.FillEllipse(brush, rect_badge);
-                            using (var pen = new Pen(brush_fore.Color, 1F))
+                            var size = (int)Math.Floor(g.MeasureString(Config.NullText, font).Width / 2);
+                            var rect_badge = new RectangleF(rect.Right - size - control.BadgeOffsetX * Config.Dpi, control.BadgeOffsetY * Config.Dpi, size, size);
+
+                            using (var brush = new SolidBrush(color))
                             {
-                                g.DrawEllipse(pen, rect_badge);
+                                if (control.BadgeMode)
+                                {
+                                    float b2 = borsize * 2, rr = size * 0.2F, rr2 = rr * 2;
+                                    g.FillEllipse(brush_fore, new RectangleF(rect_badge.X - borsize, rect_badge.Y - borsize, rect_badge.Width + b2, rect_badge.Height + b2));
+                                    using (var path = rect_badge.RoundPath(1, true))
+                                    {
+                                        path.AddEllipse(new RectangleF(rect_badge.X + rr, rect_badge.Y + rr, rect_badge.Width - rr2, rect_badge.Height - rr2));
+                                        g.FillPath(brush, path);
+                                    }
+                                }
+                                else
+                                {
+                                    g.FillEllipse(brush, rect_badge);
+                                    using (var pen = new Pen(brush_fore.Color, borsize))
+                                    {
+                                        g.DrawEllipse(pen, rect_badge);
+                                    }
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        using (var font = new Font(control.Font.FontFamily, control.BadgeSize))
+                        else
                         {
                             var size = g.MeasureString(control.Badge, font);
                             var size_badge = size.Height * 1.2F;
                             if (size.Height > size.Width)
                             {
-                                var rect_badge = new RectangleF(rect.Right - size_badge - 1F, 1F, size_badge, size_badge);
+                                var rect_badge = new RectangleF(rect.Right - size_badge - control.BadgeOffsetX * Config.Dpi, control.BadgeOffsetY * Config.Dpi, size_badge, size_badge);
                                 using (var brush = new SolidBrush(color))
                                 {
                                     g.FillEllipse(brush, rect_badge);
-                                    using (var pen = new Pen(brush_fore.Color, 1F))
+                                    using (var pen = new Pen(brush_fore.Color, borsize))
                                     {
                                         g.DrawEllipse(pen, rect_badge);
                                     }
@@ -1384,13 +1400,13 @@ namespace AntdUI
                             else
                             {
                                 var w_badge = size.Width * 1.2F;
-                                var rect_badge = new RectangleF(rect.Right - w_badge - 1F, 1F, w_badge, size_badge);
+                                var rect_badge = new RectangleF(rect.Right - w_badge - control.BadgeOffsetX * Config.Dpi, control.BadgeOffsetY * Config.Dpi, w_badge, size_badge);
                                 using (var brush = new SolidBrush(color))
                                 {
                                     using (var path = rect_badge.RoundPath(rect_badge.Height))
                                     {
                                         g.FillPath(brush, path);
-                                        using (var pen = new Pen(brush_fore.Color, 1F))
+                                        using (var pen = new Pen(brush_fore.Color, borsize))
                                         {
                                             g.DrawPath(pen, path);
                                         }
@@ -1406,16 +1422,17 @@ namespace AntdUI
 
         public static void PaintBadge(this IControl control, DateBadge badge, Font font, RectangleF rect, Graphics g)
         {
-            var color = badge.Fill.HasValue ? badge.Fill.Value : control.BadgeBack.HasValue ? control.BadgeBack.Value : Style.Db.Error;
+            var color = badge.Fill ?? control.BadgeBack ?? Style.Db.Error;
             using (var brush_fore = new SolidBrush(Style.Db.ErrorColor))
             {
+                float borsize = 1F * Config.Dpi;
                 if (badge.Count == 0)
                 {
                     var rect_badge = new RectangleF(rect.Right - 10F, rect.Top + 2F, 8, 8);
                     using (var brush = new SolidBrush(color))
                     {
                         g.FillEllipse(brush, rect_badge);
-                        using (var pen = new Pen(brush_fore.Color, 1F))
+                        using (var pen = new Pen(brush_fore.Color, borsize))
                         {
                             g.DrawEllipse(pen, rect_badge);
                         }
@@ -1437,7 +1454,7 @@ namespace AntdUI
                         using (var brush = new SolidBrush(color))
                         {
                             g.FillEllipse(brush, rect_badge);
-                            using (var pen = new Pen(brush_fore.Color, 1F))
+                            using (var pen = new Pen(brush_fore.Color, borsize))
                             {
                                 g.DrawEllipse(pen, rect_badge);
                             }
@@ -1453,7 +1470,7 @@ namespace AntdUI
                             using (var path = rect_badge.RoundPath(rect_badge.Height))
                             {
                                 g.FillPath(brush, path);
-                                using (var pen = new Pen(brush_fore.Color, 1F))
+                                using (var pen = new Pen(brush_fore.Color, borsize))
                                 {
                                     g.DrawPath(pen, path);
                                 }
@@ -1466,7 +1483,7 @@ namespace AntdUI
         }
         public static void PaintBadge(this Tabs control, TabsBadge badge, RectangleF rect, Font font, Graphics g)
         {
-            var color = badge.Fill.HasValue ? badge.Fill.Value : control.BadgeBack.HasValue ? control.BadgeBack.Value : Style.Db.Error;
+            var color = badge.Fill ?? control.BadgeBack ?? Style.Db.Error;
             using (var brush_fore = new SolidBrush(Style.Db.ErrorColor))
             {
                 if (badge.Count == 0)

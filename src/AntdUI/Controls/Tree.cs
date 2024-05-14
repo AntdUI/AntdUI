@@ -404,7 +404,7 @@ namespace AntdUI
             var g = e.Graphics.High();
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
-            Color color_fore = fore.HasValue ? fore.Value : Style.Db.TextBase, color_fore_active = ForeActive.HasValue ? ForeActive.Value : Style.Db.Primary, color_hover = BackHover.HasValue ? BackHover.Value : Style.Db.FillSecondary;
+            Color color_fore = fore ?? Style.Db.TextBase, color_fore_active = ForeActive ?? Style.Db.Primary, color_hover = BackHover ?? Style.Db.FillSecondary;
             float _radius = radius * Config.Dpi;
             PaintItem(g, rect, sx, sy, Items, color_fore, color_fore_active, color_hover, _radius);
             g.ResetTransform();
@@ -445,10 +445,10 @@ namespace AntdUI
                 {
                     g.ResetTransform();
                     g.TranslateTransform(0, -sy);
-                    PaintBack(g, BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg, item.rect, radius);
+                    PaintBack(g, BackActive ?? Style.Db.PrimaryBg, item.rect, radius);
                     g.TranslateTransform(-sx, 0);
                 }
-                else PaintBack(g, BackActive.HasValue ? BackActive.Value : Style.Db.PrimaryBg, item.rect, radius);
+                else PaintBack(g, BackActive ?? Style.Db.PrimaryBg, item.rect, radius);
                 if (item.CanExpand) PanintArrow(g, item, fore_active, sx, sy);
                 using (var brush = new SolidBrush(fore_active))
                 {

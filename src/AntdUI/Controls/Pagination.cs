@@ -250,7 +250,7 @@ namespace AntdUI
             float border = borderWidth * Config.Dpi, _radius = radius * Config.Dpi;
             if (Enabled)
             {
-                Color fore = Style.Db.Text, color = fill.HasValue ? fill.Value : Style.Db.Primary;
+                Color fore = Style.Db.Text, color = fill ?? Style.Db.Primary;
                 using (var brush_hover = new SolidBrush(Style.Db.FillSecondary))
                 {
                     #region 渲染上下

@@ -29,7 +29,6 @@ namespace AntdUI
         int FrmRadius = 0, FrmBor = 0;
         bool HasBor = false;
         Drawer.Config config;
-
         int padding = 24;
         public LayeredFormDrawer(Drawer.Config _config)
         {
@@ -57,7 +56,12 @@ namespace AntdUI
             SetLocation(start_X, start_Y);
             if (vertical) tempContent = new Bitmap(end_W - padding * 2, end_H - 20 - padding * 2);
             else tempContent = new Bitmap(end_W - 20 - padding * 2, end_H - padding * 2);
-            if (Config.Dpi != 1F) Helper.DpiLS(Config.Dpi, config.Content);
+            if (config.Content.Tag is Size) { }
+            else
+            {
+                config.Content.Tag = config.Content.Size;
+                if (Config.Dpi != 1F) Helper.DpiLS(Config.Dpi, config.Content);
+            }
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
             config.Form.LocationChanged += Form_LocationChanged;
@@ -320,7 +324,7 @@ namespace AntdUI
                     {
                         BeginInvoke(new Action(() =>
                         {
-                            LoadContent(config.Content);
+                            LoadContent();
                         }));
                     }
                     SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
@@ -332,23 +336,33 @@ namespace AntdUI
             {
                 SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
                 base.OnLoad(e);
-                LoadContent(config.Content);
+                LoadContent();
             }
         }
 
         #region 控件
 
         Form? form = null;
-        void LoadContent(Control control)
+        void LoadContent()
         {
             var rect = Ang();
-            form = new DoubleBufferForm(control)
+            form = new DoubleBufferForm(config.Content)
             {
                 FormBorderStyle = FormBorderStyle.None,
                 Location = rect.Location,
                 Size = rect.Size
             };
-            control.Disposed += (a, b) =>
+            if (!config.Dispose && config.Content.Tag is Size size)
+            {
+                form.FormClosing += (a, b) =>
+                {
+                    config.Content.Dock = DockStyle.None;
+                    config.Content.Size = size;
+                    config.Content.Location = new Point(-config.Content.Width, -config.Content.Height);
+                    config.Form.Controls.Add(config.Content);
+                };
+            }
+            config.Content.Disposed += (a, b) =>
             {
                 Close();
             };
@@ -456,7 +470,7 @@ namespace AntdUI
         {
             config.Form.LocationChanged -= Form_LocationChanged;
             config.Form.SizeChanged -= Form_SizeChanged;
-            config.Content.Dispose();
+            if (config.Dispose) config.Content.Dispose();
             tempContent?.Dispose();
             form?.Dispose();
             task_start?.Dispose();

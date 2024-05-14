@@ -151,12 +151,12 @@ namespace AntdUI
             if (icon == null || icon.Width != size)
             {
                 icon?.Dispose();
-                icon = SvgExtend.SvgToBmp(character == null ? icon_default : character, size, size, Style.Db.FillSecondary);
+                icon = SvgExtend.SvgToBmp(character ?? icon_default, size, size, Style.Db.FillSecondary);
             }
             if (icon_active == null || icon_active.Width != size)
             {
                 icon_active?.Dispose();
-                icon_active = SvgExtend.SvgToBmp(character == null ? icon_default : character, size, size, fill);
+                icon_active = SvgExtend.SvgToBmp(character ?? icon_default, size, size, fill);
             }
 
             #endregion

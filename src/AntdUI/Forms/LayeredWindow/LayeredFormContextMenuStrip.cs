@@ -41,7 +41,7 @@ namespace AntdUI
             point.Offset(-10, -10);
             maxalpha = 250;
             config = _config;
-            Font = config.Font == null ? config.Control.Font : config.Font;
+            Font = config.Font ?? config.Control.Font;
             FontSub = Font;
             rectsContent = Init(config.Items);
             var screen = Screen.FromPoint(point).WorkingArea;
@@ -58,7 +58,7 @@ namespace AntdUI
             uf = true;
             maxalpha = 250;
             config = _config;
-            Font = config.Font == null ? config.Control.Font : config.Font;
+            Font = config.Font ?? config.Control.Font;
             FontSub = Font;
             rectsContent = Init(subs);
             var screen = Screen.FromPoint(point).WorkingArea;

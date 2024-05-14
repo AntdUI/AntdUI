@@ -58,7 +58,7 @@ namespace AntdUI
                     is_clear_down = true;
                     return;
                 }
-                if (HasImage && rect_l.Contains(e.Location) && PrefixClick != null)
+                if (HasPrefix && rect_l.Contains(e.Location) && PrefixClick != null)
                 {
                     is_prefix_down = true;
                     return;
@@ -124,7 +124,7 @@ namespace AntdUI
                     }
                     if (hover) { Cursor = Cursors.Hand; return; }
                 }
-                if (HasImage && rect_l.Contains(e.Location) && PrefixClick != null)
+                if (HasPrefix && rect_l.Contains(e.Location) && PrefixClick != null)
                 {
                     Cursor = Cursors.Hand; return;
                 }

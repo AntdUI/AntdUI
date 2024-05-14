@@ -35,23 +35,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rows == null)
             {
-                if (Empty)
-                {
-                    using (var fore = new SolidBrush(Style.Db.Text))
-                    {
-                        string emptytext = EmptyText ?? Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
-                        if (EmptyImage == null) g.DrawString(emptytext, Font, fore, rect, stringCenter);
-                        else
-                        {
-                            int gap = (int)(_gap * Config.Dpi);
-                            var size = g.MeasureString(emptytext, Font);
-                            RectangleF rect_img = new RectangleF(rect.X + (rect.Width - EmptyImage.Width) / 2F, rect.Y + (rect.Height - EmptyImage.Height) / 2F - size.Height, EmptyImage.Width, EmptyImage.Height),
-                                rect_font = new RectangleF(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
-                            g.DrawImage(EmptyImage, rect_img);
-                            g.DrawString(emptytext, Font, fore, rect_font, stringCenter);
-                        }
-                    }
-                }
+                if (Empty) PaintEmpty(g, rect);
                 base.OnPaint(e);
                 return;
             }
@@ -72,6 +56,7 @@ namespace AntdUI
 
                     foreach (var it in shows)
                     {
+                        PaintTableBgFront(g, it);
                         foreach (var cel in it.cells) PaintItemBack(g, cel);
                     }
                     g.ResetTransform();
@@ -109,7 +94,11 @@ namespace AntdUI
                     }
                     foreach (var it in shows)
                     {
-                        if (!it.IsColumn) foreach (var cel in it.cells) PaintItemBack(g, cel);
+                        if (!it.IsColumn)
+                        {
+                            PaintTableBgFront(g, it);
+                            foreach (var cel in it.cells) PaintItemBack(g, cel);
+                        }
                     }
                     g.ResetTransform();
                     g.TranslateTransform(0, -sy);
@@ -152,7 +141,7 @@ namespace AntdUI
                     }
                 }
             }
-
+            if (EmptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect);
             scrollBar.Paint(g);
             base.OnPaint(e);
         }
@@ -175,7 +164,7 @@ namespace AntdUI
                 }
             }
         }
-        void PaintTableBg(Graphics g, RowTemplate row)
+        void PaintTableBgFront(Graphics g, RowTemplate row)
         {
             var style = SetRowStyle?.Invoke(this, row.RECORD, row.INDEX);
             if (style != null)
@@ -185,6 +174,9 @@ namespace AntdUI
                     g.FillRectangle(brush, row.RECT);
                 }
             }
+        }
+        void PaintTableBg(Graphics g, RowTemplate row)
+        {
             if (selectedIndex == row.INDEX || row.Checked)
             {
                 using (var brush = rowSelectedBg.Brush(Style.Db.PrimaryBg))
@@ -263,6 +255,7 @@ namespace AntdUI
                     if (row.IsColumn) { PaintTableBgHeader(g, row); PaintTableHeader(g, row, fore); }
                     else
                     {
+                        PaintTableBgFront(g, row);
                         foreach (var cel in row.cells) PaintItemBack(g, cel);
                         PaintTableBg(g, row);
                     }
@@ -328,7 +321,11 @@ namespace AntdUI
                             g.ResetTransform();
                             g.TranslateTransform(0, -sy);
                         }
-                        else PaintTableBg(g, row);
+                        else
+                        {
+                            PaintTableBgFront(g, row);
+                            PaintTableBg(g, row);
+                        }
                     }
                     g.ResetTransform();
                     g.TranslateTransform(-sFixedR, -sy);
@@ -1107,6 +1104,24 @@ namespace AntdUI
         }
 
         #endregion
+
+        void PaintEmpty(Graphics g, Rectangle rect)
+        {
+            using (var fore = new SolidBrush(Style.Db.Text))
+            {
+                string emptytext = EmptyText ?? Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
+                if (EmptyImage == null) g.DrawString(emptytext, Font, fore, rect, stringCenter);
+                else
+                {
+                    int gap = (int)(_gap * Config.Dpi);
+                    var size = g.MeasureString(emptytext, Font);
+                    RectangleF rect_img = new RectangleF(rect.X + (rect.Width - EmptyImage.Width) / 2F, rect.Y + (rect.Height - EmptyImage.Height) / 2F - size.Height, EmptyImage.Width, EmptyImage.Height),
+                        rect_font = new RectangleF(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+                    g.DrawImage(EmptyImage, rect_img);
+                    g.DrawString(emptytext, Font, fore, rect_font, stringCenter);
+                }
+            }
+        }
 
         static StringFormat StringF(Column column)
         {

@@ -269,7 +269,7 @@ namespace AntdUI
                 if (vertical) rect_prog = new RectangleF(rect_read.X, rect_read.Y, rect_read.Width, prog);
                 else rect_prog = new RectangleF(rect_read.X, rect_read.Y, prog, rect_read.Height);
 
-                Color color = fill.HasValue ? fill.Value : Style.Db.InfoBorder, color_hover = FillHover.HasValue ? FillHover.Value : Style.Db.InfoHover;
+                Color color = fill ?? Style.Db.InfoBorder, color_hover = FillHover ?? Style.Db.InfoHover;
                 if (AnimationHover)
                 {
                     using (var brush = new SolidBrush(color))
@@ -295,8 +295,8 @@ namespace AntdUI
 
         internal void PaintEllipse(Graphics g, Rectangle _rect, RectangleF rect, float prog)
         {
-            var color = fill.HasValue ? fill.Value : Style.Db.InfoBorder;
-            var color_active = FillActive.HasValue ? FillActive.Value : Style.Db.Primary;
+            var color = fill ?? Style.Db.InfoBorder;
+            var color_active = FillActive ?? Style.Db.Primary;
             int DotSize = (int)(dotSize * Config.Dpi), DotSizeActive = (int)(dotSizeActive * Config.Dpi);
 
             using (var brush = new SolidBrush(Style.Db.BgBase))

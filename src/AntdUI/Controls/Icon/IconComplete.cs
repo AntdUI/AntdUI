@@ -71,7 +71,7 @@ namespace AntdUI.Icon
             {
                 g.FillEllipse(brush, rect_dot);
             }
-            g.PaintIconComplete(rect_dot, color.HasValue ? color.Value : Style.Db.BgBase);
+            g.PaintIconComplete(rect_dot, color ?? Style.Db.BgBase);
             this.PaintBadge(g);
             base.OnPaint(e);
         }

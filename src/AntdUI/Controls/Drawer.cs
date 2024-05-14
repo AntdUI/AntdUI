@@ -148,6 +148,11 @@ namespace AntdUI
             public TAlignMini Align { get; set; } = TAlignMini.Right;
 
             /// <summary>
+            /// 是否释放
+            /// </summary>
+            public bool Dispose { get; set; } = true;
+
+            /// <summary>
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }

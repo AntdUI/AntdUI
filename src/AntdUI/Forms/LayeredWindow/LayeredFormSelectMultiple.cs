@@ -552,7 +552,7 @@ namespace AntdUI
 
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.Online == 1 ? Style.Db.Success : Style.Db.Error))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error)))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
@@ -596,7 +596,7 @@ namespace AntdUI
                 }
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.Online == 1 ? Style.Db.Success : Style.Db.Error))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error)))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
@@ -639,7 +639,7 @@ namespace AntdUI
             }
             if (it.Online.HasValue)
             {
-                using (var brush_online = new SolidBrush(it.Online == 1 ? Style.Db.Success : Style.Db.Error))
+                using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error)))
                 {
                     g.FillEllipse(brush_online, it.RectOnline);
                 }

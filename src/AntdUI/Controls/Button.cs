@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -152,6 +153,42 @@ namespace AntdUI
                 if (backFit == value) return;
                 backFit = value;
                 Invalidate();
+            }
+        }
+
+        #endregion
+
+        #region 默认样式
+
+        Color? defaultback;
+        /// <summary>
+        /// Default模式背景颜色
+        /// </summary>
+        [Description("Default模式背景颜色"), Category("外观"), DefaultValue(null)]
+        public Color? DefaultBack
+        {
+            get => defaultback;
+            set
+            {
+                if (defaultback == value) return;
+                defaultback = value;
+                if (type == TTypeMini.Default) Invalidate();
+            }
+        }
+
+        Color? defaultbordercolor;
+        /// <summary>
+        /// Default模式边框颜色
+        /// </summary>
+        [Description("Default模式边框颜色"), Category("外观"), DefaultValue(null)]
+        public Color? DefaultBorderColor
+        {
+            get => defaultbordercolor;
+            set
+            {
+                if (defaultbordercolor == value) return;
+                defaultbordercolor = value;
+                if (type == TTypeMini.Default) Invalidate();
             }
         }
 
@@ -371,6 +408,22 @@ namespace AntdUI
 
         #region 图片
 
+        float iconratio = .7F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                if (BeforeAutoSize()) Invalidate();
+            }
+        }
+
         Image? image = null;
         /// <summary>
         /// 图像
@@ -424,6 +477,12 @@ namespace AntdUI
         [Description("悬停图像SVG"), Category("外观"), DefaultValue(null)]
         public string? ImageHoverSvg { get; set; } = null;
 
+        /// <summary>
+        /// 悬停图像动画时长
+        /// </summary>
+        [Description("悬停图像动画时长"), Category("外观"), DefaultValue(200)]
+        public int ImageHoverAnimation { get; set; } = 200;
+
         #endregion
 
         #region 加载动画
@@ -457,6 +516,7 @@ namespace AntdUI
                         Invalidate();
                     });
                 }
+                else Invalidate();
             }
         }
 
@@ -577,7 +637,7 @@ namespace AntdUI
 
                             #endregion
 
-                            using (var brush = new SolidBrush(Style.Db.DefaultBg))
+                            using (var brush = new SolidBrush(defaultback ?? Style.Db.DefaultBg))
                             {
                                 g.FillPath(brush, path);
                             }
@@ -616,7 +676,7 @@ namespace AntdUI
                             }
                             else
                             {
-                                using (var brush = new Pen(Style.Db.DefaultBorder, border))
+                                using (var brush = new Pen(defaultbordercolor ?? Style.Db.DefaultBorder, border))
                                 {
                                     g.DrawPath(brush, path);
                                 }
@@ -630,10 +690,6 @@ namespace AntdUI
                                 using (var brush = new SolidBrush(_back_active))
                                 {
                                     g.FillPath(brush, path);
-                                }
-                                using (var brush = new Pen(Style.Db.BorderColorDisable, borderWidth * Config.Dpi))
-                                {
-                                    g.DrawPath(brush, path);
                                 }
                             }
                             else if (AnimationHover)
@@ -850,21 +906,22 @@ namespace AntdUI
             if (text == null)
             {
                 //没有文字
+                var rect = GetImageRectCenter(font_size, rect_read);
                 if (loading)
                 {
                     float loading_size = rect_read.Height * 0.06F;
-                    float size = rect_read.Height * 0.6F;
+                    if (loading_size < 1F) loading_size = 1F;
                     using (var brush = new Pen(color, loading_size))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, new RectangleF(rect_read.X + (rect_read.Width - size) / 2F, rect_read.Y + (rect_read.Height - size) / 2F, size, size), AnimationLoadingValue, 100);
+                        g.DrawArc(brush, rect, AnimationLoadingValue, 100);
                     }
                 }
                 else
                 {
-                    if (PaintImageNoText(g, color, font_size, rect_read) && showArrow)
+                    if (PaintImageNoText(g, color, rect) && showArrow)
                     {
-                        float size = rect_read.Height * 0.6F;
+                        float size = font_size.Height * IconRatio;
                         var rect_arrow = new RectangleF(rect_read.X + (rect_read.Width - size) / 2F, rect_read.Y + (rect_read.Height - size) / 2F, size, size);
                         using (var pen = new Pen(color, 2F * Config.Dpi))
                         {
@@ -893,7 +950,7 @@ namespace AntdUI
                 if (has_left || has_rigth)
                 {
                     int font_width = font_size.Width;
-                    int icon_size = (int)(font_size.Height * .7F), sps = (int)(font_size.Height * .4F), sps2 = sps * 2, sp = (int)(font_size.Height * .25F);
+                    int icon_size = (int)(font_size.Height * iconratio), sps = (int)(font_size.Height * .4F), sps2 = sps * 2, sp = (int)(font_size.Height * .25F);
 
                     if (has_left && has_rigth)
                     {
@@ -919,6 +976,7 @@ namespace AntdUI
                         if (loading)
                         {
                             float loading_size = rect_read.Height * 0.06F;
+                            if (loading_size < 1F) loading_size = 1F;
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
@@ -966,6 +1024,7 @@ namespace AntdUI
                         if (loading)
                         {
                             float loading_size = rect_read.Height * 0.06F;
+                            if (loading_size < 1F) loading_size = 1F;
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
@@ -1028,23 +1087,24 @@ namespace AntdUI
             var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
             if (text == null)
             {
+                var rect = GetImageRectCenter(font_size, rect_read);
                 if (loading)
                 {
                     float loading_size = rect_read.Height * 0.06F;
-                    float size = rect_read.Height * 0.6F;
+                    if (loading_size < 1F) loading_size = 1F;
                     using (var brush = new Pen(color, loading_size))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, new RectangleF(rect_read.X + (rect_read.Width - size) / 2F, rect_read.Y + (rect_read.Height - size) / 2F, size, size), AnimationLoadingValue, 100);
+                        g.DrawArc(brush, rect, AnimationLoadingValue, 100);
                     }
                 }
                 else
                 {
-                    if (PaintImageNoText(g, color, font_size, rect_read))
+                    if (PaintImageNoText(g, color, rect))
                     {
                         if (showArrow)
                         {
-                            float size = rect_read.Height * 0.6F;
+                            float size = font_size.Height * IconRatio;
                             var rect_arrow = new RectangleF(rect_read.X + (rect_read.Width - size) / 2F, rect_read.Y + (rect_read.Height - size) / 2F, size, size);
                             using (var pen = new Pen(color, 2F * Config.Dpi))
                             using (var penHover = new Pen(colorHover, pen.Width))
@@ -1069,7 +1129,7 @@ namespace AntdUI
                             }
                         }
                     }
-                    else PaintImageNoText(g, colorHover, font_size, rect_read);
+                    else PaintImageNoText(g, colorHover, rect);
                 }
             }
             else
@@ -1080,7 +1140,7 @@ namespace AntdUI
                 if (has_left || has_rigth)
                 {
                     int font_width = font_size.Width;
-                    int icon_size = (int)(font_size.Height * .7F), sps = (int)(font_size.Height * .4F), sps2 = sps * 2, sp = (int)(font_size.Height * .25F);
+                    int icon_size = (int)(font_size.Height * iconratio), sps = (int)(font_size.Height * .4F), sps2 = sps * 2, sp = (int)(font_size.Height * .25F);
 
                     if (has_left && has_rigth)
                     {
@@ -1106,6 +1166,7 @@ namespace AntdUI
                         if (loading)
                         {
                             float loading_size = rect_read.Height * 0.06F;
+                            if (loading_size < 1F) loading_size = 1F;
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
@@ -1162,6 +1223,7 @@ namespace AntdUI
                         if (loading)
                         {
                             float loading_size = rect_read.Height * 0.06F;
+                            if (loading_size < 1F) loading_size = 1F;
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
@@ -1256,41 +1318,22 @@ namespace AntdUI
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="color">颜色</param>
-        /// <param name="font_size">字体大小</param>
-        /// <param name="rect_read">客户区域</param>
-        bool PaintImageNoText(Graphics g, Color? color, Size font_size, Rectangle rect_read)
+        /// <param name="rect">区域</param>
+        bool PaintImageNoText(Graphics g, Color? color, Rectangle rect)
         {
-            if (ExtraMouseHover)
+            if (AnimationImageHover)
             {
-                if (ImageHoverSvg != null)
-                {
-                    var rect = GetImageRectCenter(font_size, rect_read);
-                    using (var _bmp = SvgExtend.GetImgExtend(ImageHoverSvg, rect, color))
-                    {
-                        if (_bmp != null) g.DrawImage(_bmp, rect);
-                    }
-                    return false;
-                }
-                else if (ImageHover != null)
-                {
-                    g.DrawImage(ImageHover, GetImageRectCenter(font_size, rect_read));
-                    return false;
-                }
-            }
-
-            if (imageSvg != null)
-            {
-                var rect = GetImageRectCenter(font_size, rect_read);
-                using (var _bmp = SvgExtend.GetImgExtend(imageSvg, rect, color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect);
-                }
+                PaintCoreImage(g, rect, color, 1F - AnimationImageHoverValue);
+                PaintCoreImageHover(g, rect, color, AnimationImageHoverValue);
                 return false;
             }
-            else if (image != null)
+            else
             {
-                g.DrawImage(image, GetImageRectCenter(font_size, rect_read));
-                return false;
+                if (ExtraMouseHover)
+                {
+                    if (PaintCoreImageHover(g, rect, color)) return false;
+                }
+                if (PaintCoreImage(g, rect, color)) return false;
             }
             return true;
         }
@@ -1309,7 +1352,7 @@ namespace AntdUI
             }
             else
             {
-                int w = (int)(font_size.Height * 0.8F);
+                int w = (int)(font_size.Height * IconRatio * 1.125F);
                 return new Rectangle(rect_read.X + (rect_read.Width - w) / 2, rect_read.Y + (rect_read.Height - w) / 2, w, w);
             }
         }
@@ -1322,37 +1365,20 @@ namespace AntdUI
         /// <param name="rectl">图标区域</param>
         void PaintImage(Graphics g, Color? color, Rectangle rectl)
         {
-            if (ExtraMouseHover)
+            var rect = GetImageRect(rectl);
+            if (AnimationImageHover)
             {
-                if (ImageHoverSvg != null)
-                {
-                    var rect = GetImageRect(rectl);
-                    using (var _bmp = SvgExtend.GetImgExtend(ImageHoverSvg, rect, color))
-                    {
-                        if (_bmp != null) g.DrawImage(_bmp, rect);
-                    }
-                    return;
-                }
-                else if (ImageHover != null)
-                {
-                    g.DrawImage(ImageHover, GetImageRect(rectl));
-                    return;
-                }
-            }
-
-            if (imageSvg != null)
-            {
-                var rect = GetImageRect(rectl);
-                using (var _bmp = SvgExtend.GetImgExtend(imageSvg, rect, color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect);
-                }
+                PaintCoreImage(g, rect, color, 1F - AnimationImageHoverValue);
+                PaintCoreImageHover(g, rect, color, AnimationImageHoverValue);
                 return;
             }
-            else if (image != null)
+            else
             {
-                g.DrawImage(image, GetImageRect(rectl));
-                return;
+                if (ExtraMouseHover)
+                {
+                    if (PaintCoreImageHover(g, rect, color)) return;
+                }
+                PaintCoreImage(g, rect, color);
             }
         }
 
@@ -1368,6 +1394,109 @@ namespace AntdUI
                 return new Rectangle(rectl.X + (rectl.Width - w) / 2, rectl.Y + (rectl.Height - h) / 2, w, h);
             }
             else return rectl;
+        }
+
+        bool PaintCoreImage(Graphics g, Rectangle rect, Color? color)
+        {
+            if (imageSvg != null)
+            {
+                using (var _bmp = SvgExtend.GetImgExtend(imageSvg, rect, color))
+                {
+                    if (_bmp != null)
+                    {
+                        g.DrawImage(_bmp, rect);
+                        return true;
+                    }
+                }
+            }
+            else if (image != null)
+            {
+                g.DrawImage(image, rect);
+                return true;
+            }
+            return false;
+        }
+        bool PaintCoreImage(Graphics g, Rectangle rect, Color? color, float opacity)
+        {
+            if (imageSvg != null)
+            {
+                using (var _bmp = SvgExtend.GetImgExtend(imageSvg, rect, color))
+                {
+                    if (_bmp != null)
+                    {
+                        using (var attributes = new ImageAttributes())
+                        {
+                            var matrix = new ColorMatrix { Matrix33 = opacity };
+                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                            g.DrawImage(_bmp, rect, 0, 0, rect.Width, rect.Height, GraphicsUnit.Pixel, attributes);
+                        }
+                        return true;
+                    }
+                }
+            }
+            else if (image != null)
+            {
+                using (var attributes = new ImageAttributes())
+                {
+                    var matrix = new ColorMatrix { Matrix33 = opacity };
+                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                    g.DrawImage(image, rect, 0, 0, rect.Width, rect.Height, GraphicsUnit.Pixel, attributes);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        bool PaintCoreImageHover(Graphics g, Rectangle rect, Color? color)
+        {
+            if (ImageHoverSvg != null)
+            {
+                using (var _bmp = SvgExtend.GetImgExtend(ImageHoverSvg, rect, color))
+                {
+                    if (_bmp != null)
+                    {
+                        g.DrawImage(_bmp, rect);
+                        return true;
+                    }
+                }
+
+            }
+            else if (ImageHover != null)
+            {
+                g.DrawImage(ImageHover, rect);
+                return true;
+            }
+            return false;
+        }
+        bool PaintCoreImageHover(Graphics g, Rectangle rect, Color? color, float opacity)
+        {
+            if (ImageHoverSvg != null)
+            {
+                using (var _bmp = SvgExtend.GetImgExtend(ImageHoverSvg, rect, color))
+                {
+                    if (_bmp != null)
+                    {
+                        using (var attributes = new ImageAttributes())
+                        {
+                            var matrix = new ColorMatrix { Matrix33 = opacity };
+                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                            g.DrawImage(_bmp, rect, 0, 0, rect.Width, rect.Height, GraphicsUnit.Pixel, attributes);
+                        }
+                        return true;
+                    }
+                }
+            }
+            else if (ImageHover != null)
+            {
+                using (var attributes = new ImageAttributes())
+                {
+                    var matrix = new ColorMatrix { Matrix33 = opacity };
+                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                    g.DrawImage(ImageHover, rect, 0, 0, rect.Width, rect.Height, GraphicsUnit.Pixel, attributes);
+                }
+                return true;
+            }
+            return false;
         }
 
         #endregion
@@ -1421,6 +1550,8 @@ namespace AntdUI
 
         int AnimationHoverValue = 0;
         bool AnimationHover = false;
+        bool AnimationImageHover = false;
+        float AnimationImageHoverValue = 0F;
         bool _mouseHover = false;
         bool ExtraMouseHover
         {
@@ -1436,11 +1567,15 @@ namespace AntdUI
                     Color _back_hover;
                     switch (type)
                     {
-                        case TTypeMini.Error:
-                            _back_hover = Style.Db.ErrorHover;
+                        case TTypeMini.Default:
+                            if (borderWidth > 0) _back_hover = Style.Db.PrimaryHover;
+                            else _back_hover = Style.Db.FillSecondary;
                             break;
                         case TTypeMini.Success:
                             _back_hover = Style.Db.SuccessHover;
+                            break;
+                        case TTypeMini.Error:
+                            _back_hover = Style.Db.ErrorHover;
                             break;
                         case TTypeMini.Info:
                             _back_hover = Style.Db.InfoHover;
@@ -1454,45 +1589,81 @@ namespace AntdUI
                             break;
                     }
 
-                    if (type == TTypeMini.Default)
-                    {
-                        if (borderWidth > 0) _back_hover = Style.Db.PrimaryHover;
-                        else _back_hover = Style.Db.FillSecondary;
-                    }
-
                     if (BackHover.HasValue) _back_hover = BackHover.Value;
                     if (Config.Animation)
                     {
-                        ThreadHover?.Dispose();
-                        AnimationHover = true;
-                        int addvalue = _back_hover.A / 12;
-                        if (value)
+                        if (ImageHoverAnimation > 0 && HasImage && (ImageHoverSvg != null || ImageHover != null))
                         {
-                            ThreadHover = new ITask(this, () =>
+                            ThreadImageHover?.Dispose();
+                            AnimationImageHover = true;
+                            var t = Animation.TotalFrames(10, ImageHoverAnimation);
+                            if (value)
                             {
-                                AnimationHoverValue += addvalue;
-                                if (AnimationHoverValue > _back_hover.A) { AnimationHoverValue = _back_hover.A; return false; }
-                                Invalidate();
-                                return true;
-                            }, 10, () =>
+                                ThreadImageHover = new ITask((i) =>
+                                {
+                                    AnimationImageHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                    Invalidate();
+                                    return true;
+                                }, 10, t, () =>
+                                {
+                                    AnimationImageHoverValue = 1F;
+                                    AnimationImageHover = false;
+                                    Invalidate();
+                                });
+                            }
+                            else
                             {
-                                AnimationHover = false;
-                                Invalidate();
-                            });
+                                ThreadImageHover = new ITask((i) =>
+                                {
+                                    AnimationImageHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                    Invalidate();
+                                    return true;
+                                }, 10, t, () =>
+                                {
+                                    AnimationImageHoverValue = 0F;
+                                    AnimationImageHover = false;
+                                    Invalidate();
+                                });
+                            }
+                        }
+                        if (_back_hover.A > 0)
+                        {
+                            int addvalue = _back_hover.A / 12;
+                            ThreadHover?.Dispose();
+                            AnimationHover = true;
+                            if (value)
+                            {
+                                ThreadHover = new ITask(this, () =>
+                                {
+                                    AnimationHoverValue += addvalue;
+                                    if (AnimationHoverValue > _back_hover.A) { AnimationHoverValue = _back_hover.A; return false; }
+                                    Invalidate();
+                                    return true;
+                                }, 10, () =>
+                                {
+                                    AnimationHover = false;
+                                    Invalidate();
+                                });
+                            }
+                            else
+                            {
+                                ThreadHover = new ITask(this, () =>
+                                {
+                                    AnimationHoverValue -= addvalue;
+                                    if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
+                                    Invalidate();
+                                    return true;
+                                }, 10, () =>
+                                {
+                                    AnimationHover = false;
+                                    Invalidate();
+                                });
+                            }
                         }
                         else
                         {
-                            ThreadHover = new ITask(this, () =>
-                            {
-                                AnimationHoverValue -= addvalue;
-                                if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
-                                Invalidate();
-                                return true;
-                            }, 10, () =>
-                            {
-                                AnimationHover = false;
-                                Invalidate();
-                            });
+                            AnimationHoverValue = _back_hover.A;
+                            Invalidate();
                         }
                     }
                     else AnimationHoverValue = _back_hover.A;
@@ -1507,10 +1678,12 @@ namespace AntdUI
         {
             ThreadClick?.Dispose();
             ThreadHover?.Dispose();
+            ThreadImageHover?.Dispose();
             ThreadLoading?.Dispose();
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;
+        ITask? ThreadImageHover = null;
         ITask? ThreadClick = null;
         ITask? ThreadLoading = null;
 

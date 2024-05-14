@@ -193,7 +193,7 @@ namespace AntdUI
             {
                 if (back == value) return;
                 back = value;
-                Color _back = back.HasValue ? back.Value : Style.Db.BgContainer;
+                Color _back = back ?? Style.Db.BgContainer;
                 textStart.BackColor = _back;
                 Invalidate();
             }
@@ -344,10 +344,10 @@ namespace AntdUI
 
             using (var path = Path(rect_read, _radius))
             {
-                Color _fore = fore.HasValue ? fore.Value : Style.Db.Text, _back = back.HasValue ? back.Value : Style.Db.BgContainer,
-                    _border = borderColor.HasValue ? borderColor.Value : Style.Db.BorderColor,
-                    _borderHover = BorderHover.HasValue ? BorderHover.Value : Style.Db.PrimaryHover,
-                _borderActive = BorderActive.HasValue ? BorderActive.Value : Style.Db.Primary;
+                Color _fore = fore ?? Style.Db.Text, _back = back ?? Style.Db.BgContainer,
+                    _border = borderColor ?? Style.Db.BorderColor,
+                    _borderHover = BorderHover ?? Style.Db.PrimaryHover,
+                _borderActive = BorderActive ?? Style.Db.Primary;
                 PaintClick(g, path, rect, _borderActive, _radius);
 
                 if (enabled)
@@ -447,7 +447,7 @@ namespace AntdUI
             if (AnimationBar)
             {
                 float h = rect_text_line.Height * 0.14F;
-                var _borderActive = BorderActive.HasValue ? BorderActive.Value : Style.Db.Primary;
+                var _borderActive = BorderActive ?? Style.Db.Primary;
                 using (var brush = new SolidBrush(_borderActive))
                 {
                     g.FillRectangle(brush, new RectangleF(AnimationBarValue.X, rect_read.Bottom - h, AnimationBarValue.Width, h));
@@ -456,7 +456,7 @@ namespace AntdUI
             else if (textStart.Focused || textEnd.Focused)
             {
                 float h = rect_text_line.Height * 0.14F;
-                var _borderActive = BorderActive.HasValue ? BorderActive.Value : Style.Db.Primary;
+                var _borderActive = BorderActive ?? Style.Db.Primary;
                 using (var brush = new SolidBrush(_borderActive))
                 {
                     if (textStart.Focused) g.FillRectangle(brush, new RectangleF(rect_text_start.X, rect_read.Bottom - h, rect_text_start.Width, h));
@@ -970,7 +970,7 @@ namespace AntdUI
 
         protected override void OnCreateControl()
         {
-            Color _fore = fore.HasValue ? fore.Value : Style.Db.Text, _back = back.HasValue ? back.Value : Style.Db.BgContainer;
+            Color _fore = fore ?? Style.Db.Text, _back = back ?? Style.Db.BgContainer;
             textStart.Font = textEnd.Font = Font;
             textStart.BackColor = textEnd.BackColor = _back;
             textStart.ForeColor = textEnd.ForeColor = _fore;
@@ -1168,7 +1168,7 @@ namespace AntdUI
             switch (eventId)
             {
                 case 1:
-                    Color _fore = fore.HasValue ? fore.Value : Style.Db.Text, _back = back.HasValue ? back.Value : Style.Db.BgContainer;
+                    Color _fore = fore ?? Style.Db.Text, _back = back ?? Style.Db.BgContainer;
                     textStart.BackColor = textEnd.BackColor = _back;
                     textStart.ForeColor = textEnd.ForeColor = _fore;
                     Refresh();

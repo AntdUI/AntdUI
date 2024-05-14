@@ -143,6 +143,23 @@ namespace AntdUI
             }
         }
 
+        float iconratio = .7F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                IOnSizeChanged();
+                Invalidate();
+            }
+        }
+
         string? prefix = null;
         [Description("前缀"), Category("外观"), DefaultValue(null)]
         public string? Prefix
@@ -157,8 +174,30 @@ namespace AntdUI
             }
         }
 
+        string? prefixSvg = null;
+        [Description("前缀SVG"), Category("外观"), DefaultValue(null)]
+        public string? PrefixSvg
+        {
+            get => prefixSvg;
+            set
+            {
+                if (prefixSvg == value) return;
+                prefixSvg = value;
+                IOnSizeChanged();
+                Invalidate();
+            }
+        }
+
         [Description("前缀颜色"), Category("外观"), DefaultValue(null)]
         public Color? PrefixColor { get; set; }
+
+        /// <summary>
+        /// 是否包含前缀
+        /// </summary>
+        public bool HasPrefix
+        {
+            get => prefixSvg != null || prefix != null;
+        }
 
         string? suffix = null;
         /// <summary>
@@ -177,8 +216,33 @@ namespace AntdUI
             }
         }
 
+        string? suffixSvg = null;
+        [Description("后缀SVG"), Category("外观"), DefaultValue(null)]
+        public string? SuffixSvg
+        {
+            get => suffixSvg;
+            set
+            {
+                if (suffixSvg == value) return;
+                suffixSvg = value;
+                IOnSizeChanged();
+                Invalidate();
+            }
+        }
+
         [Description("后缀颜色"), Category("外观"), DefaultValue(null)]
         public Color? SuffixColor { get; set; }
+
+        [Description("缀标完全展示"), Category("外观"), DefaultValue(true)]
+        public bool Highlight { get; set; } = true;
+
+        /// <summary>
+        /// 是否包含后缀
+        /// </summary>
+        public bool HasSuffix
+        {
+            get => suffixSvg != null || suffix != null;
+        }
 
         #endregion
 
@@ -265,10 +329,7 @@ namespace AntdUI
                     Helper.Blur(bmp, shadow);
                     using (var attributes = new ImageAttributes())
                     {
-                        var matrix = new ColorMatrix
-                        {
-                            Matrix33 = shadowOpacity
-                        };
+                        var matrix = new ColorMatrix { Matrix33 = shadowOpacity };
                         attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
                         g.DrawImage(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
                     }
@@ -284,8 +345,9 @@ namespace AntdUI
         {
             if (!string.IsNullOrEmpty(text))
             {
-                bool has_prefix = string.IsNullOrEmpty(prefix), has_suffix = string.IsNullOrEmpty(suffix);
-                if (!has_prefix || !has_suffix)
+                Rectangle rec;
+                bool has_prefixText = prefix != null, has_suffixText = suffix != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
+                if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
                     var font_size = g.MeasureString(text, Font);
                     switch (textAlign)
@@ -293,79 +355,159 @@ namespace AntdUI
                         case ContentAlignment.TopLeft:
                         case ContentAlignment.MiddleLeft:
                         case ContentAlignment.BottomLeft:
-                            PaintTextLeft(g, color, rect_read, font_size, has_prefix, has_suffix);
+                            rec = PaintTextLeft(g, color, rect_read, font_size, has_prefixText, has_suffixText, has_prefix, has_suffix);
                             break;
                         case ContentAlignment.TopRight:
                         case ContentAlignment.MiddleRight:
                         case ContentAlignment.BottomRight:
-                            PaintTextRight(g, color, rect_read, font_size, has_prefix, has_suffix);
+                            rec = PaintTextRight(g, color, rect_read, font_size, has_prefixText, has_suffixText, has_prefix, has_suffix);
                             break;
                         default:
-                            PaintTextCenter(g, color, rect_read, font_size, has_prefix, has_suffix);
+                            rec = PaintTextCenter(g, color, rect_read, font_size, has_prefixText, has_suffixText, has_prefix, has_suffix);
                             break;
                     }
                 }
+                else rec = rect_read;
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawString(text, Font, brush, rect_read, stringFormat);
+                    g.DrawString(text, Font, brush, rec, stringFormat);
                 }
             }
         }
 
-        void PaintTextLeft(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefix, bool has_suffix)
+        Rectangle PaintTextLeft(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
-            if (!has_prefix)
+            int hx = 0;
+            if (has_prefixText)
             {
                 var font_size_prefix = g.MeasureString(prefix, Font);
                 float x = rect_read.X - font_size_prefix.Width, w = font_size_prefix.Width;
+                var rect_l = RecFixAuto(x, w, rect_read, font_size);
+                if (Highlight)
+                {
+                    hx = (int)Math.Ceiling(font_size_prefix.Width);
+                    rect_l.X = 0;
+                }
                 using (var brush = new SolidBrush(PrefixColor ?? color))
                 {
-                    g.DrawString(prefix, Font, brush, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
+                    g.DrawString(prefix, Font, brush, rect_l, stringCNoWrap);
                 }
             }
-            if (!has_suffix)
+            else if (has_prefix)
+            {
+                int icon_size = (int)(font_size.Height * iconratio);
+                float x = rect_read.X - icon_size, w = icon_size;
+                var rect_l = RecFixAuto(x, w, rect_read, font_size);
+                if (Highlight)
+                {
+                    hx = icon_size;
+                    rect_l.X = 0;
+                }
+                using (var _bmp = SvgExtend.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color))
+                {
+                    if (_bmp != null) g.DrawImage(_bmp, rect_l);
+                }
+            }
+            if (has_suffixText)
             {
                 var font_size_suffix = g.MeasureString(suffix, Font);
-                float x = rect_read.X + font_size.Width, w = font_size_suffix.Width;
+                float x = rect_read.X + hx + font_size.Width, w = font_size_suffix.Width;
                 using (var brush = new SolidBrush(SuffixColor ?? color))
                 {
                     g.DrawString(suffix, Font, brush, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
                 }
             }
-        }
-        void PaintTextRight(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefix, bool has_suffix)
-        {
-            if (!has_prefix)
+            else if (has_suffix)
             {
-                var font_size_prefix = g.MeasureString(prefix, Font);
-                float x = rect_read.Right - font_size.Width - font_size_prefix.Width, w = font_size_prefix.Width;
-                using (var brush = new SolidBrush(PrefixColor ?? color))
+                int icon_size = (int)(font_size.Height * iconratio);
+                float x = rect_read.X + hx + font_size.Width, w = icon_size;
+                var rect_r = RecFixAuto(x, w, rect_read, font_size);
+                using (var _bmp = SvgExtend.GetImgExtend(suffixSvg, rect_r, SuffixColor ?? color))
                 {
-                    g.DrawString(prefix, Font, brush, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
+                    if (_bmp != null) g.DrawImage(_bmp, rect_r);
                 }
             }
-            if (!has_suffix)
+            if (hx > 0) return new Rectangle(rect_read.X + hx, rect_read.Y, rect_read.Width - hx, rect_read.Height);
+            return rect_read;
+        }
+        Rectangle PaintTextRight(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
+        {
+            int hr = 0;
+            if (has_suffixText)
             {
                 var font_size_suffix = g.MeasureString(suffix, Font);
                 float x = rect_read.Right, w = font_size_suffix.Width;
+                var rect_l = RecFixAuto(x, w, rect_read, font_size);
+                if (Highlight)
+                {
+                    hr = (int)Math.Ceiling(font_size_suffix.Width);
+                    rect_l.X = rect_read.Right - hr;
+                }
                 using (var brush = new SolidBrush(SuffixColor ?? color))
                 {
-                    g.DrawString(suffix, Font, brush, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
+                    g.DrawString(suffix, Font, brush, rect_l, stringCNoWrap);
                 }
             }
-        }
-        void PaintTextCenter(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefix, bool has_suffix)
-        {
-            float cex = rect_read.X + (rect_read.Width - font_size.Width) / 2F;
-            if (!has_prefix)
+            else if (has_suffix)
+            {
+                int icon_size = (int)(font_size.Height * iconratio);
+                float x = rect_read.Right, w = icon_size;
+                var rect_r = RecFixAuto(x, w, rect_read, font_size);
+                if (Highlight)
+                {
+                    hr = icon_size;
+                    rect_r.X = rect_read.Right - icon_size;
+                }
+                using (var _bmp = SvgExtend.GetImgExtend(suffixSvg, rect_r, SuffixColor ?? color))
+                {
+                    if (_bmp != null) g.DrawImage(_bmp, rect_r);
+                }
+            }
+            if (has_prefixText)
             {
                 var font_size_prefix = g.MeasureString(prefix, Font);
+                float x = rect_read.Right - hr - font_size.Width - font_size_prefix.Width, w = font_size_prefix.Width;
+                var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 using (var brush = new SolidBrush(PrefixColor ?? color))
                 {
-                    g.DrawString(prefix, Font, brush, RecFixAuto(cex - font_size_prefix.Width, font_size_prefix.Width, rect_read, font_size), stringCNoWrap);
+                    g.DrawString(prefix, Font, brush, rect_l, stringCNoWrap);
                 }
             }
-            if (!has_suffix)
+            else if (has_prefix)
+            {
+                int icon_size = (int)(font_size.Height * iconratio);
+                float x = rect_read.Right - hr - font_size.Width - icon_size, w = icon_size;
+                var rect_l = RecFixAuto(x, w, rect_read, font_size);
+                using (var _bmp = SvgExtend.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color))
+                {
+                    if (_bmp != null) g.DrawImage(_bmp, rect_l);
+                }
+            }
+            if (hr > 0) return new Rectangle(rect_read.X, rect_read.Y, rect_read.Width - hr, rect_read.Height);
+            return rect_read;
+        }
+        Rectangle PaintTextCenter(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
+        {
+            float cex = rect_read.X + (rect_read.Width - font_size.Width) / 2F;
+            if (has_prefixText)
+            {
+                var font_size_prefix = g.MeasureString(prefix, Font);
+                var rect_l = RecFixAuto(cex - font_size_prefix.Width, font_size_prefix.Width, rect_read, font_size);
+                using (var brush = new SolidBrush(PrefixColor ?? color))
+                {
+                    g.DrawString(prefix, Font, brush, rect_l, stringCNoWrap);
+                }
+            }
+            else if (has_prefix)
+            {
+                int icon_size = (int)(font_size.Height * iconratio);
+                var rect_l = RecFixAuto(cex - icon_size, icon_size, rect_read, font_size);
+                using (var _bmp = SvgExtend.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color))
+                {
+                    if (_bmp != null) g.DrawImage(_bmp, rect_l);
+                }
+            }
+            if (has_suffixText)
             {
                 var font_size_suffix = g.MeasureString(suffix, Font);
                 using (var brush = new SolidBrush(SuffixColor ?? color))
@@ -373,6 +515,16 @@ namespace AntdUI
                     g.DrawString(suffix, Font, brush, RecFixAuto(cex + font_size.Width, font_size_suffix.Width, rect_read, font_size), stringCNoWrap);
                 }
             }
+            else if (has_suffix)
+            {
+                int icon_size = (int)(font_size.Height * iconratio);
+                var rect_r = RecFixAuto(cex + font_size.Width, icon_size, rect_read, font_size);
+                using (var _bmp = SvgExtend.GetImgExtend(suffixSvg, rect_r, SuffixColor ?? color))
+                {
+                    if (_bmp != null) g.DrawImage(_bmp, rect_r);
+                }
+            }
+            return rect_read;
         }
 
         RectangleF RecFixAuto(float x, float w, Rectangle rect_read, SizeF font_size)
@@ -473,12 +625,12 @@ namespace AntdUI
                     var font_size = g.MeasureString(text ?? Config.NullText, Font);
                     if (has_prefix && has_suffix) return font_size.Size();
                     float add = 0;
-                    if (!has_prefix)
+                    if (has_prefix)
                     {
                         var font_size_prefix = g.MeasureString(prefix, Font);
                         add += font_size_prefix.Width;
                     }
-                    if (!has_suffix)
+                    if (has_suffix)
                     {
                         var font_size_suffix = g.MeasureString(suffix, Font);
                         add += font_size_suffix.Width;

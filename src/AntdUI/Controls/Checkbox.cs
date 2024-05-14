@@ -217,7 +217,7 @@ namespace AntdUI
             {
                 if (enabled)
                 {
-                    var color = fill.HasValue ? fill.Value : Style.Db.Primary;
+                    var color = fill ?? Style.Db.Primary;
                     if (AnimationCheck)
                     {
                         float dot = dot_size * 0.3F;
