@@ -111,6 +111,17 @@ namespace AntdUI
         public delegate bool BeginEditEventHandler(object sender, object? value, object? record, int rowIndex, int columnIndex);
 
         /// <summary>
+        /// 编辑前事件文本框样式
+        /// </summary>
+        /// <param name="sender">触发对象</param>
+        /// <param name="value">数值</param>
+        /// <param name="record">原始行</param>
+        /// <param name="rowIndex">行序号</param>
+        /// <param name="columnIndex">列序号</param>
+        /// <param name="input">文本框</param>
+        public delegate void BeginEditInputStyleEventHandler(object sender, object? value, object? record, int rowIndex, int columnIndex, ref Input input);
+
+        /// <summary>
         /// 编辑后事件
         /// </summary>
         /// <param name="sender">触发对象</param>
@@ -125,6 +136,13 @@ namespace AntdUI
         /// </summary>
         [Description("编辑前发生"), Category("行为")]
         public event BeginEditEventHandler? CellBeginEdit;
+
+        /// <summary>
+        /// 编辑前文本框样式发生
+        /// </summary>
+        [Description("编辑前文本框样式发生"), Category("行为")]
+        public event BeginEditInputStyleEventHandler? CellBeginEditInputStyle;
+
         /// <summary>
         /// 编辑前发生
         /// </summary>

@@ -78,7 +78,14 @@ namespace AntdUI
         Rectangle ChangeLayout()
         {
             has_check = false;
-            if (data_temp != null)
+            if (data_temp == null)
+            {
+                ThreadState?.Dispose(); ThreadState = null;
+                scrollBar.SetVrSize(0, 0);
+                dividers = new Rectangle[0];
+                rows = null;
+            }
+            else
             {
                 var _rows = new List<RowTemplate>(data_temp.rows.Length);
                 var _columns = new List<Column>(data_temp.columns.Length);

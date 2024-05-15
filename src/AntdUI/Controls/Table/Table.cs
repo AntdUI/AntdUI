@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -157,22 +158,6 @@ namespace AntdUI
             }
         }
 
-        TEditMode editmode = TEditMode.None;
-        /// <summary>
-        /// 编辑模式
-        /// </summary>
-        [Description("编辑模式"), Category("行为"), DefaultValue(TEditMode.None)]
-        public TEditMode EditMode
-        {
-            get => editmode;
-            set
-            {
-                if (editmode == value) return;
-                editmode = value;
-                Invalidate();
-            }
-        }
-
         /// <summary>
         /// 行复制
         /// </summary>
@@ -249,6 +234,26 @@ namespace AntdUI
         /// </summary>
         [Description("省略文字提示"), Category("行为"), DefaultValue(true)]
         public bool ShowTip { get; set; } = true;
+
+        #region 编辑模式
+
+        TEditMode editmode = TEditMode.None;
+        /// <summary>
+        /// 编辑模式
+        /// </summary>
+        [Description("编辑模式"), Category("行为"), DefaultValue(TEditMode.None)]
+        public TEditMode EditMode
+        {
+            get => editmode;
+            set
+            {
+                if (editmode == value) return;
+                editmode = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -327,6 +332,30 @@ namespace AntdUI
                         }));
                     }
                     else Clipboard.SetText(vals);
+                    return true;
+                }
+                catch { }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 进入编辑模式
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <param name="column">列</param>
+        public bool EnterEditMode(int row, int column)
+        {
+            if (rows != null)
+            {
+                try
+                {
+                    var _row = rows[row];
+                    var item = _row.cells[column];
+                    EditModeClose();
+                    if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, row, column, 0, scrollBar.ValueY);
+                    else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, row, column, sFixedR, scrollBar.ValueY);
+                    else OnEditMode(_row, item, row, column, scrollBar.ValueX, scrollBar.ValueY);
                     return true;
                 }
                 catch { }
@@ -720,7 +749,6 @@ namespace AntdUI
         /// <summary>
         /// 颜色
         /// </summary>
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
         public Color? Fill
         {
             get => fill;
@@ -1347,7 +1375,6 @@ namespace AntdUI
         /// <summary>
         /// 进度条
         /// </summary>
-        [Description("进度条 0.0-1.0"), Category("数据"), DefaultValue(0F)]
         public float Value
         {
             get => _value;

@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -19,16 +19,225 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Vanara.PInvoke;
-using static Vanara.PInvoke.DwmApi;
 using static Vanara.PInvoke.User32;
 
 namespace AntdUI
 {
-    public class Window : BaseForm, IMessageFilter
+    public class BorderlessForm : BaseForm, IMessageFilter
     {
+        public BorderlessForm()
+        {
+            SetStyle(
+                ControlStyles.UserPaint |
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw |
+                ControlStyles.DoubleBuffer, true);
+            UpdateStyles();
+            base.FormBorderStyle = FormBorderStyle.None;
+        }
+
+        #region 属性
+
+        bool CanMessageFilter { get => shadow < 4; }
+
+        int shadow = 10;
+        /// <summary>
+        /// 阴影大小
+        /// </summary>
+        [Description("阴影大小"), Category("外观"), DefaultValue(10)]
+        public int Shadow
+        {
+            get => shadow;
+            set
+            {
+                if (shadow == value) return;
+                shadow = value;
+                if (value > 0)
+                {
+                    ShowSkin();
+                    skin?.ISize();
+                    skin?.ClearShadow();
+                    skin?.Print();
+                }
+                else
+                {
+                    skin?.Close(); skin = null;
+                }
+            }
+        }
+
+        Color shadowColor = Color.FromArgb(100, 0, 0, 0);
+        /// <summary>
+        /// 阴影颜色
+        /// </summary>
+        [Description("阴影颜色"), Category("外观"), DefaultValue(typeof(Color), "100, 0, 0, 0")]
+        public Color ShadowColor
+        {
+            get => shadowColor;
+            set
+            {
+                if (shadowColor == value) return;
+                shadowColor = value;
+                skin?.ClearShadow();
+                skin?.Print();
+            }
+        }
+
+        int borderWidth = 1;
+        [Description("边框宽度"), Category("外观"), DefaultValue(1)]
+        public int BorderWidth
+        {
+            get => borderWidth;
+            set
+            {
+                if (borderWidth == value) return;
+                borderWidth = value;
+                skin?.Print();
+            }
+        }
+
+        Color borderColor = Color.FromArgb(180, 0, 0, 0);
+        /// <summary>
+        /// 边框颜色
+        /// </summary>
+        [Description("边框颜色"), Category("外观"), DefaultValue(typeof(Color), "180, 0, 0, 0")]
+        public Color BorderColor
+        {
+            get => borderColor;
+            set
+            {
+                if (borderColor == value) return;
+                borderColor = value;
+                skin?.Print();
+            }
+        }
+
+        int radius = 0;
+        /// <summary>
+        /// 圆角
+        /// </summary>
+        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        public int Radius
+        {
+            get => radius;
+            set
+            {
+                if (radius == value) return;
+                radius = value;
+                SetReion();
+                skin?.ClearShadow();
+                skin?.Print();
+            }
+        }
+
+        #endregion
+
+        #region 重载事件
+
+        protected override void OnLoad(EventArgs e)
+        {
+            SetReion();
+            base.OnLoad(e);
+        }
+
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+            ShowSkin();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            if (!e.Cancel) skin?.Close();
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            if (Visible && shadow > 0 && !DesignMode) ShowSkin();
+            else
+            {
+                if (skin != null) skin.Visible = false;
+            }
+            base.OnVisibleChanged(e);
+        }
+
+        BorderlessFormShadow? skin = null;
+        void ShowSkin()
+        {
+            if (Visible && shadow > 0 && !DesignMode)
+            {
+                if (skin != null) skin.Visible = true;
+                else
+                {
+                    skin = new BorderlessFormShadow(this);
+                    skin.Show(this);
+                }
+            }
+        }
+
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            skin?.OnLocationChange();
+            base.OnLocationChanged(e);
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            skin?.OnSizeChange();
+            SetReion();
+            base.OnSizeChanged(e);
+        }
+
+        internal HWND handle { get; private set; }
+        readonly IntPtr TRUE = new IntPtr(1);
+
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            var msg = (WindowMessage)m.Msg;
+            switch (msg)
+            {
+                case WindowMessage.WM_NCHITTEST:
+                    m.Result = TRUE;
+                    return;
+                case WindowMessage.WM_MOUSEMOVE:
+                case WindowMessage.WM_NCMOUSEMOVE:
+                    if (ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
+                    break;
+                case WindowMessage.WM_LBUTTONDOWN:
+                case WindowMessage.WM_NCLBUTTONDOWN:
+                    if (ReadMessage) ResizableMouseDownInternal();
+                    break;
+            }
+            base.WndProc(ref m);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 窗体圆角
+        /// </summary>
+        void SetReion()
+        {
+            if (Region != null) Region.Dispose();
+            var rect = ClientRectangle;
+            if (rect.Width > 0 && rect.Height > 0)
+            {
+                using (var path = rect.RoundPath(radius * Config.Dpi))
+                {
+                    var region = new Region(path);
+                    path.Widen(Pens.White);
+                    region.Union(path);
+                    Region = region;
+                }
+            }
+        }
+
+        #region BASE
+
         #region 属性
 
         bool resizable = true;
@@ -89,12 +298,10 @@ namespace AntdUI
             }
         }
 
-        protected virtual bool UseMessageFilter { get => false; }
         void HandMessage()
         {
-            ReadMessage = winState == WState.Restore && resizable;
-            if (UseMessageFilter) IsAddMessage = true;
-            else IsAddMessage = ReadMessage;
+            ReadMessage = CanMessageFilter && winState == WState.Restore && resizable;
+            IsAddMessage = ReadMessage;
         }
 
         bool ReadMessage = false;
@@ -112,10 +319,6 @@ namespace AntdUI
 
         #endregion
 
-        internal HWND handle { get; private set; }
-
-        readonly IntPtr TRUE = new IntPtr(1);
-
         protected override void OnHandleCreated(EventArgs e)
         {
             handle = new HWND(Handle);
@@ -124,142 +327,6 @@ namespace AntdUI
             DisableProcessWindowsGhosting();
             HandMessage();
         }
-
-        protected override void WndProc(ref System.Windows.Forms.Message m)
-        {
-            var msg = (WindowMessage)m.Msg;
-            switch (msg)
-            {
-                case WindowMessage.WM_ACTIVATE:
-                    DwmExtendFrameIntoClientArea(handle, new MARGINS(0, 0, 1, 0));
-                    break;
-                case WindowMessage.WM_NCCALCSIZE when m.WParam != IntPtr.Zero:
-                    if (WmNCCalcSize(ref m)) return;
-                    break;
-                case WindowMessage.WM_NCACTIVATE:
-                    if (WmNCActivate(ref m)) return;
-                    break;
-                case WindowMessage.WM_SIZE:
-                    WmSize(ref m);
-                    break;
-                case WindowMessage.WM_NCHITTEST:
-                    m.Result = TRUE;
-                    return;
-                case WindowMessage.WM_MOUSEMOVE:
-                case WindowMessage.WM_NCMOUSEMOVE:
-                    if (ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
-                    break;
-                case WindowMessage.WM_LBUTTONDOWN:
-                case WindowMessage.WM_NCLBUTTONDOWN:
-                    if (ReadMessage) ResizableMouseDownInternal();
-                    break;
-            }
-            base.WndProc(ref m);
-        }
-
-        #region 区域
-
-        /// <summary>
-        /// 获取或设置窗体的位置
-        /// </summary>
-        public new Point Location
-        {
-            get
-            {
-                if (winState == WState.Restore) return base.Location;
-                return ScreenRectangle.Location;
-            }
-            set { base.Location = value; }
-        }
-
-        /// <summary>
-        /// 控件的顶部坐标
-        /// </summary>
-        public new int Top
-        {
-            get => Location.Y;
-            set { base.Top = value; }
-        }
-
-        /// <summary>
-        /// 控件的左侧坐标
-        /// </summary>
-        public new int Left
-        {
-            get => Location.X;
-            set { base.Left = value; }
-        }
-
-        /// <summary>
-        /// 控件的右坐标
-        /// </summary>
-        public new int Right
-        {
-            get => ScreenRectangle.Right;
-        }
-
-        /// <summary>
-        /// 控件的底部坐标
-        /// </summary>
-        public new int Bottom
-        {
-            get => ScreenRectangle.Bottom;
-        }
-
-        /// <summary>
-        /// 获取或设置窗体的大小
-        /// </summary>
-        public new Size Size
-        {
-            get
-            {
-                if (winState == WState.Restore) return base.Size;
-                return ScreenRectangle.Size;
-            }
-            set { base.Size = value; }
-        }
-
-        /// <summary>
-        /// 控件的宽度
-        /// </summary>
-        public new int Width
-        {
-            get => Size.Width;
-            set { base.Width = value; }
-        }
-
-        /// <summary>
-        /// 控件的高度
-        /// </summary>
-        public new int Height
-        {
-            get => Size.Height;
-            set { base.Height = value; }
-        }
-
-        /// <summary>
-        /// 获取或设置窗体屏幕区域
-        /// </summary>
-        [Browsable(false)]
-        [EditorBrowsable(EditorBrowsableState.Always)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Rectangle ScreenRectangle
-        {
-            get
-            {
-                if (winState == WState.Restore) return new Rectangle(base.Location, base.Size);
-                var rect = ClientRectangle;
-                var point = RectangleToScreen(Rectangle.Empty);
-                return new Rectangle(point.Location, rect.Size);
-            }
-            set
-            {
-                base.Location = value.Location;
-                base.Size = value.Size;
-            }
-        }
-
-        #endregion
 
         #region 交互
 
@@ -271,20 +338,7 @@ namespace AntdUI
         public void DraggableMouseDown()
         {
             ReleaseCapture();
-            SendMessage(handle, 0x0112, 61456 | 2, IntPtr.Zero);
-        }
-
-        [Obsolete("请使用 DraggableMouseDown 来替代")]
-        public void ControlMouseDown(object? sender, MouseEventArgs e)
-        {
-            DraggableMouseDown();
-        }
-
-        [Obsolete("请使用 DraggableMouseDown 来替代")]
-        public void ControlMouseDown()
-        {
-            ReleaseCapture();
-            SendMessage(handle, 0x0112, 61456 | 2, IntPtr.Zero);
+            SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
         }
 
         #endregion
@@ -301,7 +355,7 @@ namespace AntdUI
             if (retval != HitTestValues.HTNOWHERE)
             {
                 var mode = retval;
-                if (mode != HitTestValues.HTCLIENT && winState == WState.Restore)
+                if (mode != HitTestValues.HTCLIENT && base.WindowState == FormWindowState.Normal)
                 {
                     down = true;
                     SetCursorHit(mode);
@@ -344,7 +398,7 @@ namespace AntdUI
             {
                 SetCursorHit(mode);
                 ReleaseCapture();
-                PostMessage(handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
+                PostMessage(Handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
                 return true;
             }
             return false;
@@ -362,7 +416,7 @@ namespace AntdUI
             {
                 SetCursorHit(mode);
                 ReleaseCapture();
-                PostMessage(handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
+                PostMessage(Handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
                 if (down)
                 {
                     down = false;
@@ -380,7 +434,7 @@ namespace AntdUI
         HitTestValues HitTest(Point point)
         {
             float htSize = 8F * Config.Dpi, htSize2 = htSize * 2;
-            GetWindowRect(handle, out var lpRect);
+            GetWindowRect(Handle, out var lpRect);
 
             var rect = new Rectangle(Point.Empty, lpRect.Size);
 
@@ -506,96 +560,6 @@ namespace AntdUI
 
         #endregion
 
-        #region WindowMessage Handlers
-
-        const nint SIZE_RESTORED = 0;
-        const nint SIZE_MINIMIZED = 1;
-        const nint SIZE_MAXIMIZED = 2;
-        void WmSize(ref System.Windows.Forms.Message m)
-        {
-            if (m.WParam == SIZE_MINIMIZED) WinState = WState.Minimize;
-            else if (m.WParam == SIZE_MAXIMIZED) WinState = WState.Maximize;
-            else if (m.WParam == SIZE_RESTORED) WinState = WState.Restore;
-        }
-
-        bool WmNCCalcSize(ref System.Windows.Forms.Message m)
-        {
-            if (FormBorderStyle == FormBorderStyle.None) return false;
-#if NET40
-            var nccsp = (NCCALCSIZE_PARAMS)Marshal.PtrToStructure(m.LParam, typeof(NCCALCSIZE_PARAMS));
-#else
-            var nccsp = Marshal.PtrToStructure<NCCALCSIZE_PARAMS>(m.LParam);
-#endif
-            var borders = GetNonClientMetrics();
-
-            if (IsZoomed(handle))
-            {
-                nccsp.rgrc0.top -= borders.Top;
-                nccsp.rgrc0.top += borders.Bottom;
-                Marshal.StructureToPtr(nccsp, m.LParam, false);
-            }
-            else
-            {
-                m.Result = TRUE;
-                return true;
-            }
-
-            m.Result = new IntPtr(0x0400);
-            return false;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct NCCALCSIZE_PARAMS
-        {
-            public RECT rgrc0, rgrc1, rgrc2;
-            public WINDOWPOS lppos;
-        }
-
-        bool WmNCActivate(ref System.Windows.Forms.Message m)
-        {
-            if (m.HWnd == IntPtr.Zero) return false;
-            if (IsIconic(m.HWnd)) return false;
-            m.Result = DefWindowProc(m.HWnd, (uint)m.Msg, m.WParam, new IntPtr(-1));
-            return true;
-        }
-
         #endregion
-
-        #region Frameless Crack
-
-        protected override void SetClientSizeCore(int x, int y)
-        {
-            if (DesignMode) Size = new Size(x, y);
-            else base.SetClientSizeCore(x, y);
-        }
-
-        protected Padding GetNonClientMetrics()
-        {
-            var rect = RECT.Empty;
-            var screenRect = ClientRectangle;
-            screenRect.Offset(-Bounds.Left, -Bounds.Top);
-
-            rect.top = screenRect.Top;
-            rect.left = screenRect.Left;
-            rect.bottom = screenRect.Bottom;
-            rect.right = screenRect.Right;
-            AdjustWindowRectEx(ref rect, (WindowStyles)CreateParams.Style, false, (WindowStylesEx)CreateParams.ExStyle);
-            return new Padding
-            {
-                Top = screenRect.Top - rect.top,
-                Left = screenRect.Left - rect.left,
-                Bottom = rect.bottom - screenRect.Bottom,
-                Right = rect.right - screenRect.Right
-            };
-        }
-
-        #endregion
-    }
-
-    public enum WState
-    {
-        Restore,
-        Maximize,
-        Minimize
     }
 }

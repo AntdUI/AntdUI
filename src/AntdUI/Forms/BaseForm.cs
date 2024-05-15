@@ -26,9 +26,9 @@ namespace AntdUI
         public BaseForm()
         {
             SetStyle(
-                 ControlStyles.UserPaint |
-                 ControlStyles.DoubleBuffer |
-                 ControlStyles.OptimizedDoubleBuffer, true);
+                ControlStyles.UserPaint |
+                ControlStyles.DoubleBuffer |
+                ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
         }
         internal void SetCursor(bool val)

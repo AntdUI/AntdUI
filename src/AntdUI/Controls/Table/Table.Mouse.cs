@@ -448,6 +448,15 @@ namespace AntdUI
         void OnEditMode(RowTemplate it, TCell cell, int i_row, int i_col, int sx, int sy)
         {
             if (rows == null) return;
+            if (it.AnimationHover)
+            {
+                ITask.Run(() =>
+                {
+                    System.Threading.Thread.Sleep(100);
+                    OnEditMode(it, cell, i_row, i_col, sx, sy);
+                });
+                return;
+            }
             if (cell is TCellText cellText)
             {
                 object? value = null;
@@ -512,6 +521,9 @@ namespace AntdUI
                             EditModeClose();
                         }
                     });
+                    if (cellText.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
+                    else if (cellText.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
+                    CellBeginEditInputStyle?.Invoke(this, value, it.RECORD, i_row, i_col, ref edit_input);
                     Controls.Add(edit_input);
                     edit_input.Focus();
                 }));
@@ -591,6 +603,12 @@ namespace AntdUI
                                     EditModeClose();
                                 }
                             });
+                            CellBeginEditInputStyle?.Invoke(this, value, it.RECORD, i_row, i_col, ref edit_input);
+                            if (template.PARENT != null)
+                            {
+                                if (template.PARENT.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
+                                else if (template.PARENT.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
+                            }
                             Controls.Add(edit_input);
                             edit_input.Focus();
                         }));
@@ -603,8 +621,10 @@ namespace AntdUI
         Input ShowInput(TCell cell, int sx, int sy, int height, object? value, Action<string> call)
         {
             Input input;
+            string old_text;
             if (value is int val_int)
             {
+                old_text = val_int.ToString();
                 input = new InputNumber
                 {
                     Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
@@ -614,6 +634,7 @@ namespace AntdUI
             }
             else if (value is double val_double)
             {
+                old_text = val_double.ToString();
                 input = new InputNumber
                 {
                     Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
@@ -623,6 +644,7 @@ namespace AntdUI
             }
             else if (value is float val_float)
             {
+                old_text = val_float.ToString();
                 input = new InputNumber
                 {
                     Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
@@ -650,18 +672,29 @@ namespace AntdUI
                         Text = value?.ToString() ?? ""
                     };
                 }
+                old_text = input.Text;
             }
             input.KeyPress += (a, b) =>
             {
                 if (b.KeyChar == 13 && a is Input input)
                 {
                     b.Handled = true;
+                    if (old_text == input.Text)
+                    {
+                        EditModeClose();
+                        return;
+                    }
                     call(input.Text);
                 }
             };
             input.LostFocus += (a, b) =>
             {
-                EditModeClose();
+                if (old_text == input.Text)
+                {
+                    EditModeClose();
+                    return;
+                }
+                call(input.Text);
             };
             return input;
         }

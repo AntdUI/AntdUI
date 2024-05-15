@@ -45,7 +45,6 @@ namespace AntdUI
             using (var brush_split = new SolidBrush(Style.Db.BorderColor))
             {
                 var shows = new List<RowTemplate>();
-                g.TranslateTransform(-sx, -sy);
                 if (fixedHeader)
                 {
                     foreach (var it in rows)
@@ -54,11 +53,13 @@ namespace AntdUI
                         if (it.SHOW) shows.Add(it);
                     }
 
-                    foreach (var it in shows)
-                    {
-                        PaintTableBgFront(g, it);
-                        foreach (var cel in it.cells) PaintItemBack(g, cel);
-                    }
+                    g.TranslateTransform(0, -sy);
+                    foreach (var it in shows) PaintTableBgFront(g, it);
+
+                    g.ResetTransform();
+                    g.TranslateTransform(-sx, -sy);
+                    foreach (var it in shows) foreach (var cel in it.cells) PaintItemBack(g, cel);
+
                     g.ResetTransform();
                     g.TranslateTransform(0, -sy);
                     foreach (var it in shows)
@@ -87,6 +88,7 @@ namespace AntdUI
                 }
                 else
                 {
+                    g.TranslateTransform(-sx, -sy);
                     foreach (var it in rows)
                     {
                         it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
@@ -174,9 +176,6 @@ namespace AntdUI
                     g.FillRectangle(brush, row.RECT);
                 }
             }
-        }
-        void PaintTableBg(Graphics g, RowTemplate row)
-        {
             if (selectedIndex == row.INDEX || row.Checked)
             {
                 using (var brush = rowSelectedBg.Brush(Style.Db.PrimaryBg))
@@ -191,6 +190,9 @@ namespace AntdUI
                     }
                 }
             }
+        }
+        void PaintTableBg(Graphics g, RowTemplate row)
+        {
             if (row.AnimationHover)
             {
                 using (var brush = new SolidBrush(Color.FromArgb((int)(row.AnimationHoverValue * Style.Db.FillSecondary.A), Style.Db.FillSecondary)))
