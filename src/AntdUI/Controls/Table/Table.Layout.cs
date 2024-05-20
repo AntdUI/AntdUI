@@ -113,20 +113,42 @@ namespace AntdUI
                     }
                 }
 
-                foreach (var row in data_temp.rows)
+                if (SortData == null || SortData.Length != data_temp.rows.Length)
                 {
-                    var cells = new List<TCell>(_columns.Count);
-                    int check = 0;
-                    foreach (var column in _columns)
+                    foreach (var row in data_temp.rows)
                     {
-                        var value = row.cells[column.Key];
-                        if (value is PropertyDescriptor prop)
+                        var cells = new List<TCell>(_columns.Count);
+                        int check = 0;
+                        foreach (var column in _columns)
                         {
-                            if (AddRows(ref cells, ref processing, ref check_count, column, row.record, prop)) check++;
+                            var value = row.cells[column.Key];
+                            if (value is PropertyDescriptor prop)
+                            {
+                                if (AddRows(ref cells, ref processing, ref check_count, column, row.record, prop)) check++;
+                            }
+                            else cells.Add(new TCellText(this, null, value, column, value?.ToString()));
                         }
-                        else cells.Add(new TCellText(this, null, value, column, value?.ToString()));
+                        if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record, check > 0);
                     }
-                    if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record, check > 0);
+                }
+                else
+                {
+                    foreach (var item in SortData)
+                    {
+                        var row = data_temp.rows[item];
+                        var cells = new List<TCell>(_columns.Count);
+                        int check = 0;
+                        foreach (var column in _columns)
+                        {
+                            var value = row.cells[column.Key];
+                            if (value is PropertyDescriptor prop)
+                            {
+                                if (AddRows(ref cells, ref processing, ref check_count, column, row.record, prop)) check++;
+                            }
+                            else cells.Add(new TCellText(this, null, value, column, value?.ToString()));
+                        }
+                        if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record, check > 0);
+                    }
                 }
 
                 if (EmptyHeader && _rows.Count == 0)
@@ -252,7 +274,6 @@ namespace AntdUI
                             else
                             {
                                 var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
-                                it.MinWidth = (int)Math.Ceiling(text_size.Width);
                                 if (max_height < text_size.Height) max_height = text_size.Height;
                                 if (read_width_cell[cel_i].value < text_size.Width) read_width_cell[cel_i].value = it.MinWidth;
                             }
@@ -285,15 +306,17 @@ namespace AntdUI
                         else if (it is TCellColumn column)
                         {
                             it.SetSize(g, Font, _rect, gap, gap2);
-                            if (column.tag is ColumnCheck columnCheck)
+                            if (column.column is ColumnCheck columnCheck)
                             {
+                                column.column.SortOrder = false;
                                 columnCheck.PARENT = this;
                                 //全选
                                 column.rect = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
                             }
                             else
                             {
-                                column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                                if (column.column.SortOrder) column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2 - column.SortWidth, _rect.Height - gap2);
+                                else column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
                                 if (x < column.rect.Right) x = column.rect.Right;
                             }
                         }
@@ -535,6 +558,27 @@ namespace AntdUI
                 else AddRows(ref cells, new TCellText(this, prop, ov, column, value?.ToString()));
             }
             return false;
+        }
+
+        string? OGetValue(TempTable data_temp, int i_r, string key)
+        {
+            var value = data_temp.rows[i_r].cells[key];
+            if (value is PropertyDescriptor prop)
+            {
+                var val = prop.GetValue(data_temp.rows[i_r].record);
+                if (val is IList<ICell> icells)
+                {
+                    var vals = new List<string>(icells.Count);
+                    foreach (var cell in icells)
+                    {
+                        var str = cell.ToString();
+                        if (!string.IsNullOrEmpty(str)) vals.Add(str);
+                    }
+                    return string.Join(" ", vals);
+                }
+                else return val?.ToString();
+            }
+            else return value?.ToString();
         }
 
         bool handcheck = false;

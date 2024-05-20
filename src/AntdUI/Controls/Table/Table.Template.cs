@@ -160,7 +160,7 @@ namespace AntdUI
 
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;
-            ITask? ThreadHover = null;
+            internal ITask? ThreadHover = null;
 
             #endregion
 
@@ -367,7 +367,9 @@ namespace AntdUI
 
             public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
-                return g.MeasureString(Config.NullText, font);
+                var sizef = g.MeasureString(Config.NullText, font);
+                MinWidth = (int)Math.Ceiling(sizef.Width);
+                return sizef;
             }
 
             public bool MouseDown { get; set; }
@@ -494,7 +496,9 @@ namespace AntdUI
 
             public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
-                return g.MeasureString(Config.NullText, font);
+                var sizef = g.MeasureString(Config.NullText, font);
+                MinWidth = (int)Math.Ceiling(sizef.Width);
+                return sizef;
             }
 
             public bool MouseDown { get; set; }
@@ -721,7 +725,9 @@ namespace AntdUI
 
             public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
-                return g.MeasureString(Config.NullText, font);
+                var sizef = g.MeasureString(Config.NullText, font);
+                MinWidth = (int)Math.Ceiling(sizef.Width);
+                return sizef;
             }
 
             public bool MouseDown { get; set; }
@@ -783,16 +789,19 @@ namespace AntdUI
                         if (column.Width.EndsWith("%") && float.TryParse(column.Width.TrimEnd('%'), out var f))
                         {
                             var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)));
+                            MinWidth = (int)Math.Ceiling(size2.Width);
                             return new SizeF(size2.Width + gap2, size2.Height);
                         }
                         else if (int.TryParse(column.Width, out var i))
                         {
                             var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi));
+                            MinWidth = (int)Math.Ceiling(size2.Width);
                             return new SizeF(size2.Width + gap2, size2.Height);
                         }
                     }
                 }
                 var size = g.MeasureString(value, font);
+                MinWidth = (int)Math.Ceiling(size.Width);
                 return new SizeF(size.Width + gap2, size.Height);
             }
 
@@ -816,12 +825,11 @@ namespace AntdUI
         /// </summary>
         internal class TCellColumn : TCell
         {
-            public TCellColumn(Table table, Column column)
+            public TCellColumn(Table table, Column _column)
             {
                 PARENT = table;
-                align = column.Align;
-                tag = column;
-                value = column.Title;
+                column = _column;
+                value = _column.Title;
             }
 
             /// <summary>
@@ -833,13 +841,20 @@ namespace AntdUI
             /// </summary>
             public Rectangle rect { get; set; }
 
-            public ColumnAlign align { get; set; }
+            public Rectangle rect_up { get; set; }
+            public Rectangle rect_down { get; set; }
             public void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2)
             {
                 RECT = _rect;
+                if (column.SortOrder)
+                {
+                    int icon_sp = (int)(gap * 0.34F), y = _rect.Y + (_rect.Height - (gap * 2) + icon_sp) / 2;
+                    rect_up = new Rectangle(_rect.Right - gap2, y, gap, gap);
+                    rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, gap, gap);
+                }
             }
 
-            public Column tag { get; set; }
+            public Column column { get; set; }
             public Table PARENT { get; set; }
             public RowTemplate ROW { get; set; }
             public PropertyDescriptor? PROPERTY { get; set; }
@@ -852,10 +867,13 @@ namespace AntdUI
                 return rect.Contains(x, y);
             }
 
+            internal int SortWidth = 0;
             public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
                 var size = g.MeasureString(value, font);
-                return new SizeF(size.Width + gap2, size.Height);
+                SortWidth = column.SortOrder ? (int)(size.Height * 0.8F) : 0;
+                MinWidth = (int)Math.Ceiling(size.Width) + SortWidth;
+                return new SizeF(size.Width + gap2 + SortWidth, size.Height);
             }
 
             public bool MouseDown { get; set; }
@@ -881,6 +899,8 @@ namespace AntdUI
             Table PARENT { get; set; }
             RowTemplate ROW { get; set; }
             Rectangle RECT { get; set; }
+            Rectangle rect { get; set; }
+
             void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2);
             SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2);
 
@@ -940,7 +960,7 @@ namespace AntdUI
 
             public void SetSize(Graphics g, Font font, Rectangle _rect, int _gap, int _gap2)
             {
-                RECT = _rect;
+                RECT = rect = _rect;
                 int gap = _gap / 2, gap2 = _gap;
                 if (value.Count == 1 && (value[0] is TemplateText || value[0] is TemplateProgress))
                 {
@@ -953,8 +973,8 @@ namespace AntdUI
                     int use_x;
                     switch (column.Align)
                     {
-                        case ColumnAlign.Center: use_x = _rect.X + (_rect.Width - USE_Width) / 2; break;
-                        case ColumnAlign.Right: use_x = _rect.Right - USE_Width; break;
+                        case ColumnAlign.Center: use_x = _rect.X + (_rect.Width - MinWidth) / 2; break;
+                        case ColumnAlign.Right: use_x = _rect.Right - MinWidth; break;
                         case ColumnAlign.Left:
                         default: use_x = _rect.X + gap2; break;
                     }
@@ -974,9 +994,9 @@ namespace AntdUI
             public int INDEX { get; set; }
             public object VALUE { get; set; }
             public Rectangle RECT { get; set; }
+            public Rectangle rect { get; set; }
 
             Size[] SIZES;
-            int USE_Width = 0;
             public SizeF GetSize(Graphics g, Font font, int width, int _gap, int _gap2)
             {
                 int gap = _gap / 2, gap2 = _gap;
@@ -989,9 +1009,9 @@ namespace AntdUI
                     w += size.Width;
                     if (h < size.Height) h = size.Height;
                 }
-                USE_Width = (int)Math.Ceiling(w);
+                MinWidth = (int)Math.Ceiling(w);
                 SIZES = sizes.ToArray();
-                return new SizeF(USE_Width + _gap2, h);
+                return new SizeF(MinWidth + _gap2, h);
             }
 
             public bool MouseDown { get; set; }
@@ -1005,10 +1025,11 @@ namespace AntdUI
 #endif
             public override string? ToString()
             {
-                var vals = new List<string?>(value.Count);
+                var vals = new List<string>(value.Count);
                 foreach (var cell in value)
                 {
-                    vals.Add(cell.ToString());
+                    var str = cell.ToString();
+                    if (!string.IsNullOrEmpty(str)) vals.Add(str);
                 }
                 return string.Join(" ", vals);
             }

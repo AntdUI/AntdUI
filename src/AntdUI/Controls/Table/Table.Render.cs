@@ -155,14 +155,29 @@ namespace AntdUI
                 g.FillRectangle(brush, row.RECT);
             }
         }
+
+        string arrow_up_svg = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z\"></path></svg>", arrow_down_svg = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z\"></path></svg>";
         void PaintTableHeader(Graphics g, RowTemplate row, SolidBrush fore)
         {
             using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 foreach (TCellColumn column in row.cells)
                 {
-                    if (column.tag is ColumnCheck) PaintCheck(g, row, column);
-                    else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.align));
+                    if (column.column.SortOrder)
+                    {
+                        using (var bmp = SvgExtend.GetImgExtend(arrow_up_svg, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                        {
+                            if (bmp != null)
+                                g.DrawImage(bmp, column.rect_up);
+                        }
+                        using (var bmp = SvgExtend.GetImgExtend(arrow_down_svg, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                        {
+                            if (bmp != null)
+                                g.DrawImage(bmp, column.rect_down);
+                        }
+                    }
+                    if (column.column is ColumnCheck) PaintCheck(g, row, column);
+                    else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
                 }
             }
         }
@@ -232,7 +247,7 @@ namespace AntdUI
             if (fixedColumnL != null && sx > 0)
             {
                 showFixedColumnL = true;
-                var last = shows[shows.Count - 1].cells[fixedColumnL[fixedColumnL.Length - 1]];
+                var last = shows[shows.Count - 1].cells[fixedColumnL[fixedColumnL.Count - 1]];
                 var rect_Fixed = new Rectangle(rect.X, rect.Y, last.RECT.Right, last.RECT.Bottom);
 
                 #region 绘制阴影
@@ -286,7 +301,7 @@ namespace AntdUI
             if (fixedColumnR != null && scrollBar.ShowX)
             {
                 var lastrow = shows[shows.Count - 1];
-                TCell first = lastrow.cells[fixedColumnR[fixedColumnR.Length - 1]], last = lastrow.cells[fixedColumnR[0]];
+                TCell first = lastrow.cells[fixedColumnR[fixedColumnR.Count - 1]], last = lastrow.cells[fixedColumnR[0]];
                 if (sx + rect.Width < last.RECT.Right)
                 {
                     sFixedR = last.RECT.Right - rect.Width;

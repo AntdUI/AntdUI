@@ -59,10 +59,7 @@ namespace AntdUI
             {
                 _value = value;
                 ValueChanged?.Invoke(this, value);
-                if (value == null || value.Length == 0)
-                {
-                    TextStart = TextEnd = "";
-                }
+                if (value == null || value.Length == 0) TextStart = TextEnd = "";
                 else if (value.Length == 2)
                 {
                     TextStart = value[0].ToString(Format);

@@ -17,8 +17,10 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Vanara.PInvoke;
@@ -142,17 +144,6 @@ namespace AntdUI
                 case WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
-                case WindowMessage.WM_NCHITTEST:
-                    m.Result = TRUE;
-                    return;
-                case WindowMessage.WM_MOUSEMOVE:
-                case WindowMessage.WM_NCMOUSEMOVE:
-                    if (ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
-                    break;
-                case WindowMessage.WM_LBUTTONDOWN:
-                case WindowMessage.WM_NCLBUTTONDOWN:
-                    if (ReadMessage) ResizableMouseDownInternal();
-                    break;
             }
             base.WndProc(ref m);
         }
@@ -263,39 +254,13 @@ namespace AntdUI
 
         #region 交互
 
-        #region 拖动窗口
-
-        /// <summary>
-        /// 拖动窗口（鼠标按下）
-        /// </summary>
-        public void DraggableMouseDown()
-        {
-            ReleaseCapture();
-            SendMessage(handle, 0x0112, 61456 | 2, IntPtr.Zero);
-        }
-
-        [Obsolete("请使用 DraggableMouseDown 来替代")]
-        public void ControlMouseDown(object? sender, MouseEventArgs e)
-        {
-            DraggableMouseDown();
-        }
-
-        [Obsolete("请使用 DraggableMouseDown 来替代")]
-        public void ControlMouseDown()
-        {
-            ReleaseCapture();
-            SendMessage(handle, 0x0112, 61456 | 2, IntPtr.Zero);
-        }
-
-        #endregion
-
         #region 调整窗口大小
 
         /// <summary>
         /// 调整窗口大小（鼠标移动）
         /// </summary>
         /// <returns>可以调整</returns>
-        public bool ResizableMouseMove()
+        public override bool ResizableMouseMove()
         {
             var retval = HitTest(PointToClient(MousePosition));
             if (retval != HitTestValues.HTNOWHERE)
@@ -303,7 +268,6 @@ namespace AntdUI
                 var mode = retval;
                 if (mode != HitTestValues.HTCLIENT && winState == WState.Restore)
                 {
-                    down = true;
                     SetCursorHit(mode);
                     return true;
                 }
@@ -315,60 +279,17 @@ namespace AntdUI
         /// </summary>
         /// <param name="point">客户端坐标</param>
         /// <returns>可以调整</returns>
-        public bool ResizableMouseMove(Point point)
+        public override bool ResizableMouseMove(Point point)
         {
             var retval = HitTest(point);
             if (retval != HitTestValues.HTNOWHERE)
             {
                 var mode = retval;
-                if (mode != HitTestValues.HTCLIENT && base.WindowState == FormWindowState.Normal)
+                if (mode != HitTestValues.HTCLIENT && winState == WState.Restore)
                 {
-                    down = true;
                     SetCursorHit(mode);
                     return true;
                 }
-            }
-            return false;
-        }
-
-        bool down = true;
-        /// <summary>
-        /// 整窗口大小（鼠标按下）
-        /// </summary>
-        /// <returns>可以调整</returns>
-        public bool ResizableMouseDown()
-        {
-            Point pointScreen = MousePosition;
-            var mode = HitTest(PointToClient(pointScreen));
-            if (mode != HitTestValues.HTCLIENT)
-            {
-                SetCursorHit(mode);
-                ReleaseCapture();
-                PostMessage(handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 整窗口大小（鼠标按下）
-        /// </summary>
-        /// <returns>可以调整</returns>
-        internal bool ResizableMouseDownInternal()
-        {
-            Point pointScreen = MousePosition;
-            var mode = HitTest(PointToClient(pointScreen));
-            if (mode != HitTestValues.HTCLIENT)
-            {
-                SetCursorHit(mode);
-                ReleaseCapture();
-                PostMessage(handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
-                if (down)
-                {
-                    down = false;
-                    return true;
-                }
-                return false;
             }
             return false;
         }
@@ -377,86 +298,11 @@ namespace AntdUI
 
         #region 鼠标
 
-        HitTestValues HitTest(Point point)
-        {
-            float htSize = 8F * Config.Dpi, htSize2 = htSize * 2;
-            GetWindowRect(handle, out var lpRect);
-
-            var rect = new Rectangle(Point.Empty, lpRect.Size);
-
-            var hitTestValue = HitTestValues.HTCLIENT;
-            var x = point.X;
-            var y = point.Y;
-
-            if (x < rect.Left + htSize2 && y < rect.Top + htSize2)
-            {
-                hitTestValue = HitTestValues.HTTOPLEFT;
-            }
-            else if (x >= rect.Left + htSize2 && x <= rect.Right - htSize2 && y <= rect.Top + htSize)
-            {
-                hitTestValue = HitTestValues.HTTOP;
-            }
-            else if (x > rect.Right - htSize2 && y <= rect.Top + htSize2)
-            {
-                hitTestValue = HitTestValues.HTTOPRIGHT;
-            }
-            else if (x <= rect.Left + htSize && y >= rect.Top + htSize2 && y <= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTLEFT;
-            }
-            else if (x >= rect.Right - htSize && y >= rect.Top * 2 + htSize && y <= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTRIGHT;
-            }
-            else if (x <= rect.Left + htSize2 && y >= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTBOTTOMLEFT;
-            }
-            else if (x > rect.Left + htSize2 && x < rect.Right - htSize2 && y >= rect.Bottom - htSize)
-            {
-                hitTestValue = HitTestValues.HTBOTTOM;
-            }
-            else if (x >= rect.Right - htSize2 && y >= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTBOTTOMRIGHT;
-            }
-
-            return hitTestValue;
-        }
-
-        void SetCursorHit(HitTestValues mode)
-        {
-            switch (mode)
-            {
-                case HitTestValues.HTTOP:
-                case HitTestValues.HTBOTTOM:
-                    LoadCursors(32645);
-                    break;
-                case HitTestValues.HTLEFT:
-                case HitTestValues.HTRIGHT:
-                    LoadCursors(32644);
-                    break;
-                case HitTestValues.HTTOPLEFT:
-                case HitTestValues.HTBOTTOMRIGHT:
-                    LoadCursors(32642);
-                    break;
-                case HitTestValues.HTTOPRIGHT:
-                case HitTestValues.HTBOTTOMLEFT:
-                    LoadCursors(32643);
-                    break;
-            }
-        }
-
-        void LoadCursors(int id)
-        {
-            var handle = LoadCursor(lpCursorName: Macros.MAKEINTRESOURCE(id));
-            var oldCursor = User32.SetCursor(handle);
-            oldCursor.Close();
-        }
-
+        public static bool CanHandMessage = true;
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {
-            if (ReadMessage)
+            if (is_resizable) return OnPreFilterMessage(m);
+            if (CanHandMessage && ReadMessage)
             {
                 switch (m.Msg)
                 {
@@ -471,7 +317,7 @@ namespace AntdUI
                     case 0x201:
                         if (isMe(m.HWnd))
                         {
-                            if (ResizableMouseDownInternal()) return true;
+                            if (ResizableMouseDown()) return true;
                         }
                         break;
                 }
@@ -587,6 +433,65 @@ namespace AntdUI
                 Bottom = rect.bottom - screenRect.Bottom,
                 Right = rect.right - screenRect.Right
             };
+        }
+
+        protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
+        {
+            if (_shouldPerformMaximiazedState && winState != WState.Maximize)
+            {
+                if (y != Top) y = Top;
+                if (x != Left) x = Left;
+                _shouldPerformMaximiazedState = false;
+            }
+            var size = PatchWindowSizeInRestoreWindowBoundsIfNecessary(width, height);
+            base.SetBoundsCore(x, y, size.Width, size.Height, specified);
+        }
+
+        protected override Rectangle GetScaledBounds(Rectangle bounds, SizeF factor, BoundsSpecified specified)
+        {
+            var rect = base.GetScaledBounds(bounds, factor, specified);
+            if (!GetStyle(ControlStyles.FixedWidth) && (specified & BoundsSpecified.Width) != BoundsSpecified.None)
+            {
+                var clientWidth = bounds.Width;// - sz.Width;
+                rect.Width = (int)Math.Round((double)(clientWidth * factor.Width));// + sz.Width;
+            }
+            if (!GetStyle(ControlStyles.FixedHeight) && (specified & BoundsSpecified.Height) != BoundsSpecified.None)
+            {
+                var clientHeight = bounds.Height;// - sz.Height;
+                rect.Height = (int)Math.Round((double)(clientHeight * factor.Height));// + sz.Height;
+            }
+            return rect;
+        }
+
+        bool _shouldPerformMaximiazedState = false;
+
+        Size PatchWindowSizeInRestoreWindowBoundsIfNecessary(int width, int height)
+        {
+            if (winState == WState.Restore)
+            {
+                var restoredWindowBoundsSpecified = typeof(Form).GetField("restoredWindowBoundsSpecified", BindingFlags.NonPublic | BindingFlags.Instance) ?? typeof(Form).GetField("_restoredWindowBoundsSpecified", BindingFlags.NonPublic | BindingFlags.Instance);
+                var restoredSpecified = (BoundsSpecified)restoredWindowBoundsSpecified!.GetValue(this)!;
+
+                if ((restoredSpecified & BoundsSpecified.Size) != BoundsSpecified.None)
+                {
+                    var formStateExWindowBoundsFieldInfo = typeof(Form).GetField("FormStateExWindowBoundsWidthIsClientSize", BindingFlags.NonPublic | BindingFlags.Static);
+                    var formStateExFieldInfo = typeof(Form).GetField("formStateEx", BindingFlags.NonPublic | BindingFlags.Instance) ?? typeof(Form).GetField("_formStateEx", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var restoredBoundsFieldInfo = typeof(Form).GetField("restoredWindowBounds", BindingFlags.NonPublic | BindingFlags.Instance) ?? typeof(Form).GetField("_restoredWindowBounds", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                    if (formStateExWindowBoundsFieldInfo != null && formStateExFieldInfo != null && restoredBoundsFieldInfo != null)
+                    {
+                        var restoredWindowBounds = (Rectangle)restoredBoundsFieldInfo.GetValue(this)!;
+                        var section = (BitVector32.Section)formStateExWindowBoundsFieldInfo.GetValue(this)!;
+                        var vector = (BitVector32)formStateExFieldInfo.GetValue(this)!;
+                        if (vector[section] == 1)
+                        {
+                            width = restoredWindowBounds.Width;// + borders.Horizontal;
+                            height = restoredWindowBounds.Height;
+                        }
+                    }
+                }
+            }
+            return new Size(width, height);
         }
 
         #endregion

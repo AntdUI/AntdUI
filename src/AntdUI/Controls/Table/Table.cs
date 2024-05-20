@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -397,7 +396,7 @@ namespace AntdUI
                     {
                         foreach (Table.TCellColumn item in PARENT.rows[0].cells)
                         {
-                            if (item.tag is ColumnCheck columnCheck)
+                            if (item.column is ColumnCheck columnCheck)
                             {
                                 PARENT?.ChangeCheckOverall(PARENT.rows, it, columnCheck, value);
                                 return;
@@ -453,7 +452,7 @@ namespace AntdUI
         /// <param name="align">对齐方式</param>
         public ColumnSwitch(string key, string title, ColumnAlign align) : base(key, title, align) { }
 
-        public Func<bool, object, int, int, bool>? Call { get; set; }
+        public Func<bool, object?, int, int, bool>? Call { get; set; }
     }
 
     /// <summary>
@@ -500,6 +499,11 @@ namespace AntdUI
         public ColumnAlign Align { get; set; } = ColumnAlign.Left;
 
         /// <summary>
+        /// 表头对齐方式
+        /// </summary>
+        public ColumnAlign? ColAlign { get; set; }
+
+        /// <summary>
         /// 列宽度
         /// </summary>
         public string? Width { get; set; }
@@ -518,6 +522,13 @@ namespace AntdUI
         /// 列是否固定
         /// </summary>
         public bool Fixed { get; set; }
+
+        /// <summary>
+        /// 头部排序
+        /// </summary>
+        public bool SortOrder { get; set; }
+
+        internal int SortMode { get; set; }
     }
 
     #endregion
@@ -700,6 +711,11 @@ namespace AntdUI
         }
 
         #endregion
+
+        public override string? ToString()
+        {
+            return _text;
+        }
     }
 
     /// <summary>
@@ -789,6 +805,11 @@ namespace AntdUI
                 _text = value;
                 OnPropertyChanged("Text");
             }
+        }
+
+        public override string? ToString()
+        {
+            return _text;
         }
     }
 
@@ -887,6 +908,11 @@ namespace AntdUI
                 _text = value;
                 OnPropertyChanged("Text");
             }
+        }
+
+        public override string ToString()
+        {
+            return _text;
         }
     }
 
@@ -1295,6 +1321,11 @@ namespace AntdUI
                 OnPropertyChanged("Enabled");
             }
         }
+
+        public override string? ToString()
+        {
+            return _text;
+        }
     }
 
     /// <summary>
@@ -1386,6 +1417,11 @@ namespace AntdUI
                 _value = value;
                 OnPropertyChanged("Icon");
             }
+        }
+
+        public override string ToString()
+        {
+            return (_value * 100F) + "%";
         }
     }
 

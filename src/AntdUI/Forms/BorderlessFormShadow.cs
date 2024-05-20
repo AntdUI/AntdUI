@@ -22,8 +22,7 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    //绘图层
-    public partial class BorderlessFormShadow : Form
+    internal class BorderlessFormShadow : Form
     {
         BorderlessForm form;
         //带参构造
@@ -68,21 +67,25 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            switch (m.Msg)
+            if (form.is_resizable) base.WndProc(ref m);
+            else
             {
-                case 0x21:
-                    m.Result = new IntPtr(3);
-                    return;
-                case 0xa0:
-                case 0x200:
-                    form.ResizableMouseMove(PointToClient(MousePosition));
-                    break;
-                case 0xa1:
-                case 0x201:
-                    form.ResizableMouseDownInternal();
-                    break;
+                switch (m.Msg)
+                {
+                    case 0x21:
+                        m.Result = new IntPtr(3);
+                        return;
+                    case 0xa0:
+                    case 0x200:
+                        if (form.ResizableMouseMove(PointToClient(MousePosition))) return;
+                        break;
+                    case 0xa1:
+                    case 0x201:
+                        if (form.ResizableMouseDown()) return;
+                        break;
+                }
+                base.WndProc(ref m);
             }
-            base.WndProc(ref m);
         }
 
         #endregion
@@ -126,9 +129,9 @@ namespace AntdUI
 
         public void ISize()
         {
-            int size2 = form.Shadow * 2;
-            rect_read = new Rectangle(form.Shadow, form.Shadow, form.Width, form.Height);
-            shadow_rect = new Rectangle(form.Left - form.Shadow, form.Top - form.Shadow, rect_read.Width + size2, rect_read.Height + size2);
+            int shadow = (int)(form.Shadow * Config.Dpi), shadow2 = shadow * 2;
+            rect_read = new Rectangle(shadow, shadow, form.Width, form.Height);
+            shadow_rect = new Rectangle(form.Left - shadow, form.Top - shadow, rect_read.Width + shadow2, rect_read.Height + shadow2);
         }
 
         #endregion
@@ -163,13 +166,13 @@ namespace AntdUI
         Bitmap? bitbmp = null;
         Bitmap PrintBit()
         {
-            int shadow = form.Shadow, shadow2 = form.Shadow * 2, shadow4 = form.Shadow * 4, shadow6 = form.Shadow * 6;
+            int radius = (int)(form.Radius * Config.Dpi), shadow = (int)(form.Shadow * Config.Dpi), shadow2 = shadow * 2, shadow4 = shadow * 4, shadow6 = shadow * 6;
             if (bitbmp == null)
             {
                 bitbmp = new Bitmap(shadow6, shadow6);
                 using (var g = Graphics.FromImage(bitbmp).High())
                 {
-                    using (var path = new Rectangle(shadow, shadow, shadow6 - shadow2, shadow6 - shadow2).RoundPath(form.Radius))
+                    using (var path = new Rectangle(shadow, shadow, shadow6 - shadow2, shadow6 - shadow2).RoundPath(radius))
                     {
                         using (var brush = new SolidBrush(form.ShadowColor))
                         {
@@ -182,7 +185,7 @@ namespace AntdUI
             var bitmap = new Bitmap(shadow_rect.Width, shadow_rect.Height);
             using (var g = Graphics.FromImage(bitmap).High())
             {
-                using (var path = rect_read.RoundPath(form.Radius * Config.Dpi))
+                using (var path = rect_read.RoundPath(radius))
                 {
                     using (var path2 = new System.Drawing.Drawing2D.GraphicsPath())
                     {
@@ -190,6 +193,8 @@ namespace AntdUI
                         path2.AddRectangle(new Rectangle(0, 0, shadow_rect.Width, shadow_rect.Height));
                         g.SetClip(path2);
                     }
+                    int r = shadow2 + radius;
+
                     g.DrawImage(bitbmp, new Rectangle(0, 0, shadow2, shadow2), new Rectangle(0, 0, shadow2, shadow2), GraphicsUnit.Pixel);
                     g.DrawImage(bitbmp, new Rectangle(0, shadow2, shadow, bitmap.Height - shadow4), new Rectangle(0, shadow2, shadow, bitbmp.Height - shadow4), GraphicsUnit.Pixel);
                     g.DrawImage(bitbmp, new Rectangle(0, bitmap.Height - shadow2, shadow2, shadow2), new Rectangle(0, bitbmp.Height - shadow2, shadow2, shadow2), GraphicsUnit.Pixel);

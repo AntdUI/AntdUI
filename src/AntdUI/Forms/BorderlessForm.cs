@@ -203,16 +203,29 @@ namespace AntdUI
                 case WindowMessage.WM_NCHITTEST:
                     m.Result = TRUE;
                     return;
+                case WindowMessage.WM_SIZE:
+                    WmSize(ref m);
+                    break;
                 case WindowMessage.WM_MOUSEMOVE:
                 case WindowMessage.WM_NCMOUSEMOVE:
-                    if (ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
+                    if (!is_resizable && ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
                     break;
                 case WindowMessage.WM_LBUTTONDOWN:
                 case WindowMessage.WM_NCLBUTTONDOWN:
-                    if (ReadMessage) ResizableMouseDownInternal();
+                    if (!is_resizable && ReadMessage) ResizableMouseDown();
                     break;
             }
             base.WndProc(ref m);
+        }
+
+        const nint SIZE_RESTORED = 0;
+        const nint SIZE_MINIMIZED = 1;
+        const nint SIZE_MAXIMIZED = 2;
+        void WmSize(ref System.Windows.Forms.Message m)
+        {
+            if (m.WParam == SIZE_MINIMIZED) WinState = WState.Minimize;
+            else if (m.WParam == SIZE_MAXIMIZED) WinState = WState.Maximize;
+            else if (m.WParam == SIZE_RESTORED) WinState = WState.Restore;
         }
 
         #endregion
@@ -224,7 +237,7 @@ namespace AntdUI
         {
             if (Region != null) Region.Dispose();
             var rect = ClientRectangle;
-            if (rect.Width > 0 && rect.Height > 0)
+            if ((rect.Width > 0 && rect.Height > 0) && winState == WState.Restore)
             {
                 using (var path = rect.RoundPath(radius * Config.Dpi))
                 {
@@ -294,7 +307,7 @@ namespace AntdUI
             {
                 if (winState == value) return;
                 winState = value;
-                if (IsHandleCreated) HandMessage();
+                if (IsHandleCreated) { HandMessage(); SetReion(); }
             }
         }
 
@@ -335,8 +348,14 @@ namespace AntdUI
         /// <summary>
         /// 拖动窗口（鼠标按下）
         /// </summary>
-        public void DraggableMouseDown()
+        public override void DraggableMouseDown()
         {
+            if (ismax)
+            {
+                ismax = false;
+                Size = old.Size;
+                Location = old.Location;
+            }
             ReleaseCapture();
             SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
         }
@@ -349,17 +368,19 @@ namespace AntdUI
         /// 调整窗口大小（鼠标移动）
         /// </summary>
         /// <returns>可以调整</returns>
-        public bool ResizableMouseMove()
+        public override bool ResizableMouseMove()
         {
-            var retval = HitTest(PointToClient(MousePosition));
-            if (retval != HitTestValues.HTNOWHERE)
+            if (!ismax && winState == WState.Restore)
             {
-                var mode = retval;
-                if (mode != HitTestValues.HTCLIENT && base.WindowState == FormWindowState.Normal)
+                var retval = HitTest(PointToClient(MousePosition));
+                if (retval != HitTestValues.HTNOWHERE)
                 {
-                    down = true;
-                    SetCursorHit(mode);
-                    return true;
+                    var mode = retval;
+                    if (mode != HitTestValues.HTCLIENT)
+                    {
+                        SetCursorHit(mode);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -369,60 +390,20 @@ namespace AntdUI
         /// </summary>
         /// <param name="point">客户端坐标</param>
         /// <returns>可以调整</returns>
-        public bool ResizableMouseMove(Point point)
+        public override bool ResizableMouseMove(Point point)
         {
-            var retval = HitTest(point);
-            if (retval != HitTestValues.HTNOWHERE)
+            if (!ismax && winState == WState.Restore)
             {
-                var mode = retval;
-                if (mode != HitTestValues.HTCLIENT && base.WindowState == FormWindowState.Normal)
+                var retval = HitTest(point);
+                if (retval != HitTestValues.HTNOWHERE)
                 {
-                    down = true;
-                    SetCursorHit(mode);
-                    return true;
+                    var mode = retval;
+                    if (mode != HitTestValues.HTCLIENT)
+                    {
+                        SetCursorHit(mode);
+                        return true;
+                    }
                 }
-            }
-            return false;
-        }
-
-        bool down = true;
-        /// <summary>
-        /// 整窗口大小（鼠标按下）
-        /// </summary>
-        /// <returns>可以调整</returns>
-        public bool ResizableMouseDown()
-        {
-            Point pointScreen = MousePosition;
-            var mode = HitTest(PointToClient(pointScreen));
-            if (mode != HitTestValues.HTCLIENT)
-            {
-                SetCursorHit(mode);
-                ReleaseCapture();
-                PostMessage(Handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 整窗口大小（鼠标按下）
-        /// </summary>
-        /// <returns>可以调整</returns>
-        internal bool ResizableMouseDownInternal()
-        {
-            Point pointScreen = MousePosition;
-            var mode = HitTest(PointToClient(pointScreen));
-            if (mode != HitTestValues.HTCLIENT)
-            {
-                SetCursorHit(mode);
-                ReleaseCapture();
-                PostMessage(Handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
-                if (down)
-                {
-                    down = false;
-                    return true;
-                }
-                return false;
             }
             return false;
         }
@@ -431,86 +412,10 @@ namespace AntdUI
 
         #region 鼠标
 
-        HitTestValues HitTest(Point point)
-        {
-            float htSize = 8F * Config.Dpi, htSize2 = htSize * 2;
-            GetWindowRect(Handle, out var lpRect);
-
-            var rect = new Rectangle(Point.Empty, lpRect.Size);
-
-            var hitTestValue = HitTestValues.HTCLIENT;
-            var x = point.X;
-            var y = point.Y;
-
-            if (x < rect.Left + htSize2 && y < rect.Top + htSize2)
-            {
-                hitTestValue = HitTestValues.HTTOPLEFT;
-            }
-            else if (x >= rect.Left + htSize2 && x <= rect.Right - htSize2 && y <= rect.Top + htSize)
-            {
-                hitTestValue = HitTestValues.HTTOP;
-            }
-            else if (x > rect.Right - htSize2 && y <= rect.Top + htSize2)
-            {
-                hitTestValue = HitTestValues.HTTOPRIGHT;
-            }
-            else if (x <= rect.Left + htSize && y >= rect.Top + htSize2 && y <= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTLEFT;
-            }
-            else if (x >= rect.Right - htSize && y >= rect.Top * 2 + htSize && y <= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTRIGHT;
-            }
-            else if (x <= rect.Left + htSize2 && y >= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTBOTTOMLEFT;
-            }
-            else if (x > rect.Left + htSize2 && x < rect.Right - htSize2 && y >= rect.Bottom - htSize)
-            {
-                hitTestValue = HitTestValues.HTBOTTOM;
-            }
-            else if (x >= rect.Right - htSize2 && y >= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTBOTTOMRIGHT;
-            }
-
-            return hitTestValue;
-        }
-
-        void SetCursorHit(HitTestValues mode)
-        {
-            switch (mode)
-            {
-                case HitTestValues.HTTOP:
-                case HitTestValues.HTBOTTOM:
-                    LoadCursors(32645);
-                    break;
-                case HitTestValues.HTLEFT:
-                case HitTestValues.HTRIGHT:
-                    LoadCursors(32644);
-                    break;
-                case HitTestValues.HTTOPLEFT:
-                case HitTestValues.HTBOTTOMRIGHT:
-                    LoadCursors(32642);
-                    break;
-                case HitTestValues.HTTOPRIGHT:
-                case HitTestValues.HTBOTTOMLEFT:
-                    LoadCursors(32643);
-                    break;
-            }
-        }
-
-        void LoadCursors(int id)
-        {
-            var handle = LoadCursor(lpCursorName: Macros.MAKEINTRESOURCE(id));
-            var oldCursor = User32.SetCursor(handle);
-            oldCursor.Close();
-        }
-
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {
-            if (ReadMessage)
+            if (is_resizable) return OnPreFilterMessage(m);
+            if (Window.CanHandMessage && ReadMessage)
             {
                 switch (m.Msg)
                 {
@@ -525,7 +430,7 @@ namespace AntdUI
                     case 0x201:
                         if (isMe(m.HWnd))
                         {
-                            if (ResizableMouseDownInternal()) return true;
+                            if (ResizableMouseDown()) return true;
                         }
                         break;
                 }
@@ -557,6 +462,80 @@ namespace AntdUI
         }
 
         #endregion
+
+        #endregion
+
+        #region 程序
+
+        /// <summary>
+        /// 最大化/还原
+        /// </summary>
+        public override bool MaxRestore()
+        {
+            if (ismax)
+            {
+                ismax = false;
+                Size = old.Size;
+                Location = old.Location;
+            }
+            else
+            {
+                old = new Rectangle(Location, Size);
+                var rect = Screen.FromPoint(MousePosition).WorkingArea;
+                WindowState = FormWindowState.Normal;
+                Location = rect.Location;
+                Size = rect.Size;
+                ismax = true;
+            }
+            return ismax;
+        }
+
+        Rectangle old;
+        bool ismax = false;
+
+        /// <summary>
+        /// 最大化
+        /// </summary>
+        public override void Max()
+        {
+            if (ismax) return;
+            old = new Rectangle(Location, Size);
+            var rect = Screen.FromPoint(MousePosition).WorkingArea;
+            WindowState = FormWindowState.Normal;
+            Location = rect.Location;
+            Size = rect.Size;
+            ismax = true;
+        }
+
+        /// <summary>
+        /// 全屏/还原
+        /// </summary>
+        public override bool FullRestore()
+        {
+            if (WindowState == FormWindowState.Maximized)
+            {
+                WindowState = FormWindowState.Normal;
+                return false;
+            }
+            else
+            {
+                WindowState = FormWindowState.Maximized;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 全屏
+        /// </summary>
+        public override void Full()
+        {
+            WindowState = FormWindowState.Maximized;
+        }
+
+        public override void NoFull()
+        {
+            WindowState = FormWindowState.Normal;
+        }
 
         #endregion
 

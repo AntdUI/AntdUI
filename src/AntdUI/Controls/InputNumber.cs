@@ -40,7 +40,6 @@ namespace AntdUI
         /// 支持清除
         /// </summary>
         [Browsable(false), Description("支持清除"), Category("行为"), DefaultValue(false)]
-        [System.Obsolete("AllowClear 在 InputNumber 中无效，请不要再使用")]
         public new bool AllowClear
         {
             get => false;

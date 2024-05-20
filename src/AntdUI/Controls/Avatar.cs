@@ -65,6 +65,7 @@ namespace AntdUI
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
         [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color Back
         {
             get => back;
@@ -139,6 +140,22 @@ namespace AntdUI
             {
                 if (image == value) return;
                 image = value;
+                Invalidate();
+            }
+        }
+
+        string? imageSvg = null;
+        /// <summary>
+        /// 图片SVG
+        /// </summary>
+        [Description("图片SVG"), Category("外观"), DefaultValue(null)]
+        public string? ImageSvg
+        {
+            get => imageSvg;
+            set
+            {
+                if (imageSvg == value) return;
+                imageSvg = value;
                 Invalidate();
             }
         }
@@ -268,23 +285,22 @@ namespace AntdUI
             if (_rect.Width == 0 || _rect.Height == 0) return;
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
-            if (borderWidth > 0)
+
+            var rect = ReadRectangle;
+            if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
+            FillRect(g, rect, back, _radius, round);
+
+            if (image != null) g.PaintImg(rect, image, imageFit, _radius, round);
+            else if (imageSvg != null)
             {
-                var rect = ReadRectangle;
-                if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
-                FillRect(g, rect, back, _radius, round);
-                if (image != null) g.PaintImg(rect, image, imageFit, _radius, round);
-                else PaintText(g, text, rect, stringCenter, Enabled);
-                DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
+                using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))
+                {
+                    if (bmp == null) PaintText(g, text, rect, stringCenter, Enabled);
+                    else g.PaintImg(rect, bmp, imageFit, _radius, round);
+                }
             }
-            else
-            {
-                var rect = ReadRectangle;
-                if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
-                FillRect(g, rect, back, _radius, round);
-                if (image != null) g.PaintImg(rect, image, imageFit, _radius, round);
-                else PaintText(g, text, rect, stringCenter, Enabled);
-            }
+            else PaintText(g, text, rect, stringCenter, Enabled);
+            if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
             this.PaintBadge(g);
             base.OnPaint(e);
         }

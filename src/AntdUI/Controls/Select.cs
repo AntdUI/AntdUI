@@ -358,10 +358,7 @@ namespace AntdUI
                         if (subForm == null)
                         {
                             var objs = new List<object>(items.Count);
-                            foreach (var it in items)
-                            {
-                                objs.Add(it);
-                            }
+                            foreach (var it in items) objs.Add(it);
                             Expand = true;
                             subForm = new LayeredFormSelectDown(this, ReadRectangle, objs, filtertext);
                             subForm.Disposed += (a, b) =>

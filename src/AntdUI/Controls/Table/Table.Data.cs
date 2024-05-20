@@ -213,7 +213,7 @@ namespace AntdUI
 
         bool showFixedColumnL = false, showFixedColumnR = false;
         int sFixedR = 0;
-        int[]? fixedColumnL = null, fixedColumnR = null;
+        List<int>? fixedColumnL = null, fixedColumnR = null;
         void ExtractHeader()
         {
             if (columns == null) return;
@@ -246,8 +246,8 @@ namespace AntdUI
                         }
                     }
                 }
-                if (_fixedColumnL.Count > 0) fixedColumnL = _fixedColumnL.ToArray(); else fixedColumnL = null;
-                if (_fixedColumnR.Count > 0) fixedColumnR = _fixedColumnR.ToArray(); else fixedColumnR = null;
+                if (_fixedColumnL.Count > 0) fixedColumnL = _fixedColumnL; else fixedColumnL = null;
+                if (_fixedColumnR.Count > 0) fixedColumnR = _fixedColumnR; else fixedColumnR = null;
             }
             else fixedColumnL = fixedColumnR = null;
         }

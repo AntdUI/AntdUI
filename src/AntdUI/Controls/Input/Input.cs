@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Globalization;
@@ -90,6 +89,7 @@ namespace AntdUI
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
         [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color? Fore
         {
             get => fore;
@@ -109,6 +109,7 @@ namespace AntdUI
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
         [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color? Back
         {
             get => back;
@@ -317,6 +318,7 @@ namespace AntdUI
         /// </summary>
         [Description("图标"), Category("外观"), DefaultValue(null)]
         [Obsolete("使用 Prefix 属性替代"), Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Image? Image
         {
             get => prefix;
@@ -331,6 +333,7 @@ namespace AntdUI
 
         [Description("图标SVG"), Category("外观"), DefaultValue(null)]
         [Obsolete("使用 PrefixSvg 属性替代"), Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string? ImageSvg
         {
             get => prefixSvg;
@@ -485,7 +488,7 @@ namespace AntdUI
         internal bool isempty = true;
         string _text = "";
         [Description("文本"), Category("外观"), DefaultValue("")]
-        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public override string Text
         {
             get => _text;
@@ -1153,11 +1156,11 @@ namespace AntdUI
         #endregion
 
         int CurrentPosIndex = 0;
-        void SetCaretPostion()
+        internal void SetCaretPostion()
         {
             SetCaretPostion(CurrentPosIndex);
         }
-        void SetCaretPostion(int PosIndex)
+        internal void SetCaretPostion(int PosIndex)
         {
             CurrentPosIndex = PosIndex;
             if (showCaret)

@@ -578,7 +578,6 @@ namespace AntdUI
                 hove_max.Switch = _max;
                 hove_min.Switch = _min;
             }
-            SetCursor(_close || _max || _min);
             base.OnMouseMove(e);
         }
 
@@ -605,18 +604,26 @@ namespace AntdUI
                         {
                             if (maximizeBox)
                             {
-                                if (form is BaseForm form_win) form_win.MaxRestore();
+                                if (form is BaseForm form_win) IsMax = form_win.MaxRestore();
                                 else
                                 {
-                                    if (form.WindowState == FormWindowState.Maximized) form.WindowState = FormWindowState.Normal;
-                                    else form.WindowState = FormWindowState.Maximized;
+                                    if (form.WindowState == FormWindowState.Maximized)
+                                    {
+                                        IsMax = false;
+                                        form.WindowState = FormWindowState.Normal;
+                                    }
+                                    else
+                                    {
+                                        IsMax = true;
+                                        form.WindowState = FormWindowState.Maximized;
+                                    }
                                 }
                                 return;
                             }
                         }
                         else
                         {
-                            if (form is Window form_win) form_win.ControlMouseDown();
+                            if (form is BaseForm form_win) form_win.DraggableMouseDown();
                             else
                             {
                                 Vanara.PInvoke.User32.ReleaseCapture();
@@ -636,26 +643,26 @@ namespace AntdUI
                 var form = Parent.FindPARENT();
                 if (form != null)
                 {
-                    if (form.WindowState == FormWindowState.Maximized)
-                    {
-                        IsMax = false;
-                        form.WindowState = FormWindowState.Normal;
-                    }
+                    if (form is BaseForm form_win) IsMax = form_win.MaxRestore();
                     else
                     {
-                        IsMax = true;
-                        form.WindowState = FormWindowState.Maximized;
+                        if (form.WindowState == FormWindowState.Maximized)
+                        {
+                            IsMax = false;
+                            form.WindowState = FormWindowState.Normal;
+                        }
+                        else
+                        {
+                            IsMax = true;
+                            form.WindowState = FormWindowState.Maximized;
+                        }
                     }
                 }
             }
             else if (hove_min.Down && rect_min.Contains(e.Location))
             {
                 var form = Parent.FindPARENT();
-                if (form != null)
-                {
-                    IsMax = false;
-                    form.WindowState = FormWindowState.Minimized;
-                }
+                if (form != null) form.WindowState = FormWindowState.Minimized;
             }
             hove_close.Down = hove_max.Down = hove_min.Down = false;
             base.OnMouseUp(e);

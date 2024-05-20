@@ -30,48 +30,12 @@ namespace AntdUI
         {
             base.OnMouseClick(e);
             if (rows == null || CellClick == null) return;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            int px = e.X + sx, py = e.Y + sy;
-            for (int i_row = 0; i_row < rows.Length; i_row++)
+            var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out _, out int offset_y, out int i_row, out int i_cel, out int mode);
+            if (cel_sel != null)
             {
                 var it = rows[i_row];
-                if (it.Contains(e.X, py))
-                {
-                    if (showFixedColumnL && fixedColumnL != null)
-                    {
-                        foreach (var i_col in fixedColumnL)
-                        {
-                            var item = it.cells[i_col];
-                            if (item.CONTAINS(e.X, py))
-                            {
-                                CellClick.Invoke(this, e, it.RECORD, i_row, i_col, new Rectangle(item.RECT.X, item.RECT.Y - sy, item.RECT.Width, item.RECT.Height));
-                                return;
-                            }
-                        }
-                    }
-                    if (showFixedColumnR && fixedColumnR != null)
-                    {
-                        foreach (var i_col in fixedColumnR)
-                        {
-                            var item = it.cells[i_col];
-                            if (item.CONTAINS(e.X + sFixedR, py))
-                            {
-                                CellClick.Invoke(this, e, it.RECORD, i_row, i_col, new Rectangle(item.RECT.X - sFixedR, item.RECT.Y - sy, item.RECT.Width, item.RECT.Height));
-                                return;
-                            }
-                        }
-                    }
-                    for (int i_col = 0; i_col < it.cells.Length; i_col++)
-                    {
-                        var item = it.cells[i_col];
-                        if (item.CONTAINS(px, py))
-                        {
-                            CellClick.Invoke(this, e, it.RECORD, i_row, i_col, new Rectangle(item.RECT.X - sx, item.RECT.Y - sy, item.RECT.Width, item.RECT.Height));
-                            return;
-                        }
-                    }
-                    return;
-                }
+                var item = it.cells[i_cel];
+                CellClick?.Invoke(this, e, it.RECORD, i_row, i_cel, new Rectangle(item.RECT.X - offset_x, item.RECT.Y - offset_y, item.RECT.Width, item.RECT.Height));
             }
         }
 
@@ -79,66 +43,18 @@ namespace AntdUI
         {
             base.OnMouseDoubleClick(e);
             if (rows == null) return;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            int px = e.X + sx, py = e.Y + sy;
-            for (int i_row = 0; i_row < rows.Length; i_row++)
+            var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+            if (cel_sel != null)
             {
                 var it = rows[i_row];
-                if (it.Contains(e.X, py))
+                var item = it.cells[i_cel];
+                if (editmode == TEditMode.DoubleClick)
                 {
-                    if (showFixedColumnL && fixedColumnL != null)
-                    {
-                        foreach (var i_col in fixedColumnL)
-                        {
-                            var item = it.cells[i_col];
-                            if (item.CONTAINS(e.X, py))
-                            {
-                                if (editmode == TEditMode.DoubleClick)
-                                {
-                                    //进入编辑模式
-                                    EditModeClose();
-                                    OnEditMode(it, item, i_row, i_col, 0, sy);
-                                }
-                                CellDoubleClick?.Invoke(this, e, it.RECORD, i_row, i_col, new Rectangle(item.RECT.X, item.RECT.Y - sy, item.RECT.Width, item.RECT.Height));
-                                return;
-                            }
-                        }
-                    }
-                    if (showFixedColumnR && fixedColumnR != null)
-                    {
-                        foreach (var i_col in fixedColumnR)
-                        {
-                            var item = it.cells[i_col];
-                            if (item.CONTAINS(e.X + sFixedR, py))
-                            {
-                                if (editmode == TEditMode.DoubleClick)
-                                {
-                                    //进入编辑模式
-                                    EditModeClose();
-                                    OnEditMode(it, item, i_row, i_col, sFixedR, sy);
-                                }
-                                CellDoubleClick?.Invoke(this, e, it.RECORD, i_row, i_col, new Rectangle(item.RECT.X - sFixedR, item.RECT.Y - sy, item.RECT.Width, item.RECT.Height));
-                                return;
-                            }
-                        }
-                    }
-                    for (int i_col = 0; i_col < it.cells.Length; i_col++)
-                    {
-                        var item = it.cells[i_col];
-                        if (item.CONTAINS(px, py))
-                        {
-                            if (editmode == TEditMode.DoubleClick)
-                            {
-                                //进入编辑模式
-                                EditModeClose();
-                                OnEditMode(it, item, i_row, i_col, sx, sy);
-                            }
-                            CellDoubleClick?.Invoke(this, e, it.RECORD, i_row, i_col, new Rectangle(item.RECT.X - sx, item.RECT.Y - sy, item.RECT.Width, item.RECT.Height));
-                            return;
-                        }
-                    }
-                    return;
+                    //进入编辑模式
+                    EditModeClose();
+                    OnEditMode(it, item, i_row, i_cel, offset_xi, offset_y);
                 }
+                CellDoubleClick?.Invoke(this, e, it.RECORD, i_row, i_cel, new Rectangle(item.RECT.X - offset_x, item.RECT.Y - offset_y, item.RECT.Width, item.RECT.Height));
             }
         }
 
@@ -151,146 +67,62 @@ namespace AntdUI
             {
                 base.OnMouseDown(e);
                 if (rows == null) return;
-                int px = e.X + scrollBar.ValueX, py = e.Y + scrollBar.ValueY;
-                for (int i_row = 0; i_row < rows.Length; i_row++)
+                var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out _, out _, out _, out int i_row, out int i_cel, out int mode);
+                if (cel_sel == null) return;
+                else
                 {
                     var it = rows[i_row];
-                    if (it.IsColumn)
+                    if (mode > 0)
                     {
-                        if (fixedHeader)
+                        if (moveheaders.Length > 0)
                         {
-                            if (it.CONTAINS(e.X, e.Y))
+                            foreach (var item in moveheaders)
                             {
-                                SelectedIndex = -1;
-                                if (moveheaders.Length > 0)
+                                if (item.rect.Contains(r_x, r_y))
                                 {
-                                    foreach (var item in moveheaders)
-                                    {
-                                        if (item.rect.Contains(e.Location))
-                                        {
-                                            item.x = e.X;
-                                            item.MouseDown = true;
-                                            return;
-                                        }
-                                    }
+                                    item.x = e.X;
+                                    Window.CanHandMessage = false;
+                                    item.MouseDown = true;
+                                    return;
                                 }
-                                if (has_check)
-                                {
-                                    if (showFixedColumnL && fixedColumnL != null)
-                                    {
-                                        foreach (var i in fixedColumnL)
-                                        {
-                                            if (MouseDownRowColumn(e, it, (TCellColumn)it.cells[i], rows, e.X, e.Y)) return;
-                                        }
-                                    }
-                                    if (showFixedColumnR && fixedColumnR != null)
-                                    {
-                                        foreach (var i in fixedColumnR)
-                                        {
-                                            if (MouseDownRowColumn(e, it, (TCellColumn)it.cells[i], rows, e.X + sFixedR, e.Y)) return;
-                                        }
-                                    }
-                                    foreach (TCellColumn item in it.cells)
-                                    {
-                                        if (MouseDownRowColumn(e, it, item, rows, px, e.Y)) return;
-                                    }
-                                }
+                            }
+                        }
+                        var cell = (TCellColumn)it.cells[i_cel];
+                        cell.MouseDown = true;
+                        if (cell.column is ColumnCheck columnCheck)
+                        {
+                            if (e.Button == MouseButtons.Left && cell.Contains(r_x, r_y))
+                            {
+                                ChangeCheckOverall(rows, it, columnCheck, !columnCheck.Checked);
                                 return;
                             }
                         }
-                        else if (it.CONTAINS(e.X, py))
-                        {
-                            SelectedIndex = -1;
-                            if (moveheaders.Length > 0)
-                            {
-                                foreach (var item in moveheaders)
-                                {
-                                    if (item.rect.Contains(e.Location))
-                                    {
-                                        item.x = e.X;
-                                        item.MouseDown = true;
-                                        return;
-                                    }
-                                }
-                            }
-                            if (has_check)
-                            {
-                                if (showFixedColumnL && fixedColumnL != null)
-                                {
-                                    foreach (var i in fixedColumnL)
-                                    {
-                                        if (MouseDownRowColumn(e, it, (TCellColumn)it.cells[i], rows, e.X, py)) return;
-                                    }
-                                }
-                                if (showFixedColumnR && fixedColumnR != null)
-                                {
-                                    foreach (var i in fixedColumnR)
-                                    {
-                                        if (MouseDownRowColumn(e, it, (TCellColumn)it.cells[i], rows, e.X + sFixedR, py)) return;
-                                    }
-                                }
-                                foreach (TCellColumn item in it.cells)
-                                {
-                                    if (MouseDownRowColumn(e, it, item, rows, px, py)) return;
-                                }
-                            }
-                            return;
-                        }
                     }
-                    else if (it.Contains(e.X, py))
-                    {
-                        if (showFixedColumnL && fixedColumnL != null)
-                        {
-                            foreach (var i in fixedColumnL) if (MouseDownRow(e, it.cells[i], e.X, py)) return;
-                        }
-                        if (showFixedColumnR && fixedColumnR != null)
-                        {
-                            foreach (var i in fixedColumnR) if (MouseDownRow(e, it.cells[i], e.X + sFixedR, py)) return;
-                        }
-                        for (int i_col = 0; i_col < it.cells.Length; i_col++) if (MouseDownRow(e, it.cells[i_col], px, py)) return;
-                        return;
-                    }
+                    else MouseDownRow(e, it.cells[i_cel], r_x, r_y);
                 }
             }
         }
 
-        bool MouseDownRowColumn(MouseEventArgs e, RowTemplate it, TCellColumn cell, RowTemplate[] rows, int x, int y)
+        void MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
         {
-            if (cell.tag is ColumnCheck columnCheck)
+            cell.MouseDown = true;
+            if (cell is Template template && template.HasBtn && e.Button == MouseButtons.Left)
             {
-                if (e.Button == MouseButtons.Left && cell.Contains(x, y))
+                foreach (var item in template.value)
                 {
-                    ChangeCheckOverall(rows, it, columnCheck, !columnCheck.Checked);
-                    return true;
-                }
-            }
-            return false;
-        }
-        bool MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
-        {
-            if (cell.CONTAINS(x, y))
-            {
-                cell.MouseDown = true;
-                if (cell is Template template && template.HasBtn && e.Button == MouseButtons.Left)
-                {
-                    foreach (var item in template.value)
+                    if (item is TemplateButton btn_template)
                     {
-                        if (item is TemplateButton btn_template)
+                        if (btn_template.Value.Enabled)
                         {
-                            if (btn_template.Value.Enabled)
+                            if (btn_template.RECT.Contains(x, y))
                             {
-                                if (btn_template.RECT.Contains(x, y))
-                                {
-                                    btn_template.ExtraMouseDown = true;
-                                    return true;
-                                }
+                                btn_template.ExtraMouseDown = true;
+                                return;
                             }
                         }
                     }
                 }
-                return true;
             }
-            return false;
         }
 
         #endregion
@@ -300,138 +132,198 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            if (moveheaders.Length > 0)
+            {
+                foreach (var item in moveheaders)
+                {
+                    if (item.MouseDown)
+                    {
+                        int width = item.width + e.X - item.x;
+                        if (width < item.min_width) width = item.min_width;
+                        if (tmpcol_width.ContainsKey(item.i)) tmpcol_width[item.i] = width;
+                        else tmpcol_width.Add(item.i, width);
+                        item.MouseDown = false;
+                        Window.CanHandMessage = true;
+                        LoadLayout();
+                        Invalidate();
+                        return;
+                    }
+                }
+            }
             if (scrollBar.MouseUpY() && scrollBar.MouseUpX())
             {
                 if (rows == null) return;
-                if (moveheaders.Length > 0)
-                {
-                    foreach (var item in moveheaders)
-                    {
-                        if (item.MouseDown)
-                        {
-                            int width = item.width + e.X - item.x;
-                            if (width < item.min_width) width = item.min_width;
-                            if (tmpcol_width.ContainsKey(item.i)) tmpcol_width[item.i] = width;
-                            else tmpcol_width.Add(item.i, width);
-                            item.MouseDown = false;
-                            LoadLayout();
-                            Invalidate();
-                            return;
-                        }
-                    }
-                }
-                int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-                int px = e.X + sx, py = e.Y + sy;
                 for (int i_row = 0; i_row < rows.Length; i_row++)
                 {
                     var it = rows[i_row];
-                    if (showFixedColumnL && fixedColumnL != null)
-                    {
-                        foreach (var i in fixedColumnL) if (MouseUpRow(it, it.cells[i], e, i_row, i, e.X, py, 0, sy)) return;
-                    }
-                    if (showFixedColumnR && fixedColumnR != null)
-                    {
-                        foreach (var i in fixedColumnR) if (MouseUpRow(it, it.cells[i], e, i_row, i, e.X + sFixedR, py, sFixedR, sy)) return;
-                    }
                     for (int i_col = 0; i_col < it.cells.Length; i_col++)
                     {
-                        var item = it.cells[i_col];
-                        if (MouseUpRow(it, item, e, i_row, i_col, px, py, sx, sy)) return;
+                        if (MouseUpRow(rows, it, it.cells[i_col], e, i_row, i_col)) return;
                     }
                 }
             }
         }
 
         Input? edit_input = null;
-        bool MouseUpRow(RowTemplate it, TCell cell, MouseEventArgs e, int i_row, int i_col, int x, int y, int sx, int sy)
+        bool MouseUpRow(RowTemplate[] rows, RowTemplate it, TCell cell, MouseEventArgs e, int i_r, int i_c)
         {
             if (cell.MouseDown)
             {
-                SelectedIndex = i_row;
-                if (e.Button == MouseButtons.Left)
+                var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                if (cel_sel == null || (i_r != i_row || i_c != i_cel)) cell.MouseDown = false;
+                else
                 {
-                    if (cell is TCellCheck checkCell)
+                    SelectedIndex = i_r;
+                    if (e.Button == MouseButtons.Left)
                     {
-                        if (checkCell.Contains(x, y))
+                        if (cell is TCellCheck checkCell)
                         {
-                            checkCell.Checked = !checkCell.Checked;
-                            it.Checked = checkCell.Checked;
-                            cell.PROPERTY?.SetValue(cell.VALUE, checkCell.Checked);
-                            CheckedChanged?.Invoke(this, checkCell.Checked, it.RECORD, i_row, i_col);
-                        }
-                    }
-                    else if (cell is TCellRadio radioCell)
-                    {
-                        if (radioCell.Contains(x, y) && !radioCell.Checked)
-                        {
-                            if (rows != null)
+                            if (checkCell.Contains(r_x, r_y))
                             {
-                                for (int i = 0; i < rows.Length; i++)
+                                checkCell.Checked = !checkCell.Checked;
+                                it.Checked = checkCell.Checked;
+                                cell.PROPERTY?.SetValue(cell.VALUE, checkCell.Checked);
+                                CheckedChanged?.Invoke(this, checkCell.Checked, it.RECORD, i_r, i_c);
+                            }
+                        }
+                        else if (cell is TCellRadio radioCell)
+                        {
+                            if (radioCell.Contains(r_x, r_y) && !radioCell.Checked)
+                            {
+                                if (rows != null)
                                 {
-                                    if (i != i_row)
+                                    for (int i = 0; i < rows.Length; i++)
                                     {
-                                        var cell2 = rows[i].cells[i_col];
-                                        if (cell2 is TCellRadio radioCell2 && radioCell2.Checked)
+                                        if (i != i_r)
                                         {
-                                            radioCell2.Checked = false;
-                                            rows[i].Checked = false;
-                                            cell2.PROPERTY?.SetValue(cell2.VALUE, radioCell2.Checked);
+                                            var cell2 = rows[i].cells[i_c];
+                                            if (cell2 is TCellRadio radioCell2 && radioCell2.Checked)
+                                            {
+                                                radioCell2.Checked = false;
+                                                rows[i].Checked = false;
+                                                cell2.PROPERTY?.SetValue(cell2.VALUE, radioCell2.Checked);
+                                            }
                                         }
                                     }
                                 }
+                                radioCell.Checked = true;
+                                it.Checked = true;
+                                cell.PROPERTY?.SetValue(cell.VALUE, radioCell.Checked);
+                                CheckedChanged?.Invoke(this, radioCell.Checked, it.RECORD, i_r, i_c);
                             }
-                            radioCell.Checked = true;
-                            it.Checked = true;
-                            cell.PROPERTY?.SetValue(cell.VALUE, radioCell.Checked);
-                            CheckedChanged?.Invoke(this, radioCell.Checked, it.RECORD, i_row, i_col);
                         }
-                    }
-                    else if (cell is TCellSwitch switchCell)
-                    {
-                        if (switchCell.Contains(x, y) && !switchCell.Loading && switchCell.column.Call != null)
+                        else if (cell is TCellSwitch switchCell)
                         {
-                            switchCell.Loading = true;
-                            ITask.Run(() =>
+                            if (switchCell.Contains(r_x, r_y) && !switchCell.Loading && switchCell.column.Call != null)
                             {
-                                var value = switchCell.column.Call(!switchCell.Checked, it.RECORD, i_row, i_col);
-                                if (switchCell.Checked == value) return;
-                                switchCell.Checked = value;
-                                cell.PROPERTY?.SetValue(cell.VALUE, value);
-                            }).ContinueWith(action =>
-                            {
-                                switchCell.Loading = false;
-                            });
-                        }
-                    }
-                    else if (cell is Template template && template.HasBtn)
-                    {
-                        foreach (var item in template.value)
-                        {
-                            if (item is TemplateButton btn)
-                            {
-                                if (btn.ExtraMouseDown)
+                                switchCell.Loading = true;
+                                ITask.Run(() =>
                                 {
-                                    if (btn.RECT.Contains(x, y))
+                                    var value = switchCell.column.Call(!switchCell.Checked, it.RECORD, i_r, i_c);
+                                    if (switchCell.Checked == value) return;
+                                    switchCell.Checked = value;
+                                    cell.PROPERTY?.SetValue(cell.VALUE, value);
+                                }).ContinueWith(action =>
+                                {
+                                    switchCell.Loading = false;
+                                });
+                            }
+                        }
+                        else if (it.IsColumn && ((TCellColumn)cell).column.SortOrder)
+                        {
+                            //点击排序
+                            var col = (TCellColumn)cell;
+                            int SortMode;
+                            if (col.rect_up.Contains(r_x, r_y)) SortMode = 1;
+                            else if (col.rect_down.Contains(r_x, r_y)) SortMode = 2;
+                            else
+                            {
+                                SortMode = col.column.SortMode + 1;
+                                if (SortMode > 2) SortMode = 0;
+                            }
+                            if (col.column.SortMode != SortMode)
+                            {
+                                col.column.SortMode = SortMode;
+                                foreach (TCellColumn item in it.cells)
+                                {
+                                    if (item.column.SortOrder && item.INDEX != i_c) item.column.SortMode = 0;
+                                }
+                                Invalidate();
+                                switch (SortMode)
+                                {
+                                    case 1:
+                                        SortDataASC(col.column.Key);
+                                        break;
+                                    case 2:
+                                        SortDataDESC(col.column.Key);
+                                        break;
+                                    case 0:
+                                    default:
+                                        SortData = null;
+                                        break;
+                                }
+                                LoadLayout();
+                            }
+                        }
+                        else if (cell is Template template && template.HasBtn)
+                        {
+                            foreach (var item in template.value)
+                            {
+                                if (item is TemplateButton btn)
+                                {
+                                    if (btn.ExtraMouseDown)
                                     {
-                                        if (btn.Value is CellButton) btn.Click();
-                                        CellButtonClick?.Invoke(this, btn.Value, e, it.RECORD, i_row, i_col);
+                                        if (btn.RECT.Contains(r_x, r_y))
+                                        {
+                                            if (btn.Value is CellButton) btn.Click();
+                                            CellButtonClick?.Invoke(this, btn.Value, e, it.RECORD, i_r, i_c);
+                                        }
+                                        btn.ExtraMouseDown = false;
                                     }
-                                    btn.ExtraMouseDown = false;
                                 }
                             }
                         }
+                        else if (editmode == TEditMode.Click)
+                        {
+                            //进入编辑模式
+                            EditModeClose();
+                            OnEditMode(it, cell, i_r, i_c, offset_xi, offset_y);
+                        }
                     }
-                    else if (editmode == TEditMode.Click)
-                    {
-                        //进入编辑模式
-                        EditModeClose();
-                        OnEditMode(it, cell, i_row, i_col, sx, sy);
-                    }
+                    cell.MouseDown = false;
                 }
-                cell.MouseDown = false;
                 return true;
             }
             return false;
+        }
+
+        int[]? SortData = null;
+        List<SortModel> SortDatas(string key)
+        {
+            if (data_temp == null) return new List<SortModel>(0);
+            var list = new List<SortModel>(data_temp.rows.Length);
+            for (int i_r = 0; i_r < data_temp.rows.Length; i_r++)
+            {
+                var value = OGetValue(data_temp, i_r, key);
+                list.Add(new SortModel(i_r, value?.ToString()));
+            }
+            return list;
+        }
+        void SortDataASC(string key)
+        {
+            var list = SortDatas(key);
+            list.Sort((x, y) => FilesNameComparerClass.Compare(x, y));
+            var SortTmp = new List<int>(list.Count);
+            foreach (var it in list) SortTmp.Add(it.i);
+            SortData = SortTmp.ToArray();
+        }
+        void SortDataDESC(string key)
+        {
+            var list = SortDatas(key);
+            list.Sort((y, x) => FilesNameComparerClass.Compare(x, y));
+            var SortTmp = new List<int>(list.Count);
+            foreach (var it in list) SortTmp.Add(it.i);
+            SortData = SortTmp.ToArray();
         }
 
         bool inEditMode = false;
@@ -450,12 +342,8 @@ namespace AntdUI
             if (rows == null) return;
             if (it.AnimationHover)
             {
-                ITask.Run(() =>
-                {
-                    System.Threading.Thread.Sleep(100);
-                    OnEditMode(it, cell, i_row, i_col, sx, sy);
-                });
-                return;
+                it.ThreadHover?.Dispose();
+                it.ThreadHover = null;
             }
             if (cell is TCellText cellText)
             {
@@ -471,10 +359,7 @@ namespace AntdUI
                 scrollBar.OnInvalidate = () => EditModeClose();
                 BeginInvoke(new Action(() =>
                 {
-                    for (int i = 0; i < rows.Length; i++)
-                    {
-                        rows[i].hover = i == i_row;
-                    }
+                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
                     int height = Helper.GDI(g =>
                     {
                         return height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
@@ -488,35 +373,11 @@ namespace AntdUI
                             cellText.value = _value;
                             if (cell.PROPERTY != null)
                             {
-                                if (value is int)
-                                {
-                                    if (int.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                }
-                                else if (value is double)
-                                {
-                                    if (double.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                }
-                                else if (value is float)
-                                {
-                                    if (float.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                }
-                                else cell.PROPERTY.SetValue(cell.VALUE, _value);
+                                if (GetValue(value, _value, out var o)) cell.PROPERTY.SetValue(cell.VALUE, o);
                             }
                             else if (it.RECORD is DataRow datarow)
                             {
-                                if (value is int)
-                                {
-                                    if (int.TryParse(_value, out var value)) datarow[i_col] = value;
-                                }
-                                else if (value is double)
-                                {
-                                    if (double.TryParse(_value, out var value)) datarow[i_col] = value;
-                                }
-                                else if (value is float)
-                                {
-                                    if (float.TryParse(_value, out var value)) datarow[i_col] = value;
-                                }
-                                else datarow[i_col] = _value;
+                                if (GetValue(value, _value, out var o)) datarow[i_col] = o;
                             }
                             EditModeClose();
                         }
@@ -569,35 +430,11 @@ namespace AntdUI
                                         text.Value.Text = _value;
                                         if (cell.PROPERTY != null)
                                         {
-                                            if (value is int)
-                                            {
-                                                if (int.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                            }
-                                            else if (value is double)
-                                            {
-                                                if (double.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                            }
-                                            else if (value is float)
-                                            {
-                                                if (float.TryParse(_value, out var value)) cell.PROPERTY.SetValue(cell.VALUE, value);
-                                            }
-                                            else cell.PROPERTY.SetValue(cell.VALUE, _value);
+                                            if (GetValue(value, _value, out var o)) cell.PROPERTY.SetValue(cell.VALUE, o);
                                         }
                                         else if (it.RECORD is DataRow datarow)
                                         {
-                                            if (value is int)
-                                            {
-                                                if (int.TryParse(_value, out var value)) datarow[i_col] = value;
-                                            }
-                                            else if (value is double)
-                                            {
-                                                if (double.TryParse(_value, out var value)) datarow[i_col] = value;
-                                            }
-                                            else if (value is float)
-                                            {
-                                                if (float.TryParse(_value, out var value)) datarow[i_col] = value;
-                                            }
-                                            else datarow[i_col] = _value;
+                                            if (GetValue(value, _value, out var o)) datarow[i_col] = o;
                                         }
                                     }
                                     EditModeClose();
@@ -618,62 +455,71 @@ namespace AntdUI
             }
         }
 
+        bool GetValue(object? value, string _value, out object read)
+        {
+            if (value is int)
+            {
+                if (int.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else if (value is double)
+            {
+                if (double.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else if (value is decimal)
+            {
+                if (decimal.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else if (value is float)
+            {
+                if (float.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else
+            {
+                read = _value;
+                return true;
+            }
+            read = _value;
+            return false;
+        }
+
         Input ShowInput(TCell cell, int sx, int sy, int height, object? value, Action<string> call)
         {
             Input input;
-            string old_text;
-            if (value is int val_int)
+            if (value is CellText text2)
             {
-                old_text = val_int.ToString();
-                input = new InputNumber
+                input = new Input
                 {
                     Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
                     Size = new Size(cell.RECT.Width, height),
-                    Value = val_int
-                };
-            }
-            else if (value is double val_double)
-            {
-                old_text = val_double.ToString();
-                input = new InputNumber
-                {
-                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                    Size = new Size(cell.RECT.Width, height),
-                    Value = new decimal(val_double)
-                };
-            }
-            else if (value is float val_float)
-            {
-                old_text = val_float.ToString();
-                input = new InputNumber
-                {
-                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                    Size = new Size(cell.RECT.Width, height),
-                    Value = new decimal(val_float)
+                    Text = text2.Text ?? ""
                 };
             }
             else
             {
-                if (value is CellText text2)
+                input = new Input
                 {
-                    input = new Input
-                    {
-                        Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                        Size = new Size(cell.RECT.Width, height),
-                        Text = text2.Text ?? ""
-                    };
-                }
-                else
-                {
-                    input = new Input
-                    {
-                        Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                        Size = new Size(cell.RECT.Width, height),
-                        Text = value?.ToString() ?? ""
-                    };
-                }
-                old_text = input.Text;
+                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
+                    Size = new Size(cell.RECT.Width, height),
+                    Text = value?.ToString() ?? ""
+                };
             }
+            string old_text = input.Text;
             input.KeyPress += (a, b) =>
             {
                 if (b.KeyChar == 13 && a is Input input)
@@ -713,124 +559,36 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (moveheaders.Length > 0)
+            {
+                foreach (var item in moveheaders)
+                {
+                    if (item.MouseDown)
+                    {
+                        int width = item.width + e.X - item.x;
+                        if (width < item.min_width) return;
+                        if (tmpcol_width.ContainsKey(item.i)) tmpcol_width[item.i] = width;
+                        else tmpcol_width.Add(item.i, width);
+                        LoadLayout();
+                        Invalidate();
+                        Cursor = Cursors.VSplit;
+                        return;
+                    }
+                }
+            }
             if (scrollBar.MouseMoveY(e.Location) && scrollBar.MouseMoveX(e.Location))
             {
                 if (rows == null || inEditMode) return;
-
-                if (moveheaders.Length > 0)
+                var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                if (cel_sel == null)
                 {
-                    foreach (var item in moveheaders)
+                    foreach (RowTemplate it in rows)
                     {
-                        if (item.MouseDown)
+                        if (it.IsColumn) continue;
+                        it.Hover = false;
+                        foreach (var cel_tmp in it.cells)
                         {
-                            int width = item.width + e.X - item.x;
-                            if (width < item.min_width) return;
-                            if (tmpcol_width.ContainsKey(item.i)) tmpcol_width[item.i] = width;
-                            else tmpcol_width.Add(item.i, width);
-                            LoadLayout();
-                            Invalidate();
-                            return;
-                        }
-                    }
-                }
-                int hand = 0;
-                int px = e.X + scrollBar.ValueX, py = e.Y + scrollBar.ValueY;
-                foreach (RowTemplate it in rows)
-                {
-                    if (it.IsColumn)
-                    {
-                        if (fixedHeader)
-                        {
-                            if (it.CONTAINS(e.X, e.Y))
-                            {
-                                if (moveheaders.Length > 0)
-                                {
-                                    foreach (var item in moveheaders)
-                                    {
-                                        if (item.rect.Contains(e.Location))
-                                        {
-                                            Cursor = Cursors.VSplit;
-                                            return;
-                                        }
-                                    }
-                                }
-                                if (has_check)
-                                {
-                                    if (showFixedColumnL && fixedColumnL != null)
-                                    {
-                                        foreach (var i in fixedColumnL) MouseMoveRowColumn((TCellColumn)it.cells[i], ref hand, e.X, e.Y);
-                                    }
-                                    if (showFixedColumnR && fixedColumnR != null)
-                                    {
-                                        foreach (var i in fixedColumnR) MouseMoveRowColumn((TCellColumn)it.cells[i], ref hand, e.X + sFixedR, e.Y);
-                                    }
-                                    foreach (TCellColumn item in it.cells) MouseMoveRowColumn(item, ref hand, px, e.Y);
-                                }
-                                for (int i = 1; i < rows.Length; i++) rows[i].Hover = false;
-                                SetCursor(hand > 0);
-                                return;
-                            }
-                        }
-                        else if (it.CONTAINS(e.X, py))
-                        {
-                            if (moveheaders.Length > 0)
-                            {
-                                foreach (var item in moveheaders)
-                                {
-                                    if (item.rect.Contains(e.Location))
-                                    {
-                                        Cursor = Cursors.VSplit;
-                                        return;
-                                    }
-                                }
-                            }
-                            if (has_check)
-                            {
-                                if (showFixedColumnL && fixedColumnL != null)
-                                {
-                                    foreach (var i in fixedColumnL) MouseMoveRowColumn((TCellColumn)it.cells[i], ref hand, e.X, py);
-                                }
-                                if (showFixedColumnR && fixedColumnR != null)
-                                {
-                                    foreach (var i in fixedColumnR) MouseMoveRowColumn((TCellColumn)it.cells[i], ref hand, e.X + sFixedR, py);
-                                }
-                                foreach (TCellColumn item in it.cells) MouseMoveRowColumn(item, ref hand, px, py);
-                            }
-                            for (int i = 1; i < rows.Length; i++) rows[i].Hover = false;
-                            SetCursor(hand > 0);
-                            return;
-                        }
-                    }
-                    else if (it.Contains(e.X, py))
-                    {
-                        var hasi = new List<int>();
-                        if (showFixedColumnL && fixedColumnL != null)
-                        {
-                            foreach (var i in fixedColumnL)
-                            {
-                                hasi.Add(i);
-                                MouseMoveRow(it.cells[i], ref hand, e.X, py);
-                            }
-                        }
-                        if (showFixedColumnR && fixedColumnR != null)
-                        {
-                            foreach (var i in fixedColumnR)
-                            {
-                                hasi.Add(i);
-                                MouseMoveRow(it.cells[i], ref hand, e.X + sFixedR, py);
-                            }
-                        }
-                        for (int i = 0; i < it.cells.Length; i++)
-                        {
-                            if (hasi.Contains(i)) continue;
-                            MouseMoveRow(it.cells[i], ref hand, px, py);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var cel in it.cells)
-                        {
-                            if (cel is Template template && template.HasBtn)
+                            if (cel_tmp is Template template && template.HasBtn)
                             {
                                 foreach (var item in template.value)
                                 {
@@ -839,41 +597,95 @@ namespace AntdUI
                             }
                         }
                     }
+                    SetCursor(false);
                 }
-                SetCursor(hand > 0);
+                else
+                {
+                    if (mode > 0)
+                    {
+                        for (int i = 1; i < rows.Length; i++)
+                        {
+                            rows[i].Hover = false;
+                            foreach (var cel_tmp in rows[i].cells)
+                            {
+                                if (cel_tmp is Template template && template.HasBtn)
+                                {
+                                    foreach (var item in template.value)
+                                    {
+                                        if (item is TemplateButton btn) btn.ExtraMouseHover = false;
+                                    }
+                                }
+                            }
+                        }
+                        var cel = (TCellColumn)cel_sel;
+                        if (moveheaders.Length > 0)
+                        {
+                            foreach (var item in moveheaders)
+                            {
+                                if (item.rect.Contains(r_x, r_y))
+                                {
+                                    Cursor = Cursors.VSplit;
+                                    return;
+                                }
+                            }
+                        }
+                        if (cel.SortWidth > 0) SetCursor(true);
+                        else if (has_check && cel.column is ColumnCheck && cel.Contains(r_x, r_y)) SetCursor(true);
+                        else SetCursor(false);
+                    }
+                    else
+                    {
+                        for (int i = 1; i < rows.Length; i++)
+                        {
+                            if (i == i_row) rows[i].Hover = true;
+                            else
+                            {
+                                rows[i].Hover = false;
+                                foreach (var cel_tmp in rows[i].cells)
+                                {
+                                    if (cel_tmp is Template template && template.HasBtn)
+                                    {
+                                        foreach (var item in template.value)
+                                        {
+                                            if (item is TemplateButton btn) btn.ExtraMouseHover = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        SetCursor(MouseMoveRow(cel_sel, r_x, r_y, offset_x, offset_xi, offset_y));
+                    }
+                }
             }
             else ILeave();
         }
 
-        void MouseMoveRowColumn(TCellColumn cel, ref int hand, int x, int y)
-        {
-            if (cel.tag is ColumnCheck)
-            {
-                if (cel.Contains(x, y)) hand++;
-            }
-        }
-        void MouseMoveRow(TCell cel, ref int hand, int x, int y)
+        bool MouseMoveRow(TCell cel, int x, int y, int offset_x, int offset_xi, int offset_y)
         {
             if (cel is TCellCheck checkCell)
             {
-                if (checkCell.Contains(x, y)) hand++;
+                if (checkCell.Contains(x, y)) return true;
+                return false;
             }
             else if (cel is TCellRadio radioCell)
             {
-                if (radioCell.Contains(x, y)) hand++;
+                if (radioCell.Contains(x, y)) return true;
+                return false;
             }
             else if (cel is TCellSwitch switchCell)
             {
-                if (switchCell.column.Call == null) return;
+                if (switchCell.column.Call == null) return false;
                 if (switchCell.Contains(x, y))
                 {
-                    hand++;
                     switchCell.ExtraMouseHover = true;
+                    return true;
                 }
                 else switchCell.ExtraMouseHover = false;
+                return false;
             }
             else if (cel is Template template && template.HasBtn)
             {
+                int hand = 0;
                 foreach (var item in template.value)
                 {
                     if (item is TemplateButton btn_template)
@@ -886,21 +698,22 @@ namespace AntdUI
                         else btn_template.ExtraMouseHover = false;
                     }
                 }
+                return hand > 0;
             }
-            else if (ShowTip && cel.CONTAINS(x, y))
+            else if (ShowTip)
             {
                 var moveid = cel.INDEX + "_" + cel.ROW.INDEX;
                 if (oldmove != moveid)
                 {
                     CloseTip();
                     oldmove = moveid;
-                    if (cel.MinWidth > cel.RECT.Width)
+                    if (cel.MinWidth > cel.rect.Width)
                     {
                         var text = cel.ToString();
-                        if (text != null)
+                        if (!string.IsNullOrEmpty(text))
                         {
                             var _rect = RectangleToScreen(ClientRectangle);
-                            var rect = new Rectangle(_rect.X + cel.RECT.X, _rect.Y + cel.RECT.Y, cel.RECT.Width, cel.RECT.Height);
+                            var rect = new Rectangle(_rect.X + cel.RECT.X - offset_xi, _rect.Y + cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
                             if (tooltipForm == null)
                             {
                                 tooltipForm = new TooltipForm(rect, text, new TooltipConfig
@@ -915,6 +728,7 @@ namespace AntdUI
                     }
                 }
             }
+            return false;
         }
         string? oldmove = null;
         TooltipForm? tooltipForm = null;
@@ -923,6 +737,216 @@ namespace AntdUI
             tooltipForm?.IClose();
             tooltipForm = null;
             if (clear) oldmove = null;
+        }
+
+        #endregion
+
+        #region 判断是否在内部
+
+        TCell? CellContains(RowTemplate[] rows, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
+        {
+            mode = 0;
+            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int px = ex + sx, py = ey + sy;
+            foreach (RowTemplate it in rows)
+            {
+                if (it.IsColumn)
+                {
+                    if (fixedHeader)
+                    {
+                        if (it.CONTAINS(ex, ey))
+                        {
+                            mode = 2;
+                            var hasi = new List<int>();
+                            if (showFixedColumnL && fixedColumnL != null)
+                            {
+                                foreach (var i in fixedColumnL)
+                                {
+                                    hasi.Add(i);
+                                    var cel = it.cells[i];
+                                    if (cel.CONTAINS(ex, ey))
+                                    {
+                                        r_x = ex;
+                                        r_y = ey;
+
+                                        offset_x = offset_xi = 0;
+                                        offset_y = sy;
+
+                                        i_row = it.INDEX;
+                                        i_cel = i;
+                                        return cel;
+                                    }
+                                }
+                            }
+                            if (showFixedColumnR && fixedColumnR != null)
+                            {
+                                foreach (var i in fixedColumnR)
+                                {
+                                    hasi.Add(i);
+                                    var cel = it.cells[i];
+                                    if (cel.CONTAINS(ex + sFixedR, ey))
+                                    {
+                                        r_x = ex + sFixedR;
+                                        r_y = ey;
+
+                                        offset_x = -sFixedR;
+                                        offset_xi = sFixedR;
+                                        offset_y = sy;
+
+                                        i_row = it.INDEX;
+                                        i_cel = i;
+                                        return cel;
+                                    }
+                                }
+                            }
+                            for (int i = 0; i < it.cells.Length; i++)
+                            {
+                                if (hasi.Contains(i)) continue;
+                                var cel = it.cells[i];
+                                if (cel.CONTAINS(px, ey))
+                                {
+                                    r_x = px;
+                                    r_y = ey;
+
+                                    offset_x = offset_xi = sx;
+                                    offset_y = sy;
+
+                                    i_row = it.INDEX;
+                                    i_cel = i;
+                                    return cel;
+                                }
+                            }
+                        }
+                    }
+                    else if (it.CONTAINS(ex, py))
+                    {
+                        mode = 1;
+                        var hasi = new List<int>();
+                        if (showFixedColumnL && fixedColumnL != null)
+                        {
+                            foreach (var i in fixedColumnL)
+                            {
+                                hasi.Add(i);
+                                var cel = it.cells[i];
+                                if (cel.CONTAINS(ex, py))
+                                {
+                                    r_x = ex;
+                                    r_y = py;
+
+                                    offset_x = offset_xi = 0;
+                                    offset_y = sy;
+
+                                    i_row = it.INDEX;
+                                    i_cel = i;
+                                    return cel;
+                                }
+                            }
+                        }
+                        if (showFixedColumnR && fixedColumnR != null)
+                        {
+                            foreach (var i in fixedColumnR)
+                            {
+                                hasi.Add(i);
+                                var cel = it.cells[i];
+                                if (cel.CONTAINS(ex + sFixedR, py))
+                                {
+                                    r_x = ex + sFixedR;
+                                    r_y = py;
+
+                                    offset_x = -sFixedR;
+                                    offset_xi = sFixedR;
+                                    offset_y = sy;
+
+                                    i_row = it.INDEX;
+                                    i_cel = i;
+                                    return cel;
+                                }
+                            }
+                        }
+                        for (int i = 0; i < it.cells.Length; i++)
+                        {
+                            if (hasi.Contains(i)) continue;
+                            var cel = it.cells[i];
+                            if (cel.CONTAINS(px, py))
+                            {
+                                r_x = px;
+                                r_y = py;
+
+                                offset_x = offset_xi = sx;
+                                offset_y = sy;
+
+                                i_row = it.INDEX;
+                                i_cel = i;
+                                return cel;
+                            }
+                        }
+                    }
+                }
+                else if (it.Contains(ex, py))
+                {
+                    var hasi = new List<int>();
+                    if (showFixedColumnL && fixedColumnL != null)
+                    {
+                        foreach (var i in fixedColumnL)
+                        {
+                            hasi.Add(i);
+                            var cel = it.cells[i];
+                            if (cel.CONTAINS(ex, py))
+                            {
+                                r_x = ex;
+                                r_y = py;
+
+                                offset_x = offset_xi = 0;
+                                offset_y = sy;
+
+                                i_row = it.INDEX;
+                                i_cel = i;
+                                return cel;
+                            }
+                        }
+                    }
+                    if (showFixedColumnR && fixedColumnR != null)
+                    {
+                        foreach (var i in fixedColumnR)
+                        {
+                            hasi.Add(i);
+                            var cel = it.cells[i];
+                            if (cel.CONTAINS(ex + sFixedR, py))
+                            {
+                                r_x = ex + sFixedR;
+                                r_y = py;
+
+                                offset_x = -sFixedR;
+                                offset_xi = sFixedR;
+                                offset_y = sy;
+
+                                i_row = it.INDEX;
+                                i_cel = i;
+                                return cel;
+                            }
+                        }
+                    }
+                    for (int i = 0; i < it.cells.Length; i++)
+                    {
+                        if (hasi.Contains(i)) continue;
+                        var cel = it.cells[i];
+                        if (cel.CONTAINS(px, py))
+                        {
+                            r_x = px;
+                            r_y = py;
+
+                            offset_x = offset_xi = sx;
+                            offset_y = sy;
+
+                            i_row = it.INDEX;
+                            i_cel = i;
+                            return cel;
+                        }
+                    }
+                }
+            }
+            r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
+            return null;
         }
 
         #endregion

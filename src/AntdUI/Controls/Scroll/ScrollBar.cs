@@ -479,6 +479,7 @@ namespace AntdUI
                 }
                 else SliderX = slider.X;
                 SliderDownX = true;
+                Window.CanHandMessage = false;
                 return false;
             }
             return true;
@@ -500,6 +501,7 @@ namespace AntdUI
                 }
                 else SliderY = slider.Y;
                 SliderDownY = true;
+                Window.CanHandMessage = false;
                 return false;
             }
             return true;
@@ -559,6 +561,7 @@ namespace AntdUI
             if (SliderDownX)
             {
                 SliderDownX = false;
+                Window.CanHandMessage = true;
                 return false;
             }
             return true;
@@ -568,6 +571,7 @@ namespace AntdUI
             if (SliderDownY)
             {
                 SliderDownY = false;
+                Window.CanHandMessage = true;
                 return false;
             }
             return true;

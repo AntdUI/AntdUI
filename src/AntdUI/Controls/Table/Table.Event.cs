@@ -144,9 +144,9 @@ namespace AntdUI
         public event BeginEditInputStyleEventHandler? CellBeginEditInputStyle;
 
         /// <summary>
-        /// 编辑前发生
+        /// 编辑后发生
         /// </summary>
-        [Description("编辑前发生"), Category("行为")]
+        [Description("编辑后发生"), Category("行为")]
         public event EndEditEventHandler? CellEndEdit;
 
         #endregion

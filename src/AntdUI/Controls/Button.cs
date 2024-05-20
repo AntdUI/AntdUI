@@ -82,6 +82,7 @@ namespace AntdUI
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
         [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color? Fore
         {
             get => fore;
@@ -101,6 +102,7 @@ namespace AntdUI
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
         [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color? Back
         {
             get => back;

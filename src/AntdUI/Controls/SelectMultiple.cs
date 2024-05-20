@@ -117,11 +117,37 @@ namespace AntdUI
             {
                 if (selectedValue == value) return;
                 selectedValue = value;
-                if (value == null || items == null || items.Count == 0) ChangeValueNULL();
+                if (value == null || items == null || items.Count == 0)
+                {
+                    ClearSelect();
+                    SelectedValueChanged?.Invoke(this, selectedValue);
+                    return;
+                }
                 CalculateRect();
                 Invalidate();
                 SelectedValueChanged?.Invoke(this, selectedValue);
             }
+        }
+
+        /// <summary>
+        /// 全选项目
+        /// </summary>
+        public void SelectAllItems()
+        {
+            if (items == null) return;
+            var selecteds = new List<object>(items.Count);
+            foreach (object it in items)
+            {
+                if (it is DividerSelectItem) { }
+                else selecteds.Add(it);
+            }
+            selectedValue = selecteds.ToArray();
+            CalculateRect();
+            SetCaretPostion();
+
+            if (subForm == null) return;
+            subForm.selectedValue = selecteds;
+            subForm.Print();
         }
 
         /// <summary>
@@ -131,10 +157,17 @@ namespace AntdUI
         public event ObjectsEventHandler? SelectedValueChanged = null;
 
         object[] selectedValue = new object[0];
-        void ChangeValueNULL()
+        /// <summary>
+        /// 清空选中
+        /// </summary>
+        public void ClearSelect()
         {
             Text = "";
             selectedValue = new object[0];
+            CalculateRect();
+            SetCaretPostion();
+            Invalidate();
+
             if (subForm == null) return;
             subForm.selectedValue = new List<object>(0);
             subForm.Print();
@@ -213,9 +246,20 @@ namespace AntdUI
                     var height = g.MeasureString(Config.NullText, Font).Size().Height;
                     List<RectangleF> _rect_left = new List<RectangleF>(selectedValue.Length), _rect_left_txt = new List<RectangleF>(selectedValue.Length), _rect_left_del = new List<RectangleF>(selectedValue.Length);
                     int y = (rect_read.Height - height) / 2, use = y, gap = (int)(2 * Config.Dpi);
-                    foreach (var it in selectedValue)
+                    for (int i = 0; i < selectedValue.Length; i++)
                     {
+                        var it = selectedValue[i];
                         var size = g.MeasureString(it.ToString(), Font).Size();
+                        var size2 = g.MeasureString("+" + (selectedValue.Length - i), Font).Size();
+                        if ((use + size.Width + height + gap + (size2.Width + gap)) > rect_read.Width)
+                        {
+                            //超出
+                            _rect_left_txt.Add(new RectangleF(rect_read.X + use, rect_read.Y + y, size2.Width, height));
+                            rect_left_txts = _rect_left_txt.ToArray();
+                            rect_left_dels = _rect_left_del.ToArray();
+                            rect_lefts = _rect_left.ToArray();
+                            return use + size2.Width + gap;
+                        }
                         var rect = new RectangleF(rect_read.X + use, rect_read.Y + y, size.Width, height);
                         _rect_left_txt.Add(rect);
                         _rect_left_del.Add(new RectangleF(rect.Right - (y - gap), rect.Y, height, height));
@@ -234,22 +278,26 @@ namespace AntdUI
 
         internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
-            if (selectedValue.Length > 0 && rect_lefts.Length == selectedValue.Length)
+            if (selectedValue.Length > 0 && rect_lefts.Length > 0)
             {
-                for (int i = 0; i < selectedValue.Length; i++)
+                using (var brush = new SolidBrush(Style.Db.TagDefaultColor))
                 {
-                    var it = selectedValue[i];
-                    using (var path = rect_lefts[i].RoundPath(radius))
+                    for (int i = 0; i < rect_lefts.Length; i++)
                     {
-                        using (var brush = new SolidBrush(Style.Db.TagDefaultBg))
+                        var it = selectedValue[i];
+                        using (var path = rect_lefts[i].RoundPath(radius))
                         {
-                            g.FillPath(brush, path);
+                            using (var brushbg = new SolidBrush(Style.Db.TagDefaultBg))
+                            {
+                                g.FillPath(brushbg, path);
+                            }
                         }
-                    }
-                    g.PaintIconError(rect_left_dels[i], Style.Db.TagDefaultColor, 0.34F, 0.05F);
-                    using (var brush = new SolidBrush(Style.Db.TagDefaultColor))
-                    {
+                        g.PaintIconError(rect_left_dels[i], Style.Db.TagDefaultColor, 0.34F, 0.05F);
                         g.DrawString(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
+                    }
+                    if (rect_lefts.Length != selectedValue.Length)
+                    {
+                        g.DrawString("+" + (selectedValue.Length - rect_lefts.Length), Font, brush, rect_left_txts[rect_left_txts.Length - 1], sf_center);
                     }
                 }
             }
@@ -401,11 +449,7 @@ namespace AntdUI
 
         internal override void OnClearValue()
         {
-            if (selectedValue.Length > 0)
-            {
-                ChangeValueNULL();
-                Invalidate();
-            }
+            if (selectedValue.Length > 0) ClearSelect();
             else ClickDown();
         }
 
