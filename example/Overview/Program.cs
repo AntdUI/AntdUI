@@ -24,12 +24,14 @@ namespace Overview
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] arge)
         {
+            bool istop = false;
+            if (arge.Length > 0) { if (arge[0] == "t") istop = true; }
             //AntdUI.Localization.Provider = new Localizer();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            Application.Run(new Main(istop));
         }
     }
     public class Localizer : AntdUI.ILocalization
