@@ -161,23 +161,64 @@ namespace AntdUI
         {
             using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
-                foreach (TCellColumn column in row.cells)
+                if (dragHeader != null)
                 {
-                    if (column.column.SortOrder)
+                    foreach (TCellColumn column in row.cells)
                     {
-                        using (var bmp = SvgExtend.GetImgExtend(arrow_up_svg, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                        if (column.column.SortOrder)
                         {
-                            if (bmp != null)
-                                g.DrawImage(bmp, column.rect_up);
+                            using (var bmp = SvgExtend.GetImgExtend(arrow_up_svg, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                            {
+                                if (bmp != null)
+                                    g.DrawImage(bmp, column.rect_up);
+                            }
+                            using (var bmp = SvgExtend.GetImgExtend(arrow_down_svg, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                            {
+                                if (bmp != null)
+                                    g.DrawImage(bmp, column.rect_down);
+                            }
                         }
-                        using (var bmp = SvgExtend.GetImgExtend(arrow_down_svg, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                        if (column.column is ColumnCheck) PaintCheck(g, row, column);
+                        else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
+
+                        if (dragHeader.i == column.INDEX)
                         {
-                            if (bmp != null)
-                                g.DrawImage(bmp, column.rect_down);
+                            using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                            {
+                                g.FillRectangle(brush, column.RECT);
+                            }
+                        }
+                        if (dragHeader.im == column.INDEX)
+                        {
+                            using (var brush_split = new SolidBrush(Style.Db.BorderColor))
+                            {
+                                int sp = (int)(2 * Config.Dpi);
+                                if (dragHeader.last) g.FillRectangle(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                                else g.FillRectangle(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                            }
                         }
                     }
-                    if (column.column is ColumnCheck) PaintCheck(g, row, column);
-                    else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
+                }
+                else
+                {
+                    foreach (TCellColumn column in row.cells)
+                    {
+                        if (column.column.SortOrder)
+                        {
+                            using (var bmp = SvgExtend.GetImgExtend(arrow_up_svg, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                            {
+                                if (bmp != null)
+                                    g.DrawImage(bmp, column.rect_up);
+                            }
+                            using (var bmp = SvgExtend.GetImgExtend(arrow_down_svg, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                            {
+                                if (bmp != null)
+                                    g.DrawImage(bmp, column.rect_down);
+                            }
+                        }
+                        if (column.column is ColumnCheck) PaintCheck(g, row, column);
+                        else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
+                    }
                 }
             }
         }
@@ -240,6 +281,13 @@ namespace AntdUI
                 foreach (var o in obj.value) o.Paint(g, it, Font, fore);
             }
             else if (it is TCellText text) g.DrawString(text.value, Font, fore, text.rect, StringF(text.column));
+            if (dragHeader != null && dragHeader.i == it.INDEX)
+            {
+                using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                {
+                    g.FillRectangle(brush, it.RECT);
+                }
+            }
         }
 
         void PaintFixedColumnL(Graphics g, Rectangle rect, RowTemplate[] rows, List<RowTemplate> shows, SolidBrush fore, SolidBrush brush_split, int sx, int sy)

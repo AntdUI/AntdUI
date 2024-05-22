@@ -41,6 +41,14 @@ namespace AntdUI
 
         #region 属性
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new FormBorderStyle FormBorderStyle
+        {
+            get => base.FormBorderStyle;
+        }
+
         bool CanMessageFilter { get => shadow < 4; }
 
         int shadow = 10;
@@ -168,7 +176,7 @@ namespace AntdUI
         BorderlessFormShadow? skin = null;
         void ShowSkin()
         {
-            if (Visible && shadow > 0 && !DesignMode)
+            if (Visible && !ismax && shadow > 0 && !DesignMode)
             {
                 if (skin != null) skin.Visible = true;
                 else
@@ -229,6 +237,16 @@ namespace AntdUI
         }
 
         #endregion
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.Style |= (int)WindowStyles.WS_MINIMIZEBOX;
+                return cp;
+            }
+        }
 
         /// <summary>
         /// 窗体圆角
@@ -350,14 +368,19 @@ namespace AntdUI
         /// </summary>
         public override void DraggableMouseDown()
         {
-            if (ismax)
+            if (isMax)
             {
-                ismax = false;
+                isMax = false;
+                var mousePosition2 = MousePosition;
+                float offsetXRatio = 1F - (float)old.Width / Width, offsetYRatio = (float)old.Height / Height;
                 Size = old.Size;
-                Location = old.Location;
+                Location = new Point((int)(mousePosition2.X * offsetXRatio), (int)(mousePosition2.Y * offsetYRatio));
             }
             ReleaseCapture();
             SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
+            var mousePosition = MousePosition;
+            var screen = Screen.FromPoint(mousePosition);
+            if (mousePosition.Y == screen.WorkingArea.Top && MaximizeBox) Max();
         }
 
         #endregion
@@ -370,7 +393,7 @@ namespace AntdUI
         /// <returns>可以调整</returns>
         public override bool ResizableMouseMove()
         {
-            if (!ismax && winState == WState.Restore)
+            if (!isMax && winState == WState.Restore)
             {
                 var retval = HitTest(PointToClient(MousePosition));
                 if (retval != HitTestValues.HTNOWHERE)
@@ -392,7 +415,7 @@ namespace AntdUI
         /// <returns>可以调整</returns>
         public override bool ResizableMouseMove(Point point)
         {
-            if (!ismax && winState == WState.Restore)
+            if (!isMax && winState == WState.Restore)
             {
                 var retval = HitTest(point);
                 if (retval != HitTestValues.HTNOWHERE)
@@ -467,44 +490,60 @@ namespace AntdUI
 
         #region 程序
 
+        public override bool IsMax
+        {
+            get => isMax || winState == WState.Maximize;
+        }
+
         /// <summary>
         /// 最大化/还原
         /// </summary>
         public override bool MaxRestore()
         {
-            if (ismax)
+            if (isMax)
             {
-                ismax = false;
+                isMax = false;
                 Size = old.Size;
                 Location = old.Location;
             }
             else
             {
+                isMax = true;
                 old = new Rectangle(Location, Size);
                 var rect = Screen.FromPoint(MousePosition).WorkingArea;
                 WindowState = FormWindowState.Normal;
                 Location = rect.Location;
                 Size = rect.Size;
-                ismax = true;
             }
-            return ismax;
+            return isMax;
         }
 
         Rectangle old;
         bool ismax = false;
+        bool isMax
+        {
+            get => ismax;
+            set
+            {
+                if (ismax == value) return;
+                ismax = value;
+                if (value) { if (skin != null) skin.Visible = false; }
+                else ShowSkin();
+            }
+        }
 
         /// <summary>
         /// 最大化
         /// </summary>
         public override void Max()
         {
-            if (ismax) return;
+            if (isMax) return;
+            isMax = true;
             old = new Rectangle(Location, Size);
             var rect = Screen.FromPoint(MousePosition).WorkingArea;
             WindowState = FormWindowState.Normal;
             Location = rect.Location;
             Size = rect.Size;
-            ismax = true;
         }
 
         /// <summary>

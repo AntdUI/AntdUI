@@ -57,6 +57,11 @@ namespace AntdUI
             WindowState = FormWindowState.Minimized;
         }
 
+        public virtual bool IsMax
+        {
+            get => WindowState == FormWindowState.Maximized;
+        }
+
         /// <summary>
         /// 最大化/还原
         /// </summary>

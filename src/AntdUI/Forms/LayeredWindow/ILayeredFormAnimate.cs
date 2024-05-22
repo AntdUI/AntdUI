@@ -187,7 +187,7 @@ namespace AntdUI
 
         internal void SetPositionCenter(int w)
         {
-            if (Align == TAlignFrom.Top)
+            if (Align == TAlignFrom.Top || Align == TAlignFrom.Bottom)
             {
                 int x = TargetRect.X + (w - TargetRect.Width) / 2;
                 SetLocationX(x);

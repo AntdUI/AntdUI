@@ -46,6 +46,7 @@ namespace AntdUI
             set
             {
                 if (columns == value) return;
+                SortHeader = null;
                 if (!EmptyHeader && dataSource == null)
                 {
                     columns = value;
@@ -73,6 +74,7 @@ namespace AntdUI
             set
             {
                 dataSource = value;
+                SortData = null;
                 ExtractData();
                 LoadLayout();
                 Invalidate();
@@ -134,6 +136,12 @@ namespace AntdUI
         /// </summary>
         [Description("手动调整列头宽度"), Category("行为"), DefaultValue(false)]
         public bool EnableHeaderResizing { get; set; }
+
+        /// <summary>
+        /// 列拖拽排序
+        /// </summary>
+        [Description("列拖拽排序"), Category("行为"), DefaultValue(false)]
+        public bool ColumnDragSort { get; set; }
 
         /// <summary>
         /// 焦点离开清空选中
@@ -522,6 +530,8 @@ namespace AntdUI
         /// 列是否固定
         /// </summary>
         public bool Fixed { get; set; }
+
+        internal int INDEX { get; set; }
 
         /// <summary>
         /// 头部排序

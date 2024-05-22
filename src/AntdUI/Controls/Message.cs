@@ -179,6 +179,11 @@ namespace AntdUI
             /// </summary>
             public int AutoClose { get; set; } = 6;
 
+            /// <summary>
+            /// 方向
+            /// </summary>
+            public TAlignFrom Align { get; set; } = TAlignFrom.Top;
+
             public void OK(string text)
             {
                 Icon = TType.Success;
@@ -225,7 +230,7 @@ namespace AntdUI
             });
             IInit();
         }
-        internal override TAlignFrom Align => TAlignFrom.Top;
+        internal override TAlignFrom Align => config.Align;
 
         bool loading = false, loadingend = true;
         int AnimationLoadingValue = 0;

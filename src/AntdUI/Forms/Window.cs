@@ -116,8 +116,6 @@ namespace AntdUI
 
         internal HWND handle { get; private set; }
 
-        readonly IntPtr TRUE = new IntPtr(1);
-
         protected override void OnHandleCreated(EventArgs e)
         {
             handle = new HWND(Handle);
@@ -298,6 +296,11 @@ namespace AntdUI
 
         #region 鼠标
 
+        public override bool IsMax
+        {
+            get => winState == WState.Maximize;
+        }
+
         public static bool CanHandMessage = true;
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {
@@ -376,19 +379,20 @@ namespace AntdUI
 
             if (IsZoomed(handle))
             {
-                nccsp.rgrc0.top -= borders.Top;
+                nccsp.rgrc0.top -= borders.Top + 1;
                 nccsp.rgrc0.top += borders.Bottom;
                 Marshal.StructureToPtr(nccsp, m.LParam, false);
             }
             else
             {
-                m.Result = TRUE;
-                return true;
+                nccsp.rgrc0.top -= borders.Top;
+                Marshal.StructureToPtr(nccsp, m.LParam, false);
             }
-
-            m.Result = new IntPtr(0x0400);
+            m.Result = RNCCalc;
             return false;
         }
+
+        readonly IntPtr RNCCalc = new IntPtr(0x0400);
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct NCCALCSIZE_PARAMS
@@ -417,14 +421,9 @@ namespace AntdUI
 
         protected Padding GetNonClientMetrics()
         {
-            var rect = RECT.Empty;
             var screenRect = ClientRectangle;
             screenRect.Offset(-Bounds.Left, -Bounds.Top);
-
-            rect.top = screenRect.Top;
-            rect.left = screenRect.Left;
-            rect.bottom = screenRect.Bottom;
-            rect.right = screenRect.Right;
+            var rect = new RECT(screenRect);
             AdjustWindowRectEx(ref rect, (WindowStyles)CreateParams.Style, false, (WindowStylesEx)CreateParams.ExStyle);
             return new Padding
             {

@@ -43,31 +43,6 @@ namespace AntdUI
         Rectangle[] dividers = new Rectangle[0], dividerHs = new Rectangle[0];
         MoveHeader[] moveheaders = new MoveHeader[0];
 
-        internal class MoveHeader
-        {
-            public MoveHeader(Dictionary<int, MoveHeader> dir, Rectangle r, int index, int w, int min)
-            {
-                rect = r;
-                i = index;
-                min_width = min;
-                if (dir.TryGetValue(index, out var find) && find.MouseDown)
-                {
-                    x = find.x;
-                    MouseDown = find.MouseDown;
-                    width = find.width;
-                }
-                else width = w;
-            }
-
-            public Rectangle rect { get; set; }
-
-            public bool MouseDown { get; set; }
-            public int x { get; set; }
-            public int i { get; set; }
-            public int width { get; set; }
-            public int min_width { get; set; }
-        }
-
         void LoadLayout()
         {
             var rect = ChangeLayout();
@@ -91,25 +66,64 @@ namespace AntdUI
                 var _columns = new List<Column>(data_temp.columns.Length);
                 int processing = 0, check_count = 0;
                 var col_width = new Dictionary<int, object>();
-                if (columns == null) foreach (var it in data_temp.columns) _columns.Add(new Column(it.key, it.key));
+                if (columns == null)
+                {
+                    if (SortHeader == null)
+                    {
+                        foreach (var it in data_temp.columns) _columns.Add(new Column(it.key, it.key) { INDEX = _columns.Count });
+                    }
+                    else
+                    {
+                        foreach (var i in SortHeader)
+                        {
+                            var it = data_temp.columns[i];
+                            _columns.Add(new Column(it.key, it.key) { INDEX = i });
+                        }
+                    }
+                }
                 else
                 {
                     int x = 0;
-                    foreach (var it in columns)
+                    if (SortHeader == null)
                     {
-                        _columns.Add(it);
-                        if (it.Width != null)
+                        foreach (var it in columns)
                         {
-                            if (it.Width.EndsWith("%") && float.TryParse(it.Width.TrimEnd('%'), out var f)) col_width.Add(x, f / 100F);
-                            else if (int.TryParse(it.Width, out var i)) col_width.Add(x, (int)(i * Config.Dpi));
-                            else if (it.Width.Contains("fill"))
+                            it.INDEX = _columns.Count;
+                            _columns.Add(it);
+                            if (it.Width != null)
                             {
-                                //填充剩下的
-                                col_width.Add(x, -2);
+                                if (it.Width.EndsWith("%") && float.TryParse(it.Width.TrimEnd('%'), out var f)) col_width.Add(x, f / 100F);
+                                else if (int.TryParse(it.Width, out var i)) col_width.Add(x, (int)(i * Config.Dpi));
+                                else if (it.Width.Contains("fill"))
+                                {
+                                    //填充剩下的
+                                    col_width.Add(x, -2);
+                                }
+                                else col_width.Add(x, -1); //AUTO 
                             }
-                            else col_width.Add(x, -1); //AUTO 
+                            x++;
                         }
-                        x++;
+                    }
+                    else
+                    {
+                        foreach (var index in SortHeader)
+                        {
+                            var it = columns[index];
+                            it.INDEX = index;
+                            _columns.Add(it);
+                            if (it.Width != null)
+                            {
+                                if (it.Width.EndsWith("%") && float.TryParse(it.Width.TrimEnd('%'), out var f)) col_width.Add(x, f / 100F);
+                                else if (int.TryParse(it.Width, out var i)) col_width.Add(x, (int)(i * Config.Dpi));
+                                else if (it.Width.Contains("fill"))
+                                {
+                                    //填充剩下的
+                                    col_width.Add(x, -2);
+                                }
+                                else col_width.Add(x, -1); //AUTO 
+                            }
+                            x++;
+                        }
                     }
                 }
 
@@ -492,19 +506,6 @@ namespace AntdUI
                 if (rect_read.Width > sum_wi) rect_read.Width = sum_wi;
             }
             return width_cell;
-        }
-
-        internal class AutoWidth
-        {
-            /// <summary>
-            /// 自动值
-            /// </summary>
-            public int value { get; set; }
-
-            /// <summary>
-            /// 最小值
-            /// </summary>
-            public int minvalue { get; set; }
         }
 
         #region 动画

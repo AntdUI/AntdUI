@@ -97,6 +97,16 @@ namespace AntdUI
                                 return;
                             }
                         }
+                        if (ColumnDragSort)
+                        {
+                            dragHeader = new DragHeader
+                            {
+                                i = cell.INDEX,
+                                x = e.X
+                            };
+                            Cursor = Cursors.SizeAll;
+                            return;
+                        }
                     }
                     else MouseDownRow(e, it.cells[i_cel], r_x, r_y);
                 }
@@ -149,6 +159,42 @@ namespace AntdUI
                         return;
                     }
                 }
+            }
+            else if (dragHeader != null)
+            {
+                if (dragHeader.im != -1)
+                {
+                    //执行排序
+                    if (rows == null) return;
+                    var cells = rows[0].cells;
+                    var sortHeader = new List<int>(cells.Length);
+                    int dim = dragHeader.im, di = dragHeader.i;
+                    if (SortHeader != null)
+                    {
+                        foreach (var item in SortHeader)
+                        {
+                            var it = (TCellColumn)cells[item];
+                            if (dragHeader.im == it.INDEX) dim = it.column.INDEX;
+                            if (dragHeader.i == it.INDEX) di = it.column.INDEX;
+                        }
+                    }
+                    foreach (TCellColumn it in cells)
+                    {
+                        int index = it.column.INDEX;
+                        if (index == dim)
+                        {
+                            if (dragHeader.last) sortHeader.Add(index);
+                            if (sortHeader.Contains(di)) sortHeader.Remove(di);
+                            sortHeader.Add(di);
+                        }
+                        if (!sortHeader.Contains(index)) sortHeader.Add(index);
+                    }
+                    SortHeader = sortHeader.ToArray();
+                    LoadLayout();
+                }
+                dragHeader = null;
+                Invalidate();
+                return;
             }
             if (scrollBar.MouseUpY() && scrollBar.MouseUpX())
             {
@@ -295,35 +341,6 @@ namespace AntdUI
                 return true;
             }
             return false;
-        }
-
-        int[]? SortData = null;
-        List<SortModel> SortDatas(string key)
-        {
-            if (data_temp == null) return new List<SortModel>(0);
-            var list = new List<SortModel>(data_temp.rows.Length);
-            for (int i_r = 0; i_r < data_temp.rows.Length; i_r++)
-            {
-                var value = OGetValue(data_temp, i_r, key);
-                list.Add(new SortModel(i_r, value?.ToString()));
-            }
-            return list;
-        }
-        void SortDataASC(string key)
-        {
-            var list = SortDatas(key);
-            list.Sort((x, y) => FilesNameComparerClass.Compare(x, y));
-            var SortTmp = new List<int>(list.Count);
-            foreach (var it in list) SortTmp.Add(it.i);
-            SortData = SortTmp.ToArray();
-        }
-        void SortDataDESC(string key)
-        {
-            var list = SortDatas(key);
-            list.Sort((y, x) => FilesNameComparerClass.Compare(x, y));
-            var SortTmp = new List<int>(list.Count);
-            foreach (var it in list) SortTmp.Add(it.i);
-            SortData = SortTmp.ToArray();
         }
 
         bool inEditMode = false;
@@ -547,13 +564,6 @@ namespace AntdUI
 
         #endregion
 
-        protected override void OnLostFocus(EventArgs e)
-        {
-            if (LostFocusClearSelection) SelectedIndex = -1;
-            CloseTip(true);
-            base.OnLostFocus(e);
-        }
-
         #region 鼠标移动
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -575,6 +585,28 @@ namespace AntdUI
                         return;
                     }
                 }
+            }
+            else if (dragHeader != null)
+            {
+                dragHeader.xr = e.X - dragHeader.x;
+                if (rows == null) return;
+                int xr = dragHeader.x + dragHeader.xr;
+                var cells = rows[0].cells;
+                dragHeader.last = e.X > dragHeader.x;
+                foreach (var it in cells)
+                {
+                    if (it.RECT.Contains(xr, it.RECT.Y + 1))
+                    {
+                        if (it.INDEX == dragHeader.i) dragHeader.im = -1;
+                        else dragHeader.im = it.INDEX;
+                        Invalidate();
+                        return;
+                    }
+                }
+                if (cells[cells.Length - 1].INDEX == dragHeader.i) dragHeader.im = -1;
+                else dragHeader.im = cells[cells.Length - 1].INDEX;
+                Invalidate();
+                return;
             }
             if (scrollBar.MouseMoveY(e.Location) && scrollBar.MouseMoveX(e.Location))
             {
@@ -631,6 +663,11 @@ namespace AntdUI
                         }
                         if (cel.SortWidth > 0) SetCursor(true);
                         else if (has_check && cel.column is ColumnCheck && cel.Contains(r_x, r_y)) SetCursor(true);
+                        else if (ColumnDragSort)
+                        {
+                            Cursor = Cursors.SizeAll;
+                            return;
+                        }
                         else SetCursor(false);
                     }
                     else
@@ -950,6 +987,49 @@ namespace AntdUI
         }
 
         #endregion
+
+        DragHeader? dragHeader = null;
+
+        #region 排序
+
+        int[]? SortHeader = null;
+        int[]? SortData = null;
+        List<SortModel> SortDatas(string key)
+        {
+            if (data_temp == null) return new List<SortModel>(0);
+            var list = new List<SortModel>(data_temp.rows.Length);
+            for (int i_r = 0; i_r < data_temp.rows.Length; i_r++)
+            {
+                var value = OGetValue(data_temp, i_r, key);
+                list.Add(new SortModel(i_r, value?.ToString()));
+            }
+            return list;
+        }
+        void SortDataASC(string key)
+        {
+            var list = SortDatas(key);
+            list.Sort((x, y) => FilesNameComparerClass.Compare(x, y));
+            var SortTmp = new List<int>(list.Count);
+            foreach (var it in list) SortTmp.Add(it.i);
+            SortData = SortTmp.ToArray();
+        }
+        void SortDataDESC(string key)
+        {
+            var list = SortDatas(key);
+            list.Sort((y, x) => FilesNameComparerClass.Compare(x, y));
+            var SortTmp = new List<int>(list.Count);
+            foreach (var it in list) SortTmp.Add(it.i);
+            SortData = SortTmp.ToArray();
+        }
+
+        #endregion
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            if (LostFocusClearSelection) SelectedIndex = -1;
+            CloseTip(true);
+            base.OnLostFocus(e);
+        }
 
         /// <summary>
         /// 全局复选框改动时发生

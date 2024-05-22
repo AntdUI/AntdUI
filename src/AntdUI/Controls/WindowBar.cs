@@ -549,7 +549,11 @@ namespace AntdUI
             if (DragMove)
             {
                 var form = Parent.FindPARENT();
-                if (form != null) IsMax = form.WindowState == FormWindowState.Maximized;
+                if (form != null)
+                {
+                    if (form is BaseForm form_win) IsMax = form_win.IsMax;
+                    else IsMax = form.WindowState == FormWindowState.Maximized;
+                }
             }
             base.OnSizeChanged(e);
         }
