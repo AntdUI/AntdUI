@@ -96,10 +96,15 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Progress** 进度条 | ✅ | ❎ |
 :arrow_right: | **Spin** 加载中 | ✅ | ❎ |
 ||||
-:arrow_down: | 其他 `3` | 动画 | 禁用 |
+:arrow_down: | 聊天 `2` | 动画 | 禁用 |
+:arrow_right: | **MsgList** 好友消息列表 | ✅ | ❎ |
+:arrow_right: | **ChatList** 气泡聊天列表 | ✅ | ❎ |
+||||
+:arrow_down: | 其他 `4` | 动画 | 禁用 |
 :arrow_right: | **WindowBar** 窗口栏 | ✅ | ❎ |
+:arrow_right: | **Battery** 电量 | ✅ | ❎ | 
 :arrow_right: | **ContextMenuStrip** 右键菜单 | ✅ | ❎ |
-:arrow_right: | **Image3D** 图片3D | ✅ | ❎ |  
+:arrow_right: | **Image3D** 图片3D | ✅ | ❎ | 
 
 ### 🐿️捐赠 🥣💲🐖👚
 ![Payment](screenshot/Pre/Payment.png?raw=true)

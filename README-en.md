@@ -96,8 +96,13 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Progress** | ✅ | ❎ |
 :arrow_right: | **Spin** | ✅ | ❎ |
 ||||
-:arrow_down: | Other `3` | Animation | Disable |
+:arrow_down: | Chat `2` | 动画 | 禁用 |
+:arrow_right: | **MsgList** Friend message list | ✅ | ❎ |
+:arrow_right: | **ChatList** Chat bubble list | ✅ | ❎ |
+||||
+:arrow_down: | Other `4` | Animation | Disable |
 :arrow_right: | **WindowBar** | ✅ | ❎ |
+:arrow_right: | **Battery** | ✅ | ❎ | 
 :arrow_right: | **ContextMenuStrip** | ✅ | ❎ |
 :arrow_right: | **Image3D** | ✅ | ❎ |  
 
