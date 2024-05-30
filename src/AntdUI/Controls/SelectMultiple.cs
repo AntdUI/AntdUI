@@ -84,6 +84,12 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; } = false;
 
+        /// <summary>
+        /// 焦点时展开下拉
+        /// </summary>
+        [Description("焦点时展开下拉"), Category("行为"), DefaultValue(true)]
+        public bool FocusExpandDropdown { get; set; } = true;
+
         #region 数据
 
         BaseCollection? items;
@@ -390,6 +396,10 @@ namespace AntdUI
             }
         }
 
+        #endregion
+
+        #region 焦点
+
         bool textFocus = false;
         bool TextFocus
         {
@@ -403,7 +413,7 @@ namespace AntdUI
                 }
                 if (value)
                 {
-                    if (!ReadOnly && items != null && items.Count > 0)
+                    if (FocusExpandDropdown && !ReadOnly && items != null && items.Count > 0)
                     {
                         if (subForm == null)
                         {
@@ -437,6 +447,7 @@ namespace AntdUI
             TextFocus = true;
             base.OnGotFocus(e);
         }
+
         protected override void OnLostFocus(EventArgs e)
         {
             TextFocus = false;

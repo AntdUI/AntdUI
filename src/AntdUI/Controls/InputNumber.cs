@@ -206,7 +206,7 @@ namespace AntdUI
         static NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
         static string decimalSeparator = numberFormatInfo.NumberDecimalSeparator, groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
 
-        protected override bool Verify(char key, out char? change)
+        protected override bool Verify(char key, out string? change)
         {
             change = null;
             string keyInput = key.ToString();

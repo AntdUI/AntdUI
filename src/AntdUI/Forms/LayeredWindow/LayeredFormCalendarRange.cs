@@ -449,7 +449,7 @@ namespace AntdUI
                                 it.hover = hove;
                                 if (it.hover)
                                 {
-                                    if (isend) oldtime2 = it.date;
+                                    if (isEnd) oldTimeHover = it.date;
                                     hand++;
                                 }
                             }
@@ -463,7 +463,7 @@ namespace AntdUI
                                 it.hover = hove;
                                 if (it.hover)
                                 {
-                                    if (isend) oldtime2 = it.date;
+                                    if (isEnd) oldTimeHover = it.date;
                                     hand++;
                                 }
                             }
@@ -700,23 +700,22 @@ namespace AntdUI
             base.OnMouseUp(e);
         }
 
-        bool isend = false;
-        DateTime oldtime;
-        DateTime? oldtime2;
+        bool isEnd = false;
+        DateTime? oldTime, oldTimeHover;
         bool SetDate(Calendari item)
         {
-            if (isend)
+            if (isEnd && oldTime.HasValue)
             {
-                if (oldtime == item.date) SelDate = new DateTime[] { item.date, item.date };
-                else if (oldtime < item.date) SelDate = new DateTime[] { oldtime, item.date };
-                else SelDate = new DateTime[] { item.date, oldtime };
+                if (oldTime == item.date) SelDate = new DateTime[] { item.date, item.date };
+                else if (oldTime < item.date) SelDate = new DateTime[] { oldTime.Value, item.date };
+                else SelDate = new DateTime[] { item.date, oldTime.Value };
                 action(SelDate);
-                isend = false;
+                isEnd = false;
                 return false;
             }
             SelDate = null;
-            oldtime2 = oldtime = item.date;
-            isend = true;
+            oldTimeHover = oldTime = item.date;
+            isEnd = true;
             Print();
             return true;
         }
@@ -754,7 +753,7 @@ namespace AntdUI
 
         bool init = false;
         public override void LoadOK()
-        { init = true; Print(); }
+        { init = true; Print(); CanLoadMessage = true; LoadMessage(); }
 
         float AnimationBarValue = 0;
         public void SetArrow(float x)
@@ -1163,7 +1162,6 @@ namespace AntdUI
                     else g.DrawString(_Date_R.ToString("MM") + MonthButton, font, brush_fore, rect_r_r, stringFormatR);
 
                     #endregion
-
                 }
 
                 using (var brush_split = new SolidBrush(Style.Db.Split))
@@ -1234,18 +1232,18 @@ namespace AntdUI
                 using (var brush_bg_activebg = new SolidBrush(Style.Db.PrimaryBg))
                 using (var brush_fore_active = new SolidBrush(Style.Db.PrimaryColor))
                 {
-                    if (oldtime2.HasValue)
+                    if (oldTimeHover.HasValue && oldTime.HasValue)
                     {
-                        if (oldtime2.Value != oldtime && oldtime2.Value > oldtime)
+                        if (oldTimeHover.Value != oldTime.Value && oldTimeHover.Value > oldTime.Value)
                         {
-                            PrintCalendarMutual(g, oldtime2.Value, brush_bg_active, brush_bg_activebg, datas);
-                            PrintCalendarMutual(g, oldtime2.Value, brush_bg_active, brush_bg_activebg, datas2);
+                            PrintCalendarMutual(g, oldTime.Value, oldTimeHover.Value, brush_bg_active, brush_bg_activebg, datas);
+                            PrintCalendarMutual(g, oldTime.Value, oldTimeHover.Value, brush_bg_active, brush_bg_activebg, datas2);
                         }
                         else
                         {
                             foreach (var it in datas)
                             {
-                                if (it.t == 1 && it.date == oldtime)
+                                if (it.t == 1 && it.date == oldTime.Value)
                                 {
                                     using (var path_l = it.rect_read.RoundPath(Radius, true, false, false, true))
                                     {
@@ -1255,7 +1253,7 @@ namespace AntdUI
                             }
                             foreach (var it in datas2)
                             {
-                                if (it.t == 1 && it.date == oldtime)
+                                if (it.t == 1 && it.date == oldTime.Value)
                                 {
                                     using (var path_l = it.rect_read.RoundPath(Radius, true, false, false, true))
                                     {
@@ -1301,17 +1299,17 @@ namespace AntdUI
                 }
             }
         }
-        void PrintCalendarMutual(Graphics g, DateTime oldtime2, Brush brush_bg_active, Brush brush_bg_activebg, List<Calendari> datas)
+        void PrintCalendarMutual(Graphics g, DateTime oldTime, DateTime oldTimeHover, Brush brush_bg_active, Brush brush_bg_activebg, List<Calendari> datas)
         {
             foreach (var it in datas)
             {
                 if (it.t == 1)
                 {
-                    if (it.date > oldtime && it.date < oldtime2)
+                    if (it.date > oldTime && it.date < oldTimeHover)
                     {
                         g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect.X - 1F, it.rect_read.Y, it.rect.Width + 2F, it.rect_read.Height));
                     }
-                    else if (it.date == oldtime)
+                    else if (it.date == oldTime)
                     {
                         g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect_read.Right, it.rect_read.Y, it.rect.Width - it.rect_read.Width, it.rect_read.Height));
                         using (var path_l = it.rect_read.RoundPath(Radius, true, false, false, true))
@@ -1319,7 +1317,7 @@ namespace AntdUI
                             g.FillPath(brush_bg_active, path_l);
                         }
                     }
-                    else if (it.date == oldtime2)
+                    else if (it.date == oldTimeHover)
                     {
                         g.FillRectangle(brush_bg_activebg, new RectangleF(it.rect.X, it.rect_read.Y, it.rect_read.Width, it.rect_read.Height));
                         using (var path_r = it.rect_read.RoundPath(Radius, false, true, true, false))
@@ -1402,12 +1400,12 @@ namespace AntdUI
                     }
                     if (hand)
                     {
-                        if (oldtime2.HasValue && it.date < oldtime)
+                        if ((oldTimeHover.HasValue && oldTime.HasValue) && it.date < oldTime.Value)
                         {
                             g.FillRectangle(brush_bg_disable, new RectangleF(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
                             g.DrawString(it.v, Font, brush_fore_disable, it.rect, stringFormatC);
                         }
-                        else if (oldtime2.HasValue && it.t == 1 && (it.date == oldtime || it.date == oldtime2.Value)) g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
+                        else if ((oldTimeHover.HasValue && oldTime.HasValue) && it.t == 1 && (it.date == oldTime.Value || it.date == oldTimeHover.Value)) g.DrawString(it.v, Font, brush_fore_active, it.rect, stringFormatC);
                         else
                         {
                             if (it.hover) g.FillPath(brush_bg_disable, path);
@@ -1415,12 +1413,6 @@ namespace AntdUI
                         }
                     }
                 }
-            }
-
-            string nowstr = DateNow.ToString("yyyy-MM-dd");
-            if (oldtime2.HasValue)
-            {
-                if (oldtime.ToString("yyyy-MM-dd") == nowstr || oldtime2.Value.ToString("yyyy-MM-dd") == nowstr) return;
             }
 
             if (badge_list.Count > 0)
@@ -1434,6 +1426,13 @@ namespace AntdUI
                 }
             }
 
+            #region 渲染当天
+
+            string nowstr = DateNow.ToString("yyyy-MM-dd");
+            if (oldTimeHover.HasValue && oldTime.HasValue)
+            {
+                if (oldTime.Value.ToString("yyyy-MM-dd") == nowstr || oldTimeHover.Value.ToString("yyyy-MM-dd") == nowstr) return;
+            }
             if (SelDate != null && SelDate.Length > 0)
             {
                 if (SelDate.Length > 1)
@@ -1455,6 +1454,8 @@ namespace AntdUI
                     }
                 }
             }
+
+            #endregion
         }
 
         #endregion

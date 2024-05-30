@@ -84,6 +84,12 @@ namespace AntdUI
         [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
         public bool ClickEnd { get; set; } = false;
 
+        /// <summary>
+        /// 焦点时展开下拉
+        /// </summary>
+        [Description("焦点时展开下拉"), Category("行为"), DefaultValue(true)]
+        public bool FocusExpandDropdown { get; set; } = true;
+
         #region 数据
 
         BaseCollection? items;
@@ -340,6 +346,11 @@ namespace AntdUI
         }
 
         internal int select_x = 0;
+
+        #endregion
+
+        #region 焦点
+
         bool textFocus = false;
         bool TextFocus
         {
@@ -353,7 +364,7 @@ namespace AntdUI
                 }
                 if (value)
                 {
-                    if (!ReadOnly && items != null && items.Count > 0)
+                    if (FocusExpandDropdown && !ReadOnly && items != null && items.Count > 0)
                     {
                         if (subForm == null)
                         {
@@ -386,6 +397,7 @@ namespace AntdUI
             TextFocus = true;
             base.OnGotFocus(e);
         }
+
         protected override void OnLostFocus(EventArgs e)
         {
             TextFocus = false;

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -55,6 +56,7 @@ namespace AntdUI
             }
         }
 
+        bool setvalue = true;
         DateTime? _value = null;
         /// <summary>
         /// 控件当前日期
@@ -67,7 +69,9 @@ namespace AntdUI
             {
                 _value = value;
                 ValueChanged?.Invoke(this, value);
+                setvalue = false;
                 Text = value.HasValue ? value.Value.ToString(Format) : "";
+                setvalue = true;
             }
         }
 
@@ -105,9 +109,20 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; } = false;
 
+        /// <summary>
+        /// 焦点时展开下拉
+        /// </summary>
+        [Description("焦点时展开下拉"), Category("行为"), DefaultValue(true)]
+        public bool FocusExpandDropdown { get; set; } = true;
+
         protected override void CreateHandle()
         {
-            if (_value.HasValue) Text = _value.Value.ToString(Format);
+            if (_value.HasValue)
+            {
+                setvalue = false;
+                Text = _value.Value.ToString(Format);
+                setvalue = true;
+            }
             base.CreateHandle();
         }
 
@@ -163,10 +178,7 @@ namespace AntdUI
 
         #endregion
 
-        #region 动画
-
-        ILayeredForm? subForm = null;
-        public ILayeredForm? SubForm() { return subForm; }
+        #region 焦点
 
         bool textFocus = false;
         bool TextFocus
@@ -176,7 +188,7 @@ namespace AntdUI
             {
                 if (textFocus == value) return;
                 textFocus = value;
-                if (!ReadOnly && value)
+                if (FocusExpandDropdown && !ReadOnly && value)
                 {
                     if (subForm == null)
                     {
@@ -204,11 +216,19 @@ namespace AntdUI
             TextFocus = true;
             base.OnGotFocus(e);
         }
+
         protected override void OnLostFocus(EventArgs e)
         {
             TextFocus = false;
             base.OnLostFocus(e);
         }
+
+        #region 动画
+
+        LayeredFormCalendar? subForm = null;
+        public ILayeredForm? SubForm() { return subForm; }
+
+        #endregion
 
         #endregion
 
@@ -243,13 +263,27 @@ namespace AntdUI
             else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d))
             {
                 Value = _d;
-                if (subForm is LayeredFormCalendar _SubForm)
+                if (subForm != null)
                 {
-                    _SubForm.SelDate = _SubForm.Date = _d;
-                    _SubForm.Print();
+                    subForm.SelDate = subForm.Date = _d;
+                    subForm.Print();
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            if (IsHandleCreated && setvalue && DateTime.TryParseExact(Text, dateFormat.Replace("MM", "M").Replace("dd", "d"), DateTimeFormatInfo.CurrentInfo, DateTimeStyles.None, out var _d))
+            {
+                Value = _d;
+                if (subForm != null)
+                {
+                    subForm.SelDate = subForm.Date = _d;
+                    subForm.Print();
+                }
+            }
+            base.OnTextChanged(e);
         }
 
         #endregion

@@ -71,7 +71,6 @@ namespace AntdUI
                 {
                     int endY = TargetRect.Y;
                     SetAnimateValue(endY, EndHeight, 255);
-                    LoadOK();
                 }
                 else SetAnimateValue(EndHeight, 255);
                 LoadOK();
@@ -111,7 +110,8 @@ namespace AntdUI
 
         #endregion
 
-        public virtual void LoadOK() { }
+        internal override bool CanLoadMessage { get; set; } = false;
+        public virtual void LoadOK() { CanLoadMessage = true; LoadMessage(); }
 
         protected override void OnClosing(CancelEventArgs e)
         {

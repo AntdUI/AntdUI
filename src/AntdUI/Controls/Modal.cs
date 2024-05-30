@@ -83,15 +83,14 @@ namespace AntdUI
                 if (config.Mask)
                 {
                     bool isclose = false;
-                    var ifrm = new LayeredFormMask(config.Form);
-                    ifrm.Show(config.Form);
+                    var formMask = config.Form.FormMask();
                     frm.FormClosed += (s1, e1) =>
                     {
                         if (isclose) return;
                         isclose = true;
-                        ifrm.IClose();
+                        formMask.IClose();
                     };
-                    return frm.ShowDialog(ifrm);
+                    return frm.ShowDialog(formMask);
                 }
                 else
                 {
@@ -286,6 +285,11 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+
+            /// <summary>
+            /// 加载时禁用取消按钮
+            /// </summary>
+            public bool LoadingDisableCancel { get; set; }
 
             #region 自定义按钮
 

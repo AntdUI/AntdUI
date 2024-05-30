@@ -33,8 +33,8 @@ namespace AntdUI
             TopMost = _form.TopMost;
             if (form.WindowState != FormWindowState.Maximized)
             {
-                var version = Environment.OSVersion.Version;
-                if (version.Major >= 10 && version.Build > 22000) Radius = (int)(8 * Config.Dpi); //Win11
+                if (form is BorderlessForm borderless) Radius = (int)(borderless.Radius * Config.Dpi);
+                else if (Helper.OSVersionWin11) Radius = (int)(8 * Config.Dpi); //Win11
                 if (form is Window || form is FormNoBar)
                 {
                     //无边框处理

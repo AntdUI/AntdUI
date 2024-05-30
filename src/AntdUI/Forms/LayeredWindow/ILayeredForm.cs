@@ -41,10 +41,24 @@ namespace AntdUI
         internal Control? PARENT = null;
         internal Func<Keys, bool>? KeyCall = null;
 
+        internal virtual bool CanLoadMessage { get; set; } = true;
+        internal virtual void LoadMessage()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    LoadMessage();
+                }));
+                return;
+            }
+            if (MessageClose) Application.AddMessageFilter(this);
+        }
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            if (MessageClose) Application.AddMessageFilter(this);
+            if (CanLoadMessage) LoadMessage();
         }
         protected override void Dispose(bool disposing)
         {

@@ -74,7 +74,8 @@ namespace AntdUI
             }
             else
             {
-                WindowState = FormWindowState.Maximized; return true;
+                WindowState = FormWindowState.Maximized;
+                return true;
             }
         }
 

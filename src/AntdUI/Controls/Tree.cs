@@ -227,6 +227,33 @@ namespace AntdUI
             return list;
         }
 
+        /// <summary>
+        /// 全选/全不选
+        /// </summary>
+        public void SetCheckeds()
+        {
+            if (items == null) return;
+            var list = GetCheckeds();
+            SetCheckeds(list.Count == 0);
+        }
+
+        /// <summary>
+        /// 全选/全不选
+        /// </summary>
+        public void SetCheckeds(bool check)
+        {
+            if (items == null) return;
+            SetCheckeds(items, check);
+        }
+        void SetCheckeds(TreeItemCollection items, bool check)
+        {
+            foreach (TreeItem it in items)
+            {
+                it.Checked = check;
+                if (it.Sub != null && it.Sub.Count > 0) SetCheckeds(it.Sub, check);
+            }
+        }
+
         #endregion
 
         #region 事件

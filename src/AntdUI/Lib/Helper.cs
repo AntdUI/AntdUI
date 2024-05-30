@@ -419,14 +419,14 @@ namespace AntdUI
             return rect.IconRect((int)Math.Round(text_height), icon_l, icon_r, right, muit, gap_ratio, sp_ratio, icon_ratio);
         }
 
-        internal static void IconRectL(this Rectangle rect, SizeF font_size, out RectangleF icon_rect, out RectangleF text_rect, float size = 0.8F)
+        internal static void IconRectL(this Rectangle rect, SizeF font_size, out Rectangle icon_rect, out Rectangle text_rect, float size = 0.8F)
         {
-            float h = font_size.Height * size;
-            float dot_size_ = h / 2;
-            float dot_txt_left = h * 2;
+            int h = (int)(font_size.Height * size);
+            int dot_size_ = h / 2;
+            int dot_txt_left = h * 2;
 
-            icon_rect = new RectangleF(rect.X + dot_size_, rect.Y + (rect.Height - h) / 2, h, h);
-            text_rect = new RectangleF(rect.X + dot_txt_left, rect.Y, rect.Width - dot_txt_left, rect.Height);
+            icon_rect = new Rectangle(rect.X + dot_size_, rect.Y + (rect.Height - h) / 2, h, h);
+            text_rect = new Rectangle(rect.X + dot_txt_left, rect.Y, rect.Width - dot_txt_left, rect.Height);
         }
 
         #region 三角
@@ -1653,10 +1653,7 @@ namespace AntdUI
             if (control.Controls.Count > 0)
             {
                 if (control is Pagination || control is Input) return;
-                foreach (Control it in control.Controls)
-                {
-                    DpiLS(dpi, it);
-                }
+                foreach (Control it in control.Controls) DpiLS(dpi, it);
             }
         }
         internal static Padding SetPadding(float dpi, Padding padding)
@@ -1700,6 +1697,111 @@ namespace AntdUI
                 return new SolidBrush(default_color);
             }
             else return new SolidBrush(enabled_color);
+        }
+
+        #region 获取OS版本
+
+#if NET40 || NET46 || NET48
+        public static Version OSVersion
+        {
+            get
+            {
+                try
+                {
+                    var osVersionInfo = new OSVERSIONINFOEX { OSVersionInfoSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(OSVERSIONINFOEX)) };
+                    if (RtlGetVersion(ref osVersionInfo) == 0) return new Version(osVersionInfo.MajorVersion, osVersionInfo.MinorVersion, osVersionInfo.BuildNumber);
+                }
+                catch { }
+                return Environment.OSVersion.Version;
+            }
+        }
+
+        [System.Runtime.InteropServices.DllImport("ntdll.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        internal static extern int RtlGetVersion(ref OSVERSIONINFOEX versionInfo);
+
+        internal struct OSVERSIONINFOEX
+        {
+            internal int OSVersionInfoSize;
+            internal int MajorVersion;
+            internal int MinorVersion;
+            internal int BuildNumber;
+            internal int PlatformId;
+            [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValTStr, SizeConst = 128)]
+            internal string CSDVersion;
+            internal ushort ServicePackMajor;
+            internal ushort ServicePackMinor;
+            internal short SuiteMask;
+            internal byte ProductType;
+            internal byte Reserved;
+        }
+#else
+        public static Version OSVersion
+        {
+            get => Environment.OSVersion.Version;
+        }
+#endif
+
+        public static bool OSVersionWin11
+        {
+            get
+            {
+                var version = OSVersion;
+                if (version.Major >= 10 && version.Build > 22000) return true;
+                return false;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 叠加蒙版
+        /// </summary>
+        /// <param name="owner">父窗口</param>
+        public static ILayeredFormOpacity FormMask(this Form owner)
+        {
+            var mask = new LayeredFormMask(owner);
+            mask.Show(owner);
+            return mask;
+        }
+
+        /// <summary>
+        /// 叠加蒙版（可关闭）
+        /// </summary>
+        /// <param name="owner">父窗口</param>
+        /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
+        /// <param name="form">操作对象</param>
+        public static ILayeredFormOpacity FormMask(this Form owner, bool MaskClosable, ILayeredForm form)
+        {
+            var mask = new LayeredFormMask(owner);
+            if (MaskClosable)
+            {
+                mask.Click += (s1, e1) =>
+                {
+                    form.IClose();
+                };
+            }
+            mask.Show(owner);
+            return mask;
+        }
+
+        /// <summary>
+        /// 叠加蒙版（可关闭）
+        /// </summary>
+        /// <param name="owner">父窗口</param>
+        /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
+        /// <param name="form">操作对象</param>
+        public static ILayeredFormOpacity FormMask(this Form owner, bool MaskClosable, Form form)
+        {
+            var mask = new LayeredFormMask(owner);
+            if (MaskClosable)
+            {
+                mask.Click += (s1, e1) =>
+                {
+                    form.Close();
+                };
+            }
+            mask.Show(owner);
+            return mask;
         }
     }
 

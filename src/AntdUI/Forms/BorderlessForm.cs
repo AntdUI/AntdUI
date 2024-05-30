@@ -255,14 +255,18 @@ namespace AntdUI
         {
             if (Region != null) Region.Dispose();
             var rect = ClientRectangle;
-            if ((rect.Width > 0 && rect.Height > 0) && winState == WState.Restore)
+            if (rect.Width > 0 && rect.Height > 0)
             {
-                using (var path = rect.RoundPath(radius * Config.Dpi))
+                if (IsMax) Region = new Region(rect);
+                else
                 {
-                    var region = new Region(path);
-                    path.Widen(Pens.White);
-                    region.Union(path);
-                    Region = region;
+                    using (var path = rect.RoundPath(radius * Config.Dpi))
+                    {
+                        var region = new Region(path);
+                        path.Widen(Pens.White);
+                        region.Union(path);
+                        Region = region;
+                    }
                 }
             }
         }
@@ -492,7 +496,7 @@ namespace AntdUI
 
         public override bool IsMax
         {
-            get => isMax || winState == WState.Maximize;
+            get => isMax || WindowState == FormWindowState.Maximized;
         }
 
         /// <summary>

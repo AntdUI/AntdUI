@@ -385,6 +385,19 @@ namespace AntdUI
         [Description("SelectIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectIndexChanged = null;
 
+        /// <summary>
+        /// 点击项时发生
+        /// </summary>
+        [Description("点击项时发生"), Category("行为")]
+        public event ItemClickEventHandler? ItemClick = null;
+
+        /// <summary>
+        /// 点击项时发生
+        /// </summary>
+        /// <param name="sender">触发对象</param>
+        /// <param name="value">数值</param>
+        public delegate void ItemClickEventHandler(object sender, MouseEventArgs e, SegmentedItem value);
+
         #region Change
 
         protected override void OnSizeChanged(EventArgs e)
@@ -864,6 +877,7 @@ namespace AntdUI
                 if (it != null && it.Rect.Contains(e.Location))
                 {
                     SelectIndex = i;
+                    ItemClick?.Invoke(this, e, it);
                     return;
                 }
             }

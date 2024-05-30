@@ -1126,7 +1126,11 @@ namespace AntdUI
                         using (var brush = new Pen(color, size))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
+                            try
+                            {
+                                g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
+                            }
+                            catch { }
                         }
                     }
                 }
@@ -1144,7 +1148,11 @@ namespace AntdUI
                         using (var brush = new Pen(color, size))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
+                            try
+                            {
+                                g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
+                            }
+                            catch { }
                         }
                     }
                 }

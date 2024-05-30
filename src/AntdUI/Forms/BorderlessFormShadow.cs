@@ -100,7 +100,7 @@ namespace AntdUI
 
         public void OnSizeChange()
         {
-            if (form.WindowState == FormWindowState.Maximized) Visible = false;
+            if (form.IsMax) Visible = false;
             else
             {
                 Visible = true;

@@ -750,7 +750,7 @@ namespace AntdUI
         /// </summary>
         class TCellText : TCell
         {
-            public TCellText(Table table, PropertyDescriptor? prop, object ov, Column _column, string? _value)
+            public TCellText(Table table, PropertyDescriptor? prop, object? ov, Column _column, string? _value)
             {
                 PARENT = table;
                 PROPERTY = prop;
@@ -777,7 +777,7 @@ namespace AntdUI
             public RowTemplate ROW { get; set; }
             public PropertyDescriptor? PROPERTY { get; set; }
             public int INDEX { get; set; }
-            public object VALUE { get; set; }
+            public object? VALUE { get; set; }
             public Rectangle RECT { get; set; }
 
             public SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
@@ -872,7 +872,7 @@ namespace AntdUI
             {
                 var size = g.MeasureString(value, font);
                 SortWidth = column.SortOrder ? (int)(size.Height * 0.8F) : 0;
-                MinWidth = (int)Math.Ceiling(size.Width) + SortWidth;
+                MinWidth = (int)Math.Ceiling(size.Width) + gap2 + SortWidth;
                 return new SizeF(size.Width + gap2 + SortWidth, size.Height);
             }
 
@@ -1717,7 +1717,7 @@ namespace AntdUI
                     }
                     if (Value.Value > 0)
                     {
-                        float max = 360F * Value.Value;
+                        int max = (int)(360 * Value.Value);
                         using (var brush = new Pen(_color, w))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;

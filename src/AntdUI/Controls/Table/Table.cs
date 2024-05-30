@@ -75,6 +75,7 @@ namespace AntdUI
             {
                 dataSource = value;
                 SortData = null;
+                scrollBar.Clear();
                 ExtractData();
                 LoadLayout();
                 Invalidate();
@@ -170,6 +171,12 @@ namespace AntdUI
         /// </summary>
         [Description("行复制"), Category("行为"), DefaultValue(true)]
         public bool ClipboardCopy { get; set; } = true;
+
+        /// <summary>
+        /// 列宽自动调整模式
+        /// </summary>
+        [Description("列宽自动调整模式"), Category("行为"), DefaultValue(ColumnsMode.Auto)]
+        public ColumnsMode AutoSizeColumnsMode { get; set; } = ColumnsMode.Auto;
 
         #region 为空
 
@@ -515,6 +522,11 @@ namespace AntdUI
         /// 列宽度
         /// </summary>
         public string? Width { get; set; }
+
+        /// <summary>
+        /// 列最大宽度
+        /// </summary>
+        public string? MaxWidth { get; set; }
 
         /// <summary>
         /// 超过宽度将自动省略

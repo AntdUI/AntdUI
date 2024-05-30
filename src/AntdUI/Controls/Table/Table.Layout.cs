@@ -90,17 +90,7 @@ namespace AntdUI
                         {
                             it.INDEX = _columns.Count;
                             _columns.Add(it);
-                            if (it.Width != null)
-                            {
-                                if (it.Width.EndsWith("%") && float.TryParse(it.Width.TrimEnd('%'), out var f)) col_width.Add(x, f / 100F);
-                                else if (int.TryParse(it.Width, out var i)) col_width.Add(x, (int)(i * Config.Dpi));
-                                else if (it.Width.Contains("fill"))
-                                {
-                                    //填充剩下的
-                                    col_width.Add(x, -2);
-                                }
-                                else col_width.Add(x, -1); //AUTO 
-                            }
+                            ColumnWidth(it, ref col_width, x);
                             x++;
                         }
                     }
@@ -111,17 +101,7 @@ namespace AntdUI
                             var it = columns[index];
                             it.INDEX = index;
                             _columns.Add(it);
-                            if (it.Width != null)
-                            {
-                                if (it.Width.EndsWith("%") && float.TryParse(it.Width.TrimEnd('%'), out var f)) col_width.Add(x, f / 100F);
-                                else if (int.TryParse(it.Width, out var i)) col_width.Add(x, (int)(i * Config.Dpi));
-                                else if (it.Width.Contains("fill"))
-                                {
-                                    //填充剩下的
-                                    col_width.Add(x, -2);
-                                }
-                                else col_width.Add(x, -1); //AUTO 
-                            }
+                            ColumnWidth(it, ref col_width, x);
                             x++;
                         }
                     }
@@ -267,10 +247,10 @@ namespace AntdUI
                             else
                             {
                                 var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
-                                it.MinWidth = (int)Math.Ceiling(text_size.Width);
+                                int width = (int)Math.Ceiling(text_size.Width);
                                 if (max_height < text_size.Height) max_height = text_size.Height;
-                                if (read_width_cell[cel_i].value < text_size.Width) read_width_cell[cel_i].value = it.MinWidth;
-                                if (read_width_cell[cel_i].minvalue < text_size.Width) read_width_cell[cel_i].minvalue = it.MinWidth;
+                                if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
+                                if (read_width_cell[cel_i].minvalue < it.MinWidth) read_width_cell[cel_i].minvalue = it.MinWidth;
                             }
                         }
                     }
@@ -288,12 +268,30 @@ namespace AntdUI
                             else
                             {
                                 var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
+                                int width = (int)Math.Ceiling(text_size.Width);
                                 if (max_height < text_size.Height) max_height = text_size.Height;
-                                if (read_width_cell[cel_i].value < text_size.Width) read_width_cell[cel_i].value = it.MinWidth;
+                                if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
                             }
                         }
                     }
                     row.Height = (int)Math.Round(max_height) + gap2;
+                }
+                foreach (var it in read_width_cell)
+                {
+                    var maxWidth = _columns[it.Key].MaxWidth;
+                    if (maxWidth != null)
+                    {
+                        if (maxWidth.EndsWith("%") && float.TryParse(maxWidth.TrimEnd('%'), out var f))
+                        {
+                            int max = (int)(rect.Width * f / 100F);
+                            if (it.Value.value > max) it.Value.value = max;
+                        }
+                        else if (int.TryParse(maxWidth, out var i))
+                        {
+                            int max = (int)(i * Config.Dpi);
+                            if (it.Value.value > max) it.Value.value = max;
+                        }
+                    }
                 }
 
                 rect_read.Width = rect.Width;
@@ -503,9 +501,35 @@ namespace AntdUI
                     foreach (var it in fill_count) width_cell.Add(it, width);
                     sum_wi = rect.Width;
                 }
-                if (rect_read.Width > sum_wi) rect_read.Width = sum_wi;
+                if (rect_read.Width > sum_wi)
+                {
+                    if (AutoSizeColumnsMode == ColumnsMode.Fill)
+                    {
+                        //填充
+                        var percentage = new List<double>(width_cell.Count);
+                        foreach (var it in width_cell) percentage.Add((it.Value * 1.0) / sum_wi);
+                        int index = 0;
+                        foreach (var it in width_cell.Keys)
+                        {
+                            width_cell[it] = (int)Math.Round(rect_read.Width * percentage[index]);
+                            index++;
+                        }
+                    }
+                    else rect_read.Width = sum_wi;
+                }
             }
             return width_cell;
+        }
+
+        void ColumnWidth(Column it, ref Dictionary<int, object> col_width, int x)
+        {
+            if (it.Width != null)
+            {
+                if (it.Width.EndsWith("%") && float.TryParse(it.Width.TrimEnd('%'), out var f)) col_width.Add(x, f / 100F);
+                else if (int.TryParse(it.Width, out var i)) col_width.Add(x, (int)(i * Config.Dpi));
+                else if (it.Width.Contains("fill")) col_width.Add(x, -2);//填充剩下的
+                else col_width.Add(x, -1); //AUTO
+            }
         }
 
         #region 动画

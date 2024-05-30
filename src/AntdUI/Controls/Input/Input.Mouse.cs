@@ -83,6 +83,7 @@ namespace AntdUI
                 SelectionStart = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
                 SelectionLength = 0;
                 if (cache_font != null) mouseDown = true;
+                else if (ModeRange) SetCaretPostion();
             }
         }
 

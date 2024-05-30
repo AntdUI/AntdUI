@@ -34,7 +34,7 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 生成图片
+        /// SVG转图片
         /// </summary>
         /// <param name="svg">代码</param>
         /// <param name="width">宽</param>

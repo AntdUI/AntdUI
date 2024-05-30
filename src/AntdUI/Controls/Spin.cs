@@ -186,10 +186,13 @@ namespace AntdUI
             }
             using (var brush = new Pen(color, size))
             {
-                //g.DrawEllipse(brush, rect_prog);
-                //brush.Color = Color;
                 brush.StartCap = brush.EndCap = LineCap.Round;
-                g.DrawArc(brush, rect_prog, LineAngle, LineWidth * 3.6F);
+                try
+                {
+                    g.DrawArc(brush, rect_prog, LineAngle, LineWidth * 3.6F);
+                }
+                catch { }
+
             }
         }
 

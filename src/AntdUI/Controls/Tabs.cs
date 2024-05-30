@@ -242,13 +242,12 @@ namespace AntdUI
         {
             if (value > -1)
             {
-                if (old > -1)
+                if (old > -1 && TabPages.Count > old)
                 {
                     ThreadBar?.Dispose();
                     Helper.GDI(g =>
                     {
                         RectangleF OldValue = GetRect(g, GetTabRect(old), TabPages[old]), NewValue = GetRect(g, GetTabRect(value), TabPages[value]);
-
                         if (Config.Animation && OldValue.Y == NewValue.Y)
                         {
                             AnimationBarValue.Y = OldValue.Y;
@@ -300,12 +299,8 @@ namespace AntdUI
                             });
                             return;
                         }
-                        else
-                        {
-                            AnimationBarValue = NewValue;
-                            Invalidate();
-                            return;
-                        }
+                        AnimationBarValue = NewValue;
+                        Invalidate();
                     });
                 }
                 else

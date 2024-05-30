@@ -272,6 +272,11 @@ namespace AntdUI
             }
         }
 
+        public void Clear()
+        {
+            valueX = valueY = 0;
+        }
+
         #endregion
 
         #region 布局

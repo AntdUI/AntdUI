@@ -73,25 +73,24 @@ namespace AntdUI
                 var frm = new LayeredFormDrawer(config);
                 if (config.Mask)
                 {
-                    var ifrm = new LayeredFormMask(config.Form);
-                    ifrm.Show(config.Form);
+                    var formMask = config.Form.FormMask(config.MaskClosable, frm);
                     if (config.MaskClosable)
                     {
-                        ifrm.Click += (s1, e1) =>
+                        formMask.Click += (s1, e1) =>
                         {
                             frm.IClose();
                         };
                     }
                     frm.Disposed += (s1, e1) =>
                     {
-                        ifrm.IClose();
+                        formMask.IClose();
                     };
                     ITask.Run(() =>
                     {
                         System.Threading.Thread.Sleep(200);
                         config.Form.BeginInvoke(new Action(() =>
                         {
-                            frm.Show(ifrm);
+                            frm.Show(formMask);
                         }));
                     });
                 }

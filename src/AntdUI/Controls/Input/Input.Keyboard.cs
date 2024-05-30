@@ -102,7 +102,7 @@ namespace AntdUI
             }
             if (Verify(e.KeyChar, out var change))
             {
-                EnterText((change ?? e.KeyChar).ToString());
+                EnterText(change ?? e.KeyChar.ToString());
                 base.OnKeyPress(e);
             }
             else e.Handled = true;

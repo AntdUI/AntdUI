@@ -160,7 +160,7 @@ namespace AntdUI
                     }
                 }
             }
-            else if (dragHeader != null)
+            if (dragHeader != null)
             {
                 if (dragHeader.im != -1)
                 {
@@ -586,7 +586,7 @@ namespace AntdUI
                     }
                 }
             }
-            else if (dragHeader != null)
+            if (dragHeader != null)
             {
                 dragHeader.xr = e.X - dragHeader.x;
                 if (rows == null) return;

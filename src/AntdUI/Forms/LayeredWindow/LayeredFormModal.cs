@@ -294,6 +294,7 @@ namespace AntdUI
             base.OnClosing(e);
             close_button.Dispose();
             if (config.Content is Control control) control.Dispose();
+            Dispose();
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -470,6 +471,12 @@ namespace AntdUI
             {
                 isclose = false;
                 btn_ok.Loading = true;
+                bool DisableCancel = false;
+                if (config.LoadingDisableCancel && btn_no != null)
+                {
+                    btn_no.Enabled = false;
+                    DisableCancel = true;
+                }
                 ITask.Run(() =>
                 {
                     bool result = false;
@@ -486,6 +493,13 @@ namespace AntdUI
                         BeginInvoke(new Action(() =>
                         {
                             DialogResult = DialogResult.OK;
+                        }));
+                    }
+                    else if (DisableCancel && btn_no != null)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            btn_no.Enabled = true;
                         }));
                     }
                 });

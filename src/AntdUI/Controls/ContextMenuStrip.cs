@@ -33,9 +33,9 @@ namespace AntdUI
         /// <param name="control">所属控件</param>
         /// <param name="call">点击回调</param>
         /// <param name="items">内容</param>
-        public static void open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
+        public static Form? open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
         {
-            open(new Config(control, call, items, sleep));
+            return open(new Config(control, call, items, sleep));
         }
 
         /// <summary>
@@ -45,29 +45,33 @@ namespace AntdUI
         /// <param name="notifyIcon">托盘</param>
         /// <param name="call">点击回调</param>
         /// <param name="items">内容</param>
-        public static void open(Control control, NotifyIcon notifyIcon, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
+        public static Form? open(Control control, NotifyIcon notifyIcon, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
         {
-            open(new Config(control, call, items, sleep) { TopMost = true });
+            return open(new Config(control, call, items, sleep) { TopMost = true });
         }
 
         /// <summary>
         /// ContextMenuStrip 右键菜单
         /// </summary>
         /// <param name="config">配置</param>
-        public static void open(this Config config)
+        public static Form? open(this Config config)
         {
             if (config.Control.IsHandleCreated)
             {
                 if (config.Control.InvokeRequired)
                 {
-                    config.Control.BeginInvoke(new Action(() =>
+                    Form? form = null;
+                    config.Control.Invoke(new Action(() =>
                     {
-                        open(config);
+                        form = open(config);
                     }));
-                    return;
+                    return form;
                 }
-                new LayeredFormContextMenuStrip(config).Show(config.Control);
+                var frm = new LayeredFormContextMenuStrip(config);
+                frm.Show(config.Control);
+                return frm;
             }
+            return null;
         }
 
         /// <summary>
@@ -112,6 +116,21 @@ namespace AntdUI
             /// 延迟回调
             /// </summary>
             public int CallSleep { get; set; }
+
+            /// <summary>
+            /// 是否抢占焦点
+            /// </summary>
+            public bool UFocus { get; set; }
+
+            /// <summary>
+            /// 坐标
+            /// </summary>
+            public Point? Location { get; set; }
+
+            /// <summary>
+            /// 方向
+            /// </summary>
+            public TAlign Align { get; set; } = TAlign.BR;
 
             /// <summary>
             /// 点击回调

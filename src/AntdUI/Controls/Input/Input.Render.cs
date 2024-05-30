@@ -28,7 +28,7 @@ namespace AntdUI
 
         StringFormat sf_font = Helper.SF_MEASURE_FONT();
         internal StringFormat sf_center = Helper.SF_NoWrap();
-        StringFormat sf_placeholder = Helper.SF_ALL(lr: StringAlignment.Near);
+        internal StringFormat sf_placeholder = Helper.SF_ALL(lr: StringAlignment.Near);
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -237,7 +237,7 @@ namespace AntdUI
                     int end = selectionStartTemp + selectionLength - 1;
                     if (end > cache_font.Length - 1) end = cache_font.Length - 1;
                     var first = cache_font[selectionStartTemp];
-                    using (var brush = new SolidBrush(Color.FromArgb(173, 214, 255)))
+                    using (var brush = new SolidBrush(selection))
                     {
                         for (int i = selectionStartTemp; i <= end; i++)
                         {

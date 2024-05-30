@@ -131,7 +131,8 @@ namespace AntdUI
             switch (msg)
             {
                 case WindowMessage.WM_ACTIVATE:
-                    DwmExtendFrameIntoClientArea(handle, new MARGINS(0, 0, 1, 0));
+                case WindowMessage.WM_NCPAINT:
+                    DwmArea();
                     break;
                 case WindowMessage.WM_NCCALCSIZE when m.WParam != IntPtr.Zero:
                     if (WmNCCalcSize(ref m)) return;
@@ -144,6 +145,23 @@ namespace AntdUI
                     break;
             }
             base.WndProc(ref m);
+        }
+
+        bool iszoomed = false;
+        bool ISZoomed()
+        {
+            bool value = IsZoomed(handle);
+            if (iszoomed == value) return value;
+            iszoomed = value;
+            DwmArea();
+            return value;
+        }
+        void DwmArea()
+        {
+            int margin;
+            if (iszoomed) margin = 0;
+            else margin = 1;
+            DwmExtendFrameIntoClientArea(handle, new MARGINS(margin));
         }
 
         #region 区域
@@ -377,22 +395,15 @@ namespace AntdUI
 #endif
             var borders = GetNonClientMetrics();
 
-            if (IsZoomed(handle))
-            {
-                nccsp.rgrc0.top -= borders.Top + 1;
-                nccsp.rgrc0.top += borders.Bottom;
-                Marshal.StructureToPtr(nccsp, m.LParam, false);
-            }
-            else
+            if (ISZoomed())
             {
                 nccsp.rgrc0.top -= borders.Top;
+                nccsp.rgrc0.top += borders.Bottom;
                 Marshal.StructureToPtr(nccsp, m.LParam, false);
+                return false;
             }
-            m.Result = RNCCalc;
-            return false;
+            else return true;
         }
-
-        readonly IntPtr RNCCalc = new IntPtr(0x0400);
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct NCCALCSIZE_PARAMS
@@ -466,7 +477,7 @@ namespace AntdUI
 
         Size PatchWindowSizeInRestoreWindowBoundsIfNecessary(int width, int height)
         {
-            if (winState == WState.Restore)
+            if (WindowState == FormWindowState.Normal)
             {
                 var restoredWindowBoundsSpecified = typeof(Form).GetField("restoredWindowBoundsSpecified", BindingFlags.NonPublic | BindingFlags.Instance) ?? typeof(Form).GetField("_restoredWindowBoundsSpecified", BindingFlags.NonPublic | BindingFlags.Instance);
                 var restoredSpecified = (BoundsSpecified)restoredWindowBoundsSpecified!.GetValue(this)!;

@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -250,7 +251,7 @@ namespace AntdUI
                 }
                 if (_value > 0)
                 {
-                    float max = 360F * _value;
+                    int max = (int)Math.Round(360 * _value);
                     using (var brush = new Pen(_color, w))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
@@ -260,10 +261,11 @@ namespace AntdUI
                     if (loading && AnimationLoadingValue > 0)
                     {
                         int a = (int)(60 * (1f - AnimationLoadingValue));
+
                         using (var brush = new Pen(Color.FromArgb(a, Style.Db.BgBase), w))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, icon_rect, -90, max * AnimationLoadingValue);
+                            g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
                         }
                     }
                 }
@@ -304,7 +306,7 @@ namespace AntdUI
                                     break;
                             }
                         }
-                        float max = 360F * _value;
+                        int max = (int)Math.Round(360 * _value);
                         using (var brush = new Pen(_color, w))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
@@ -314,10 +316,11 @@ namespace AntdUI
                         if (loading && AnimationLoadingValue > 0)
                         {
                             int a = (int)(60 * (1f - AnimationLoadingValue));
+
                             using (var brush = new Pen(Color.FromArgb(a, Style.Db.BgBase), w))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_prog, -90, max * AnimationLoadingValue);
+                                g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
                             }
                         }
                     }
