@@ -29,6 +29,7 @@ namespace Overview
             bool istop = false;
             if (arge.Length > 0) { if (arge[0] == "t") istop = true; }
             //AntdUI.Localization.Provider = new Localizer();
+            AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main(istop));

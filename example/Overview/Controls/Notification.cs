@@ -34,6 +34,8 @@ namespace Overview.Controls
         {
             AntdUI.Notification.open(new AntdUI.Notification.Config((Form)Parent, "Notification " + button2.Text, "Hello, Ant Design!", AntdUI.TType.Info, AntdUI.TAlignFrom.TR, Font)
             {
+                Radius = 10,
+                FontStyleTitle = FontStyle.Bold,
                 Link = new AntdUI.Notification.ConfigLink("前往查看", () =>
                 {
                     MessageBox.Show("点击超链接");

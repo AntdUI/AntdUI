@@ -108,7 +108,7 @@ namespace Overview.Controls
             // 
             // input5
             // 
-            input5.ImageSvg = Properties.Resources.icon_poweroff;
+            input5.PrefixSvg = Properties.Resources.icon_poweroff;
             input5.Location = new Point(18, 101);
             input5.Name = "input5";
             input5.Size = new Size(220, 44);

@@ -118,7 +118,7 @@ namespace Overview
             // txt_search
             // 
             txt_search.Dock = DockStyle.Right;
-            txt_search.ImageSvg = Properties.Resources.icon_search;
+            txt_search.PrefixSvg = Properties.Resources.icon_search;
             txt_search.Location = new Point(896, 0);
             txt_search.Name = "txt_search";
             txt_search.Padding = new Padding(0, 4, 0, 4);

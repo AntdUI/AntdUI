@@ -347,8 +347,8 @@ namespace Overview.Controls
             // tag16
             // 
             tag16.AutoSize = true;
-            tag16.Back = Color.FromArgb(59, 89, 153);
-            tag16.Fore = Color.White;
+            tag16.BackColor = Color.FromArgb(59, 89, 153);
+            tag16.ForeColor = Color.White;
             tag16.Image = Properties.Resources.img1;
             tag16.Location = new Point(13, 13);
             tag16.Name = "tag16";
