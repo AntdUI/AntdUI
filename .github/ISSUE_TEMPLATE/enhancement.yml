@@ -35,13 +35,7 @@ body:
       description: 在此处添加有关功能请求的任何其他上下文或截图。
     validations:
       required: true
-  - type: checkboxes
-    attributes:
-      label: 意向参与贡献
-      options:
-        - label: 我有意向参与具体功能的开发实现并将代码贡献回到上游社区
-          required: true
   - type: markdown
     attributes:
       value: |
-        感谢你的参与！
+        🙏 我承诺将本着相互尊重、理解和友善的态度进行交流，共同维护好良好的社区氛围。

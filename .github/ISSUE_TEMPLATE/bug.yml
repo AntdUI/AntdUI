@@ -3,6 +3,10 @@ description: 当你中发现了一个 Bug，导致应用崩溃或抛出异常，
 labels: ["BUG"]
 assignees: []
 body:
+  - type: markdown
+    attributes:
+      value: |
+        注意看看Wiki文档或者有没有重复问题 (https://github.com/AntdUI/AntdUI/issues)
   - type: input
     attributes:
       label: 版本号
@@ -38,12 +42,6 @@ body:
         - 其他
     validations:
       required: true
-  - type: checkboxes
-    attributes:
-      label: 这个问题是否已经存在？
-      options:
-        - label: 我已经搜索过现有的问题 (https://github.com/AntdUI/AntdUI/issues)
-          required: true
   - type: textarea
     attributes:
       label: 如何复现
@@ -70,13 +68,7 @@ body:
       label: Demo 地址（Git/网盘/SVN）
       description: 请提供复现错误的 Demo 下载
       placeholder: https://github.com/your_id/your_test_project.git
-  - type: checkboxes
-    attributes:
-      label: 友好承诺
-      options:
-        - label: 我承诺将本着相互尊重、理解和友善的态度进行交流，共同维护好良好的社区氛围。
-          required: true
   - type: markdown
     attributes:
       value: |
-        感谢你提交 bug，我们会尽快处理。
+        🙏 我承诺将本着相互尊重、理解和友善的态度进行交流，共同维护好良好的社区氛围。

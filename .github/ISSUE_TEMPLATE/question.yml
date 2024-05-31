@@ -3,6 +3,10 @@ description: 当你不明白某个功能如何使用时，可以提交该Issue�
 labels: ["问题"]
 assignees: []
 body:
+  - type: markdown
+    attributes:
+      value: |
+        注意看看Wiki文档或者有没有重复问题 (https://github.com/AntdUI/AntdUI/issues)
   - type: input
     attributes:
       label: 版本号
@@ -44,15 +48,7 @@ body:
       description: 清晰并简洁地描述你希望发生的事情。
     validations:
       required: true
-  - type: checkboxes
+  - type: markdown
     attributes:
-      label: 这个问题是否已经存在？
-      options:
-        - label: 我已经搜索过现有的问题 (https://github.com/AntdUI/AntdUI/issues)
-          required: true
-  - type: checkboxes
-    attributes:
-      label: 友好承诺
-      options:
-        - label: 我承诺将本着相互尊重、理解和友善的态度进行交流，共同维护好良好的社区氛围。
-          required: true
+      value: |
+        🙏 我承诺将本着相互尊重、理解和友善的态度进行交流，共同维护好良好的社区氛围。
