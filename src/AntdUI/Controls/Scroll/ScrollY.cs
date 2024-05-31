@@ -30,7 +30,6 @@ namespace AntdUI
         {
             Invalidate = () =>
             {
-                Change?.Invoke();
                 _control.Invalidate();
             };
             control = _control;
@@ -41,7 +40,6 @@ namespace AntdUI
             SIZE = SystemInformation.VerticalScrollBarWidth;
             Invalidate = () =>
             {
-                Change?.Invoke();
                 _control.Invalidate(Rect);
             };
         }
@@ -49,7 +47,6 @@ namespace AntdUI
         {
             Invalidate = () =>
             {
-                Change?.Invoke();
                 _control.Invalidate();
             };
         }
@@ -57,15 +54,12 @@ namespace AntdUI
         {
             Invalidate = () =>
             {
-                Change?.Invoke();
                 _form.Print();
             };
             Gap = Back = false;
         }
 
         Action Invalidate;
-
-        internal Action? Change;
 
         public bool Back = true;
         public bool Gap = true;

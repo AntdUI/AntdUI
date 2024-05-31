@@ -20,6 +20,8 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -140,8 +142,61 @@ namespace AntdUI
             {
                 if (image == value) return;
                 image = value;
-                Invalidate();
+                if (value != null && PlayGIF)
+                {
+                    var fd = new FrameDimension(value.FrameDimensionsList[0]);
+                    int count = value.GetFrameCount(fd);
+                    if (count > 1) PlayGif(value, fd, count);
+                    else Invalidate();
+                }
+                else Invalidate();
             }
+        }
+
+        /// <summary>
+        /// 播放GIF
+        /// </summary>
+        [Description("播放GIF"), Category("行为"), DefaultValue(true)]
+        public bool PlayGIF { get; set; } = true;
+
+        void PlayGif(Image value, FrameDimension fd, int count)
+        {
+            int[] delays = GifDelays(value, count);
+            ITask.Run(() =>
+            {
+                while (image == value)
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (image == value)
+                        {
+                            lock (_lock) { value.SelectActiveFrame(fd, i); }
+                            Invalidate();
+                            Thread.Sleep(delays[i]);
+                        }
+                        else return;
+                    }
+                }
+            });
+        }
+        object _lock = new object();
+        int[] GifDelays(Image value, int count)
+        {
+            int PropertyTagFrameDelay = 0x5100;
+            var propItem = value.GetPropertyItem(PropertyTagFrameDelay);
+            if (propItem != null)
+            {
+                var bytes = propItem.Value;
+                if (bytes != null)
+                {
+                    int[] delays = new int[count];
+                    for (int i = 0; i < delays.Length; i++) delays[i] = BitConverter.ToInt32(bytes, i * 4) * 10;
+                    return delays;
+                }
+            }
+            int[] delaysd = new int[count];
+            for (int i = 0; i < delaysd.Length; i++) delaysd[i] = 100;
+            return delaysd;
         }
 
         string? imageSvg = null;
@@ -290,7 +345,13 @@ namespace AntdUI
             if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
             FillRect(g, rect, back, _radius, round);
 
-            if (image != null) g.PaintImg(rect, image, imageFit, _radius, round);
+            if (image != null)
+            {
+                lock (_lock)
+                {
+                    g.PaintImg(rect, image, imageFit, _radius, round);
+                }
+            }
             else if (imageSvg != null)
             {
                 using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))

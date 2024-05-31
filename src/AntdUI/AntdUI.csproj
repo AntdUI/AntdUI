@@ -13,7 +13,7 @@
 		<Description>Winform UI library use Ant Design 5.0</Description>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Version>1.2.8</Version>
+		<Version>1.2.9</Version>
 		<Description>👚 基于 Ant Design 设计语言的 Winform 界面库</Description>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<LangVersion>9.0</LangVersion>
@@ -28,6 +28,14 @@
 		<PackageProjectUrl>https://gitee.com/andtui</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PackageReleaseNotes>+ Avatar 支持GIF
++ Segmented 新增间距，新增线样式
++ ChatList 新增 ItemClick 点击事件
++ Model 新增 按钮字体与按钮高度设置
++ Notification 新增 标题字体设置
+* Avatar 修复方图
+* ColumnsMode.Fill
+* 修复自定义无关闭图标</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net40' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net48'">

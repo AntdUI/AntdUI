@@ -169,6 +169,16 @@ namespace AntdUI
             public string Title { get; set; }
 
             /// <summary>
+            /// 标题字体
+            /// </summary>
+            public Font? FontTitle { get; set; }
+
+            /// <summary>
+            /// 标题字体样式
+            /// </summary>
+            public FontStyle? FontStyleTitle { get; set; }
+
+            /// <summary>
             /// 文本
             /// </summary>
             public string Text { get; set; }
@@ -251,7 +261,7 @@ namespace AntdUI
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;
             else Font = config.Form.Font;
-            font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style);
+            font_title = config.FontTitle ?? new Font(Font.FontFamily, Font.Size * 1.14F, config.FontStyleTitle ?? Font.Style);
             Icon = config.Form.Icon;
             Helper.GDI(g =>
             {

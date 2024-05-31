@@ -40,6 +40,61 @@ namespace AntdUI
 
         #region 属性
 
+        #region 线条
+
+        bool barstyle = false;
+        [Description("线条样式"), Category("外观"), DefaultValue(false)]
+        public bool BarStyle
+        {
+            get => barstyle;
+            set
+            {
+                if (barstyle == value) return;
+                barstyle = value;
+                Invalidate();
+            }
+        }
+
+        float barsize = 3F;
+        /// <summary>
+        /// 条大小
+        /// </summary>
+        [Description("条大小"), Category("条"), DefaultValue(3F)]
+        public float BarSize
+        {
+            get => barsize;
+            set
+            {
+                if (barsize == value) return;
+                barsize = value;
+                if (barstyle) Invalidate();
+            }
+        }
+
+        int barpadding = 0;
+        /// <summary>
+        /// 条边距
+        /// </summary>
+        [Description("条边距"), Category("条"), DefaultValue(0)]
+        public int BarPadding
+        {
+            get => barpadding;
+            set
+            {
+                if (barpadding == value) return;
+                barpadding = value;
+                if (barstyle) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 条圆角
+        /// </summary>
+        [Description("条圆角"), Category("条"), DefaultValue(0)]
+        public int BarRadius { get; set; }
+
+        #endregion
+
         bool vertical = false;
         /// <summary>
         /// 是否竖向
@@ -115,6 +170,20 @@ namespace AntdUI
             {
                 if (iconalign == value) return;
                 iconalign = value;
+                ChangeItems();
+                Invalidate();
+            }
+        }
+
+        int igap = 0;
+        [Description("间距"), Category("外观"), DefaultValue(0)]
+        public int Gap
+        {
+            get => igap;
+            set
+            {
+                if (igap == value) return;
+                igap = value;
                 ChangeItems();
                 Invalidate();
             }
@@ -455,7 +524,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size_t = g.MeasureString(Config.NullText, Font);
-                int text_heigth = (int)Math.Ceiling(size_t.Height), sp = (int)(4 * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
+                int text_heigth = (int)Math.Ceiling(size_t.Height), sp = (int)(4 * Config.Dpi), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
 
                 if (Full)
                 {
@@ -463,7 +532,7 @@ namespace AntdUI
                     int len = Items.Count;
                     if (Vertical)
                     {
-                        float heightone = rect.Height * 1F / len, y = 0;
+                        float heightone = (rect.Height * 1F - (_igap * (len - 1))) / len, y = 0;
                         switch (iconalign)
                         {
                             case TAlignMini.Top:
@@ -473,7 +542,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectTop(new RectangleF(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t, text_heigth, sp);
-                                    y += heightone;
+                                    y += heightone + _igap;
                                 }
                                 break;
                             case TAlignMini.Bottom:
@@ -483,7 +552,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectBottom(new RectangleF(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b, text_heigth, sp);
-                                    y += heightone;
+                                    y += heightone + _igap;
                                 }
                                 break;
                             case TAlignMini.Left:
@@ -493,7 +562,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectLeft(new RectangleF(rect.X, rect.Y + y, rect.Width, heightone), imgsize_l, sp, gap);
-                                    y += heightone;
+                                    y += heightone + _igap;
                                 }
                                 break;
                             case TAlignMini.Right:
@@ -503,7 +572,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectRight(new RectangleF(rect.X, rect.Y + y, rect.Width, heightone), imgsize_r, sp, gap);
-                                    y += heightone;
+                                    y += heightone + _igap;
                                 }
                                 break;
                             default:
@@ -512,14 +581,14 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectNone(new RectangleF(rect.X, rect.Y + y, rect.Width, heightone));
-                                    y += heightone;
+                                    y += heightone + _igap;
                                 }
                                 break;
                         }
                     }
                     else
                     {
-                        float widthone = rect.Width * 1F / len, x = 0;
+                        float widthone = (rect.Width * 1F - (_igap * (len - 1))) / len, x = 0;
                         switch (iconalign)
                         {
                             case TAlignMini.Top:
@@ -529,7 +598,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectTop(new RectangleF(rect.X + x, rect.Y, widthone, rect.Height), imgsize_t, text_heigth, sp);
-                                    x += widthone;
+                                    x += widthone + _igap;
                                 }
                                 break;
                             case TAlignMini.Bottom:
@@ -539,7 +608,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectBottom(new RectangleF(rect.X + x, rect.Y, widthone, rect.Height), imgsize_b, text_heigth, sp);
-                                    x += widthone;
+                                    x += widthone + _igap;
                                 }
                                 break;
                             case TAlignMini.Left:
@@ -549,7 +618,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectLeft(new RectangleF(rect.X + x, rect.Y, widthone, rect.Height), imgsize_l, sp, gap);
-                                    x += widthone;
+                                    x += widthone + _igap;
                                 }
                                 break;
                             case TAlignMini.Right:
@@ -559,7 +628,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectRight(new RectangleF(rect.X + x, rect.Y, widthone, rect.Height), imgsize_r, sp, gap);
-                                    x += widthone;
+                                    x += widthone + _igap;
                                 }
                                 break;
                             default:
@@ -568,7 +637,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectNone(new RectangleF(rect.X + x, rect.Y, widthone, rect.Height));
-                                    x += widthone;
+                                    x += widthone + _igap;
                                 }
                                 break;
                         }
@@ -589,7 +658,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectTop(new RectangleF(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t, text_heigth, sp);
-                                    y += it.Rect.Height;
+                                    y += it.Rect.Height + _igap;
                                 }
                                 break;
                             case TAlignMini.Bottom:
@@ -599,7 +668,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectBottom(new RectangleF(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b, text_heigth, sp);
-                                    y += it.Rect.Height;
+                                    y += it.Rect.Height + _igap;
                                 }
                                 break;
                             case TAlignMini.Left:
@@ -609,7 +678,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectLeft(new RectangleF(rect.X, rect.Y + y, rect.Width, heigth_l), imgsize_l, sp, gap);
-                                    y += it.Rect.Height;
+                                    y += it.Rect.Height + _igap;
                                 }
                                 break;
                             case TAlignMini.Right:
@@ -619,7 +688,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectRight(new RectangleF(rect.X, rect.Y + y, rect.Width, heigth_r), imgsize_r, sp, gap);
-                                    y += it.Rect.Height;
+                                    y += it.Rect.Height + _igap;
                                 }
                                 break;
                             default:
@@ -629,11 +698,11 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectNone(new RectangleF(rect.X, rect.Y + y, rect.Width, heigth));
-                                    y += it.Rect.Height;
+                                    y += it.Rect.Height + _igap;
                                 }
                                 break;
                         }
-                        Rect = new RectangleF(_rect.X, _rect.Y, _rect.Height, y + Margin.Vertical);
+                        Rect = new RectangleF(_rect.X, _rect.Y, _rect.Height, y - _igap + Margin.Vertical);
                     }
                     else
                     {
@@ -647,7 +716,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectTop(new RectangleF(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, text_heigth, sp);
-                                    x += it.Rect.Width;
+                                    x += it.Rect.Width + _igap;
                                 }
                                 break;
                             case TAlignMini.Bottom:
@@ -657,7 +726,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectBottom(new RectangleF(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, text_heigth, sp);
-                                    x += it.Rect.Width;
+                                    x += it.Rect.Width + _igap;
                                 }
                                 break;
                             case TAlignMini.Left:
@@ -667,7 +736,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectLeft(new RectangleF(rect.X + x, rect.Y, size.Width + imgsize_l + sp + gap2, rect.Height), imgsize_l, sp, gap);
-                                    x += it.Rect.Width;
+                                    x += it.Rect.Width + _igap;
                                 }
                                 break;
                             case TAlignMini.Right:
@@ -677,7 +746,7 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectRight(new RectangleF(rect.X + x, rect.Y, size.Width + imgsize_r + sp + gap2, rect.Height), imgsize_r, sp, gap);
-                                    x += it.Rect.Width;
+                                    x += it.Rect.Width + _igap;
                                 }
                                 break;
                             default:
@@ -686,11 +755,11 @@ namespace AntdUI
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
                                     it.SetRectNone(new RectangleF(rect.X + x, rect.Y, size.Width + gap2, rect.Height));
-                                    x += it.Rect.Width;
+                                    x += it.Rect.Width + _igap;
                                 }
                                 break;
                         }
-                        Rect = new RectangleF(_rect.X, _rect.Y, x + Margin.Horizontal, _rect.Height);
+                        Rect = new RectangleF(_rect.X, _rect.Y, x - _igap + Margin.Horizontal, _rect.Height);
                     }
                 }
             });
@@ -731,11 +800,36 @@ namespace AntdUI
                 if (it == null) continue;
                 if (i == _select && !AnimationBar)
                 {
-                    using (var path = TabSelectRect.RoundPath(_radius, Round))
+                    if (BarStyle)
                     {
-                        using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                        float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
+                        var rect = new RectangleF(TabSelectRect.X + barPadding, TabSelectRect.Bottom - barSize, TabSelectRect.Width - barPadding2, barSize);
+                        if (BarRadius > 0)
                         {
-                            g.FillPath(brush, path);
+                            using (var path = rect.RoundPath(BarRadius * Config.Dpi))
+                            {
+                                using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                            {
+                                g.FillRectangle(brush, rect);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (var path = TabSelectRect.RoundPath(_radius, Round))
+                        {
+                            using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                            {
+                                g.FillPath(brush, path);
+                            }
                         }
                     }
                 }
@@ -754,11 +848,36 @@ namespace AntdUI
             }
             if (AnimationBar)
             {
-                using (var path = AnimationBarValue.RoundPath(_radius, Round))
+                if (BarStyle)
                 {
-                    using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                    float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
+                    var rect = new RectangleF(AnimationBarValue.X + barPadding, AnimationBarValue.Bottom - barSize, AnimationBarValue.Width - barPadding2, barSize);
+                    if (BarRadius > 0)
                     {
-                        g.FillPath(brush, path);
+                        using (var path = rect.RoundPath(BarRadius * Config.Dpi))
+                        {
+                            using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                            {
+                                g.FillPath(brush, path);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                        {
+                            g.FillRectangle(brush, rect);
+                        }
+                    }
+                }
+                else
+                {
+                    using (var path = AnimationBarValue.RoundPath(_radius, Round))
+                    {
+                        using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                        {
+                            g.FillPath(brush, path);
+                        }
                     }
                 }
             }

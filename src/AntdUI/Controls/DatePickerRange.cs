@@ -93,7 +93,6 @@ namespace AntdUI
             }
         }
 
-        bool setvalue = true;
         DateTime[]? _value = null;
         [Description("控件当前日期"), Category("数据"), DefaultValue(null)]
         public DateTime[]? Value
@@ -103,10 +102,8 @@ namespace AntdUI
             {
                 _value = value;
                 ValueChanged?.Invoke(this, value);
-                setvalue = false;
                 if (value == null) Text = "";
                 else Text = value[0].ToString(Format) + "\t" + value[1].ToString(Format);
-                setvalue = true;
             }
         }
 
@@ -220,12 +217,7 @@ namespace AntdUI
 
         protected override void CreateHandle()
         {
-            if (_value != null)
-            {
-                setvalue = false;
-                Text = _value[0].ToString(Format) + "\t" + _value[1].ToString(Format);
-                setvalue = true;
-            }
+            if (_value != null) Text = _value[0].ToString(Format) + "\t" + _value[1].ToString(Format);
             base.CreateHandle();
         }
 

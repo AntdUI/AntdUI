@@ -48,41 +48,48 @@ namespace AntdUI
             SuspendLayout();
 
             BackColor = Style.Db.BgElevated;
-            Size = new Size(416, 160);
-            Font = config.Font == null ? config.Form.Font : config.Font;
+            Size = new Size(416, 122 + config.BtnHeight);
+            Font = config.Font ?? config.Form.Font;
             ForeColor = Style.Db.TextBase;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
 
-            btn_ok.AutoSizeMode = TAutoSize.Width;
-            btn_ok.Dock = DockStyle.Right;
-            btn_ok.Location = new Point(304, 0);
-            btn_ok.Name = "btn_ok";
-            btn_ok.Size = new Size(64, 38);
-            btn_ok.TabIndex = 0;
-            btn_ok.Type = config.OkType;
-            btn_ok.Text = config.OkText;
+            btn_ok = new Button
+            {
+                AutoSizeMode = TAutoSize.Width,
+                Dock = DockStyle.Right,
+                Location = new Point(304, 0),
+                Name = "btn_ok",
+                Size = new Size(64, config.BtnHeight),
+                TabIndex = 0,
+                Type = config.OkType,
+                Text = config.OkText
+            };
             btn_ok.Click += btn_ok_Click;
+            if (config.OkFont != null) btn_ok.Font = config.OkFont;
 
             if (config.CancelText != null)
             {
-                btn_no = new Button();
-                btn_no.AutoSizeMode = TAutoSize.Width;
-                btn_no.BorderWidth = 1F;
-                btn_no.Dock = DockStyle.Right;
-                btn_no.Location = new Point(240, 0);
-                btn_no.Name = "btn_no";
-                btn_no.Size = new Size(64, 38);
-                btn_no.TabIndex = 1;
-                btn_no.Text = config.CancelText;
+                btn_no = new Button
+                {
+                    AutoSizeMode = TAutoSize.Width,
+                    BorderWidth = 1F,
+                    Dock = DockStyle.Right,
+                    Location = new Point(240, 0),
+                    Name = "btn_no",
+                    Size = new Size(64, config.BtnHeight),
+                    TabIndex = 1,
+                    Text = config.CancelText
+                };
                 btn_no.Click += btn_no_Click;
+                if (config.CancelFont != null) btn_no.Font = config.CancelFont;
             }
 
             var panel1 = new Panel
             {
                 Dock = DockStyle.Bottom,
                 Back = Style.Db.BgElevated,
-                Size = new Size(368, 38)
+                Size = new Size(368, config.BtnHeight)
             };
             if (btn_no != null) panel1.Controls.Add(btn_no);
             panel1.Controls.Add(btn_ok);
@@ -95,7 +102,7 @@ namespace AntdUI
                     {
                         AutoSizeMode = TAutoSize.Width,
                         Dock = DockStyle.Right,
-                        Size = new Size(64, 38),
+                        Size = new Size(64, config.BtnHeight),
                         Name = btn.Name,
                         Text = btn.Text,
                         Type = btn.Type,
@@ -119,7 +126,7 @@ namespace AntdUI
             Controls.Add(panel1);
             var tmp = new System.Windows.Forms.Panel
             {
-                Location = new Point(386, 100),
+                Location = new Point(386, 62 + config.BtnHeight),
                 Size = new Size(60, 90)
             };
             Controls.Add(tmp);
@@ -140,7 +147,7 @@ namespace AntdUI
             {
                 var dpi = Config.Dpi;
 
-                int butt_h = (int)Math.Round(38 * dpi), gap = (int)Math.Round(8F * dpi), paddingx = (int)Math.Round(24 * dpi), paddingy = (int)Math.Round(20 * dpi),
+                int butt_h = (int)Math.Round(config.BtnHeight * dpi), gap = (int)Math.Round(8F * dpi), paddingx = (int)Math.Round(24 * dpi), paddingy = (int)Math.Round(20 * dpi),
                     w = (int)Math.Round(config.Width * dpi), wp = w - paddingx * 2;
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
 
@@ -179,6 +186,11 @@ namespace AntdUI
                             rectIcon = new RectangleF(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2F, icon_size, icon_size);
 
                             MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                        }
+                        if (config.CloseIcon)
+                        {
+                            float close_size = 22F * dpi;
+                            rect_close = new RectangleF(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
                         control.Location = new Point((int)rectContent.X, (int)rectContent.Y);
                         control.Size = new Size((int)rectContent.Width, (int)rectContent.Height);
@@ -506,7 +518,7 @@ namespace AntdUI
             }
         }
 
-        Button btn_ok = new Button();
+        Button btn_ok;
         Button? btn_no;
 
         #endregion

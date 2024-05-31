@@ -257,6 +257,21 @@ namespace AntdUI
             public bool CloseIcon { get; set; } = false;
 
             /// <summary>
+            /// 取消按钮字体
+            /// </summary>
+            public Font? CancelFont { get; set; }
+
+            /// <summary>
+            /// 确认按钮字体
+            /// </summary>
+            public Font? OkFont { get; set; }
+
+            /// <summary>
+            /// 按钮栏高度
+            /// </summary>
+            public int BtnHeight { get; set; } = 38;
+
+            /// <summary>
             /// 取消按钮文字
             /// </summary>
             public string? CancelText { get; set; } = Localization.Provider?.GetLocalizedString("Cancel") ?? "取消";

@@ -159,7 +159,9 @@ namespace AntdUI
             float originWidth = image.Width, originHeight = image.Height;
             if (originWidth == originHeight)
             {
-                g.DrawImage(image, rect);
+                if (rect.Width == rect.Height) g.DrawImage(image, rect);
+                else if (rect.Width > rect.Height) g.DrawImage(image, new RectangleF(0, (rect.Height - rect.Width) / 2, rect.Width, rect.Width));
+                else g.DrawImage(image, new RectangleF((rect.Width - rect.Height) / 2, 0, rect.Height, rect.Height));
                 return;
             }
             float destWidth = rect.Width, destHeight = rect.Height;
@@ -181,7 +183,9 @@ namespace AntdUI
             float originWidth = image.Width, originHeight = image.Height;
             if (originWidth == originHeight)
             {
-                g.DrawImage(image, rect);
+                if (rect.Width == rect.Height) g.DrawImage(image, rect);
+                else if (rect.Width > rect.Height) g.DrawImage(image, new RectangleF((rect.Width - rect.Height) / 2, 0, rect.Height, rect.Height));
+                else g.DrawImage(image, new RectangleF(0, (rect.Height - rect.Width) / 2, rect.Width, rect.Width));
                 return;
             }
             float destWidth = rect.Width, destHeight = rect.Height;

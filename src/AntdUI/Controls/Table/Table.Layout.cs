@@ -506,14 +506,12 @@ namespace AntdUI
                     if (AutoSizeColumnsMode == ColumnsMode.Fill)
                     {
                         //填充
-                        var percentage = new List<double>(width_cell.Count);
-                        foreach (var it in width_cell) percentage.Add((it.Value * 1.0) / sum_wi);
-                        int index = 0;
-                        foreach (var it in width_cell.Keys)
+                        var percentage = new Dictionary<int, int>(width_cell.Count);
+                        foreach (var it in width_cell)
                         {
-                            width_cell[it] = (int)Math.Round(rect_read.Width * percentage[index]);
-                            index++;
+                            percentage.Add(it.Key, (int)Math.Round(rect_read.Width * (it.Value * 1.0) / sum_wi));
                         }
+                        width_cell = percentage;
                     }
                     else rect_read.Width = sum_wi;
                 }

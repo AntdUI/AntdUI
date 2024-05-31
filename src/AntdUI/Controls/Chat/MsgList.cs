@@ -23,6 +23,11 @@ using System.Windows.Forms;
 
 namespace AntdUI.Chat
 {
+    /// <summary>
+    /// MsgList 好友消息列表
+    /// </summary>
+    /// <remarks>好友消息列表。</remarks>
+    [Description("MsgList 好友消息列表")]
     [ToolboxItem(true)]
     public class MsgList : IControl
     {
