@@ -149,7 +149,7 @@ namespace Vanara.PInvoke
         /// <summary>Determines whether the specified <see cref="PRECT"/>, is equal to this instance.</summary>
         /// <param name="r">The <see cref="PRECT"/> to compare with this instance.</param>
         /// <returns><c>true</c> if the specified <see cref="PRECT"/> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(PRECT r) => (object)r != null && Equals(r.rect);
+        public bool Equals(PRECT? r) => Equals(r?.rect);
 
         /// <summary>Determines whether the specified <see cref="Rectangle"/>, is equal to this instance.</summary>
         /// <param name="r">The <see cref="Rectangle"/> to compare with this instance.</param>
@@ -347,7 +347,7 @@ namespace Vanara.PInvoke
         /// <summary>Determines whether the specified <see cref="PRECT"/>, is equal to this instance.</summary>
         /// <param name="r">The <see cref="PRECT"/> to compare with this instance.</param>
         /// <returns><c>true</c> if the specified <see cref="PRECT"/> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(PRECT r) => rect == r?.rect;
+        public bool Equals(PRECT? r) => rect == r?.rect;
 
         /// <summary>Determines whether the specified <see cref="RECT"/>, is equal to this instance.</summary>
         /// <param name="r">The <see cref="RECT"/> to compare with this instance.</param>

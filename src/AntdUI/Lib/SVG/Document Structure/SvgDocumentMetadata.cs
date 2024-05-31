@@ -3,8 +3,6 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.Xml;
-
 namespace AntdUI.Svg
 {
     /// <summary>
@@ -40,14 +38,6 @@ namespace AntdUI.Svg
         protected override void Render(ISvgRenderer renderer)
         {
             // Do nothing. Children should NOT be rendered.
-        }
-
-        public override void InitialiseFromXML(XmlTextReader reader, SvgDocument document)
-        {
-            base.InitialiseFromXML(reader, document);
-
-            //read in the metadata just as a string ready to be written straight back out again
-            Content = reader.ReadInnerXml();
         }
     }
 }

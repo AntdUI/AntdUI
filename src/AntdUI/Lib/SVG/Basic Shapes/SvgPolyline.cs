@@ -27,9 +27,7 @@ namespace AntdUI.Svg
                 {
                     for (int i = 0; (i + 1) < Points.Count; i += 2)
                     {
-                        PointF endPoint = new PointF(Points[i].ToDeviceValue(renderer, UnitRenderingType.Horizontal, this),
-                                                     Points[i + 1].ToDeviceValue(renderer, UnitRenderingType.Vertical, this));
-
+                        PointF endPoint = new PointF(Points[i].ToDeviceValue(renderer, UnitRenderingType.Horizontal, this), Points[i + 1].ToDeviceValue(renderer, UnitRenderingType.Vertical, this));
                         if (renderer == null)
                         {
                             var radius = base.StrokeWidth / 2;
@@ -38,14 +36,8 @@ namespace AntdUI.Svg
                         }
 
                         // TODO: Remove unrequired first line
-                        if (_Path.PointCount == 0)
-                        {
-                            _Path.AddLine(endPoint, endPoint);
-                        }
-                        else
-                        {
-                            _Path.AddLine(_Path.GetLastPoint(), endPoint);
-                        }
+                        if (_Path.PointCount == 0) _Path.AddLine(endPoint, endPoint);
+                        else _Path.AddLine(_Path.GetLastPoint(), endPoint);
                     }
                 }
                 catch (Exception exc)

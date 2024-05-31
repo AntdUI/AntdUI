@@ -15,10 +15,8 @@ namespace AntdUI.Svg
 {
     public abstract class SvgTextBase : SvgVisualElement
     {
-        [CLSCompliant(false)] protected SvgUnitCollection _x = new SvgUnitCollection();
-        [CLSCompliant(false)] protected SvgUnitCollection _y = new SvgUnitCollection();
-        [CLSCompliant(false)] protected SvgUnitCollection _dy = new SvgUnitCollection();
-        [CLSCompliant(false)] protected SvgUnitCollection _dx = new SvgUnitCollection();
+        protected SvgUnitCollection _x = new SvgUnitCollection(), _y = new SvgUnitCollection(),
+            _dy = new SvgUnitCollection(), _dx = new SvgUnitCollection();
         private string _rotate;
         private List<float> _rotations = new List<float>();
 

@@ -244,8 +244,7 @@ namespace Vanara.Extensions
             }
             if (ptr == IntPtr.Zero) throw new ArgumentNullException(nameof(ptr));
             var bytes = GetBytes(value, nullTerm, charSet);
-            if (bytes.Length > allocatedBytes)
-                throw new ArgumentOutOfRangeException(nameof(allocatedBytes));
+            if (bytes.Length > allocatedBytes) throw new ArgumentOutOfRangeException(nameof(allocatedBytes));
             byteCnt = bytes.Length;
             Marshal.Copy(bytes, 0, ptr, byteCnt);
         }

@@ -30,11 +30,7 @@ namespace AntdUI.Svg
 
         internal SvgElementCollection(SvgElement owner, bool mock)
         {
-            if (owner == null)
-            {
-                throw new ArgumentNullException("owner");
-            }
-
+            if (owner == null) throw new ArgumentNullException("owner");
             _elements = new List<SvgElement>();
             _owner = owner;
             _mock = mock;

@@ -16,22 +16,20 @@ namespace AntdUI.Svg.Transforms
         public abstract object Clone();
 
         #region Equals implementation
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            SvgTransform other = obj as SvgTransform;
-            if (other == null)
-                return false;
-
-            var thisMatrix = Matrix.Elements;
-            var otherMatrix = other.Matrix.Elements;
-
-            for (int i = 0; i < 6; i++)
+            if (obj == null) return false;
+            if (obj is SvgTransform other)
             {
-                if (thisMatrix[i] != otherMatrix[i])
-                    return false;
+                var thisMatrix = Matrix.Elements;
+                var otherMatrix = other.Matrix.Elements;
+                for (int i = 0; i < 6; i++)
+                {
+                    if (thisMatrix[i] != otherMatrix[i]) return false;
+                }
+                return true;
             }
-
-            return true;
+            else return false;
         }
 
         public override int GetHashCode()

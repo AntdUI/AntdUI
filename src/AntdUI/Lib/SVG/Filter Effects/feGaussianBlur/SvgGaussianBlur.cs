@@ -3,7 +3,6 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System;
 using System.Drawing;
 
 namespace AntdUI.Svg.FilterEffects
@@ -237,10 +236,7 @@ namespace AntdUI.Svg.FilterEffects
             get { return _stdDeviation; }
             set
             {
-                if (value <= 0)
-                {
-                    throw new InvalidOperationException("Radius must be greater then 0");
-                }
+                if (value <= 0) value = 0;
                 _stdDeviation = value;
                 PreCalculate();
             }

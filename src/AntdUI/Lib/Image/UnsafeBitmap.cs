@@ -77,7 +77,7 @@ namespace AntdUI
             return !(bmp1 == bmp2);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is UnsafeBitmap unsafeBitmap && Compare(unsafeBitmap, this);
         }

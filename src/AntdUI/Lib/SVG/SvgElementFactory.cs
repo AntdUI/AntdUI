@@ -6,10 +6,6 @@
 using AntdUI.Svg.DataTypes;
 using AntdUI.Svg.Transforms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using System.Xml;
 
 namespace AntdUI.Svg
@@ -27,15 +23,8 @@ namespace AntdUI.Svg
         /// <exception cref="InvalidOperationException">The CreateDocument method can only be used to parse root &lt;svg&gt; elements.</exception>
         public T CreateDocument<T>(XmlReader reader) where T : SvgDocument, new()
         {
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
-
-            if (reader.LocalName != "svg")
-            {
-                throw new InvalidOperationException("The CreateDocument method can only be used to parse root <svg> elements.");
-            }
+            if (reader == null) throw new ArgumentNullException("reader");
+            if (reader.LocalName != "svg") throw new InvalidOperationException("The CreateDocument method can only be used to parse root <svg> elements.");
 
             return (T)CreateElement<T>(reader, true, null);
         }
@@ -48,10 +37,7 @@ namespace AntdUI.Svg
         /// <exception cref="ArgumentNullException">The <paramref name="reader"/> and <paramref name="document"/> parameters cannot be <c>null</c>.</exception>
         public SvgElement CreateElement(XmlReader reader, SvgDocument document)
         {
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
+            if (reader == null) throw new ArgumentNullException("reader");
             return CreateElement<SvgDocument>(reader, false, document);
         }
 
@@ -293,9 +279,6 @@ namespace AntdUI.Svg
             }
             return false;
         }
-
-        private static Dictionary<Type, Dictionary<string, PropertyDescriptorCollection>> _propertyDescriptors = new Dictionary<Type, Dictionary<string, PropertyDescriptorCollection>>();
-        private static object syncLock = new object();
 
         internal static bool SetPropertyValue(SvgElement element, string attributeName, string attributeValue, SvgDocument document, bool isStyle = false)
         {
@@ -1266,47 +1249,7 @@ namespace AntdUI.Svg
                 }
             }
             catch { }
-
-            var elementType = element.GetType();
-
-            PropertyDescriptorCollection properties;
-            lock (syncLock)
-            {
-                if (_propertyDescriptors.Keys.Contains(elementType))
-                {
-                    if (_propertyDescriptors[elementType].Keys.Contains(attributeName))
-                    {
-                        properties = _propertyDescriptors[elementType][attributeName];
-                    }
-                    else
-                    {
-                        properties = TypeDescriptor.GetProperties(elementType, new[] { new SvgAttributeAttribute(attributeName) });
-                        _propertyDescriptors[elementType].Add(attributeName, properties);
-                    }
-                }
-                else
-                {
-                    properties = TypeDescriptor.GetProperties(elementType, new[] { new SvgAttributeAttribute(attributeName) });
-                    _propertyDescriptors.Add(elementType, new Dictionary<string, PropertyDescriptorCollection>());
-
-                    _propertyDescriptors[elementType].Add(attributeName, properties);
-                }
-            }
-
-            if (properties.Count > 0)
-            {
-                PropertyDescriptor descriptor = properties[0];
-
-                try
-                {
-                    var value = descriptor.Converter.ConvertFrom(document, CultureInfo.InvariantCulture, attributeValue);
-                    descriptor.SetValue(element, value);
-                }
-                catch
-                { }
-            }
-            else return SetPropertyValueNULL(element, attributeName, attributeValue);
-            return true;
+            return SetPropertyValueNULL(element, attributeName, attributeValue);
         }
 
         internal static bool SetPropertyValueNULL(SvgElement element, string attributeName, string attributeValue, bool isStyle = false)

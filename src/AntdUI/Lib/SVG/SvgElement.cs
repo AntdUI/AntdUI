@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Xml;
 
 namespace AntdUI.Svg
 {
@@ -461,12 +460,6 @@ namespace AntdUI.Svg
             OnAttributeChanged(e);
         }
 
-        public virtual void InitialiseFromXML(XmlTextReader reader, SvgDocument document)
-        {
-            throw new NotImplementedException();
-        }
-
-
         /// <summary>
         /// Renders this element to the <see cref="ISvgRenderer"/>.
         /// </summary>
@@ -481,29 +474,6 @@ namespace AntdUI.Svg
         {
             //Write any element who has a name.
             return (ElementName != String.Empty);
-        }
-
-        private bool TryResolveParentAttributeValue(string attributeKey, out object parentAttributeValue)
-        {
-            parentAttributeValue = null;
-
-            //attributeKey = char.ToUpper(attributeKey[0]) + attributeKey.Substring(1);
-
-            var currentParent = Parent;
-            var resolved = false;
-            while (currentParent != null)
-            {
-                if (currentParent.Attributes.ContainsKey(attributeKey))
-                {
-                    resolved = true;
-                    parentAttributeValue = currentParent.Attributes[attributeKey];
-                    if (parentAttributeValue != null)
-                        break;
-                }
-                currentParent = currentParent.Parent;
-            }
-
-            return resolved;
         }
 
         /// <summary>

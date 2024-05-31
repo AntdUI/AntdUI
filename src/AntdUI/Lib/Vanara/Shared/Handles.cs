@@ -243,30 +243,24 @@ namespace Vanara.PInvoke
         /// <summary>Determines whether the specified <see cref="SafeHANDLE"/>, is equal to this instance.</summary>
         /// <param name="other">The <see cref="SafeHANDLE"/> to compare with this instance.</param>
         /// <returns><c>true</c> if the specified <see cref="SafeHANDLE"/> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(SafeHANDLE other)
+        public bool Equals(SafeHANDLE? other)
         {
-            if (other is null)
-                return false;
-            if (ReferenceEquals(this, other))
-                return true;
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
             return handle == other.handle && IsClosed == other.IsClosed;
         }
 
         /// <summary>Determines whether the specified <see cref="System.Object"/>, is equal to this instance.</summary>
         /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             switch (obj)
             {
-                case IHandle ih:
-                    return handle.Equals(ih.DangerousGetHandle());
-                case SafeHandle sh:
-                    return handle.Equals(sh.DangerousGetHandle());
-                case IntPtr p:
-                    return handle.Equals(p);
-                default:
-                    return base.Equals(obj);
+                case IHandle ih: return handle.Equals(ih.DangerousGetHandle());
+                case SafeHandle sh: return handle.Equals(sh.DangerousGetHandle());
+                case IntPtr p: return handle.Equals(p);
+                default: return base.Equals(obj);
             }
         }
 

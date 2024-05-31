@@ -39,19 +39,19 @@ namespace AntdUI.Svg
             return element;
         }
 
-        public virtual SvgElement GetElementById(Uri uri)
+        public virtual SvgElement? GetElementById(Uri uri)
         {
             if (uri.ToString().StartsWith("url(")) uri = new Uri(uri.ToString().Substring(4).TrimEnd(')'), UriKind.Relative);
             if (!uri.IsAbsoluteUri && _document.BaseUri != null && !uri.ToString().StartsWith("#"))
             {
                 var fullUri = new Uri(_document.BaseUri, uri);
                 var hash = fullUri.OriginalString.Substring(fullUri.OriginalString.LastIndexOf('#'));
-                SvgDocument doc;
+                SvgDocument? doc;
                 switch (fullUri.Scheme.ToLowerInvariant())
                 {
                     case "file":
                         doc = SvgDocument.Open<SvgDocument>(fullUri.LocalPath.Substring(0, fullUri.LocalPath.Length - hash.Length));
-                        return doc.IdManager.GetElementById(hash);
+                        return doc?.IdManager.GetElementById(hash);
                     default: throw new NotSupportedException();
                 }
 
