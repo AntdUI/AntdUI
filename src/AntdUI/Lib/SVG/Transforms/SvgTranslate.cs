@@ -25,14 +25,17 @@ namespace AntdUI.Svg.Transforms
             set { y = value; }
         }
 
-        public override System.Drawing.Drawing2D.Matrix Matrix
+        public override Matrix Matrix(float w, float h)
         {
-            get
+            Matrix matrix = new Matrix();
+            if (RX || RY)
             {
-                Matrix matrix = new Matrix();
-                matrix.Translate(X, Y);
-                return matrix;
+                if (RX && RY) matrix.Translate(w * (X / 100F), h * (Y / 100F));
+                else if (RX) matrix.Translate(w * (X / 100F), Y);
+                else matrix.Translate(X, h * (Y / 100F));
             }
+            else matrix.Translate(X, Y);
+            return matrix;
         }
 
         public override string WriteToString()
@@ -40,18 +43,19 @@ namespace AntdUI.Svg.Transforms
             return string.Format(CultureInfo.InvariantCulture, "translate({0}, {1})", X, Y);
         }
 
-        public SvgTranslate(float _x, float _y)
+        public SvgTranslate(float _x, bool ratio_x, float _y, bool ratio_y)
         {
             x = _x;
             y = _y;
+            RX = ratio_x;
+            RY = ratio_y;
         }
 
-        public SvgTranslate(float x) : this(x, 0.0f)
-        { }
+        bool RX = false, RY = false;
 
         public override object Clone()
         {
-            return new SvgTranslate(x, y);
+            return new SvgTranslate(x, RX, y, RY);
         }
     }
 }

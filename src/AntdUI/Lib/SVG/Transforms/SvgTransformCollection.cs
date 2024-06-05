@@ -54,7 +54,7 @@ namespace AntdUI.Svg.Transforms
 
             foreach (SvgTransform transformation in this)
             {
-                transformMatrix.Multiply(transformation.Matrix);
+                transformMatrix.Multiply(transformation.Matrix(0, 0));
             }
 
             return transformMatrix;

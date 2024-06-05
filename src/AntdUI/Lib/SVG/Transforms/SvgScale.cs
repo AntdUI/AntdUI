@@ -3,6 +3,7 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
+using System.Drawing.Drawing2D;
 using System.Globalization;
 
 namespace AntdUI.Svg.Transforms
@@ -24,14 +25,11 @@ namespace AntdUI.Svg.Transforms
             set { scaleFactorY = value; }
         }
 
-        public override System.Drawing.Drawing2D.Matrix Matrix
+        public override Matrix Matrix(float w, float h)
         {
-            get
-            {
-                var matrix = new System.Drawing.Drawing2D.Matrix();
-                matrix.Scale(X, Y);
-                return matrix;
-            }
+            var matrix = new Matrix();
+            matrix.Scale(X, Y);
+            return matrix;
         }
 
         public override string WriteToString()

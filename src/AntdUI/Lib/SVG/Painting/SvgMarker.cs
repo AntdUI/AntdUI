@@ -238,7 +238,7 @@ namespace AntdUI.Svg
                         {
                             foreach (var transformation in MarkerElement.Transforms)
                             {
-                                transMatrix.Multiply(transformation.Matrix);
+                                transMatrix.Multiply(transformation.Matrix(0, 0));
                             }
                         }
                         markerPath.Transform(transMatrix);

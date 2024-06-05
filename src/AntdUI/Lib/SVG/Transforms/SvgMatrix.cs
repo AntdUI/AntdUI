@@ -15,44 +15,40 @@ namespace AntdUI.Svg.Transforms
     public sealed class SvgMatrix : SvgTransform
     {
         private List<float> points;
-
         public List<float> Points
         {
-            get { return this.points; }
-            set { this.points = value; }
+            get { return points; }
+            set { points = value; }
         }
 
-        public override System.Drawing.Drawing2D.Matrix Matrix
+        public override Matrix Matrix(float w, float h)
         {
-            get
-            {
-                Matrix matrix = new Matrix(
-                    this.points[0],
-                    this.points[1],
-                    this.points[2],
-                    this.points[3],
-                    this.points[4],
-                    this.points[5]
-                );
-                return matrix;
-            }
+            Matrix matrix = new Matrix(
+                points[0],
+                points[1],
+                points[2],
+                points[3],
+                points[4],
+                points[5]
+            );
+            return matrix;
         }
 
         public override string WriteToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "matrix({0}, {1}, {2}, {3}, {4}, {5})",
-                this.points[0], this.points[1], this.points[2], this.points[3], this.points[4], this.points[5]);
+                points[0], points[1], points[2], points[3], points[4], points[5]);
         }
 
         public SvgMatrix(List<float> m)
         {
-            this.points = m;
+            points = m;
         }
 
 
         public override object Clone()
         {
-            return new SvgMatrix(this.Points);
+            return new SvgMatrix(Points);
         }
 
     }

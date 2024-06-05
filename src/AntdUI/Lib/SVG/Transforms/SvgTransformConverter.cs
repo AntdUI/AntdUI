@@ -39,13 +39,47 @@ namespace AntdUI.Svg.Transforms
                     case "translate":
                         var coords = contents.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         if (coords.Length == 0 || coords.Length > 2) throw new FormatException("Translate transforms must be in the format 'translate(x [,y])'");
-                        float x = float.Parse(coords[0].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture);
                         if (coords.Length > 1)
                         {
-                            float y = float.Parse(coords[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture);
-                            transformList.Add(new SvgTranslate(x, y));
+                            string c1 = coords[0].Trim(), c2 = coords[1].Trim();
+                            if (c1.EndsWith("%") || c2.EndsWith("%"))
+                            {
+                                if (c1.EndsWith("%") && c2.EndsWith("%"))
+                                {
+                                    float x = float.Parse(c1.TrimEnd('%'), NumberStyles.Float, CultureInfo.InvariantCulture), y = float.Parse(c2.TrimEnd('%'), NumberStyles.Float, CultureInfo.InvariantCulture);
+                                    transformList.Add(new SvgTranslate(x, true, y, true));
+                                }
+                                else if (c1.EndsWith("%"))
+                                {
+                                    float x = float.Parse(c1.TrimEnd('%'), NumberStyles.Float, CultureInfo.InvariantCulture), y = float.Parse(c2, NumberStyles.Float, CultureInfo.InvariantCulture);
+                                    transformList.Add(new SvgTranslate(x, true, y, false));
+                                }
+                                else
+                                {
+                                    float x = float.Parse(c1, NumberStyles.Float, CultureInfo.InvariantCulture), y = float.Parse(c2.TrimEnd('%'), NumberStyles.Float, CultureInfo.InvariantCulture);
+                                    transformList.Add(new SvgTranslate(x, false, y, true));
+                                }
+                            }
+                            else
+                            {
+                                float x = float.Parse(c1, NumberStyles.Float, CultureInfo.InvariantCulture), y = float.Parse(c2.TrimEnd('%'), NumberStyles.Float, CultureInfo.InvariantCulture);
+                                transformList.Add(new SvgTranslate(x, false, y, false));
+                            }
                         }
-                        else transformList.Add(new SvgTranslate(x));
+                        else
+                        {
+                            string c1 = coords[0].Trim();
+                            if (c1.EndsWith("%"))
+                            {
+                                float x = float.Parse(c1.TrimEnd('%'), NumberStyles.Float, CultureInfo.InvariantCulture);
+                                transformList.Add(new SvgTranslate(x, true, 0F, false));
+                            }
+                            else
+                            {
+                                float x = float.Parse(c1, NumberStyles.Float, CultureInfo.InvariantCulture);
+                                transformList.Add(new SvgTranslate(x, false, 0F, false));
+                            }
+                        }
                         break;
                     case "rotate":
                         var args = contents.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);

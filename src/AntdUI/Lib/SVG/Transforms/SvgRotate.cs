@@ -16,16 +16,13 @@ namespace AntdUI.Svg.Transforms
 
         public float CenterY { get; set; }
 
-        public override Matrix Matrix
+        public override Matrix Matrix(float w, float h)
         {
-            get
-            {
-                Matrix matrix = new Matrix();
-                matrix.Translate(CenterX, CenterY);
-                matrix.Rotate(Angle);
-                matrix.Translate(-CenterX, -CenterY);
-                return matrix;
-            }
+            Matrix matrix = new Matrix();
+            matrix.Translate(CenterX, CenterY);
+            matrix.Rotate(Angle);
+            matrix.Translate(-CenterX, -CenterY);
+            return matrix;
         }
 
         public override string WriteToString()

@@ -104,7 +104,7 @@ namespace AntdUI.Svg.FilterEffects
             var transformMatrix = new Matrix();
             foreach (var transformation in element.Transforms)
             {
-                transformMatrix.Multiply(transformation.Matrix);
+                transformMatrix.Multiply(transformation.Matrix(0, 0));
             }
             return transformMatrix;
         }

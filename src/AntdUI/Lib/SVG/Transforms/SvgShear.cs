@@ -28,14 +28,11 @@ namespace AntdUI.Svg.Transforms
             set { shearFactorY = value; }
         }
 
-        public override Matrix Matrix
+        public override Matrix Matrix(float w, float h)
         {
-            get
-            {
-                Matrix matrix = new Matrix();
-                matrix.Shear(X, Y);
-                return matrix;
-            }
+            Matrix matrix = new Matrix();
+            matrix.Shear(X, Y);
+            return matrix;
         }
 
         public override string WriteToString()

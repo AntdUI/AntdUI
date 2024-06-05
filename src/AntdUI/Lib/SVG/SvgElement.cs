@@ -234,8 +234,6 @@ namespace AntdUI.Svg
             get { return _customAttributes; }
         }
 
-        private readonly Matrix _zeroMatrix = new Matrix(0, 0, 0, 0, 0, 0);
-
         /// <summary>
         /// Applies the required transforms to <see cref="ISvgRenderer"/>.
         /// </summary>
@@ -246,21 +244,14 @@ namespace AntdUI.Svg
             _graphicsClip = renderer.GetClip();
 
             // Return if there are no transforms
-            if (Transforms == null || Transforms.Count == 0)
-            {
-                return true;
-            }
-            if (Transforms.Count == 1 && Transforms[0].Matrix.Equals(_zeroMatrix)) return false;
-
+            if (Transforms == null || Transforms.Count == 0) return true;
             Matrix transformMatrix = renderer.Transform.Clone();
-
+            var bound = renderer.GetBoundable();
             foreach (SvgTransform transformation in Transforms)
             {
-                transformMatrix.Multiply(transformation.Matrix);
+                transformMatrix.Multiply(transformation.Matrix(bound.Bounds.Width, bound.Bounds.Height));
             }
-
             renderer.Transform = transformMatrix;
-
             return true;
         }
 

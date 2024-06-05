@@ -18,28 +18,19 @@ namespace AntdUI.Svg.Transforms
 
         public float AngleY { get; set; }
 
-        public override Matrix Matrix
+        public override Matrix Matrix(float w, float h)
         {
-            get
-            {
-                var matrix = new Matrix();
-                matrix.Shear(
-                    (float)Math.Tan(AngleX / 180 * Math.PI),
-                    (float)Math.Tan(AngleY / 180 * Math.PI));
-                return matrix;
-            }
+            var matrix = new Matrix();
+            matrix.Shear(
+                (float)Math.Tan(AngleX / 180 * Math.PI),
+                (float)Math.Tan(AngleY / 180 * Math.PI));
+            return matrix;
         }
 
         public override string WriteToString()
         {
-            if (AngleY == 0)
-            {
-                return string.Format(CultureInfo.InvariantCulture, "skewX({0})", AngleX);
-            }
-            else
-            {
-                return string.Format(CultureInfo.InvariantCulture, "skewY({0})", AngleY);
-            }
+            if (AngleY == 0) return string.Format(CultureInfo.InvariantCulture, "skewX({0})", AngleX);
+            else return string.Format(CultureInfo.InvariantCulture, "skewY({0})", AngleY);
         }
 
         public SvgSkew(float x, float y)

@@ -87,7 +87,7 @@ namespace AntdUI.Svg
                 {
                     foreach (SvgTransform transform in graphicsElement.Transforms)
                     {
-                        childPath.Transform(transform.Matrix);
+                        childPath.Transform(transform.Matrix(0, 0));
                     }
                 }
 

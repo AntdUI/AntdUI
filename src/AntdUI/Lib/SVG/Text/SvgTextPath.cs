@@ -72,7 +72,7 @@ namespace AntdUI.Svg
 
                 foreach (var transformation in path.Transforms)
                 {
-                    transformMatrix.Multiply(transformation.Matrix);
+                    transformMatrix.Multiply(transformation.Matrix(0, 0));
                 }
 
                 pathData.Transform(transformMatrix);
