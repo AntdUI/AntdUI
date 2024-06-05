@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class TimePicker : UserControl
     {
-        public TimePicker()
+        Form form;
+        public TimePicker(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Select : UserControl
     {
-        public Select()
+        Form form;
+        public Select(Form _form)
         {
+            form = _form;
             InitializeComponent();
 
             select5.Items.AddRange(new AntdUI.SelectItem[] {

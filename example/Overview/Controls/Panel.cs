@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Panel : UserControl
     {
-        public Panel()
+        Form form;
+        public Panel(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

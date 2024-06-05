@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Table : UserControl
     {
-        public Table()
+        Form form;
+        public Table(Form _form)
         {
+            form = _form;
             InitializeComponent();
 
             table1.Columns = new AntdUI.Column[] {
@@ -324,10 +326,10 @@ namespace Overview.Controls
         {
             if (record is TestClass data)
             {
-                AntdUI.Modal.open(new AntdUI.Modal.Config((Form)Parent, "ÊÇ·ñÉ¾³ý", new AntdUI.Modal.TextLine[] {
-                new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
-                new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
-            }, AntdUI.TType.Error)
+                AntdUI.Modal.open(new AntdUI.Modal.Config(form, "ÊÇ·ñÉ¾³ý", new AntdUI.Modal.TextLine[] {
+                    new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
+                    new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
+                }, AntdUI.TType.Error)
                 {
                     CancelText = null,
                     OkType = AntdUI.TTypeMini.Error,
@@ -338,10 +340,8 @@ namespace Overview.Controls
                 {
                     Thread.Sleep(2000);
                 },
-                    () =>
-                    {
-
-                    });
+                () =>
+                { });
             }
         }
     }

@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Alert : UserControl
     {
-        public Alert()
+        Form form;
+        public Alert(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class DatePicker : UserControl
     {
-        public DatePicker()
+        Form form;
+        public DatePicker(Form _form)
         {
+            form = _form;
             InitializeComponent();
             DateTime now = DateTime.Now.AddDays(new Random().Next(-5, 5));
             datePicker1.BadgeAction = dates =>
@@ -46,7 +48,7 @@ namespace Overview.Controls
 
         private void datePickerRange4_PresetsClickChanged(object sender, object value)
         {
-            AntdUI.Message.info((Form)Parent, "已点击：" + value, Font);
+            AntdUI.Message.info(form, "已点击：" + value, Font);
         }
     }
 }

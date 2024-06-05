@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Steps : UserControl
     {
-        public Steps()
+        Form form;
+        public Steps(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
 

@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class ColorPicker : UserControl
     {
-        public ColorPicker()
+        Form form;
+        public ColorPicker(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

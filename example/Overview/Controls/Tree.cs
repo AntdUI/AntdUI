@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Tree : UserControl
     {
-        public Tree()
+        Form form;
+        public Tree(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
 

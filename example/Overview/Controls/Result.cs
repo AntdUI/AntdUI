@@ -18,10 +18,10 @@
 
 namespace Overview.Controls
 {
-    public partial class Divider : UserControl
+    public partial class Result : UserControl
     {
         Form form;
-        public Divider(Form _form)
+        public Result(Form _form)
         {
             form = _form;
             InitializeComponent();

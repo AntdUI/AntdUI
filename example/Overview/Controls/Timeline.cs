@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Timeline : UserControl
     {
-        public Timeline()
+        Form form;
+        public Timeline(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Radio : UserControl
     {
-        public Radio()
+        Form form;
+        public Radio(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

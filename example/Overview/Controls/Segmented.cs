@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Segmented : UserControl
     {
-        public Segmented()
+        Form form;
+        public Segmented(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

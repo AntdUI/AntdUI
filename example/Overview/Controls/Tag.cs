@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Tag : UserControl
     {
-        public Tag()
+        Form form;
+        public Tag(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

@@ -20,10 +20,13 @@ namespace Overview.Controls
 {
     public partial class Button : UserControl
     {
-        public Button()
+        Form form;
+        public Button(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);

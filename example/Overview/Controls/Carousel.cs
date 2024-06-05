@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Carousel : UserControl
     {
-        public Carousel()
+        Form form;
+        public Carousel(Form _form)
         {
+            form = _form;
             InitializeComponent();
             if (carousel1.Image != null) slider1.MaxValue = carousel1.Image.Count - 1;
             slider1.Value = carousel1.SelectIndex;

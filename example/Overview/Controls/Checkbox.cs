@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Checkbox : UserControl
     {
-        public Checkbox()
+        Form form;
+        public Checkbox(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

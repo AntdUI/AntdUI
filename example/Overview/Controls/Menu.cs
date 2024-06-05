@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Menu : UserControl
     {
-        public Menu()
+        Form form;
+        public Menu(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
 

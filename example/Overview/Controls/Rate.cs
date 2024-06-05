@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Rate : UserControl
     {
-        public Rate()
+        Form form;
+        public Rate(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

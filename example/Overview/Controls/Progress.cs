@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Progress : UserControl
     {
-        public Progress()
+        Form form;
+        public Progress(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
 

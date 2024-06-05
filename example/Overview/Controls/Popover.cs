@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Popover : UserControl
     {
-        public Popover()
+        Form form;
+        public Popover(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
 
@@ -32,7 +34,7 @@ namespace Overview.Controls
 
         private void button2_Click(object sender, EventArgs e)
         {
-            AntdUI.Popover.open(button2, new Button() { Size = new Size(400, 300) });
+            AntdUI.Popover.open(button2, new Button(form) { Size = new Size(400, 300) });
         }
 
         private void buttonTL_Click(object sender, EventArgs e)

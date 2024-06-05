@@ -20,14 +20,16 @@ namespace Overview.Controls
 {
     public partial class Modal : UserControl
     {
-        public Modal()
+        Form form;
+        public Modal(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AntdUI.Modal.open(new AntdUI.Modal.Config((Form)Parent, "This is a success message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Success)
+            AntdUI.Modal.open(new AntdUI.Modal.Config(form, "This is a success message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Success)
             {
                 CancelText = null,
                 OkText = "知道了"
@@ -36,13 +38,13 @@ namespace Overview.Controls
 
         private void button2_Click(object sender, EventArgs e)
         {
-            AntdUI.Modal.open((Form)Parent, "This is a error message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Error);
+            AntdUI.Modal.open(form, "This is a error message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Error);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             button3.Enabled = false;
-            AntdUI.Modal.open(new AntdUI.Modal.Config((Form)Parent, "This is a warn message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Warn)
+            AntdUI.Modal.open(new AntdUI.Modal.Config(form, "This is a warn message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Warn)
             {
                 Btns = new AntdUI.Modal.Btn[] { new AntdUI.Modal.Btn("按钮Name", "自定义按钮", AntdUI.TTypeMini.Warn) },
                 OnBtns = btn =>
@@ -60,7 +62,7 @@ namespace Overview.Controls
 
         private void button4_Click(object sender, EventArgs e)
         {
-            AntdUI.Modal.open((Form)Parent, "Hello, Ant Design!", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...");
+            AntdUI.Modal.open(form, "Hello, Ant Design!", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...");
         }
     }
 }

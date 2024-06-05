@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Pagination : UserControl
     {
-        public Pagination()
+        Form form;
+        public Pagination(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Tooltip : UserControl
     {
-        public Tooltip()
+        Form form;
+        public Tooltip(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

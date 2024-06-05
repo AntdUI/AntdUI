@@ -177,6 +177,15 @@ namespace Overview {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 131 94&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-186.000000, -3491.000000)&quot;&gt;&lt;g id=&quot;编组备份-5&quot; transform=&quot;translate(186.000000, 3491.000000)&quot;&gt;&lt;rect id=&quot;d&quot; stroke-opacity=&quot;0.2&quot; stroke=&quot;#FFFFFF&quot; x=&quot;0.5&quot; y=&quot;0.5&quot; width=&quot;130&quot; height=&quot;93&quot; rx=&quot;4&quot;&gt;&lt;/rect&gt;&lt;polygon id=&quot;路径&quot; fill-opacity=&quot;0.15&quot; fill=&quot;#FFFFFF&quot; fill-rule=&quot;nonzero&quot; opacity=&quot;0.999255952&quot; points=&quot;0 94 62.7424567 42.11468 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Image {
+            get {
+                return ResourceManager.GetString("Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 119 75&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-559.000000, -1960.000000)&quot;&gt;&lt;g id=&quot;Input&quot; transform=&quot;translate(559.000000, 1960.000000)&quot;&gt;&lt;g id=&quot;3.DataEntry/Input/Default/Basic-#&quot;&gt;&lt;g id=&quot;9.Box/1.Cards/4.Border&quot; stroke=&quot;#FFFFFF&quot; stroke-opacity=&quot;0.2&quot;&gt;&lt;g id=&quot;Z/Shape/RectangleRC/2px/RC-A&quot;&gt;&lt;rect id=&quot;outline&quot; x=&quot;0.5&quot; y=&quot;0.5&quot; width=&quot;118&quot; height=&quot;30&quot; rx=&quot;6&quot;&gt;&lt;/rect&gt;&lt;/g&gt;&lt;/g&gt;&lt;te [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Input {
@@ -281,6 +290,15 @@ namespace Overview {
         internal static string Rate {
             get {
                 return ResourceManager.GetString("Rate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 137 117&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-1279.000000, -4547.000000)&quot;&gt;&lt;g id=&quot;Result&quot; transform=&quot;translate(1279.000000, 4547.000000)&quot;&gt;&lt;g id=&quot;1.通用/2.Icon图标/Fill/Check-Circle-Fill&quot; transform=&quot;translate(46.000000, 0.000000)&quot;&gt;&lt;rect id=&quot;矩形&quot; fill=&quot;#000000&quot; fill-rule=&quot;nonzero&quot; opacity=&quot;0&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;44.7457627&quot; height=&quot;44.7457627&quot;&gt;&lt;/rect&gt;&lt;path d=&quot;M22.3728814, [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Result {
+            get {
+                return ResourceManager.GetString("Result", resourceCulture);
             }
         }
         

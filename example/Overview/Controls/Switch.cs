@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Switch : UserControl
     {
-        public Switch()
+        Form form;
+        public Switch(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

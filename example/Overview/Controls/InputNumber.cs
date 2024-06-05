@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class InputNumber : UserControl
     {
-        public InputNumber()
+        Form form;
+        public InputNumber(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

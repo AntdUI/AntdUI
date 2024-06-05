@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Slider : UserControl
     {
-        public Slider()
+        Form form;
+        public Slider(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

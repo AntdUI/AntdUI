@@ -20,19 +20,21 @@ namespace Overview.Controls
 {
     public partial class Notification : UserControl
     {
-        public Notification()
+        Form form;
+        public Notification(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info((Form)Parent, "Notification " + button1.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.TL, Font);
+            AntdUI.Notification.info(form, "Notification " + button1.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.TL, Font);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.open(new AntdUI.Notification.Config((Form)Parent, "Notification " + button2.Text, "Hello, Ant Design!", AntdUI.TType.Info, AntdUI.TAlignFrom.TR, Font)
+            AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification " + button2.Text, "Hello, Ant Design!", AntdUI.TType.Info, AntdUI.TAlignFrom.TR, Font)
             {
                 Radius = 10,
                 FontStyleTitle = FontStyle.Bold,
@@ -45,42 +47,42 @@ namespace Overview.Controls
 
         private void button3_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info((Form)Parent, "Notification " + button3.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.BL, Font);
+            AntdUI.Notification.info(form, "Notification " + button3.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.BL, Font);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info((Form)Parent, "Notification " + button4.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.BR, Font);
+            AntdUI.Notification.info(form, "Notification " + button4.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.BR, Font);
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info((Form)Parent, "Notification " + button5.Text, "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.Top, Font);
+            AntdUI.Notification.info(form, "Notification " + button5.Text, "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.Top, Font);
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info((Form)Parent, "Notification " + button6.Text, "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.Bottom, Font);
+            AntdUI.Notification.info(form, "Notification " + button6.Text, "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.Bottom, Font);
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.success((Form)Parent, "Notification Title", "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.TR, Font);
+            AntdUI.Notification.success(form, "Notification Title", "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.TR, Font);
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.error((Form)Parent, "Notification Title", "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.TR, Font);
+            AntdUI.Notification.error(form, "Notification Title", "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.TR, Font);
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.warn((Form)Parent, "Notification Title", "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.TR, Font);
+            AntdUI.Notification.warn(form, "Notification Title", "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.TR, Font);
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info((Form)Parent, "Notification Title", "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.TR, Font);
+            AntdUI.Notification.info(form, "Notification Title", "This is the content of the notification. This is the content of the notification. This is the content of the notification.", AntdUI.TAlignFrom.TR, Font);
         }
     }
 }

@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Tabs : UserControl
     {
-        public Tabs()
+        Form form;
+        public Tabs(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Badge : UserControl
     {
-        public Badge()
+        Form form;
+        public Badge(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

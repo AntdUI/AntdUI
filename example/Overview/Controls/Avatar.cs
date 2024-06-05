@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Avatar : UserControl
     {
-        public Avatar()
+        Form form;
+        public Avatar(Form _form)
         {
+            form = _form;
             InitializeComponent();
         }
     }

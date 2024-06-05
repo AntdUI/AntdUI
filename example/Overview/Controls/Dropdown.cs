@@ -20,8 +20,10 @@ namespace Overview.Controls
 {
     public partial class Dropdown : UserControl
     {
-        public Dropdown()
+        Form form;
+        public Dropdown(Form _form)
         {
+            form = _form;
             InitializeComponent();
             button17.Items.Add(new AntdUI.SelectItem(Properties.Resources.bg1, "汉尼拔 Hannibal"));
             dropdown1.Items.AddRange(new AntdUI.SelectItem[] {
@@ -62,7 +64,7 @@ namespace Overview.Controls
 
         private void dropdown1_SelectedValueChanged(object sender, object value)
         {
-            AntdUI.Message.info((Form)Parent, "已选中：" + value, Font);
+            AntdUI.Message.info(form, "已选中：" + value, Font);
         }
     }
 }
