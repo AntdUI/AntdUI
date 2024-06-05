@@ -72,11 +72,12 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Switch** 开关 | ✅ | ✅ |
 :arrow_right: | **TimePicker** 时间选择框 | ✅ | ✅ |
 ||||
-:arrow_down: | 数据展示 `13` | 动画 | 禁用 |
+:arrow_down: | 数据展示 `14` | 动画 | 禁用 |
 :arrow_right: | **Avatar** 头像 | ❎ | ❎ |
 :arrow_right: | **Badge** 徽标数 | ✅ | ❎ |
 :arrow_right: | **Panel** 面板 | ✅ | ❎ |
 :arrow_right: | **Carousel** 走马灯 | ✅ | ❎ |
+:arrow_right: | **Preview** 图片预览 | ✅ | ✅ |
 :arrow_right: | **Popover** 气泡卡片 | ✅ | ❎ |
 :arrow_right: | **Segmented** 分段控制器 | ✅ | ❎
 :arrow_right: | **Table** 表格 | ✅ | ❎ | |

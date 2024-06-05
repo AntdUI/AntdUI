@@ -241,7 +241,7 @@ namespace AntdUI
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
-            if (Focused)
+            if (HasFocus)
             {
                 filtertext = Text;
                 TextFocus = true;
@@ -433,7 +433,7 @@ namespace AntdUI
             }
             else
             {
-                if (Focused)
+                if (HasFocus)
                 {
                     if (textFocus) return;
                     TextFocus = !textFocus;

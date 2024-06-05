@@ -39,9 +39,24 @@ namespace AntdUI
                 base.OnPaint(e);
                 return;
             }
+            if (columnfont == null)
+            {
+                using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                {
+                    PaintTable(g, rows, rect, column_font);
+                }
+            }
+            else PaintTable(g, rows, rect, columnfont);
+            if (EmptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect);
+            scrollBar.Paint(g);
+            base.OnPaint(e);
+        }
 
+        void PaintTable(Graphics g, RowTemplate[] rows, Rectangle rect, Font column_font)
+        {
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             using (var fore = new SolidBrush(Style.Db.Text))
+            using (var forecolumn = new SolidBrush(columnfore ?? Style.Db.Text))
             using (var brush_split = new SolidBrush(Style.Db.BorderColor))
             {
                 var shows = new List<RowTemplate>();
@@ -82,7 +97,7 @@ namespace AntdUI
 
                     g.TranslateTransform(-sx, 0);
 
-                    PaintTableHeader(g, rows[0], fore);
+                    PaintTableHeader(g, rows[0], forecolumn, column_font);
 
                     if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.FillRectangle(brush_split, divider);
                 }
@@ -116,7 +131,7 @@ namespace AntdUI
                     g.TranslateTransform(-sx, -sy);
                     foreach (var it in shows)
                     {
-                        if (it.IsColumn) PaintTableHeader(g, it, fore);
+                        if (it.IsColumn) PaintTableHeader(g, it, forecolumn, column_font);
                         else foreach (var cel in it.cells) PaintItem(g, cel, fore);
                     }
                     if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.FillRectangle(brush_split, divider);
@@ -128,8 +143,8 @@ namespace AntdUI
 
                 if (fixedColumnL != null || fixedColumnR != null)
                 {
-                    PaintFixedColumnL(g, rect, rows, shows, fore, brush_split, sx, sy);
-                    PaintFixedColumnR(g, rect, rows, shows, fore, brush_split, sx, sy);
+                    PaintFixedColumnL(g, rect, rows, shows, fore, forecolumn, column_font, brush_split, sx, sy);
+                    PaintFixedColumnR(g, rect, rows, shows, fore, forecolumn, column_font, brush_split, sx, sy);
                 }
                 else showFixedColumnL = showFixedColumnR = false;
 
@@ -143,82 +158,77 @@ namespace AntdUI
                     }
                 }
             }
-            if (EmptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect);
-            scrollBar.Paint(g);
-            base.OnPaint(e);
+
         }
 
         void PaintTableBgHeader(Graphics g, RowTemplate row)
         {
-            using (var brush = new SolidBrush(Style.Db.TagDefaultBg))
+            using (var brush = new SolidBrush(columnback ?? Style.Db.TagDefaultBg))
             {
                 g.FillRectangle(brush, row.RECT);
             }
         }
 
         string arrow_up_svg = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z\"></path></svg>", arrow_down_svg = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z\"></path></svg>";
-        void PaintTableHeader(Graphics g, RowTemplate row, SolidBrush fore)
+        void PaintTableHeader(Graphics g, RowTemplate row, SolidBrush fore, Font column_font)
         {
-            using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            if (dragHeader != null)
             {
-                if (dragHeader != null)
+                foreach (TCellColumn column in row.cells)
                 {
-                    foreach (TCellColumn column in row.cells)
+                    if (column.column.SortOrder)
                     {
-                        if (column.column.SortOrder)
+                        using (var bmp = SvgExtend.GetImgExtend(arrow_up_svg, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary))
                         {
-                            using (var bmp = SvgExtend.GetImgExtend(arrow_up_svg, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary))
-                            {
-                                if (bmp != null)
-                                    g.DrawImage(bmp, column.rect_up);
-                            }
-                            using (var bmp = SvgExtend.GetImgExtend(arrow_down_svg, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary))
-                            {
-                                if (bmp != null)
-                                    g.DrawImage(bmp, column.rect_down);
-                            }
+                            if (bmp != null)
+                                g.DrawImage(bmp, column.rect_up);
                         }
-                        if (column.column is ColumnCheck) PaintCheck(g, row, column);
-                        else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
+                        using (var bmp = SvgExtend.GetImgExtend(arrow_down_svg, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                        {
+                            if (bmp != null)
+                                g.DrawImage(bmp, column.rect_down);
+                        }
+                    }
+                    if (column.column is ColumnCheck) PaintCheck(g, row, column);
+                    else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
 
-                        if (dragHeader.i == column.INDEX)
+                    if (dragHeader.i == column.INDEX)
+                    {
+                        using (var brush = new SolidBrush(Style.Db.FillSecondary))
                         {
-                            using (var brush = new SolidBrush(Style.Db.FillSecondary))
-                            {
-                                g.FillRectangle(brush, column.RECT);
-                            }
+                            g.FillRectangle(brush, column.RECT);
                         }
-                        if (dragHeader.im == column.INDEX)
+                    }
+                    if (dragHeader.im == column.INDEX)
+                    {
+                        using (var brush_split = new SolidBrush(Style.Db.BorderColor))
                         {
-                            using (var brush_split = new SolidBrush(Style.Db.BorderColor))
-                            {
-                                int sp = (int)(2 * Config.Dpi);
-                                if (dragHeader.last) g.FillRectangle(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
-                                else g.FillRectangle(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
-                            }
+                            int sp = (int)(2 * Config.Dpi);
+                            if (dragHeader.last) g.FillRectangle(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                            else g.FillRectangle(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
                         }
                     }
                 }
-                else
+            }
+            else
+            {
+                foreach (TCellColumn column in row.cells)
                 {
-                    foreach (TCellColumn column in row.cells)
+                    if (column.column.SortOrder)
                     {
-                        if (column.column.SortOrder)
+                        using (var bmp = SvgExtend.GetImgExtend(arrow_up_svg, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary))
                         {
-                            using (var bmp = SvgExtend.GetImgExtend(arrow_up_svg, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary))
-                            {
-                                if (bmp != null)
-                                    g.DrawImage(bmp, column.rect_up);
-                            }
-                            using (var bmp = SvgExtend.GetImgExtend(arrow_down_svg, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary))
-                            {
-                                if (bmp != null)
-                                    g.DrawImage(bmp, column.rect_down);
-                            }
+                            if (bmp != null)
+                                g.DrawImage(bmp, column.rect_up);
                         }
-                        if (column.column is ColumnCheck) PaintCheck(g, row, column);
-                        else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
+                        using (var bmp = SvgExtend.GetImgExtend(arrow_down_svg, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary))
+                        {
+                            if (bmp != null)
+                                g.DrawImage(bmp, column.rect_down);
+                        }
                     }
+                    if (column.column is ColumnCheck) PaintCheck(g, row, column);
+                    else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
                 }
             }
         }
@@ -290,7 +300,7 @@ namespace AntdUI
             }
         }
 
-        void PaintFixedColumnL(Graphics g, Rectangle rect, RowTemplate[] rows, List<RowTemplate> shows, SolidBrush fore, SolidBrush brush_split, int sx, int sy)
+        void PaintFixedColumnL(Graphics g, Rectangle rect, RowTemplate[] rows, List<RowTemplate> shows, SolidBrush fore, SolidBrush forecolumn, Font column_font, SolidBrush brush_split, int sx, int sy)
         {
             if (fixedColumnL != null && sx > 0)
             {
@@ -317,7 +327,7 @@ namespace AntdUI
                 g.TranslateTransform(0, -sy);
                 foreach (var row in shows)
                 {
-                    if (row.IsColumn) { PaintTableBgHeader(g, row); PaintTableHeader(g, row, fore); }
+                    if (row.IsColumn) { PaintTableBgHeader(g, row); PaintTableHeader(g, row, forecolumn, column_font); }
                     else
                     {
                         PaintTableBgFront(g, row);
@@ -337,14 +347,14 @@ namespace AntdUI
                 if (fixedHeader)
                 {
                     PaintTableBgHeader(g, rows[0]);
-                    PaintTableHeader(g, rows[0], fore);
+                    PaintTableHeader(g, rows[0], forecolumn, column_font);
                 }
                 if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.FillRectangle(brush_split, divider);
                 g.ResetClip();
             }
             else showFixedColumnL = false;
         }
-        void PaintFixedColumnR(Graphics g, Rectangle rect, RowTemplate[] rows, List<RowTemplate> shows, SolidBrush fore, SolidBrush brush_split, int sx, int sy)
+        void PaintFixedColumnR(Graphics g, Rectangle rect, RowTemplate[] rows, List<RowTemplate> shows, SolidBrush fore, SolidBrush forecolumn, Font column_font, SolidBrush brush_split, int sx, int sy)
         {
             if (fixedColumnR != null && scrollBar.ShowX)
             {
@@ -382,7 +392,7 @@ namespace AntdUI
                             PaintTableBgHeader(g, row);
                             g.ResetTransform();
                             g.TranslateTransform(-sFixedR, -sy);
-                            PaintTableHeader(g, row, fore);
+                            PaintTableHeader(g, row, forecolumn, column_font);
                             g.ResetTransform();
                             g.TranslateTransform(0, -sy);
                         }
@@ -413,7 +423,7 @@ namespace AntdUI
                     {
                         PaintTableBgHeader(g, rows[0]);
                         g.TranslateTransform(-sFixedR, 0);
-                        PaintTableHeader(g, rows[0], fore);
+                        PaintTableHeader(g, rows[0], forecolumn, column_font);
                     }
                     g.ResetTransform();
                     g.TranslateTransform(-sFixedR, 0);

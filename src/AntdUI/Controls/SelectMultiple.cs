@@ -479,7 +479,7 @@ namespace AntdUI
             }
             else
             {
-                if (Focused)
+                if (HasFocus)
                 {
                     if (textFocus) return;
                     TextFocus = !textFocus;

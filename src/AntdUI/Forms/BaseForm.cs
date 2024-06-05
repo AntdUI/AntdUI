@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Vanara.PInvoke;
@@ -46,6 +47,49 @@ namespace AntdUI
             }
             Cursor = val ? Cursors.Hand : DefaultCursor;
         }
+
+        #region 主题
+
+        bool dark = false;
+        /// <summary>
+        /// 深色模式
+        /// </summary>
+        [Description("深色模式"), Category("外观"), DefaultValue(false)]
+        public bool Dark
+        {
+            get => dark;
+            set
+            {
+                if (dark == value) return;
+                dark = value;
+                mode = dark ? TAMode.Dark : TAMode.Light;
+                if (IsHandleCreated) DarkUI.UseImmersiveDarkMode(Handle, value);
+            }
+        }
+
+        TAMode mode = TAMode.Auto;
+        /// <summary>
+        /// 色彩模式
+        /// </summary>
+        [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
+        public TAMode Mode
+        {
+            get => mode;
+            set
+            {
+                if (mode == value) return;
+                mode = value;
+                if (mode == TAMode.Dark || (mode == TAMode.Auto || Config.Mode == TMode.Dark)) Dark = true;
+                else Dark = false;
+            }
+        }
+
+        internal void SetTheme()
+        {
+            if (mode == TAMode.Dark || (mode == TAMode.Auto || Config.Mode == TMode.Dark)) DarkUI.UseImmersiveDarkMode(Handle, true);
+        }
+
+        #endregion
 
         #region 程序
 
@@ -157,7 +201,12 @@ namespace AntdUI
 
         public void AutoDpi(float dpi, Control control)
         {
-            if (dpi != 1F) Helper.DpiLS(dpi, control);
+            if (dpi != 1F)
+            {
+                var dir = Helper.DpiSuspend(control.Controls);
+                Helper.DpiLS(dpi, control);
+                Helper.DpiResume(dir, control.Controls);
+            }
         }
 
         #endregion

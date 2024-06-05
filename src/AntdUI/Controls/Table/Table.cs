@@ -225,6 +225,58 @@ namespace AntdUI
             }
         }
 
+        #region 表头
+
+        Font? columnfont;
+        /// <summary>
+        /// 表头字体
+        /// </summary>
+        [Description("表头字体"), Category("外观"), DefaultValue(null)]
+        public Font? ColumnFont
+        {
+            get => columnfont;
+            set
+            {
+                if (columnfont == value) return;
+                columnfont = value;
+                Invalidate();
+            }
+        }
+
+        Color? columnback;
+        /// <summary>
+        /// 表头背景色
+        /// </summary>
+        [Description("表头背景色"), Category("外观"), DefaultValue(null)]
+        public Color? ColumnBack
+        {
+            get => columnback;
+            set
+            {
+                if (columnback == value) return;
+                columnback = value;
+                Invalidate();
+            }
+        }
+
+        Color? columnfore;
+        /// <summary>
+        /// 表头文本色
+        /// </summary>
+        [Description("表头文本色"), Category("外观"), DefaultValue(null)]
+        public Color? ColumnFore
+        {
+            get => columnfore;
+            set
+            {
+                if (columnfore == value) return;
+                columnfore = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
+
         #endregion
 
         int selectedIndex = -1;
@@ -546,7 +598,7 @@ namespace AntdUI
         internal int INDEX { get; set; }
 
         /// <summary>
-        /// 头部排序
+        /// 启用排序
         /// </summary>
         public bool SortOrder { get; set; }
 
@@ -1437,7 +1489,7 @@ namespace AntdUI
                 if (value < 0) value = 0;
                 else if (value > 1) value = 1;
                 _value = value;
-                OnPropertyChanged("Icon");
+                OnPropertyChanged("Value");
             }
         }
 

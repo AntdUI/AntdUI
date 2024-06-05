@@ -248,11 +248,6 @@ namespace AntdUI
         #region 事件
 
         public delegate void SelectEventHandler(object sender, MenuItem item);
-        /// <summary>
-        /// SelectIndex 属性值更改时发生
-        /// </summary>
-        [Description("SelectIndex 属性值更改时发生"), Category("行为")]
-        public event SelectEventHandler? SelectIndexChanged = null;
 
         /// <summary>
         /// Select 属性值更改时发生
@@ -262,7 +257,6 @@ namespace AntdUI
 
         internal void OnSelectIndexChanged(MenuItem item)
         {
-            SelectIndexChanged?.Invoke(this, item);
             SelectChanged?.Invoke(this, item);
         }
 
@@ -735,34 +729,39 @@ namespace AntdUI
 
         bool IMouseDown(MenuItem item, List<MenuItem> list, Point point)
         {
-            bool can = item.CanExpand;
-            if (item.Enabled && item.Contains(point, 0, scroll.Value, out _))
+            if (item.Visible)
             {
-                if (can) item.Expand = !item.Expand;
-                else
+                bool can = item.CanExpand;
+                if (item.Enabled && item.Contains(point, 0, scroll.Value, out _))
                 {
-                    IUSelect();
-                    if (list.Count > 1)
+                    if (can) item.Expand = !item.Expand;
+                    else
                     {
-                        foreach (MenuItem it in list)
+                        IUSelect();
+                        if (list.Count > 1)
                         {
-                            it.Select = true;
+                            foreach (MenuItem it in list)
+                            {
+                                it.Select = true;
+                            }
                         }
+                        item.Select = true;
+                        OnSelectIndexChanged(item);
+                        Invalidate();
                     }
-                    item.Select = true;
-                    OnSelectIndexChanged(item);
-                    Invalidate();
+                    return true;
                 }
-                return true;
-            }
-            if (can && item.Expand)
-                foreach (MenuItem sub in item.Sub)
+                if (can && item.Expand)
                 {
-                    var list_ = new List<MenuItem>(list.Count + 1);
-                    list_.AddRange(list);
-                    list_.Add(sub);
-                    if (IMouseDown(sub, list_, point)) return true;
+                    foreach (MenuItem sub in item.Sub)
+                    {
+                        var list_ = new List<MenuItem>(list.Count + 1);
+                        list_.AddRange(list);
+                        list_.Add(sub);
+                        if (IMouseDown(sub, list_, point)) return true;
+                    }
                 }
+            }
             return false;
         }
 
@@ -979,7 +978,8 @@ namespace AntdUI
                 }
                 return true;
             }
-            if (can && item.Expand)
+            if (can)
+            {
                 foreach (MenuItem sub in item.Sub)
                 {
                     var list_ = new List<MenuItem>(list.Count + 1);
@@ -987,6 +987,7 @@ namespace AntdUI
                     list_.Add(sub);
                     if (IDropDownChange(sub, list_, value)) return true;
                 }
+            }
             return false;
         }
 
@@ -1341,7 +1342,7 @@ namespace AntdUI
                 }
             }
         }
-        internal bool Select { get; set; }
+        public bool Select { get; set; }
         internal int Depth { get; set; }
         internal float ArrowProg { get; set; } = 1F;
         internal Menu? PARENT { get; set; }

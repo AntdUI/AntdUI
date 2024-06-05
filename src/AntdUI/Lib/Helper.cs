@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -1603,12 +1604,46 @@ namespace AntdUI
 
         #region DPI
 
+        internal static Dictionary<Control, AnchorDock> DpiSuspend(Control.ControlCollection controls)
+        {
+            var dir = new Dictionary<Control, AnchorDock>();
+            foreach (Control control in controls)
+            {
+                if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
+                if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
+            }
+            return dir;
+        }
+        internal static void DpiSuspend(ref Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
+        {
+            foreach (Control control in controls)
+            {
+                if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
+                if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
+            }
+        }
+
+        internal static void DpiResume(Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
+        {
+            foreach (Control control in controls)
+            {
+                if (dir.TryGetValue(control, out var find))
+                {
+                    control.Dock = find.Dock;
+                    control.Anchor = find.Anchor;
+                }
+                if (controls.Count > 0) DpiResume(dir, control.Controls);
+            }
+        }
+
         internal static void DpiLS(float dpi, Control control)
         {
             var size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
             Point point;
+            bool last = false;
             if (control is Form)
             {
+                last = true;
                 var screen = Screen.FromPoint(control.Location);
                 if (size.Width > screen.WorkingArea.Width && size.Height > screen.WorkingArea.Height)
                 {
@@ -1627,7 +1662,6 @@ namespace AntdUI
                 {
                     if (size.Width > screen.WorkingArea.Width) size.Width = screen.WorkingArea.Width;
                     if (size.Height > screen.WorkingArea.Height) size.Height = screen.WorkingArea.Height;
-
                     point = new Point(control.Left + (control.Width - size.Width) / 2, control.Top + (control.Height - size.Height) / 2);
                 }
             }
@@ -1637,8 +1671,11 @@ namespace AntdUI
             if (!control.MaximumSize.IsEmpty) control.MaximumSize = new Size((int)(control.MaximumSize.Width * dpi), (int)(control.MaximumSize.Height * dpi));
             control.Padding = SetPadding(dpi, control.Padding);
             control.Margin = SetPadding(dpi, control.Margin);
-            control.Size = size;
-            control.Location = point;
+            if (!last)
+            {
+                control.Size = size;
+                control.Location = point;
+            }
             if (control is TableLayoutPanel tableLayout)
             {
                 foreach (ColumnStyle it in tableLayout.ColumnStyles)
@@ -1654,12 +1691,23 @@ namespace AntdUI
             {
                 tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
             }
+            DpiLSS(dpi, control);
+            if (last)
+            {
+                control.Size = size;
+                control.Location = point;
+            }
+        }
+
+        internal static void DpiLSS(float dpi, Control control)
+        {
             if (control.Controls.Count > 0)
             {
                 if (control is Pagination || control is Input) return;
                 foreach (Control it in control.Controls) DpiLS(dpi, it);
             }
         }
+
         internal static Padding SetPadding(float dpi, Padding padding)
         {
             if (padding.All == 0) return padding;
@@ -1807,6 +1855,19 @@ namespace AntdUI
             mask.Show(owner);
             return mask;
         }
+    }
+
+    internal class AnchorDock
+    {
+        public AnchorDock(Control control)
+        {
+            Dock = control.Dock;
+            Anchor = control.Anchor;
+            control.Dock = DockStyle.None;
+            control.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+        }
+        public DockStyle Dock { get; set; }
+        public AnchorStyles Anchor { get; set; }
     }
 
     public class RectTextLR

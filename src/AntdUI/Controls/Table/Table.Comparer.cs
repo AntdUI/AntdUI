@@ -44,8 +44,11 @@ namespace AntdUI
                         s2 += arr2[j];
                         j++;
                     }
-                    if (int.Parse(s1) > int.Parse(s2)) return 1;
-                    if (int.Parse(s1) < int.Parse(s2)) return -1;
+                    if (int.TryParse(s1, out var _s1) && int.TryParse(s2, out var _s2))
+                    {
+                        if (_s1 > _s2) return 1;
+                        else if (_s1 < _s2) return -1;
+                    }
                 }
                 else
                 {

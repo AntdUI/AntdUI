@@ -979,8 +979,10 @@ namespace AntdUI
 
         bool AnimationFocus = false;
         int AnimationFocusValue = 0;
+        public bool HasFocus { get; internal set; }
         protected override void OnGotFocus(EventArgs e)
         {
+            HasFocus = true;
             base.OnGotFocus(e);
             ShowCaret = true;
             ExtraMouseDown = true;
@@ -988,6 +990,7 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
+            HasFocus = false;
             base.OnLostFocus(e);
             ShowCaret = false;
             if (LostFocusClearSelection) SelectionLength = 0;

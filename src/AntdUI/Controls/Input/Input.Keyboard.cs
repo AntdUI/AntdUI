@@ -36,18 +36,24 @@ namespace AntdUI
                     return true;
                 //========================================================
                 case Keys.Left:
-                    ProcessLeftKey();
+                    ProcessLeftKey(false);
+                    return true;
+                case Keys.Left | Keys.Shift:
+                    ProcessLeftKey(true);
                     return true;
                 case Keys.Up:
                     if (multiline) ProcessUpKey();
-                    else ProcessLeftKey();
+                    else ProcessLeftKey(false);
                     return true;
                 case Keys.Right:
-                    ProcessRightKey();
+                    ProcessRightKey(false);
+                    return true;
+                case Keys.Right | Keys.Shift:
+                    ProcessRightKey(true);
                     return true;
                 case Keys.Down:
                     if (multiline) ProcessDownKey();
-                    else ProcessRightKey();
+                    else ProcessRightKey(false);
                     return true;
                 case Keys.Home:
                     ProcessHomeKey();
@@ -181,16 +187,68 @@ namespace AntdUI
             }
         }
 
-        void ProcessLeftKey()
+        void ProcessLeftKey(bool shift)
         {
-            SelectionLength = 0;
-            SelectionStart--;
+            if (shift)
+            {
+                if (selectionStartTemp == selectionStart || selectionStartTemp < selectionStart) selectionStartTemp--;
+                SelectionLength++;
+                CurrentPosIndex = selectionStartTemp;
+                SetCaretPostion();
+                return;
+            }
+            if (SelectionLength > 0)
+            {
+                if (selectionStartTemp < selectionStart) SelectionStart = selectionStartTemp;
+                else
+                {
+                    int old = selectionStart;
+                    selectionStart--;
+                    SelectionStart = old;
+                }
+                SelectionLength = 0;
+            }
+            else
+            {
+                SelectionLength = 0;
+                SelectionStart--;
+            }
         }
 
-        void ProcessRightKey()
+        void ProcessRightKey(bool shift)
         {
-            SelectionLength = 0;
-            SelectionStart++;
+            if (shift)
+            {
+                if (selectionStart > selectionStartTemp)
+                {
+                    selectionStartTemp++;
+                    SelectionLength--;
+                    CurrentPosIndex = selectionStartTemp + selectionLength;
+                }
+                else
+                {
+                    SelectionLength++;
+                    CurrentPosIndex = selectionStart + selectionLength;
+                }
+                SetCaretPostion();
+                return;
+            }
+            if (SelectionLength > 0)
+            {
+                if (selectionStartTemp > selectionStart) SelectionStart = selectionStartTemp + selectionLength;
+                else
+                {
+                    int old = selectionStart;
+                    selectionStart--;
+                    SelectionStart = old + selectionLength;
+                }
+                SelectionLength = 0;
+            }
+            else
+            {
+                SelectionLength = 0;
+                SelectionStart++;
+            }
         }
 
         void ProcessUpKey()

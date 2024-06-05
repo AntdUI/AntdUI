@@ -232,26 +232,30 @@ namespace AntdUI
             if (cache_font != null)
             {
                 g.TranslateTransform(-ScrollX, -ScrollY);
-                if (selectionLength > 0)
+                if (selectionLength > 0 && cache_font.Length > selectionStartTemp)
                 {
-                    int end = selectionStartTemp + selectionLength - 1;
-                    if (end > cache_font.Length - 1) end = cache_font.Length - 1;
-                    var first = cache_font[selectionStartTemp];
-                    using (var brush = new SolidBrush(selection))
+                    try
                     {
-                        for (int i = selectionStartTemp; i <= end; i++)
+                        int end = selectionStartTemp + selectionLength - 1;
+                        if (end > cache_font.Length - 1) end = cache_font.Length - 1;
+                        var first = cache_font[selectionStartTemp];
+                        using (var brush = new SolidBrush(selection))
                         {
-                            var last = cache_font[i];
-                            if (first.rect.Y != last.rect.Y || last.retun > 0)
+                            for (int i = selectionStartTemp; i <= end; i++)
                             {
-                                //先渲染上一行
-                                if (i > 0) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, cache_font[i - 1].rect.Right - first.rect.X, first.rect.Height));
-                                if (i == end) g.FillRectangle(brush, last.rect);
-                                first = last;
+                                var last = cache_font[i];
+                                if (first.rect.Y != last.rect.Y || last.retun > 0)
+                                {
+                                    //先渲染上一行
+                                    if (i > 0) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, cache_font[i - 1].rect.Right - first.rect.X, first.rect.Height));
+                                    if (i == end) g.FillRectangle(brush, last.rect);
+                                    first = last;
+                                }
+                                else if (i == end) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
                             }
-                            else if (i == end) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
                         }
                     }
+                    catch { }
                 }
                 using (var fore = new SolidBrush(_fore))
                 {

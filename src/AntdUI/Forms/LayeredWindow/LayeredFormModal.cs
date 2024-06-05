@@ -40,7 +40,7 @@ namespace AntdUI
             Resizable = false;
 
             config = _config;
-            TopMost = config.Form.TopMost;
+            if (config.Form != null) TopMost = config.Form.TopMost;
             close_button = new ITaskOpacity(this);
 
             #region InitializeComponent
@@ -49,10 +49,12 @@ namespace AntdUI
 
             BackColor = Style.Db.BgElevated;
             Size = new Size(416, 122 + config.BtnHeight);
-            Font = config.Font ?? config.Form.Font;
+            if (config.Form == null) { if (config.Font != null) Font = config.Font; }
+            else Font = config.Font ?? config.Form.Font;
             ForeColor = Style.Db.TextBase;
             ShowInTaskbar = false;
-            StartPosition = FormStartPosition.CenterParent;
+            if (config.Form == null) StartPosition = FormStartPosition.CenterScreen;
+            else StartPosition = FormStartPosition.CenterParent;
 
             btn_ok = new Button
             {
@@ -309,12 +311,28 @@ namespace AntdUI
             Dispose();
         }
 
+        DateTime old_now;
+        int count = 0;
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            if (config.MaskClosable && isclose && min && m.Msg == 0x86 && m.WParam == (IntPtr)1 && m.LParam == (IntPtr)0)
+            if (config.MaskClosable && isclose)
             {
-                DialogResult = DialogResult.No;
-                return;
+                if (m.Msg == 0xa0 || m.Msg == 0x200) count = 0;
+                else if (m.Msg == 134)
+                {
+                    var now = DateTime.Now;
+                    if (now > old_now)
+                    {
+                        count = 0;
+                        old_now = now.AddSeconds(1);
+                    }
+                    count++;
+                    if (count > 2)
+                    {
+                        DialogResult = DialogResult.No;
+                        return;
+                    }
+                }
             }
             base.WndProc(ref m);
         }

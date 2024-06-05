@@ -305,9 +305,6 @@ namespace AntdUI
                                 TextFocus = false;
                             };
                             subForm.Show(this);
-                            //if (StartFocused)
-                            //{
-                            //} else if (EndFocused) { }
                         }
                         else
                         {
@@ -367,7 +364,7 @@ namespace AntdUI
         {
             if (e.Button == MouseButtons.Left && _mouseHover)
             {
-                if (Focused)
+                if (HasFocus)
                 {
                     if (textFocus) return;
                     TextFocus = !textFocus;

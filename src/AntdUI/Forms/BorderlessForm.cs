@@ -288,40 +288,6 @@ namespace AntdUI
             }
         }
 
-        bool dark = false;
-        /// <summary>
-        /// 深色模式
-        /// </summary>
-        [Description("深色模式"), Category("外观"), DefaultValue(false)]
-        public bool Dark
-        {
-            get => dark;
-            set
-            {
-                if (dark == value) return;
-                dark = value;
-                mode = dark ? TAMode.Dark : TAMode.Light;
-                if (IsHandleCreated) DarkUI.UseImmersiveDarkMode(Handle, value);
-            }
-        }
-
-        TAMode mode = TAMode.Auto;
-        /// <summary>
-        /// 色彩模式
-        /// </summary>
-        [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
-        public TAMode Mode
-        {
-            get => mode;
-            set
-            {
-                if (mode == value) return;
-                mode = value;
-                if (mode == TAMode.Dark || (mode == TAMode.Auto || Config.Mode == TMode.Dark)) Dark = true;
-                else Dark = false;
-            }
-        }
-
         WState winState = WState.Restore;
         WState WinState
         {
@@ -358,7 +324,7 @@ namespace AntdUI
         {
             handle = new HWND(Handle);
             base.OnHandleCreated(e);
-            if (mode == TAMode.Dark || (mode == TAMode.Auto || Config.Mode == TMode.Dark)) DarkUI.UseImmersiveDarkMode(Handle, true);
+            SetTheme();
             DisableProcessWindowsGhosting();
             HandMessage();
         }

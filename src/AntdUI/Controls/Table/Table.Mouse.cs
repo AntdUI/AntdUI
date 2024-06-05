@@ -593,15 +593,15 @@ namespace AntdUI
                 int xr = dragHeader.x + dragHeader.xr;
                 var cells = rows[0].cells;
                 dragHeader.last = e.X > dragHeader.x;
-                foreach (var it in cells)
+
+                var cel_sel = CellContains(rows, xr, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                if (cel_sel != null)
                 {
-                    if (it.RECT.Contains(xr, it.RECT.Y + 1))
-                    {
-                        if (it.INDEX == dragHeader.i) dragHeader.im = -1;
-                        else dragHeader.im = it.INDEX;
-                        Invalidate();
-                        return;
-                    }
+                    var it = cells[i_cel];
+                    if (it.INDEX == dragHeader.i) dragHeader.im = -1;
+                    else dragHeader.im = it.INDEX;
+                    Invalidate();
+                    return;
                 }
                 if (cells[cells.Length - 1].INDEX == dragHeader.i) dragHeader.im = -1;
                 else dragHeader.im = cells[cells.Length - 1].INDEX;

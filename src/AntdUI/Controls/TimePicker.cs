@@ -190,7 +190,7 @@ namespace AntdUI
         {
             if (e.Button == MouseButtons.Left && _mouseHover)
             {
-                if (Focused)
+                if (HasFocus)
                 {
                     if (textFocus) return;
                     TextFocus = !textFocus;

@@ -131,7 +131,8 @@ namespace AntdUI
         [Description("满电颜色"), Category("外观"), DefaultValue(typeof(Color), "0, 210, 121")]
         public Color FillFully
         {
-            get => fillfully; set
+            get => fillfully;
+            set
             {
                 if (fillfully == value) return;
                 fillfully = value;

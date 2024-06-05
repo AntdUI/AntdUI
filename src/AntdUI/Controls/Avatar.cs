@@ -233,6 +233,44 @@ namespace AntdUI
 
         #endregion
 
+        #region 加载
+
+        bool loading = false;
+        /// <summary>
+        /// 加载状态
+        /// </summary>
+        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                Invalidate();
+            }
+        }
+
+        float _value = 0F;
+        /// <summary>
+        /// 加载进度
+        /// </summary>
+        [Description("加载进度 0F-1F"), Category("数据"), DefaultValue(0F)]
+        public float LoadingProgress
+        {
+            get => _value;
+            set
+            {
+                if (_value == value) return;
+                if (value < 0) value = 0;
+                else if (value > 1) value = 1;
+                _value = value;
+                if (loading) Invalidate();
+            }
+        }
+
+        #endregion
+
         #region 边框
 
         float borderWidth = 0F;
@@ -362,6 +400,21 @@ namespace AntdUI
             }
             else PaintText(g, text, rect, stringCenter, Enabled);
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
+            if (loading)
+            {
+                using (Pen pen = new Pen(Color.FromArgb(220, Style.Db.PrimaryColor), 6 * Config.Dpi))
+                using (Pen penpro = new Pen(Style.Db.Primary, pen.Width))
+                {
+                    int loading_size = (int)(40 * Config.Dpi);
+                    var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
+                    g.DrawEllipse(pen, rect_loading);
+                    try
+                    {
+                        g.DrawArc(penpro, rect_loading, -90, 360F * _value);
+                    }
+                    catch { }
+                }
+            }
             this.PaintBadge(g);
             base.OnPaint(e);
         }
