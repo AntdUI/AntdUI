@@ -1,26 +1,22 @@
-![banner](screenshot/banner.png?raw=true)
+<div align="center">
 
-<p align="center">
-    <a href="README.md">中文</a>
-    ❤
-    <a href="README-en.md">English</a>
-</p>
+<img height="100" src="src/logo.png">
 
-# AntdUI
+<h1>AntdUI</h1>
+
 Winform UI library use Ant Design 5.0
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=for-the-badge&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
 [![NuGet](https://img.shields.io/nuget/v/AntdUI.svg?style=for-the-badge&label=AntdUI&logo=nuget)](https://www.nuget.org/packages/AntdUI)
+[![Download](https://img.shields.io/nuget/dt/antdui?style=for-the-badge)](https://www.nuget.org/packages/AntdUI)
 [![QQGroup](https://img.shields.io/badge/QQ群-328884096-f74658?style=for-the-badge&logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
 
-**[文档 Wiki](https://gitee.com/antdui/AntdUI/wikis)** 👈点击跳转，请查看后再提问
+中文・[English](README-en.md)・[文档](https://gitee.com/antdui/AntdUI/wikis)
 
----
+</div>
 
-![DEMO](screenshot/Pre/Demo.png?raw=true)
-![OverView](screenshot/Pre/OverView.png?raw=true)
-![Scale150](screenshot/Pre/Scale150.png?raw=true)
+![banner](screenshot/banner.png?raw=true)
 
 ### ✨特性
 
@@ -32,6 +28,7 @@ Winform UI library use Ant Design 5.0
 - 👚 主题配置
 - 🦜 SVG矢量图
 - 👓 DPI适配
+- 🌍 国际化
 
 ### 🖥支持环境
 
