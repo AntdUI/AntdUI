@@ -16,7 +16,7 @@ Winform UI library use Ant Design 5.0
 
 </div>
 
-![banner](screenshot/banner.png?raw=true)
+![banner](screenshot/Pre/banner.png?raw=true)
 
 ### ✨特性
 
