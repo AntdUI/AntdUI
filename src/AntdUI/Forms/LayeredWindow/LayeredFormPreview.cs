@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -290,15 +289,7 @@ namespace AntdUI
                             if (bmp != null)
                             {
                                 if (it.enabled) g.DrawImage(bmp, it.rect);
-                                else
-                                {
-                                    using (var attributes = new ImageAttributes())
-                                    {
-                                        var matrix = new ColorMatrix { Matrix33 = .3F };
-                                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                                        g.DrawImage(bmp, it.rect, 0, 0, it.rect.Width, it.rect.Height, GraphicsUnit.Pixel, attributes);
-                                    }
-                                }
+                                else g.DrawImage(bmp, it.rect, 0.3F);
                             }
                         }
                     }
@@ -321,15 +312,7 @@ namespace AntdUI
                     }
                     else g.FillEllipse(brush, rect);
                     if (enabled) g.DrawImage(bmp, rect_ico);
-                    else
-                    {
-                        using (var attributes = new ImageAttributes())
-                        {
-                            var matrix = new ColorMatrix { Matrix33 = .3F };
-                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.DrawImage(bmp, rect_ico, 0, 0, rect_ico.Width, rect_ico.Height, GraphicsUnit.Pixel, attributes);
-                        }
-                    }
+                    else g.DrawImage(bmp, rect_ico, 0.3F);
                 }
             }
         }

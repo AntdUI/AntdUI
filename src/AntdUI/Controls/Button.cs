@@ -21,7 +21,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -1426,24 +1425,14 @@ namespace AntdUI
                 {
                     if (_bmp != null)
                     {
-                        using (var attributes = new ImageAttributes())
-                        {
-                            var matrix = new ColorMatrix { Matrix33 = opacity };
-                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.DrawImage(_bmp, rect, 0, 0, rect.Width, rect.Height, GraphicsUnit.Pixel, attributes);
-                        }
+                        g.DrawImage(_bmp, rect, opacity);
                         return true;
                     }
                 }
             }
             else if (image != null)
             {
-                using (var attributes = new ImageAttributes())
-                {
-                    var matrix = new ColorMatrix { Matrix33 = opacity };
-                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(image, rect, 0, 0, rect.Width, rect.Height, GraphicsUnit.Pixel, attributes);
-                }
+                g.DrawImage(image, rect, opacity);
                 return true;
             }
             return false;
@@ -1478,24 +1467,14 @@ namespace AntdUI
                 {
                     if (_bmp != null)
                     {
-                        using (var attributes = new ImageAttributes())
-                        {
-                            var matrix = new ColorMatrix { Matrix33 = opacity };
-                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.DrawImage(_bmp, rect, 0, 0, rect.Width, rect.Height, GraphicsUnit.Pixel, attributes);
-                        }
+                        g.DrawImage(_bmp, rect, opacity);
                         return true;
                     }
                 }
             }
             else if (ImageHover != null)
             {
-                using (var attributes = new ImageAttributes())
-                {
-                    var matrix = new ColorMatrix { Matrix33 = opacity };
-                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(ImageHover, rect, 0, 0, rect.Width, rect.Height, GraphicsUnit.Pixel, attributes);
-                }
+                g.DrawImage(ImageHover, rect, opacity);
                 return true;
             }
             return false;

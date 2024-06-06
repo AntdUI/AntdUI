@@ -763,7 +763,7 @@ namespace AntdUI
         {
             if (IsPassWord && !PasswordCopy) return;
             var text = GetSelectionText();
-            if (text == null) return;
+            if (string.IsNullOrEmpty(text)) return;
             Clipboard.SetText(text);
         }
 
@@ -774,7 +774,7 @@ namespace AntdUI
         {
             if (IsPassWord && !PasswordCopy) return;
             var text = GetSelectionText();
-            if (text == null) return;
+            if (string.IsNullOrEmpty(text)) return;
             Clipboard.SetText(text);
             ProcessBackSpaceKey();
         }
@@ -930,8 +930,9 @@ namespace AntdUI
             {
                 if (selectionLength > 0)
                 {
-                    int start = selectionStart, end = selectionLength;
+                    int start = selectionStartTemp, end = selectionLength;
                     int end_temp = start + end;
+                    if (end_temp > cache_font.Length - 1) end_temp = cache_font.Length - 1;
                     var texts = new List<string>(end);
                     foreach (var it in cache_font)
                     {

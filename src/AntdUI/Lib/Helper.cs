@@ -314,6 +314,26 @@ namespace AntdUI
             }
         }
 
+        public static void DrawImage(this Graphics g, Bitmap bmp, Rectangle rect, float opacity)
+        {
+            using (var attributes = new ImageAttributes())
+            {
+                var matrix = new ColorMatrix { Matrix33 = opacity };
+                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+            }
+        }
+
+        public static void DrawImage(this Graphics g, Image bmp, Rectangle rect, float opacity)
+        {
+            using (var attributes = new ImageAttributes())
+            {
+                var matrix = new ColorMatrix { Matrix33 = opacity };
+                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+            }
+        }
+
         #endregion
 
         #region 区域

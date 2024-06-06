@@ -20,7 +20,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -328,12 +327,7 @@ namespace AntdUI
                         PaintText(g2, text, ShadowColor ?? _fore, rect_read);
                     }
                     Helper.Blur(bmp, shadow);
-                    using (var attributes = new ImageAttributes())
-                    {
-                        var matrix = new ColorMatrix { Matrix33 = shadowOpacity };
-                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                        g.DrawImage(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-                    }
+                    g.DrawImage(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
                 }
             }
             this.PaintBadge(g);
