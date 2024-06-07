@@ -648,7 +648,7 @@ namespace AntdUI
                     {
                         link.Value.Changed = key =>
                         {
-                            if (key == "Text") LoadLayout();
+                            if (key == "Text" || key == "Image" || key == "ImageSvg" || key == "ShowArrow") LoadLayout();
                             else Invalidate();
                         };
                     }

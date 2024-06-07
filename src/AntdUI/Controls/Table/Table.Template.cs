@@ -1495,9 +1495,27 @@ namespace AntdUI
 
             public Size GetSize(Graphics g, Font font, int gap, int gap2)
             {
-                var size = g.MeasureString(Value.Text, font);
-                if (Value is CellButton btn && btn.ShowArrow) return new Size((int)Math.Ceiling(size.Width + size.Height) + gap2 * 2, (int)Math.Ceiling(size.Height) + gap);
-                else return new Size((int)Math.Ceiling(size.Width) + gap2 * 2, (int)Math.Ceiling(size.Height) + gap);
+                if (Value is CellButton btn)
+                {
+                    if (string.IsNullOrEmpty(Value.Text))
+                    {
+                        var size = g.MeasureString(Config.NullText, font);
+                        int sizei = (int)Math.Ceiling(size.Height) + gap;
+                        return new Size(sizei + gap2, sizei);
+                    }
+                    else
+                    {
+                        var size = g.MeasureString(Value.Text ?? Config.NullText, font);
+                        if (btn.HasImage && btn.ShowArrow) return new Size((int)Math.Ceiling(size.Width + size.Height * 2) + gap2 * 3, (int)Math.Ceiling(size.Height) + gap);
+                        else if (btn.HasImage || btn.ShowArrow) return new Size((int)Math.Ceiling(size.Width + size.Height + gap) + gap2 * 2, (int)Math.Ceiling(size.Height) + gap);
+                        return new Size((int)Math.Ceiling(size.Width) + gap2 * 2, (int)Math.Ceiling(size.Height) + gap);
+                    }
+                }
+                else
+                {
+                    var size = g.MeasureString(Value.Text ?? Config.NullText, font);
+                    return new Size((int)Math.Ceiling(size.Width) + gap2 * 2, (int)Math.Ceiling(size.Height) + gap);
+                }
             }
 
             #region 按钮
@@ -1505,6 +1523,7 @@ namespace AntdUI
             #region 动画
 
             internal ITask? ThreadHover = null;
+            internal ITask? ThreadImageHover = null;
 
             internal bool _mouseDown = false;
             internal bool ExtraMouseDown
@@ -1530,43 +1549,75 @@ namespace AntdUI
                     _mouseHover = value;
                     if (PARENT.PARENT == null) return;
                     var enabled = Value.Enabled;
-                    if (enabled)
+                    if (enabled && Value is CellButton btn)
                     {
-                        if (Value is CellButton btn)
+                        Color _back_hover;
+                        switch (btn.Type)
                         {
-                            Color _back_hover;
-                            switch (btn.Type)
-                            {
-                                case TTypeMini.Error:
-                                    _back_hover = Style.Db.ErrorHover;
-                                    break;
-                                case TTypeMini.Success:
-                                    _back_hover = Style.Db.SuccessHover;
-                                    break;
-                                case TTypeMini.Info:
-                                    _back_hover = Style.Db.InfoHover;
-                                    break;
-                                case TTypeMini.Warn:
-                                    _back_hover = Style.Db.WarningHover;
-                                    break;
-                                case TTypeMini.Primary:
-                                default:
-                                    _back_hover = Style.Db.PrimaryHover;
-                                    break;
-                            }
-
-                            if (btn.Type == TTypeMini.Default)
-                            {
+                            case TTypeMini.Default:
                                 if (btn.BorderWidth > 0) _back_hover = Style.Db.PrimaryHover;
                                 else _back_hover = Style.Db.FillSecondary;
-                            }
+                                break;
+                            case TTypeMini.Success:
+                                _back_hover = Style.Db.SuccessHover;
+                                break;
+                            case TTypeMini.Error:
+                                _back_hover = Style.Db.ErrorHover;
+                                break;
+                            case TTypeMini.Info:
+                                _back_hover = Style.Db.InfoHover;
+                                break;
+                            case TTypeMini.Warn:
+                                _back_hover = Style.Db.WarningHover;
+                                break;
+                            case TTypeMini.Primary:
+                            default:
+                                _back_hover = Style.Db.PrimaryHover;
+                                break;
+                        }
 
-                            if (btn.BackHover.HasValue) _back_hover = btn.BackHover.Value;
-                            if (Config.Animation)
+                        if (btn.BackHover.HasValue) _back_hover = btn.BackHover.Value;
+                        if (Config.Animation)
+                        {
+                            if (btn.ImageHoverAnimation > 0 && btn.HasImage && (btn.ImageHoverSvg != null || btn.ImageHover != null))
                             {
+                                ThreadImageHover?.Dispose();
+                                AnimationImageHover = true;
+                                var t = Animation.TotalFrames(10, btn.ImageHoverAnimation);
+                                if (value)
+                                {
+                                    ThreadImageHover = new ITask((i) =>
+                                    {
+                                        AnimationImageHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                        PARENT.PARENT.Invalidate();
+                                        return true;
+                                    }, 10, t, () =>
+                                    {
+                                        AnimationImageHoverValue = 1F;
+                                        AnimationImageHover = false;
+                                        PARENT.PARENT.Invalidate();
+                                    });
+                                }
+                                else
+                                {
+                                    ThreadImageHover = new ITask((i) =>
+                                    {
+                                        AnimationImageHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                        PARENT.PARENT.Invalidate();
+                                        return true;
+                                    }, 10, t, () =>
+                                    {
+                                        AnimationImageHoverValue = 0F;
+                                        AnimationImageHover = false;
+                                        PARENT.PARENT.Invalidate();
+                                    });
+                                }
+                            }
+                            if (_back_hover.A > 0)
+                            {
+                                int addvalue = _back_hover.A / 12;
                                 ThreadHover?.Dispose();
                                 AnimationHover = true;
-                                int addvalue = _back_hover.A / 12;
                                 if (value)
                                 {
                                     ThreadHover = new ITask(PARENT.PARENT, () =>
@@ -1596,52 +1647,20 @@ namespace AntdUI
                                     });
                                 }
                             }
-                            else AnimationHoverValue = _back_hover.A;
-                            PARENT.PARENT.Invalidate();
-                        }
-                        else
-                        {
-                            int a = Style.Db.PrimaryHover.A;
-                            if (Config.Animation)
+                            else
                             {
-                                ThreadHover?.Dispose();
-                                AnimationHover = true;
-                                int addvalue = a / 12;
-                                if (value)
-                                {
-                                    ThreadHover = new ITask(PARENT.PARENT, () =>
-                                    {
-                                        AnimationHoverValue += addvalue;
-                                        if (AnimationHoverValue > a) { AnimationHoverValue = a; return false; }
-                                        PARENT.PARENT.Invalidate();
-                                        return true;
-                                    }, 10, () =>
-                                    {
-                                        AnimationHover = false;
-                                        PARENT.PARENT.Invalidate();
-                                    });
-                                }
-                                else
-                                {
-                                    ThreadHover = new ITask(PARENT.PARENT, () =>
-                                    {
-                                        AnimationHoverValue -= addvalue;
-                                        if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
-                                        PARENT.PARENT.Invalidate();
-                                        return true;
-                                    }, 10, () =>
-                                    {
-                                        AnimationHover = false;
-                                        PARENT.PARENT.Invalidate();
-                                    });
-                                }
+                                AnimationHoverValue = _back_hover.A;
+                                PARENT.PARENT.Invalidate();
                             }
-                            else AnimationHoverValue = a;
-                            PARENT.PARENT.Invalidate();
                         }
+                        else AnimationHoverValue = _back_hover.A;
+                        PARENT.PARENT.Invalidate();
                     }
                 }
             }
+
+            internal bool AnimationImageHover = false;
+            internal float AnimationImageHoverValue = 0F;
 
             #region 点击动画
 

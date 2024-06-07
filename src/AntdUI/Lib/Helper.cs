@@ -236,7 +236,7 @@ namespace AntdUI
         {
             using (var brush = new Pen(color, rect.Height * width))
             {
-                float size = rect.Height * dot;
+            float size = rect.Height * dot;
                 PointF p1 = new PointF(rect.X + size, rect.Y + size), p2 = new PointF(rect.X + rect.Width - size, rect.Y + rect.Height - size);
                 g.DrawLines(brush, new PointF[] { p1, p2 });
                 g.DrawLines(brush, new PointF[] { new PointF(p2.X, p1.Y), new PointF(p1.X, p2.Y) });
@@ -253,8 +253,6 @@ namespace AntdUI
                 var rect_1 = new RectangleF(rect.X + (rect.Width - w) / 2F, rect.Y + rect.Height - h - wh * 0.5F, w, h);
                 g.FillRectangle(brush, rect_1);
                 g.FillEllipse(brush, new RectangleF(rect.X + (rect.Width - w2) / 2F, rect_1.Top - w - w2, w2, w2));
-                //g.TranslateTransform(rect.Width, rect.Height);
-                //g.RotateTransform(180);
             }
         }
         internal static void PaintIconWarn(this Graphics g, RectangleF rect, Color color)
@@ -326,6 +324,11 @@ namespace AntdUI
 
         public static void DrawImage(this Graphics g, Image bmp, Rectangle rect, float opacity)
         {
+            if (opacity == 1F)
+            {
+                g.DrawImage(bmp, rect);
+                return;
+            }
             using (var attributes = new ImageAttributes())
             {
                 var matrix = new ColorMatrix { Matrix33 = opacity };

@@ -71,6 +71,7 @@ namespace AntdUI
                 if (cel_sel == null) return;
                 else
                 {
+                    SelectedIndex = i_row;
                     var it = rows[i_row];
                     if (mode > 0)
                     {

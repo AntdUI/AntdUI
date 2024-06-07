@@ -102,6 +102,8 @@ namespace AntdUI
             config = _config;
             Font = config.Font ?? config.Control.Font;
             FontSub = Font;
+            TopMost = _config.TopMost;
+            if (!_config.TopMost) _config.Control.SetTopMost(Handle);
             rectsContent = Init(subs);
             var screen = Screen.FromPoint(point).WorkingArea;
             if (point.X < screen.X) point.X = screen.X;
@@ -215,6 +217,7 @@ namespace AntdUI
                 using (var brush = new SolidBrush(Style.Db.Text))
                 using (var brushSplit = new SolidBrush(Style.Db.Split))
                 using (var brushSecondary = new SolidBrush(Style.Db.TextSecondary))
+                using (var brushEnabled = new SolidBrush(Style.Db.TextQuaternary))
                 {
                     foreach (var it in rectsContent)
                     {
@@ -231,32 +234,71 @@ namespace AntdUI
                                     }
                                 }
                             }
-                            g.DrawString(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
-                            g.DrawString(it.Tag.Text, Font, brush, it.RectT, stringLeft);
+                            if (it.Tag.Enabled)
+                            {
+                                g.DrawString(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
+                                if (it.Tag.Fore.HasValue)
+                                {
+                                    using (var brush_fore = new SolidBrush(it.Tag.Fore.Value))
+                                    {
+                                        g.DrawString(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
+                                    }
+                                }
+                                else g.DrawString(it.Tag.Text, Font, brush, it.RectT, stringLeft);
 
-                            if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
-                            {
-                                using (var pen = new Pen(Style.Db.TextSecondary, 2F * Config.Dpi))
+                                if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                 {
-                                    pen.StartCap = pen.EndCap = LineCap.Round;
-                                    g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
+                                    using (var pen = new Pen(Style.Db.TextSecondary, 2F * Config.Dpi))
+                                    {
+                                        pen.StartCap = pen.EndCap = LineCap.Round;
+                                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
+                                    }
                                 }
-                            }
-                            if (it.Tag.Checked)
-                            {
-                                using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
+                                if (it.Tag.Checked)
                                 {
-                                    g.DrawLines(pen, PaintArrow(it.RectCheck));
+                                    using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
+                                    {
+                                        g.DrawLines(pen, PaintArrow(it.RectCheck));
+                                    }
                                 }
-                            }
-                            if (it.Tag.IconSvg != null)
-                            {
-                                using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, brush.Color))
+                                if (it.Tag.IconSvg != null)
                                 {
-                                    g.DrawImage(bmp, it.RectIcon);
+                                    using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, it.Tag.Fore ?? brush.Color))
+                                    {
+                                        if (bmp != null) g.DrawImage(bmp, it.RectIcon);
+                                    }
                                 }
+                                else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
                             }
-                            else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
+                            else
+                            {
+                                g.DrawString(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
+                                g.DrawString(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
+
+                                if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
+                                {
+                                    using (var pen = new Pen(Style.Db.TextQuaternary, 2F * Config.Dpi))
+                                    {
+                                        pen.StartCap = pen.EndCap = LineCap.Round;
+                                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
+                                    }
+                                }
+                                if (it.Tag.Checked)
+                                {
+                                    using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
+                                    {
+                                        g.DrawLines(pen, PaintArrow(it.RectCheck));
+                                    }
+                                }
+                                if (it.Tag.IconSvg != null)
+                                {
+                                    using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, brushEnabled.Color))
+                                    {
+                                        if (bmp != null) g.DrawImage(bmp, it.RectIcon);
+                                    }
+                                }
+                                else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
+                            }
                         }
                     }
                 }
@@ -306,15 +348,23 @@ namespace AntdUI
             {
                 var it = rectsContent[i];
                 if (it.Tag == null) continue;
-                bool hover = it.Rect.Contains(e.Location);
-                if (hover)
+                if (it.Tag.Enabled)
                 {
-                    hand = i;
+                    bool hover = it.Rect.Contains(e.Location);
+                    if (hover) hand = i;
+                    if (it.Hover != hover)
+                    {
+                        it.Hover = hover;
+                        count++;
+                    }
                 }
-                if (it.Hover != hover)
+                else
                 {
-                    it.Hover = hover;
-                    count++;
+                    if (it.Hover != false)
+                    {
+                        it.Hover = false;
+                        count++;
+                    }
                 }
             }
             SetCursor(hand > 0);
@@ -350,7 +400,7 @@ namespace AntdUI
             {
                 foreach (var it in rectsContent)
                 {
-                    if (it.Tag != null && it.Rect.Contains(e.Location))
+                    if (it.Tag != null && it.Tag.Enabled && it.Rect.Contains(e.Location))
                     {
                         if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
                         {

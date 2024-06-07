@@ -123,25 +123,41 @@ namespace Overview.Controls
                         new AntdUI.CellImage(Properties.Resources.bg1)
                     };
                 }
+
                 if (i == 2)
                 {
                     _btns = new AntdUI.CellLink[] {
-                    new AntdUI.CellButton("edit","Edit",AntdUI.TTypeMini.Primary) {  Ghost = true,BorderWidth=1 },
-                    new AntdUI.CellButton("delete","Delete",AntdUI.TTypeMini.Error) {  Ghost = true ,BorderWidth=1}
+                        new AntdUI.CellButton("b1") { BorderWidth=1, ImageSvg=Properties.Resources.icon_search,ImageHoverSvg=Properties.Resources.icon_like,ShowArrow=true},
+                        new AntdUI.CellButton("b2") {  ShowArrow=true},
+                        new AntdUI.CellButton("b3") { Type= AntdUI.TTypeMini.Primary, ImageSvg=Properties.Resources.icon_search }
                     };
                 }
                 else if (i == 3)
                 {
                     _btns = new AntdUI.CellLink[] {
-                    new AntdUI.CellButton("edit","Edit",AntdUI.TTypeMini.Primary),
-                    new AntdUI.CellButton("delete","Delete",AntdUI.TTypeMini.Error)
+                        new AntdUI.CellButton("b1","Border") {  BorderWidth=1},
+                        new AntdUI.CellButton("b2","GhostBorder") {  Ghost = true,BorderWidth=1,ShowArrow=true,IsLink=true }
+                    };
+                }
+                else if (i == 4)
+                {
+                    _btns = new AntdUI.CellLink[] {
+                        new AntdUI.CellButton("edit","Edit",AntdUI.TTypeMini.Primary) {  Ghost = true,BorderWidth=1 },
+                        new AntdUI.CellButton("delete","Delete",AntdUI.TTypeMini.Error) {  Ghost = true ,BorderWidth=1}
+                    };
+                }
+                else if (i == 5)
+                {
+                    _btns = new AntdUI.CellLink[] {
+                        new AntdUI.CellButton("edit","Edit",AntdUI.TTypeMini.Primary),
+                        new AntdUI.CellButton("delete","Delete",AntdUI.TTypeMini.Error)
                     };
                 }
                 else
                 {
                     _btns = new AntdUI.CellLink[] {
-                    new AntdUI.CellLink("delete","Delete")
-                };
+                        new AntdUI.CellLink("delete","Delete")
+                    };
                 }
             }
 

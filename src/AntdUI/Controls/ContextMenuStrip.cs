@@ -190,6 +190,11 @@ namespace AntdUI
         public string? IconSvg { get; set; }
 
         /// <summary>
+        /// 使能
+        /// </summary>
+        public bool Enabled { get; set; } = true;
+
+        /// <summary>
         /// 选中
         /// </summary>
         public bool Checked { get; set; }

@@ -1161,7 +1161,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="id">id</param>
         /// <param name="text">文本</param>
-        public CellButton(string id, string text) : base(id, text) { }
+        public CellButton(string id, string? text = null) : base(id, text) { }
 
         /// <summary>
         /// 按钮
@@ -1217,6 +1217,40 @@ namespace AntdUI
 
         #endregion
 
+        #region 默认样式
+
+        Color? defaultback;
+        /// <summary>
+        /// Default模式背景颜色
+        /// </summary>
+        public Color? DefaultBack
+        {
+            get => defaultback;
+            set
+            {
+                if (defaultback == value) return;
+                defaultback = value;
+                if (type == TTypeMini.Default) OnPropertyChanged("DefaultBack");
+            }
+        }
+
+        Color? defaultbordercolor;
+        /// <summary>
+        /// Default模式边框颜色
+        /// </summary>
+        public Color? DefaultBorderColor
+        {
+            get => defaultbordercolor;
+            set
+            {
+                if (defaultbordercolor == value) return;
+                defaultbordercolor = value;
+                if (type == TTypeMini.Default) OnPropertyChanged("DefaultBorderColor");
+            }
+        }
+
+        #endregion
+
         #region 边框
 
         internal float borderWidth = 0;
@@ -1233,6 +1267,78 @@ namespace AntdUI
                 OnPropertyChanged("BorderWidth");
             }
         }
+
+        #endregion
+
+        #region 图标
+
+        float iconratio = .7F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                OnPropertyChanged("IconRatio");
+            }
+        }
+
+        Image? image = null;
+        /// <summary>
+        /// 图像
+        /// </summary>
+        [Description("图像"), Category("外观"), DefaultValue(null)]
+        public Image? Image
+        {
+            get => image;
+            set
+            {
+                if (image == value) return;
+                image = value;
+                OnPropertyChanged("Image");
+            }
+        }
+
+        string? imageSvg = null;
+        [Description("图像SVG"), Category("外观"), DefaultValue(null)]
+        public string? ImageSvg
+        {
+            get => imageSvg;
+            set
+            {
+                if (imageSvg == value) return;
+                imageSvg = value;
+                OnPropertyChanged("ImageSvg");
+            }
+        }
+
+        /// <summary>
+        /// 是否包含图片
+        /// </summary>
+        public bool HasImage
+        {
+            get => imageSvg != null || image != null;
+        }
+
+        /// <summary>
+        /// 悬停图像
+        /// </summary>
+        public Image? ImageHover { get; set; } = null;
+
+        /// <summary>
+        /// 悬停图像SVG
+        /// </summary>
+        public string? ImageHoverSvg { get; set; } = null;
+
+        /// <summary>
+        /// 悬停图像动画时长
+        /// </summary>
+        public int ImageHoverAnimation { get; set; } = 200;
 
         #endregion
 
@@ -1340,7 +1446,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="id">id</param>
         /// <param name="text">文本</param>
-        public CellLink(string id, string text) { Id = id; _text = text; }
+        public CellLink(string id, string? text) { Id = id; _text = text; }
 
         /// <summary>
         /// ID

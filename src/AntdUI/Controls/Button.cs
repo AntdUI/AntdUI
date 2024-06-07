@@ -442,6 +442,9 @@ namespace AntdUI
         }
 
         string? imageSvg = null;
+        /// <summary>
+        /// 图像SVG
+        /// </summary>
         [Description("图像SVG"), Category("外观"), DefaultValue(null)]
         public string? ImageSvg
         {
@@ -471,10 +474,12 @@ namespace AntdUI
         /// <summary>
         /// 悬停图像
         /// </summary>
-
         [Description("悬停图像"), Category("外观"), DefaultValue(null)]
         public Image? ImageHover { get; set; } = null;
 
+        /// <summary>
+        /// 悬停图像SVG
+        /// </summary>
         [Description("悬停图像SVG"), Category("外观"), DefaultValue(null)]
         public string? ImageHoverSvg { get; set; } = null;
 
@@ -1397,27 +1402,7 @@ namespace AntdUI
             else return rectl;
         }
 
-        bool PaintCoreImage(Graphics g, Rectangle rect, Color? color)
-        {
-            if (imageSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(imageSvg, rect, color))
-                {
-                    if (_bmp != null)
-                    {
-                        g.DrawImage(_bmp, rect);
-                        return true;
-                    }
-                }
-            }
-            else if (image != null)
-            {
-                g.DrawImage(image, rect);
-                return true;
-            }
-            return false;
-        }
-        bool PaintCoreImage(Graphics g, Rectangle rect, Color? color, float opacity)
+        bool PaintCoreImage(Graphics g, Rectangle rect, Color? color, float opacity = 1F)
         {
             if (imageSvg != null)
             {
@@ -1438,28 +1423,7 @@ namespace AntdUI
             return false;
         }
 
-        bool PaintCoreImageHover(Graphics g, Rectangle rect, Color? color)
-        {
-            if (ImageHoverSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(ImageHoverSvg, rect, color))
-                {
-                    if (_bmp != null)
-                    {
-                        g.DrawImage(_bmp, rect);
-                        return true;
-                    }
-                }
-
-            }
-            else if (ImageHover != null)
-            {
-                g.DrawImage(ImageHover, rect);
-                return true;
-            }
-            return false;
-        }
-        bool PaintCoreImageHover(Graphics g, Rectangle rect, Color? color, float opacity)
+        bool PaintCoreImageHover(Graphics g, Rectangle rect, Color? color, float opacity = 1F)
         {
             if (ImageHoverSvg != null)
             {

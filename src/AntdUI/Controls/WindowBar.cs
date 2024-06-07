@@ -233,11 +233,6 @@ namespace AntdUI
 
         public bool IsMax = false;
 
-        string close_default = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M794.737778 284.444444l-56.32-56.888888-223.573334 223.573333L291.84 227.555556l-56.888889 56.888888 223.573333 223.004445-223.573333 223.573333 56.888889 56.32 223.004444-223.573333 223.573334 223.573333 56.32-56.32-223.573334-223.573333L794.737778 284.444444z\"></path></svg>",
-            max_default = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M746.666667 341.333333v341.333334h-469.333334V341.333333h469.333334m68.266666-85.333333H209.066667a17.066667 17.066667 0 0 0-17.066667 17.066667v477.866666a17.066667 17.066667 0 0 0 17.066667 17.066667h605.866666a17.066667 17.066667 0 0 0 17.066667-17.066667V273.066667a17.066667 17.066667 0 0 0-17.066667-17.066667z\"></path></svg>",
-           restore_default = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M853.333333 228.124444H284.444444v112.64H170.666667v455.111112h568.888889v-112.64h113.777777v-455.111112zM227.555556 738.986667v-284.444445h455.111111v284.444445H227.555556z m568.888888-112.64h-56.888888V340.764444H341.333333v-55.751111h455.111111v341.333334z\"></path></svg>",
-           min_default = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M207.075556 560h568.888888v113.777778h-568.888888z\"></path></svg>";
-
         #endregion
 
         /// <summary>
@@ -375,7 +370,7 @@ namespace AntdUI
                     g.FillRectangle(brush, rect_close);
                 }
                 PrintClose(g, fore, rect_close_icon);
-                using (var _bmp = SvgExtend.GetImgExtend(close_default, rect_close_icon, Color.FromArgb(hove_close.Value, Style.Db.ErrorColor)))
+                using (var _bmp = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Color.FromArgb(hove_close.Value, Style.Db.ErrorColor)))
                 {
                     if (_bmp != null) g.DrawImage(_bmp, rect_close_icon);
                 }
@@ -458,7 +453,7 @@ namespace AntdUI
             if (temp_close == null || temp_close.Width != rect_icon.Width)
             {
                 temp_close?.Dispose();
-                temp_close = SvgExtend.GetImgExtend(close_default, rect_icon, color);
+                temp_close = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_icon, color);
             }
             if (temp_close != null) g.DrawImage(temp_close, rect_icon);
         }
@@ -467,7 +462,7 @@ namespace AntdUI
             if (temp_close_hover == null || temp_close_hover.Width != rect_icon.Width)
             {
                 temp_close_hover?.Dispose();
-                temp_close_hover = SvgExtend.GetImgExtend(close_default, rect_icon, Style.Db.ErrorColor);
+                temp_close_hover = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_icon, Style.Db.ErrorColor);
             }
             if (temp_close_hover != null) g.DrawImage(temp_close_hover, rect_icon);
         }
@@ -476,7 +471,7 @@ namespace AntdUI
             if (temp_max == null || temp_max.Width != rect_icon.Width)
             {
                 temp_max?.Dispose();
-                temp_max = SvgExtend.GetImgExtend(max_default, rect_icon, color);
+                temp_max = SvgExtend.GetImgExtend(SvgDb.IcoAppMax, rect_icon, color);
             }
             if (temp_max != null) g.DrawImage(temp_max, rect_icon);
         }
@@ -485,7 +480,7 @@ namespace AntdUI
             if (temp_restore == null || temp_restore.Width != rect_icon.Width)
             {
                 temp_restore?.Dispose();
-                temp_restore = SvgExtend.GetImgExtend(restore_default, rect_icon, color);
+                temp_restore = SvgExtend.GetImgExtend(SvgDb.IcoAppRestore, rect_icon, color);
             }
             if (temp_restore != null) g.DrawImage(temp_restore, rect_icon);
         }
@@ -494,7 +489,7 @@ namespace AntdUI
             if (temp_min == null || temp_min.Width != rect_icon.Width)
             {
                 temp_min?.Dispose();
-                temp_min = SvgExtend.GetImgExtend(min_default, rect_icon, color);
+                temp_min = SvgExtend.GetImgExtend(SvgDb.IcoAppMin, rect_icon, color);
             }
             if (temp_min != null) g.DrawImage(temp_min, rect_icon);
         }
