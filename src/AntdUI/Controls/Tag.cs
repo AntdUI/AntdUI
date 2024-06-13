@@ -440,18 +440,12 @@ namespace AntdUI
                 {
                     if (closeIcon)
                     {
-                        float size = rect_read.Height * 0.6F;
+                        float size = rect_read.Height * 0.4F;
                         var rect_arrow = new RectangleF(rect_read.X + (rect_read.Width - size) / 2F, rect_read.Y + (rect_read.Height - size) / 2F, size, size);
                         rect_close = rect_arrow;
-                        if (hover_close.Animation)
-                        {
-                            g.PaintIconError(rect_arrow, Color.FromArgb(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text));
-                        }
-                        else if (hover_close.Switch)
-                        {
-                            g.PaintIconError(rect_arrow, Style.Db.Text);
-                        }
-                        else g.PaintIconError(rect_arrow, Style.Db.TextQuaternary);
+                        if (hover_close.Animation) g.PaintIconClose(rect_arrow, Color.FromArgb(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text));
+                        else if (hover_close.Switch) g.PaintIconClose(rect_arrow, Style.Db.Text);
+                        else g.PaintIconClose(rect_arrow, Style.Db.TextQuaternary);
                     }
                 }
             }
@@ -462,15 +456,9 @@ namespace AntdUI
                 rect_close = rect.r;
                 if (closeIcon)
                 {
-                    if (hover_close.Animation)
-                    {
-                        g.PaintIconError(rect.r, Color.FromArgb(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text), 0.76F);
-                    }
-                    else if (hover_close.Switch)
-                    {
-                        g.PaintIconError(rect.r, Style.Db.Text, 0.76F);
-                    }
-                    else g.PaintIconError(rect.r, Style.Db.TextQuaternary, 0.76F);
+                    if (hover_close.Animation) g.PaintIconClose(rect.r, Color.FromArgb(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text), .8F);
+                    else if (hover_close.Switch) g.PaintIconClose(rect.r, Style.Db.Text, .8F);
+                    else g.PaintIconClose(rect.r, Style.Db.TextQuaternary, .8F);
                 }
                 PaintImage(g, color, rect.l);
                 using (var brush = new SolidBrush(color))

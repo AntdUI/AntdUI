@@ -279,7 +279,7 @@ namespace AntdUI
                         var rect_icon = new RectangleF(gap, rect.Y + (rect.Height - icon_size) / 2F, icon_size, icon_size);
                         PaintText(g, rect, rect_icon, font_size.Value, color, back, _radius);
                         g.ResetClip();
-                        PaintIcon(g, rect_icon);
+                        g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
                     }
                     else
                     {
@@ -290,7 +290,7 @@ namespace AntdUI
                             float icon_size = size.Height * 0.86F, gap = icon_size * 0.4F;
 
                             var rect_icon = new RectangleF(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2F, icon_size, icon_size);
-                            PaintIcon(g, rect_icon);
+                            g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
                             using (var brush = new SolidBrush(color))
                             {
                                 var rect_txt = new RectangleF(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 2), rect.Height);
@@ -305,7 +305,7 @@ namespace AntdUI
                                 float icon_size = size_title.Height * 1.2F, gap = icon_size * 0.5F;
 
                                 var rect_icon = new RectangleF(rect.X + gap, rect.Y + gap, icon_size, icon_size);
-                                PaintIcon(g, rect_icon);
+                                g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
 
                                 using (var brush = new SolidBrush(color))
                                 {
@@ -338,46 +338,6 @@ namespace AntdUI
         readonly StringFormat stringLTEllipsis = Helper.SF_Ellipsis(tb: StringAlignment.Near, lr: StringAlignment.Near);
         readonly StringFormat stringCenter = Helper.SF_NoWrap();
         readonly StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
-
-        /// <summary>
-        /// 绘制图标
-        /// </summary>
-        /// <param name="g">GDI</param>
-        /// <param name="rect_icon">图标位置</param>
-        void PaintIcon(Graphics g, RectangleF rect_icon)
-        {
-            switch (icon)
-            {
-                case TType.Success:
-                    using (var brush = new SolidBrush(Style.Db.Success))
-                    {
-                        g.FillEllipse(brush, rect_icon);
-                    }
-                    g.PaintIconComplete(rect_icon, Style.Db.BgBase);
-                    break;
-                case TType.Info:
-                    using (var brush = new SolidBrush(Style.Db.Info))
-                    {
-                        g.FillEllipse(brush, rect_icon);
-                    }
-                    g.PaintIconInfo(rect_icon, Style.Db.BgBase);
-                    break;
-                case TType.Warn:
-                    using (var brush = new SolidBrush(Style.Db.Warning))
-                    {
-                        g.FillEllipse(brush, rect_icon);
-                    }
-                    g.PaintIconWarn(rect_icon, Style.Db.BgBase);
-                    break;
-                case TType.Error:
-                    using (var brush = new SolidBrush(Style.Db.Error))
-                    {
-                        g.FillEllipse(brush, rect_icon);
-                    }
-                    g.PaintIconError(rect_icon, Style.Db.BgBase);
-                    break;
-            }
-        }
 
         /// <summary>
         /// 渲染文字

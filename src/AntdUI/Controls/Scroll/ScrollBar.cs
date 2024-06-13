@@ -25,6 +25,8 @@ namespace AntdUI
     {
         #region 属性
 
+        public int Radius { get; set; }
+
         #region 布局容器
 
         public ScrollBar(FlowPanel control, bool enabledY = true, bool enabledX = false)
@@ -62,8 +64,9 @@ namespace AntdUI
 
         #endregion
 
-        public ScrollBar(IControl control, bool enabledY = true, bool enabledX = false)
+        public ScrollBar(IControl control, bool enabledY = true, bool enabledX = false, int radius = 0)
         {
+            Radius = radius;
             Invalidate = rect =>
             {
                 OnInvalidate?.Invoke();
@@ -367,7 +370,15 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
                     {
-                        g.FillRectangle(brush, RectY);
+                        if (Radius > 0)
+                        {
+                            float radius = Radius * Config.Dpi;
+                            using (var path = Helper.RoundPath(RectY, radius, false, true, false, false))
+                            {
+                                g.FillPath(brush, path);
+                            }
+                        }
+                        else g.FillRectangle(brush, RectY);
                         g.FillRectangle(brush, new Rectangle(RectX.X, RectX.Y, RectX.Width - RectY.Width, RectX.Height));
                     }
                 }
@@ -391,7 +402,15 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
                     {
-                        g.FillRectangle(brush, RectY);
+                        if (Radius > 0)
+                        {
+                            float radius = Radius * Config.Dpi;
+                            using (var path = Helper.RoundPath(RectY, radius, false, true, false, false))
+                            {
+                                g.FillPath(brush, path);
+                            }
+                        }
+                        else g.FillRectangle(brush, RectY);
                     }
                 }
                 var slider = RectSliderY();

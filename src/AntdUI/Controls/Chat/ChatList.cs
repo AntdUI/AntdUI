@@ -188,8 +188,18 @@ namespace AntdUI.Chat
                 {
                     foreach (var itt in text.cache_font)
                     {
-                        if (itt.emoji) g.DrawString(itt.text, font, fore, itt.rect, m_sf);
-                        else g.DrawString(itt.text, Font, fore, itt.rect, m_sf);
+                        if (itt.svgImage != null)
+                        {
+                            g.PaintImg(itt.rect, itt.svgImage, TFit.Cover, 0, false);
+                        }
+                        else if (itt.emoji)
+                        {
+                            g.DrawString(itt.text, font, fore, itt.rect, m_sf);
+                        }
+                        else
+                        {
+                            g.DrawString(itt.text, Font, fore, itt.rect, m_sf);
+                        }
                     }
                 }
             }
@@ -197,9 +207,17 @@ namespace AntdUI.Chat
             {
                 foreach (var itt in text.cache_font)
                 {
-                    g.DrawString(itt.text, Font, fore, itt.rect, m_sf);
+                    if (itt.svgImage != null)
+                    {
+                        g.PaintImg(itt.rect, itt.svgImage, TFit.Cover, 0, false);
+                    }
+                    else
+                    {
+                        g.DrawString(itt.text, Font, fore, itt.rect, m_sf);
+                    }
                 }
             }
+
             if (text.showlinedot)
             {
                 int size = (int)(2 * Config.Dpi), w = size * 3;
@@ -219,6 +237,7 @@ namespace AntdUI.Chat
                     }
                 }
             }
+
         }
 
         internal ScrollBar scroll;
@@ -554,10 +573,36 @@ namespace AntdUI.Chat
             var font_widths = new List<CacheFont>(item.Text.Length);
 
             bool iseone = false;
-            foreach (char it in item.Text)
+            char[] textChars = item.Text.ToCharArray();
+            int i = 0;
+            while (i < textChars.Length)
             {
-                string txt = it.ToString();
+                char it = textChars[i];
                 var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it);
+
+                // 开始解析 SVG 图像
+                if (it == '<' && textChars.Skip(i).Take(4).SequenceEqual(new[] { '<', 's', 'v', 'g' }))
+                {
+                    int endIndex = item.Text.IndexOf("</svg>", i, StringComparison.OrdinalIgnoreCase);
+                    if (endIndex != -1)
+                    {
+                        string svgText = item.Text.Substring(i, endIndex - i + 6); // 包含结束标签
+                        i = endIndex + 6; // 跳过已处理的 SVG
+
+                        Image? svgImage = SvgExtend.SvgToBmp(svgText);
+                        if (svgImage != null)
+                        {
+                            int svgWidth = svgImage.Width;
+                            int svgHeight = svgImage.Height;
+                            if (font_height < svgHeight) font_height = svgHeight;
+                            font_widths.Add(new CacheFont(svgText, false, svgWidth, svgImage, _isSvg: true));
+                        }
+                        continue;
+                    }
+                }
+
+                // 原来的逻辑处理其他字符
+                string txt = it.ToString();
                 if (IsEmoji(unicodeInfo))
                 {
                     item.HasEmoji = true;
@@ -590,6 +635,8 @@ namespace AntdUI.Chat
                         font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
                     }
                 }
+
+                i++;
             }
 
             if (item.HasEmoji)
@@ -608,7 +655,7 @@ namespace AntdUI.Chat
                 }
             }
 
-            for (int i = 0; i < font_widths.Count; i++) { font_widths[i].i = i; }
+            for (int j = 0; j < font_widths.Count; j++) { font_widths[j].i = j; }
             item.cache_font = font_widths.ToArray();
 
             int usex = 0, usey = 0, maxx = 0, maxy = 0;
@@ -906,11 +953,13 @@ namespace AntdUI.Chat
 
     internal class CacheFont
     {
-        public CacheFont(string _text, bool _emoji, int _width)
+        public CacheFont(string _text, bool _emoji, int _width, Image? _svgImage = null, bool _isSvg = false)
         {
             text = _text;
             emoji = _emoji;
             width = _width;
+            svgImage = _svgImage;
+            isSvg = _isSvg;
         }
         public int i { get; set; }
         public string text { get; set; }
@@ -927,5 +976,7 @@ namespace AntdUI.Chat
         public bool emoji { get; set; }
         public bool retun { get; set; }
         public int width { get; set; }
+        public Image? svgImage { get; set; } // 新增svgImage字段
+        public bool isSvg { get; set; } // 新增isSvg字段
     }
 }

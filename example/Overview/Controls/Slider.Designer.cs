@@ -108,7 +108,7 @@ namespace Overview.Controls
             slider2.ShowValue = true;
             slider2.Size = new Size(40, 406);
             slider2.TabIndex = 3;
-            slider2.Vertical = true;
+            slider2.Align = AntdUI.TAlignMini.Top;
             // 
             // slider4
             // 
@@ -120,7 +120,7 @@ namespace Overview.Controls
             slider4.ShowValue = true;
             slider4.Size = new Size(40, 406);
             slider4.TabIndex = 3;
-            slider4.Vertical = true;
+            slider4.Align = AntdUI.TAlignMini.Bottom;
             // 
             // Slider
             // 

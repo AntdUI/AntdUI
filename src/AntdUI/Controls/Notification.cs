@@ -309,40 +309,7 @@ namespace AntdUI
                         g.FillPath(brush, path);
                     }
                 }
-                if (config.Icon != TType.None)
-                {
-                    switch (config.Icon)
-                    {
-                        case TType.Success:
-                            using (var brush = new SolidBrush(Style.Db.Success))
-                            {
-                                g.FillEllipse(brush, rect_icon);
-                            }
-                            g.PaintIconComplete(rect_icon, Style.Db.BgBase);
-                            break;
-                        case TType.Info:
-                            using (var brush = new SolidBrush(Style.Db.Info))
-                            {
-                                g.FillEllipse(brush, rect_icon);
-                            }
-                            g.PaintIconInfo(rect_icon, Style.Db.BgBase);
-                            break;
-                        case TType.Warn:
-                            using (var brush = new SolidBrush(Style.Db.Warning))
-                            {
-                                g.FillEllipse(brush, rect_icon);
-                            }
-                            g.PaintIconWarn(rect_icon, Style.Db.BgBase);
-                            break;
-                        case TType.Error:
-                            using (var brush = new SolidBrush(Style.Db.Error))
-                            {
-                                g.FillEllipse(brush, rect_icon);
-                            }
-                            g.PaintIconError(rect_icon, Style.Db.BgBase);
-                            break;
-                    }
-                }
+                if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
 
                 if (config.CloseIcon)
                 {
@@ -355,7 +322,7 @@ namespace AntdUI
                                 g.FillPath(brush, path);
                             }
                         }
-                        g.PaintIconError(rect_close, Style.Db.Text, 0.7F);
+                        g.PaintIconClose(rect_close, Style.Db.Text, 0.6F);
                     }
                     else if (close_button.Switch)
                     {
@@ -366,12 +333,9 @@ namespace AntdUI
                                 g.FillPath(brush, path);
                             }
                         }
-                        g.PaintIconError(rect_close, Style.Db.Text, 0.7F);
+                        g.PaintIconClose(rect_close, Style.Db.Text, 0.6F);
                     }
-                    else
-                    {
-                        g.PaintIconError(rect_close, Style.Db.TextTertiary, 0.7F);
-                    }
+                    else g.PaintIconClose(rect_close, Style.Db.TextTertiary, 0.6F);
                 }
                 using (var brush = new SolidBrush(Style.Db.TextBase))
                 {

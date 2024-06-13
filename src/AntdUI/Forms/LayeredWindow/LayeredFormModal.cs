@@ -351,40 +351,7 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
-            if (config.Icon != TType.None)
-            {
-                switch (config.Icon)
-                {
-                    case TType.Success:
-                        using (var brush = new SolidBrush(Style.Db.Success))
-                        {
-                            g.FillEllipse(brush, rectIcon);
-                        }
-                        g.PaintIconComplete(rectIcon, Style.Db.BgBase);
-                        break;
-                    case TType.Info:
-                        using (var brush = new SolidBrush(Style.Db.Info))
-                        {
-                            g.FillEllipse(brush, rectIcon);
-                        }
-                        g.PaintIconInfo(rectIcon, Style.Db.BgBase);
-                        break;
-                    case TType.Warn:
-                        using (var brush = new SolidBrush(Style.Db.Warning))
-                        {
-                            g.FillEllipse(brush, rectIcon);
-                        }
-                        g.PaintIconWarn(rectIcon, Style.Db.BgBase);
-                        break;
-                    case TType.Error:
-                        using (var brush = new SolidBrush(Style.Db.Error))
-                        {
-                            g.FillEllipse(brush, rectIcon);
-                        }
-                        g.PaintIconError(rectIcon, Style.Db.BgBase);
-                        break;
-                }
-            }
+            if (config.Icon != TType.None) g.PaintIcons(config.Icon, rectIcon);
             if (config.CloseIcon)
             {
                 if (close_button.Animation)
@@ -396,7 +363,7 @@ namespace AntdUI
                             g.FillPath(brush, path);
                         }
                     }
-                    g.PaintIconError(rect_close, Style.Db.Text, 0.7F);
+                    g.PaintIconClose(rect_close, Style.Db.Text, 0.6F);
                 }
                 else if (close_button.Switch)
                 {
@@ -407,12 +374,9 @@ namespace AntdUI
                             g.FillPath(brush, path);
                         }
                     }
-                    g.PaintIconError(rect_close, Style.Db.Text, 0.7F);
+                    g.PaintIconClose(rect_close, Style.Db.Text, 0.6F);
                 }
-                else
-                {
-                    g.PaintIconError(rect_close, Style.Db.TextTertiary, 0.7F);
-                }
+                else g.PaintIconClose(rect_close, Style.Db.TextTertiary, 0.6F);
             }
             using (var brush = new SolidBrush(Style.Db.Text))
             {

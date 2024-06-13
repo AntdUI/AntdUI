@@ -171,8 +171,8 @@ namespace AntdUI
         /// <summary>
         /// 自动折叠
         /// </summary>
-        [Description("自动折叠"), Category("外观"), DefaultValue(true)]
-        public bool AutoCollapse { get; set; } = true;
+        [Description("自动折叠"), Category("外观"), DefaultValue(false)]
+        public bool AutoCollapse { get; set; }
 
         bool collapsed = false;
         /// <summary>

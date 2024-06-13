@@ -67,11 +67,20 @@ namespace AntdUI.Icon
             var g = e.Graphics.High();
             float dot_size = rect.Width > rect.Height ? rect.Height : rect.Width;
             var rect_dot = new RectangleF((rect.Width - dot_size) / 2, (rect.Height - dot_size) / 2, dot_size, dot_size);
-            using (var brush = back.Brush(Style.Db.Info))
+
+            if (color.HasValue)
             {
-                g.FillEllipse(brush, rect_dot);
+                using (var brush = new SolidBrush(color.Value))
+                {
+                    g.FillEllipse(brush, new RectangleF(rect_dot.X + 1, rect_dot.Y + 1, rect_dot.Width - 2, rect_dot.Height - 2));
+                }
             }
-            g.PaintIconInfo(rect_dot, color ?? Style.Db.BgBase);
+            using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, back ?? Style.Db.Info))
+            {
+                if (bmp == null) return;
+                g.DrawImage(bmp, rect);
+            }
+
             this.PaintBadge(g);
             base.OnPaint(e);
         }

@@ -366,11 +366,13 @@ namespace AntdUI
                         pen.StartCap = pen.EndCap = LineCap.Round;
                         if (btn.IsLink)
                         {
+                            var state = g.Save();
                             float size2 = rect_arrow.Width / 2F;
                             g.TranslateTransform(rect_arrow.X + size2, rect_arrow.Y + size2);
                             g.RotateTransform(-90F);
                             g.DrawLines(pen, new RectangleF(-size2, -size2, rect_arrow.Width, rect_arrow.Height).TriangleLines(btn.ArrowProg));
                             g.ResetTransform();
+                            g.Restore(state);
                         }
                         else
                         {
@@ -407,11 +409,13 @@ namespace AntdUI
                             g.FillEllipse(Brushes.AliceBlue, rect_r);
                             if (btn.IsLink)
                             {
+                                var state = g.Save();
                                 float size2 = rect_r.Width / 2F;
                                 g.TranslateTransform(rect_r.X + size2, rect_r.Y + size2);
                                 g.RotateTransform(-90F);
                                 g.DrawLines(pen, new RectangleF(-size2, -size2, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg));
                                 g.ResetTransform();
+                                g.Restore(state);
                             }
                             else
                             {
@@ -442,11 +446,13 @@ namespace AntdUI
                             pen.StartCap = pen.EndCap = LineCap.Round;
                             if (btn.IsLink)
                             {
+                                var state = g.Save();
                                 float size2 = rect_r.Width / 2F;
                                 g.TranslateTransform(rect_r.X + size2, rect_r.Y + size2);
                                 g.RotateTransform(-90F);
                                 g.DrawLines(pen, new RectangleF(-size2, -size2, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg));
                                 g.ResetTransform();
+                                g.Restore(state);
                             }
                             else
                             {
@@ -488,6 +494,7 @@ namespace AntdUI
                             pen.StartCap = pen.EndCap = LineCap.Round;
                             if (btn.IsLink)
                             {
+                                var state = g.Save();
                                 float size2 = rect_arrow.Width / 2F;
                                 g.TranslateTransform(rect_arrow.X + size2, rect_arrow.Y + size2);
                                 g.RotateTransform(-90F);
@@ -495,6 +502,7 @@ namespace AntdUI
                                 g.DrawLines(pen, rect_arrow_lines);
                                 g.DrawLines(penHover, rect_arrow_lines);
                                 g.ResetTransform();
+                                g.Restore(state);
                             }
                             else
                             {
@@ -541,6 +549,7 @@ namespace AntdUI
                             penHover.StartCap = penHover.EndCap = pen.StartCap = pen.EndCap = LineCap.Round;
                             if (btn.IsLink)
                             {
+                                var state = g.Save();
                                 float size2 = rect_r.Width / 2F;
                                 g.TranslateTransform(rect_r.X + size2, rect_r.Y + size2);
                                 g.RotateTransform(-90F);
@@ -548,6 +557,7 @@ namespace AntdUI
                                 g.DrawLines(pen, rect_arrow);
                                 g.DrawLines(penHover, rect_arrow);
                                 g.ResetTransform();
+                                g.Restore(state);
                             }
                             else
                             {
@@ -587,6 +597,7 @@ namespace AntdUI
                             penHover.StartCap = penHover.EndCap = pen.StartCap = pen.EndCap = LineCap.Round;
                             if (btn.IsLink)
                             {
+                                var state = g.Save();
                                 float size2 = rect_r.Width / 2F;
                                 g.TranslateTransform(rect_r.X + size2, rect_r.Y + size2);
                                 g.RotateTransform(-90F);
@@ -594,6 +605,7 @@ namespace AntdUI
                                 g.DrawLines(pen, rect_arrow);
                                 g.DrawLines(penHover, rect_arrow);
                                 g.ResetTransform();
+                                g.Restore(state);
                             }
                             else
                             {

@@ -33,10 +33,18 @@ namespace AntdUI
             base.OnFontChanged(e);
         }
 
+        string? show_oldrect = null;
         protected override void OnSizeChanged(EventArgs e)
         {
-            LoadLayout();
-            base.OnSizeChanged(e);
+            var rect = ClientRectangle;
+            if (rect.Width > 1 && rect.Height > 1)
+            {
+                string show_rect = rect.Width + "_" + rect.Height;
+                if (show_oldrect == show_rect) return;
+                show_oldrect = show_rect;
+                LoadLayout(rect);
+                base.OnSizeChanged(e);
+            }
         }
 
         internal RowTemplate[]? rows = null;
@@ -45,12 +53,18 @@ namespace AntdUI
 
         void LoadLayout()
         {
-            var rect = ChangeLayout();
+            LoadLayout(ClientRectangle);
+        }
+
+        void LoadLayout(Rectangle rect_t)
+        {
+            var rect = ChangeLayout(rect_t);
             scrollBar.SizeChange(rect);
         }
+
         bool has_check = false;
         Rectangle rect_read, rect_divider;
-        Rectangle ChangeLayout()
+        Rectangle ChangeLayout(Rectangle rect)
         {
             has_check = false;
             if (data_temp == null)
@@ -147,8 +161,6 @@ namespace AntdUI
 
                 if (EmptyHeader && _rows.Count == 0)
                 {
-                    var rect = ClientRectangle;
-
                     rows = ChangeLayoutCore(rect, _rows, _columns, check_count, col_width, out int x, out int y, out bool is_exceed);
                     scrollBar.SetVrSize(is_exceed ? x : 0, y);
 
@@ -158,7 +170,6 @@ namespace AntdUI
                 }
                 else if (_rows.Count > 0)
                 {
-                    var rect = ClientRectangle;
                     rows = ChangeLayoutCore(rect, _rows, _columns, check_count, col_width, out int x, out int y, out bool is_exceed);
                     scrollBar.SetVrSize(is_exceed ? x : 0, y);
 

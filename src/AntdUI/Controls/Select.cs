@@ -505,13 +505,34 @@ namespace AntdUI
         /// <summary>
         /// 子选项
         /// </summary>
-        public List<object>? Sub { get; set; }
+        public IList<object>? Sub { get; set; }
 
         public object Tag { get; set; }
 
         public override string ToString()
         {
             return Text;
+        }
+    }
+    public class GroupSelectItem : ISelectItem
+    {
+        public GroupSelectItem(string title)
+        {
+            Title = title;
+        }
+
+        public string Title { get; set; }
+
+        /// <summary>
+        /// 子选项
+        /// </summary>
+        public IList<object>? Sub { get; set; }
+
+        public object? Tag { get; set; }
+
+        public override string ToString()
+        {
+            return Title;
         }
     }
     public class ISelectItem { }
@@ -556,7 +577,7 @@ namespace AntdUI
         /// <summary>
         /// 子选项
         /// </summary>
-        public List<object>? Sub { get; set; }
+        public IList<object>? Sub { get; set; }
         internal bool has_sub { get; set; }
 
         /// <summary>

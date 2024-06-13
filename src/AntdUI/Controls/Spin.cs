@@ -77,7 +77,7 @@ namespace AntdUI
         {
             var rect = ClientRectangle.PaddingRect(Padding);
             if (rect.Width == 0 || rect.Height == 0) return;
-            spin_core.Paint(e.Graphics.High(), rect, text, Fill ?? Style.Db.Primary, this);
+            spin_core.Paint(e.Graphics.High(), rect, text, Fill ?? Style.Db.Primary, null, this);
         }
 
         protected override void Dispose(bool disposing)
@@ -95,6 +95,7 @@ namespace AntdUI
             /// 文本
             /// </summary>
             public string? Text { get; set; }
+
             /// <summary>
             /// 背景颜色
             /// </summary>
@@ -104,6 +105,12 @@ namespace AntdUI
             /// 颜色
             /// </summary>
             public Color? Color { get; set; }
+
+            /// <summary>
+            /// 字体
+            /// </summary>
+
+            public Font? Font { get; set; }
 
             /// <summary>
             /// 圆角
@@ -168,9 +175,9 @@ namespace AntdUI
             }, 10);
         }
 
-        public void Paint(Graphics g, Rectangle rect, string? text, Color color, Control control)
+        public void Paint(Graphics g, Rectangle rect, string? text, Color color, Font? font, Control control)
         {
-            if (prog_size == 0) prog_size = g.MeasureString(text ?? Config.NullText, control.Font).Height;
+            if (prog_size == 0) prog_size = g.MeasureString(text ?? Config.NullText, font ?? control.Font).Height;
 
             float rprog_size = prog_size * 1.4F, size = prog_size * .1F, size2 = prog_size / 2F;
 
@@ -181,7 +188,7 @@ namespace AntdUI
                 rect_prog.Offset(0, -size2);
                 using (var brush = new SolidBrush(control.ForeColor))
                 {
-                    g.DrawString(text, control.Font, brush, new RectangleF(rect.X, y, rect.Width, prog_size), Helper.stringFormatCenter);
+                    g.DrawString(text, font ?? control.Font, brush, new RectangleF(rect.X, y, rect.Width, prog_size), Helper.stringFormatCenter);
                 }
             }
             using (var brush = new Pen(color, size))
@@ -251,7 +258,7 @@ namespace AntdUI
                     }
                     else g.FillRectangle(brush, rect);
                 }
-                spin_core.Paint(g, rect, config.Text, config.Color ?? Style.Db.Primary, this);
+                spin_core.Paint(g, rect, config.Text, config.Color ?? Style.Db.Primary, config.Font, this);
             }
             return original_bmp;
         }

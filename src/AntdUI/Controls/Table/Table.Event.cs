@@ -49,6 +49,7 @@ namespace AntdUI
         /// 按钮点击事件
         /// </summary>
         /// <param name="sender">触发对象</param>
+        /// <param name="btn">触发按钮</param>
         /// <param name="args">点击</param>
         /// <param name="record">原始行</param>
         /// <param name="rowIndex">行序号</param>

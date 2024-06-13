@@ -26,13 +26,13 @@ namespace AntdUI
 {
     internal class LayeredFormSelectDown : ILayeredFormOpacityDown
     {
-        int MaxCount = 4;
+        int MaxCount = 0;
         internal float Radius = 0;
         bool ClickEnd = false;
         object? selectedValue;
         int r_w = 0;
         readonly List<ObjectItem> Items = new List<ObjectItem>();
-        public LayeredFormSelectDown(Select control, RectangleF rect_read, List<object> items, string filtertext)
+        public LayeredFormSelectDown(Select control, RectangleF rect_read, IList<object> items, string filtertext)
         {
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -45,7 +45,7 @@ namespace AntdUI
             Radius = (int)(control.radius * Config.Dpi);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items, filtertext);
         }
-        public LayeredFormSelectDown(Dropdown control, int radius, RectangleF rect_read, List<object> items)
+        public LayeredFormSelectDown(Dropdown control, int radius, RectangleF rect_read, IList<object> items)
         {
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -58,25 +58,25 @@ namespace AntdUI
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items);
         }
 
-        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, RectangleF rect_read, List<object>? items, int sel = -1)
+        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, RectangleF rect_read, IList<object> items, int sel = -1)
         {
             ClickEnd = control.ClickEnd;
             selectedValue = control.SelectedValue;
+            scrollY = new ScrollY(this);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
-        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown ocontrol, float radius, RectangleF rect_read, List<object>? items, int sel = -1)
+        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown ocontrol, float radius, RectangleF rect_read, IList<object> items, int sel = -1)
         {
             ClickEnd = control.ClickEnd;
+            scrollY = new ScrollY(this);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
 
-        void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, RectangleF rect_read, List<object>? items, int sel)
+        void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, RectangleF rect_read, IList<object> items, int sel)
         {
             parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
-            scrollY = new ScrollY(this);
-            MaxCount = items.Count;
             Font = control.Font;
             Radius = radius;
 
@@ -98,10 +98,11 @@ namespace AntdUI
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
         internal LayeredFormSelectDown? SubForm = null;
-        void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, RectangleF rect_read, List<object> items, string? filtertext = null)
+        void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, RectangleF rect_read, IList<object> items, string? filtertext = null)
         {
             int y = 10, w = (int)rect_read.Width;
             r_w = w;
+            var point = control.PointToScreen(Point.Empty);
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font).Size(2);
@@ -175,20 +176,43 @@ namespace AntdUI
                     y += font_size;
                 }
                 var vr = (font_size * item_count) + (gap_y * divider_count);
-                if (Items.Count > MaxCount)
+                if (MaxCount > 0)
                 {
-                    y = 10 + gap_y * 2 + (font_size * MaxCount);
-                    scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
-                    scrollY.Show = true;
-                    scrollY.SetVrSize(vr, scrollY.Rect.Height);
-                    if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap_y);
+                    if (Items.Count > MaxCount)
+                    {
+                        y = 10 + gap_y * 2 + (font_size * MaxCount);
+                        scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
+                        scrollY.Show = true;
+                        scrollY.SetVrSize(vr, scrollY.Rect.Height);
+                        if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap_y);
+                    }
+                    else y = 10 + gap_y * 2 + vr;
                 }
-                else y = 10 + gap_y * 2 + vr;
+                else
+                {
+                    //Sub
+                    var screen = Screen.FromPoint(point).WorkingArea;
+                    int sh;
+                    if (ShowArrow) sh = point.Y + control.Height + 20 + ArrowSize + gap_y * 2;
+                    else sh = point.Y + control.Height + 20 + gap_y * 2;
+
+                    int ry = 10 + gap_y * 2 + vr;
+                    if (ry > (screen.Height - point.Y))
+                    {
+                        MaxCount = (int)Math.Floor((screen.Height - sh) / (font_size * 1.0)) - 1;
+                        if (MaxCount < 1) MaxCount = 1;
+                        y = 10 + gap_y * 2 + (font_size * MaxCount);
+                        scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
+                        scrollY.Show = true;
+                        scrollY.SetVrSize(vr, scrollY.Rect.Height);
+                        if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap_y);
+                    }
+                    else y = ry;
+                }
             });
             SetSizeW(w + 20);
-            if (string.IsNullOrEmpty(filtertext)) EndHeight = y + 10;
+            if (filtertext == null || string.IsNullOrEmpty(filtertext)) EndHeight = y + 10;
             else EndHeight = TextChangeCore(filtertext);
-            var point = control.PointToScreen(Point.Empty);
             if (control is LayeredFormSelectDown) SetLocation(point.X + (int)rect_read.Width, point.Y + (int)rect_read.Y - 10);
             else
             {

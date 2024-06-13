@@ -208,62 +208,164 @@ namespace AntdUI
 
         #region 图标渲染
 
-        internal static void PaintIconComplete(this Graphics g, RectangleF rect, Color color)
+        internal static void PaintIcons(this Graphics g, TType icon, RectangleF rect)
         {
-            using (var brush = new SolidBrush(color))
+            switch (icon)
             {
-                PaintIconComplete(g, rect, brush);
+                case TType.Success:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccess, rect, Style.Db.Success))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Info:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, Style.Db.Info))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Warn:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarn, rect, Style.Db.Warning))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Error:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, Style.Db.Error))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
             }
         }
-
-        internal static void PaintIconComplete(this Graphics g, RectangleF rect, SolidBrush brush)
+        internal static void PaintIcons(this Graphics g, TType icon, RectangleF rect, Color back)
         {
-            float wh = rect.Height / 2F;
-            float x = rect.X + wh, y = rect.Y + wh;
-            float y1 = y - wh * 0.092F, y2 = y - wh * 0.356F;
-            float x_1 = wh * 0.434F, x_2 = wh * 0.282F;
-            g.FillPolygon(brush, new PointF[] {
-                new PointF(x - x_1, y1),
-                new PointF(x - x_2, y1),
-                new PointF(x - wh * 0.096F, y + wh * 0.149F),
-                new PointF(x + x_2, y2),
-                new PointF(x + x_1, y2),
-                new PointF(x - wh * 0.1F, y + wh * 0.357F),
-            });
+            using (var brush = new SolidBrush(back))
+            {
+                g.FillEllipse(brush, new RectangleF(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
+            }
+            switch (icon)
+            {
+                case TType.Success:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccess, rect, Style.Db.Success))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Info:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, Style.Db.Info))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Warn:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarn, rect, Style.Db.Warning))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Error:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, Style.Db.Error))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+            }
+        }
+        internal static void PaintIconGhosts(this Graphics g, TType icon, RectangleF rect, Color color)
+        {
+            switch (icon)
+            {
+                case TType.Success:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccessGhost, rect, color))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Info:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfoGhost, rect, color))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Warn:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarnGhost, rect, color))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+                case TType.Error:
+                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoErrorGhost, rect, color))
+                    {
+                        if (bmp == null) return;
+                        g.DrawImage(bmp, rect);
+                    }
+                    break;
+            }
+        }
+        internal static void PaintIconClose(this Graphics g, RectangleF rect, Color color)
+        {
+            PaintIconCore(g, rect, SvgDb.IcoErrorGhost, color);
+        }
+        internal static void PaintIconClose(this Graphics g, RectangleF rect, Color color, float dot)
+        {
+            PaintIconCore(g, rect, SvgDb.IcoErrorGhost, color, dot);
         }
 
-        internal static void PaintIconError(this Graphics g, RectangleF rect, Color color, float dot = 0.34F, float width = 0.07F)
+        /// <summary>
+        /// 绘制带圆背景的镂空图标
+        /// </summary>
+        internal static void PaintIconCoreGhost(this Graphics g, RectangleF rect, string svg, Color back, Color fore)
         {
-            using (var brush = new Pen(color, rect.Height * width))
+            using (var brush = new SolidBrush(back))
             {
+                g.FillEllipse(brush, rect);
+            }
+            using (var bmp = SvgExtend.GetImgExtend(svg, rect, fore))
+            {
+                if (bmp == null) return;
+                g.DrawImage(bmp, rect);
+            }
+        }
+        internal static void PaintIconCore(this Graphics g, RectangleF rect, string svg, Color back, Color fore)
+        {
+            using (var brush = new SolidBrush(back))
+            {
+                g.FillEllipse(brush, new RectangleF(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
+            }
+            using (var bmp = SvgExtend.GetImgExtend(svg, rect, fore))
+            {
+                if (bmp == null) return;
+                g.DrawImage(bmp, rect);
+            }
+        }
+        internal static void PaintIconCore(this Graphics g, RectangleF rect, string svg, Color color)
+        {
+            using (var bmp = SvgExtend.GetImgExtend(svg, rect, color))
+            {
+                if (bmp == null) return;
+                g.DrawImage(bmp, rect);
+            }
+        }
+        internal static void PaintIconCore(this Graphics g, RectangleF rect, string svg, Color color, float dot)
+        {
             float size = rect.Height * dot;
-                PointF p1 = new PointF(rect.X + size, rect.Y + size), p2 = new PointF(rect.X + rect.Width - size, rect.Y + rect.Height - size);
-                g.DrawLines(brush, new PointF[] { p1, p2 });
-                g.DrawLines(brush, new PointF[] { new PointF(p2.X, p1.Y), new PointF(p1.X, p2.Y) });
-            }
-        }
-
-        internal static void PaintIconInfo(this Graphics g, RectangleF rect, Color color)
-        {
-            using (var brush = new SolidBrush(color))
+            var rect_ico = new RectangleF(rect.X + (rect.Width - size) / 2F, rect.Y + (rect.Height - size) / 2F, size, size);
+            using (var bmp = SvgExtend.GetImgExtend(svg, rect_ico, color))
             {
-                float wh = rect.Height / 2F;
-
-                float w = rect.Height * 0.07F, w2 = rect.Height * 0.11F, h = rect.Height * 0.32F;
-                var rect_1 = new RectangleF(rect.X + (rect.Width - w) / 2F, rect.Y + rect.Height - h - wh * 0.5F, w, h);
-                g.FillRectangle(brush, rect_1);
-                g.FillEllipse(brush, new RectangleF(rect.X + (rect.Width - w2) / 2F, rect_1.Top - w - w2, w2, w2));
-            }
-        }
-        internal static void PaintIconWarn(this Graphics g, RectangleF rect, Color color)
-        {
-            using (var brush = new SolidBrush(color))
-            {
-                float wh = rect.Height / 2F;
-                float w = rect.Height * 0.07F, w2 = rect.Height * 0.11F;
-                var rect_1 = new RectangleF(rect.X + (rect.Width - w) / 2F, rect.Y + wh * 0.5F, w, rect.Height * 0.32F);
-                g.FillRectangle(brush, rect_1);
-                g.FillEllipse(brush, new RectangleF(rect.X + (rect.Width - w2) / 2F, rect_1.Top + rect_1.Height + w, w2, w2));
+                if (bmp == null) return;
+                g.DrawImage(bmp, rect_ico);
             }
         }
 

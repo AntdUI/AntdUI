@@ -396,19 +396,14 @@ namespace AntdUI
                                 switch (status)
                                 {
                                     case TStepState.Finish:
-                                        g.FillEllipse(brush_primarybg, it.ico_rect);
-                                        g.PaintIconComplete(it.ico_rect, brush_primary);
+                                        g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
                                         break;
                                     case TStepState.Wait:
                                         g.FillEllipse(brush_bg2, it.ico_rect);
                                         g.DrawString((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
                                         break;
                                     case TStepState.Error:
-                                        using (var brush_error = new SolidBrush(Style.Db.Error))
-                                        {
-                                            g.FillEllipse(brush_error, it.ico_rect);
-                                            g.PaintIconError(it.ico_rect, Style.Db.ErrorColor, 0.34F, 0.05F);
-                                        }
+                                        g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Style.Db.ErrorColor, Style.Db.Error);
                                         break;
                                     case TStepState.Process:
                                     default:
@@ -417,11 +412,7 @@ namespace AntdUI
                                         break;
                                 }
                             }
-                            else if (i < current)
-                            {
-                                g.FillEllipse(brush_primarybg, it.ico_rect);
-                                g.PaintIconComplete(it.ico_rect, brush_primary);
-                            }
+                            else if (i < current) g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
                             else
                             {
                                 g.FillEllipse(brush_bg2, it.ico_rect);

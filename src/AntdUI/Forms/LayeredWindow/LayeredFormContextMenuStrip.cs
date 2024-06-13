@@ -44,6 +44,7 @@ namespace AntdUI
             Font = config.Font ?? config.Control.Font;
             FontSub = Font;
             rectsContent = Init(config.Items);
+            scrollY = new ScrollY(this);
             switch (config.Align)
             {
                 case TAlign.BL:
@@ -90,9 +91,22 @@ namespace AntdUI
             if (point.X < screen.X) point.X = screen.X;
             else if (point.X > (screen.X + screen.Width) - TargetRect.Width) point.X = screen.X + screen.Width - TargetRect.Width;
             if (point.Y < screen.Y) point.Y = screen.Y;
-            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height) point.Y = screen.Y + screen.Height - TargetRect.Height;
+            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height)
+            {
+                if (TargetRect.Height > (screen.Height - point.Y))
+                {
+                    int gap_y = rectsContent[0].y / 2 / 2, vr = TargetRect.Height, height = screen.Height - point.Y;
+                    scrollY.Rect = new Rectangle(TargetRect.Width - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
+                    scrollY.Show = true;
+                    scrollY.SetVrSize(vr, height);
+                    SetSizeH(height);
+                }
+                else point.Y = screen.Y + screen.Height - TargetRect.Height;
+            }
             SetLocation(point);
         }
+
+        ScrollY scrollY;
 
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, IContextMenuStripItem[] subs)
         {
@@ -105,11 +119,23 @@ namespace AntdUI
             TopMost = _config.TopMost;
             if (!_config.TopMost) _config.Control.SetTopMost(Handle);
             rectsContent = Init(subs);
+            scrollY = new ScrollY(this);
             var screen = Screen.FromPoint(point).WorkingArea;
             if (point.X < screen.X) point.X = screen.X;
             else if (point.X > (screen.X + screen.Width) - TargetRect.Width) point.X = screen.X + screen.Width - TargetRect.Width;
             if (point.Y < screen.Y) point.Y = screen.Y;
-            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height) point.Y = screen.Y + screen.Height - TargetRect.Height;
+            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height)
+            {
+                if (TargetRect.Height > (screen.Height - point.Y))
+                {
+                    int gap_y = rectsContent[0].y / 2 / 2, vr = TargetRect.Height, height = screen.Height - point.Y;
+                    scrollY.Rect = new Rectangle(TargetRect.Width - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
+                    scrollY.Show = true;
+                    scrollY.SetVrSize(vr, height);
+                    SetSizeH(height);
+                }
+                else point.Y = screen.Y + screen.Height - TargetRect.Height;
+            }
             SetLocation(point);
         }
 
@@ -207,99 +233,107 @@ namespace AntdUI
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
-                using (var path = DrawShadow(g, rect, rect_read))
+                using (var path_sh = DrawShadow(g, rect, rect_read))
                 {
                     using (var brush = new SolidBrush(Style.Db.BgElevated))
                     {
-                        g.FillPath(brush, path);
+                        g.FillPath(brush, path_sh);
                     }
-                }
-                using (var brush = new SolidBrush(Style.Db.Text))
-                using (var brushSplit = new SolidBrush(Style.Db.Split))
-                using (var brushSecondary = new SolidBrush(Style.Db.TextSecondary))
-                using (var brushEnabled = new SolidBrush(Style.Db.TextQuaternary))
-                {
-                    foreach (var it in rectsContent)
+                    using (var brush = new SolidBrush(Style.Db.Text))
+                    using (var brushSplit = new SolidBrush(Style.Db.Split))
+                    using (var brushSecondary = new SolidBrush(Style.Db.TextSecondary))
+                    using (var brushEnabled = new SolidBrush(Style.Db.TextQuaternary))
                     {
-                        if (it.Tag == null) g.FillRectangle(brushSplit, it.Rect);
-                        else
+                        if (scrollY.Show)
                         {
-                            if (it.Hover)
-                            {
-                                using (var path = Helper.RoundPath(it.Rect, radius))
-                                {
-                                    using (var brush_hover = new SolidBrush(Style.Db.PrimaryBg))
-                                    {
-                                        g.FillPath(brush_hover, path);
-                                    }
-                                }
-                            }
-                            if (it.Tag.Enabled)
-                            {
-                                g.DrawString(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
-                                if (it.Tag.Fore.HasValue)
-                                {
-                                    using (var brush_fore = new SolidBrush(it.Tag.Fore.Value))
-                                    {
-                                        g.DrawString(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
-                                    }
-                                }
-                                else g.DrawString(it.Tag.Text, Font, brush, it.RectT, stringLeft);
-
-                                if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
-                                {
-                                    using (var pen = new Pen(Style.Db.TextSecondary, 2F * Config.Dpi))
-                                    {
-                                        pen.StartCap = pen.EndCap = LineCap.Round;
-                                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
-                                    }
-                                }
-                                if (it.Tag.Checked)
-                                {
-                                    using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
-                                    {
-                                        g.DrawLines(pen, PaintArrow(it.RectCheck));
-                                    }
-                                }
-                                if (it.Tag.IconSvg != null)
-                                {
-                                    using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, it.Tag.Fore ?? brush.Color))
-                                    {
-                                        if (bmp != null) g.DrawImage(bmp, it.RectIcon);
-                                    }
-                                }
-                                else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
-                            }
+                            g.SetClip(path_sh);
+                            g.TranslateTransform(0, -scrollY.Value);
+                        }
+                        foreach (var it in rectsContent)
+                        {
+                            if (it.Tag == null) g.FillRectangle(brushSplit, it.Rect);
                             else
                             {
-                                g.DrawString(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
-                                g.DrawString(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
+                                if (it.Hover)
+                                {
+                                    using (var path = Helper.RoundPath(it.Rect, radius))
+                                    {
+                                        using (var brush_hover = new SolidBrush(Style.Db.PrimaryBg))
+                                        {
+                                            g.FillPath(brush_hover, path);
+                                        }
+                                    }
+                                }
+                                if (it.Tag.Enabled)
+                                {
+                                    g.DrawString(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
+                                    if (it.Tag.Fore.HasValue)
+                                    {
+                                        using (var brush_fore = new SolidBrush(it.Tag.Fore.Value))
+                                        {
+                                            g.DrawString(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
+                                        }
+                                    }
+                                    else g.DrawString(it.Tag.Text, Font, brush, it.RectT, stringLeft);
 
-                                if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
-                                {
-                                    using (var pen = new Pen(Style.Db.TextQuaternary, 2F * Config.Dpi))
+                                    if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {
-                                        pen.StartCap = pen.EndCap = LineCap.Round;
-                                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
+                                        using (var pen = new Pen(Style.Db.TextSecondary, 2F * Config.Dpi))
+                                        {
+                                            pen.StartCap = pen.EndCap = LineCap.Round;
+                                            g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
+                                        }
                                     }
-                                }
-                                if (it.Tag.Checked)
-                                {
-                                    using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
+                                    if (it.Tag.Checked)
                                     {
-                                        g.DrawLines(pen, PaintArrow(it.RectCheck));
+                                        using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
+                                        {
+                                            g.DrawLines(pen, PaintArrow(it.RectCheck));
+                                        }
                                     }
-                                }
-                                if (it.Tag.IconSvg != null)
-                                {
-                                    using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, brushEnabled.Color))
+                                    if (it.Tag.IconSvg != null)
                                     {
-                                        if (bmp != null) g.DrawImage(bmp, it.RectIcon);
+                                        using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, it.Tag.Fore ?? brush.Color))
+                                        {
+                                            if (bmp != null) g.DrawImage(bmp, it.RectIcon);
+                                        }
                                     }
+                                    else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
                                 }
-                                else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
+                                else
+                                {
+                                    g.DrawString(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
+                                    g.DrawString(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
+
+                                    if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
+                                    {
+                                        using (var pen = new Pen(Style.Db.TextQuaternary, 2F * Config.Dpi))
+                                        {
+                                            pen.StartCap = pen.EndCap = LineCap.Round;
+                                            g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
+                                        }
+                                    }
+                                    if (it.Tag.Checked)
+                                    {
+                                        using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
+                                        {
+                                            g.DrawLines(pen, PaintArrow(it.RectCheck));
+                                        }
+                                    }
+                                    if (it.Tag.IconSvg != null)
+                                    {
+                                        using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, brushEnabled.Color))
+                                        {
+                                            if (bmp != null) g.DrawImage(bmp, it.RectIcon);
+                                        }
+                                    }
+                                    else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
+                                }
                             }
                         }
+                        g.ResetTransform();
+                        g.ResetClip();
+                        scrollY.Paint(g);
                     }
                 }
             }
@@ -339,98 +373,139 @@ namespace AntdUI
 
         #region 鼠标
 
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (scrollY.MouseDown(e.Location))
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    int y = scrollY.Show ? (int)scrollY.Value : 0;
+                    foreach (var it in rectsContent)
+                    {
+                        if (it.Tag != null && it.Tag.Enabled && it.Rect.Contains(e.X, e.Y + y))
+                        {
+                            it.Down = true;
+                            base.OnMouseDown(e);
+                            return;
+                        }
+                    }
+                }
+                base.OnMouseDown(e);
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (scrollY.MouseUp(e.Location))
+            {
+
+                int y = scrollY.Show ? (int)scrollY.Value : 0;
+                foreach (var it in rectsContent)
+                {
+                    if (it.Down)
+                    {
+                        if (it.Rect.Contains(e.X, e.Y + y))
+                        {
+                            if (it.Tag != null)
+                            {
+                                if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
+                                {
+                                    IClose();
+                                    LayeredFormContextMenuStrip item = this;
+                                    while (item.PARENT is LayeredFormContextMenuStrip form)
+                                    {
+                                        form.IClose();
+                                        item = form;
+                                    }
+                                    resetEvent = new ManualResetEvent(false);
+                                    ITask.Run(() =>
+                                    {
+                                        try
+                                        {
+                                            resetEvent.WaitOne();
+                                        }
+                                        catch { }
+                                        if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
+                                        config.Control.BeginInvoke(new Action(() =>
+                                        {
+                                            config.Call(it.Tag);
+                                        }));
+                                    });
+                                }
+                            }
+                        }
+                        it.Down = false;
+                        return;
+                    }
+                }
+            }
+            base.OnMouseUp(e);
+        }
+
         LayeredFormContextMenuStrip? SubForm = null;
         int oldSub = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            int count = 0, hand = -1;
-            for (int i = 0; i < rectsContent.Length; i++)
+            if (scrollY.MouseMove(e.Location))
             {
-                var it = rectsContent[i];
-                if (it.Tag == null) continue;
-                if (it.Tag.Enabled)
+                int count = 0, hand = -1;
+                int y = scrollY.Show ? (int)scrollY.Value : 0;
+                for (int i = 0; i < rectsContent.Length; i++)
                 {
-                    bool hover = it.Rect.Contains(e.Location);
-                    if (hover) hand = i;
-                    if (it.Hover != hover)
+                    var it = rectsContent[i];
+                    if (it.Tag == null) continue;
+                    if (it.Tag.Enabled)
                     {
-                        it.Hover = hover;
-                        count++;
+                        bool hover = it.Rect.Contains(e.X, e.Y + y);
+                        if (hover) hand = i;
+                        if (it.Hover != hover)
+                        {
+                            it.Hover = hover;
+                            count++;
+                        }
+                    }
+                    else
+                    {
+                        if (it.Hover != false)
+                        {
+                            it.Hover = false;
+                            count++;
+                        }
+                    }
+                }
+                SetCursor(hand > 0);
+                if (count > 0) Print();
+                if (hand > -1)
+                {
+                    SetCursor(true);
+                    if (oldSub == hand) return;
+                    var it = rectsContent[hand];
+                    oldSub = hand;
+                    SubForm?.IClose();
+                    SubForm = null;
+                    if (it.Tag != null && it.Tag.Sub != null && it.Tag.Sub.Length > 0)
+                    {
+                        SubForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20), it.Tag.Sub);
+                        SubForm.Show(this);
                     }
                 }
                 else
                 {
-                    if (it.Hover != false)
-                    {
-                        it.Hover = false;
-                        count++;
-                    }
+                    oldSub = -1;
+                    SubForm?.IClose();
+                    SubForm = null;
+                    SetCursor(false);
                 }
-            }
-            SetCursor(hand > 0);
-            if (count > 0) Print();
-            if (hand > -1)
-            {
-                SetCursor(true);
-                if (oldSub == hand) return;
-                var it = rectsContent[hand];
-                oldSub = hand;
-                SubForm?.IClose();
-                SubForm = null;
-                if (it.Tag != null && it.Tag.Sub != null && it.Tag.Sub.Length > 0)
-                {
-                    SubForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20), it.Tag.Sub);
-                    SubForm.Show(this);
-                }
-            }
-            else
-            {
-                oldSub = -1;
-                SubForm?.IClose();
-                SubForm = null;
-                SetCursor(false);
             }
             base.OnMouseMove(e);
         }
 
         ManualResetEvent? resetEvent;
-        protected override void OnMouseClick(MouseEventArgs e)
+
+        protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                foreach (var it in rectsContent)
-                {
-                    if (it.Tag != null && it.Tag.Enabled && it.Rect.Contains(e.Location))
-                    {
-                        if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
-                        {
-                            IClose();
-                            LayeredFormContextMenuStrip item = this;
-                            while (item.PARENT is LayeredFormContextMenuStrip form)
-                            {
-                                form.IClose();
-                                item = form;
-                            }
-                            resetEvent = new ManualResetEvent(false);
-                            ITask.Run(() =>
-                            {
-                                try
-                                {
-                                    resetEvent.WaitOne();
-                                }
-                                catch { }
-                                if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
-                                config.Control.BeginInvoke(new Action(() =>
-                                {
-                                    config.Call(it.Tag);
-                                }));
-                            });
-                        }
-                        return;
-                    }
-                }
-            }
-            base.OnMouseClick(e);
+            scrollY.MouseWheel(e.Delta);
+            base.OnMouseWheel(e);
         }
 
         #endregion
@@ -450,6 +525,7 @@ namespace AntdUI
             }
             public ContextMenuStripItem? Tag { get; set; }
             public bool Hover { get; set; }
+            public bool Down { get; set; }
             public Rectangle RectT { get; set; }
             public Rectangle RectIcon { get; set; }
             public Rectangle RectCheck { get; set; }

@@ -46,9 +46,11 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            AntdUI.DividerSelectItem dividerSelectItem1 = new AntdUI.DividerSelectItem();
             header1 = new AntdUI.Header();
             panel1 = new System.Windows.Forms.Panel();
             panel4 = new System.Windows.Forms.Panel();
+            select8 = new AntdUI.Select();
             divider3 = new AntdUI.Divider();
             panel3 = new System.Windows.Forms.Panel();
             panel5 = new System.Windows.Forms.Panel();
@@ -65,7 +67,7 @@ namespace Overview.Controls
             select5 = new AntdUI.Select();
             select1 = new AntdUI.Select();
             divider1 = new AntdUI.Divider();
-            select8 = new AntdUI.Select();
+            selectMultiple1 = new AntdUI.SelectMultiple();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             panel3.SuspendLayout();
@@ -105,11 +107,26 @@ namespace Overview.Controls
             // panel4
             // 
             panel4.Controls.Add(select8);
+            panel4.Controls.Add(selectMultiple1);
             panel4.Dock = DockStyle.Top;
             panel4.Location = new Point(0, 279);
             panel4.Name = "panel4";
             panel4.Size = new Size(555, 100);
             panel4.TabIndex = 5;
+            // 
+            // select8
+            // 
+            select8.DropDownArrow = true;
+            select8.Items.AddRange(new object[] { dividerSelectItem1 });
+            select8.List = true;
+            select8.ListAutoWidth = true;
+            select8.Location = new Point(18, 20);
+            select8.Margin = new Padding(2, 3, 2, 3);
+            select8.Name = "select8";
+            select8.PlaceholderText = "（选择）";
+            select8.Placement = AntdUI.TAlignFrom.TR;
+            select8.Size = new Size(126, 41);
+            select8.TabIndex = 2;
             // 
             // divider3
             // 
@@ -299,19 +316,13 @@ namespace Overview.Controls
             divider1.TabStop = false;
             divider1.Text = "常规";
             // 
-            // select8
-            //
-            select8.Items.AddRange(new AntdUI.ISelectItem[] { new AntdUI.SelectItem(0, "Lucy"), new AntdUI.SelectItem(1, "Tom"), new AntdUI.SelectItem(1, "AduSkin"), new AntdUI.DividerSelectItem(), new AntdUI.SelectItem(0, "WangLi"), new AntdUI.SelectItem(0, "HUAWEI"), new AntdUI.SelectItem(0, "XIAOMI") });
-            select8.DropDownArrow = true;
-            select8.Placement = AntdUI.TAlignFrom.TR;
-            select8.List = true;
-            select8.ListAutoWidth = true;
-            select8.Location = new Point(18, 20);
-            select8.Margin = new Padding(2, 3, 2, 3);
-            select8.Name = "select8";
-            select8.PlaceholderText = "（选择）";
-            select8.Size = new Size(126, 41);
-            select8.TabIndex = 2;
+            // selectMultiple1
+            // 
+            selectMultiple1.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
+            selectMultiple1.Location = new Point(170, 20);
+            selectMultiple1.Name = "selectMultiple1";
+            selectMultiple1.Size = new Size(230, 41);
+            selectMultiple1.TabIndex = 0;
             // 
             // Select
             // 
@@ -350,5 +361,6 @@ namespace Overview.Controls
         private AntdUI.Select select6;
         private AntdUI.Button button4;
         private AntdUI.Select select8;
+        private AntdUI.SelectMultiple selectMultiple1;
     }
 }

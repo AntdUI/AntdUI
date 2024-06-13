@@ -249,7 +249,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var height = g.MeasureString(Config.NullText, Font).Size().Height;
+                    int height = g.MeasureString(Config.NullText, Font).Size().Height, del_icon = (int)(height * 0.4);
                     List<RectangleF> _rect_left = new List<RectangleF>(selectedValue.Length), _rect_left_txt = new List<RectangleF>(selectedValue.Length), _rect_left_del = new List<RectangleF>(selectedValue.Length);
                     int y = (rect_read.Height - height) / 2, use = y, gap = (int)(2 * Config.Dpi);
                     for (int i = 0; i < selectedValue.Length; i++)
@@ -268,7 +268,8 @@ namespace AntdUI
                         }
                         var rect = new RectangleF(rect_read.X + use, rect_read.Y + y, size.Width, height);
                         _rect_left_txt.Add(rect);
-                        _rect_left_del.Add(new RectangleF(rect.Right - (y - gap), rect.Y, height, height));
+                        float gapdelxy = (rect.Height - del_icon) / 2;
+                        _rect_left_del.Add(new RectangleF(rect.Right - (y - gap) + gapdelxy, rect.Y + gapdelxy, del_icon, del_icon));
                         rect.Width += height;
                         _rect_left.Add(rect);
                         use += size.Width + height + gap;
@@ -298,7 +299,7 @@ namespace AntdUI
                                 g.FillPath(brushbg, path);
                             }
                         }
-                        g.PaintIconError(rect_left_dels[i], Style.Db.TagDefaultColor, 0.34F, 0.05F);
+                        g.PaintIconClose(rect_left_dels[i], Style.Db.TagDefaultColor);
                         g.DrawString(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                     }
                     if (rect_lefts.Length != selectedValue.Length)

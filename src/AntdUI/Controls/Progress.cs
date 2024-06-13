@@ -288,23 +288,8 @@ namespace AntdUI
                     {
                         if (icon != TType.None)
                         {
-                            var size = rect_prog.Width * 0.5F;
-                            var rect_icon = new RectangleF(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
-                            switch (icon)
-                            {
-                                case TType.Success:
-                                    g.PaintIconComplete(rect_icon, _color);
-                                    break;
-                                case TType.Info:
-                                    g.PaintIconInfo(rect_icon, _color);
-                                    break;
-                                case TType.Warn:
-                                    g.PaintIconWarn(rect_icon, _color);
-                                    break;
-                                case TType.Error:
-                                    g.PaintIconError(rect_icon, _color);
-                                    break;
-                            }
+                            var size = rect_prog.Width * 0.26F;
+                            g.PaintIconGhosts(icon, new RectangleF(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size), _color);
                         }
                         int max = (int)Math.Round(360 * _value);
                         using (var brush = new Pen(_color, w))

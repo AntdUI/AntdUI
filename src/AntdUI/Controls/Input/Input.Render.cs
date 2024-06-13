@@ -201,11 +201,10 @@ namespace AntdUI
 
             if (is_clear)
             {
-                using (var brush = new SolidBrush(hover_clear ? Style.Db.TextTertiary : Style.Db.TextQuaternary))
+                using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect_r, hover_clear ? Style.Db.TextTertiary : Style.Db.TextQuaternary))
                 {
-                    g.FillEllipse(brush, rect_r);
+                    if (bmp != null) g.DrawImage(bmp, rect_r);
                 }
-                g.PaintIconError(rect_r, Style.Db.BgBase);
             }
             else if (suffixText != null)
             {

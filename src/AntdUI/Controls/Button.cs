@@ -36,6 +36,7 @@ namespace AntdUI
     {
         public Button()
         {
+            SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
             base.BackColor = Color.Transparent;
         }
 
@@ -1667,10 +1668,12 @@ namespace AntdUI
             ExtraMouseHover = false;
         }
 
+        bool doubleclick = false;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (CanClick(e.Location))
             {
+                doubleclick = e.Clicks > 1;
                 Focus();
                 base.OnMouseDown(e);
                 ExtraMouseDown = true;
@@ -1701,6 +1704,16 @@ namespace AntdUI
                         AnimationClick = false;
                         Invalidate();
                     });
+                    if (doubleclick)
+                    {
+                        OnDoubleClick(e);
+                        OnMouseDoubleClick(e);
+                    }
+                    else
+                    {
+                        OnClick(e);
+                        OnMouseClick(e);
+                    }
                 }
             }
             ExtraMouseDown = false;
@@ -1837,23 +1850,6 @@ namespace AntdUI
         public void PerformClick()
         {
             OnClick(EventArgs.Empty);
-        }
-
-        protected override void OnClick(EventArgs e)
-        {
-            if (CanClick()) base.OnClick(e);
-        }
-        protected override void OnDoubleClick(EventArgs e)
-        {
-            if (CanClick()) base.OnDoubleClick(e);
-        }
-        protected override void OnMouseClick(MouseEventArgs e)
-        {
-            if (CanClick(e.Location)) base.OnMouseClick(e);
-        }
-        protected override void OnMouseDoubleClick(MouseEventArgs e)
-        {
-            if (CanClick(e.Location)) base.OnMouseDoubleClick(e);
         }
 
         bool CanClick()

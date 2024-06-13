@@ -236,6 +236,15 @@ namespace AntdUI.Chat
 
         #endregion
 
+        #region 事件
+        public delegate void ItemSelectedEventHandler(object sender, MsgItemEventArgs e);
+        public event ItemSelectedEventHandler ItemSelected;
+        protected virtual void OnItemSelected(MsgItem selectedItem)
+        {
+            ItemSelected?.Invoke(this, new MsgItemEventArgs(selectedItem));
+        }
+        #endregion
+
         #region 布局
 
         protected override void OnFontChanged(EventArgs e)
@@ -287,15 +296,6 @@ namespace AntdUI.Chat
             return rect;
         }
 
-        #endregion
-
-        #region 事件
-        public delegate void ItemSelectedEventHandler(object sender, MsgItemEventArgs e);
-        public event ItemSelectedEventHandler ItemSelected;
-        protected virtual void OnItemSelected(MsgItem selectedItem)
-        {
-            ItemSelected?.Invoke(this, new MsgItemEventArgs(selectedItem));
-        }
         #endregion
     }
 

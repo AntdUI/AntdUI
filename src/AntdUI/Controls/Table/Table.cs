@@ -166,6 +166,22 @@ namespace AntdUI
             }
         }
 
+        int radius = 0;
+        /// <summary>
+        /// 圆角
+        /// </summary>
+        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        public int Radius
+        {
+            get => radius;
+            set
+            {
+                if (radius == value) return;
+                scrollBar.Radius = radius = value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// 行复制
         /// </summary>
@@ -221,6 +237,22 @@ namespace AntdUI
             {
                 if (rowSelectedBg == value) return;
                 rowSelectedBg = value;
+                Invalidate();
+            }
+        }
+
+        Color? borderColor;
+        /// <summary>
+        /// 表格边框颜色色
+        /// </summary>
+        [Description("表格边框颜色色"), Category("外观"), DefaultValue(null)]
+        public Color? BorderColor
+        {
+            get => borderColor;
+            set
+            {
+                if (borderColor == value) return;
+                borderColor = value;
                 Invalidate();
             }
         }
@@ -326,7 +358,7 @@ namespace AntdUI
         #region 初始化
 
         ScrollBar scrollBar;
-        public Table() { scrollBar = new ScrollBar(this, true, true); }
+        public Table() { scrollBar = new ScrollBar(this, true, true, radius); }
 
         protected override void Dispose(bool disposing)
         {

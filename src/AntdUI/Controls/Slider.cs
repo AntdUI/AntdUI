@@ -143,14 +143,11 @@ namespace AntdUI
                 tooltipForm = new TooltipForm(rect, tooltipText, new TooltipConfig
                 {
                     Font = Font,
-                    ArrowAlign = vertical ? TAlign.Right : TAlign.Top,
+                    ArrowAlign = (align == TAlignMini.Top || align == TAlignMini.Bottom) ? TAlign.Right : TAlign.Top,
                 });
                 tooltipForm.Show(this);
             }
-            else
-            {
-                tooltipForm.SetText(rect, tooltipText);
-            }
+            else tooltipForm.SetText(rect, tooltipText);
         }
 
         void CloseTips()
@@ -159,18 +156,18 @@ namespace AntdUI
             tooltipForm = null;
         }
 
-        bool vertical = false;
+        TAlignMini align = TAlignMini.Left;
         /// <summary>
-        /// 是否垂直方向
+        /// 方向
         /// </summary>
-        [Description("是否垂直方向"), Category("外观"), DefaultValue(false)]
-        public bool Vertical
+        [Description("方向"), Category("外观"), DefaultValue(TAlignMini.Left)]
+        public TAlignMini Align
         {
-            get => vertical;
+            get => align;
             set
             {
-                if (vertical == value) return;
-                vertical = value;
+                if (align == value) return;
+                align = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
             }
@@ -257,18 +254,12 @@ namespace AntdUI
                         g.FillRectangle(brush2, rect_read);
                     }
                 }
-                else if (ExtraMouseHover)
-                {
-                    g.FillRectangle(brush, rect_read);
-                }
+                else if (ExtraMouseHover) g.FillRectangle(brush, rect_read);
             }
-            float prog = CProg(_value, rect_read.Width, rect_read.Height);
+            float prog = ProgValue(_value, rect_read.Width, rect_read.Height);
             if (_value > _minValue)
             {
-                RectangleF rect_prog;
-                if (vertical) rect_prog = new RectangleF(rect_read.X, rect_read.Y, rect_read.Width, prog);
-                else rect_prog = new RectangleF(rect_read.X, rect_read.Y, prog, rect_read.Height);
-
+                var rect_prog = RectLine(rect_read, prog);
                 Color color = fill ?? Style.Db.InfoBorder, color_hover = FillHover ?? Style.Db.InfoHover;
                 if (AnimationHover)
                 {
@@ -306,25 +297,25 @@ namespace AntdUI
                     foreach (var it in Dots)
                     {
                         float size = DotSize * 0.9F;
-                        float uks = CProg(it, rect.Width, rect.Height);
-                        var rect_dot = CRect(_rect, rect, uks, size);
+                        float uks = ProgValue(it, rect.Width, rect.Height);
+                        var rect_dot = RectDot(_rect, rect, uks, size);
                         g.FillEllipse(brush, rect_dot);
                         PaintEllipse(g, rect_dot, color, 1);
                     }
                 }
-                var rect_ellipse_rl = CRect(_rect, rect, prog, DotSize);
+                var rect_ellipse_rl = RectDot(_rect, rect, prog, DotSize);
                 if (ShowValue && _mouseHover) ShowTips(rect_ellipse_rl);
                 if (AnimationHover)
                 {
                     int size2 = DotSizeActive - DotSize;
                     var size = DotSize + size2 * AnimationHoverValue;
-                    var rect_ellipse = CRect(_rect, rect, prog, size);
+                    var rect_ellipse = RectDot(_rect, rect, prog, size);
                     g.FillEllipse(brush, rect_ellipse);
                     PaintEllipse(g, rect_ellipse, color_active, 2 + 2 * AnimationHoverValue);
                 }
                 else if (ExtraMouseHover)
                 {
-                    var rect_ellipse = CRect(_rect, rect, prog, DotSizeActive);
+                    var rect_ellipse = RectDot(_rect, rect, prog, DotSizeActive);
                     g.FillEllipse(brush, rect_ellipse);
                     PaintEllipse(g, rect_ellipse, color_active, 4);
                 }
@@ -338,16 +329,60 @@ namespace AntdUI
 
         #region 计算区域
 
-        internal float CProg(int val, float w, float h)
+        internal float ProgValue(int val, float w, float h)
         {
             int max = _maxValue - _minValue;
-            if (vertical) return val >= _maxValue ? h : h * ((val - _minValue) * 1F / max);
-            else return val >= _maxValue ? w : w * ((val - _minValue) * 1F / max);
+            switch (align)
+            {
+                case TAlignMini.Top:
+                case TAlignMini.Bottom:
+                    return val >= _maxValue ? h : h * ((val - _minValue) * 1F / max);
+                default:
+                    return val >= _maxValue ? w : w * ((val - _minValue) * 1F / max);
+            }
         }
-        internal RectangleF CRect(Rectangle _rect, RectangleF rect, float prog, float size)
+
+        internal RectangleF RectLine(RectangleF rect, float prog)
         {
-            if (vertical) return new RectangleF(_rect.X + (_rect.Width - size) / 2F, rect.Y + prog - size / 2, size, size);
-            else return new RectangleF(rect.X + prog - size / 2, _rect.Y + (_rect.Height - size) / 2F, size, size);
+            switch (align)
+            {
+                case TAlignMini.Right:
+                    return new RectangleF(rect_read.X + rect_read.Width - prog, rect_read.Y, prog, rect_read.Height);
+                case TAlignMini.Top:
+                    return new RectangleF(rect_read.X, rect_read.Y, rect_read.Width, prog);
+                case TAlignMini.Bottom:
+                    return new RectangleF(rect_read.X, rect_read.Y + rect_read.Height - prog, rect_read.Width, prog);
+                default:
+                    return new RectangleF(rect_read.X, rect_read.Y, prog, rect_read.Height);
+            }
+        }
+        internal RectangleF RectDot(Rectangle _rect, RectangleF rect, float prog, float size)
+        {
+            switch (align)
+            {
+                case TAlignMini.Right:
+                    return new RectangleF(rect.X + (rect.Width - prog - (size / 2F)), _rect.Y + (_rect.Height - size) / 2F, size, size);
+                case TAlignMini.Top:
+                    return new RectangleF(_rect.X + (_rect.Width - size) / 2F, rect.Y + prog - size / 2F, size, size);
+                case TAlignMini.Bottom:
+                    return new RectangleF(_rect.X + (_rect.Width - size) / 2F, rect.Y + (rect.Height - prog - (size / 2F)), size, size);
+                default:
+                    return new RectangleF(rect.X + prog - size / 2F, _rect.Y + (_rect.Height - size) / 2F, size, size);
+            }
+        }
+        internal RectangleF RectDotH(Rectangle rect_read, RectangleF _rect, float prog, int DotSize)
+        {
+            switch (align)
+            {
+                case TAlignMini.Right:
+                    return new RectangleF(rect_read.X + (rect_read.Width - prog - (DotSize / 2)), _rect.Y, DotSize, _rect.Height);
+                case TAlignMini.Top:
+                    return new RectangleF(_rect.X, rect_read.Y + prog - DotSize / 2, _rect.Width, DotSize);
+                case TAlignMini.Bottom:
+                    return new RectangleF(_rect.X, rect_read.Y + (rect_read.Height - prog - (DotSize / 2)), _rect.Width, DotSize);
+                default:
+                    return new RectangleF(rect_read.X + prog - DotSize / 2, _rect.Y, DotSize, _rect.Height);
+            }
         }
 
         #endregion
@@ -370,7 +405,7 @@ namespace AntdUI
             var _rect = ClientRectangle;
             float dpi = Config.Dpi;
             int LineSize = (int)(lineSize * dpi), DotSizeActive = (int)(dotSizeActive * dpi), DotSizeActive2 = DotSizeActive * 2;
-            if (vertical) rect_read = new Rectangle(_rect.Left + (_rect.Width - LineSize) / 2, DotSizeActive, LineSize, _rect.Height - DotSizeActive2);
+            if (align == TAlignMini.Top || align == TAlignMini.Bottom) rect_read = new Rectangle(_rect.Left + (_rect.Width - LineSize) / 2, DotSizeActive, LineSize, _rect.Height - DotSizeActive2);
             else rect_read = new Rectangle(DotSizeActive, _rect.Top + (_rect.Height - LineSize) / 2, _rect.Width - DotSizeActive2, LineSize);
             base.OnSizeChanged(e);
         }
@@ -384,50 +419,72 @@ namespace AntdUI
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Left)
             {
-                mouseFlat = true;
-                var _rect = ClientRectangle;
                 int max = _maxValue - _minValue;
-                if (vertical)
-                {
-                    if (Dots != null && Dots.Length > 0)
-                    {
-                        int DotSize = (int)(dotSize * Config.Dpi);
-                        foreach (var it in Dots)
-                        {
-                            float uks = CProg(it, rect_read.Width, rect_read.Height);
-                            var rect_dot = new RectangleF(_rect.X, rect_read.Y + uks - DotSize / 2, _rect.Width, DotSize);
-                            if (rect_dot.Contains(e.Location))
-                            {
-                                Value = it;
-                                return;
-                            }
-                        }
-                    }
+                Value = _MouseDown(ClientRectangle, e.Location, max);
+                mouseFlat = true;
+            }
+        }
 
-                    float y = (e.Y - rect_read.Y) * 1.0F / rect_read.Height;
-                    if (y > 0) Value = (int)Math.Round(y * max) + _minValue;
-                    else Value = 0;
-                }
-                else
-                {
+        int _MouseDown(Rectangle _rect, Point loc, int max)
+        {
+            switch (align)
+            {
+                case TAlignMini.Right:
                     if (Dots != null && Dots.Length > 0)
                     {
                         int DotSize = (int)(dotSize * Config.Dpi);
                         foreach (var it in Dots)
                         {
-                            float uks = CProg(it, rect_read.Width, rect_read.Height);
-                            var rect_dot = new RectangleF(rect_read.X + uks - DotSize / 2, _rect.Y, DotSize, _rect.Height);
-                            if (rect_dot.Contains(e.Location))
-                            {
-                                Value = it;
-                                return;
-                            }
+                            float uks = ProgValue(it, rect_read.Width, rect_read.Height);
+                            var rect_dot = RectDotH(rect_read, _rect, uks, DotSize);
+                            if (rect_dot.Contains(loc)) return it;
                         }
                     }
-                    float x = (e.X - rect_read.X) * 1.0F / rect_read.Width;
-                    if (x > 0) Value = (int)Math.Round(x * max) + _minValue;
-                    else Value = _minValue;
-                }
+                    float xr = 1F - ((loc.X - rect_read.X) * 1.0F / rect_read.Width);
+                    if (xr > 0) return (int)Math.Round(xr * max) + _minValue;
+                    else return _minValue;
+                case TAlignMini.Top:
+                    if (Dots != null && Dots.Length > 0)
+                    {
+                        int DotSize = (int)(dotSize * Config.Dpi);
+                        foreach (var it in Dots)
+                        {
+                            float uks = ProgValue(it, rect_read.Width, rect_read.Height);
+                            var rect_dot = RectDotH(rect_read, _rect, uks, DotSize);
+                            if (rect_dot.Contains(loc)) return it;
+                        }
+                    }
+                    float yt = (loc.Y - rect_read.Y) * 1.0F / rect_read.Height;
+                    if (yt > 0) return (int)Math.Round(yt * max) + _minValue;
+                    else return _minValue;
+                case TAlignMini.Bottom:
+                    if (Dots != null && Dots.Length > 0)
+                    {
+                        int DotSize = (int)(dotSize * Config.Dpi);
+                        foreach (var it in Dots)
+                        {
+                            float uks = ProgValue(it, rect_read.Width, rect_read.Height);
+                            var rect_dot = RectDotH(rect_read, _rect, uks, DotSize);
+                            if (rect_dot.Contains(loc)) return it;
+                        }
+                    }
+                    float yb = 1F - ((loc.Y - rect_read.Y) * 1.0F / rect_read.Height);
+                    if (yb > 0) return (int)Math.Round(yb * max) + _minValue;
+                    else return _minValue;
+                default:
+                    if (Dots != null && Dots.Length > 0)
+                    {
+                        int DotSize = (int)(dotSize * Config.Dpi);
+                        foreach (var it in Dots)
+                        {
+                            float uks = ProgValue(it, rect_read.Width, rect_read.Height);
+                            var rect_dot = RectDotH(rect_read, _rect, uks, DotSize);
+                            if (rect_dot.Contains(loc)) return it;
+                        }
+                    }
+                    float xl = (loc.X - rect_read.X) * 1.0F / rect_read.Width;
+                    if (xl > 0) return (int)Math.Round(xl * max) + _minValue;
+                    else return _minValue;
             }
         }
 
@@ -437,17 +494,28 @@ namespace AntdUI
             if (mouseFlat)
             {
                 int max = _maxValue - _minValue;
-                if (vertical)
+                switch (align)
                 {
-                    float y = (e.Y - rect_read.Y) * 1.0F / rect_read.Height;
-                    if (y > 0) Value = (int)Math.Round(y * max) + _minValue;
-                    else Value = _minValue;
-                }
-                else
-                {
-                    float x = (e.X - rect_read.X) * 1.0F / rect_read.Width;
-                    if (x > 0) Value = (int)Math.Round(x * max) + _minValue;
-                    else Value = _minValue;
+                    case TAlignMini.Right:
+                        float xr = 1F - ((e.X - rect_read.X) * 1.0F / rect_read.Width);
+                        if (xr > 0) Value = (int)Math.Round(xr * max) + _minValue;
+                        else Value = _minValue;
+                        break;
+                    case TAlignMini.Top:
+                        float yt = (e.Y - rect_read.Y) * 1.0F / rect_read.Height;
+                        if (yt > 0) Value = (int)Math.Round(yt * max) + _minValue;
+                        else Value = _minValue;
+                        break;
+                    case TAlignMini.Bottom:
+                        float yb = 1F - ((e.Y - rect_read.Y) * 1.0F / rect_read.Height);
+                        if (yb > 0) Value = (int)Math.Round(yb * max) + _minValue;
+                        else Value = _minValue;
+                        break;
+                    default:
+                        float xl = (e.X - rect_read.X) * 1.0F / rect_read.Width;
+                        if (xl > 0) Value = (int)Math.Round(xl * max) + _minValue;
+                        else Value = _minValue;
+                        break;
                 }
             }
         }
