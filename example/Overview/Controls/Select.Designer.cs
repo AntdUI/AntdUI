@@ -117,7 +117,7 @@ namespace Overview.Controls
             // select8
             // 
             select8.DropDownArrow = true;
-            select8.Items.AddRange(new object[] { dividerSelectItem1 });
+            select8.Items.AddRange(new AntdUI.ISelectItem[] { new AntdUI.SelectItem(0, "Lucy"), new AntdUI.SelectItem(1, "Tom"), new AntdUI.SelectItem(1, "AduSkin"), new AntdUI.DividerSelectItem(), new AntdUI.SelectItem(0, "WangLi"), new AntdUI.SelectItem(0, "HUAWEI"), new AntdUI.SelectItem(0, "XIAOMI") });
             select8.List = true;
             select8.ListAutoWidth = true;
             select8.Location = new Point(18, 20);

@@ -43,11 +43,11 @@ namespace Overview.Controls
 
             var list = new List<TestClass>(10) {
                 new TestClass(1,"1","ºúÑå±ó",32,"Î÷ºþÇøºþµ×¹«Ô°1ºÅ"),
-                new TestClass(2,"2","ºúÑå×æ",43,"Î÷ºþÇøºþµ×¹«Ô°1ºÅ") {
+                new TestClass(2,"2","ºúÑå×æ",22,"Î÷ºþÇøºþµ×¹«Ô°1ºÅ") {
                     tag=new AntdUI.CellTag[]{ new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) }
                 },
             };// Ìí¼ÓÊý¾Ý
-            for (int i = 2; i < 10; i++) list.Add(new TestClass(i, i.ToString(), "ºúÑå±ó", 100, "Î÷ºþÇøºþµ×¹«Ô°" + (i + 10) + "ºÅ"));
+            for (int i = 2; i < 10; i++) list.Add(new TestClass(i, i.ToString(), "ºúÑå±ó", 31 + i, "Î÷ºþÇøºþµ×¹«Ô°" + (i + 10) + "ºÅ"));
 
             table1.DataSource = list;
             table1.CellClick += Table1_CellClick;
@@ -359,6 +359,55 @@ namespace Overview.Controls
                 () =>
                 { });
             }
+        }
+
+        private void checkbox1_CheckedChanged(object sender, bool value)
+        {
+            table1.FixedHeader = value;
+        }
+
+        private void checkbox2_CheckedChanged(object sender, bool value)
+        {
+            table1.EnableHeaderResizing = value;
+        }
+
+        private void checkbox3_CheckedChanged(object sender, bool value)
+        {
+            table1.ColumnDragSort = value;
+        }
+
+        private void checkbox4_CheckedChanged(object sender, bool value)
+        {
+            table1.Bordered = value;
+        }
+
+        private void checkbox5_CheckedChanged(object sender, bool value)
+        {
+            if (value) table1.SetRowStyle += Table1_SetRowStyle;
+            else table1.SetRowStyle -= Table1_SetRowStyle;
+            table1.Invalidate();
+        }
+
+        private void checkbox6_CheckedChanged(object sender, bool value)
+        {
+            if (table1.Columns != null)
+            {
+                table1.Columns[4].SortOrder = table1.Columns[5].SortOrder = value;
+                table1.Width = 2;
+            }
+        }
+
+        private AntdUI.Table.CellStyleInfo? Table1_SetRowStyle(object sender, object? record, int rowIndex)
+        {
+            if (rowIndex % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = AntdUI.Style.Db.ErrorBg,
+                    ForeColor = AntdUI.Style.Db.Error
+                };
+            }
+            return null;
         }
     }
 }

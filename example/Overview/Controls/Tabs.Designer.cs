@@ -135,10 +135,10 @@ namespace Overview.Controls
             // tabPage2
             // 
             tabPage2.Controls.Add(label2);
-            tabPage2.Location = new Point(4, 58);
+            tabPage2.Location = new Point(4, 29);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(680, 277);
+            tabPage2.Size = new Size(192, 67);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Tab 2";
             tabPage2.UseVisualStyleBackColor = true;
@@ -156,10 +156,10 @@ namespace Overview.Controls
             // tabPage3
             // 
             tabPage3.Controls.Add(label3);
-            tabPage3.Location = new Point(4, 58);
+            tabPage3.Location = new Point(4, 29);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(680, 277);
+            tabPage3.Size = new Size(192, 67);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "TabPage3";
             tabPage3.UseVisualStyleBackColor = true;
@@ -177,10 +177,10 @@ namespace Overview.Controls
             // tabPage4
             // 
             tabPage4.Controls.Add(label4);
-            tabPage4.Location = new Point(4, 58);
+            tabPage4.Location = new Point(4, 29);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new Padding(3);
-            tabPage4.Size = new Size(680, 277);
+            tabPage4.Size = new Size(192, 67);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "TabPage4 233";
             tabPage4.UseVisualStyleBackColor = true;

@@ -112,6 +112,7 @@ namespace Overview.Controls
             panel8.Radius = 10;
             panel8.Shadow = 24;
             panel8.ShadowOpacity = 0.18F;
+            panel8.ShadowOpacityAnimation = true;
             panel8.Size = new Size(269, 221);
             panel8.TabIndex = 15;
             // 
@@ -162,6 +163,7 @@ namespace Overview.Controls
             panel1.Radius = 0;
             panel1.Shadow = 24;
             panel1.ShadowOpacity = 0.18F;
+            panel1.ShadowOpacityAnimation = true;
             panel1.Size = new Size(269, 221);
             panel1.TabIndex = 18;
             // 
@@ -215,6 +217,7 @@ namespace Overview.Controls
             panel9.Radius = 10;
             panel9.Shadow = 24;
             panel9.ShadowOpacity = 0.18F;
+            panel9.ShadowOpacityAnimation = true;
             panel9.Size = new Size(320, 258);
             panel9.TabIndex = 14;
             // 
@@ -265,6 +268,7 @@ namespace Overview.Controls
             panel4.Padding = new Padding(14);
             panel4.Radius = 10;
             panel4.Shadow = 24;
+            panel4.ShadowOpacityAnimation = true;
             panel4.Size = new Size(320, 299);
             panel4.TabIndex = 19;
             // 

@@ -698,6 +698,7 @@ namespace Demo
             panel8.Radius = 10;
             panel8.Shadow = 24;
             panel8.ShadowOpacity = 0.18F;
+            panel8.ShadowOpacityAnimation = true;
             panel8.Size = new Size(285, 228);
             panel8.TabIndex = 13;
             // 
@@ -751,6 +752,7 @@ namespace Demo
             panel9.Radius = 10;
             panel9.Shadow = 24;
             panel9.ShadowOpacity = 0.18F;
+            panel9.ShadowOpacityAnimation = true;
             panel9.Size = new Size(403, 304);
             panel9.TabIndex = 13;
             // 

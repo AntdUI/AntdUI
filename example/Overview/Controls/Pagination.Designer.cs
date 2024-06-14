@@ -83,7 +83,7 @@ namespace Overview.Controls
             pagination2.Name = "pagination2";
             pagination2.Padding = new Padding(4);
             pagination2.ShowSizeChanger = true;
-            pagination2.Size = new Size(360, 38);
+            pagination2.Size = new Size(307, 38);
             pagination2.TabIndex = 12;
             pagination2.Total = 100;
             // 
