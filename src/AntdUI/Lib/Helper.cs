@@ -1952,10 +1952,14 @@ namespace AntdUI
             var mask = new LayeredFormMask(owner);
             if (MaskClosable)
             {
-                mask.Click += (s1, e1) =>
+                try
                 {
-                    form.IClose();
-                };
+                    mask.Click += (s1, e1) =>
+                    {
+                        form.IClose();
+                    };
+                }
+                catch { }
             }
             mask.Show(owner);
             return mask;
@@ -1972,10 +1976,14 @@ namespace AntdUI
             var mask = new LayeredFormMask(owner);
             if (MaskClosable)
             {
-                mask.Click += (s1, e1) =>
+                try
                 {
-                    form.Close();
-                };
+                    mask.Click += (s1, e1) =>
+                    {
+                        form.Close();
+                    };
+                }
+                catch { }
             }
             mask.Show(owner);
             return mask;

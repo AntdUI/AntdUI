@@ -19,6 +19,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -46,6 +47,7 @@ namespace AntdUI
         /// 颜色
         /// </summary>
         [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
             get { return fill; }
@@ -61,12 +63,14 @@ namespace AntdUI
         /// 悬停颜色
         /// </summary>
         [Description("悬停颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillHover { get; set; }
 
         /// <summary>
         /// 激活颜色
         /// </summary>
         [Description("激活颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillActive { get; set; }
 
         int _minValue = 0;

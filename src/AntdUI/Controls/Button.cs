@@ -48,6 +48,7 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
             get => back;
@@ -63,6 +64,7 @@ namespace AntdUI
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
             get => fore;
@@ -118,12 +120,14 @@ namespace AntdUI
         /// 悬停背景颜色
         /// </summary>
         [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
         [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
         Image? backImage = null;
@@ -167,6 +171,7 @@ namespace AntdUI
         /// Default模式背景颜色
         /// </summary>
         [Description("Default模式背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DefaultBack
         {
             get => defaultback;
@@ -183,6 +188,7 @@ namespace AntdUI
         /// Default模式边框颜色
         /// </summary>
         [Description("Default模式边框颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DefaultBorderColor
         {
             get => defaultbordercolor;
@@ -1668,12 +1674,10 @@ namespace AntdUI
             ExtraMouseHover = false;
         }
 
-        bool doubleclick = false;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (CanClick(e.Location))
             {
-                doubleclick = e.Clicks > 1;
                 Focus();
                 base.OnMouseDown(e);
                 ExtraMouseDown = true;
@@ -1684,39 +1688,38 @@ namespace AntdUI
         float AnimationClickValue = 0;
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (CanClick(e.Location))
+            if (ExtraMouseDown)
             {
-                base.OnMouseUp(e);
-                if (ExtraMouseDown && margins > 0 && Config.Animation && e.Button == MouseButtons.Left)
+                if (CanClick(e.Location))
                 {
-                    ThreadClick?.Dispose();
-                    AnimationClickValue = 0;
-                    AnimationClick = true;
-                    ThreadClick = new ITask(this, () =>
+                    base.OnMouseUp(e);
+                    if (e.Button == MouseButtons.Left)
                     {
-                        if (AnimationClickValue > 0.6) AnimationClickValue = AnimationClickValue.Calculate(0.04F);
-                        else AnimationClickValue += AnimationClickValue = AnimationClickValue.Calculate(0.1F);
-                        if (AnimationClickValue > 1) { AnimationClickValue = 0F; return false; }
-                        Invalidate();
-                        return true;
-                    }, 50, () =>
-                    {
-                        AnimationClick = false;
-                        Invalidate();
-                    });
-                    if (doubleclick)
-                    {
-                        OnDoubleClick(e);
-                        OnMouseDoubleClick(e);
-                    }
-                    else
-                    {
+                        if (margins > 0 && Config.Animation)
+                        {
+                            ThreadClick?.Dispose();
+                            AnimationClickValue = 0;
+                            AnimationClick = true;
+                            ThreadClick = new ITask(this, () =>
+                            {
+                                if (AnimationClickValue > 0.6) AnimationClickValue = AnimationClickValue.Calculate(0.04F);
+                                else AnimationClickValue += AnimationClickValue = AnimationClickValue.Calculate(0.1F);
+                                if (AnimationClickValue > 1) { AnimationClickValue = 0F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 50, () =>
+                            {
+                                AnimationClick = false;
+                                Invalidate();
+                            });
+                        }
                         OnClick(e);
                         OnMouseClick(e);
                     }
                 }
+                ExtraMouseDown = false;
             }
-            ExtraMouseDown = false;
+            else base.OnMouseUp(e);
         }
 
         #endregion
@@ -1884,6 +1887,22 @@ namespace AntdUI
                 }
                 else return true;
             }
+        }
+
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public new event EventHandler? DoubleClick
+        {
+            add => base.DoubleClick += value;
+            remove => base.DoubleClick -= value;
+        }
+
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public new event MouseEventHandler? MouseDoubleClick
+        {
+            add => base.MouseDoubleClick += value;
+            remove => base.MouseDoubleClick -= value;
         }
 
         #endregion

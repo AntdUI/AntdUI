@@ -19,6 +19,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Threading;
@@ -323,6 +324,7 @@ namespace AntdUI
         }
 
         [Description("阴影颜色"), Category("阴影"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ShadowColor { get; set; }
 
         float shadowOpacity = 0.3F;

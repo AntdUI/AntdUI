@@ -1883,5 +1883,16 @@ namespace AntdUI
         #endregion
 
         #endregion
+
+        internal class StyleRow
+        {
+            public StyleRow(RowTemplate _row, CellStyleInfo? _style)
+            {
+                row = _row;
+                style = _style;
+            }
+            public RowTemplate row { get; set; }
+            public CellStyleInfo? style { get; set; }
+        }
     }
 }

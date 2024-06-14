@@ -122,11 +122,15 @@ namespace AntdUI
             DwmArea();
             return value;
         }
+
+        int oldmargin = -1;
         void DwmArea()
         {
             int margin;
             if (iszoomed) margin = 0;
             else margin = 1;
+            if (oldmargin == margin) return;
+            oldmargin = margin;
             DwmExtendFrameIntoClientArea(handle, new MARGINS(margin));
         }
 

@@ -21,7 +21,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace AntdUI.Chat
@@ -156,6 +158,7 @@ namespace AntdUI.Chat
                         }
                     }
                     if (text.Icon != null) g.PaintImg(text.rect_icon, text.Icon, TFit.Cover, 0, true);
+                  
                 }
             }
         }
@@ -192,6 +195,10 @@ namespace AntdUI.Chat
                         {
                             g.PaintImg(itt.rect, itt.svgImage, TFit.Cover, 0, false);
                         }
+                        else if (itt.isImage) // 检查是否是图片
+                        {
+                            g.PaintImg(itt.rect, itt.image, TFit.Contain, 0, false);
+                        }
                         else if (itt.emoji)
                         {
                             g.DrawString(itt.text, font, fore, itt.rect, m_sf);
@@ -210,6 +217,10 @@ namespace AntdUI.Chat
                     if (itt.svgImage != null)
                     {
                         g.PaintImg(itt.rect, itt.svgImage, TFit.Cover, 0, false);
+                    }
+                    else if (itt.isImage) // 检查是否是图片
+                    {
+                        g.PaintImg(itt.rect, itt.image, TFit.Contain, 0, false);
                     }
                     else
                     {
@@ -571,23 +582,53 @@ namespace AntdUI.Chat
             int font_height = 0;
 
             var font_widths = new List<CacheFont>(item.Text.Length);
-
+            string base64Pattern = @"data:image/(?<type>.+?);base64,(?<data>[A-Za-z0-9+/=]+)";
+            var regex = new Regex(base64Pattern);
             bool iseone = false;
             char[] textChars = item.Text.ToCharArray();
             int i = 0;
+
             while (i < textChars.Length)
             {
                 char it = textChars[i];
                 var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it);
 
-                // 开始解析 SVG 图像
+                string remainingText = item.Text.Substring(i);
+                var match = regex.Match(remainingText);
+                if (match.Success && match.Index == 0)
+                {
+                    string base64Data = match.Groups["data"].Value;
+                    string imageData = match.Value;
+                    byte[] imageBytes = Convert.FromBase64String(base64Data);
+                    using (MemoryStream ms = new MemoryStream(imageBytes))
+                    {
+                        Image image = Image.FromStream(ms);
+                        int imgWidth = image.Width;
+                        int imgHeight = image.Height;
+
+                        // Adjust image size to fit within max_width if necessary
+                        if (imgWidth > max_width)
+                        {
+                            float scaleRatio = (float)max_width / imgWidth;
+                            imgWidth = max_width;
+                            imgHeight = (int)(imgHeight * scaleRatio);
+                        }
+
+                        font_widths.Add(new CacheFont(imageData, false, imgWidth) { isImage = true, image = image, width = imgWidth });
+                        font_height = Math.Max(font_height, imgHeight);
+                        i += imageData.Length;
+                        continue;
+                    }
+                }
+
+                // Check if it's an SVG image
                 if (it == '<' && textChars.Skip(i).Take(4).SequenceEqual(new[] { '<', 's', 'v', 'g' }))
                 {
                     int endIndex = item.Text.IndexOf("</svg>", i, StringComparison.OrdinalIgnoreCase);
                     if (endIndex != -1)
                     {
-                        string svgText = item.Text.Substring(i, endIndex - i + 6); // 包含结束标签
-                        i = endIndex + 6; // 跳过已处理的 SVG
+                        string svgText = item.Text.Substring(i, endIndex - i + 6); // Include the ending tag
+                        i = endIndex + 6; // Move past the processed SVG text
 
                         Image? svgImage = SvgExtend.SvgToBmp(svgText);
                         if (svgImage != null)
@@ -601,7 +642,7 @@ namespace AntdUI.Chat
                     }
                 }
 
-                // 原来的逻辑处理其他字符
+                // Process other characters
                 string txt = it.ToString();
                 if (IsEmoji(unicodeInfo))
                 {
@@ -683,6 +724,7 @@ namespace AntdUI.Chat
                 if (maxy < it.rect.Bottom) maxy = it.rect.Bottom;
                 usex += it.width;
             }
+
             return new Size(maxx + spilt, maxy + spilt);
         }
         bool IsEmoji(UnicodeCategory unicodeInfo)
@@ -816,6 +858,7 @@ namespace AntdUI.Chat
                 else Invalidate();
             }
         }
+
 
         internal int SetRect(Rectangle _rect, int y, Graphics g, Font font, Size msglen, int gap, int spilt, int spilt2, int image_size)
         {
@@ -953,7 +996,7 @@ namespace AntdUI.Chat
 
     internal class CacheFont
     {
-        public CacheFont(string _text, bool _emoji, int _width, Image? _svgImage = null, bool _isSvg = false)
+        public CacheFont(string _text, bool _emoji, int _width, Image? _svgImage = null,  bool _isSvg = false)
         {
             text = _text;
             emoji = _emoji;
@@ -978,5 +1021,8 @@ namespace AntdUI.Chat
         public int width { get; set; }
         public Image? svgImage { get; set; } // 新增svgImage字段
         public bool isSvg { get; set; } // 新增isSvg字段
+        // 新增 isImage 和 image 属性
+        public bool isImage { get; set; } = false;
+        public Image? image { get; set; } = null;
     }
 }

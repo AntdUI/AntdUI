@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -42,6 +43,7 @@ namespace AntdUI
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
             get => fore;
@@ -59,12 +61,14 @@ namespace AntdUI
         /// 悬停背景颜色
         /// </summary>
         [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
         [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
         Color? fore;
@@ -89,6 +93,7 @@ namespace AntdUI
         /// 激活字体颜色
         /// </summary>
         [Description("激活字体颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
         int radius = 6;
@@ -258,7 +263,7 @@ namespace AntdUI
 
         #region 事件
 
-        public delegate void SelectEventHandler(object sender, TreeItem item, Rectangle rect);
+        public delegate void SelectEventHandler(object sender, MouseEventArgs args, TreeItem item, Rectangle rect);
         public delegate void HoverEventHandler(object sender, TreeItem item, Rectangle rect, bool hover);
         /// <summary>
         /// Select 属性值更改时发生
@@ -297,23 +302,23 @@ namespace AntdUI
             NodeMouseMove(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), hover);
         }
 
-        internal void OnSelectChanged(TreeItem item)
+        internal void OnSelectChanged(TreeItem item, MouseEventArgs args)
         {
             if (SelectChanged == null) return;
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            SelectChanged(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
+            SelectChanged(this, args, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
-        internal void OnNodeMouseClick(TreeItem item)
+        internal void OnNodeMouseClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseClick == null) return;
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            NodeMouseClick(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
+            NodeMouseClick(this, args, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
-        internal void OnNodeMouseDoubleClick(TreeItem item)
+        internal void OnNodeMouseDoubleClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseDoubleClick == null) return;
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            NodeMouseDoubleClick(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
+            NodeMouseDoubleClick(this, args, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
         }
         internal void OnCheckedChanged(TreeItem item, bool value)
         {
@@ -702,17 +707,14 @@ namespace AntdUI
             int down = item.Contains(e.Location, blockNode ? 0 : scrollBar.ValueX, scrollBar.ValueY, checkable);
             if (down > 0)
             {
-                if (e.Button == MouseButtons.Left)
-                {
-                    if (e.Clicks > 1) OnNodeMouseDoubleClick(item);
-                    else OnNodeMouseClick(item);
-                }
+                if (e.Clicks > 1) OnNodeMouseDoubleClick(item, e);
+                else OnNodeMouseClick(item, e);
                 if (blockNode)
                 {
                     if (can) item.Expand = !item.Expand;
                     IUSelect();
                     item.Select = true;
-                    OnSelectChanged(item);
+                    OnSelectChanged(item, e);
                     Invalidate();
                 }
                 else if (down == 3 && item.Enabled)
@@ -737,7 +739,7 @@ namespace AntdUI
                 {
                     IUSelect();
                     item.Select = true;
-                    OnSelectChanged(item);
+                    OnSelectChanged(item, e);
                     Invalidate();
                 }
                 return true;

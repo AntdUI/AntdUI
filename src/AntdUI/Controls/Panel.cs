@@ -19,6 +19,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -79,6 +80,7 @@ namespace AntdUI
         /// 阴影颜色
         /// </summary>
         [Description("阴影颜色"), Category("阴影"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ShadowColor
         {
             get => shadowColor;
@@ -147,6 +149,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 阴影透明度动画使能
+        /// </summary>
+        [Description("阴影透明度动画使能"), Category("阴影"), DefaultValue(false)]
+        public bool ShadowOpacityAnimation { get; set; }
+
         float shadowOpacityHover = 0.3F;
         /// <summary>
         /// 悬停阴影后透明度
@@ -189,6 +197,7 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
             get => back;
@@ -283,6 +292,7 @@ namespace AntdUI
         /// 边框颜色
         /// </summary>
         [Description("边框颜色"), Category("边框"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderColor
         {
             get => borderColor;
@@ -390,7 +400,7 @@ namespace AntdUI
             {
                 if (_mouseHover == value) return;
                 _mouseHover = value;
-                if (Enabled && shadow > 0 && shadowOpacityHover > 0 && shadowOpacityHover > shadowOpacity)
+                if (Enabled && ShadowOpacityAnimation && shadow > 0 && shadowOpacityHover > 0 && shadowOpacityHover > shadowOpacity)
                 {
                     if (Config.Animation)
                     {

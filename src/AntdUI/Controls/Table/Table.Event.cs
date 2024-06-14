@@ -163,7 +163,12 @@ namespace AntdUI
             /// <summary>
             /// 背景颜色
             /// </summary>
-            public Color BackColor { get; set; }
+            public Color? BackColor { get; set; }
+
+            /// <summary>
+            /// 文字颜色
+            /// </summary>
+            public Color? ForeColor { get; set; }
         }
     }
 }

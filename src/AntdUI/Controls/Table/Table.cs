@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -132,11 +133,22 @@ namespace AntdUI
             }
         }
 
+        bool enableHeaderResizing = false;
         /// <summary>
         /// 手动调整列头宽度
         /// </summary>
         [Description("手动调整列头宽度"), Category("行为"), DefaultValue(false)]
-        public bool EnableHeaderResizing { get; set; }
+        public bool EnableHeaderResizing
+        {
+            get => enableHeaderResizing;
+            set
+            {
+                if (enableHeaderResizing == value) return;
+                enableHeaderResizing = value;
+                LoadLayout();
+                Invalidate();
+            }
+        }
 
         /// <summary>
         /// 列拖拽排序
@@ -162,6 +174,7 @@ namespace AntdUI
             {
                 if (bordered == value) return;
                 bordered = value;
+                LoadLayout();
                 Invalidate();
             }
         }
@@ -230,6 +243,7 @@ namespace AntdUI
         /// 表格行选中背景色
         /// </summary>
         [Description("表格行选中背景色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? RowSelectedBg
         {
             get => rowSelectedBg;
@@ -237,7 +251,24 @@ namespace AntdUI
             {
                 if (rowSelectedBg == value) return;
                 rowSelectedBg = value;
-                Invalidate();
+                if (selectedIndex > 0) Invalidate();
+            }
+        }
+
+        Color? rowSelectedFore;
+        /// <summary>
+        /// 表格行选中字色
+        /// </summary>
+        [Description("表格行选中字色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? RowSelectedFore
+        {
+            get => rowSelectedFore;
+            set
+            {
+                if (rowSelectedFore == value) return;
+                rowSelectedFore = value;
+                if (selectedIndex > 0) Invalidate();
             }
         }
 
@@ -246,6 +277,7 @@ namespace AntdUI
         /// 表格边框颜色色
         /// </summary>
         [Description("表格边框颜色色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderColor
         {
             get => borderColor;
@@ -280,6 +312,7 @@ namespace AntdUI
         /// 表头背景色
         /// </summary>
         [Description("表头背景色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ColumnBack
         {
             get => columnback;
@@ -296,6 +329,7 @@ namespace AntdUI
         /// 表头文本色
         /// </summary>
         [Description("表头文本色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ColumnFore
         {
             get => columnfore;

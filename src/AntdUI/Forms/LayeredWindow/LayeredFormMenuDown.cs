@@ -511,15 +511,18 @@ namespace AntdUI
         /// <param name="shadow_height">最终阴影高度</param>
         void DrawShadow(Graphics g, Rectangle rect_client, int shadow_width, int shadow_height)
         {
-            if (shadow_temp == null || (shadow_temp.Width != shadow_width || shadow_temp.Height != shadow_height))
+            if (Config.ShadowEnabled)
             {
-                shadow_temp?.Dispose();
-                using (var path = new Rectangle(10, 10, shadow_width - 20, shadow_height - 20).RoundPath(Radius))
+                if (shadow_temp == null || (shadow_temp.Width != shadow_width || shadow_temp.Height != shadow_height))
                 {
-                    shadow_temp = path.PaintShadow(shadow_width, shadow_height);
+                    shadow_temp?.Dispose();
+                    using (var path = new Rectangle(10, 10, shadow_width - 20, shadow_height - 20).RoundPath(Radius))
+                    {
+                        shadow_temp = path.PaintShadow(shadow_width, shadow_height);
+                    }
                 }
+                g.DrawImage(shadow_temp, rect_client, 0.2F);
             }
-            g.DrawImage(shadow_temp, rect_client, 0.2F);
         }
 
         #region 列模型

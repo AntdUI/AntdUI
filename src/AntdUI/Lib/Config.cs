@@ -69,6 +69,11 @@ namespace AntdUI
         public static bool Animation { get; set; } = true;
 
         /// <summary>
+        /// 阴影使能
+        /// </summary>
+        public static bool ShadowEnabled { get; set; } = true;
+
+        /// <summary>
         /// 弹出是否在窗口里而不是在系统里（Message/Notification）
         /// </summary>
         public static bool ShowInWindow { get; set; } = false;

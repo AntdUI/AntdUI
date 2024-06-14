@@ -353,12 +353,15 @@ namespace AntdUI
         GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, RectangleF rect_read)
         {
             var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
-            if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
+            if (Config.ShadowEnabled)
             {
-                shadow_temp?.Dispose();
-                shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
+                if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
+                {
+                    shadow_temp?.Dispose();
+                    shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
+                }
+                g.DrawImage(shadow_temp, rect_client, 0.2F);
             }
-            g.DrawImage(shadow_temp, rect_client, 0.2F);
             return path;
         }
 

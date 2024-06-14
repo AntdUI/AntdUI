@@ -296,19 +296,22 @@ namespace AntdUI
         {
             float radius = it.Shape == TShape.Circle ? it.rect_read.Height : it.Radius * Config.Dpi;
             var path = Helper.RoundPath(it.rect_read, radius, it.Shape);
-            if (it.shadow_temp == null || (it.shadow_temp.Width != it.rect.Width || it.shadow_temp.Height != it.rect.Height))
+            if (Config.ShadowEnabled)
             {
-                it.shadow_temp?.Dispose();
-                using (var path2 = Helper.RoundPath(new Rectangle(ShadowXY, ShadowXY, it.rect_read.Width, it.rect_read.Height), radius, it.Shape))
+                if (it.shadow_temp == null || (it.shadow_temp.Width != it.rect.Width || it.shadow_temp.Height != it.rect.Height))
                 {
-                    it.shadow_temp = path2.PaintShadow(it.rect.Width, it.rect.Height, 14);
+                    it.shadow_temp?.Dispose();
+                    using (var path2 = Helper.RoundPath(new Rectangle(ShadowXY, ShadowXY, it.rect_read.Width, it.rect_read.Height), radius, it.Shape))
+                    {
+                        it.shadow_temp = path2.PaintShadow(it.rect.Width, it.rect.Height, 14);
+                    }
                 }
-            }
-            using (var attributes = new ImageAttributes())
-            {
-                var matrix = new ColorMatrix { Matrix33 = 0.2F };
-                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                g.DrawImage(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + 6, it.rect.Width, it.rect.Height), 0, 0, it.rect.Width, it.rect.Height, GraphicsUnit.Pixel, attributes);
+                using (var attributes = new ImageAttributes())
+                {
+                    var matrix = new ColorMatrix { Matrix33 = 0.2F };
+                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                    g.DrawImage(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + 6, it.rect.Width, it.rect.Height), 0, 0, it.rect.Width, it.rect.Height, GraphicsUnit.Pixel, attributes);
+                }
             }
             return path;
         }

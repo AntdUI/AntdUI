@@ -18,6 +18,7 @@
 
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 
 namespace AntdUI.Icon
@@ -33,6 +34,7 @@ namespace AntdUI.Icon
 
         Color? back;
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
             get => back;
@@ -46,6 +48,7 @@ namespace AntdUI.Icon
 
         Color? color;
         [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Color
         {
             get => color;

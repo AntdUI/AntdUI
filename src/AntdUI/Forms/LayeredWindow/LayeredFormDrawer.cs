@@ -520,64 +520,76 @@ namespace AntdUI
             switch (config.Align)
             {
                 case TAlignMini.Top:
-                    if (shadow_temp == null || shadow_temp.Width != end_W)
+                    if (Config.ShadowEnabled)
                     {
-                        shadow_temp?.Dispose();
-                        using (var path = new Rectangle(rect.X, rect.Y + 20, end_W, 40).RoundPath(FrmRadius))
+                        if (shadow_temp == null || shadow_temp.Width != end_W)
                         {
-                            shadow_temp = path.PaintShadow(end_W, 80, 20);
+                            shadow_temp?.Dispose();
+                            using (var path = new Rectangle(rect.X, rect.Y + 20, end_W, 40).RoundPath(FrmRadius))
+                            {
+                                shadow_temp = path.PaintShadow(end_W, 80, 20);
+                            }
                         }
-                    }
-                    using (var attributes = new ImageAttributes())
-                    {
-                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                        g.DrawImage(shadow_temp, new Rectangle(rect.Y, rect.Bottom - 80, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                        using (var attributes = new ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                            g.DrawImage(shadow_temp, new Rectangle(rect.Y, rect.Bottom - 80, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                        }
                     }
                     return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - 20);
                 case TAlignMini.Bottom:
-                    if (shadow_temp == null || shadow_temp.Width != end_W)
+                    if (Config.ShadowEnabled)
                     {
-                        shadow_temp?.Dispose();
-                        using (var path = new Rectangle(rect.X, rect.Y + 20, end_W, 40).RoundPath(FrmRadius))
+                        if (shadow_temp == null || shadow_temp.Width != end_W)
                         {
-                            shadow_temp = path.PaintShadow(end_W, 80, 20);
+                            shadow_temp?.Dispose();
+                            using (var path = new Rectangle(rect.X, rect.Y + 20, end_W, 40).RoundPath(FrmRadius))
+                            {
+                                shadow_temp = path.PaintShadow(end_W, 80, 20);
+                            }
                         }
-                    }
-                    using (var attributes = new ImageAttributes())
-                    {
-                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                        g.DrawImage(shadow_temp, new Rectangle(rect.Y, rect.Y, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                        using (var attributes = new ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                            g.DrawImage(shadow_temp, new Rectangle(rect.Y, rect.Y, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                        }
                     }
                     return new Rectangle(rect.X, rect.Y + 20, rect.Width, rect.Height - 20);
                 case TAlignMini.Left:
-                    if (shadow_temp == null || shadow_temp.Height != end_H)
+                    if (Config.ShadowEnabled)
                     {
-                        shadow_temp?.Dispose();
-                        using (var path = new Rectangle(rect.X + 20, rect.Y, 40, end_H).RoundPath(FrmRadius))
+                        if (shadow_temp == null || shadow_temp.Height != end_H)
                         {
-                            shadow_temp = path.PaintShadow(80, end_H, 20);
+                            shadow_temp?.Dispose();
+                            using (var path = new Rectangle(rect.X + 20, rect.Y, 40, end_H).RoundPath(FrmRadius))
+                            {
+                                shadow_temp = path.PaintShadow(80, end_H, 20);
+                            }
                         }
-                    }
-                    using (var attributes = new ImageAttributes())
-                    {
-                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                        g.DrawImage(shadow_temp, new Rectangle(rect.Right - 80, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                        using (var attributes = new ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                            g.DrawImage(shadow_temp, new Rectangle(rect.Right - 80, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                        }
                     }
                     return new Rectangle(rect.X, rect.Y, rect.Width - 20, rect.Height);
                 case TAlignMini.Right:
                 default:
-                    if (shadow_temp == null || shadow_temp.Height != end_H)
+                    if (Config.ShadowEnabled)
                     {
-                        shadow_temp?.Dispose();
-                        using (var path = new Rectangle(rect.X + 20, rect.Y, 40, end_H).RoundPath(FrmRadius))
+                        if (shadow_temp == null || shadow_temp.Height != end_H)
                         {
-                            shadow_temp = path.PaintShadow(80, end_H, 20);
+                            shadow_temp?.Dispose();
+                            using (var path = new Rectangle(rect.X + 20, rect.Y, 40, end_H).RoundPath(FrmRadius))
+                            {
+                                shadow_temp = path.PaintShadow(80, end_H, 20);
+                            }
                         }
-                    }
-                    using (var attributes = new ImageAttributes())
-                    {
-                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                        g.DrawImage(shadow_temp, new Rectangle(rect.X, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                        using (var attributes = new ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                            g.DrawImage(shadow_temp, new Rectangle(rect.X, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                        }
                     }
                     return new Rectangle(rect.X + 20, rect.Y, rect.Width - 20, rect.Height);
             }

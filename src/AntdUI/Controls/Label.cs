@@ -35,33 +35,13 @@ namespace AntdUI
     {
         #region 属性
 
-        #region 系统
-
-        /// <summary>
-        /// 文字颜色
-        /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
-        public new Color? ForeColor
-        {
-            get => fore;
-            set
-            {
-                if (fore == value) fore = value;
-                fore = value;
-                Invalidate();
-            }
-        }
-
-        #endregion
-
         Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Fore
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? ForeColor
         {
             get => fore;
             set
@@ -123,6 +103,7 @@ namespace AntdUI
                 if (autoEllipsis == value) return;
                 autoEllipsis = value;
                 stringFormat.Trimming = value ? StringTrimming.EllipsisCharacter : StringTrimming.None;
+                Invalidate();
             }
         }
 
@@ -161,6 +142,9 @@ namespace AntdUI
         }
 
         string? prefix = null;
+        /// <summary>
+        /// 前缀
+        /// </summary>
         [Description("前缀"), Category("外观"), DefaultValue(null)]
         public string? Prefix
         {
@@ -175,6 +159,9 @@ namespace AntdUI
         }
 
         string? prefixSvg = null;
+        /// <summary>
+        /// 前缀SVG
+        /// </summary>
         [Description("前缀SVG"), Category("外观"), DefaultValue(null)]
         public string? PrefixSvg
         {
@@ -188,7 +175,11 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 前缀颜色
+        /// </summary>
         [Description("前缀颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? PrefixColor { get; set; }
 
         /// <summary>
@@ -217,6 +208,9 @@ namespace AntdUI
         }
 
         string? suffixSvg = null;
+        /// <summary>
+        /// 后缀SVG
+        /// </summary>
         [Description("后缀SVG"), Category("外观"), DefaultValue(null)]
         public string? SuffixSvg
         {
@@ -230,9 +224,16 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 后缀颜色
+        /// </summary>
         [Description("后缀颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? SuffixColor { get; set; }
 
+        /// <summary>
+        /// 缀标完全展示
+        /// </summary>
         [Description("缀标完全展示"), Category("外观"), DefaultValue(true)]
         public bool Highlight { get; set; } = true;
 
@@ -262,6 +263,7 @@ namespace AntdUI
         }
 
         [Description("阴影颜色"), Category("阴影"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ShadowColor { get; set; }
 
         float shadowOpacity = 0.3F;
@@ -336,15 +338,16 @@ namespace AntdUI
 
         #region 渲染帮助
 
+        bool ellipsis = false;
         void PaintText(Graphics g, string? text, Color color, Rectangle rect_read)
         {
             if (!string.IsNullOrEmpty(text))
             {
                 Rectangle rec;
+                var font_size = g.MeasureString(text, Font);
                 bool has_prefixText = prefix != null, has_suffixText = suffix != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
                 if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
-                    var font_size = g.MeasureString(text, Font);
                     switch (textAlign)
                     {
                         case ContentAlignment.TopLeft:
@@ -363,6 +366,8 @@ namespace AntdUI
                     }
                 }
                 else rec = rect_read;
+                if (autoEllipsis) ellipsis = rec.Width < font_size.Width;
+                else ellipsis = false;
                 using (var brush = new SolidBrush(color))
                 {
                     g.DrawString(text, Font, brush, rec, stringFormat);
@@ -551,6 +556,26 @@ namespace AntdUI
         }
 
         #endregion
+
+        TooltipForm? tooltipForm = null;
+        protected override void OnMouseHover(EventArgs e)
+        {
+            tooltipForm?.Close();
+            tooltipForm = null;
+            if (ellipsis && text != null)
+            {
+                if (tooltipForm == null)
+                {
+                    tooltipForm = new TooltipForm(this, text, new TooltipConfig
+                    {
+                        Font = Font,
+                        ArrowAlign = TAlign.Top,
+                    });
+                    tooltipForm.Show(this);
+                }
+            }
+            base.OnMouseHover(e);
+        }
 
         public override Rectangle ReadRectangle
         {

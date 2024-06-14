@@ -53,7 +53,7 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
             get => back;
@@ -69,7 +69,7 @@ namespace AntdUI
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
             get => fore;
@@ -194,6 +194,7 @@ namespace AntdUI
         /// </summary>
         internal Color? borderColor;
         [Description("边框颜色"), Category("边框"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderColor
         {
             get => borderColor;
@@ -209,12 +210,14 @@ namespace AntdUI
         /// 悬停边框颜色
         /// </summary>
         [Description("悬停边框颜色"), Category("边框"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderHover { get; set; }
 
         /// <summary>
         /// 激活边框颜色
         /// </summary>
         [Description("激活边框颜色"), Category("边框"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderActive { get; set; }
 
         #endregion

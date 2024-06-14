@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 using static Vanara.PInvoke.User32;
 
@@ -52,6 +53,7 @@ namespace AntdUI
         /// 颜色
         /// </summary>
         [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
             get => fill;
@@ -67,6 +69,7 @@ namespace AntdUI
         /// 悬停颜色
         /// </summary>
         [Description("悬停颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillHover { get; set; }
 
         /// <summary>
@@ -85,6 +88,7 @@ namespace AntdUI
         /// 条背景
         /// </summary>
         [Description("条背景"), Category("条"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BarBack { get; set; }
 
         [Description("样式"), Category("外观"), DefaultValue(TabType.Line)]
@@ -129,6 +133,7 @@ namespace AntdUI
         public float BadgeSize { get; set; } = 9F;
 
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BadgeBack { get; set; }
 
         #endregion

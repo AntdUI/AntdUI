@@ -19,6 +19,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -194,6 +195,7 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
             get => back;
@@ -209,6 +211,7 @@ namespace AntdUI
         /// 悬停背景颜色
         /// </summary>
         [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         Color? backactive;
@@ -216,6 +219,7 @@ namespace AntdUI
         /// 激活背景颜色
         /// </summary>
         [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive
         {
             get => backactive;
@@ -232,6 +236,7 @@ namespace AntdUI
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
             get => fore;
@@ -247,6 +252,7 @@ namespace AntdUI
         /// 悬停文字颜色
         /// </summary>
         [Description("悬停文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeHover { get; set; }
 
         Color? foreactive;
@@ -254,6 +260,7 @@ namespace AntdUI
         /// 激活文字颜色
         /// </summary>
         [Description("激活文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive
         {
             get => foreactive;
