@@ -222,7 +222,7 @@ namespace AntdUI
             {
                 if (_select == value) return;
                 int old = _select;
-                _select = value;
+                base.SelectedIndex = _select = value;
                 if (Type == TabType.Line) SetRect(old, _select);
                 else Invalidate();
             }

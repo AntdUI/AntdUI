@@ -68,6 +68,7 @@ namespace AntdUI
             public int i { get; set; }
             public int im { get; set; } = -1;
             public bool last { get; set; }
+            public bool hand { get; set; }
         }
     }
 }

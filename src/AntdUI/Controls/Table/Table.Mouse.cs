@@ -105,7 +105,6 @@ namespace AntdUI
                                 i = cell.INDEX,
                                 x = e.X
                             };
-                            Cursor = Cursors.SizeAll;
                             return;
                         }
                     }
@@ -163,7 +162,8 @@ namespace AntdUI
             }
             if (dragHeader != null)
             {
-                if (dragHeader.im != -1)
+                bool hand = dragHeader.hand;
+                if (hand && dragHeader.im != -1)
                 {
                     //执行排序
                     if (rows == null) return;
@@ -194,8 +194,11 @@ namespace AntdUI
                     LoadLayout();
                 }
                 dragHeader = null;
-                Invalidate();
-                return;
+                if (hand)
+                {
+                    Invalidate();
+                    return;
+                }
             }
             if (scrollBar.MouseUpY() && scrollBar.MouseUpX())
             {
@@ -211,7 +214,6 @@ namespace AntdUI
             }
         }
 
-        Input? edit_input = null;
         bool MouseUpRow(RowTemplate[] rows, RowTemplate it, TCell cell, MouseEventArgs e, int i_r, int i_c)
         {
             if (cell.MouseDown)
@@ -347,14 +349,14 @@ namespace AntdUI
         bool inEditMode = false;
         void EditModeClose()
         {
-            if (edit_input != null)
+            if (inEditMode)
             {
                 scrollBar.OnInvalidate = null;
-                edit_input?.Dispose();
-                edit_input = null;
+                Focus();
+                inEditMode = false;
             }
-            inEditMode = false;
         }
+
         void OnEditMode(RowTemplate it, TCell cell, int i_row, int i_col, int sx, int sy)
         {
             if (rows == null) return;
@@ -382,7 +384,7 @@ namespace AntdUI
                     {
                         return height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
                     });
-                    edit_input = ShowInput(cell, sx, sy, height, value, _value =>
+                    var edit_input = ShowInput(cell, sx, sy, height, value, _value =>
                     {
                         bool isok_end = true;
                         if (CellEndEdit != null) isok_end = CellEndEdit(this, _value, it.RECORD, i_row, i_col);
@@ -397,7 +399,6 @@ namespace AntdUI
                             {
                                 if (GetValue(value, _value, out var o)) datarow[i_col] = o;
                             }
-                            EditModeClose();
                         }
                     });
                     if (cellText.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
@@ -432,7 +433,7 @@ namespace AntdUI
                             {
                                 return height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
                             });
-                            edit_input = ShowInput(cell, sx, sy, height, value, _value =>
+                            var edit_input = ShowInput(cell, sx, sy, height, value, _value =>
                             {
                                 bool isok_end = true;
                                 if (CellEndEdit != null) isok_end = CellEndEdit(this, _value, it.RECORD, i_row, i_col);
@@ -455,7 +456,6 @@ namespace AntdUI
                                             if (GetValue(value, _value, out var o)) datarow[i_col] = o;
                                         }
                                     }
-                                    EditModeClose();
                                 }
                             });
                             CellBeginEditInputStyle?.Invoke(this, value, it.RECORD, i_row, i_col, ref edit_input);
@@ -538,27 +538,32 @@ namespace AntdUI
                 };
             }
             string old_text = input.Text;
+            bool isone = true;
             input.KeyPress += (a, b) =>
             {
-                if (b.KeyChar == 13 && a is Input input)
+                if (a is Input input && isone)
                 {
-                    b.Handled = true;
-                    if (old_text == input.Text)
+                    if (b.KeyChar == 13)
                     {
-                        EditModeClose();
-                        return;
+                        isone = false;
+                        b.Handled = true;
+                        scrollBar.OnInvalidate = null;
+                        if (old_text != input.Text) call(input.Text);
+                        inEditMode = false;
+                        input.Dispose();
                     }
-                    call(input.Text);
                 }
             };
             input.LostFocus += (a, b) =>
             {
-                if (old_text == input.Text)
+                if (a is Input input && isone)
                 {
-                    EditModeClose();
-                    return;
+                    isone = false;
+                    scrollBar.OnInvalidate = null;
+                    if (old_text != input.Text) call(input.Text);
+                    inEditMode = false;
+                    input.Dispose();
                 }
-                call(input.Text);
             };
             return input;
         }
@@ -589,6 +594,8 @@ namespace AntdUI
             }
             if (dragHeader != null)
             {
+                Cursor = Cursors.SizeAll;
+                dragHeader.hand = true;
                 dragHeader.xr = e.X - dragHeader.x;
                 if (rows == null) return;
                 int xr = dragHeader.x + dragHeader.xr;

@@ -626,6 +626,21 @@ namespace AntdUI
         /// </summary>
         public string Title { get; set; }
 
+        bool visible = true;
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        public bool Visible
+        {
+            get => visible;
+            set
+            {
+                if (visible == value) return;
+                visible = value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// 对齐方式
         /// </summary>
@@ -661,14 +676,34 @@ namespace AntdUI
         /// </summary>
         public bool Fixed { get; set; }
 
-        internal int INDEX { get; set; }
-
+        bool sortorder = false;
         /// <summary>
         /// 启用排序
         /// </summary>
-        public bool SortOrder { get; set; }
+        public bool SortOrder
+        {
+            get => sortorder;
+            set
+            {
+                if (sortorder == value) return;
+                sortorder = value;
+                Invalidate();
+            }
+        }
 
+        #region 内部
+
+        internal Table? PARENT { get; set; }
+        internal int INDEX { get; set; }
         internal int SortMode { get; set; }
+        void Invalidate()
+        {
+            if (PARENT == null) return;
+            PARENT.LoadLayout();
+            PARENT.Invalidate();
+        }
+
+        #endregion
     }
 
     #endregion

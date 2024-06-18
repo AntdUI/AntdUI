@@ -1163,11 +1163,9 @@ namespace AntdUI
 
         void Invalidates()
         {
-            if (PARENT != null)
-            {
-                PARENT.ChangeItems();
-                PARENT.Invalidate();
-            }
+            if (PARENT == null) return;
+            PARENT.ChangeItems();
+            PARENT.Invalidate();
         }
     }
 }

@@ -685,15 +685,13 @@ namespace AntdUI
             if (scrollBar.MouseDownY(e.Location) && scrollBar.MouseDownX(e.Location))
             {
                 if (items == null || items.Count == 0) return;
-                if (e.Button == MouseButtons.Left)
+                foreach (TreeItem it in Items)
                 {
-                    foreach (TreeItem it in Items)
-                    {
-                        if (IMouseDown(e, it, null)) return;
-                    }
+                    if (IMouseDown(e, it, null)) return;
                 }
             }
         }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
@@ -712,7 +710,6 @@ namespace AntdUI
                 if (blockNode)
                 {
                     if (can) item.Expand = !item.Expand;
-                    IUSelect();
                     item.Select = true;
                     OnSelectChanged(item, e);
                     Invalidate();
@@ -737,7 +734,6 @@ namespace AntdUI
                 else if (down == 2 && can) item.Expand = !item.Expand;
                 else
                 {
-                    IUSelect();
                     item.Select = true;
                     OnSelectChanged(item, e);
                     Invalidate();
@@ -773,10 +769,7 @@ namespace AntdUI
             {
                 if (items == null || items.Count == 0) return;
                 int hand = 0;
-                foreach (TreeItem it in Items)
-                {
-                    IMouseMove(it, e.Location, ref hand);
-                }
+                foreach (TreeItem it in Items) IMouseMove(it, e.Location, ref hand);
                 SetCursor(hand > 0);
             }
             else ILeave();
@@ -787,11 +780,7 @@ namespace AntdUI
             if (item.show)
             {
                 if (item.Contains(point, blockNode ? 0 : scrollBar.ValueX, scrollBar.ValueY, checkable) > 0) hand++;
-                if (item.Sub != null)
-                    foreach (TreeItem sub in item.Sub)
-                    {
-                        IMouseMove(sub, point, ref hand);
-                    }
+                if (item.Sub != null) foreach (TreeItem sub in item.Sub) IMouseMove(sub, point, ref hand);
             }
         }
 
@@ -836,21 +825,14 @@ namespace AntdUI
                 }
         }
 
-        void IUSelect()
+        internal void IUSelect()
         {
-            foreach (TreeItem it in Items)
-            {
-                IUSelect(it);
-            }
+            foreach (TreeItem it in Items) IUSelect(it);
         }
         void IUSelect(TreeItem item)
         {
             item.Select = false;
-            if (item.Sub != null)
-                foreach (TreeItem sub in item.Sub)
-                {
-                    IUSelect(sub);
-                }
+            if (item.Sub != null) foreach (TreeItem sub in item.Sub) IUSelect(sub);
         }
 
         #endregion
@@ -960,7 +942,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 text = value;
-                OnPropertyChanged("Text");
+                Invalidates();
             }
         }
 
@@ -1208,11 +1190,9 @@ namespace AntdUI
         }
         void Invalidates()
         {
-            if (PARENT != null)
-            {
-                PARENT.ChangeList();
-                PARENT.Invalidate();
-            }
+            if (PARENT == null) return;
+            PARENT.ChangeList();
+            PARENT.Invalidate();
         }
 
         internal float SubY { get; set; }
@@ -1273,8 +1253,19 @@ namespace AntdUI
             }
         }
 
+        bool select = false;
         [Description("激活状态"), Category("行为"), DefaultValue(false)]
-        public bool Select { get; set; }
+        public bool Select
+        {
+            get => select;
+            set
+            {
+                if (select == value) return;
+                if (value) PARENT?.IUSelect();
+                select = value;
+                Invalidate();
+            }
+        }
 
         public int Depth { get; private set; }
         internal float ArrowProg { get; set; } = 0F;

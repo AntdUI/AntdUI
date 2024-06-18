@@ -268,8 +268,8 @@ namespace AntdUI
                         }
                         var rect = new RectangleF(rect_read.X + use, rect_read.Y + y, size.Width, height);
                         _rect_left_txt.Add(rect);
-                        float gapdelxy = (rect.Height - del_icon) / 2;
-                        _rect_left_del.Add(new RectangleF(rect.Right - (y - gap) + gapdelxy, rect.Y + gapdelxy, del_icon, del_icon));
+                        float gapdelxy = (height - del_icon) / 2;
+                        _rect_left_del.Add(new RectangleF(rect.Right + gapdelxy / 2, rect.Y + gapdelxy, del_icon, del_icon));
                         rect.Width += height;
                         _rect_left.Add(rect);
                         use += size.Width + height + gap;

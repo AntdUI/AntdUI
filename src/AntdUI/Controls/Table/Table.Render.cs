@@ -135,7 +135,7 @@ namespace AntdUI
 
                 #region 渲染浮动列
 
-                if (fixedColumnL != null || fixedColumnR != null)
+                if (shows.Count > 0 && (fixedColumnL != null || fixedColumnR != null))
                 {
                     PaintFixedColumnL(g, rect, rows, shows, fore, forecolumn, column_font, brush_split, sx, sy, _radius);
                     PaintFixedColumnR(g, rect, rows, shows, fore, forecolumn, column_font, brush_split, sx, sy, _radius);

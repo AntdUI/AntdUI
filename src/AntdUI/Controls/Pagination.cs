@@ -565,7 +565,7 @@ namespace AntdUI
 
                     PageTotal = total_page;
                     bool has_previous = current > 1, has_next = total_page > current;//是否还有下一页
-                    var _buttons = new List<ButtonLoad> {
+                    var _buttons = new List<ButtonLoad>(total_button) {
                     new ButtonLoad(new RectangleF(x + rect.X, rect.Y, rect.Height, rect.Height))
                     {
                         enabled = has_previous
@@ -665,10 +665,10 @@ namespace AntdUI
                         //不够
                         for (int i = 0; i < total_page; i++)
                         {
-                            AddButs(ref _buttons, dir, new ButtonLoad(i + 1, new RectangleF(x + rect.X + rect.Height * (i + 1), rect.Y, rect.Height, rect.Height))
+                            n_x += AddButs(ref _buttons, dir, new ButtonLoad(i + 1, new RectangleF(n_x, rect.Y, rect.Height, rect.Height))
                             {
                                 enabled = true
-                            });
+                            }) + gap;
                         }
                     }
                     _buttons.Insert(1, new ButtonLoad(new RectangleF(_buttons[_buttons.Count - 1].rect.Right + gap, rect.Y, rect.Height, rect.Height))

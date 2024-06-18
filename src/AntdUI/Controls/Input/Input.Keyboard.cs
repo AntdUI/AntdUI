@@ -191,7 +191,10 @@ namespace AntdUI
         {
             if (shift)
             {
+                int old = selectionStartTemp;
                 if (selectionStartTemp == selectionStart || selectionStartTemp < selectionStart) selectionStartTemp--;
+                if (selectionStartTemp < 0) selectionStartTemp = 0;
+                if (old == selectionStartTemp) return;
                 SelectionLength++;
                 CurrentPosIndex = selectionStartTemp;
                 SetCaretPostion();

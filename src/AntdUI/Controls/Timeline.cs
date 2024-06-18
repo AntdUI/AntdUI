@@ -450,11 +450,9 @@ namespace AntdUI
 
         void Invalidates()
         {
-            if (PARENT != null)
-            {
-                PARENT.ChangeList();
-                PARENT.Invalidate();
-            }
+            if (PARENT == null) return;
+            PARENT.ChangeList();
+            PARENT.Invalidate();
         }
 
         internal Timeline? PARENT { get; set; }

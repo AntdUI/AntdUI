@@ -550,6 +550,17 @@ namespace AntdUI
             SetRect(rect, rect_text);
         }
 
+        public ObjectItem(GroupSelectItem _val, int _i, RectangleF rect, RectangleF rect_text)
+        {
+            Show = Group = true;
+            Val = _val;
+            Text = _val.Title;
+            PY = Pinyin.Pinyin.GetPinyin(Text).ToLower();
+            PYS = Pinyin.Pinyin.GetInitials(Text).ToLower();
+            ID = _i;
+            SetRect(rect, rect_text);
+        }
+
         public ObjectItem(SelectItem _val, int _i, RectangleF rect, int gap_y, float gap, RectangleF rect_text)
         {
             Sub = _val.Sub;
@@ -605,6 +616,8 @@ namespace AntdUI
 
         public bool Hover { get; set; }
         public bool Show { get; set; }
+        internal bool Group { get; set; }
+        internal bool NoIndex { get; set; }
 
         internal bool ShowAndID { get => ID == -1 || !Show; }
 

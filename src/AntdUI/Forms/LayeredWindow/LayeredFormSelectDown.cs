@@ -115,25 +115,7 @@ namespace AntdUI
                 {
                     string btext = "";
                     bool ui_online = false, ui_icon = false, ui_arrow = false;
-                    foreach (var obj in items)
-                    {
-                        if (obj is SelectItem it)
-                        {
-                            string text = it.Text;
-                            if (text.Length > btext.Length) btext = text;
-                            if (it.Online > -1) ui_online = true;
-                            if (it.Icon != null) ui_icon = true;
-                            if (it.Sub != null && it.Sub.Count > 0) ui_arrow = true;
-                        }
-                        else if (obj is DividerSelectItem)
-                        {
-                        }
-                        else
-                        {
-                            string? text = obj.ToString();
-                            if (text != null) if (text.Length > btext.Length) btext = text;
-                        }
-                    }
+                    foreach (var obj in items) InitReadList(obj, ref btext, ref ui_online, ref ui_icon, ref ui_arrow);
                     var size3 = g.MeasureString(btext, Font);
                     int b_w = (int)Math.Ceiling(size3.Width) + 42;
                     if (ui_icon && ui_online) b_w += font_size * 2;
@@ -147,34 +129,7 @@ namespace AntdUI
                 int item_count = 0, divider_count = 0;
                 int text_height = font_size - y2;
                 float gap = (text_height - gap_y) / 2F;
-                for (int i = 0; i < items.Count; i++)
-                {
-                    var obj = items[i];
-                    if (obj is SelectItem it)
-                    {
-                        item_count++;
-                        RectangleF rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size),
-                            rect_text = new RectangleF(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
-                        Items.Add(new ObjectItem(it, i, rect_bg, gap_y, gap, rect_text));
-                        if (selectedValue == it.Tag) selY = y;
-                    }
-                    else if (obj is DividerSelectItem)
-                    {
-                        divider_count++;
-                        Items.Add(new ObjectItem(new RectangleF(10 + gap_y, y + (gap_y - 1F) / 2F, w - y2, 1)));
-                        y += gap_y;
-                        continue;
-                    }
-                    else
-                    {
-                        item_count++;
-                        RectangleF rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size),
-                            rect_text = new RectangleF(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
-                        Items.Add(new ObjectItem(obj, i, rect_bg, rect_text));
-                        if (selectedValue == obj) selY = y;
-                    }
-                    y += font_size;
-                }
+                for (int i = 0; i < items.Count; i++) ReadList(items[i], i, w, y2, gap_x, gap_y, gap, font_size, text_height, ref item_count, ref divider_count, ref y, ref selY);
                 var vr = (font_size * item_count) + (gap_y * divider_count);
                 if (MaxCount > 0)
                 {
@@ -354,6 +309,64 @@ namespace AntdUI
             };
         }
         StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
+
+        void ReadList(object obj, int i, int w, int y2, int gap_x, int gap_y, float gap, int font_size, int text_height, ref int item_count, ref int divider_count, ref int y, ref int selY, bool NoIndex = true)
+        {
+            if (obj is SelectItem it)
+            {
+                item_count++;
+                RectangleF rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size), rect_text = new RectangleF(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
+                Items.Add(new ObjectItem(it, i, rect_bg, gap_y, gap, rect_text) { NoIndex = NoIndex });
+                if (selectedValue == it.Tag) selY = y;
+                y += font_size;
+            }
+            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
+            {
+                item_count++;
+                RectangleF rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size), rect_text = new RectangleF(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
+                Items.Add(new ObjectItem(group, i, rect_bg, rect_text));
+                if (selectedValue == obj) selY = y;
+                y += font_size;
+                foreach (var item in group.Sub) ReadList(item, i, w, y2, gap_x, gap_y, gap, font_size, text_height, ref item_count, ref divider_count, ref y, ref selY, false);
+            }
+            else if (obj is DividerSelectItem)
+            {
+                divider_count++;
+                Items.Add(new ObjectItem(new RectangleF(10 + gap_y, y + (gap_y - 1F) / 2F, w - y2, 1)));
+                y += gap_y;
+            }
+            else
+            {
+                item_count++;
+                RectangleF rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size), rect_text = new RectangleF(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
+                Items.Add(new ObjectItem(obj, i, rect_bg, rect_text) { NoIndex = NoIndex });
+                if (selectedValue == obj) selY = y;
+                y += font_size;
+            }
+        }
+        void InitReadList(object obj, ref string btext, ref bool ui_online, ref bool ui_icon, ref bool ui_arrow)
+        {
+            if (obj is SelectItem it)
+            {
+                string text = it.Text;
+                if (text.Length > btext.Length) btext = text;
+                if (it.Online > -1) ui_online = true;
+                if (it.Icon != null) ui_icon = true;
+                if (it.Sub != null && it.Sub.Count > 0) ui_arrow = true;
+            }
+            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
+            {
+                foreach (var item in group.Sub) InitReadList(item, ref btext, ref ui_online, ref ui_icon, ref ui_arrow);
+            }
+            else if (obj is DividerSelectItem)
+            {
+            }
+            else
+            {
+                string? text = obj.ToString();
+                if (text != null) if (text.Length > btext.Length) btext = text;
+            }
+        }
 
         public void FocusItem(ObjectItem item)
         {
@@ -602,7 +615,7 @@ namespace AntdUI
         {
             if (PARENT is Select select)
             {
-                if (select_x == 0)
+                if (select_x == 0 && it.NoIndex)
                 {
                     if (select.DropDownChange()) select.DropDownChange(it.ID);
                     else select.DropDownChange(select_x, it.ID, it.Val);
@@ -705,6 +718,13 @@ namespace AntdUI
                 using (var brush_back = new SolidBrush(Style.Db.Split))
                 {
                     g.FillRectangle(brush_back, it.Rect);
+                }
+            }
+            else if (it.Group)
+            {
+                using (var brush_fore = new SolidBrush(Style.Db.TextTertiary))
+                {
+                    g.DrawString(it.Text, Font, brush_fore, it.RectText, stringFormatLeft);
                 }
             }
             else if (selectedValue == it.Val || it.Val is SelectItem item && item.Tag == selectedValue)

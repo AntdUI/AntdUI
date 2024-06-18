@@ -51,7 +51,7 @@ namespace AntdUI
         Rectangle[] dividers = new Rectangle[0], dividerHs = new Rectangle[0];
         MoveHeader[] moveheaders = new MoveHeader[0];
 
-        void LoadLayout()
+        internal void LoadLayout()
         {
             LoadLayout(ClientRectangle);
         }
@@ -102,10 +102,14 @@ namespace AntdUI
                     {
                         foreach (var it in columns)
                         {
-                            it.INDEX = _columns.Count;
-                            _columns.Add(it);
-                            ColumnWidth(it, ref col_width, x);
-                            x++;
+                            it.PARENT = this;
+                            if (it.Visible)
+                            {
+                                it.INDEX = _columns.Count;
+                                _columns.Add(it);
+                                ColumnWidth(it, ref col_width, x);
+                                x++;
+                            }
                         }
                     }
                     else
@@ -113,10 +117,14 @@ namespace AntdUI
                         foreach (var index in SortHeader)
                         {
                             var it = columns[index];
-                            it.INDEX = index;
-                            _columns.Add(it);
-                            ColumnWidth(it, ref col_width, x);
-                            x++;
+                            it.PARENT = this;
+                            if (it.Visible)
+                            {
+                                it.INDEX = index;
+                                _columns.Add(it);
+                                ColumnWidth(it, ref col_width, x);
+                                x++;
+                            }
                         }
                     }
                 }

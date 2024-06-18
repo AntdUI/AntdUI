@@ -644,11 +644,9 @@ namespace AntdUI
 
         void Invalidate()
         {
-            if (PARENT != null)
-            {
-                PARENT.ChangeList();
-                PARENT.Invalidate();
-            }
+            if (PARENT == null) return;
+            PARENT.ChangeList();
+            PARENT.Invalidate();
         }
 
         internal Steps? PARENT { get; set; }

@@ -27,7 +27,7 @@ namespace Overview.Controls
             InitializeComponent();
 
             table1.Columns = new AntdUI.Column[] {
-                new AntdUI.ColumnCheck("check"){ Fixed=true},
+                new AntdUI.ColumnCheck("check"){ Fixed=true,Visible=false },
                 new AntdUI.Column("name","ÐÕÃû"){ Fixed=true},
                 new AntdUI.Column("online","×´Ì¬",AntdUI.ColumnAlign.Center),
                 new AntdUI.ColumnSwitch("enable","ÆôÓÃ",AntdUI.ColumnAlign.Center){ Call=(value,record, i_row, i_col)=>{
@@ -390,11 +390,8 @@ namespace Overview.Controls
 
         private void checkbox6_CheckedChanged(object sender, bool value)
         {
-            if (table1.Columns != null)
-            {
-                table1.Columns[4].SortOrder = table1.Columns[5].SortOrder = value;
-                table1.Width = 2;
-            }
+            if (table1.Columns != null) table1.Columns[5].LineBreak = value;
+            //if (table1.Columns != null) table1.Columns[4].SortOrder = table1.Columns[5].SortOrder = value;
         }
 
         private AntdUI.Table.CellStyleInfo? Table1_SetRowStyle(object sender, object? record, int rowIndex)

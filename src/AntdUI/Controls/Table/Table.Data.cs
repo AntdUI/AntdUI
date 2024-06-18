@@ -240,10 +240,7 @@ namespace AntdUI
                     foreach (int i in dir)
                     {
                         if (i == columns.Length - 1) _fixedColumnR.Add(i);
-                        else if (_fixedColumnR.Count > 0 && _fixedColumnR[_fixedColumnR.Count - 1] - 1 == i)
-                        {
-                            _fixedColumnR.Add(i);
-                        }
+                        else if (_fixedColumnR.Count > 0 && _fixedColumnR[_fixedColumnR.Count - 1] - 1 == i) _fixedColumnR.Add(i);
                     }
                 }
                 if (_fixedColumnL.Count > 0) fixedColumnL = _fixedColumnL; else fixedColumnL = null;
