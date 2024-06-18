@@ -159,7 +159,7 @@ namespace AntdUI
                     {
                         var rect = parent.DisplayRectangle;
                         int val = 0;
-                        if (string.IsNullOrEmpty(ItemSize)) val = HandLayout(parent, controls, rect);
+                        if (ItemSize == null || string.IsNullOrEmpty(ItemSize)) val = HandLayout(parent, controls, rect);
                         else
                         {
                             if (ItemSize.EndsWith("%") && float.TryParse(ItemSize.TrimEnd('%'), out var f)) val = HandLayout(parent, controls, rect, (int)Math.Round((Vertical ? rect.Height : rect.Width) * (f / 100F)));
@@ -170,7 +170,7 @@ namespace AntdUI
                         {
                             bool old = parent.scroll.Show;
                             parent.scroll.SetVrSize(val);
-                            if (old != parent.scroll.Show) parent.Invoke(new Action(() => { parent.IOnSizeChanged(); }));
+                            if (old != parent.scroll.Show) parent.BeginInvoke(new Action(() => { parent.IOnSizeChanged(); }));
                         }
                     }
                 }

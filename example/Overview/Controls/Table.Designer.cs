@@ -53,13 +53,14 @@ namespace Overview.Controls
             tabs1 = new AntdUI.Tabs();
             tabPage1 = new TabPage();
             panel1 = new AntdUI.Panel();
+            checkbox2 = new AntdUI.Checkbox();
+            checkbox6 = new AntdUI.Checkbox();
             checkbox5 = new AntdUI.Checkbox();
             checkbox4 = new AntdUI.Checkbox();
             checkbox3 = new AntdUI.Checkbox();
-            checkbox2 = new AntdUI.Checkbox();
             checkbox1 = new AntdUI.Checkbox();
             tabPage2 = new TabPage();
-            checkbox6 = new AntdUI.Checkbox();
+            checkbox7 = new AntdUI.Checkbox();
             tabs1.SuspendLayout();
             tabPage1.SuspendLayout();
             panel1.SuspendLayout();
@@ -143,6 +144,7 @@ namespace Overview.Controls
             // 
             // panel1
             // 
+            panel1.Controls.Add(checkbox7);
             panel1.Controls.Add(checkbox2);
             panel1.Controls.Add(checkbox6);
             panel1.Controls.Add(checkbox5);
@@ -157,6 +159,26 @@ namespace Overview.Controls
             panel1.Size = new Size(1286, 43);
             panel1.TabIndex = 1;
             panel1.Text = "panel1";
+            // 
+            // checkbox2
+            // 
+            checkbox2.Dock = DockStyle.Left;
+            checkbox2.Location = new Point(599, 0);
+            checkbox2.Name = "checkbox2";
+            checkbox2.Size = new Size(178, 43);
+            checkbox2.TabIndex = 1;
+            checkbox2.Text = "手动调整列头宽度";
+            checkbox2.CheckedChanged += checkbox2_CheckedChanged;
+            // 
+            // checkbox6
+            // 
+            checkbox6.Dock = DockStyle.Left;
+            checkbox6.Location = new Point(483, 0);
+            checkbox6.Name = "checkbox6";
+            checkbox6.Size = new Size(116, 43);
+            checkbox6.TabIndex = 5;
+            checkbox6.Text = "年龄排序";
+            checkbox6.CheckedChanged += checkbox6_CheckedChanged;
             // 
             // checkbox5
             // 
@@ -188,16 +210,6 @@ namespace Overview.Controls
             checkbox3.Text = "列拖拽排序";
             checkbox3.CheckedChanged += checkbox3_CheckedChanged;
             // 
-            // checkbox2
-            // 
-            checkbox2.Dock = DockStyle.Left;
-            checkbox2.Location = new Point(599, 0);
-            checkbox2.Name = "checkbox2";
-            checkbox2.Size = new Size(178, 43);
-            checkbox2.TabIndex = 1;
-            checkbox2.Text = "手动调整列头宽度";
-            checkbox2.CheckedChanged += checkbox2_CheckedChanged;
-            // 
             // checkbox1
             // 
             checkbox1.Checked = true;
@@ -221,15 +233,16 @@ namespace Overview.Controls
             tabPage2.Text = "分页";
             tabPage2.UseVisualStyleBackColor = true;
             // 
-            // checkbox6
+            // checkbox7
             // 
-            checkbox6.Dock = DockStyle.Left;
-            checkbox6.Location = new Point(483, 0);
-            checkbox6.Name = "checkbox6";
-            checkbox6.Size = new Size(116, 43);
-            checkbox6.TabIndex = 5;
-            checkbox6.Text = "年龄排序";
-            checkbox6.CheckedChanged += checkbox6_CheckedChanged;
+            checkbox7.Checked = true;
+            checkbox7.Dock = DockStyle.Left;
+            checkbox7.Location = new Point(777, 0);
+            checkbox7.Name = "checkbox7";
+            checkbox7.Size = new Size(116, 43);
+            checkbox7.TabIndex = 6;
+            checkbox7.Text = "显示表头";
+            checkbox7.CheckedChanged += checkbox7_CheckedChanged;
             // 
             // Table
             // 
@@ -260,5 +273,6 @@ namespace Overview.Controls
         private AntdUI.Checkbox checkbox5;
         private AntdUI.Checkbox checkbox4;
         private AntdUI.Checkbox checkbox6;
+        private AntdUI.Checkbox checkbox7;
     }
 }

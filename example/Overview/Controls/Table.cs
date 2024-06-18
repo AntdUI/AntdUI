@@ -381,6 +381,11 @@ namespace Overview.Controls
             table1.Bordered = value;
         }
 
+        private void checkbox7_CheckedChanged(object sender, bool value)
+        {
+            table1.VisibleHeader = value;
+        }
+
         private void checkbox5_CheckedChanged(object sender, bool value)
         {
             if (value) table1.SetRowStyle += Table1_SetRowStyle;

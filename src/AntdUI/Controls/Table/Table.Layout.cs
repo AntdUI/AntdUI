@@ -53,7 +53,9 @@ namespace AntdUI
 
         internal void LoadLayout()
         {
-            LoadLayout(ClientRectangle);
+            var rect = ClientRectangle;
+            if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
+            else show_oldrect = null;
         }
 
         void LoadLayout(Rectangle rect_t)
@@ -322,7 +324,9 @@ namespace AntdUI
 
                 #region 最终坐标
 
-                int use_y = rect.Y;
+                int use_y;
+                if (visibleHeader) use_y = rect.Y;
+                else { use_y = rect.Y - _rows[0].Height; }
                 foreach (var row in _rows)
                 {
                     int use_x = rect.X;
@@ -406,7 +410,7 @@ namespace AntdUI
                                     _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, rect_read.Height));
                                 }
                             }
-                            _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
+                            if (visibleHeader) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
                         }
                         else
                         {

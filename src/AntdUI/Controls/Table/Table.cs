@@ -133,6 +133,24 @@ namespace AntdUI
             }
         }
 
+        bool visibleHeader = true;
+        /// <summary>
+        /// 显示表头
+        /// </summary>
+        [Description("显示表头"), Category("外观"), DefaultValue(true)]
+        public bool VisibleHeader
+        {
+            get => visibleHeader;
+            set
+            {
+                if (visibleHeader == value) return;
+                visibleHeader = value;
+                scrollBar.RB = !value;
+                LoadLayout();
+                Invalidate();
+            }
+        }
+
         bool enableHeaderResizing = false;
         /// <summary>
         /// 手动调整列头宽度

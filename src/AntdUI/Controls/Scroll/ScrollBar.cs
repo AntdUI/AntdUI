@@ -26,6 +26,7 @@ namespace AntdUI
         #region 属性
 
         public int Radius { get; set; }
+        public bool RB { get; set; }
 
         #region 布局容器
 
@@ -373,7 +374,7 @@ namespace AntdUI
                         if (Radius > 0)
                         {
                             float radius = Radius * Config.Dpi;
-                            using (var path = Helper.RoundPath(RectY, radius, false, true, false, false))
+                            using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
                             {
                                 g.FillPath(brush, path);
                             }
@@ -405,7 +406,7 @@ namespace AntdUI
                         if (Radius > 0)
                         {
                             float radius = Radius * Config.Dpi;
-                            using (var path = Helper.RoundPath(RectY, radius, false, true, false, false))
+                            using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
                             {
                                 g.FillPath(brush, path);
                             }
