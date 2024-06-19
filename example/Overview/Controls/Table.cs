@@ -62,6 +62,7 @@ namespace Overview.Controls
             var list2 = new List<TestClass2>(100);
             for (int i = 0; i < 100; i++) list2.Add(new TestClass2(i, "王健林" + i, (i + 20), "西湖区湖底公园" + (i + 1) + "号"));
             table2.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
+            pagination1.PageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
         }
 
         private void Table1_CellClick(object sender, MouseEventArgs args, object record, int rowIndex, int columnIndex, Rectangle rect)

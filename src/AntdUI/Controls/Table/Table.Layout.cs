@@ -119,7 +119,7 @@ namespace AntdUI
                         var dir = new Dictionary<int, Column>();
                         foreach (var it in columns)
                         {
-                            if (it.Visible)  dir.Add(dir.Count, it);
+                            if (it.Visible) dir.Add(dir.Count, it);
                         }
                         foreach (var index in SortHeader)
                         {

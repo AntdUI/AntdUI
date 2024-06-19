@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -509,8 +510,7 @@ namespace AntdUI
             {
                 if (sizeChanger)
                 {
-                    _SizeChangerWidth = (int)(SizeChangerWidth * Config.Dpi);
-                    InitSizeChanger(rect, _SizeChangerWidth);
+                    _SizeChangerWidth = InitSizeChanger(rect);
                     t_Width -= _SizeChangerWidth;
                 }
                 int gap = (int)(_gap * Config.Dpi);
@@ -698,16 +698,18 @@ namespace AntdUI
                 });
             }
         }
-        void InitSizeChanger(RectangleF rect, int SizeChangerWidth)
+        int InitSizeChanger(RectangleF rect)
         {
             if (input_SizeChanger == null)
             {
                 bool r = rightToLeft == RightToLeft.Yes;
+                int width;
                 if (pageSizeOptions == null || pageSizeOptions.Length == 0)
                 {
+                    width = (int)(SizeChangerWidth * Config.Dpi);
                     var input = new Input
                     {
-                        Size = new Size(SizeChangerWidth, (int)rect.Height),
+                        Size = new Size(width, (int)rect.Height),
                         Dock = r ? DockStyle.Right : DockStyle.Left,
                         Text = pageSize.ToString(),
                         TextAlign = HorizontalAlignment.Center,
@@ -718,10 +720,22 @@ namespace AntdUI
                 }
                 else
                 {
+                    var max = pageSizeOptions.Max();
+                    if (max >= 100)
+                    {
+                        width = Helper.GDI(g =>
+                        {
+                            var size = g.MeasureString(max.ToString(), Font);
+                            return (int)Math.Ceiling(size.Width + (size.Height * 2F));
+                        });
+                    }
+                    else width = (int)(SizeChangerWidth * Config.Dpi);
                     var input = new Select
                     {
                         List = true,
-                        Size = new Size(SizeChangerWidth, (int)rect.Height),
+                        ListAutoWidth = true,
+                        Placement = TAlignFrom.Top,
+                        Size = new Size(width, (int)rect.Height),
                         Dock = r ? DockStyle.Right : DockStyle.Left,
                         Text = pageSize.ToString(),
                         TextAlign = HorizontalAlignment.Center,
@@ -737,8 +751,9 @@ namespace AntdUI
                 }
                 Controls.Add(input_SizeChanger);
                 input_SizeChanger.KeyPress += Input_SizeChanger_KeyPress;
+                return width;
             }
-            else input_SizeChanger.Width = SizeChangerWidth;
+            else return input_SizeChanger.Width;
         }
 
         protected override void OnFontChanged(EventArgs e)
