@@ -154,7 +154,7 @@ namespace AntdUI
                 if (prefix == value) return;
                 prefix = value;
                 IOnSizeChanged();
-                Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -171,7 +171,7 @@ namespace AntdUI
                 if (prefixSvg == value) return;
                 prefixSvg = value;
                 IOnSizeChanged();
-                Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -203,7 +203,7 @@ namespace AntdUI
                 if (suffix == value) return;
                 suffix = value;
                 IOnSizeChanged();
-                Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -220,7 +220,7 @@ namespace AntdUI
                 if (suffixSvg == value) return;
                 suffixSvg = value;
                 IOnSizeChanged();
-                Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -345,7 +345,7 @@ namespace AntdUI
             {
                 Rectangle rec;
                 var font_size = g.MeasureString(text, Font);
-                bool has_prefixText = prefix != null, has_suffixText = suffix != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
+                bool has_prefixText = prefix != null, has_suffixText = suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
                     switch (textAlign)
@@ -639,23 +639,28 @@ namespace AntdUI
         {
             get
             {
-                bool has_prefix = string.IsNullOrEmpty(prefix), has_suffix = string.IsNullOrEmpty(suffix);
+                bool has_prefixText = prefix != null, has_suffixText = suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 return Helper.GDI(g =>
                 {
                     var font_size = g.MeasureString(text ?? Config.NullText, Font);
-                    if (has_prefix && has_suffix) return font_size.Size();
-                    float add = 0;
-                    if (has_prefix)
+                    if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
-                        var font_size_prefix = g.MeasureString(prefix, Font);
-                        add += font_size_prefix.Width;
+                        float add = 0;
+                        if (has_prefix) add += font_size.Height;
+                        else if (has_prefixText)
+                        {
+                            var font_size_prefix = g.MeasureString(prefix, Font).Size().Width;
+                            add += font_size_prefix;
+                        }
+                        if (has_suffix) add += font_size.Height;
+                        else if (has_suffixText)
+                        {
+                            var font_size_suffix = g.MeasureString(suffix, Font).Size().Width;
+                            add += font_size_suffix;
+                        }
+                        return new Size((int)Math.Ceiling(font_size.Width + add), (int)Math.Ceiling(font_size.Height));
                     }
-                    if (has_suffix)
-                    {
-                        var font_size_suffix = g.MeasureString(suffix, Font);
-                        add += font_size_suffix.Width;
-                    }
-                    return new Size((int)Math.Ceiling(font_size.Width + add), (int)Math.Ceiling(font_size.Height));
+                    else return font_size.Size();
                 });
             }
         }
