@@ -116,13 +116,18 @@ namespace AntdUI
                     }
                     else
                     {
+                        var dir = new Dictionary<int, Column>();
+                        foreach (var it in columns)
+                        {
+                            if (it.Visible)  dir.Add(dir.Count, it);
+                        }
                         foreach (var index in SortHeader)
                         {
-                            var it = columns[index];
+                            var it = dir[index];
                             it.PARENT = this;
+                            it.INDEX = index;
                             if (it.Visible)
                             {
-                                it.INDEX = index;
                                 _columns.Add(it);
                                 ColumnWidth(it, ref col_width, x);
                                 x++;

@@ -214,13 +214,18 @@ namespace AntdUI
         bool showFixedColumnL = false, showFixedColumnR = false;
         int sFixedR = 0;
         List<int>? fixedColumnL = null, fixedColumnR = null;
-        void ExtractHeader()
+        internal void ExtractHeaderFixed()
         {
             if (columns == null) return;
             var dir = new List<int>();
-            for (var i = 0; i < columns.Length; i++)
+            int index = 0;
+            foreach (var column in columns)
             {
-                if (columns[i].Fixed) dir.Add(i);
+                if (column.Visible)
+                {
+                    if (column.Fixed) dir.Add(index);
+                    index++;
+                }
             }
             if (dir.Count > 0)
             {
@@ -228,10 +233,7 @@ namespace AntdUI
                 foreach (int i in dir)
                 {
                     if (i == 0) _fixedColumnL.Add(i);
-                    else if (_fixedColumnL.Count > 0 && _fixedColumnL[_fixedColumnL.Count - 1] + 1 == i)
-                    {
-                        _fixedColumnL.Add(i);
-                    }
+                    else if (_fixedColumnL.Count > 0 && _fixedColumnL[_fixedColumnL.Count - 1] + 1 == i) _fixedColumnL.Add(i);
                 }
                 foreach (int it in _fixedColumnL) dir.Remove(it);
                 if (dir.Count > 0)
@@ -239,7 +241,7 @@ namespace AntdUI
                     dir.Reverse();
                     foreach (int i in dir)
                     {
-                        if (i == columns.Length - 1) _fixedColumnR.Add(i);
+                        if (i == index - 1) _fixedColumnR.Add(i);
                         else if (_fixedColumnR.Count > 0 && _fixedColumnR[_fixedColumnR.Count - 1] - 1 == i) _fixedColumnR.Add(i);
                     }
                 }

@@ -51,14 +51,14 @@ namespace AntdUI
                 if (!EmptyHeader && dataSource == null)
                 {
                     columns = value;
-                    ExtractHeader();
+                    ExtractHeaderFixed();
                     return;
                 }
                 List<string> oldid = new List<string>(), id = new List<string>();
                 if (columns != null) foreach (var col in columns) oldid.Add(col.Key);
                 if (value != null) foreach (var col in value) id.Add(col.Key);
                 columns = value;
-                if (string.Join("", oldid) != string.Join("", id)) { ExtractHeader(); ExtractData(); }
+                if (string.Join("", oldid) != string.Join("", id)) { ExtractHeaderFixed(); ExtractData(); }
                 LoadLayout();
                 Invalidate();
             }
@@ -655,7 +655,7 @@ namespace AntdUI
             {
                 if (visible == value) return;
                 visible = value;
-                Invalidate();
+                Invalidates();
             }
         }
 
@@ -689,10 +689,20 @@ namespace AntdUI
         /// </summary>
         public bool LineBreak { get; set; }
 
+        bool _fixed = false;
         /// <summary>
         /// 列是否固定
         /// </summary>
-        public bool Fixed { get; set; }
+        public bool Fixed
+        {
+            get => _fixed;
+            set
+            {
+                if (_fixed == value) return;
+                _fixed = value;
+                Invalidates();
+            }
+        }
 
         bool sortorder = false;
         /// <summary>
@@ -717,6 +727,13 @@ namespace AntdUI
         void Invalidate()
         {
             if (PARENT == null) return;
+            PARENT.LoadLayout();
+            PARENT.Invalidate();
+        }
+        void Invalidates()
+        {
+            if (PARENT == null) return;
+            PARENT.ExtractHeaderFixed();
             PARENT.LoadLayout();
             PARENT.Invalidate();
         }
