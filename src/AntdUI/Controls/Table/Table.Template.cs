@@ -1142,6 +1142,11 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public bool SValue(object obj)
+            {
+                if (obj is CellText value) { Value = value; return true; }
+                return false;
+            }
             public override string? ToString()
             {
                 return Value.Text;
@@ -1252,6 +1257,11 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public bool SValue(object obj)
+            {
+                if (obj is CellTag value) { Value = value; return true; }
+                return false;
+            }
             public override string ToString()
             {
                 return Value.Text;
@@ -1317,7 +1327,7 @@ namespace AntdUI
 
             public Size GetSize(Graphics g, Font font, int gap, int gap2)
             {
-                if (Value.Text == null)
+                if (string.IsNullOrEmpty(Value.Text))
                 {
                     var size = g.MeasureString(Config.NullText, font);
                     int height = (int)Math.Ceiling(size.Height);
@@ -1339,7 +1349,7 @@ namespace AntdUI
                 RECT = rect;
                 TxtHeight = size.Height;
                 float dot_size = size.Height / 2.5F;
-                if (Value.Text == null) RectDot = new RectangleF(rect.X + (rect.Width - dot_size) / 2F, rect.Y + (rect.Height - dot_size) / 2F, dot_size, dot_size);
+                if (string.IsNullOrEmpty(Value.Text)) RectDot = new RectangleF(rect.X + (rect.Width - dot_size) / 2F, rect.Y + (rect.Height - dot_size) / 2F, dot_size, dot_size);
                 else
                 {
                     Rect = new RectangleF(rect.X + gap + size.Height, rect.Y, rect.Width - size.Height - gap2, rect.Height);
@@ -1371,6 +1381,11 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public bool SValue(object obj)
+            {
+                if (obj is CellBadge value) { Value = value; return true; }
+                return false;
+            }
             public override string? ToString()
             {
                 return Value.Text;
@@ -1461,6 +1476,11 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public bool SValue(object obj)
+            {
+                if (obj is CellImage value) { Value = value; return true; }
+                return false;
+            }
             public override string? ToString()
             {
                 return null;
@@ -1705,6 +1725,11 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public bool SValue(object obj)
+            {
+                if (obj is CellLink value) { Value = value; return true; }
+                return false;
+            }
             public override string? ToString()
             {
                 return Value.Text;
@@ -1829,6 +1854,11 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            public bool SValue(object obj)
+            {
+                if (obj is CellProgress value) { Value = value; return true; }
+                return false;
+            }
             public override string? ToString()
             {
                 return Math.Round(Value.Value * 100F) + "%";
@@ -1878,6 +1908,7 @@ namespace AntdUI
                 return RECT.Contains(x, y);
             }
 #endif
+            bool SValue(object value);
         }
 
         #endregion

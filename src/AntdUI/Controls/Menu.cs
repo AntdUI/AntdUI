@@ -1044,6 +1044,11 @@ namespace AntdUI
             Text = text;
             Icon = icon;
         }
+        public MenuItem(string text, string? icon_svg)
+        {
+            Text = text;
+            IconSvg = icon_svg;
+        }
 
         #region 图标
 

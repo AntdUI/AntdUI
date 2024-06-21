@@ -51,7 +51,7 @@ namespace AntdUI
         Rectangle[] dividers = new Rectangle[0], dividerHs = new Rectangle[0];
         MoveHeader[] moveheaders = new MoveHeader[0];
 
-        internal void LoadLayout()
+        public void LoadLayout()
         {
             var rect = ClientRectangle;
             if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
@@ -646,8 +646,8 @@ namespace AntdUI
                     {
                         badge.Value.Changed = key =>
                         {
-                            if (key == "StateProcessing") LoadLayout();
-                            else Invalidate();
+                            if (key == "SProcessing" || key == "EProcessing" || key == "Text") LoadLayout();
+                            Invalidate();
                         };
                     }
                     else if (it is TemplateTag tag)
@@ -655,13 +655,14 @@ namespace AntdUI
                         tag.Value.Changed = key =>
                         {
                             if (key == "Text") LoadLayout();
-                            else Invalidate();
+                            Invalidate();
                         };
                     }
                     else if (it is TemplateProgress progress)
                     {
                         progress.Value.Changed = key =>
                         {
+                            if (key == "Shape") LoadLayout();
                             Invalidate();
                         };
                     }
@@ -669,6 +670,7 @@ namespace AntdUI
                     {
                         image.Value.Changed = key =>
                         {
+                            if (key == "Size") LoadLayout();
                             Invalidate();
                         };
                     }
@@ -676,8 +678,8 @@ namespace AntdUI
                     {
                         link.Value.Changed = key =>
                         {
-                            if (key == "Text" || key == "Image" || key == "ImageSvg" || key == "ShowArrow") LoadLayout();
-                            else Invalidate();
+                            if (key == "Text" || key == "Image" || key == "ImageSvg" || key == "IconRatio" || key == "Shape" || key == "ShowArrow") LoadLayout();
+                            Invalidate();
                         };
                     }
                     else if (it is TemplateText text)
@@ -685,7 +687,7 @@ namespace AntdUI
                         text.Value.Changed = key =>
                         {
                             if (key == "IconRatio" || key == "Prefix" || key == "PrefixSvg" || key == "Suffix" || key == "SuffixSvg") LoadLayout();
-                            else Invalidate();
+                            Invalidate();
                         };
                     }
                 }
@@ -758,7 +760,6 @@ namespace AntdUI
                             else rows[0].CheckState = CheckState.Unchecked;
                             check.SetCheckState(rows[0].CheckState);
                         }
-                        else if (it is ColumnSwitch _switch) { }
                         else
                         {
                             foreach (var row in rows)
@@ -786,12 +787,14 @@ namespace AntdUI
                 {
                     foreach (ITemplate it in template.value)
                     {
-                        if (it is TemplateText text)
+                        var value = temp.PROPERTY.GetValue(data);
+                        if (value != null)
                         {
-                            var value = temp.PROPERTY.GetValue(data);
-                            if (value is CellText text2) text.Value = text2;
-                            else text.Value.Text = value?.ToString();
-                            return;
+                            if (it.SValue(value))
+                            {
+                                LoadLayout();
+                                Invalidate();
+                            }
                         }
                     }
                 }
@@ -799,13 +802,14 @@ namespace AntdUI
                 {
                     var value = temp.PROPERTY.GetValue(data);
                     if (value is IList<ICell> || value is ICell) LoadLayout();
-                    else
-                    {
-                        text.value = value?.ToString();
-                        Invalidate();
-                    }
+                    else text.value = value?.ToString();
+                    Invalidate();
                 }
-                else LoadLayout();
+                else
+                {
+                    LoadLayout();
+                    Invalidate();
+                }
             }
         }
         void AddRows(ref List<RowTemplate> rows, TCell[] cells, object Record, bool check)

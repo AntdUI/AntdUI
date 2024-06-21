@@ -127,7 +127,7 @@ namespace AntdUI
             }
             if (selectionLength > 0)
             {
-                int start = selectionStart, end = selectionLength;
+                int start = selectionStartTemp, end = selectionLength;
                 AddHistoryRecord();
                 int end_temp = start + end;
                 var texts = new List<string>();
@@ -162,7 +162,7 @@ namespace AntdUI
             if (cache_font == null || ReadOnly) return;
             if (selectionLength > 0)
             {
-                int start = selectionStart, end = selectionLength;
+                int start = selectionStartTemp, end = selectionLength;
                 AddHistoryRecord();
                 int end_temp = start + end;
                 var texts = new List<string>();

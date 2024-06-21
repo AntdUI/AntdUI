@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -879,24 +878,23 @@ namespace AntdUI
         {
             if (ReadOnly) return;
             AddHistoryRecord();
-            int countSurrogate = 0;
-            foreach (var it in text)
+            int len = 0;
+            GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
             {
-                var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it);
-                if (unicodeInfo == UnicodeCategory.Surrogate) countSurrogate++;
-            }
-            int len = (text.Length - countSurrogate) + countSurrogate / 2;
+                len++;
+                return true;
+            });
             if (cache_font == null)
             {
                 if (ismax && text.Length > MaxLength) text = text.Substring(0, MaxLength);
                 Text = text;
-                SelectionStart = selectionStart + len;
+                SelectionStart = len;
             }
             else
             {
                 if (selectionLength > 0)
                 {
-                    int start = selectionStart, end = selectionLength;
+                    int start = selectionStartTemp, end = selectionLength;
                     AddHistoryRecord();
                     int end_temp = start + end;
                     var texts = new List<string>();
@@ -935,7 +933,7 @@ namespace AntdUI
                 {
                     int start = selectionStartTemp, end = selectionLength;
                     int end_temp = start + end;
-                    if (end_temp > cache_font.Length - 1) end_temp = cache_font.Length - 1;
+                    if (end_temp > cache_font.Length) end_temp = cache_font.Length;
                     var texts = new List<string>(end);
                     foreach (var it in cache_font)
                     {

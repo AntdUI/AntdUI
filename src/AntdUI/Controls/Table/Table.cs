@@ -996,8 +996,10 @@ namespace AntdUI
             set
             {
                 if (_state == value) return;
+                var old = _state;
                 _state = value;
-                if (value == TState.Processing) OnPropertyChanged("StateProcessing");
+                if (value == TState.Processing) OnPropertyChanged("SProcessing");
+                else if (old == TState.Processing) OnPropertyChanged("EProcessing");
                 else OnPropertyChanged("State");
             }
         }
@@ -1221,10 +1223,20 @@ namespace AntdUI
             }
         }
 
+        Size? size = null;
         /// <summary>
         /// 自定义大小
         /// </summary>
-        public Size? Size { get; set; } = null;
+        public Size? Size
+        {
+            get => size;
+            set
+            {
+                if (size == value) return;
+                size = value;
+                OnPropertyChanged("Size");
+            }
+        }
 
         TFit imageFit = TFit.Cover;
         /// <summary>
