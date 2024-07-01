@@ -445,7 +445,7 @@ namespace AntdUI
                         float size = rect_read.Height * 0.4F;
                         var rect_arrow = new RectangleF(rect_read.X + (rect_read.Width - size) / 2F, rect_read.Y + (rect_read.Height - size) / 2F, size, size);
                         rect_close = rect_arrow;
-                        if (hover_close.Animation) g.PaintIconClose(rect_arrow, Color.FromArgb(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text));
+                        if (hover_close.Animation) g.PaintIconClose(rect_arrow, Helper.ToColor(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text));
                         else if (hover_close.Switch) g.PaintIconClose(rect_arrow, Style.Db.Text);
                         else g.PaintIconClose(rect_arrow, Style.Db.TextQuaternary);
                     }
@@ -458,7 +458,7 @@ namespace AntdUI
                 rect_close = rect.r;
                 if (closeIcon)
                 {
-                    if (hover_close.Animation) g.PaintIconClose(rect.r, Color.FromArgb(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text), .8F);
+                    if (hover_close.Animation) g.PaintIconClose(rect.r, Helper.ToColor(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text), .8F);
                     else if (hover_close.Switch) g.PaintIconClose(rect.r, Style.Db.Text, .8F);
                     else g.PaintIconClose(rect.r, Style.Db.TextQuaternary, .8F);
                 }
@@ -703,7 +703,6 @@ namespace AntdUI
                     Size = PSize;
                     break;
             }
-            Invalidate();
             return false;
         }
 

@@ -488,7 +488,7 @@ namespace AntdUI
                     SubForm = null;
                     if (it.Tag != null && it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                     {
-                        SubForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20), it.Tag.Sub);
+                        SubForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20 - (scrollY.Show ? (int)scrollY.Value : 0)), it.Tag.Sub);
                         SubForm.Show(this);
                     }
                 }

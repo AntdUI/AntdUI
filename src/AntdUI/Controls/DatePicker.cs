@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Globalization;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -219,6 +218,15 @@ namespace AntdUI
         protected override void OnLostFocus(EventArgs e)
         {
             TextFocus = false;
+            if (IsHandleCreated && setvalue && DateTime.TryParse(Text, out var _d))
+            {
+                Value = _d;
+                if (subForm != null)
+                {
+                    subForm.SelDate = subForm.Date = _d;
+                    subForm.Print();
+                }
+            }
             base.OnLostFocus(e);
         }
 
@@ -269,20 +277,6 @@ namespace AntdUI
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        protected override void OnTextChanged(EventArgs e)
-        {
-            if (IsHandleCreated && setvalue && DateTime.TryParseExact(Text, dateFormat.Replace("MM", "M").Replace("dd", "d"), DateTimeFormatInfo.CurrentInfo, DateTimeStyles.None, out var _d))
-            {
-                Value = _d;
-                if (subForm != null)
-                {
-                    subForm.SelDate = subForm.Date = _d;
-                    subForm.Print();
-                }
-            }
-            base.OnTextChanged(e);
         }
 
         #endregion

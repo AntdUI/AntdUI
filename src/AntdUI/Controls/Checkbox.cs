@@ -103,7 +103,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 text = value;
-                BeforeAutoSize();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -224,22 +224,19 @@ namespace AntdUI
                     var color = fill ?? Style.Db.Primary;
                     if (AnimationCheck)
                     {
-                        float dot = dot_size * 0.3F;
-
-                        int a = (int)(255 * AnimationCheckValue);
-                        using (var brush = new SolidBrush(Color.FromArgb(a, color)))
+                        float dot = dot_size * 0.3F, alpha = 255 * AnimationCheckValue;
+                        using (var brush = new SolidBrush(Helper.ToColor(alpha, color)))
                         {
                             g.FillPath(brush, path);
                         }
-                        using (var brush = new Pen(Color.FromArgb(a, Style.Db.BgBase), 3F))
+                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), 3F))
                         {
                             g.DrawLines(brush, PaintArrow(icon_rect));
                         }
                         if (_checked)
                         {
-                            float max = icon_rect.Height + ((rect.Height - icon_rect.Height) * AnimationCheckValue);
-                            int a2 = (int)(100 * (1f - AnimationCheckValue));
-                            using (var brush = new SolidBrush(Color.FromArgb(a2, color)))
+                            float max = icon_rect.Height + ((rect.Height - icon_rect.Height) * AnimationCheckValue), alpha2 = 100 * (1F - AnimationCheckValue);
+                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, color)))
                             {
                                 g.FillEllipse(brush, new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
                             }
@@ -268,7 +265,7 @@ namespace AntdUI
                             {
                                 g.DrawPath(brush, path);
                             }
-                            using (var brush = new Pen(Color.FromArgb(AnimationHoverValue, color), 2F))
+                            using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, color), 2F))
                             {
                                 g.DrawPath(brush, path);
                             }
@@ -464,7 +461,7 @@ namespace AntdUI
 
         protected override void OnFontChanged(EventArgs e)
         {
-            BeforeAutoSize();
+            if (BeforeAutoSize()) Invalidate();
             base.OnFontChanged(e);
         }
 
@@ -492,16 +489,16 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal void BeforeAutoSize()
+        internal bool BeforeAutoSize()
         {
-            if (autoSize == TAutoSize.None) return;
+            if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)
             {
                 Invoke(new Action(() =>
                 {
                     BeforeAutoSize();
                 }));
-                return;
+                return false;
             }
             switch (autoSize)
             {
@@ -516,7 +513,7 @@ namespace AntdUI
                     Size = PSize;
                     break;
             }
-            Invalidate();
+            return false;
         }
 
         #endregion

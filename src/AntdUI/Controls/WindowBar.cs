@@ -365,12 +365,12 @@ namespace AntdUI
             }
             else if (hove_close.Animation)
             {
-                using (var brush = new SolidBrush(Color.FromArgb(hove_close.Value, Style.Db.Error)))
+                using (var brush = new SolidBrush(Helper.ToColor(hove_close.Value, Style.Db.Error)))
                 {
                     g.FillRectangle(brush, rect_close);
                 }
                 PrintClose(g, fore, rect_close_icon);
-                using (var _bmp = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Color.FromArgb(hove_close.Value, Style.Db.ErrorColor)))
+                using (var _bmp = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Style.Db.ErrorColor)))
                 {
                     if (_bmp != null) g.DrawImage(_bmp, rect_close_icon);
                 }
@@ -390,7 +390,7 @@ namespace AntdUI
                 var rect_max_icon = new Rectangle(rect_max.X + btn_x, rect_max.Y + btn_y, btn_size, btn_size);
                 if (hove_max.Animation)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(hove_max.Value, fillsecondary)))
+                    using (var brush = new SolidBrush(Helper.ToColor(hove_max.Value, fillsecondary)))
                     {
                         g.FillRectangle(brush, rect_max);
                     }
@@ -417,7 +417,7 @@ namespace AntdUI
                 var rect_min_icon = new Rectangle(rect_min.X + btn_x, rect_min.Y + btn_y, btn_size, btn_size);
                 if (hove_min.Animation)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(hove_min.Value, fillsecondary)))
+                    using (var brush = new SolidBrush(Helper.ToColor(hove_min.Value, fillsecondary)))
                     {
                         g.FillRectangle(brush, rect_min);
                     }

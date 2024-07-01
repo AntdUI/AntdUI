@@ -254,12 +254,6 @@ namespace AntdUI
         internal void CalculateRect()
         {
             var rect = ReadRectangle;
-            int useLeft = UseLeft(rect);
-            if (useLeft > 0)
-            {
-                rect.X += useLeft;
-                rect.Width -= useLeft;
-            }
             int sps = (int)(CurrentCaret.Height * .4F), sps2 = sps * 2;
             RectAuto(rect, sps, sps2);
             if (cache_font == null)
@@ -544,7 +538,8 @@ namespace AntdUI
             }
             SetCaretPostion();
         }
-        internal virtual int UseLeft(Rectangle rect) { return 0; }
+        internal virtual bool HasLeft() => false;
+        internal virtual int UseLeft(Rectangle rect, bool delgap) { return 0; }
 
         #region 最终区域计算
 
@@ -634,6 +629,15 @@ namespace AntdUI
                 }
                 else
                 {
+                    if (HasLeft())
+                    {
+                        int useLeft = UseLeft(rect, false);
+                        if (useLeft > 0)
+                        {
+                            rect.X += useLeft;
+                            rect.Width -= useLeft;
+                        }
+                    }
                     rect_l.Width = rect_r.Width = 0;
                     if (multiline) rect_text = new Rectangle(rect.X + sps, rect.Y + sps, rect.Width - sps2, rect.Height - sps2);
                     else rect_text = new Rectangle(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - sps2, read_height);
@@ -642,39 +646,53 @@ namespace AntdUI
         }
         void RectLR(Rectangle rect, int read_height, int sps, int sps2, int w_L, int h_L, int w_R, int h_R)
         {
-            int sp = (int)(read_height * .25F);
+            int sp = (int)(read_height * .25F), hasx = sps + w_L + sp, hasr = w_L + w_R + ((sps + sp) * 2),
+                useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasr, rect.Height), true) : 0;
             if (multiline)
             {
-                rect_text = new Rectangle(rect.X + sps + w_L + sp, rect.Y + sps, rect.Width - w_L - w_R - ((sps + sp) * 2), rect.Height - sps2);
                 rect_l = new Rectangle(rect.X + sps, rect.Y + sps + (read_height - h_L) / 2, w_L, h_L);
+                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, rect.Y + sps, rect.Width - hasr - useLeft, rect.Height - sps2);
+                else rect_text = new Rectangle(rect.X + hasx, rect.Y + sps, rect.Width - w_L - w_R - ((sps + sp) * 2), rect.Height - sps2);
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + sps + (read_height - h_R) / 2, w_R, h_R);
             }
             else
             {
-                rect_text = new Rectangle(rect.X + sps + w_L + sp, rect.Y + (rect.Height - read_height) / 2, rect.Width - w_L - w_R - ((sps + sp) * 2), read_height);
                 rect_l = new Rectangle(rect.X + sps, rect.Y + (rect.Height - h_L) / 2, w_L, h_L);
+                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasr - useLeft, read_height);
+                else rect_text = new Rectangle(rect.X + hasx, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasr, read_height);
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + (rect.Height - h_R) / 2, w_R, h_R);
             }
         }
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
-            int sp = (int)(read_height * .25F);
+            int sp = (int)(read_height * .25F), hasx = sps + w + sp,
+                useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), true) : 0;
             if (multiline)
             {
                 rect_l = new Rectangle(rect.X + sps, rect.Y + sps + (read_height - h) / 2, w, h);
-                rect_text = new Rectangle(rect.X + sps + w + sp, rect.Y + sps, rect.Width - sps2 - w - sp, rect.Height - sps2);
+                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, rect.Y + sps, rect.Width - hasx - useLeft, rect.Height - sps2);
+                else rect_text = new Rectangle(rect.X + hasx, rect.Y + sps, rect.Width - sps, rect.Height - sps2);
             }
             else
             {
                 rect_l = new Rectangle(rect.X + sps, rect.Y + (rect.Height - h) / 2, w, h);
-                rect_text = new Rectangle(rect.X + sps + w + sp, rect.Y + (rect.Height - read_height) / 2, rect.Width - sps2 - w - sp, read_height);
+                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasx - useLeft, read_height);
+                else rect_text = new Rectangle(rect.X + hasx, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasx, read_height);
             }
-
             rect_r.Width = 0;
         }
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
             int sp = (int)(read_height * .25F);
+            if (HasLeft())
+            {
+                int useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), false);
+                if (useLeft > 0)
+                {
+                    rect.X += useLeft;
+                    rect.Width -= useLeft;
+                }
+            }
             if (multiline)
             {
                 rect_text = new Rectangle(rect.X + sps, rect.Y + sps, rect.Width - sps2 - w - sp, rect.Height - sps2);
@@ -685,7 +703,6 @@ namespace AntdUI
                 rect_text = new Rectangle(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - sps2 - w - sp, read_height);
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + (rect.Height - h) / 2, w, h);
             }
-
             rect_l.Width = 0;
         }
 

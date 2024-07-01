@@ -51,6 +51,7 @@ namespace Overview.Controls
             panel1 = new System.Windows.Forms.Panel();
             panel4 = new System.Windows.Forms.Panel();
             select8 = new AntdUI.Select();
+            selectMultiple1 = new AntdUI.SelectMultiple();
             divider3 = new AntdUI.Divider();
             panel3 = new System.Windows.Forms.Panel();
             panel5 = new System.Windows.Forms.Panel();
@@ -67,7 +68,6 @@ namespace Overview.Controls
             select5 = new AntdUI.Select();
             select1 = new AntdUI.Select();
             divider1 = new AntdUI.Divider();
-            selectMultiple1 = new AntdUI.SelectMultiple();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             panel3.SuspendLayout();
@@ -117,7 +117,7 @@ namespace Overview.Controls
             // select8
             // 
             select8.DropDownArrow = true;
-            select8.Items.AddRange(new AntdUI.ISelectItem[] { new AntdUI.SelectItem(0, "Lucy"), new AntdUI.SelectItem(1, "Tom"), new AntdUI.SelectItem(1, "AduSkin"), new AntdUI.DividerSelectItem(), new AntdUI.SelectItem(0, "WangLi"), new AntdUI.SelectItem(0, "HUAWEI"), new AntdUI.SelectItem(0, "XIAOMI") });
+            select8.Items.AddRange(new object[] { dividerSelectItem1 });
             select8.List = true;
             select8.ListAutoWidth = true;
             select8.Location = new Point(18, 20);
@@ -127,6 +127,14 @@ namespace Overview.Controls
             select8.Placement = AntdUI.TAlignFrom.TR;
             select8.Size = new Size(126, 41);
             select8.TabIndex = 2;
+            // 
+            // selectMultiple1
+            // 
+            selectMultiple1.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
+            selectMultiple1.Location = new Point(170, 20);
+            selectMultiple1.Name = "selectMultiple1";
+            selectMultiple1.Size = new Size(316, 41);
+            selectMultiple1.TabIndex = 0;
             // 
             // divider3
             // 
@@ -315,14 +323,6 @@ namespace Overview.Controls
             divider1.TabIndex = 1;
             divider1.TabStop = false;
             divider1.Text = "常规";
-            // 
-            // selectMultiple1
-            // 
-            selectMultiple1.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
-            selectMultiple1.Location = new Point(170, 20);
-            selectMultiple1.Name = "selectMultiple1";
-            selectMultiple1.Size = new Size(230, 41);
-            selectMultiple1.TabIndex = 0;
             // 
             // Select
             // 

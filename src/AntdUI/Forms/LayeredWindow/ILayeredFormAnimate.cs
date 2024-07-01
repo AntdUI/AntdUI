@@ -104,14 +104,15 @@ namespace AntdUI
 
         int TopY(Rectangle workingArea)
         {
-            var y = TopYCore(workingArea);
+            int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
+            var y = TopYCore(workingArea, offset);
             if (y < workingArea.Bottom - TargetRect.Height) return y;
             else
             {
                 var find_0 = list[Align][0];
                 find_0.IRClose();
                 list[Align].Remove(find_0);
-                int y_temp = 0;
+                int y_temp = offset;
                 lock (list)
                 {
                     foreach (var it in list[Align])
@@ -121,14 +122,14 @@ namespace AntdUI
                         y_temp += it.TargetRect.Height;
                     }
                 }
-                return TopYCore(workingArea);
+                return TopYCore(workingArea, offset);
             }
         }
-        internal int TopYCore(Rectangle workingArea)
+        internal int TopYCore(Rectangle workingArea, int offset)
         {
             if (list.TryGetValue(Align, out var its) && its.Count > 0)
             {
-                int y_temp = workingArea.Y;
+                int y_temp = workingArea.Y + offset;
                 while (true)
                 {
                     int y_temp_end = y_temp + TargetRect.Height;
@@ -140,18 +141,19 @@ namespace AntdUI
                     y_temp += TargetRect.Height;
                 }
             }
-            else return workingArea.Y;
+            else return workingArea.Y + offset;
         }
         int BottomY(Rectangle workingArea)
         {
-            var y = BottomYCore(workingArea);
+            int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
+            var y = BottomYCore(workingArea, offset);
             if (y >= 0) return y;
             else
             {
                 var find_0 = list[Align][0];
                 find_0.IRClose();
                 list[Align].Remove(find_0);
-                int y_temp = workingArea.Bottom - TargetRect.Height;
+                int y_temp = workingArea.Bottom - TargetRect.Height - offset;
                 lock (list)
                 {
                     foreach (var it in list[Align])
@@ -161,12 +163,12 @@ namespace AntdUI
                         y_temp -= it.TargetRect.Height;
                     }
                 }
-                return BottomYCore(workingArea);
+                return BottomYCore(workingArea, offset);
             }
         }
-        internal int BottomYCore(Rectangle workingArea)
+        internal int BottomYCore(Rectangle workingArea, int offset)
         {
-            int y_temp = workingArea.Bottom - TargetRect.Height;
+            int y_temp = workingArea.Bottom - TargetRect.Height - offset;
             if (list.TryGetValue(Align, out var its) && its.Count > 0)
             {
                 while (true)

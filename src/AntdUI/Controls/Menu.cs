@@ -547,7 +547,7 @@ namespace AntdUI
                         if (it.AnimationHover)
                         {
                             PaintIcon(g, it, fore);
-                            PaintIcon(g, it, Color.FromArgb((int)(it.AnimationHoverValue * back_hover.A), back_hover));
+                            PaintIcon(g, it, Helper.ToColorN(it.AnimationHoverValue, back_hover));
                         }
                         else if (it.Hover) PaintIcon(g, it, back_hover);
                         else PaintIcon(g, it, fore);
@@ -562,7 +562,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (it.AnimationHover) PaintBack(g, Color.FromArgb((int)(it.AnimationHoverValue * back_hover.A), back_hover), it.rect, radius);
+                        if (it.AnimationHover) PaintBack(g, Helper.ToColorN(it.AnimationHoverValue, back_hover), it.rect, radius);
                         else if (it.Hover) PaintBack(g, back_hover, it.rect, radius);
                         PaintIcon(g, it, fore);
                     }
@@ -595,7 +595,7 @@ namespace AntdUI
                         if (it.AnimationHover)
                         {
                             PaintTextIconExpand(g, it, fore);
-                            PaintTextIconExpand(g, it, Color.FromArgb((int)(it.AnimationHoverValue * back_hover.A), back_hover));
+                            PaintTextIconExpand(g, it, Helper.ToColorN(it.AnimationHoverValue, back_hover));
                         }
                         else if (it.Hover) PaintTextIconExpand(g, it, back_hover);
                         else PaintTextIconExpand(g, it, fore);
@@ -614,7 +614,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (it.AnimationHover) PaintBack(g, Color.FromArgb((int)(it.AnimationHoverValue * back_hover.A), back_hover), it.rect, radius);
+                        if (it.AnimationHover) PaintBack(g, Helper.ToColorN(it.AnimationHoverValue, back_hover), it.rect, radius);
                         else if (it.Hover) PaintBack(g, back_hover, it.rect, radius);
                         PaintTextIconExpand(g, it, fore);
                     }

@@ -55,7 +55,7 @@ namespace AntdUI.Design
 
         protected override void OnLoad(EventArgs e)
         {
-            Helper.DpiLS(Config.Dpi, this);
+            Helper.DpiAuto(Config.Dpi, this);
             base.OnLoad(e);
         }
 
@@ -188,7 +188,6 @@ namespace AntdUI.Design
                 }
 
                 #endregion
-
 
                 #region ‰÷»æ÷∏±Í
 

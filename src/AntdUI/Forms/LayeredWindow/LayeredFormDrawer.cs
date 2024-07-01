@@ -60,7 +60,7 @@ namespace AntdUI
             else
             {
                 config.Content.Tag = config.Content.Size;
-                if (Config.Dpi != 1F) Helper.DpiLS(Config.Dpi, config.Content);
+                if (Config.Dpi != 1F) Helper.DpiAuto(Config.Dpi, config.Content);
             }
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));

@@ -67,8 +67,7 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            if (form.is_resizable) base.WndProc(ref m);
-            else
+            if (form.is_resizable)
             {
                 switch (m.Msg)
                 {
@@ -84,8 +83,8 @@ namespace AntdUI
                         if (form.ResizableMouseDown()) return;
                         break;
                 }
-                base.WndProc(ref m);
             }
+            base.WndProc(ref m);
         }
 
         #endregion

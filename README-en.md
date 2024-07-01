@@ -69,9 +69,10 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Switch** | ✅ | ✅ |
 :arrow_right: | **TimePicker** | ✅ | ✅ |
 ||||
-:arrow_down: | Data Display `14` | Animation | Disable |
+:arrow_down: | Data Display `15` | Animation | Disable |
 :arrow_right: | **Avatar** | ❎ | ❎ |
 :arrow_right: | **Badge** | ✅ | ❎ |
+:arrow_right: | **Calendar** | ✅ | ❎ |
 :arrow_right: | **Panel** | ✅ | ❎ |
 :arrow_right: | **Carousel** | ✅ | ❎ |
 :arrow_right: | **Preview** | ✅ | ✅ |

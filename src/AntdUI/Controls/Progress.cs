@@ -450,9 +450,8 @@ namespace AntdUI
 
                     if (loading && AnimationLoadingValue > 0)
                     {
-                        int a = (int)(60 * (1f - AnimationLoadingValue));
-
-                        using (var brush = new Pen(Color.FromArgb(a, Style.Db.BgBase), w))
+                        float alpha = 60 * (1F - AnimationLoadingValue);
+                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
                             g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
@@ -485,9 +484,8 @@ namespace AntdUI
                         }
                         if (loading && AnimationLoadingValue > 0)
                         {
-                            int a = (int)(60 * (1f - AnimationLoadingValue));
-
-                            using (var brush = new Pen(Color.FromArgb(a, Style.Db.BgBase), w))
+                            float alpha = 60 * (1F - AnimationLoadingValue);
+                            using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
                                 g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
@@ -546,8 +544,8 @@ namespace AntdUI
                                     }
                                     if (loading && AnimationLoadingValue > 0)
                                     {
-                                        int a = (int)(60 * (1f - AnimationLoadingValue));
-                                        using (var brush = new SolidBrush(Color.FromArgb(a, Style.Db.BgBase)))
+                                        var alpha = 60 * (1F - AnimationLoadingValue);
+                                        using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.BgBase)))
                                         {
                                             using (var path_prog = new RectangleF(rect.X, rect.Y, _w * AnimationLoadingValue, rect.Height).RoundPath(_radius))
                                             {
@@ -558,20 +556,20 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    using (var bmp = new Bitmap(rect.Right, rect.Bottom))
+                                    using (var bmp = new Bitmap(rect.Width, rect.Height))
                                     {
                                         using (var g2 = Graphics.FromImage(bmp).High())
                                         {
                                             using (var brush = new SolidBrush(_color))
                                             {
-                                                g2.FillEllipse(brush, new RectangleF(rect.X, rect.Y, _w, rect.Height));
+                                                g2.FillEllipse(brush, new RectangleF(0, 0, _w, rect.Height));
                                             }
                                             if (loading && AnimationLoadingValue > 0)
                                             {
-                                                int a = (int)(60 * (1f - AnimationLoadingValue));
-                                                using (var brush = new SolidBrush(Color.FromArgb(a, Style.Db.BgBase)))
+                                                var alpha = 60 * (1F - AnimationLoadingValue);
+                                                using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.BgBase)))
                                                 {
-                                                    g2.FillEllipse(brush, new RectangleF(rect.X, rect.Y, _w * AnimationLoadingValue, rect.Height));
+                                                    g2.FillEllipse(brush, new RectangleF(0, 0, _w * AnimationLoadingValue, rect.Height));
                                                 }
                                             }
                                         }
@@ -621,8 +619,8 @@ namespace AntdUI
                                     }
                                     if (loading && AnimationLoadingValue > 0)
                                     {
-                                        int a = (int)(60 * (1f - AnimationLoadingValue));
-                                        using (var brush = new SolidBrush(Color.FromArgb(a, Style.Db.BgBase)))
+                                        var alpha = 60 * (1F - AnimationLoadingValue);
+                                        using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.BgBase)))
                                         {
                                             using (var path_prog = new RectangleF(rect.X, rect.Y, _w * AnimationLoadingValue, rect.Height).RoundPath(_radius))
                                             {
@@ -643,8 +641,8 @@ namespace AntdUI
                                             }
                                             if (loading && AnimationLoadingValue > 0)
                                             {
-                                                int a = (int)(60 * (1f - AnimationLoadingValue));
-                                                using (var brush = new SolidBrush(Color.FromArgb(a, Style.Db.BgBase)))
+                                                var alpha = 60 * (1F - AnimationLoadingValue);
+                                                using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.BgBase)))
                                                 {
                                                     g2.FillEllipse(brush, new RectangleF(rect.X, rect.Y, _w * AnimationLoadingValue, rect.Height));
                                                 }

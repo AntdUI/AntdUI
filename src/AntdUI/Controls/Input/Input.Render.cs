@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -30,106 +31,92 @@ namespace AntdUI
         internal StringFormat sf_center = Helper.SF_NoWrap();
         internal StringFormat sf_placeholder = Helper.SF_ALL(lr: StringAlignment.Near);
 
+        internal Action? TakePaint;
+        public new void Invalidate()
+        {
+            if (TakePaint == null) base.Invalidate();
+            else TakePaint();
+        }
         protected override void OnPaint(PaintEventArgs e)
         {
-            var g = e.Graphics.High();
             var rect_read = ReadRectangle;
-            if (rect_read.Width > 0 && rect_read.Height > 0)
+            if (rect_read.Width > 0 && rect_read.Height > 0) IPaint(e.Graphics.High(), rect_read);
+            base.OnPaint(e);
+        }
+
+        internal void IPaint(Graphics g, Rectangle rect_read)
+        {
+            float _radius = round ? rect_read.Height : radius * Config.Dpi;
+            bool enabled = Enabled;
+            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
+            using (var path = Path(rect_read, _radius))
             {
-                float _radius = round ? rect_read.Height : radius * Config.Dpi;
+                Color _back = back ?? Style.Db.BgContainer,
+                    _fore = fore ?? Style.Db.Text,
+                   _border = borderColor ?? Style.Db.BorderColor,
+                   _borderHover = BorderHover ?? Style.Db.PrimaryHover,
+               _borderActive = BorderActive ?? Style.Db.Primary;
 
-                bool enabled = Enabled;
-
-                if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
-
-                using (var path = Path(rect_read, _radius))
+                switch (status)
                 {
-                    Color _back = back ?? Style.Db.BgContainer,
-                        _fore = fore ?? Style.Db.Text,
-                       _border = borderColor ?? Style.Db.BorderColor,
-                       _borderHover = BorderHover ?? Style.Db.PrimaryHover,
-                   _borderActive = BorderActive ?? Style.Db.Primary;
+                    case TType.Success:
+                        _border = Style.Db.SuccessBorder;
+                        _borderHover = Style.Db.SuccessHover;
+                        _borderActive = Style.Db.Success;
+                        break;
+                    case TType.Error:
+                        _border = Style.Db.ErrorBorder;
+                        _borderHover = Style.Db.ErrorHover;
+                        _borderActive = Style.Db.Error;
+                        break;
+                    case TType.Warn:
+                        _border = Style.Db.WarningBorder;
+                        _borderHover = Style.Db.WarningHover;
+                        _borderActive = Style.Db.Warning;
+                        break;
+                }
 
-                    switch (status)
+                PaintClick(g, path, _borderActive, _radius);
+
+                if (enabled)
+                {
+                    using (var brush = new SolidBrush(_back))
                     {
-                        case TType.Success:
-                            _border = Style.Db.SuccessBorder;
-                            _borderHover = Style.Db.SuccessHover;
-                            _borderActive = Style.Db.Success;
-                            break;
-                        case TType.Error:
-                            _border = Style.Db.ErrorBorder;
-                            _borderHover = Style.Db.ErrorHover;
-                            _borderActive = Style.Db.Error;
-                            break;
-                        case TType.Warn:
-                            _border = Style.Db.WarningBorder;
-                            _borderHover = Style.Db.WarningHover;
-                            _borderActive = Style.Db.Warning;
-                            break;
+                        g.FillPath(brush, path);
                     }
-
-                    PaintClick(g, path, _borderActive, _radius);
-
-                    if (enabled)
+                    PaintIcon(g, _fore);
+                    PaintText(g, _fore, rect_read.Right, rect_read.Bottom);
+                    g.ResetClip();
+                    PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
+                    PaintScroll(g, rect_read, _radius);
+                    if (borderWidth > 0)
                     {
-                        using (var brush = new SolidBrush(_back))
+                        if (AnimationHover)
                         {
-                            g.FillPath(brush, path);
-                        }
-                        PaintIcon(g, _fore);
-                        PaintText(g, _fore, rect_read.Right, rect_read.Bottom);
-                        g.ResetClip();
-                        PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
-                        PaintScroll(g, rect_read, _radius);
-                        if (borderWidth > 0)
-                        {
-                            if (AnimationHover)
+                            using (var brush = new Pen(_border, borderWidth))
                             {
-                                using (var brush = new Pen(_border, borderWidth))
-                                {
-                                    g.DrawPath(brush, path);
-                                }
-                                using (var brush = new Pen(Color.FromArgb(AnimationHoverValue, _borderHover), borderWidth))
-                                {
-                                    g.DrawPath(brush, path);
-                                }
+                                g.DrawPath(brush, path);
                             }
-                            else if (ExtraMouseDown)
+                            using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, _borderHover), borderWidth))
                             {
-                                using (var brush = new Pen(_borderActive, borderWidth))
-                                {
-                                    g.DrawPath(brush, path);
-                                }
-                            }
-                            else if (ExtraMouseHover)
-                            {
-                                using (var brush = new Pen(_borderHover, borderWidth))
-                                {
-                                    g.DrawPath(brush, path);
-                                }
-                            }
-                            else
-                            {
-                                using (var brush = new Pen(_border, borderWidth))
-                                {
-                                    g.DrawPath(brush, path);
-                                }
+                                g.DrawPath(brush, path);
                             }
                         }
-                    }
-                    else
-                    {
-                        using (var brush = new SolidBrush(Style.Db.FillTertiary))
+                        else if (ExtraMouseDown)
                         {
-                            g.FillPath(brush, path);
+                            using (var brush = new Pen(_borderActive, borderWidth))
+                            {
+                                g.DrawPath(brush, path);
+                            }
                         }
-                        PaintIcon(g, Style.Db.TextQuaternary);
-                        PaintText(g, Style.Db.TextQuaternary, rect_read.Right, rect_read.Bottom);
-                        g.ResetClip();
-                        PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
-                        PaintScroll(g, rect_read, _radius);
-                        if (borderWidth > 0)
+                        else if (ExtraMouseHover)
+                        {
+                            using (var brush = new Pen(_borderHover, borderWidth))
+                            {
+                                g.DrawPath(brush, path);
+                            }
+                        }
+                        else
                         {
                             using (var brush = new Pen(_border, borderWidth))
                             {
@@ -138,8 +125,26 @@ namespace AntdUI
                         }
                     }
                 }
+                else
+                {
+                    using (var brush = new SolidBrush(Style.Db.FillTertiary))
+                    {
+                        g.FillPath(brush, path);
+                    }
+                    PaintIcon(g, Style.Db.TextQuaternary);
+                    PaintText(g, Style.Db.TextQuaternary, rect_read.Right, rect_read.Bottom);
+                    g.ResetClip();
+                    PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
+                    PaintScroll(g, rect_read, _radius);
+                    if (borderWidth > 0)
+                    {
+                        using (var brush = new Pen(_border, borderWidth))
+                        {
+                            g.DrawPath(brush, path);
+                        }
+                    }
+                }
             }
-            base.OnPaint(e);
         }
 
         void PaintScroll(Graphics g, Rectangle rect_read, float _radius)
@@ -310,7 +315,7 @@ namespace AntdUI
             {
                 if (AnimationFocusValue > 0)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(AnimationFocusValue, color)))
+                    using (var brush = new SolidBrush(Helper.ToColor(AnimationFocusValue, color)))
                     {
                         var rect = ClientRectangle.PaddingRect(Padding);
                         using (var path_click = Helper.RoundPath(rect, radius, round))

@@ -315,7 +315,7 @@ namespace AntdUI
                 {
                     if (close_button.Animation)
                     {
-                        using (var brush = new SolidBrush(Color.FromArgb(close_button.Value, Style.Db.FillSecondary)))
+                        using (var brush = new SolidBrush(Helper.ToColor(close_button.Value, Style.Db.FillSecondary)))
                         {
                             using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                             {

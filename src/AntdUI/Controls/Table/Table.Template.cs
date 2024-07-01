@@ -1306,9 +1306,8 @@ namespace AntdUI
                 {
                     if (Value.State == TState.Processing && PARENT.PARENT != null)
                     {
-                        float max = (TxtHeight - 6F) * PARENT.PARENT.AnimationStateValue;
-                        int alpha = (int)(255 * (1f - PARENT.PARENT.AnimationStateValue));
-                        using (var pen = new Pen(Color.FromArgb(alpha, brush.Color), 4F))
+                        float max = (TxtHeight - 6F) * PARENT.PARENT.AnimationStateValue, alpha = 255 * (1F - PARENT.PARENT.AnimationStateValue);
+                        using (var pen = new Pen(Helper.ToColor(alpha, brush.Color), 4F))
                         {
                             g.DrawEllipse(pen, new RectangleF(RectDot.X + (RectDot.Width - max) / 2F, RectDot.Y + (RectDot.Height - max) / 2F, max, max));
                         }

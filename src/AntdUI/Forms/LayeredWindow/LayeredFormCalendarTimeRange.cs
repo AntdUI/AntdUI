@@ -419,7 +419,7 @@ namespace AntdUI
                             tl2 = TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F);
                         g.DrawLines(pen_arrow, tl1);
                         g.DrawLines(pen_arrow, tl2);
-                        using (var pen_arrow_hovers = new Pen(Color.FromArgb(hover_lefts.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                        using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_lefts.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                         {
                             g.DrawLines(pen_arrow_hovers, tl1);
                             g.DrawLines(pen_arrow_hovers, tl2);
@@ -443,7 +443,7 @@ namespace AntdUI
                             tl2 = TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F);
                         g.DrawLines(pen_arrow, tl1);
                         g.DrawLines(pen_arrow, tl2);
-                        using (var pen_arrow_hovers = new Pen(Color.FromArgb(hover_rights.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                        using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_rights.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                         {
                             g.DrawLines(pen_arrow_hovers, tl1);
                             g.DrawLines(pen_arrow_hovers, tl2);
@@ -467,7 +467,7 @@ namespace AntdUI
                         {
                             var tl = TAlignMini.Left.TriangleLines(rect_left, 0.26F);
                             g.DrawLines(pen_arrow, tl);
-                            using (var pen_arrow_hovers = new Pen(Color.FromArgb(hover_left.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                            using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_left.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                             {
                                 g.DrawLines(pen_arrow_hovers, tl);
                             }
@@ -486,7 +486,7 @@ namespace AntdUI
                         {
                             var tl = TAlignMini.Right.TriangleLines(rect_right, 0.26F);
                             g.DrawLines(pen_arrow, tl);
-                            using (var pen_arrow_hovers = new Pen(Color.FromArgb(hover_right.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                            using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_right.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                             {
                                 g.DrawLines(pen_arrow_hovers, tl);
                             }
@@ -534,7 +534,7 @@ namespace AntdUI
                     if (hover_year.Animation)
                     {
                         g.DrawString(year_str, font, brush_fore, rect_l, stringFormatC);
-                        using (var brush_hove = new SolidBrush(Color.FromArgb(hover_year.Value, Style.Db.Primary)))
+                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
                             g.DrawString(year_str, font, brush_hove, rect_l, stringFormatC);
                         }
@@ -623,7 +623,7 @@ namespace AntdUI
                     if (hover_year.Animation)
                     {
                         g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, stringFormatC);
-                        using (var brush_hove = new SolidBrush(Color.FromArgb(hover_year.Value, Style.Db.Primary)))
+                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
                             g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, stringFormatC);
                         }
@@ -711,7 +711,7 @@ namespace AntdUI
                     if (hover_year.Animation)
                     {
                         g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, stringFormatL);
-                        using (var brush_hove = new SolidBrush(Color.FromArgb(hover_year.Value, Style.Db.Primary)))
+                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
                             g.DrawString(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, stringFormatL);
                         }
@@ -728,7 +728,7 @@ namespace AntdUI
                     if (hover_month.Animation)
                     {
                         g.DrawString(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_r, stringFormatR);
-                        using (var brush_hove = new SolidBrush(Color.FromArgb(hover_month.Value, Style.Db.Primary)))
+                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_month.Value, Style.Db.Primary)))
                         {
                             g.DrawString(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_r, stringFormatR);
                         }
@@ -1073,7 +1073,7 @@ namespace AntdUI
                             if (hover_buttonok.Animation)
                             {
                                 g.DrawString(OKButton, Font, brush_bg_active, rect_buttonok, stringFormatC);
-                                using (var brush_hove = new SolidBrush(Color.FromArgb(hover_buttonok.Value, Style.Db.PrimaryActive)))
+                                using (var brush_hove = new SolidBrush(Helper.ToColor(hover_buttonok.Value, Style.Db.PrimaryActive)))
                                 {
                                     g.DrawString(OKButton, Font, brush_hove, rect_buttonok, stringFormatC);
                                 }
@@ -1091,7 +1091,7 @@ namespace AntdUI
                     if (hover_button.Animation)
                     {
                         g.DrawString(button_text, Font, brush_bg_active, rect_button, stringFormatC);
-                        using (var brush_hove = new SolidBrush(Color.FromArgb(hover_button.Value, Style.Db.PrimaryActive)))
+                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
                         {
                             g.DrawString(button_text, Font, brush_hove, rect_button, stringFormatC);
                         }

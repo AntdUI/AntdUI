@@ -312,7 +312,7 @@ namespace AntdUI
                             {
                                 g.DrawPath(brush, path);
                             }
-                            using (var brush = new Pen(Color.FromArgb(AnimationHoverValue, _borderHover), borderWidth))
+                            using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, _borderHover), borderWidth))
                             {
                                 g.DrawPath(brush, path);
                             }
@@ -406,7 +406,7 @@ namespace AntdUI
             {
                 if (AnimationFocusValue > 0)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(AnimationFocusValue, color)))
+                    using (var brush = new SolidBrush(Helper.ToColor(AnimationFocusValue, color)))
                     {
                         using (var path_click = rect.RoundPath(radius, round))
                         {
@@ -575,12 +575,14 @@ namespace AntdUI
         }
 
 
-        ILayeredForm? subForm = null;
+        LayeredFormColorPicker? subForm = null;
         public ILayeredForm? SubForm() { return subForm; }
         protected override void OnMouseClick(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
+                ImeMode = ImeMode.Disable;
+                Focus();
                 ExtraMouseDown = true;
                 if (subForm == null)
                 {
@@ -717,10 +719,20 @@ namespace AntdUI
                     Size = PSize;
                     break;
             }
-            Invalidate();
             return false;
         }
 
         #endregion
+
+        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        {
+            if (subForm != null) return subForm.IProcessCmdKey(ref msg, keyData);
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            if (subForm != null) subForm.IKeyPress(e);
+            base.OnKeyPress(e);
+        }
     }
 }

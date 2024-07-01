@@ -275,7 +275,7 @@ namespace AntdUI
                         if (hover_button.Animation)
                         {
                             g.DrawString(button_text, Font, brush_active, rect_button, stringFormatC);
-                            using (var brush_hove = new SolidBrush(Color.FromArgb(hover_button.Value, Style.Db.PrimaryActive)))
+                            using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
                             {
                                 g.DrawString(button_text, Font, brush_hove, rect_button, stringFormatC);
                             }
@@ -292,7 +292,7 @@ namespace AntdUI
                         if (hover_buttonok.Animation)
                         {
                             g.DrawString(OKButton, Font, brush_active, rect_buttonok, stringFormatC);
-                            using (var brush_hove = new SolidBrush(Color.FromArgb(hover_buttonok.Value, Style.Db.PrimaryActive)))
+                            using (var brush_hove = new SolidBrush(Helper.ToColor(hover_buttonok.Value, Style.Db.PrimaryActive)))
                             {
                                 g.DrawString(OKButton, Font, brush_hove, rect_buttonok, stringFormatC);
                             }

@@ -362,7 +362,7 @@ namespace AntdUI
         {
             if (row.AnimationHover)
             {
-                using (var brush = new SolidBrush(Color.FromArgb((int)(row.AnimationHoverValue * Style.Db.FillSecondary.A), Style.Db.FillSecondary)))
+                using (var brush = new SolidBrush(Helper.ToColorN(row.AnimationHoverValue, Style.Db.FillSecondary)))
                 {
                     g.FillRectangle(brush, row.RECT);
                 }
@@ -600,15 +600,14 @@ namespace AntdUI
             {
                 if (it.AnimationCheck)
                 {
-                    int a = (int)(255 * it.AnimationCheckValue);
-
+                    var alpha = 255 * it.AnimationCheckValue;
                     if (it.CheckState == CheckState.Indeterminate || (it.checkStateOld == CheckState.Indeterminate && !it.Checked))
                     {
                         using (var brush = new Pen(Style.Db.BorderColor, check_border))
                         {
                             g.DrawPath(brush, path_check);
                         }
-                        using (var brush = new SolidBrush(Color.FromArgb(a, Style.Db.Primary)))
+                        using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.Primary)))
                         {
                             g.FillRectangle(brush, PaintBlock(check.rect));
                         }
@@ -617,20 +616,19 @@ namespace AntdUI
                     {
                         float dot = check.rect.Width * 0.3F;
 
-                        using (var brush = new SolidBrush(Color.FromArgb(a, Style.Db.Primary)))
+                        using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.Primary)))
                         {
                             g.FillPath(brush, path_check);
                         }
-                        using (var brush = new Pen(Color.FromArgb(a, Style.Db.BgBase), check_border))
+                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), check_border))
                         {
                             g.DrawLines(brush, PaintArrow(check.rect));
                         }
 
                         if (it.Checked)
                         {
-                            float max = check.rect.Height + check.rect.Height * it.AnimationCheckValue;
-                            int a2 = (int)(100 * (1f - it.AnimationCheckValue));
-                            using (var brush = new SolidBrush(Color.FromArgb(a2, Style.Db.Primary)))
+                            float max = check.rect.Height + check.rect.Height * it.AnimationCheckValue, alpha2 = 100 * (1F - it.AnimationCheckValue);
+                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, Style.Db.Primary)))
                             {
                                 g.FillEllipse(brush, new RectangleF(check.rect.X + (check.rect.Width - max) / 2F, check.rect.Y + (check.rect.Height - max) / 2F, max, max));
                             }
@@ -678,22 +676,21 @@ namespace AntdUI
             {
                 if (check.AnimationCheck)
                 {
-                    int a = (int)(255 * check.AnimationCheckValue);
+                    var alpha = 255 * check.AnimationCheckValue;
 
-                    using (var brush = new SolidBrush(Color.FromArgb(a, Style.Db.Primary)))
+                    using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.Primary)))
                     {
                         g.FillPath(brush, path_check);
                     }
-                    using (var brush = new Pen(Color.FromArgb(a, Style.Db.BgBase), check_border))
+                    using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), check_border))
                     {
                         g.DrawLines(brush, PaintArrow(check.rect));
                     }
 
                     if (check.Checked)
                     {
-                        float max = check.rect.Height + check.rect.Height * check.AnimationCheckValue;
-                        int a2 = (int)(100 * (1f - check.AnimationCheckValue));
-                        using (var brush = new SolidBrush(Color.FromArgb(a2, Style.Db.Primary)))
+                        float max = check.rect.Height + check.rect.Height * check.AnimationCheckValue, alpha2 = 100 * (1F - check.AnimationCheckValue);
+                        using (var brush = new SolidBrush(Helper.ToColor(alpha2, Style.Db.Primary)))
                         {
                             g.FillEllipse(brush, new RectangleF(check.rect.X + (check.rect.Width - max) / 2F, check.rect.Y + (check.rect.Height - max) / 2F, max, max));
                         }
@@ -737,20 +734,18 @@ namespace AntdUI
                 float dot = dot_size * 0.3F;
                 using (var path = new GraphicsPath())
                 {
-                    float dot_ant = dot_size - dot * radio.AnimationCheckValue, dot_ant2 = dot_ant / 2F;
-                    int a = (int)(255 * radio.AnimationCheckValue);
+                    float dot_ant = dot_size - dot * radio.AnimationCheckValue, dot_ant2 = dot_ant / 2F, alpha = 255 * radio.AnimationCheckValue;
                     path.AddEllipse(radio.rect);
                     path.AddEllipse(new RectangleF(radio.rect.X + dot_ant2, radio.rect.Y + dot_ant2, radio.rect.Width - dot_ant, radio.rect.Height - dot_ant));
-                    using (var brush = new SolidBrush(Color.FromArgb(a, color)))
+                    using (var brush = new SolidBrush(Helper.ToColor(alpha, color)))
                     {
                         g.FillPath(brush, path);
                     }
                 }
                 if (radio.Checked)
                 {
-                    float max = radio.rect.Height + radio.rect.Height * radio.AnimationCheckValue;
-                    int a2 = (int)(100 * (1f - radio.AnimationCheckValue));
-                    using (var brush = new SolidBrush(Color.FromArgb(a2, color)))
+                    float max = radio.rect.Height + radio.rect.Height * radio.AnimationCheckValue, alpha2 = 100 * (1F - radio.AnimationCheckValue);
+                    using (var brush = new SolidBrush(Helper.ToColor(alpha2, color)))
                     {
                         g.FillEllipse(brush, new RectangleF(radio.rect.X + (radio.rect.Width - max) / 2F, radio.rect.Y + (radio.rect.Height - max) / 2F, max, max));
                     }
@@ -795,8 +790,7 @@ namespace AntdUI
                     g.FillPath(brush, path);
                     if (_switch.AnimationHover)
                     {
-                        int a = (int)(brush.Color.A * _switch.AnimationHoverValue);
-                        using (var brush2 = new SolidBrush(Color.FromArgb(a, brush.Color)))
+                        using (var brush2 = new SolidBrush(Helper.ToColorN(_switch.AnimationHoverValue, brush.Color)))
                         {
                             g.FillPath(brush2, path);
                         }
@@ -806,8 +800,8 @@ namespace AntdUI
                 float gap = (int)(2 * Config.Dpi), gap2 = gap * 2F;
                 if (_switch.AnimationCheck)
                 {
-                    int a = (int)(255 * _switch.AnimationCheckValue);
-                    using (var brush = new SolidBrush(Color.FromArgb(a, color)))
+                    var alpha = 255 * _switch.AnimationCheckValue;
+                    using (var brush = new SolidBrush(Helper.ToColor(alpha, color)))
                     {
                         g.FillPath(brush, path);
                     }
@@ -826,8 +820,7 @@ namespace AntdUI
                     }
                     if (_switch.AnimationHover)
                     {
-                        int a = (int)(colorhover.A * _switch.AnimationHoverValue);
-                        using (var brush2 = new SolidBrush(Color.FromArgb(a, colorhover)))
+                        using (var brush2 = new SolidBrush(Helper.ToColorN(_switch.AnimationHoverValue, colorhover)))
                         {
                             g.FillPath(brush2, path);
                         }

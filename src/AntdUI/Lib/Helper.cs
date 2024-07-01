@@ -50,7 +50,9 @@ namespace AntdUI
         /// <param name="lr">水平（前后）</param>
         public static StringFormat SF_NoWrap(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
         {
-            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, FormatFlags = StringFormatFlags.NoWrap };
+            var sf = new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
+            sf.FormatFlags |= StringFormatFlags.NoWrap;
+            return sf;
         }
 
         /// <summary>
@@ -70,12 +72,16 @@ namespace AntdUI
         /// <param name="lr">水平（前后）</param>
         public static StringFormat SF_ALL(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
         {
-            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+            var sf = new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter, };
+            sf.FormatFlags |= StringFormatFlags.NoWrap;
+            return sf;
         }
 
         public static StringFormat SF_MEASURE_FONT()
         {
-            return new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.MeasureTrailingSpaces };
+            var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            return sf;
         }
 
         #endregion
@@ -1727,9 +1733,33 @@ namespace AntdUI
             return new Size((int)Math.Ceiling(size.Width + p), (int)Math.Ceiling(size.Height + p));
         }
 
+        public static Color ToColor(float alpha, Color color)
+        {
+            return ToColor((int)alpha, color);
+        }
+
+        public static Color ToColorN(float val, Color color)
+        {
+            return ToColor((int)(val * color.A), color);
+        }
+
+        public static Color ToColor(int alpha, Color color)
+        {
+            if (alpha > 255) alpha = 255;
+            else if (alpha < 0) alpha = 0;
+            return Color.FromArgb(alpha, color);
+        }
+
         #region DPI
 
-        internal static Dictionary<Control, AnchorDock> DpiSuspend(Control.ControlCollection controls)
+        internal static void DpiAuto(float dpi, Control control)
+        {
+            var dir = DpiSuspend(control.Controls);
+            DpiLS(dpi, control);
+            DpiResume(dir, control.Controls);
+        }
+
+        static Dictionary<Control, AnchorDock> DpiSuspend(Control.ControlCollection controls)
         {
             var dir = new Dictionary<Control, AnchorDock>();
             foreach (Control control in controls)
@@ -1739,7 +1769,7 @@ namespace AntdUI
             }
             return dir;
         }
-        internal static void DpiSuspend(ref Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
+        static void DpiSuspend(ref Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
         {
             foreach (Control control in controls)
             {
@@ -1748,7 +1778,7 @@ namespace AntdUI
             }
         }
 
-        internal static void DpiResume(Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
+        static void DpiResume(Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
         {
             foreach (Control control in controls)
             {
@@ -1761,7 +1791,7 @@ namespace AntdUI
             }
         }
 
-        internal static void DpiLS(float dpi, Control control)
+        static void DpiLS(float dpi, Control control)
         {
             var size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
             Point point;
@@ -1824,7 +1854,7 @@ namespace AntdUI
             }
         }
 
-        internal static void DpiLSS(float dpi, Control control)
+        static void DpiLSS(float dpi, Control control)
         {
             if (control.Controls.Count > 0)
             {

@@ -32,7 +32,7 @@ namespace AntdUI
         internal List<object> selectedValue;
         int r_w = 0;
         readonly List<ObjectItem> Items = new List<ObjectItem>();
-        public LayeredFormSelectMultiple(SelectMultiple control, RectangleF rect_read, List<object> items)
+        public LayeredFormSelectMultiple(SelectMultiple control, RectangleF rect_read, List<object> items, string filtertext)
         {
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -44,12 +44,12 @@ namespace AntdUI
             selectedValue = new List<object>(control.SelectedValue.Length);
             selectedValue.AddRange(control.SelectedValue);
             Radius = (int)(control.radius * Config.Dpi);
-            Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items);
+            Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items, filtertext);
         }
 
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
-        void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, RectangleF rect_read, List<object> items)
+        void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, RectangleF rect_read, List<object> items, string? filtertext = null)
         {
             int y = 10, w = (int)rect_read.Width;
             r_w = w;
@@ -97,7 +97,8 @@ namespace AntdUI
             });
 
             SetSizeW(w + 20);
-            EndHeight = y + 10;
+            if (filtertext == null || string.IsNullOrEmpty(filtertext)) EndHeight = y + 10;
+            else EndHeight = TextChangeCore(filtertext);
             var point = control.PointToScreen(Point.Empty);
             switch (Placement)
             {
@@ -276,22 +277,9 @@ namespace AntdUI
 
         #region 筛选
 
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            textBox.TextChanged += TextBox_TextChanged;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            textBox.TextChanged -= TextBox_TextChanged;
-            base.Dispose(disposing);
-        }
-
-        void TextBox_TextChanged(object? sender, EventArgs e)
+        internal void TextChange(string val)
         {
             int count = 0;
-            var val = textBox.Text;
             if (string.IsNullOrEmpty(val))
             {
                 nodata = false;
@@ -308,13 +296,20 @@ namespace AntdUI
             {
                 val = val.ToLower();
                 int showcount = 0;
-                foreach (var it in Items)
+                for (int i = 0; i < Items.Count; i++)
                 {
+                    var it = Items[i];
                     if (it.ID > -1)
                     {
                         if (it.Contains(val))
                         {
                             showcount++;
+                            if (it.Text.ToLower() == val)
+                            {
+                                it.Hover = true;
+                                hoveindex = i;
+                                count++;
+                            }
                             if (!it.Show)
                             {
                                 it.Show = true;
@@ -352,7 +347,7 @@ namespace AntdUI
                         float gap = (text_height - gap_y) / 2F;
                         foreach (var it in Items)
                         {
-                            if (it.Show)
+                            if (it.ID > -1 && it.Show)
                             {
                                 list_count++;
                                 var rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size);
@@ -378,6 +373,80 @@ namespace AntdUI
                     });
                 }
                 Print();
+            }
+        }
+        internal int TextChangeCore(string val)
+        {
+            if (string.IsNullOrEmpty(val))
+            {
+                nodata = false;
+                foreach (var it in Items) it.Show = true;
+            }
+            else
+            {
+                val = val.ToLower();
+                int showcount = 0;
+                for (int i = 0; i < Items.Count; i++)
+                {
+                    var it = Items[i];
+                    if (it.ID > -1)
+                    {
+                        if (it.Contains(val))
+                        {
+                            showcount++;
+                            if (it.Text.ToLower() == val)
+                            {
+                                it.Hover = true;
+                                hoveindex = i;
+                            }
+                            it.Show = true;
+                        }
+                        else it.Show = false;
+                    }
+                }
+                nodata = showcount == 0;
+            }
+            if (nodata) return 80;
+            else
+            {
+                scrollY.val = 0;
+                int y = 10, w = r_w, list_count = 0;
+                Helper.GDI(g =>
+                {
+                    var size = g.MeasureString(Config.NullText, Font).Size(2);
+                    int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
+                    int font_size = size.Height + gap_y * 2;
+                    var y2 = gap_y * 2;
+                    y += gap_y;
+
+                    int text_height = font_size - y2;
+                    float gap = (text_height - gap_y) / 2F;
+                    foreach (var it in Items)
+                    {
+                        if (it.ID > -1 && it.Show)
+                        {
+                            list_count++;
+                            var rect_bg = new RectangleF(10 + gap_y, y, w - y2, font_size);
+                            it.SetRect(rect_bg, new RectangleF(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, rect_bg.Height - y2), gap, gap_y);
+                            y += font_size;
+                        }
+                    }
+
+                    var vr = font_size * list_count;
+                    if (list_count > MaxCount)
+                    {
+                        y = 10 + gap_y * 2 + (font_size * MaxCount);
+                        scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
+                        scrollY.Show = true;
+                        scrollY.SetVrSize(vr, scrollY.Rect.Height);
+                    }
+                    else
+                    {
+                        y = 10 + gap_y * 2 + vr;
+                        scrollY.Show = false;
+                    }
+                });
+                return y + 10;
             }
         }
 

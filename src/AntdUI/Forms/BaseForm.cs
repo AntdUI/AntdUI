@@ -201,12 +201,7 @@ namespace AntdUI
 
         public void AutoDpi(float dpi, Control control)
         {
-            if (dpi != 1F)
-            {
-                var dir = Helper.DpiSuspend(control.Controls);
-                Helper.DpiLS(dpi, control);
-                Helper.DpiResume(dir, control.Controls);
-            }
+            if (dpi != 1F) Helper.DpiAuto(dpi, control);
         }
 
         #endregion

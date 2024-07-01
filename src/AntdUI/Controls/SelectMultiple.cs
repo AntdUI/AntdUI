@@ -162,6 +162,18 @@ namespace AntdUI
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
         public event ObjectsEventHandler? SelectedValueChanged = null;
 
+        string filtertext = "";
+        protected override void OnTextChanged(EventArgs e)
+        {
+            base.OnTextChanged(e);
+            if (HasFocus)
+            {
+                filtertext = Text;
+                TextFocus = true;
+                if (textFocus) subForm?.TextChange(Text);
+            }
+        }
+
         object[] selectedValue = new object[0];
         /// <summary>
         /// 清空选中
@@ -243,7 +255,10 @@ namespace AntdUI
         RectangleF[] rect_lefts = new RectangleF[0];
         RectangleF[] rect_left_txts = new RectangleF[0];
         RectangleF[] rect_left_dels = new RectangleF[0];
-        internal override int UseLeft(Rectangle rect_read)
+
+        internal override bool HasLeft() => selectedValue.Length > 0;
+
+        internal override int UseLeft(Rectangle rect_read, bool delgap)
         {
             if (selectedValue.Length > 0)
             {
@@ -251,13 +266,14 @@ namespace AntdUI
                 {
                     int height = g.MeasureString(Config.NullText, Font).Size().Height, del_icon = (int)(height * 0.4);
                     List<RectangleF> _rect_left = new List<RectangleF>(selectedValue.Length), _rect_left_txt = new List<RectangleF>(selectedValue.Length), _rect_left_del = new List<RectangleF>(selectedValue.Length);
-                    int y = (rect_read.Height - height) / 2, use = y, gap = (int)(2 * Config.Dpi);
+                    int y = (rect_read.Height - height) / 2, use = delgap ? 0 : y, gap = (int)(2 * Config.Dpi);
                     for (int i = 0; i < selectedValue.Length; i++)
                     {
                         var it = selectedValue[i];
                         var size = g.MeasureString(it.ToString(), Font).Size();
                         var size2 = g.MeasureString("+" + (selectedValue.Length - i), Font).Size();
-                        if ((use + size.Width + height + gap + (size2.Width + gap)) > rect_read.Width)
+                        int use_base = use + size.Width + height + gap;
+                        if (use_base + (size2.Width + gap) > rect_read.Width)
                         {
                             //超出
                             _rect_left_txt.Add(new RectangleF(rect_read.X + use, rect_read.Y + y, size2.Width, height));
@@ -277,7 +293,7 @@ namespace AntdUI
                     rect_left_txts = _rect_left_txt.ToArray();
                     rect_left_dels = _rect_left_del.ToArray();
                     rect_lefts = _rect_left.ToArray();
-                    return use - gap;
+                    return use - (delgap ? 0 : gap);
                 });
             }
             return 0;
@@ -424,7 +440,7 @@ namespace AntdUI
                                 objs.Add(it);
                             }
                             Expand = true;
-                            subForm = new LayeredFormSelectMultiple(this, ReadRectangle, objs);
+                            subForm = new LayeredFormSelectMultiple(this, ReadRectangle, objs, filtertext);
                             subForm.Disposed += (a, b) =>
                             {
                                 subForm = null;
@@ -436,6 +452,7 @@ namespace AntdUI
                     }
                     else { textFocus = false; return; }
                 }
+                else filtertext = "";
             }
         }
 

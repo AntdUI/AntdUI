@@ -93,6 +93,22 @@ namespace AntdUI
             }
         }
 
+        bool showcontrol = true;
+        /// <summary>
+        /// 显示控制器
+        /// </summary>
+        [Description("显示控制器"), Category("交互"), DefaultValue(true)]
+        public bool ShowControl
+        {
+            get => showcontrol;
+            set
+            {
+                if (showcontrol == value) return;
+                showcontrol = value;
+                Invalidate();
+            }
+        }
+
         int decimalPlaces = 0;
         /// <summary>
         /// 显示的小数点位数
@@ -251,7 +267,7 @@ namespace AntdUI
 
                 if (hover_button.Animation)
                 {
-                    using (var pen = new Pen(Color.FromArgb(hover_button.Value, borColor), 1 * Config.Dpi))
+                    using (var pen = new Pen(Helper.ToColor(hover_button.Value, borColor), 1 * Config.Dpi))
                     {
                         using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
                         {
@@ -283,7 +299,7 @@ namespace AntdUI
                     using (var pen_def = new Pen(borColor, 1 * Config.Dpi))
                     {
                         g.DrawLines(pen_def, TAlignMini.Top.TriangleLines(rect_button_up));
-                        using (var brush_hove = new Pen(Color.FromArgb(hover_button_up.Value, borderActive), pen_def.Width))
+                        using (var brush_hove = new Pen(Helper.ToColor(hover_button_up.Value, borderActive), pen_def.Width))
                         {
                             g.DrawLines(brush_hove, TAlignMini.Top.TriangleLines(rect_button_up));
                         }
@@ -309,7 +325,7 @@ namespace AntdUI
                     using (var pen_def = new Pen(borColor, 1 * Config.Dpi))
                     {
                         g.DrawLines(pen_def, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
-                        using (var brush_hove = new Pen(Color.FromArgb(hover_button_bottom.Value, borderActive), pen_def.Width))
+                        using (var brush_hove = new Pen(Helper.ToColor(hover_button_bottom.Value, borderActive), pen_def.Width))
                         {
                             g.DrawLines(brush_hove, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                         }
@@ -338,30 +354,33 @@ namespace AntdUI
 
         internal override void ChangeMouseHover(bool Hover, bool Focus)
         {
-            hover_button.Switch = !ReadOnly && (Hover || Focus);
+            hover_button.Switch = showcontrol && !ReadOnly && (Hover || Focus);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (!ReadOnly && rect_button.Contains(e.Location))
+            if (showcontrol)
             {
-                if (rect_button_up.Contains(e.Location))
+                if (!ReadOnly && rect_button.Contains(e.Location))
                 {
-                    hover_button_bottom.Switch = false;
-                    hover_button_up.Switch = true;
+                    if (rect_button_up.Contains(e.Location))
+                    {
+                        hover_button_bottom.Switch = false;
+                        hover_button_up.Switch = true;
+                    }
+                    else
+                    {
+                        hover_button_up.Switch = false;
+                        hover_button_bottom.Switch = true;
+                    }
+                    SetCursor(true);
+                    return;
                 }
                 else
                 {
-                    hover_button_up.Switch = false;
-                    hover_button_bottom.Switch = true;
+                    hover_button_up.Switch = hover_button_bottom.Switch = false;
+                    SetCursor(false);
                 }
-                SetCursor(true);
-                return;
-            }
-            else
-            {
-                hover_button_up.Switch = hover_button_bottom.Switch = false;
-                SetCursor(false);
             }
             base.OnMouseMove(e);
         }
@@ -370,7 +389,7 @@ namespace AntdUI
         int downid = 0, temp_old = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (!ReadOnly && rect_button.Contains(e.Location))
+            if (showcontrol && !ReadOnly && rect_button.Contains(e.Location))
             {
                 if (rect_button_up.Contains(e.Location))
                 {
@@ -419,10 +438,10 @@ namespace AntdUI
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        protected override void OnTextChanged(EventArgs e)
+        protected override void OnLostFocus(EventArgs e)
         {
             if (IsHandleCreated && setvalue && decimal.TryParse(Text, out var _d)) Value = _d;
-            base.OnTextChanged(e);
+            base.OnLostFocus(e);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

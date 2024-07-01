@@ -147,7 +147,22 @@ namespace AntdUI
         /// <param name="end">运行结束后的回调</param>
         public void Spin(Spin.Config config, Action action, Action? end = null)
         {
-            if (InvokeRequired)
+            if (this.FindPARENT() is LayeredFormModal model)
+            {
+                if (model.Tag == null)
+                {
+                    model.Tag = 1;
+                    model.Load += (a, b) =>
+                    {
+                        BeginInvoke(new Action(() =>
+                        {
+                            Spin(config, action, end);
+                        }));
+                    };
+                    return;
+                }
+            }
+            else if (InvokeRequired)
             {
                 BeginInvoke(new Action(() =>
                 {

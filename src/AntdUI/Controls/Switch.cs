@@ -154,8 +154,7 @@ namespace AntdUI
                     g.FillPath(brush, path);
                     if (AnimationHover)
                     {
-                        int a = (int)(brush.Color.A * AnimationHoverValue);
-                        using (var brush2 = new SolidBrush(Color.FromArgb(a, brush.Color)))
+                        using (var brush2 = new SolidBrush(Helper.ToColorN(AnimationHoverValue, brush.Color)))
                         {
                             g.FillPath(brush2, path);
                         }
@@ -165,8 +164,8 @@ namespace AntdUI
                 float gap = (int)(Gap * Config.Dpi), gap2 = gap * 2F;
                 if (AnimationCheck)
                 {
-                    int a = (int)(255 * AnimationCheckValue);
-                    using (var brush = new SolidBrush(Color.FromArgb(a, _color)))
+                    var alpha = 255 * AnimationCheckValue;
+                    using (var brush = new SolidBrush(Helper.ToColor(alpha, _color)))
                     {
                         g.FillPath(brush, path);
                     }
@@ -185,8 +184,7 @@ namespace AntdUI
                     }
                     if (AnimationHover)
                     {
-                        int a = (int)(colorhover.A * AnimationHoverValue);
-                        using (var brush2 = new SolidBrush(Color.FromArgb(a, colorhover)))
+                        using (var brush2 = new SolidBrush(Helper.ToColorN(AnimationHoverValue, colorhover)))
                         {
                             g.FillPath(brush2, path);
                         }
@@ -220,9 +218,9 @@ namespace AntdUI
         {
             if (AnimationClick)
             {
-                float maxw = rect_read.Width + ((rect.Width - rect_read.Width) * AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * AnimationClickValue);
-                int a = (int)(100 * (1f - AnimationClickValue));
-                using (var brush = new SolidBrush(Color.FromArgb(a, color)))
+                float maxw = rect_read.Width + ((rect.Width - rect_read.Width) * AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * AnimationClickValue),
+                    alpha = 100 * (1F - AnimationClickValue);
+                using (var brush = new SolidBrush(Helper.ToColor(alpha, color)))
                 {
                     using (var path_click = new RectangleF((rect.Width - maxw) / 2F, (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(maxh))
                     {

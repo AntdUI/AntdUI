@@ -32,9 +32,11 @@ namespace AntdUI
         int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28;//260
         Color Value, ValueNAlpha, ValueHue;
         Action<Color> action;
+        Input input;
         public LayeredFormColorPicker(ColorPicker control, RectangleF rect_read, Action<Color> _action)
         {
             control.Parent.SetTopMost(Handle);
+            Font = control.Font;
             color_alpha = Value = control.Value;
             ValueNAlpha = Color.FromArgb(255, Value);
             var hsv = ValueNAlpha.ToHSV();
@@ -81,6 +83,9 @@ namespace AntdUI
                 }
             }
 
+            rect_input = new Rectangle(rect_colors_big.X + 4, rect_alpha.Bottom + gap, rect_colors_big.Width - 8, panel_color);
+            h += panel_color + gap;
+
             SetSizeW(w + 20);
             EndHeight = h + 20;
             var point = control.PointToScreen(Point.Empty);
@@ -90,6 +95,40 @@ namespace AntdUI
 
             Location = TargetRect.Location;
             Size = TargetRect.Size;
+            input = new Input
+            {
+                Padding = new Padding(rect_colors_big.X + 4, 0, rect_colors_big.X + 4, 0),
+                Location = new Point(0, rect_input.Y),
+                Size = new Size(w + 20, rect_input.Height),
+                TextAlign = HorizontalAlignment.Center,
+                Text = "#" + Value.ToHex()
+            };
+            input.TakePaint = () =>
+            {
+                Print();
+            };
+            input.TextChanged += (a, b) =>
+            {
+                if (isinput)
+                {
+                    var color = input.Text.ToColor();
+                    color_alpha = Value = color;
+                    ValueNAlpha = Color.FromArgb(255, Value);
+                    var hsv = ValueNAlpha.ToHSV();
+                    hsv.s = hsv.v = 1;
+                    ValueHue = hsv.HSVToColor();
+
+                    action(Value);
+                    bmp_colors?.Dispose();
+                    bmp_colors = null;
+                    bmp_hue?.Dispose();
+                    bmp_hue = null;
+                    bmp_alpha?.Dispose();
+                    bmp_alpha = null;
+                    Print();
+                }
+            };
+            Controls.Add(input);
         }
 
         public override void LoadOK()
@@ -110,6 +149,14 @@ namespace AntdUI
 
         #region 鼠标
 
+        bool isinput = true;
+        void SetValue()
+        {
+            isinput = false;
+            input.Text = "#" + Value.ToHex();
+            action(Value);
+            isinput = true;
+        }
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -125,7 +172,7 @@ namespace AntdUI
                         else if (point_colors.Y > bmp_colors.Height - 1) point_colors.Y = bmp_colors.Height - 1;
                         color_alpha = Value = bmp_colors.GetPixel(point_colors.X, point_colors.Y);
                         ValueNAlpha = Color.FromArgb(255, Value);
-                        action(Value);
+                        SetValue();
                         bmp_alpha?.Dispose();
                         bmp_alpha = null;
                         Print();
@@ -146,7 +193,7 @@ namespace AntdUI
                         hsv_value.h = hsv.h;
                         color_alpha = Value = hsv_value.HSVToColor();
                         ValueNAlpha = Color.FromArgb(255, Value);
-                        action(Value);
+                        SetValue();
                         bmp_colors?.Dispose();
                         bmp_colors = null;
                         bmp_alpha?.Dispose();
@@ -163,7 +210,7 @@ namespace AntdUI
                         if (point_alpha < 0) point_alpha = 0;
                         else if (point_alpha > bmp_alpha_read.Width - 1) point_alpha = bmp_alpha_read.Width - 1;
                         color_alpha = Value = Color.FromArgb(bmp_alpha_read.GetPixel(point_alpha, 1).A, ValueNAlpha);
-                        action(Value);
+                        SetValue();
                         Print();
                         down_alpha = true;
                     }
@@ -183,7 +230,7 @@ namespace AntdUI
                 else if (point_colors.Y > bmp_colors.Height - 1) point_colors.Y = bmp_colors.Height - 1;
                 color_alpha = Value = bmp_colors.GetPixel(point_colors.X, point_colors.Y);
                 ValueNAlpha = Color.FromArgb(255, Value);
-                action(Value);
+                SetValue();
                 bmp_alpha?.Dispose();
                 bmp_alpha = null;
                 Print();
@@ -200,7 +247,7 @@ namespace AntdUI
                 hsv_value.h = hsv.h;
                 color_alpha = Value = hsv_value.HSVToColor();
                 ValueNAlpha = Color.FromArgb(255, Value);
-                action(Value);
+                SetValue();
                 bmp_colors?.Dispose();
                 bmp_colors = null;
                 bmp_alpha?.Dispose();
@@ -213,7 +260,7 @@ namespace AntdUI
                 if (point_alpha < 0) point_alpha = 0;
                 else if (point_alpha > bmp_alpha_read.Width - 1) point_alpha = bmp_alpha_read.Width - 1;
                 color_alpha = Value = Color.FromArgb(bmp_alpha_read.GetPixel(point_alpha, 1).A, ValueNAlpha);
-                action(Value);
+                SetValue();
                 Print();
             }
             base.OnMouseMove(e);
@@ -362,9 +409,13 @@ namespace AntdUI
 
                     #endregion
                 }
+                g.TranslateTransform(0, rect_input.Y);
+                input.IPaint(g, rect_input);
             }
             return original_bmp;
         }
+
+        Rectangle rect_input;
 
         #region 渲染帮助
 
@@ -578,5 +629,15 @@ namespace AntdUI
         }
 
         #endregion
+
+        public bool IProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        {
+            return input.IProcessCmdKey(ref msg, keyData);
+        }
+
+        public void IKeyPress(KeyPressEventArgs e)
+        {
+            input.IKeyPress(e);
+        }
     }
 }

@@ -157,10 +157,10 @@ namespace AntdUI
             ShowSkin();
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected override void OnClosed(EventArgs e)
         {
-            base.OnClosing(e);
-            if (!e.Cancel) skin?.Close();
+            base.OnClosed(e);
+            skin?.Close(); skin = null;
         }
 
         protected override void OnVisibleChanged(EventArgs e)

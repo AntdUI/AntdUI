@@ -570,12 +570,6 @@ namespace AntdUI
         #endregion
 
         /// <summary>
-        /// 多行编辑是否允许输入回车
-        /// </summary>
-        [Description("多行编辑是否允许输入回车"), Category("行为"), DefaultValue(false)]
-        public bool AcceptsReturn { get; set; } = false;
-
-        /// <summary>
         /// 多行编辑是否允许输入制表符
         /// </summary>
         [Description("多行编辑是否允许输入制表符"), Category("行为"), DefaultValue(false)]

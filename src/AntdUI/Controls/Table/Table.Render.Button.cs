@@ -50,9 +50,9 @@ namespace AntdUI
 
                     if (template.AnimationClick)
                     {
-                        float maxw = rect_read.Width + (gap * template.AnimationClickValue), maxh = rect_read.Height + (gap * template.AnimationClickValue);
-                        int a = (int)(100 * (1f - template.AnimationClickValue));
-                        using (var brush = new SolidBrush(Color.FromArgb(a, _color)))
+                        float maxw = rect_read.Width + (gap * template.AnimationClickValue), maxh = rect_read.Height + (gap * template.AnimationClickValue),
+                            alpha = 100 * (1F - template.AnimationClickValue);
+                        using (var brush = new SolidBrush(Helper.ToColor(alpha, _color)))
                         {
                             using (var path_click = new RectangleF(rect_read.X + (rect_read.Width - maxw) / 2F, rect_read.Y + (rect_read.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, btn.Shape))
                             {
@@ -102,7 +102,7 @@ namespace AntdUI
                             }
                             else if (template.AnimationHover)
                             {
-                                var colorHover = Color.FromArgb(template.AnimationHoverValue, _back_hover);
+                                var colorHover = Helper.ToColor(template.AnimationHoverValue, _back_hover);
                                 using (var brush = new Pen(Style.Db.DefaultBorder, border))
                                 {
                                     g.DrawPath(brush, path);
@@ -141,7 +141,7 @@ namespace AntdUI
                             }
                             else if (template.AnimationHover)
                             {
-                                using (var brush = new SolidBrush(Color.FromArgb(template.AnimationHoverValue, _back_hover)))
+                                using (var brush = new SolidBrush(Helper.ToColor(template.AnimationHoverValue, _back_hover)))
                                 {
                                     g.FillPath(brush, path);
                                 }
@@ -218,9 +218,9 @@ namespace AntdUI
 
                     if (template.AnimationClick)
                     {
-                        float maxw = rect_read.Width + (gap * template.AnimationClickValue), maxh = rect_read.Height + (gap * template.AnimationClickValue);
-                        int a = (int)(100 * (1f - template.AnimationClickValue));
-                        using (var brush = new SolidBrush(Color.FromArgb(a, _back)))
+                        float maxw = rect_read.Width + (gap * template.AnimationClickValue), maxh = rect_read.Height + (gap * template.AnimationClickValue),
+                            alpha = 100 * (1F - template.AnimationClickValue);
+                        using (var brush = new SolidBrush(Helper.ToColor(alpha, _back)))
                         {
                             using (var path_click = new RectangleF(rect_read.X + (rect_read.Width - maxw) / 2F, rect_read.Y + (rect_read.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, btn.Shape))
                             {
@@ -249,7 +249,7 @@ namespace AntdUI
                             }
                             else if (template.AnimationHover)
                             {
-                                var colorHover = Color.FromArgb(template.AnimationHoverValue, _back_hover);
+                                var colorHover = Helper.ToColor(template.AnimationHoverValue, _back_hover);
                                 using (var brush = new Pen(btn.Enabled ? _back : Style.Db.FillTertiary, border))
                                 {
                                     g.DrawPath(brush, path);
@@ -315,7 +315,7 @@ namespace AntdUI
                         }
                         else if (template.AnimationHover)
                         {
-                            var colorHover = Color.FromArgb(template.AnimationHoverValue, _back_hover);
+                            var colorHover = Helper.ToColor(template.AnimationHoverValue, _back_hover);
                             using (var brush = new SolidBrush(colorHover))
                             {
                                 g.FillPath(brush, path);
@@ -761,7 +761,7 @@ namespace AntdUI
             }
             else if (template.AnimationHover)
             {
-                var colorHover = Color.FromArgb(template.AnimationHoverValue, Style.Db.PrimaryHover);
+                var colorHover = Helper.ToColor(template.AnimationHoverValue, Style.Db.PrimaryHover);
                 using (var brush = new SolidBrush(Style.Db.Primary))
                 {
                     g.DrawString(link.Text, font, brush, rect_read, link.stringFormat);

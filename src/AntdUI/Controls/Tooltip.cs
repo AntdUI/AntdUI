@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Threading;
 using System.Windows.Forms;
@@ -64,16 +65,23 @@ namespace AntdUI
         [Description("箭头方向"), Category("外观"), DefaultValue(TAlign.Top)]
         public TAlign ArrowAlign { get; set; } = TAlign.Top;
 
+        /// <summary>
+        /// 自定义宽度
+        /// </summary>
+        [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
+        public int? CustomWidth { get; set; }
+
         #endregion
 
         #region 渲染
 
+        readonly StringFormat s_c = Helper.SF_NoWrap(), s_l = Helper.SF(lr: StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect = ClientRectangle;
             var g = e.Graphics.High();
-            MaximumSize = MinimumSize = this.RenderMeasure(g);
-            this.Render(g, rect, Helper.stringFormatCenter2);
+            MaximumSize = MinimumSize = this.RenderMeasure(g, out var multiline);
+            this.Render(g, rect, multiline, s_c, s_l);
             base.OnPaint(e);
         }
 
@@ -179,6 +187,11 @@ namespace AntdUI
             /// 箭头方向
             /// </summary>
             public TAlign ArrowAlign { get; set; } = TAlign.Top;
+
+            /// <summary>
+            /// 自定义宽度
+            /// </summary>
+            public int? CustomWidth { get; set; }
         }
 
         #endregion
@@ -187,6 +200,7 @@ namespace AntdUI
     internal class TooltipForm : ILayeredFormOpacity, ITooltip
     {
         readonly Control? ocontrol = null;
+        bool multiline = false;
         public TooltipForm(Control control, string txt, ITooltipConfig component)
         {
             ocontrol = control;
@@ -197,9 +211,10 @@ namespace AntdUI
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
+            CustomWidth = component.CustomWidth;
             Helper.GDI(g =>
             {
-                SetSize(this.RenderMeasure(g));
+                SetSize(this.RenderMeasure(g, out multiline));
             });
             var point = control.PointToScreen(Point.Empty);
             if (component is Tooltip.Config config)
@@ -221,9 +236,10 @@ namespace AntdUI
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
+            CustomWidth = component.CustomWidth;
             Helper.GDI(g =>
             {
-                SetSize(this.RenderMeasure(g));
+                SetSize(this.RenderMeasure(g, out multiline));
             });
             SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
         }
@@ -233,7 +249,7 @@ namespace AntdUI
             Text = text;
             Helper.GDI(g =>
             {
-                SetSize(this.RenderMeasure(g));
+                SetSize(this.RenderMeasure(g, out multiline));
             });
             SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
             Print();
@@ -264,17 +280,24 @@ namespace AntdUI
         [Description("箭头方向"), Category("外观"), DefaultValue(TAlign.Top)]
         public TAlign ArrowAlign { get; set; } = TAlign.Top;
 
+        /// <summary>
+        /// 自定义宽度
+        /// </summary>
+        [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
+        public int? CustomWidth { get; set; }
+
         #endregion
 
         #region 渲染
 
+        readonly StringFormat s_c = Helper.SF_NoWrap(), s_l = Helper.SF(lr: StringAlignment.Near);
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
-                this.Render(g, rect, Helper.stringFormatCenter2);
+                this.Render(g, rect, multiline, s_c, s_l);
             }
             return original_bmp;
         }
@@ -321,16 +344,20 @@ namespace AntdUI
         [Description("箭头方向"), Category("外观"), DefaultValue(TAlign.Top)]
         public TAlign ArrowAlign { get; set; } = TAlign.Top;
 
+        /// <summary>
+        /// 自定义宽度
+        /// </summary>
+        [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
+        public int? CustomWidth { get; set; }
+
         #endregion
 
         readonly Dictionary<Control, string> dic = new Dictionary<Control, string>();
         [Description("设置是否提示"), DefaultValue(null)]
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public string? GetTip(Control item)
         {
-            if (dic.TryGetValue(item, out string? value))
-            {
-                return value;
-            }
+            if (dic.TryGetValue(item, out string? value)) return value;
             return null;
         }
         public void SetTip(Control control, string? val)
@@ -391,15 +418,25 @@ namespace AntdUI
 
         public static int Padding = 20;
 
-        public static Size RenderMeasure(this ITooltip core, Graphics g)
+        public static Size RenderMeasure(this ITooltip core, Graphics g, out bool multiline)
         {
+            multiline = core.Text.Contains("\n");
             var font_size = g.MeasureString(core.Text, core.Font);
+            if (core.CustomWidth.HasValue)
+            {
+                int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);
+                if (font_size.Width > width)
+                {
+                    font_size = g.MeasureString(core.Text, core.Font, width);
+                    multiline = true;
+                }
+            }
             if (core.ArrowAlign == TAlign.None) return new Size((int)Math.Ceiling(font_size.Width + Padding), (int)Math.Ceiling(font_size.Height + Padding));
             if (core.ArrowAlign == TAlign.Bottom || core.ArrowAlign == TAlign.BL || core.ArrowAlign == TAlign.BR || core.ArrowAlign == TAlign.Top || core.ArrowAlign == TAlign.TL || core.ArrowAlign == TAlign.TR)
                 return new Size((int)Math.Ceiling(font_size.Width + Padding), (int)Math.Ceiling(font_size.Height + Padding + core.ArrowSize));
             else return new Size((int)Math.Ceiling(font_size.Width + Padding + core.ArrowSize), (int)Math.Ceiling(font_size.Height + Padding));
         }
-        public static void Render(this ITooltip core, Graphics g, Rectangle rect, StringFormat stringFormat)
+        public static void Render(this ITooltip core, Graphics g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)
         {
             RectangleF rect_read;
             using (var brush = new SolidBrush(Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38)))
@@ -440,7 +477,9 @@ namespace AntdUI
                     g.FillPolygon(brush, core.ArrowAlign.AlignLines(core.ArrowSize, rect, rect_read));
                 }
             }
-            g.DrawString(core.Text, core.Font, Brushes.White, rect_read, stringFormat);
+            if (multiline) g.DrawString(core.Text, core.Font, Brushes.White, new RectangleF(rect_read.X + 10, rect_read.Y, rect_read.Width - 20, rect_read.Height), s_l);
+            else g.DrawString(core.Text, core.Font, Brushes.White, rect_read, s_c);
+
         }
         static void DrawShadow(this ITooltip core, Graphics _g, Rectangle brect, RectangleF rect, float size, GraphicsPath path2)
         {
@@ -473,6 +512,7 @@ namespace AntdUI
         public int Radius { get; set; } = 6;
         public float ArrowSize { get; set; } = 8F;
         public TAlign ArrowAlign { get; set; } = TAlign.Top;
+        public int? CustomWidth { get; set; }
     }
 
     internal interface ITooltipConfig
@@ -496,7 +536,13 @@ namespace AntdUI
         /// 箭头方向
         /// </summary>
         TAlign ArrowAlign { get; set; }
+
+        /// <summary>
+        /// 设定宽度
+        /// </summary>
+        int? CustomWidth { get; set; }
     }
+
     internal interface ITooltip
     {
         /// <summary>
@@ -523,6 +569,11 @@ namespace AntdUI
         /// 箭头方向
         /// </summary>
         TAlign ArrowAlign { get; set; }
+
+        /// <summary>
+        /// 设定宽度
+        /// </summary>
+        int? CustomWidth { get; set; }
     }
 
     #endregion

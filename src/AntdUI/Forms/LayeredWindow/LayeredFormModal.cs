@@ -161,9 +161,8 @@ namespace AntdUI
                     {
                         rectsContent = new RectangleF[0];
                         w = (int)Math.Round(control.Width * dpi);
-                        if (dpi != 1F) Helper.DpiLS(dpi, control);
+                        if (dpi != 1F) Helper.DpiAuto(dpi, control);
                         wp = w - paddingx * 2;
-                        control.Width = w;
                         Controls.Add(control);
                         if (_config.Icon == TType.None)
                         {
@@ -356,7 +355,7 @@ namespace AntdUI
             {
                 if (close_button.Animation)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(close_button.Value, Style.Db.FillSecondary)))
+                    using (var brush = new SolidBrush(Helper.ToColor(close_button.Value, Style.Db.FillSecondary)))
                     {
                         using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {

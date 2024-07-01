@@ -24,6 +24,11 @@ namespace AntdUI
 {
     partial class Input
     {
+        public bool IProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        {
+            return ProcessCmdKey(ref msg, keyData);
+        }
+
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
             switch (keyData)
@@ -42,7 +47,11 @@ namespace AntdUI
                     ProcessLeftKey(true);
                     return true;
                 case Keys.Up:
-                    if (multiline) ProcessUpKey();
+                    if (multiline) ProcessUpKey(false);
+                    else ProcessLeftKey(false);
+                    return true;
+                case Keys.Up | Keys.Shift:
+                    if (multiline) ProcessUpKey(true);
                     else ProcessLeftKey(false);
                     return true;
                 case Keys.Right:
@@ -52,14 +61,36 @@ namespace AntdUI
                     ProcessRightKey(true);
                     return true;
                 case Keys.Down:
-                    if (multiline) ProcessDownKey();
+                    if (multiline) ProcessDownKey(false);
+                    else ProcessRightKey(false);
+                    return true;
+                case Keys.Down | Keys.Shift:
+                    if (multiline) ProcessDownKey(true);
                     else ProcessRightKey(false);
                     return true;
                 case Keys.Home:
-                    ProcessHomeKey();
+                    ProcessHomeKey(false, false);
                     return true;
                 case Keys.End:
-                    ProcessEndKey();
+                    ProcessEndKey(false, false);
+                    return true;
+                case Keys.Control | Keys.Home:
+                    ProcessHomeKey(true, false);
+                    return true;
+                case Keys.Control | Keys.End:
+                    ProcessEndKey(true, false);
+                    return true;
+                case Keys.Shift | Keys.Home:
+                    ProcessHomeKey(false, true);
+                    return true;
+                case Keys.Shift | Keys.End:
+                    ProcessEndKey(false, true);
+                    return true;
+                case Keys.Control | Keys.Shift | Keys.Home:
+                    ProcessHomeKey(true, true);
+                    return true;
+                case Keys.Control | Keys.Shift | Keys.End:
+                    ProcessEndKey(true, true);
                     return true;
                 //========================================================
                 case Keys.Tab:
@@ -70,7 +101,7 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Enter:
-                    if (multiline && AcceptsReturn)
+                    if (multiline)
                     {
                         EnterText(Environment.NewLine);
                         return true;
@@ -95,8 +126,31 @@ namespace AntdUI
                 case Keys.Control | Keys.Y:
                     Redo();
                     return true;
+                case Keys.PageUp:
+                    if (ScrollYShow && cache_font != null)
+                    {
+                        SelectionLength = 0;
+                        var index = GetCaretPostion(CurrentCaret.X, CurrentCaret.Y - (rect_text.Height - cache_font[0].rect.Height));
+                        SelectionStart = index;
+                        return true;
+                    }
+                    break;
+                case Keys.PageDown:
+                    if (ScrollYShow && cache_font != null)
+                    {
+                        SelectionLength = 0;
+                        var index = GetCaretPostion(CurrentCaret.X, CurrentCaret.Y + (rect_text.Height - cache_font[0].rect.Height));
+                        SelectionStart = index;
+                        return true;
+                    }
+                    break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        internal void IKeyPress(KeyPressEventArgs e)
+        {
+            OnKeyPress(e);
         }
 
         protected override void OnKeyPress(KeyPressEventArgs e)
@@ -254,56 +308,149 @@ namespace AntdUI
             }
         }
 
-        void ProcessUpKey()
+        void ProcessUpKey(bool shift)
         {
-            SelectionLength = 0;
-            if (cache_font == null) SelectionStart--;
-            else
+            if (shift)
             {
-                int end = SelectionStart;
-                if (end > cache_font.Length - 1) end = cache_font.Length - 1;
-                var it = cache_font[end];
-                var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out _);
-                if (nearest == null || nearest.i == selectionStart) SelectionStart--;
-                else SelectionStart = nearest.i;
-            }
-        }
-
-        void ProcessDownKey()
-        {
-            SelectionLength = 0;
-            if (cache_font == null) SelectionStart++;
-            else
-            {
-                int end = SelectionStart;
-                if (end > cache_font.Length - 1) return;
-                var it = cache_font[end];
-                if (it.retun == 1)
+                if (cache_font == null)
                 {
-                    var nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
-                    if (nearest == null || nearest.i == selectionStart) SelectionStart++;
-                    else SelectionStart = nearest.i;
+                    SelectionLength = 0;
+                    SelectionStart--;
                 }
                 else
                 {
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out _);
+                    int index = selectionStartTemp;
+                    if (index > cache_font.Length - 1) index = cache_font.Length - 1;
+                    var it = cache_font[index];
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out _);
+                    if (nearest == null || nearest.i == selectionStartTemp)
+                    {
+                        SelectionStart = index - 1;
+                        SelectionLength++;
+                    }
+                    else
+                    {
+                        SelectionStart = nearest.i;
+                        SelectionLength += index - nearest.i;
+                    }
+                }
+            }
+            else
+            {
+                SelectionLength = 0;
+                if (cache_font == null) SelectionStart--;
+                else
+                {
+                    int end = SelectionStart;
+                    if (end > cache_font.Length - 1) end = cache_font.Length - 1;
+                    var it = cache_font[end];
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out _);
+                    if (nearest == null || nearest.i == selectionStart) SelectionStart--;
+                    else SelectionStart = nearest.i;
+                }
+            }
+        }
+
+        void ProcessDownKey(bool shift)
+        {
+            if (shift)
+            {
+                if (cache_font == null)
+                {
+                    SelectionLength = 0;
+                    SelectionStart++;
+                }
+                else
+                {
+                    int index = selectionStartTemp + selectionLength;
+                    if (index > cache_font.Length - 1) return;
+                    var it = cache_font[index];
+                    CacheFont? nearest;
+                    if (it.retun == 1) nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
+                    else nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out _);
+                    if (nearest == null || nearest.i == index) SelectionLength++;
+                    else SelectionLength += nearest.i - index;
+                    CurrentPosIndex = selectionStart + selectionLength;
+                    SetCaretPostion();
+                }
+            }
+            else
+            {
+                SelectionLength = 0;
+                if (cache_font == null) SelectionStart++;
+                else
+                {
+                    int end = SelectionStart;
+                    if (end > cache_font.Length - 1) return;
+                    var it = cache_font[end];
+                    CacheFont? nearest;
+                    if (it.retun == 1) nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
+                    else nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out _);
                     if (nearest == null || nearest.i == selectionStart) SelectionStart++;
                     else SelectionStart = nearest.i;
                 }
             }
         }
 
-        void ProcessHomeKey()
+        void ProcessHomeKey(bool ctrl, bool shift)
         {
-            SelectionLength = 0;
-            SelectionStart = 0;
+            if (ctrl && shift)
+            {
+                int index = selectionStartTemp;
+                if (index == 0) return;
+                if (ScrollYShow) ScrollY = 0;
+                SelectionStart = 0;
+                SelectionLength += index;
+            }
+            else
+            {
+                SelectionLength = 0;
+                if (ctrl)
+                {
+                    if (ScrollYShow) ScrollY = 0;
+                    SelectionStart = 0;
+                }
+                else
+                {
+                    if (cache_font == null) return;
+                    int index = selectionStartTemp;
+                    if (index > 0)
+                    {
+                        int start = FindStart(cache_font, index - 1);
+                        if (start == index) return;
+                        SelectionStart = start;
+                    }
+                }
+            }
         }
 
-        void ProcessEndKey()
+        void ProcessEndKey(bool ctrl, bool shift)
         {
             if (cache_font == null) return;
-            SelectionLength = 0;
-            SelectionStart = cache_font.Length;
+            if (ctrl && shift)
+            {
+                int index = selectionStartTemp + selectionLength;
+                if (index > cache_font.Length - 1) return;
+                if (ScrollYShow) ScrollY = ScrollYMax;
+                SelectionLength += cache_font.Length - selectionStartTemp;
+            }
+            else
+            {
+                if (ctrl)
+                {
+                    if (ScrollYShow) ScrollY = ScrollYMax;
+                    SelectionLength = 0;
+                    SelectionStart = cache_font.Length;
+                }
+                else
+                {
+                    int index = selectionStartTemp + selectionLength;
+                    if (index > cache_font.Length - 1) return;
+                    int start = FindEnd(cache_font, index);
+                    if (start == index) return;
+                    SelectionStart = start;
+                }
+            }
         }
     }
 }

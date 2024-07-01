@@ -76,7 +76,12 @@ namespace AntdUI
         /// <summary>
         /// 弹出是否在窗口里而不是在系统里（Message/Notification）
         /// </summary>
-        public static bool ShowInWindow { get; set; } = false;
+        public static bool ShowInWindow { get; set; }
+
+        /// <summary>
+        /// 通知消息边界偏移量XY（Message/Notification）
+        /// </summary>
+        public static int NoticeWindowOffsetXY { get; set; }
 
         /// <summary>
         /// 文本呈现的质量

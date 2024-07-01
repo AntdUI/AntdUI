@@ -34,6 +34,8 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            Focus();
+            Select();
             is_prefix_down = is_suffix_down = false;
             if (e.Button == MouseButtons.Left)
             {
@@ -78,11 +80,28 @@ namespace AntdUI
                     return;
                 }
                 mouseDownMove = false;
-                Select();
                 oldMouseDown = e.Location;
-                SelectionStart = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
-                SelectionLength = 0;
-                SetCaretPostion(selectionStart);
+                int indeX = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
+                if (ModifierKeys.HasFlag(Keys.Shift))
+                {
+                    if (indeX > selectionStartTemp)
+                    {
+                        if (selectionStart != selectionStartTemp) SelectionStart = selectionStartTemp;
+                        SelectionLength = indeX - selectionStartTemp;
+                    }
+                    else
+                    {
+                        int len = selectionStartTemp - indeX;
+                        SelectionStart = indeX;
+                        SelectionLength = len;
+                    }
+                }
+                else
+                {
+                    SelectionStart = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
+                    SelectionLength = 0;
+                    SetCaretPostion(selectionStart);
+                }
                 if (cache_font != null) mouseDown = true;
                 else if (ModeRange) SetCaretPostion();
             }
@@ -215,7 +234,7 @@ namespace AntdUI
             "/",
             "\\",
 
-            "\r","\t","\n"
+            "\r","\t","\n","\r\n"
         };
 
         /// <summary>
@@ -225,10 +244,7 @@ namespace AntdUI
         {
             for (int i = index; i >= 0; i--)
             {
-                if (sptext.Contains(cache_font[i].text))
-                {
-                    return i + 1;
-                }
+                if (sptext.Contains(cache_font[i].text)) return i + 1;
             }
             return 0;
         }
@@ -241,10 +257,7 @@ namespace AntdUI
             int end = cache_font.Length;
             for (int i = index; i < end; i++)
             {
-                if (sptext.Contains(cache_font[i].text))
-                {
-                    return i;
-                }
+                if (sptext.Contains(cache_font[i].text)) return i;
             }
             return end;
         }

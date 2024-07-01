@@ -170,9 +170,8 @@ namespace AntdUI
                     g.FillEllipse(brush, new RectangleF((rect.Width - dot_size) / 2F, (rect.Height - dot_size) / 2F, dot_size, dot_size));
                     if (state == TState.Processing)
                     {
-                        float max = (size.Height - 6F) * AnimationStateValue;
-                        int alpha = (int)(255 * (1f - AnimationStateValue));
-                        using (var pen = new Pen(Color.FromArgb(alpha, brush.Color), 4F))
+                        float max = (size.Height - 6F) * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
+                        using (var pen = new Pen(Helper.ToColor(alpha, brush.Color), 4F))
                         {
                             g.DrawEllipse(pen, new RectangleF((rect.Width - max) / 2F, (rect.Height - max) / 2F, max, max));
                         }
@@ -189,9 +188,8 @@ namespace AntdUI
                     g.FillEllipse(brush, rect_dot);
                     if (state == TState.Processing)
                     {
-                        float max = (size.Height - 6F) * AnimationStateValue;
-                        int alpha = (int)(255 * (1f - AnimationStateValue));
-                        using (var pen = new Pen(Color.FromArgb(alpha, brush.Color), 4F))
+                        float max = (size.Height - 6F) * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
+                        using (var pen = new Pen(Helper.ToColor(alpha, brush.Color), 4F))
                         {
                             g.DrawEllipse(pen, new RectangleF(rect_dot.X + (rect_dot.Width - max) / 2F, rect_dot.Y + (rect_dot.Height - max) / 2F, max, max));
                         }

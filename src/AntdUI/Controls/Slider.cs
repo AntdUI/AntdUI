@@ -253,7 +253,7 @@ namespace AntdUI
 
                 if (AnimationHover)
                 {
-                    using (var brush2 = new SolidBrush(Color.FromArgb((int)(back.A * AnimationHoverValue), back)))
+                    using (var brush2 = new SolidBrush(Helper.ToColorN(AnimationHoverValue, back)))
                     {
                         g.FillRectangle(brush2, rect_read);
                     }
@@ -271,7 +271,7 @@ namespace AntdUI
                     {
                         g.FillRectangle(brush, rect_prog);
                     }
-                    using (var brush = new SolidBrush(Color.FromArgb((int)(255 * AnimationHoverValue), color_hover)))
+                    using (var brush = new SolidBrush(Helper.ToColor(255 * AnimationHoverValue, color_hover)))
                     {
                         g.FillRectangle(brush, rect_prog);
                     }
