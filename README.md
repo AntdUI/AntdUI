@@ -77,8 +77,8 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Carousel** 走马灯 | ✅ | ❎ |
 :arrow_right: | **Preview** 图片预览 | ✅ | ✅ |
 :arrow_right: | **Popover** 气泡卡片 | ✅ | ❎ |
-:arrow_right: | **Segmented** 分段控制器 | ✅ | ❎
-:arrow_right: | **Table** 表格 | ✅ | ❎ | |
+:arrow_right: | **Segmented** 分段控制器 | ✅ | ❎ |
+:arrow_right: | **Table** 表格 | ✅ | ❎ |
 :arrow_right: | **Tabs** 标签页 | ✅ | ❎ |
 :arrow_right: | **Tag** 标签 | ✅ | ❎ |
 :arrow_right: | **Timeline** 时间轴 | ❎ | ❎ |
@@ -101,9 +101,9 @@ Winform UI library use Ant Design 5.0
 ||||
 :arrow_down: | 其他 `4` | 动画 | 禁用 |
 :arrow_right: | **WindowBar** 窗口栏 | ✅ | ❎ |
-:arrow_right: | **Battery** 电量 | ✅ | ❎ | 
+:arrow_right: | **Battery** 电量 | ✅ | ❎ |
 :arrow_right: | **ContextMenuStrip** 右键菜单 | ✅ | ❎ |
-:arrow_right: | **Image3D** 图片3D | ✅ | ❎ | 
+:arrow_right: | **Image3D** 图片3D | ✅ | ❎ |
 
 ### 🐿️捐赠 🥣💲🐖👚
 ![Payment](screenshot/Pre/Payment.png?raw=true)

@@ -78,7 +78,7 @@ Winform UI library use Ant Design 5.0
 :arrow_right: | **Preview** | ✅ | ✅ |
 :arrow_right: | **Popover** | ✅ | ❎ |
 :arrow_right: | **Segmented** | ✅ | ❎
-:arrow_right: | **Table** | ✅ | ❎ | |
+:arrow_right: | **Table** | ✅ | ❎ |
 :arrow_right: | **Tabs** | ✅ | ❎ |
 :arrow_right: | **Tag** | ✅ | ❎ |
 :arrow_right: | **Timeline** | ❎ | ❎ |
@@ -101,9 +101,9 @@ Winform UI library use Ant Design 5.0
 ||||
 :arrow_down: | Other `4` | Animation | Disable |
 :arrow_right: | **WindowBar** | ✅ | ❎ |
-:arrow_right: | **Battery** | ✅ | ❎ | 
+:arrow_right: | **Battery** | ✅ | ❎ |
 :arrow_right: | **ContextMenuStrip** | ✅ | ❎ |
-:arrow_right: | **Image3D** | ✅ | ❎ |  
+:arrow_right: | **Image3D** | ✅ | ❎ |
 
 ### 🐿️Donation 🥣💲🐖👚
 ![Payment](screenshot/Pre/Payment.png?raw=true)
