@@ -164,6 +164,10 @@ namespace AntdUI
                         if (dpi != 1F) Helper.DpiAuto(dpi, control);
                         wp = w - paddingx * 2;
                         Controls.Add(control);
+                        control.Disposed += (a, b) =>
+                        {
+                            Close();
+                        };
                         if (_config.Icon == TType.None)
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);

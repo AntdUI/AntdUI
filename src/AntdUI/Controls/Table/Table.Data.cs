@@ -40,7 +40,7 @@ namespace AntdUI
             }
             if (dataSource == null)
             {
-                if (EmptyHeader)
+                if (EmptyHeader && columns != null && columns.Length > 0)
                 {
                     var columns = new List<TempiColumn>();
                     data_temp = new TempTable(columns.ToArray(), new TempiRow[0]);

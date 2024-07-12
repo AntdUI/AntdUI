@@ -351,14 +351,14 @@ namespace AntdUI
             return _rect;
         }
 
-        int ChangeList(Rectangle rect, Graphics g, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, float gap, int gapI, int depth)
+        int ChangeList(Rectangle rect, Graphics g, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapI, int depth)
         {
             int collapsedWidth = 0;
             foreach (MenuItem it in items)
             {
                 it.PARENT = this;
                 if (it.HasIcon) icon_count++;
-                it.SetRect(depth, Indent, new RectangleF(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
+                it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
                     int size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width);
@@ -395,7 +395,7 @@ namespace AntdUI
             }
             return collapsedWidth;
         }
-        void ChangeListHorizontal(Rectangle rect, Graphics g, MenuItemCollection items, int x, int icon_size, float gap, int gapI)
+        void ChangeListHorizontal(Rectangle rect, Graphics g, MenuItemCollection items, int x, int icon_size, int gap, int gapI)
         {
             foreach (MenuItem it in items)
             {
@@ -403,7 +403,7 @@ namespace AntdUI
                 int size;
                 if (it.HasIcon) size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size);
                 else size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 2);
-                it.SetRectNoArr(0, new RectangleF(rect.X + x, rect.Y, size, rect.Height), icon_size, gap);
+                it.SetRectNoArr(0, new Rectangle(rect.X + x, rect.Y, size, rect.Height), icon_size, gap);
                 if (it.Visible) x += size;
             }
         }
@@ -412,7 +412,8 @@ namespace AntdUI
         {
             foreach (MenuItem it in items)
             {
-                it.ico_rect = new RectangleF(it.Rect.X + (it.Rect.Width - it.ico_rect.Width) / 2F, it.ico_rect.Y, it.ico_rect.Width, it.ico_rect.Height);
+                var rect = it.Rect;
+                it.ico_rect = new Rectangle(rect.X + (rect.Width - it.ico_rect.Width) / 2, it.ico_rect.Y, it.ico_rect.Width, it.ico_rect.Height);
                 if (it.Visible && it.CanExpand) ChangeUTitle(it.Sub);
             }
         }
@@ -745,10 +746,7 @@ namespace AntdUI
                         IUSelect();
                         if (list.Count > 1)
                         {
-                            foreach (MenuItem it in list)
-                            {
-                                it.Select = true;
-                            }
+                            foreach (MenuItem it in list) it.Select = true;
                         }
                         item.Select = true;
                         OnSelectIndexChanged(item);
@@ -806,7 +804,8 @@ namespace AntdUI
                         var _rect = RectangleToScreen(ClientRectangle);
                         var it = Items[hoveindex];
                         if (it == null) return;
-                        var rect = new Rectangle(_rect.X + (int)it.Rect.X / 2, _rect.Y + (int)it.Rect.Y, (int)it.Rect.Width, (int)it.Rect.Height);
+                        var Rect = it.Rect;
+                        var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
                         if (it.Sub != null && it.Sub.Count > 0)
                         {
                             select_x = 0;
@@ -863,7 +862,8 @@ namespace AntdUI
                         var _rect = RectangleToScreen(ClientRectangle);
                         var it = Items[hoveindex];
                         if (it == null) return;
-                        var rect = new Rectangle(_rect.X + (int)it.Rect.X / 2, _rect.Y + (int)it.Rect.Y, (int)it.Rect.Width, (int)it.Rect.Height);
+                        var Rect = it.Rect;
+                        var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
                         if (it.Sub != null && it.Sub.Count > 0)
                         {
                             select_x = 0;
@@ -1270,13 +1270,13 @@ namespace AntdUI
         /// <summary>
         /// 菜单坐标位置
         /// </summary>
-        public RectangleF Rect
+        public Rectangle Rect
         {
             get
             {
                 if (PARENT == null) return rect;
-                float y = PARENT.scroll.Value;
-                if (y != 0F) return new RectangleF(rect.X, rect.Y - y, rect.Width, rect.Height);
+                int y = PARENT.scroll.Value;
+                if (y != 0F) return new Rectangle(rect.X, rect.Y - y, rect.Width, rect.Height);
                 return rect;
             }
         }
@@ -1354,7 +1354,7 @@ namespace AntdUI
         internal int Depth { get; set; }
         internal float ArrowProg { get; set; } = 1F;
         internal Menu? PARENT { get; set; }
-        internal void SetRect(int depth, bool indent, RectangleF _rect, float icon_size, float gap)
+        internal void SetRect(int depth, bool indent, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;
             rect = _rect;
@@ -1362,42 +1362,42 @@ namespace AntdUI
             {
                 if (indent || depth > 1)
                 {
-                    ico_rect = new RectangleF(_rect.X + (gap * (depth + 1)), _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
-                    txt_rect = new RectangleF(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
+                    ico_rect = new Rectangle(_rect.X + (gap * (depth + 1)), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+                    txt_rect = new Rectangle(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
                 }
                 else
                 {
-                    ico_rect = new RectangleF(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
-                    txt_rect = new RectangleF(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
+                    ico_rect = new Rectangle(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+                    txt_rect = new Rectangle(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
                 }
-                arr_rect = new RectangleF(_rect.Right - ico_rect.Height - (ico_rect.Height * 0.9F), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
+                arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (int)(ico_rect.Height * 0.9F), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
             }
             else
             {
-                if (indent || depth > 1) txt_rect = new RectangleF(_rect.X + (gap * (depth + 1)), _rect.Y, _rect.Width - (gap * 2), _rect.Height);
-                else txt_rect = new RectangleF(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
-                arr_rect = new RectangleF(_rect.Right - icon_size - (icon_size * 0.9F), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+                if (indent || depth > 1) txt_rect = new Rectangle(_rect.X + (gap * (depth + 1)), _rect.Y, _rect.Width - (gap * 2), _rect.Height);
+                else txt_rect = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
+                arr_rect = new Rectangle(_rect.Right - icon_size - (int)(icon_size * 0.9F), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
             }
             Show = true;
         }
-        internal void SetRectNoArr(int depth, RectangleF _rect, float icon_size, float gap)
+        internal void SetRectNoArr(int depth, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;
             rect = _rect;
             if (HasIcon)
             {
-                ico_rect = new RectangleF(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2F, icon_size, icon_size);
-                txt_rect = new RectangleF(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
+                ico_rect = new Rectangle(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+                txt_rect = new Rectangle(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
             }
-            else txt_rect = new RectangleF(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
+            else txt_rect = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
             Show = true;
         }
-        internal RectangleF rect { get; set; }
-        internal RectangleF arr_rect { get; set; }
+        internal Rectangle rect { get; set; }
+        internal Rectangle arr_rect { get; set; }
 
-        internal bool Contains(Point point, float x, float y, out bool change)
+        internal bool Contains(Point point, int x, int y, out bool change)
         {
-            if (rect.Contains(new PointF(point.X + x, point.Y + y)))
+            if (rect.Contains(point.X + x, point.Y + y))
             {
                 change = SetHover(true);
                 return true;
@@ -1429,7 +1429,7 @@ namespace AntdUI
         internal bool AnimationHover = false;
         ITask? ThreadHover = null;
 
-        internal RectangleF txt_rect { get; set; }
-        internal RectangleF ico_rect { get; set; }
+        internal Rectangle txt_rect { get; set; }
+        internal Rectangle ico_rect { get; set; }
     }
 }

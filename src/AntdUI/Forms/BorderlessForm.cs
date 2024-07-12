@@ -77,6 +77,9 @@ namespace AntdUI
             }
         }
 
+        [Description("鼠标穿透"), Category("行为"), DefaultValue(false)]
+        public bool ShadowPierce { get; set; }
+
         Color shadowColor = Color.FromArgb(100, 0, 0, 0);
         /// <summary>
         /// 阴影颜色

@@ -112,10 +112,14 @@ namespace AntdUI.Chat
                     }
                     using (var brush = new SolidBrush(Color.Black))
                     {
-                        g.DrawString(it.Name, Font, brush, it.rect_name, SFL);
-                        g.DrawString(it.Text, font_text, brush, it.rect_text, SFL);
+                        try
+                        {
+                            g.DrawString(it.Name, Font, brush, it.rect_name, SFL);
+                            g.DrawString(it.Text, font_text, brush, it.rect_text, SFL);
 
-                        g.DrawString(it.Time, font_time, brush, it.rect_time, SFR);
+                            g.DrawString(it.Time, font_time, brush, it.rect_time, SFR);
+                        }
+                        catch { }
                     }
                 }
                 if (it.Icon != null)

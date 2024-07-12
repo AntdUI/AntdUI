@@ -155,6 +155,16 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+
+            /// <summary>
+            /// 加载回调
+            /// </summary>
+            public Action? OnLoad { get; set; }
+
+            /// <summary>
+            /// 关闭回调
+            /// </summary>
+            public Action? OnClose { get; set; }
         }
     }
 }

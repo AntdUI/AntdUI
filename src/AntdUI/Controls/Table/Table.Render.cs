@@ -206,9 +206,10 @@ namespace AntdUI
 
                 if (bordered)
                 {
+                    var splitsize = dividerHs.Length > 0 ? dividerHs[0].Width : (int)(1F * Config.Dpi);
                     if (_radius > 0)
                     {
-                        using (var pen = new Pen(brush_split.Color, dividerHs[0].Width))
+                        using (var pen = new Pen(brush_split.Color, splitsize))
                         {
                             if (visibleHeader)
                             {
@@ -228,7 +229,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var pen = new Pen(brush_split.Color, dividerHs[0].Width))
+                        using (var pen = new Pen(brush_split.Color, splitsize))
                         {
                             g.DrawRectangle(pen, rect_divider);
                         }

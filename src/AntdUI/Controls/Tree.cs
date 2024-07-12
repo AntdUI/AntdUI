@@ -381,24 +381,34 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0) return rect;
 
             int x = 0, y = 0;
+            bool has = HasSub(items);
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                int icon_size = (int)(size.Height), gap = icon_size / 2;
-                int height = (int)Math.Ceiling(size.Height + gap * 2);
-                int gapI = (int)(gap / 2);
-                ChangeList(g, rect, null, Items, ref x, ref y, height, icon_size, gap, gapI, 0, true);
+                int icon_size = (int)(size.Height), gap = icon_size / 2, gapI = gap / 2, height = (int)Math.Ceiling(size.Height + gap * 2);
+                check_radius = icon_size * .2F;
+                ChangeList(g, rect, null, items, has, ref x, ref y, height, icon_size, gap, gapI, 0, true);
             });
             scrollBar.SetVrSize(x, y);
             return rect;
         }
-        void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
+
+        bool HasSub(TreeItemCollection items)
+        {
+            foreach (TreeItem it in items)
+            {
+                if (it.CanExpand) return true;
+            }
+            return false;
+        }
+
+        void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
         {
             foreach (TreeItem it in items)
             {
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
-                it.SetRect(g, Font, depth, checkable, blockNode, new Rectangle(0, y, rect.Width, height), icon_size, gap);
+                it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), icon_size, gap);
                 if (expand && it.txt_rect.Right > x) x = it.txt_rect.Right;
                 if (it.Show && it.Visible)
                 {
@@ -406,7 +416,7 @@ namespace AntdUI
                     if (it.CanExpand)
                     {
                         int y_item = y;
-                        ChangeList(g, rect, it, it.Sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
+                        ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
                         it.SubY = y_item - gapI / 2;
                         it.SubHeight = y - y_item;
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
@@ -425,10 +435,12 @@ namespace AntdUI
         #region 渲染
 
         ScrollBar scrollBar;
+        float check_radius = 0F;
         public Tree()
         {
             scrollBar = new ScrollBar(this, true, true);
         }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             if (items == null || items.Count == 0) return;
@@ -437,26 +449,32 @@ namespace AntdUI
             var g = e.Graphics.High();
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
-            Color color_fore = fore ?? Style.Db.TextBase, color_fore_active = ForeActive ?? Style.Db.Primary, color_hover = BackHover ?? Style.Db.FillSecondary;
             float _radius = radius * Config.Dpi;
-            PaintItem(g, rect, sx, sy, Items, color_fore, color_fore_active, color_hover, _radius);
+            using (var brush_fore = new SolidBrush(fore ?? Style.Db.TextBase))
+            using (var brush_fore_active = new SolidBrush(ForeActive ?? Style.Db.Primary))
+            using (var brush_hover = new SolidBrush(BackHover ?? Style.Db.FillSecondary))
+            using (var brush_active = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
+            using (var brush_TextTertiary = new SolidBrush(Style.Db.TextTertiary))
+            {
+                PaintItem(g, rect, sx, sy, Items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
+            }
             g.ResetTransform();
             scrollBar.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
 
-        void PaintItem(Graphics g, Rectangle rect, int sx, int sy, TreeItemCollection items, Color fore, Color fore_active, Color hover, float radius)
+        void PaintItem(Graphics g, Rectangle rect, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
         {
             foreach (TreeItem it in items)
             {
                 it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
                 if (it.show)
                 {
-                    PaintItem(g, it, fore, fore_active, hover, radius, sx, sy);
+                    PaintItem(g, it, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
                     if (it.Expand && it.Sub != null && it.Sub.Count > 0)
                     {
-                        PaintItem(g, rect, sx, sy, it.Sub, fore, fore_active, hover, radius);
+                        PaintItem(g, rect, sx, sy, it.Sub, fore, fore_active, hover, active, brushTextTertiary, radius);
                         if (it.ExpandThread)
                         {
                             using (var brush = new SolidBrush(BackColor))
@@ -470,7 +488,7 @@ namespace AntdUI
         }
 
         StringFormat sf_center = Helper.SF_Ellipsis();
-        void PaintItem(Graphics g, TreeItem item, Color fore, Color fore_active, Color hover, float radius, int sx, int sy)
+        void PaintItem(Graphics g, TreeItem item, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy)
         {
             if (item.Select)
             {
@@ -478,22 +496,12 @@ namespace AntdUI
                 {
                     g.ResetTransform();
                     g.TranslateTransform(0, -sy);
-                    PaintBack(g, BackActive ?? Style.Db.PrimaryBg, item.rect, radius);
+                    PaintBack(g, active, item.rect, radius);
                     g.TranslateTransform(-sx, 0);
                 }
-                else PaintBack(g, BackActive ?? Style.Db.PrimaryBg, item.rect, radius);
+                else PaintBack(g, active, item.rect, radius);
                 if (item.CanExpand) PanintArrow(g, item, fore_active, sx, sy);
-                using (var brush = new SolidBrush(fore_active))
-                {
-                    g.DrawString(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
-                }
-                if (item.SubTitle != null)
-                {
-                    using (var brush = new SolidBrush(Style.Db.TextTertiary))
-                    {
-                        g.DrawString(item.SubTitle, Font, brush, item.subtxt_rect, Helper.stringFormatLeft);
-                    }
-                }
+                PaintItemText(g, item, fore_active, brushTextTertiary);
             }
             else
             {
@@ -503,7 +511,10 @@ namespace AntdUI
                     g.TranslateTransform(0, -sy);
                     if (item.AnimationHover)
                     {
-                        PaintBack(g, Helper.ToColorN(item.AnimationHoverValue, hover), item.rect, radius);
+                        using (var brush = new SolidBrush(Helper.ToColorN(item.AnimationHoverValue, hover.Color)))
+                        {
+                            PaintBack(g, brush, item.rect, radius);
+                        }
                     }
                     else if (item.Hover) PaintBack(g, hover, item.rect, radius);
                     g.TranslateTransform(-sx, 0);
@@ -512,26 +523,27 @@ namespace AntdUI
                 {
                     if (item.AnimationHover)
                     {
-                        PaintBack(g, Helper.ToColorN(item.AnimationHoverValue, hover), item.rect, radius);
+                        using (var brush = new SolidBrush(Helper.ToColorN(item.AnimationHoverValue, hover.Color)))
+                        {
+                            PaintBack(g, brush, item.rect, radius);
+                        }
                     }
                     else if (item.Hover) PaintBack(g, hover, item.rect, radius);
                 }
                 if (item.CanExpand) PanintArrow(g, item, fore, sx, sy);
-                using (var brush = new SolidBrush(item.Enabled ? fore : Style.Db.TextQuaternary))
+                if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
+                else
                 {
-                    g.DrawString(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
-                }
-                if (item.SubTitle != null)
-                {
-                    using (var brush = new SolidBrush(Style.Db.TextTertiary))
+
+                    using (var brush = new SolidBrush(Style.Db.TextQuaternary))
                     {
-                        g.DrawString(item.SubTitle, Font, brush, item.subtxt_rect, Helper.stringFormatLeft);
+                        PaintItemText(g, item, brush, brushTextTertiary);
                     }
                 }
             }
             if (checkable)
             {
-                using (var path_check = Helper.RoundPath(item.check_rect, item.check_radius, false))
+                using (var path_check = Helper.RoundPath(item.check_rect, check_radius, false))
                 {
                     if (item.Enabled)
                     {
@@ -634,10 +646,15 @@ namespace AntdUI
                     }
                 }
             }
+        }
+        void PaintItemText(Graphics g, TreeItem item, SolidBrush fore, SolidBrush brushTextTertiary)
+        {
+            g.DrawString(item.Text, Font, fore, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
+            if (item.SubTitle != null) g.DrawString(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, Helper.stringFormatLeft);
             if (item.Icon != null) g.DrawImage(item.Icon, item.ico_rect);
             else if (item.IconSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(item.IconSvg, item.ico_rect, fore))
+                using (var _bmp = SvgExtend.GetImgExtend(item.IconSvg, item.ico_rect, fore.Color))
                 {
                     if (_bmp != null) g.DrawImage(_bmp, item.ico_rect);
                 }
@@ -659,7 +676,7 @@ namespace AntdUI
             };
         }
 
-        void PanintArrow(Graphics g, TreeItem item, Color color, int sx, int sy)
+        void PanintArrow(Graphics g, TreeItem item, SolidBrush color, int sx, int sy)
         {
             float size = item.arr_rect.Width, size2 = size / 2F;
             g.TranslateTransform(item.arr_rect.X + size2, item.arr_rect.Y + size2);
@@ -673,19 +690,16 @@ namespace AntdUI
             g.TranslateTransform(-sx, -sy);
         }
 
-        void PaintBack(Graphics g, Color color, RectangleF rect, float radius)
+        void PaintBack(Graphics g, SolidBrush brush, RectangleF rect, float radius)
         {
-            using (var brush = new SolidBrush(color))
+            if (round || radius > 0)
             {
-                if (round || radius > 0)
+                using (var path = rect.RoundPath(radius, round))
                 {
-                    using (var path = rect.RoundPath(radius, round))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.FillPath(brush, path);
                 }
-                else g.FillRectangle(brush, rect);
             }
+            else g.FillRectangle(brush, rect);
         }
 
         #endregion
@@ -1302,24 +1316,26 @@ namespace AntdUI
         internal Tree? PARENT { get; set; }
         public TreeItem? PARENTITEM { get; set; }
 
-        internal void SetRect(Graphics g, Font font, int depth, bool checkable, bool blockNode, Rectangle _rect, int icon_size, int gap)
+        internal void SetRect(Graphics g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;
             rect = _rect;
-            int x = _rect.X + gap + (icon_size * depth);
-            arr_rect = new Rectangle(x, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
-            x += icon_size + gap;
+            int x = _rect.X + gap + (icon_size * depth), y = _rect.Y + (_rect.Height - icon_size) / 2;
+            if (has_sub)
+            {
+                arr_rect = new Rectangle(x, y, icon_size, icon_size);
+                x += icon_size + gap;
+            }
 
             if (checkable)
             {
-                check_radius = arr_rect.Height * .2F;
-                check_rect = new Rectangle(x, arr_rect.Y, arr_rect.Width, arr_rect.Height);
+                check_rect = new Rectangle(x, y, icon_size, icon_size);
                 x += icon_size + gap;
             }
 
             if (HasIcon)
             {
-                ico_rect = new Rectangle(x, arr_rect.Y, arr_rect.Width, arr_rect.Height);
+                ico_rect = new Rectangle(x, y, icon_size, icon_size);
                 x += icon_size + gap;
             }
 
@@ -1370,7 +1386,6 @@ namespace AntdUI
         ITask? ThreadHover = null;
 
         internal Rectangle check_rect { get; set; }
-        internal float check_radius { get; set; }
         internal Rectangle txt_rect { get; set; }
         internal Rectangle subtxt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }

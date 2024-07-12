@@ -55,6 +55,7 @@ namespace AntdUI
             {
                 var cp = base.CreateParams;
                 cp.ExStyle |= 0x08000000 | 0x00080000;
+                if (form != null && form.ShadowPierce) cp.ExStyle |= 0x20;
                 cp.Parent = IntPtr.Zero;
                 return cp;
             }
@@ -67,7 +68,7 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            if (form.is_resizable)
+            if (form.Resizable)
             {
                 switch (m.Msg)
                 {

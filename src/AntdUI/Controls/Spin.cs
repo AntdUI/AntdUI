@@ -119,6 +119,94 @@ namespace AntdUI
             /// </summary>
             public int? Radius { get; set; }
         }
+
+        #region 静态方法
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        public static void open(Control control, Action action, Action? end = null)
+        {
+            open(control, new Config(), action, end);
+        }
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="text">加载文本</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        public static void open(Control control, string text, Action action, Action? end = null)
+        {
+            open(control, new Config { Text = text }, action, end);
+        }
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="config">自定义配置</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        public static void open(Control control, Config config, Action action, Action? end = null)
+        {
+            var parent = control.FindPARENT();
+            if (parent is LayeredFormModal model)
+            {
+                model.Load += (a, b) =>
+                {
+                    control.BeginInvoke(new Action(() =>
+                    {
+                        open_core(control, parent, config, action, end);
+                    }));
+                };
+                return;
+            }
+            else if (parent is LayeredFormDrawer drawer)
+            {
+                drawer.LoadOK = () =>
+                {
+                    control.BeginInvoke(new Action(() =>
+                    {
+                        open_core(control, parent, config, action, end);
+                    }));
+                };
+                return;
+            }
+            else if (control.InvokeRequired)
+            {
+                control.BeginInvoke(new Action(() =>
+                {
+                    open_core(control, parent, config, action, end);
+                }));
+                return;
+            }
+            open_core(control, parent, config, action, end);
+        }
+
+        static void open_core(Control control, Form? parent, Config config, Action action, Action? end = null)
+        {
+            var frm = new SpinForm(control, parent, config);
+            frm.Show(control);
+            ITask.Run(() =>
+            {
+                try
+                {
+                    action();
+                }
+                catch { }
+                frm.Invoke(new Action(() =>
+                {
+                    frm.Dispose();
+                }));
+            }, end);
+        }
+
+        #endregion
     }
 
     internal class SpinCore : IDisposable
@@ -212,22 +300,21 @@ namespace AntdUI
     }
     internal class SpinForm : ILayeredFormOpacity
     {
-        readonly Control? ocontrol = null;
+        Control control;
+        Form? parent = null;
 
         Spin.Config config;
-        public SpinForm(Control control, Spin.Config _config)
+        public SpinForm(Control _control, Form? _parent, Spin.Config _config)
         {
-            Font = control.Font;
+            control = _control;
+            parent = _parent;
+            Font = _control.Font;
             config = _config;
-            ocontrol = control;
-            control.SetTopMost(Handle);
-            SetSize(control.Size);
-            SetLocation(control.PointToScreen(Point.Empty));
+            _control.SetTopMost(Handle);
+            SetSize(_control.Size);
+            SetLocation(_control.PointToScreen(Point.Empty));
             if (_config.Radius.HasValue) Radius = _config.Radius.Value;
-            else
-            {
-                if (control is IControl _control) gpath = _control.RenderRegion;
-            }
+            else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
         }
 
         GraphicsPath? gpath = null;
@@ -237,6 +324,26 @@ namespace AntdUI
         {
             base.OnLoad(e);
             spin_core.Start(this);
+            if (parent != null)
+            {
+                parent.LocationChanged += Parent_LocationChanged;
+                parent.SizeChanged += Parent_SizeChanged;
+            }
+        }
+
+        private void Parent_LocationChanged(object? sender, EventArgs e)
+        {
+            SetLocation(control.PointToScreen(Point.Empty));
+        }
+        private void Parent_SizeChanged(object? sender, EventArgs e)
+        {
+            SetLocation(control.PointToScreen(Point.Empty));
+            SetSize(control.Size);
+            if (!config.Radius.HasValue && control is IControl icontrol)
+            {
+                gpath?.Dispose();
+                gpath = icontrol.RenderRegion;
+            }
         }
 
         #region 渲染
@@ -250,10 +357,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(config.Back ?? Color.FromArgb(100, Style.Db.TextBase)))
                 {
-                    if (gpath != null)
-                    {
-                        g.FillPath(brush, gpath);
-                    }
+                    if (gpath != null) g.FillPath(brush, gpath);
                     else if (Radius > 0)
                     {
                         using (var path = rect.RoundPath(Radius)) { g.FillPath(brush, path); }
@@ -270,8 +374,14 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             spin_core.Dispose();
+            if (parent != null)
+            {
+                parent.LocationChanged -= Parent_LocationChanged;
+                parent.SizeChanged -= Parent_SizeChanged;
+            }
+            gpath?.Dispose();
             base.Dispose(disposing);
-            if (ocontrol == null) return;
+            if (control == null) return;
         }
     }
 }

@@ -54,11 +54,20 @@ namespace AntdUI
                     ExtractHeaderFixed();
                     return;
                 }
-                List<string> oldid = new List<string>(), id = new List<string>();
-                if (columns != null) foreach (var col in columns) oldid.Add(col.Key);
-                if (value != null) foreach (var col in value) id.Add(col.Key);
-                columns = value;
-                if (string.Join("", oldid) != string.Join("", id)) { ExtractHeaderFixed(); ExtractData(); }
+                if (value == null)
+                {
+                    columns = value;
+                    fixedColumnL = fixedColumnR = null;
+                    ExtractData();
+                }
+                else
+                {
+                    List<string> oldid = new List<string>(), id = new List<string>();
+                    if (columns != null) foreach (var col in columns) oldid.Add(col.Key);
+                    if (value != null) foreach (var col in value) id.Add(col.Key);
+                    columns = value;
+                    if (string.Join("", oldid) != string.Join("", id)) { ExtractHeaderFixed(); ExtractData(); }
+                }
                 LoadLayout();
                 Invalidate();
             }

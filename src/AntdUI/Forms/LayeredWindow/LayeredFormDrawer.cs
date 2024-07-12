@@ -33,12 +33,13 @@ namespace AntdUI
         public LayeredFormDrawer(Drawer.Config _config)
         {
             config = _config;
+            config.Content.Parent = this;
             TopMost = config.Form.TopMost;
             Font = config.Form.Font;
 
             padding = (int)Math.Round(config.Padding * Config.Dpi);
             Padding = new Padding(padding);
-            var version = Environment.OSVersion.Version;
+            var version = Helper.OSVersion;
             if (version.Major >= 10 && version.Build > 22000) FrmRadius = 8; //Win11
             if (config.Form is Window)
             {
@@ -370,7 +371,11 @@ namespace AntdUI
             form.Location = rect.Location;
             tempContent?.Dispose();
             tempContent = null;
+            config.OnLoad?.Invoke();
+            LoadOK?.Invoke();
         }
+
+        internal Action? LoadOK = null;
 
         Rectangle Ang()
         {
@@ -474,6 +479,8 @@ namespace AntdUI
             tempContent?.Dispose();
             form?.Dispose();
             task_start?.Dispose();
+            config.OnClose?.Invoke();
+            config.OnClose = null;
             base.Dispose(disposing);
         }
 

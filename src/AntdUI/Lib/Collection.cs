@@ -58,7 +58,7 @@ namespace AntdUI
         }
     }
 
-    public class BaseCollection : IList, ICollection, IEnumerable
+    public class BaseCollection : IList
     {
         internal Action<bool>? action;
         internal void PropertyChanged(object value)

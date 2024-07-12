@@ -526,21 +526,26 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle.PaddingRect(Padding);
-            int btn_size = (maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Config.Dpi) : (int)Math.Round((CloseSize - 8) * Config.Dpi);
-            rect_close = new Rectangle(rect.Right - btn_size, rect.Y, btn_size, rect.Height);
-            hasr = btn_size;
-            int left = rect_close.Left;
-            if (maximizeBox)
+            if (CloseSize > 0)
             {
-                rect_max = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
-                left -= btn_size;
-                hasr += btn_size;
+                int btn_size = (maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Config.Dpi) : (int)Math.Round((CloseSize - 8) * Config.Dpi);
+                rect_close = new Rectangle(rect.Right - btn_size, rect.Y, btn_size, rect.Height);
+                hasr = btn_size;
+                int left = rect_close.Left;
+                if (maximizeBox)
+                {
+                    rect_max = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
+                    left -= btn_size;
+                    hasr += btn_size;
+                }
+                if (minimizeBox)
+                {
+                    rect_min = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
+                    hasr += btn_size;
+                }
             }
-            if (minimizeBox)
-            {
-                rect_min = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
-                hasr += btn_size;
-            }
+            else hasr = 0;
+
             if (DragMove)
             {
                 var form = Parent.FindPARENT();

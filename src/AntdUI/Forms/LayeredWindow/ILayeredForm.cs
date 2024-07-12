@@ -91,6 +91,13 @@ namespace AntdUI
             get => new Rectangle(0, 0, target_rect.Width, target_rect.Height);
         }
 
+        public void SetRect(Rectangle rect)
+        {
+            target_rect.X = rect.X;
+            target_rect.Y = rect.Y;
+            target_rect.Width = rect.Width;
+            target_rect.Height = rect.Height;
+        }
         public void SetSize(Size size)
         {
             target_rect.Width = size.Width;

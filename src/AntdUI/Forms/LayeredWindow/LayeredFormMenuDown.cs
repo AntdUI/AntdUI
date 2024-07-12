@@ -106,7 +106,7 @@ namespace AntdUI
             }
             else
             {
-                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) SetLocation(rect_read.X + rect_read.Width / 2, rect_read.Bottom);
+                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) SetLocation(rect_read.X + (rect_read.Width - (w + 20)) / 2, rect_read.Bottom);
                 else SetLocation(rect_read.Right, rect_read.Y);
             }
             KeyCall = keys =>
