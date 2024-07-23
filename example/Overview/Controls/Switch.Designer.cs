@@ -72,7 +72,7 @@ namespace Overview.Controls
             // switch8
             // 
             switch8.Enabled = false;
-            switch8.Location = new Point(293, 167);
+            switch8.Location = new Point(323, 167);
             switch8.Name = "switch8";
             switch8.Size = new Size(60, 38);
             switch8.TabIndex = 5;
@@ -81,21 +81,23 @@ namespace Overview.Controls
             // 
             switch4.Location = new Point(109, 167);
             switch4.Name = "switch4";
-            switch4.Size = new Size(60, 38);
+            switch4.CheckedText = "on";
+            switch4.UnCheckedText = "off";
+            switch4.Size = new Size(90, 38);
             switch4.TabIndex = 6;
             // 
             // switch7
             // 
             switch7.Checked = true;
             switch7.Enabled = false;
-            switch7.Location = new Point(201, 167);
+            switch7.Location = new Point(231, 167);
             switch7.Name = "switch7";
             switch7.Size = new Size(60, 38);
             switch7.TabIndex = 7;
             // 
             // switch2
             // 
-            switch2.Checked = true;
+            switch2.Checked = false;
             switch2.Location = new Point(17, 167);
             switch2.Name = "switch2";
             switch2.Size = new Size(60, 38);
@@ -104,23 +106,26 @@ namespace Overview.Controls
             // switch6
             // 
             switch6.Enabled = false;
-            switch6.Location = new Point(293, 96);
+            switch6.Location = new Point(323, 96);
             switch6.Name = "switch6";
             switch6.Size = new Size(60, 38);
             switch6.TabIndex = 9;
             // 
             // switch3
             // 
+            switch3.Checked = true;
             switch3.Location = new Point(109, 96);
             switch3.Name = "switch3";
-            switch3.Size = new Size(60, 38);
+            switch3.CheckedText = "开启";
+            switch3.UnCheckedText = "关闭";
+            switch3.Size = new Size(90, 38);
             switch3.TabIndex = 10;
             // 
             // switch5
             // 
             switch5.Checked = true;
             switch5.Enabled = false;
-            switch5.Location = new Point(201, 96);
+            switch5.Location = new Point(231, 96);
             switch5.Name = "switch5";
             switch5.Size = new Size(60, 38);
             switch5.TabIndex = 11;
@@ -144,7 +149,7 @@ namespace Overview.Controls
             Controls.Add(switch5);
             Controls.Add(switch1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             Name = "Switch";
             Size = new Size(543, 275);
             ResumeLayout(false);

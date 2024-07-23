@@ -26,7 +26,7 @@ namespace Overview.Controls
             form = _form;
             InitializeComponent();
 
-            table1.Columns = new AntdUI.Column[] {
+            table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check"){ Fixed=true},
                 new AntdUI.Column("name","姓名"){ Fixed=true},
                 new AntdUI.Column("online","状态",AntdUI.ColumnAlign.Center),
@@ -52,7 +52,7 @@ namespace Overview.Controls
             table1.DataSource = list;
             table1.CellClick += Table1_CellClick;
 
-            table2.Columns = new AntdUI.Column[] {
+            table2.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.Column("name","姓名"),
                 new AntdUI.Column("age","年龄",AntdUI.ColumnAlign.Center),
                 new AntdUI.Column("address","住址"),

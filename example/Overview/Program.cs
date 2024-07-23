@@ -27,7 +27,7 @@ namespace Overview
         static void Main(string[] arge)
         {
             bool istop = false;
-            if (arge.Length > 0) { if (arge[0] == "t") istop = true; }
+            if (arge.Length > 0 && arge[0] == "t") istop = true;
             //AntdUI.Localization.Provider = new Localizer();
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);

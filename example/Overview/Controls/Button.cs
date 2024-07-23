@@ -16,6 +16,8 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+
 namespace Overview.Controls
 {
     public partial class Button : UserControl
@@ -40,21 +42,21 @@ namespace Overview.Controls
             if (btn.Parent == panel2)
             {
                 change = true;
-                panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
+                UpdatePanelWidth();
             }
             Task.Run(() =>
             {
                 Thread.Sleep(2000);
-                btn.Loading = false;
-            }).ContinueWith(action =>
-            {
-                if (change)
+                if (btn.IsDisposed) return; // Check if the button has been disposed
+                btn.Invoke(() =>
                 {
-                    panel2.Invoke(() =>
+                    if (btn.IsDisposed) return; // Check if the button has been disposed
+                    btn.Loading = false;
+                    if (change)
                     {
-                        panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
-                    });
-                }
+                        UpdatePanelWidth();
+                    }
+                });
             });
         }
 
@@ -70,9 +72,11 @@ namespace Overview.Controls
                 Task.Run(() =>
                 {
                     Thread.Sleep(2000);
-                    btn.Loading = false;
+                    if (btn.IsDisposed) return; // Check if the button has been disposed
                     btn.Invoke(() =>
                     {
+                        if (btn.IsDisposed) return; // Check if the button has been disposed
+                        btn.Loading = false;
                         btn.Enabled = true;
                     });
                 });
@@ -83,7 +87,12 @@ namespace Overview.Controls
                 Task.Run(() =>
                 {
                     Thread.Sleep(2000);
-                    btn.Loading = false;
+                    if (btn.IsDisposed) return; // Check if the button has been disposed
+                    btn.Invoke(() =>
+                    {
+                        if (btn.IsDisposed) return; // Check if the button has been disposed
+                        btn.Loading = false;
+                    });
                 });
             }
             else
@@ -92,12 +101,21 @@ namespace Overview.Controls
                 Task.Run(() =>
                 {
                     Thread.Sleep(2000);
+                    if (btn.IsDisposed) return; // Check if the button has been disposed
                     btn.Invoke(() =>
                     {
+                        if (btn.IsDisposed) return; // Check if the button has been disposed
                         btn.Enabled = true;
                     });
                 });
             }
         }
+
+        private void UpdatePanelWidth()
+        {
+            if (panel2.IsDisposed) return; // Check if the panel has been disposed
+            panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
+        }
+
     }
 }
