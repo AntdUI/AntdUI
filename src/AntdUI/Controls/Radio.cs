@@ -183,6 +183,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 点击时自动改变选中状态
+        /// </summary>
+        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(false)]
+        public bool AutoCheck { get; set; } = true;
+
         RightToLeft rightToLeft = RightToLeft.No;
         [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
         public override RightToLeft RightToLeft
@@ -336,7 +342,7 @@ namespace AntdUI
 
         protected override void OnClick(EventArgs e)
         {
-            Checked = true;
+            if (AutoCheck) Checked = true;
             base.OnClick(e);
         }
 

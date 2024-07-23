@@ -818,7 +818,7 @@ namespace AntdUI
                             {
                                 if (tooltipForm == null)
                                 {
-                                    tooltipForm = new TooltipForm(rect, it.Text, new TooltipConfig
+                                    tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
                                     {
                                         Font = it.Font ?? Font,
                                         ArrowAlign = TAlign.Right,

@@ -23,39 +23,224 @@ using System.ComponentModel;
 
 namespace AntdUI
 {
-    public class iCollection<T> : BaseCollection
+    public class iCollection<T> : IList<T>, IList
     {
-        public new T? this[int index]
+        #region 刷新UI
+
+        internal Action<bool>? action;
+        internal void PropertyChanged(T value)
         {
-            get
+            if (value is NotifyProperty notify)
             {
-                var v = get(index);
-                if (v is T obj) return obj;
-                return default;
+                notify.PropertyChanged += (a, b) =>
+                {
+                    action?.Invoke(false);
+                };
             }
-            set => set(index, value);
         }
 
-        public void AddRange(T[] items)
+        #endregion
+
+        List<T> list;
+        public iCollection() { list = new List<T>(); }
+        public iCollection(int capacity) { list = new List<T>(capacity); }
+        public iCollection(IEnumerable<T> collection) { list = new List<T>(collection); }
+
+        public T this[int index]
         {
-            var m_arrItem = EnsureSpace(items.Length);
-            foreach (T item in items)
+            get => list[index];
+            set
             {
-                m_arrItem[count++] = item;
-                PropertyChanged(item);
+                list[index] = value;
+                PropertyChanged(value);
             }
+        }
+        object? IList.this[int index]
+        {
+            get => list[index];
+            set
+            {
+                if (value is T item)
+                {
+                    list[index] = item;
+                    PropertyChanged(item);
+                }
+            }
+        }
+
+        #region 原生
+
+        #region 列表
+
+        public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
+        public T[] ToArray() => list.ToArray();
+        public void ForEach(Action<T> action) => list.ForEach(action);
+        public bool TrueForAll(Predicate<T> match) => list.TrueForAll(match);
+
+        #endregion
+
+        public int Count => list.Count;
+
+        public bool IsReadOnly => false;
+
+        public bool IsFixedSize => false;
+
+        public bool IsSynchronized => true;
+
+        public object SyncRoot => this;
+
+        #region 添加
+
+        public void Add(T item)
+        {
+            list.Add(item);
+            PropertyChanged(item);
             action?.Invoke(true);
         }
-        public void AddRange(IList<T> items)
+        public int Add(object? value)
         {
-            var m_arrItem = EnsureSpace(items.Count);
-            foreach (T item in items)
+            if (value is T item)
             {
-                m_arrItem[count++] = item;
+                list.Add(item);
                 PropertyChanged(item);
+                action?.Invoke(true);
             }
+            return list.Count;
+        }
+
+        public void AddRange(IEnumerable<T> collection)
+        {
+            list.AddRange(collection);
+            foreach (var item in collection) PropertyChanged(item);
             action?.Invoke(true);
         }
+
+        public void Insert(int index, T item)
+        {
+            list.Insert(index, item);
+            PropertyChanged(item);
+            action?.Invoke(true);
+        }
+        public void Insert(int index, object? value)
+        {
+            if (value is T item)
+            {
+                list.Insert(index, item);
+            }
+        }
+        public void InsertRange(int index, IEnumerable<T> collection)
+        {
+            list.InsertRange(index, collection);
+            foreach (var item in collection) PropertyChanged(item);
+            action?.Invoke(true);
+        }
+
+        #endregion
+
+        #region 判断/查找
+
+        public bool Contains(T item) => list.Contains(item);
+        public bool Contains(object? value)
+        {
+            if (value is T item) return list.Contains(item);
+            return false;
+        }
+
+        public int IndexOf(object? value)
+        {
+            if (value is T item) return list.IndexOf(item);
+            return -1;
+        }
+        public int IndexOf(T item) => list.IndexOf(item);
+        public int IndexOf(T item, int index) => list.IndexOf(item, index);
+        public int IndexOf(T item, int index, int count) => list.IndexOf(item, index, count);
+
+        public int LastIndexOf(T item) => list.LastIndexOf(item);
+        public int LastIndexOf(T item, int index) => list.LastIndexOf(item, index);
+        public int LastIndexOf(T item, int index, int count) => list.LastIndexOf(item, index, count);
+
+        public bool Exists(Predicate<T> match) => list.Exists(match);
+
+        public T? Find(Predicate<T> match) => list.Find(match);
+        public List<T> FindAll(Predicate<T> match) => list.FindAll(match);
+        public int FindIndex(Predicate<T> match) => list.FindIndex(match);
+        public int FindIndex(int startIndex, Predicate<T> match) => list.FindIndex(startIndex, match);
+        public int FindIndex(int startIndex, int count, Predicate<T> match) => list.FindIndex(startIndex, count, match);
+
+        public T? FindLast(Predicate<T> match) => list.FindLast(match);
+        public int FindLastIndex(Predicate<T> match) => list.FindLastIndex(match);
+        public int FindLastIndex(int startIndex, Predicate<T> match) => list.FindLastIndex(startIndex, match);
+        public int FindLastIndex(int startIndex, int count, Predicate<T> match) => list.FindLastIndex(startIndex, count, match);
+
+        public List<T> GetRange(int index, int count) => list.GetRange(index, count);
+
+        #endregion
+
+        #region 删除
+
+        public void Clear()
+        {
+            list.Clear();
+            action?.Invoke(true);
+        }
+
+        public void Remove(object? value)
+        {
+            if (value is T item)
+            {
+                list.Remove(item);
+                action?.Invoke(true);
+            }
+        }
+        public bool Remove(T item)
+        {
+            bool flag = list.Remove(item);
+            if (flag) action?.Invoke(true);
+            return flag;
+        }
+        public void RemoveAt(int index)
+        {
+            list.RemoveAt(index);
+            action?.Invoke(true);
+        }
+        public int RemoveAll(Predicate<T> match)
+        {
+            int i = list.RemoveAll(match);
+            action?.Invoke(true);
+            return i;
+        }
+        public void RemoveRange(int index, int count)
+        {
+            list.RemoveRange(index, count);
+            action?.Invoke(true);
+        }
+
+        #endregion
+
+        public void Reverse() => list.Reverse();
+        public void Reverse(int index, int count) => list.Reverse(index, count);
+
+        public void Sort() => list.Sort();
+        public void Sort(IComparer<T> comparer) => list.Sort(comparer);
+        public void Sort(Comparison<T> comparison) => list.Sort(comparison);
+        public void Sort(int index, int count, IComparer<T> comparer) => list.Sort(index, count, comparer);
+
+        public void CopyTo(T[] array) => list.CopyTo(array);
+        public void CopyTo(T[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
+        public void CopyTo(int index, T[] array, int arrayIndex, int count) => list.CopyTo(index, array, arrayIndex, count);
+
+        public int BinarySearch(T item) => list.BinarySearch(item);
+        public int BinarySearch(T item, IComparer<T> comparer) => list.BinarySearch(item, comparer);
+        public int BinarySearch(int index, int count, T item, IComparer<T> comparer) => list.BinarySearch(index, count, item, comparer);
+
+
+        public void CopyTo(Array array, int index)
+        {
+            //list.CopyTo(array, index);
+        }
+
+        #endregion
     }
 
     public class BaseCollection : IList

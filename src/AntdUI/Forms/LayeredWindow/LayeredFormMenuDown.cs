@@ -46,7 +46,7 @@ namespace AntdUI
         {
             isauto = parent.Theme == TAMode.Auto;
             isdark = Config.IsDark || parent.Theme == TAMode.Dark;
-            control.Parent.SetTopMost(Handle);
+            parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
             Font = control.Font;
@@ -490,13 +490,13 @@ namespace AntdUI
         }
         void PaintArrow(Graphics g, OMenuItem item, Color color)
         {
-            float size = item.arr_rect.Width, size2 = size / 2F;
-            g.TranslateTransform(item.arr_rect.X + size2, item.arr_rect.Y + size2);
+            int size = item.arr_rect.Width, size_arrow = size / 2;
+            g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
             g.RotateTransform(-90F);
             using (var pen = new Pen(color, 2F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, new RectangleF(-size2, -size2, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .2F));
+                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .2F));
             }
             g.ResetTransform();
         }
@@ -529,18 +529,18 @@ namespace AntdUI
 
         internal class OMenuItem
         {
-            public OMenuItem(MenuItem _val, Rectangle rect, int gap_y, RectangleF rect_text)
+            public OMenuItem(MenuItem _val, Rectangle rect, int gap_y, Rectangle rect_text)
             {
                 Sub = _val.Sub;
                 if (_val.CanExpand) has_sub = true;
                 Rect = rect;
                 if (_val.HasIcon)
                 {
-                    RectIcon = new RectangleF(rect_text.X, rect_text.Y, rect_text.Height, rect_text.Height);
-                    RectText = new RectangleF(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
+                    RectIcon = new Rectangle(rect_text.X, rect_text.Y, rect_text.Height, rect_text.Height);
+                    RectText = new Rectangle(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
                 }
                 else RectText = rect_text;
-                arr_rect = new RectangleF(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
+                arr_rect = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
                 Show = true;
                 Val = _val;
             }
@@ -553,12 +553,12 @@ namespace AntdUI
             public MenuItemCollection Sub { get; set; }
             internal bool has_sub { get; set; }
 
-            public RectangleF RectIcon { get; set; }
+            public Rectangle RectIcon { get; set; }
 
             public bool Hover { get; set; }
             public bool Show { get; set; }
 
-            internal RectangleF arr_rect { get; set; }
+            internal Rectangle arr_rect { get; set; }
 
             public Rectangle Rect { get; set; }
             internal bool SetHover(bool val)
@@ -591,7 +591,7 @@ namespace AntdUI
                 }
             }
 
-            public RectangleF RectText { get; set; }
+            public Rectangle RectText { get; set; }
         }
 
         #endregion

@@ -36,12 +36,12 @@ namespace AntdUI
     {
         #region 属性
 
-        Column[]? columns = null;
+        ColumnCollection? columns = null;
         /// <summary>
         /// 表格列的配置
         /// </summary>
         [Browsable(false), Description("表格列的配置"), Category("数据"), DefaultValue(null)]
-        public Column[]? Columns
+        public ColumnCollection? Columns
         {
             get => columns;
             set
@@ -54,20 +54,10 @@ namespace AntdUI
                     ExtractHeaderFixed();
                     return;
                 }
-                if (value == null)
-                {
-                    columns = value;
-                    fixedColumnL = fixedColumnR = null;
-                    ExtractData();
-                }
-                else
-                {
-                    List<string> oldid = new List<string>(), id = new List<string>();
-                    if (columns != null) foreach (var col in columns) oldid.Add(col.Key);
-                    if (value != null) foreach (var col in value) id.Add(col.Key);
-                    columns = value;
-                    if (string.Join("", oldid) != string.Join("", id)) { ExtractHeaderFixed(); ExtractData(); }
-                }
+                columns = value;
+                if (value == null) fixedColumnL = fixedColumnR = null;
+                else ExtractHeaderFixed();
+
                 LoadLayout();
                 Invalidate();
             }
@@ -89,6 +79,22 @@ namespace AntdUI
                 ExtractData();
                 LoadLayout();
                 Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 获取指定行的数据
+        /// </summary>
+        /// <param name="index">序号</param>
+        /// <returns>行</returns>
+        public IRow? this[int index]
+        {
+            get
+            {
+                if (data_temp == null || data_temp.rows.Length == 0) return null;
+                if (index < 0 || data_temp.rows.Length - 1 < index) return null;
+                var row = data_temp.rows[index];
+                return row;
             }
         }
 
@@ -301,9 +307,9 @@ namespace AntdUI
 
         Color? borderColor;
         /// <summary>
-        /// 表格边框颜色色
+        /// 表格边框颜色
         /// </summary>
-        [Description("表格边框颜色色"), Category("外观"), DefaultValue(null)]
+        [Description("表格边框颜色"), Category("外观"), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderColor
         {

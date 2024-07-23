@@ -672,7 +672,7 @@ namespace AntdUI
             }
             else
             {
-                if (items == null || selectIndex >= items.count - 1) return;
+                if (items == null || selectIndex >= items.Count - 1) return;
                 SetSelectIndex(selectIndex + 1);
             }
             base.OnMouseWheel(e);

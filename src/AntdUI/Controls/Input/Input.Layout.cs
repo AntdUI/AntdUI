@@ -665,19 +665,19 @@ namespace AntdUI
         }
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
-            int sp = (int)(read_height * .25F), hasx = sps + w + sp,
+            int sp = (int)(read_height * .25F), hasx = sps + w + sp, hasx2 = sps2 + w + sp,
                 useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), true) : 0;
             if (multiline)
             {
                 rect_l = new Rectangle(rect.X + sps, rect.Y + sps + (read_height - h) / 2, w, h);
-                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, rect.Y + sps, rect.Width - hasx - useLeft, rect.Height - sps2);
-                else rect_text = new Rectangle(rect.X + hasx, rect.Y + sps, rect.Width - sps, rect.Height - sps2);
+                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, rect.Y + sps, rect.Width - hasx2 - useLeft, rect.Height - sps2);
+                else rect_text = new Rectangle(rect.X + hasx, rect.Y + sps, rect.Width - hasx2, rect.Height - sps2);
             }
             else
             {
                 rect_l = new Rectangle(rect.X + sps, rect.Y + (rect.Height - h) / 2, w, h);
-                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasx - useLeft, read_height);
-                else rect_text = new Rectangle(rect.X + hasx, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasx, read_height);
+                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasx2 - useLeft, read_height);
+                else rect_text = new Rectangle(rect.X + hasx, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasx2, read_height);
             }
             rect_r.Width = 0;
         }

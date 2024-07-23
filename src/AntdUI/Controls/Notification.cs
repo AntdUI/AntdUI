@@ -126,6 +126,25 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 关闭全部
+        /// </summary>
+        public static void close_all()
+        {
+            var close_list = new System.Collections.Generic.List<NotificationFrm>(10);
+            foreach (var it in ILayeredFormAnimate.list)
+            {
+                foreach (var item in it.Value)
+                {
+                    if (item is NotificationFrm notification) close_list.Add(notification);
+                }
+            }
+            if (close_list.Count > 0)
+            {
+                foreach (var item in close_list) item.IClose();
+            }
+        }
+
+        /// <summary>
         /// 配置
         /// </summary>
         public class Config

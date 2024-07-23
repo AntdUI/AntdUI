@@ -120,6 +120,25 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 关闭全部
+        /// </summary>
+        public static void close_all()
+        {
+            var close_list = new System.Collections.Generic.List<MessageFrm>(10);
+            foreach (var it in ILayeredFormAnimate.list)
+            {
+                foreach (var item in it.Value)
+                {
+                    if (item is MessageFrm message) close_list.Add(message);
+                }
+            }
+            if (close_list.Count > 0)
+            {
+                foreach (var item in close_list) item.IClose();
+            }
+        }
+
+        /// <summary>
         /// 配置
         /// </summary>
         public class Config
@@ -149,10 +168,12 @@ namespace AntdUI
             /// 所属窗口
             /// </summary>
             public Form Form { get; set; }
+
             /// <summary>
             /// 文本
             /// </summary>
             public string Text { get; set; }
+
             /// <summary>
             /// 图标
             /// </summary>
@@ -187,26 +208,31 @@ namespace AntdUI
             {
                 Icon = TType.Success;
                 Text = text;
+                Refresh();
             }
             public void Error(string text)
             {
                 Icon = TType.Error;
                 Text = text;
+                Refresh();
             }
             public void Warn(string text)
             {
                 Icon = TType.Warn;
                 Text = text;
+                Refresh();
             }
             public void Info(string text)
             {
                 Icon = TType.Info;
                 Text = text;
+                Refresh();
             }
+
             internal Action? refresh;
             public void Refresh()
             {
-                if (refresh != null) refresh();
+                refresh?.Invoke();
             }
         }
     }

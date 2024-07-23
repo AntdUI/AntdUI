@@ -580,53 +580,24 @@ namespace AntdUI
             }
             else if (prog > 0)
             {
-                float h = size2 * prog, h2 = h / 2, yc = rect.Y + (rect.Height - h2) / 2F;
+                float h = size2 * prog, h2 = h / 2;
                 return new PointF[] {
-                    new PointF(x - size2,yc + h2),
-                    new PointF(x, yc - h2),
-                    new PointF(x + size2,yc + h2)
+                    new PointF(x - size2,y + h2),
+                    new PointF(x, y - h2),
+                    new PointF(x + size2,y + h2)
                 };
             }
             else
             {
-                float h = size2 * -prog, h2 = h / 2, yc = rect.Y + (rect.Height - h2) / 2F;
+                float h = size2 * -prog, h2 = h / 2;
                 return new PointF[] {
-                    new PointF(x - size2,yc - h2),
-                    new PointF(x, yc + h2),
-                    new PointF(x + size2,yc - h2)
+                    new PointF(x - size2,y - h2),
+                    new PointF(x, y + h2),
+                    new PointF(x + size2,y - h2)
                 };
             }
         }
-        internal static PointF[] TriangleLines(this RectangleF rect, float prog, float d = 0.7F)
-        {
-            float size = rect.Width * d, size2 = size / 2;
-            float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height / 2F;
-            if (prog == 0)
-            {
-                return new PointF[] {
-                    new PointF(x - size2, y),
-                    new PointF(x + size2,y)
-                };
-            }
-            else if (prog > 0)
-            {
-                float h = size2 * prog, h2 = h / 2, yc = rect.Y + (rect.Height - h2) / 2F;
-                return new PointF[] {
-                    new PointF(x - size2,yc + h2),
-                    new PointF(x, yc - h2),
-                    new PointF(x + size2,yc + h2)
-                };
-            }
-            else
-            {
-                float h = size2 * -prog, h2 = h / 2, yc = rect.Y + (rect.Height - h2) / 2F;
-                return new PointF[] {
-                    new PointF(x - size2,yc - h2),
-                    new PointF(x, yc + h2),
-                    new PointF(x + size2,yc - h2)
-                };
-            }
-        }
+
         internal static PointF[] TriangleLines(this TAlignMini align, RectangleF rect, float b = 0.375F)
         {
             float size = rect.Height * b, size2 = size / 2F;
@@ -829,6 +800,17 @@ namespace AntdUI
         public static Rectangle PaddingRect(this Rectangle rect, Padding padding, int x, int y, int r, int b)
         {
             return new Rectangle(rect.X + padding.Left + x, rect.Y + padding.Top + y, rect.Width - padding.Horizontal - r, rect.Height - padding.Vertical - b);
+        }
+        public static Rectangle PaddingRect(this Rectangle rect, params Padding[] paddings)
+        {
+            foreach (var padding in paddings)
+            {
+                rect.X += padding.Left;
+                rect.Y += padding.Top;
+                rect.Width -= padding.Horizontal;
+                rect.Height -= padding.Vertical;
+            }
+            return rect;
         }
 
         /// <summary>
@@ -1186,6 +1168,48 @@ namespace AntdUI
         /// <param name="BR">↘</param>
         /// <param name="BL">↙</param>
         public static GraphicsPath RoundPath(this RectangleF rect, float radius, bool TL, bool TR, bool BR, bool BL)
+        {
+            var path = new GraphicsPath();
+            if (radius <= 0F) path.AddRectangle(rect);
+            else
+            {
+                float diameter = radius * 2F;
+                var arc = new RectangleF(rect.X, rect.Y, diameter, diameter);
+
+                // TL
+                if (TL) path.AddArc(arc, 180, 90);
+                else path.AddLine(rect.X, rect.Y, rect.Right - diameter, rect.Y);
+
+                // TR
+                arc.X = rect.Right - diameter;
+                if (TR) path.AddArc(arc, 270, 90);
+                else path.AddLine(rect.Right, rect.Y, rect.Right, rect.Bottom - diameter);
+
+                // BR
+                arc.Y = rect.Bottom - diameter;
+                if (BR) path.AddArc(arc, 0, 90);
+                else path.AddLine(rect.Right, rect.Bottom, rect.X + diameter, rect.Bottom);
+
+                // BL
+                arc.X = rect.Left;
+                if (BL) path.AddArc(arc, 90, 90);
+                else path.AddLine(rect.X, rect.Bottom, rect.X, rect.Y + diameter);
+
+                path.CloseFigure();
+            }
+            return path;
+        }
+
+        /// <summary>
+        /// 自定义圆角
+        /// </summary>
+        /// <param name="rect">区域</param>
+        /// <param name="radius">圆角大小</param>
+        /// <param name="TL">↖</param>
+        /// <param name="TR">↗</param>
+        /// <param name="BR">↘</param>
+        /// <param name="BL">↙</param>
+        public static GraphicsPath RoundPath(this Rectangle rect, float radius, bool TL, bool TR, bool BR, bool BL)
         {
             var path = new GraphicsPath();
             if (radius <= 0F) path.AddRectangle(rect);
@@ -1617,66 +1641,6 @@ namespace AntdUI
                 }
             }
         }
-        public static void PaintBadge(this Tabs control, TabsBadge badge, RectangleF rect, Font font, Graphics g)
-        {
-            var color = badge.Fill ?? control.BadgeBack ?? Style.Db.Error;
-            using (var brush_fore = new SolidBrush(Style.Db.ErrorColor))
-            {
-                if (badge.Count == 0)
-                {
-                    var rect_badge = new RectangleF(rect.Right - 7F, 1F, 6, 6);
-                    using (var brush = new SolidBrush(color))
-                    {
-                        g.FillEllipse(brush, rect_badge);
-                        using (var pen = new Pen(brush_fore.Color, 1F))
-                        {
-                            g.DrawEllipse(pen, rect_badge);
-                        }
-                    }
-                }
-                else
-                {
-                    string countStr;
-                    if (badge.Count == 999) countStr = "999";
-                    else if (badge.Count > 1000) countStr = (badge.Count / 1000).ToString().Substring(0, 1) + "K+";
-                    else if (badge.Count > 99) countStr = "99+";
-                    else countStr = badge.Count.ToString();
-
-                    var size = g.MeasureString(countStr, font);
-                    var size_badge = size.Height * 1.2F;
-                    if (size.Height > size.Width)
-                    {
-                        var rect_badge = new RectangleF(rect.Right - size_badge - 1F, 1F, size_badge, size_badge);
-                        using (var brush = new SolidBrush(color))
-                        {
-                            g.FillEllipse(brush, rect_badge);
-                            using (var pen = new Pen(brush_fore.Color, 1F))
-                            {
-                                g.DrawEllipse(pen, rect_badge);
-                            }
-                        }
-                        g.DrawString(countStr, font, brush_fore, rect_badge, stringFormatCenter2);
-                    }
-                    else
-                    {
-                        var w_badge = size.Width * 1.2F;
-                        var rect_badge = new RectangleF(rect.Right - w_badge - 1F, 1F, w_badge, size_badge);
-                        using (var brush = new SolidBrush(color))
-                        {
-                            using (var path = rect_badge.RoundPath(rect_badge.Height))
-                            {
-                                g.FillPath(brush, path);
-                                using (var pen = new Pen(brush_fore.Color, 1F))
-                                {
-                                    g.DrawPath(pen, path);
-                                }
-                            }
-                        }
-                        g.DrawString(countStr, font, brush_fore, rect_badge, stringFormatCenter2);
-                    }
-                }
-            }
-        }
 
         #endregion
 
@@ -1766,6 +1730,10 @@ namespace AntdUI
             {
                 if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
                 if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
+                if (control is Tabs tabs)
+                {
+                    foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
+                }
             }
             return dir;
         }
@@ -1775,6 +1743,10 @@ namespace AntdUI
             {
                 if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
                 if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
+                if (control is Tabs tabs)
+                {
+                    foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
+                }
             }
         }
 
@@ -1788,6 +1760,10 @@ namespace AntdUI
                     control.Anchor = find.Anchor;
                 }
                 if (controls.Count > 0) DpiResume(dir, control.Controls);
+                if (control is Tabs tabs)
+                {
+                    foreach (var page in tabs.Pages) DpiResume(dir, page.Controls);
+                }
             }
         }
 
@@ -1845,6 +1821,16 @@ namespace AntdUI
             else if (control is TabControl tab && tab.ItemSize.Width > 1 && tab.ItemSize.Height > 1)
             {
                 tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
+            }
+            else if (control is Tabs tabs)
+            {
+                foreach (var page in tabs.Pages) DpiLS(dpi, page);
+                if (last)
+                {
+                    control.Size = size;
+                    control.Location = point;
+                }
+                return;
             }
             DpiLSS(dpi, control);
             if (last)

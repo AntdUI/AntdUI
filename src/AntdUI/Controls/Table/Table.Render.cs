@@ -422,7 +422,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(style.ForeColor.Value))
                 {
-                    PaintItem(g, it, fore);
+                    PaintItem(g, it, brush);
                 }
             }
             else PaintItem(g, it, fore);

@@ -26,38 +26,6 @@ namespace AntdUI
 {
     partial class Table
     {
-        protected override void OnMouseClick(MouseEventArgs e)
-        {
-            base.OnMouseClick(e);
-            if (rows == null || CellClick == null) return;
-            var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out _, out int offset_y, out int i_row, out int i_cel, out int mode);
-            if (cel_sel != null)
-            {
-                var it = rows[i_row];
-                var item = it.cells[i_cel];
-                CellClick?.Invoke(this, e, it.RECORD, i_row, i_cel, new Rectangle(item.RECT.X - offset_x, item.RECT.Y - offset_y, item.RECT.Width, item.RECT.Height));
-            }
-        }
-
-        protected override void OnMouseDoubleClick(MouseEventArgs e)
-        {
-            base.OnMouseDoubleClick(e);
-            if (rows == null) return;
-            var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
-            if (cel_sel != null)
-            {
-                var it = rows[i_row];
-                var item = it.cells[i_cel];
-                if (editmode == TEditMode.DoubleClick)
-                {
-                    //进入编辑模式
-                    EditModeClose();
-                    OnEditMode(it, item, i_row, i_cel, offset_xi, offset_y);
-                }
-                CellDoubleClick?.Invoke(this, e, it.RECORD, i_row, i_cel, new Rectangle(item.RECT.X - offset_x, item.RECT.Y - offset_y, item.RECT.Width, item.RECT.Height));
-            }
-        }
-
         #region 鼠标按下
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -89,7 +57,7 @@ namespace AntdUI
                             }
                         }
                         var cell = (TCellColumn)it.cells[i_cel];
-                        cell.MouseDown = true;
+                        cell.MouseDown = e.Clicks > 1 ? 2 : 1;
                         if (cell.column is ColumnCheck columnCheck)
                         {
                             if (e.Button == MouseButtons.Left && cell.Contains(r_x, r_y))
@@ -115,7 +83,7 @@ namespace AntdUI
 
         void MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
         {
-            cell.MouseDown = true;
+            cell.MouseDown = e.Clicks > 1 ? 2 : 1;
             if (cell is Template template && template.HasBtn && e.Button == MouseButtons.Left)
             {
                 foreach (var item in template.value)
@@ -216,10 +184,10 @@ namespace AntdUI
 
         bool MouseUpRow(RowTemplate[] rows, RowTemplate it, TCell cell, MouseEventArgs e, int i_r, int i_c)
         {
-            if (cell.MouseDown)
+            if (cell.MouseDown > 0)
             {
                 var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
-                if (cel_sel == null || (i_r != i_row || i_c != i_cel)) cell.MouseDown = false;
+                if (cel_sel == null || (i_r != i_row || i_c != i_cel)) cell.MouseDown = 0;
                 else
                 {
                     SelectedIndex = i_r;
@@ -332,14 +300,30 @@ namespace AntdUI
                                 }
                             }
                         }
-                        else if (editmode == TEditMode.Click)
+                    }
+                    bool doubleClick = cell.MouseDown == 2;
+                    cell.MouseDown = 0;
+                    CellClick?.Invoke(this, e, it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height));
+
+                    if (doubleClick)
+                    {
+                        CellDoubleClick?.Invoke(this, e, it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height));
+                        if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick)
+                        {
+                            //进入编辑模式
+                            EditModeClose();
+                            OnEditMode(it, cel_sel, i_row, i_cel, offset_xi, offset_y);
+                        }
+                    }
+                    else
+                    {
+                        if (e.Button == MouseButtons.Left && editmode == TEditMode.Click)
                         {
                             //进入编辑模式
                             EditModeClose();
                             OnEditMode(it, cell, i_r, i_c, offset_xi, offset_y);
                         }
                     }
-                    cell.MouseDown = false;
                 }
                 return true;
             }
@@ -761,7 +745,7 @@ namespace AntdUI
                             var rect = new Rectangle(_rect.X + cel.RECT.X - offset_xi, _rect.Y + cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(rect, text, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, text, new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,

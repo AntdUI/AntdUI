@@ -349,6 +349,7 @@ namespace AntdUI
             var rect = Ang();
             form = new DoubleBufferForm(config.Content)
             {
+                BackColor = Style.Db.BgElevated,
                 FormBorderStyle = FormBorderStyle.None,
                 Location = rect.Location,
                 Size = rect.Size
@@ -373,6 +374,95 @@ namespace AntdUI
             tempContent = null;
             config.OnLoad?.Invoke();
             LoadOK?.Invoke();
+            config.Content.SizeChanged += Content_SizeChanged;
+        }
+
+        bool isok = true;
+        private void Content_SizeChanged(object? sender, EventArgs e)
+        {
+            if (form == null) return;
+            if (isok)
+            {
+                isok = false;
+                var size = config.Content.Size;
+                switch (config.Align)
+                {
+                    case TAlignMini.Top:
+                        end_H = (int)(size.Height * Config.Dpi) + padding * 2 + 20;
+                        if (config.Form is Window windowT)
+                        {
+                            start_W = end_W = windowT.Width;
+                            start_X = end_X = windowT.Left;
+                            start_Y = end_Y = windowT.Top;
+                        }
+                        else
+                        {
+                            start_W = end_W = config.Form.Width;
+                            start_X = end_X = config.Form.Left;
+                            start_Y = end_Y = config.Form.Top;
+                        }
+                        break;
+                    case TAlignMini.Bottom:
+                        end_H = (int)(size.Height * Config.Dpi) + padding * 2 + 20;
+                        if (config.Form is Window windowB)
+                        {
+                            start_W = end_W = windowB.Width;
+                            start_X = end_X = windowB.Left;
+                            start_Y = windowB.Top + windowB.Height;
+                        }
+                        else
+                        {
+                            start_W = end_W = config.Form.Width;
+                            start_X = end_X = config.Form.Left;
+                            start_Y = config.Form.Top + config.Form.Height;
+                        }
+                        end_Y = start_Y - end_H;
+                        break;
+                    case TAlignMini.Left:
+                        end_W = (int)(size.Width * Config.Dpi) + padding * 2 + 20;
+                        if (config.Form is Window windowL)
+                        {
+                            start_H = end_H = windowL.Height;
+                            start_X = end_X = windowL.Left;
+                            start_Y = end_Y = windowL.Top;
+                        }
+                        else
+                        {
+                            start_H = end_H = config.Form.Height;
+                            start_X = end_X = config.Form.Left;
+                            start_Y = end_Y = config.Form.Top;
+                        }
+                        break;
+                    case TAlignMini.Right:
+                    default:
+                        end_W = (int)(size.Width * Config.Dpi) + padding * 2 + 20;
+                        if (config.Form is Window windowR)
+                        {
+                            start_H = end_H = windowR.Height;
+                            start_X = windowR.Left + windowR.Width;
+                            start_Y = end_Y = windowR.Top;
+                        }
+                        else
+                        {
+                            start_H = end_H = config.Form.Height;
+                            start_X = config.Form.Left + config.Form.Width;
+                            start_Y = end_Y = config.Form.Top;
+                        }
+                        end_X = start_X - end_W;
+                        break;
+                }
+                SetLocation(end_X, end_Y);
+                SetSize(end_W, end_H);
+                var rect = Ang();
+                form.Location = rect.Location;
+                form.Size = rect.Size;
+                Print();
+                ITask.Run(() =>
+                {
+                    System.Threading.Thread.Sleep(500);
+                    isok = true;
+                });
+            }
         }
 
         internal Action? LoadOK = null;

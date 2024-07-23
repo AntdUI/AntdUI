@@ -355,15 +355,19 @@ namespace AntdUI
             var original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).HighLay())
             {
-                using (var brush = new SolidBrush(config.Back ?? Color.FromArgb(100, Style.Db.TextBase)))
+                try
                 {
-                    if (gpath != null) g.FillPath(brush, gpath);
-                    else if (Radius > 0)
+                    using (var brush = new SolidBrush(config.Back ?? Color.FromArgb(100, Style.Db.TextBase)))
                     {
-                        using (var path = rect.RoundPath(Radius)) { g.FillPath(brush, path); }
+                        if (gpath != null) g.FillPath(brush, gpath);
+                        else if (Radius > 0)
+                        {
+                            using (var path = rect.RoundPath(Radius)) { g.FillPath(brush, path); }
+                        }
+                        else g.FillRectangle(brush, rect);
                     }
-                    else g.FillRectangle(brush, rect);
                 }
+                catch { }
                 spin_core.Paint(g, rect, config.Text, config.Color ?? Style.Db.Primary, config.Font, this);
             }
             return original_bmp;

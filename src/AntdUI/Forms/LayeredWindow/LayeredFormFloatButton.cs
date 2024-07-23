@@ -339,7 +339,7 @@ namespace AntdUI
                             var rect = new Rectangle(_rect.X + it.rect.X, _rect.Y + it.rect.Y, it.rect.Width, it.rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(rect, it.Tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(config.Form, rect, it.Tooltip, new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = config.Align.AlignMiniReverse(config.Vertical),

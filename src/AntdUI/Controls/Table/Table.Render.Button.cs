@@ -359,25 +359,22 @@ namespace AntdUI
                 var rect = PaintButtonImageRectCenter(btn, font_size, rect_read);
                 if (PaintButtonImageNoText(g, btn, template, color, rect) && btn.ShowArrow)
                 {
-                    float size = font_size.Height * btn.IconRatio;
-                    var rect_arrow = new RectangleF(rect_read.X + (rect_read.Width - size) / 2F, rect_read.Y + (rect_read.Height - size) / 2F, size, size);
+                    int size = (int)(font_size.Height * btn.IconRatio);
+                    var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
                     using (var pen = new Pen(color, 2F * Config.Dpi))
                     {
                         pen.StartCap = pen.EndCap = LineCap.Round;
                         if (btn.IsLink)
                         {
                             var state = g.Save();
-                            float size2 = rect_arrow.Width / 2F;
-                            g.TranslateTransform(rect_arrow.X + size2, rect_arrow.Y + size2);
+                            int size_arrow = rect_arrow.Width / 2;
+                            g.TranslateTransform(rect_arrow.X + size_arrow, rect_arrow.Y + size_arrow);
                             g.RotateTransform(-90F);
-                            g.DrawLines(pen, new RectangleF(-size2, -size2, rect_arrow.Width, rect_arrow.Height).TriangleLines(btn.ArrowProg));
+                            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arrow.Width, rect_arrow.Height).TriangleLines(btn.ArrowProg));
                             g.ResetTransform();
                             g.Restore(state);
                         }
-                        else
-                        {
-                            g.DrawLines(pen, rect_arrow.TriangleLines(btn.ArrowProg));
-                        }
+                        else g.DrawLines(pen, rect_arrow.TriangleLines(btn.ArrowProg));
                     }
                 }
             }
@@ -406,14 +403,13 @@ namespace AntdUI
                         using (var pen = new Pen(color, 2F * Config.Dpi))
                         {
                             pen.StartCap = pen.EndCap = LineCap.Round;
-                            g.FillEllipse(Brushes.AliceBlue, rect_r);
                             if (btn.IsLink)
                             {
                                 var state = g.Save();
-                                float size2 = rect_r.Width / 2F;
-                                g.TranslateTransform(rect_r.X + size2, rect_r.Y + size2);
+                                int size_arrow = rect_r.Width / 2;
+                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
                                 g.RotateTransform(-90F);
-                                g.DrawLines(pen, new RectangleF(-size2, -size2, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg));
+                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg));
                                 g.ResetTransform();
                                 g.Restore(state);
                             }
@@ -447,10 +443,10 @@ namespace AntdUI
                             if (btn.IsLink)
                             {
                                 var state = g.Save();
-                                float size2 = rect_r.Width / 2F;
-                                g.TranslateTransform(rect_r.X + size2, rect_r.Y + size2);
+                                int size_arrow = rect_r.Width / 2;
+                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
                                 g.RotateTransform(-90F);
-                                g.DrawLines(pen, new RectangleF(-size2, -size2, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg));
+                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg));
                                 g.ResetTransform();
                                 g.Restore(state);
                             }
@@ -486,8 +482,8 @@ namespace AntdUI
                 {
                     if (btn.ShowArrow)
                     {
-                        float size = font_size.Height * btn.IconRatio;
-                        var rect_arrow = new RectangleF(rect_read.X + (rect_read.Width - size) / 2F, rect_read.Y + (rect_read.Height - size) / 2F, size, size);
+                        int size = (int)(font_size.Height * btn.IconRatio);
+                        var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
                         using (var pen = new Pen(color, 2F * Config.Dpi))
                         using (var penHover = new Pen(colorHover, pen.Width))
                         {
@@ -495,10 +491,10 @@ namespace AntdUI
                             if (btn.IsLink)
                             {
                                 var state = g.Save();
-                                float size2 = rect_arrow.Width / 2F;
-                                g.TranslateTransform(rect_arrow.X + size2, rect_arrow.Y + size2);
+                                int size_arrow = rect_arrow.Width / 2;
+                                g.TranslateTransform(rect_arrow.X + size_arrow, rect_arrow.Y + size_arrow);
                                 g.RotateTransform(-90F);
-                                var rect_arrow_lines = new RectangleF(-size2, -size2, rect_arrow.Width, rect_arrow.Height).TriangleLines(btn.ArrowProg);
+                                var rect_arrow_lines = new Rectangle(-size_arrow, -size_arrow, rect_arrow.Width, rect_arrow.Height).TriangleLines(btn.ArrowProg);
                                 g.DrawLines(pen, rect_arrow_lines);
                                 g.DrawLines(penHover, rect_arrow_lines);
                                 g.ResetTransform();
@@ -550,10 +546,10 @@ namespace AntdUI
                             if (btn.IsLink)
                             {
                                 var state = g.Save();
-                                float size2 = rect_r.Width / 2F;
-                                g.TranslateTransform(rect_r.X + size2, rect_r.Y + size2);
+                                int size_arrow = rect_r.Width / 2;
+                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
                                 g.RotateTransform(-90F);
-                                var rect_arrow = new RectangleF(-size2, -size2, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg);
+                                var rect_arrow = new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg);
                                 g.DrawLines(pen, rect_arrow);
                                 g.DrawLines(penHover, rect_arrow);
                                 g.ResetTransform();
@@ -598,10 +594,10 @@ namespace AntdUI
                             if (btn.IsLink)
                             {
                                 var state = g.Save();
-                                float size2 = rect_r.Width / 2F;
-                                g.TranslateTransform(rect_r.X + size2, rect_r.Y + size2);
+                                int size_arrow = rect_r.Width / 2;
+                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
                                 g.RotateTransform(-90F);
-                                var rect_arrow = new RectangleF(-size2, -size2, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg);
+                                var rect_arrow = new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg);
                                 g.DrawLines(pen, rect_arrow);
                                 g.DrawLines(penHover, rect_arrow);
                                 g.ResetTransform();

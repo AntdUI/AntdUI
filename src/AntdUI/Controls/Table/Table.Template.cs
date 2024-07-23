@@ -372,7 +372,7 @@ namespace AntdUI
                 return sizef;
             }
 
-            public bool MouseDown { get; set; }
+            public int MouseDown { get; set; }
             public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
@@ -501,7 +501,7 @@ namespace AntdUI
                 return sizef;
             }
 
-            public bool MouseDown { get; set; }
+            public int MouseDown { get; set; }
             public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
@@ -730,7 +730,7 @@ namespace AntdUI
                 return sizef;
             }
 
-            public bool MouseDown { get; set; }
+            public int MouseDown { get; set; }
             public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
@@ -805,7 +805,7 @@ namespace AntdUI
                 return new SizeF(size.Width + gap2, size.Height);
             }
 
-            public bool MouseDown { get; set; }
+            public int MouseDown { get; set; }
             public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
@@ -876,7 +876,7 @@ namespace AntdUI
                 return new SizeF(size.Width + gap2 + SortWidth, size.Height);
             }
 
-            public bool MouseDown { get; set; }
+            public int MouseDown { get; set; }
             public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48
@@ -906,7 +906,7 @@ namespace AntdUI
 
             int MinWidth { get; set; }
 
-            bool MouseDown { get; set; }
+            int MouseDown { get; set; }
 
 #if NET40 || NET46 || NET48
             bool CONTAINS(int x, int y);
@@ -1014,7 +1014,7 @@ namespace AntdUI
                 return new SizeF(MinWidth + _gap2, h);
             }
 
-            public bool MouseDown { get; set; }
+            public int MouseDown { get; set; }
             public int MinWidth { get; set; }
 
 #if NET40 || NET46 || NET48

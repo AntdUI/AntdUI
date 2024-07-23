@@ -112,6 +112,23 @@ namespace AntdUI
             }
         }
 
+        int _gap = 8;
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(8)]
+        public int Gap
+        {
+            get => _gap;
+            set
+            {
+                if (_gap == value) return;
+                _gap = value;
+                ChangeList();
+                Invalidate();
+            }
+        }
+
         bool round = false;
         /// <summary>
         /// 圆角样式
@@ -377,15 +394,15 @@ namespace AntdUI
         internal Rectangle ChangeList()
         {
             var rect = ClientRectangle;
-            if (pauseLayout || items == null || items.Count == 0) return rect;
-            if (rect.Width == 0 || rect.Height == 0) return rect;
+            if (pauseLayout || items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return rect;
 
             int x = 0, y = 0;
             bool has = HasSub(items);
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                int icon_size = (int)(size.Height), gap = icon_size / 2, gapI = gap / 2, height = (int)Math.Ceiling(size.Height + gap * 2);
+                int icon_size = (int)(size.Height), gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
+
                 check_radius = icon_size * .2F;
                 ChangeList(g, rect, null, items, has, ref x, ref y, height, icon_size, gap, gapI, 0, true);
             });
@@ -505,6 +522,13 @@ namespace AntdUI
             }
             else
             {
+                if (item.Back.HasValue)
+                {
+                    using (var brush = new SolidBrush(item.Back.Value))
+                    {
+                        PaintBack(g, brush, item.rect, radius);
+                    }
+                }
                 if (blockNode)
                 {
                     g.ResetTransform();
@@ -534,7 +558,6 @@ namespace AntdUI
                 if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
                 {
-
                     using (var brush = new SolidBrush(Style.Db.TextQuaternary))
                     {
                         PaintItemText(g, item, brush, brushTextTertiary);
@@ -649,12 +672,21 @@ namespace AntdUI
         }
         void PaintItemText(Graphics g, TreeItem item, SolidBrush fore, SolidBrush brushTextTertiary)
         {
-            g.DrawString(item.Text, Font, fore, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
+            Color color = fore.Color;
+            if (item.Fore.HasValue)
+            {
+                color = item.Fore.Value;
+                using (var brush = new SolidBrush(color))
+                {
+                    g.DrawString(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
+                }
+            }
+            else g.DrawString(item.Text, Font, fore, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
             if (item.SubTitle != null) g.DrawString(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, Helper.stringFormatLeft);
             if (item.Icon != null) g.DrawImage(item.Icon, item.ico_rect);
             else if (item.IconSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(item.IconSvg, item.ico_rect, fore.Color))
+                using (var _bmp = SvgExtend.GetImgExtend(item.IconSvg, item.ico_rect, color))
                 {
                     if (_bmp != null) g.DrawImage(_bmp, item.ico_rect);
                 }
@@ -678,13 +710,13 @@ namespace AntdUI
 
         void PanintArrow(Graphics g, TreeItem item, SolidBrush color, int sx, int sy)
         {
-            float size = item.arr_rect.Width, size2 = size / 2F;
-            g.TranslateTransform(item.arr_rect.X + size2, item.arr_rect.Y + size2);
+            int size = item.arr_rect.Width, size_arrow = size / 2;
+            g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
             g.RotateTransform(-90F + item.ArrowProg);
             using (var pen = new Pen(color, 2F))
             {
                 pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                g.DrawLines(pen, new RectangleF(-size2, -size2, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .4F));
+                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .4F));
             }
             g.ResetTransform();
             g.TranslateTransform(-sx, -sy);
@@ -1224,6 +1256,42 @@ namespace AntdUI
             }
             else AnimationCheckValue = _checked ? 1F : 0F;
             Invalidate();
+        }
+
+        #endregion
+
+        #region 样式
+
+        Color? fore;
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
+        [Description("文本颜色"), Category("外观"), DefaultValue(null)]
+        public Color? Fore
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) return;
+                fore = value;
+                Invalidate();
+            }
+        }
+
+        Color? back;
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        public Color? Back
+        {
+            get => back;
+            set
+            {
+                if (back == value) return;
+                back = value;
+                Invalidate();
+            }
         }
 
         #endregion

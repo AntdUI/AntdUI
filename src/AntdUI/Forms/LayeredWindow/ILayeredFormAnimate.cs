@@ -26,7 +26,7 @@ namespace AntdUI
 {
     public abstract class ILayeredFormAnimate : ILayeredForm
     {
-        static Dictionary<TAlignFrom, List<ILayeredFormAnimate>> list = new Dictionary<TAlignFrom, List<ILayeredFormAnimate>>();
+        internal static Dictionary<TAlignFrom, List<ILayeredFormAnimate>> list = new Dictionary<TAlignFrom, List<ILayeredFormAnimate>>();
 
         internal virtual TAlignFrom Align => TAlignFrom.TR;
 

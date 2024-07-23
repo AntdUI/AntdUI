@@ -40,11 +40,7 @@ namespace AntdUI
             }
             if (dataSource == null)
             {
-                if (EmptyHeader && columns != null && columns.Length > 0)
-                {
-                    var columns = new List<TempiColumn>();
-                    data_temp = new TempTable(columns.ToArray(), new TempiRow[0]);
-                }
+                if (EmptyHeader && columns != null && columns.Count > 0) data_temp = new TempTable(new TempiColumn[0], new IRow[0]);
                 // 空数据
                 scrollBar.ValueX = scrollBar.ValueY = 0;
                 return;
@@ -54,7 +50,7 @@ namespace AntdUI
                 if (table.Columns.Count > 0 && table.Rows.Count > 0)
                 {
                     var columns = new List<TempiColumn>(table.Columns.Count);
-                    var rows = new List<TempiRow>(table.Rows.Count + 1);
+                    var rows = new List<IRow>(table.Rows.Count + 1);
                     for (int i = 0; i < table.Columns.Count; i++) columns.Add(new TempiColumn(i, table.Columns[i].ColumnName));
                     for (int i = 0; i < table.Rows.Count; i++)
                     {
@@ -62,11 +58,8 @@ namespace AntdUI
                         if (row != null)
                         {
                             var cells = new Dictionary<string, object?>(columns.Count);
-                            foreach (var it in columns)
-                            {
-                                cells.Add(it.key, row[it.key]);
-                            }
-                            if (cells.Count > 0) rows.Add(new TempiRow(i, row, cells));
+                            foreach (var it in columns) cells.Add(it.key, row[it.key]);
+                            if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
                         }
                     }
                     data_temp = new TempTable(columns.ToArray(), rows.ToArray());
@@ -75,14 +68,14 @@ namespace AntdUI
             else if (dataSource is IList list)
             {
                 var columns = new List<TempiColumn>();
-                var rows = new List<TempiRow>(list.Count + 1);
+                var rows = new List<IRow>(list.Count + 1);
                 for (int i = 0; i < list.Count; i++)
                 {
                     var row = list[i];
                     if (row != null)
                     {
                         var cells = GetRowAuto(row, ref columns);
-                        if (cells.Count > 0) rows.Add(new TempiRow(i, row, cells));
+                        if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
                     }
                 }
                 data_temp = new TempTable(columns.ToArray(), rows.ToArray());
@@ -106,9 +99,9 @@ namespace AntdUI
                             {
                                 var cells = GetRow(row, data_temp.columns.Length);
                                 if (cells.Count == 0) return;
-                                var rows = new List<TempiRow>(data_temp.rows.Length + 1);
+                                var rows = new List<IRow>(data_temp.rows.Length + 1);
                                 rows.AddRange(data_temp.rows);
-                                rows.Insert(i, new TempiRow(i, row, cells));
+                                rows.Insert(i, new IRow(i, row, cells));
                                 data_temp.rows = ChangeList(rows);
                                 LoadLayout();
                                 Invalidate();
@@ -116,17 +109,17 @@ namespace AntdUI
                         }
                         else if (obj is int[] i_s)
                         {
-                            var _list = new List<TempiRow>();
+                            var _list = new List<IRow>();
                             foreach (int id in i_s)
                             {
                                 var row = list[id];
                                 if (row != null)
                                 {
                                     var cells = GetRow(row, data_temp.columns.Length);
-                                    if (cells.Count > 0) _list.Add(new TempiRow(id, row, cells));
+                                    if (cells.Count > 0) _list.Add(new IRow(id, row, cells));
                                 }
                             }
-                            var rows = new List<TempiRow>(data_temp.rows.Length + _list.Count);
+                            var rows = new List<IRow>(data_temp.rows.Length + _list.Count);
                             rows.AddRange(data_temp.rows);
                             rows.InsertRange(i_s[0], _list);
                             data_temp.rows = ChangeList(rows);
@@ -145,7 +138,7 @@ namespace AntdUI
                         {
                             if (i >= 0 && i < data_temp.rows.Length)
                             {
-                                var rows = new List<TempiRow>(data_temp.rows.Length);
+                                var rows = new List<IRow>(data_temp.rows.Length);
                                 rows.AddRange(data_temp.rows);
                                 rows.RemoveAt(i);
                                 data_temp.rows = ChangeList(rows);
@@ -155,7 +148,7 @@ namespace AntdUI
                         }
                         else if (obj is string)
                         {
-                            data_temp.rows = new TempiRow[0];
+                            data_temp.rows = new IRow[0];
                             LoadLayout();
                             Invalidate();
                         }
@@ -163,14 +156,14 @@ namespace AntdUI
                 }
             };
             var columns = new List<TempiColumn>();
-            var rows = new List<TempiRow>(list.Count + 1);
+            var rows = new List<IRow>(list.Count + 1);
             for (int i = 0; i < list.Count; i++)
             {
                 var row = list[i];
                 if (row != null)
                 {
                     var cells = GetRowAuto(row, ref columns);
-                    if (cells.Count > 0) rows.Add(new TempiRow(i, row, cells));
+                    if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
                 }
             }
             data_temp = new TempTable(columns.ToArray(), rows.ToArray());
@@ -179,7 +172,7 @@ namespace AntdUI
             Invalidate();
         }
 
-        TempiRow[] ChangeList(List<TempiRow> rows)
+        IRow[] ChangeList(List<IRow> rows)
         {
             for (int i = 0; i < rows.Count; i++) rows[i].i = i;
             return rows.ToArray();
@@ -253,7 +246,7 @@ namespace AntdUI
 
         class TempTable
         {
-            public TempTable(TempiColumn[] _columns, TempiRow[] _rows)
+            public TempTable(TempiColumn[] _columns, IRow[] _rows)
             {
                 columns = _columns;
                 rows = _rows;
@@ -265,8 +258,9 @@ namespace AntdUI
             /// <summary>
             /// 数据 - 行
             /// </summary>
-            public TempiRow[] rows { get; set; }
+            public IRow[] rows { get; set; }
         }
+
         class TempiColumn
         {
             public TempiColumn(int index, string name)
@@ -284,14 +278,16 @@ namespace AntdUI
             /// </summary>
             public int i { get; set; }
         }
-        class TempiRow
+
+        public class IRow
         {
-            public TempiRow(int index, object _record, Dictionary<string, object?> _cells)
+            public IRow(int index, object _record, Dictionary<string, object?> _cells)
             {
                 i = index;
                 record = _record;
                 cells = _cells;
             }
+
             /// <summary>
             /// 行序号
             /// </summary>
@@ -303,6 +299,38 @@ namespace AntdUI
             public object record { get; set; }
 
             public Dictionary<string, object?> cells { get; set; }
+
+            public object? this[int index]
+            {
+                get
+                {
+                    if (cells == null) return null;
+                    int i = 0;
+                    foreach (var item in cells)
+                    {
+                        if (i == index)
+                        {
+                            if (item.Value is PropertyDescriptor prop) return prop.GetValue(record);
+                            else return item.Value;
+                        }
+                        i++;
+                    }
+                    return null;
+                }
+            }
+            public object? this[string key]
+            {
+                get
+                {
+                    if (cells == null) return null;
+                    if (cells.TryGetValue(key, out var value))
+                    {
+                        if (value is PropertyDescriptor prop) return prop.GetValue(record);
+                        else return value;
+                    }
+                    return null;
+                }
+            }
         }
     }
 }

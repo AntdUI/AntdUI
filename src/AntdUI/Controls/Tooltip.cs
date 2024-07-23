@@ -228,8 +228,10 @@ namespace AntdUI
             control.LostFocus += Control_LostFocus;
             control.MouseLeave += Control_LostFocus;
         }
-        public TooltipForm(Rectangle rect, string txt, ITooltipConfig component)
+        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component)
         {
+            ocontrol = control;
+            control.SetTopMost(Handle);
             Text = txt;
             if (component.Font != null) Font = component.Font;
             else if (Config.Font != null) Font = Config.Font;

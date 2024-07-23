@@ -144,7 +144,7 @@ namespace AntdUI
             var rect = new Rectangle(_rect.X + (int)dot_rect.X, _rect.Y + (int)dot_rect.Y, (int)dot_rect.Width, (int)dot_rect.Height);
             if (tooltipForm == null)
             {
-                tooltipForm = new TooltipForm(rect, tooltipText, new TooltipConfig
+                tooltipForm = new TooltipForm(this, rect, tooltipText, new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = (align == TAlignMini.Top || align == TAlignMini.Bottom) ? TAlign.Right : TAlign.Top,

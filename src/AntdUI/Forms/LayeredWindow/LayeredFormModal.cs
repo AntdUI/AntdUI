@@ -484,20 +484,31 @@ namespace AntdUI
                     catch { }
                     isclose = true;
                     btn_ok.Loading = false;
-                    if (result)
+
+                    // 等待窗口关闭
+                    if (IsHandleCreated && !IsDisposed)
                     {
-                        System.Threading.Thread.Sleep(100);
-                        BeginInvoke(new Action(() =>
+                        if (result)
                         {
-                            DialogResult = DialogResult.OK;
-                        }));
-                    }
-                    else if (DisableCancel && btn_no != null)
-                    {
-                        Invoke(new Action(() =>
+                            System.Threading.Thread.Sleep(100);
+                            BeginInvoke(new Action(() =>
+                            {
+                                if (IsHandleCreated && !IsDisposed)
+                                {
+                                    DialogResult = DialogResult.OK;
+                                }
+                            }));
+                        }
+                        else if (DisableCancel && btn_no != null)
                         {
-                            btn_no.Enabled = true;
-                        }));
+                            BeginInvoke(new Action(() =>
+                            {
+                                if (btn_no.IsHandleCreated && !btn_no.IsDisposed)
+                                {
+                                    btn_no.Enabled = true;
+                                }
+                            }));
+                        }
                     }
                 });
             }
