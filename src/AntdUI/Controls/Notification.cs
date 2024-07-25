@@ -274,8 +274,8 @@ namespace AntdUI
         public NotificationFrm(Notification.Config _config)
         {
             config = _config;
-            if (config.TopMost) TopMost = true;
-            else TopMost = config.Form.TopMost;
+            if (config.TopMost) Helper.SetTopMost(Handle);
+            else config.Form.SetTopMost(Handle);
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;
             else Font = config.Form.Font;

@@ -320,11 +320,11 @@ namespace AntdUI
         void SetRect(int old, int value)
         {
             if (items == null || items.Count == 0) return;
-            var _new = Items[value];
+            var _new = items[value];
             if (_new == null) return;
             if (old > -1)
             {
-                var _old = Items[old];
+                var _old = items[old];
                 if (_old == null) AnimationBarValue = TabSelectRect = _new.Rect;
                 else
                 {
@@ -536,7 +536,7 @@ namespace AntdUI
                 if (Full)
                 {
                     int imgsize = (int)(size_t.Height * 1.8F);
-                    int len = Items.Count;
+                    int len = items.Count;
                     if (Vertical)
                     {
                         float heightone = (rect.Height * 1F - (_igap * (len - 1))) / len, y = 0;
@@ -544,7 +544,7 @@ namespace AntdUI
                         {
                             case TAlignMini.Top:
                                 int imgsize_t = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -554,7 +554,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Bottom:
                                 int imgsize_b = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -564,7 +564,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Left:
                                 int imgsize_l = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -574,7 +574,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Right:
                                 int imgsize_r = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -583,7 +583,7 @@ namespace AntdUI
                                 }
                                 break;
                             default:
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -600,7 +600,7 @@ namespace AntdUI
                         {
                             case TAlignMini.Top:
                                 int imgsize_t = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -610,7 +610,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Bottom:
                                 int imgsize_b = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -620,7 +620,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Left:
                                 int imgsize_l = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -630,7 +630,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Right:
                                 int imgsize_r = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -639,7 +639,7 @@ namespace AntdUI
                                 }
                                 break;
                             default:
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -660,7 +660,7 @@ namespace AntdUI
                         {
                             case TAlignMini.Top:
                                 int imgsize_t = (int)(size_t.Height * 1.8F), heigth_t = (int)Math.Ceiling(size_t.Height * 2.4F + gap2);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -670,7 +670,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Bottom:
                                 int imgsize_b = (int)(size_t.Height * 1.8F), heigth_b = (int)Math.Ceiling(size_t.Height * 2.4F + gap2);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -680,7 +680,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Left:
                                 int imgsize_l = (int)(size_t.Height * 1.2F), heigth_l = (int)Math.Ceiling(size_t.Height + gap2);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -690,7 +690,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Right:
                                 int imgsize_r = (int)(size_t.Height * 1.2F), heigth_r = (int)Math.Ceiling(size_t.Height + gap2);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -700,7 +700,7 @@ namespace AntdUI
                                 break;
                             default:
                                 int heigth = (int)Math.Ceiling(size_t.Height + gap);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -718,7 +718,7 @@ namespace AntdUI
                         {
                             case TAlignMini.Top:
                                 int imgsize_t = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -728,7 +728,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Bottom:
                                 int imgsize_b = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -738,7 +738,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Left:
                                 int imgsize_l = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -748,7 +748,7 @@ namespace AntdUI
                                 break;
                             case TAlignMini.Right:
                                 int imgsize_r = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -757,7 +757,7 @@ namespace AntdUI
                                 }
                                 break;
                             default:
-                                foreach (SegmentedItem it in Items)
+                                foreach (SegmentedItem it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font);
@@ -772,7 +772,7 @@ namespace AntdUI
             });
             if (_select > -1)
             {
-                var _new = Items[_select];
+                var _new = items[_select];
                 if (_new == null) return;
                 AnimationBarValue = TabSelectRect = _new.Rect;
             }
@@ -801,9 +801,9 @@ namespace AntdUI
             }
             var item_text = new System.Collections.Generic.List<SegmentedItem>();
             int _hover = -1;
-            for (int i = 0; i < Items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                var it = Items[i];
+                var it = items[i];
                 if (it == null) continue;
                 if (i == _select && !AnimationBar)
                 {
@@ -945,7 +945,7 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (items == null || items.Count == 0) return;
             int hand = 0, change = 0;
-            foreach (SegmentedItem it in Items)
+            foreach (SegmentedItem it in items)
             {
                 bool hover = it.Rect.Contains(e.Location);
                 if (it.Hover != hover)
@@ -965,7 +965,7 @@ namespace AntdUI
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int change = 0;
-            foreach (SegmentedItem it in Items)
+            foreach (SegmentedItem it in items)
             {
                 if (it.Hover)
                 {
@@ -982,7 +982,7 @@ namespace AntdUI
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int change = 0;
-            foreach (SegmentedItem it in Items)
+            foreach (SegmentedItem it in items)
             {
                 if (it.Hover)
                 {
@@ -997,9 +997,9 @@ namespace AntdUI
         {
             base.OnMouseClick(e);
             if (items == null || items.Count == 0) return;
-            for (int i = 0; i < Items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                var it = Items[i];
+                var it = items[i];
                 if (it != null && it.Rect.Contains(e.Location))
                 {
                     SelectIndex = i;

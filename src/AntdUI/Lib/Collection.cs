@@ -72,8 +72,14 @@ namespace AntdUI
 
         #region 列表
 
-        public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = 0; i < list.Count; i++) yield return list[i];
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            for (int i = 0; i < list.Count; i++) yield return list[i];
+        }
         public T[] ToArray() => list.ToArray();
         public void ForEach(Action<T> action) => list.ForEach(action);
         public bool TrueForAll(Predicate<T> match) => list.TrueForAll(match);

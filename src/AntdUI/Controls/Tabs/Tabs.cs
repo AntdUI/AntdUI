@@ -215,6 +215,46 @@ namespace AntdUI
             }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TabPage? SelectedTab
+        {
+            get
+            {
+                if (items == null || items.Count <= _select || _select < 0) return null;
+                return items[_select];
+            }
+            set
+            {
+                if (items == null || value == null) return;
+                var index = items.IndexOf(value);
+                SelectedIndex = index;
+            }
+        }
+
+        public void SelectTab(string tabPageName)
+        {
+            if (items == null) return;
+            foreach (var it in items)
+            {
+                if (it.Text == tabPageName)
+                {
+                    SelectedTab = it;
+                    return;
+                }
+            }
+        }
+
+        public void SelectTab(TabPage tabPage)
+        {
+            SelectedTab = tabPage;
+        }
+
+        public void SelectTab(int index)
+        {
+            SelectedIndex = index;
+        }
+
         #region 动画
 
         int _select = 0;
@@ -229,6 +269,7 @@ namespace AntdUI
                 _select = value;
                 style.SelectedIndexChanged(value, old);
                 SelectedIndexChanged?.Invoke(this, value);
+                Invalidate();
                 ShowPage();
             }
         }

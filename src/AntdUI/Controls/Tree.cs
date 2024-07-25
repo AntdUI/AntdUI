@@ -404,6 +404,20 @@ namespace AntdUI
                 int icon_size = (int)(size.Height), gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
 
                 check_radius = icon_size * .2F;
+                if (CheckStrictly && has && items[0].PARENT == null && items[0].PARENTITEM == null)
+                {
+                    //新数据
+                    var dir = new List<TreeItem>();
+                    TestSub(ref dir, items);
+                    foreach (var item in dir)
+                    {
+                        int check_count = 0;
+                        foreach (TreeItem sub in item.Sub)
+                        { if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++; }
+                        if (check_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
+                        else item.CheckState = CheckState.Unchecked;
+                    }
+                }
                 ChangeList(g, rect, null, items, has, ref x, ref y, height, icon_size, gap, gapI, 0, true);
             });
             scrollBar.SetVrSize(x, y);
@@ -417,6 +431,17 @@ namespace AntdUI
                 if (it.CanExpand) return true;
             }
             return false;
+        }
+        void TestSub(ref List<TreeItem> dir, TreeItemCollection items)
+        {
+            foreach (TreeItem it in items)
+            {
+                if (it.CanExpand)
+                {
+                    dir.Insert(0, it);
+                    TestSub(ref dir, it.Sub);
+                }
+            }
         }
 
         void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
@@ -473,7 +498,7 @@ namespace AntdUI
             using (var brush_active = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
             using (var brush_TextTertiary = new SolidBrush(Style.Db.TextTertiary))
             {
-                PaintItem(g, rect, sx, sy, Items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
+                PaintItem(g, rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
             }
             g.ResetTransform();
             scrollBar.Paint(g);
@@ -744,7 +769,7 @@ namespace AntdUI
             if (scrollBar.MouseDownY(e.Location) && scrollBar.MouseDownX(e.Location))
             {
                 if (items == null || items.Count == 0) return;
-                foreach (TreeItem it in Items)
+                foreach (TreeItem it in items)
                 {
                     if (IMouseDown(e, it, null)) return;
                 }
@@ -828,7 +853,7 @@ namespace AntdUI
             {
                 if (items == null || items.Count == 0) return;
                 int hand = 0;
-                foreach (TreeItem it in Items) IMouseMove(it, e.Location, ref hand);
+                foreach (TreeItem it in items) IMouseMove(it, e.Location, ref hand);
                 SetCursor(hand > 0);
             }
             else ILeave();
@@ -867,7 +892,7 @@ namespace AntdUI
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int count = 0;
-            foreach (TreeItem it in Items)
+            foreach (TreeItem it in items)
             {
                 ILeave(it, ref count);
             }
@@ -1095,7 +1120,7 @@ namespace AntdUI
             {
                 if (expand == value) return;
                 expand = value;
-                if (Sub != null && Sub.Count > 0)
+                if (items != null && items.Count > 0)
                 {
                     if (PARENT != null && PARENT.IsHandleCreated && Config.Animation)
                     {
@@ -1145,7 +1170,6 @@ namespace AntdUI
                 }
                 else
                 {
-                    expand = false;
                     ExpandProg = 1F;
                     ArrowProg = 0F;
                     Invalidates();
@@ -1156,10 +1180,10 @@ namespace AntdUI
         internal int ExpandCount(TreeItem it)
         {
             int count = 0;
-            if (it.Sub != null && it.Sub.Count > 0)
+            if (it.items != null && it.items.Count > 0)
             {
-                count += it.Sub.Count;
-                foreach (TreeItem item in it.Sub)
+                count += it.items.Count;
+                foreach (TreeItem item in it.items)
                 {
                     if (item.Expand) count += ExpandCount(item);
                 }
@@ -1170,7 +1194,7 @@ namespace AntdUI
         [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
         public bool CanExpand
         {
-            get => visible && Sub != null && Sub.Count > 0;
+            get => visible && items != null && items.Count > 0;
         }
 
         #endregion

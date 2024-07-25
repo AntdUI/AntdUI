@@ -27,6 +27,7 @@ namespace AntdUI
     internal class LayeredFormModal : Window
     {
         Modal.Config config;
+        Panel panel_main;
         public LayeredFormModal(Modal.Config _config)
         {
             SetStyle(
@@ -87,14 +88,14 @@ namespace AntdUI
                 if (config.CancelFont != null) btn_no.Font = config.CancelFont;
             }
 
-            var panel1 = new Panel
+            panel_main = new Panel
             {
                 Dock = DockStyle.Bottom,
                 Back = Style.Db.BgElevated,
                 Size = new Size(368, config.BtnHeight)
             };
-            if (btn_no != null) panel1.Controls.Add(btn_no);
-            panel1.Controls.Add(btn_ok);
+            if (btn_no != null) panel_main.Controls.Add(btn_no);
+            panel_main.Controls.Add(btn_ok);
             if (config.Btns != null)
             {
                 var btns = new List<Button>(config.Btns.Length);
@@ -112,7 +113,7 @@ namespace AntdUI
                         ForeColor = btn.Fore,
                         Tag = btn.Tag
                     };
-                    panel1.Controls.Add(_btn);
+                    panel_main.Controls.Add(_btn);
                     btns.Insert(0, _btn);
                 }
                 foreach (var btn in btns)
@@ -125,7 +126,7 @@ namespace AntdUI
                     };
                 }
             }
-            Controls.Add(panel1);
+            Controls.Add(panel_main);
             var tmp = new System.Windows.Forms.Panel
             {
                 Location = new Point(386, 62 + config.BtnHeight),
@@ -145,7 +146,7 @@ namespace AntdUI
 
             #endregion
 
-            Helper.GDI(g =>
+            rectsContent = Helper.GDI(g =>
             {
                 var dpi = Config.Dpi;
 
@@ -153,13 +154,12 @@ namespace AntdUI
                     w = (int)Math.Round(config.Width * dpi), wp = w - paddingx * 2;
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
 
-                panel1.Height = butt_h;
+                panel_main.Height = butt_h;
 
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
                     if (config.Content is Control control)
                     {
-                        rectsContent = new RectangleF[0];
                         w = (int)Math.Round(control.Width * dpi);
                         if (dpi != 1F) Helper.DpiAuto(dpi, control);
                         wp = w - paddingx * 2;
@@ -251,16 +251,15 @@ namespace AntdUI
 
                             MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
-                        rectsContent = texts.ToArray();
                         if (config.CloseIcon)
                         {
                             float close_size = 22F * dpi;
                             rect_close = new RectangleF(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
+                        return texts.ToArray();
                     }
                     else
                     {
-                        rectsContent = new RectangleF[0];
                         rtext = true;
                         var content = config.Content.ToString();
                         if (_config.Icon == TType.None)
@@ -295,11 +294,13 @@ namespace AntdUI
                             rect_close = new RectangleF(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
                     }
+                    return new RectangleF[0];
                 }
             });
             tmp.Location = new Point(Width - 30, Height - 30);
             ResumeLayout();
-            panel1.MouseMove += Window_MouseDown;
+            panel_main.MouseMove += Window_MouseDown;
+            config.Layered = this;
         }
 
         bool min = true;
@@ -456,12 +457,13 @@ namespace AntdUI
             base.OnMouseUp(e);
         }
 
-        private void btn_no_Click(object? sender, EventArgs e)
+        void btn_no_Click(object? sender, EventArgs e)
         {
             DialogResult = DialogResult.No;
         }
+
         bool isclose = true;
-        private void btn_ok_Click(object? sender, EventArgs e)
+        void btn_ok_Click(object? sender, EventArgs e)
         {
             if (config.OnOk == null) DialogResult = DialogResult.OK;
             else
@@ -518,5 +520,62 @@ namespace AntdUI
         Button? btn_no;
 
         #endregion
+
+        public void SetOkText(string value)
+        {
+            btn_ok.Text = value;
+        }
+
+        public void SetCancelText(string? value)
+        {
+            if (btn_no == null)
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    btn_no = new Button
+                    {
+                        AutoSizeMode = TAutoSize.Width,
+                        BorderWidth = 1F,
+                        Dock = DockStyle.Right,
+                        Location = new Point(240, 0),
+                        Name = "btn_no",
+                        Size = new Size(64, config.BtnHeight),
+                        TabIndex = 1,
+                        Text = value
+                    };
+                    btn_no.Click += btn_no_Click;
+                    if (config.CancelFont != null) btn_no.Font = config.CancelFont;
+                    panel_main.Controls.Add(btn_no);
+                    CancelButton = btn_no;
+                }
+                return;
+            }
+            if (string.IsNullOrEmpty(value))
+            {
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new Action(() =>
+                    {
+                        btn_no.Visible = false;
+                    }));
+                }
+                else btn_no.Visible = false;
+            }
+            else
+            {
+                btn_no.Text = value;
+                if (!btn_no.Visible)
+                {
+                    if (InvokeRequired)
+                    {
+                        BeginInvoke(new Action(() =>
+                        {
+                            btn_no.Visible = true;
+                        }));
+                    }
+                    else btn_no.Visible = true;
+                }
+            }
+        }
     }
 }

@@ -177,15 +177,15 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 int gap = (int)(8F * Config.Dpi), split = (int)(1F * Config.Dpi);
-                var _splits = new List<RectangleF>(Items.Count);
+                var _splits = new List<RectangleF>(items.Count);
                 using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                 {
                     int gap2 = gap * 2;
                     if (vertical)
                     {
-                        int t_height_one = rect.Height / Items.Count;
+                        int t_height_one = rect.Height / items.Count;
                         int i = 0;
-                        foreach (StepsItem it in Items)
+                        foreach (StepsItem it in items)
                         {
                             it.PARENT = this;
                             it.TitleSize = g.MeasureString(it.Title, Font).Size();
@@ -232,7 +232,7 @@ namespace AntdUI
 
                             if (i > 0)
                             {
-                                var old = Items[i - 1];
+                                var old = items[i - 1];
                                 if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + gap, split, it.ico_rect.Y - old.ico_rect.Bottom - gap2));
                             }
                             i++;
@@ -243,11 +243,11 @@ namespace AntdUI
                         //横向
                         int read_width = MaxHeight(g, font_description, gap, out var maxHeight);
                         int i = 0;
-                        int count = Items.Count;
+                        int count = items.Count;
                         int sp = (rect.Width - read_width) / count, spline = sp - gap;
                         int has_x = rect.X + sp / 2;
                         count -= 1;
-                        foreach (StepsItem it in Items)
+                        foreach (StepsItem it in items)
                         {
                             int icon_size = it.IconSize ?? (int)(it.TitleSize.Height * 1.6F);
                             int y = rect.Y + (rect.Height - maxHeight) / 2;
@@ -339,7 +339,7 @@ namespace AntdUI
                     }
                 }
                 int i = 0;
-                foreach (StepsItem it in Items)
+                foreach (StepsItem it in items)
                 {
                     if (it.Visible)
                     {
@@ -450,9 +450,9 @@ namespace AntdUI
         {
             base.OnMouseClick(e);
             if (items == null || items.Count == 0 || ItemClick == null) return;
-            for (int i = 0; i < Items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                var it = Items[i];
+                var it = items[i];
                 if (it != null)
                 {
                     if (it.rect.Contains(e.Location))
@@ -468,9 +468,9 @@ namespace AntdUI
         {
             base.OnMouseMove(e);
             if (items == null || items.Count == 0 || ItemClick == null) return;
-            for (int i = 0; i < Items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                var it = Items[i];
+                var it = items[i];
                 if (it != null)
                 {
                     if (it.rect.Contains(e.Location))

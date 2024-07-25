@@ -48,15 +48,15 @@ namespace AntdUI
             {
                 if (columns == value) return;
                 SortHeader = null;
-                if (!EmptyHeader && dataSource == null)
-                {
-                    columns = value;
-                    ExtractHeaderFixed();
-                    return;
-                }
                 columns = value;
                 if (value == null) fixedColumnL = fixedColumnR = null;
                 else ExtractHeaderFixed();
+
+                if (EmptyHeader && dataSource == null && value != null)
+                {
+                    ExtractData();
+                    return;
+                }
 
                 LoadLayout();
                 Invalidate();
@@ -542,44 +542,113 @@ namespace AntdUI
         {
         }
 
-        /// <summary>
-        /// 选中状态
-        /// </summary>
-        public CheckState CheckState { get; internal set; }
+        public ColumnCheck(string key, string title) : base(key, title)
+        {
+            NoTitle = false;
+        }
 
+        bool _checked = false;
         /// <summary>
         /// 选中状态
         /// </summary>
         public bool Checked
         {
-            get => CheckState == CheckState.Checked;
+            get => _checked;
             set
             {
-                if (PARENT == null || PARENT.rows == null) return;
-                foreach (var it in PARENT.rows)
+                if (_checked == value) return;
+                _checked = value;
+                OnCheck();
+                CheckState = value ? CheckState.Checked : CheckState.Unchecked;
+
+                PARENT?.CheckAll(INDEX, value);
+            }
+        }
+
+        CheckState checkState = CheckState.Unchecked;
+        /// <summary>
+        /// 选中状态
+        /// </summary>
+        public CheckState CheckState
+        {
+            get => checkState;
+            internal set
+            {
+                if (checkState == value) return;
+                checkState = value;
+                PARENT?.OnCheckedOverallChanged(this, value);
+                bool __checked = value == CheckState.Checked;
+                if (_checked != __checked)
                 {
-                    if (it.IsColumn)
-                    {
-                        foreach (Table.TCellColumn item in PARENT.rows[0].cells)
-                        {
-                            if (item.column is ColumnCheck columnCheck)
-                            {
-                                PARENT?.ChangeCheckOverall(PARENT.rows, it, columnCheck, value);
-                                return;
-                            }
-                        }
-                        return;
-                    }
+                    _checked = __checked;
+                    OnCheck();
+                }
+                if (value != CheckState.Unchecked)
+                {
+                    checkStateOld = value;
+                    PARENT?.Invalidate();
                 }
             }
         }
-        internal Table? PARENT { get; set; }
-        internal void SetCheckState(CheckState checkState)
+
+        /// <summary>
+        /// 点击时自动改变选中状态
+        /// </summary>
+        public bool AutoCheck { get; set; } = true;
+
+        void OnCheck()
         {
-            if (CheckState == checkState) return;
-            CheckState = checkState;
-            PARENT?.OnCheckedOverallChanged(this, checkState);
+            ThreadCheck?.Dispose();
+            if (PARENT != null && PARENT.IsHandleCreated)
+            {
+                if (Config.Animation)
+                {
+                    AnimationCheck = true;
+                    if (_checked)
+                    {
+                        ThreadCheck = new ITask(PARENT, () =>
+                        {
+                            AnimationCheckValue = AnimationCheckValue.Calculate(0.2F);
+                            if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
+                            PARENT.Invalidate();
+                            return true;
+                        }, 20, () =>
+                        {
+                            AnimationCheck = false;
+                            PARENT.Invalidate();
+                        });
+                    }
+                    else
+                    {
+                        ThreadCheck = new ITask(PARENT, () =>
+                        {
+                            AnimationCheckValue = AnimationCheckValue.Calculate(-0.2F);
+                            if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
+                            PARENT.Invalidate();
+                            return true;
+                        }, 20, () =>
+                        {
+                            AnimationCheck = false;
+                            PARENT.Invalidate();
+                        });
+                    }
+                }
+                else
+                {
+                    AnimationCheckValue = _checked ? 1F : 0F;
+                    PARENT.Invalidate();
+                }
+            }
         }
+
+        internal bool AnimationCheck = false;
+        internal float AnimationCheckValue = 0;
+
+        ITask? ThreadCheck = null;
+
+        internal CheckState checkStateOld = CheckState.Unchecked;
+
+        internal bool NoTitle { get; set; } = true;
     }
 
     /// <summary>
@@ -596,6 +665,11 @@ namespace AntdUI
         {
             Align = ColumnAlign.Center;
         }
+
+        /// <summary>
+        /// 点击时自动改变选中状态
+        /// </summary>
+        public bool AutoCheck { get; set; } = true;
     }
 
     /// <summary>
@@ -617,6 +691,11 @@ namespace AntdUI
         /// <param name="title">显示文字</param>
         /// <param name="align">对齐方式</param>
         public ColumnSwitch(string key, string title, ColumnAlign align) : base(key, title, align) { }
+
+        /// <summary>
+        /// 点击时自动改变选中状态
+        /// </summary>
+        public bool AutoCheck { get; set; } = true;
 
         public Func<bool, object?, int, int, bool>? Call { get; set; }
     }

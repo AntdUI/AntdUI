@@ -243,7 +243,7 @@ namespace AntdUI
         public MessageFrm(Message.Config _config)
         {
             config = _config;
-            TopMost = config.Form.TopMost;
+            config.Form.SetTopMost(Handle);
             loading = _config.Call != null;
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;

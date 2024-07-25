@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -33,29 +32,11 @@ namespace AntdUI
         internal class RowTemplate
         {
             Table PARENT;
-            public RowTemplate(Table table, TCell[] cell, object value)
+            public RowTemplate(Table table, TCell[] cell, object? value)
             {
                 PARENT = table;
                 cells = cell;
                 RECORD = value;
-            }
-
-            public RowTemplate(Table table, TCell[] cell, object value, bool check)
-            {
-                PARENT = table;
-                cells = cell;
-                RECORD = value;
-                checkState = CheckState.Checked;
-                _checked = check;
-            }
-            public RowTemplate(Table table, TCell[] cell, object? value, CheckState check)
-            {
-                PARENT = table;
-                cells = cell;
-                RECORD = value;
-                IsColumn = true;
-                checkState = check;
-                _checked = check == CheckState.Checked;
             }
 
             /// <summary>
@@ -164,97 +145,7 @@ namespace AntdUI
 
             #endregion
 
-            #region 选中状态(总)
-
-            internal bool AnimationCheck = false;
-            internal float AnimationCheckValue = 0;
-
-            ITask? ThreadCheck = null;
-
-            bool _checked = false;
-            [Description("选中状态"), Category("行为"), DefaultValue(false)]
-            public bool Checked
-            {
-                get => _checked;
-                set
-                {
-                    if (_checked == value) return;
-                    _checked = value;
-                    if (IsColumn) OnCheck();
-                    CheckState = value ? CheckState.Checked : CheckState.Unchecked;
-                }
-            }
-
-            internal CheckState checkStateOld = CheckState.Unchecked;
-            CheckState checkState = CheckState.Unchecked;
-            [Description("选中状态"), Category("行为"), DefaultValue(CheckState.Unchecked)]
-            public CheckState CheckState
-            {
-                get => checkState;
-                set
-                {
-                    if (checkState == value) return;
-                    checkState = value;
-                    bool __checked = value == CheckState.Checked;
-                    if (_checked != __checked)
-                    {
-                        _checked = __checked;
-                        OnCheck();
-                    }
-                    if (value != CheckState.Unchecked)
-                    {
-                        checkStateOld = value;
-                        PARENT.Invalidate();
-                    }
-                }
-            }
-
-            void OnCheck()
-            {
-                ThreadCheck?.Dispose();
-                if (PARENT.IsHandleCreated)
-                {
-                    if (SHOW && Config.Animation)
-                    {
-                        AnimationCheck = true;
-                        if (_checked)
-                        {
-                            ThreadCheck = new ITask(PARENT, () =>
-                            {
-                                AnimationCheckValue = AnimationCheckValue.Calculate(0.2F);
-                                if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
-                                PARENT.Invalidate();
-                                return true;
-                            }, 20, () =>
-                            {
-                                AnimationCheck = false;
-                                PARENT.Invalidate();
-                            });
-                        }
-                        else
-                        {
-                            ThreadCheck = new ITask(PARENT, () =>
-                            {
-                                AnimationCheckValue = AnimationCheckValue.Calculate(-0.2F);
-                                if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
-                                PARENT.Invalidate();
-                                return true;
-                            }, 20, () =>
-                            {
-                                AnimationCheck = false;
-                                PARENT.Invalidate();
-                            });
-                        }
-                    }
-                    else
-                    {
-                        AnimationCheckValue = _checked ? 1F : 0F;
-                        PARENT.Invalidate();
-                    }
-                }
-            }
-
-            #endregion
+            public bool Select { get; set; }
         }
 
         #region 单元格
@@ -264,13 +155,15 @@ namespace AntdUI
         /// </summary>
         class TCellCheck : TCell
         {
-            public TCellCheck(Table table, PropertyDescriptor prop, object ov, bool value)
+            public TCellCheck(Table table, PropertyDescriptor prop, object ov, bool value, ColumnCheck column)
             {
                 PARENT = table;
                 PROPERTY = prop;
                 VALUE = ov;
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
+                NoTitle = column.NoTitle;
+                AutoCheck = column.AutoCheck;
             }
 
             #region 选中状态
@@ -386,6 +279,9 @@ namespace AntdUI
             {
                 return Checked.ToString();
             }
+
+            internal bool NoTitle { get; set; }
+            internal bool AutoCheck { get; set; }
         }
 
         /// <summary>
@@ -393,13 +289,14 @@ namespace AntdUI
         /// </summary>
         class TCellRadio : TCell
         {
-            public TCellRadio(Table table, PropertyDescriptor prop, object ov, bool value)
+            public TCellRadio(Table table, PropertyDescriptor prop, object ov, bool value, ColumnRadio column)
             {
                 PARENT = table;
                 PROPERTY = prop;
                 VALUE = ov;
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
+                AutoCheck = column.AutoCheck;
             }
 
             #region 选中状态
@@ -514,6 +411,7 @@ namespace AntdUI
             {
                 return Checked.ToString();
             }
+            internal bool AutoCheck { get; set; }
         }
 
         /// <summary>
@@ -521,7 +419,7 @@ namespace AntdUI
         /// </summary>
         class TCellSwitch : TCell
         {
-            public TCellSwitch(Table table, PropertyDescriptor prop, object ov, ColumnSwitch _column, bool value)
+            public TCellSwitch(Table table, PropertyDescriptor prop, object ov, bool value, ColumnSwitch _column)
             {
                 PARENT = table;
                 PROPERTY = prop;
@@ -529,7 +427,9 @@ namespace AntdUI
                 column = _column;
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
+                AutoCheck = _column.AutoCheck;
             }
+
             public ColumnSwitch column { get; set; }
 
             #region 选中状态
@@ -743,6 +643,7 @@ namespace AntdUI
             {
                 return Checked.ToString();
             }
+            internal bool AutoCheck { get; set; }
         }
 
         /// <summary>

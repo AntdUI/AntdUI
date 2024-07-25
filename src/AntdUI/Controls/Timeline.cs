@@ -135,11 +135,11 @@ namespace AntdUI
 
                 int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
                 y += gap_x;
-                var _splits = new List<RectangleF>(Items.Count);
+                var _splits = new List<RectangleF>(items.Count);
                 int i = 0;
                 var font_Description = FontDescription ?? Font;
                 float gap2 = gap * 2F;
-                foreach (TimelineItem it in Items)
+                foreach (TimelineItem it in items)
                 {
                     it.PARENT = this;
                     it.pen_w = pen_w;
@@ -161,7 +161,7 @@ namespace AntdUI
 
                         if (i > 0)
                         {
-                            var old = Items[i - 1];
+                            var old = items[i - 1];
                             if (old != null)
                             {
                                 _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
@@ -215,7 +215,7 @@ namespace AntdUI
             using (var brush_fore2 = new SolidBrush(Style.Db.TextTertiary))
             using (var brush_dotback = new SolidBrush(Style.Db.BgBase))
             {
-                foreach (TimelineItem it in Items)
+                foreach (TimelineItem it in items)
                 {
                     if (it.Visible)
                     {
@@ -288,9 +288,9 @@ namespace AntdUI
             if (scroll.MouseMove(e.Location))
             {
                 if (items == null || items.Count == 0 || ItemClick == null) return;
-                for (int i = 0; i < Items.Count; i++)
+                for (int i = 0; i < items.Count; i++)
                 {
-                    var it = Items[i];
+                    var it = items[i];
                     if (it != null)
                     {
                         if (it.rect.Contains(e.X, e.Y + scroll.Value))
@@ -336,9 +336,9 @@ namespace AntdUI
         {
             base.OnMouseClick(e);
             if (items == null || items.Count == 0 || ItemClick == null) return;
-            for (int i = 0; i < Items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                var it = Items[i];
+                var it = items[i];
                 if (it != null)
                 {
                     if (it.rect.Contains(e.X, e.Y + scroll.Value))

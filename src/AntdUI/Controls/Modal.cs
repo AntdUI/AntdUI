@@ -364,15 +364,37 @@ namespace AntdUI
             /// </summary>
             public int BtnHeight { get; set; } = 38;
 
+            string canceltext = Localization.Provider?.GetLocalizedString("Cancel") ?? "取消";
             /// <summary>
             /// 取消按钮文字
             /// </summary>
-            public string? CancelText { get; set; } = Localization.Provider?.GetLocalizedString("Cancel") ?? "取消";
+            public string? CancelText
+            {
+                get => canceltext;
+                set
+                {
+                    if (canceltext == value) return;
+                    canceltext = value;
+                    Layered?.SetCancelText(value);
+                }
+            }
 
+            string oktext = Localization.Provider?.GetLocalizedString("OK") ?? "确定";
             /// <summary>
             /// 确认按钮文字
             /// </summary>
-            public string OkText { get; set; } = Localization.Provider?.GetLocalizedString("OK") ?? "确定";
+            public string OkText
+            {
+                get => oktext;
+                set
+                {
+                    if (oktext == value) return;
+                    oktext = value;
+                    Layered?.SetOkText(value);
+                }
+            }
+
+            internal LayeredFormModal? Layered = null;
 
             /// <summary>
             /// 确认按钮类型

@@ -332,19 +332,20 @@ namespace AntdUI
             int icon_count = 0;
             Helper.GDI(g =>
             {
+                var lists = items;
                 var size = g.MeasureString(Config.NullText, Font);
                 int icon_size = (int)Math.Ceiling(size.Height * 1.2F), gap = icon_size / 2, gapI = gap / 2, height = (int)Math.Ceiling(size.Height + gap * 2);
-                if (mode == TMenuMode.Horizontal) ChangeListHorizontal(rect, g, Items, 0, icon_size, gap, gapI);
+                if (mode == TMenuMode.Horizontal) ChangeListHorizontal(rect, g, lists, 0, icon_size, gap, gapI);
                 else
                 {
                     CollapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
-                    CollapsedWidth = ChangeList(rect, g, Items, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
+                    CollapsedWidth = ChangeList(rect, g, lists, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
                     if (AutoCollapse)
                     {
                         if (icon_count > 0) collapsed = CollapsedWidth > _rect.Width;
                         else collapsed = false;
                     }
-                    if (collapsed) ChangeUTitle(Items);
+                    if (collapsed) ChangeUTitle(lists);
                 }
             });
             scroll.SetVrSize(y);
@@ -472,7 +473,7 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             using (var sub_bg = new SolidBrush(Style.Db.FillQuaternary))
             {
-                PaintItems(g, rect, sy, Items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
+                PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
             g.ResetTransform();
             scroll.Paint(g, scroll_color);
@@ -720,7 +721,7 @@ namespace AntdUI
             if (scroll.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
-                foreach (MenuItem it in Items)
+                foreach (MenuItem it in items)
                 {
                     var list = new List<MenuItem> { it };
                     if (IMouseDown(it, list, e.Location)) return;
@@ -779,7 +780,7 @@ namespace AntdUI
                 if (collapsed)
                 {
                     int i = 0, hoveindex = -1;
-                    foreach (MenuItem it in Items)
+                    foreach (MenuItem it in items)
                     {
                         if (it.show)
                         {
@@ -800,44 +801,46 @@ namespace AntdUI
                         subForm = null;
                         tooltipForm?.Close();
                         tooltipForm = null;
-
-                        var _rect = RectangleToScreen(ClientRectangle);
-                        var it = Items[hoveindex];
-                        if (it == null) return;
-                        var Rect = it.Rect;
-                        var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
-                        if (it.Sub != null && it.Sub.Count > 0)
+                        if (hoveindex > -1)
                         {
-                            select_x = 0;
-                            subForm = new LayeredFormMenuDown(this, radius, rect, it.Sub);
-                            subForm.Show(this);
-                        }
-                        else
-                        {
-                            if (it.Text != null)
+                            var _rect = RectangleToScreen(ClientRectangle);
+                            var it = items[hoveindex];
+                            if (it == null) return;
+                            var Rect = it.Rect;
+                            var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
+                            if (it.Sub != null && it.Sub.Count > 0)
                             {
-                                if (tooltipForm == null)
+                                select_x = 0;
+                                subForm = new LayeredFormMenuDown(this, radius, rect, it.Sub);
+                                subForm.Show(this);
+                            }
+                            else
+                            {
+                                if (it.Text != null)
                                 {
-                                    tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
+                                    if (tooltipForm == null)
                                     {
-                                        Font = it.Font ?? Font,
-                                        ArrowAlign = TAlign.Right,
-                                    });
-                                    tooltipForm.Show(this);
+                                        tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
+                                        {
+                                            Font = it.Font ?? Font,
+                                            ArrowAlign = TAlign.Right,
+                                        });
+                                        tooltipForm.Show(this);
+                                    }
+                                    else tooltipForm.SetText(rect, it.Text);
                                 }
-                                else tooltipForm.SetText(rect, it.Text);
                             }
                         }
                     }
                 }
                 else if (mode == TMenuMode.Inline)
                 {
-                    foreach (MenuItem it in Items) IMouseMove(it, e.Location, ref count, ref hand);
+                    foreach (MenuItem it in items) IMouseMove(it, e.Location, ref count, ref hand);
                 }
                 else
                 {
                     int i = 0, hoveindex = -1;
-                    foreach (MenuItem it in Items)
+                    foreach (MenuItem it in items)
                     {
                         if (it.show)
                         {
@@ -860,7 +863,7 @@ namespace AntdUI
                         tooltipForm = null;
 
                         var _rect = RectangleToScreen(ClientRectangle);
-                        var it = Items[hoveindex];
+                        var it = items[hoveindex];
                         if (it == null) return;
                         var Rect = it.Rect;
                         var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
@@ -919,7 +922,7 @@ namespace AntdUI
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int count = 0;
-            foreach (MenuItem it in Items) ILeave(it, ref count);
+            foreach (MenuItem it in items) ILeave(it, ref count);
             if (count > 0) Invalidate();
         }
         void ILeave(MenuItem it, ref int count)
@@ -954,7 +957,7 @@ namespace AntdUI
             subForm = null;
             IUSelect();
             if (items == null || items.Count == 0) return;
-            foreach (MenuItem it in Items)
+            foreach (MenuItem it in items)
             {
                 var list = new List<MenuItem> { it };
                 if (IDropDownChange(it, list, value)) return;

@@ -58,11 +58,11 @@ namespace AntdUI
                         }
                         var cell = (TCellColumn)it.cells[i_cel];
                         cell.MouseDown = e.Clicks > 1 ? 2 : 1;
-                        if (cell.column is ColumnCheck columnCheck)
+                        if (cell.MouseDown == 1 && cell.column is ColumnCheck columnCheck && columnCheck.NoTitle)
                         {
                             if (e.Button == MouseButtons.Left && cell.Contains(r_x, r_y))
                             {
-                                ChangeCheckOverall(rows, it, columnCheck, !columnCheck.Checked);
+                                CheckAll(i_cel, !columnCheck.Checked);
                                 return;
                             }
                         }
@@ -195,17 +195,16 @@ namespace AntdUI
                     {
                         if (cell is TCellCheck checkCell)
                         {
-                            if (checkCell.Contains(r_x, r_y))
+                            if (checkCell.AutoCheck && checkCell.Contains(r_x, r_y))
                             {
                                 checkCell.Checked = !checkCell.Checked;
-                                it.Checked = checkCell.Checked;
                                 cell.PROPERTY?.SetValue(cell.VALUE, checkCell.Checked);
                                 CheckedChanged?.Invoke(this, checkCell.Checked, it.RECORD, i_r, i_c);
                             }
                         }
                         else if (cell is TCellRadio radioCell)
                         {
-                            if (radioCell.Contains(r_x, r_y) && !radioCell.Checked)
+                            if (radioCell.AutoCheck && radioCell.Contains(r_x, r_y) && !radioCell.Checked)
                             {
                                 if (rows != null)
                                 {
@@ -217,33 +216,40 @@ namespace AntdUI
                                             if (cell2 is TCellRadio radioCell2 && radioCell2.Checked)
                                             {
                                                 radioCell2.Checked = false;
-                                                rows[i].Checked = false;
                                                 cell2.PROPERTY?.SetValue(cell2.VALUE, radioCell2.Checked);
                                             }
                                         }
                                     }
                                 }
                                 radioCell.Checked = true;
-                                it.Checked = true;
                                 cell.PROPERTY?.SetValue(cell.VALUE, radioCell.Checked);
                                 CheckedChanged?.Invoke(this, radioCell.Checked, it.RECORD, i_r, i_c);
                             }
                         }
                         else if (cell is TCellSwitch switchCell)
                         {
-                            if (switchCell.Contains(r_x, r_y) && !switchCell.Loading && switchCell.column.Call != null)
+                            if (switchCell.Contains(r_x, r_y) && !switchCell.Loading)
                             {
-                                switchCell.Loading = true;
-                                ITask.Run(() =>
+                                if (switchCell.column.Call != null)
                                 {
-                                    var value = switchCell.column.Call(!switchCell.Checked, it.RECORD, i_r, i_c);
-                                    if (switchCell.Checked == value) return;
-                                    switchCell.Checked = value;
-                                    cell.PROPERTY?.SetValue(cell.VALUE, value);
-                                }).ContinueWith(action =>
+                                    switchCell.Loading = true;
+                                    ITask.Run(() =>
+                                    {
+                                        var value = switchCell.column.Call(!switchCell.Checked, it.RECORD, i_r, i_c);
+                                        if (switchCell.Checked == value) return;
+                                        switchCell.Checked = value;
+                                        cell.PROPERTY?.SetValue(cell.VALUE, value);
+                                    }).ContinueWith(action =>
+                                    {
+                                        switchCell.Loading = false;
+                                    });
+                                }
+                                else if (switchCell.AutoCheck)
                                 {
-                                    switchCell.Loading = false;
-                                });
+                                    switchCell.Checked = !switchCell.Checked;
+                                    cell.PROPERTY?.SetValue(cell.VALUE, switchCell.Checked);
+                                    CheckedChanged?.Invoke(this, switchCell.Checked, it.RECORD, i_r, i_c);
+                                }
                             }
                         }
                         else if (it.IsColumn && ((TCellColumn)cell).column.SortOrder)
@@ -654,7 +660,7 @@ namespace AntdUI
                             }
                         }
                         if (cel.SortWidth > 0) SetCursor(true);
-                        else if (has_check && cel.column is ColumnCheck && cel.Contains(r_x, r_y)) SetCursor(true);
+                        else if (has_check && cel.column is ColumnCheck columnCheck && columnCheck.NoTitle && cel.Contains(r_x, r_y)) SetCursor(true);
                         else if (ColumnDragSort)
                         {
                             Cursor = Cursors.SizeAll;
@@ -693,21 +699,20 @@ namespace AntdUI
         {
             if (cel is TCellCheck checkCell)
             {
-                if (checkCell.Contains(x, y)) return true;
+                if (checkCell.AutoCheck && checkCell.Contains(x, y)) return true;
                 return false;
             }
             else if (cel is TCellRadio radioCell)
             {
-                if (radioCell.Contains(x, y)) return true;
+                if (radioCell.AutoCheck && radioCell.Contains(x, y)) return true;
                 return false;
             }
             else if (cel is TCellSwitch switchCell)
             {
-                if (switchCell.column.Call == null) return false;
-                if (switchCell.Contains(x, y))
+                if ((switchCell.AutoCheck || switchCell.column.Call != null))
                 {
-                    switchCell.ExtraMouseHover = true;
-                    return true;
+                    switchCell.ExtraMouseHover = switchCell.Contains(x, y);
+                    if (switchCell.ExtraMouseHover) return true;
                 }
                 else switchCell.ExtraMouseHover = false;
                 return false;
@@ -1021,32 +1026,6 @@ namespace AntdUI
             if (LostFocusClearSelection) SelectedIndex = -1;
             CloseTip(true);
             base.OnLostFocus(e);
-        }
-
-        /// <summary>
-        /// 全局复选框改动时发生
-        /// </summary>
-        internal void ChangeCheckOverall(RowTemplate[] rows, RowTemplate it, ColumnCheck columnCheck, bool value)
-        {
-            handcheck = true;
-            for (int i_row = 1; i_row < rows.Length; i_row++)
-            {
-                for (int i_col = 0; i_col < rows[i_row].cells.Length; i_col++)
-                {
-                    var item = rows[i_row].cells[i_col];
-                    if (item is TCellCheck checkCell)
-                    {
-                        if (checkCell.Checked == value) continue;
-                        checkCell.Checked = value;
-                        rows[i_row].Checked = value;
-                        item.PROPERTY?.SetValue(item.VALUE, checkCell.Checked);
-                        CheckedChanged?.Invoke(this, value, rows[i_row].RECORD, i_row, i_col);
-                    }
-                }
-            }
-            it.CheckState = value ? CheckState.Checked : CheckState.Unchecked;
-            columnCheck.SetCheckState(it.CheckState);
-            handcheck = false;
         }
 
         protected override void OnMouseLeave(EventArgs e)
