@@ -46,7 +46,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.Tabs.StyleLine styleLine1 = new AntdUI.Tabs.StyleLine();
+            AntdUI.Tabs.StyleLine styleLine2 = new AntdUI.Tabs.StyleLine();
             header1 = new AntdUI.Header();
             pagination1 = new AntdUI.Pagination();
             table2 = new AntdUI.Table();
@@ -54,13 +54,13 @@ namespace Overview.Controls
             tabs1 = new AntdUI.Tabs();
             tabPage1 = new AntdUI.TabPage();
             panel1 = new AntdUI.Panel();
-            checkbox7 = new AntdUI.Checkbox();
-            checkbox2 = new AntdUI.Checkbox();
-            checkbox6 = new AntdUI.Checkbox();
-            checkbox5 = new AntdUI.Checkbox();
-            checkbox4 = new AntdUI.Checkbox();
-            checkbox3 = new AntdUI.Checkbox();
-            checkbox1 = new AntdUI.Checkbox();
+            checkVisibleHeader = new AntdUI.Checkbox();
+            checkEnableHeaderResizing = new AntdUI.Checkbox();
+            checkSortOrder = new AntdUI.Checkbox();
+            checkSetRowStyle = new AntdUI.Checkbox();
+            checkBordered = new AntdUI.Checkbox();
+            checkColumnDragSort = new AntdUI.Checkbox();
+            checkFixedHeader = new AntdUI.Checkbox();
             tabPage2 = new AntdUI.TabPage();
             tabs1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -116,6 +116,7 @@ namespace Overview.Controls
             table1.Size = new Size(1288, 503);
             table1.TabIndex = 0;
             table1.Text = "table1";
+            table1.CellClick += table1_CellClick;
             table1.CellButtonClick += table1_CellButtonClick;
             // 
             // tabs1
@@ -129,8 +130,8 @@ namespace Overview.Controls
             tabs1.Pages.Add(tabPage1);
             tabs1.Pages.Add(tabPage2);
             tabs1.Size = new Size(1300, 597);
-            styleLine1.Radius = 2;
-            tabs1.Style = styleLine1;
+            styleLine2.Radius = 2;
+            tabs1.Style = styleLine2;
             tabs1.TabIndex = 0;
             // 
             // tabPage1
@@ -147,13 +148,13 @@ namespace Overview.Controls
             // 
             // panel1
             // 
-            panel1.Controls.Add(checkbox7);
-            panel1.Controls.Add(checkbox2);
-            panel1.Controls.Add(checkbox6);
-            panel1.Controls.Add(checkbox5);
-            panel1.Controls.Add(checkbox4);
-            panel1.Controls.Add(checkbox3);
-            panel1.Controls.Add(checkbox1);
+            panel1.Controls.Add(checkVisibleHeader);
+            panel1.Controls.Add(checkEnableHeaderResizing);
+            panel1.Controls.Add(checkSortOrder);
+            panel1.Controls.Add(checkSetRowStyle);
+            panel1.Controls.Add(checkBordered);
+            panel1.Controls.Add(checkColumnDragSort);
+            panel1.Controls.Add(checkFixedHeader);
             panel1.Dock = DockStyle.Top;
             panel1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             panel1.Location = new Point(3, 3);
@@ -163,77 +164,84 @@ namespace Overview.Controls
             panel1.TabIndex = 1;
             panel1.Text = "panel1";
             // 
-            // checkbox7
+            // checkVisibleHeader
             // 
-            checkbox7.Checked = true;
-            checkbox7.Dock = DockStyle.Left;
-            checkbox7.Location = new Point(777, 0);
-            checkbox7.Name = "checkbox7";
-            checkbox7.Size = new Size(116, 43);
-            checkbox7.TabIndex = 6;
-            checkbox7.Text = "显示表头";
-            checkbox7.CheckedChanged += checkbox7_CheckedChanged;
+            checkVisibleHeader.AutoCheck = true;
+            checkVisibleHeader.Checked = true;
+            checkVisibleHeader.Dock = DockStyle.Left;
+            checkVisibleHeader.Location = new Point(777, 0);
+            checkVisibleHeader.Name = "checkVisibleHeader";
+            checkVisibleHeader.Size = new Size(116, 43);
+            checkVisibleHeader.TabIndex = 6;
+            checkVisibleHeader.Text = "显示表头";
+            checkVisibleHeader.CheckedChanged += checkVisibleHeader_CheckedChanged;
             // 
-            // checkbox2
+            // checkEnableHeaderResizing
             // 
-            checkbox2.Dock = DockStyle.Left;
-            checkbox2.Location = new Point(599, 0);
-            checkbox2.Name = "checkbox2";
-            checkbox2.Size = new Size(178, 43);
-            checkbox2.TabIndex = 1;
-            checkbox2.Text = "手动调整列头宽度";
-            checkbox2.CheckedChanged += checkbox2_CheckedChanged;
+            checkEnableHeaderResizing.AutoCheck = true;
+            checkEnableHeaderResizing.Dock = DockStyle.Left;
+            checkEnableHeaderResizing.Location = new Point(599, 0);
+            checkEnableHeaderResizing.Name = "checkEnableHeaderResizing";
+            checkEnableHeaderResizing.Size = new Size(178, 43);
+            checkEnableHeaderResizing.TabIndex = 5;
+            checkEnableHeaderResizing.Text = "手动调整列头宽度";
+            checkEnableHeaderResizing.CheckedChanged += checkEnableHeaderResizing_CheckedChanged;
             // 
-            // checkbox6
+            // checkSortOrder
             // 
-            checkbox6.Dock = DockStyle.Left;
-            checkbox6.Location = new Point(483, 0);
-            checkbox6.Name = "checkbox6";
-            checkbox6.Size = new Size(116, 43);
-            checkbox6.TabIndex = 5;
-            checkbox6.Text = "年龄排序";
-            checkbox6.CheckedChanged += checkbox6_CheckedChanged;
+            checkSortOrder.AutoCheck = true;
+            checkSortOrder.Dock = DockStyle.Left;
+            checkSortOrder.Location = new Point(483, 0);
+            checkSortOrder.Name = "checkSortOrder";
+            checkSortOrder.Size = new Size(116, 43);
+            checkSortOrder.TabIndex = 4;
+            checkSortOrder.Text = "年龄排序";
+            checkSortOrder.CheckedChanged += checkSortOrder_CheckedChanged;
             // 
-            // checkbox5
+            // checkSetRowStyle
             // 
-            checkbox5.Dock = DockStyle.Left;
-            checkbox5.Location = new Point(386, 0);
-            checkbox5.Name = "checkbox5";
-            checkbox5.Size = new Size(97, 43);
-            checkbox5.TabIndex = 4;
-            checkbox5.Text = "奇偶列";
-            checkbox5.CheckedChanged += checkbox5_CheckedChanged;
+            checkSetRowStyle.AutoCheck = true;
+            checkSetRowStyle.Dock = DockStyle.Left;
+            checkSetRowStyle.Location = new Point(386, 0);
+            checkSetRowStyle.Name = "checkSetRowStyle";
+            checkSetRowStyle.Size = new Size(97, 43);
+            checkSetRowStyle.TabIndex = 3;
+            checkSetRowStyle.Text = "奇偶列";
+            checkSetRowStyle.CheckedChanged += checkSetRowStyle_CheckedChanged;
             // 
-            // checkbox4
+            // checkBordered
             // 
-            checkbox4.Dock = DockStyle.Left;
-            checkbox4.Location = new Point(259, 0);
-            checkbox4.Name = "checkbox4";
-            checkbox4.Size = new Size(127, 43);
-            checkbox4.TabIndex = 3;
-            checkbox4.Text = "显示列边框";
-            checkbox4.CheckedChanged += checkbox4_CheckedChanged;
+            checkBordered.AutoCheck = true;
+            checkBordered.Dock = DockStyle.Left;
+            checkBordered.Location = new Point(259, 0);
+            checkBordered.Name = "checkBordered";
+            checkBordered.Size = new Size(127, 43);
+            checkBordered.TabIndex = 2;
+            checkBordered.Text = "显示列边框";
+            checkBordered.CheckedChanged += checkBordered_CheckedChanged;
             // 
-            // checkbox3
+            // checkColumnDragSort
             // 
-            checkbox3.Dock = DockStyle.Left;
-            checkbox3.Location = new Point(126, 0);
-            checkbox3.Name = "checkbox3";
-            checkbox3.Size = new Size(133, 43);
-            checkbox3.TabIndex = 2;
-            checkbox3.Text = "列拖拽排序";
-            checkbox3.CheckedChanged += checkbox3_CheckedChanged;
+            checkColumnDragSort.AutoCheck = true;
+            checkColumnDragSort.Dock = DockStyle.Left;
+            checkColumnDragSort.Location = new Point(126, 0);
+            checkColumnDragSort.Name = "checkColumnDragSort";
+            checkColumnDragSort.Size = new Size(133, 43);
+            checkColumnDragSort.TabIndex = 1;
+            checkColumnDragSort.Text = "列拖拽排序";
+            checkColumnDragSort.CheckedChanged += checkColumnDragSort_CheckedChanged;
             // 
-            // checkbox1
+            // checkFixedHeader
             // 
-            checkbox1.Checked = true;
-            checkbox1.Dock = DockStyle.Left;
-            checkbox1.Location = new Point(10, 0);
-            checkbox1.Name = "checkbox1";
-            checkbox1.Size = new Size(116, 43);
-            checkbox1.TabIndex = 0;
-            checkbox1.Text = "固定表头";
-            checkbox1.CheckedChanged += checkbox1_CheckedChanged;
+            checkFixedHeader.AutoCheck = true;
+            checkFixedHeader.Checked = true;
+            checkFixedHeader.Dock = DockStyle.Left;
+            checkFixedHeader.Location = new Point(10, 0);
+            checkFixedHeader.Name = "checkFixedHeader";
+            checkFixedHeader.Size = new Size(116, 43);
+            checkFixedHeader.TabIndex = 0;
+            checkFixedHeader.Text = "固定表头";
+            checkFixedHeader.CheckedChanged += checkFixedHeader_CheckedChanged;
             // 
             // tabPage2
             // 
@@ -270,12 +278,12 @@ namespace Overview.Controls
         private AntdUI.TabPage tabPage1;
         private AntdUI.TabPage tabPage2;
         private AntdUI.Panel panel1;
-        private AntdUI.Checkbox checkbox1;
-        private AntdUI.Checkbox checkbox2;
-        private AntdUI.Checkbox checkbox3;
-        private AntdUI.Checkbox checkbox5;
-        private AntdUI.Checkbox checkbox4;
-        private AntdUI.Checkbox checkbox6;
-        private AntdUI.Checkbox checkbox7;
+        private AntdUI.Checkbox checkFixedHeader;
+        private AntdUI.Checkbox checkEnableHeaderResizing;
+        private AntdUI.Checkbox checkColumnDragSort;
+        private AntdUI.Checkbox checkSetRowStyle;
+        private AntdUI.Checkbox checkBordered;
+        private AntdUI.Checkbox checkSortOrder;
+        private AntdUI.Checkbox checkVisibleHeader;
     }
 }

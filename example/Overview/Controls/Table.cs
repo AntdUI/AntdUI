@@ -26,9 +26,14 @@ namespace Overview.Controls
             form = _form;
             InitializeComponent();
 
+            #region Table 1
+
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check"){ Fixed=true},
                 new AntdUI.Column("name","姓名"){ Fixed=true},
+                new AntdUI.ColumnCheck("check2"){ Fixed=true},
+                new AntdUI.ColumnCheck("check4","不全选标题"){ColAlign=AntdUI.ColumnAlign.Center},
+                new AntdUI.ColumnRadio("check3","单选"),
                 new AntdUI.Column("online","状态",AntdUI.ColumnAlign.Center),
                 new AntdUI.ColumnSwitch("enable","启用",AntdUI.ColumnAlign.Center){ Call=(value,record, i_row, i_col)=>{
                     Thread.Sleep(2000);
@@ -40,7 +45,6 @@ namespace Overview.Controls
                 new AntdUI.Column("imgs","图片"),
                 new AntdUI.Column("btns","操作"){ Fixed=true,Width="auto"},
             };// 添加表头，绑定模型名称
-
             var list = new List<TestClass>(10) {
                 new TestClass(1,"1","胡彦斌",32,"西湖区湖底公园1号"),
                 new TestClass(2,"2","胡彦祖",22,"西湖区湖底公园1号") {
@@ -50,7 +54,10 @@ namespace Overview.Controls
             for (int i = 2; i < 10; i++) list.Add(new TestClass(i, i.ToString(), "胡彦斌", 31 + i, "西湖区湖底公园" + (i + 10) + "号"));
 
             table1.DataSource = list;
-            table1.CellClick += Table1_CellClick;
+
+            #endregion
+
+            #region Table 2
 
             table2.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.Column("name","姓名"),
@@ -63,12 +70,121 @@ namespace Overview.Controls
             for (int i = 0; i < 100; i++) list2.Add(new TestClass2(i, "王健林" + i, (i + 20), "西湖区湖底公园" + (i + 1) + "号"));
             table2.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
             pagination1.PageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
+
+            #endregion
+
         }
 
-        private void Table1_CellClick(object sender, MouseEventArgs args, object record, int rowIndex, int columnIndex, Rectangle rect)
+        #region 示例
+
+        void checkFixedHeader_CheckedChanged(object sender, bool value)
         {
-            if (rowIndex > 0 && columnIndex == 4) AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "演示一下能弹出自定义") { Offset = rect });
+            table1.FixedHeader = value;
         }
+
+        void checkColumnDragSort_CheckedChanged(object sender, bool value)
+        {
+            table1.ColumnDragSort = value;
+        }
+
+        void checkBordered_CheckedChanged(object sender, bool value)
+        {
+            table1.Bordered = value;
+        }
+
+        #region 奇偶列
+
+        void checkSetRowStyle_CheckedChanged(object sender, bool value)
+        {
+            if (value) table1.SetRowStyle += table1_SetRowStyle;
+            else table1.SetRowStyle -= table1_SetRowStyle;
+            table1.Invalidate();
+        }
+        AntdUI.Table.CellStyleInfo? table1_SetRowStyle(object sender, object? record, int rowIndex)
+        {
+            if (rowIndex % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = AntdUI.Style.Db.ErrorBg,
+                    ForeColor = AntdUI.Style.Db.Error
+                };
+            }
+            return null;
+        }
+
+        #endregion
+
+        void checkSortOrder_CheckedChanged(object sender, bool value)
+        {
+            if (table1.Columns != null) table1.Columns[4].SortOrder = table1.Columns[5].SortOrder = value;
+        }
+
+        void checkEnableHeaderResizing_CheckedChanged(object sender, bool value)
+        {
+            table1.EnableHeaderResizing = value;
+        }
+
+        void checkVisibleHeader_CheckedChanged(object sender, bool value)
+        {
+            table1.VisibleHeader = value;
+        }
+
+        #endregion
+
+        #region 点击/双击
+
+        void table1_CellClick(object sender, MouseEventArgs args, object record, int rowIndex, int columnIndex, Rectangle rect)
+        {
+            if (record is TestClass data)
+            {
+                if (rowIndex > 0 && columnIndex == 7) AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "演示一下能弹出自定义") { Offset = rect });
+                else if (rowIndex > 0 && columnIndex == 9)
+                {
+                    if (data.tag == null) data.tag = new AntdUI.CellTag[] { new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) };
+                    else
+                    {
+                        if (data.tag.Length == 1)
+                        {
+                            if (data.tag[0].Text == "ERROR") data.tag = new AntdUI.CellTag[] { new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) };
+                            else
+                            {
+                                data.tag[0].Type = AntdUI.TTypeMini.Error;
+                                data.tag[0].Text = "ERROR";
+                            }
+                        }
+                        else data.tag = new AntdUI.CellTag[] { new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) };
+                    }
+                }
+            }
+        }
+
+        void table1_CellButtonClick(object sender, AntdUI.CellLink btn, MouseEventArgs args, object record, int rowIndex, int columnIndex)
+        {
+            if (record is TestClass data)
+            {
+                AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
+                    new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
+                    new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
+                }, AntdUI.TType.Error)
+                {
+                    CancelText = null,
+                    OkType = AntdUI.TTypeMini.Error,
+                    OkText = "删除"
+                });
+                table1.Spin("正在加载中...", () =>
+                {
+                    Thread.Sleep(2000);
+                }, () =>
+                {
+                    System.Diagnostics.Debug.WriteLine("加载结束");
+                });
+            }
+        }
+
+        #endregion
+
+        #region 分页与数据
 
         object GetPageData(int current, int pageSize)
         {
@@ -82,7 +198,7 @@ namespace Overview.Controls
             return list2;
         }
 
-        private void pagination1_ValueChanged(int current, int total, int pageSize, int pageTotal)
+        void pagination1_ValueChanged(int current, int total, int pageSize, int pageTotal)
         {
             var list = new List<TestClass> {
                 new TestClass(1,"1","胡彦斌",32,"西湖区湖底公园1号"),
@@ -97,11 +213,12 @@ namespace Overview.Controls
 
             table2.DataSource = GetPageData(current, pageSize);
         }
-
-        private string pagination1_ShowTotalChanged(int current, int total, int pageSize, int pageTotal)
+        string pagination1_ShowTotalChanged(int current, int total, int pageSize, int pageTotal)
         {
             return $"{pageSize} / {total}条 {pageTotal}页";
         }
+
+        #endregion
 
         public class TestClass : AntdUI.NotifyProperty
         {
@@ -171,6 +288,42 @@ namespace Overview.Controls
                     if (_check == value) return;
                     _check = value;
                     OnPropertyChanged("check");
+                }
+            }
+
+            bool _check2 = false;
+            public bool check2
+            {
+                get => _check2;
+                set
+                {
+                    if (_check2 == value) return;
+                    _check2 = value;
+                    OnPropertyChanged("check2");
+                }
+            }
+
+            bool _check3 = false;
+            public bool check3
+            {
+                get => _check3;
+                set
+                {
+                    if (_check3 == value) return;
+                    _check3 = value;
+                    OnPropertyChanged("check3");
+                }
+            }
+
+            bool _check4 = false;
+            public bool check4
+            {
+                get => _check4;
+                set
+                {
+                    if (_check4 == value) return;
+                    _check4 = value;
+                    OnPropertyChanged("check4");
                 }
             }
 
@@ -337,79 +490,6 @@ namespace Overview.Controls
                     OnPropertyChanged("tag");
                 }
             }
-        }
-
-        private void table1_CellButtonClick(object sender, AntdUI.CellLink btn, MouseEventArgs args, object record, int rowIndex, int columnIndex)
-        {
-            if (record is TestClass data)
-            {
-                AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
-                    new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
-                    new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
-                }, AntdUI.TType.Error)
-                {
-                    CancelText = null,
-                    OkType = AntdUI.TTypeMini.Error,
-                    OkText = "删除"
-                });
-
-                table1.Spin("正在加载中...", () =>
-                {
-                    Thread.Sleep(2000);
-                },
-                () =>
-                { });
-            }
-        }
-
-        private void checkbox1_CheckedChanged(object sender, bool value)
-        {
-            table1.FixedHeader = value;
-        }
-
-        private void checkbox2_CheckedChanged(object sender, bool value)
-        {
-            table1.EnableHeaderResizing = value;
-        }
-
-        private void checkbox3_CheckedChanged(object sender, bool value)
-        {
-            table1.ColumnDragSort = value;
-        }
-
-        private void checkbox4_CheckedChanged(object sender, bool value)
-        {
-            table1.Bordered = value;
-        }
-
-        private void checkbox7_CheckedChanged(object sender, bool value)
-        {
-            table1.VisibleHeader = value;
-        }
-
-        private void checkbox5_CheckedChanged(object sender, bool value)
-        {
-            if (value) table1.SetRowStyle += Table1_SetRowStyle;
-            else table1.SetRowStyle -= Table1_SetRowStyle;
-            table1.Invalidate();
-        }
-
-        private void checkbox6_CheckedChanged(object sender, bool value)
-        {
-            if (table1.Columns != null) table1.Columns[4].SortOrder = table1.Columns[5].SortOrder = value;
-        }
-
-        private AntdUI.Table.CellStyleInfo? Table1_SetRowStyle(object sender, object? record, int rowIndex)
-        {
-            if (rowIndex % 2 == 0)
-            {
-                return new AntdUI.Table.CellStyleInfo
-                {
-                    BackColor = AntdUI.Style.Db.ErrorBg,
-                    ForeColor = AntdUI.Style.Db.Error
-                };
-            }
-            return null;
         }
     }
 }

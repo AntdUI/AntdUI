@@ -16,8 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
-
 namespace Overview.Controls
 {
     public partial class Button : UserControl
@@ -47,15 +45,12 @@ namespace Overview.Controls
             Task.Run(() =>
             {
                 Thread.Sleep(2000);
-                if (btn.IsDisposed) return; // Check if the button has been disposed
+                if (btn.IsDisposed) return;
                 btn.Invoke(() =>
                 {
-                    if (btn.IsDisposed) return; // Check if the button has been disposed
+                    if (btn.IsDisposed) return;
                     btn.Loading = false;
-                    if (change)
-                    {
-                        UpdatePanelWidth();
-                    }
+                    if (change) UpdatePanelWidth();
                 });
             });
         }
@@ -87,10 +82,10 @@ namespace Overview.Controls
                 Task.Run(() =>
                 {
                     Thread.Sleep(2000);
-                    if (btn.IsDisposed) return; // Check if the button has been disposed
+                    if (btn.IsDisposed) return;
                     btn.Invoke(() =>
                     {
-                        if (btn.IsDisposed) return; // Check if the button has been disposed
+                        if (btn.IsDisposed) return;
                         btn.Loading = false;
                     });
                 });
@@ -101,10 +96,10 @@ namespace Overview.Controls
                 Task.Run(() =>
                 {
                     Thread.Sleep(2000);
-                    if (btn.IsDisposed) return; // Check if the button has been disposed
+                    if (btn.IsDisposed) return;
                     btn.Invoke(() =>
                     {
-                        if (btn.IsDisposed) return; // Check if the button has been disposed
+                        if (btn.IsDisposed) return;
                         btn.Enabled = true;
                     });
                 });
@@ -113,9 +108,8 @@ namespace Overview.Controls
 
         private void UpdatePanelWidth()
         {
-            if (panel2.IsDisposed) return; // Check if the panel has been disposed
+            if (panel2.IsDisposed) return;
             panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
         }
-
     }
 }
