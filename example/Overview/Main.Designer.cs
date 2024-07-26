@@ -16,6 +16,9 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace Overview
 {
     partial class Main
@@ -118,15 +121,15 @@ namespace Overview
             // txt_search
             // 
             txt_search.Dock = DockStyle.Right;
-            txt_search.PrefixSvg = Properties.Resources.icon_search;
             txt_search.Location = new Point(896, 0);
             txt_search.Name = "txt_search";
             txt_search.Padding = new Padding(0, 4, 0, 4);
             txt_search.PlaceholderText = "输入关键字搜索...";
+            txt_search.PrefixSvg = Properties.Resources.icon_search;
             txt_search.Size = new Size(170, 40);
             txt_search.TabIndex = 9;
-            txt_search.TextChanged += txt_search_TextChanged;
             txt_search.PrefixClick += txt_search_PrefixClick;
+            txt_search.TextChanged += txt_search_TextChanged;
             // 
             // colorTheme
             // 

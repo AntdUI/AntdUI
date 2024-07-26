@@ -16,6 +16,9 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Windows.Forms;
+
 namespace Overview.Controls
 {
     public partial class Input : UserControl
@@ -31,9 +34,9 @@ namespace Overview.Controls
         {
             AntdUI.Button btn = (AntdUI.Button)sender;
             btn.Loading = true;
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
-                Thread.Sleep(2000);
+                System.Threading.Thread.Sleep(2000);
                 btn.Loading = false;
             });
         }

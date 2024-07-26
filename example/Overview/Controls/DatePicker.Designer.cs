@@ -16,6 +16,9 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace Overview.Controls
 {
     partial class DatePicker
@@ -216,7 +219,7 @@ namespace Overview.Controls
             datePicker3.Size = new Size(148, 44);
             datePicker3.TabIndex = 20;
             datePicker3.Text = "2013-11-11";
-            datePicker3.Value = new DateTime(2013, 11, 11, 0, 0, 0, 0);
+            datePicker3.Value = new System.DateTime(2013, 11, 11, 0, 0, 0, 0);
             // 
             // datePicker2
             // 

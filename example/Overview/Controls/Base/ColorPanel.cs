@@ -17,6 +17,8 @@
 // QQ: 17379620
 
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -25,12 +27,12 @@ namespace AntdUI
     {
         #region 属性
 
-        string? text = null;
+        string text = null;
         /// <summary>
         /// 文本
         /// </summary>
         [Description("文本"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        public new string Text
         {
             get => text;
             set
@@ -43,12 +45,12 @@ namespace AntdUI
             }
         }
 
-        string? desc = null;
+        string desc = null;
         /// <summary>
         /// 描述
         /// </summary>
         [Description("描述"), Category("外观"), DefaultValue(null)]
-        public string? TextDesc
+        public string TextDesc
         {
             get => desc;
             set

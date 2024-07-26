@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace Overview.Controls
 {
-    partial class Table
+    partial class TableAOT
     {
         /// <summary>
         ///  Required designer variable.

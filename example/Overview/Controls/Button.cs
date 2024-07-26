@@ -16,6 +16,10 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Threading;
+using System.Windows.Forms;
+
 namespace Overview.Controls
 {
     public partial class Button : UserControl
@@ -42,16 +46,16 @@ namespace Overview.Controls
                 change = true;
                 UpdatePanelWidth();
             }
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
                 Thread.Sleep(2000);
                 if (btn.IsDisposed) return;
-                btn.Invoke(() =>
+                btn.Invoke(new Action(() =>
                 {
                     if (btn.IsDisposed) return;
                     btn.Loading = false;
                     if (change) UpdatePanelWidth();
-                });
+                }));
             });
         }
 
@@ -64,44 +68,44 @@ namespace Overview.Controls
             {
                 btn.Loading = true;
                 btn.Enabled = false;
-                Task.Run(() =>
+                AntdUI.ITask.Run(() =>
                 {
                     Thread.Sleep(2000);
-                    if (btn.IsDisposed) return; // Check if the button has been disposed
-                    btn.Invoke(() =>
+                    if (btn.IsDisposed) return;
+                    btn.Invoke(new Action(() =>
                     {
-                        if (btn.IsDisposed) return; // Check if the button has been disposed
+                        if (btn.IsDisposed) return;
                         btn.Loading = false;
                         btn.Enabled = true;
-                    });
+                    }));
                 });
             }
             else if (nnn > 5)
             {
                 btn.Loading = true;
-                Task.Run(() =>
+                AntdUI.ITask.Run(() =>
                 {
                     Thread.Sleep(2000);
                     if (btn.IsDisposed) return;
-                    btn.Invoke(() =>
+                    btn.Invoke(new Action(() =>
                     {
                         if (btn.IsDisposed) return;
                         btn.Loading = false;
-                    });
+                    }));
                 });
             }
             else
             {
                 btn.Enabled = false;
-                Task.Run(() =>
+                AntdUI.ITask.Run(() =>
                 {
                     Thread.Sleep(2000);
                     if (btn.IsDisposed) return;
-                    btn.Invoke(() =>
+                    btn.Invoke(new Action(() =>
                     {
                         if (btn.IsDisposed) return;
                         btn.Enabled = true;
-                    });
+                    }));
                 });
             }
         }

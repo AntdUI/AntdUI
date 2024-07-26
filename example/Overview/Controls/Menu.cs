@@ -16,6 +16,9 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Windows.Forms;
+
 namespace Overview.Controls
 {
     public partial class Menu : UserControl
@@ -30,9 +33,8 @@ namespace Overview.Controls
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
-                Thread.Sleep(500);
                 var random = new Random();
                 for (int i = 0; i < random.Next(7, 20); i++)
                 {

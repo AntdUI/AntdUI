@@ -16,6 +16,10 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Threading;
+using System.Windows.Forms;
+
 namespace Overview.Controls
 {
     public partial class Progress : UserControl
@@ -30,7 +34,7 @@ namespace Overview.Controls
         private void Progress_Blue_1(object sender, EventArgs e)
         {
             progress1.Value = 0F;
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
                 while (true)
                 {
@@ -56,7 +60,7 @@ namespace Overview.Controls
         private void Progress_Blue_2(object sender, EventArgs e)
         {
             progress4.Value = progress7.Value = 0F;
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
                 while (true)
                 {
@@ -83,7 +87,7 @@ namespace Overview.Controls
         {
             progress3.State = progress6.State = AntdUI.TType.None;
             progress3.Value = progress6.Value = progress9.Value = 0F;
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
                 while (true)
                 {

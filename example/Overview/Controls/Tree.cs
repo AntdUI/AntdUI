@@ -16,6 +16,10 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
 namespace Overview.Controls
 {
     public partial class Tree : UserControl
@@ -31,9 +35,8 @@ namespace Overview.Controls
         {
             base.OnLoad(e);
             tree1.PauseLayout = tree2.PauseLayout = true;
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
-                Thread.Sleep(200);
                 var random = new Random();
                 for (int i = 0; i < random.Next(7, 20); i++)
                 {

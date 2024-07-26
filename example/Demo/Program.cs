@@ -16,6 +16,9 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Windows.Forms;
+
 namespace Demo
 {
     internal static class Program
@@ -26,7 +29,7 @@ namespace Demo
         [STAThread]
         static void Main()
         {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            //Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());
         }

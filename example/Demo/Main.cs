@@ -16,6 +16,10 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Threading;
+using System.Windows.Forms;
+
 namespace Demo
 {
     public partial class Main : AntdUI.Window
@@ -28,7 +32,7 @@ namespace Demo
             label_title.MouseDown += Window_MouseDown;
         }
 
-        void Window_MouseDown(object? sender, MouseEventArgs e)
+        void Window_MouseDown(object sender, MouseEventArgs e)
         {
             DraggableMouseDown();
         }
@@ -42,7 +46,7 @@ namespace Demo
         private void Progress_Blue_1(object sender, EventArgs e)
         {
             progress1.Value = 0F;
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
                 while (true)
                 {
@@ -68,7 +72,7 @@ namespace Demo
         private void Progress_Blue_2(object sender, EventArgs e)
         {
             progress4.Value = progress7.Value = 0F;
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
                 while (true)
                 {
@@ -95,7 +99,7 @@ namespace Demo
         {
             progress3.State = progress6.State = AntdUI.TType.None;
             progress3.Value = progress6.Value = progress9.Value = 0F;
-            Task.Run(() =>
+            AntdUI.ITask.Run(() =>
             {
                 while (true)
                 {
@@ -119,14 +123,14 @@ namespace Demo
         }
 
         Random random = new Random();
-        private void Button_Click(object? sender, EventArgs e)
+        private void Button_Click(object sender, EventArgs e)
         {
             if (sender is AntdUI.Button btn)
             {
                 if (random.Next(0, 10) > 5)
                 {
                     btn.Enabled = false;
-                    Task.Run(() =>
+                    AntdUI.ITask.Run(() =>
                     {
                         Thread.Sleep(2000);
                         Invoke(new Action(() =>
@@ -138,7 +142,7 @@ namespace Demo
                 else
                 {
                     btn.Loading = true;
-                    Task.Run(() =>
+                    AntdUI.ITask.Run(() =>
                     {
                         Thread.Sleep(2000);
                         btn.Loading = false;
@@ -147,26 +151,20 @@ namespace Demo
             }
         }
 
-        private void btn_close_Click(object? sender, EventArgs e)
+        private void btn_close_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void btn_min_Click(object? sender, EventArgs e)
+        private void btn_min_Click(object sender, EventArgs e)
         {
             Min();
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            if (WindowState == FormWindowState.Maximized)
-            {
-                btn_max.Image = Properties.Resources.app_max2b;
-            }
-            else
-            {
-                btn_max.Image = Properties.Resources.app_maxb;
-            }
+            if (WindowState == FormWindowState.Maximized) btn_max.Image = Properties.Resources.app_max2b;
+            else btn_max.Image = Properties.Resources.app_maxb;
             base.OnSizeChanged(e);
         }
 

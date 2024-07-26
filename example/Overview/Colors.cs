@@ -17,10 +17,13 @@
 // QQ: 17379620
 
 using AntdUI;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Overview
 {
-    public partial class Colors : Form
+    public partial class Colors : AntdUI.BaseForm
     {
         public Colors()
         {

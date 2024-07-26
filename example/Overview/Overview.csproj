@@ -2,10 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
     <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
@@ -20,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="WinFormsComInterop" Version="0.4.3" />
+    <PackageReference Include="WinFormsComInterop" Version="0.5.0" />
     <RdXmlFile Include="rd.xml" />
   </ItemGroup>
 

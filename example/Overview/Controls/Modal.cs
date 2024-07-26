@@ -16,6 +16,9 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Windows.Forms;
+
 namespace Overview.Controls
 {
     public partial class Modal : UserControl
@@ -53,7 +56,7 @@ namespace Overview.Controls
                 },
                 OnOk = config =>
                 {
-                    Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(1000);
                     return true;
                 }
             });
