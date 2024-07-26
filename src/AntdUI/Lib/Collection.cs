@@ -552,6 +552,39 @@ namespace AntdUI
         #endregion
     }
 
+    public class AntItem : NotifyProperty
+    {
+        public AntItem(string k)
+        {
+            key = k;
+        }
+        public AntItem(string k, object? v)
+        {
+            key = k;
+            value = v;
+        }
+        public string key { get; set; }
+
+        object? _value = null;
+        public object? value
+        {
+            get => _value;
+            set
+            {
+                if (_value == value) return;
+                _value = value;
+                OnPropertyChanged(key);
+            }
+        }
+
+        public bool Try<T>(out T val)
+        {
+            if (_value is T v) { val = v; return true; }
+            val = default;
+            return false;
+        }
+    }
+
     public class NotifyProperty : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;

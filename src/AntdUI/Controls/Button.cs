@@ -1783,13 +1783,16 @@ namespace AntdUI
             switch (autoSize)
             {
                 case TAutoSize.Width:
+                    if (Width == PSize.Width) return true;
                     Width = PSize.Width;
                     break;
                 case TAutoSize.Height:
+                    if (Height == PSize.Height) return true;
                     Height = PSize.Height;
                     break;
                 case TAutoSize.Auto:
                 default:
+                    if (Width == PSize.Width && Height == PSize.Height) return true;
                     Size = PSize;
                     break;
             }

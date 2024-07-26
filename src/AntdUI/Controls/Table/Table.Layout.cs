@@ -140,12 +140,7 @@ namespace AntdUI
                     foreach (var row in data_temp.rows)
                     {
                         var cells = new List<TCell>(_columns.Count);
-                        foreach (var column in _columns)
-                        {
-                            var value = row.cells[column.Key];
-                            if (value is PropertyDescriptor prop) AddRows(ref cells, ref processing, column, row.record, prop);
-                            else cells.Add(new TCellText(this, null, value, column, value?.ToString()));
-                        }
+                        foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, row.cells[column.Key]);
                         if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record);
                     }
                 }
@@ -155,12 +150,7 @@ namespace AntdUI
                     {
                         var row = data_temp.rows[item];
                         var cells = new List<TCell>(_columns.Count);
-                        foreach (var column in _columns)
-                        {
-                            var value = row.cells[column.Key];
-                            if (value is PropertyDescriptor prop) AddRows(ref cells, ref processing, column, row.record, prop);
-                            else cells.Add(new TCellText(this, null, value, column, value?.ToString()));
-                        }
+                        foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, row.cells[column.Key]);
                         if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record);
                     }
                 }
@@ -207,6 +197,23 @@ namespace AntdUI
 
         RowTemplate[] ChangeLayoutCore(Rectangle rect, List<RowTemplate> _rows, List<Column> _columns, Dictionary<int, object> col_width, out int _x, out int _y, out bool _is_exceed)
         {
+            List<object?> dir_Select, dir_Hover = new List<object?>(1);
+            if (rows != null)
+            {
+                dir_Select = new List<object?>(rows.Length);
+                foreach (var item in rows)
+                {
+                    if (item.Select) dir_Select.Add(item.RECORD);
+                    if (item.Hover) dir_Hover.Add(item.RECORD);
+                }
+            }
+            else dir_Select = new List<object?>(0);
+            foreach (var item in _rows)
+            {
+                if (dir_Select.Contains(item.RECORD)) item.Select = true;
+                if (dir_Hover.Contains(item.RECORD)) item.Hover = true;
+            }
+
             #region 添加表头
 
             var _cols = new List<TCellColumn>(_columns.Count);
@@ -552,6 +559,51 @@ namespace AntdUI
         #endregion
 
         float check_radius = 0F, check_border = 1F;
+        void AddRows(ref List<TCell> cells, ref int processing, Column column, IRow row, object? ov)
+        {
+            if (ov is PropertyDescriptor prop) AddRows(ref cells, ref processing, column, row.record, prop);
+            else
+            {
+                if (ov == null) cells.Add(new TCellText(this, null, ov, column, null));
+                else
+                {
+                    if (ov is AntItem cell)
+                    {
+                        if (column is ColumnCheck columnCheck)
+                        {
+                            //复选框
+                            has_check = true;
+                            bool value = false;
+                            if (cell.value is bool check) value = check;
+                            AddRows(ref cells, new TCellCheck(this, null, ov, value, columnCheck));
+                        }
+                        else if (column is ColumnRadio columnRadio)
+                        {
+                            //单选框
+                            has_check = true;
+                            bool value = false;
+                            if (cell.value is bool check) value = check;
+                            AddRows(ref cells, new TCellRadio(this, null, ov, value, columnRadio));
+                        }
+                        else if (column is ColumnSwitch columnSwitch)
+                        {
+                            //开关
+                            bool value = false;
+                            if (cell.value is bool check) value = check;
+                            AddRows(ref cells, new TCellSwitch(this, null, ov, value, columnSwitch));
+                        }
+                        else
+                        {
+                            if (cell.value is IList<ICell> icells) AddRows(ref cells, new Template(this, null, ov, column, ref processing, icells));
+                            else if (cell.value is ICell icell) AddRows(ref cells, new Template(this, null, ov, column, ref processing, new ICell[] { icell }));
+                            else AddRows(ref cells, new TCellText(this, null, ov, column, cell.value?.ToString()));
+                        }
+                    }
+                    else cells.Add(new TCellText(this, null, ov, column, ov.ToString()));
+                }
+                //cells.Add(new TCellText(this, null, ov, column, ov?.ToString()));
+            }
+        }
         void AddRows(ref List<TCell> cells, ref int processing, Column column, object ov, PropertyDescriptor prop)
         {
             if (column is ColumnCheck columnCheck)
@@ -589,7 +641,22 @@ namespace AntdUI
         string? OGetValue(TempTable data_temp, int i_r, string key)
         {
             var value = data_temp.rows[i_r].cells[key];
-            if (value is PropertyDescriptor prop)
+            if (value is AntItem item)
+            {
+                var val = item.value;
+                if (val is IList<ICell> icells)
+                {
+                    var vals = new List<string>(icells.Count);
+                    foreach (var cell in icells)
+                    {
+                        var str = cell.ToString();
+                        if (!string.IsNullOrEmpty(str)) vals.Add(str);
+                    }
+                    return string.Join(" ", vals);
+                }
+                else return val?.ToString();
+            }
+            else if (value is PropertyDescriptor prop)
             {
                 var val = prop.GetValue(data_temp.rows[i_r].record);
                 if (val is IList<ICell> icells)
@@ -704,94 +771,105 @@ namespace AntdUI
                 var column = (TCellColumn)rows[0].cells[cel_i];
                 if (key == column.column.Key)
                 {
-                    foreach (var row in rows)
+                    if (data is AntItem item)
                     {
-                        if (row.RECORD == data)
+                        foreach (var row in rows)
                         {
-                            var cel = row.cells[cel_i];
-                            if (cel.PROPERTY != null)
+                            if (row.RECORD is IList<AntItem> items && items.Contains(item))
                             {
-                                if (cel is Template template)
-                                {
-                                    int count = 0;
-                                    var value = cel.PROPERTY.GetValue(data);
-                                    if (value == null) count++;
-                                    else if (value is IList<ICell> cells)
-                                    {
-                                        if (template.value.Count == cells.Count)
-                                        {
-                                            for (int i = 0; i < template.value.Count; i++)
-                                            {
-                                                if (template.value[i].SValue(cells[i])) count++;
-                                            }
-                                        }
-                                        else count++;
-                                    }
-                                    else if (value is ICell cell)
-                                    {
-                                        if (template.value.Count == 1)
-                                        {
-                                            if (template.value[0].SValue(cel)) count++;
-                                        }
-                                        else count++;
-                                    }
-                                    if (count > 0)
-                                    {
-                                        LoadLayout();
-                                        Invalidate();
-                                    }
-                                }
-                                else if (cel is TCellText text)
-                                {
-                                    var value = cel.PROPERTY.GetValue(data);
-                                    if (value is IList<ICell> || value is ICell) LoadLayout();
-                                    else text.value = value?.ToString();
-                                    Invalidate();
-                                }
-                                else if (cel is TCellCheck check)
-                                {
-                                    var value = cel.PROPERTY.GetValue(data);
-                                    if (value is bool b) check.Checked = b;
-                                    row.Select = RowISelect(row);
-                                    if (column.column is ColumnCheck checkColumn && checkColumn.NoTitle)
-                                    {
-                                        int t_count = rows.Length - 1, check_count = 0;
-                                        for (int row_i = 1; row_i < rows.Length; row_i++)
-                                        {
-                                            var it = rows[row_i];
-                                            var cell = it.cells[cel_i];
-                                            if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
-                                        }
-                                        if (t_count == check_count) checkColumn.CheckState = System.Windows.Forms.CheckState.Checked;
-                                        else if (check_count > 0) checkColumn.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-                                        else checkColumn.CheckState = System.Windows.Forms.CheckState.Unchecked;
-                                    }
-                                    Invalidate();
-                                }
-                                else if (cel is TCellRadio radio)
-                                {
-                                    var value = cel.PROPERTY.GetValue(data);
-                                    if (value is bool b) radio.Checked = b;
-                                    row.Select = RowISelect(row);
-                                    Invalidate();
-                                }
-                                else if (cel is TCellSwitch _switch)
-                                {
-                                    var value = cel.PROPERTY.GetValue(data);
-                                    if (value is bool b) _switch.Checked = b;
-                                    Invalidate();
-                                }
-                                else
-                                {
-                                    LoadLayout();
-                                    Invalidate();
-                                }
+                                RefreshItem(rows, column, row, row.cells[cel_i], cel_i, item.value);
+                                return;
                             }
-                            return;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var row in rows)
+                        {
+                            if (row.RECORD == data)
+                            {
+                                var cel = row.cells[cel_i];
+                                if (cel.PROPERTY != null) RefreshItem(rows, column, row, cel, cel_i, cel.PROPERTY.GetValue(data));
+                                return;
+                            }
                         }
                     }
                     return;
                 }
+            }
+        }
+
+        void RefreshItem(RowTemplate[] rows, TCellColumn column, RowTemplate row, TCell cel, int cel_i, object? value)
+        {
+            if (cel is Template template)
+            {
+                int count = 0;
+                if (value == null) count++;
+                else if (value is IList<ICell> cells)
+                {
+                    if (template.value.Count == cells.Count)
+                    {
+                        for (int i = 0; i < template.value.Count; i++)
+                        {
+                            if (template.value[i].SValue(cells[i])) count++;
+                        }
+                    }
+                    else count++;
+                }
+                else if (value is ICell cell)
+                {
+                    if (template.value.Count == 1)
+                    {
+                        if (template.value[0].SValue(cel)) count++;
+                    }
+                    else count++;
+                }
+                if (count > 0)
+                {
+                    LoadLayout();
+                    Invalidate();
+                }
+            }
+            else if (cel is TCellText text)
+            {
+                if (value is IList<ICell> || value is ICell) LoadLayout();
+                else text.value = value?.ToString();
+                Invalidate();
+            }
+            else if (cel is TCellCheck check)
+            {
+                if (value is bool b) check.Checked = b;
+                row.Select = RowISelect(row);
+                if (column.column is ColumnCheck checkColumn && checkColumn.NoTitle)
+                {
+                    int t_count = rows.Length - 1, check_count = 0;
+                    for (int row_i = 1; row_i < rows.Length; row_i++)
+                    {
+                        var it = rows[row_i];
+                        var cell = it.cells[cel_i];
+                        if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                    }
+                    if (t_count == check_count) checkColumn.CheckState = System.Windows.Forms.CheckState.Checked;
+                    else if (check_count > 0) checkColumn.CheckState = System.Windows.Forms.CheckState.Indeterminate;
+                    else checkColumn.CheckState = System.Windows.Forms.CheckState.Unchecked;
+                }
+                Invalidate();
+            }
+            else if (cel is TCellRadio radio)
+            {
+                if (value is bool b) radio.Checked = b;
+                row.Select = RowISelect(row);
+                Invalidate();
+            }
+            else if (cel is TCellSwitch _switch)
+            {
+                if (value is bool b) _switch.Checked = b;
+                Invalidate();
+            }
+            else
+            {
+                LoadLayout();
+                Invalidate();
             }
         }
 
@@ -806,11 +884,20 @@ namespace AntdUI
                     if (checkCell.Checked != value)
                     {
                         checkCell.Checked = value;
-                        item.PROPERTY?.SetValue(item.VALUE, checkCell.Checked);
+                        SetValue(item, checkCell.Checked);
                         CheckedChanged?.Invoke(this, value, rows[i_row].RECORD, i_row, i_cel);
                     }
                 }
             }
+        }
+
+        void SetValue(TCell cel, object? value)
+        {
+            if (cel.PROPERTY == null)
+            {
+                if (cel.VALUE is AntItem arow) arow.value = value;
+            }
+            else cel.PROPERTY.SetValue(cel.VALUE, value);
         }
 
         bool RowISelect(RowTemplate row)

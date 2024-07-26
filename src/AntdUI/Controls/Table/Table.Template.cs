@@ -155,7 +155,7 @@ namespace AntdUI
         /// </summary>
         class TCellCheck : TCell
         {
-            public TCellCheck(Table table, PropertyDescriptor prop, object ov, bool value, ColumnCheck column)
+            public TCellCheck(Table table, PropertyDescriptor? prop, object ov, bool value, ColumnCheck column)
             {
                 PARENT = table;
                 PROPERTY = prop;
@@ -289,7 +289,7 @@ namespace AntdUI
         /// </summary>
         class TCellRadio : TCell
         {
-            public TCellRadio(Table table, PropertyDescriptor prop, object ov, bool value, ColumnRadio column)
+            public TCellRadio(Table table, PropertyDescriptor? prop, object ov, bool value, ColumnRadio column)
             {
                 PARENT = table;
                 PROPERTY = prop;
@@ -419,7 +419,7 @@ namespace AntdUI
         /// </summary>
         class TCellSwitch : TCell
         {
-            public TCellSwitch(Table table, PropertyDescriptor prop, object ov, bool value, ColumnSwitch _column)
+            public TCellSwitch(Table table, PropertyDescriptor? prop, object ov, bool value, ColumnSwitch _column)
             {
                 PARENT = table;
                 PROPERTY = prop;
@@ -826,7 +826,7 @@ namespace AntdUI
         /// </summary>
         class Template : TCell
         {
-            public Template(Table table, PropertyDescriptor prop, object ov, Column _column, ref int processing, IList<ICell> _value)
+            public Template(Table table, PropertyDescriptor? prop, object ov, Column _column, ref int processing, IList<ICell> _value)
             {
                 PARENT = table;
                 PROPERTY = prop;
@@ -852,6 +852,7 @@ namespace AntdUI
                 }
                 value = list;
             }
+
             /// <summary>
             /// 值
             /// </summary>

@@ -74,8 +74,12 @@ namespace AntdUI
                     var row = list[i];
                     if (row != null)
                     {
-                        var cells = GetRowAuto(row, ref columns);
-                        if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
+                        if (row is IList<AntItem> arows) rows.Add(new IRow(i, row, arows));
+                        else
+                        {
+                            var cells = GetRowAuto(row, ref columns);
+                            if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
+                        }
                     }
                 }
                 data_temp = new TempTable(columns.ToArray(), rows.ToArray());
@@ -162,8 +166,12 @@ namespace AntdUI
                 var row = list[i];
                 if (row != null)
                 {
-                    var cells = GetRowAuto(row, ref columns);
-                    if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
+                    if (row is IList<AntItem> arows) rows.Add(new IRow(i, row, arows));
+                    else
+                    {
+                        var cells = GetRowAuto(row, ref columns);
+                        if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
+                    }
                 }
             }
             data_temp = new TempTable(columns.ToArray(), rows.ToArray());
@@ -186,9 +194,18 @@ namespace AntdUI
 
         Dictionary<string, object?> GetRow(object row, int len)
         {
-            var cells = new Dictionary<string, object?>(len);
-            foreach (PropertyDescriptor it in TypeDescriptor.GetProperties(row)) cells.Add(it.Name, it);
-            return cells;
+            if (row is IList<AntItem> arows)
+            {
+                var cells = new Dictionary<string, object?>(arows.Count);
+                foreach (AntItem it in arows) cells.Add(it.key, it);
+                return cells;
+            }
+            else
+            {
+                var cells = new Dictionary<string, object?>(len);
+                foreach (PropertyDescriptor it in TypeDescriptor.GetProperties(row)) cells.Add(it.Name, it);
+                return cells;
+            }
         }
 
         Dictionary<string, object?> GetRow(object row, ref List<TempiColumn> columns)
@@ -288,6 +305,14 @@ namespace AntdUI
                 cells = _cells;
             }
 
+            public IRow(int index, object _record, IList<AntItem> _cells)
+            {
+                i = index;
+                record = _record;
+                cells = new Dictionary<string, object?>(_cells.Count);
+                foreach (var it in _cells) cells.Add(it.key, it);
+            }
+
             /// <summary>
             /// 行序号
             /// </summary>
@@ -311,6 +336,7 @@ namespace AntdUI
                         if (i == index)
                         {
                             if (item.Value is PropertyDescriptor prop) return prop.GetValue(record);
+                            else if (item.Value is AntItem it) return it.value;
                             else return item.Value;
                         }
                         i++;
@@ -326,6 +352,7 @@ namespace AntdUI
                     if (cells.TryGetValue(key, out var value))
                     {
                         if (value is PropertyDescriptor prop) return prop.GetValue(record);
+                        else if (value is AntItem it) return it.value;
                         else return value;
                     }
                     return null;

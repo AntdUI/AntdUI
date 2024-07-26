@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -198,7 +197,7 @@ namespace AntdUI
                             if (checkCell.AutoCheck && checkCell.Contains(r_x, r_y))
                             {
                                 checkCell.Checked = !checkCell.Checked;
-                                cell.PROPERTY?.SetValue(cell.VALUE, checkCell.Checked);
+                                SetValue(cell, checkCell.Checked);
                                 CheckedChanged?.Invoke(this, checkCell.Checked, it.RECORD, i_r, i_c);
                             }
                         }
@@ -212,17 +211,17 @@ namespace AntdUI
                                     {
                                         if (i != i_r)
                                         {
-                                            var cell2 = rows[i].cells[i_c];
-                                            if (cell2 is TCellRadio radioCell2 && radioCell2.Checked)
+                                            var cell_selno = rows[i].cells[i_c];
+                                            if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
                                             {
                                                 radioCell2.Checked = false;
-                                                cell2.PROPERTY?.SetValue(cell2.VALUE, radioCell2.Checked);
+                                                SetValue(cell_selno, false);
                                             }
                                         }
                                     }
                                 }
                                 radioCell.Checked = true;
-                                cell.PROPERTY?.SetValue(cell.VALUE, radioCell.Checked);
+                                SetValue(cell, radioCell.Checked);
                                 CheckedChanged?.Invoke(this, radioCell.Checked, it.RECORD, i_r, i_c);
                             }
                         }
@@ -238,7 +237,7 @@ namespace AntdUI
                                         var value = switchCell.column.Call(!switchCell.Checked, it.RECORD, i_r, i_c);
                                         if (switchCell.Checked == value) return;
                                         switchCell.Checked = value;
-                                        cell.PROPERTY?.SetValue(cell.VALUE, value);
+                                        SetValue(cell, value);
                                     }).ContinueWith(action =>
                                     {
                                         switchCell.Loading = false;
@@ -247,7 +246,7 @@ namespace AntdUI
                                 else if (switchCell.AutoCheck)
                                 {
                                     switchCell.Checked = !switchCell.Checked;
-                                    cell.PROPERTY?.SetValue(cell.VALUE, switchCell.Checked);
+                                    SetValue(cell, switchCell.Checked);
                                     CheckedChanged?.Invoke(this, switchCell.Checked, it.RECORD, i_r, i_c);
                                 }
                             }
@@ -334,228 +333,6 @@ namespace AntdUI
                 return true;
             }
             return false;
-        }
-
-        bool inEditMode = false;
-        void EditModeClose()
-        {
-            if (inEditMode)
-            {
-                scrollBar.OnInvalidate = null;
-                Focus();
-                inEditMode = false;
-            }
-        }
-
-        void OnEditMode(RowTemplate it, TCell cell, int i_row, int i_col, int sx, int sy)
-        {
-            if (rows == null) return;
-            if (it.AnimationHover)
-            {
-                it.ThreadHover?.Dispose();
-                it.ThreadHover = null;
-            }
-            if (cell is TCellText cellText)
-            {
-                object? value = null;
-                if (cell.PROPERTY != null && cell.VALUE != null) value = cell.PROPERTY.GetValue(cell.VALUE);
-                else value = cell.VALUE;
-
-                bool isok = true;
-                if (CellBeginEdit != null) isok = CellBeginEdit(this, value, it.RECORD, i_row, i_col);
-                if (!isok) return;
-                inEditMode = true;
-
-                scrollBar.OnInvalidate = () => EditModeClose();
-                BeginInvoke(new Action(() =>
-                {
-                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                    int height = Helper.GDI(g =>
-                    {
-                        return height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
-                    });
-                    var edit_input = ShowInput(cell, sx, sy, height, value, _value =>
-                    {
-                        bool isok_end = true;
-                        if (CellEndEdit != null) isok_end = CellEndEdit(this, _value, it.RECORD, i_row, i_col);
-                        if (isok_end)
-                        {
-                            cellText.value = _value;
-                            if (cell.PROPERTY != null)
-                            {
-                                if (GetValue(value, _value, out var o)) cell.PROPERTY.SetValue(cell.VALUE, o);
-                            }
-                            else if (it.RECORD is DataRow datarow)
-                            {
-                                if (GetValue(value, _value, out var o)) datarow[i_col] = o;
-                            }
-                        }
-                    });
-                    if (cellText.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
-                    else if (cellText.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
-                    CellBeginEditInputStyle?.Invoke(this, value, it.RECORD, i_row, i_col, ref edit_input);
-                    Controls.Add(edit_input);
-                    edit_input.Focus();
-                }));
-            }
-            else if (cell is Template templates)
-            {
-                foreach (ITemplate template in templates.value)
-                {
-                    if (template is TemplateText text)
-                    {
-                        object? value = null;
-                        if (cell.PROPERTY != null && cell.VALUE != null) value = cell.PROPERTY.GetValue(cell.VALUE);
-                        else value = cell.VALUE;
-                        bool isok = true;
-                        if (CellBeginEdit != null) isok = CellBeginEdit(this, value, it.RECORD, i_row, i_col);
-                        if (!isok) return;
-                        inEditMode = true;
-
-                        scrollBar.OnInvalidate = () => EditModeClose();
-                        BeginInvoke(new Action(() =>
-                        {
-                            for (int i = 0; i < rows.Length; i++)
-                            {
-                                rows[i].hover = i == i_row;
-                            }
-                            int height = Helper.GDI(g =>
-                            {
-                                return height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
-                            });
-                            var edit_input = ShowInput(cell, sx, sy, height, value, _value =>
-                            {
-                                bool isok_end = true;
-                                if (CellEndEdit != null) isok_end = CellEndEdit(this, _value, it.RECORD, i_row, i_col);
-                                if (isok_end)
-                                {
-                                    if (value is CellText text2)
-                                    {
-                                        text2.Text = _value;
-                                        if (cell.PROPERTY != null) cell.PROPERTY.SetValue(cell.VALUE, text2);
-                                    }
-                                    else
-                                    {
-                                        text.Value.Text = _value;
-                                        if (cell.PROPERTY != null)
-                                        {
-                                            if (GetValue(value, _value, out var o)) cell.PROPERTY.SetValue(cell.VALUE, o);
-                                        }
-                                        else if (it.RECORD is DataRow datarow)
-                                        {
-                                            if (GetValue(value, _value, out var o)) datarow[i_col] = o;
-                                        }
-                                    }
-                                }
-                            });
-                            CellBeginEditInputStyle?.Invoke(this, value, it.RECORD, i_row, i_col, ref edit_input);
-                            if (template.PARENT != null)
-                            {
-                                if (template.PARENT.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
-                                else if (template.PARENT.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
-                            }
-                            Controls.Add(edit_input);
-                            edit_input.Focus();
-                        }));
-                        return;
-                    }
-                }
-            }
-        }
-
-        bool GetValue(object? value, string _value, out object read)
-        {
-            if (value is int)
-            {
-                if (int.TryParse(_value, out var v))
-                {
-                    read = v;
-                    return true;
-                }
-            }
-            else if (value is double)
-            {
-                if (double.TryParse(_value, out var v))
-                {
-                    read = v;
-                    return true;
-                }
-            }
-            else if (value is decimal)
-            {
-                if (decimal.TryParse(_value, out var v))
-                {
-                    read = v;
-                    return true;
-                }
-            }
-            else if (value is float)
-            {
-                if (float.TryParse(_value, out var v))
-                {
-                    read = v;
-                    return true;
-                }
-            }
-            else
-            {
-                read = _value;
-                return true;
-            }
-            read = _value;
-            return false;
-        }
-
-        Input ShowInput(TCell cell, int sx, int sy, int height, object? value, Action<string> call)
-        {
-            Input input;
-            if (value is CellText text2)
-            {
-                input = new Input
-                {
-                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                    Size = new Size(cell.RECT.Width, height),
-                    Text = text2.Text ?? ""
-                };
-            }
-            else
-            {
-                input = new Input
-                {
-                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                    Size = new Size(cell.RECT.Width, height),
-                    Text = value?.ToString() ?? ""
-                };
-            }
-            string old_text = input.Text;
-            bool isone = true;
-            input.KeyPress += (a, b) =>
-            {
-                if (a is Input input && isone)
-                {
-                    if (b.KeyChar == 13)
-                    {
-                        isone = false;
-                        b.Handled = true;
-                        scrollBar.OnInvalidate = null;
-                        if (old_text != input.Text) call(input.Text);
-                        inEditMode = false;
-                        input.Dispose();
-                    }
-                }
-            };
-            input.LostFocus += (a, b) =>
-            {
-                if (a is Input input && isone)
-                {
-                    isone = false;
-                    scrollBar.OnInvalidate = null;
-                    if (old_text != input.Text) call(input.Text);
-                    inEditMode = false;
-                    input.Dispose();
-                }
-            };
-            return input;
         }
 
         #endregion
