@@ -26,10 +26,10 @@ namespace AntdUI
 {
     partial class Table
     {
-        TempTable? data_temp = null;
+        TempTable? dataTmp = null;
         void ExtractData()
         {
-            data_temp = null;
+            dataTmp = null;
             if (columns != null)
             {
                 // 重置复选状态
@@ -40,7 +40,7 @@ namespace AntdUI
             }
             if (dataSource == null)
             {
-                if (EmptyHeader && columns != null && columns.Count > 0) data_temp = new TempTable(new TempiColumn[0], new IRow[0]);
+                rows_Expand.Clear();
                 // 空数据
                 scrollBar.ValueX = scrollBar.ValueY = 0;
                 return;
@@ -62,7 +62,7 @@ namespace AntdUI
                             if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
                         }
                     }
-                    data_temp = new TempTable(columns.ToArray(), rows.ToArray());
+                    dataTmp = new TempTable(columns.ToArray(), rows.ToArray());
                 }
             }
             else if (dataSource is IList list)
@@ -82,7 +82,7 @@ namespace AntdUI
                         }
                     }
                 }
-                data_temp = new TempTable(columns.ToArray(), rows.ToArray());
+                dataTmp = new TempTable(columns.ToArray(), rows.ToArray());
             }
         }
 
@@ -92,7 +92,7 @@ namespace AntdUI
             dataSource = list;
             list.action = (code, obj) =>
             {
-                if (data_temp != null)
+                if (dataTmp != null)
                 {
                     if (code == "add")
                     {
@@ -101,12 +101,12 @@ namespace AntdUI
                             var row = list[i];
                             if (row != null)
                             {
-                                var cells = GetRow(row, data_temp.columns.Length);
+                                var cells = GetRow(row, dataTmp.columns.Length);
                                 if (cells.Count == 0) return;
-                                var rows = new List<IRow>(data_temp.rows.Length + 1);
-                                rows.AddRange(data_temp.rows);
+                                var rows = new List<IRow>(dataTmp.rows.Length + 1);
+                                rows.AddRange(dataTmp.rows);
                                 rows.Insert(i, new IRow(i, row, cells));
-                                data_temp.rows = ChangeList(rows);
+                                dataTmp.rows = ChangeList(rows);
                                 LoadLayout();
                                 Invalidate();
                             }
@@ -119,14 +119,14 @@ namespace AntdUI
                                 var row = list[id];
                                 if (row != null)
                                 {
-                                    var cells = GetRow(row, data_temp.columns.Length);
+                                    var cells = GetRow(row, dataTmp.columns.Length);
                                     if (cells.Count > 0) _list.Add(new IRow(id, row, cells));
                                 }
                             }
-                            var rows = new List<IRow>(data_temp.rows.Length + _list.Count);
-                            rows.AddRange(data_temp.rows);
+                            var rows = new List<IRow>(dataTmp.rows.Length + _list.Count);
+                            rows.AddRange(dataTmp.rows);
                             rows.InsertRange(i_s[0], _list);
-                            data_temp.rows = ChangeList(rows);
+                            dataTmp.rows = ChangeList(rows);
                             LoadLayout();
                             Invalidate();
                         }
@@ -140,19 +140,19 @@ namespace AntdUI
                     {
                         if (obj is int i)
                         {
-                            if (i >= 0 && i < data_temp.rows.Length)
+                            if (i >= 0 && i < dataTmp.rows.Length)
                             {
-                                var rows = new List<IRow>(data_temp.rows.Length);
-                                rows.AddRange(data_temp.rows);
+                                var rows = new List<IRow>(dataTmp.rows.Length);
+                                rows.AddRange(dataTmp.rows);
                                 rows.RemoveAt(i);
-                                data_temp.rows = ChangeList(rows);
+                                dataTmp.rows = ChangeList(rows);
                                 LoadLayout();
                                 Invalidate();
                             }
                         }
                         else if (obj is string)
                         {
-                            data_temp.rows = new IRow[0];
+                            dataTmp.rows = new IRow[0];
                             LoadLayout();
                             Invalidate();
                         }
@@ -174,7 +174,7 @@ namespace AntdUI
                     }
                 }
             }
-            data_temp = new TempTable(columns.ToArray(), rows.ToArray());
+            dataTmp = new TempTable(columns.ToArray(), rows.ToArray());
 
             LoadLayout();
             Invalidate();

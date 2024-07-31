@@ -53,6 +53,7 @@ namespace AntdUI
             /// 原始行数据
             /// </summary>
             public object? RECORD { get; set; }
+
             public int INDEX { get; set; }
 
             /// <summary>
@@ -146,6 +147,15 @@ namespace AntdUI
             #endregion
 
             public bool Select { get; set; }
+
+            public bool CanExpand { get; set; }
+
+            public bool Expand { get; set; }
+            public bool ShowExpand { get; set; } = true;
+
+            internal int ExpandDepth { get; set; }
+            internal int KeyTreeINDEX { get; set; } = -1;
+            internal Rectangle RectExpand;
         }
 
         #region 单元格
@@ -238,7 +248,7 @@ namespace AntdUI
             /// </summary>
             public Rectangle rect { get; set; }
 
-            public void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2)
+            public void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
             internal void SetSize(Rectangle _rect, int check_size)
@@ -371,7 +381,7 @@ namespace AntdUI
             /// </summary>
             public Rectangle rect { get; set; }
 
-            public void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2)
+            public void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
             internal void SetSize(Rectangle _rect, int check_size)
@@ -602,7 +612,7 @@ namespace AntdUI
             /// </summary>
             public Rectangle rect { get; set; }
 
-            public void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2)
+            public void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
             internal void SetSize(Rectangle _rect, int check_size)
@@ -668,10 +678,10 @@ namespace AntdUI
             /// 区域
             /// </summary>
             public Rectangle rect { get; set; }
-            public void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2)
+            public void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
-                rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                rect = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
             }
             public Column column { get; set; }
             public Table PARENT { get; set; }
@@ -744,7 +754,7 @@ namespace AntdUI
 
             public Rectangle rect_up { get; set; }
             public Rectangle rect_down { get; set; }
-            public void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2)
+            public void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
                 if (column.SortOrder)
@@ -802,7 +812,7 @@ namespace AntdUI
             Rectangle RECT { get; set; }
             Rectangle rect { get; set; }
 
-            void SetSize(Graphics g, Font font, Rectangle _rect, int gap, int gap2);
+            void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2);
             SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2);
 
             int MinWidth { get; set; }
@@ -860,25 +870,26 @@ namespace AntdUI
 
             internal bool HasBtn = false;
 
-            public void SetSize(Graphics g, Font font, Rectangle _rect, int _gap, int _gap2)
+            public void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int _gap, int _gap2)
             {
                 RECT = rect = _rect;
+                int rx = _rect.X + ox;
                 int gap = _gap / 2, gap2 = _gap;
                 if (value.Count == 1 && (value[0] is TemplateText || value[0] is TemplateProgress))
                 {
                     var it = value[0];
                     var size = SIZES[0];
-                    it.SetRect(g, font, new Rectangle(_rect.X, _rect.Y, _rect.Width, _rect.Height), size, gap, gap2);
+                    it.SetRect(g, font, new Rectangle(rx, _rect.Y, _rect.Width, _rect.Height), size, gap, gap2);
                 }
                 else
                 {
                     int use_x;
                     switch (column.Align)
                     {
-                        case ColumnAlign.Center: use_x = _rect.X + (_rect.Width - MinWidth) / 2; break;
+                        case ColumnAlign.Center: use_x = rx + (_rect.Width - MinWidth) / 2; break;
                         case ColumnAlign.Right: use_x = _rect.Right - MinWidth; break;
                         case ColumnAlign.Left:
-                        default: use_x = _rect.X + gap2; break;
+                        default: use_x = rx + gap2; break;
                     }
                     for (int i = 0; i < value.Count; i++)
                     {

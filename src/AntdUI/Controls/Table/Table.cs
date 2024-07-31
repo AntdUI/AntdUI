@@ -51,13 +51,6 @@ namespace AntdUI
                 columns = value;
                 if (value == null) fixedColumnL = fixedColumnR = null;
                 else ExtractHeaderFixed();
-
-                if (EmptyHeader && dataSource == null && value != null)
-                {
-                    ExtractData();
-                    return;
-                }
-
                 LoadLayout();
                 Invalidate();
             }
@@ -91,9 +84,9 @@ namespace AntdUI
         {
             get
             {
-                if (data_temp == null || data_temp.rows.Length == 0) return null;
-                if (index < 0 || data_temp.rows.Length - 1 < index) return null;
-                var row = data_temp.rows[index];
+                if (dataTmp == null || dataTmp.rows.Length == 0) return null;
+                if (index < 0 || dataTmp.rows.Length - 1 < index) return null;
+                var row = dataTmp.rows[index];
                 return row;
             }
         }
@@ -261,11 +254,22 @@ namespace AntdUI
         [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
         public Image? EmptyImage { get; set; }
 
+        bool emptyHeader = false;
         /// <summary>
         /// 空是否显示表头
         /// </summary>
         [Description("空是否显示表头"), Category("外观"), DefaultValue(false)]
-        public bool EmptyHeader { get; set; }
+        public bool EmptyHeader
+        {
+            get => emptyHeader;
+            set
+            {
+                if (emptyHeader == value) return;
+                emptyHeader = value;
+                LoadLayout();
+                Invalidate();
+            }
+        }
 
         #endregion
 
@@ -561,7 +565,7 @@ namespace AntdUI
                 OnCheck();
                 CheckState = value ? CheckState.Checked : CheckState.Unchecked;
 
-                PARENT?.CheckAll(INDEX, value);
+                PARENT?.CheckAll(INDEX, this, value);
             }
         }
 
@@ -812,6 +816,11 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        /// <summary>
+        /// 树形列
+        /// </summary>
+        public string? KeyTree { get; set; }
 
         #region 内部
 

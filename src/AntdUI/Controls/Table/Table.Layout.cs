@@ -47,6 +47,7 @@ namespace AntdUI
         }
 
         internal RowTemplate[]? rows = null;
+        internal List<object> rows_Expand = new List<object>();
         Rectangle[] dividers = new Rectangle[0], dividerHs = new Rectangle[0];
         MoveHeader[] moveheaders = new MoveHeader[0];
 
@@ -59,114 +60,38 @@ namespace AntdUI
 
         void LoadLayout(Rectangle rect_t)
         {
-            var rect = ChangeLayout(rect_t);
+            var rect = LayoutDesign(rect_t);
             scrollBar.SizeChange(rect);
         }
 
         bool has_check = false;
         Rectangle rect_read, rect_divider;
-        Rectangle ChangeLayout(Rectangle rect)
+        Rectangle LayoutDesign(Rectangle rect)
         {
             has_check = false;
-            if (data_temp == null)
+            if (dataTmp == null)
             {
                 ThreadState?.Dispose(); ThreadState = null;
-                scrollBar.SetVrSize(0, 0);
-                dividers = new Rectangle[0];
-                rows = null;
+                if (visibleHeader && emptyHeader && columns != null && columns.Count > 0)
+                {
+                    var _rows = LayoutDesign(new TempTable(new TempiColumn[0], new IRow[0]), out var _columns, out int processing, out var col_width, out int KeyTreeINDEX);
+                    rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
+                    scrollBar.SetVrSize(is_exceed ? x : 0, y);
+                    return rect;
+                }
+                else
+                {
+                    scrollBar.SetVrSize(0, 0);
+                    dividers = new Rectangle[0];
+                    rows = null;
+                }
             }
             else
             {
-                var _rows = new List<RowTemplate>(data_temp.rows.Length);
-                var _columns = new List<Column>(data_temp.columns.Length);
-                int processing = 0;
-                var col_width = new Dictionary<int, object>();
-                if (columns == null)
+                var _rows = LayoutDesign(dataTmp, out var _columns, out int processing, out var col_width, out int KeyTreeINDEX);
+                if (_rows.Count > 0)
                 {
-                    if (SortHeader == null)
-                    {
-                        foreach (var it in data_temp.columns) _columns.Add(new Column(it.key, it.key) { INDEX = _columns.Count });
-                    }
-                    else
-                    {
-                        foreach (var i in SortHeader)
-                        {
-                            var it = data_temp.columns[i];
-                            _columns.Add(new Column(it.key, it.key) { INDEX = i });
-                        }
-                    }
-                }
-                else
-                {
-                    int x = 0;
-                    if (SortHeader == null)
-                    {
-                        foreach (var it in columns)
-                        {
-                            it.PARENT = this;
-                            if (it.Visible)
-                            {
-                                it.INDEX = _columns.Count;
-                                _columns.Add(it);
-                                ColumnWidth(it, ref col_width, x);
-                                x++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var dir = new Dictionary<int, Column>();
-                        foreach (var it in columns)
-                        {
-                            if (it.Visible) dir.Add(dir.Count, it);
-                        }
-                        foreach (var index in SortHeader)
-                        {
-                            var it = dir[index];
-                            it.PARENT = this;
-                            it.INDEX = index;
-                            if (it.Visible)
-                            {
-                                _columns.Add(it);
-                                ColumnWidth(it, ref col_width, x);
-                                x++;
-                            }
-                        }
-                    }
-                }
-
-                if (SortData == null || SortData.Length != data_temp.rows.Length)
-                {
-                    foreach (var row in data_temp.rows)
-                    {
-                        var cells = new List<TCell>(_columns.Count);
-                        foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, row.cells[column.Key]);
-                        if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record);
-                    }
-                }
-                else
-                {
-                    foreach (var item in SortData)
-                    {
-                        var row = data_temp.rows[item];
-                        var cells = new List<TCell>(_columns.Count);
-                        foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, row.cells[column.Key]);
-                        if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record);
-                    }
-                }
-
-                if ((visibleHeader && EmptyHeader) && _rows.Count == 0)
-                {
-                    rows = ChangeLayoutCore(rect, _rows, _columns, col_width, out int x, out int y, out bool is_exceed);
-                    scrollBar.SetVrSize(is_exceed ? x : 0, y);
-
-                    ThreadState?.Dispose(); ThreadState = null;
-
-                    return rect;
-                }
-                else if (_rows.Count > 0)
-                {
-                    rows = ChangeLayoutCore(rect, _rows, _columns, col_width, out int x, out int y, out bool is_exceed);
+                    rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
                     scrollBar.SetVrSize(is_exceed ? x : 0, y);
 
                     if (processing == 0) { ThreadState?.Dispose(); ThreadState = null; }
@@ -195,23 +120,100 @@ namespace AntdUI
             return Rectangle.Empty;
         }
 
-        RowTemplate[] ChangeLayoutCore(Rectangle rect, List<RowTemplate> _rows, List<Column> _columns, Dictionary<int, object> col_width, out int _x, out int _y, out bool _is_exceed)
+        List<RowTemplate> LayoutDesign(TempTable dataTmp, out List<Column> Columns, out int Processing, out Dictionary<int, object> ColWidth, out int KeyTreeIndex)
         {
-            List<object?> dir_Select, dir_Hover = new List<object?>(1);
+            var _rows = new List<RowTemplate>(dataTmp.rows.Length);
+            var _columns = new List<Column>(dataTmp.columns.Length);
+            int processing = 0;
+            var col_width = new Dictionary<int, object>();
+            string? KeyTree = null;
+            int KeyTreeINDEX = -1;
+            if (columns == null)
+            {
+                if (SortHeader == null)
+                {
+                    foreach (var it in dataTmp.columns) _columns.Add(new Column(it.key, it.key) { INDEX = _columns.Count });
+                }
+                else
+                {
+                    foreach (var i in SortHeader)
+                    {
+                        var it = dataTmp.columns[i];
+                        _columns.Add(new Column(it.key, it.key) { INDEX = i });
+                    }
+                }
+            }
+            else
+            {
+                int x = 0;
+                ForColumn(dataTmp, columns, it =>
+                {
+                    int INDEX = _columns.Count;
+                    _columns.Add(it);
+                    ColumnWidth(it, ref col_width, x);
+                    x++;
+                    if (it.KeyTree != null)
+                    {
+                        foreach (var item in dataTmp.columns)
+                        {
+                            if (item.key == it.KeyTree)
+                            {
+                                KeyTree = it.KeyTree;
+                                break;
+                            }
+                        }
+                    }
+                    return INDEX;
+                });
+                if (KeyTree != null)
+                {
+                    foreach (var it in _columns)
+                    {
+                        if (it.KeyTree == KeyTree) KeyTreeINDEX = it.INDEX;
+                    }
+                }
+            }
+
+            if (KeyTree == null)
+            {
+                ForRow(dataTmp, row =>
+                {
+                    var cells = new List<TCell>(_columns.Count);
+                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, row.cells[column.Key]);
+                    if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record);
+                });
+            }
+            else
+            {
+                ForRow(dataTmp, row =>
+                {
+                    var cells = new List<TCell>(_columns.Count);
+                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, row.cells[column.Key]);
+                    if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.record), row, _columns, KeyTree, KeyTreeINDEX, 0, true);
+                });
+            }
+
+            Columns = _columns;
+            Processing = processing;
+            ColWidth = col_width;
+            KeyTreeIndex = KeyTreeINDEX;
+            return _rows;
+        }
+        RowTemplate[] LayoutDesign(Rectangle rect, List<RowTemplate> _rows, List<Column> _columns, Dictionary<int, object> col_width, int KeyTreeINDEX, out int _x, out int _y, out bool _is_exceed)
+        {
             if (rows != null)
             {
-                dir_Select = new List<object?>(rows.Length);
+                List<object?> dir_Select = new List<object?>(rows.Length), dir_Hover = new List<object?>(1);
                 foreach (var item in rows)
                 {
                     if (item.Select) dir_Select.Add(item.RECORD);
                     if (item.Hover) dir_Hover.Add(item.RECORD);
                 }
-            }
-            else dir_Select = new List<object?>(0);
-            foreach (var item in _rows)
-            {
-                if (dir_Select.Contains(item.RECORD)) item.Select = true;
-                if (dir_Hover.Contains(item.RECORD)) item.Hover = true;
+                foreach (var item in _rows)
+                {
+                    if (dir_Select.Contains(item.RECORD)) item.Select = true;
+                    if (dir_Hover.Contains(item.RECORD)) item.Hover = true;
+                }
             }
 
             #region 添加表头
@@ -248,52 +250,56 @@ namespace AntdUI
                 {
                     var row = _rows[row_i];
                     row.INDEX = row_i;
-                    float max_height = 0;
-                    if (row.IsColumn)
+                    if (row.ShowExpand)
                     {
-                        for (int cel_i = 0; cel_i < row.cells.Length; cel_i++)
+                        float max_height = 0;
+                        if (row.IsColumn)
                         {
-                            var it = row.cells[cel_i];
-                            it.INDEX = cel_i;
-                            if (it is TCellCheck check && check.NoTitle)
+                            for (int cel_i = 0; cel_i < row.cells.Length; cel_i++)
                             {
-                                if (max_height < gap2) max_height = gap2;
-                                read_width_cell[cel_i].value = -1;
-                            }
-                            else
-                            {
-                                var text_size = it.GetSize(g, columnfont ?? Font, rect.Width, gap, gap2);
-                                int width = (int)Math.Ceiling(text_size.Width);
-                                if (max_height < text_size.Height) max_height = text_size.Height;
-                                if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
-                                if (read_width_cell[cel_i].minvalue < it.MinWidth) read_width_cell[cel_i].minvalue = it.MinWidth;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int cel_i = 0; cel_i < row.cells.Length; cel_i++)
-                        {
-                            var it = row.cells[cel_i];
-                            it.INDEX = cel_i;
-                            if (it is TCellCheck check)
-                            {
-                                if (check.NoTitle)
+                                var it = row.cells[cel_i];
+                                it.INDEX = cel_i;
+                                if (it is TCellCheck check && check.NoTitle)
                                 {
                                     if (max_height < gap2) max_height = gap2;
                                     read_width_cell[cel_i].value = -1;
                                 }
-                            }
-                            else
-                            {
-                                var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
-                                int width = (int)Math.Ceiling(text_size.Width);
-                                if (max_height < text_size.Height) max_height = text_size.Height;
-                                if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
+                                else
+                                {
+                                    var text_size = it.GetSize(g, columnfont ?? Font, rect.Width, gap, gap2);
+                                    int width = (int)Math.Ceiling(text_size.Width);
+                                    if (max_height < text_size.Height) max_height = text_size.Height;
+                                    if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
+                                    if (read_width_cell[cel_i].minvalue < it.MinWidth) read_width_cell[cel_i].minvalue = it.MinWidth;
+                                }
                             }
                         }
+                        else
+                        {
+                            for (int cel_i = 0; cel_i < row.cells.Length; cel_i++)
+                            {
+                                var it = row.cells[cel_i];
+                                it.INDEX = cel_i;
+                                if (it is TCellCheck check)
+                                {
+                                    if (check.NoTitle)
+                                    {
+                                        if (max_height < gap2) max_height = gap2;
+                                        read_width_cell[cel_i].value = -1;
+                                    }
+                                }
+                                else
+                                {
+                                    var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
+                                    int width = (int)Math.Ceiling(text_size.Width);
+                                    if (it.ROW.CanExpand && _rows[0].cells[cel_i].INDEX == KeyTreeINDEX) width += check_size + gap2 + (check_size * it.ROW.ExpandDepth);
+                                    if (max_height < text_size.Height) max_height = text_size.Height;
+                                    if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
+                                }
+                            }
+                        }
+                        row.Height = (int)Math.Round(max_height) + gap2;
                     }
-                    row.Height = (int)Math.Round(max_height) + gap2;
                 }
                 foreach (var it in read_width_cell)
                 {
@@ -324,42 +330,53 @@ namespace AntdUI
 
                 int use_y;
                 if (visibleHeader) use_y = rect.Y;
-                else { use_y = rect.Y - _rows[0].Height; }
+                else use_y = rect.Y - _rows[0].Height;
                 foreach (var row in _rows)
                 {
-                    int use_x = rect.X;
-                    row.RECT = new Rectangle(rect.X, use_y, rect_read.Width, row.Height);
-                    for (int i = 0; i < row.cells.Length; i++)
+                    if (row.ShowExpand)
                     {
-                        var it = row.cells[i];
-                        var _rect = new Rectangle(use_x, use_y, width_cell[i], row.RECT.Height);
-                        if (it is TCellCheck check) check.SetSize(_rect, check_size);
-                        else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
-                        else if (it is TCellSwitch _switch) _switch.SetSize(_rect, check_size);
-                        else if (it is TCellColumn column)
+                        int use_x = rect.X;
+                        row.RECT = new Rectangle(rect.X, use_y, rect_read.Width, row.Height);
+                        for (int i = 0; i < row.cells.Length; i++)
                         {
-                            it.SetSize(g, Font, _rect, gap, gap2);
-                            if (column.column is ColumnCheck columnCheck && columnCheck.NoTitle)
+                            var it = row.cells[i];
+                            var _rect = new Rectangle(use_x, use_y, width_cell[i], row.RECT.Height);
+                            int ox = 0;
+                            if (row.INDEX > 0 && _rows[0].cells[i].INDEX == KeyTreeINDEX)
                             {
-                                column.column.SortOrder = false;
-                                columnCheck.PARENT = this;
-                                //全选
-                                column.rect = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
+                                int x = gap + (check_size * row.ExpandDepth);
+                                ox = x + gap + check_size / 2;
+                                row.RectExpand = new Rectangle(use_x + x + split_move, use_y + (row.Height - check_size) / 2, check_size, check_size);
                             }
-                            else
-                            {
-                                if (column.column.SortOrder) column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2 - column.SortWidth, _rect.Height - gap2);
-                                else column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
-                                if (x < column.rect.Right) x = column.rect.Right;
-                            }
-                        }
-                        else it.SetSize(g, Font, _rect, gap, gap2);
 
-                        if (x < _rect.Right) x = _rect.Right;
-                        if (y < _rect.Bottom) y = _rect.Bottom;
-                        use_x += width_cell[i];
+                            if (it is TCellCheck check) check.SetSize(_rect, check_size);
+                            else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
+                            else if (it is TCellSwitch _switch) _switch.SetSize(_rect, check_size);
+                            else if (it is TCellColumn column)
+                            {
+                                it.SetSize(g, Font, _rect, ox, gap, gap2);
+                                if (column.column is ColumnCheck columnCheck && columnCheck.NoTitle)
+                                {
+                                    column.column.SortOrder = false;
+                                    columnCheck.PARENT = this;
+                                    //全选
+                                    column.rect = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
+                                }
+                                else
+                                {
+                                    if (column.column.SortOrder) column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2 - column.SortWidth, _rect.Height - gap2);
+                                    else column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                                    if (x < column.rect.Right) x = column.rect.Right;
+                                }
+                            }
+                            else it.SetSize(g, Font, _rect, ox, gap, gap2);
+
+                            if (x < _rect.Right) x = _rect.Right;
+                            if (y < _rect.Bottom) y = _rect.Bottom;
+                            use_x += width_cell[i];
+                        }
+                        use_y += row.Height;
                     }
-                    use_y += row.Height;
                 }
 
                 #endregion
@@ -370,7 +387,7 @@ namespace AntdUI
                 var last_row = _rows[_rows.Count - 1];
                 var last = last_row.cells[last_row.cells.Length - 1];
 
-                bool iseg = EmptyHeader && _rows.Count == 1;
+                bool iseg = emptyHeader && _rows.Count == 1;
                 if ((rect.Y + rect.Height) > last.RECT.Bottom && !iseg) rect_read.Height = last.RECT.Bottom - rect.Y;
 
                 int sp2 = split * 2;
@@ -438,6 +455,80 @@ namespace AntdUI
             _is_exceed = is_exceed;
             return _rows.ToArray();
         }
+
+        #region 通用循环
+
+        void ForColumn(TempTable data_temp, ColumnCollection columns, Func<Column, int> action)
+        {
+            if (SortHeader == null)
+            {
+                foreach (var it in columns)
+                {
+                    it.PARENT = this;
+                    if (it.Visible) it.INDEX = action(it);
+                }
+            }
+            else
+            {
+                var dir = new Dictionary<int, Column>();
+                foreach (var it in columns)
+                {
+                    if (it.Visible) dir.Add(dir.Count, it);
+                }
+                foreach (var index in SortHeader)
+                {
+                    var it = dir[index];
+                    it.PARENT = this;
+                    it.INDEX = index;
+                    if (it.Visible) action(it);
+                }
+            }
+        }
+        void ForRow(TempTable data_temp, Action<IRow> action)
+        {
+            if (SortData == null || SortData.Length != data_temp.rows.Length)
+            {
+                foreach (var row in data_temp.rows) action(row);
+            }
+            else
+            {
+                foreach (var i in SortData) action(data_temp.rows[i]);
+            }
+        }
+        bool ForTree(ref List<RowTemplate> _rows, ref int processing, RowTemplate row_new, IRow row, List<Column> _columns, string KeyTree, int KeyTreeINDEX, int depth, bool show)
+        {
+            row_new.ShowExpand = show;
+            row_new.ExpandDepth = depth;
+            row_new.KeyTreeINDEX = KeyTreeINDEX;
+            row_new.Expand = rows_Expand.Contains(row.record);
+            int count = 0;
+            var ov_tree = row.cells[KeyTree];
+            if (ov_tree is PropertyDescriptor prop)
+            {
+                var value_tree = prop.GetValue(row.record);
+                if (value_tree is IList<object> list_tree && list_tree.Count > 0)
+                {
+                    show = show && row_new.Expand;
+                    row_new.CanExpand = true;
+                    count++;
+                    var rows_tree = new List<IRow>(list_tree.Count);
+                    for (int i = 0; i < list_tree.Count; i++)
+                    {
+                        var item_tree = GetRow(list_tree[i], _columns.Count);
+                        if (item_tree.Count > 0)
+                        {
+                            var row_tree = new IRow(i, list_tree[i], item_tree);
+                            var cells_tree = new List<TCell>(_columns.Count);
+                            foreach (var column in _columns) AddRows(ref cells_tree, ref processing, column, row_tree, row_tree.cells[column.Key]);
+                            if (ForTree(ref _rows, ref processing, AddRows(ref _rows, cells_tree.ToArray(), row_tree.record), row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, show)) count++;
+                        }
+                    }
+                }
+            }
+            return count > 0;
+        }
+
+        #endregion
 
         Dictionary<int, int> tmpcol_width = new Dictionary<int, int>(0);
         Dictionary<int, int> CalculateWidth(Rectangle rect, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int check_size, ref bool is_exceed)
@@ -739,20 +830,39 @@ namespace AntdUI
             }
         }
 
-        void AddRows(ref List<RowTemplate> rows, TCell[] cells, object? record)
+        RowTemplate AddRows(ref List<RowTemplate> rows, TCell[] cells, object? record)
         {
             var row = new RowTemplate(this, cells, record);
             foreach (var it in row.cells) it.ROW = row;
             rows.Add(row);
+            return row;
         }
-        void AddRows(ref List<RowTemplate> rows, TCellColumn[] cells, object? record)
+        RowTemplate AddRows(ref List<RowTemplate> rows, TCellColumn[] cells, object? record)
         {
             var row = new RowTemplate(this, cells, record)
             {
                 IsColumn = true
             };
-            foreach (var it in row.cells) it.ROW = row;
+
+            for (int i = 0; i < row.cells.Length; i++)
+            {
+                var it = row.cells[i];
+                if (rows.Count > 0 && it is TCellColumn column && column.column is ColumnCheck checkColumn && checkColumn.NoTitle)
+                {
+                    int t_count = rows.Count, check_count = 0;
+                    for (int row_i = 0; row_i < rows.Count; row_i++)
+                    {
+                        var cell = rows[row_i].cells[i];
+                        if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                    }
+                    if (t_count == check_count) checkColumn.CheckState = System.Windows.Forms.CheckState.Checked;
+                    else if (check_count > 0) checkColumn.CheckState = System.Windows.Forms.CheckState.Indeterminate;
+                    else checkColumn.CheckState = System.Windows.Forms.CheckState.Unchecked;
+                }
+                it.ROW = row;
+            }
             rows.Insert(0, row);
+            return row;
         }
 
         #region MVVM
@@ -873,22 +983,26 @@ namespace AntdUI
             }
         }
 
-        public void CheckAll(int i_cel, bool value)
+        internal void CheckAll(int i_cel, ColumnCheck columnCheck, bool value)
         {
             if (rows == null) return;
+            int count = 0, nocount = 0;
             for (int i_row = 1; i_row < rows.Length; i_row++)
             {
                 var item = rows[i_row].cells[i_cel];
                 if (item is TCellCheck checkCell)
                 {
+                    count++;
                     if (checkCell.Checked != value)
                     {
                         checkCell.Checked = value;
                         SetValue(item, checkCell.Checked);
                         CheckedChanged?.Invoke(this, value, rows[i_row].RECORD, i_row, i_cel);
                     }
+                    else nocount++;
                 }
             }
+            if (nocount == count) columnCheck.Checked = value;
         }
 
         void SetValue(TCell cel, object? value)

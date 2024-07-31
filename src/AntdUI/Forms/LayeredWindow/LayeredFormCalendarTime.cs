@@ -25,10 +25,12 @@ namespace AntdUI
 {
     public class LayeredFormCalendarTime : ILayeredFormOpacityDown
     {
+        bool ShowSecond = true;
         public LayeredFormCalendarTime(TimePicker _control, RectangleF rect_read, TimeSpan date, Action<TimeSpan> _action)
         {
             _control.Parent.SetTopMost(Handle);
             control = _control;
+            ShowSecond = _control.Format.Contains("s");
             PARENT = _control;
             action = _action;
             scrollY_h = new ScrollY(this);
@@ -43,7 +45,10 @@ namespace AntdUI
             calendar_time = new List<CalendarT>(24 + 120);
             for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(0, i, i));
             for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(1, i, i));
-            for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(2, i, i));
+            if (ShowSecond)
+            {
+                for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(2, i, i));
+            }
 
             #endregion
 
@@ -58,7 +63,7 @@ namespace AntdUI
             }
             else Radius = _control.Radius;
 
-            t_width = t_time * 3;
+            t_width = t_time * (ShowSecond ? 3 : 2);
 
             Font = new Font(_control.Font.FontFamily, 11.2F);
 

@@ -47,7 +47,7 @@ namespace AntdUI
                 }
             }
             else PaintTable(g, rows, rect, columnfont);
-            if (EmptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect);
+            if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect);
             scrollBar.Paint(g);
             base.OnPaint(e);
         }
@@ -74,7 +74,7 @@ namespace AntdUI
                     {
                         foreach (var it in rows)
                         {
-                            it.SHOW = !it.IsColumn && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
+                            it.SHOW = it.ShowExpand && !it.IsColumn && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
                             if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, it.RECORD, it.INDEX)));
                         }
 
@@ -93,7 +93,7 @@ namespace AntdUI
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
-                        foreach (var it in shows) PaintItemFore(g, it, fore);
+                        foreach (var it in shows) PaintItemFore(g, rows, it, fore);
                         g.ResetTransform();
 
                         g.ResetClip();
@@ -110,7 +110,7 @@ namespace AntdUI
                     {
                         foreach (var it in rows)
                         {
-                            it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
+                            it.SHOW = it.ShowExpand && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
                             if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, it.RECORD, it.INDEX)));
                         }
                         g.TranslateTransform(0, -sy);
@@ -139,7 +139,7 @@ namespace AntdUI
                         foreach (var it in shows)
                         {
                             if (it.row.IsColumn) PaintTableHeader(g, it.row, forecolumn, column_font, _radius);
-                            else PaintItemFore(g, it, fore);
+                            else PaintItemFore(g, rows, it, fore);
                         }
                         if (bordered)
                         {
@@ -181,7 +181,7 @@ namespace AntdUI
 
                     g.ResetTransform();
                     g.TranslateTransform(-sx, -sy);
-                    foreach (var it in shows) PaintItemFore(g, it, fore);
+                    foreach (var it in shows) PaintItemFore(g, rows, it, fore);
                     if (bordered)
                     {
                         g.ResetTransform();
@@ -391,43 +391,43 @@ namespace AntdUI
             }
         }
 
-        void PaintItemFore(Graphics g, StyleRow row, SolidBrush fore)
+        void PaintItemFore(Graphics g, RowTemplate[] rows, StyleRow row, SolidBrush fore)
         {
             if (selectedIndex == row.row.INDEX && rowSelectedFore.HasValue)
             {
                 using (var brush = new SolidBrush(rowSelectedFore.Value))
                 {
-                    foreach (var cel in row.row.cells) PaintItem(g, cel, brush);
+                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, (TCellColumn)rows[0].cells[i], row.row.cells[i], brush);
                 }
             }
             else if (row.style != null && row.style.ForeColor.HasValue)
             {
                 using (var brush = new SolidBrush(row.style.ForeColor.Value))
                 {
-                    foreach (var cel in row.row.cells) PaintItem(g, cel, brush);
+                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, (TCellColumn)rows[0].cells[i], row.row.cells[i], brush);
                 }
             }
-            else foreach (var cel in row.row.cells) PaintItem(g, cel, fore);
+            else for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, (TCellColumn)rows[0].cells[i], row.row.cells[i], fore);
         }
-        void PaintItemFore(Graphics g, TCell it, SolidBrush fore, CellStyleInfo? style)
+        void PaintItemFore(Graphics g, TCellColumn column, TCell it, SolidBrush fore, CellStyleInfo? style)
         {
             if (selectedIndex == it.ROW.INDEX && rowSelectedFore.HasValue)
             {
                 using (var brush = new SolidBrush(rowSelectedFore.Value))
                 {
-                    PaintItem(g, it, brush);
+                    PaintItem(g, column, it, brush);
                 }
             }
             else if (style != null && style.ForeColor.HasValue)
             {
                 using (var brush = new SolidBrush(style.ForeColor.Value))
                 {
-                    PaintItem(g, it, brush);
+                    PaintItem(g, column, it, brush);
                 }
             }
-            else PaintItem(g, it, fore);
+            else PaintItem(g, column, it, fore);
         }
-        void PaintItem(Graphics g, TCell it, SolidBrush fore)
+        void PaintItem(Graphics g, TCellColumn column, TCell it, SolidBrush fore)
         {
             if (it is TCellCheck check) PaintCheck(g, check);
             else if (it is TCellRadio radio) PaintRadio(g, radio);
@@ -444,6 +444,36 @@ namespace AntdUI
                     g.FillRectangle(brush, it.RECT);
                 }
             }
+            if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == column.INDEX)
+            {
+                using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
+                {
+                    using (var brush_bg = new SolidBrush(Style.Db.BgBase))
+                    {
+                        g.FillPath(brush_bg, path_check);
+                    }
+                    using (var brush = new Pen(Style.Db.BorderColor, check_border))
+                    {
+                        g.DrawPath(brush, path_check);
+                    }
+                    PanintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                }
+            }
+        }
+
+
+        void PanintArrow(Graphics g, RowTemplate item, SolidBrush color, int ArrowProg)
+        {
+            int size = item.RectExpand.Width, size_arrow = size / 2;
+            var state = g.Save();
+            g.TranslateTransform(item.RectExpand.X + size_arrow, item.RectExpand.Y + size_arrow);
+            g.RotateTransform(-90F + ArrowProg);
+            using (var pen = new Pen(color, check_border * 2))
+            {
+                pen.StartCap = pen.EndCap = LineCap.Round;
+                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectExpand.Width, item.RectExpand.Height).TriangleLines(-1, .6F));
+            }
+            g.Restore(state);
         }
 
         #endregion
@@ -489,7 +519,7 @@ namespace AntdUI
                 {
                     foreach (int fixedIndex in fixedColumnL)
                     {
-                        if (!row.row.IsColumn) PaintItemFore(g, row.row.cells[fixedIndex], fore, row.style);
+                        if (!row.row.IsColumn) PaintItemFore(g, (TCellColumn)rows[0].cells[fixedIndex], row.row.cells[fixedIndex], fore, row.style);
                     }
                 }
                 if (dividers.Length > 0) foreach (var divider in dividers) g.FillRectangle(brush_split, divider);
@@ -561,7 +591,7 @@ namespace AntdUI
                             if (!row.row.IsColumn)
                             {
                                 PaintItemBack(g, row.row.cells[fixedIndex]);
-                                PaintItemFore(g, row.row.cells[fixedIndex], fore, row.style);
+                                PaintItemFore(g, (TCellColumn)rows[0].cells[fixedIndex], row.row.cells[fixedIndex], fore, row.style);
                             }
                         }
                     }
