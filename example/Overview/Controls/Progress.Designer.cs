@@ -75,7 +75,7 @@ namespace Overview.Controls
             // header1
             // 
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(6);
@@ -91,7 +91,6 @@ namespace Overview.Controls
             progress1.Loading = true;
             progress1.Location = new Point(10, 0);
             progress1.Name = "progress1";
-            progress1.Padding = new Padding(0, 10, 0, 10);
             progress1.ShowText = true;
             progress1.Size = new Size(613, 30);
             progress1.TabIndex = 0;
@@ -105,7 +104,6 @@ namespace Overview.Controls
             progress2.Dock = DockStyle.Top;
             progress2.Location = new Point(10, 30);
             progress2.Name = "progress2";
-            progress2.Padding = new Padding(0, 10, 0, 10);
             progress2.ShowText = true;
             progress2.Size = new Size(613, 30);
             progress2.State = AntdUI.TType.Success;
@@ -119,7 +117,6 @@ namespace Overview.Controls
             progress3.Dock = DockStyle.Top;
             progress3.Location = new Point(10, 60);
             progress3.Name = "progress3";
-            progress3.Padding = new Padding(0, 10, 0, 10);
             progress3.ShowText = true;
             progress3.Size = new Size(613, 30);
             progress3.State = AntdUI.TType.Error;
@@ -142,7 +139,7 @@ namespace Overview.Controls
             // progress4
             // 
             progress4.ContainerControl = this;
-            progress4.Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            progress4.Font = new Font("Microsoft YaHei UI", 16F);
             progress4.Loading = true;
             progress4.Location = new Point(10, 7);
             progress4.Name = "progress4";
@@ -158,7 +155,7 @@ namespace Overview.Controls
             // progress5
             // 
             progress5.ContainerControl = this;
-            progress5.Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            progress5.Font = new Font("Microsoft YaHei UI", 16F);
             progress5.Location = new Point(158, 7);
             progress5.Name = "progress5";
             progress5.Radius = 5;
@@ -173,7 +170,7 @@ namespace Overview.Controls
             // progress6
             // 
             progress6.ContainerControl = this;
-            progress6.Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            progress6.Font = new Font("Microsoft YaHei UI", 16F);
             progress6.Location = new Point(306, 7);
             progress6.Name = "progress6";
             progress6.Radius = 5;
@@ -255,7 +252,7 @@ namespace Overview.Controls
             // divider3
             // 
             divider3.Dock = DockStyle.Top;
-            divider3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.Location = new Point(0, 269);
             divider3.Margin = new Padding(10);
             divider3.Name = "divider3";
@@ -267,7 +264,7 @@ namespace Overview.Controls
             // divider2
             // 
             divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.Location = new Point(0, 127);
             divider2.Margin = new Padding(10);
             divider2.Name = "divider2";
@@ -291,7 +288,7 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.Location = new Point(0, 0);
             divider1.Margin = new Padding(10);
             divider1.Name = "divider1";
@@ -304,7 +301,7 @@ namespace Overview.Controls
             // 
             Controls.Add(panel9);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Progress";
             Size = new Size(650, 412);
             panel8.ResumeLayout(false);

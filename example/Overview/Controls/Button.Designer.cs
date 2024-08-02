@@ -49,6 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Button));
             header1 = new AntdUI.Header();
             button5 = new AntdUI.Button();
             button16 = new AntdUI.Button();
@@ -60,6 +61,7 @@ namespace Overview.Controls
             button10 = new AntdUI.Button();
             button15 = new AntdUI.Button();
             button2 = new AntdUI.Button();
+            button11 = new AntdUI.Button();
             panel5 = new System.Windows.Forms.Panel();
             button8 = new AntdUI.Button();
             button20 = new AntdUI.Button();
@@ -96,7 +98,7 @@ namespace Overview.Controls
             // header1
             // 
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(6);
@@ -112,7 +114,7 @@ namespace Overview.Controls
             button5.Ghost = true;
             button5.Location = new Point(546, 3);
             button5.Name = "button5";
-            button5.Size = new Size(154, 46);
+            button5.Size = new Size(154, 47);
             button5.TabIndex = 0;
             button5.Text = "Danger Default";
             button5.Type = AntdUI.TTypeMini.Error;
@@ -123,7 +125,7 @@ namespace Overview.Controls
             button16.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button16.Location = new Point(448, 3);
             button16.Name = "button16";
-            button16.Size = new Size(92, 46);
+            button16.Size = new Size(92, 47);
             button16.TabIndex = 0;
             button16.Text = "Danger";
             button16.Type = AntdUI.TTypeMini.Error;
@@ -135,7 +137,7 @@ namespace Overview.Controls
             button9.ImageSvg = Properties.Resources.icon_search;
             button9.Location = new Point(56, 3);
             button9.Name = "button9";
-            button9.Size = new Size(94, 46);
+            button9.Size = new Size(95, 47);
             button9.TabIndex = 0;
             button9.Text = "搜索";
             button9.Type = AntdUI.TTypeMini.Primary;
@@ -185,7 +187,7 @@ namespace Overview.Controls
             panel2.Controls.Add(button10);
             panel2.Controls.Add(button15);
             panel2.Controls.Add(button2);
-            panel2.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            panel2.Font = new Font("Microsoft YaHei UI", 10F);
             panel2.Location = new Point(14, 10);
             panel2.Name = "panel2";
             panel2.Padding = new Padding(4);
@@ -240,11 +242,23 @@ namespace Overview.Controls
             button2.Text = "Default Button";
             button2.Click += Btn;
             // 
+            // button11
+            // 
+            button11.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button11.BackExtend = "135, #6253E1, #04BEFE";
+            button11.ImageSvg = resources.GetString("button11.ImageSvg");
+            button11.Location = new Point(465, 3);
+            button11.Name = "button11";
+            button11.Size = new Size(188, 47);
+            button11.TabIndex = 0;
+            button11.Text = "Gradient Button";
+            button11.Type = AntdUI.TTypeMini.Primary;
+            // 
             // panel5
             // 
             panel5.Controls.Add(button8);
             panel5.Controls.Add(button20);
-            panel5.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            panel5.Font = new Font("Microsoft YaHei UI", 14F);
             panel5.Location = new Point(462, 27);
             panel5.Name = "panel5";
             panel5.Size = new Size(147, 48);
@@ -252,13 +266,13 @@ namespace Overview.Controls
             // 
             // button8
             // 
-            button8.BackColor = Color.FromArgb(17, 24, 39);
             button8.BackActive = Color.FromArgb(17, 24, 39);
+            button8.BackColor = Color.FromArgb(17, 24, 39);
             button8.BackHover = Color.FromArgb(17, 24, 39);
             button8.Dock = DockStyle.Fill;
             button8.JoinLeft = true;
             button8.Location = new Point(50, 0);
-            button8.Margins = 0;
+            button8.WaveSize = 0;
             button8.Name = "button8";
             button8.Radius = 4;
             button8.Size = new Size(97, 48);
@@ -268,14 +282,14 @@ namespace Overview.Controls
             // 
             // button20
             // 
-            button20.BackColor = Color.FromArgb(168, 85, 247);
             button20.BackActive = Color.FromArgb(147, 51, 234);
+            button20.BackColor = Color.FromArgb(168, 85, 247);
             button20.BackHover = Color.FromArgb(147, 51, 234);
             button20.Dock = DockStyle.Left;
             button20.ImageSvg = Properties.Resources.icon_search;
             button20.JoinRight = true;
             button20.Location = new Point(0, 0);
-            button20.Margins = 0;
+            button20.WaveSize = 0;
             button20.Name = "button20";
             button20.Radius = 4;
             button20.Size = new Size(50, 48);
@@ -285,7 +299,7 @@ namespace Overview.Controls
             // divider3
             // 
             divider3.Dock = DockStyle.Top;
-            divider3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.Location = new Point(0, 324);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
@@ -344,7 +358,7 @@ namespace Overview.Controls
             button23.Location = new Point(319, 3);
             button23.Name = "button23";
             button23.ShowArrow = true;
-            button23.Size = new Size(160, 46);
+            button23.Size = new Size(163, 47);
             button23.TabIndex = 26;
             button23.Text = "button21";
             button23.TextAlign = ContentAlignment.MiddleLeft;
@@ -354,7 +368,7 @@ namespace Overview.Controls
             // 
             button218.BorderWidth = 1F;
             button218.Ghost = true;
-            button218.Location = new Point(485, 3);
+            button218.Location = new Point(488, 3);
             button218.Name = "button218";
             button218.ShowArrow = true;
             button218.Size = new Size(152, 44);
@@ -367,7 +381,7 @@ namespace Overview.Controls
             // button210
             // 
             button210.BorderWidth = 1F;
-            button210.Location = new Point(643, 3);
+            button210.Location = new Point(646, 3);
             button210.Name = "button210";
             button210.ShowArrow = true;
             button210.Size = new Size(152, 44);
@@ -382,7 +396,7 @@ namespace Overview.Controls
             button216.BorderWidth = 1F;
             button216.Ghost = true;
             button216.IsLink = true;
-            button216.Location = new Point(801, 3);
+            button216.Location = new Point(804, 3);
             button216.Name = "button216";
             button216.ShowArrow = true;
             button216.Size = new Size(152, 44);
@@ -395,7 +409,7 @@ namespace Overview.Controls
             // 
             button220.Ghost = true;
             button220.IsLink = true;
-            button220.Location = new Point(959, 3);
+            button220.Location = new Point(962, 3);
             button220.Name = "button220";
             button220.ShowArrow = true;
             button220.Size = new Size(152, 44);
@@ -407,7 +421,7 @@ namespace Overview.Controls
             // divider4
             // 
             divider4.Dock = DockStyle.Top;
-            divider4.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider4.Font = new Font("Microsoft YaHei UI", 10F);
             divider4.Location = new Point(0, 209);
             divider4.Name = "divider4";
             divider4.Orientation = AntdUI.TOrientation.Left;
@@ -423,6 +437,7 @@ namespace Overview.Controls
             flowLayoutPanel1.Controls.Add(button4);
             flowLayoutPanel1.Controls.Add(button26);
             flowLayoutPanel1.Controls.Add(button6);
+            flowLayoutPanel1.Controls.Add(button11);
             flowLayoutPanel1.Dock = DockStyle.Top;
             flowLayoutPanel1.Location = new Point(0, 137);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -434,7 +449,7 @@ namespace Overview.Controls
             button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.BorderWidth = 1F;
             button1.ImageSvg = Properties.Resources.icon_poweroff;
-            button1.Location = new Point(156, 3);
+            button1.Location = new Point(157, 3);
             button1.Name = "button1";
             button1.Shape = AntdUI.TShape.Circle;
             button1.Size = new Size(47, 47);
@@ -446,9 +461,9 @@ namespace Overview.Controls
             button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button4.BorderWidth = 1F;
             button4.ImageSvg = Properties.Resources.icon_search;
-            button4.Location = new Point(209, 3);
+            button4.Location = new Point(210, 3);
             button4.Name = "button4";
-            button4.Size = new Size(94, 46);
+            button4.Size = new Size(95, 47);
             button4.TabIndex = 2;
             button4.Text = "搜索";
             button4.Click += Btn2;
@@ -458,7 +473,7 @@ namespace Overview.Controls
             button26.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button26.BorderWidth = 2F;
             button26.ImageSvg = Properties.Resources.icon_search;
-            button26.Location = new Point(309, 3);
+            button26.Location = new Point(311, 3);
             button26.Name = "button26";
             button26.Shape = AntdUI.TShape.Circle;
             button26.Size = new Size(47, 47);
@@ -470,9 +485,9 @@ namespace Overview.Controls
             // 
             button6.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button6.ImageSvg = Properties.Resources.icon_search;
-            button6.Location = new Point(362, 3);
+            button6.Location = new Point(364, 3);
             button6.Name = "button6";
-            button6.Size = new Size(94, 46);
+            button6.Size = new Size(95, 47);
             button6.TabIndex = 7;
             button6.Text = "搜索";
             button6.Type = AntdUI.TTypeMini.Error;
@@ -481,7 +496,7 @@ namespace Overview.Controls
             // divider2
             // 
             divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.Location = new Point(0, 115);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
@@ -507,7 +522,7 @@ namespace Overview.Controls
             button17.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button17.Location = new Point(3, 3);
             button17.Name = "button17";
-            button17.Size = new Size(152, 46);
+            button17.Size = new Size(152, 47);
             button17.TabIndex = 0;
             button17.Text = "Primary Button";
             button17.Type = AntdUI.TTypeMini.Primary;
@@ -519,7 +534,7 @@ namespace Overview.Controls
             button18.BorderWidth = 1F;
             button18.Location = new Point(161, 3);
             button18.Name = "button18";
-            button18.Size = new Size(150, 46);
+            button18.Size = new Size(150, 47);
             button18.TabIndex = 0;
             button18.Text = "Default Button";
             button18.Click += Btn2;
@@ -530,7 +545,7 @@ namespace Overview.Controls
             button19.Ghost = true;
             button19.Location = new Point(317, 3);
             button19.Name = "button19";
-            button19.Size = new Size(125, 46);
+            button19.Size = new Size(125, 47);
             button19.TabIndex = 0;
             button19.Text = "Text Button";
             button19.Click += Btn2;
@@ -538,7 +553,7 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -550,7 +565,7 @@ namespace Overview.Controls
             // 
             Controls.Add(panel3);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Button";
             Size = new Size(1300, 676);
             panel3.ResumeLayout(false);
@@ -604,5 +619,6 @@ namespace Overview.Controls
         private AntdUI.Button button210;
         private AntdUI.Button button216;
         private AntdUI.Button button220;
+        private AntdUI.Button button11;
     }
 }

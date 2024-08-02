@@ -184,7 +184,6 @@ namespace Overview.Controls
             input8.Dock = DockStyle.Fill;
             input8.JoinLeft = true;
             input8.Location = new Point(59, 0);
-            input8.Margins = 6;
             input8.Name = "input8";
             input8.PlaceholderText = "输入点什么搜索";
             input8.Size = new Size(161, 50);
@@ -197,7 +196,6 @@ namespace Overview.Controls
             button1.Dock = DockStyle.Left;
             button1.JoinRight = true;
             button1.Location = new Point(0, 0);
-            button1.Margins = 6;
             button1.Name = "button1";
             button1.Size = new Size(59, 50);
             button1.TabIndex = 1;
@@ -220,7 +218,6 @@ namespace Overview.Controls
             input9.Dock = DockStyle.Fill;
             input9.JoinRight = true;
             input9.Location = new Point(0, 0);
-            input9.Margins = 6;
             input9.Name = "input9";
             input9.PlaceholderText = "输入点什么搜索";
             input9.Size = new Size(170, 46);
@@ -232,7 +229,6 @@ namespace Overview.Controls
             button2.ImageSvg = Properties.Resources.icon_search;
             button2.JoinLeft = true;
             button2.Location = new Point(170, 0);
-            button2.Margins = 6;
             button2.Name = "button2";
             button2.Size = new Size(50, 46);
             button2.TabIndex = 1;
@@ -254,7 +250,6 @@ namespace Overview.Controls
             input7.Dock = DockStyle.Fill;
             input7.JoinRight = true;
             input7.Location = new Point(0, 0);
-            input7.Margins = 6;
             input7.Name = "input7";
             input7.PlaceholderText = "输入点什么搜索";
             input7.Size = new Size(161, 50);
@@ -267,7 +262,6 @@ namespace Overview.Controls
             button3.Dock = DockStyle.Right;
             button3.JoinLeft = true;
             button3.Location = new Point(161, 0);
-            button3.Margins = 6;
             button3.Name = "button3";
             button3.Size = new Size(59, 50);
             button3.TabIndex = 1;

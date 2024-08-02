@@ -75,15 +75,15 @@ namespace Overview
             // btn_mode
             // 
             btn_mode.Dock = DockStyle.Right;
-            btn_mode.Font = new Font("Microsoft YaHei UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
+            btn_mode.Font = new Font("Microsoft YaHei UI", 18F);
             btn_mode.Ghost = true;
             btn_mode.ImageSvg = Properties.Resources.app_light;
             btn_mode.Location = new Point(1106, 0);
-            btn_mode.Margins = 0;
             btn_mode.Name = "btn_mode";
             btn_mode.Radius = 0;
             btn_mode.Size = new Size(50, 40);
             btn_mode.TabIndex = 6;
+            btn_mode.WaveSize = 0;
             btn_mode.Click += btn_mode_Click;
             // 
             // divider_top
@@ -123,7 +123,7 @@ namespace Overview
             txt_search.Dock = DockStyle.Right;
             txt_search.Location = new Point(896, 0);
             txt_search.Name = "txt_search";
-            txt_search.Padding = new Padding(0, 4, 0, 4);
+            txt_search.Padding = new Padding(0, 2, 0, 2);
             txt_search.PlaceholderText = "输入关键字搜索...";
             txt_search.PrefixSvg = Properties.Resources.icon_search;
             txt_search.Size = new Size(170, 40);
@@ -148,7 +148,7 @@ namespace Overview
             Controls.Add(flowPanel);
             Controls.Add(divider_top);
             Controls.Add(windowBar);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             ForeColor = Color.Black;
             MinimumSize = new Size(660, 400);
             Name = "Main";

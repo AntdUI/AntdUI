@@ -157,6 +157,7 @@ namespace Demo
             // 
             // radio1
             // 
+            radio1.AutoCheck = true;
             radio1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio1.Location = new Point(40, 168);
             radio1.Name = "radio1";
@@ -166,6 +167,7 @@ namespace Demo
             // 
             // radio2
             // 
+            radio2.AutoCheck = true;
             radio2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio2.Location = new Point(210, 168);
             radio2.Name = "radio2";
@@ -175,6 +177,7 @@ namespace Demo
             // 
             // radio3
             // 
+            radio3.AutoCheck = true;
             radio3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio3.Checked = true;
             radio3.Location = new Point(380, 168);
@@ -185,6 +188,7 @@ namespace Demo
             // 
             // radio4
             // 
+            radio4.AutoCheck = true;
             radio4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio4.Enabled = false;
             radio4.Location = new Point(550, 168);
@@ -195,6 +199,7 @@ namespace Demo
             // 
             // radio5
             // 
+            radio5.AutoCheck = true;
             radio5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio5.Enabled = false;
             radio5.Location = new Point(720, 168);
@@ -205,6 +210,7 @@ namespace Demo
             // 
             // checkbox1
             // 
+            checkbox1.AutoCheck = true;
             checkbox1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox1.Location = new Point(40, 239);
             checkbox1.Name = "checkbox1";
@@ -214,6 +220,7 @@ namespace Demo
             // 
             // checkbox2
             // 
+            checkbox2.AutoCheck = true;
             checkbox2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox2.Location = new Point(210, 239);
             checkbox2.Name = "checkbox2";
@@ -223,6 +230,7 @@ namespace Demo
             // 
             // checkbox3
             // 
+            checkbox3.AutoCheck = true;
             checkbox3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox3.Checked = true;
             checkbox3.Location = new Point(380, 239);
@@ -233,6 +241,7 @@ namespace Demo
             // 
             // checkbox4
             // 
+            checkbox4.AutoCheck = true;
             checkbox4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox4.Enabled = false;
             checkbox4.Location = new Point(550, 239);
@@ -243,6 +252,7 @@ namespace Demo
             // 
             // checkbox5
             // 
+            checkbox5.AutoCheck = true;
             checkbox5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox5.Enabled = false;
             checkbox5.Location = new Point(720, 239);
@@ -253,6 +263,7 @@ namespace Demo
             // 
             // switch1
             // 
+            switch1.AutoCheck = true;
             switch1.Checked = true;
             switch1.Location = new Point(907, 170);
             switch1.Name = "switch1";
@@ -261,6 +272,7 @@ namespace Demo
             // 
             // switch2
             // 
+            switch2.AutoCheck = true;
             switch2.Checked = true;
             switch2.Location = new Point(907, 241);
             switch2.Name = "switch2";
@@ -269,6 +281,7 @@ namespace Demo
             // 
             // switch3
             // 
+            switch3.AutoCheck = true;
             switch3.Location = new Point(999, 170);
             switch3.Name = "switch3";
             switch3.Size = new Size(60, 38);
@@ -276,6 +289,7 @@ namespace Demo
             // 
             // switch4
             // 
+            switch4.AutoCheck = true;
             switch4.Location = new Point(999, 241);
             switch4.Name = "switch4";
             switch4.Size = new Size(60, 38);
@@ -283,6 +297,7 @@ namespace Demo
             // 
             // switch5
             // 
+            switch5.AutoCheck = true;
             switch5.Checked = true;
             switch5.Enabled = false;
             switch5.Location = new Point(1091, 170);
@@ -292,6 +307,7 @@ namespace Demo
             // 
             // switch6
             // 
+            switch6.AutoCheck = true;
             switch6.Enabled = false;
             switch6.Location = new Point(1183, 170);
             switch6.Name = "switch6";
@@ -300,6 +316,7 @@ namespace Demo
             // 
             // switch7
             // 
+            switch7.AutoCheck = true;
             switch7.Checked = true;
             switch7.Enabled = false;
             switch7.Location = new Point(1091, 241);
@@ -309,6 +326,7 @@ namespace Demo
             // 
             // switch8
             // 
+            switch8.AutoCheck = true;
             switch8.Enabled = false;
             switch8.Location = new Point(1183, 241);
             switch8.Name = "switch8";
@@ -364,7 +382,6 @@ namespace Demo
             progress1.Loading = true;
             progress1.Location = new Point(40, 332);
             progress1.Name = "progress1";
-            progress1.Padding = new Padding(0, 10, 0, 10);
             progress1.ShowText = true;
             progress1.Size = new Size(480, 30);
             progress1.TabIndex = 10;
@@ -377,7 +394,6 @@ namespace Demo
             progress2.ContainerControl = this;
             progress2.Location = new Point(40, 378);
             progress2.Name = "progress2";
-            progress2.Padding = new Padding(0, 10, 0, 10);
             progress2.ShowText = true;
             progress2.Size = new Size(480, 30);
             progress2.State = AntdUI.TType.Success;
@@ -390,7 +406,6 @@ namespace Demo
             progress3.ContainerControl = this;
             progress3.Location = new Point(40, 424);
             progress3.Name = "progress3";
-            progress3.Padding = new Padding(0, 10, 0, 10);
             progress3.ShowText = true;
             progress3.Size = new Size(480, 30);
             progress3.State = AntdUI.TType.Error;
@@ -571,7 +586,10 @@ namespace Demo
             carouselItem2.Img = Properties.Resources.bg2;
             carouselItem3.Img = Properties.Resources.bg3;
             carouselItem4.Img = Properties.Resources.bg1;
-            avatar2.Image.AddRange(new AntdUI.CarouselItem[] { carouselItem1, carouselItem2, carouselItem3, carouselItem4 });
+            avatar2.Image.Add(carouselItem1);
+            avatar2.Image.Add(carouselItem2);
+            avatar2.Image.Add(carouselItem3);
+            avatar2.Image.Add(carouselItem4);
             avatar2.Location = new Point(38, 38);
             avatar2.Name = "avatar2";
             avatar2.Radius = 6;
@@ -778,7 +796,6 @@ namespace Demo
             button6.Image = Properties.Resources.search;
             button6.Location = new Point(1080, 625);
             button6.Margin = new Padding(4);
-            button6.Margins = 6;
             button6.Name = "button6";
             button6.Size = new Size(170, 49);
             button6.TabIndex = 0;

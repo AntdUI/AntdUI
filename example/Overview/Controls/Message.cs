@@ -56,7 +56,16 @@ namespace Overview.Controls
             button8.Enabled = false;
             AntdUI.Message.loading(form, "Action in progress..", (config) =>
             {
-                Thread.Sleep(3000);
+                for (int i = 0; i < 100; i++)
+                {
+                    Thread.Sleep(10);
+                    config.Text = "Мгдижа " + (i + 1) + "%";
+                    config.Refresh();
+                }
+                Thread.Sleep(1000);
+                config.Text = "Action in progress..";
+                config.Refresh();
+                Thread.Sleep(2000);
                 config.OK("This is a success message");
                 Invoke(new Action(() =>
                 {

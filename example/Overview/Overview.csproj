@@ -5,12 +5,15 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
     <PublishTrimmed>true</PublishTrimmed>
     <_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
-    <PublishAot Condition="'$(Configuration)'=='Release'">true</PublishAot>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>

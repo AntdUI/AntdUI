@@ -178,7 +178,6 @@ namespace Overview.Controls
             select7.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
             select7.JoinRight = true;
             select7.Location = new Point(0, 0);
-            select7.Margins = 6;
             select7.Name = "select7";
             select7.PlaceholderText = "输入点什么搜索";
             select7.Size = new Size(170, 46);
@@ -190,7 +189,6 @@ namespace Overview.Controls
             button1.ImageSvg = Properties.Resources.icon_search;
             button1.JoinLeft = true;
             button1.Location = new Point(170, 0);
-            button1.Margins = 6;
             button1.Name = "button1";
             button1.Size = new Size(50, 46);
             button1.TabIndex = 1;
@@ -213,7 +211,6 @@ namespace Overview.Controls
             select6.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
             select6.JoinRight = true;
             select6.Location = new Point(0, 0);
-            select6.Margins = 6;
             select6.Name = "select6";
             select6.PlaceholderText = "输入点什么搜索";
             select6.Size = new Size(170, 46);
@@ -225,7 +222,6 @@ namespace Overview.Controls
             button4.ImageSvg = Properties.Resources.icon_search;
             button4.JoinLeft = true;
             button4.Location = new Point(170, 0);
-            button4.Margins = 6;
             button4.Name = "button4";
             button4.Size = new Size(50, 46);
             button4.TabIndex = 1;
