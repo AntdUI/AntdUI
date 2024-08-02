@@ -49,8 +49,6 @@ namespace AntdUI
                 if (columns == value) return;
                 SortHeader = null;
                 columns = value;
-                if (value == null) fixedColumnL = fixedColumnR = null;
-                else ExtractHeaderFixed();
                 LoadLayout();
                 Invalidate();
             }
@@ -69,6 +67,7 @@ namespace AntdUI
                 dataSource = value;
                 SortData = null;
                 scrollBar.Clear();
+                ExtractHeaderFixed();
                 ExtractData();
                 LoadLayout();
                 Invalidate();
@@ -270,6 +269,12 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        /// <summary>
+        /// 默认是否展开
+        /// </summary>
+        [Description("默认是否展开"), Category("外观"), DefaultValue(false)]
+        public bool DefaultExpand { get; set; }
 
         #endregion
 
@@ -1400,6 +1405,11 @@ namespace AntdUI
                 OnPropertyChanged("FillSvg");
             }
         }
+
+        /// <summary>
+        /// 文本提示
+        /// </summary>
+        public string? Tooltip { get; set; }
     }
 
     /// <summary>
@@ -1753,6 +1763,11 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 文本提示
+        /// </summary>
+        public string? Tooltip { get; set; }
+
         public override string? ToString()
         {
             return _text;
@@ -1855,6 +1870,11 @@ namespace AntdUI
             return (_value * 100F) + "%";
         }
     }
+
+    /// <summary>
+    /// 分割线
+    /// </summary>
+    public class CellDivider : ICell { }
 
     public class ICell
     {

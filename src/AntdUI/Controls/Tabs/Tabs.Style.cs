@@ -230,7 +230,41 @@ namespace AntdUI
                             scroll_show = xy > rect.Width;
                             break;
                     }
-                    if (!scroll_show) owner.scroll_x = owner.scroll_y = 0;
+                    if (!scroll_show)
+                    {
+                        owner.scroll_x = owner.scroll_y = 0;
+                        if (tabs.centered)
+                        {
+                            switch (tabs.Alignment)
+                            {
+                                case TabAlignment.Left:
+                                case TabAlignment.Right:
+                                    int oy = (rect.Height - xy) / 2;
+                                    foreach (var item in rect_dir) item.Key.SetOffset(0, oy);
+                                    foreach (var item in rect_list)
+                                    {
+                                        item.Rect.Offset(0, oy);
+                                        item.Rect_Text.Offset(0, oy);
+                                        item.Rect_Ico.Offset(0, oy);
+                                        item.Rect_Line.Offset(0, oy);
+                                    }
+                                    break;
+                                case TabAlignment.Top:
+                                case TabAlignment.Bottom:
+                                default:
+                                    int ox = (rect.Width - xy) / 2;
+                                    foreach (var item in rect_dir) item.Key.SetOffset(ox, 0);
+                                    foreach (var item in rect_list)
+                                    {
+                                        item.Rect.Offset(ox, 0);
+                                        item.Rect_Text.Offset(ox, 0);
+                                        item.Rect_Ico.Offset(ox, 0);
+                                        item.Rect_Line.Offset(ox, 0);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
                     return rect_list.ToArray();
                 });
             }
@@ -907,7 +941,41 @@ namespace AntdUI
                                 break;
                         }
                     }
-                    if (!scroll_show) owner.scroll_x = owner.scroll_y = 0;
+                    if (!scroll_show)
+                    {
+                        owner.scroll_x = owner.scroll_y = 0;
+                        if (tabs.centered)
+                        {
+                            switch (tabs.Alignment)
+                            {
+                                case TabAlignment.Left:
+                                case TabAlignment.Right:
+                                    int oy = (rect.Height - xy) / 2;
+                                    foreach (var item in rect_dir) item.Key.SetOffset(0, oy);
+                                    foreach (var item in rect_list)
+                                    {
+                                        item.Rect.Offset(0, oy);
+                                        item.Rect_Text.Offset(0, oy);
+                                        item.Rect_Ico.Offset(0, oy);
+                                        item.Rect_Close.Offset(0, oy);
+                                    }
+                                    break;
+                                case TabAlignment.Top:
+                                case TabAlignment.Bottom:
+                                default:
+                                    int ox = (rect.Width - xy) / 2;
+                                    foreach (var item in rect_dir) item.Key.SetOffset(ox, 0);
+                                    foreach (var item in rect_list)
+                                    {
+                                        item.Rect.Offset(ox, 0);
+                                        item.Rect_Text.Offset(ox, 0);
+                                        item.Rect_Ico.Offset(ox, 0);
+                                        item.Rect_Close.Offset(ox, 0);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
                     return rect_list.ToArray();
                 });
             }

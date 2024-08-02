@@ -506,8 +506,9 @@ namespace AntdUI
                 else switchCell.ExtraMouseHover = false;
                 return false;
             }
-            else if (cel is Template template && template.HasBtn)
+            else if (cel is Template template)
             {
+                ITemplate? tipcel = null;
                 int hand = 0;
                 foreach (var item in template.value)
                 {
@@ -516,9 +517,59 @@ namespace AntdUI
                         if (btn_template.Value.Enabled)
                         {
                             btn_template.ExtraMouseHover = btn_template.RECT.Contains(x, y);
-                            if (btn_template.ExtraMouseHover) hand++;
+                            if (btn_template.ExtraMouseHover)
+                            {
+                                hand++;
+                                tipcel = btn_template;
+                            }
                         }
                         else btn_template.ExtraMouseHover = false;
+                    }
+                    else if (item is TemplateImage img_template)
+                    {
+                        if (img_template.Value.Tooltip != null && img_template.RECT.Contains(x, y)) tipcel = img_template;
+                    }
+                }
+                if (tipcel == null) CloseTip();
+                else
+                {
+                    if (tipcel is TemplateButton btn_template)
+                    {
+                        if (btn_template.Value.Tooltip == null) CloseTip();
+                        else
+                        {
+                            var _rect = RectangleToScreen(ClientRectangle);
+                            var rect = new Rectangle(_rect.X + btn_template.Rect.X - offset_xi, _rect.Y + btn_template.Rect.Y - offset_y, btn_template.Rect.Width, btn_template.Rect.Height);
+                            if (tooltipForm == null)
+                            {
+                                tooltipForm = new TooltipForm(this, rect, btn_template.Value.Tooltip, new TooltipConfig
+                                {
+                                    Font = Font,
+                                    ArrowAlign = TAlign.Top,
+                                });
+                                tooltipForm.Show(this);
+                            }
+                            else tooltipForm.SetText(rect, btn_template.Value.Tooltip);
+                        }
+                    }
+                    else if (tipcel is TemplateImage img_template)
+                    {
+                        if (img_template.Value.Tooltip == null) CloseTip();
+                        else
+                        {
+                            var _rect = RectangleToScreen(ClientRectangle);
+                            var rect = new Rectangle(_rect.X + img_template.Rect.X - offset_xi, _rect.Y + img_template.Rect.Y - offset_y, img_template.Rect.Width, img_template.Rect.Height);
+                            if (tooltipForm == null)
+                            {
+                                tooltipForm = new TooltipForm(this, rect, img_template.Value.Tooltip, new TooltipConfig
+                                {
+                                    Font = Font,
+                                    ArrowAlign = TAlign.Top,
+                                });
+                                tooltipForm.Show(this);
+                            }
+                            else tooltipForm.SetText(rect, img_template.Value.Tooltip);
+                        }
                     }
                 }
                 return hand > 0;

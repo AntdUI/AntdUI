@@ -55,7 +55,6 @@ namespace AntdUI
             }
         }
 
-        bool setvalue = true;
         DateTime? _value = null;
         /// <summary>
         /// 控件当前日期
@@ -68,9 +67,7 @@ namespace AntdUI
             {
                 _value = value;
                 ValueChanged?.Invoke(this, value);
-                setvalue = false;
                 Text = value.HasValue ? value.Value.ToString(Format) : "";
-                setvalue = true;
             }
         }
 
@@ -116,12 +113,7 @@ namespace AntdUI
 
         protected override void CreateHandle()
         {
-            if (_value.HasValue)
-            {
-                setvalue = false;
-                Text = _value.Value.ToString(Format);
-                setvalue = true;
-            }
+            if (_value.HasValue) Text = _value.Value.ToString(Format);
             base.CreateHandle();
         }
 
@@ -218,13 +210,21 @@ namespace AntdUI
         protected override void OnLostFocus(EventArgs e)
         {
             TextFocus = false;
-            if (IsHandleCreated && setvalue && DateTime.TryParse(Text, out var _d))
+            if (IsHandleCreated)
             {
-                Value = _d;
-                if (subForm != null)
+                if (DateTime.TryParse(Text, out var _d))
                 {
-                    subForm.SelDate = subForm.Date = _d;
-                    subForm.Print();
+                    Value = _d;
+                    if (subForm != null)
+                    {
+                        subForm.SelDate = subForm.Date = _d;
+                        subForm.Print();
+                    }
+                }
+                else
+                {
+                    if (_value.HasValue) Text = _value.Value.ToString(Format);
+                    else Text = "";
                 }
             }
             base.OnLostFocus(e);

@@ -103,6 +103,22 @@ namespace AntdUI
             }
         }
 
+        bool centered = false;
+        /// <summary>
+        /// 标签居中展示
+        /// </summary>
+        [Description("标签居中展示"), Category("外观"), DefaultValue(false)]
+        public bool Centered
+        {
+            get { return centered; }
+            set
+            {
+                if (centered == value) return;
+                centered = value;
+                LoadLayout();
+            }
+        }
+
         #region 样式
 
         IStyle style;
@@ -696,6 +712,11 @@ namespace AntdUI
         internal Rectangle SetRect(Rectangle rect)
         {
             Rect = rect;
+            return Rect;
+        }
+        internal Rectangle SetOffset(int x, int y)
+        {
+            Rect.Offset(x, y);
             return Rect;
         }
 

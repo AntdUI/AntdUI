@@ -27,8 +27,10 @@ namespace AntdUI
     partial class Table
     {
         TempTable? dataTmp = null;
+        bool dataOne = true;
         void ExtractData()
         {
+            dataOne = true;
             dataTmp = null;
             if (columns != null)
             {
@@ -88,6 +90,7 @@ namespace AntdUI
 
         public void Binding<T>(AntList<T> list)
         {
+            dataOne = true;
             if (list == null) return;
             dataSource = list;
             list.action = (code, obj) =>
@@ -226,7 +229,11 @@ namespace AntdUI
         List<int>? fixedColumnL = null, fixedColumnR = null;
         internal void ExtractHeaderFixed()
         {
-            if (columns == null) return;
+            if (columns == null)
+            {
+                fixedColumnL = fixedColumnR = null;
+                return;
+            }
             var dir = new List<int>();
             int index = 0;
             foreach (var column in columns)

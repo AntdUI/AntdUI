@@ -36,7 +36,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle;
-            if (rect.Width > 1 && rect.Height > 1)
+            if (IsHandleCreated && rect.Width > 1 && rect.Height > 1)
             {
                 string show_rect = rect.Width + "_" + rect.Height;
                 if (show_oldrect == show_rect) return;
@@ -53,9 +53,12 @@ namespace AntdUI
 
         public void LoadLayout()
         {
-            var rect = ClientRectangle;
-            if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
-            else show_oldrect = null;
+            if (IsHandleCreated)
+            {
+                var rect = ClientRectangle;
+                if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
+                else show_oldrect = null;
+            }
         }
 
         void LoadLayout(Rectangle rect_t)
@@ -89,11 +92,17 @@ namespace AntdUI
             else
             {
                 var _rows = LayoutDesign(dataTmp, out var _columns, out int processing, out var col_width, out int KeyTreeINDEX);
-                if (_rows.Count > 0)
+                if (visibleHeader && EmptyHeader && _rows.Count == 0)
                 {
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
                     scrollBar.SetVrSize(is_exceed ? x : 0, y);
-
+                    ThreadState?.Dispose(); ThreadState = null;
+                    return rect;
+                }
+                else if (_rows.Count > 0)
+                {
+                    rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
+                    scrollBar.SetVrSize(is_exceed ? x : 0, y);
                     if (processing == 0) { ThreadState?.Dispose(); ThreadState = null; }
                     else
                     {
@@ -106,7 +115,6 @@ namespace AntdUI
                             }, 50, 1F, 0.05F);
                         }
                     }
-
                     return rect;
                 }
                 else
@@ -197,6 +205,7 @@ namespace AntdUI
             Processing = processing;
             ColWidth = col_width;
             KeyTreeIndex = KeyTreeINDEX;
+            dataOne = false;
             return _rows;
         }
         RowTemplate[] LayoutDesign(Rectangle rect, List<RowTemplate> _rows, List<Column> _columns, Dictionary<int, object> col_width, int KeyTreeINDEX, out int _x, out int _y, out bool _is_exceed)
@@ -497,11 +506,16 @@ namespace AntdUI
         }
         bool ForTree(ref List<RowTemplate> _rows, ref int processing, RowTemplate row_new, IRow row, List<Column> _columns, string KeyTree, int KeyTreeINDEX, int depth, bool show)
         {
+            if (DefaultExpand && dataOne)
+            {
+                if (!rows_Expand.Contains(row.record)) rows_Expand.Add(row.record);
+            }
             row_new.ShowExpand = show;
             row_new.ExpandDepth = depth;
             row_new.KeyTreeINDEX = KeyTreeINDEX;
             row_new.Expand = rows_Expand.Contains(row.record);
             int count = 0;
+
             var ov_tree = row.cells[KeyTree];
             if (ov_tree is PropertyDescriptor prop)
             {
@@ -843,20 +857,23 @@ namespace AntdUI
             {
                 IsColumn = true
             };
-
             for (int i = 0; i < row.cells.Length; i++)
             {
                 var it = row.cells[i];
-                if (rows.Count > 0 && it is TCellColumn column && column.column is ColumnCheck checkColumn && checkColumn.NoTitle)
+                if (it is TCellColumn column && column.column is ColumnCheck checkColumn && checkColumn.NoTitle)
                 {
-                    int t_count = rows.Count, check_count = 0;
-                    for (int row_i = 0; row_i < rows.Count; row_i++)
+                    if (rows.Count > 0)
                     {
-                        var cell = rows[row_i].cells[i];
-                        if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                        int t_count = rows.Count, check_count = 0;
+                        for (int row_i = 0; row_i < rows.Count; row_i++)
+                        {
+                            var cell = rows[row_i].cells[i];
+                            if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                        }
+                        if (t_count == check_count) checkColumn.CheckState = System.Windows.Forms.CheckState.Checked;
+                        else if (check_count > 0) checkColumn.CheckState = System.Windows.Forms.CheckState.Indeterminate;
+                        else checkColumn.CheckState = System.Windows.Forms.CheckState.Unchecked;
                     }
-                    if (t_count == check_count) checkColumn.CheckState = System.Windows.Forms.CheckState.Checked;
-                    else if (check_count > 0) checkColumn.CheckState = System.Windows.Forms.CheckState.Indeterminate;
                     else checkColumn.CheckState = System.Windows.Forms.CheckState.Unchecked;
                 }
                 it.ROW = row;
@@ -1002,7 +1019,7 @@ namespace AntdUI
                     else nocount++;
                 }
             }
-            if (nocount == count) columnCheck.Checked = value;
+            if (count > 0 && nocount == count) columnCheck.Checked = value;
         }
 
         void SetValue(TCell cel, object? value)

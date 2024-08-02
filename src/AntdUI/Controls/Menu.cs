@@ -168,6 +168,12 @@ namespace AntdUI
         public bool Indent { get; set; } = false;
 
         /// <summary>
+        /// 只保持一个子菜单的展开
+        /// </summary>
+        [Description("只保持一个子菜单的展开"), Category("外观"), DefaultValue(false)]
+        public bool Unique { get; set; }
+
+        /// <summary>
         /// 显示子菜单背景
         /// </summary>
         [Description("显示子菜单背景"), Category("外观"), DefaultValue(false)]
@@ -339,7 +345,7 @@ namespace AntdUI
                 else
                 {
                     CollapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
-                    CollapsedWidth = ChangeList(rect, g, lists, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
+                    CollapsedWidth = ChangeList(rect, g, null, lists, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
                     if (AutoCollapse)
                     {
                         if (icon_count > 0) collapsed = CollapsedWidth > _rect.Width;
@@ -352,12 +358,13 @@ namespace AntdUI
             return _rect;
         }
 
-        int ChangeList(Rectangle rect, Graphics g, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapI, int depth)
+        int ChangeList(Rectangle rect, Graphics g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapI, int depth)
         {
             int collapsedWidth = 0;
             foreach (MenuItem it in items)
             {
                 it.PARENT = this;
+                it.PARENTITEM = Parent;
                 if (it.HasIcon) icon_count++;
                 it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
@@ -371,7 +378,7 @@ namespace AntdUI
                         {
                             int y_item = y;
 
-                            int size2 = ChangeList(rect, g, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
+                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
 
                             it.SubY = y_item - gapI / 2;
@@ -387,7 +394,7 @@ namespace AntdUI
                         else
                         {
                             int oldy = y;
-                            int size2 = ChangeList(rect, g, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
+                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
                             y = oldy;
                         }
@@ -1194,6 +1201,23 @@ namespace AntdUI
                 expand = value;
                 if (items != null && items.Count > 0)
                 {
+                    if (value && PARENT != null && PARENT.Unique)
+                    {
+                        if (PARENTITEM == null)
+                        {
+                            foreach (var it in PARENT.Items)
+                            {
+                                if (it != this) it.Expand = false;
+                            }
+                        }
+                        else
+                        {
+                            foreach (var it in PARENTITEM.Sub)
+                            {
+                                if (it != this) it.Expand = false;
+                            }
+                        }
+                    }
                     if (Config.Animation)
                     {
                         ThreadExpand?.Dispose();
@@ -1357,6 +1381,8 @@ namespace AntdUI
         internal int Depth { get; set; }
         internal float ArrowProg { get; set; } = 1F;
         internal Menu? PARENT { get; set; }
+        public MenuItem? PARENTITEM { get; set; }
+
         internal void SetRect(int depth, bool indent, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;

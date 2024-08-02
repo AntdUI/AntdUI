@@ -859,6 +859,7 @@ namespace AntdUI
                     }
                     else if (it is CellText text) list.Add(new TemplateText(text, this));
                     else if (it is CellProgress progress) list.Add(new TemplateProgress(progress, this));
+                    else if (it is CellDivider divider) list.Add(new TemplateDivider(divider, this));
                 }
                 value = list;
             }
@@ -1357,7 +1358,7 @@ namespace AntdUI
                 }
             }
 
-            Rectangle Rect;
+            internal Rectangle Rect;
             public void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
             {
                 RECT = rect;
@@ -1418,7 +1419,7 @@ namespace AntdUI
                 else PaintLink(g, font, Rect, this, Value);
             }
 
-            Rectangle Rect;
+            internal Rectangle Rect;
             public void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
             {
                 RECT = rect;
@@ -1774,6 +1775,62 @@ namespace AntdUI
             public override string? ToString()
             {
                 return Math.Round(Value.Value * 100F) + "%";
+            }
+        }
+
+        /// <summary>
+        /// Divider 分割线
+        /// </summary>
+        class TemplateDivider : ITemplate
+        {
+            public TemplateDivider(CellDivider value, Template template)
+            {
+                Value = value;
+                PARENT = template;
+            }
+
+            public void PaintBack(Graphics g, TCell it) { }
+
+            public void Paint(Graphics g, TCell it, Font font, SolidBrush fore)
+            {
+                using (var brush = new SolidBrush(Style.Db.Split))
+                {
+                    g.FillRectangle(brush, Rect);
+                }
+            }
+
+            Rectangle Rect;
+            public void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
+            {
+                RECT = rect;
+                int h = size.Height - gap2;
+                Rect = new Rectangle(rect.X + (rect.Width - 1) / 2, rect.Y + (rect.Height - h) / 2, 1, h);
+            }
+
+            public Size GetSize(Graphics g, Font font, int gap, int gap2)
+            {
+                var size = g.MeasureString(Config.NullText, font);
+                return new Size(gap, (int)Math.Ceiling(size.Height) + gap);
+            }
+
+            public CellDivider Value { get; set; }
+            public Template PARENT { get; set; }
+            public Rectangle RECT { get; set; }
+
+#if NET40 || NET46 || NET48
+            public bool CONTAINS(int x, int y)
+            {
+                return RECT.Contains(x, y);
+            }
+#endif
+            public bool SValue(object obj)
+            {
+                if (obj is CellDivider value) { Value = value; return true; }
+                return false;
+            }
+            public override string? ToString()
+            {
+                return null;
             }
         }
 
