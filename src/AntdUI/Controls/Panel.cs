@@ -449,7 +449,6 @@ namespace AntdUI
         {
             ThreadHover?.Dispose();
             Application.RemoveMessageFilter(this);
-            EventManager.Instance.RemoveListener(1, this);
             shadow_temp?.Dispose();
             shadow_temp = null;
             base.Dispose(disposing);
@@ -491,16 +490,16 @@ namespace AntdUI
         {
             base.CreateHandle();
             Application.AddMessageFilter(this);
-            EventManager.Instance.AddListener(1, this);
+            this.AddListener();
         }
 
         #region 主题变化
 
-        public void HandleEvent(int eventId, IEventArgs? args)
+        public void HandleEvent(EventType id, object? tag)
         {
-            switch (eventId)
+            switch (id)
             {
-                case 1:
+                case EventType.THEME:
                     shadow_temp?.Dispose();
                     shadow_temp = null;
                     break;

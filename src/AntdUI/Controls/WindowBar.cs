@@ -178,7 +178,6 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            EventManager.Instance.RemoveListener(1, this);
             hove_close.Dispose();
             hove_max.Dispose();
             hove_min.Dispose();
@@ -677,13 +676,13 @@ namespace AntdUI
         protected override void CreateHandle()
         {
             base.CreateHandle();
-            EventManager.Instance.AddListener(1, this);
+            this.AddListener();
         }
-        public void HandleEvent(int eventId, IEventArgs? args)
+        public void HandleEvent(EventType id, object? tag)
         {
-            switch (eventId)
+            switch (id)
             {
-                case 1:
+                case EventType.THEME:
                     DisposeBmp();
                     Invalidate();
                     break;

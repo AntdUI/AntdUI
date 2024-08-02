@@ -400,7 +400,7 @@ namespace AntdUI
         Rectangle rect_link_text, rect_links;
         Size RenderMeasure(Graphics g)
         {
-            float dpi = g.DpiX / 96F;
+            float dpi = Config.Dpi;
 
             var size_title = g.MeasureString(config.Title, font_title);
             int px = (int)(24 * dpi), py = (int)(20 * dpi), t_max_width = (int)Math.Ceiling(360 * dpi);

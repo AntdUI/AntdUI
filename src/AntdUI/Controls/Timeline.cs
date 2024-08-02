@@ -351,6 +351,12 @@ namespace AntdUI
         }
 
         #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            scroll.Dispose();
+            base.Dispose(disposing);
+        }
     }
 
     public class TimelineItemCollection : iCollection<TimelineItem>

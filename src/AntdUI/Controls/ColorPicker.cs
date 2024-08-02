@@ -170,10 +170,10 @@ namespace AntdUI
         #endregion
 
         /// <summary>
-        /// 边距，用于激活动画
+        /// 波浪大小
         /// </summary>
-        [Description("边距，用于激活动画"), Category("外观"), DefaultValue(4)]
-        public int Margins { get; set; } = 4;
+        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        public int WaveSize { get; set; } = 4;
 
         internal int radius = 6;
         /// <summary>
@@ -416,7 +416,7 @@ namespace AntdUI
                     }
                 }
             }
-            else if (ExtraMouseDown && Margins > 0)
+            else if (ExtraMouseDown && WaveSize > 0)
             {
                 using (var brush = new SolidBrush(Color.FromArgb(30, color)))
                 {
@@ -435,7 +435,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle
         {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect(Margins + (int)(borderWidth * Config.Dpi / 2F), JoinLeft, JoinRight);
+            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
         }
 
         public override GraphicsPath RenderRegion
@@ -467,7 +467,7 @@ namespace AntdUI
             {
                 if (_mouseDown == value) return;
                 _mouseDown = value;
-                if (Config.Animation && Margins > 0)
+                if (Config.Animation && WaveSize > 0)
                 {
                     ThreadFocus?.Dispose();
                     AnimationFocus = true;
@@ -674,15 +674,15 @@ namespace AntdUI
                 return Helper.GDI(g =>
                 {
                     var font_size = g.MeasureString(_value.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font);
-                    float gap = 20 * Config.Dpi;
+                    int gap = (int)((20 + WaveSize) * Config.Dpi);
                     if (showText)
                     {
-                        int s = (int)Math.Ceiling(font_size.Height + Margins + gap);
+                        int s = (int)Math.Ceiling(font_size.Height + gap);
                         return new Size(s + (int)font_size.Width, s);
                     }
                     else
                     {
-                        int s = (int)Math.Ceiling(font_size.Height + Margins + gap);
+                        int s = (int)Math.Ceiling(font_size.Height + gap);
                         return new Size(s, s);
                     }
                 });

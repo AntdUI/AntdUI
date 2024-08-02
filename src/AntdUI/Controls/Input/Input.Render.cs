@@ -326,7 +326,7 @@ namespace AntdUI
                     }
                 }
             }
-            else if (ExtraMouseDown && Margins > 0)
+            else if (ExtraMouseDown && WaveSize > 0)
             {
                 using (var brush = new SolidBrush(Color.FromArgb(30, color)))
                 {
@@ -344,7 +344,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle
         {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect(Margins + (int)(borderWidth * Config.Dpi / 2F), JoinLeft, JoinRight);
+            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
         }
 
         public override GraphicsPath RenderRegion

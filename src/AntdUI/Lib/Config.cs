@@ -38,7 +38,7 @@ namespace AntdUI
             {
                 mode = value;
                 Style.Db = value == TMode.Light ? new Theme.Light() : new Theme.Dark();
-                EventManager.Instance.Dispatch(1);
+                EventHub.Dispatch(EventType.THEME, value);
             }
         }
 
@@ -48,7 +48,7 @@ namespace AntdUI
             set
             {
                 Mode = value ? TMode.Light : TMode.Dark;
-                EventManager.Instance.Dispatch(1);
+                EventHub.Dispatch(EventType.THEME, value);
             }
         }
         public static bool IsDark
@@ -57,7 +57,7 @@ namespace AntdUI
             set
             {
                 Mode = value ? TMode.Dark : TMode.Light;
-                EventManager.Instance.Dispatch(1);
+                EventHub.Dispatch(EventType.THEME, value);
             }
         }
 
@@ -93,18 +93,53 @@ namespace AntdUI
         /// </summary>
         public static Font? Font { get; set; } = null;
 
-        public static float Dpi { get; private set; } = 1F;
+        /// <summary>
+        /// 滚动条隐藏样式
+        /// </summary>
+        public static bool ScrollBarHide { get; set; }
 
-        internal const string NullText = "Qq";
+        #region DPI
+
+        static bool dpione = true;
+        static float _dpi = 1F;
+        static float? _dpi_custom;
+        public static float Dpi
+        {
+            get
+            {
+                if (dpione) Helper.GDI(g => g.DpiX);
+                if (_dpi_custom.HasValue) return _dpi_custom.Value;
+                return _dpi;
+            }
+        }
+
+        /// <summary>
+        /// 自定义DPI
+        /// </summary>
+        /// <param name="dpi">值</param>
+        public static void SetDpi(float? dpi)
+        {
+            if (_dpi_custom == dpi) return;
+            _dpi_custom = dpi;
+            if (dpi.HasValue) EventHub.Dispatch(EventType.DPI, dpi.Value);
+            else EventHub.Dispatch(EventType.DPI, _dpi);
+        }
+
+        #endregion
+
+        internal const string NullText = "龍Qq";
 
         internal static void SetDpi(float dpi)
         {
-            Dpi = dpi;
+            dpione = false;
+            if (_dpi == dpi) return;
+            _dpi = dpi;
+            EventHub.Dispatch(EventType.DPI, dpi);
         }
 
         internal static void SetDpi(Graphics g)
         {
-            Dpi = g.DpiX / 96F;
+            SetDpi(g.DpiX / 96F);
         }
     }
 }

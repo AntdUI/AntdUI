@@ -169,24 +169,7 @@ namespace AntdUI
 
         #region DPI
 
-        public float Dpi()
-        {
-            float dpi = 1F;
-#if NET40 || NET46 || NET48
-            using (var bmp = new System.Drawing.Bitmap(1, 1))
-            {
-                using (var g = System.Drawing.Graphics.FromImage(bmp))
-                {
-                    Config.SetDpi(g);
-                    dpi = Config.Dpi;
-                }
-            }
-#else
-            dpi = DeviceDpi / 96F;
-#endif
-            Config.SetDpi(dpi);
-            return dpi;
-        }
+        public float Dpi() => Config.Dpi;
 
         protected override void OnLoad(EventArgs e)
         {

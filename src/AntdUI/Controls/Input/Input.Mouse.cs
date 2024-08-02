@@ -273,7 +273,7 @@ namespace AntdUI
                 if (_mouseDown == value) return;
                 _mouseDown = value;
                 ChangeMouseHover(_mouseHover, value);
-                if (Config.Animation && Margins > 0)
+                if (Config.Animation && WaveSize > 0)
                 {
                     ThreadFocus?.Dispose();
                     AnimationFocus = true;

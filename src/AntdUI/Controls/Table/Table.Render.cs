@@ -436,7 +436,12 @@ namespace AntdUI
             {
                 foreach (var o in obj.value) o.Paint(g, it, Font, fore);
             }
-            else if (it is TCellText text) g.DrawString(text.value, Font, fore, text.rect, StringF(text.column));
+            else if (it is TCellText text)
+            {
+                g.SetClip(it.RECT);
+                g.DrawString(text.value, Font, fore, text.rect, StringF(text.column));
+                g.ResetClip();
+            }
             if (dragHeader != null && dragHeader.i == it.INDEX)
             {
                 using (var brush = new SolidBrush(Style.Db.FillSecondary))

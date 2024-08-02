@@ -116,6 +116,22 @@ namespace AntdUI
             }
         }
 
+        string? backExtend = null;
+        /// <summary>
+        /// 背景渐变色
+        /// </summary>
+        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        public string? BackExtend
+        {
+            get => backExtend;
+            set
+            {
+                if (backExtend == value) return;
+                backExtend = value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// 悬停背景颜色
         /// </summary>
@@ -222,21 +238,11 @@ namespace AntdUI
 
         #endregion
 
-        int margins = 4;
         /// <summary>
-        /// 边距，用于激活动画
+        /// 波浪大小
         /// </summary>
-        [Description("边距，用于激活动画"), Category("外观"), DefaultValue(4)]
-        public int Margins
-        {
-            get => margins;
-            set
-            {
-                if (margins == value) return;
-                margins = value;
-                if (BeforeAutoSize()) Invalidate();
-            }
-        }
+        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        public int WaveSize { get; set; } = 4;
 
         internal int radius = 6;
         /// <summary>
@@ -636,7 +642,7 @@ namespace AntdUI
                         {
                             #region 绘制阴影
 
-                            if (margins > 0)
+                            if (WaveSize > 0)
                             {
                                 using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                                 {
@@ -842,9 +848,22 @@ namespace AntdUI
                             }
                             else
                             {
-                                using (var brush = new Pen(enabled ? _back : Style.Db.FillTertiary, border))
+                                if (enabled)
                                 {
-                                    g.DrawPath(brush, path);
+                                    using (var brushback = backExtend.BrushEx(rect_read, _back))
+                                    {
+                                        using (var brush = new Pen(brushback, border))
+                                        {
+                                            g.DrawPath(brush, path);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    using (var brush = new Pen(Style.Db.FillTertiary, border))
+                                    {
+                                        g.DrawPath(brush, path);
+                                    }
                                 }
                                 PaintTextLoading(g, text, enabled ? _back : Style.Db.TextQuaternary, rect_read, enabled);
                             }
@@ -857,7 +876,7 @@ namespace AntdUI
                     {
                         #region 绘制阴影
 
-                        if (enabled && margins > 0)
+                        if (enabled && WaveSize > 0)
                         {
                             using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                             {
@@ -873,9 +892,19 @@ namespace AntdUI
 
                         #region 绘制背景
 
-                        using (var brush = new SolidBrush(enabled ? _back : Style.Db.FillTertiary))
+                        if (enabled)
                         {
-                            g.FillPath(brush, path);
+                            using (var brush = backExtend.BrushEx(rect_read, _back))
+                            {
+                                g.FillPath(brush, path);
+                            }
+                        }
+                        else
+                        {
+                            using (var brush = new SolidBrush(Style.Db.FillTertiary))
+                            {
+                                g.FillPath(brush, path);
+                            }
                         }
 
                         if (ExtraMouseDown)
@@ -1433,7 +1462,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle
         {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect(margins + (int)(borderWidth * Config.Dpi / 2F), shape, joinLeft, joinRight);
+            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, shape, joinLeft, joinRight);
         }
 
         public override GraphicsPath RenderRegion
@@ -1657,7 +1686,7 @@ namespace AntdUI
                     base.OnMouseUp(e);
                     if (e.Button == MouseButtons.Left)
                     {
-                        if (margins > 0 && Config.Animation)
+                        if (WaveSize > 0 && Config.Animation)
                         {
                             ThreadClick?.Dispose();
                             AnimationClickValue = 0;
@@ -1744,20 +1773,20 @@ namespace AntdUI
                 return Helper.GDI(g =>
                 {
                     var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
-                    int gap = (int)(20 * Config.Dpi);
+                    int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
                     if (shape == TShape.Circle)
                     {
-                        int s = font_size.Height + margins + gap;
+                        int s = font_size.Height + wave + gap;
                         return new Size(s, s);
                     }
                     else
                     {
-                        int m = margins * 2;
+                        int m = wave * 2;
                         if (joinLeft || joinRight) m = 0;
                         int count = 0;
                         if (loading || HasImage) count++;
                         if (showArrow) count++;
-                        return new Size(font_size.Width + m + gap + ((int)Math.Ceiling(font_size.Height * 1.2F) * count), font_size.Height + margins + gap);
+                        return new Size(font_size.Width + m + gap + ((int)Math.Ceiling(font_size.Height * 1.2F) * count), font_size.Height + wave + gap);
                     }
                 });
             }

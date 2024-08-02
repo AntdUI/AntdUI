@@ -72,7 +72,7 @@ namespace AntdUI
         /// <param name="lr">水平（前后）</param>
         public static StringFormat SF_ALL(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
         {
-            var sf = new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter, };
+            var sf = new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
             sf.FormatFlags |= StringFormatFlags.NoWrap;
             return sf;
         }
@@ -376,6 +376,20 @@ namespace AntdUI
         }
 
         #endregion
+
+        public static Brush BrushEx(this string? code, Rectangle rect, Color def)
+        {
+            if (code != null)
+            {
+                var arr = code.Split(',');
+                if (arr.Length > 1)
+                {
+                    if (arr.Length > 2 && float.TryParse(arr[0], out float deg)) return new LinearGradientBrush(rect, arr[1].Trim().ToColor(), arr[2].Trim().ToColor(), 270 + deg);
+                    else return new LinearGradientBrush(rect, arr[0].Trim().ToColor(), arr[1].Trim().ToColor(), 270F);
+                }
+            }
+            return new SolidBrush(def);
+        }
 
         public static Graphics High(this Graphics g)
         {

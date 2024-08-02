@@ -158,40 +158,40 @@ namespace AntdUI
         public bool AutoCheck { get; set; } = true;
 
         /// <summary>
-        /// 边距，用于激活动画
+        /// 波浪大小
         /// </summary>
-        [Description("边距，用于激活动画"), Category("外观"), DefaultValue(4)]
-        public int Margins { get; set; } = 4;
+        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        public int WaveSize { get; set; } = 4;
 
         [Description("间距"), Category("外观"), DefaultValue(2)]
         public int Gap { get; set; } = 2;
 
-        private string _checkedText = "";
-        private string _unCheckedText = "";
+        string? _checkedText = null, _unCheckedText = null;
 
-        [Description("选中时显示的文本"), Category("外观"), DefaultValue("")]
-        public string CheckedText
+        [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        public string? CheckedText
         {
             get => _checkedText;
             set
             {
                 if (_checkedText == value) return;
                 _checkedText = value;
-                Invalidate();
+                if (_checked) Invalidate();
             }
         }
 
-        [Description("未选中时显示的文本"), Category("外观"), DefaultValue("")]
-        public string UnCheckedText
+        [Description("未选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        public string? UnCheckedText
         {
             get => _unCheckedText;
             set
             {
                 if (_unCheckedText == value) return;
                 _unCheckedText = value;
-                Invalidate();
+                if (!_checked) Invalidate();
             }
         }
+
         #endregion
 
         #region 事件
@@ -278,19 +278,22 @@ namespace AntdUI
                         g.FillEllipse(brush, dot_rect);
                     }
                 }
+
                 // 绘制文本
-                string textToRender = Checked ? CheckedText : UnCheckedText;
-                Color _fore = fore ?? Style.Db.PrimaryColor;
-                using (var brush = new SolidBrush(_fore))
+                string? textToRender = Checked ? CheckedText : UnCheckedText;
+                if (textToRender != null)
                 {
-                    var textSize = g.MeasureString(textToRender, Font);
-                    var textRect = Checked
-                        ? new RectangleF(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
-                        : new RectangleF(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
-                    g.DrawString(textToRender, Font, brush, textRect);
+                    Color _fore = fore ?? Style.Db.PrimaryColor;
+                    using (var brush = new SolidBrush(_fore))
+                    {
+                        var textSize = g.MeasureString(textToRender, Font);
+                        var textRect = Checked
+                            ? new RectangleF(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
+                            : new RectangleF(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
+                        g.DrawString(textToRender, Font, brush, textRect);
+                    }
                 }
             }
-
             this.PaintBadge(g);
             base.OnPaint(e);
         }
@@ -313,7 +316,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle
         {
-            get => ClientRectangle.PaddingRect(Padding, Margins);
+            get => ClientRectangle.PaddingRect(Padding, WaveSize * Config.Dpi);
         }
 
         public override GraphicsPath RenderRegion

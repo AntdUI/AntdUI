@@ -920,6 +920,12 @@ namespace AntdUI
         }
 
         #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            scrollBar.Dispose();
+            base.Dispose(disposing);
+        }
     }
 
     public class TreeItemCollection : iCollection<TreeItem>

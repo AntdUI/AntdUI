@@ -33,7 +33,7 @@ namespace AntdUI
         public static void LoadCustom(Theme.IColor<Color> style)
         {
             Db = style;
-            EventManager.Instance.Dispatch(1);
+            EventHub.Dispatch(EventType.THEME);
         }
 
         public static void LoadCustom(Theme.IColor<string> style)
@@ -104,7 +104,7 @@ namespace AntdUI
             Db.HoverBg = style.HoverBg.ToColor();
             Db.HoverColor = style.HoverColor.ToColor();
 
-            EventManager.Instance.Dispatch(1);
+            EventHub.Dispatch(EventType.THEME);
         }
 
         /// <summary>

@@ -254,6 +254,12 @@ namespace AntdUI.Chat
         internal ScrollBar scroll;
         public ChatList() { scroll = new ScrollBar(this); }
 
+        protected override void Dispose(bool disposing)
+        {
+            scroll.Dispose();
+            base.Dispose(disposing);
+        }
+
         #endregion
 
         #region 鼠标

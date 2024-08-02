@@ -434,11 +434,12 @@ namespace AntdUI
         #region 初始化
 
         ScrollBar scrollBar;
-        public Table() { scrollBar = new ScrollBar(this, true, true, radius); }
+        public Table() { scrollBar = new ScrollBar(this, true, true, radius, !visibleHeader); }
 
         protected override void Dispose(bool disposing)
         {
             ThreadState?.Dispose();
+            scrollBar.Dispose();
             base.Dispose(disposing);
         }
 

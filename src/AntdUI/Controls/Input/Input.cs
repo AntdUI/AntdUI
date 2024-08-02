@@ -222,10 +222,10 @@ namespace AntdUI
         #endregion
 
         /// <summary>
-        /// 边距，用于激活动画
+        /// 波浪大小
         /// </summary>
-        [Description("边距，用于激活动画"), Category("外观"), DefaultValue(4)]
-        public int Margins { get; set; } = 4;
+        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        public int WaveSize { get; set; } = 4;
 
         internal int radius = 6;
         /// <summary>

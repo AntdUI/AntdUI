@@ -394,7 +394,7 @@ namespace AntdUI
         Rectangle rect_icon, rect_loading, rect_txt;
         Size RenderMeasure(Graphics g)
         {
-            float dpi = g.DpiX / 96F;
+            float dpi = Config.Dpi;
             var size = g.MeasureString(config.Text, Font);
             int px = (int)(14 * dpi), sp = (int)(8 * dpi);
             int width = (int)Math.Ceiling(size.Width), height = (int)Math.Ceiling(size.Height + (12 * dpi) * 2);

@@ -43,7 +43,7 @@ namespace AntdUI
             {
                 Helper.GDI(g =>
                 {
-                    float dpi = g.DpiX / 96F;
+                    float dpi = Config.Dpi;
                     int font_height = 0;
                     if (isempty)
                     {

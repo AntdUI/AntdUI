@@ -397,23 +397,19 @@ namespace AntdUI
         protected override void CreateHandle()
         {
             base.CreateHandle();
-            EventManager.Instance.AddListener(1, this);
+            this.AddListener();
         }
         protected override void Dispose(bool disposing)
         {
-            EventManager.Instance.RemoveListener(1, this);
-            foreach (var it in config.Btns)
-            {
-                it.PropertyChanged -= Notify_PropertyChanged;
-            }
+            foreach (var it in config.Btns) it.PropertyChanged -= Notify_PropertyChanged;
             base.Dispose(disposing);
         }
 
-        public void HandleEvent(int eventId, IEventArgs? args)
+        public void HandleEvent(EventType id, object? tag)
         {
-            switch (eventId)
+            switch (id)
             {
-                case 1:
+                case EventType.THEME:
                     Print();
                     break;
             }

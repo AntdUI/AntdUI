@@ -231,10 +231,10 @@ namespace AntdUI.Design
 
                 #region É«¿¨¼¯
 
-                int gap2 = gap * 2, y = rect_alpha.Bottom + panel_color + line_h * 2 + gap, wr = (w - gap2) / gap2 - 1, windex = 0;
-                input1.Left = gap - input1.Margins;
+                int gap2 = gap * 2, y = rect_alpha.Bottom + panel_color + line_h * 2 + gap, wr = (w - gap2) / gap2 - 1, windex = 0, wave = (int)Math.Ceiling(input1.WaveSize * Config.Dpi);
+                input1.Left = gap - wave;
                 input1.Height = panel_color + gap;
-                input1.Width = w - gap2 + input1.Margins * 2;
+                input1.Width = w - gap2 + wave * 2;
                 input1.Top = rect_alpha.Bottom + line_h;
                 var colors_rect = new List<Rectangle>(colors.Length);
                 foreach (var item in colors)

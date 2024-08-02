@@ -159,6 +159,12 @@ namespace AntdUI.Chat
         internal ScrollBar scroll;
         public MsgList() { scroll = new ScrollBar(this); }
 
+        protected override void Dispose(bool disposing)
+        {
+            scroll.Dispose();
+            base.Dispose(disposing);
+        }
+
         #endregion
 
         #region 鼠标
@@ -247,12 +253,14 @@ namespace AntdUI.Chat
         #endregion
 
         #region 事件
+
         public delegate void ItemSelectedEventHandler(object sender, MsgItemEventArgs e);
-        public event ItemSelectedEventHandler ItemSelected;
+        public event ItemSelectedEventHandler? ItemSelected;
         protected virtual void OnItemSelected(MsgItem selectedItem)
         {
             ItemSelected?.Invoke(this, new MsgItemEventArgs(selectedItem));
         }
+
         #endregion
 
         #region 布局

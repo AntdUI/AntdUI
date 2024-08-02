@@ -42,9 +42,7 @@ namespace AntdUI
             };
             EnabledX = enabledX;
             EnabledY = enabledY;
-            SIZE = (int)(SIZE * Config.Dpi);
-            SIZE_NORMAL = (int)(SIZE_NORMAL * Config.Dpi);
-            SIZE_MOVE = (int)(SIZE_MOVE * Config.Dpi);
+            Init();
         }
         public ScrollBar(StackPanel control)
         {
@@ -58,16 +56,15 @@ namespace AntdUI
             };
             if (control.Vertical) EnabledY = true;
             else EnabledX = true;
-            SIZE = (int)(SIZE * Config.Dpi);
-            SIZE_NORMAL = (int)(SIZE_NORMAL * Config.Dpi);
-            SIZE_MOVE = (int)(SIZE_MOVE * Config.Dpi);
+            Init();
         }
 
         #endregion
 
-        public ScrollBar(IControl control, bool enabledY = true, bool enabledX = false, int radius = 0)
+        public ScrollBar(IControl control, bool enabledY = true, bool enabledX = false, int radius = 0, bool radiusy = false)
         {
             Radius = radius;
+            RB = radiusy;
             Invalidate = rect =>
             {
                 OnInvalidate?.Invoke();
@@ -80,9 +77,7 @@ namespace AntdUI
             };
             EnabledX = enabledX;
             EnabledY = enabledY;
-            SIZE = (int)(SIZE * Config.Dpi);
-            SIZE_NORMAL = (int)(SIZE_NORMAL * Config.Dpi);
-            SIZE_MOVE = (int)(SIZE_MOVE * Config.Dpi);
+            Init();
         }
 
         public ScrollBar(Action change, Action<Rectangle?> invalidate, bool enabledY = true, bool enabledX = false)
@@ -91,9 +86,13 @@ namespace AntdUI
             EnabledY = enabledY;
             ChangeSize = change;
             Invalidate = invalidate;
-            SIZE = (int)(SIZE * Config.Dpi);
-            SIZE_NORMAL = (int)(SIZE_NORMAL * Config.Dpi);
-            SIZE_MOVE = (int)(SIZE_MOVE * Config.Dpi);
+            Init();
+        }
+
+        void Init()
+        {
+            SIZE = (int)(16 * Config.Dpi);
+            SIZE_BAR = (int)(6 * Config.Dpi);
         }
 
         Action? ChangeSize;
@@ -113,12 +112,7 @@ namespace AntdUI
         /// <summary>
         /// 常态下滚动条大小
         /// </summary>
-        public int SIZE_NORMAL { get; set; } = 6;
-
-        /// <summary>
-        /// 悬浮下滚动条大小
-        /// </summary>
-        public int SIZE_MOVE { get; set; } = 8;
+        public int SIZE_BAR { get; set; } = 8;
 
         #endregion
 
@@ -194,7 +188,41 @@ namespace AntdUI
             {
                 if (hoverY == value) return;
                 hoverY = value;
-                Invalidate(RectY);
+                if (Config.Animation)
+                {
+                    ThreadHoverY?.Dispose();
+                    AnimationHoverY = true;
+                    var t = Animation.TotalFrames(10, 100);
+                    if (value)
+                    {
+                        ThreadHoverY = new ITask((i) =>
+                        {
+                            AnimationHoverYValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            Invalidate(RectY);
+                            return true;
+                        }, 10, t, () =>
+                        {
+                            AnimationHoverYValue = 1F;
+                            AnimationHoverY = false;
+                            Invalidate(RectY);
+                        });
+                    }
+                    else
+                    {
+                        ThreadHoverY = new ITask((i) =>
+                        {
+                            AnimationHoverYValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            Invalidate(RectY);
+                            return true;
+                        }, 10, t, () =>
+                        {
+                            AnimationHoverYValue = 0F;
+                            AnimationHoverY = false;
+                            Invalidate(RectY);
+                        });
+                    }
+                }
+                else Invalidate(RectY);
             }
         }
 
@@ -272,7 +300,41 @@ namespace AntdUI
             {
                 if (hoverX == value) return;
                 hoverX = value;
-                Invalidate(RectX);
+                if (Config.Animation)
+                {
+                    ThreadHoverX?.Dispose();
+                    AnimationHoverX = true;
+                    var t = Animation.TotalFrames(10, 100);
+                    if (value)
+                    {
+                        ThreadHoverX = new ITask((i) =>
+                        {
+                            AnimationHoverXValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            Invalidate(RectX);
+                            return true;
+                        }, 10, t, () =>
+                        {
+                            AnimationHoverXValue = 1F;
+                            AnimationHoverX = false;
+                            Invalidate(RectX);
+                        });
+                    }
+                    else
+                    {
+                        ThreadHoverX = new ITask((i) =>
+                        {
+                            AnimationHoverXValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                            Invalidate(RectX);
+                            return true;
+                        }, 10, t, () =>
+                        {
+                            AnimationHoverXValue = 0F;
+                            AnimationHoverX = false;
+                            Invalidate(RectX);
+                        });
+                    }
+                }
+                else Invalidate(RectX);
             }
         }
 
@@ -365,76 +427,221 @@ namespace AntdUI
         }
         public virtual void Paint(Graphics g, Color baseColor)
         {
-            if (showY && showX)
+            if (Config.ScrollBarHide)
             {
-                if (Back)
+                if (showY && showX)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
+                    if (Back && ((hoverY || AnimationHoverY) || (hoverX || AnimationHoverX)))
                     {
-                        if (Radius > 0)
+                        if (hoverY || AnimationHoverY)
                         {
-                            float radius = Radius * Config.Dpi;
-                            using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                            using (var brush = BackBrushY(baseColor))
                             {
-                                g.FillPath(brush, path);
+                                if (Radius > 0)
+                                {
+                                    float radius = Radius * Config.Dpi;
+                                    using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                                    {
+                                        g.FillPath(brush, path);
+                                    }
+                                }
+                                else g.FillRectangle(brush, RectY);
                             }
                         }
-                        else g.FillRectangle(brush, RectY);
-                        g.FillRectangle(brush, new Rectangle(RectX.X, RectX.Y, RectX.Width - RectY.Width, RectX.Height));
+                        else
+                        {
+                            using (var brush = BackBrushX(baseColor))
+                            {
+                                if (RB && Radius > 0)
+                                {
+                                    float radius = Radius * Config.Dpi;
+                                    using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
+                                    {
+                                        g.FillPath(brush, path);
+                                    }
+                                }
+                                else g.FillRectangle(brush, new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height));
+                            }
+                        }
                     }
+                    PaintX(g, baseColor);
+                    PaintY(g, baseColor);
                 }
-                using (var brush = new SolidBrush(Color.FromArgb(141, baseColor)))
+                else if (showY)
                 {
-                    var slidery = RectSliderY();
-                    using (var path = slidery.RoundPath(slidery.Width))
+                    if (Back && (hoverY || AnimationHoverY))
                     {
-                        g.FillPath(brush, path);
+                        using (var brush = BackBrushY(baseColor))
+                        {
+                            if (Radius > 0)
+                            {
+                                float radius = Radius * Config.Dpi;
+                                using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                            }
+                            else g.FillRectangle(brush, RectY);
+                        }
                     }
-                    var sliderx = RectSliderX();
-                    using (var path = sliderx.RoundPath(sliderx.Height))
+                    PaintY(g, baseColor);
+                }
+                else if (showX)
+                {
+                    if (Back && (hoverX || AnimationHoverX))
                     {
-                        g.FillPath(brush, path);
+                        using (var brush = BackBrushX(baseColor))
+                        {
+                            if (RB && Radius > 0)
+                            {
+                                float radius = Radius * Config.Dpi;
+                                using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                            }
+                            else g.FillRectangle(brush, RectX);
+                        }
                     }
+                    PaintX(g, baseColor);
                 }
             }
-            else if (showY)
+            else
             {
-                if (Back)
+                if (showY && showX)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
+                    if (Back)
                     {
-                        if (Radius > 0)
+                        using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
                         {
-                            float radius = Radius * Config.Dpi;
-                            using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                            var rectX = new Rectangle(RectX.X, RectX.Y, RectX.Width - RectY.Width, RectX.Height);
+                            if (Radius > 0)
                             {
-                                g.FillPath(brush, path);
+                                float radius = Radius * Config.Dpi;
+                                using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                                if (RB)
+                                {
+                                    using (var path = Helper.RoundPath(rectX, radius, false, false, false, true))
+                                    {
+                                        g.FillPath(brush, path);
+
+                                    }
+                                }
+                                else g.FillRectangle(brush, rectX);
+                            }
+                            else
+                            {
+                                g.FillRectangle(brush, RectY);
+                                g.FillRectangle(brush, rectX);
                             }
                         }
-                        else g.FillRectangle(brush, RectY);
                     }
+                    PaintX(g, baseColor);
+                    PaintY(g, baseColor);
                 }
-                var slider = RectSliderY();
-                using (var brush = new SolidBrush(Color.FromArgb(141, baseColor)))
+                else if (showY)
                 {
+                    if (Back)
+                    {
+                        using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
+                        {
+                            if (Radius > 0)
+                            {
+                                float radius = Radius * Config.Dpi;
+                                using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                            }
+                            else g.FillRectangle(brush, RectY);
+                        }
+                    }
+                    PaintY(g, baseColor);
+                }
+                else if (showX)
+                {
+                    if (Back)
+                    {
+                        using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
+                        {
+                            if (RB && Radius > 0)
+                            {
+                                float radius = Radius * Config.Dpi;
+                                using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                            }
+                            else g.FillRectangle(brush, RectX);
+                        }
+                    }
+                    PaintX(g, baseColor);
+                }
+            }
+        }
+
+        SolidBrush BackBrushY(Color color)
+        {
+            if (AnimationHoverY) return new SolidBrush(Color.FromArgb((int)(10 * AnimationHoverYValue), color));
+            else return new SolidBrush(Color.FromArgb(10, color));
+        }
+        SolidBrush BackBrushX(Color color)
+        {
+            if (AnimationHoverX) return new SolidBrush(Color.FromArgb((int)(10 * AnimationHoverXValue), color));
+            else return new SolidBrush(Color.FromArgb(10, color));
+        }
+        void PaintY(Graphics g, Color color)
+        {
+            if (AnimationHoverY)
+            {
+                using (var brush = new SolidBrush(Color.FromArgb(110 + (int)((141 - 110) * AnimationHoverYValue), color)))
+                {
+                    var slider = RectSliderY();
                     using (var path = slider.RoundPath(slider.Width))
                     {
                         g.FillPath(brush, path);
                     }
                 }
             }
-            else if (showX)
+            else
             {
-                if (Back)
+                int alpha;
+                if (SliderDownY) alpha = 172;
+                else alpha = hoverY ? 141 : 110;
+                using (var brush = new SolidBrush(Color.FromArgb(alpha, color)))
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
+                    var slider = RectSliderY();
+                    using (var path = slider.RoundPath(slider.Width))
                     {
-                        g.FillRectangle(brush, RectX);
+                        g.FillPath(brush, path);
                     }
                 }
-                var slider = RectSliderX();
-                using (var brush = new SolidBrush(Color.FromArgb(141, baseColor)))
+            }
+        }
+        void PaintX(Graphics g, Color color)
+        {
+            if (AnimationHoverX)
+            {
+                using (var brush = new SolidBrush(Color.FromArgb(110 + (int)((141 - 110) * AnimationHoverXValue), color)))
                 {
+                    var slider = RectSliderX();
+                    using (var path = slider.RoundPath(slider.Height))
+                    {
+                        g.FillPath(brush, path);
+                    }
+                }
+            }
+            else
+            {
+                int alpha;
+                if (SliderDownX) alpha = 172;
+                else alpha = hoverX ? 141 : 110;
+                using (var brush = new SolidBrush(Color.FromArgb(alpha, color)))
+                {
+                    var slider = RectSliderX();
                     using (var path = slider.RoundPath(slider.Height))
                     {
                         g.FillPath(brush, path);
@@ -443,43 +650,40 @@ namespace AntdUI
             }
         }
 
-        RectangleF RectSliderX(bool full = false)
+        #region 坐标
+
+        RectangleF RectSliderX()
+        {
+            float read = RectX.Width - (showY ? SIZE : 0), width = ((RectX.Width * 1F) / maxX) * read;
+            if (width < SIZE) width = SIZE;
+            float x = (valueX * 1.0F / (maxX - RectX.Width)) * (read - width), gap = (RectX.Height - SIZE_BAR) / 2F;
+            return new RectangleF(RectX.X + x + gap, RectX.Y + gap, width - gap * 2, SIZE_BAR);
+        }
+
+        RectangleF RectSliderY()
+        {
+            float read = RectY.Height - (showX ? SIZE : 0), height = ((RectY.Height * 1F) / maxY) * read;
+            if (height < SIZE) height = SIZE;
+            float y = (valueY * 1.0F / (maxY - RectY.Height)) * (read - height), gap = (RectY.Width - SIZE_BAR) / 2F;
+            return new RectangleF(RectY.X + gap, RectY.Y + y + gap, SIZE_BAR, height - gap * 2);
+        }
+
+        RectangleF RectSliderFullX()
         {
             float read = RectX.Width - (showY ? SIZE : 0), width = ((RectX.Width * 1F) / maxX) * read;
             if (width < SIZE) width = SIZE;
             float x = (valueX * 1.0F / (maxX - RectX.Width)) * (read - width);
-            var slider = new RectangleF(RectX.X + x, RectX.Y, width, RectX.Height);
-            if (full) return slider;
-            float gap = (RectX.Height - SIZE_NORMAL) / 2F;
-            width -= gap * 2;
-            slider.X += gap;
-            slider.Width = width;
-
-            int size = SIZE_NORMAL;
-            if (hoverX) size = SIZE_MOVE;
-            slider.Y = slider.Y + (slider.Height - size) / 2F;
-            slider.Height = size;
-            return slider;
+            return new RectangleF(RectX.X + x, RectX.Y, width, RectX.Height);
         }
-
-        RectangleF RectSliderY(bool full = false)
+        RectangleF RectSliderFullY()
         {
             float read = RectY.Height - (showX ? SIZE : 0), height = ((RectY.Height * 1F) / maxY) * read;
             if (height < SIZE) height = SIZE;
             float y = (valueY * 1.0F / (maxY - RectY.Height)) * (read - height);
-            var slider = new RectangleF(RectY.X, RectY.Y + y, RectY.Width, height);
-            if (full) return slider;
-            float gap = (RectY.Width - SIZE_NORMAL) / 2F;
-            height -= gap * 2;
-            slider.Y += gap;
-            slider.Height = height;
-
-            int size = SIZE_NORMAL;
-            if (hoverY) size = SIZE_MOVE;
-            slider.X = slider.X + (slider.Width - size) / 2F;
-            slider.Width = size;
-            return slider;
+            return new RectangleF(RectY.X, RectY.Y + y, RectY.Width, height);
         }
+
+        #endregion
 
         #endregion
 
@@ -495,12 +699,12 @@ namespace AntdUI
             if (EnabledX && ShowX && RectX.Contains(e))
             {
                 old = e;
-                var slider = RectSliderX(true);
+                var slider = RectSliderFullX();
                 if (!slider.Contains(e))
                 {
                     float read = RectX.Width - (showY ? SIZE : 0), x = (e.X - slider.Width / 2F) / read;
                     ValueX = (int)Math.Round(x * maxX);
-                    SliderX = RectSliderX(true).X;
+                    SliderX = RectSliderFullX().X;
                 }
                 else SliderX = slider.X;
                 SliderDownX = true;
@@ -517,12 +721,12 @@ namespace AntdUI
             if (EnabledY && ShowY && RectY.Contains(e))
             {
                 old = e;
-                var slider = RectSliderY(true);
+                var slider = RectSliderFullY();
                 if (!slider.Contains(e))
                 {
                     float read = RectY.Height - (showX ? SIZE : 0), y = (e.Y - slider.Height / 2F) / read;
                     ValueY = (int)Math.Round(y * maxY);
-                    SliderY = RectSliderY(true).Y;
+                    SliderY = RectSliderFullY().Y;
                 }
                 else SliderY = slider.Y;
                 SliderDownY = true;
@@ -543,7 +747,7 @@ namespace AntdUI
                 if (SliderDownX)
                 {
                     HoverX = true;
-                    var slider = RectSliderX(true);
+                    var slider = RectSliderFullX();
                     float read = RectX.Width - (showY ? SIZE : 0), x = SliderX + e.X - old.X;
                     ValueX = (int)(x / (read - slider.Width) * (maxX - RectX.Width));
                     return false;
@@ -564,7 +768,7 @@ namespace AntdUI
                 if (SliderDownY)
                 {
                     HoverY = true;
-                    var slider = RectSliderY(true);
+                    var slider = RectSliderFullY();
                     float read = RectY.Height - (showX ? SIZE : 0), y = SliderY + e.Y - old.Y;
                     ValueY = (int)(y / (read - slider.Height) * (maxY - RectY.Height));
                     return false;
@@ -707,5 +911,20 @@ namespace AntdUI
         }
 
         #endregion
+
+        #region 动画
+
+        ITask? ThreadHoverY = null;
+        float AnimationHoverYValue = 0F;
+        bool AnimationHoverY = false;
+
+        ITask? ThreadHoverX = null;
+        float AnimationHoverXValue = 0F;
+        bool AnimationHoverX = false;
+
+        #endregion
+
+        public void Dispose()
+        { ThreadHoverY?.Dispose(); ThreadHoverX?.Dispose(); }
     }
 }

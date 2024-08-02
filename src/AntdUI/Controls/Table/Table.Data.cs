@@ -97,71 +97,86 @@ namespace AntdUI
             {
                 if (dataTmp != null)
                 {
-                    if (code == "add")
+                    try
                     {
-                        if (obj is int i)
+                        if (code == "add")
                         {
-                            var row = list[i];
-                            if (row != null)
+                            if (obj is int i)
                             {
-                                var cells = GetRow(row, dataTmp.columns.Length);
-                                if (cells.Count == 0) return;
-                                var rows = new List<IRow>(dataTmp.rows.Length + 1);
-                                rows.AddRange(dataTmp.rows);
-                                rows.Insert(i, new IRow(i, row, cells));
-                                dataTmp.rows = ChangeList(rows);
-                                LoadLayout();
-                                Invalidate();
-                            }
-                        }
-                        else if (obj is int[] i_s)
-                        {
-                            var _list = new List<IRow>();
-                            foreach (int id in i_s)
-                            {
-                                var row = list[id];
+                                var row = list[i];
                                 if (row != null)
                                 {
                                     var cells = GetRow(row, dataTmp.columns.Length);
-                                    if (cells.Count > 0) _list.Add(new IRow(id, row, cells));
+                                    if (cells.Count == 0) return;
+                                    int len = dataTmp.rows.Length + 1;
+                                    if (len < i) return;
+                                    var rows = new List<IRow>(len);
+                                    rows.AddRange(dataTmp.rows);
+                                    rows.Insert(i, new IRow(i, row, cells));
+                                    dataTmp.rows = ChangeList(rows);
+                                    LoadLayout();
+                                    Invalidate();
                                 }
                             }
-                            var rows = new List<IRow>(dataTmp.rows.Length + _list.Count);
-                            rows.AddRange(dataTmp.rows);
-                            rows.InsertRange(i_s[0], _list);
-                            dataTmp.rows = ChangeList(rows);
-                            LoadLayout();
-                            Invalidate();
-                        }
-                    }
-                    else if (code == "edit")
-                    {
-                        LoadLayout();
-                        Invalidate();
-                    }
-                    else if (code == "del")
-                    {
-                        if (obj is int i)
-                        {
-                            if (i >= 0 && i < dataTmp.rows.Length)
+                            else if (obj is int[] i_s)
                             {
-                                var rows = new List<IRow>(dataTmp.rows.Length);
+                                var _list = new List<IRow>();
+                                foreach (int id in i_s)
+                                {
+                                    var row = list[id];
+                                    if (row != null)
+                                    {
+                                        var cells = GetRow(row, dataTmp.columns.Length);
+                                        if (cells.Count > 0) _list.Add(new IRow(id, row, cells));
+                                    }
+                                }
+                                var rows = new List<IRow>(dataTmp.rows.Length + _list.Count);
                                 rows.AddRange(dataTmp.rows);
-                                rows.RemoveAt(i);
+                                rows.InsertRange(i_s[0], _list);
                                 dataTmp.rows = ChangeList(rows);
                                 LoadLayout();
                                 Invalidate();
                             }
                         }
-                        else if (obj is string)
+                        else if (code == "edit")
                         {
-                            dataTmp.rows = new IRow[0];
                             LoadLayout();
                             Invalidate();
                         }
+                        else if (code == "del")
+                        {
+                            if (obj is int i)
+                            {
+                                if (i >= 0 && i < dataTmp.rows.Length)
+                                {
+                                    var rows = new List<IRow>(dataTmp.rows.Length);
+                                    rows.AddRange(dataTmp.rows);
+                                    rows.RemoveAt(i);
+                                    dataTmp.rows = ChangeList(rows);
+                                    LoadLayout();
+                                    Invalidate();
+                                }
+                            }
+                            else if (obj is string)
+                            {
+                                dataTmp.rows = new IRow[0];
+                                LoadLayout();
+                                Invalidate();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // 刷新数据
+                        IBinding(list);
                     }
                 }
             };
+            IBinding(list);
+        }
+
+        void IBinding<T>(AntList<T> list)
+        {
             var columns = new List<TempiColumn>();
             var rows = new List<IRow>(list.Count + 1);
             for (int i = 0; i < list.Count; i++)
@@ -178,7 +193,6 @@ namespace AntdUI
                 }
             }
             dataTmp = new TempTable(columns.ToArray(), rows.ToArray());
-
             LoadLayout();
             Invalidate();
         }
