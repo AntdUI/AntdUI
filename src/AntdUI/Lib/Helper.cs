@@ -1739,7 +1739,7 @@ namespace AntdUI
 
         static Dictionary<Control, AnchorDock> DpiSuspend(Control.ControlCollection controls)
         {
-            var dir = new Dictionary<Control, AnchorDock>();
+            var dir = new Dictionary<Control, AnchorDock>(controls.Count);
             foreach (Control control in controls)
             {
                 if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));

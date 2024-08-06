@@ -762,7 +762,7 @@ namespace AntdUI
                     }
                     return true;
                 }
-                if (can && item.Expand)
+                if (can && item.Expand && !collapsed)
                 {
                     foreach (MenuItem sub in item.Sub)
                     {

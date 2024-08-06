@@ -502,6 +502,12 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (items == null) return;
+            if (style.MouseMovePre(e.X, e.Y))
+            {
+                Cursor = DefaultCursor;
+                base.OnMouseMove(e);
+                return;
+            }
             int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
             foreach (var item in items)
             {

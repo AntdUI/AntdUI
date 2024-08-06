@@ -94,7 +94,7 @@ namespace AntdUI
             {
                 foreach (ITemplate template in templates.value)
                 {
-                    if (template is TemplateText text)
+                    if (template.Value is CellText text)
                     {
                         object? value = null;
                         if (cell.PROPERTY != null && cell.VALUE != null) value = cell.PROPERTY.GetValue(cell.VALUE);
@@ -130,7 +130,7 @@ namespace AntdUI
                                     }
                                     else
                                     {
-                                        text.Value.Text = _value;
+                                        text.Text = _value;
                                         if (GetValue(value, _value, out var o))
                                         {
                                             if (it.RECORD is DataRow datarow) datarow[i_col] = o;
@@ -140,10 +140,10 @@ namespace AntdUI
                                 }
                             });
                             CellBeginEditInputStyle?.Invoke(this, value, it.RECORD, i_row, i_col, ref edit_input);
-                            if (template.PARENT != null)
+                            if (template.Value.PARENT != null)
                             {
-                                if (template.PARENT.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
-                                else if (template.PARENT.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
+                                if (template.Value.PARENT.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
+                                else if (template.Value.PARENT.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
                             }
                             Controls.Add(edit_input);
                             edit_input.Focus();

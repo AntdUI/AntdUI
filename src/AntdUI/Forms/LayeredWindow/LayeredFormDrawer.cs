@@ -33,7 +33,8 @@ namespace AntdUI
         public LayeredFormDrawer(Drawer.Config _config)
         {
             config = _config;
-            config.Content.Parent = this;
+            if (config.Content is Form form) form.FormBorderStyle = FormBorderStyle.None;
+            else config.Content.Parent = this;
             TopMost = config.Form.TopMost;
             Font = config.Form.Font;
 
@@ -347,13 +348,24 @@ namespace AntdUI
         void LoadContent()
         {
             var rect = Ang();
-            form = new DoubleBufferForm(config.Content)
+            if (config.Content is Form form_)
             {
-                BackColor = Style.Db.BgElevated,
-                FormBorderStyle = FormBorderStyle.None,
-                Location = rect.Location,
-                Size = rect.Size
-            };
+                form_.BackColor = Style.Db.BgElevated;
+                form_.FormBorderStyle = FormBorderStyle.None;
+                form_.Location = rect.Location;
+                form_.Size = rect.Size;
+                form = form_;
+            }
+            else
+            {
+                form = new DoubleBufferForm(config.Content)
+                {
+                    BackColor = Style.Db.BgElevated,
+                    FormBorderStyle = FormBorderStyle.None,
+                    Location = rect.Location,
+                    Size = rect.Size
+                };
+            }
             if (!config.Dispose && config.Content.Tag is Size size)
             {
                 form.FormClosing += (a, b) =>
@@ -370,6 +382,7 @@ namespace AntdUI
             };
             form.Show(this);
             form.Location = rect.Location;
+            form.Size = rect.Size;
             tempContent?.Dispose();
             tempContent = null;
             config.OnLoad?.Invoke();

@@ -53,7 +53,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var font_widths = new List<CacheFont>();
+                        var font_widths = new List<CacheFont>(_text.Length);
                         if (IsPassWord)
                         {
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
@@ -134,7 +134,7 @@ namespace AntdUI
                     {
                         int font_height = 0;
                         if (_text == null) return;
-                        var font_widths = new List<CacheFont>();
+                        var font_widths = new List<CacheFont>(_text.Length);
                         if (IsPassWord)
                         {
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
@@ -144,7 +144,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            var font_dir = new Dictionary<string, CacheFont>();
+                            var font_dir = new Dictionary<string, CacheFont>(font_widths.Count);
                             if (cache_font != null)
                             {
                                 foreach (var it in cache_font) if (!it.emoji && !font_dir.ContainsKey(it.text)) font_dir.Add(it.text, it);

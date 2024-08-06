@@ -184,7 +184,7 @@ namespace AntdUI
                 int start = selectionStartTemp, end = selectionLength;
                 AddHistoryRecord();
                 int end_temp = start + end;
-                var texts = new List<string>();
+                var texts = new List<string>(end);
                 foreach (var it in cache_font)
                 {
                     if (it.i < start || it.i >= end_temp) texts.Add(it.text);
@@ -196,7 +196,7 @@ namespace AntdUI
             else if (selectionStart > 0)
             {
                 int start = selectionStart - 1;
-                var texts = new List<string>();
+                var texts = new List<string>(cache_font.Length);
                 foreach (var it in cache_font)
                 {
                     if (start != it.i) texts.Add(it.text);
@@ -219,7 +219,7 @@ namespace AntdUI
                 int start = selectionStartTemp, end = selectionLength;
                 AddHistoryRecord();
                 int end_temp = start + end;
-                var texts = new List<string>();
+                var texts = new List<string>(end);
                 foreach (var it in cache_font)
                 {
                     if (it.i < start || it.i >= end_temp) texts.Add(it.text);
@@ -231,7 +231,7 @@ namespace AntdUI
             else if (selectionStart < cache_font.Length)
             {
                 int start = selectionStart;
-                var texts = new List<string>();
+                var texts = new List<string>(cache_font.Length);
                 foreach (var it in cache_font)
                 {
                     if (start != it.i) texts.Add(it.text);

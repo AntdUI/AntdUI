@@ -25,7 +25,7 @@ namespace AntdUI
 {
     partial class Table
     {
-        static StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near), stringCenter = Helper.SF_NoWrap(), stringRight = Helper.SF_NoWrap(lr: StringAlignment.Far);
+        internal static StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near), stringCenter = Helper.SF_NoWrap(), stringRight = Helper.SF_NoWrap(lr: StringAlignment.Far);
         static StringFormat stringLeftEllipsis = Helper.SF_ALL(lr: StringAlignment.Near), stringCenterEllipsis = Helper.SF_ALL(), stringRightEllipsis = Helper.SF_ALL(lr: StringAlignment.Far);
         static StringFormat stringLeftN = Helper.SF(lr: StringAlignment.Near), stringCenterN = Helper.SF(), stringRightN = Helper.SF(lr: StringAlignment.Far);
 
@@ -387,7 +387,7 @@ namespace AntdUI
         {
             if (it is Template obj)
             {
-                foreach (var o in obj.value) o.PaintBack(g, it);
+                foreach (var o in obj.value) o.Value.PaintBack(g);
             }
         }
 
@@ -434,13 +434,14 @@ namespace AntdUI
             else if (it is TCellSwitch _switch) PaintSwitch(g, _switch);
             else if (it is Template obj)
             {
-                foreach (var o in obj.value) o.Paint(g, it, Font, fore);
+                foreach (var o in obj.value) o.Value.Paint(g, Font, fore);
             }
             else if (it is TCellText text)
             {
+                var state = g.Save();
                 g.SetClip(it.RECT);
                 g.DrawString(text.value, Font, fore, text.rect, StringF(text.column));
-                g.ResetClip();
+                g.Restore(state);
             }
             if (dragHeader != null && dragHeader.i == it.INDEX)
             {
@@ -971,7 +972,7 @@ namespace AntdUI
             }
         }
 
-        static StringFormat StringF(Column column)
+        internal static StringFormat StringF(Column column)
         {
             if (column.LineBreak)
             {

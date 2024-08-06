@@ -69,22 +69,10 @@ namespace AntdUI
             }
             else if (dataSource is IList list)
             {
-                var columns = new List<TempiColumn>();
+                var columns = new TempiColumn[0];
                 var rows = new List<IRow>(list.Count + 1);
-                for (int i = 0; i < list.Count; i++)
-                {
-                    var row = list[i];
-                    if (row != null)
-                    {
-                        if (row is IList<AntItem> arows) rows.Add(new IRow(i, row, arows));
-                        else
-                        {
-                            var cells = GetRowAuto(row, ref columns);
-                            if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
-                        }
-                    }
-                }
-                dataTmp = new TempTable(columns.ToArray(), rows.ToArray());
+                for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);
+                dataTmp = new TempTable(columns, rows.ToArray());
             }
         }
 
@@ -120,7 +108,7 @@ namespace AntdUI
                             }
                             else if (obj is int[] i_s)
                             {
-                                var _list = new List<IRow>();
+                                var _list = new List<IRow>(i_s.Length);
                                 foreach (int id in i_s)
                                 {
                                     var row = list[id];
@@ -177,22 +165,10 @@ namespace AntdUI
 
         void IBinding<T>(AntList<T> list)
         {
-            var columns = new List<TempiColumn>();
+            var columns = new TempiColumn[0];
             var rows = new List<IRow>(list.Count + 1);
-            for (int i = 0; i < list.Count; i++)
-            {
-                var row = list[i];
-                if (row != null)
-                {
-                    if (row is IList<AntItem> arows) rows.Add(new IRow(i, row, arows));
-                    else
-                    {
-                        var cells = GetRowAuto(row, ref columns);
-                        if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
-                    }
-                }
-            }
-            dataTmp = new TempTable(columns.ToArray(), rows.ToArray());
+            for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);
+            dataTmp = new TempTable(columns, rows.ToArray());
             LoadLayout();
             Invalidate();
         }
@@ -203,10 +179,30 @@ namespace AntdUI
             return rows.ToArray();
         }
 
-        Dictionary<string, object?> GetRowAuto(object row, ref List<TempiColumn> columns)
+        void GetRowAuto(ref List<IRow> rows, object? row, int i, ref TempiColumn[] columns)
         {
-            if (columns.Count == 0) return GetRow(row, ref columns);
-            else return GetRow(row, columns.Count);
+            if (row == null) return;
+            if (row is IList<AntItem> arows)
+            {
+                var irow = new IRow(i, row, arows);
+                rows.Add(irow);
+                if (columns.Length == 0)
+                {
+                    columns = new TempiColumn[arows.Count];
+                    for (int j = 0; j < arows.Count; j++) columns[j] = new TempiColumn(j, arows[j].key);
+                }
+            }
+            else
+            {
+                var cells = GetRowAuto(row, ref columns);
+                if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
+            }
+        }
+
+        Dictionary<string, object?> GetRowAuto(object row, ref TempiColumn[] columns)
+        {
+            if (columns.Length == 0) return GetRow(row, out columns);
+            else return GetRow(row, columns.Length);
         }
 
         Dictionary<string, object?> GetRow(object row, int len)
@@ -225,16 +221,18 @@ namespace AntdUI
             }
         }
 
-        Dictionary<string, object?> GetRow(object row, ref List<TempiColumn> columns)
+        Dictionary<string, object?> GetRow(object row, out TempiColumn[] _columns)
         {
             var list = TypeDescriptor.GetProperties(row);
             var cells = new Dictionary<string, object?>(list.Count);
             int index = 0;
+            var columns = new List<TempiColumn>(list.Count);
             foreach (PropertyDescriptor it in list)
             {
                 columns.Add(new TempiColumn(index, it.Name)); index++;
                 cells.Add(it.Name, it);
             }
+            _columns = columns.ToArray();
             return cells;
         }
 

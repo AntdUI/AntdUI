@@ -891,7 +891,7 @@ namespace AntdUI
                     int start = selectionStartTemp, end = selectionLength;
                     AddHistoryRecord();
                     int end_temp = start + end;
-                    var texts = new List<string>();
+                    var texts = new List<string>(end);
                     foreach (var it in cache_font)
                     {
                         if (it.i < start || it.i >= end_temp)
@@ -906,8 +906,8 @@ namespace AntdUI
                 }
                 else
                 {
-                    int start = selectionStart - 1, end = selectionLength;
-                    var texts = new List<string>();
+                    int start = selectionStart - 1;
+                    var texts = new List<string>(cache_font.Length);
                     foreach (var it in cache_font) texts.Add(it.text);
                     texts.Insert(start + 1, text);
                     var tmp = string.Join("", texts);

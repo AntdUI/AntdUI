@@ -31,7 +31,7 @@ namespace AntdUI
         bool ClickEnd = false;
         object? selectedValue;
         int r_w = 0;
-        readonly List<ObjectItem> Items = new List<ObjectItem>();
+        List<ObjectItem> Items;
         public LayeredFormSelectDown(Select control, IList<object> items, string filtertext)
         {
             control.Parent.SetTopMost(Handle);
@@ -43,6 +43,7 @@ namespace AntdUI
             Font = control.Font;
             selectedValue = control.SelectedValue;
             Radius = (int)(control.radius * Config.Dpi);
+            Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items, filtertext);
         }
         public LayeredFormSelectDown(Dropdown control, int radius, IList<object> items)
@@ -55,7 +56,22 @@ namespace AntdUI
             MaxCount = control.MaxCount;
             Font = control.Font;
             Radius = (int)(radius * Config.Dpi);
+            Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items);
+        }
+        public LayeredFormSelectDown(Tabs control, int radius, IList<object> items, object? sValue, Rectangle rect_ctls)
+        {
+            control.Parent.SetTopMost(Handle);
+            PARENT = control;
+            ClickEnd = false;
+            select_x = 0;
+            scrollY = new ScrollY(this);
+            MaxCount = 7;
+            Font = control.Font;
+            selectedValue = sValue;
+            Radius = (int)(radius * Config.Dpi);
+            Items = new List<ObjectItem>(items.Count);
+            Init(control, TAlignFrom.BR, false, true, rect_ctls, items);
         }
 
         public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
@@ -63,12 +79,14 @@ namespace AntdUI
             ClickEnd = control.ClickEnd;
             selectedValue = control.SelectedValue;
             scrollY = new ScrollY(this);
+            Items = new List<ObjectItem>(items.Count);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
         public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
         {
             ClickEnd = control.ClickEnd;
             scrollY = new ScrollY(this);
+            Items = new List<ObjectItem>(items.Count);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
 
@@ -100,7 +118,7 @@ namespace AntdUI
         internal LayeredFormSelectDown? SubForm = null;
         void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
-            int y = 10, w = (int)rect_read.Width;
+            int y = 10, w = rect_read.Width;
             r_w = w;
             var point = control.PointToScreen(Point.Empty);
             Helper.GDI(g =>
@@ -289,7 +307,8 @@ namespace AntdUI
                     else SetLocation(point.X + (control.Width - (r_w + 20)) / 2, point.Y + control.Height - 10);
                     break;
                 case TAlignFrom.BR:
-                    if (ShowArrow)
+                    if (control is Tabs) SetLocation(point.X + (rect_read.X + rect_read.Width) - r_w - 10, point.Y + rect_read.Bottom - 10);
+                    else if (ShowArrow)
                     {
                         ArrowAlign = TAlign.BR;
                         SetLocation(point.X + (rect_read.X + rect_read.Width) - r_w - 10, point.Y + control.Height - 10 + ArrowSize);
@@ -751,6 +770,7 @@ namespace AntdUI
                 else select.DropDownChange(select_x, it.ID, it.Val);
             }
             else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Val);
+            else if (PARENT is Tabs tabs) tabs.SelectedIndex = it.ID;
         }
 
         void OpenDown(ObjectItem it, IList<object> sub, int tag = -1)

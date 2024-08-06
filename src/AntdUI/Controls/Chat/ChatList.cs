@@ -468,7 +468,7 @@ namespace AntdUI.Chat
                 {
                     int start = text.selectionStart, end = text.selectionLength;
                     int end_temp = start + end;
-                    var texts = new List<string>();
+                    var texts = new List<string>(end);
                     foreach (var it in text.cache_font)
                     {
                         if (it.i >= start && end_temp > it.i) texts.Add(it.text);

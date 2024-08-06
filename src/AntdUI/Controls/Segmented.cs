@@ -799,7 +799,7 @@ namespace AntdUI
                     g.FillPath(brush, path);
                 }
             }
-            var item_text = new System.Collections.Generic.List<SegmentedItem>();
+            var item_text = new System.Collections.Generic.List<SegmentedItem>(items.Count);
             int _hover = -1;
             for (int i = 0; i < items.Count; i++)
             {

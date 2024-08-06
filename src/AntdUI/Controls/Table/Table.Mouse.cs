@@ -94,15 +94,15 @@ namespace AntdUI
         void MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
         {
             cell.MouseDown = e.Clicks > 1 ? 2 : 1;
-            if (cell is Template template && template.HasBtn && e.Button == MouseButtons.Left)
+            if (cell is Template template && e.Button == MouseButtons.Left)
             {
                 foreach (var item in template.value)
                 {
-                    if (item is TemplateButton btn_template)
+                    if (item.Value is CellLink btn_template)
                     {
-                        if (btn_template.Value.Enabled)
+                        if (btn_template.Enabled)
                         {
-                            if (btn_template.RECT.Contains(x, y))
+                            if (btn_template.Rect.Contains(x, y))
                             {
                                 btn_template.ExtraMouseDown = true;
                                 return;
@@ -298,18 +298,18 @@ namespace AntdUI
                                 LoadLayout();
                             }
                         }
-                        else if (cell is Template template && template.HasBtn)
+                        else if (cell is Template template)
                         {
                             foreach (var item in template.value)
                             {
-                                if (item is TemplateButton btn)
+                                if (item.Value is CellLink btn)
                                 {
                                     if (btn.ExtraMouseDown)
                                     {
-                                        if (btn.RECT.Contains(r_x, r_y))
+                                        if (btn.Rect.Contains(r_x, r_y))
                                         {
-                                            if (btn.Value is CellButton) btn.Click();
-                                            CellButtonClick?.Invoke(this, btn.Value, e, it.RECORD, i_r, i_c);
+                                            btn.Click();
+                                            CellButtonClick?.Invoke(this, btn, e, it.RECORD, i_r, i_c);
                                         }
                                         btn.ExtraMouseDown = false;
                                     }
@@ -406,11 +406,11 @@ namespace AntdUI
                         it.Hover = false;
                         foreach (var cel_tmp in it.cells)
                         {
-                            if (cel_tmp is Template template && template.HasBtn)
+                            if (cel_tmp is Template template)
                             {
                                 foreach (var item in template.value)
                                 {
-                                    if (item is TemplateButton btn) btn.ExtraMouseHover = false;
+                                    if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
                                 }
                             }
                         }
@@ -426,11 +426,11 @@ namespace AntdUI
                             rows[i].Hover = false;
                             foreach (var cel_tmp in rows[i].cells)
                             {
-                                if (cel_tmp is Template template && template.HasBtn)
+                                if (cel_tmp is Template template)
                                 {
                                     foreach (var item in template.value)
                                     {
-                                        if (item is TemplateButton btn) btn.ExtraMouseHover = false;
+                                        if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
                                     }
                                 }
                             }
@@ -466,11 +466,11 @@ namespace AntdUI
                                 rows[i].Hover = false;
                                 foreach (var cel_tmp in rows[i].cells)
                                 {
-                                    if (cel_tmp is Template template && template.HasBtn)
+                                    if (cel_tmp is Template template)
                                     {
                                         foreach (var item in template.value)
                                         {
-                                            if (item is TemplateButton btn) btn.ExtraMouseHover = false;
+                                            if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
                                         }
                                     }
                                 }
@@ -508,15 +508,15 @@ namespace AntdUI
             }
             else if (cel is Template template)
             {
-                ITemplate? tipcel = null;
+                ICell? tipcel = null;
                 int hand = 0;
                 foreach (var item in template.value)
                 {
-                    if (item is TemplateButton btn_template)
+                    if (item.Value is CellLink btn_template)
                     {
-                        if (btn_template.Value.Enabled)
+                        if (btn_template.Enabled)
                         {
-                            btn_template.ExtraMouseHover = btn_template.RECT.Contains(x, y);
+                            btn_template.ExtraMouseHover = btn_template.Rect.Contains(x, y);
                             if (btn_template.ExtraMouseHover)
                             {
                                 hand++;
@@ -525,50 +525,50 @@ namespace AntdUI
                         }
                         else btn_template.ExtraMouseHover = false;
                     }
-                    else if (item is TemplateImage img_template)
+                    else if (item.Value is CellImage img_template)
                     {
-                        if (img_template.Value.Tooltip != null && img_template.RECT.Contains(x, y)) tipcel = img_template;
+                        if (img_template.Tooltip != null && img_template.Rect.Contains(x, y)) tipcel = img_template;
                     }
                 }
                 if (tipcel == null) CloseTip();
                 else
                 {
-                    if (tipcel is TemplateButton btn_template)
+                    if (tipcel is CellLink btn_template)
                     {
-                        if (btn_template.Value.Tooltip == null) CloseTip();
+                        if (btn_template.Tooltip == null) CloseTip();
                         else
                         {
                             var _rect = RectangleToScreen(ClientRectangle);
                             var rect = new Rectangle(_rect.X + btn_template.Rect.X - offset_xi, _rect.Y + btn_template.Rect.Y - offset_y, btn_template.Rect.Width, btn_template.Rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(this, rect, btn_template.Value.Tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, btn_template.Tooltip, new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,
                                 });
                                 tooltipForm.Show(this);
                             }
-                            else tooltipForm.SetText(rect, btn_template.Value.Tooltip);
+                            else tooltipForm.SetText(rect, btn_template.Tooltip);
                         }
                     }
-                    else if (tipcel is TemplateImage img_template)
+                    else if (tipcel is CellImage img_template)
                     {
-                        if (img_template.Value.Tooltip == null) CloseTip();
+                        if (img_template.Tooltip == null) CloseTip();
                         else
                         {
                             var _rect = RectangleToScreen(ClientRectangle);
                             var rect = new Rectangle(_rect.X + img_template.Rect.X - offset_xi, _rect.Y + img_template.Rect.Y - offset_y, img_template.Rect.Width, img_template.Rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(this, rect, img_template.Value.Tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, img_template.Tooltip, new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,
                                 });
                                 tooltipForm.Show(this);
                             }
-                            else tooltipForm.SetText(rect, img_template.Value.Tooltip);
+                            else tooltipForm.SetText(rect, img_template.Tooltip);
                         }
                     }
                 }
@@ -892,11 +892,11 @@ namespace AntdUI
                 it.Hover = false;
                 foreach (var cel in it.cells)
                 {
-                    if (cel is Template template && template.HasBtn)
+                    if (cel is Template template)
                     {
                         foreach (var item in template.value)
                         {
-                            if (item is TemplateButton btn) btn.ExtraMouseHover = false;
+                            if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
                         }
                     }
                 }

@@ -38,7 +38,6 @@ namespace AntdUI
         public static int Each(string strText, int nIndex, Func<string, int, int, bool> cb)
         {
             int nCounter = 0;
-            List<int> lst_history_break_type = new List<int>();
             if (string.IsNullOrEmpty(strText) || nIndex >= strText.Length) return 0;
             int nIndexCharStart = 0, nCharLen = 0, nLastCharLen = 0;
             int nCodePoint = 0;
@@ -60,7 +59,7 @@ namespace AntdUI
             nLeftBreakType = GetBreakProperty(nCodePoint);
             nIndex += nLastCharLen;
             nCharLen = nLastCharLen;
-            lst_history_break_type.Add(nLeftBreakType);
+            var lst_history_break_type = new List<int> { nLeftBreakType };
             while (nIndex < strText.Length)
             {
                 nCodePoint = GetCodePoint(strText, nIndex);

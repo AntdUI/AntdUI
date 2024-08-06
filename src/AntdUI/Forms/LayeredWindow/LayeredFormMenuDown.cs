@@ -28,8 +28,7 @@ namespace AntdUI
     {
         internal float Radius = 0;
         bool isauto = true, isdark = false;
-
-        readonly List<OMenuItem> Items = new List<OMenuItem>();
+        List<OMenuItem> Items;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, MenuItemCollection items)
         {
             isauto = control.Theme == TAMode.Auto;
@@ -39,6 +38,7 @@ namespace AntdUI
             select_x = 0;
             Font = control.Font;
             Radius = (int)(radius * Config.Dpi);
+            Items = new List<OMenuItem>(items.Count);
             Init(control, rect_read, items);
         }
 
@@ -52,6 +52,7 @@ namespace AntdUI
             Font = control.Font;
             Radius = radius;
             control.Disposed += (a, b) => { Dispose(); };
+            Items = new List<OMenuItem>(items.Count);
             Init(control, rect_read, items);
         }
 

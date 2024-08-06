@@ -30,7 +30,7 @@ namespace AntdUI
         internal float Radius = 0;
         internal List<object> selectedValue;
         int r_w = 0;
-        readonly List<ObjectItem> Items = new List<ObjectItem>();
+        List<ObjectItem> Items;
         public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, List<object> items, string filtertext)
         {
             control.Parent.SetTopMost(Handle);
@@ -42,6 +42,7 @@ namespace AntdUI
             selectedValue = new List<object>(control.SelectedValue.Length);
             selectedValue.AddRange(control.SelectedValue);
             Radius = (int)(control.radius * Config.Dpi);
+            Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items, filtertext);
         }
 
