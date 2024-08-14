@@ -868,17 +868,19 @@ namespace AntdUI
                         subForm = null;
                         tooltipForm?.Close();
                         tooltipForm = null;
-
-                        var _rect = RectangleToScreen(ClientRectangle);
-                        var it = items[hoveindex];
-                        if (it == null) return;
-                        var Rect = it.Rect;
-                        var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
-                        if (it.Sub != null && it.Sub.Count > 0)
+                        if (hoveindex > -1)
                         {
-                            select_x = 0;
-                            subForm = new LayeredFormMenuDown(this, radius, rect, it.Sub);
-                            subForm.Show(this);
+                            var _rect = RectangleToScreen(ClientRectangle);
+                            var it = items[hoveindex];
+                            if (it == null) return;
+                            var Rect = it.Rect;
+                            var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
+                            if (it.Sub != null && it.Sub.Count > 0)
+                            {
+                                select_x = 0;
+                                subForm = new LayeredFormMenuDown(this, radius, rect, it.Sub);
+                                subForm.Show(this);
+                            }
                         }
                     }
                 }

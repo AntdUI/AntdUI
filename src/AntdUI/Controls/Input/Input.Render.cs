@@ -236,7 +236,7 @@ namespace AntdUI
             if (cache_font != null)
             {
                 g.TranslateTransform(-ScrollX, -ScrollY);
-                if (selectionLength > 0 && cache_font.Length > selectionStartTemp)
+                if (selectionLength > 0 && cache_font.Length > selectionStartTemp && !inhibitInput)
                 {
                     try
                     {

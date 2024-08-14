@@ -37,6 +37,8 @@ namespace AntdUI
     {
         #region 属性
 
+        internal override bool inhibitInput { get => _list; }
+
         bool _list = false;
         /// <summary>
         /// 是否列表样式

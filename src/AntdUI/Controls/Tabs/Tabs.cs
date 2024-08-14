@@ -355,9 +355,13 @@ namespace AntdUI
                 if (items == null) return;
                 if (_tabMenuVisible)
                 {
-                    var rect_t = ClientRectangle.DeflateRect(Margin);
-                    style.LoadLayout(this, rect_t, items);
-                    if (r) Invalidate();
+                    var rect = ClientRectangle;
+                    if (rect.Width > 0 && rect.Height > 0)
+                    {
+                        var rect_t = rect.DeflateRect(Margin);
+                        style.LoadLayout(this, rect_t, items);
+                        if (r) Invalidate();
+                    }
                 }
                 else SetPadding(0, 0, 0, 0);
             }

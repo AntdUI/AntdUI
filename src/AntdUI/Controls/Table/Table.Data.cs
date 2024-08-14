@@ -165,6 +165,7 @@ namespace AntdUI
 
         void IBinding<T>(AntList<T> list)
         {
+            ExtractHeaderFixed();
             var columns = new TempiColumn[0];
             var rows = new List<IRow>(list.Count + 1);
             for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);

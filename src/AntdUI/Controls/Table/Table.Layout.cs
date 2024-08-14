@@ -32,6 +32,13 @@ namespace AntdUI
             base.OnFontChanged(e);
         }
 
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+            if (dataSource == null) return;
+            if (dataOne) LoadLayout();
+        }
+
         string? show_oldrect = null;
         protected override void OnSizeChanged(EventArgs e)
         {
@@ -244,7 +251,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var dpi = Config.Dpi;
-                int check_size = (int)(_checksize * dpi), gap = (int)(_gap * dpi), gap2 = gap * 2,
+                int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi), gap = (int)(_gap * dpi), gap2 = gap * 2,
                 split = (int)(1F * dpi), split2 = split / 2,
                 split_move = (int)(6F * dpi), split_move2 = split_move / 2;
 
@@ -301,7 +308,7 @@ namespace AntdUI
                                 {
                                     var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
                                     int width = (int)Math.Ceiling(text_size.Width);
-                                    if (it.ROW.CanExpand && _rows[0].cells[cel_i].INDEX == KeyTreeINDEX) width += check_size + gap2 + (check_size * it.ROW.ExpandDepth);
+                                    if (it.ROW.CanExpand && _rows[0].cells[cel_i].INDEX == KeyTreeINDEX) width += treesize + gap2 + (treesize * it.ROW.ExpandDepth);
                                     if (max_height < text_size.Height) max_height = text_size.Height;
                                     if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
                                 }
@@ -353,14 +360,14 @@ namespace AntdUI
                             int ox = 0;
                             if (row.INDEX > 0 && _rows[0].cells[i].INDEX == KeyTreeINDEX)
                             {
-                                int x = gap + (check_size * row.ExpandDepth);
-                                ox = x + gap + check_size / 2;
-                                row.RectExpand = new Rectangle(use_x + x + split_move, use_y + (row.Height - check_size) / 2, check_size, check_size);
+                                int x = gap + (treesize * row.ExpandDepth);
+                                ox = x + gap + treesize / 2;
+                                row.RectExpand = new Rectangle(use_x + x + split_move, use_y + (row.Height - treesize) / 2, treesize, treesize);
                             }
 
                             if (it is TCellCheck check) check.SetSize(_rect, check_size);
                             else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
-                            else if (it is TCellSwitch _switch) _switch.SetSize(_rect, check_size);
+                            else if (it is TCellSwitch _switch) _switch.SetSize(_rect, switchsize);
                             else if (it is TCellColumn column)
                             {
                                 it.SetSize(g, Font, _rect, ox, gap, gap2);

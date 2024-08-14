@@ -107,23 +107,6 @@ namespace AntdUI
             }
         }
 
-        int _checksize = 16;
-        /// <summary>
-        /// 复选框大小
-        /// </summary>
-        [Description("复选框大小"), Category("外观"), DefaultValue(16)]
-        public int CheckSize
-        {
-            get => _checksize;
-            set
-            {
-                if (_checksize == value) return;
-                _checksize = value;
-                LoadLayout();
-                Invalidate();
-            }
-        }
-
         bool fixedHeader = true;
         /// <summary>
         /// 固定表头
@@ -219,6 +202,50 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        #region 大小
+
+        int _checksize = 16;
+        /// <summary>
+        /// 复选框大小
+        /// </summary>
+        [Description("复选框大小"), Category("外观"), DefaultValue(16)]
+        public int CheckSize
+        {
+            get => _checksize;
+            set
+            {
+                if (_checksize == value) return;
+                _checksize = value;
+                LoadLayout();
+                Invalidate();
+            }
+        }
+
+        int _switchsize = 16;
+        /// <summary>
+        /// 开关大小
+        /// </summary>
+        [Description("开关大小"), Category("外观"), DefaultValue(16)]
+        public int SwitchSize
+        {
+            get => _switchsize;
+            set
+            {
+                if (_switchsize == value) return;
+                _switchsize = value;
+                LoadLayout();
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 树开关按钮大小
+        /// </summary>
+        [Description("树开关按钮大小"), Category("外观"), DefaultValue(16)]
+        public int TreeButtonSize { get; set; } = 16;
+
+        #endregion
 
         /// <summary>
         /// 行复制

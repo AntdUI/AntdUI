@@ -300,12 +300,9 @@ namespace AntdUI
 
         private static byte[] m_byString = new byte[1024];
 
-        public static string ImmGetCompositionString(IntPtr hIMC, int dwIndex)
+        public static string? ImmGetCompositionString(IntPtr hIMC, int dwIndex)
         {
-            if (hIMC == IntPtr.Zero)
-            {
-                return null;
-            }
+            if (hIMC == IntPtr.Zero) return null;
             int nLen = ImmGetCompositionString(hIMC, dwIndex, m_byString, m_byString.Length);
             return Encoding.Unicode.GetString(m_byString, 0, nLen);
         }

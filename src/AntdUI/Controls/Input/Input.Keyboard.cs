@@ -173,7 +173,7 @@ namespace AntdUI
         /// </summary>
         void ProcessBackSpaceKey()
         {
-            if (ReadOnly) return;
+            if (ReadOnly || inhibitInput) return;
             if (cache_font == null)
             {
                 IBackSpaceKey();
@@ -213,7 +213,7 @@ namespace AntdUI
         /// </summary>
         void ProcessDelete()
         {
-            if (cache_font == null || ReadOnly) return;
+            if (cache_font == null || ReadOnly || inhibitInput) return;
             if (selectionLength > 0)
             {
                 int start = selectionStartTemp, end = selectionLength;

@@ -39,7 +39,7 @@ namespace AntdUI
             is_prefix_down = is_suffix_down = false;
             if (e.Button == MouseButtons.Left)
             {
-                if (cache_font != null && e.Clicks > 1)
+                if (cache_font != null && e.Clicks > 1 && !inhibitInput)
                 {
                     mouseDownMove = mouseDown = false;
 
@@ -81,6 +81,7 @@ namespace AntdUI
                 }
                 mouseDownMove = false;
                 oldMouseDown = e.Location;
+                if (inhibitInput) return;
                 int indeX = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
                 if (ModifierKeys.HasFlag(Keys.Shift))
                 {

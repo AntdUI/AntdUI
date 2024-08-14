@@ -44,11 +44,10 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     float dpi = Config.Dpi;
-                    int font_height = 0;
+                    int font_height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font, 10000, sf_font).Height);
                     if (isempty)
                     {
                         ScrollX = ScrollY = 0;
-                        font_height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font, 10000, sf_font).Height);
                         cache_font = null;
                     }
                     else
@@ -58,7 +57,7 @@ namespace AntdUI
                         {
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
                             int w = (int)Math.Ceiling(sizefont.Width);
-                            font_height = (int)Math.Ceiling(sizefont.Height);
+                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
                             foreach (char it in _text) font_widths.Add(new CacheFont(it.ToString(), false, w));
                         }
                         else
@@ -132,14 +131,18 @@ namespace AntdUI
                 {
                     Helper.GDI(g =>
                     {
-                        int font_height = 0;
-                        if (_text == null) return;
+                        int font_height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font, 10000, sf_font).Height);
+                        if (_text == null)
+                        {
+                            CurrentCaret.Height = font_height;
+                            return;
+                        }
                         var font_widths = new List<CacheFont>(_text.Length);
                         if (IsPassWord)
                         {
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
                             int w = (int)Math.Ceiling(sizefont.Width);
-                            font_height = (int)Math.Ceiling(sizefont.Height);
+                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
                             foreach (char it in _text) font_widths.Add(new CacheFont(it.ToString(), false, w));
                         }
                         else

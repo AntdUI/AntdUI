@@ -478,7 +478,7 @@ namespace AntdUI
         internal virtual bool HasValue { get => false; }
         void OnAllowClear()
         {
-            bool _is_clear = !ReadOnly && allowclear && _mouseHover && (!isempty || HasValue);
+            bool _is_clear = !ReadOnly && !inhibitInput && allowclear && _mouseHover && (!isempty || HasValue);
             if (is_clear == _is_clear) return;
             is_clear = _is_clear;
             CalculateRect();
@@ -586,6 +586,8 @@ namespace AntdUI
         /// </summary>
         [Description("只读"), Category("行为"), DefaultValue(false)]
         public bool ReadOnly { get; set; }
+
+        internal virtual bool inhibitInput { get => false; }
 
         bool multiline = false;
         /// <summary>
@@ -870,7 +872,7 @@ namespace AntdUI
 
         void EnterText(string text, bool ismax = true)
         {
-            if (ReadOnly) return;
+            if (ReadOnly || inhibitInput) return;
             AddHistoryRecord();
             int len = 0;
             GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
@@ -1014,7 +1016,7 @@ namespace AntdUI
                     {
                         m.Result = (IntPtr)1;
                         OnImeResultStrPrivate(m_hIMC, Win32.ImmGetCompositionString(m_hIMC, Win32.GCS_RESULTSTR));
-                        return;//Interrupt, WM_CHAR, WM_IME_CHAR messages will not be generated.
+                        return;
                     }
                     break;
             }
@@ -1266,7 +1268,7 @@ namespace AntdUI
         {
             Win32.ImmReleaseContext(Handle, hIMC);
         }
-        void OnImeResultStrPrivate(IntPtr hIMC, string strResult)
+        void OnImeResultStrPrivate(IntPtr hIMC, string? strResult)
         {
             var CompositionForm = new Win32.COMPOSITIONFORM()
             {
@@ -1274,7 +1276,7 @@ namespace AntdUI
                 ptCurrentPos = CurrentCaret.Location
             };
             Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
-            if (!string.IsNullOrEmpty(strResult))
+            if (strResult != null && !string.IsNullOrEmpty(strResult))
             {
                 var chars = new List<string>(strResult.Length);
                 foreach (char key in strResult)
