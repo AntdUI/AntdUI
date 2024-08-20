@@ -34,6 +34,10 @@ namespace Overview.Controls
         {
             AntdUI.Modal.open(new AntdUI.Modal.Config(form, "This is a success message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Success)
             {
+                OnButtonStyle = (id, btn) =>
+                {
+                    btn.BackExtend = "135, #6253E1, #04BEFE";
+                },
                 CancelText = null,
                 OkText = "ÖªµÀÁË"
             });

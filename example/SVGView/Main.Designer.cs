@@ -71,7 +71,7 @@ namespace SVGView
             // 
             button2.AutoSizeMode = AntdUI.TAutoSize.Width;
             button2.Dock = DockStyle.Right;
-            button2.ImageSvg = resources.GetString("button2.ImageSvg");
+            button2.IconSvg = resources.GetString("button2.ImageSvg");
             button2.Location = new Point(525, 0);
             button2.Name = "button2";
             button2.Size = new Size(77, 36);

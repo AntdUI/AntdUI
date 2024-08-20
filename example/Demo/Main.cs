@@ -163,8 +163,8 @@ namespace Demo
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            if (WindowState == FormWindowState.Maximized) btn_max.Image = Properties.Resources.app_max2b;
-            else btn_max.Image = Properties.Resources.app_maxb;
+            if (WindowState == FormWindowState.Maximized) btn_max.Icon = Properties.Resources.app_max2b;
+            else btn_max.Icon = Properties.Resources.app_maxb;
             base.OnSizeChanged(e);
         }
 

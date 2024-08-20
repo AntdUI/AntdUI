@@ -308,66 +308,66 @@ namespace Overview.Controls
             // 
             // tooltipComponent1
             // 
-            tooltipComponent1.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipComponent1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipTL
             // 
             tooltipTL.ArrowAlign = AntdUI.TAlign.TL;
-            tooltipTL.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipTL.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipTop
             // 
-            tooltipTop.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipTop.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipTR
             // 
             tooltipTR.ArrowAlign = AntdUI.TAlign.TR;
-            tooltipTR.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipTR.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipRT
             // 
             tooltipRT.ArrowAlign = AntdUI.TAlign.RT;
-            tooltipRT.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipRT.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipRight
             // 
             tooltipRight.ArrowAlign = AntdUI.TAlign.Right;
-            tooltipRight.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipRight.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipRB
             // 
             tooltipRB.ArrowAlign = AntdUI.TAlign.RB;
-            tooltipRB.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipRB.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipBR
             // 
             tooltipBR.ArrowAlign = AntdUI.TAlign.BR;
-            tooltipBR.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipBR.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipBottom
             // 
             tooltipBottom.ArrowAlign = AntdUI.TAlign.Bottom;
-            tooltipBottom.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipBottom.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipBL
             // 
             tooltipBL.ArrowAlign = AntdUI.TAlign.BL;
-            tooltipBL.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipBL.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipLB
             // 
             tooltipLB.ArrowAlign = AntdUI.TAlign.LB;
-            tooltipLB.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipLB.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipLeft
             // 
             tooltipLeft.ArrowAlign = AntdUI.TAlign.Left;
-            tooltipLeft.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipLeft.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // tooltipLT
             // 
             tooltipLT.ArrowAlign = AntdUI.TAlign.LT;
-            tooltipLT.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipLT.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             // 
             // Tooltip
             // 

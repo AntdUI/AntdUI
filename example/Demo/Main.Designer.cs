@@ -535,7 +535,7 @@ namespace Demo
             btn_min.Dock = DockStyle.Right;
             btn_min.Font = new Font("Microsoft YaHei UI Light", 18F, FontStyle.Regular, GraphicsUnit.Point);
             btn_min.Ghost = true;
-            btn_min.Image = Properties.Resources.app_minb;
+            btn_min.Icon = Properties.Resources.app_minb;
             btn_min.Location = new Point(1142, 0);
             btn_min.Name = "btn_min";
             btn_min.Size = new Size(50, 40);
@@ -550,7 +550,7 @@ namespace Demo
             btn_max.Dock = DockStyle.Right;
             btn_max.Font = new Font("Microsoft YaHei UI Light", 18F, FontStyle.Regular, GraphicsUnit.Point);
             btn_max.Ghost = true;
-            btn_max.Image = Properties.Resources.app_maxb;
+            btn_max.Icon = Properties.Resources.app_maxb;
             btn_max.Location = new Point(1192, 0);
             btn_max.Name = "btn_max";
             btn_max.Size = new Size(50, 40);
@@ -565,8 +565,8 @@ namespace Demo
             btn_close.Dock = DockStyle.Right;
             btn_close.Font = new Font("Microsoft YaHei UI Light", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn_close.Ghost = true;
-            btn_close.Image = Properties.Resources.app_closeb;
-            btn_close.ImageHover = Properties.Resources.app_close;
+            btn_close.Icon = Properties.Resources.app_closeb;
+            btn_close.IconHover = Properties.Resources.app_close;
             btn_close.Location = new Point(1242, 0);
             btn_close.Name = "btn_close";
             btn_close.Size = new Size(58, 40);
@@ -775,7 +775,7 @@ namespace Demo
             button5.BackHover = Color.FromArgb(100, 64, 150, 255);
             button5.ForeColor = Color.White;
             button5.Ghost = true;
-            button5.Image = Properties.Resources.search;
+            button5.Icon = Properties.Resources.search;
             button5.Location = new Point(887, 625);
             button5.Margin = new Padding(4);
             button5.Name = "button5";
@@ -793,7 +793,7 @@ namespace Demo
             button6.BackHover = Color.FromArgb(100, 64, 150, 255);
             button6.ForeColor = Color.White;
             button6.Ghost = true;
-            button6.Image = Properties.Resources.search;
+            button6.Icon = Properties.Resources.search;
             button6.Location = new Point(1080, 625);
             button6.Margin = new Padding(4);
             button6.Name = "button6";

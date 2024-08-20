@@ -134,7 +134,7 @@ namespace Overview.Controls
             // button9
             // 
             button9.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button9.ImageSvg = Properties.Resources.icon_search;
+            button9.IconSvg = Properties.Resources.icon_search;
             button9.Location = new Point(56, 3);
             button9.Name = "button9";
             button9.Size = new Size(95, 47);
@@ -146,7 +146,7 @@ namespace Overview.Controls
             // button7
             // 
             button7.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button7.ImageSvg = Properties.Resources.icon_poweroff;
+            button7.IconSvg = Properties.Resources.icon_poweroff;
             button7.Location = new Point(3, 3);
             button7.Name = "button7";
             button7.Shape = AntdUI.TShape.Circle;
@@ -246,7 +246,7 @@ namespace Overview.Controls
             // 
             button11.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button11.BackExtend = "135, #6253E1, #04BEFE";
-            button11.ImageSvg = resources.GetString("button11.ImageSvg");
+            button11.IconSvg = resources.GetString("button11.IconSvg");
             button11.Location = new Point(465, 3);
             button11.Name = "button11";
             button11.Size = new Size(188, 47);
@@ -286,7 +286,7 @@ namespace Overview.Controls
             button20.BackColor = Color.FromArgb(168, 85, 247);
             button20.BackHover = Color.FromArgb(147, 51, 234);
             button20.Dock = DockStyle.Left;
-            button20.ImageSvg = Properties.Resources.icon_search;
+            button20.IconSvg = Properties.Resources.icon_search;
             button20.JoinRight = true;
             button20.Location = new Point(0, 0);
             button20.WaveSize = 0;
@@ -338,7 +338,7 @@ namespace Overview.Controls
             // button25
             // 
             button25.BorderWidth = 1F;
-            button25.ImageSvg = Properties.Resources.icon_search;
+            button25.IconSvg = Properties.Resources.icon_search;
             button25.Location = new Point(161, 3);
             button25.Name = "button25";
             button25.ShowArrow = true;
@@ -353,7 +353,7 @@ namespace Overview.Controls
             // 
             button23.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button23.BorderWidth = 1F;
-            button23.ImageSvg = Properties.Resources.icon_poweroff;
+            button23.IconSvg = Properties.Resources.icon_poweroff;
             button23.IsLink = true;
             button23.Location = new Point(319, 3);
             button23.Name = "button23";
@@ -448,7 +448,7 @@ namespace Overview.Controls
             // 
             button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.BorderWidth = 1F;
-            button1.ImageSvg = Properties.Resources.icon_poweroff;
+            button1.IconSvg = Properties.Resources.icon_poweroff;
             button1.Location = new Point(157, 3);
             button1.Name = "button1";
             button1.Shape = AntdUI.TShape.Circle;
@@ -460,7 +460,7 @@ namespace Overview.Controls
             // 
             button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button4.BorderWidth = 1F;
-            button4.ImageSvg = Properties.Resources.icon_search;
+            button4.IconSvg = Properties.Resources.icon_search;
             button4.Location = new Point(210, 3);
             button4.Name = "button4";
             button4.Size = new Size(95, 47);
@@ -472,7 +472,7 @@ namespace Overview.Controls
             // 
             button26.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button26.BorderWidth = 2F;
-            button26.ImageSvg = Properties.Resources.icon_search;
+            button26.IconSvg = Properties.Resources.icon_search;
             button26.Location = new Point(311, 3);
             button26.Name = "button26";
             button26.Shape = AntdUI.TShape.Circle;
@@ -484,7 +484,7 @@ namespace Overview.Controls
             // button6
             // 
             button6.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button6.ImageSvg = Properties.Resources.icon_search;
+            button6.IconSvg = Properties.Resources.icon_search;
             button6.Location = new Point(364, 3);
             button6.Name = "button6";
             button6.Size = new Size(95, 47);

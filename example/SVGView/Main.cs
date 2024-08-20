@@ -68,7 +68,7 @@ namespace SVGView
             {
                 var svg = input1.Text;
                 if (svg == null) return;
-                button1.ImageSvg = svg;
+                button1.IconSvg = svg;
                 int size = (int)Math.Floor((pictureBox1.Width > pictureBox1.Height ? pictureBox1.Height : pictureBox1.Width) * 0.8F);
                 pictureBox1.Image = AntdUI.SvgExtend.SvgToBmp(svg, size, size, Color.Black);
             }

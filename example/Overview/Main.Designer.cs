@@ -51,7 +51,6 @@ namespace Overview
         {
             btn_back = new AntdUI.Button();
             btn_mode = new AntdUI.Button();
-            divider_top = new AntdUI.Divider();
             flowPanel = new AntdUI.FlowPanel();
             windowBar = new AntdUI.WindowBar();
             txt_search = new AntdUI.Input();
@@ -63,7 +62,7 @@ namespace Overview
             // 
             btn_back.Dock = DockStyle.Left;
             btn_back.Ghost = true;
-            btn_back.ImageSvg = Properties.Resources.app_back;
+            btn_back.IconSvg = Properties.Resources.app_back;
             btn_back.Location = new Point(0, 0);
             btn_back.Name = "btn_back";
             btn_back.Size = new Size(90, 40);
@@ -77,7 +76,7 @@ namespace Overview
             btn_mode.Dock = DockStyle.Right;
             btn_mode.Font = new Font("Microsoft YaHei UI", 18F);
             btn_mode.Ghost = true;
-            btn_mode.ImageSvg = Properties.Resources.app_light;
+            btn_mode.IconSvg = Properties.Resources.app_light;
             btn_mode.Location = new Point(1106, 0);
             btn_mode.Name = "btn_mode";
             btn_mode.Radius = 0;
@@ -86,21 +85,13 @@ namespace Overview
             btn_mode.WaveSize = 0;
             btn_mode.Click += btn_mode_Click;
             // 
-            // divider_top
-            // 
-            divider_top.Dock = DockStyle.Top;
-            divider_top.Location = new Point(0, 40);
-            divider_top.Name = "divider_top";
-            divider_top.Size = new Size(1300, 4);
-            divider_top.TabIndex = 0;
-            // 
             // flowPanel
             // 
             flowPanel.AutoScroll = true;
             flowPanel.Dock = DockStyle.Fill;
-            flowPanel.Location = new Point(0, 44);
+            flowPanel.Location = new Point(0, 40);
             flowPanel.Name = "flowPanel";
-            flowPanel.Size = new Size(1300, 676);
+            flowPanel.Size = new Size(1300, 680);
             flowPanel.TabIndex = 2;
             // 
             // windowBar
@@ -109,6 +100,8 @@ namespace Overview
             windowBar.Controls.Add(colorTheme);
             windowBar.Controls.Add(btn_mode);
             windowBar.Controls.Add(btn_back);
+            windowBar.DividerMargin = 3;
+            windowBar.DividerShow = true;
             windowBar.Dock = DockStyle.Top;
             windowBar.Icon = Properties.Resources.logo;
             windowBar.Location = new Point(0, 0);
@@ -146,7 +139,6 @@ namespace Overview
             BackColor = Color.White;
             ClientSize = new Size(1300, 720);
             Controls.Add(flowPanel);
-            Controls.Add(divider_top);
             Controls.Add(windowBar);
             Font = new Font("Microsoft YaHei UI", 12F);
             ForeColor = Color.Black;
@@ -160,7 +152,6 @@ namespace Overview
 
         #endregion
         private AntdUI.Button btn_mode;
-        private AntdUI.Divider divider_top;
         private AntdUI.FlowPanel flowPanel;
         private AntdUI.Button btn_back;
         private AntdUI.WindowBar windowBar;

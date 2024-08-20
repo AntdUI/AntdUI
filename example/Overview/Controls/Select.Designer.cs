@@ -186,7 +186,7 @@ namespace Overview.Controls
             // button1
             // 
             button1.Dock = DockStyle.Right;
-            button1.ImageSvg = Properties.Resources.icon_search;
+            button1.IconSvg = Properties.Resources.icon_search;
             button1.JoinLeft = true;
             button1.Location = new Point(170, 0);
             button1.Name = "button1";
@@ -219,7 +219,7 @@ namespace Overview.Controls
             // button4
             // 
             button4.Dock = DockStyle.Right;
-            button4.ImageSvg = Properties.Resources.icon_search;
+            button4.IconSvg = Properties.Resources.icon_search;
             button4.JoinLeft = true;
             button4.Location = new Point(170, 0);
             button4.Name = "button4";

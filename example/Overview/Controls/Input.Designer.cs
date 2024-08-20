@@ -226,7 +226,7 @@ namespace Overview.Controls
             // button2
             // 
             button2.Dock = DockStyle.Right;
-            button2.ImageSvg = Properties.Resources.icon_search;
+            button2.IconSvg = Properties.Resources.icon_search;
             button2.JoinLeft = true;
             button2.Location = new Point(170, 0);
             button2.Name = "button2";
