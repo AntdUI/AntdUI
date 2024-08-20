@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormModal : Window
+    internal class LayeredFormModal : Window, IEventListener
     {
         Modal.Config config;
         Panel? panel_main;
@@ -568,5 +568,27 @@ namespace AntdUI
                 }
             }
         }
+
+        #region 主题
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.THEME:
+                    BackColor = Style.Db.BgElevated;
+                    ForeColor = Style.Db.TextBase;
+                    if (panel_main != null) panel_main.Back = Style.Db.BgElevated;
+                    break;
+            }
+        }
+
+        #endregion
     }
 }

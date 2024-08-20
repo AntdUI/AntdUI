@@ -108,6 +108,23 @@ namespace AntdUI
             }
         }
 
+        StringFormat stringFormat = Helper.SF_ALL(lr: StringAlignment.Near);
+        ContentAlignment textAlign = ContentAlignment.MiddleLeft;
+        /// <summary>
+        /// 文本位置
+        /// </summary>
+        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleLeft)]
+        public ContentAlignment TextAlign
+        {
+            get => textAlign;
+            set
+            {
+                if (textAlign == value) return;
+                textAlign = value;
+                textAlign.SetAlignment(ref stringFormat);
+                Invalidate();
+            }
+        }
 
         bool AnimationCheck = false;
         float AnimationCheckValue = 0;
@@ -217,11 +234,9 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat stringFormat = Helper.SF_ALL(lr: StringAlignment.Near);
-
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle;
+            var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
             bool enabled = Enabled;
             var font_size = g.MeasureString(text ?? Config.NullText, Font);
