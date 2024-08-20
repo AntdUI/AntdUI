@@ -34,10 +34,13 @@ namespace AntdUI
     [DefaultProperty("Text")]
     public class Button : IControl, IButtonControl
     {
+        IButton button;
+
         public Button()
         {
             SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
             base.BackColor = Color.Transparent;
+            button = new IButton(this, () => BeforeAutoSize());
         }
 
         #region 属性
@@ -51,13 +54,8 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
-            get => back;
-            set
-            {
-                if (back == value) return;
-                back = value;
-                Invalidate();
-            }
+            get => button.Back;
+            set => button.Back = value;
         }
 
         /// <summary>
@@ -67,24 +65,751 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
-            get => fore;
-            set
-            {
-                if (fore == value) fore = value;
-                fore = value;
-                Invalidate();
-            }
+            get => button.Fore;
+            set => button.Fore = value;
         }
 
         #endregion
 
-        Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
         [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Color? Fore
+        {
+            get => button.Fore;
+            set => button.Fore = value;
+        }
+
+        #region 背景
+
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Color? Back
+        {
+            get => button.Back;
+            set => button.Back = value;
+        }
+
+        /// <summary>
+        /// 背景渐变色
+        /// </summary>
+        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        public string? BackExtend
+        {
+            get => button.BackExtend;
+            set => button.BackExtend = value;
+        }
+
+        /// <summary>
+        /// 悬停背景颜色
+        /// </summary>
+        [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? BackHover
+        {
+            get => button.BackHover;
+            set => button.BackHover = value;
+        }
+
+        /// <summary>
+        /// 激活背景颜色
+        /// </summary>
+        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? BackActive
+        {
+            get => button.BackActive;
+            set => button.BackActive = value;
+        }
+
+        /// <summary>
+        /// 背景图片
+        /// </summary>
+        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        public new Image? BackgroundImage
+        {
+            get => button.BackgroundImage;
+            set => button.BackgroundImage = value;
+        }
+
+        /// <summary>
+        /// 背景图片布局
+        /// </summary>
+        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        public new TFit BackgroundImageLayout
+        {
+            get => button.BackgroundImageLayout;
+            set => button.BackgroundImageLayout = value;
+        }
+
+        #endregion
+
+        #region 默认样式
+
+        /// <summary>
+        /// Default模式背景颜色
+        /// </summary>
+        [Description("Default模式背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? DefaultBack
+        {
+            get => button.DefaultBack;
+            set => button.DefaultBack = value;
+        }
+
+        /// <summary>
+        /// Default模式边框颜色
+        /// </summary>
+        [Description("Default模式边框颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? DefaultBorderColor
+        {
+            get => button.DefaultBorderColor;
+            set => button.DefaultBorderColor = value;
+        }
+
+        #endregion
+
+        #region 边框
+
+        /// <summary>
+        /// 边框宽度
+        /// </summary>
+        [Description("边框宽度"), Category("边框"), DefaultValue(0F)]
+        public float BorderWidth
+        {
+            get => button.BorderWidth;
+            set => button.BorderWidth = value;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 波浪大小
+        /// </summary>
+        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        public int WaveSize
+        {
+            get => button.WaveSize;
+            set => button.WaveSize = value;
+        }
+
+        /// <summary>
+        /// 圆角
+        /// </summary>
+        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        public int Radius
+        {
+            get => button.Radius;
+            set => button.Radius = value;
+        }
+
+        /// <summary>
+        /// 形状
+        /// </summary>
+        [Description("形状"), Category("外观"), DefaultValue(TShape.Default)]
+        public TShape Shape
+        {
+            get => button.Shape;
+            set => button.Shape = value;
+        }
+
+        /// <summary>
+        /// 类型
+        /// </summary>
+        [Description("类型"), Category("外观"), DefaultValue(TTypeMini.Default)]
+        public TTypeMini Type
+        {
+            get => button.Type;
+            set => button.Type = value;
+        }
+
+        /// <summary>
+        /// 幽灵属性，使按钮背景透明
+        /// </summary>
+        [Description("幽灵属性，使按钮背景透明"), Category("外观"), DefaultValue(false)]
+        public bool Ghost
+        {
+            get => button.Ghost;
+            set => button.Ghost = value;
+        }
+
+        /// <summary>
+        /// 响应真实区域
+        /// </summary>
+        [Description("响应真实区域"), Category("行为"), DefaultValue(false)]
+        public bool RespondRealAreas { get; set; }
+
+        /// <summary>
+        /// 显示箭头
+        /// </summary>
+        [Description("显示箭头"), Category("行为"), DefaultValue(false)]
+        public bool ShowArrow
+        {
+            get => button.ShowArrow;
+            set => button.ShowArrow = value;
+        }
+
+        /// <summary>
+        /// 箭头链接样式
+        /// </summary>
+        [Description("箭头链接样式"), Category("行为"), DefaultValue(false)]
+        public bool IsLink
+        {
+            get => button.IsLink;
+            set => button.IsLink = value;
+        }
+
+        /// <summary>
+        /// 箭头角度
+        /// </summary>
+        [Browsable(false), Description("箭头角度"), Category("外观"), DefaultValue(-1F)]
+        public float ArrowProg
+        {
+            get => button.ArrowProg;
+            set => button.ArrowProg = value;
+        }
+
+        #region 文本
+
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
+        [Description("文本"), Category("外观"), DefaultValue(null)]
+        public new string? Text
+        {
+            get => button.Text;
+            set => button.Text = value;
+        }
+
+        /// <summary>
+        /// 文本位置
+        /// </summary>
+        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleCenter)]
+        public ContentAlignment TextAlign
+        {
+            get => button.TextAlign;
+            set => button.TextAlign = value;
+        }
+
+        /// <summary>
+        /// 文本超出自动处理
+        /// </summary>
+        [Description("文本超出自动处理"), Category("行为"), DefaultValue(false)]
+        public bool AutoEllipsis
+        {
+            get => button.AutoEllipsis;
+            set => button.AutoEllipsis = value;
+        }
+
+        /// <summary>
+        /// 是否多行
+        /// </summary>
+        [Description("是否多行"), Category("行为"), DefaultValue(false)]
+        public bool TextMultiLine
+        {
+            get => button.TextMultiLine;
+            set => button.TextMultiLine = value;
+        }
+
+        #endregion
+
+        #region 图标
+
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        public float IconRatio
+        {
+            get => button.IconRatio;
+            set => button.IconRatio = value;
+        }
+
+        /// <summary>
+        /// 图标
+        /// </summary>
+        [Description("图标"), Category("外观"), DefaultValue(null)]
+        public Image? Icon
+        {
+            get => button.Icon;
+            set => button.Icon = value;
+        }
+
+        /// <summary>
+        /// 图标SVG
+        /// </summary>
+        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconSvg
+        {
+            get => button.IconSvg;
+            set => button.IconSvg = value;
+        }
+
+        /// <summary>
+        /// 是否包含图标
+        /// </summary>
+        public bool HasIcon => button.HasIcon;
+
+        /// <summary>
+        /// 图标大小
+        /// </summary>
+        [Description("图标大小"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
+        public Size IconSize
+        {
+            get => button.IconSize;
+            set => button.IconSize = value;
+        }
+
+        /// <summary>
+        /// 悬停图标
+        /// </summary>
+        [Description("悬停图标"), Category("外观"), DefaultValue(null)]
+        public Image? IconHover
+        {
+            get => button.IconHover;
+            set => button.IconHover = value;
+        }
+
+        /// <summary>
+        /// 悬停图标SVG
+        /// </summary>
+        [Description("悬停图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconHoverSvg
+        {
+            get => button.IconHoverSvg;
+            set => button.IconHoverSvg = value;
+        }
+
+        /// <summary>
+        /// 悬停图标动画时长
+        /// </summary>
+        [Description("悬停图标动画时长"), Category("外观"), DefaultValue(200)]
+        public int IconHoverAnimation
+        {
+            get => button.IconHoverAnimation;
+            set => button.IconHoverAnimation = value;
+        }
+
+        /// <summary>
+        /// 按钮图标组件的位置
+        /// </summary>
+        [Description("按钮图标组件的位置"), Category("外观"), DefaultValue(TAlignMini.Left)]
+        public TAlignMini IconPosition
+        {
+            get => button.IconPosition;
+            set => button.IconPosition = value;
+        }
+
+        #region Obsolete
+
+        [Obsolete("请使用 Icon 代替")]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Image? Image { get => Icon; set => Icon = value; }
+
+        [Obsolete("请使用 IconSvg 代替")]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string? ImageSvg { get => IconSvg; set => IconSvg = value; }
+
+        [Obsolete("请使用 IconSize 代替")]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Size ImageSize { get => IconSize; set => IconSize = value; }
+
+        [Obsolete("请使用 IconHover 代替")]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Image? ImageHover { get => IconHover; set => IconHover = value; }
+
+        [Obsolete("请使用 IconHoverSvg 代替")]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string? ImageHoverSvg { get => IconHoverSvg; set => IconHoverSvg = value; }
+
+        [Obsolete("请使用 HasIcon 代替")]
+        public bool HasImage => HasIcon;
+
+        #endregion
+
+        #endregion
+
+        #region 加载动画
+
+        /// <summary>
+        /// 加载状态
+        /// </summary>
+        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        public bool Loading
+        {
+            get => button.Loading;
+            set => button.Loading = value;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 连接左边
+        /// </summary>
+        [Description("连接左边"), Category("外观"), DefaultValue(false)]
+        public bool JoinLeft
+        {
+            get => button.JoinLeft;
+            set => button.JoinLeft = value;
+        }
+
+        /// <summary>
+        /// 连接右边
+        /// </summary>
+        [Description("连接右边"), Category("外观"), DefaultValue(false)]
+        public bool JoinRight
+        {
+            get => button.JoinRight;
+            set => button.JoinRight = value;
+        }
+
+        #endregion
+
+        #region 渲染
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            var g = e.Graphics.High();
+            button.Paint(g, ClientRectangle.PaddingRect(Padding), ReadRectangle);
+            this.PaintBadge(g);
+            base.OnPaint(e);
+        }
+
+        public override Rectangle ReadRectangle
+        {
+            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + button.BorderWidth / 2F) * Config.Dpi, button.Shape, button.JoinLeft, button.JoinRight);
+        }
+
+        public override GraphicsPath RenderRegion
+        {
+            get
+            {
+                var rect_read = ReadRectangle;
+                float _radius = (button.Shape == TShape.Round || button.Shape == TShape.Circle) ? rect_read.Height : button.Radius * Config.Dpi;
+                return button.Path(rect_read, _radius);
+            }
+        }
+
+        #endregion
+
+        #region 鼠标
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (RespondRealAreas)
+            {
+                var rect_read = ReadRectangle;
+                using (var path = button.Path(rect_read, button.Radius * Config.Dpi))
+                {
+                    button.MouseHover = path.IsVisible(e.Location);
+                }
+            }
+            base.OnMouseMove(e);
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            if (RespondRealAreas) return;
+            button.MouseHover = true;
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            button.MouseHover = false;
+        }
+
+        protected override void OnLeave(EventArgs e)
+        {
+            base.OnLeave(e);
+            button.MouseHover = false;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (CanClick(e.Location))
+            {
+                Focus();
+                base.OnMouseDown(e);
+                button.MouseDown = true;
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (button.MouseDown)
+            {
+                if (CanClick(e.Location))
+                {
+                    base.OnMouseUp(e);
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        button.OnClick();
+                        OnClick(e);
+                    }
+                    OnMouseClick(e);
+                }
+                button.MouseDown = false;
+            }
+            else base.OnMouseUp(e);
+        }
+
+        #endregion
+
+        #region 自动大小
+
+        /// <summary>
+        /// 自动大小
+        /// </summary>
+        [Browsable(true)]
+        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        public override bool AutoSize
+        {
+            get => base.AutoSize;
+            set
+            {
+                if (base.AutoSize == value) return;
+                base.AutoSize = value;
+                if (value)
+                {
+                    if (autoSize == TAutoSize.None) autoSize = TAutoSize.Auto;
+                }
+                else autoSize = TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        TAutoSize autoSize = TAutoSize.None;
+        /// <summary>
+        /// 自动大小模式
+        /// </summary>
+        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        public TAutoSize AutoSizeMode
+        {
+            get => autoSize;
+            set
+            {
+                if (autoSize == value) return;
+                autoSize = value;
+                base.AutoSize = autoSize != TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            BeforeAutoSize();
+            base.OnFontChanged(e);
+        }
+
+        public override Size GetPreferredSize(Size proposedSize)
+        {
+            return PSize;
+        }
+
+        internal Size PSize
+        {
+            get
+            {
+                return Helper.GDI(g =>
+                {
+                    var font_size = g.MeasureString(button.Text ?? Config.NullText, Font).Size();
+                    int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
+                    if (button.Shape == TShape.Circle)
+                    {
+                        int s = font_size.Height + wave + gap;
+                        return new Size(s, s);
+                    }
+                    else
+                    {
+                        int m = wave * 2;
+                        if (button.JoinLeft || button.JoinRight) m = 0;
+                        int count = 0;
+                        bool has_icon = button.Loading || HasIcon;
+                        if (has_icon) count++;
+                        if (button.ShowArrow) count++;
+                        if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
+                        {
+                            int size = (int)Math.Ceiling(font_size.Height * 1.2F);
+                            return new Size(font_size.Width + m + gap + (size * (count - 1)), font_size.Height + wave + gap + size);
+                        }
+                        return new Size(font_size.Width + m + gap + ((int)Math.Ceiling(font_size.Height * 1.2F) * count), font_size.Height + wave + gap);
+                    }
+                });
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            BeforeAutoSize();
+            base.OnResize(e);
+        }
+
+        internal bool BeforeAutoSize()
+        {
+            if (autoSize == TAutoSize.None) return true;
+            if (InvokeRequired)
+            {
+                bool flag = false;
+                Invoke(new Action(() =>
+                {
+                    flag = BeforeAutoSize();
+                }));
+                return flag;
+            }
+            switch (autoSize)
+            {
+                case TAutoSize.Width:
+                    if (Width == PSize.Width) return true;
+                    Width = PSize.Width;
+                    break;
+                case TAutoSize.Height:
+                    if (Height == PSize.Height) return true;
+                    Height = PSize.Height;
+                    break;
+                case TAutoSize.Auto:
+                default:
+                    if (Width == PSize.Width && Height == PSize.Height) return true;
+                    Size = PSize;
+                    break;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region 按钮点击
+
+        [DefaultValue(DialogResult.None)]
+        public DialogResult DialogResult { get; set; } = DialogResult.None;
+
+        /// <summary>
+        /// 是否默认按钮
+        /// </summary>
+        public void NotifyDefault(bool value)
+        {
+
+        }
+
+        public void PerformClick()
+        {
+            OnClick(EventArgs.Empty);
+        }
+
+        bool CanClick()
+        {
+            if (button.Loading) return false;
+            else
+            {
+                if (RespondRealAreas)
+                {
+                    var e = PointToClient(MousePosition);
+                    var rect_read = ReadRectangle;
+                    using (var path = button.Path(rect_read, button.Radius * Config.Dpi))
+                    {
+                        return path.IsVisible(e);
+                    }
+                }
+                else return true;
+            }
+        }
+        bool CanClick(Point e)
+        {
+            if (button.Loading) return false;
+            else
+            {
+                if (RespondRealAreas)
+                {
+                    var rect_read = ReadRectangle;
+                    using (var path = button.Path(rect_read, button.Radius * Config.Dpi))
+                    {
+                        return path.IsVisible(e);
+                    }
+                }
+                else return true;
+            }
+        }
+
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public new event EventHandler? DoubleClick
+        {
+            add => base.DoubleClick += value;
+            remove => base.DoubleClick -= value;
+        }
+
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public new event MouseEventHandler? MouseDoubleClick
+        {
+            add => base.MouseDoubleClick += value;
+            remove => base.MouseDoubleClick -= value;
+        }
+
+        #endregion
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            button.Enabled = Enabled;
+            base.OnEnabledChanged(e);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            button.Dispose();
+            base.Dispose(disposing);
+        }
+    }
+
+
+    class IButton : IDisposable
+    {
+        Func<Font> Font;
+        Func<bool> BAutoSize;
+        Action Invalidate;
+        IControl control;
+
+        public IButton(IControl _control, Func<bool> autoSize)
+        {
+            control = _control;
+            Invalidate = () => control.Invalidate();
+            Font = () => control.Font;
+            BAutoSize = autoSize;
+        }
+
+        #region 属性
+
+        bool enabled = true;
+        public bool Enabled
+        {
+            get => enabled;
+            set
+            {
+                if (enabled == value) return;
+                enabled = value;
+                Invalidate();
+            }
+        }
+
+        Color? fore;
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
         public Color? Fore
         {
             get => fore;
@@ -102,9 +827,6 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color? Back
         {
             get => back;
@@ -120,7 +842,6 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;
@@ -135,23 +856,18 @@ namespace AntdUI
         /// <summary>
         /// 悬停背景颜色
         /// </summary>
-        [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
-        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
         Image? backImage = null;
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
-        public new Image? BackgroundImage
+        public Image? BackgroundImage
         {
             get => backImage;
             set
@@ -166,8 +882,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
-        public new TFit BackgroundImageLayout
+        public TFit BackgroundImageLayout
         {
             get => backFit;
             set
@@ -186,8 +901,6 @@ namespace AntdUI
         /// <summary>
         /// Default模式背景颜色
         /// </summary>
-        [Description("Default模式背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DefaultBack
         {
             get => defaultback;
@@ -203,8 +916,6 @@ namespace AntdUI
         /// <summary>
         /// Default模式边框颜色
         /// </summary>
-        [Description("Default模式边框颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DefaultBorderColor
         {
             get => defaultbordercolor;
@@ -220,11 +931,10 @@ namespace AntdUI
 
         #region 边框
 
-        internal float borderWidth = 0;
+        float borderWidth = 0;
         /// <summary>
         /// 边框宽度
         /// </summary>
-        [Description("边框宽度"), Category("边框"), DefaultValue(0F)]
         public float BorderWidth
         {
             get => borderWidth;
@@ -241,14 +951,12 @@ namespace AntdUI
         /// <summary>
         /// 波浪大小
         /// </summary>
-        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
 
-        internal int radius = 6;
+        int radius = 6;
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -256,15 +964,14 @@ namespace AntdUI
             {
                 if (radius == value) return;
                 radius = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (BAutoSize()) Invalidate();
             }
         }
 
-        internal TShape shape = TShape.Default;
+        TShape shape = TShape.Default;
         /// <summary>
         /// 形状
         /// </summary>
-        [Description("形状"), Category("外观"), DefaultValue(TShape.Default)]
         public TShape Shape
         {
             get => shape;
@@ -272,15 +979,14 @@ namespace AntdUI
             {
                 if (shape == value) return;
                 shape = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (BAutoSize()) Invalidate();
             }
         }
 
-        internal TTypeMini type = TTypeMini.Default;
+        TTypeMini type = TTypeMini.Default;
         /// <summary>
         /// 类型
         /// </summary>
-        [Description("类型"), Category("外观"), DefaultValue(TTypeMini.Default)]
         public TTypeMini Type
         {
             get => type;
@@ -296,7 +1002,6 @@ namespace AntdUI
         /// <summary>
         /// 幽灵属性，使按钮背景透明
         /// </summary>
-        [Description("幽灵属性，使按钮背景透明"), Category("外观"), DefaultValue(false)]
         public bool Ghost
         {
             get => ghost;
@@ -308,18 +1013,12 @@ namespace AntdUI
             }
         }
 
-        /// <summary>
-        /// 响应真实区域
-        /// </summary>
-        [Description("响应真实区域"), Category("行为"), DefaultValue(false)]
-        public bool RespondRealAreas { get; set; }
+        public float ArrowProg = -1F;
 
-        internal float ArrowProg = -1F;
         bool showArrow = false;
         /// <summary>
         /// 显示箭头
         /// </summary>
-        [Description("显示箭头"), Category("行为"), DefaultValue(false)]
         public bool ShowArrow
         {
             get => showArrow;
@@ -327,7 +1026,7 @@ namespace AntdUI
             {
                 if (showArrow == value) return;
                 showArrow = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (BAutoSize()) Invalidate();
             }
         }
 
@@ -335,7 +1034,6 @@ namespace AntdUI
         /// <summary>
         /// 箭头链接样式
         /// </summary>
-        [Description("箭头链接样式"), Category("行为"), DefaultValue(false)]
         public bool IsLink
         {
             get => isLink;
@@ -349,13 +1047,12 @@ namespace AntdUI
 
         #region 文本
 
-        internal string? text = null;
+        bool textLine = false;
+        string? text = null;
         /// <summary>
         /// 文本
         /// </summary>
-        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
-        [Description("文本"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        public string? Text
         {
             get => text;
             set
@@ -363,7 +1060,9 @@ namespace AntdUI
                 if (string.IsNullOrEmpty(value)) value = null;
                 if (text == value) return;
                 text = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (text == null) textLine = false;
+                else textLine = text.Contains(Environment.NewLine);
+                if (BAutoSize()) Invalidate();
             }
         }
 
@@ -379,6 +1078,11 @@ namespace AntdUI
             set
             {
                 if (textAlign == value) return;
+                if (loading || HasIcon || showArrow)
+                {
+                    value = ContentAlignment.MiddleCenter;
+                    if (textAlign == value) return;
+                }
                 textAlign = value;
                 textAlign.SetAlignment(ref stringFormat);
                 Invalidate();
@@ -389,7 +1093,6 @@ namespace AntdUI
         /// <summary>
         /// 文本超出自动处理
         /// </summary>
-        [Description("文本超出自动处理"), Category("行为"), DefaultValue(false)]
         public bool AutoEllipsis
         {
             get => autoEllipsis;
@@ -405,10 +1108,9 @@ namespace AntdUI
         /// <summary>
         /// 是否多行
         /// </summary>
-        [Description("是否多行"), Category("行为"), DefaultValue(false)]
         public bool TextMultiLine
         {
-            get { return textMultiLine; }
+            get => textMultiLine;
             set
             {
                 if (textMultiLine == value) return;
@@ -420,7 +1122,7 @@ namespace AntdUI
 
         #endregion
 
-        #region 图片
+        #region 图标
 
         float iconratio = .7F;
         /// <summary>
@@ -434,73 +1136,89 @@ namespace AntdUI
             {
                 if (iconratio == value) return;
                 iconratio = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (BAutoSize()) Invalidate();
             }
         }
 
-        Image? image = null;
+        Image? icon = null;
         /// <summary>
-        /// 图像
+        /// 图标
         /// </summary>
-        [Description("图像"), Category("外观"), DefaultValue(null)]
-        public Image? Image
+        [Description("图标"), Category("外观"), DefaultValue(null)]
+        public Image? Icon
         {
-            get => image;
+            get => icon;
             set
             {
-                if (image == value) return;
-                image = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (icon == value) return;
+                icon = value;
+                if (BAutoSize()) Invalidate();
             }
         }
 
-        string? imageSvg = null;
+        string? iconSvg = null;
         /// <summary>
-        /// 图像SVG
+        /// 图标SVG
         /// </summary>
-        [Description("图像SVG"), Category("外观"), DefaultValue(null)]
-        public string? ImageSvg
+        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconSvg
         {
-            get => imageSvg;
+            get => iconSvg;
             set
             {
-                if (imageSvg == value) return;
-                imageSvg = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (iconSvg == value) return;
+                iconSvg = value;
+                if (BAutoSize()) Invalidate();
             }
         }
 
         /// <summary>
-        /// 是否包含图片
+        /// 是否包含图标
         /// </summary>
-        public bool HasImage
+        public bool HasIcon
         {
-            get => imageSvg != null || image != null;
+            get => iconSvg != null || icon != null;
         }
 
         /// <summary>
-        /// 图像大小
+        /// 图标大小
         /// </summary>
-        [Description("图像大小"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
-        public Size ImageSize { get; set; } = new Size(0, 0);
+        [Description("图标大小"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
+        public Size IconSize { get; set; } = new Size(0, 0);
 
         /// <summary>
-        /// 悬停图像
+        /// 悬停图标
         /// </summary>
-        [Description("悬停图像"), Category("外观"), DefaultValue(null)]
-        public Image? ImageHover { get; set; } = null;
+        [Description("悬停图标"), Category("外观"), DefaultValue(null)]
+        public Image? IconHover { get; set; } = null;
 
         /// <summary>
-        /// 悬停图像SVG
+        /// 悬停图标SVG
         /// </summary>
-        [Description("悬停图像SVG"), Category("外观"), DefaultValue(null)]
-        public string? ImageHoverSvg { get; set; } = null;
+        [Description("悬停图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconHoverSvg { get; set; } = null;
 
         /// <summary>
-        /// 悬停图像动画时长
+        /// 悬停图标动画时长
         /// </summary>
-        [Description("悬停图像动画时长"), Category("外观"), DefaultValue(200)]
-        public int ImageHoverAnimation { get; set; } = 200;
+        [Description("悬停图标动画时长"), Category("外观"), DefaultValue(200)]
+        public int IconHoverAnimation { get; set; } = 200;
+
+        TAlignMini iconPosition = TAlignMini.Left;
+        /// <summary>
+        /// 按钮图标组件的位置
+        /// </summary>
+        [Description("按钮图标组件的位置"), Category("外观"), DefaultValue(TAlignMini.Left)]
+        public TAlignMini IconPosition
+        {
+            get => iconPosition;
+            set
+            {
+                if (iconPosition == value) return;
+                iconPosition = value;
+                if (BAutoSize()) Invalidate();
+            }
+        }
 
         #endregion
 
@@ -519,13 +1237,13 @@ namespace AntdUI
             {
                 if (loading == value) return;
                 loading = value;
-                SetCursor(_mouseHover && Enabled && !value);
-                BeforeAutoSize();
+                control.SetCursor(_mouseHover && enabled && !value);
+                BAutoSize();
                 ThreadLoading?.Dispose();
                 if (loading)
                 {
                     AnimationClickValue = 0;
-                    ThreadLoading = new ITask(this, i =>
+                    ThreadLoading = new ITask(control, i =>
                     {
                         AnimationLoadingValue = i;
                         Invalidate();
@@ -553,7 +1271,7 @@ namespace AntdUI
             {
                 if (joinLeft == value) return;
                 joinLeft = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (BAutoSize()) Invalidate();
             }
         }
 
@@ -569,22 +1287,197 @@ namespace AntdUI
             {
                 if (joinRight == value) return;
                 joinRight = value;
-                if (BeforeAutoSize()) Invalidate();
+                if (BAutoSize()) Invalidate();
+            }
+        }
+
+        public void Dispose()
+        {
+            ThreadClick?.Dispose();
+            ThreadHover?.Dispose();
+            ThreadIconHover?.Dispose();
+            ThreadLoading?.Dispose();
+        }
+
+        ITask? ThreadHover = null;
+        ITask? ThreadIconHover = null;
+        ITask? ThreadClick = null;
+        ITask? ThreadLoading = null;
+
+        #region 点击动画
+
+        bool AnimationClick = false;
+        float AnimationClickValue = 0;
+
+        public void OnClick()
+        {
+            if (WaveSize > 0 && Config.Animation)
+            {
+                ThreadClick?.Dispose();
+                AnimationClickValue = 0;
+                AnimationClick = true;
+                ThreadClick = new ITask(control, () =>
+                {
+                    if (AnimationClickValue > 0.6) AnimationClickValue = AnimationClickValue.Calculate(0.04F);
+                    else AnimationClickValue += AnimationClickValue = AnimationClickValue.Calculate(0.1F);
+                    if (AnimationClickValue > 1) { AnimationClickValue = 0F; return false; }
+                    Invalidate();
+                    return true;
+                }, 50, () =>
+                {
+                    AnimationClick = false;
+                    Invalidate();
+                });
             }
         }
 
         #endregion
 
+        #region 悬停动画
+
+        bool _mouseDown = false;
+        public bool MouseDown
+        {
+            get => _mouseDown;
+            set
+            {
+                if (_mouseDown == value) return;
+                _mouseDown = value;
+                Invalidate();
+            }
+        }
+
+        int AnimationHoverValue = 0;
+        bool AnimationHover = false;
+        bool AnimationIconHover = false;
+        float AnimationIconHoverValue = 0F;
+        bool _mouseHover = false;
+        public bool MouseHover
+        {
+            get => _mouseHover;
+            set
+            {
+                if (_mouseHover == value) return;
+                _mouseHover = value;
+                control.SetCursor(value && enabled && !loading);
+                if (enabled)
+                {
+                    Color _back_hover;
+                    switch (type)
+                    {
+                        case TTypeMini.Default:
+                            if (borderWidth > 0) _back_hover = Style.Db.PrimaryHover;
+                            else _back_hover = Style.Db.FillSecondary;
+                            break;
+                        case TTypeMini.Success:
+                            _back_hover = Style.Db.SuccessHover;
+                            break;
+                        case TTypeMini.Error:
+                            _back_hover = Style.Db.ErrorHover;
+                            break;
+                        case TTypeMini.Info:
+                            _back_hover = Style.Db.InfoHover;
+                            break;
+                        case TTypeMini.Warn:
+                            _back_hover = Style.Db.WarningHover;
+                            break;
+                        case TTypeMini.Primary:
+                        default:
+                            _back_hover = Style.Db.PrimaryHover;
+                            break;
+                    }
+
+                    if (BackHover.HasValue) _back_hover = BackHover.Value;
+                    if (Config.Animation)
+                    {
+                        if (IconHoverAnimation > 0 && HasIcon && (IconHoverSvg != null || IconHover != null))
+                        {
+                            ThreadIconHover?.Dispose();
+                            AnimationIconHover = true;
+                            var t = Animation.TotalFrames(10, IconHoverAnimation);
+                            if (value)
+                            {
+                                ThreadIconHover = new ITask((i) =>
+                                {
+                                    AnimationIconHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                    Invalidate();
+                                    return true;
+                                }, 10, t, () =>
+                                {
+                                    AnimationIconHoverValue = 1F;
+                                    AnimationIconHover = false;
+                                    Invalidate();
+                                });
+                            }
+                            else
+                            {
+                                ThreadIconHover = new ITask((i) =>
+                                {
+                                    AnimationIconHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                    Invalidate();
+                                    return true;
+                                }, 10, t, () =>
+                                {
+                                    AnimationIconHoverValue = 0F;
+                                    AnimationIconHover = false;
+                                    Invalidate();
+                                });
+                            }
+                        }
+                        if (_back_hover.A > 0)
+                        {
+                            int addvalue = _back_hover.A / 12;
+                            ThreadHover?.Dispose();
+                            AnimationHover = true;
+                            if (value)
+                            {
+                                ThreadHover = new ITask(control, () =>
+                                {
+                                    AnimationHoverValue += addvalue;
+                                    if (AnimationHoverValue > _back_hover.A) { AnimationHoverValue = _back_hover.A; return false; }
+                                    Invalidate();
+                                    return true;
+                                }, 10, () =>
+                                {
+                                    AnimationHover = false;
+                                    Invalidate();
+                                });
+                            }
+                            else
+                            {
+                                ThreadHover = new ITask(control, () =>
+                                {
+                                    AnimationHoverValue -= addvalue;
+                                    if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
+                                    Invalidate();
+                                    return true;
+                                }, 10, () =>
+                                {
+                                    AnimationHover = false;
+                                    Invalidate();
+                                });
+                            }
+                        }
+                        else
+                        {
+                            AnimationHoverValue = _back_hover.A;
+                            Invalidate();
+                        }
+                    }
+                    else AnimationHoverValue = _back_hover.A;
+                    Invalidate();
+                }
+            }
+        }
+
+        #endregion
+
+        #endregion
+
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        public void Paint(Graphics g, Rectangle rect, Rectangle rect_read)
         {
-            RectangleF rect = ClientRectangle.PaddingRect(Padding);
-            var g = e.Graphics.High();
-            bool enabled = Enabled;
-
-            var rect_read = ReadRectangle;
-
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
 
             if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, shape);
@@ -664,7 +1557,7 @@ namespace AntdUI
                         if (borderWidth > 0)
                         {
                             float border = borderWidth * Config.Dpi;
-                            if (ExtraMouseDown)
+                            if (MouseDown)
                             {
                                 using (var brush = new Pen(_back_active, border))
                                 {
@@ -685,7 +1578,7 @@ namespace AntdUI
                                 }
                                 PaintTextLoading(g, text, _fore, colorHover, rect_read);
                             }
-                            else if (ExtraMouseHover)
+                            else if (MouseHover)
                             {
                                 using (var brush = new Pen(_back_hover, border))
                                 {
@@ -704,7 +1597,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            if (ExtraMouseDown)
+                            if (MouseDown)
                             {
                                 using (var brush = new SolidBrush(_back_active))
                                 {
@@ -718,7 +1611,7 @@ namespace AntdUI
                                     g.FillPath(brush, path);
                                 }
                             }
-                            else if (ExtraMouseHover)
+                            else if (MouseHover)
                             {
                                 using (var brush = new SolidBrush(_back_hover))
                                 {
@@ -817,7 +1710,7 @@ namespace AntdUI
                         if (borderWidth > 0)
                         {
                             float border = borderWidth * Config.Dpi;
-                            if (ExtraMouseDown)
+                            if (MouseDown)
                             {
                                 using (var brush = new Pen(_back_active, border))
                                 {
@@ -838,7 +1731,7 @@ namespace AntdUI
                                 }
                                 PaintTextLoading(g, text, _back, colorHover, rect_read);
                             }
-                            else if (ExtraMouseHover)
+                            else if (MouseHover)
                             {
                                 using (var brush = new Pen(_back_hover, border))
                                 {
@@ -907,7 +1800,7 @@ namespace AntdUI
                             }
                         }
 
-                        if (ExtraMouseDown)
+                        if (MouseDown)
                         {
                             using (var brush = new SolidBrush(_back_active))
                             {
@@ -922,7 +1815,7 @@ namespace AntdUI
                                 g.FillPath(brush, path);
                             }
                         }
-                        else if (ExtraMouseHover)
+                        else if (MouseHover)
                         {
                             using (var brush = new SolidBrush(_back_hover))
                             {
@@ -936,19 +1829,17 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
         }
 
         #region 渲染帮助
 
         void PaintTextLoading(Graphics g, string? text, Color color, Rectangle rect_read, bool enabled)
         {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+            var font_size = g.MeasureString(text ?? Config.NullText, Font()).Size();
             if (text == null)
             {
                 //没有文字
-                var rect = GetImageRectCenter(font_size, rect_read);
+                var rect = GetIconRectCenter(font_size, rect_read);
                 if (loading)
                 {
                     float loading_size = rect_read.Height * 0.06F;
@@ -961,7 +1852,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (PaintImage(g, color, rect, false, enabled) && showArrow)
+                    if (PaintIcon(g, color, rect, false, enabled) && showArrow)
                     {
                         int size = (int)(font_size.Height * IconRatio);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
@@ -983,34 +1874,13 @@ namespace AntdUI
             }
             else
             {
-                bool right = RightToLeft == RightToLeft.Yes;
-                bool has_left = loading || HasImage, has_rigth = showArrow;
+                bool has_left = loading || HasIcon, has_right = showArrow;
                 Rectangle rect_text;
-                if (has_left || has_rigth)
+                if (has_left || has_right)
                 {
-                    int font_width = font_size.Width;
-                    int icon_size = (int)(font_size.Height * iconratio), sps = (int)(font_size.Height * .4F), sps2 = sps * 2, sp = (int)(font_size.Height * .25F);
-
-                    if (has_left && has_rigth)
+                    if (has_left && has_right)
                     {
-                        int read_width = font_width + icon_size + (sp * 2) + sps2, read_x = rect_read.X + ((rect_read.Width - read_width) / 2);
-
-                        Rectangle rect_l, rect_r;
-
-                        if (right)
-                        {
-                            rect_text = new Rectangle(read_x + sps, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                            rect_l = new Rectangle(read_x + read_width - icon_size - sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-
-                            rect_r = new Rectangle(rect_read.X + sps, rect_l.Y, icon_size, icon_size);
-                        }
-                        else
-                        {
-                            rect_text = new Rectangle(read_x + sps + icon_size + sp, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                            rect_l = new Rectangle(read_x + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-
-                            rect_r = new Rectangle((rect_read.X + sps + rect_read.Width - sps2 - icon_size - sp) + sp, rect_l.Y, icon_size, icon_size);
-                        }
+                        rect_text = RectAlignLR(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l, out var rect_r);
 
                         if (loading)
                         {
@@ -1022,7 +1892,7 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_l, AnimationLoadingValue, 100);
                             }
                         }
-                        else PaintImage(g, color, rect_l, true, enabled);
+                        else PaintIcon(g, color, rect_l, true, enabled);
 
                         #region ARROW
 
@@ -1044,19 +1914,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        int read_width = font_width + icon_size + (sp * 2) + sps2, read_x = rect_read.X + ((rect_read.Width - read_width) / 2);
-
-                        Rectangle rect_l;
-                        if (right)
-                        {
-                            rect_text = new Rectangle(read_x + sps, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                            rect_l = new Rectangle(read_x + read_width - icon_size - sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                        }
-                        else
-                        {
-                            rect_text = new Rectangle(read_x + sps + icon_size + sp, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                            rect_l = new Rectangle(read_x + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                        }
+                        rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
                             float loading_size = rect_read.Height * 0.06F;
@@ -1067,22 +1925,11 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_l, AnimationLoadingValue, 100);
                             }
                         }
-                        else PaintImage(g, color, rect_l, true, enabled);
+                        else PaintIcon(g, color, rect_l, true, enabled);
                     }
                     else
                     {
-                        Rectangle rect_r;
-
-                        if (right)
-                        {
-                            rect_text = new Rectangle(rect_read.X + sps + icon_size + sp, rect_read.Y + sps, rect_read.Width - sps2 - icon_size - sp, rect_read.Height - sps2);
-                            rect_r = new Rectangle(rect_read.X + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                        }
-                        else
-                        {
-                            rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2 - icon_size - sp, rect_read.Height - sps2);
-                            rect_r = new Rectangle(rect_text.Right + sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                        }
+                        rect_text = RectAlignR(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_r);
 
                         #region ARROW
 
@@ -1107,20 +1954,20 @@ namespace AntdUI
                 {
                     int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
+                    PaintTextAlign(rect_read, ref rect_text);
                 }
-                PaintTextAlign(rect_read, ref rect_text);
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawString(text, Font, brush, rect_text, stringFormat);
+                    g.DrawString(text, Font(), brush, rect_text, stringFormat);
                 }
             }
         }
         void PaintTextLoading(Graphics g, string? text, Color color, Color colorHover, Rectangle rect_read)
         {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+            var font_size = g.MeasureString(text ?? Config.NullText, Font()).Size();
             if (text == null)
             {
-                var rect = GetImageRectCenter(font_size, rect_read);
+                var rect = GetIconRectCenter(font_size, rect_read);
                 if (loading)
                 {
                     float loading_size = rect_read.Height * 0.06F;
@@ -1133,7 +1980,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (PaintImage(g, color, rect, false, true))
+                    if (PaintIcon(g, color, rect, false, true))
                     {
                         if (showArrow)
                         {
@@ -1162,39 +2009,18 @@ namespace AntdUI
                             }
                         }
                     }
-                    else PaintImage(g, colorHover, rect, false, true);
+                    else PaintIcon(g, colorHover, rect, false, true);
                 }
             }
             else
             {
-                bool right = RightToLeft == RightToLeft.Yes;
-                bool has_left = loading || HasImage, has_rigth = showArrow;
+                bool has_left = loading || HasIcon, has_right = showArrow;
                 Rectangle rect_text;
-                if (has_left || has_rigth)
+                if (has_left || has_right)
                 {
-                    int font_width = font_size.Width;
-                    int icon_size = (int)(font_size.Height * iconratio), sps = (int)(font_size.Height * .4F), sps2 = sps * 2, sp = (int)(font_size.Height * .25F);
-
-                    if (has_left && has_rigth)
+                    if (has_left && has_right)
                     {
-                        int read_width = font_width + icon_size + (sp * 2) + sps2, read_x = rect_read.X + ((rect_read.Width - read_width) / 2);
-
-                        Rectangle rect_l, rect_r;
-
-                        if (right)
-                        {
-                            rect_text = new Rectangle(read_x + sps, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                            rect_l = new Rectangle(read_x + read_width - icon_size - sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-
-                            rect_r = new Rectangle(rect_read.X + sps, rect_l.Y, icon_size, icon_size);
-                        }
-                        else
-                        {
-                            rect_text = new Rectangle(read_x + sps + icon_size + sp, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                            rect_l = new Rectangle(read_x + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-
-                            rect_r = new Rectangle((rect_read.X + sps + rect_read.Width - sps2 - icon_size - sp) + sp, rect_l.Y, icon_size, icon_size);
-                        }
+                        rect_text = RectAlignLR(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l, out var rect_r);
 
                         if (loading)
                         {
@@ -1208,8 +2034,8 @@ namespace AntdUI
                         }
                         else
                         {
-                            PaintImage(g, color, rect_l, true, true);
-                            PaintImage(g, colorHover, rect_l, true, true);
+                            PaintIcon(g, color, rect_l, true, true);
+                            PaintIcon(g, colorHover, rect_l, true, true);
                         }
 
                         #region ARROW
@@ -1240,19 +2066,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        int read_width = font_width + icon_size + (sp * 2) + sps2, read_x = rect_read.X + ((rect_read.Width - read_width) / 2);
-                        Rectangle rect_l;
-                        if (right)
-                        {
-                            rect_text = new Rectangle(read_x + sps, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                            rect_l = new Rectangle(read_x + read_width - icon_size - sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                        }
-                        else
-                        {
-                            rect_text = new Rectangle(read_x + sps + icon_size + sp, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                            rect_l = new Rectangle(read_x + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                        }
-
+                        rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
                             float loading_size = rect_read.Height * 0.06F;
@@ -1265,24 +2079,13 @@ namespace AntdUI
                         }
                         else
                         {
-                            PaintImage(g, color, rect_l, true, true);
-                            PaintImage(g, colorHover, rect_l, true, true);
+                            PaintIcon(g, color, rect_l, true, true);
+                            PaintIcon(g, colorHover, rect_l, true, true);
                         }
                     }
                     else
                     {
-                        Rectangle rect_r;
-
-                        if (right)
-                        {
-                            rect_text = new Rectangle(rect_read.X + sps + icon_size + sp, rect_read.Y + sps, rect_read.Width - sps2 - icon_size - sp, rect_read.Height - sps2);
-                            rect_r = new Rectangle(rect_read.X + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                        }
-                        else
-                        {
-                            rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2 - icon_size - sp, rect_read.Height - sps2);
-                            rect_r = new Rectangle(rect_text.Right + sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                        }
+                        rect_text = RectAlignR(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_r);
 
                         #region ARROW
 
@@ -1315,16 +2118,108 @@ namespace AntdUI
                 {
                     int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
+                    PaintTextAlign(rect_read, ref rect_text);
                 }
-                PaintTextAlign(rect_read, ref rect_text);
                 using (var brush = new SolidBrush(color))
                 using (var brushHover = new SolidBrush(colorHover))
                 {
-                    g.DrawString(text, Font, brush, rect_text, stringFormat);
-                    g.DrawString(text, Font, brushHover, rect_text, stringFormat);
+                    g.DrawString(text, Font(), brush, rect_text, stringFormat);
+                    g.DrawString(text, Font(), brushHover, rect_text, stringFormat);
                 }
             }
         }
+
+        internal static Rectangle RectAlignL(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, Size font_size, Rectangle rect_read, out Rectangle rect_l)
+        {
+            int font_Height = font_size.Height;
+            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
+            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * .25F);
+            Rectangle rect_text;
+            switch (iconPosition)
+            {
+                case TAlignMini.Top:
+                    int t_x = rect_read.Y + ((rect_read.Height - (font_size.Height + icon_size + sp)) / 2);
+                    rect_text = new Rectangle(rect_read.X, t_x + icon_size + sp, rect_read.Width, font_size.Height);
+                    rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, t_x, icon_size, icon_size);
+                    break;
+                case TAlignMini.Bottom:
+                    int b_x = rect_read.Y + ((rect_read.Height - (font_size.Height + icon_size + sp)) / 2);
+                    rect_text = new Rectangle(rect_read.X, b_x, rect_read.Width, font_size.Height);
+                    rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, b_x + font_size.Height + sp, icon_size, icon_size);
+                    break;
+                case TAlignMini.Right:
+                    int r_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2);
+                    rect_text = new Rectangle(r_x, rect_read.Y, font_size.Width, rect_read.Height);
+                    rect_l = new Rectangle(r_x + font_size.Width + sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                    break;
+                case TAlignMini.Left:
+                default:
+                    int l_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2);
+                    rect_text = new Rectangle(l_x + icon_size + sp, rect_read.Y, font_size.Width, rect_read.Height);
+                    rect_l = new Rectangle(l_x, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                    break;
+            }
+            return rect_text;
+        }
+        internal static Rectangle RectAlignLR(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, Size font_size, Rectangle rect_read, out Rectangle rect_l, out Rectangle rect_r)
+        {
+            int font_Height = font_size.Height;
+            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
+            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * .25F), sps = (int)(font_size.Height * .4F);
+            Rectangle rect_text;
+            switch (iconPosition)
+            {
+                case TAlignMini.Top:
+                    int t_x = rect_read.Y + ((rect_read.Height - (font_size.Height + icon_size + sp)) / 2);
+                    rect_text = new Rectangle(rect_read.X, t_x + icon_size + sp, rect_read.Width, font_size.Height);
+                    rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, t_x, icon_size, icon_size);
+                    rect_r = new Rectangle(rect_read.Right - icon_size - sps, rect_text.Y + (rect_text.Height - icon_size) / 2, icon_size, icon_size);
+                    break;
+                case TAlignMini.Bottom:
+                    int b_x = rect_read.Y + ((rect_read.Height - (font_size.Height + icon_size + sp)) / 2);
+                    rect_text = new Rectangle(rect_read.X, b_x, rect_read.Width, font_size.Height);
+                    rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, b_x + font_size.Height + sp, icon_size, icon_size);
+                    rect_r = new Rectangle(rect_read.Right - icon_size - sps, rect_text.Y + (rect_text.Height - icon_size) / 2, icon_size, icon_size);
+                    break;
+                case TAlignMini.Right:
+                    int r_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2), r_y = rect_read.Y + (rect_read.Height - icon_size) / 2;
+                    rect_text = new Rectangle(r_x, rect_read.Y, font_size.Width, rect_read.Height);
+                    rect_l = new Rectangle(r_x + font_size.Width + sp, r_y, icon_size, icon_size);
+                    rect_r = new Rectangle(rect_read.X + sps, r_y, icon_size, icon_size);
+                    break;
+                case TAlignMini.Left:
+                default:
+                    int l_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2), l_y = rect_read.Y + (rect_read.Height - icon_size) / 2;
+                    rect_text = new Rectangle(l_x + icon_size + sp, rect_read.Y, font_size.Width, rect_read.Height);
+                    rect_l = new Rectangle(l_x, l_y, icon_size, icon_size);
+                    rect_r = new Rectangle(rect_read.Right - icon_size - sps, l_y, icon_size, icon_size);
+                    break;
+            }
+            return rect_text;
+        }
+        internal static Rectangle RectAlignR(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, Size font_size, Rectangle rect_read, out Rectangle rect_r)
+        {
+            int font_Height = font_size.Height;
+            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
+            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * .25F), sps = (int)(font_size.Height * .4F), rsps = icon_size + sp;
+            Rectangle rect_text;
+            switch (iconPosition)
+            {
+                case TAlignMini.Bottom:
+                case TAlignMini.Right:
+                    rect_text = new Rectangle(rect_read.X + rsps, rect_read.Y, rect_read.Width - rsps, rect_read.Height);
+                    rect_r = new Rectangle(rect_read.X + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                    break;
+                case TAlignMini.Top:
+                case TAlignMini.Left:
+                default:
+                    rect_text = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width - rsps, rect_read.Height);
+                    rect_r = new Rectangle(rect_read.Right - icon_size - sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                    break;
+            }
+            return rect_text;
+        }
+
         void PaintTextAlign(Rectangle rect_read, ref Rectangle rect_text)
         {
             switch (textAlign)
@@ -1343,18 +2238,18 @@ namespace AntdUI
             }
         }
 
-        #region 渲染图片
+        #region 渲染图标
 
         /// <summary>
-        /// 居中的图片绘制区域
+        /// 居中的图标绘制区域
         /// </summary>
         /// <param name="font_size">字体大小</param>
         /// <param name="rect_read">客户区域</param>
-        Rectangle GetImageRectCenter(Size font_size, Rectangle rect_read)
+        Rectangle GetIconRectCenter(Size font_size, Rectangle rect_read)
         {
-            if (ImageSize.Width > 0 && ImageSize.Height > 0)
+            if (IconSize.Width > 0 && IconSize.Height > 0)
             {
-                int w = (int)(ImageSize.Width * Config.Dpi), h = (int)(ImageSize.Height * Config.Dpi);
+                int w = (int)(IconSize.Width * Config.Dpi), h = (int)(IconSize.Height * Config.Dpi);
                 return new Rectangle(rect_read.X + (rect_read.Width - w) / 2, rect_read.Y + (rect_read.Height - h) / 2, w, h);
             }
             else
@@ -1366,66 +2261,66 @@ namespace AntdUI
 
 
         /// <summary>
-        /// 渲染图片
+        /// 渲染图标
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="color">颜色</param>
         /// <param name="rect_o">区域</param>
         /// <param name="hastxt">包含文本</param>
         /// <param name="enabled">使能</param>
-        bool PaintImage(Graphics g, Color? color, Rectangle rect_o, bool hastxt, bool enabled)
+        bool PaintIcon(Graphics g, Color? color, Rectangle rect_o, bool hastxt, bool enabled)
         {
-            var rect = hastxt ? GetImageRect(rect_o) : rect_o;
-            if (AnimationImageHover)
+            var rect = hastxt ? GetIconRect(rect_o) : rect_o;
+            if (AnimationIconHover)
             {
-                PaintCoreImage(g, rect, color, 1F - AnimationImageHoverValue);
-                PaintCoreImageHover(g, rect, color, AnimationImageHoverValue);
+                PaintCoreIcon(g, rect, color, 1F - AnimationIconHoverValue);
+                PaintCoreIconHover(g, rect, color, AnimationIconHoverValue);
                 return false;
             }
             else
             {
                 if (enabled)
                 {
-                    if (ExtraMouseHover)
+                    if (MouseHover)
                     {
-                        if (PaintCoreImageHover(g, rect, color)) return false;
+                        if (PaintCoreIconHover(g, rect, color)) return false;
                     }
-                    if (PaintCoreImage(g, rect, color)) return false;
+                    if (PaintCoreIcon(g, rect, color)) return false;
                 }
                 else
                 {
-                    if (ExtraMouseHover)
+                    if (MouseHover)
                     {
-                        if (PaintCoreImageHover(g, rect, color, .3F)) return false;
+                        if (PaintCoreIconHover(g, rect, color, .3F)) return false;
                     }
-                    if (PaintCoreImage(g, rect, color, .3F)) return false;
+                    if (PaintCoreIcon(g, rect, color, .3F)) return false;
                 }
             }
             return true;
         }
 
         /// <summary>
-        /// 图片绘制区域
+        /// 图标绘制区域
         /// </summary>
         /// <param name="rectl">图标区域</param>
-        Rectangle GetImageRect(Rectangle rectl)
+        Rectangle GetIconRect(Rectangle rectl)
         {
-            if (ImageSize.Width > 0 && ImageSize.Height > 0)
+            if (IconSize.Width > 0 && IconSize.Height > 0)
             {
-                int w = (int)(ImageSize.Width * Config.Dpi), h = (int)(ImageSize.Height * Config.Dpi);
+                int w = (int)(IconSize.Width * Config.Dpi), h = (int)(IconSize.Height * Config.Dpi);
                 return new Rectangle(rectl.X + (rectl.Width - w) / 2, rectl.Y + (rectl.Height - h) / 2, w, h);
             }
             else return rectl;
         }
 
-        bool PaintCoreImage(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => PaintCoreImage(g, image, imageSvg, rect, color, opacity);
-        bool PaintCoreImageHover(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => PaintCoreImage(g, ImageHover, ImageHoverSvg, rect, color, opacity);
+        bool PaintCoreIcon(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => PaintCoreIcon(g, icon, iconSvg, rect, color, opacity);
+        bool PaintCoreIconHover(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => PaintCoreIcon(g, IconHover, IconHoverSvg, rect, color, opacity);
 
-        bool PaintCoreImage(Graphics g, Image? image, string? imageSvg, Rectangle rect, Color? color, float opacity = 1F)
+        bool PaintCoreIcon(Graphics g, Image? icon, string? iconSvg, Rectangle rect, Color? color, float opacity = 1F)
         {
-            if (imageSvg != null)
+            if (iconSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(imageSvg, rect, color))
+                using (var _bmp = SvgExtend.GetImgExtend(iconSvg, rect, color))
                 {
                     if (_bmp != null)
                     {
@@ -1434,9 +2329,9 @@ namespace AntdUI
                     }
                 }
             }
-            else if (image != null)
+            else if (icon != null)
             {
-                g.DrawImage(image, rect, opacity);
+                g.DrawImage(icon, rect, opacity);
                 return true;
             }
             return false;
@@ -1444,7 +2339,7 @@ namespace AntdUI
 
         #endregion
 
-        internal GraphicsPath Path(RectangleF rect_read, float _radius)
+        public GraphicsPath Path(RectangleF rect_read, float _radius)
         {
             if (shape == TShape.Circle)
             {
@@ -1459,443 +2354,6 @@ namespace AntdUI
         }
 
         #endregion
-
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, shape, joinLeft, joinRight);
-        }
-
-        public override GraphicsPath RenderRegion
-        {
-            get
-            {
-                var rect_read = ReadRectangle;
-                float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
-                return Path(rect_read, _radius);
-            }
-        }
-
-        #endregion
-
-        #region 鼠标
-
-        bool _mouseDown = false;
-        bool ExtraMouseDown
-        {
-            get => _mouseDown;
-            set
-            {
-                if (_mouseDown == value) return;
-                _mouseDown = value;
-                Invalidate();
-            }
-        }
-
-        int AnimationHoverValue = 0;
-        bool AnimationHover = false;
-        bool AnimationImageHover = false;
-        float AnimationImageHoverValue = 0F;
-        bool _mouseHover = false;
-        bool ExtraMouseHover
-        {
-            get => _mouseHover;
-            set
-            {
-                if (_mouseHover == value) return;
-                _mouseHover = value;
-                var enabled = Enabled;
-                SetCursor(value && enabled && !loading);
-                if (enabled)
-                {
-                    Color _back_hover;
-                    switch (type)
-                    {
-                        case TTypeMini.Default:
-                            if (borderWidth > 0) _back_hover = Style.Db.PrimaryHover;
-                            else _back_hover = Style.Db.FillSecondary;
-                            break;
-                        case TTypeMini.Success:
-                            _back_hover = Style.Db.SuccessHover;
-                            break;
-                        case TTypeMini.Error:
-                            _back_hover = Style.Db.ErrorHover;
-                            break;
-                        case TTypeMini.Info:
-                            _back_hover = Style.Db.InfoHover;
-                            break;
-                        case TTypeMini.Warn:
-                            _back_hover = Style.Db.WarningHover;
-                            break;
-                        case TTypeMini.Primary:
-                        default:
-                            _back_hover = Style.Db.PrimaryHover;
-                            break;
-                    }
-
-                    if (BackHover.HasValue) _back_hover = BackHover.Value;
-                    if (Config.Animation)
-                    {
-                        if (ImageHoverAnimation > 0 && HasImage && (ImageHoverSvg != null || ImageHover != null))
-                        {
-                            ThreadImageHover?.Dispose();
-                            AnimationImageHover = true;
-                            var t = Animation.TotalFrames(10, ImageHoverAnimation);
-                            if (value)
-                            {
-                                ThreadImageHover = new ITask((i) =>
-                                {
-                                    AnimationImageHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                    Invalidate();
-                                    return true;
-                                }, 10, t, () =>
-                                {
-                                    AnimationImageHoverValue = 1F;
-                                    AnimationImageHover = false;
-                                    Invalidate();
-                                });
-                            }
-                            else
-                            {
-                                ThreadImageHover = new ITask((i) =>
-                                {
-                                    AnimationImageHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                    Invalidate();
-                                    return true;
-                                }, 10, t, () =>
-                                {
-                                    AnimationImageHoverValue = 0F;
-                                    AnimationImageHover = false;
-                                    Invalidate();
-                                });
-                            }
-                        }
-                        if (_back_hover.A > 0)
-                        {
-                            int addvalue = _back_hover.A / 12;
-                            ThreadHover?.Dispose();
-                            AnimationHover = true;
-                            if (value)
-                            {
-                                ThreadHover = new ITask(this, () =>
-                                {
-                                    AnimationHoverValue += addvalue;
-                                    if (AnimationHoverValue > _back_hover.A) { AnimationHoverValue = _back_hover.A; return false; }
-                                    Invalidate();
-                                    return true;
-                                }, 10, () =>
-                                {
-                                    AnimationHover = false;
-                                    Invalidate();
-                                });
-                            }
-                            else
-                            {
-                                ThreadHover = new ITask(this, () =>
-                                {
-                                    AnimationHoverValue -= addvalue;
-                                    if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
-                                    Invalidate();
-                                    return true;
-                                }, 10, () =>
-                                {
-                                    AnimationHover = false;
-                                    Invalidate();
-                                });
-                            }
-                        }
-                        else
-                        {
-                            AnimationHoverValue = _back_hover.A;
-                            Invalidate();
-                        }
-                    }
-                    else AnimationHoverValue = _back_hover.A;
-                    Invalidate();
-                }
-            }
-        }
-
-        #region 动画
-
-        protected override void Dispose(bool disposing)
-        {
-            ThreadClick?.Dispose();
-            ThreadHover?.Dispose();
-            ThreadImageHover?.Dispose();
-            ThreadLoading?.Dispose();
-            base.Dispose(disposing);
-        }
-        ITask? ThreadHover = null;
-        ITask? ThreadImageHover = null;
-        ITask? ThreadClick = null;
-        ITask? ThreadLoading = null;
-
-        #endregion
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (RespondRealAreas)
-            {
-                var rect_read = ReadRectangle;
-                using (var path = Path(rect_read, radius * Config.Dpi))
-                {
-                    ExtraMouseHover = path.IsVisible(e.Location);
-                }
-            }
-            base.OnMouseMove(e);
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            if (RespondRealAreas) return;
-            ExtraMouseHover = true;
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            ExtraMouseHover = false;
-        }
-
-        protected override void OnLeave(EventArgs e)
-        {
-            base.OnLeave(e);
-            ExtraMouseHover = false;
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (CanClick(e.Location))
-            {
-                Focus();
-                base.OnMouseDown(e);
-                ExtraMouseDown = true;
-            }
-        }
-
-        bool AnimationClick = false;
-        float AnimationClickValue = 0;
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (ExtraMouseDown)
-            {
-                if (CanClick(e.Location))
-                {
-                    base.OnMouseUp(e);
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        if (WaveSize > 0 && Config.Animation)
-                        {
-                            ThreadClick?.Dispose();
-                            AnimationClickValue = 0;
-                            AnimationClick = true;
-                            ThreadClick = new ITask(this, () =>
-                            {
-                                if (AnimationClickValue > 0.6) AnimationClickValue = AnimationClickValue.Calculate(0.04F);
-                                else AnimationClickValue += AnimationClickValue = AnimationClickValue.Calculate(0.1F);
-                                if (AnimationClickValue > 1) { AnimationClickValue = 0F; return false; }
-                                Invalidate();
-                                return true;
-                            }, 50, () =>
-                            {
-                                AnimationClick = false;
-                                Invalidate();
-                            });
-                        }
-                        OnClick(e);
-                    }
-                    OnMouseClick(e);
-                }
-                ExtraMouseDown = false;
-            }
-            else base.OnMouseUp(e);
-        }
-
-        #endregion
-
-        #region 自动大小
-
-        /// <summary>
-        /// 自动大小
-        /// </summary>
-        [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
-        public override bool AutoSize
-        {
-            get => base.AutoSize;
-            set
-            {
-                if (base.AutoSize == value) return;
-                base.AutoSize = value;
-                if (value)
-                {
-                    if (autoSize == TAutoSize.None) autoSize = TAutoSize.Auto;
-                }
-                else autoSize = TAutoSize.None;
-                BeforeAutoSize();
-            }
-        }
-
-        TAutoSize autoSize = TAutoSize.None;
-        /// <summary>
-        /// 自动大小模式
-        /// </summary>
-        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
-        public TAutoSize AutoSizeMode
-        {
-            get => autoSize;
-            set
-            {
-                if (autoSize == value) return;
-                autoSize = value;
-                base.AutoSize = autoSize != TAutoSize.None;
-                BeforeAutoSize();
-            }
-        }
-
-        protected override void OnFontChanged(EventArgs e)
-        {
-            BeforeAutoSize();
-            base.OnFontChanged(e);
-        }
-
-        public override Size GetPreferredSize(Size proposedSize)
-        {
-            return PSize;
-        }
-
-        internal Size PSize
-        {
-            get
-            {
-                return Helper.GDI(g =>
-                {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
-                    int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
-                    if (shape == TShape.Circle)
-                    {
-                        int s = font_size.Height + wave + gap;
-                        return new Size(s, s);
-                    }
-                    else
-                    {
-                        int m = wave * 2;
-                        if (joinLeft || joinRight) m = 0;
-                        int count = 0;
-                        if (loading || HasImage) count++;
-                        if (showArrow) count++;
-                        return new Size(font_size.Width + m + gap + ((int)Math.Ceiling(font_size.Height * 1.2F) * count), font_size.Height + wave + gap);
-                    }
-                });
-            }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            BeforeAutoSize();
-            base.OnResize(e);
-        }
-
-        internal bool BeforeAutoSize()
-        {
-            if (autoSize == TAutoSize.None) return true;
-            if (InvokeRequired)
-            {
-                Invoke(new Action(() =>
-                {
-                    BeforeAutoSize();
-                }));
-                return false;
-            }
-            switch (autoSize)
-            {
-                case TAutoSize.Width:
-                    if (Width == PSize.Width) return true;
-                    Width = PSize.Width;
-                    break;
-                case TAutoSize.Height:
-                    if (Height == PSize.Height) return true;
-                    Height = PSize.Height;
-                    break;
-                case TAutoSize.Auto:
-                default:
-                    if (Width == PSize.Width && Height == PSize.Height) return true;
-                    Size = PSize;
-                    break;
-            }
-            return false;
-        }
-
-        #endregion
-
-        #region 按钮点击
-
-        [DefaultValue(DialogResult.None)]
-        public DialogResult DialogResult { get; set; } = DialogResult.None;
-
-        /// <summary>
-        /// 是否默认按钮
-        /// </summary>
-        public void NotifyDefault(bool value)
-        {
-
-        }
-
-        public void PerformClick()
-        {
-            OnClick(EventArgs.Empty);
-        }
-
-        bool CanClick()
-        {
-            if (loading) return false;
-            else
-            {
-                if (RespondRealAreas)
-                {
-                    var e = PointToClient(MousePosition);
-                    var rect_read = ReadRectangle;
-                    using (var path = Path(rect_read, radius * Config.Dpi))
-                    {
-                        return path.IsVisible(e);
-                    }
-                }
-                else return true;
-            }
-        }
-        bool CanClick(Point e)
-        {
-            if (loading) return false;
-            else
-            {
-                if (RespondRealAreas)
-                {
-                    var rect_read = ReadRectangle;
-                    using (var path = Path(rect_read, radius * Config.Dpi))
-                    {
-                        return path.IsVisible(e);
-                    }
-                }
-                else return true;
-            }
-        }
-
-        [Browsable(false)]
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public new event EventHandler? DoubleClick
-        {
-            add => base.DoubleClick += value;
-            remove => base.DoubleClick -= value;
-        }
-
-        [Browsable(false)]
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public new event MouseEventHandler? MouseDoubleClick
-        {
-            add => base.MouseDoubleClick += value;
-            remove => base.MouseDoubleClick -= value;
-        }
 
         #endregion
     }

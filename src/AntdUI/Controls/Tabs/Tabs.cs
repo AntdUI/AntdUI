@@ -94,7 +94,7 @@ namespace AntdUI
         [Description("位置"), Category("外观"), DefaultValue(TabAlignment.Top)]
         public TabAlignment Alignment
         {
-            get { return alignment; }
+            get => alignment;
             set
             {
                 if (alignment == value) return;
@@ -110,7 +110,7 @@ namespace AntdUI
         [Description("标签居中展示"), Category("外观"), DefaultValue(false)]
         public bool Centered
         {
-            get { return centered; }
+            get => centered;
             set
             {
                 if (centered == value) return;
@@ -156,6 +156,9 @@ namespace AntdUI
                 case TabType.Card:
                     if (style is StyleCard stylec) return stylec;
                     return new StyleCard(this);
+                case TabType.Card2:
+                    if (style is StyleCard2 stylec2) return stylec2;
+                    return new StyleCard2(this);
                 case TabType.Line:
                 default:
                     if (style is StyleLine stylel) return stylel;

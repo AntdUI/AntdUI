@@ -404,9 +404,15 @@ namespace AntdUI
     {
         public AntList() { }
 
-        public AntList(int count)
+        public AntList(int capacity)
         {
-            EnsureSpace(count);
+            EnsureSpace(capacity);
+        }
+
+        public AntList(IList<T> collection)
+        {
+            EnsureSpace(collection.Count);
+            AddRange(collection);
         }
 
         #region 通知
@@ -588,7 +594,11 @@ namespace AntdUI
     public class NotifyProperty : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+#if NET40
         public void OnPropertyChanged(string propertyName)
+#else
+        public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
+#endif
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

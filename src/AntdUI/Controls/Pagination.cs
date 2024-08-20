@@ -206,7 +206,7 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
-            get { return fill; }
+            get => fill;
             set
             {
                 fill = value;

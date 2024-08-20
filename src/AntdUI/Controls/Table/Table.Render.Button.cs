@@ -404,20 +404,13 @@ namespace AntdUI
             else
             {
                 var font_size = g.MeasureString(btn.Text ?? Config.NullText, font).Size();
-                bool has_left = btn.HasImage, has_rigth = btn.ShowArrow;
+                bool has_left = btn.HasIcon, has_right = btn.ShowArrow;
                 Rectangle rect_text;
-                if (has_left || has_rigth)
+                if (has_left || has_right)
                 {
-                    int font_width = font_size.Width;
-                    int icon_size = (int)(font_size.Height * btn.IconRatio), sps = (int)(font_size.Height * .4F), sps2 = sps * 2, sp = (int)(font_size.Height * .25F);
-
-                    if (has_left && has_rigth)
+                    if (has_left && has_right)
                     {
-                        int read_width = font_width + icon_size + (sp * 2) + sps2, read_x = rect_read.X + ((rect_read.Width - read_width) / 2);
-
-                        rect_text = new Rectangle(read_x + sps + icon_size + sp, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                        Rectangle rect_l = new Rectangle(read_x + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size),
-                            rect_r = new Rectangle((rect_read.X + sps + rect_read.Width - sps2 - icon_size - sp) + sp, rect_l.Y, icon_size, icon_size);
+                        rect_text = IButton.RectAlignLR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, font_size, rect_read, out var rect_l, out var rect_r);
 
                         PaintButtonPaintImage(g, btn, color, rect_l);
 
@@ -446,16 +439,13 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        int read_width = font_width + icon_size + (sp * 2) + sps2, read_x = rect_read.X + ((rect_read.Width - read_width) / 2);
+                        rect_text = IButton.RectAlignL(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, font_size, rect_read, out var rect_l);
 
-                        rect_text = new Rectangle(read_x + sps + icon_size + sp, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                        var rect_l = new Rectangle(read_x + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
                         PaintButtonPaintImage(g, btn, color, rect_l);
                     }
                     else
                     {
-                        rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2 - icon_size - sp, rect_read.Height - sps2);
-                        var rect_r = new Rectangle(rect_text.Right + sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                        rect_text = IButton.RectAlignR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, font_size, rect_read, out var rect_r);
 
                         #region ARROW
 
@@ -485,8 +475,8 @@ namespace AntdUI
                 {
                     int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
+                    PaintButtonTextAlign(btn, rect_read, ref rect_text);
                 }
-                PaintButtonTextAlign(btn, rect_read, ref rect_text);
                 using (var brush = new SolidBrush(color))
                 {
                     g.DrawString(btn.Text, font, brush, rect_text, btn.stringFormat);
@@ -536,25 +526,13 @@ namespace AntdUI
             else
             {
                 var font_size = g.MeasureString(btn.Text ?? Config.NullText, font).Size();
-                bool has_left = btn.HasImage, has_rigth = btn.ShowArrow;
+                bool has_left = btn.HasIcon, has_right = btn.ShowArrow;
                 Rectangle rect_text;
-                if (has_left || has_rigth)
+                if (has_left || has_right)
                 {
-                    int font_width = font_size.Width;
-                    int icon_size = (int)(font_size.Height * btn.IconRatio), sps = (int)(font_size.Height * .4F), sps2 = sps * 2, sp = (int)(font_size.Height * .25F);
-
-                    if (has_left && has_rigth)
+                    if (has_left && has_right)
                     {
-                        int read_width = font_width + icon_size + (sp * 2) + sps2, read_x = rect_read.X + ((rect_read.Width - read_width) / 2);
-
-                        Rectangle rect_l, rect_r;
-
-
-                        rect_text = new Rectangle(read_x + sps + icon_size + sp, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                        rect_l = new Rectangle(read_x + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-
-                        rect_r = new Rectangle((rect_read.X + sps + rect_read.Width - sps2 - icon_size - sp) + sp, rect_l.Y, icon_size, icon_size);
-
+                        rect_text = IButton.RectAlignLR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, font_size, rect_read, out var rect_l, out var rect_r);
 
                         PaintButtonPaintImage(g, btn, color, rect_l);
                         PaintButtonPaintImage(g, btn, colorHover, rect_l);
@@ -589,23 +567,14 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        int read_width = font_width + icon_size + (sp * 2) + sps2, read_x = rect_read.X + ((rect_read.Width - read_width) / 2);
-                        Rectangle rect_l;
-
-                        rect_text = new Rectangle(read_x + sps + icon_size + sp, rect_read.Y + sps, font_width, rect_read.Height - sps2);
-                        rect_l = new Rectangle(read_x + sps, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                        rect_text = IButton.RectAlignL(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, font_size, rect_read, out var rect_l);
 
                         PaintButtonPaintImage(g, btn, color, rect_l);
                         PaintButtonPaintImage(g, btn, colorHover, rect_l);
                     }
                     else
                     {
-                        Rectangle rect_r;
-
-
-                        rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2 - icon_size - sp, rect_read.Height - sps2);
-                        rect_r = new Rectangle(rect_text.Right + sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-
+                        rect_text = IButton.RectAlignR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, font_size, rect_read, out var rect_r);
 
                         #region ARROW
 
@@ -640,8 +609,8 @@ namespace AntdUI
                 {
                     int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
+                    PaintButtonTextAlign(btn, rect_read, ref rect_text);
                 }
-                PaintButtonTextAlign(btn, rect_read, ref rect_text);
                 using (var brush = new SolidBrush(color))
                 using (var brushHover = new SolidBrush(colorHover))
                 {
@@ -696,9 +665,9 @@ namespace AntdUI
 
         static bool PaintButtonCoreImage(Graphics g, CellButton btn, Rectangle rect, Color? color, float opacity = 1F)
         {
-            if (btn.ImageSvg != null)
+            if (btn.IconSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(btn.ImageSvg, rect, color))
+                using (var _bmp = SvgExtend.GetImgExtend(btn.IconSvg, rect, color))
                 {
                     if (_bmp != null)
                     {
@@ -707,9 +676,9 @@ namespace AntdUI
                     }
                 }
             }
-            else if (btn.Image != null)
+            else if (btn.Icon != null)
             {
-                g.DrawImage(btn.Image, rect, opacity);
+                g.DrawImage(btn.Icon, rect, opacity);
                 return true;
             }
             return false;
@@ -717,9 +686,9 @@ namespace AntdUI
 
         static bool PaintButtonCoreImageHover(Graphics g, CellButton btn, Rectangle rect, Color? color, float opacity = 1F)
         {
-            if (btn.ImageHoverSvg != null)
+            if (btn.IconHoverSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(btn.ImageHoverSvg, rect, color))
+                using (var _bmp = SvgExtend.GetImgExtend(btn.IconHoverSvg, rect, color))
                 {
                     if (_bmp != null)
                     {
@@ -728,9 +697,9 @@ namespace AntdUI
                     }
                 }
             }
-            else if (btn.ImageHover != null)
+            else if (btn.IconHover != null)
             {
-                g.DrawImage(btn.ImageHover, rect, opacity);
+                g.DrawImage(btn.IconHover, rect, opacity);
                 return true;
             }
             return false;

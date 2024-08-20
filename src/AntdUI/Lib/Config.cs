@@ -134,7 +134,7 @@ namespace AntdUI
             dpione = false;
             if (_dpi == dpi) return;
             _dpi = dpi;
-            EventHub.Dispatch(EventType.DPI, dpi);
+            if (!_dpi_custom.HasValue) EventHub.Dispatch(EventType.DPI, dpi);
         }
 
         internal static void SetDpi(Graphics g)

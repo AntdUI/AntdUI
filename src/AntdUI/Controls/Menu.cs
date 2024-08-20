@@ -957,7 +957,7 @@ namespace AntdUI
 
         TooltipForm? tooltipForm = null;
         ILayeredForm? subForm = null;
-        public ILayeredForm? SubForm() { return subForm; }
+        public ILayeredForm? SubForm() => subForm;
         internal int select_x = 0;
 
         internal void DropDownChange(MenuItem value)

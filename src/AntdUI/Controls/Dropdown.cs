@@ -110,7 +110,7 @@ namespace AntdUI
         #region 动画
 
         LayeredFormSelectDown? subForm = null;
-        public ILayeredForm? SubForm() { return subForm; }
+        public ILayeredForm? SubForm() => subForm;
 
         ITask? ThreadExpand = null;
         bool expand = false;
@@ -224,7 +224,7 @@ namespace AntdUI
                         objs.Add(it);
                     }
                     Expand = true;
-                    subForm = new LayeredFormSelectDown(this, radius, objs);
+                    subForm = new LayeredFormSelectDown(this, Radius, objs);
                     subForm.Disposed += (a, b) =>
                     {
                         select_x = 0;

@@ -146,7 +146,7 @@ namespace AntdUI
             {
                 if (selectedValue == value) return;
                 if (value == null || items == null || items.Count == 0) ChangeValueNULL();
-                else ChangeValue(items.IndexOf(value), value);
+                else SetChangeValue(items, value);
                 if (_list) Invalidate();
             }
         }
@@ -179,6 +179,40 @@ namespace AntdUI
             }
             SelectedValueChanged?.Invoke(this, selectedValue);
             SelectedIndexChanged?.Invoke(this, selectedIndex);
+        }
+        void SetChangeValue(BaseCollection items, object val)
+        {
+            for (var i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                if (val.Equals(item))
+                {
+                    ChangeValue(i, item);
+                    return;
+                }
+                else if (item is SelectItem it && it.Tag.Equals(val))
+                {
+                    ChangeValue(i, item);
+                    return;
+                }
+                else if (item is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
+                {
+                    foreach (var sub in group.Sub)
+                    {
+                        if (val.Equals(sub))
+                        {
+                            ChangeValue(i, sub);
+                            return;
+                        }
+                        else if (sub is SelectItem it2 && it2.Tag.Equals(val))
+                        {
+                            ChangeValue(i, sub);
+                            return;
+                        }
+                    }
+                }
+            }
+            ChangeValue(items.IndexOf(val), val);
         }
         void ChangeValue(int x, int y, object obj)
         {
@@ -333,7 +367,7 @@ namespace AntdUI
         #region 动画
 
         LayeredFormSelectDown? subForm = null;
-        public ILayeredForm? SubForm() { return subForm; }
+        public ILayeredForm? SubForm() => subForm;
 
         ITask? ThreadExpand = null;
         float ArrowProg = -1F;
@@ -545,7 +579,13 @@ namespace AntdUI
         /// </summary>
         public Color? OnlineCustom { get; set; }
         public Image? Icon { get; set; }
+        public string? IconSvg { get; set; }
         public string Text { get; set; }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// 子文本
@@ -620,8 +660,10 @@ namespace AntdUI
             Online = _val.Online;
             OnlineCustom = _val.OnlineCustom;
             Icon = _val.Icon;
+            IconSvg = _val.IconSvg;
             Text = _val.Text;
             SubText = _val.SubText;
+            Enable = _val.Enable;
             PY = Pinyin.GetPinyin(_val.Text + _val.SubText).ToLower();
             PYS = Pinyin.GetInitials(_val.Text + _val.SubText).ToLower();
             ID = _i;
@@ -635,6 +677,11 @@ namespace AntdUI
             Show = true;
         }
         public object Val { get; set; }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// 子选项
@@ -652,6 +699,16 @@ namespace AntdUI
         public Color? OnlineCustom { get; set; }
 
         public Image? Icon { get; set; }
+        public string? IconSvg { get; set; }
+
+        /// <summary>
+        /// 是否包含图标
+        /// </summary>
+        public bool HasIcon
+        {
+            get => IconSvg != null || Icon != null;
+        }
+
         public Rectangle RectIcon { get; set; }
         public Rectangle RectOnline { get; set; }
 
@@ -682,9 +739,9 @@ namespace AntdUI
             Rect = rect;
             if (Val is SelectItem)
             {
-                if (Online > -1 || Icon != null)
+                if (Online > -1 || HasIcon)
                 {
-                    if (Online > -1 && Icon != null)
+                    if (Online > -1 && HasIcon)
                     {
                         int h2 = (int)(rect_text.Height * 0.7F);
                         RectOnline = new Rectangle(rect_text.X + (h2 - gap_y) / 2, rect_text.Y + gap, gap_y, gap_y);

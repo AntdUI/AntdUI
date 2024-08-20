@@ -61,9 +61,9 @@ namespace AntdUI
         #region 动画
 
         SpinCore spin_core = new SpinCore();
-        protected override void OnCreateControl()
+        protected override void OnHandleCreated(EventArgs e)
         {
-            base.OnCreateControl();
+            base.OnHandleCreated(e);
             spin_core.Start(this);
         }
 

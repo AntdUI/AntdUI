@@ -173,13 +173,13 @@ namespace AntdUI
                 foreach (var control in controls)
                 {
                     var point = rect.Location;
-                    if (use_x + control.Width > rect.Width)
+                    if (use_x + control.Width + control.Margin.Horizontal > rect.Width)
                     {
                         if (cps.Count > 0)
                         {
                             if (Align == TAlignFlow.LeftCenter || Align == TAlignFlow.Center || Align == TAlignFlow.RightCenter)
                             {
-                                int x = ((rect.Width - use_x) / 2);
+                                int x = ((rect.Width - use_x + gap) / 2);
                                 oldx = x;
                                 foreach (var item in cps)
                                 {
@@ -188,7 +188,7 @@ namespace AntdUI
                             }
                             else if (Align == TAlignFlow.Right)
                             {
-                                int x = rect.Width - use_x;
+                                int x = rect.Width - use_x + gap;
                                 oldx = x;
                                 foreach (var item in cps)
                                 {
@@ -222,7 +222,7 @@ namespace AntdUI
                     }
                     else if (Align == TAlignFlow.RightCenter)
                     {
-                        int x = rect.X + (rect.Width - use_x) - oldx;
+                        int x = rect.X + (rect.Width - use_x + gap) - oldx;
                         foreach (var item in cps)
                         {
                             item.Point = new Point(item.Point.X + x, item.Point.Y);
@@ -230,7 +230,7 @@ namespace AntdUI
                     }
                     else if (Align == TAlignFlow.Center)
                     {
-                        int x = ((rect.Width - use_x) / 2);
+                        int x = ((rect.Width - use_x + gap) / 2);
                         foreach (var item in cps)
                         {
                             item.Point = new Point(item.Point.X + x, item.Point.Y);
@@ -238,7 +238,7 @@ namespace AntdUI
                     }
                     else if (Align == TAlignFlow.Right)
                     {
-                        int x = rect.Width - use_x;
+                        int x = rect.Width - use_x + gap;
                         foreach (var item in cps)
                         {
                             item.Point = new Point(item.Point.X + x, item.Point.Y);

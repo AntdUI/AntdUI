@@ -79,6 +79,11 @@ namespace AntdUI
             set
             {
                 if (text == value) return;
+                if (loop && string.IsNullOrEmpty(value))
+                {
+                    task?.Dispose();
+                    task = null;
+                }
                 font_size = null;
                 text = value;
                 Invalidate();
@@ -133,9 +138,9 @@ namespace AntdUI
             }
         }
 
-        protected override void CreateHandle()
+        protected override void OnHandleCreated(EventArgs e)
         {
-            base.CreateHandle();
+            base.OnHandleCreated(e);
             if (loop) StartTask();
         }
 
@@ -200,10 +205,13 @@ namespace AntdUI
             {
                 if (loop)
                 {
-                    if (font_size == null) font_size = g.MeasureString(text, Font);
-                    g.SetClip(rect);
-                    PaintText(g, rect, font_size.Value, ForeColor);
-                    g.ResetClip();
+                    if (font_size == null && !string.IsNullOrEmpty(text)) font_size = g.MeasureString(text, Font);
+                    if (font_size.HasValue)
+                    {
+                        g.SetClip(rect);
+                        PaintText(g, rect, font_size.Value, ForeColor);
+                        g.ResetClip();
+                    }
                 }
                 else
                 {
@@ -274,12 +282,15 @@ namespace AntdUI
                     }
                     if (loop)
                     {
-                        if (font_size == null) font_size = g.MeasureString(text, Font);
-                        float icon_size = font_size.Value.Height * 0.86F, gap = icon_size * 0.4F;
-                        var rect_icon = new RectangleF(gap, rect.Y + (rect.Height - icon_size) / 2F, icon_size, icon_size);
-                        PaintText(g, rect, rect_icon, font_size.Value, color, back, _radius);
-                        g.ResetClip();
-                        g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
+                        if (font_size == null && !string.IsNullOrEmpty(text)) font_size = g.MeasureString(text, Font);
+                        if (font_size.HasValue)
+                        {
+                            float icon_size = font_size.Value.Height * 0.86F, gap = icon_size * 0.4F;
+                            var rect_icon = new RectangleF(gap, rect.Y + (rect.Height - icon_size) / 2F, icon_size, icon_size);
+                            PaintText(g, rect, rect_icon, font_size.Value, color, back, _radius);
+                            g.ResetClip();
+                            g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
+                        }
                     }
                     else
                     {

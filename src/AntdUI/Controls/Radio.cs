@@ -511,11 +511,12 @@ namespace AntdUI
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)
             {
+                bool flag = false;
                 Invoke(new Action(() =>
                 {
-                    BeforeAutoSize();
+                    flag = BeforeAutoSize();
                 }));
-                return false;
+                return flag;
             }
             switch (autoSize)
             {

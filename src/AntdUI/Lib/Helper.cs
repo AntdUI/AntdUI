@@ -2023,6 +2023,19 @@ namespace AntdUI
             mask.Show(owner);
             return mask;
         }
+
+        public static bool Wait(this System.Threading.WaitHandle handle)
+        {
+            try
+            {
+                handle.WaitOne();
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
     }
 
     internal class AnchorDock

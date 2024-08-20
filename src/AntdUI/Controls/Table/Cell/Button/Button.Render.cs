@@ -39,8 +39,8 @@ namespace AntdUI
             else
             {
                 var size = g.MeasureString(Text ?? Config.NullText, font).Size();
-                if (HasImage && ShowArrow) return new Size(size.Width + size.Height * 2 + gap2 * 3, size.Height + gap);
-                else if (HasImage || ShowArrow) return new Size(size.Width + size.Height + gap + gap2 * 2, size.Height + gap);
+                if (HasIcon && ShowArrow) return new Size(size.Width + size.Height * 2 + gap2 * 3, size.Height + gap);
+                else if (HasIcon || ShowArrow) return new Size(size.Width + size.Height + gap + gap2 * 2, size.Height + gap);
                 return new Size(size.Width + gap2 * 2, size.Height + gap);
             }
         }
@@ -85,11 +85,11 @@ namespace AntdUI
                     if (BackHover.HasValue) _back_hover = BackHover.Value;
                     if (Config.Animation)
                     {
-                        if (ImageHoverAnimation > 0 && HasImage && (ImageHoverSvg != null || ImageHover != null))
+                        if (IconHoverAnimation > 0 && HasIcon && (IconHoverSvg != null || IconHover != null))
                         {
                             ThreadImageHover?.Dispose();
                             AnimationImageHover = true;
-                            var t = Animation.TotalFrames(10, ImageHoverAnimation);
+                            var t = Animation.TotalFrames(10, IconHoverAnimation);
                             if (value)
                             {
                                 ThreadImageHover = new ITask((i) =>

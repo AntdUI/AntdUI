@@ -56,8 +56,8 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        [Description("箭头大小"), Category("外观"), DefaultValue(8F)]
-        public float ArrowSize { get; set; } = 8F;
+        [Description("箭头大小"), Category("外观"), DefaultValue(8)]
+        public int ArrowSize { get; set; } = 8;
 
         /// <summary>
         /// 箭头方向
@@ -181,7 +181,7 @@ namespace AntdUI
             /// <summary>
             /// 箭头大小
             /// </summary>
-            public float ArrowSize { get; set; } = 8F;
+            public int ArrowSize { get; set; } = 8;
 
             /// <summary>
             /// 箭头方向
@@ -273,8 +273,8 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        [Description("箭头大小"), Category("外观"), DefaultValue(8F)]
-        public float ArrowSize { get; set; } = 8F;
+        [Description("箭头大小"), Category("外观"), DefaultValue(8)]
+        public int ArrowSize { get; set; } = 8;
 
         /// <summary>
         /// 箭头方向
@@ -337,8 +337,8 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        [Description("箭头大小"), Category("外观"), DefaultValue(8F)]
-        public float ArrowSize { get; set; } = 8F;
+        [Description("箭头大小"), Category("外观"), DefaultValue(8)]
+        public int ArrowSize { get; set; } = 8;
 
         /// <summary>
         /// 箭头方向
@@ -375,10 +375,10 @@ namespace AntdUI
                 }
                 return;
             }
-            if (dic.ContainsKey(control)) dic[control] = val;
+            if (dic.ContainsKey(control)) dic[control] = val.Trim();
             else
             {
-                dic.Add(control, val);
+                dic.Add(control, val.Trim());
                 control.MouseEnter += Control_Enter;
                 control.MouseLeave += Control_Leave;
                 control.Leave -= Control_Leave;
@@ -418,79 +418,87 @@ namespace AntdUI
     {
         #region 渲染
 
-        public static int Padding = 20;
-
         public static Size RenderMeasure(this ITooltip core, Graphics g, out bool multiline)
         {
             multiline = core.Text.Contains("\n");
-            var font_size = g.MeasureString(core.Text, core.Font);
+            int padding = (int)Math.Ceiling(20 * Config.Dpi);
+            var font_size = g.MeasureString(core.Text, core.Font).Size();
             if (core.CustomWidth.HasValue)
             {
                 int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);
                 if (font_size.Width > width)
                 {
-                    font_size = g.MeasureString(core.Text, core.Font, width);
+                    font_size = g.MeasureString(core.Text, core.Font, width).Size();
                     multiline = true;
                 }
             }
-            if (core.ArrowAlign == TAlign.None) return new Size((int)Math.Ceiling(font_size.Width + Padding), (int)Math.Ceiling(font_size.Height + Padding));
+            if (core.ArrowAlign == TAlign.None) return new Size(font_size.Width + padding, font_size.Height + padding);
             if (core.ArrowAlign == TAlign.Bottom || core.ArrowAlign == TAlign.BL || core.ArrowAlign == TAlign.BR || core.ArrowAlign == TAlign.Top || core.ArrowAlign == TAlign.TL || core.ArrowAlign == TAlign.TR)
-                return new Size((int)Math.Ceiling(font_size.Width + Padding), (int)Math.Ceiling(font_size.Height + Padding + core.ArrowSize));
-            else return new Size((int)Math.Ceiling(font_size.Width + Padding + core.ArrowSize), (int)Math.Ceiling(font_size.Height + Padding));
+                return new Size(font_size.Width + padding, font_size.Height + padding + core.ArrowSize);
+            else return new Size(font_size.Width + padding + core.ArrowSize, font_size.Height + padding);
         }
+
         public static void Render(this ITooltip core, Graphics g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)
         {
-            RectangleF rect_read;
+            int gap = (int)Math.Ceiling(5 * Config.Dpi), padding = gap * 2, padding2 = padding * 2;
             using (var brush = new SolidBrush(Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38)))
             {
                 if (core.ArrowAlign == TAlign.None)
                 {
-                    rect_read = new RectangleF(rect.X + 5, rect.Y + 5, rect.Width - 10, rect.Height - 10);
+                    var rect_read = new Rectangle(rect.X + 5, rect.Y + 5, rect.Width - 10, rect.Height - 10);
                     using (var path = rect_read.RoundPath(core.Radius))
                     {
-                        DrawShadow(core, g, rect, rect_read, 3F, path);
+                        DrawShadow(core, g, rect, rect_read, 3, path);
                         g.FillPath(brush, path);
                     }
+                    RenderText(core, g, rect_read, multiline, padding, padding2, s_c, s_l);
                 }
                 else
                 {
+                    Rectangle rect_text;
                     switch (core.ArrowAlign.AlignMini())
                     {
                         case TAlignMini.Top:
-                            rect_read = new RectangleF(rect.X + 5, rect.Y + 5, rect.Width - 10, rect.Height - 10 - core.ArrowSize);
+                            rect_text = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - core.ArrowSize);
                             break;
                         case TAlignMini.Bottom:
-                            rect_read = new RectangleF(rect.X + 5, rect.Y + 5 + core.ArrowSize, rect.Width - 10, rect.Height - 10 - core.ArrowSize);
+                            rect_text = new Rectangle(rect.X, rect.Y + core.ArrowSize, rect.Width, rect.Height - core.ArrowSize);
                             break;
                         case TAlignMini.Left:
                             //左
-                            rect_read = new RectangleF(rect.X + 5, rect.Y + 5, rect.Width - 10 - core.ArrowSize, rect.Height - 10);
+                            rect_text = new Rectangle(rect.X, rect.Y, rect.Width - core.ArrowSize, rect.Height);
                             break;
                         default:
                             //右
-                            rect_read = new RectangleF(rect.X + 5 + core.ArrowSize, rect.Y + 5, rect.Width - 10 - core.ArrowSize, rect.Height - 10);
+                            rect_text = new Rectangle(rect.X + core.ArrowSize, rect.Y, rect.Width - core.ArrowSize, rect.Height);
                             break;
                     }
+                    var rect_read = new Rectangle(rect_text.X + gap, rect_text.Y + gap, rect_text.Width - padding, rect_text.Height - padding);
                     using (var path = rect_read.RoundPath(core.Radius))
                     {
-                        DrawShadow(core, g, rect, rect_read, 3F, path);
+                        DrawShadow(core, g, rect, rect_read, 3, path);
                         g.FillPath(brush, path);
                     }
                     g.FillPolygon(brush, core.ArrowAlign.AlignLines(core.ArrowSize, rect, rect_read));
+                    RenderText(core, g, rect_text, multiline, padding, padding2, s_c, s_l);
                 }
             }
-            if (multiline) g.DrawString(core.Text, core.Font, Brushes.White, new RectangleF(rect_read.X + 10, rect_read.Y, rect_read.Width - 20, rect_read.Height), s_l);
-            else g.DrawString(core.Text, core.Font, Brushes.White, rect_read, s_c);
-
         }
-        static void DrawShadow(this ITooltip core, Graphics _g, Rectangle brect, RectangleF rect, float size, GraphicsPath path2)
+
+        static void RenderText(ITooltip core, Graphics g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
+        {
+            if (multiline) g.DrawString(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
+            else g.DrawString(core.Text, core.Font, Brushes.White, rect, s_c);
+        }
+
+        static void DrawShadow(this ITooltip core, Graphics _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)
         {
             using (var bmp = new Bitmap(brect.Width, brect.Height))
             {
                 using (var g = Graphics.FromImage(bmp))
                 {
-                    float size2 = size * 2;
-                    using (var path = new RectangleF(rect.X - size, rect.Y - size + 2, rect.Width + size2, rect.Height + size2).RoundPath(core.Radius))
+                    int size2 = size * 2;
+                    using (var path = new Rectangle(rect.X - size, rect.Y - size + 2, rect.Width + size2, rect.Height + size2).RoundPath(core.Radius))
                     {
                         path.AddPath(path2, false);
                         using (var brush = new PathGradientBrush(path))
@@ -512,7 +520,7 @@ namespace AntdUI
     {
         public Font? Font { get; set; }
         public int Radius { get; set; } = 6;
-        public float ArrowSize { get; set; } = 8F;
+        public int ArrowSize { get; set; } = 8;
         public TAlign ArrowAlign { get; set; } = TAlign.Top;
         public int? CustomWidth { get; set; }
     }
@@ -532,7 +540,7 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        float ArrowSize { get; set; }
+        int ArrowSize { get; set; }
 
         /// <summary>
         /// 箭头方向
@@ -565,7 +573,7 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        float ArrowSize { get; set; }
+        int ArrowSize { get; set; }
 
         /// <summary>
         /// 箭头方向

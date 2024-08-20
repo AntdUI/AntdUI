@@ -576,7 +576,7 @@ namespace AntdUI
 
 
         LayeredFormColorPicker? subForm = null;
-        public ILayeredForm? SubForm() { return subForm; }
+        public ILayeredForm? SubForm() => subForm;
         protected override void OnMouseClick(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -700,11 +700,12 @@ namespace AntdUI
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)
             {
+                bool flag = false;
                 Invoke(new Action(() =>
                 {
-                    BeforeAutoSize();
+                    flag = BeforeAutoSize();
                 }));
-                return false;
+                return flag;
             }
             switch (autoSize)
             {

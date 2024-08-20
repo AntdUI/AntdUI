@@ -229,6 +229,7 @@ namespace AntdUI
             else PaintRIcon(g, rect_r);
         }
 
+        internal virtual bool showplaceholder { get => true; }
         void PaintText(Graphics g, Color _fore, int w, int h)
         {
             if (multiline) g.SetClip(rect_text);
@@ -294,7 +295,7 @@ namespace AntdUI
                 }
                 g.ResetTransform();
             }
-            else if (placeholderText != null)
+            else if (placeholderText != null && showplaceholder)
             {
                 using (var fore = new SolidBrush(Style.Db.TextQuaternary))
                 {

@@ -364,7 +364,7 @@ namespace AntdUI
             /// </summary>
             public int BtnHeight { get; set; } = 38;
 
-            string canceltext = Localization.Provider?.GetLocalizedString("Cancel") ?? "取消";
+            string? canceltext = Localization.Provider?.GetLocalizedString("Cancel") ?? "取消";
             /// <summary>
             /// 取消按钮文字
             /// </summary>
@@ -434,6 +434,11 @@ namespace AntdUI
             public Action<Button>? OnBtns { get; set; }
 
             #endregion
+
+            /// <summary>
+            /// 自定义按钮样式回调
+            /// </summary>
+            public Action<string, Button>? OnButtonStyle { get; set; }
         }
 
         /// <summary>

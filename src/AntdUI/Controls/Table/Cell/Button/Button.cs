@@ -16,7 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.ComponentModel;
+using System;
 using System.Drawing;
 
 namespace AntdUI
@@ -161,7 +161,6 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
         public float IconRatio
         {
             get => iconratio;
@@ -173,57 +172,105 @@ namespace AntdUI
             }
         }
 
-        Image? image = null;
+        Image? icon = null;
         /// <summary>
-        /// 图像
+        /// 图标
         /// </summary>
-        [Description("图像"), Category("外观"), DefaultValue(null)]
+        public Image? Icon
+        {
+            get => icon;
+            set
+            {
+                if (icon == value) return;
+                icon = value;
+                OnPropertyChanged(true);
+            }
+        }
+
+        string? iconSvg = null;
+        /// <summary>
+        /// 图标SVG
+        /// </summary>
+        public string? IconSvg
+        {
+            get => iconSvg;
+            set
+            {
+                if (iconSvg == value) return;
+                iconSvg = value;
+                OnPropertyChanged(true);
+            }
+        }
+
+        /// <summary>
+        /// 是否包含图标
+        /// </summary>
+        public bool HasIcon
+        {
+            get => iconSvg != null || icon != null;
+        }
+
+        /// <summary>
+        /// 悬停图标
+        /// </summary>
+        public Image? IconHover { get; set; } = null;
+
+        /// <summary>
+        /// 悬停图标SVG
+        /// </summary>
+        public string? IconHoverSvg { get; set; } = null;
+
+        /// <summary>
+        /// 悬停图标动画时长
+        /// </summary>
+        public int IconHoverAnimation { get; set; } = 200;
+
+        TAlignMini iconPosition = TAlignMini.Left;
+        /// <summary>
+        /// 按钮图标组件的位置
+        /// </summary>
+        public TAlignMini IconPosition
+        {
+            get => iconPosition;
+            set
+            {
+                if (iconPosition == value) return;
+                iconPosition = value;
+                OnPropertyChanged(true);
+            }
+        }
+
+        #region Obsolete
+
+        [Obsolete("请使用 Icon 代替")]
         public Image? Image
         {
-            get => image;
-            set
-            {
-                if (image == value) return;
-                image = value;
-                OnPropertyChanged(true);
-            }
+            get => Icon;
+            set => Icon = value;
         }
 
-        string? imageSvg = null;
-        [Description("图像SVG"), Category("外观"), DefaultValue(null)]
+        [Obsolete("请使用 IconSvg 代替")]
         public string? ImageSvg
         {
-            get => imageSvg;
-            set
-            {
-                if (imageSvg == value) return;
-                imageSvg = value;
-                OnPropertyChanged(true);
-            }
+            get => IconSvg;
+            set => IconSvg = value;
         }
 
-        /// <summary>
-        /// 是否包含图片
-        /// </summary>
-        public bool HasImage
+        [Obsolete("请使用 IconHover 代替")]
+        public Image? ImageHover
         {
-            get => imageSvg != null || image != null;
+            get => IconHover;
+            set => IconHover = value;
         }
 
-        /// <summary>
-        /// 悬停图像
-        /// </summary>
-        public Image? ImageHover { get; set; } = null;
+        [Obsolete("请使用 IconHoverSvg 代替")]
+        public string? ImageHoverSvg
+        {
+            get => IconHoverSvg;
+            set => IconHoverSvg = value;
+        }
 
-        /// <summary>
-        /// 悬停图像SVG
-        /// </summary>
-        public string? ImageHoverSvg { get; set; } = null;
-
-        /// <summary>
-        /// 悬停图像动画时长
-        /// </summary>
-        public int ImageHoverAnimation { get; set; } = 200;
+        #endregion
 
         #endregion
 

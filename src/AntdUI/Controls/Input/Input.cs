@@ -518,6 +518,14 @@ namespace AntdUI
                 isempty = string.IsNullOrEmpty(_text);
                 FixFontWidth();
                 OnAllowClear();
+                if (isempty)
+                {
+                    if (selectionStart > 0) SelectionStart = 0;
+                }
+                else if (cache_font != null)
+                {
+                    if (selectionStart > cache_font.Length) SelectionStart = cache_font.Length;
+                }
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
             }

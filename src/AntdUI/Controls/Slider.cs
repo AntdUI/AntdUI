@@ -50,7 +50,7 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
-            get { return fill; }
+            get => fill;
             set
             {
                 if (fill == value) return;
@@ -80,7 +80,7 @@ namespace AntdUI
         [Description("最小值"), Category("数据"), DefaultValue(0)]
         public int MinValue
         {
-            get { return _minValue; }
+            get => _minValue;
             set
             {
                 if (value > _maxValue) return;
@@ -97,7 +97,7 @@ namespace AntdUI
         [Description("最大值"), Category("数据"), DefaultValue(100)]
         public int MaxValue
         {
-            get { return _maxValue; }
+            get => _maxValue;
             set
             {
                 if (value < _minValue || value < _value) return;
@@ -114,7 +114,7 @@ namespace AntdUI
         [Description("当前值"), Category("数据"), DefaultValue(0)]
         public int Value
         {
-            get { return _value; }
+            get => _value;
             set
             {
                 if (value < _minValue) value = _minValue;
@@ -196,7 +196,7 @@ namespace AntdUI
         [Description("线条粗细"), Category("外观"), DefaultValue(4)]
         public int LineSize
         {
-            get { return lineSize; }
+            get => lineSize;
             set
             {
                 if (lineSize == value) return;
@@ -212,7 +212,7 @@ namespace AntdUI
         [Description("点大小"), Category("外观"), DefaultValue(14)]
         public int DotSize
         {
-            get { return dotSize; }
+            get => dotSize;
             set
             {
                 if (dotSize == value) return;
@@ -228,7 +228,7 @@ namespace AntdUI
         [Description("点激活大小"), Category("外观"), DefaultValue(20)]
         public int DotSizeActive
         {
-            get { return dotSizeActive; }
+            get => dotSizeActive;
             set
             {
                 if (dotSizeActive == value) return;

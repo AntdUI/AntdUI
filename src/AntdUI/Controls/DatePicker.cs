@@ -111,10 +111,10 @@ namespace AntdUI
         [Description("焦点时展开下拉"), Category("行为"), DefaultValue(true)]
         public bool FocusExpandDropdown { get; set; } = true;
 
-        protected override void CreateHandle()
+        protected override void OnHandleCreated(EventArgs e)
         {
             if (_value.HasValue) Text = _value.Value.ToString(Format);
-            base.CreateHandle();
+            base.OnHandleCreated(e);
         }
 
         #region 自带图标
@@ -233,7 +233,7 @@ namespace AntdUI
         #region 动画
 
         LayeredFormCalendar? subForm = null;
-        public ILayeredForm? SubForm() { return subForm; }
+        public ILayeredForm? SubForm() => subForm;
 
         #endregion
 

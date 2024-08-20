@@ -19,6 +19,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
@@ -243,6 +244,75 @@ namespace AntdUI
         [Description("关闭按钮大小"), Category("行为"), DefaultValue(48)]
         public int CloseSize { get; set; } = 48;
 
+        #region 线条
+
+        bool showDivider = false;
+        /// <summary>
+        /// 显示线
+        /// </summary>
+        [Description("显示线"), Category("线"), DefaultValue(false)]
+        public bool DividerShow
+        {
+            get => showDivider;
+            set
+            {
+                if (showDivider == value) return;
+                showDivider = value;
+                Invalidate();
+            }
+        }
+
+        Color? dividerColor;
+        /// <summary>
+        /// 线颜色
+        /// </summary>
+        [Description("线颜色"), Category("线"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? DividerColor
+        {
+            get => dividerColor;
+            set
+            {
+                if (dividerColor == value) return;
+                dividerColor = value;
+                if (showDivider) Invalidate();
+            }
+        }
+
+        float dividerthickness = 1F;
+        /// <summary>
+        /// 线厚度
+        /// </summary>
+        [Description("线厚度"), Category("线"), DefaultValue(1F)]
+        public float DividerThickness
+        {
+            get => dividerthickness;
+            set
+            {
+                if (dividerthickness == value) return;
+                dividerthickness = value;
+                if (showDivider) Invalidate();
+            }
+        }
+
+        int dividerMargin = 0;
+        /// <summary>
+        /// 线边距
+        /// </summary>
+        [Description("线边距"), Category("线"), DefaultValue(0)]
+        public int DividerMargin
+        {
+            get => dividerMargin;
+            set
+            {
+                if (dividerMargin == value) return;
+                dividerMargin = value;
+                if (showDivider) Invalidate();
+            }
+        }
+
+        #endregion
+
         #endregion
 
         public override Rectangle DisplayRectangle
@@ -256,7 +326,8 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle.PaddingRect(Padding, UseLeft, 0, 0, 0);
+            var rect_ = ClientRectangle;
+            var rect = rect_.PaddingRect(Padding, UseLeft, 0, 0, 0);
             var g = e.Graphics.High();
 
             var size = g.MeasureString(text ?? Config.NullText, Font);
@@ -440,6 +511,15 @@ namespace AntdUI
 
             #endregion
 
+            if (showDivider)
+            {
+                float thickness = dividerthickness * Config.Dpi;
+                int margin = (int)(dividerMargin * Config.Dpi);
+                using (var brush = dividerColor.Brush(Style.Db.Split))
+                {
+                    g.FillRectangle(brush, new RectangleF(rect_.X + margin, rect_.Bottom - thickness, rect_.Width - margin * 2, thickness));
+                }
+            }
             base.OnPaint(e);
         }
 
@@ -673,9 +753,9 @@ namespace AntdUI
 
         #region 主题变化
 
-        protected override void CreateHandle()
+        protected override void OnHandleCreated(EventArgs e)
         {
-            base.CreateHandle();
+            base.OnHandleCreated(e);
             this.AddListener();
         }
         public void HandleEvent(EventType id, object? tag)

@@ -18,6 +18,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -36,6 +37,7 @@ namespace AntdUI
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
+            new Thread(FrameRenderTask) { IsBackground = true }.Start();
         }
 
         internal Control? PARENT = null;
@@ -62,8 +64,9 @@ namespace AntdUI
         }
         protected override void Dispose(bool disposing)
         {
-            Application.RemoveMessageFilter(this);
             base.Dispose(disposing);
+            Application.RemoveMessageFilter(this);
+            _event.Dispose();
         }
 
         public virtual bool UFocus => true;
@@ -144,13 +147,38 @@ namespace AntdUI
 
         public void Print()
         {
-            if (IsHandleCreated && target_rect.Width > 0 && target_rect.Height > 0)
+            if (IsHandleCreated && target_rect.Width > 0 && target_rect.Height > 0) _event.Set();
+        }
+
+        #region 逐帧渲染
+
+        ManualResetEvent _event = new ManualResetEvent(false);
+        void FrameRenderTask()
+        {
+            while (true)
+            {
+                if (_event.Wait() || !IsHandleCreated || target_rect.Width == 0 && target_rect.Height == 0) return;
+                Render();
+                try
+                {
+                    _event.Reset();
+                }
+                catch
+                {
+                    return;
+                }
+            }
+        }
+
+        void Render()
+        {
+            try
             {
                 if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
                     {
-                        Print();
+                        Render();
                     }));
                     return;
                 }
@@ -165,7 +193,10 @@ namespace AntdUI
                 }
                 catch { }
             }
+            catch { }
         }
+
+        #endregion
 
         internal void SetCursor(bool val)
         {

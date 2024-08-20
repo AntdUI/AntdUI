@@ -250,6 +250,7 @@ namespace AntdUI
                 if (text.Length > btext.Length) btext = text;
                 if (it.Online > -1) ui_online = true;
                 if (it.Icon != null) ui_icon = true;
+                else if (it.IconSvg != null) ui_icon = true;
                 if (it.Sub != null && it.Sub.Count > 0) ui_arrow = true;
             }
             else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
@@ -489,7 +490,7 @@ namespace AntdUI
             {
                 foreach (var it in Items)
                 {
-                    if (it.Show && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
+                    if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
                     {
                         OnClick(it); return;
                     }
@@ -505,7 +506,8 @@ namespace AntdUI
                 int count = 0;
                 foreach (var item in group.Sub)
                 {
-                    if (selectedValue.Contains(item))
+                    var value = ReadValue(item);
+                    if (selectedValue.Contains(value))
                     {
                         count++;
                         break;
@@ -515,26 +517,34 @@ namespace AntdUI
                 {
                     foreach (var item in group.Sub)
                     {
-                        if (selectedValue.Contains(item)) selectedValue.Remove(item);
+                        var value = ReadValue(item);
+                        if (selectedValue.Contains(value)) selectedValue.Remove(value);
                     }
                 }
                 else
                 {
                     foreach (var item in group.Sub)
                     {
-                        if (!selectedValue.Contains(item)) selectedValue.Add(item);
+                        var value = ReadValue(item);
+                        if (!selectedValue.Contains(value)) selectedValue.Add(value);
                     }
                 }
             }
-            else if (selectedValue.Contains(it.Val)) selectedValue.Remove(it.Val);
+            else if (selectedValue.Contains(ReadValue(it.Val))) selectedValue.Remove(ReadValue(it.Val));
             else
             {
                 if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) return;
-                selectedValue.Add(it.Val);
+                selectedValue.Add(ReadValue(it.Val));
             }
             if (PARENT is SelectMultiple select) select.SelectedValue = selectedValue.ToArray();
             down = false;
             Print();
+        }
+
+        object ReadValue(object obj)
+        {
+            if (obj is SelectItem it) return it.Tag;
+            return obj;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -546,8 +556,11 @@ namespace AntdUI
                 for (int i = 0; i < Items.Count; i++)
                 {
                     var it = Items[i];
-                    if (it.Contains(e.Location, 0, (int)scrollY.Value, out var change)) hoveindex = i;
-                    if (change) count++;
+                    if (it.Enable)
+                    {
+                        if (it.Contains(e.Location, 0, (int)scrollY.Value, out var change)) hoveindex = i;
+                        if (change) count++;
+                    }
                 }
                 if (count > 0) Print();
             }
@@ -678,10 +691,7 @@ namespace AntdUI
                     var rectSubText = new RectangleF(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
                     g.DrawString(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
-                using (var brush_select = new SolidBrush(Style.Db.TextBase))
-                {
-                    g.DrawString(it.Text, Font, brush_select, it.RectText, stringFormatLeft);
-                }
+                DrawTextIconSelect(g, it);
                 g.PaintIconCore(new RectangleF(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, 0.46F);
                 if (it.Online.HasValue)
                 {
@@ -690,8 +700,7 @@ namespace AntdUI
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
                 }
-                if (it.Icon != null) g.DrawImage(it.Icon, it.RectIcon);
-                if (it.has_sub) PanintArrow(g, it, Style.Db.TextBase);
+                if (it.has_sub) DrawArrow(g, it, Style.Db.TextBase);
             }
         }
 
@@ -707,7 +716,7 @@ namespace AntdUI
                     var rectSubText = new RectangleF(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
                     g.DrawString(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
-                if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) g.DrawString(it.Text, Font, subbrush, it.RectText, stringFormatLeft);
+                if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) DrawTextIcon(g, it, subbrush);
                 else
                 {
                     if (it.Hover)
@@ -717,7 +726,7 @@ namespace AntdUI
                             g.FillPath(brush_back_hover, path);
                         }
                     }
-                    g.DrawString(it.Text, Font, brush, it.RectText, stringFormatLeft);
+                    DrawTextIcon(g, it, brush);
                 }
                 if (it.Online.HasValue)
                 {
@@ -726,8 +735,7 @@ namespace AntdUI
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
                 }
-                if (it.Icon != null) g.DrawImage(it.Icon, it.RectIcon);
-                if (it.has_sub) PanintArrow(g, it, Style.Db.TextBase);
+                if (it.has_sub) DrawArrow(g, it, Style.Db.TextBase);
             }
         }
         void DrawItemR(Graphics g, SolidBrush brush, SolidBrush brush_back_hover, SolidBrush brush_split, ObjectItem it)
@@ -739,16 +747,13 @@ namespace AntdUI
                 {
                     g.FillRectangle(brush_back, it.Rect);
                 }
-                using (var brush_select = new SolidBrush(Style.Db.TextBase))
-                {
-                    g.DrawString(it.Text, Font, brush_select, it.RectText, stringFormatLeft);
-                }
+                DrawTextIconSelect(g, it);
                 g.PaintIconCore(new RectangleF(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, 0.46F);
             }
             else
             {
                 if (it.Hover) g.FillRectangle(brush_back_hover, it.Rect);
-                g.DrawString(it.Text, Font, brush, it.RectText, stringFormatLeft);
+                DrawTextIcon(g, it, brush);
             }
             if (it.Online.HasValue)
             {
@@ -757,10 +762,60 @@ namespace AntdUI
                     g.FillEllipse(brush_online, it.RectOnline);
                 }
             }
-            if (it.Icon != null) g.DrawImage(it.Icon, it.RectIcon);
-            if (it.has_sub) PanintArrow(g, it, Style.Db.TextBase);
+            if (it.has_sub) DrawArrow(g, it, Style.Db.TextBase);
         }
-        void PanintArrow(Graphics g, ObjectItem item, Color color)
+
+        void DrawTextIconSelect(Graphics g, ObjectItem it)
+        {
+            if (it.Enable)
+            {
+                using (var fore = new SolidBrush(Style.Db.TextBase))
+                {
+                    g.DrawString(it.Text, Font, fore, it.RectText, stringFormatLeft);
+                }
+            }
+            else
+            {
+                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                {
+                    g.DrawString(it.Text, Font, fore, it.RectText, stringFormatLeft);
+                }
+            }
+            DrawIcon(g, it, Style.Db.TextBase);
+        }
+        void DrawTextIcon(Graphics g, ObjectItem it, SolidBrush brush)
+        {
+            if (it.Enable) g.DrawString(it.Text, Font, brush, it.RectText, stringFormatLeft);
+            else
+            {
+                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                {
+                    g.DrawString(it.Text, Font, fore, it.RectText, stringFormatLeft);
+                }
+            }
+            DrawIcon(g, it, brush.Color);
+        }
+        void DrawIcon(Graphics g, ObjectItem it, Color color)
+        {
+            if (it.IconSvg != null)
+            {
+                using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
+                {
+                    if (bmp != null)
+                    {
+                        if (it.Enable) g.DrawImage(bmp, it.RectIcon);
+                        else g.DrawImage(bmp, it.RectIcon, 0.25F);
+                        return;
+                    }
+                }
+            }
+            if (it.Icon != null)
+            {
+                if (it.Enable) g.DrawImage(it.Icon, it.RectIcon);
+                else g.DrawImage(it.Icon, it.RectIcon, 0.25F);
+            }
+        }
+        void DrawArrow(Graphics g, ObjectItem item, Color color)
         {
             int size = item.arr_rect.Width, size_arrow = size / 2;
             g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);

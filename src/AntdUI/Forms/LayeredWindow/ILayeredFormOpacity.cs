@@ -52,7 +52,8 @@ namespace AntdUI
                 alpha = _alpha;
                 if (isrint)
                 {
-                    Print(); return;
+                    Print();
+                    return;
                 }
                 if (IsHandleCreated && TargetRect.Width > 0 && TargetRect.Height > 0)
                 {

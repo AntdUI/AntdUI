@@ -110,6 +110,7 @@ namespace AntdUI
             temp = null;
             base.Dispose(disposing);
         }
+
         Bitmap? temp = null;
         public override Bitmap PrintBit()
         {

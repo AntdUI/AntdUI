@@ -273,7 +273,7 @@ namespace AntdUI
         [Description("是否多行"), Category("行为"), DefaultValue(false)]
         public bool TextMultiLine
         {
-            get { return textMultiLine; }
+            get => textMultiLine;
             set
             {
                 if (textMultiLine == value) return;
@@ -684,11 +684,12 @@ namespace AntdUI
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)
             {
+                bool flag = false;
                 Invoke(new Action(() =>
                 {
-                    BeforeAutoSize();
+                    flag = BeforeAutoSize();
                 }));
-                return false;
+                return flag;
             }
             switch (autoSize)
             {

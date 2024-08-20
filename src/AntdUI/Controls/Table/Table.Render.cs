@@ -462,13 +462,13 @@ namespace AntdUI
                     {
                         g.DrawPath(brush, path_check);
                     }
-                    PanintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                    PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
                 }
             }
         }
 
 
-        void PanintArrow(Graphics g, RowTemplate item, SolidBrush color, int ArrowProg)
+        void PaintArrow(Graphics g, RowTemplate item, SolidBrush color, int ArrowProg)
         {
             int size = item.RectExpand.Width, size_arrow = size / 2;
             var state = g.Save();

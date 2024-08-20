@@ -26,10 +26,10 @@ namespace AntdUI
 {
     partial class Input
     {
-        protected override void OnCreateControl()
+        protected override void OnHandleCreated(EventArgs e)
         {
             FixFontWidth(true);
-            base.OnCreateControl();
+            base.OnHandleCreated(e);
         }
 
         #region 确定字体宽度
@@ -542,7 +542,7 @@ namespace AntdUI
             SetCaretPostion();
         }
         internal virtual bool HasLeft() => false;
-        internal virtual int UseLeft(Rectangle rect, bool delgap) { return 0; }
+        internal virtual int UseLeft(Rectangle rect, bool delgap) => 0;
 
         #region 最终区域计算
 

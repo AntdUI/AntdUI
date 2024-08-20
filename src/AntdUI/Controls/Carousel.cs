@@ -289,11 +289,11 @@ namespace AntdUI
             return speed;
         }
 
-        protected override void OnCreateControl()
+        protected override void OnHandleCreated(EventArgs e)
         {
             int width = ClientRectangle.Width;
             AnimationChangeValue = selectIndex * width;
-            base.OnCreateControl();
+            base.OnHandleCreated(e);
         }
 
         bool AnimationChangeAuto = false;

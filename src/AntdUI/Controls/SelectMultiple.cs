@@ -37,6 +37,8 @@ namespace AntdUI
     {
         #region 属性
 
+        internal override bool inhibitInput { get => _list; }
+
         bool _list = false;
         /// <summary>
         /// 是否列表样式
@@ -51,6 +53,23 @@ namespace AntdUI
                 _list = value;
                 ReadShowCaret = value;
                 if (value) ShowCaret = false;
+            }
+        }
+
+        bool canDelete = true;
+        /// <summary>
+        /// 是否可以删除
+        /// </summary>
+        [Description("是否可以删除"), Category("交互"), DefaultValue(true)]
+        public bool CanDelete
+        {
+            get => canDelete;
+            set
+            {
+                if (canDelete == value) return;
+                canDelete = value;
+                CalculateRect();
+                Invalidate();
             }
         }
 
@@ -134,6 +153,8 @@ namespace AntdUI
                 SelectedValueChanged?.Invoke(this, selectedValue);
             }
         }
+
+        internal override bool showplaceholder { get => selectedValue.Length == 0; }
 
         /// <summary>
         /// 全选项目
@@ -262,6 +283,14 @@ namespace AntdUI
         {
             if (selectedValue.Length > 0)
             {
+                var enable_dir = new List<object>(selectedValue.Length);
+                if (items != null && items.Count > 0)
+                {
+                    foreach (var it in items)
+                    {
+                        if (it is SelectItem item && !item.Enable) enable_dir.Add(item.Tag);
+                    }
+                }
                 return Helper.GDI(g =>
                 {
                     int height = g.MeasureString(Config.NullText, Font).Size().Height, del_icon = (int)(height * 0.4);
@@ -282,13 +311,24 @@ namespace AntdUI
                             rect_lefts = _rect_left.ToArray();
                             return use + size2.Width + gap;
                         }
-                        var rect = new RectangleF(rect_read.X + use, rect_read.Y + y, size.Width, height);
-                        _rect_left_txt.Add(rect);
-                        float gapdelxy = (height - del_icon) / 2;
-                        _rect_left_del.Add(new RectangleF(rect.Right + gapdelxy / 2, rect.Y + gapdelxy, del_icon, del_icon));
-                        rect.Width += height;
-                        _rect_left.Add(rect);
-                        use += size.Width + height + gap;
+                        if (enable_dir.Contains(it) || !canDelete)
+                        {
+                            var rect = new RectangleF(rect_read.X + use, rect_read.Y + y, size.Width, height);
+                            _rect_left_txt.Add(rect);
+                            _rect_left_del.Add(new Rectangle(-10, -10, 0, 0));
+                            _rect_left.Add(rect);
+                            use += size.Width + gap;
+                        }
+                        else
+                        {
+                            var rect = new RectangleF(rect_read.X + use, rect_read.Y + y, size.Width, height);
+                            _rect_left_txt.Add(rect);
+                            float gapdelxy = (height - del_icon) / 2;
+                            _rect_left_del.Add(new RectangleF(rect.Right + gapdelxy / 2, rect.Y + gapdelxy, del_icon, del_icon));
+                            rect.Width += height;
+                            _rect_left.Add(rect);
+                            use += size.Width + height + gap;
+                        }
                     }
                     rect_left_txts = _rect_left_txt.ToArray();
                     rect_left_dels = _rect_left_del.ToArray();
@@ -315,7 +355,8 @@ namespace AntdUI
                                 g.FillPath(brushbg, path);
                             }
                         }
-                        g.PaintIconClose(rect_left_dels[i], Style.Db.TagDefaultColor);
+                        var rect_del = rect_left_dels[i];
+                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
                         g.DrawString(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                     }
                     if (rect_lefts.Length != selectedValue.Length)
@@ -355,7 +396,7 @@ namespace AntdUI
             {
                 for (int i = 0; i < selectedValue.Length; i++)
                 {
-                    if (rect_left_dels[i].Contains(e)) { return true; }
+                    if (rect_left_dels[i].Contains(e)) return true;
                 }
             }
             return false;
@@ -366,7 +407,7 @@ namespace AntdUI
         #region 动画
 
         LayeredFormSelectMultiple? subForm = null;
-        public ILayeredForm? SubForm() { return subForm; }
+        public ILayeredForm? SubForm() => subForm;
 
         ITask? ThreadExpand = null;
         float ArrowProg = -1F;

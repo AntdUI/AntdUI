@@ -542,7 +542,7 @@ namespace AntdUI
                     g.TranslateTransform(-sx, 0);
                 }
                 else PaintBack(g, active, item.rect, radius);
-                if (item.CanExpand) PanintArrow(g, item, fore_active, sx, sy);
+                if (item.CanExpand) PaintArrow(g, item, fore_active, sx, sy);
                 PaintItemText(g, item, fore_active, brushTextTertiary);
             }
             else
@@ -579,7 +579,7 @@ namespace AntdUI
                     }
                     else if (item.Hover) PaintBack(g, hover, item.rect, radius);
                 }
-                if (item.CanExpand) PanintArrow(g, item, fore, sx, sy);
+                if (item.CanExpand) PaintArrow(g, item, fore, sx, sy);
                 if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
                 {
@@ -733,7 +733,7 @@ namespace AntdUI
             };
         }
 
-        void PanintArrow(Graphics g, TreeItem item, SolidBrush color, int sx, int sy)
+        void PaintArrow(Graphics g, TreeItem item, SolidBrush color, int sx, int sy)
         {
             int size = item.arr_rect.Width, size_arrow = size / 2;
             g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);

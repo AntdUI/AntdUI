@@ -313,7 +313,7 @@ namespace AntdUI
             return OnPreFilterMessage(m);
         }
 
-        protected virtual bool OnPreFilterMessage(System.Windows.Forms.Message m) { return false; }
+        protected virtual bool OnPreFilterMessage(System.Windows.Forms.Message m) => false;
 
         bool isMe(IntPtr intPtr)
         {
