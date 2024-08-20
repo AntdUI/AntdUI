@@ -6,12 +6,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        注意看看Wiki文档或者有没有重复问题 (https://github.com/AntdUI/AntdUI/issues)
+        ⚠️ 请**明确指出**问题复现流程，以减少维护者在排查问题上浪费过多时间，并且仔细观看完 [文档📖](https://gitee.com/antdui/AntdUI/wikis) 后再提。
   - type: input
     attributes:
       label: 版本号
       description: 请输入您使用的版本号。
-      placeholder: 例如：1.0.5
+      placeholder: 例如：1.0.5，请不要填写“最新”等干扰描述，源码可填写提交id
     validations:
       required: true
   - type: dropdown
@@ -26,6 +26,7 @@ body:
         - .NET6
         - .NET7
         - .NET8
+        - .NET9
     validations:
       required: true
   - type: dropdown
