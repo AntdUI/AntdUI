@@ -71,8 +71,8 @@ namespace AntdUI
             }
         }
 
-        StringFormat stringCNoWrap = Helper.SF_NoWrap();
-        StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
+        StringFormat stringCNoWrap = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap },
+            stringFormat = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>
         /// 文本位置
@@ -344,7 +344,7 @@ namespace AntdUI
             if (!string.IsNullOrEmpty(text))
             {
                 Rectangle rec;
-                var font_size = g.MeasureString(text, Font);
+                var font_size = g.MeasureString(text, Font).Size();
                 bool has_prefixText = prefix != null, has_suffixText = suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
@@ -375,17 +375,17 @@ namespace AntdUI
             }
         }
 
-        Rectangle PaintTextLeft(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
+        Rectangle PaintTextLeft(Graphics g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
             int hx = 0;
             if (has_prefixText)
             {
-                var font_size_prefix = g.MeasureString(prefix, Font);
-                float x = rect_read.X - font_size_prefix.Width, w = font_size_prefix.Width;
+                var font_size_prefix = g.MeasureString(prefix, Font).Size();
+                int x = rect_read.X - font_size_prefix.Width, w = font_size_prefix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 if (Highlight)
                 {
-                    hx = (int)Math.Ceiling(font_size_prefix.Width);
+                    hx = font_size_prefix.Width;
                     rect_l.X = 0;
                 }
                 using (var brush = new SolidBrush(PrefixColor ?? color))
@@ -396,7 +396,7 @@ namespace AntdUI
             else if (has_prefix)
             {
                 int icon_size = (int)(font_size.Height * iconratio);
-                float x = rect_read.X - icon_size, w = icon_size;
+                int x = rect_read.X - icon_size, w = icon_size;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 if (Highlight)
                 {
@@ -410,8 +410,8 @@ namespace AntdUI
             }
             if (has_suffixText)
             {
-                var font_size_suffix = g.MeasureString(suffix, Font);
-                float x = rect_read.X + hx + font_size.Width, w = font_size_suffix.Width;
+                var font_size_suffix = g.MeasureString(suffix, Font).Size();
+                int x = rect_read.X + hx + font_size.Width, w = font_size_suffix.Width;
                 using (var brush = new SolidBrush(SuffixColor ?? color))
                 {
                     g.DrawString(suffix, Font, brush, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
@@ -420,7 +420,7 @@ namespace AntdUI
             else if (has_suffix)
             {
                 int icon_size = (int)(font_size.Height * iconratio);
-                float x = rect_read.X + hx + font_size.Width, w = icon_size;
+                int x = rect_read.X + hx + font_size.Width, w = icon_size;
                 var rect_r = RecFixAuto(x, w, rect_read, font_size);
                 using (var _bmp = SvgExtend.GetImgExtend(suffixSvg, rect_r, SuffixColor ?? color))
                 {
@@ -430,17 +430,17 @@ namespace AntdUI
             if (hx > 0) return new Rectangle(rect_read.X + hx, rect_read.Y, rect_read.Width - hx, rect_read.Height);
             return rect_read;
         }
-        Rectangle PaintTextRight(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
+        Rectangle PaintTextRight(Graphics g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
             int hr = 0;
             if (has_suffixText)
             {
-                var font_size_suffix = g.MeasureString(suffix, Font);
-                float x = rect_read.Right, w = font_size_suffix.Width;
+                var font_size_suffix = g.MeasureString(suffix, Font).Size();
+                int x = rect_read.Right, w = font_size_suffix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 if (Highlight)
                 {
-                    hr = (int)Math.Ceiling(font_size_suffix.Width);
+                    hr = font_size_suffix.Width;
                     rect_l.X = rect_read.Right - hr;
                 }
                 using (var brush = new SolidBrush(SuffixColor ?? color))
@@ -451,7 +451,7 @@ namespace AntdUI
             else if (has_suffix)
             {
                 int icon_size = (int)(font_size.Height * iconratio);
-                float x = rect_read.Right, w = icon_size;
+                int x = rect_read.Right, w = icon_size;
                 var rect_r = RecFixAuto(x, w, rect_read, font_size);
                 if (Highlight)
                 {
@@ -465,8 +465,8 @@ namespace AntdUI
             }
             if (has_prefixText)
             {
-                var font_size_prefix = g.MeasureString(prefix, Font);
-                float x = rect_read.Right - hr - font_size.Width - font_size_prefix.Width, w = font_size_prefix.Width;
+                var font_size_prefix = g.MeasureString(prefix, Font).Size();
+                int x = rect_read.Right - hr - font_size.Width - font_size_prefix.Width, w = font_size_prefix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 using (var brush = new SolidBrush(PrefixColor ?? color))
                 {
@@ -476,7 +476,7 @@ namespace AntdUI
             else if (has_prefix)
             {
                 int icon_size = (int)(font_size.Height * iconratio);
-                float x = rect_read.Right - hr - font_size.Width - icon_size, w = icon_size;
+                int x = rect_read.Right - hr - font_size.Width - icon_size, w = icon_size;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 using (var _bmp = SvgExtend.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color))
                 {
@@ -486,12 +486,12 @@ namespace AntdUI
             if (hr > 0) return new Rectangle(rect_read.X, rect_read.Y, rect_read.Width - hr, rect_read.Height);
             return rect_read;
         }
-        Rectangle PaintTextCenter(Graphics g, Color color, Rectangle rect_read, SizeF font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
+        Rectangle PaintTextCenter(Graphics g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
-            float cex = rect_read.X + (rect_read.Width - font_size.Width) / 2F;
+            int cex = rect_read.X + (rect_read.Width - font_size.Width) / 2;
             if (has_prefixText)
             {
-                var font_size_prefix = g.MeasureString(prefix, Font);
+                var font_size_prefix = g.MeasureString(prefix, Font).Size();
                 var rect_l = RecFixAuto(cex - font_size_prefix.Width, font_size_prefix.Width, rect_read, font_size);
                 using (var brush = new SolidBrush(PrefixColor ?? color))
                 {
@@ -509,7 +509,7 @@ namespace AntdUI
             }
             if (has_suffixText)
             {
-                var font_size_suffix = g.MeasureString(suffix, Font);
+                var font_size_suffix = g.MeasureString(suffix, Font).Size();
                 using (var brush = new SolidBrush(SuffixColor ?? color))
                 {
                     g.DrawString(suffix, Font, brush, RecFixAuto(cex + font_size.Width, font_size_suffix.Width, rect_read, font_size), stringCNoWrap);
@@ -527,7 +527,7 @@ namespace AntdUI
             return rect_read;
         }
 
-        RectangleF RecFixAuto(float x, float w, Rectangle rect_read, SizeF font_size)
+        Rectangle RecFixAuto(int x, int w, Rectangle rect_read, Size font_size)
         {
             switch (textAlign)
             {
@@ -542,17 +542,17 @@ namespace AntdUI
                 default: return RecFix(x, w, rect_read);
             }
         }
-        RectangleF RecFix(float x, float w, Rectangle rect_read)
+        Rectangle RecFix(int x, int w, Rectangle rect_read)
         {
-            return new RectangleF(x, rect_read.Y, w, rect_read.Height);
+            return new Rectangle(x, rect_read.Y, w, rect_read.Height);
         }
-        RectangleF RecFixT(float x, float w, Rectangle rect_read, SizeF font_size)
+        Rectangle RecFixT(int x, int w, Rectangle rect_read, Size font_size)
         {
-            return new RectangleF(x, rect_read.Y, w, font_size.Height);
+            return new Rectangle(x, rect_read.Y, w, font_size.Height);
         }
-        RectangleF RecFixB(float x, float w, Rectangle rect_read, SizeF font_size)
+        Rectangle RecFixB(int x, int w, Rectangle rect_read, Size font_size)
         {
-            return new RectangleF(x, rect_read.Bottom - font_size.Height, w, font_size.Height);
+            return new Rectangle(x, rect_read.Bottom - font_size.Height, w, font_size.Height);
         }
 
         #endregion
@@ -632,6 +632,9 @@ namespace AntdUI
 
         public override Size GetPreferredSize(Size proposedSize)
         {
+            if (autoSize == TAutoSize.None) return base.GetPreferredSize(proposedSize);
+            else if (autoSize == TAutoSize.Width) return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
+            else if (autoSize == TAutoSize.Height) return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
             return PSize;
         }
 
@@ -683,20 +686,21 @@ namespace AntdUI
                 }));
                 return flag;
             }
+            var PS = PSize;
             switch (autoSize)
             {
                 case TAutoSize.Width:
-                    if (Width == PSize.Width) return true;
-                    Width = PSize.Width;
+                    if (Width == PS.Width) return true;
+                    Width = PS.Width;
                     break;
                 case TAutoSize.Height:
-                    if (Height == PSize.Height) return true;
-                    Height = PSize.Height;
+                    if (Height == PS.Height) return true;
+                    Height = PS.Height;
                     break;
                 case TAutoSize.Auto:
                 default:
-                    if (Width == PSize.Width && Height == PSize.Height) return true;
-                    Size = PSize;
+                    if (Width == PS.Width && Height == PS.Height) return true;
+                    Size = PS;
                     break;
             }
             return false;

@@ -558,8 +558,7 @@ namespace AntdUI
                 {
                     Helper.GDI(g =>
                     {
-                        Size size_L = g.MeasureString(prefixText, Font).Size();
-                        RectLR(rect, read_height, sps, sps2, size_L.Width, size_L.Height, icon_size, icon_size);
+                        RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width, read_height, icon_size, icon_size);
                     });
                 }
                 else if (has_prefix) RectLR(rect, read_height, sps, sps2, icon_size, icon_size, icon_size, icon_size);
@@ -573,48 +572,34 @@ namespace AntdUI
                     {
                         Helper.GDI(g =>
                         {
-                            if (has_prefixText && has_suffixText)
-                            {
-                                Size size_L = g.MeasureString(prefixText, Font).Size(), size_R = g.MeasureString(suffixText, Font).Size();
-                                RectLR(rect, read_height, sps, sps2, size_L.Width, size_L.Height, size_R.Width, size_R.Height);
-                            }
+                            if (has_prefixText && has_suffixText) RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width, read_height, g.MeasureString(suffixText, Font).Size().Width, read_height);
                             else
                             {
                                 if (has_prefix || has_suffix)
                                 {
                                     if (has_prefixText)
                                     {
-                                        Size size_L = g.MeasureString(prefixText, Font).Size();
                                         if (has_suffix)
                                         {
                                             int icon_size = (int)(read_height * iconratio);
-                                            RectLR(rect, read_height, sps, sps2, size_L.Width, size_L.Height, icon_size, icon_size);
+                                            RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width, read_height, icon_size, icon_size);
                                         }
-                                        else RectL(rect, read_height, sps, sps2, size_L.Width, size_L.Height);
+                                        else RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width);
                                     }
                                     else
                                     {
-                                        Size size_R = g.MeasureString(suffixText, Font).Size();
                                         if (has_prefix)
                                         {
                                             int icon_size = (int)(read_height * iconratio);
-                                            RectLR(rect, read_height, sps, sps2, icon_size, icon_size, size_R.Width, size_R.Height);
+                                            RectLR(rect, read_height, sps, sps2, icon_size, icon_size, g.MeasureString(suffixText, Font).Size().Width, read_height);
                                         }
-                                        else RectR(rect, read_height, sps, sps2, size_R.Width, size_R.Height);
+                                        else RectR(rect, read_height, sps, sps2, g.MeasureString(suffixText, Font).Size().Width);
                                     }
                                 }
                                 else
                                 {
-                                    if (has_prefixText)
-                                    {
-                                        Size size_L = g.MeasureString(prefixText, Font).Size();
-                                        RectL(rect, read_height, sps, sps2, size_L.Width, size_L.Height);
-                                    }
-                                    else
-                                    {
-                                        Size size_R = g.MeasureString(suffixText, Font).Size();
-                                        RectR(rect, read_height, sps, sps2, size_R.Width, size_R.Height);
-                                    }
+                                    if (has_prefixText) RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width);
+                                    else RectR(rect, read_height, sps, sps2, g.MeasureString(suffixText, Font).Size().Width);
                                 }
                             }
                         });
@@ -666,6 +651,29 @@ namespace AntdUI
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + (rect.Height - h_R) / 2, w_R, h_R);
             }
         }
+
+        #region 前缀布局
+
+        void RectL(Rectangle rect, int read_height, int sps, int sps2, int w)
+        {
+            int sp = (int)(read_height * .25F), hasx = sps + w + sp, hasx2 = sps2 + w + sp,
+                useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), true) : 0;
+            if (multiline)
+            {
+                int y = rect.Y + sps, h = rect.Height - sps2;
+                rect_l = new Rectangle(rect.X + sps, y, w, h);
+                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, y, rect.Width - hasx2 - useLeft, h);
+                else rect_text = new Rectangle(rect.X + hasx, y, rect.Width - hasx2, h);
+            }
+            else
+            {
+                int y = rect.Y + (rect.Height - read_height) / 2;
+                rect_l = new Rectangle(rect.X + sps, y, w, read_height);
+                if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, y, rect.Width - hasx2 - useLeft, read_height);
+                else rect_text = new Rectangle(rect.X + hasx, y, rect.Width - hasx2, read_height);
+            }
+            rect_r.Width = 0;
+        }
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
             int sp = (int)(read_height * .25F), hasx = sps + w + sp, hasx2 = sps2 + w + sp,
@@ -683,6 +691,35 @@ namespace AntdUI
                 else rect_text = new Rectangle(rect.X + hasx, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasx2, read_height);
             }
             rect_r.Width = 0;
+        }
+
+        #endregion
+
+        #region 后缀布局
+
+        void RectR(Rectangle rect, int read_height, int sps, int sps2, int w)
+        {
+            int sp = (int)(read_height * .25F);
+            if (HasLeft())
+            {
+                int useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), false);
+                if (useLeft > 0)
+                {
+                    rect.X += useLeft;
+                    rect.Width -= useLeft;
+                }
+            }
+            if (multiline)
+            {
+                rect_text = new Rectangle(rect.X + sps, rect.Y + sps, rect.Width - sps2 - w - sp, rect.Height - sps2);
+                rect_r = new Rectangle(rect_text.Right + sp, rect_text.Y, w, rect_text.Height);
+            }
+            else
+            {
+                rect_text = new Rectangle(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - sps2 - w - sp, read_height);
+                rect_r = new Rectangle(rect_text.Right + sp, rect_text.Y, w, rect_text.Height);
+            }
+            rect_l.Width = 0;
         }
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
@@ -708,6 +745,8 @@ namespace AntdUI
             }
             rect_l.Width = 0;
         }
+
+        #endregion
 
         #endregion
 

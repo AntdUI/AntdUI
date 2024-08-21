@@ -129,16 +129,9 @@ namespace AntdUI
             if (StartFocused)
             {
                 int index = Text.IndexOf("\t");
-                if (index == -1)
+                if (index != -1)
                 {
-                    change = key + "\t";
-                    return true;
-                }
-                else if (index == 0)
-                {
-                    change = null;
-                    Text = key + Text;
-                    return false;
+                    if (SelectionStart > index) SelectionStart = index;
                 }
             }
             else if (EndFocused)
@@ -148,12 +141,6 @@ namespace AntdUI
                 {
                     change = "\t" + key;
                     return true;
-                }
-                else if (index == Text.Length - 1)
-                {
-                    change = null;
-                    Text = Text + key;
-                    return false;
                 }
             }
             return base.Verify(key, out change);
@@ -379,6 +366,72 @@ namespace AntdUI
             {
                 subForm.IClose();
                 return true;
+            }
+            else if (keyData == Keys.Enter)
+            {
+                if (StartFocused || EndFocused)
+                {
+                    string text = Text;
+                    int index = text.IndexOf("\t");
+                    if (StartFocused)
+                    {
+                        string stext;
+                        if (index == -1) stext = text;
+                        else stext = text.Substring(0, index);
+                        if (DateTime.TryParse(stext, out var date_s))
+                        {
+                            if (index == -1)
+                            {
+                                Text = date_s.ToString(Format) + '\t';
+                                SelectionStart = Text.Length;
+                            }
+                            else
+                            {
+                                var etext = text.Substring(index + 1);
+                                if (DateTime.TryParse(etext, out var date_e)) Text = date_s.ToString(Format) + '\t' + date_e.ToString(Format);
+                                else Text = date_s.ToString(Format) + '\t' + etext;
+                            }
+                            if (subForm is LayeredFormCalendarRange layered_range)
+                            {
+                                layered_range.Date = date_s;
+                                layered_range.SetDateS(date_s);
+                                layered_range.Print();
+                            }
+                            else if (subForm is LayeredFormCalendarTimeRange layered_time) layered_time.IClose();
+                            StartFocused = false;
+                            EndFocused = true;
+                            StartEndFocused();
+                            SetCaretPostion();
+                        }
+                    }
+                    else
+                    {
+                        string etext;
+                        if (index == -1) etext = text;
+                        else etext = text.Substring(index + 1);
+                        if (DateTime.TryParse(etext, out var date_e))
+                        {
+                            if (index == -1) Text = '\t' + date_e.ToString(Format);
+                            else
+                            {
+                                string stext = text.Substring(0, index);
+                                if (DateTime.TryParse(stext, out var date_s))
+                                {
+                                    Text = date_s.ToString(Format) + '\t' + date_e.ToString(Format);
+                                    if (subForm is LayeredFormCalendarRange layered_range)
+                                    {
+                                        layered_range.Date = date_e;
+                                        layered_range.SetDateE(date_s, date_e);
+                                        layered_range.Print();
+                                    }
+                                    else if (subForm is LayeredFormCalendarTimeRange layered_time) layered_time.IClose();
+                                }
+                                else Text = text.Substring(0, index) + '\t' + date_e.ToString(Format);
+                            }
+                        }
+                    }
+                    return true;
+                }
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }

@@ -39,9 +39,20 @@ namespace AntdUI
             else
             {
                 var size = g.MeasureString(Text ?? Config.NullText, font).Size();
-                if (HasIcon && ShowArrow) return new Size(size.Width + size.Height * 2 + gap2 * 3, size.Height + gap);
-                else if (HasIcon || ShowArrow) return new Size(size.Width + size.Height + gap + gap2 * 2, size.Height + gap);
-                return new Size(size.Width + gap2 * 2, size.Height + gap);
+                bool has_icon = HasIcon;
+                if (has_icon || ShowArrow)
+                {
+                    if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
+                    {
+                        int size_read = (int)Math.Ceiling(size.Height * 1.2F);
+                        return new Size(size.Width + gap2 * 2 + size_read, size.Height + gap + size_read);
+                    }
+                    int height = size.Height + gap;
+                    if (has_icon && ShowArrow) return new Size(size.Width + gap2 * 2 + size.Height * 2, height);
+                    else if (has_icon) return new Size(size.Width + gap2 * 2 + (int)Math.Ceiling(size.Height * 1.2F), height);
+                    else return new Size(size.Width + gap2 * 2 + (int)Math.Ceiling(size.Height * .8F), height);
+                }
+                else return new Size(size.Width + gap2 * 2, size.Height + gap);
             }
         }
 

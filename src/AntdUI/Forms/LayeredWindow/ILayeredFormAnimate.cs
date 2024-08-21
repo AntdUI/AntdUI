@@ -39,10 +39,10 @@ namespace AntdUI
             get => TargetRect.Y + TargetRect.Height;
         }
 
-        internal void SetPosition(Form form)
+        internal void SetPosition(Form form, bool InWindow)
         {
             Rectangle workingArea;
-            if (Config.ShowInWindow) workingArea = new Rectangle(form.Location, form.Size);
+            if (InWindow || Config.ShowInWindow) workingArea = new Rectangle(form.Location, form.Size);
             else workingArea = Screen.FromControl(form).WorkingArea;
             int width = TargetRect.Width, height = TargetRect.Height;
             switch (Align)

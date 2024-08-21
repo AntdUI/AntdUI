@@ -245,6 +245,11 @@ namespace AntdUI
             /// 关闭回调
             /// </summary>
             public Action? OnClose { get; set; }
+
+            /// <summary>
+            /// 弹出在窗口
+            /// </summary>
+            public bool ShowInWindow { get; set; } = false;
         }
 
         public class ConfigLink
@@ -299,7 +304,7 @@ namespace AntdUI
 
         public void IInit()
         {
-            SetPosition(config.Form);
+            SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByNotification);
             if (config.AutoClose > 0)
             {
                 ITask.Run(() =>

@@ -204,6 +204,11 @@ namespace AntdUI
             /// </summary>
             public TAlignFrom Align { get; set; } = TAlignFrom.Top;
 
+            /// <summary>
+            /// 弹出在窗口
+            /// </summary>
+            public bool ShowInWindow { get; set; } = false;
+
             public void OK(string text)
             {
                 Icon = TType.Success;
@@ -262,7 +267,7 @@ namespace AntdUI
         ITask? ThreadLoading = null;
         public void IInit()
         {
-            SetPosition(config.Form);
+            SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByMessage);
             if (loading)
             {
                 ThreadLoading = new ITask(this, i =>

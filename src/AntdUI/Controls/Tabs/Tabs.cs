@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -210,6 +211,45 @@ namespace AntdUI
                 _tabMenuVisible = value;
                 LoadLayout();
             }
+        }
+
+        int? _itemSize = null;
+        /// <summary>
+        /// 自定义项宽度
+        /// </summary>
+        [Description("自定义项大小"), Category("外观"), DefaultValue(null)]
+        public int? ItemSize
+        {
+            get => _itemSize;
+            set
+            {
+                if (_itemSize == value) return;
+                _itemSize = value;
+                LoadLayout();
+            }
+        }
+
+        internal Dictionary<TabPage, Size> HandItemSize(Dictionary<TabPage, Size> rect_dir)
+        {
+            if (_itemSize.HasValue)
+            {
+                int Size = (int)Math.Ceiling(_itemSize.Value * Config.Dpi);
+                switch (alignment)
+                {
+                    case TabAlignment.Left:
+                    case TabAlignment.Right:
+                        var rect_dirtmp = new Dictionary<TabPage, Size>(rect_dir.Count);
+                        foreach (var it in rect_dir) rect_dirtmp.Add(it.Key, new Size(it.Value.Width, Size));
+                        return rect_dirtmp;
+                    case TabAlignment.Top:
+                    case TabAlignment.Bottom:
+                    default:
+                        var rect_dirtmph = new Dictionary<TabPage, Size>(rect_dir.Count);
+                        foreach (var it in rect_dir) rect_dirtmph.Add(it.Key, new Size(Size, it.Value.Height));
+                        return rect_dirtmph;
+                }
+            }
+            return rect_dir;
         }
 
         public override Rectangle DisplayRectangle

@@ -619,6 +619,9 @@ namespace AntdUI
 
         public override Size GetPreferredSize(Size proposedSize)
         {
+            if (autoSize == TAutoSize.None) return base.GetPreferredSize(proposedSize);
+            else if (autoSize == TAutoSize.Width) return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
+            else if (autoSize == TAutoSize.Height) return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
             return PSize;
         }
 
@@ -630,7 +633,7 @@ namespace AntdUI
                 {
                     var font_size = g.MeasureString(button.Text ?? Config.NullText, Font).Size();
                     int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
-                    if (button.Shape == TShape.Circle)
+                    if (button.Shape == TShape.Circle || string.IsNullOrEmpty(button.Text))
                     {
                         int s = font_size.Height + wave + gap;
                         return new Size(s, s);
@@ -639,16 +642,20 @@ namespace AntdUI
                     {
                         int m = wave * 2;
                         if (button.JoinLeft || button.JoinRight) m = 0;
-                        int count = 0;
                         bool has_icon = button.Loading || HasIcon;
-                        if (has_icon) count++;
-                        if (button.ShowArrow) count++;
-                        if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
+                        if (has_icon || button.ShowArrow)
                         {
-                            int size = (int)Math.Ceiling(font_size.Height * 1.2F);
-                            return new Size(font_size.Width + m + gap + (size * (count - 1)), font_size.Height + wave + gap + size);
+                            if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
+                            {
+                                int size = (int)Math.Ceiling(font_size.Height * 1.2F);
+                                return new Size(font_size.Width + m + gap + size, font_size.Height + wave + gap + size);
+                            }
+                            int height = font_size.Height + wave + gap;
+                            if (has_icon && button.ShowArrow) return new Size(font_size.Width + m + gap + font_size.Height * 2, height);
+                            else if (has_icon) return new Size(font_size.Width + m + gap + (int)Math.Ceiling(font_size.Height * 1.2F), height);
+                            else return new Size(font_size.Width + m + gap + (int)Math.Ceiling(font_size.Height * .8F), height);
                         }
-                        return new Size(font_size.Width + m + gap + ((int)Math.Ceiling(font_size.Height * 1.2F) * count), font_size.Height + wave + gap);
+                        else return new Size(font_size.Width + m + gap, font_size.Height + wave + gap);
                     }
                 });
             }
@@ -672,20 +679,21 @@ namespace AntdUI
                 }));
                 return flag;
             }
+            var PS = PSize;
             switch (autoSize)
             {
                 case TAutoSize.Width:
-                    if (Width == PSize.Width) return true;
-                    Width = PSize.Width;
+                    if (Width == PS.Width) return true;
+                    Width = PS.Width;
                     break;
                 case TAutoSize.Height:
-                    if (Height == PSize.Height) return true;
-                    Height = PSize.Height;
+                    if (Height == PS.Height) return true;
+                    Height = PS.Height;
                     break;
                 case TAutoSize.Auto:
                 default:
-                    if (Width == PSize.Width && Height == PSize.Height) return true;
-                    Size = PSize;
+                    if (Width == PS.Width && Height == PS.Height) return true;
+                    Size = PS;
                     break;
             }
             return false;
@@ -1843,7 +1851,6 @@ namespace AntdUI
                 if (loading)
                 {
                     float loading_size = rect_read.Height * 0.06F;
-                    if (loading_size < 1F) loading_size = 1F;
                     using (var brush = new Pen(color, loading_size))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
@@ -1884,8 +1891,7 @@ namespace AntdUI
 
                         if (loading)
                         {
-                            float loading_size = rect_read.Height * 0.06F;
-                            if (loading_size < 1F) loading_size = 1F;
+                            float loading_size = rect_l.Height * .14F;
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
@@ -1917,8 +1923,7 @@ namespace AntdUI
                         rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
-                            float loading_size = rect_read.Height * 0.06F;
-                            if (loading_size < 1F) loading_size = 1F;
+                            float loading_size = rect_l.Height * .14F;
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
@@ -1971,7 +1976,6 @@ namespace AntdUI
                 if (loading)
                 {
                     float loading_size = rect_read.Height * 0.06F;
-                    if (loading_size < 1F) loading_size = 1F;
                     using (var brush = new Pen(color, loading_size))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
@@ -2024,8 +2028,7 @@ namespace AntdUI
 
                         if (loading)
                         {
-                            float loading_size = rect_read.Height * 0.06F;
-                            if (loading_size < 1F) loading_size = 1F;
+                            float loading_size = rect_l.Height * .14F;
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
@@ -2069,8 +2072,7 @@ namespace AntdUI
                         rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
-                            float loading_size = rect_read.Height * 0.06F;
-                            if (loading_size < 1F) loading_size = 1F;
+                            float loading_size = rect_l.Height * .14F;
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
@@ -2182,14 +2184,14 @@ namespace AntdUI
                     rect_r = new Rectangle(rect_read.Right - icon_size - sps, rect_text.Y + (rect_text.Height - icon_size) / 2, icon_size, icon_size);
                     break;
                 case TAlignMini.Right:
-                    int r_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2), r_y = rect_read.Y + (rect_read.Height - icon_size) / 2;
+                    int r_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp + sps)) / 2), r_y = rect_read.Y + (rect_read.Height - icon_size) / 2;
                     rect_text = new Rectangle(r_x, rect_read.Y, font_size.Width, rect_read.Height);
                     rect_l = new Rectangle(r_x + font_size.Width + sp, r_y, icon_size, icon_size);
                     rect_r = new Rectangle(rect_read.X + sps, r_y, icon_size, icon_size);
                     break;
                 case TAlignMini.Left:
                 default:
-                    int l_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2), l_y = rect_read.Y + (rect_read.Height - icon_size) / 2;
+                    int l_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp + sps)) / 2), l_y = rect_read.Y + (rect_read.Height - icon_size) / 2;
                     rect_text = new Rectangle(l_x + icon_size + sp, rect_read.Y, font_size.Width, rect_read.Height);
                     rect_l = new Rectangle(l_x, l_y, icon_size, icon_size);
                     rect_r = new Rectangle(rect_read.Right - icon_size - sps, l_y, icon_size, icon_size);

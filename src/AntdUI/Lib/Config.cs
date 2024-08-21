@@ -64,7 +64,7 @@ namespace AntdUI
         #endregion
 
         /// <summary>
-        /// 启用动画
+        /// 动画使能
         /// </summary>
         public static bool Animation { get; set; } = true;
 
@@ -73,10 +73,24 @@ namespace AntdUI
         /// </summary>
         public static bool ShadowEnabled { get; set; } = true;
 
+        #region 弹出在窗口
+
         /// <summary>
         /// 弹出是否在窗口里而不是在系统里（Message/Notification）
         /// </summary>
         public static bool ShowInWindow { get; set; }
+
+        /// <summary>
+        /// 弹出是否在窗口里而不是在系统里（Message）
+        /// </summary>
+        public static bool ShowInWindowByMessage { get; set; }
+
+        /// <summary>
+        /// 弹出是否在窗口里而不是在系统里（Notification）
+        /// </summary>
+        public static bool ShowInWindowByNotification { get; set; }
+
+        #endregion
 
         /// <summary>
         /// 通知消息边界偏移量XY（Message/Notification）

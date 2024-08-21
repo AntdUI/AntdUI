@@ -705,18 +705,28 @@ namespace AntdUI
         {
             if (isEnd && oldTime.HasValue)
             {
-                if (oldTime == item.date) SelDate = new DateTime[] { item.date, item.date };
-                else if (oldTime < item.date) SelDate = new DateTime[] { oldTime.Value, item.date };
-                else SelDate = new DateTime[] { item.date, oldTime.Value };
-                action(SelDate);
-                isEnd = false;
+                SetDateE(oldTime.Value, item.date);
                 return false;
             }
-            SelDate = null;
-            oldTimeHover = oldTime = item.date;
-            isEnd = true;
+            SetDateS(item.date);
             Print();
             return true;
+        }
+
+        public void SetDateS(DateTime date)
+        {
+            SelDate = null;
+            oldTimeHover = oldTime = date;
+            isEnd = true;
+        }
+
+        public void SetDateE(DateTime sdate, DateTime edate)
+        {
+            if (sdate == edate) SelDate = new DateTime[] { edate, edate };
+            else if (sdate < edate) SelDate = new DateTime[] { sdate, edate };
+            else SelDate = new DateTime[] { edate, sdate };
+            action(SelDate);
+            isEnd = false;
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
