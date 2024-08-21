@@ -49,50 +49,68 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Button));
             header1 = new AntdUI.Header();
-            button5 = new AntdUI.Button();
-            button16 = new AntdUI.Button();
-            button9 = new AntdUI.Button();
-            button7 = new AntdUI.Button();
-            panel3 = new System.Windows.Forms.Panel();
-            panel1 = new System.Windows.Forms.Panel();
-            panel2 = new AntdUI.Panel();
-            button10 = new AntdUI.Button();
-            button15 = new AntdUI.Button();
-            button2 = new AntdUI.Button();
-            button11 = new AntdUI.Button();
+            panel_main = new System.Windows.Forms.Panel();
             panel5 = new System.Windows.Forms.Panel();
-            button8 = new AntdUI.Button();
-            button20 = new AntdUI.Button();
-            divider3 = new AntdUI.Divider();
-            flowLayoutPanel2 = new FlowLayoutPanel();
-            button3 = new AntdUI.Button();
-            button25 = new AntdUI.Button();
-            button23 = new AntdUI.Button();
-            button218 = new AntdUI.Button();
-            button210 = new AntdUI.Button();
-            button216 = new AntdUI.Button();
-            button220 = new AntdUI.Button();
+            panel6 = new AntdUI.Panel();
+            btng3 = new AntdUI.Button();
+            btng2 = new AntdUI.Button();
+            btng1 = new AntdUI.Button();
+            panel7 = new System.Windows.Forms.Panel();
+            button41 = new AntdUI.Button();
+            button40 = new AntdUI.Button();
+            divider5 = new AntdUI.Divider();
+            panel4 = new System.Windows.Forms.Panel();
+            button30 = new AntdUI.Button();
+            button31 = new AntdUI.Button();
+            button36 = new AntdUI.Button();
+            button37 = new AntdUI.Button();
+            button32 = new AntdUI.Button();
+            button33 = new AntdUI.Button();
+            button34 = new AntdUI.Button();
+            button35 = new AntdUI.Button();
             divider4 = new AntdUI.Divider();
-            flowLayoutPanel1 = new FlowLayoutPanel();
-            button1 = new AntdUI.Button();
-            button4 = new AntdUI.Button();
+            panel3 = new FlowLayoutPanel();
+            button20 = new AntdUI.Button();
+            button21 = new AntdUI.Button();
+            button22 = new AntdUI.Button();
+            button23 = new AntdUI.Button();
+            button24 = new AntdUI.Button();
+            button25 = new AntdUI.Button();
             button26 = new AntdUI.Button();
-            button6 = new AntdUI.Button();
+            divider3 = new AntdUI.Divider();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            button50 = new AntdUI.Button();
+            button51 = new AntdUI.Button();
+            button54 = new AntdUI.Button();
+            button52 = new AntdUI.Button();
+            button53 = new AntdUI.Button();
+            divider6 = new AntdUI.Divider();
+            panel2 = new FlowLayoutPanel();
+            button10 = new AntdUI.Button();
+            button11 = new AntdUI.Button();
+            button12 = new AntdUI.Button();
+            button13 = new AntdUI.Button();
+            button14 = new AntdUI.Button();
+            button15 = new AntdUI.Button();
+            button16 = new AntdUI.Button();
             divider2 = new AntdUI.Divider();
-            panel4 = new FlowLayoutPanel();
-            button17 = new AntdUI.Button();
-            button18 = new AntdUI.Button();
-            button19 = new AntdUI.Button();
+            panel1 = new FlowLayoutPanel();
+            button1 = new AntdUI.Button();
+            button2 = new AntdUI.Button();
+            button3 = new AntdUI.Button();
+            button4 = new AntdUI.Button();
+            button5 = new AntdUI.Button();
             divider1 = new AntdUI.Divider();
-            panel3.SuspendLayout();
-            panel1.SuspendLayout();
-            panel2.SuspendLayout();
+            panel_main.SuspendLayout();
             panel5.SuspendLayout();
-            flowLayoutPanel2.SuspendLayout();
-            flowLayoutPanel1.SuspendLayout();
+            panel6.SuspendLayout();
+            panel7.SuspendLayout();
             panel4.SuspendLayout();
+            panel3.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
+            panel2.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
@@ -102,10 +120,661 @@ namespace Overview.Controls
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(6);
-            header1.Size = new Size(1300, 79);
+            header1.Size = new Size(845, 79);
             header1.TabIndex = 4;
             header1.Text = "Button 按钮";
             header1.TextDesc = "按钮用于开始一个即时操作。";
+            // 
+            // panel_main
+            // 
+            panel_main.AutoScroll = true;
+            panel_main.Controls.Add(panel5);
+            panel_main.Controls.Add(divider5);
+            panel_main.Controls.Add(panel4);
+            panel_main.Controls.Add(divider4);
+            panel_main.Controls.Add(panel3);
+            panel_main.Controls.Add(divider3);
+            panel_main.Controls.Add(flowLayoutPanel1);
+            panel_main.Controls.Add(divider6);
+            panel_main.Controls.Add(panel2);
+            panel_main.Controls.Add(divider2);
+            panel_main.Controls.Add(panel1);
+            panel_main.Controls.Add(divider1);
+            panel_main.Dock = DockStyle.Fill;
+            panel_main.Location = new Point(0, 79);
+            panel_main.Name = "panel_main";
+            panel_main.Size = new Size(845, 682);
+            panel_main.TabIndex = 6;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(panel6);
+            panel5.Controls.Add(panel7);
+            panel5.Dock = DockStyle.Top;
+            panel5.Location = new Point(0, 517);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(845, 100);
+            panel5.TabIndex = 5;
+            // 
+            // panel6
+            // 
+            panel6.Controls.Add(btng3);
+            panel6.Controls.Add(btng2);
+            panel6.Controls.Add(btng1);
+            panel6.Font = new Font("Microsoft YaHei UI", 10F);
+            panel6.Location = new Point(14, 10);
+            panel6.Name = "panel6";
+            panel6.Padding = new Padding(4);
+            panel6.Shadow = 18;
+            panel6.Size = new Size(417, 83);
+            panel6.TabIndex = 0;
+            panel6.Text = "panel6";
+            // 
+            // btng3
+            // 
+            btng3.AutoSizeMode = AntdUI.TAutoSize.Width;
+            btng3.BackColor = Color.FromArgb(217, 217, 217);
+            btng3.BorderWidth = 2F;
+            btng3.Dock = DockStyle.Left;
+            btng3.JoinLeft = true;
+            btng3.Location = new Point(264, 22);
+            btng3.Margin = new Padding(0);
+            btng3.Name = "btng3";
+            btng3.Size = new Size(121, 39);
+            btng3.TabIndex = 2;
+            btng3.Text = "Default Button";
+            btng3.Click += Btn;
+            // 
+            // btng2
+            // 
+            btng2.AutoSizeMode = AntdUI.TAutoSize.Width;
+            btng2.BackColor = Color.FromArgb(217, 217, 217);
+            btng2.BorderWidth = 2F;
+            btng2.Dock = DockStyle.Left;
+            btng2.JoinLeft = true;
+            btng2.JoinRight = true;
+            btng2.Location = new Point(143, 22);
+            btng2.Margin = new Padding(0);
+            btng2.Name = "btng2";
+            btng2.Size = new Size(121, 39);
+            btng2.TabIndex = 1;
+            btng2.Text = "Default Button";
+            btng2.Click += Btn;
+            // 
+            // btng1
+            // 
+            btng1.AutoSizeMode = AntdUI.TAutoSize.Width;
+            btng1.BackColor = Color.FromArgb(217, 217, 217);
+            btng1.BorderWidth = 2F;
+            btng1.Dock = DockStyle.Left;
+            btng1.JoinRight = true;
+            btng1.Location = new Point(22, 22);
+            btng1.Margin = new Padding(0);
+            btng1.Name = "btng1";
+            btng1.Size = new Size(121, 39);
+            btng1.TabIndex = 0;
+            btng1.Text = "Default Button";
+            btng1.Click += Btn;
+            // 
+            // panel7
+            // 
+            panel7.Controls.Add(button41);
+            panel7.Controls.Add(button40);
+            panel7.Font = new Font("Microsoft YaHei UI", 14F);
+            panel7.Location = new Point(482, 27);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(147, 40);
+            panel7.TabIndex = 1;
+            // 
+            // button41
+            // 
+            button41.BackActive = Color.FromArgb(17, 24, 39);
+            button41.BackColor = Color.FromArgb(17, 24, 39);
+            button41.BackHover = Color.FromArgb(17, 24, 39);
+            button41.Dock = DockStyle.Fill;
+            button41.JoinLeft = true;
+            button41.Location = new Point(50, 0);
+            button41.Name = "button41";
+            button41.Radius = 4;
+            button41.Size = new Size(97, 40);
+            button41.TabIndex = 1;
+            button41.Text = "Button";
+            button41.Type = AntdUI.TTypeMini.Primary;
+            button41.WaveSize = 0;
+            // 
+            // button40
+            // 
+            button40.BackActive = Color.FromArgb(147, 51, 234);
+            button40.BackColor = Color.FromArgb(168, 85, 247);
+            button40.BackHover = Color.FromArgb(147, 51, 234);
+            button40.Dock = DockStyle.Left;
+            button40.IconSvg = Properties.Resources.icon_search;
+            button40.JoinRight = true;
+            button40.Location = new Point(0, 0);
+            button40.Name = "button40";
+            button40.Radius = 4;
+            button40.Size = new Size(50, 40);
+            button40.TabIndex = 0;
+            button40.Type = AntdUI.TTypeMini.Primary;
+            button40.WaveSize = 0;
+            // 
+            // divider5
+            // 
+            divider5.Dock = DockStyle.Top;
+            divider5.Font = new Font("Microsoft YaHei UI", 10F);
+            divider5.Location = new Point(0, 495);
+            divider5.Name = "divider5";
+            divider5.Orientation = AntdUI.TOrientation.Left;
+            divider5.Size = new Size(845, 22);
+            divider5.TabIndex = 4;
+            divider5.Text = "组合按钮";
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(button30);
+            panel4.Controls.Add(button31);
+            panel4.Controls.Add(button36);
+            panel4.Controls.Add(button37);
+            panel4.Controls.Add(button32);
+            panel4.Controls.Add(button33);
+            panel4.Controls.Add(button34);
+            panel4.Controls.Add(button35);
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(0, 384);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(845, 111);
+            panel4.TabIndex = 4;
+            // 
+            // button30
+            // 
+            button30.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button30.BorderWidth = 1F;
+            button30.IconSvg = Properties.Resources.icon_search;
+            button30.Location = new Point(3, 3);
+            button30.Name = "button30";
+            button30.Size = new Size(115, 47);
+            button30.TabIndex = 0;
+            button30.Text = "Button";
+            button30.Type = AntdUI.TTypeMini.Primary;
+            button30.Click += Btn2;
+            // 
+            // button31
+            // 
+            button31.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button31.BorderWidth = 1F;
+            button31.IconPosition = AntdUI.TAlignMini.Right;
+            button31.IconSvg = Properties.Resources.icon_search;
+            button31.Location = new Point(124, 3);
+            button31.Name = "button31";
+            button31.Size = new Size(115, 47);
+            button31.TabIndex = 1;
+            button31.Text = "Button";
+            button31.Type = AntdUI.TTypeMini.Primary;
+            button31.Click += Btn2;
+            // 
+            // button36
+            // 
+            button36.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button36.BorderWidth = 1F;
+            button36.IconSvg = Properties.Resources.icon_search;
+            button36.Location = new Point(3, 56);
+            button36.Name = "button36";
+            button36.Size = new Size(115, 47);
+            button36.TabIndex = 6;
+            button36.Text = "Button";
+            button36.Click += Btn2;
+            // 
+            // button37
+            // 
+            button37.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button37.BorderWidth = 1F;
+            button37.IconPosition = AntdUI.TAlignMini.Right;
+            button37.IconSvg = Properties.Resources.icon_search;
+            button37.Location = new Point(124, 56);
+            button37.Name = "button37";
+            button37.Size = new Size(115, 47);
+            button37.TabIndex = 7;
+            button37.Text = "Button";
+            button37.Click += Btn2;
+            // 
+            // button32
+            // 
+            button32.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button32.BorderWidth = 1F;
+            button32.IconPosition = AntdUI.TAlignMini.Top;
+            button32.IconSvg = Properties.Resources.icon_search;
+            button32.Location = new Point(245, 3);
+            button32.Name = "button32";
+            button32.Size = new Size(115, 75);
+            button32.TabIndex = 2;
+            button32.Text = "Button";
+            button32.Type = AntdUI.TTypeMini.Primary;
+            button32.Click += Btn2;
+            // 
+            // button33
+            // 
+            button33.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button33.BorderWidth = 1F;
+            button33.IconPosition = AntdUI.TAlignMini.Bottom;
+            button33.IconSvg = Properties.Resources.icon_search;
+            button33.Location = new Point(366, 3);
+            button33.Name = "button33";
+            button33.Size = new Size(115, 75);
+            button33.TabIndex = 3;
+            button33.Text = "Button";
+            button33.Type = AntdUI.TTypeMini.Primary;
+            button33.Click += Btn2;
+            // 
+            // button34
+            // 
+            button34.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button34.BorderWidth = 1F;
+            button34.IconPosition = AntdUI.TAlignMini.Top;
+            button34.IconSvg = Properties.Resources.icon_search;
+            button34.Location = new Point(487, 3);
+            button34.Name = "button34";
+            button34.Size = new Size(115, 75);
+            button34.TabIndex = 4;
+            button34.Text = "Button";
+            button34.Click += Btn2;
+            // 
+            // button35
+            // 
+            button35.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button35.BorderWidth = 1F;
+            button35.IconPosition = AntdUI.TAlignMini.Bottom;
+            button35.IconSvg = Properties.Resources.icon_search;
+            button35.Location = new Point(608, 3);
+            button35.Name = "button35";
+            button35.Size = new Size(115, 75);
+            button35.TabIndex = 5;
+            button35.Text = "Button";
+            button35.Click += Btn2;
+            // 
+            // divider4
+            // 
+            divider4.Dock = DockStyle.Top;
+            divider4.Font = new Font("Microsoft YaHei UI", 10F);
+            divider4.Location = new Point(0, 362);
+            divider4.Name = "divider4";
+            divider4.Orientation = AntdUI.TOrientation.Left;
+            divider4.Size = new Size(845, 22);
+            divider4.TabIndex = 4;
+            divider4.Text = "图标位置";
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(button20);
+            panel3.Controls.Add(button21);
+            panel3.Controls.Add(button22);
+            panel3.Controls.Add(button23);
+            panel3.Controls.Add(button24);
+            panel3.Controls.Add(button25);
+            panel3.Controls.Add(button26);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(0, 253);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(845, 109);
+            panel3.TabIndex = 3;
+            // 
+            // button20
+            // 
+            button20.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button20.BorderWidth = 1F;
+            button20.Location = new Point(3, 3);
+            button20.Name = "button20";
+            button20.ShowArrow = true;
+            button20.Size = new Size(106, 47);
+            button20.TabIndex = 0;
+            button20.Text = "Button";
+            button20.Type = AntdUI.TTypeMini.Primary;
+            button20.Click += Btn2;
+            // 
+            // button21
+            // 
+            button21.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button21.BorderWidth = 1F;
+            button21.IconSvg = Properties.Resources.icon_search;
+            button21.Location = new Point(115, 3);
+            button21.Name = "button21";
+            button21.ShowArrow = true;
+            button21.Size = new Size(133, 47);
+            button21.TabIndex = 1;
+            button21.Text = "Button";
+            button21.Type = AntdUI.TTypeMini.Primary;
+            button21.Click += Btn2;
+            // 
+            // button22
+            // 
+            button22.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button22.BorderWidth = 1F;
+            button22.IconSvg = Properties.Resources.icon_poweroff;
+            button22.IsLink = true;
+            button22.Location = new Point(254, 3);
+            button22.Name = "button22";
+            button22.ShowArrow = true;
+            button22.Size = new Size(133, 47);
+            button22.TabIndex = 2;
+            button22.Text = "Button";
+            button22.Click += Btn2;
+            // 
+            // button23
+            // 
+            button23.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button23.BorderWidth = 1F;
+            button23.Ghost = true;
+            button23.Location = new Point(393, 3);
+            button23.Name = "button23";
+            button23.ShowArrow = true;
+            button23.Size = new Size(106, 47);
+            button23.TabIndex = 3;
+            button23.Text = "Button";
+            button23.Type = AntdUI.TTypeMini.Primary;
+            button23.Click += Btn2;
+            // 
+            // button24
+            // 
+            button24.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button24.BorderWidth = 1F;
+            button24.Location = new Point(505, 3);
+            button24.Name = "button24";
+            button24.ShowArrow = true;
+            button24.Size = new Size(106, 47);
+            button24.TabIndex = 4;
+            button24.Text = "Button";
+            button24.Type = AntdUI.TTypeMini.Error;
+            button24.Click += Btn2;
+            // 
+            // button25
+            // 
+            button25.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button25.BorderWidth = 1F;
+            button25.Ghost = true;
+            button25.IsLink = true;
+            button25.Location = new Point(617, 3);
+            button25.Name = "button25";
+            button25.ShowArrow = true;
+            button25.Size = new Size(106, 47);
+            button25.TabIndex = 5;
+            button25.Text = "Button";
+            button25.Click += Btn2;
+            // 
+            // button26
+            // 
+            button26.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button26.Ghost = true;
+            button26.IsLink = true;
+            button26.Location = new Point(729, 3);
+            button26.Name = "button26";
+            button26.ShowArrow = true;
+            button26.Size = new Size(106, 47);
+            button26.TabIndex = 6;
+            button26.Text = "Button";
+            button26.Click += Btn2;
+            // 
+            // divider3
+            // 
+            divider3.Dock = DockStyle.Top;
+            divider3.Font = new Font("Microsoft YaHei UI", 10F);
+            divider3.Location = new Point(0, 231);
+            divider3.Name = "divider3";
+            divider3.Orientation = AntdUI.TOrientation.Left;
+            divider3.Size = new Size(845, 22);
+            divider3.TabIndex = 3;
+            divider3.Text = "连接按钮";
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Controls.Add(button50);
+            flowLayoutPanel1.Controls.Add(button51);
+            flowLayoutPanel1.Controls.Add(button52);
+            flowLayoutPanel1.Controls.Add(button53);
+            flowLayoutPanel1.Controls.Add(button54);
+            flowLayoutPanel1.Dock = DockStyle.Top;
+            flowLayoutPanel1.Location = new Point(0, 176);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(845, 55);
+            flowLayoutPanel1.TabIndex = 2;
+            // 
+            // button50
+            // 
+            button50.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button50.IconSvg = Properties.Resources.Download;
+            button50.Location = new Point(3, 3);
+            button50.Name = "button50";
+            button50.Size = new Size(47, 47);
+            button50.TabIndex = 0;
+            button50.Type = AntdUI.TTypeMini.Primary;
+            button50.Click += Btn2;
+            // 
+            // button51
+            // 
+            button51.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button51.IconSvg = Properties.Resources.Download;
+            button51.Location = new Point(56, 3);
+            button51.Name = "button51";
+            button51.Shape = AntdUI.TShape.Circle;
+            button51.Size = new Size(47, 47);
+            button51.TabIndex = 1;
+            button51.Type = AntdUI.TTypeMini.Primary;
+            button51.Click += Btn2;
+            // 
+            // button54
+            // 
+            button54.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button54.IconSvg = Properties.Resources.Download;
+            button54.Location = new Point(331, 3);
+            button54.Name = "button54";
+            button54.Size = new Size(143, 47);
+            button54.TabIndex = 4;
+            button54.Text = "Download";
+            button54.Type = AntdUI.TTypeMini.Primary;
+            button54.Click += Btn2;
+            // 
+            // button52
+            // 
+            button52.AutoSizeMode = AntdUI.TAutoSize.Height;
+            button52.IconSvg = Properties.Resources.Download;
+            button52.Location = new Point(109, 3);
+            button52.Name = "button52";
+            button52.Shape = AntdUI.TShape.Round;
+            button52.Size = new Size(67, 47);
+            button52.TabIndex = 2;
+            button52.Type = AntdUI.TTypeMini.Primary;
+            button52.Click += Btn2;
+            // 
+            // button53
+            // 
+            button53.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button53.IconSvg = Properties.Resources.Download;
+            button53.Location = new Point(182, 3);
+            button53.Name = "button53";
+            button53.Shape = AntdUI.TShape.Round;
+            button53.Size = new Size(143, 47);
+            button53.TabIndex = 3;
+            button53.Text = "Download";
+            button53.Type = AntdUI.TTypeMini.Primary;
+            button53.Click += Btn2;
+            // 
+            // divider6
+            // 
+            divider6.Dock = DockStyle.Top;
+            divider6.Font = new Font("Microsoft YaHei UI", 10F);
+            divider6.Location = new Point(0, 154);
+            divider6.Name = "divider6";
+            divider6.Orientation = AntdUI.TOrientation.Left;
+            divider6.Size = new Size(845, 22);
+            divider6.TabIndex = 2;
+            divider6.Text = "按钮形状";
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(button10);
+            panel2.Controls.Add(button11);
+            panel2.Controls.Add(button12);
+            panel2.Controls.Add(button13);
+            panel2.Controls.Add(button14);
+            panel2.Controls.Add(button15);
+            panel2.Controls.Add(button16);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 99);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(845, 55);
+            panel2.TabIndex = 1;
+            // 
+            // button10
+            // 
+            button10.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button10.IconSvg = Properties.Resources.icon_poweroff;
+            button10.Location = new Point(3, 3);
+            button10.Name = "button10";
+            button10.Shape = AntdUI.TShape.Circle;
+            button10.Size = new Size(47, 47);
+            button10.TabIndex = 0;
+            button10.Type = AntdUI.TTypeMini.Primary;
+            button10.Click += Btn2;
+            // 
+            // button11
+            // 
+            button11.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button11.IconSvg = Properties.Resources.icon_search;
+            button11.Location = new Point(56, 3);
+            button11.Name = "button11";
+            button11.Size = new Size(95, 47);
+            button11.TabIndex = 1;
+            button11.Text = "搜索";
+            button11.Type = AntdUI.TTypeMini.Primary;
+            button11.Click += Btn2;
+            // 
+            // button12
+            // 
+            button12.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button12.BorderWidth = 1F;
+            button12.IconSvg = Properties.Resources.icon_poweroff;
+            button12.Location = new Point(157, 3);
+            button12.Name = "button12";
+            button12.Shape = AntdUI.TShape.Circle;
+            button12.Size = new Size(47, 47);
+            button12.TabIndex = 2;
+            button12.Click += Btn2;
+            // 
+            // button13
+            // 
+            button13.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button13.BorderWidth = 1F;
+            button13.IconSvg = Properties.Resources.icon_search;
+            button13.Location = new Point(210, 3);
+            button13.Name = "button13";
+            button13.Size = new Size(95, 47);
+            button13.TabIndex = 3;
+            button13.Text = "搜索";
+            button13.Click += Btn2;
+            // 
+            // button14
+            // 
+            button14.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button14.BorderWidth = 2F;
+            button14.IconSvg = Properties.Resources.icon_search;
+            button14.Location = new Point(311, 3);
+            button14.Name = "button14";
+            button14.Shape = AntdUI.TShape.Circle;
+            button14.Size = new Size(47, 47);
+            button14.TabIndex = 4;
+            button14.Type = AntdUI.TTypeMini.Error;
+            button14.Click += Btn2;
+            // 
+            // button15
+            // 
+            button15.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button15.IconSvg = Properties.Resources.icon_search;
+            button15.Location = new Point(364, 3);
+            button15.Name = "button15";
+            button15.Size = new Size(95, 47);
+            button15.TabIndex = 5;
+            button15.Text = "搜索";
+            button15.Type = AntdUI.TTypeMini.Error;
+            button15.Click += Btn2;
+            // 
+            // button16
+            // 
+            button16.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button16.BackExtend = "135, #6253E1, #04BEFE";
+            button16.IconSvg = Properties.Resources.icon_search;
+            button16.Location = new Point(465, 3);
+            button16.Name = "button16";
+            button16.Size = new Size(188, 47);
+            button16.TabIndex = 6;
+            button16.Text = "Gradient Button";
+            button16.Type = AntdUI.TTypeMini.Primary;
+            button16.Click += Btn2;
+            // 
+            // divider2
+            // 
+            divider2.Dock = DockStyle.Top;
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.Location = new Point(0, 77);
+            divider2.Name = "divider2";
+            divider2.Orientation = AntdUI.TOrientation.Left;
+            divider2.Size = new Size(845, 22);
+            divider2.TabIndex = 1;
+            divider2.Text = "按钮图标";
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(button1);
+            panel1.Controls.Add(button2);
+            panel1.Controls.Add(button3);
+            panel1.Controls.Add(button4);
+            panel1.Controls.Add(button5);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 22);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(845, 55);
+            panel1.TabIndex = 0;
+            // 
+            // button1
+            // 
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button1.Location = new Point(3, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(152, 47);
+            button1.TabIndex = 0;
+            button1.Text = "Primary Button";
+            button1.Type = AntdUI.TTypeMini.Primary;
+            button1.Click += Btn2;
+            // 
+            // button2
+            // 
+            button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button2.BorderWidth = 1F;
+            button2.Location = new Point(161, 3);
+            button2.Name = "button2";
+            button2.Size = new Size(150, 47);
+            button2.TabIndex = 1;
+            button2.Text = "Default Button";
+            button2.Click += Btn2;
+            // 
+            // button3
+            // 
+            button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button3.Ghost = true;
+            button3.Location = new Point(317, 3);
+            button3.Name = "button3";
+            button3.Size = new Size(125, 47);
+            button3.TabIndex = 2;
+            button3.Text = "Text Button";
+            button3.Click += Btn2;
+            // 
+            // button4
+            // 
+            button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button4.Location = new Point(448, 3);
+            button4.Name = "button4";
+            button4.Size = new Size(92, 47);
+            button4.TabIndex = 3;
+            button4.Text = "Danger";
+            button4.Type = AntdUI.TTypeMini.Error;
+            button4.Click += Btn2;
             // 
             // button5
             // 
@@ -115,440 +784,10 @@ namespace Overview.Controls
             button5.Location = new Point(546, 3);
             button5.Name = "button5";
             button5.Size = new Size(154, 47);
-            button5.TabIndex = 0;
+            button5.TabIndex = 4;
             button5.Text = "Danger Default";
             button5.Type = AntdUI.TTypeMini.Error;
             button5.Click += Btn2;
-            // 
-            // button16
-            // 
-            button16.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button16.Location = new Point(448, 3);
-            button16.Name = "button16";
-            button16.Size = new Size(92, 47);
-            button16.TabIndex = 0;
-            button16.Text = "Danger";
-            button16.Type = AntdUI.TTypeMini.Error;
-            button16.Click += Btn2;
-            // 
-            // button9
-            // 
-            button9.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button9.IconSvg = Properties.Resources.icon_search;
-            button9.Location = new Point(56, 3);
-            button9.Name = "button9";
-            button9.Size = new Size(95, 47);
-            button9.TabIndex = 0;
-            button9.Text = "搜索";
-            button9.Type = AntdUI.TTypeMini.Primary;
-            button9.Click += Btn2;
-            // 
-            // button7
-            // 
-            button7.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button7.IconSvg = Properties.Resources.icon_poweroff;
-            button7.Location = new Point(3, 3);
-            button7.Name = "button7";
-            button7.Shape = AntdUI.TShape.Circle;
-            button7.Size = new Size(47, 47);
-            button7.TabIndex = 0;
-            button7.Type = AntdUI.TTypeMini.Primary;
-            button7.Click += Btn2;
-            // 
-            // panel3
-            // 
-            panel3.AutoScroll = true;
-            panel3.Controls.Add(panel1);
-            panel3.Controls.Add(divider3);
-            panel3.Controls.Add(flowLayoutPanel2);
-            panel3.Controls.Add(divider4);
-            panel3.Controls.Add(flowLayoutPanel1);
-            panel3.Controls.Add(divider2);
-            panel3.Controls.Add(panel4);
-            panel3.Controls.Add(divider1);
-            panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(0, 79);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(1300, 597);
-            panel3.TabIndex = 6;
-            // 
-            // panel1
-            // 
-            panel1.Controls.Add(panel2);
-            panel1.Controls.Add(panel5);
-            panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 346);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1300, 118);
-            panel1.TabIndex = 8;
-            // 
-            // panel2
-            // 
-            panel2.Controls.Add(button10);
-            panel2.Controls.Add(button15);
-            panel2.Controls.Add(button2);
-            panel2.Font = new Font("Microsoft YaHei UI", 10F);
-            panel2.Location = new Point(14, 10);
-            panel2.Name = "panel2";
-            panel2.Padding = new Padding(4);
-            panel2.Shadow = 18;
-            panel2.Size = new Size(417, 83);
-            panel2.TabIndex = 0;
-            panel2.Text = "panel2";
-            // 
-            // button10
-            // 
-            button10.AutoSizeMode = AntdUI.TAutoSize.Width;
-            button10.BackColor = Color.FromArgb(217, 217, 217);
-            button10.BorderWidth = 2F;
-            button10.Dock = DockStyle.Left;
-            button10.JoinLeft = true;
-            button10.Location = new Point(264, 22);
-            button10.Margin = new Padding(0);
-            button10.Name = "button10";
-            button10.Size = new Size(121, 39);
-            button10.TabIndex = 0;
-            button10.Text = "Default Button";
-            button10.Click += Btn;
-            // 
-            // button15
-            // 
-            button15.AutoSizeMode = AntdUI.TAutoSize.Width;
-            button15.BackColor = Color.FromArgb(217, 217, 217);
-            button15.BorderWidth = 2F;
-            button15.Dock = DockStyle.Left;
-            button15.JoinLeft = true;
-            button15.JoinRight = true;
-            button15.Location = new Point(143, 22);
-            button15.Margin = new Padding(0);
-            button15.Name = "button15";
-            button15.Size = new Size(121, 39);
-            button15.TabIndex = 0;
-            button15.Text = "Default Button";
-            button15.Click += Btn;
-            // 
-            // button2
-            // 
-            button2.AutoSizeMode = AntdUI.TAutoSize.Width;
-            button2.BackColor = Color.FromArgb(217, 217, 217);
-            button2.BorderWidth = 2F;
-            button2.Dock = DockStyle.Left;
-            button2.JoinRight = true;
-            button2.Location = new Point(22, 22);
-            button2.Margin = new Padding(0);
-            button2.Name = "button2";
-            button2.Size = new Size(121, 39);
-            button2.TabIndex = 0;
-            button2.Text = "Default Button";
-            button2.Click += Btn;
-            // 
-            // button11
-            // 
-            button11.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button11.BackExtend = "135, #6253E1, #04BEFE";
-            button11.IconSvg = resources.GetString("button11.IconSvg");
-            button11.Location = new Point(465, 3);
-            button11.Name = "button11";
-            button11.Size = new Size(188, 47);
-            button11.TabIndex = 0;
-            button11.Text = "Gradient Button";
-            button11.Type = AntdUI.TTypeMini.Primary;
-            // 
-            // panel5
-            // 
-            panel5.Controls.Add(button8);
-            panel5.Controls.Add(button20);
-            panel5.Font = new Font("Microsoft YaHei UI", 14F);
-            panel5.Location = new Point(462, 27);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(147, 48);
-            panel5.TabIndex = 16;
-            // 
-            // button8
-            // 
-            button8.BackActive = Color.FromArgb(17, 24, 39);
-            button8.BackColor = Color.FromArgb(17, 24, 39);
-            button8.BackHover = Color.FromArgb(17, 24, 39);
-            button8.Dock = DockStyle.Fill;
-            button8.JoinLeft = true;
-            button8.Location = new Point(50, 0);
-            button8.WaveSize = 0;
-            button8.Name = "button8";
-            button8.Radius = 4;
-            button8.Size = new Size(97, 48);
-            button8.TabIndex = 1;
-            button8.Text = "Button";
-            button8.Type = AntdUI.TTypeMini.Primary;
-            // 
-            // button20
-            // 
-            button20.BackActive = Color.FromArgb(147, 51, 234);
-            button20.BackColor = Color.FromArgb(168, 85, 247);
-            button20.BackHover = Color.FromArgb(147, 51, 234);
-            button20.Dock = DockStyle.Left;
-            button20.IconSvg = Properties.Resources.icon_search;
-            button20.JoinRight = true;
-            button20.Location = new Point(0, 0);
-            button20.WaveSize = 0;
-            button20.Name = "button20";
-            button20.Radius = 4;
-            button20.Size = new Size(50, 48);
-            button20.TabIndex = 0;
-            button20.Type = AntdUI.TTypeMini.Primary;
-            // 
-            // divider3
-            // 
-            divider3.Dock = DockStyle.Top;
-            divider3.Font = new Font("Microsoft YaHei UI", 10F);
-            divider3.Location = new Point(0, 324);
-            divider3.Name = "divider3";
-            divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(1300, 22);
-            divider3.TabIndex = 7;
-            divider3.Text = "组合按钮";
-            // 
-            // flowLayoutPanel2
-            // 
-            flowLayoutPanel2.Controls.Add(button3);
-            flowLayoutPanel2.Controls.Add(button25);
-            flowLayoutPanel2.Controls.Add(button23);
-            flowLayoutPanel2.Controls.Add(button218);
-            flowLayoutPanel2.Controls.Add(button210);
-            flowLayoutPanel2.Controls.Add(button216);
-            flowLayoutPanel2.Controls.Add(button220);
-            flowLayoutPanel2.Dock = DockStyle.Top;
-            flowLayoutPanel2.Location = new Point(0, 231);
-            flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(1300, 93);
-            flowLayoutPanel2.TabIndex = 12;
-            // 
-            // button3
-            // 
-            button3.BorderWidth = 1F;
-            button3.Location = new Point(3, 3);
-            button3.Name = "button3";
-            button3.ShowArrow = true;
-            button3.Size = new Size(152, 44);
-            button3.TabIndex = 22;
-            button3.Text = "button21";
-            button3.TextAlign = ContentAlignment.MiddleLeft;
-            button3.Type = AntdUI.TTypeMini.Primary;
-            button3.Click += Btn2;
-            // 
-            // button25
-            // 
-            button25.BorderWidth = 1F;
-            button25.IconSvg = Properties.Resources.icon_search;
-            button25.Location = new Point(161, 3);
-            button25.Name = "button25";
-            button25.ShowArrow = true;
-            button25.Size = new Size(152, 44);
-            button25.TabIndex = 24;
-            button25.Text = "button21";
-            button25.TextAlign = ContentAlignment.MiddleLeft;
-            button25.Type = AntdUI.TTypeMini.Primary;
-            button25.Click += Btn2;
-            // 
-            // button23
-            // 
-            button23.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button23.BorderWidth = 1F;
-            button23.IconSvg = Properties.Resources.icon_poweroff;
-            button23.IsLink = true;
-            button23.Location = new Point(319, 3);
-            button23.Name = "button23";
-            button23.ShowArrow = true;
-            button23.Size = new Size(163, 47);
-            button23.TabIndex = 26;
-            button23.Text = "button21";
-            button23.TextAlign = ContentAlignment.MiddleLeft;
-            button23.Click += Btn2;
-            // 
-            // button218
-            // 
-            button218.BorderWidth = 1F;
-            button218.Ghost = true;
-            button218.Location = new Point(488, 3);
-            button218.Name = "button218";
-            button218.ShowArrow = true;
-            button218.Size = new Size(152, 44);
-            button218.TabIndex = 21;
-            button218.Text = "button21";
-            button218.TextAlign = ContentAlignment.MiddleLeft;
-            button218.Type = AntdUI.TTypeMini.Primary;
-            button218.Click += Btn2;
-            // 
-            // button210
-            // 
-            button210.BorderWidth = 1F;
-            button210.Location = new Point(646, 3);
-            button210.Name = "button210";
-            button210.ShowArrow = true;
-            button210.Size = new Size(152, 44);
-            button210.TabIndex = 20;
-            button210.Text = "button21";
-            button210.TextAlign = ContentAlignment.MiddleLeft;
-            button210.Type = AntdUI.TTypeMini.Error;
-            button210.Click += Btn2;
-            // 
-            // button216
-            // 
-            button216.BorderWidth = 1F;
-            button216.Ghost = true;
-            button216.IsLink = true;
-            button216.Location = new Point(804, 3);
-            button216.Name = "button216";
-            button216.ShowArrow = true;
-            button216.Size = new Size(152, 44);
-            button216.TabIndex = 25;
-            button216.Text = "button21";
-            button216.TextAlign = ContentAlignment.MiddleLeft;
-            button216.Click += Btn2;
-            // 
-            // button220
-            // 
-            button220.Ghost = true;
-            button220.IsLink = true;
-            button220.Location = new Point(962, 3);
-            button220.Name = "button220";
-            button220.ShowArrow = true;
-            button220.Size = new Size(152, 44);
-            button220.TabIndex = 23;
-            button220.Text = "button21";
-            button220.TextAlign = ContentAlignment.MiddleLeft;
-            button220.Click += Btn2;
-            // 
-            // divider4
-            // 
-            divider4.Dock = DockStyle.Top;
-            divider4.Font = new Font("Microsoft YaHei UI", 10F);
-            divider4.Location = new Point(0, 209);
-            divider4.Name = "divider4";
-            divider4.Orientation = AntdUI.TOrientation.Left;
-            divider4.Size = new Size(1300, 22);
-            divider4.TabIndex = 11;
-            divider4.Text = "连接按钮";
-            // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.Controls.Add(button7);
-            flowLayoutPanel1.Controls.Add(button9);
-            flowLayoutPanel1.Controls.Add(button1);
-            flowLayoutPanel1.Controls.Add(button4);
-            flowLayoutPanel1.Controls.Add(button26);
-            flowLayoutPanel1.Controls.Add(button6);
-            flowLayoutPanel1.Controls.Add(button11);
-            flowLayoutPanel1.Dock = DockStyle.Top;
-            flowLayoutPanel1.Location = new Point(0, 137);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(1300, 72);
-            flowLayoutPanel1.TabIndex = 10;
-            // 
-            // button1
-            // 
-            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button1.BorderWidth = 1F;
-            button1.IconSvg = Properties.Resources.icon_poweroff;
-            button1.Location = new Point(157, 3);
-            button1.Name = "button1";
-            button1.Shape = AntdUI.TShape.Circle;
-            button1.Size = new Size(47, 47);
-            button1.TabIndex = 1;
-            button1.Click += Btn2;
-            // 
-            // button4
-            // 
-            button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button4.BorderWidth = 1F;
-            button4.IconSvg = Properties.Resources.icon_search;
-            button4.Location = new Point(210, 3);
-            button4.Name = "button4";
-            button4.Size = new Size(95, 47);
-            button4.TabIndex = 2;
-            button4.Text = "搜索";
-            button4.Click += Btn2;
-            // 
-            // button26
-            // 
-            button26.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button26.BorderWidth = 2F;
-            button26.IconSvg = Properties.Resources.icon_search;
-            button26.Location = new Point(311, 3);
-            button26.Name = "button26";
-            button26.Shape = AntdUI.TShape.Circle;
-            button26.Size = new Size(47, 47);
-            button26.TabIndex = 6;
-            button26.Type = AntdUI.TTypeMini.Error;
-            button26.Click += Btn2;
-            // 
-            // button6
-            // 
-            button6.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button6.IconSvg = Properties.Resources.icon_search;
-            button6.Location = new Point(364, 3);
-            button6.Name = "button6";
-            button6.Size = new Size(95, 47);
-            button6.TabIndex = 7;
-            button6.Text = "搜索";
-            button6.Type = AntdUI.TTypeMini.Error;
-            button6.Click += Btn2;
-            // 
-            // divider2
-            // 
-            divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 10F);
-            divider2.Location = new Point(0, 115);
-            divider2.Name = "divider2";
-            divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(1300, 22);
-            divider2.TabIndex = 9;
-            divider2.Text = "图标按钮";
-            // 
-            // panel4
-            // 
-            panel4.Controls.Add(button17);
-            panel4.Controls.Add(button18);
-            panel4.Controls.Add(button19);
-            panel4.Controls.Add(button16);
-            panel4.Controls.Add(button5);
-            panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 22);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(1300, 93);
-            panel4.TabIndex = 2;
-            // 
-            // button17
-            // 
-            button17.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button17.Location = new Point(3, 3);
-            button17.Name = "button17";
-            button17.Size = new Size(152, 47);
-            button17.TabIndex = 0;
-            button17.Text = "Primary Button";
-            button17.Type = AntdUI.TTypeMini.Primary;
-            button17.Click += Btn2;
-            // 
-            // button18
-            // 
-            button18.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button18.BorderWidth = 1F;
-            button18.Location = new Point(161, 3);
-            button18.Name = "button18";
-            button18.Size = new Size(150, 47);
-            button18.TabIndex = 0;
-            button18.Text = "Default Button";
-            button18.Click += Btn2;
-            // 
-            // button19
-            // 
-            button19.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button19.Ghost = true;
-            button19.Location = new Point(317, 3);
-            button19.Name = "button19";
-            button19.Size = new Size(125, 47);
-            button19.TabIndex = 0;
-            button19.Text = "Text Button";
-            button19.Click += Btn2;
             // 
             // divider1
             // 
@@ -557,68 +796,89 @@ namespace Overview.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(1300, 22);
-            divider1.TabIndex = 1;
+            divider1.Size = new Size(845, 22);
+            divider1.TabIndex = 0;
             divider1.Text = "按钮类型";
             // 
             // Button
             // 
-            Controls.Add(panel3);
+            Controls.Add(panel_main);
             Controls.Add(header1);
             Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Button";
-            Size = new Size(1300, 676);
-            panel3.ResumeLayout(false);
-            panel1.ResumeLayout(false);
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
+            Size = new Size(845, 761);
+            panel_main.ResumeLayout(false);
             panel5.ResumeLayout(false);
-            flowLayoutPanel2.ResumeLayout(false);
-            flowLayoutPanel2.PerformLayout();
-            flowLayoutPanel1.ResumeLayout(false);
-            flowLayoutPanel1.PerformLayout();
+            panel6.ResumeLayout(false);
+            panel6.PerformLayout();
+            panel7.ResumeLayout(false);
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
         private AntdUI.Header header1;
-        private AntdUI.Button button16;
-        private AntdUI.Button button5;
-        private AntdUI.Button button7;
-        private AntdUI.Button button9;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel_main;
         private AntdUI.Divider divider1;
-        private FlowLayoutPanel panel4;
-        private AntdUI.Button button19;
-        private AntdUI.Button button18;
-        private AntdUI.Button button17;
-        private System.Windows.Forms.Panel panel1;
-        private AntdUI.Panel panel2;
-        private AntdUI.Divider divider3;
-        private AntdUI.Button button10;
-        private AntdUI.Button button15;
-        private AntdUI.Button button2;
-        private System.Windows.Forms.Panel panel5;
-        private AntdUI.Button button8;
-        private AntdUI.Button button20;
-        private AntdUI.Button button26;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel panel1;
         private AntdUI.Button button1;
-        private AntdUI.Button button4;
-        private AntdUI.Button button6;
-        private AntdUI.Divider divider2;
-        private FlowLayoutPanel flowLayoutPanel2;
-        private AntdUI.Divider divider4;
+        private AntdUI.Button button2;
         private AntdUI.Button button3;
-        private AntdUI.Button button25;
-        private AntdUI.Button button23;
-        private AntdUI.Button button218;
-        private AntdUI.Button button210;
-        private AntdUI.Button button216;
-        private AntdUI.Button button220;
+        private AntdUI.Button button4;
+        private AntdUI.Button button5;
+        private AntdUI.Divider divider2;
+        private FlowLayoutPanel panel2;
+        private AntdUI.Button button10;
         private AntdUI.Button button11;
+        private AntdUI.Button button12;
+        private AntdUI.Button button13;
+        private AntdUI.Button button14;
+        private AntdUI.Button button15;
+        private AntdUI.Button button16;
+        private AntdUI.Divider divider3;
+        private FlowLayoutPanel panel3;
+        private AntdUI.Button button20;
+        private AntdUI.Button button21;
+        private AntdUI.Button button22;
+        private AntdUI.Button button23;
+        private AntdUI.Button button24;
+        private AntdUI.Button button25;
+        private AntdUI.Button button26;
+        private AntdUI.Divider divider4;
+        private System.Windows.Forms.Panel panel4;
+        private AntdUI.Button button30;
+        private AntdUI.Button button31;
+        private AntdUI.Button button32;
+        private AntdUI.Button button33;
+        private AntdUI.Button button36;
+        private AntdUI.Button button37;
+        private AntdUI.Button button34;
+        private AntdUI.Button button35;
+        private AntdUI.Divider divider5;
+        private System.Windows.Forms.Panel panel5;
+        private AntdUI.Panel panel6;
+        private AntdUI.Button btng3;
+        private AntdUI.Button btng2;
+        private AntdUI.Button btng1;
+        private System.Windows.Forms.Panel panel7;
+        private AntdUI.Button button41;
+        private AntdUI.Button button40;
+        private AntdUI.Divider divider6;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private AntdUI.Button button50;
+        private AntdUI.Button button51;
+        private AntdUI.Button button52;
+        private AntdUI.Button button53;
+        private AntdUI.Button button54;
     }
 }

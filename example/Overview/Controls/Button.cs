@@ -34,14 +34,14 @@ namespace Overview.Controls
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
+            panel6.Width = btng1.Width + btng2.Width + btng3.Width + panel6.Padding.Horizontal + (int)(panel6.Shadow * AntdUI.Config.Dpi) * 2;
         }
         private void Btn(object sender, EventArgs e)
         {
             AntdUI.Button btn = (AntdUI.Button)sender;
             btn.Loading = true;
             bool change = false;
-            if (btn.Parent == panel2)
+            if (btn.Parent == panel6)
             {
                 change = true;
                 UpdatePanelWidth();
@@ -112,8 +112,8 @@ namespace Overview.Controls
 
         private void UpdatePanelWidth()
         {
-            if (panel2.IsDisposed) return;
-            panel2.Width = button2.Width + button15.Width + button10.Width + panel2.Padding.Horizontal + (int)(panel2.Shadow * AntdUI.Config.Dpi) * 2;
+            if (panel6.IsDisposed) return;
+            panel6.Width = btng1.Width + btng2.Width + btng3.Width + panel6.Padding.Horizontal + (int)(panel6.Shadow * AntdUI.Config.Dpi) * 2;
         }
     }
 }
