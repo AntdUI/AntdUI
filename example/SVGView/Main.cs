@@ -43,7 +43,7 @@ namespace SVGView
                 int i = svg.IndexOf(id + "=\"");
                 while (i != -1)
                 {
-                    string first = svg.Substring(0, i), last = svg.Substring(i + id.Length + 3);
+                    string first = svg.Substring(0, i), last = svg.Substring(i + id.Length + 2);
                     last = last.Substring(last.IndexOf("\"") + 1).Trim();
                     svg = first + last;
                     i = svg.IndexOf(id + "=\"");
