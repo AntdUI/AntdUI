@@ -443,6 +443,143 @@ namespace AntdUI
 
         #endregion
 
+        #region 切换
+
+        /// <summary>
+        /// 选中状态
+        /// </summary>
+        [Description("选中状态"), Category("切换"), DefaultValue(false)]
+        public bool Toggle
+        {
+            get => button.Toggle;
+            set => button.Toggle = value;
+        }
+
+        /// <summary>
+        /// 切换图标
+        /// </summary>
+        [Description("切换图标"), Category("切换"), DefaultValue(null)]
+        public Image? ToggleIcon
+        {
+            get => button.ToggleIcon;
+            set => button.ToggleIcon = value;
+        }
+
+        /// <summary>
+        /// 切换图标SVG
+        /// </summary>
+        [Description("切换图标SVG"), Category("切换"), DefaultValue(null)]
+        public string? ToggleIconSvg
+        {
+            get => button.ToggleIconSvg;
+            set => button.ToggleIconSvg = value;
+        }
+
+        /// <summary>
+        /// 是否包含切换图标
+        /// </summary>
+        public bool HasToggleIcon => button.HasToggleIcon;
+
+        /// <summary>
+        /// 切换悬停图标
+        /// </summary>
+        [Description("切换悬停图标"), Category("切换"), DefaultValue(null)]
+        public Image? ToggleIconHover
+        {
+            get => button.ToggleIconHover;
+            set => button.ToggleIconHover = value;
+        }
+
+        /// <summary>
+        /// 切换悬停图标SVG
+        /// </summary>
+        [Description("切换悬停图标SVG"), Category("切换"), DefaultValue(null)]
+        public string? ToggleIconHoverSvg
+        {
+            get => button.ToggleIconHoverSvg;
+            set => button.ToggleIconHoverSvg = value;
+        }
+
+        /// <summary>
+        /// 图标切换动画时长
+        /// </summary>
+        [Description("图标切换动画时长"), Category("切换"), DefaultValue(200)]
+        public int IconToggleAnimation
+        {
+            get => button.IconToggleAnimation;
+            set => button.IconToggleAnimation = value;
+        }
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("切换文字颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ToggleFore
+        {
+            get => button.ToggleFore;
+            set => button.ToggleFore = value;
+        }
+
+        /// <summary>
+        /// 切换类型
+        /// </summary>
+        [Description("切换类型"), Category("切换"), DefaultValue(TTypeMini.Default)]
+        public TTypeMini? ToggleType
+        {
+            get => button.ToggleType;
+            set => button.ToggleType = value;
+        }
+
+        #region 背景
+
+        /// <summary>
+        /// 切换背景颜色
+        /// </summary>
+        [Description("切换背景颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ToggleBack
+        {
+            get => button.ToggleBack;
+            set => button.ToggleBack = value;
+        }
+
+        /// <summary>
+        /// 切换背景渐变色
+        /// </summary>
+        [Description("切换背景渐变色"), Category("切换"), DefaultValue(null)]
+        public string? ToggleBackExtend
+        {
+            get => button.ToggleBackExtend;
+            set => button.ToggleBackExtend = value;
+        }
+
+        /// <summary>
+        /// 切换悬停背景颜色
+        /// </summary>
+        [Description("切换悬停背景颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ToggleBackHover
+        {
+            get => button.ToggleBackHover;
+            set => button.ToggleBackHover = value;
+        }
+
+        /// <summary>
+        /// 切换激活背景颜色
+        /// </summary>
+        [Description("切换激活背景颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ToggleBackActive
+        {
+            get => button.ToggleBackActive;
+            set => button.ToggleBackActive = value;
+        }
+
+        #endregion
+
+        #endregion
+
         #region 加载动画
 
         /// <summary>
@@ -783,7 +920,6 @@ namespace AntdUI
             base.Dispose(disposing);
         }
     }
-
 
     class IButton : IDisposable
     {
@@ -1230,6 +1366,207 @@ namespace AntdUI
 
         #endregion
 
+        #region 切换
+
+        #region 动画
+
+        bool AnimationIconToggle = false;
+        float AnimationIconToggleValue = 0F;
+
+        #endregion
+
+        bool toggle = false;
+        /// <summary>
+        /// 选中状态
+        /// </summary>
+        [Description("选中状态"), Category("切换"), DefaultValue(false)]
+        public bool Toggle
+        {
+            get => toggle;
+            set
+            {
+                if (value == toggle) return;
+                toggle = value;
+                if (Config.Animation)
+                {
+                    if (IconToggleAnimation > 0 && HasIcon && HasToggleIcon)
+                    {
+                        ThreadIconHover?.Dispose();
+                        ThreadIconHover = null;
+                        AnimationIconHover = false;
+
+                        ThreadIconToggle?.Dispose();
+                        AnimationIconToggle = true;
+                        var t = Animation.TotalFrames(10, IconToggleAnimation);
+                        if (value)
+                        {
+                            ThreadIconToggle = new ITask((i) =>
+                            {
+                                AnimationIconToggleValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                Invalidate();
+                                return true;
+                            }, 10, t, () =>
+                            {
+                                AnimationIconToggleValue = 1F;
+                                AnimationIconToggle = false;
+                                Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            ThreadIconToggle = new ITask((i) =>
+                            {
+                                AnimationIconToggleValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                Invalidate();
+                                return true;
+                            }, 10, t, () =>
+                            {
+                                AnimationIconToggleValue = 0F;
+                                AnimationIconToggle = false;
+                                Invalidate();
+                            });
+                        }
+                    }
+                    else Invalidate();
+                }
+                else Invalidate();
+            }
+        }
+
+        Image? iconToggle = null;
+        /// <summary>
+        /// 切换图标
+        /// </summary>
+        [Description("切换图标"), Category("切换"), DefaultValue(null)]
+        public Image? ToggleIcon
+        {
+            get => iconToggle;
+            set
+            {
+                if (iconToggle == value) return;
+                iconToggle = value;
+                if (toggle) Invalidate();
+            }
+        }
+
+        string? iconSvgToggle = null;
+        /// <summary>
+        /// 切换图标SVG
+        /// </summary>
+        [Description("切换图标SVG"), Category("切换"), DefaultValue(null)]
+        public string? ToggleIconSvg
+        {
+            get => iconSvgToggle;
+            set
+            {
+                if (iconSvgToggle == value) return;
+                iconSvgToggle = value;
+                if (toggle) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 是否包含切换图标
+        /// </summary>
+        public bool HasToggleIcon
+        {
+            get => iconSvgToggle != null || iconToggle != null;
+        }
+
+        /// <summary>
+        /// 切换悬停图标
+        /// </summary>
+        [Description("切换悬停图标"), Category("切换"), DefaultValue(null)]
+        public Image? ToggleIconHover { get; set; } = null;
+
+        /// <summary>
+        /// 切换悬停图标SVG
+        /// </summary>
+        [Description("切换悬停图标SVG"), Category("切换"), DefaultValue(null)]
+        public string? ToggleIconHoverSvg { get; set; } = null;
+
+        /// <summary>
+        /// 图标切换动画时长
+        /// </summary>
+        [Description("图标切换动画时长"), Category("切换"), DefaultValue(200)]
+        public int IconToggleAnimation { get; set; } = 200;
+
+        Color? foreToggle;
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        public Color? ToggleFore
+        {
+            get => foreToggle;
+            set
+            {
+                if (foreToggle == value) foreToggle = value;
+                foreToggle = value;
+                if (toggle) Invalidate();
+            }
+        }
+
+        TTypeMini? typeToggle = null;
+        /// <summary>
+        /// 切换类型
+        /// </summary>
+        public TTypeMini? ToggleType
+        {
+            get => typeToggle;
+            set
+            {
+                if (typeToggle == value) return;
+                typeToggle = value;
+                if (toggle) Invalidate();
+            }
+        }
+
+        #region 背景
+
+        Color? backToggle;
+        /// <summary>
+        /// 切换背景颜色
+        /// </summary>
+        public Color? ToggleBack
+        {
+            get => backToggle;
+            set
+            {
+                if (backToggle == value) return;
+                backToggle = value;
+                if (toggle) Invalidate();
+            }
+        }
+
+        string? backExtendToggle = null;
+        /// <summary>
+        /// 切换背景渐变色
+        /// </summary>
+        public string? ToggleBackExtend
+        {
+            get => backExtendToggle;
+            set
+            {
+                if (backExtendToggle == value) return;
+                backExtendToggle = value;
+                if (toggle) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 切换悬停背景颜色
+        /// </summary>
+        public Color? ToggleBackHover { get; set; }
+
+        /// <summary>
+        /// 切换激活背景颜色
+        /// </summary>
+        public Color? ToggleBackActive { get; set; }
+
+        #endregion
+
+        #endregion
+
         #region 加载动画
 
         bool loading = false;
@@ -1304,11 +1641,13 @@ namespace AntdUI
             ThreadClick?.Dispose();
             ThreadHover?.Dispose();
             ThreadIconHover?.Dispose();
+            ThreadIconToggle?.Dispose();
             ThreadLoading?.Dispose();
         }
 
         ITask? ThreadHover = null;
         ITask? ThreadIconHover = null;
+        ITask? ThreadIconToggle = null;
         ITask? ThreadClick = null;
         ITask? ThreadLoading = null;
 
@@ -1370,35 +1709,10 @@ namespace AntdUI
                 control.SetCursor(value && enabled && !loading);
                 if (enabled)
                 {
-                    Color _back_hover;
-                    switch (type)
-                    {
-                        case TTypeMini.Default:
-                            if (borderWidth > 0) _back_hover = Style.Db.PrimaryHover;
-                            else _back_hover = Style.Db.FillSecondary;
-                            break;
-                        case TTypeMini.Success:
-                            _back_hover = Style.Db.SuccessHover;
-                            break;
-                        case TTypeMini.Error:
-                            _back_hover = Style.Db.ErrorHover;
-                            break;
-                        case TTypeMini.Info:
-                            _back_hover = Style.Db.InfoHover;
-                            break;
-                        case TTypeMini.Warn:
-                            _back_hover = Style.Db.WarningHover;
-                            break;
-                        case TTypeMini.Primary:
-                        default:
-                            _back_hover = Style.Db.PrimaryHover;
-                            break;
-                    }
-
-                    if (BackHover.HasValue) _back_hover = BackHover.Value;
+                    var backHover = GetColorO();
                     if (Config.Animation)
                     {
-                        if (IconHoverAnimation > 0 && HasIcon && (IconHoverSvg != null || IconHover != null))
+                        if (IconHoverAnimation > 0 && ((toggle && HasToggleIcon && (ToggleIconHoverSvg != null || ToggleIconHover != null)) || (HasIcon && (IconHoverSvg != null || IconHover != null))))
                         {
                             ThreadIconHover?.Dispose();
                             AnimationIconHover = true;
@@ -1432,9 +1746,9 @@ namespace AntdUI
                                 });
                             }
                         }
-                        if (_back_hover.A > 0)
+                        if (backHover.A > 0)
                         {
-                            int addvalue = _back_hover.A / 12;
+                            int addvalue = backHover.A / 12;
                             ThreadHover?.Dispose();
                             AnimationHover = true;
                             if (value)
@@ -1442,7 +1756,7 @@ namespace AntdUI
                                 ThreadHover = new ITask(control, () =>
                                 {
                                     AnimationHoverValue += addvalue;
-                                    if (AnimationHoverValue > _back_hover.A) { AnimationHoverValue = _back_hover.A; return false; }
+                                    if (AnimationHoverValue > backHover.A) { AnimationHoverValue = backHover.A; return false; }
                                     Invalidate();
                                     return true;
                                 }, 10, () =>
@@ -1468,11 +1782,11 @@ namespace AntdUI
                         }
                         else
                         {
-                            AnimationHoverValue = _back_hover.A;
+                            AnimationHoverValue = backHover.A;
                             Invalidate();
                         }
                     }
-                    else AnimationHoverValue = _back_hover.A;
+                    else AnimationHoverValue = backHover.A;
                     Invalidate();
                 }
             }
@@ -1490,28 +1804,11 @@ namespace AntdUI
 
             if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, shape);
 
-            if (type == TTypeMini.Default)
+            bool is_default = type == TTypeMini.Default;
+            if (toggle && typeToggle.HasValue) is_default = typeToggle.Value == TTypeMini.Default;
+            if (is_default)
             {
-                Color _fore = Style.Db.DefaultColor, _color = Style.Db.Primary, _back_hover, _back_active;
-                if (borderWidth > 0)
-                {
-                    _back_hover = Style.Db.PrimaryHover;
-                    _back_active = Style.Db.PrimaryActive;
-                }
-                else
-                {
-                    _back_hover = Style.Db.FillSecondary;
-                    _back_active = Style.Db.Fill;
-                }
-                if (fore.HasValue) _fore = fore.Value;
-                if (BackHover.HasValue) _back_hover = BackHover.Value;
-                if (BackActive.HasValue) _back_active = BackActive.Value;
-                if (loading)
-                {
-                    _fore = Color.FromArgb(165, _fore);
-                    _color = Color.FromArgb(165, _color);
-                }
-
+                GetDefaultColorConfig(out var _fore, out var _color, out var _back_hover, out var _back_active);
                 using (var path = Path(rect_read, _radius))
                 {
                     #region 动画
@@ -1644,48 +1941,7 @@ namespace AntdUI
             }
             else
             {
-                Color _fore, _back, _back_hover, _back_active;
-                switch (type)
-                {
-                    case TTypeMini.Error:
-                        _back = Style.Db.Error;
-                        _fore = Style.Db.ErrorColor;
-                        _back_hover = Style.Db.ErrorHover;
-                        _back_active = Style.Db.ErrorActive;
-                        break;
-                    case TTypeMini.Success:
-                        _back = Style.Db.Success;
-                        _fore = Style.Db.SuccessColor;
-                        _back_hover = Style.Db.SuccessHover;
-                        _back_active = Style.Db.SuccessActive;
-                        break;
-                    case TTypeMini.Info:
-                        _back = Style.Db.Info;
-                        _fore = Style.Db.InfoColor;
-                        _back_hover = Style.Db.InfoHover;
-                        _back_active = Style.Db.InfoActive;
-                        break;
-                    case TTypeMini.Warn:
-                        _back = Style.Db.Warning;
-                        _fore = Style.Db.WarningColor;
-                        _back_hover = Style.Db.WarningHover;
-                        _back_active = Style.Db.WarningActive;
-                        break;
-                    case TTypeMini.Primary:
-                    default:
-                        _back = Style.Db.Primary;
-                        _fore = Style.Db.PrimaryColor;
-                        _back_hover = Style.Db.PrimaryHover;
-                        _back_active = Style.Db.PrimaryActive;
-                        break;
-                }
-
-                if (fore.HasValue) _fore = fore.Value;
-                if (back.HasValue) _back = back.Value;
-                if (BackHover.HasValue) _back_hover = BackHover.Value;
-                if (BackActive.HasValue) _back_active = BackActive.Value;
-                if (loading) _back = Color.FromArgb(165, _back);
-
+                GetColorConfig(out var _fore, out var _back, out var _back_hover, out var _back_active);
                 using (var path = Path(rect_read, _radius))
                 {
                     #region 动画
@@ -1751,11 +2007,24 @@ namespace AntdUI
                             {
                                 if (enabled)
                                 {
-                                    using (var brushback = backExtend.BrushEx(rect_read, _back))
+                                    if (toggle)
                                     {
-                                        using (var brush = new Pen(brushback, border))
+                                        using (var brushback = backExtendToggle.BrushEx(rect_read, _back))
                                         {
-                                            g.DrawPath(brush, path);
+                                            using (var brush = new Pen(brushback, border))
+                                            {
+                                                g.DrawPath(brush, path);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        using (var brushback = backExtend.BrushEx(rect_read, _back))
+                                        {
+                                            using (var brush = new Pen(brushback, border))
+                                            {
+                                                g.DrawPath(brush, path);
+                                            }
                                         }
                                     }
                                 }
@@ -1795,9 +2064,19 @@ namespace AntdUI
 
                         if (enabled)
                         {
-                            using (var brush = backExtend.BrushEx(rect_read, _back))
+                            if (toggle)
                             {
-                                g.FillPath(brush, path);
+                                using (var brush = backExtendToggle.BrushEx(rect_read, _back))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                            }
+                            else
+                            {
+                                using (var brush = backExtend.BrushEx(rect_read, _back))
+                                {
+                                    g.FillPath(brush, path);
+                                }
                             }
                         }
                         else
@@ -2279,6 +2558,21 @@ namespace AntdUI
                 PaintCoreIconHover(g, rect, color, AnimationIconHoverValue);
                 return false;
             }
+            else if (AnimationIconToggle)
+            {
+                float d = 1F - AnimationIconToggleValue;
+                if (MouseHover)
+                {
+                    if (!PaintCoreIcon(g, IconHover, IconHoverSvg, rect, color, d)) PaintCoreIcon(g, icon, iconSvg, rect, color, d);
+                    if (!PaintCoreIcon(g, ToggleIconHover, ToggleIconHoverSvg, rect, color, AnimationIconToggleValue)) PaintCoreIcon(g, ToggleIcon, ToggleIconSvg, rect, color, AnimationIconToggleValue);
+                }
+                else
+                {
+                    PaintCoreIcon(g, icon, iconSvg, rect, color, d);
+                    PaintCoreIcon(g, iconToggle, iconSvgToggle, rect, color, AnimationIconToggleValue);
+                }
+                return false;
+            }
             else
             {
                 if (enabled)
@@ -2315,8 +2609,8 @@ namespace AntdUI
             else return rectl;
         }
 
-        bool PaintCoreIcon(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => PaintCoreIcon(g, icon, iconSvg, rect, color, opacity);
-        bool PaintCoreIconHover(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => PaintCoreIcon(g, IconHover, IconHoverSvg, rect, color, opacity);
+        bool PaintCoreIcon(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => toggle ? PaintCoreIcon(g, iconToggle, iconSvgToggle, rect, color, opacity) : PaintCoreIcon(g, icon, iconSvg, rect, color, opacity);
+        bool PaintCoreIconHover(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => toggle ? PaintCoreIcon(g, ToggleIconHover, ToggleIconHoverSvg, rect, color, opacity) : PaintCoreIcon(g, IconHover, IconHoverSvg, rect, color, opacity);
 
         bool PaintCoreIcon(Graphics g, Image? icon, string? iconSvg, Rectangle rect, Color? color, float opacity = 1F)
         {
@@ -2353,6 +2647,142 @@ namespace AntdUI
             else if (joinRight) return rect_read.RoundPath(_radius, true, false, false, true);
             else if (joinLeft) return rect_read.RoundPath(_radius, false, true, true, false);
             return rect_read.RoundPath(_radius);
+        }
+
+        #endregion
+
+        #region 帮助
+
+        Color GetColorO()
+        {
+            if (toggle)
+            {
+                if (typeToggle.HasValue) return GetColorO(typeToggle.Value);
+                else return GetColorO(type);
+            }
+            return GetColorO(type);
+        }
+        Color GetColorO(TTypeMini type)
+        {
+            Color color;
+            switch (type)
+            {
+                case TTypeMini.Default:
+                    if (borderWidth > 0) color = Style.Db.PrimaryHover;
+                    else color = Style.Db.FillSecondary;
+                    break;
+                case TTypeMini.Success:
+                    color = Style.Db.SuccessHover;
+                    break;
+                case TTypeMini.Error:
+                    color = Style.Db.ErrorHover;
+                    break;
+                case TTypeMini.Info:
+                    color = Style.Db.InfoHover;
+                    break;
+                case TTypeMini.Warn:
+                    color = Style.Db.WarningHover;
+                    break;
+                case TTypeMini.Primary:
+                default:
+                    color = Style.Db.PrimaryHover;
+                    break;
+            }
+            if (BackHover.HasValue) color = BackHover.Value;
+            return color;
+        }
+
+        void GetDefaultColorConfig(out Color Fore, out Color Color, out Color backHover, out Color backActive)
+        {
+            Fore = Style.Db.DefaultColor;
+            Color = Style.Db.Primary;
+            if (borderWidth > 0)
+            {
+                backHover = Style.Db.PrimaryHover;
+                backActive = Style.Db.PrimaryActive;
+            }
+            else
+            {
+                backHover = Style.Db.FillSecondary;
+                backActive = Style.Db.Fill;
+            }
+            if (toggle)
+            {
+                if (foreToggle.HasValue) Fore = foreToggle.Value;
+                if (ToggleBackHover.HasValue) backHover = ToggleBackHover.Value;
+                if (ToggleBackActive.HasValue) backActive = ToggleBackActive.Value;
+            }
+            else
+            {
+                if (fore.HasValue) Fore = fore.Value;
+                if (BackHover.HasValue) backHover = BackHover.Value;
+                if (BackActive.HasValue) backActive = BackActive.Value;
+            }
+            if (loading)
+            {
+                Fore = Color.FromArgb(165, Fore);
+                Color = Color.FromArgb(165, Color);
+            }
+        }
+
+        void GetColorConfig(out Color Fore, out Color Back, out Color backHover, out Color backActive)
+        {
+            if (toggle)
+            {
+                if (typeToggle.HasValue) GetColorConfig(typeToggle.Value, out Fore, out Back, out backHover, out backActive);
+                else GetColorConfig(type, out Fore, out Back, out backHover, out backActive);
+
+                if (foreToggle.HasValue) Fore = foreToggle.Value;
+                if (backToggle.HasValue) Back = backToggle.Value;
+                if (ToggleBackHover.HasValue) backHover = ToggleBackHover.Value;
+                if (ToggleBackActive.HasValue) backActive = ToggleBackActive.Value;
+                if (loading) Back = Color.FromArgb(165, Back);
+                return;
+            }
+            GetColorConfig(type, out Fore, out Back, out backHover, out backActive);
+            if (fore.HasValue) Fore = fore.Value;
+            if (back.HasValue) Back = back.Value;
+            if (BackHover.HasValue) backHover = BackHover.Value;
+            if (BackActive.HasValue) backActive = BackActive.Value;
+            if (loading) Back = Color.FromArgb(165, Back);
+        }
+
+        void GetColorConfig(TTypeMini type, out Color Fore, out Color Back, out Color backHover, out Color backActive)
+        {
+            switch (type)
+            {
+                case TTypeMini.Error:
+                    Back = Style.Db.Error;
+                    Fore = Style.Db.ErrorColor;
+                    backHover = Style.Db.ErrorHover;
+                    backActive = Style.Db.ErrorActive;
+                    break;
+                case TTypeMini.Success:
+                    Back = Style.Db.Success;
+                    Fore = Style.Db.SuccessColor;
+                    backHover = Style.Db.SuccessHover;
+                    backActive = Style.Db.SuccessActive;
+                    break;
+                case TTypeMini.Info:
+                    Back = Style.Db.Info;
+                    Fore = Style.Db.InfoColor;
+                    backHover = Style.Db.InfoHover;
+                    backActive = Style.Db.InfoActive;
+                    break;
+                case TTypeMini.Warn:
+                    Back = Style.Db.Warning;
+                    Fore = Style.Db.WarningColor;
+                    backHover = Style.Db.WarningHover;
+                    backActive = Style.Db.WarningActive;
+                    break;
+                case TTypeMini.Primary:
+                default:
+                    Back = Style.Db.Primary;
+                    Fore = Style.Db.PrimaryColor;
+                    backHover = Style.Db.PrimaryHover;
+                    backActive = Style.Db.PrimaryActive;
+                    break;
+            }
         }
 
         #endregion
