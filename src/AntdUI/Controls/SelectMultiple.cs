@@ -273,9 +273,9 @@ namespace AntdUI
 
         #endregion
 
-        RectangleF[] rect_lefts = new RectangleF[0];
-        RectangleF[] rect_left_txts = new RectangleF[0];
-        RectangleF[] rect_left_dels = new RectangleF[0];
+        Rectangle[] rect_lefts = new Rectangle[0];
+        Rectangle[] rect_left_txts = new Rectangle[0];
+        Rectangle[] rect_left_dels = new Rectangle[0];
 
         internal override bool HasLeft() => selectedValue.Length > 0;
 
@@ -294,7 +294,7 @@ namespace AntdUI
                 return Helper.GDI(g =>
                 {
                     int height = g.MeasureString(Config.NullText, Font).Size().Height, del_icon = (int)(height * 0.4);
-                    List<RectangleF> _rect_left = new List<RectangleF>(selectedValue.Length), _rect_left_txt = new List<RectangleF>(selectedValue.Length), _rect_left_del = new List<RectangleF>(selectedValue.Length);
+                    List<Rectangle> _rect_left = new List<Rectangle>(selectedValue.Length), _rect_left_txt = new List<Rectangle>(selectedValue.Length), _rect_left_del = new List<Rectangle>(selectedValue.Length);
                     int y = (rect_read.Height - height) / 2, use = delgap ? 0 : y, gap = (int)(2 * Config.Dpi);
                     for (int i = 0; i < selectedValue.Length; i++)
                     {
@@ -305,7 +305,7 @@ namespace AntdUI
                         if (use_base + (size2.Width + gap) > rect_read.Width)
                         {
                             //超出
-                            _rect_left_txt.Add(new RectangleF(rect_read.X + use, rect_read.Y + y, size2.Width, height));
+                            _rect_left_txt.Add(new Rectangle(rect_read.X + use, rect_read.Y + y, size2.Width, height));
                             rect_left_txts = _rect_left_txt.ToArray();
                             rect_left_dels = _rect_left_del.ToArray();
                             rect_lefts = _rect_left.ToArray();
@@ -313,7 +313,7 @@ namespace AntdUI
                         }
                         if (enable_dir.Contains(it) || !canDelete)
                         {
-                            var rect = new RectangleF(rect_read.X + use, rect_read.Y + y, size.Width, height);
+                            var rect = new Rectangle(rect_read.X + use, rect_read.Y + y, size.Width, height);
                             _rect_left_txt.Add(rect);
                             _rect_left_del.Add(new Rectangle(-10, -10, 0, 0));
                             _rect_left.Add(rect);
@@ -321,10 +321,10 @@ namespace AntdUI
                         }
                         else
                         {
-                            var rect = new RectangleF(rect_read.X + use, rect_read.Y + y, size.Width, height);
+                            var rect = new Rectangle(rect_read.X + use, rect_read.Y + y, size.Width, height);
                             _rect_left_txt.Add(rect);
-                            float gapdelxy = (height - del_icon) / 2;
-                            _rect_left_del.Add(new RectangleF(rect.Right + gapdelxy / 2, rect.Y + gapdelxy, del_icon, del_icon));
+                            int gapdelxy = (height - del_icon) / 2;
+                            _rect_left_del.Add(new Rectangle(rect.Right + gapdelxy / 2, rect.Y + gapdelxy, del_icon, del_icon));
                             rect.Width += height;
                             _rect_left.Add(rect);
                             use += size.Width + height + gap;

@@ -362,7 +362,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, float radius, Rectangle rect_client, RectangleF rect_read)
+        GraphicsPath DrawShadow(Graphics g, float radius, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath(radius, shadowAlign);
             if (shadow > 0)

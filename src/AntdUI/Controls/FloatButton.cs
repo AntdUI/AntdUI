@@ -333,7 +333,7 @@ namespace AntdUI
             internal bool hover = false;
             internal Rectangle rect;
             internal Rectangle rect_read;
-            internal RectangleF rect_icon;
+            internal Rectangle rect_icon;
             internal Bitmap? shadow_temp = null;
 
             #endregion

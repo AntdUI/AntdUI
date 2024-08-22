@@ -346,7 +346,7 @@ namespace AntdUI
                                 g.FillPath(brush, path);
                             }
                         }
-                        g.PaintIconClose(rect_close, Style.Db.Text, 0.6F);
+                        g.PaintIconClose(rect_close, Style.Db.Text, .6F);
                     }
                     else if (close_button.Switch)
                     {
@@ -357,9 +357,9 @@ namespace AntdUI
                                 g.FillPath(brush, path);
                             }
                         }
-                        g.PaintIconClose(rect_close, Style.Db.Text, 0.6F);
+                        g.PaintIconClose(rect_close, Style.Db.Text, .6F);
                     }
-                    else g.PaintIconClose(rect_close, Style.Db.TextTertiary, 0.6F);
+                    else g.PaintIconClose(rect_close, Style.Db.TextTertiary, .6F);
                 }
                 using (var brush = new SolidBrush(Style.Db.TextBase))
                 {
@@ -386,7 +386,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, RectangleF rect_read)
+        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
             if (Config.ShadowEnabled)

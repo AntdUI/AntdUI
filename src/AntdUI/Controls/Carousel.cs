@@ -406,7 +406,7 @@ namespace AntdUI
                         bmpcode = select_range.i;
                         bmp = PaintBmp(select_range, rect, _radius);
                     }
-                    g.DrawImage(bmp, rect.X - AnimationChangeValue, rect.Y, bmp.Width, bmp.Height);
+                    g.DrawImage(bmp, (int)(rect.X - AnimationChangeValue), rect.Y, bmp.Width, bmp.Height);
                 }
                 else g.PaintImg(rect, image, imageFit, _radius, round);
             }

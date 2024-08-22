@@ -703,7 +703,7 @@ namespace AntdUI
             }
         }
 
-        void PaintBack(Graphics g, Color color, RectangleF rect, float radius)
+        void PaintBack(Graphics g, Color color, Rectangle rect, float radius)
         {
             using (var brush = new SolidBrush(color))
             {

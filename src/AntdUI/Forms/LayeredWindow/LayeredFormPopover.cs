@@ -29,7 +29,7 @@ namespace AntdUI
     internal class LayeredFormPopover : ILayeredFormOpacity
     {
         Popover.Config config;
-        public override bool MessageClose => true;
+        public override bool MessageEnable => true;
         public override bool MessageCloseSub => true;
         Form? form = null;
         public LayeredFormPopover(Popover.Config _config)

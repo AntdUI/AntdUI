@@ -283,7 +283,7 @@ namespace AntdUI
         internal StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
-            RectangleF rect = ClientRectangle.PaddingRect(Padding);
+            var rect = ClientRectangle.PaddingRect(Padding);
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
             float _radius = round ? rect_read.Height : radius * Config.Dpi;
@@ -390,7 +390,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal GraphicsPath Path(RectangleF rect_read, float _radius)
+        internal GraphicsPath Path(Rectangle rect_read, float _radius)
         {
             if (JoinLeft && JoinRight) return rect_read.RoundPath(0);
             else if (JoinRight) return rect_read.RoundPath(_radius, true, false, false, true);
@@ -400,7 +400,7 @@ namespace AntdUI
 
         #region 点击动画
 
-        internal void PaintClick(Graphics g, GraphicsPath path, RectangleF rect, Color color, float radius)
+        internal void PaintClick(Graphics g, GraphicsPath path, Rectangle rect, Color color, float radius)
         {
             if (AnimationFocus)
             {

@@ -30,7 +30,7 @@ namespace AntdUI
         ContextMenuStrip.Config config;
         bool uf = false;
         public override bool UFocus => uf;
-        public override bool MessageClose => true;
+        public override bool MessageEnable => true;
         Font FontSub;
         float radius = 0;
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config)

@@ -692,7 +692,7 @@ namespace AntdUI
                     g.DrawString(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
                 DrawTextIconSelect(g, it);
-                g.PaintIconCore(new RectangleF(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, 0.46F);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, .46F);
                 if (it.Online.HasValue)
                 {
                     using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error)))
@@ -748,7 +748,7 @@ namespace AntdUI
                     g.FillRectangle(brush_back, it.Rect);
                 }
                 DrawTextIconSelect(g, it);
-                g.PaintIconCore(new RectangleF(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, 0.46F);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, .46F);
             }
             else
             {

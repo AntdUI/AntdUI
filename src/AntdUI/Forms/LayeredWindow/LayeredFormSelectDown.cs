@@ -51,6 +51,7 @@ namespace AntdUI
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             ClickEnd = control.ClickEnd;
+            MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
             select_x = 0;
             scrollY = new ScrollY(this);
             MaxCount = control.MaxCount;

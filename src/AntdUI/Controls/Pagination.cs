@@ -709,6 +709,7 @@ namespace AntdUI
                     width = (int)(SizeChangerWidth * Config.Dpi);
                     var input = new Input
                     {
+                        WaveSize = 0,
                         Size = new Size(width, (int)rect.Height),
                         Dock = r ? DockStyle.Right : DockStyle.Left,
                         Text = pageSize.ToString(),
@@ -732,6 +733,7 @@ namespace AntdUI
                     else width = (int)(SizeChangerWidth * Config.Dpi);
                     var input = new Select
                     {
+                        WaveSize = 0,
                         List = true,
                         ListAutoWidth = true,
                         Placement = TAlignFrom.Top,

@@ -28,7 +28,6 @@ namespace AntdUI
     {
         FloatButton.Config config;
         int BadgeSize = 6, ShadowXY = 20, ShadowS = 40;
-        public override bool MessageClose => false;
         public LayeredFormFloatButton(FloatButton.Config _config)
         {
             maxalpha = 255;
@@ -41,13 +40,10 @@ namespace AntdUI
             {
                 var dpi = Config.Dpi;
                 BadgeSize = (int)Math.Round(BadgeSize * dpi);
-                //ShadowXY = (int)Math.Round(ShadowXY * dpi);
-                //ShadowS = ShadowXY * 2;
                 _config.MarginX = (int)Math.Round(_config.MarginX * dpi);
                 _config.MarginY = (int)Math.Round(_config.MarginY * dpi);
                 _config.Size = (int)Math.Round(_config.Size * dpi);
-                int size = _config.Size, t_size = size + ShadowS;
-                float icon_size = size * 0.45F, xy = (size - icon_size) / 2F;
+                int size = _config.Size, t_size = size + ShadowS, icon_size = (int)(size * 0.45F), xy = (size - icon_size) / 2;
                 int hasx = 0, hasy = 0;
                 if (_config.Vertical)
                 {
@@ -56,7 +52,7 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                        it.rect_icon = new RectangleF(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
+                        it.rect_icon = new Rectangle(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
                         hasy += t_size;
                     }
                     SetSize(size + ShadowS, t_size * _config.Btns.Length);
@@ -68,7 +64,7 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                        it.rect_icon = new RectangleF(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
+                        it.rect_icon = new Rectangle(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
                         hasx += t_size;
                     }
                     SetSize(t_size * _config.Btns.Length, size + ShadowS);

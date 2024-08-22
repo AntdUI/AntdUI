@@ -54,7 +54,7 @@ namespace AntdUI
                 }));
                 return;
             }
-            if (MessageClose) Application.AddMessageFilter(this);
+            if (MessageEnable) Application.AddMessageFilter(this);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -71,11 +71,6 @@ namespace AntdUI
 
         public virtual bool UFocus => true;
 
-        /// <summary>
-        /// 是否点击外面关闭
-        /// </summary>
-        public virtual bool MessageClose => false;
-        public virtual bool MessageCloseSub => false;
         public abstract Bitmap PrintBit();
         public byte alpha = 10;
 
@@ -263,6 +258,16 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 点击外面关闭使能
+        /// </summary>
+        public virtual bool MessageEnable => false;
+        public virtual bool MessageCloseSub => false;
+
+        /// <summary>
+        /// 鼠标离开关闭
+        /// </summary>
+        public bool MessageCloseMouseLeave { get; set; }
 
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {
@@ -270,6 +275,30 @@ namespace AntdUI
             //0x2a1 (WM_MOUSEHOVER)
             //0x2a3 (WM_MOUSELEAVE)
             if ((m.Msg == 0x201 || m.Msg == 0xa0))
+            {
+                var mousePosition = MousePosition;
+                if (!target_rect.Contains(mousePosition))
+                {
+                    try
+                    {
+                        if (PARENT != null && PARENT.IsHandleCreated)
+                        {
+                            if (ContainsPosition(PARENT, mousePosition)) return false;
+                            if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return false;
+
+                            #region 判断内容
+
+                            if (MessageCloseSub && FunSub(PARENT, mousePosition)) return false;
+
+                            #endregion
+                        }
+                        IClose();
+                    }
+                    catch { }
+                    return false;
+                }
+            }
+            else if (m.Msg == 0x2a3 && MessageCloseMouseLeave)
             {
                 var mousePosition = MousePosition;
                 if (!target_rect.Contains(mousePosition))

@@ -29,7 +29,7 @@ namespace AntdUI
         internal int EndHeight = 0;
         internal bool Inverted = false;
 
-        public override bool MessageClose => true;
+        public override bool MessageEnable => true;
 
         protected override void OnLoad(EventArgs e)
         {

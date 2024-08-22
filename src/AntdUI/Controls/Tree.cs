@@ -747,7 +747,7 @@ namespace AntdUI
             g.TranslateTransform(-sx, -sy);
         }
 
-        void PaintBack(Graphics g, SolidBrush brush, RectangleF rect, float radius)
+        void PaintBack(Graphics g, SolidBrush brush, Rectangle rect, float radius)
         {
             if (round || radius > 0)
             {

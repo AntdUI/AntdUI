@@ -231,21 +231,6 @@ namespace AntdUI
                         subForm = null;
                         Expand = false;
                     };
-                    if (Trigger == Trigger.Hover)
-                    {
-                        subForm.MouseEnter += (a, b) =>
-                        {
-                            if (a is LayeredFormSelectDown form) form.tag1 = false;
-                        };
-                        subForm.MouseLeave += (a, b) =>
-                        {
-                            if (a is LayeredFormSelectDown form) form.IClose();
-                        };
-                        subForm.Leave += (a, b) =>
-                        {
-                            if (a is LayeredFormSelectDown form) form.IClose();
-                        };
-                    }
                     subForm.Show(this);
                 }
                 else subForm?.IClose();

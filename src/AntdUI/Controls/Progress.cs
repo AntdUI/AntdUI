@@ -567,8 +567,8 @@ namespace AntdUI
                         }
                         else
                         {
-                            var size = rect_prog.Width * 0.26F;
-                            g.PaintIconGhosts(state, new RectangleF(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size), _color);
+                            int size = (int)(rect_prog.Width * .26F);
+                            g.PaintIconGhosts(state, new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size), _color);
                         }
                     }
                     else
