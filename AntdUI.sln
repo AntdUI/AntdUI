@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SVGView", "example\SVGView\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatUI", "example\ChatUI\ChatUI.csproj", "{796C3020-70CB-464D-A67A-66BCC566C6D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FontTest", "example\FontTest\FontTest.csproj", "{94493153-4FF8-4F33-8589-D72A8563AF52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{796C3020-70CB-464D-A67A-66BCC566C6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{796C3020-70CB-464D-A67A-66BCC566C6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{796C3020-70CB-464D-A67A-66BCC566C6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94493153-4FF8-4F33-8589-D72A8563AF52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94493153-4FF8-4F33-8589-D72A8563AF52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94493153-4FF8-4F33-8589-D72A8563AF52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94493153-4FF8-4F33-8589-D72A8563AF52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{2EFC67E4-34D0-4CE3-961C-7FB64AF965D8} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
 		{48484E20-7B05-41D3-9E76-D59A95A70A80} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
 		{796C3020-70CB-464D-A67A-66BCC566C6D8} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
+		{94493153-4FF8-4F33-8589-D72A8563AF52} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B151716-3D07-4DA4-8C4D-2D2BBE164EAA}

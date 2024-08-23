@@ -37,11 +37,9 @@ namespace AntdUI
             get => text;
             set
             {
-                if (text != value)
-                {
-                    text = value;
-                    Invalidate();
-                }
+                if (text == value) return;
+                text = value;
+                Invalidate();
             }
         }
 
@@ -55,11 +53,9 @@ namespace AntdUI
             get => desc;
             set
             {
-                if (desc != value)
-                {
-                    desc = value;
-                    Invalidate();
-                }
+                if (desc == value) return;
+                desc = value;
+                Invalidate();
             }
         }
 

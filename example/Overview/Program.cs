@@ -35,6 +35,7 @@ namespace Overview
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
+            AntdUI.Config.SetCorrectionTextRendering("Microsoft YaHei UI");
             Application.Run(new Main(istop));
         }
     }
