@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.Tabs.StyleLine styleLine2 = new AntdUI.Tabs.StyleLine();
+            AntdUI.Tabs.StyleLine styleLine1 = new AntdUI.Tabs.StyleLine();
             header1 = new AntdUI.Header();
             pagination1 = new AntdUI.Pagination();
             table2 = new AntdUI.Table();
@@ -74,7 +74,7 @@ namespace Overview.Controls
             // header1
             // 
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(6);
@@ -86,12 +86,12 @@ namespace Overview.Controls
             // pagination1
             // 
             pagination1.Dock = DockStyle.Bottom;
-            pagination1.Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
-            pagination1.Location = new Point(3, 30);
+            pagination1.Font = new Font("Microsoft YaHei UI", 11F);
+            pagination1.Location = new Point(3, 509);
             pagination1.Name = "pagination1";
             pagination1.RightToLeft = RightToLeft.Yes;
             pagination1.ShowSizeChanger = true;
-            pagination1.Size = new Size(186, 34);
+            pagination1.Size = new Size(1288, 40);
             pagination1.TabIndex = 5;
             pagination1.Total = 100;
             pagination1.ValueChanged += pagination1_ValueChanged;
@@ -101,10 +101,10 @@ namespace Overview.Controls
             // 
             table2.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
             table2.Dock = DockStyle.Fill;
-            table2.Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            table2.Font = new Font("Microsoft YaHei UI", 11F);
             table2.Location = new Point(3, 3);
             table2.Name = "table2";
-            table2.Size = new Size(186, 27);
+            table2.Size = new Size(1288, 506);
             table2.TabIndex = 3;
             table2.Text = "table2";
             // 
@@ -112,7 +112,7 @@ namespace Overview.Controls
             // 
             table1.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
             table1.Dock = DockStyle.Fill;
-            table1.Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            table1.Font = new Font("Microsoft YaHei UI", 11F);
             table1.Location = new Point(3, 46);
             table1.Name = "table1";
             table1.Radius = 6;
@@ -125,7 +125,7 @@ namespace Overview.Controls
             // tabs1
             // 
             tabs1.Dock = DockStyle.Fill;
-            tabs1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tabs1.Font = new Font("Microsoft YaHei UI", 12F);
             tabs1.Gap = 12;
             tabs1.Location = new Point(0, 79);
             tabs1.Name = "tabs1";
@@ -133,8 +133,8 @@ namespace Overview.Controls
             tabs1.Pages.Add(tabPage1);
             tabs1.Pages.Add(tabPage2);
             tabs1.Size = new Size(1300, 597);
-            styleLine2.Radius = 2;
-            tabs1.Style = styleLine2;
+            styleLine1.Radius = 2;
+            tabs1.Style = styleLine1;
             tabs1.TabIndex = 0;
             // 
             // tabPage1
@@ -159,7 +159,7 @@ namespace Overview.Controls
             panel1.Controls.Add(checkColumnDragSort);
             panel1.Controls.Add(checkFixedHeader);
             panel1.Dock = DockStyle.Top;
-            panel1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            panel1.Font = new Font("Microsoft YaHei UI", 12F);
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(10, 0, 0, 0);
@@ -251,10 +251,10 @@ namespace Overview.Controls
             tabPage2.Controls.Add(table2);
             tabPage2.Controls.Add(pagination1);
             tabPage2.Dock = DockStyle.Fill;
-            tabPage2.Location = new Point(4, 29);
+            tabPage2.Location = new Point(3, 42);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(192, 67);
+            tabPage2.Size = new Size(1294, 552);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "分页";
             // 
@@ -262,7 +262,7 @@ namespace Overview.Controls
             // 
             Controls.Add(tabs1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Table";
             Size = new Size(1300, 676);
             tabs1.ResumeLayout(false);

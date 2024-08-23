@@ -73,6 +73,8 @@ namespace Overview
                     return "Sat";
                 case "Sun":
                     return "Sun";
+                case "ItemsPerPage":
+                    return "Per/Page";
 
                 default:
                     System.Diagnostics.Debug.WriteLine(key);
