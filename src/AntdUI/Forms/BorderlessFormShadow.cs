@@ -144,10 +144,7 @@ namespace AntdUI
             {
                 if (InvokeRequired)
                 {
-                    Invoke(new Action(() =>
-                    {
-                        Print();
-                    }));
+                    Invoke(new Action(Print));
                     return;
                 }
                 try

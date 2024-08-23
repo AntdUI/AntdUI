@@ -31,6 +31,7 @@ namespace AntdUI
         List<OMenuItem> Items;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, MenuItemCollection items)
         {
+            MessageCloseMouseLeave = true;
             isauto = control.Theme == TAMode.Auto;
             isdark = Config.IsDark || control.Theme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);

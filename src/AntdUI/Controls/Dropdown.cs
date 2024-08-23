@@ -181,10 +181,7 @@ namespace AntdUI
                     System.Threading.Thread.Sleep(100);
                     if (subForm == null && mousein)
                     {
-                        BeginInvoke(new Action(() =>
-                        {
-                            ClickDown();
-                        }));
+                        BeginInvoke(new Action(ClickDown));
                     }
                 });
             }

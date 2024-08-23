@@ -343,6 +343,7 @@ namespace AntdUI
                 {
                     if (it.Visible)
                     {
+                        Color ccolor;
                         if (i == current)
                         {
                             switch (status)
@@ -351,11 +352,13 @@ namespace AntdUI
                                     g.DrawString(it.Title, Font, brush_fore, it.title_rect, stringLeft);
                                     g.DrawString(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
                                     g.DrawString(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                                    ccolor = brush_primary.Color;
                                     break;
                                 case TStepState.Wait:
                                     g.DrawString(it.Title, Font, brush_fore2, it.title_rect, stringLeft);
                                     g.DrawString(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
                                     g.DrawString(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                                    ccolor = brush_fore2.Color;
                                     break;
                                 case TStepState.Error:
                                     using (var brush_error = new SolidBrush(Style.Db.Error))
@@ -363,6 +366,7 @@ namespace AntdUI
                                         g.DrawString(it.Title, Font, brush_error, it.title_rect, stringLeft);
                                         g.DrawString(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
                                         g.DrawString(it.Description, font_description, brush_error, it.description_rect, stringLeft);
+                                        ccolor = brush_error.Color;
                                     }
                                     break;
                                 case TStepState.Process:
@@ -372,6 +376,7 @@ namespace AntdUI
                                     g.DrawString(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
                                     g.DrawString(it.Description, font_description, brush_fore, it.description_rect, stringLeft);
 
+                                    ccolor = brush_fore.Color;
                                     break;
                             }
                         }
@@ -381,6 +386,7 @@ namespace AntdUI
                             g.DrawString(it.Title, Font, brush_fore, it.title_rect, stringLeft);
                             g.DrawString(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
                             g.DrawString(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                            ccolor = brush_fore.Color;
                         }
                         else
                         {
@@ -388,10 +394,10 @@ namespace AntdUI
                             g.DrawString(it.Title, Font, brush_fore2, it.title_rect, stringLeft);
                             g.DrawString(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
                             g.DrawString(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                            ccolor = brush_fore2.Color;
                         }
 
-                        if (it.Icon != null) g.DrawImage(it.Icon, it.ico_rect);
-                        else
+                        if (PaintIcon(g, it, ccolor))
                         {
                             if (i == current)
                             {
@@ -427,6 +433,19 @@ namespace AntdUI
             }
             this.PaintBadge(g);
             base.OnPaint(e);
+        }
+
+        bool PaintIcon(Graphics g, StepsItem it, Color fore)
+        {
+            if (it.Icon != null) { g.DrawImage(it.Icon, it.ico_rect); return false; }
+            else if (it.IconSvg != null)
+            {
+                using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.ico_rect, fore))
+                {
+                    if (_bmp != null) { g.DrawImage(_bmp, it.ico_rect); return false; }
+                }
+            }
+            return true;
         }
 
         #endregion
@@ -524,9 +543,9 @@ namespace AntdUI
         }
         Image? icon = null;
         /// <summary>
-        /// 步骤图标的类型，可选
+        /// 图标，可选
         /// </summary>
-        [Description("步骤图标的类型，可选"), Category("外观"), DefaultValue(null)]
+        [Description("图标，可选"), Category("外观"), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -538,11 +557,27 @@ namespace AntdUI
             }
         }
 
+        string? iconSvg = null;
+        /// <summary>
+        /// 图标SVG，可选
+        /// </summary>
+        [Description("图标SVG，可选"), Category("外观"), DefaultValue(null)]
+        public string? IconSvg
+        {
+            get => iconSvg;
+            set
+            {
+                if (iconSvg == value) return;
+                iconSvg = value;
+                PARENT?.Invalidate();
+            }
+        }
+
         int? iconsize = null;
         /// <summary>
-        /// 步骤图标的大小，可选
+        /// 图标的大小，可选
         /// </summary>
-        [Description("步骤图标的大小，可选"), Category("外观"), DefaultValue(null)]
+        [Description("图标的大小，可选"), Category("外观"), DefaultValue(null)]
         public int? IconSize
         {
             get => iconsize;
@@ -603,9 +638,9 @@ namespace AntdUI
         string? description = null;
         internal bool showDescription = false;
         /// <summary>
-        /// 步骤的详情描述，可选
+        /// 详情描述，可选
         /// </summary>
-        [Description("步骤的详情描述，可选"), Category("外观"), DefaultValue(null)]
+        [Description("详情描述，可选"), Category("外观"), DefaultValue(null)]
         public string? Description
         {
             get => description;

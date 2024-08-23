@@ -48,10 +48,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() =>
-                {
-                    LoadMessage();
-                }));
+                Invoke(new Action(LoadMessage));
                 return;
             }
             if (MessageEnable) Application.AddMessageFilter(this);
@@ -171,10 +168,7 @@ namespace AntdUI
             {
                 if (InvokeRequired)
                 {
-                    Invoke(new Action(() =>
-                    {
-                        Render();
-                    }));
+                    Invoke(new Action(Render));
                     return;
                 }
                 try

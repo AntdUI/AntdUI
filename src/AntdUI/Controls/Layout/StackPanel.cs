@@ -170,7 +170,7 @@ namespace AntdUI
                         {
                             bool old = parent.scroll.Show;
                             parent.scroll.SetVrSize(val);
-                            if (old != parent.scroll.Show) parent.BeginInvoke(new Action(() => { parent.IOnSizeChanged(); }));
+                            if (old != parent.scroll.Show) parent.BeginInvoke(new Action(parent.IOnSizeChanged));
                         }
                     }
                 }

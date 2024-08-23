@@ -842,6 +842,15 @@ namespace AntdUI
             }
             return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
         }
+        public static Rectangle PaddingRect(this Rectangle rect, Padding padding, int x, int y, int r, int b, float size = 0F)
+        {
+            if (size > 0)
+            {
+                int pr = (int)Math.Round(size), pr2 = pr * 2;
+                return new Rectangle(rect.X + padding.Left + pr + x, rect.Y + padding.Top + pr + y, rect.Width - padding.Horizontal - pr2 - r, rect.Height - padding.Vertical - pr2 - b);
+            }
+            return new Rectangle(rect.X + padding.Left + x, rect.Y + padding.Top + y, rect.Width - padding.Horizontal - r, rect.Height - padding.Vertical - b);
+        }
 
         /// <summary>
         /// 得到真实渲染区域

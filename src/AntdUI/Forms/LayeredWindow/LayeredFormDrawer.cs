@@ -324,10 +324,7 @@ namespace AntdUI
                 {
                     if (IsHandleCreated)
                     {
-                        BeginInvoke(new Action(() =>
-                        {
-                            LoadContent();
-                        }));
+                        BeginInvoke(new Action(LoadContent));
                     }
                     SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
                     task_start = null;

@@ -154,7 +154,7 @@ namespace AntdUI
                             bool old_show = parent.scroll.Show;
                             float old_vr = parent.scroll.Max;
                             parent.scroll.SetVrSize(val);
-                            if (old_show != parent.scroll.Show || old_vr != parent.scroll.Max) parent.BeginInvoke(new Action(() => { parent.IOnSizeChanged(); }));
+                            if (old_show != parent.scroll.Show || old_vr != parent.scroll.Max) parent.BeginInvoke(new Action(parent.IOnSizeChanged));
                         }
                     }
                 }
