@@ -197,7 +197,7 @@ namespace AntdUI
                 }
                 using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
                 {
-                    g.DrawString(text, Font, brush, new RectangleF(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), Helper.stringFormatLeft);
+                    g.DrawStr(text, Font, brush, new RectangleF(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), Helper.stringFormatLeft);
                 }
             }
             this.PaintBadge(g);

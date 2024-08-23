@@ -370,7 +370,7 @@ namespace AntdUI
                 else ellipsis = false;
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawString(text, Font, brush, rec, stringFormat);
+                    g.DrawStr(text, Font, brush, rec, stringFormat);
                 }
             }
         }
@@ -390,7 +390,7 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(PrefixColor ?? color))
                 {
-                    g.DrawString(prefix, Font, brush, rect_l, stringCNoWrap);
+                    g.DrawStr(prefix, Font, brush, rect_l, stringCNoWrap);
                 }
             }
             else if (has_prefix)
@@ -414,7 +414,7 @@ namespace AntdUI
                 int x = rect_read.X + hx + font_size.Width, w = font_size_suffix.Width;
                 using (var brush = new SolidBrush(SuffixColor ?? color))
                 {
-                    g.DrawString(suffix, Font, brush, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
+                    g.DrawStr(suffix, Font, brush, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
                 }
             }
             else if (has_suffix)
@@ -445,7 +445,7 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(SuffixColor ?? color))
                 {
-                    g.DrawString(suffix, Font, brush, rect_l, stringCNoWrap);
+                    g.DrawStr(suffix, Font, brush, rect_l, stringCNoWrap);
                 }
             }
             else if (has_suffix)
@@ -470,7 +470,7 @@ namespace AntdUI
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 using (var brush = new SolidBrush(PrefixColor ?? color))
                 {
-                    g.DrawString(prefix, Font, brush, rect_l, stringCNoWrap);
+                    g.DrawStr(prefix, Font, brush, rect_l, stringCNoWrap);
                 }
             }
             else if (has_prefix)
@@ -495,7 +495,7 @@ namespace AntdUI
                 var rect_l = RecFixAuto(cex - font_size_prefix.Width, font_size_prefix.Width, rect_read, font_size);
                 using (var brush = new SolidBrush(PrefixColor ?? color))
                 {
-                    g.DrawString(prefix, Font, brush, rect_l, stringCNoWrap);
+                    g.DrawStr(prefix, Font, brush, rect_l, stringCNoWrap);
                 }
             }
             else if (has_prefix)
@@ -512,7 +512,7 @@ namespace AntdUI
                 var font_size_suffix = g.MeasureString(suffix, Font).Size();
                 using (var brush = new SolidBrush(SuffixColor ?? color))
                 {
-                    g.DrawString(suffix, Font, brush, RecFixAuto(cex + font_size.Width, font_size_suffix.Width, rect_read, font_size), stringCNoWrap);
+                    g.DrawStr(suffix, Font, brush, RecFixAuto(cex + font_size.Width, font_size_suffix.Width, rect_read, font_size), stringCNoWrap);
                 }
             }
             else if (has_suffix)

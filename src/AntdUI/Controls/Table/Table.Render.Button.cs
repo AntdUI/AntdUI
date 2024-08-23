@@ -479,7 +479,7 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawString(btn.Text, font, brush, rect_text, btn.stringFormat);
+                    g.DrawStr(btn.Text, font, brush, rect_text, btn.stringFormat);
                 }
             }
         }
@@ -614,8 +614,8 @@ namespace AntdUI
                 using (var brush = new SolidBrush(color))
                 using (var brushHover = new SolidBrush(colorHover))
                 {
-                    g.DrawString(btn.Text, font, brush, rect_text, btn.stringFormat);
-                    g.DrawString(btn.Text, font, brushHover, rect_text, btn.stringFormat);
+                    g.DrawStr(btn.Text, font, brush, rect_text, btn.stringFormat);
+                    g.DrawStr(btn.Text, font, brushHover, rect_text, btn.stringFormat);
                 }
             }
         }
@@ -743,7 +743,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Style.Db.PrimaryActive))
                 {
-                    g.DrawString(link.Text, font, brush, rect_read, link.stringFormat);
+                    g.DrawStr(link.Text, font, brush, rect_read, link.stringFormat);
                 }
             }
             else if (link.AnimationHover)
@@ -751,25 +751,25 @@ namespace AntdUI
                 var colorHover = Helper.ToColor(link.AnimationHoverValue, Style.Db.PrimaryHover);
                 using (var brush = new SolidBrush(Style.Db.Primary))
                 {
-                    g.DrawString(link.Text, font, brush, rect_read, link.stringFormat);
+                    g.DrawStr(link.Text, font, brush, rect_read, link.stringFormat);
                 }
                 using (var brush = new SolidBrush(colorHover))
                 {
-                    g.DrawString(link.Text, font, brush, rect_read, link.stringFormat);
+                    g.DrawStr(link.Text, font, brush, rect_read, link.stringFormat);
                 }
             }
             else if (link.ExtraMouseHover)
             {
                 using (var brush = new SolidBrush(Style.Db.PrimaryHover))
                 {
-                    g.DrawString(link.Text, font, brush, rect_read, link.stringFormat);
+                    g.DrawStr(link.Text, font, brush, rect_read, link.stringFormat);
                 }
             }
             else
             {
                 using (var brush = new SolidBrush(link.Enabled ? Style.Db.Primary : Style.Db.TextQuaternary))
                 {
-                    g.DrawString(link.Text, font, brush, rect_read, link.stringFormat);
+                    g.DrawStr(link.Text, font, brush, rect_read, link.stringFormat);
                 }
             }
         }

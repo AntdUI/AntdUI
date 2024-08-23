@@ -883,7 +883,7 @@ namespace AntdUI
                         using (var brush_active = new SolidBrush(foreactive ?? Style.Db.Text))
                         {
                             if (PaintImg(g, it, brush_active.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                            g.DrawString(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
+                            g.DrawStr(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
                         }
                     }
                     else
@@ -893,13 +893,13 @@ namespace AntdUI
                             using (var brush_active = new SolidBrush(ForeHover ?? Style.Db.HoverColor))
                             {
                                 PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                                g.DrawString(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
+                                g.DrawStr(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
                             }
                         }
                         else
                         {
                             PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                            g.DrawString(it.Text, Font, brush, it.RectText, Helper.stringFormatCenter);
+                            g.DrawStr(it.Text, Font, brush, it.RectText, Helper.stringFormatCenter);
                         }
                     }
                 }

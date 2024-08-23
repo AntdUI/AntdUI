@@ -487,8 +487,8 @@ namespace AntdUI
 
         static void RenderText(ITooltip core, Graphics g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
         {
-            if (multiline) g.DrawString(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
-            else g.DrawString(core.Text, core.Font, Brushes.White, rect, s_c);
+            if (multiline) g.DrawStr(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
+            else g.DrawStr(core.Text, core.Font, Brushes.White, rect, s_c);
         }
 
         static void DrawShadow(this ITooltip core, Graphics _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)

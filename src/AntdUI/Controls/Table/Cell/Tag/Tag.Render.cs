@@ -88,7 +88,7 @@ namespace AntdUI
 
                 using (var brush = new SolidBrush(_fore))
                 {
-                    g.DrawString(Text, font, brush, Rect, Table.stringCenter);
+                    g.DrawStr(Text, font, brush, Rect, Table.stringCenter);
                 }
             }
         }

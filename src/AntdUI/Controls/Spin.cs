@@ -278,7 +278,7 @@ namespace AntdUI
                 rect_prog.Offset(0, -size2);
                 using (var brush = new SolidBrush(control.ForeColor))
                 {
-                    g.DrawString(text, font ?? control.Font, brush, new RectangleF(rect.X, y, rect.Width, prog_size), Helper.stringFormatCenter);
+                    g.DrawStr(text, font ?? control.Font, brush, new RectangleF(rect.X, y, rect.Width, prog_size), Helper.stringFormatCenter);
                 }
             }
             using (var brush = new Pen(color, size))

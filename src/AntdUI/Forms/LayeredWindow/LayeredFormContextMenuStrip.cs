@@ -266,15 +266,15 @@ namespace AntdUI
                                 }
                                 if (it.Tag.Enabled)
                                 {
-                                    g.DrawString(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
+                                    g.DrawStr(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
                                     if (it.Tag.Fore.HasValue)
                                     {
                                         using (var brush_fore = new SolidBrush(it.Tag.Fore.Value))
                                         {
-                                            g.DrawString(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
+                                            g.DrawStr(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
                                         }
                                     }
-                                    else g.DrawString(it.Tag.Text, Font, brush, it.RectT, stringLeft);
+                                    else g.DrawStr(it.Tag.Text, Font, brush, it.RectT, stringLeft);
 
                                     if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {
@@ -302,8 +302,8 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    g.DrawString(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
-                                    g.DrawString(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
+                                    g.DrawStr(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
+                                    g.DrawStr(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
 
                                     if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {

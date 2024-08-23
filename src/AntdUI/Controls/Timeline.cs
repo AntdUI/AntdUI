@@ -219,8 +219,8 @@ namespace AntdUI
                 {
                     if (it.Visible)
                     {
-                        g.DrawString(it.Text, Font, brush_fore, it.txt_rect, stringFormatLeft);
-                        g.DrawString(it.Description, font_Description, brush_fore2, it.description_rect, stringFormatLeft);
+                        g.DrawStr(it.Text, Font, brush_fore, it.txt_rect, stringFormatLeft);
+                        g.DrawStr(it.Description, font_Description, brush_fore2, it.description_rect, stringFormatLeft);
                         if (it.Icon != null) g.DrawImage(it.Icon, it.ico_rect);
                         else
                         {

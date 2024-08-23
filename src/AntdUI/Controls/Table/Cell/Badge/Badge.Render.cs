@@ -63,10 +63,10 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Fore.Value))
                 {
-                    g.DrawString(Text, font, brush, Rect, Table.StringF(PARENT.column));
+                    g.DrawStr(Text, font, brush, Rect, Table.StringF(PARENT.column));
                 }
             }
-            else g.DrawString(Text, font, fore, Rect, Table.StringF(PARENT.column));
+            else g.DrawStr(Text, font, fore, Rect, Table.StringF(PARENT.column));
         }
 
         internal override Size GetSize(Graphics g, Font font, int gap, int gap2)

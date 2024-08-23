@@ -215,7 +215,7 @@ namespace AntdUI
                         {
                             using (var brush = new SolidBrush(fore))
                             {
-                                g.DrawString(it.Text, Font, brush, it.rect_read, stringCenter);
+                                g.DrawStr(it.Text, Font, brush, it.rect_read, stringCenter);
                             }
                         }
                         PrintBadge(g, it);
@@ -264,7 +264,7 @@ namespace AntdUI
                                         g.DrawEllipse(pen, rect_badge);
                                     }
                                 }
-                                g.DrawString(it.Badge, font, brush_fore, rect_badge, stringBadge);
+                                g.DrawStr(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
                             else
                             {
@@ -281,7 +281,7 @@ namespace AntdUI
                                         }
                                     }
                                 }
-                                g.DrawString(it.Badge, font, brush_fore, rect_badge, stringBadge);
+                                g.DrawStr(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
                         }
                     }

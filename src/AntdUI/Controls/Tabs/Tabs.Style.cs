@@ -446,7 +446,7 @@ namespace AntdUI
                         }
                     }
                 }
-                g.DrawString(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
+                g.DrawStr(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
             void PaintBar(Graphics g, RectangleF rect, SolidBrush brush)
@@ -1429,7 +1429,7 @@ namespace AntdUI
                     else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.Text);
                     else g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
                 }
-                g.DrawString(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
+                g.DrawStr(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
 
@@ -2273,7 +2273,7 @@ namespace AntdUI
                     else
                         g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
                 }
-                g.DrawString(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
+                g.DrawStr(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
 

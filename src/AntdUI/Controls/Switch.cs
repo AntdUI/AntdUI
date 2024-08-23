@@ -290,7 +290,7 @@ namespace AntdUI
                         var textRect = Checked
                             ? new RectangleF(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
                             : new RectangleF(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
-                        g.DrawString(textToRender, Font, brush, textRect);
+                        g.DrawStr(textToRender, Font, brush, textRect);
                     }
                 }
             }

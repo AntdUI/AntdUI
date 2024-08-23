@@ -368,7 +368,7 @@ namespace AntdUI
                     using (var brush = new SolidBrush(_fore))
                     {
                         var wi = gap * 2 + size_color;
-                        g.DrawString("#" + _value.ToHex(), Font, brush, new RectangleF(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                        g.DrawStr("#" + _value.ToHex(), Font, brush, new RectangleF(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
                     }
                 }
                 else

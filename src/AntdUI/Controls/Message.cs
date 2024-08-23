@@ -368,7 +368,7 @@ namespace AntdUI
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
                 using (var brush = new SolidBrush(Style.Db.TextBase))
                 {
-                    g.DrawString(config.Text, Font, brush, rect_txt, Helper.stringFormatLeft);
+                    g.DrawStr(config.Text, Font, brush, rect_txt, Helper.stringFormatLeft);
                 }
             }
             return original_bmp;

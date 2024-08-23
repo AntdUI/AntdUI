@@ -118,7 +118,7 @@ namespace AntdUI.Chat
                     {
                         using (var brush = new SolidBrush(Style.Db.TextTertiary))
                         {
-                            g.DrawString(text.Name, Font, brush, text.rect_name, SFL);
+                            g.DrawStr(text.Name, Font, brush, text.rect_name, SFL);
                         }
                         if (text.Me)
                         {
@@ -201,11 +201,11 @@ namespace AntdUI.Chat
                         }
                         else if (itt.emoji)
                         {
-                            g.DrawString(itt.text, font, fore, itt.rect, m_sf);
+                            g.DrawStr(itt.text, font, fore, itt.rect, m_sf);
                         }
                         else
                         {
-                            g.DrawString(itt.text, Font, fore, itt.rect, m_sf);
+                            g.DrawStr(itt.text, Font, fore, itt.rect, m_sf);
                         }
                     }
                 }
@@ -224,7 +224,7 @@ namespace AntdUI.Chat
                     }
                     else
                     {
-                        g.DrawString(itt.text, Font, fore, itt.rect, m_sf);
+                        g.DrawStr(itt.text, Font, fore, itt.rect, m_sf);
                     }
                 }
             }

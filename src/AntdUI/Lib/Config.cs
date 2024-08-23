@@ -155,5 +155,14 @@ namespace AntdUI
         {
             SetDpi(g.DpiX / 96F);
         }
+
+        /// <summary>
+        /// 设置修正文本渲染
+        /// </summary>
+        /// <param name="families">需要修正的字体列表</param>
+        public static void SetCorrectionTextRendering(params string[] families)
+        {
+            foreach (var it in families) CorrectionTextRendering.Set(it);
+        }
     }
 }

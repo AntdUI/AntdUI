@@ -246,7 +246,7 @@ namespace AntdUI
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
             using (var brush = new SolidBrush(enabled ? (fore ?? Style.Db.Text) : Style.Db.TextQuaternary))
             {
-                g.DrawString(text, Font, brush, text_rect, stringFormat);
+                g.DrawStr(text, Font, brush, text_rect, stringFormat);
             }
             this.PaintBadge(g);
             base.OnPaint(e);

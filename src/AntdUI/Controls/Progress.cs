@@ -495,8 +495,8 @@ namespace AntdUI
                 if (icon_rect.Width == 0 || icon_rect.Height == 0) return;
                 using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                 {
-                    if (showText) g.DrawString((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), Helper.stringFormatLeft);
-                    else g.DrawString(text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), Helper.stringFormatLeft);
+                    if (showText) g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), Helper.stringFormatLeft);
+                    else g.DrawStr(text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), Helper.stringFormatLeft);
                 }
 
                 float w = radius * Config.Dpi;
@@ -561,8 +561,8 @@ namespace AntdUI
                         {
                             using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                             {
-                                if (showText) g.DrawString((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
-                                else g.DrawString(text, Font, brush, rect, s_c);
+                                if (showText) g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
+                                else g.DrawStr(text, Font, brush, rect, s_c);
                             }
                         }
                         else
@@ -575,8 +575,8 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            if (showText) g.DrawString((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
-                            else g.DrawString(text, Font, brush, rect, s_c);
+                            if (showText) g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
+                            else g.DrawStr(text, Font, brush, rect, s_c);
                         }
                     }
                 }
@@ -611,7 +611,7 @@ namespace AntdUI
 
                                 using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                                 {
-                                    g.DrawString(basetext + text, Font, brush, rect_rext, s_r);
+                                    g.DrawStr(basetext + text, Font, brush, rect_rext, s_r);
                                 }
                             }
                             else
@@ -633,7 +633,7 @@ namespace AntdUI
                             PaintProgress(g, _radius, rect, _back, _color);
                             using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                             {
-                                g.DrawString((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
+                                g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
                             }
                         }
                     }
@@ -642,7 +642,7 @@ namespace AntdUI
                         PaintProgress(g, _radius, rect, _back, _color);
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawString(text, Font, brush, rect, s_c);
+                            g.DrawStr(text, Font, brush, rect, s_c);
                         }
                     }
                 }

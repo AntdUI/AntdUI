@@ -357,11 +357,11 @@ namespace AntdUI
                         }
                         var rect_del = rect_left_dels[i];
                         if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
-                        g.DrawString(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
+                        g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                     }
                     if (rect_lefts.Length != selectedValue.Length)
                     {
-                        g.DrawString("+" + (selectedValue.Length - rect_lefts.Length), Font, brush, rect_left_txts[rect_left_txts.Length - 1], sf_center);
+                        g.DrawStr("+" + (selectedValue.Length - rect_lefts.Length), Font, brush, rect_left_txts[rect_left_txts.Length - 1], sf_center);
                     }
                 }
             }

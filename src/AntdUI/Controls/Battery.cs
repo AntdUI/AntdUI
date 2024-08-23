@@ -180,7 +180,7 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawString("100%", Font, brush, rect, c);
+                            g.DrawStr("100%", Font, brush, rect, c);
                         }
                     }
                 }
@@ -223,7 +223,7 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawString(_value + "%", Font, brush, rect, c);
+                            g.DrawStr(_value + "%", Font, brush, rect, c);
                         }
                     }
                 }

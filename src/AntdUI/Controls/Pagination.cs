@@ -347,7 +347,7 @@ namespace AntdUI
 
                     using (var brush = new SolidBrush(fore))
                     {
-                        if (showTotal != null) g.DrawString(showTotal, Font, brush, rect_text, Helper.stringFormatCenter2);
+                        if (showTotal != null) g.DrawStr(showTotal, Font, brush, rect_text, Helper.stringFormatCenter2);
                         for (int i = 2; i < buttons.Length; i++)
                         {
                             var btn = buttons[i];
@@ -362,7 +362,7 @@ namespace AntdUI
                             {
                                 using (var brush_prog = new SolidBrush(Style.Db.TextQuaternary))
                                 {
-                                    g.DrawString("•••", Font, brush_prog, btn.rect, Helper.stringFormatCenter2);
+                                    g.DrawStr("•••", Font, brush_prog, btn.rect, Helper.stringFormatCenter2);
                                 }
                             }
                             else
@@ -377,7 +377,7 @@ namespace AntdUI
                                         }
                                     }
                                 }
-                                g.DrawString(btn.key, Font, brush, btn.rect, Helper.stringFormatCenter2);
+                                g.DrawStr(btn.key, Font, brush, btn.rect, Helper.stringFormatCenter2);
                             }
                         }
                     }
@@ -403,13 +403,13 @@ namespace AntdUI
 
                 using (var brush = new SolidBrush(Style.Db.TextQuaternary))
                 {
-                    if (showTotal != null) g.DrawString(showTotal, Font, brush, rect_text, Helper.stringFormatCenter2);
+                    if (showTotal != null) g.DrawStr(showTotal, Font, brush, rect_text, Helper.stringFormatCenter2);
                     for (int i = 2; i < buttons.Length; i++)
                     {
                         var btn = buttons[i];
                         if (btn.prog > 0)
                         {
-                            g.DrawString("•••", Font, brush, btn.rect, Helper.stringFormatCenter2);
+                            g.DrawStr("•••", Font, brush, btn.rect, Helper.stringFormatCenter2);
                         }
                         else
                         {
@@ -423,7 +423,7 @@ namespace AntdUI
                                     }
                                 }
                             }
-                            g.DrawString(btn.key, Font, brush, btn.rect, Helper.stringFormatCenter2);
+                            g.DrawStr(btn.key, Font, brush, btn.rect, Helper.stringFormatCenter2);
                         }
                     }
                 }

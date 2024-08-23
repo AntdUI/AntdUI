@@ -496,8 +496,8 @@ namespace AntdUI
             {
                 using (var fore = new SolidBrush(Style.Db.TextQuaternary))
                 {
-                    if (showS && placeholderS != null) g.DrawString(placeholderS, Font, fore, rect_d_l, sf_placeholder);
-                    if (showE && placeholderE != null) g.DrawString(placeholderE, Font, fore, rect_d_r, sf_placeholder);
+                    if (showS && placeholderS != null) g.DrawStr(placeholderS, Font, fore, rect_d_l, sf_placeholder);
+                    if (showE && placeholderE != null) g.DrawStr(placeholderE, Font, fore, rect_d_r, sf_placeholder);
                 }
             }
             if (AnimationBar)

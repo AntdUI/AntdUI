@@ -363,15 +363,15 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(Style.Db.TextBase))
                 {
-                    g.DrawString(config.Title, font_title, brush, rect_title, Helper.stringFormatLeft);
-                    g.DrawString(config.Text, Font, brush, rect_txt, stringFormat);
+                    g.DrawStr(config.Title, font_title, brush, rect_title, Helper.stringFormatLeft);
+                    g.DrawStr(config.Text, Font, brush, rect_txt, stringFormat);
                 }
                 if (config.Link != null)
                 {
                     using (var brush = new SolidBrush(Style.Db.Primary))
                     using (var pen = new Pen(Style.Db.Primary, 1F * Config.Dpi))
                     {
-                        g.DrawString(config.Link.Text, Font, brush, rect_link_text, Helper.stringFormatLeft);
+                        g.DrawStr(config.Link.Text, Font, brush, rect_link_text, Helper.stringFormatLeft);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
                     }
                 }

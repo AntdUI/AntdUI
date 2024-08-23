@@ -2242,7 +2242,7 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawString(text, Font(), brush, rect_text, stringFormat);
+                    g.DrawStr(text, Font(), brush, rect_text, stringFormat);
                 }
             }
         }
@@ -2404,8 +2404,8 @@ namespace AntdUI
                 using (var brush = new SolidBrush(color))
                 using (var brushHover = new SolidBrush(colorHover))
                 {
-                    g.DrawString(text, Font(), brush, rect_text, stringFormat);
-                    g.DrawString(text, Font(), brushHover, rect_text, stringFormat);
+                    g.DrawStr(text, Font(), brush, rect_text, stringFormat);
+                    g.DrawStr(text, Font(), brushHover, rect_text, stringFormat);
                 }
             }
         }

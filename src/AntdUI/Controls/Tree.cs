@@ -703,11 +703,11 @@ namespace AntdUI
                 color = item.Fore.Value;
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawString(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
+                    g.DrawStr(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
                 }
             }
-            else g.DrawString(item.Text, Font, fore, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
-            if (item.SubTitle != null) g.DrawString(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, Helper.stringFormatLeft);
+            else g.DrawStr(item.Text, Font, fore, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
+            if (item.SubTitle != null) g.DrawStr(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, Helper.stringFormatLeft);
             if (item.Icon != null) g.DrawImage(item.Icon, item.ico_rect);
             else if (item.IconSvg != null)
             {

@@ -660,7 +660,7 @@ namespace AntdUI
         {
             using (var brush = new SolidBrush(fore))
             {
-                g.DrawString(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                g.DrawStr(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }
@@ -687,7 +687,7 @@ namespace AntdUI
             }
             using (var brush = new SolidBrush(fore))
             {
-                g.DrawString(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                g.DrawStr(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }

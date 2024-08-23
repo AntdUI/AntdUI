@@ -465,7 +465,7 @@ namespace AntdUI
                 PaintImage(g, color, rect.l);
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawString(text, Font, brush, rect.text, stringFormat);
+                    g.DrawStr(text, Font, brush, rect.text, stringFormat);
                 }
             }
         }

@@ -193,14 +193,14 @@ namespace AntdUI
         {
             using (var brush = new SolidBrush(enabled ? ForeColor : Style.Db.TextQuaternary))
             {
-                g.DrawString(text, Font, brush, path, stringFormat);
+                g.DrawStr(text, Font, brush, path, stringFormat);
             }
         }
         internal void PaintText(Graphics g, string? text, RectangleF path, StringFormat stringFormat, bool enabled)
         {
             using (var brush = new SolidBrush(enabled ? ForeColor : Style.Db.TextQuaternary))
             {
-                g.DrawString(text, Font, brush, path, stringFormat);
+                g.DrawStr(text, Font, brush, path, stringFormat);
             }
         }
 

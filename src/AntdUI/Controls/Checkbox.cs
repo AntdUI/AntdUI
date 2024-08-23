@@ -225,7 +225,7 @@ namespace AntdUI
 
             using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, enabled))
             {
-                g.DrawString(text, Font, brush, text_rect, stringFormat);
+                g.DrawStr(text, Font, brush, text_rect, stringFormat);
             }
 
             this.PaintBadge(g);

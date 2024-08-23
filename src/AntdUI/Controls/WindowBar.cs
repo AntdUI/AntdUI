@@ -411,12 +411,12 @@ namespace AntdUI
 
             using (var brush = new SolidBrush(forebase))
             {
-                g.DrawString(text, Font, brush, rect, stringLeft);
+                g.DrawStr(text, Font, brush, rect, stringLeft);
                 if (desc != null)
                 {
                     using (var brushsub = new SolidBrush(foreSecondary))
                     {
-                        g.DrawString(desc, Font, brushsub, new RectangleF(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
+                        g.DrawStr(desc, Font, brushsub, new RectangleF(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
                     }
                 }
             }

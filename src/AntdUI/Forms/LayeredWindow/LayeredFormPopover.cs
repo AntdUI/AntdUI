@@ -275,7 +275,7 @@ namespace AntdUI
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {
-                            g.DrawString(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                            g.DrawStr(config.Title, fontTitle, brush, rectTitle, stringLeft);
                         }
                         if (rtext)
                         {
@@ -288,13 +288,13 @@ namespace AntdUI
                                     {
                                         using (var fore = new SolidBrush(txt.Fore.Value))
                                         {
-                                            g.DrawString(txt.Text, txt.Font ?? Font, fore, rectsContent[i].Rect, stringCenter);
+                                            g.DrawStr(txt.Text, txt.Font ?? Font, fore, rectsContent[i].Rect, stringCenter);
                                         }
                                     }
-                                    else g.DrawString(txt.Text, txt.Font ?? Font, brush, rectsContent[i].Rect, stringCenter);
+                                    else g.DrawStr(txt.Text, txt.Font ?? Font, brush, rectsContent[i].Rect, stringCenter);
                                 }
                             }
-                            else g.DrawString(config.Content.ToString(), Font, brush, rectContent, stringLeft);
+                            else g.DrawStr(config.Content.ToString(), Font, brush, rectContent, stringLeft);
                         }
                     }
                 }

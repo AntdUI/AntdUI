@@ -461,7 +461,7 @@ namespace AntdUI
                                         g.DrawEllipse(pen, rect_badge);
                                     }
                                 }
-                                g.DrawString(page.Badge, font, brush_fore, rect_badge, Helper.stringFormatCenter2);
+                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, Helper.stringFormatCenter2);
                             }
                             else
                             {
@@ -478,7 +478,7 @@ namespace AntdUI
                                         }
                                     }
                                 }
-                                g.DrawString(page.Badge, font, brush_fore, rect_badge, Helper.stringFormatCenter2);
+                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, Helper.stringFormatCenter2);
                             }
                         }
                     }

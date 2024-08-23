@@ -192,7 +192,7 @@ namespace AntdUI
             {
                 using (var fore = new SolidBrush(_fore))
                 {
-                    g.DrawString(prefixText, Font, fore, rect_l, sf_center);
+                    g.DrawStr(prefixText, Font, fore, rect_l, sf_center);
                 }
             }
             else if (prefixSvg != null)
@@ -215,7 +215,7 @@ namespace AntdUI
             {
                 using (var fore = new SolidBrush(_fore))
                 {
-                    g.DrawString(suffixText, Font, fore, rect_r, sf_center);
+                    g.DrawStr(suffixText, Font, fore, rect_r, sf_center);
                 }
             }
             else if (suffixSvg != null)
@@ -273,9 +273,9 @@ namespace AntdUI
                                 it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
                                 if (it.show)
                                 {
-                                    if (IsPassWord) g.DrawString(PassWordChar, Font, fore, it.rect, sf_font);
-                                    else if (it.emoji) g.DrawString(it.text, font, fore, it.rect, sf_font);
-                                    else g.DrawString(it.text, Font, fore, it.rect, sf_font);
+                                    if (IsPassWord) g.DrawStr(PassWordChar, Font, fore, it.rect, sf_font);
+                                    else if (it.emoji) g.DrawStr(it.text, font, fore, it.rect, sf_font);
+                                    else g.DrawStr(it.text, Font, fore, it.rect, sf_font);
                                 }
                             }
                         }
@@ -287,8 +287,8 @@ namespace AntdUI
                             it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
                             if (it.show)
                             {
-                                if (IsPassWord) g.DrawString(PassWordChar, Font, fore, it.rect, sf_font);
-                                else g.DrawString(it.text, Font, fore, it.rect, sf_font);
+                                if (IsPassWord) g.DrawStr(PassWordChar, Font, fore, it.rect, sf_font);
+                                else g.DrawStr(it.text, Font, fore, it.rect, sf_font);
                             }
                         }
                     }
@@ -299,7 +299,7 @@ namespace AntdUI
             {
                 using (var fore = new SolidBrush(Style.Db.TextQuaternary))
                 {
-                    g.DrawString(placeholderText, Font, fore, rect_text, sf_placeholder);
+                    g.DrawStr(placeholderText, Font, fore, rect_text, sf_placeholder);
                 }
             }
         }

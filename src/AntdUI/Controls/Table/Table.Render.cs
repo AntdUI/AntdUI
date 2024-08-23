@@ -272,7 +272,7 @@ namespace AntdUI
                         }
                     }
                     if (column.column is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
-                    else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
+                    else g.DrawStr(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
 
                     if (dragHeader.i == column.INDEX)
                     {
@@ -326,7 +326,7 @@ namespace AntdUI
                         }
                     }
                     if (column.column is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
-                    else g.DrawString(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
+                    else g.DrawStr(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
                 }
             }
         }
@@ -440,7 +440,7 @@ namespace AntdUI
             {
                 var state = g.Save();
                 g.SetClip(it.RECT);
-                g.DrawString(text.value, Font, fore, text.rect, StringF(text.column));
+                g.DrawStr(text.value, Font, fore, text.rect, StringF(text.column));
                 g.Restore(state);
             }
             if (dragHeader != null && dragHeader.i == it.INDEX)
@@ -959,7 +959,7 @@ namespace AntdUI
             using (var fore = new SolidBrush(Style.Db.Text))
             {
                 string emptytext = EmptyText ?? Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
-                if (EmptyImage == null) g.DrawString(emptytext, Font, fore, rect, stringCenter);
+                if (EmptyImage == null) g.DrawStr(emptytext, Font, fore, rect, stringCenter);
                 else
                 {
                     int gap = (int)(_gap * Config.Dpi);
@@ -967,7 +967,7 @@ namespace AntdUI
                     RectangleF rect_img = new RectangleF(rect.X + (rect.Width - EmptyImage.Width) / 2F, rect.Y + (rect.Height - EmptyImage.Height) / 2F - size.Height, EmptyImage.Width, EmptyImage.Height),
                         rect_font = new RectangleF(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                     g.DrawImage(EmptyImage, rect_img);
-                    g.DrawString(emptytext, Font, fore, rect_font, stringCenter);
+                    g.DrawStr(emptytext, Font, fore, rect_font, stringCenter);
                 }
             }
         }
