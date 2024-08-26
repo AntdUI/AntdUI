@@ -42,24 +42,7 @@ namespace AntdUI
 
         #region 属性
 
-        #region 系统
-
-        /// <summary>
-        /// 背景颜色
-        /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public new Color? BackColor
-        {
-            get => back;
-            set
-            {
-                if (back == value) return;
-                back = value;
-                Invalidate();
-            }
-        }
-
+        Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
@@ -76,26 +59,6 @@ namespace AntdUI
             }
         }
 
-        #endregion
-
-        Color? fore;
-        /// <summary>
-        /// 文字颜色
-        /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Fore
-        {
-            get => fore;
-            set
-            {
-                if (fore == value) return;
-                fore = value;
-                Invalidate();
-            }
-        }
-
         #region 背景
 
         internal Color? back;
@@ -103,9 +66,8 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Back
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? BackColor
         {
             get => back;
             set

@@ -33,7 +33,7 @@ namespace AntdUI
         Color Value, ValueNAlpha, ValueHue;
         Action<Color> action;
         Input input;
-        public LayeredFormColorPicker(ColorPicker control, RectangleF rect_read, Action<Color> _action)
+        public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             control.Parent.SetTopMost(Handle);
             Font = control.Font;
@@ -91,7 +91,16 @@ namespace AntdUI
             var point = control.PointToScreen(Point.Empty);
 
             ArrowAlign = TAlign.BL;
-            SetLocation(point.X + (int)rect_read.X - 10, point.Y + control.Height - 10 + ArrowSize);
+            int x = point.X + rect_read.X - 10;
+            SetLocation(x, point.Y + control.Height - 10 + ArrowSize);
+
+            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+            if (x > (screen.X + screen.Width) - TargetRect.Width)
+            {
+                ArrowAlign = TAlign.BR;
+                x = point.X + rect_read.X - w + 30;
+                SetLocation(x, point.Y + control.Height - 10 + ArrowSize);
+            }
 
             Location = TargetRect.Location;
             Size = TargetRect.Size;

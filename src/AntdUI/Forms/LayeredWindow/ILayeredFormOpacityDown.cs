@@ -18,6 +18,8 @@
 
 using System;
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -168,6 +170,65 @@ namespace AntdUI
         {
             task_start?.Dispose();
             base.Dispose(disposing);
+        }
+
+        internal void CLocation(Control control, Point point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int t_width, int height, Rectangle rect_read, ref bool Inverted, ref TAlign ArrowAlign)
+        {
+            switch (Placement)
+            {
+                case TAlignFrom.Top:
+                    Inverted = true;
+                    if (DropDownArrow)
+                    {
+                        ArrowAlign = TAlign.Top;
+                        SetLocation(point.X + (control.Width - (t_width + 20)) / 2, point.Y - height + 10 - ArrowSize);
+                    }
+                    else SetLocation(point.X + (control.Width - (t_width + 20)) / 2, point.Y - height + 10);
+                    break;
+                case TAlignFrom.TL:
+                    Inverted = true;
+                    if (DropDownArrow)
+                    {
+                        ArrowAlign = TAlign.TL;
+                        SetLocation(point.X + rect_read.X - 10, point.Y - height + 10 - ArrowSize);
+                    }
+                    else SetLocation(point.X + rect_read.X - 10, point.Y - height + 10);
+                    break;
+                case TAlignFrom.TR:
+                    Inverted = true;
+                    if (DropDownArrow)
+                    {
+                        ArrowAlign = TAlign.TR;
+                        SetLocation(point.X + (rect_read.X + rect_read.Width) - t_width - 10, point.Y - height + 10 - ArrowSize);
+                    }
+                    else SetLocation(point.X + (rect_read.X + rect_read.Width) - t_width - 10, point.Y - height + 10);
+                    break;
+                case TAlignFrom.Bottom:
+                    if (DropDownArrow)
+                    {
+                        ArrowAlign = TAlign.Bottom;
+                        SetLocation(point.X + (control.Width - (t_width + 20)) / 2, point.Y + control.Height - 10 + ArrowSize);
+                    }
+                    else SetLocation(point.X + (control.Width - (t_width + 20)) / 2, point.Y + control.Height - 10);
+                    break;
+                case TAlignFrom.BR:
+                    if (DropDownArrow)
+                    {
+                        ArrowAlign = TAlign.BR;
+                        SetLocation(point.X + (rect_read.X + rect_read.Width) - t_width - 10, point.Y + control.Height - 10 + ArrowSize);
+                    }
+                    else SetLocation(point.X + (rect_read.X + rect_read.Width) - t_width - 10, point.Y + control.Height - 10);
+                    break;
+                case TAlignFrom.BL:
+                default:
+                    if (DropDownArrow)
+                    {
+                        ArrowAlign = TAlign.BL;
+                        SetLocation(point.X + rect_read.X - 10, point.Y + control.Height - 10 + ArrowSize);
+                    }
+                    else SetLocation(point.X + rect_read.X - 10, point.Y + control.Height - 10);
+                    break;
+            }
         }
     }
 }

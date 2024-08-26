@@ -46,24 +46,7 @@ namespace AntdUI
 
         #region 属性
 
-        #region 系统
-
-        /// <summary>
-        /// 背景颜色
-        /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public new Color? BackColor
-        {
-            get => back;
-            set
-            {
-                if (back == value) return;
-                back = value;
-                Invalidate();
-            }
-        }
-
+        internal Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
@@ -80,26 +63,6 @@ namespace AntdUI
             }
         }
 
-        #endregion
-
-        internal Color? fore;
-        /// <summary>
-        /// 文字颜色
-        /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Fore
-        {
-            get => fore;
-            set
-            {
-                if (fore == value) return;
-                fore = value;
-                Invalidate();
-            }
-        }
-
         #region 背景
 
         internal Color? back;
@@ -107,9 +70,8 @@ namespace AntdUI
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Back
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? BackColor
         {
             get => back;
             set
@@ -329,50 +291,10 @@ namespace AntdUI
             }
         }
 
-        #region 旧的
-
-        /// <summary>
-        /// 图标
-        /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 Prefix 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Image? Image
-        {
-            get => prefix;
-            set
-            {
-                if (prefix == value) return;
-                prefix = value;
-                CalculateRect();
-                Invalidate();
-            }
-        }
-
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 PrefixSvg 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string? ImageSvg
-        {
-            get => prefixSvg;
-            set
-            {
-                if (prefixSvg == value) return;
-                prefixSvg = value;
-                CalculateRect();
-                Invalidate();
-            }
-        }
-
-        #endregion
-
         /// <summary>
         /// 是否包含前缀
         /// </summary>
-        public bool HasPrefix
-        {
-            get => prefixSvg != null || prefix != null;
-        }
+        public bool HasPrefix => prefixSvg != null || prefix != null;
 
         Image? suffix = null;
         /// <summary>
@@ -411,10 +333,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含后缀
         /// </summary>
-        public virtual bool HasSuffix
-        {
-            get => suffixSvg != null || suffix != null;
-        }
+        public virtual bool HasSuffix => suffixSvg != null || suffix != null;
 
         string? prefixText = null;
         [Description("前缀文本"), Category("外观"), DefaultValue(null)]

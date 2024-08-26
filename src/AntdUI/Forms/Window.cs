@@ -97,7 +97,6 @@ namespace AntdUI
             switch (msg)
             {
                 case WindowMessage.WM_ACTIVATE:
-                case WindowMessage.WM_NCPAINT:
                     DwmArea();
                     break;
                 case WindowMessage.WM_NCCALCSIZE when m.WParam != IntPtr.Zero:
@@ -355,28 +354,22 @@ namespace AntdUI
         bool WmNCCalcSize(ref System.Windows.Forms.Message m)
         {
             if (FormBorderStyle == FormBorderStyle.None) return false;
-#if NET40
-            var nccsp = (NCCALCSIZE_PARAMS)Marshal.PtrToStructure(m.LParam, typeof(NCCALCSIZE_PARAMS));
-#else
-            var nccsp = Marshal.PtrToStructure<NCCALCSIZE_PARAMS>(m.LParam);
-#endif
-            var borders = GetNonClientMetrics();
 
             if (ISZoomed())
             {
-                nccsp.rgrc0.top -= borders.Top;
-                nccsp.rgrc0.top += borders.Bottom;
+#if NET40
+                var nccsp = (RECT)Marshal.PtrToStructure(m.LParam, typeof(RECT));
+#else
+                var nccsp = Marshal.PtrToStructure<RECT>(m.LParam);
+#endif
+                var borders = GetNonClientMetrics();
+
+                nccsp.top -= borders.Top;
+                nccsp.top += borders.Bottom;
                 Marshal.StructureToPtr(nccsp, m.LParam, false);
                 return false;
             }
             else return true;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct NCCALCSIZE_PARAMS
-        {
-            public RECT rgrc0, rgrc1, rgrc2;
-            public WINDOWPOS lppos;
         }
 
         bool WmNCActivate(ref System.Windows.Forms.Message m)

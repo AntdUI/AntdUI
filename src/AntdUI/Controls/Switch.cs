@@ -37,32 +37,13 @@ namespace AntdUI
     {
         #region 属性
 
-        #region 系统
+        Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
-        {
-            get => fore;
-            set
-            {
-                if (fore == value) fore = value;
-                fore = value;
-                Invalidate();
-            }
-        }
-        #endregion
-
-        Color? fore;
-        /// <summary>
-        /// 文字颜色
-        /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Fore
         {
             get => fore;
             set

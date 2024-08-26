@@ -148,65 +148,7 @@ namespace AntdUI
             };
         }
 
-        void MyPoint(Point point, Control control, int height, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read)
-        {
-            switch (Placement)
-            {
-                case TAlignFrom.Top:
-                    Inverted = true;
-                    if (ShowArrow)
-                    {
-                        ArrowAlign = TAlign.Top;
-                        SetLocation(point.X + (control.Width - (r_w + 20)) / 2, point.Y - height + 10 - ArrowSize);
-                    }
-                    else SetLocation(point.X + (control.Width - (r_w + 20)) / 2, point.Y - height + 10);
-                    break;
-                case TAlignFrom.TL:
-                    Inverted = true;
-                    if (ShowArrow)
-                    {
-                        ArrowAlign = TAlign.TL;
-                        SetLocation(point.X + rect_read.X - 10, point.Y - height + 10 - ArrowSize);
-                    }
-                    else SetLocation(point.X + rect_read.X - 10, point.Y - height + 10);
-                    break;
-                case TAlignFrom.TR:
-                    Inverted = true;
-                    if (ShowArrow)
-                    {
-                        ArrowAlign = TAlign.TR;
-                        SetLocation(point.X + (rect_read.X + rect_read.Width) - r_w - 10, point.Y - height + 10 - ArrowSize);
-                    }
-                    else SetLocation(point.X + (rect_read.X + rect_read.Width) - r_w - 10, point.Y - height + 10);
-                    break;
-                case TAlignFrom.Bottom:
-                    if (ShowArrow)
-                    {
-                        ArrowAlign = TAlign.Bottom;
-                        SetLocation(point.X + (control.Width - (r_w + 20)) / 2, point.Y + control.Height - 10 + ArrowSize);
-                    }
-                    else SetLocation(point.X + (control.Width - (r_w + 20)) / 2, point.Y + control.Height - 10);
-                    break;
-                case TAlignFrom.BR:
-                    if (ShowArrow)
-                    {
-                        ArrowAlign = TAlign.BR;
-                        SetLocation(point.X + (rect_read.X + rect_read.Width) - r_w - 10, point.Y + control.Height - 10 + ArrowSize);
-                    }
-                    else SetLocation(point.X + (rect_read.X + rect_read.Width) - r_w - 10, point.Y + control.Height - 10);
-                    break;
-                case TAlignFrom.BL:
-                default:
-                    if (ShowArrow)
-                    {
-                        ArrowAlign = TAlign.BL;
-                        SetLocation(point.X + rect_read.X - 10, point.Y + control.Height - 10 + ArrowSize);
-                    }
-                    else SetLocation(point.X + rect_read.X - 10, point.Y + control.Height - 10);
-                    break;
-
-            }
-        }
+        void MyPoint(Point point, Control control, int height, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(control, point, Placement, ShowArrow, ArrowSize, r_w, height, rect_read, ref Inverted, ref ArrowAlign);
 
         void ReadList(object obj, int i, int w, int y2, int gap_x, int gap_y, int gap, int font_size, int text_height, ref int item_count, ref int divider_count, ref int y, ref int selY, bool NoIndex = true)
         {

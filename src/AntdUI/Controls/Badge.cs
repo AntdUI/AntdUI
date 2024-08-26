@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -35,8 +34,7 @@ namespace AntdUI
     {
         #region 属性
 
-        #region 系统
-
+        Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
@@ -48,26 +46,6 @@ namespace AntdUI
             set
             {
                 if (fore == value) fore = value;
-                fore = value;
-                Invalidate();
-            }
-        }
-
-        #endregion
-
-        Color? fore;
-        /// <summary>
-        /// 文字颜色
-        /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Fore
-        {
-            get => fore;
-            set
-            {
-                if (fore == value) return;
                 fore = value;
                 Invalidate();
             }

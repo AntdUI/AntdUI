@@ -25,7 +25,7 @@ namespace AntdUI
 {
     public class LayeredFormCalendarTimeRange : ILayeredFormOpacityDown
     {
-        public LayeredFormCalendarTimeRange(DatePickerRange _control, RectangleF rect_read, DateTime[]? date, Action<DateTime[]> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
+        public LayeredFormCalendarTimeRange(DatePickerRange _control, Rectangle rect_read, DateTime[]? date, Action<DateTime[]> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
         {
             _control.Parent.SetTopMost(Handle);
             control = _control;
@@ -96,63 +96,7 @@ namespace AntdUI
 
             int t_time_w = t_time * 3;
             rect_buttonok = new RectangleF(t_x + 10 + t_one_width, rect_button.Y, t_time_w, t_button);
-
-            switch (_control.Placement)
-            {
-                case TAlignFrom.Top:
-                    Inverted = true;
-                    if (_control.DropDownArrow)
-                    {
-                        ArrowAlign = TAlign.Top;
-                        SetLocation(point.X + (_control.Width - (t_width + 20)) / 2, point.Y - EndHeight + 10 - ArrowSize);
-                    }
-                    else SetLocation(point.X + (_control.Width - (t_width + 20)) / 2, point.Y - EndHeight + 10);
-                    break;
-                case TAlignFrom.TL:
-                    Inverted = true;
-                    if (_control.DropDownArrow)
-                    {
-                        ArrowAlign = TAlign.TL;
-                        SetLocation(point.X + (int)rect_read.X - 10, point.Y - EndHeight + 10 - ArrowSize);
-                    }
-                    else SetLocation(point.X + (int)rect_read.X - 10, point.Y - EndHeight + 10);
-                    break;
-                case TAlignFrom.TR:
-                    Inverted = true;
-                    if (_control.DropDownArrow)
-                    {
-                        ArrowAlign = TAlign.TR;
-                        SetLocation(point.X + (int)(rect_read.X + rect_read.Width) - t_width - 10, point.Y - EndHeight + 10 - ArrowSize);
-                    }
-                    else SetLocation(point.X + (int)(rect_read.X + rect_read.Width) - t_width - 10, point.Y - EndHeight + 10);
-                    break;
-                case TAlignFrom.Bottom:
-                    if (_control.DropDownArrow)
-                    {
-                        ArrowAlign = TAlign.Bottom;
-                        SetLocation(point.X + (_control.Width - (t_width + 20)) / 2, point.Y + _control.Height - 10 + ArrowSize);
-                    }
-                    else SetLocation(point.X + (_control.Width - (t_width + 20)) / 2, point.Y + _control.Height - 10);
-                    break;
-                case TAlignFrom.BR:
-                    if (_control.DropDownArrow)
-                    {
-                        ArrowAlign = TAlign.BR;
-                        SetLocation(point.X + (int)(rect_read.X + rect_read.Width) - t_width - 10, point.Y + _control.Height - 10 + ArrowSize);
-                    }
-                    else SetLocation(point.X + (int)(rect_read.X + rect_read.Width) - t_width - 10, point.Y + _control.Height - 10);
-                    break;
-                case TAlignFrom.BL:
-                default:
-                    if (_control.DropDownArrow)
-                    {
-                        ArrowAlign = TAlign.BL;
-                        SetLocation(point.X + (int)rect_read.X - 10, point.Y + _control.Height - 10 + ArrowSize);
-                    }
-                    else SetLocation(point.X + (int)rect_read.X - 10, point.Y + _control.Height - 10);
-                    break;
-
-            }
+            CLocation(_control, point, _control.Placement, _control.DropDownArrow, ArrowSize, t_width, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
         }
 
         #region 属性

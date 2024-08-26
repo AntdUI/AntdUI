@@ -135,6 +135,32 @@ namespace AntdUI
             target_rect.Y = y;
         }
 
+        /// <summary>
+        /// 设置屏幕碰撞
+        /// </summary>
+        public void SetScreenCollision()
+        {
+            var point = target_rect.Location;
+            var screen = Screen.FromPoint(point).WorkingArea;
+            if (point.X < screen.X) point.X = screen.X;
+            else if (point.X > (screen.X + screen.Width) - TargetRect.Width) point.X = screen.X + screen.Width - TargetRect.Width;
+            if (point.Y < screen.Y) point.Y = screen.Y;
+            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height)
+            {
+                //高度不够
+                //if (TargetRect.Height > (screen.Height - point.Y))
+                //{
+                //    int gap_y = rectsContent[0].y / 2 / 2, vr = TargetRect.Height, height = screen.Height - point.Y;
+                //    scrollY.Rect = new Rectangle(TargetRect.Width - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
+                //    scrollY.Show = true;
+                //    scrollY.SetVrSize(vr, height);
+                //    SetSizeH(height);
+                //}
+                //else point.Y = screen.Y + screen.Height - TargetRect.Height;
+            }
+            SetLocation(point);
+        }
+
         #endregion
 
         public void Print()

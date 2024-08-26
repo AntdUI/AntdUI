@@ -45,19 +45,6 @@ namespace AntdUI
 
         #region 属性
 
-        #region 系统
-
-        /// <summary>
-        /// 背景颜色
-        /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public new Color? BackColor
-        {
-            get => button.Back;
-            set => button.Back = value;
-        }
-
         /// <summary>
         /// 文字颜色
         /// </summary>
@@ -69,29 +56,14 @@ namespace AntdUI
             set => button.Fore = value;
         }
 
-        #endregion
-
-        /// <summary>
-        /// 文字颜色
-        /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 ForeColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Fore
-        {
-            get => button.Fore;
-            set => button.Fore = value;
-        }
-
         #region 背景
 
         /// <summary>
         /// 背景颜色
         /// </summary>
         [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Obsolete("使用 BackColor 属性替代"), Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color? Back
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? BackColor
         {
             get => button.Back;
             set => button.Back = value;
@@ -413,27 +385,22 @@ namespace AntdUI
 
         [Obsolete("请使用 Icon 代替")]
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Image? Image { get => Icon; set => Icon = value; }
 
         [Obsolete("请使用 IconSvg 代替")]
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string? ImageSvg { get => IconSvg; set => IconSvg = value; }
 
         [Obsolete("请使用 IconSize 代替")]
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Size ImageSize { get => IconSize; set => IconSize = value; }
 
         [Obsolete("请使用 IconHover 代替")]
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Image? ImageHover { get => IconHover; set => IconHover = value; }
 
         [Obsolete("请使用 IconHoverSvg 代替")]
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string? ImageHoverSvg { get => IconHoverSvg; set => IconHoverSvg = value; }
 
         [Obsolete("请使用 HasIcon 代替")]
@@ -524,7 +491,7 @@ namespace AntdUI
         /// <summary>
         /// 切换类型
         /// </summary>
-        [Description("切换类型"), Category("切换"), DefaultValue(TTypeMini.Default)]
+        [Description("切换类型"), Category("切换"), DefaultValue(null)]
         public TTypeMini? ToggleType
         {
             get => button.ToggleType;
