@@ -121,12 +121,11 @@ namespace AntdUI
                 else if (value > _maxValue) value = _maxValue;
                 if (_value == value) return;
                 _value = value;
-                ValueChanged?.Invoke(this, _value);
+                ValueChanged?.Invoke(this, new IntEventArgs(_value));
                 Invalidate();
             }
         }
 
-        public delegate string ValueFormatEventHandler(int value);
         /// <summary>
         /// Value格式化时发生
         /// </summary>
@@ -137,7 +136,7 @@ namespace AntdUI
         string? tooltipText = null;
         void ShowTips(RectangleF dot_rect)
         {
-            var text = ValueFormatChanged == null ? Value.ToString() : ValueFormatChanged.Invoke(Value);
+            var text = ValueFormatChanged == null ? Value.ToString() : ValueFormatChanged.Invoke(this, new IntEventArgs(Value));
             if (text == tooltipText && tooltipForm != null) return;
             tooltipText = text;
             var _rect = RectangleToScreen(ClientRectangle);

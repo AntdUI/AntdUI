@@ -56,7 +56,7 @@ namespace AntdUI
                 else value = cell.VALUE;
 
                 bool isok = true;
-                if (CellBeginEdit != null) isok = CellBeginEdit(this, value, it.RECORD, i_row, i_col);
+                if (CellBeginEdit != null) isok = CellBeginEdit(this, new TableEventArgs(value, it.RECORD, i_row, i_col));
                 if (!isok) return;
                 inEditMode = true;
 
@@ -72,7 +72,7 @@ namespace AntdUI
                     var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
                     {
                         bool isok_end = true;
-                        if (CellEndEdit != null) isok_end = CellEndEdit(this, _value, it.RECORD, i_row, i_col);
+                        if (CellEndEdit != null) isok_end = CellEndEdit(this, new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col));
                         if (isok_end)
                         {
                             cellText.value = _value;
@@ -85,7 +85,7 @@ namespace AntdUI
                     });
                     if (cellText.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
                     else if (cellText.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
-                    CellBeginEditInputStyle?.Invoke(this, value, it.RECORD, i_row, i_col, ref edit_input);
+                    CellBeginEditInputStyle?.Invoke(this, new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, ref edit_input));
                     Controls.Add(edit_input);
                     edit_input.Focus();
                 }));
@@ -101,7 +101,7 @@ namespace AntdUI
                         else if (cell.VALUE is AntItem item) value = item.value;
                         else value = cell.VALUE;
                         bool isok = true;
-                        if (CellBeginEdit != null) isok = CellBeginEdit(this, value, it.RECORD, i_row, i_col);
+                        if (CellBeginEdit != null) isok = CellBeginEdit(this, new TableEventArgs(value, it.RECORD, i_row, i_col));
                         if (!isok) return;
                         inEditMode = true;
 
@@ -120,7 +120,7 @@ namespace AntdUI
                             var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
                             {
                                 bool isok_end = true;
-                                if (CellEndEdit != null) isok_end = CellEndEdit(this, _value, it.RECORD, i_row, i_col);
+                                if (CellEndEdit != null) isok_end = CellEndEdit(this, new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col));
                                 if (isok_end)
                                 {
                                     if (value is CellText text2)
@@ -139,7 +139,7 @@ namespace AntdUI
                                     }
                                 }
                             });
-                            CellBeginEditInputStyle?.Invoke(this, value, it.RECORD, i_row, i_col, ref edit_input);
+                            CellBeginEditInputStyle?.Invoke(this, new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, ref edit_input));
                             if (template.Value.PARENT != null)
                             {
                                 if (template.Value.PARENT.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;

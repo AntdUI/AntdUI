@@ -75,7 +75,7 @@ namespace AntdUI
                         foreach (var it in rows)
                         {
                             it.SHOW = it.ShowExpand && !it.IsColumn && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
-                            if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, it.RECORD, it.INDEX)));
+                            if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
                         }
 
                         g.TranslateTransform(0, -sy);
@@ -111,7 +111,7 @@ namespace AntdUI
                         foreach (var it in rows)
                         {
                             it.SHOW = it.ShowExpand && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
-                            if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, it.RECORD, it.INDEX)));
+                            if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
                         }
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows)
@@ -163,7 +163,7 @@ namespace AntdUI
                     {
                         var it = rows[index_r];
                         it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
-                        if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, it.RECORD, it.INDEX)));
+                        if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
                     }
 
                     g.TranslateTransform(0, -sy);

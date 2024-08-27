@@ -178,7 +178,7 @@ namespace AntdUI
             {
                 if (value == _value) return;
                 _value = value;
-                ValueChanged?.Invoke(this, value);
+                ValueChanged?.Invoke(this, new ColorEventArgs(value));
                 if (BeforeAutoSize()) Invalidate();
             }
         }

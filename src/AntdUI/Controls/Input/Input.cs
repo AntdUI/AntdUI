@@ -528,7 +528,16 @@ namespace AntdUI
             {
                 if (multiline == value) return;
                 multiline = value;
-                sf_placeholder.LineAlignment = multiline ? StringAlignment.Near : StringAlignment.Center;
+                if (multiline)
+                {
+                    sf_placeholder.FormatFlags &= ~StringFormatFlags.NoWrap;
+                    sf_placeholder.LineAlignment = StringAlignment.Near;
+                }
+                else
+                {
+                    sf_placeholder.FormatFlags |= StringFormatFlags.NoWrap;
+                    sf_placeholder.LineAlignment = StringAlignment.Center;
+                }
                 CalculateRect();
                 Invalidate();
             }

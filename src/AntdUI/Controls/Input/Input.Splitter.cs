@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace AntdUI
 {
@@ -84,6 +85,116 @@ namespace AntdUI
                 CharCompleted(strText, nIndexCharStart, nCharLen, cb);
             }
             return nCounter;
+        }
+
+        public static int EachT(string strText, int nIndex, Func<string, STRE_TYPE, int, int, bool> cb)
+        {
+            int nCounter = 0;
+            if (string.IsNullOrEmpty(strText) || nIndex >= strText.Length) return 0;
+            int nIndexCharStart = 0, nCharLen = 0, nLastCharLen = 0;
+            int nCodePoint = 0;
+            int nLeftBreakType = 0, nRightBreakType = 0;
+
+            while (nIndex < strText.Length && char.IsLowSurrogate(strText, nIndex))
+            {
+                nIndex++;
+                nCharLen++;
+            }
+            if (nCharLen != 0)
+            {
+                nCounter++;
+                if (!cb(strText, STRE_TYPE.STR, nIndex - nCharLen, nCharLen)) return nCounter;
+            }
+            nIndexCharStart = nIndex;
+            nCodePoint = GetCodePoint(strText, nIndex);
+            nLastCharLen = nCodePoint >= 0x10000 ? 2 : 1;       // >= 0x10000 is double char
+            nLeftBreakType = GetBreakProperty(nCodePoint);
+            nIndex += nLastCharLen;
+            nCharLen = nLastCharLen;
+            var lst_history_break_type = new List<int> { nLeftBreakType };
+            while (nIndex < strText.Length)
+            {
+                nCodePoint = GetCodePoint(strText, nIndex);
+                nLastCharLen = nCodePoint >= 0x10000 ? 2 : 1;   // >= 0x10000 is double char
+                nRightBreakType = GetBreakProperty(nCodePoint);
+                int LastLen = nLastCharLen;
+                if (ShouldBreak(nRightBreakType, lst_history_break_type))
+                {
+                    nCounter++;
+                    if (ReadSvg(strText, nIndexCharStart, nCharLen, out var endIndexSvg))
+                    {
+                        if (!cb(strText, STRE_TYPE.SVG, nIndexCharStart, endIndexSvg)) return nCounter;
+                        nIndexCharStart += endIndexSvg;
+                        LastLen = endIndexSvg;
+                        nCharLen = nLastCharLen;
+                    }
+                    else if (ReadBase64Image(strText, nIndexCharStart, nCharLen, out var endIndex))
+                    {
+                        if (!cb(strText, STRE_TYPE.BASE64IMG, nIndexCharStart, endIndex)) return nCounter;
+                        nIndexCharStart += endIndex;
+                        LastLen = endIndex;
+                        nCharLen = nLastCharLen;
+                    }
+                    else
+                    {
+                        if (!cb(strText, STRE_TYPE.STR, nIndexCharStart, nCharLen)) return nCounter;
+                        nIndexCharStart = nIndex;
+                        nCharLen = nLastCharLen;
+                    }
+                    lst_history_break_type.Clear();
+                }
+                else nCharLen += nLastCharLen;
+                lst_history_break_type.Add(nRightBreakType);
+                nIndex += LastLen;
+                nLeftBreakType = nRightBreakType;
+            }
+            if (nCharLen != 0 && nIndexCharStart < strText.Length)
+            {
+                nCounter++;
+                cb(strText, STRE_TYPE.STR, nIndexCharStart, nCharLen);
+            }
+            return nCounter;
+        }
+
+        static bool ReadSvg(string strText, int start, int len, out int endIndex)
+        {
+            if (strText.Substring(start, len) == "<" && start + 5 < strText.Length && strText.Substring(start, 4) == "<svg")
+            {
+                int tmp = strText.IndexOf("</svg>", start + 5, StringComparison.OrdinalIgnoreCase);
+                if (tmp > 0)
+                {
+                    endIndex = tmp + 6 - start;
+                    return true;
+                }
+            }
+            endIndex = -1;
+            return false;
+        }
+        static bool ReadBase64Image(string strText, int start, int len, out int endIndex)
+        {
+            if (strText.Substring(start, len) == "d" && start + 20 < strText.Length && strText.Substring(start, 11) == "data:image/")
+            {
+                int tmp = strText.IndexOf(";base64,", start + 12, StringComparison.OrdinalIgnoreCase);
+                if (tmp > 0)
+                {
+                    var regex = new Regex(@"data:image/(?<type>.+?);base64,(?<data>[A-Za-z0-9+/=]+)");
+                    var match = regex.Match(strText.Substring(start, strText.Length - start));
+                    if (match.Success && match.Index == 0)
+                    {
+                        endIndex = match.Value.Length;
+                        return true;
+                    }
+                }
+            }
+            endIndex = -1;
+            return false;
+        }
+
+        public enum STRE_TYPE : int
+        {
+            STR,
+            SVG,
+            BASE64IMG
         }
 
         public static int GetCodePoint(string strText, int nIndex)

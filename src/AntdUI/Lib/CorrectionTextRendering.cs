@@ -141,19 +141,19 @@ namespace AntdUI
 
         #region 渲染字体
 
-        internal static void DrawStr(this Graphics g, string? s, Font font, Brush brush, RectangleF layoutRectangle)
+        public static void DrawStr(this Graphics g, string? s, Font font, Brush brush, RectangleF layoutRectangle)
         {
             CORE(font, s, ref layoutRectangle);
             g.DrawString(s, font, brush, layoutRectangle, null);
         }
 
-        internal static void DrawStr(this Graphics g, string? s, Font font, Brush brush, Rectangle layoutRectangle, StringFormat? format)
+        public static void DrawStr(this Graphics g, string? s, Font font, Brush brush, Rectangle layoutRectangle, StringFormat? format)
         {
             CORE(font, s, ref layoutRectangle);
             g.DrawString(s, font, brush, layoutRectangle, format);
         }
 
-        internal static void DrawStr(this Graphics g, string? s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat? format)
+        public static void DrawStr(this Graphics g, string? s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat? format)
         {
             CORE(font, s, ref layoutRectangle);
             g.DrawString(s, font, brush, layoutRectangle, format);

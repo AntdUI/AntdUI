@@ -645,6 +645,7 @@ namespace AntdUI
             }
 
             bool scroll_show = false;
+            public bool ScrollMouseEvent(string eventTyp, int x = 0, int y = 0) => false;
             public void MouseWheel(int delta)
             {
                 if (scroll_show && owner != null)
@@ -1484,6 +1485,7 @@ namespace AntdUI
             }
 
             bool scroll_show = false;
+            public bool ScrollMouseEvent(string eventTyp, int x = 0, int y = 0) => false;
             public bool MouseClick(TabPage page, int i, int x, int y)
             {
                 if (owner == null) return false;
@@ -1492,7 +1494,7 @@ namespace AntdUI
                     if (rects[i].Rect_Close.Contains(x, y))
                     {
                         bool flag = true;
-                        if (owner.ClosingPage != null) flag = owner.ClosingPage.Invoke(owner, page);
+                        if (owner.ClosingPage != null) flag = owner.ClosingPage.Invoke(owner, new ClosingPageEventArgs(page));
                         if (flag) owner.Pages.Remove(page);
                         return true;
                     }
@@ -1683,7 +1685,56 @@ namespace AntdUI
                 }
             }
 
+            public bool scrollable = true;
+            /// <summary>
+            /// 启用滚动条
+            /// </summary>
+            [Description("启用滚动条"), Category("卡片"), DefaultValue(false)]
+            public bool Scrollable
+            {
+                get => scrollable;
+                set
+                {
+                    if (scrollable == value) return;
+                    scrollable = value;
+                    owner?.LoadLayout();
+                }
+            }
+
+            Color? scrollfill;
+            /// <summary>
+            /// 卡片颜色
+            /// </summary>
+            [Description("滚动条颜色"), Category("卡片"), DefaultValue(null)]
+            [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+            public Color? ScrollFill
+            {
+                get => scrollfill;
+                set
+                {
+                    if (scrollfill == value) return;
+                    scrollfill = value;
+                    owner?.Invalidate();
+                }
+            }
+
+            /// <summary>
+            /// 卡片悬停颜色
+            /// </summary>
+            [Description("滚动条悬停颜色"), Category("卡片"), DefaultValue(null)]
+            [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+            public Color? ScrollFillHover { get; set; }
+
+            /// <summary>
+            /// 卡片激活颜色
+            /// </summary>
+            [Description("滚动条激活颜色"), Category("卡片"), DefaultValue(null)]
+            [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+            public Color? ScrollFillActive { get; set; }
+
             TabPageRect[] rects = new TabPageRect[0];
+            Rectangle lr = Rectangle.Empty;
+            Rectangle rr = Rectangle.Empty;
             public void LoadLayout(Tabs tabs, Rectangle rect, TabCollection items)
             {
                 owner = tabs;
@@ -1898,6 +1949,20 @@ namespace AntdUI
 
                     if (scroll_show)
                     {
+                        switch (tabs.Alignment)
+                        {
+                            case TabAlignment.Left:
+                            case TabAlignment.Right:
+                                lr = new Rectangle(rect_list[0].Rect.X, 0, rect_list[0].Rect.Width, (int)(rect_list[0].Rect.Height * 0.6));
+                                rr = new Rectangle(rect_list[0].Rect.X, owner.ClientRectangle.Height - (int)(rect_list[0].Rect.Height * 0.6), rect_list[0].Rect.Width, (int)(rect_list[0].Rect.Height * 0.6));
+                                break;
+                            case TabAlignment.Top:
+                            case TabAlignment.Bottom:
+                            default:
+                                lr = new Rectangle(0, rect_list[0].Rect.Y, (int)(rect_list[0].Rect.Height * 0.6), rect_list[0].Rect.Height);
+                                rr = new Rectangle(owner.ClientRectangle.Width - (int)(rect_list[0].Rect.Height * 0.6), rect_list[0].Rect.Y, (int)(rect_list[0].Rect.Height * 0.6), rect_list[rect_list.Count - 1].Rect.Height);
+                                break;
+                        }
                     }
                     else
                     {
@@ -1996,13 +2061,11 @@ namespace AntdUI
                                             using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
                                             {
                                                 float ly = rect_page.Y + borb2;
-                                                //g.DrawLine(pen_bg, rect_t.X, ly, rect_t.Right, ly);
                                                 if (scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                                 using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2), radius, true, true, true, true))
                                                 {
                                                     g.FillPath(brush_bg_active, path2);
                                                 }
-                                                //g.SetClip(new Rectangle(rect_page.X - bor, rect_page.Y + bor, rect_page.Width + bor2, rect_page.Height + bor));
                                                 g.DrawPath(pen_bg, path);
                                                 g.ResetClip();
                                             }
@@ -2073,7 +2136,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TabAlignment.Right:
-                                int read_r_w = rects[0].Rect.Width + rects[0].Rect.Y;
+                                //int read_r_w = rects[0].Rect.Width + rects[0].Rect.Y;
                                 if (scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 foreach (var page in items)
                                 {
@@ -2082,7 +2145,7 @@ namespace AntdUI
                                         if (owner.SelectedIndex == i) sel = page;
                                         else
                                         {
-                                            using (var path = Helper.RoundPath(page.Rect, radius, false, true, true, false))
+                                            using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.FillPath(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0)
@@ -2104,14 +2167,15 @@ namespace AntdUI
                                 if (sel != null)//是否选中
                                 {
                                     var rect_page = sel.Rect;
-                                    using (var path = Helper.RoundPath(rect_page, radius, false, true, true, false))
+                                    using (var path = Helper.RoundPath(rect_page, radius, true, true, true, true))
                                     {
                                         if (bor > 0)
                                         {
                                             using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
                                             {
                                                 float lx = rect_page.X + borb2;
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor), radius, false, true, true, false))
+                                                if (scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor), radius, true, true, true, true))
                                                 {
                                                     g.FillPath(brush_bg_active, path2);
                                                 }
@@ -2119,7 +2183,11 @@ namespace AntdUI
                                                 g.ResetClip();
                                             }
                                         }
-                                        else g.FillPath(brush_bg_active, path);
+                                        else
+                                        {
+                                            if (scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                            g.FillPath(brush_bg_active, path);
+                                        }
                                         PaintText(g, rects[select], owner, sel, brush_fill, true);
                                     }
                                 }
@@ -2183,9 +2251,133 @@ namespace AntdUI
                                 break;
                         }
                     }
+                    if (scrollable && scroll_show)
+                    {
+                        g.TranslateTransform(owner.scroll_x, owner.scroll_y);
+                        using (var scrool_bg = new SolidBrush(ScrollFill ?? AntdUI.Style.Db.Primary))
+                        using (var scrool_bg_hover = new SolidBrush(ScrollFillHover ?? AntdUI.Style.Db.PrimaryHover))
+                        using (var scrool_bg_active = new SolidBrush(ScrollFillActive ?? AntdUI.Style.Db.PrimaryActive))
+                        {
+                            switch (owner.Alignment)
+                            {
+                                case TabAlignment.Left:
+                                case TabAlignment.Right:
+                                    if (owner.scroll_y > 0)
+                                    {
+                                        using (var path = Helper.RoundPath(lr, radius, true, true, true, true))
+                                        {
+                                            if (lh)
+                                            {
+                                                g.FillPath(scrool_bg_hover, path);
+                                                if (la)
+                                                {
+                                                    g.FillPath(scrool_bg_active, path);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                g.FillPath(scrool_bg, path);
+                                            }
+                                        }
+                                        var pen = new Pen(Color.Black, 2F * Config.Dpi);
+                                        g.DrawLines(pen, TAlignMini.Top.TriangleLines(lr, 0.5F));
+                                        lcs = true;
+                                    }
+                                    else
+                                    {
+                                        lcs = false;
+                                    }
+                                    if (owner.scroll_y != owner.scroll_max)
+                                    {
+                                        using (var path = Helper.RoundPath(rr, radius, true, true, true, true))
+                                        {
+                                            if (rh)
+                                            {
+                                                g.FillPath(scrool_bg_hover, path);
+                                                if (ra)
+                                                {
+                                                    g.FillPath(scrool_bg_active, path);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                g.FillPath(scrool_bg, path);
+                                            }
+                                        }
+                                        var pen = new Pen(Color.Black, 2F * Config.Dpi);
+                                        g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rr, 0.5F));
+                                        rcs = true;
+                                    }
+                                    else
+                                    {
+                                        rcs = false;
+                                    }
+                                    break;
+                                case TabAlignment.Top:
+                                case TabAlignment.Bottom:
+                                default:
+                                    if (owner.scroll_x > 0)
+                                    {
+                                        using (var path = Helper.RoundPath(lr, radius, true, true, true, true))
+                                        {
+                                            if (lh)
+                                            {
+                                                g.FillPath(scrool_bg_hover, path);
+                                                if (la)
+                                                {
+                                                    g.FillPath(scrool_bg_active, path);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                g.FillPath(scrool_bg, path);
+                                            }
+                                        }
+                                        var pen = new Pen(Color.Black, 2F * Config.Dpi);
+                                        g.DrawLines(pen, TAlignMini.Left.TriangleLines(lr, 0.5F));
+                                        lcs = true;
+                                    }
+                                    else
+                                    {
+                                        lcs = false;
+                                    }
+                                    if (owner.scroll_x != owner.scroll_max)
+                                    {
+                                        using (var path = Helper.RoundPath(rr, radius, true, true, true, true))
+                                        {
+                                            if (rh)
+                                            {
+                                                g.FillPath(scrool_bg_hover, path);
+                                                if (ra)
+                                                {
+                                                    g.FillPath(scrool_bg_active, path);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                g.FillPath(scrool_bg, path);
+                                            }
+                                        }
+                                        var pen = new Pen(Color.Black, 2F * Config.Dpi);
+                                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(rr, 0.5F));
+                                        rcs = true;
+                                    }
+                                    else
+                                    {
+                                        rcs = false;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
                 }
             }
-
+            bool lcs = false;
+            bool rcs = false;
+            bool lh = false;
+            bool la = false;
+            bool rh = false;
+            bool ra = false;
             #region 辅助
 
             Dictionary<TabPage, Size> GetDir(Tabs owner, Graphics g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
@@ -2328,6 +2520,50 @@ namespace AntdUI
             }
 
             bool scroll_show = false;
+            public bool ScrollMouseEvent(string eventTyp, int x = 0, int y = 0)
+            {
+                bool lcst = false;
+                bool rcst = false;
+                if (lcs && lr.Contains(x, y))
+                {
+                    lcst = true;
+                }
+                else if (rcs && rr.Contains(x, y))
+                {
+                    rcst = true;
+                }
+                switch (eventTyp)
+                {
+                    case "move":
+                        if (lcst) { lh = true; return true; }
+                        if (rcst) { rh = true; return true; }
+                        break;
+                    case "leave":
+                        lh = rh = la = ra = false; return true;
+                    case "down":
+
+                        switch (owner.Alignment)
+                        {
+                            case TabAlignment.Left:
+                            case TabAlignment.Right:
+                                if (lcst) { la = true; owner.scroll_y -= 120; return true; }
+                                if (rcst) { ra = true; owner.scroll_y += 120; return true; }
+                                break;
+                            case TabAlignment.Top:
+                            case TabAlignment.Bottom:
+                            default:
+                                if (lcst) { la = true; owner.scroll_x -= 120; return true; }
+                                if (rcst) { ra = true; owner.scroll_x += 120; return true; }
+                                break;
+                        }
+                        break;
+                    case "up":
+                        la = ra = false;
+                        break;
+                }
+                lh = rh = false;
+                return false;
+            }
             public bool MouseClick(TabPage page, int i, int x, int y)
             {
                 if (owner == null) return false;
@@ -2336,7 +2572,7 @@ namespace AntdUI
                     if (rects[i].Rect_Close.Contains(x, y))
                     {
                         bool flag = true;
-                        if (owner.ClosingPage != null) flag = owner.ClosingPage.Invoke(owner, page);
+                        if (owner.ClosingPage != null) flag = owner.ClosingPage.Invoke(owner, new ClosingPageEventArgs(page));
                         if (flag) owner.Pages.Remove(page);
                         return true;
                     }
@@ -2403,6 +2639,7 @@ namespace AntdUI
             void LoadLayout(Tabs owner, Rectangle rect, TabCollection items);
             void Paint(Tabs owner, Graphics g, TabCollection items);
             void SelectedIndexChanged(int i, int old);
+            bool ScrollMouseEvent(string eventTyp, int x = 0, int y = 0);
             bool MouseClick(TabPage page, int i, int x, int y);
             bool MouseMovePre(int x, int y);
             void MouseMove(int x, int y);

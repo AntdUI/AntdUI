@@ -332,9 +332,8 @@ namespace AntdUI
             {
                 var g = e.Graphics.High();
                 var rect_read = ReadRectangle;
-                Color _back = back ?? Style.Db.BgContainer;
                 float _radius = radius * Config.Dpi;
-                using (var brush = new SolidBrush(_back))
+                using (var brush = new SolidBrush(back ?? Style.Db.BgContainer))
                 {
                     using (var path = DrawShadow(g, _radius, rect, rect_read))
                     {

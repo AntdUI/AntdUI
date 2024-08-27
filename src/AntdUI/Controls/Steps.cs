@@ -435,14 +435,7 @@ namespace AntdUI
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
-        public event ItemClickEventHandler? ItemClick = null;
-
-        /// <summary>
-        /// 点击项时发生
-        /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="value">数值</param>
-        public delegate void ItemClickEventHandler(object sender, MouseEventArgs e, StepsItem value);
+        public event StepsItemEventHandler? ItemClick = null;
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
@@ -455,7 +448,7 @@ namespace AntdUI
                 {
                     if (it.rect.Contains(e.Location))
                     {
-                        ItemClick(this, e, it);
+                        ItemClick(this, new StepsItemEventArgs(it, e));
                         return;
                     }
                 }

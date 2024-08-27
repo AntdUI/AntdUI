@@ -993,7 +993,7 @@ namespace AntdUI
                     {
                         checkCell.Checked = value;
                         SetValue(item, checkCell.Checked);
-                        CheckedChanged?.Invoke(this, value, rows[i_row].RECORD, i_row, i_cel);
+                        CheckedChanged?.Invoke(this, new TableCheckEventArgs(value, rows[i_row].RECORD, i_row, i_cel));
                     }
                     else nocount++;
                 }

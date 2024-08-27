@@ -237,8 +237,6 @@ namespace AntdUI
 
         #region 事件
 
-        public delegate void SelectEventHandler(object sender, MenuItem item);
-
         /// <summary>
         /// Select 属性值更改时发生
         /// </summary>
@@ -247,7 +245,7 @@ namespace AntdUI
 
         internal void OnSelectIndexChanged(MenuItem item)
         {
-            SelectChanged?.Invoke(this, item);
+            SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
         }
 
         #endregion

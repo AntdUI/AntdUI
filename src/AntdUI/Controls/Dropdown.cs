@@ -98,7 +98,7 @@ namespace AntdUI
 
         internal void DropDownChange(object value)
         {
-            SelectedValueChanged?.Invoke(this, value);
+            SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(value));
             select_x = 0;
             subForm = null;
         }
@@ -186,20 +186,6 @@ namespace AntdUI
                 });
             }
             base.OnMouseEnter(e);
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            mousein = false;
-            if (Trigger == Trigger.Hover && subForm != null)
-            {
-                ITask.Run(() =>
-                {
-                    System.Threading.Thread.Sleep(200);
-                    if (Trigger == Trigger.Hover && !mousein && subForm != null && subForm.tag1) subForm?.IClose();
-                });
-            }
-            base.OnMouseLeave(e);
         }
 
         protected override void OnLostFocus(EventArgs e)

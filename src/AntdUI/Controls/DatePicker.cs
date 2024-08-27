@@ -66,7 +66,7 @@ namespace AntdUI
             set
             {
                 _value = value;
-                ValueChanged?.Invoke(this, value);
+                ValueChanged?.Invoke(this, new DateTimeNEventArgs(value));
                 Text = value.HasValue ? value.Value.ToString(Format) : "";
             }
         }
@@ -187,7 +187,7 @@ namespace AntdUI
                             Value = date;
                         }, btn =>
                         {
-                            PresetsClickChanged?.Invoke(this, btn);
+                            PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn));
                         }, BadgeAction);
                         subForm.Disposed += (a, b) =>
                         {

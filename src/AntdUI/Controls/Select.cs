@@ -159,8 +159,8 @@ namespace AntdUI
             Text = "";
             selectedValue = null;
             selectedIndex = -1;
-            SelectedValueChanged?.Invoke(this, selectedValue);
-            SelectedIndexChanged?.Invoke(this, selectedIndex);
+            SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
+            SelectedIndexChanged?.Invoke(this, new IntEventArgs(selectedIndex));
         }
 
         void ChangeValue(int value, object? obj)
@@ -177,8 +177,8 @@ namespace AntdUI
                 if (obj == null) Text = "";
                 else Text = obj.ToString() ?? "";
             }
-            SelectedValueChanged?.Invoke(this, selectedValue);
-            SelectedIndexChanged?.Invoke(this, selectedIndex);
+            SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
+            SelectedIndexChanged?.Invoke(this, new IntEventArgs(selectedIndex));
         }
         void SetChangeValue(BaseCollection items, object val)
         {
@@ -228,8 +228,8 @@ namespace AntdUI
                 selectedValue = obj;
                 Text = obj.ToString() ?? "";
             }
-            SelectedValueChanged?.Invoke(this, selectedValue);
-            SelectedIndexsChanged?.Invoke(this, selectedIndexX, selectedIndex);
+            SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
+            SelectedIndexsChanged?.Invoke(this, new IntXYEventArgs(selectedIndexX, selectedIndex));
         }
 
         internal void DropDownChange(int i)
@@ -267,14 +267,12 @@ namespace AntdUI
         /// </summary>
         [Description("多层树结构更改时发生"), Category("行为")]
         public event IntXYEventHandler? SelectedIndexsChanged = null;
-        public delegate void IntXYEventHandler(object sender, int x, int y);
 
         /// <summary>
         /// SelectedValue 属性值更改时发生
         /// </summary>
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
         public event ObjectNEventHandler? SelectedValueChanged = null;
-
 
         public delegate IList<object>? FilterEventHandler(object sender, string value);
         /// <summary>

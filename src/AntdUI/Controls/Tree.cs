@@ -259,66 +259,63 @@ namespace AntdUI
 
         #region 事件
 
-        public delegate void SelectEventHandler(object sender, MouseEventArgs args, TreeItem item, Rectangle rect);
-        public delegate void HoverEventHandler(object sender, TreeItem item, Rectangle rect, bool hover);
         /// <summary>
         /// Select 属性值更改时发生
         /// </summary>
         [Description("Select 属性值更改时发生"), Category("行为")]
-        public event SelectEventHandler? SelectChanged = null;
+        public event TreeSelectEventHandler? SelectChanged = null;
 
-        public delegate void CheckedEventHandler(object sender, TreeItem item, bool value);
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
         [Description("Checked 属性值更改时发生"), Category("行为")]
-        public event CheckedEventHandler? CheckedChanged = null;
+        public event TreeCheckedEventHandler? CheckedChanged = null;
 
         /// <summary>
         /// 点击项事件
         /// </summary>
         [Description("点击项事件"), Category("行为")]
-        public event SelectEventHandler? NodeMouseClick = null;
+        public event TreeSelectEventHandler? NodeMouseClick = null;
 
         /// <summary>
         /// 双击项事件
         /// </summary>
         [Description("双击项事件"), Category("行为")]
-        public event SelectEventHandler? NodeMouseDoubleClick = null;
+        public event TreeSelectEventHandler? NodeMouseDoubleClick = null;
 
         /// <summary>
         /// 移动项事件
         /// </summary>
         [Description("移动项事件"), Category("行为")]
-        public event HoverEventHandler? NodeMouseMove = null;
+        public event TreeHoverEventHandler? NodeMouseMove = null;
         internal void OnNodeMouseMove(TreeItem item, bool hover)
         {
             if (NodeMouseMove == null) return;
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            NodeMouseMove(this, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), hover);
+            NodeMouseMove(this, new TreeHoverEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), hover));
         }
 
         internal void OnSelectChanged(TreeItem item, MouseEventArgs args)
         {
             if (SelectChanged == null) return;
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            SelectChanged(this, args, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
+            SelectChanged(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
         }
         internal void OnNodeMouseClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseClick == null) return;
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            NodeMouseClick(this, args, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
+            NodeMouseClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
         }
         internal void OnNodeMouseDoubleClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseDoubleClick == null) return;
             int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
-            NodeMouseDoubleClick(this, args, item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height));
+            NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
         }
         internal void OnCheckedChanged(TreeItem item, bool value)
         {
-            CheckedChanged?.Invoke(this, item, value);
+            CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
         }
 
         #endregion

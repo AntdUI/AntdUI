@@ -299,17 +299,10 @@ namespace AntdUI
         #region 事件
 
         /// <summary>
-        /// Close事件
-        /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="value">数值</param>
-        public delegate bool CloseEventHandler(object sender);
-
-        /// <summary>
         /// Close时发生
         /// </summary>
         [Description("Close时发生"), Category("行为")]
-        public event CloseEventHandler? CloseChanged = null;
+        public event RBoolEventHandler? CloseChanged = null;
 
         #endregion
 
@@ -549,7 +542,7 @@ namespace AntdUI
             if (e.Button == MouseButtons.Left && closeIcon && rect_close.Contains(e.Location))
             {
                 bool isclose = false;
-                if (CloseChanged == null || CloseChanged(this)) isclose = true;
+                if (CloseChanged == null || CloseChanged(this, EventArgs.Empty)) isclose = true;
                 if (isclose && Parent is Control control) control.Controls.Remove(this);
                 return;
             }

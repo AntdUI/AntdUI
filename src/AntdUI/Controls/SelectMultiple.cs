@@ -145,12 +145,12 @@ namespace AntdUI
                 if (value == null || items == null || items.Count == 0)
                 {
                     ClearSelect();
-                    SelectedValueChanged?.Invoke(this, selectedValue);
+                    SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
                     return;
                 }
                 CalculateRect();
                 Invalidate();
-                SelectedValueChanged?.Invoke(this, selectedValue);
+                SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
             }
         }
 
@@ -383,7 +383,6 @@ namespace AntdUI
                         subForm.selectedValue = new List<object>(selectedValue.Length);
                         subForm.selectedValue.AddRange(selectedValue);
                         subForm.Print();
-
                         return true;
                     }
                 }

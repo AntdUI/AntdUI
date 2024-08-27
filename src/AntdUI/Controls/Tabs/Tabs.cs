@@ -327,7 +327,7 @@ namespace AntdUI
                 int old = _select;
                 _select = value;
                 style.SelectedIndexChanged(value, old);
-                SelectedIndexChanged?.Invoke(this, value);
+                SelectedIndexChanged?.Invoke(this, new IntEventArgs(value));
                 Invalidate();
                 ShowPage();
             }
@@ -493,6 +493,12 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (items == null) { base.OnMouseDown(e); return; }
+            if (style.ScrollMouseEvent("down", e.X, e.Y))
+            {
+                Invalidate();
+                base.OnMouseDown(e);
+                return;
+            }
             if (_tabMenuVisible)
             {
                 int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
@@ -512,6 +518,12 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (items == null) { base.OnMouseUp(e); return; }
+            if (style.ScrollMouseEvent("up", e.X, e.Y))
+            {
+                //Invalidate();
+                base.OnMouseUp(e);
+                return;
+            }
             if (_tabMenuVisible)
             {
                 int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
@@ -549,6 +561,14 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (items == null) return;
+            if (style.ScrollMouseEvent("move", e.X, e.Y))
+            {
+                hover_i = -1;
+                Invalidate();
+                Cursor = DefaultCursor;
+                base.OnMouseMove(e);
+                return;
+            }
             if (style.MouseMovePre(e.X, e.Y))
             {
                 Cursor = DefaultCursor;
@@ -574,6 +594,8 @@ namespace AntdUI
 
         protected override void OnMouseLeave(EventArgs e)
         {
+            style.ScrollMouseEvent("leave");
+            if (Hover_i == -1) Invalidate();
             Hover_i = -1;
             style.MouseLeave();
             Cursor = DefaultCursor;
@@ -622,7 +644,6 @@ namespace AntdUI
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectedIndexChanged = null;
 
-        public delegate bool ClosingPageEventHandler(object sender, TabPage page);
         /// <summary>
         /// 关闭页面前发生
         /// </summary>

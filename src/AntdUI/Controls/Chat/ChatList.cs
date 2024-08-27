@@ -23,7 +23,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace AntdUI.Chat
@@ -289,7 +288,7 @@ namespace AntdUI.Chat
                                 mouseDown = text;
                             }
                         }
-                        ItemClick?.Invoke(this, e, it);
+                        ItemClick?.Invoke(this, new ChatItemEventArgs(it, e));
                     }
                     else if (it is TextChatItem text) text.SelectionLength = 0;
                 }
@@ -400,14 +399,6 @@ namespace AntdUI.Chat
         #endregion
 
         #region 事件
-
-        /// <summary>
-        /// 点击事件
-        /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="args">点击</param>
-        /// <param name="item">消息框</param>
-        public delegate void ClickEventHandler(object sender, MouseEventArgs args, IChatItem item);
 
         /// <summary>
         /// 单击时发生
@@ -586,105 +577,65 @@ namespace AntdUI.Chat
         {
             item.HasEmoji = false;
             int font_height = 0;
-
             var font_widths = new List<CacheFont>(item.Text.Length);
-            string base64Pattern = @"data:image/(?<type>.+?);base64,(?<data>[A-Za-z0-9+/=]+)";
-            var regex = new Regex(base64Pattern);
-            bool iseone = false;
-            char[] textChars = item.Text.ToCharArray();
-            int i = 0;
-
-            while (i < textChars.Length)
+            GraphemeSplitter.EachT(item.Text, 0, (str, type, nStart, nLen) =>
             {
-                char it = textChars[i];
-                var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it);
-
-                string remainingText = item.Text.Substring(i);
-                var match = regex.Match(remainingText);
-                if (match.Success && match.Index == 0)
+                string it = str.Substring(nStart, nLen);
+                switch (type)
                 {
-                    string base64Data = match.Groups["data"].Value;
-                    string imageData = match.Value;
-                    byte[] imageBytes = Convert.FromBase64String(base64Data);
-                    using (MemoryStream ms = new MemoryStream(imageBytes))
-                    {
-                        Image image = Image.FromStream(ms);
-                        int imgWidth = image.Width;
-                        int imgHeight = image.Height;
-
-                        // Adjust image size to fit within max_width if necessary
-                        if (imgWidth > max_width)
+                    case GraphemeSplitter.STRE_TYPE.BASE64IMG:
+                        var imageBytes = Convert.FromBase64String(it.Substring(it.IndexOf(";base64,") + 8));
+                        using (var ms = new MemoryStream(imageBytes))
                         {
-                            float scaleRatio = (float)max_width / imgWidth;
-                            imgWidth = max_width;
-                            imgHeight = (int)(imgHeight * scaleRatio);
+                            var image = Image.FromStream(ms);
+                            int imgWidth = image.Width;
+                            int imgHeight = image.Height;
+                            if (imgWidth > max_width)
+                            {
+                                float scaleRatio = (float)max_width / imgWidth;
+                                imgWidth = max_width;
+                                imgHeight = (int)(imgHeight * scaleRatio);
+                            }
+                            font_widths.Add(new CacheFont(it, false, imgWidth) { isImage = true, image = image, width = imgWidth });
+                            font_height = Math.Max(font_height, imgHeight);
                         }
-
-                        font_widths.Add(new CacheFont(imageData, false, imgWidth) { isImage = true, image = image, width = imgWidth });
-                        font_height = Math.Max(font_height, imgHeight);
-                        i += imageData.Length;
-                        continue;
-                    }
-                }
-
-                // Check if it's an SVG image
-                if (it == '<' && textChars.Skip(i).Take(4).SequenceEqual(new[] { '<', 's', 'v', 'g' }))
-                {
-                    int endIndex = item.Text.IndexOf("</svg>", i, StringComparison.OrdinalIgnoreCase);
-                    if (endIndex != -1)
-                    {
-                        string svgText = item.Text.Substring(i, endIndex - i + 6); // Include the ending tag
-                        i = endIndex + 6; // Move past the processed SVG text
-
-                        Image? svgImage = SvgExtend.SvgToBmp(svgText);
+                        break;
+                    case GraphemeSplitter.STRE_TYPE.SVG:
+                        var svgImage = SvgExtend.SvgToBmp(it);
                         if (svgImage != null)
                         {
                             int svgWidth = svgImage.Width;
                             int svgHeight = svgImage.Height;
                             if (font_height < svgHeight) font_height = svgHeight;
-                            font_widths.Add(new CacheFont(svgText, false, svgWidth, svgImage, _isSvg: true));
+                            font_widths.Add(new CacheFont(it, false, svgWidth, svgImage, _isSvg: true));
                         }
-                        continue;
-                    }
-                }
-
-                // Process other characters
-                string txt = it.ToString();
-                if (IsEmoji(unicodeInfo))
-                {
-                    item.HasEmoji = true;
-                    if (unicodeInfo == UnicodeCategory.Surrogate)
-                    {
-                        if (iseone)
+                        break;
+                    default:
+                        var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it[0]);
+                        if (IsEmoji(unicodeInfo))
                         {
-                            iseone = false;
-                            font_widths[font_widths.Count - 1].text += txt;
-                            continue;
+                            item.HasEmoji = true;
+                            font_widths.Add(new CacheFont(it, true, 0));
                         }
-                        else iseone = true;
-                    }
-                    else iseone = false;
-                    font_widths.Add(new CacheFont(txt, true, 0));
+                        else
+                        {
+                            if (it == "\t" || it == "\n")
+                            {
+                                var sizefont = g.MeasureString(" ", Font, 10000, m_sf);
+                                if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
+                                font_widths.Add(new CacheFont(it, false, (int)Math.Ceiling(sizefont.Width * 8F)));
+                            }
+                            else
+                            {
+                                var sizefont = g.MeasureString(it, Font, 10000, m_sf);
+                                if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
+                                font_widths.Add(new CacheFont(it, false, (int)Math.Ceiling(sizefont.Width)));
+                            }
+                        }
+                        break;
                 }
-                else
-                {
-                    iseone = false;
-                    if (it == '\t' || it == '\n')
-                    {
-                        var sizefont = g.MeasureString(" ", Font, 10000, m_sf);
-                        if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                        font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
-                    }
-                    else
-                    {
-                        var sizefont = g.MeasureString(txt, Font, 10000, m_sf);
-                        if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                        font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
-                    }
-                }
-
-                i++;
-            }
+                return true;
+            });
 
             if (item.HasEmoji)
             {

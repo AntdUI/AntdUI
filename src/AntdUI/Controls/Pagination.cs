@@ -51,7 +51,7 @@ namespace AntdUI
                 else if (value > PageTotal) value = PageTotal;
                 if (current == value) return;
                 current = value;
-                ValueChanged?.Invoke(current, total, pageSize, PageTotal);
+                ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
                 ButtonLayout();
                 Invalidate();
             }
@@ -87,7 +87,7 @@ namespace AntdUI
                 if (pageSize == value) return;
                 pageSize = value;
                 if (Math.Ceiling(total * 1.0 / pageSize) < current) current = (int)Math.Ceiling(total * 1.0 / pageSize);
-                ValueChanged?.Invoke(current, total, pageSize, PageTotal);
+                ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
                 if (input_SizeChanger != null)
                 {
                     string tips = Localization.Provider?.GetLocalizedString("ItemsPerPage") ?? "条/页";
@@ -132,33 +132,13 @@ namespace AntdUI
         /// Value 属性值更改时发生
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
-        public event ValueEventHandler? ValueChanged;
-
-        /// <summary>
-        /// 显示数据总量
-        /// </summary>
-        /// <param name="current">当前页数</param>
-        /// <param name="total">数据总数</param>
-        /// <param name="pageSize">每页条数</param>
-        /// <param name="pageTotal">总页数</param>
-        /// <returns></returns>
-        public delegate void ValueEventHandler(int current, int total, int pageSize, int pageTotal);
-
-        /// <summary>
-        /// 显示数据总量
-        /// </summary>
-        /// <param name="current">当前页数</param>
-        /// <param name="total">数据总数</param>
-        /// <param name="pageSize">每页条数</param>
-        /// <param name="pageTotal">总页数</param>
-        /// <returns></returns>
-        public delegate string RtValueEventHandler(int current, int total, int pageSize, int pageTotal);
+        public event PageValueEventHandler? ValueChanged;
 
         /// <summary>
         /// 显示数据总量
         /// </summary>
         [Description("用于显示数据总量"), Category("行为")]
-        public event RtValueEventHandler? ShowTotalChanged;
+        public event PageValueRtEventHandler? ShowTotalChanged;
 
         bool showSizeChanger = false;
         /// <summary>
@@ -559,7 +539,7 @@ namespace AntdUI
                 int total_page = (int)Math.Ceiling((total * 1.0) / pageSize);//总页数
                 if (total_page == 0) total_page = 1;
 
-                if (textdesc == null) showTotal = ShowTotalChanged?.Invoke(current, total, pageSize, total_page);
+                if (textdesc == null) showTotal = ShowTotalChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, total_page));
                 else showTotal = textdesc;
 
                 int pyrn = Helper.GDI(g =>
@@ -666,7 +646,8 @@ namespace AntdUI
                 });
                 if (pyr == pyrn) return;
                 pyr = pyrn;
-                OnSizeChanged(EventArgs.Empty);
+                if (InvokeRequired) Invoke(new Action(() => { OnSizeChanged(EventArgs.Empty); }));
+                else OnSizeChanged(EventArgs.Empty);
             }
         }
         int InitSizeChanger(Rectangle rect)
@@ -707,7 +688,7 @@ namespace AntdUI
                     input.Text = "";
                     input.SelectedValueChanged += (a, b) =>
                     {
-                        if (b is int pageSize) PageSize = pageSize;
+                        if (b.Value is int pageSize) PageSize = pageSize;
                     };
                     input_SizeChanger = input;
                 }

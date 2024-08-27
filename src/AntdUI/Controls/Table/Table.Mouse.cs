@@ -209,7 +209,7 @@ namespace AntdUI
                             {
                                 checkCell.Checked = !checkCell.Checked;
                                 SetValue(cell, checkCell.Checked);
-                                CheckedChanged?.Invoke(this, checkCell.Checked, it.RECORD, i_r, i_c);
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
                             }
                         }
                         else if (cell is TCellRadio radioCell)
@@ -233,7 +233,7 @@ namespace AntdUI
                                 }
                                 radioCell.Checked = true;
                                 SetValue(cell, radioCell.Checked);
-                                CheckedChanged?.Invoke(this, radioCell.Checked, it.RECORD, i_r, i_c);
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.RECORD, i_r, i_c));
                             }
                         }
                         else if (cell is TCellSwitch switchCell)
@@ -258,7 +258,7 @@ namespace AntdUI
                                 {
                                     switchCell.Checked = !switchCell.Checked;
                                     SetValue(cell, switchCell.Checked);
-                                    CheckedChanged?.Invoke(this, switchCell.Checked, it.RECORD, i_r, i_c);
+                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(switchCell.Checked, it.RECORD, i_r, i_c));
                                 }
                             }
                         }
@@ -309,7 +309,7 @@ namespace AntdUI
                                         if (btn.Rect.Contains(r_x, r_y))
                                         {
                                             btn.Click();
-                                            CellButtonClick?.Invoke(this, btn, e, it.RECORD, i_r, i_c);
+                                            CellButtonClick?.Invoke(this, new TableButtonEventArgs(btn, it.RECORD, i_r, i_c, e));
                                         }
                                         btn.ExtraMouseDown = false;
                                     }
@@ -319,11 +319,11 @@ namespace AntdUI
                     }
                     bool doubleClick = cell.MouseDown == 2;
                     cell.MouseDown = 0;
-                    CellClick?.Invoke(this, e, it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height));
+                    CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
 
                     if (doubleClick)
                     {
-                        CellDoubleClick?.Invoke(this, e, it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height));
+                        CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
                         if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick)
                         {
                             //进入编辑模式

@@ -18,7 +18,6 @@
 
 using System;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -37,7 +36,6 @@ namespace AntdUI
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
-            new Thread(FrameRenderTask) { IsBackground = true }.Start();
         }
 
         internal Control? PARENT = null;
@@ -59,11 +57,13 @@ namespace AntdUI
             base.OnLoad(e);
             if (CanLoadMessage) LoadMessage();
         }
+
+        bool can_render = true;
         protected override void Dispose(bool disposing)
         {
+            can_render = false;
             base.Dispose(disposing);
             Application.RemoveMessageFilter(this);
-            _event.Dispose();
         }
 
         public virtual bool UFocus => true;
@@ -135,83 +135,34 @@ namespace AntdUI
             target_rect.Y = y;
         }
 
-        /// <summary>
-        /// 设置屏幕碰撞
-        /// </summary>
-        public void SetScreenCollision()
-        {
-            var point = target_rect.Location;
-            var screen = Screen.FromPoint(point).WorkingArea;
-            if (point.X < screen.X) point.X = screen.X;
-            else if (point.X > (screen.X + screen.Width) - TargetRect.Width) point.X = screen.X + screen.Width - TargetRect.Width;
-            if (point.Y < screen.Y) point.Y = screen.Y;
-            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height)
-            {
-                //高度不够
-                //if (TargetRect.Height > (screen.Height - point.Y))
-                //{
-                //    int gap_y = rectsContent[0].y / 2 / 2, vr = TargetRect.Height, height = screen.Height - point.Y;
-                //    scrollY.Rect = new Rectangle(TargetRect.Width - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
-                //    scrollY.Show = true;
-                //    scrollY.SetVrSize(vr, height);
-                //    SetSizeH(height);
-                //}
-                //else point.Y = screen.Y + screen.Height - TargetRect.Height;
-            }
-            SetLocation(point);
-        }
-
         #endregion
 
         public void Print()
         {
-            if (IsHandleCreated && target_rect.Width > 0 && target_rect.Height > 0) _event.Set();
-        }
-
-        #region 逐帧渲染
-
-        ManualResetEvent _event = new ManualResetEvent(false);
-        void FrameRenderTask()
-        {
-            while (true)
+            if (IsHandleCreated && can_render && target_rect.Width > 0 && target_rect.Height > 0)
             {
-                if (_event.Wait() || !IsHandleCreated || target_rect.Width == 0 && target_rect.Height == 0) return;
-                Render();
-                try
-                {
-                    _event.Reset();
-                }
-                catch
-                {
-                    return;
-                }
-            }
-        }
-
-        void Render()
-        {
-            try
-            {
-                if (InvokeRequired)
-                {
-                    Invoke(new Action(Render));
-                    return;
-                }
                 try
                 {
                     using (var bmp = PrintBit())
                     {
                         if (bmp == null) return;
-                        Win32.SetBits(bmp, target_rect, Handle, alpha);
+                        Render(bmp);
                     }
                     GC.Collect();
                 }
                 catch { }
             }
-            catch { }
         }
 
-        #endregion
+        void Render(Bitmap bmp)
+        {
+            try
+            {
+                if (InvokeRequired) Invoke(new Action(() => { Render(bmp); }));
+                else Win32.SetBits(bmp, target_rect, Handle, alpha);
+            }
+            catch { }
+        }
 
         internal void SetCursor(bool val)
         {

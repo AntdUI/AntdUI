@@ -101,7 +101,7 @@ namespace AntdUI
             set
             {
                 _value = value;
-                ValueChanged?.Invoke(this, value);
+                ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
                 if (value == null) Text = "";
                 else Text = value[0].ToString(Format) + "\t" + value[1].ToString(Format);
             }
@@ -250,7 +250,6 @@ namespace AntdUI
 
         #region 事件
 
-        public delegate void DateTimesEventHandler(object sender, DateTime[]? value);
         public event DateTimesEventHandler? ValueChanged;
 
         /// <summary>
@@ -282,7 +281,7 @@ namespace AntdUI
                                 Value = date;
                             }, btn =>
                             {
-                                PresetsClickChanged?.Invoke(this, btn);
+                                PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn));
                             }, BadgeAction);
                             subForm.Disposed += (a, b) =>
                             {
@@ -298,7 +297,7 @@ namespace AntdUI
                                 Value = date;
                             }, btn =>
                             {
-                                PresetsClickChanged?.Invoke(this, btn);
+                                PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn));
                             }, BadgeAction);
                             subForm.Disposed += (a, b) =>
                             {
@@ -326,6 +325,16 @@ namespace AntdUI
             TextFocus = StartFocused = EndFocused = false;
             StartEndFocused();
             AnimationBarValue = RectangleF.Empty;
+            if (IsHandleCreated)
+            {
+                string text = Text;
+                int index = text.IndexOf("\t");
+                if (index > 0)
+                {
+                    string stext = text.Substring(0, index), etext = text.Substring(index + 1);
+                    if (DateTime.TryParse(stext, out var date_s) && DateTime.TryParse(etext, out var date_e)) Value = new DateTime[] { date_s, date_e };
+                }
+            }
             base.OnLostFocus(e);
         }
 

@@ -383,24 +383,29 @@ namespace AntdUI
 
         #region Obsolete
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("请使用 Icon 代替")]
-        [Browsable(false)]
+        [Description("请使用 Icon 代替"), Category("外观"), DefaultValue(null)]
         public Image? Image { get => Icon; set => Icon = value; }
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("请使用 IconSvg 代替")]
-        [Browsable(false)]
+        [Description("请使用 IconSvg 代替"), Category("外观"), DefaultValue(null)]
         public string? ImageSvg { get => IconSvg; set => IconSvg = value; }
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("请使用 IconSize 代替")]
-        [Browsable(false)]
+        [Description("请使用 IconSize 代替"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
         public Size ImageSize { get => IconSize; set => IconSize = value; }
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("请使用 IconHover 代替")]
-        [Browsable(false)]
+        [Description("请使用 IconHover 代替"), Category("外观"), DefaultValue(null)]
         public Image? ImageHover { get => IconHover; set => IconHover = value; }
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("请使用 IconHoverSvg 代替")]
-        [Browsable(false)]
+        [Description("请使用 IconHoverSvg 代替"), Category("外观"), DefaultValue(null)]
         public string? ImageHoverSvg { get => IconHoverSvg; set => IconHoverSvg = value; }
 
         [Obsolete("请使用 HasIcon 代替")]

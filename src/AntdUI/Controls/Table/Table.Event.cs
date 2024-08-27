@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -27,34 +28,18 @@ namespace AntdUI
         /// <summary>
         /// 选中改变事件
         /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="value">数值</param>
-        /// <param name="record">原始行</param>
-        /// <param name="rowIndex">行序号</param>
-        /// <param name="columnIndex">列序号</param>
-        public delegate void CheckEventHandler(object sender, bool value, object? record, int rowIndex, int columnIndex);
+        public delegate void CheckEventHandler(object sender, TableCheckEventArgs e);
+
 
         /// <summary>
         /// 点击事件
         /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="args">点击</param>
-        /// <param name="record">原始行</param>
-        /// <param name="rowIndex">行序号</param>
-        /// <param name="columnIndex">列序号</param>
-        /// <param name="rect">表格区域</param>
-        public delegate void ClickEventHandler(object sender, MouseEventArgs args, object? record, int rowIndex, int columnIndex, Rectangle rect);
+        public delegate void ClickEventHandler(object sender, TableClickEventArgs e);
 
         /// <summary>
         /// 按钮点击事件
         /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="btn">触发按钮</param>
-        /// <param name="args">点击</param>
-        /// <param name="record">原始行</param>
-        /// <param name="rowIndex">行序号</param>
-        /// <param name="columnIndex">列序号</param>
-        public delegate void ClickButtonEventHandler(object sender, CellLink btn, MouseEventArgs args, object? record, int rowIndex, int columnIndex);
+        public delegate void ClickButtonEventHandler(object sender, TableButtonEventArgs e);
 
         /// <summary>
         /// Checked 属性值更改时发生
@@ -62,13 +47,30 @@ namespace AntdUI
         [Description("Checked 属性值更改时发生"), Category("行为")]
         public event CheckEventHandler? CheckedChanged;
 
+
+        public class CheckStateEventArgs : EventArgs
+        {
+            public CheckStateEventArgs(ColumnCheck column, CheckState value)
+            {
+                Column = column;
+                Value = value;
+            }
+
+            /// <summary>
+            /// 触发表头对象
+            /// </summary>
+            public ColumnCheck Column { get; private set; }
+
+            /// <summary>
+            /// 数值
+            /// </summary>
+            public CheckState? Value { get; private set; }
+        }
+
         /// <summary>
         /// CheckState类型事件
         /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="column">触发表头对象</param>
-        /// <param name="value">数值</param>
-        public delegate void CheckStateEventHandler(object sender, ColumnCheck column, CheckState value);
+        public delegate void CheckStateEventHandler(object sender, CheckStateEventArgs e);
 
         /// <summary>
         /// 全局 CheckState 属性值更改时发生
@@ -78,7 +80,7 @@ namespace AntdUI
 
         internal void OnCheckedOverallChanged(ColumnCheck column, CheckState checkState)
         {
-            CheckedOverallChanged?.Invoke(this, column, checkState);
+            CheckedOverallChanged?.Invoke(this, new CheckStateEventArgs(column, checkState));
         }
 
         /// <summary>
@@ -104,33 +106,17 @@ namespace AntdUI
         /// <summary>
         /// 编辑前事件
         /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="value">数值</param>
-        /// <param name="record">原始行</param>
-        /// <param name="rowIndex">行序号</param>
-        /// <param name="columnIndex">列序号</param>
-        public delegate bool BeginEditEventHandler(object sender, object? value, object? record, int rowIndex, int columnIndex);
+        public delegate bool BeginEditEventHandler(object sender, TableEventArgs e);
 
         /// <summary>
         /// 编辑前事件文本框样式
         /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="value">数值</param>
-        /// <param name="record">原始行</param>
-        /// <param name="rowIndex">行序号</param>
-        /// <param name="columnIndex">列序号</param>
-        /// <param name="input">文本框</param>
-        public delegate void BeginEditInputStyleEventHandler(object sender, object? value, object? record, int rowIndex, int columnIndex, ref Input input);
+        public delegate void BeginEditInputStyleEventHandler(object sender, TableBeginEditInputStyleEventArgs e);
 
         /// <summary>
         /// 编辑后事件
         /// </summary>
-        /// <param name="sender">触发对象</param>
-        /// <param name="value">修改后值</param>
-        /// <param name="record">原始行</param>
-        /// <param name="rowIndex">行序号</param>
-        /// <param name="columnIndex">列序号</param>
-        public delegate bool EndEditEventHandler(object sender, string value, object? record, int rowIndex, int columnIndex);
+        public delegate bool EndEditEventHandler(object sender, TableEndEditEventArgs e);
 
         /// <summary>
         /// 编辑前发生
@@ -152,7 +138,7 @@ namespace AntdUI
 
         #endregion
 
-        public delegate CellStyleInfo? SetRowStyleEventHandler(object sender, object? record, int rowIndex);
+        public delegate CellStyleInfo? SetRowStyleEventHandler(object sender, TableSetRowStyleEventArgs e);
         /// <summary>
         /// 设置行样式
         /// </summary>

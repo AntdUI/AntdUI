@@ -200,7 +200,7 @@ namespace AntdUI
                 AnimationChange = true;
                 var old = selectIndex;
                 selectIndex = value;
-                SelectIndexChanged?.Invoke(this, value);
+                SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
                 var speed = Math.Abs(end - AnimationChangeValue) / 50F;
                 if (speed < 8) speed = 8F;
                 if (left)

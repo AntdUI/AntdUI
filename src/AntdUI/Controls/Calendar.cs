@@ -122,7 +122,7 @@ namespace AntdUI
             set
             {
                 _value = value;
-                DateChanged?.Invoke(this, _value);
+                DateChanged?.Invoke(this, new DateTimeEventArgs(_value));
                 Invalidate();
                 LoadBadge();
             }
