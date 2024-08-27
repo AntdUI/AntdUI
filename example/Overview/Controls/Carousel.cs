@@ -34,9 +34,9 @@ namespace Overview.Controls
             {
                 slider1.Value = carousel1.SelectIndex;
             };
-            slider1.ValueChanged += (s, a) =>
+            slider1.ValueChanged += (s, e) =>
             {
-                carousel1.SelectIndex = a;
+                carousel1.SelectIndex = e.Value;
             };
         }
 

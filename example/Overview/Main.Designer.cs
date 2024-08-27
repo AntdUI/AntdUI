@@ -51,10 +51,11 @@ namespace Overview
         {
             btn_back = new AntdUI.Button();
             btn_mode = new AntdUI.Button();
-            flowPanel = new AntdUI.FlowPanel();
+            virtualPanel = new AntdUI.VirtualPanel();
             windowBar = new AntdUI.WindowBar();
             txt_search = new AntdUI.Input();
             colorTheme = new AntdUI.ColorPicker();
+            btn_setting = new AntdUI.Button();
             windowBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -77,7 +78,7 @@ namespace Overview
             btn_mode.Font = new Font("Microsoft YaHei UI", 18F);
             btn_mode.Ghost = true;
             btn_mode.IconSvg = Properties.Resources.app_light;
-            btn_mode.Location = new Point(1106, 0);
+            btn_mode.Location = new Point(1056, 0);
             btn_mode.Name = "btn_mode";
             btn_mode.Radius = 0;
             btn_mode.Size = new Size(50, 40);
@@ -85,14 +86,16 @@ namespace Overview
             btn_mode.WaveSize = 0;
             btn_mode.Click += btn_mode_Click;
             // 
-            // flowPanel
+            // virtualPanel
             // 
-            flowPanel.AutoScroll = true;
-            flowPanel.Dock = DockStyle.Fill;
-            flowPanel.Location = new Point(0, 40);
-            flowPanel.Name = "flowPanel";
-            flowPanel.Size = new Size(1300, 680);
-            flowPanel.TabIndex = 2;
+            virtualPanel.Dock = DockStyle.Fill;
+            virtualPanel.Location = new Point(0, 40);
+            virtualPanel.Name = "virtualPanel";
+            virtualPanel.Shadow = 20;
+            virtualPanel.ShadowOpacityAnimation = true;
+            virtualPanel.Size = new Size(1300, 680);
+            virtualPanel.TabIndex = 2;
+            virtualPanel.ItemClick += ItemClick;
             // 
             // windowBar
             // 
@@ -100,6 +103,7 @@ namespace Overview
             windowBar.Controls.Add(colorTheme);
             windowBar.Controls.Add(btn_mode);
             windowBar.Controls.Add(btn_back);
+            windowBar.Controls.Add(btn_setting);
             windowBar.DividerMargin = 3;
             windowBar.DividerShow = true;
             windowBar.Dock = DockStyle.Top;
@@ -114,7 +118,7 @@ namespace Overview
             // txt_search
             // 
             txt_search.Dock = DockStyle.Right;
-            txt_search.Location = new Point(896, 0);
+            txt_search.Location = new Point(846, 0);
             txt_search.Name = "txt_search";
             txt_search.Padding = new Padding(0, 2, 0, 2);
             txt_search.PlaceholderText = "输入关键字搜索...";
@@ -127,18 +131,31 @@ namespace Overview
             // colorTheme
             // 
             colorTheme.Dock = DockStyle.Right;
-            colorTheme.Location = new Point(1066, 0);
+            colorTheme.Location = new Point(1016, 0);
             colorTheme.Name = "colorTheme";
             colorTheme.Padding = new Padding(5);
             colorTheme.Size = new Size(40, 40);
             colorTheme.TabIndex = 8;
             colorTheme.Value = Color.FromArgb(22, 119, 255);
             // 
+            // btn_setting
+            // 
+            btn_setting.Dock = DockStyle.Right;
+            btn_setting.Ghost = true;
+            btn_setting.IconSvg = Properties.Resources.setting;
+            btn_setting.Location = new Point(1106, 0);
+            btn_setting.Name = "btn_setting";
+            btn_setting.Radius = 0;
+            btn_setting.Size = new Size(50, 40);
+            btn_setting.TabIndex = 7;
+            btn_setting.WaveSize = 0;
+            btn_setting.Click += btn_setting_Click;
+            // 
             // Main
             // 
             BackColor = Color.White;
             ClientSize = new Size(1300, 720);
-            Controls.Add(flowPanel);
+            Controls.Add(virtualPanel);
             Controls.Add(windowBar);
             Font = new Font("Microsoft YaHei UI", 12F);
             ForeColor = Color.Black;
@@ -152,10 +169,11 @@ namespace Overview
 
         #endregion
         private AntdUI.Button btn_mode;
-        private AntdUI.FlowPanel flowPanel;
+        private AntdUI.VirtualPanel virtualPanel;
         private AntdUI.Button btn_back;
         private AntdUI.WindowBar windowBar;
         private AntdUI.ColorPicker colorTheme;
         private AntdUI.Input txt_search;
+        private AntdUI.Button btn_setting;
     }
 }

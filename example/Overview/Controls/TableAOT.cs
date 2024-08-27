@@ -177,32 +177,32 @@ namespace Overview.Controls
 
         #region 示例
 
-        void checkFixedHeader_CheckedChanged(object sender, bool value)
+        void checkFixedHeader_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            table1.FixedHeader = value;
+            table1.FixedHeader = e.Value;
         }
 
-        void checkColumnDragSort_CheckedChanged(object sender, bool value)
+        void checkColumnDragSort_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            table1.ColumnDragSort = value;
+            table1.ColumnDragSort = e.Value;
         }
 
-        void checkBordered_CheckedChanged(object sender, bool value)
+        void checkBordered_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            table1.Bordered = value;
+            table1.Bordered = e.Value;
         }
 
         #region 奇偶列
 
-        void checkSetRowStyle_CheckedChanged(object sender, bool value)
+        void checkSetRowStyle_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            if (value) table1.SetRowStyle += table1_SetRowStyle;
+            if (e.Value) table1.SetRowStyle += table1_SetRowStyle;
             else table1.SetRowStyle -= table1_SetRowStyle;
             table1.Invalidate();
         }
-        AntdUI.Table.CellStyleInfo table1_SetRowStyle(object sender, object mrecord, int rowIndex)
+        AntdUI.Table.CellStyleInfo table1_SetRowStyle(object sender, AntdUI.TableSetRowStyleEventArgs e)
         {
-            if (rowIndex % 2 == 0)
+            if (e.RowIndex % 2 == 0)
             {
                 return new AntdUI.Table.CellStyleInfo
                 {
@@ -215,31 +215,31 @@ namespace Overview.Controls
 
         #endregion
 
-        void checkSortOrder_CheckedChanged(object sender, bool value)
+        void checkSortOrder_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            if (table1.Columns != null) table1.Columns[6].SortOrder = table1.Columns[7].SortOrder = value;
+            if (table1.Columns != null) table1.Columns[6].SortOrder = table1.Columns[7].SortOrder = e.Value;
         }
 
-        void checkEnableHeaderResizing_CheckedChanged(object sender, bool value)
+        void checkEnableHeaderResizing_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            table1.EnableHeaderResizing = value;
+            table1.EnableHeaderResizing = e.Value;
         }
 
-        void checkVisibleHeader_CheckedChanged(object sender, bool value)
+        void checkVisibleHeader_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            table1.VisibleHeader = value;
+            table1.VisibleHeader = e.Value;
         }
 
         #endregion
 
         #region 点击/双击
 
-        void table1_CellClick(object sender, MouseEventArgs args, object record, int rowIndex, int columnIndex, Rectangle rect)
+        void table1_CellClick(object sender, AntdUI.TableClickEventArgs e)
         {
-            if (record is IList<AntdUI.AntItem> data)
+            if (e.Record is IList<AntdUI.AntItem> data)
             {
-                if (rowIndex > 0 && columnIndex == 6) AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "演示一下能弹出自定义") { Offset = rect });
-                else if (rowIndex > 0 && columnIndex == 8)
+                if (e.RowIndex > 0 && e.ColumnIndex == 6) AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "演示一下能弹出自定义") { Offset = e.Rect });
+                else if (e.RowIndex > 0 && e.ColumnIndex == 8)
                 {
                     var tag = data[10];
                     if (tag.value is AntdUI.CellTag[] tags)
@@ -260,9 +260,9 @@ namespace Overview.Controls
             }
         }
 
-        void table1_CellButtonClick(object sender, AntdUI.CellLink btn, MouseEventArgs args, object record, int rowIndex, int columnIndex)
+        void table1_CellButtonClick(object sender, AntdUI.TableButtonEventArgs e)
         {
-            if (record is IList<AntdUI.AntItem> data)
+            if (e.Record is IList<AntdUI.AntItem> data)
             {
                 if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
                     new AntdUI.Modal.TextLine(data[3].value.ToString(),AntdUI.Style.Db.Primary),
@@ -307,13 +307,13 @@ namespace Overview.Controls
             return list;
         }
 
-        void pagination1_ValueChanged(int current, int total, int pageSize, int pageTotal)
+        void pagination1_ValueChanged(object sender, AntdUI.PagePageEventArgs e)
         {
-            table2.DataSource = GetPageData(current, pageSize);
+            table2.DataSource = GetPageData(e.Current, e.PageSize);
         }
-        string pagination1_ShowTotalChanged(int current, int total, int pageSize, int pageTotal)
+        string pagination1_ShowTotalChanged(object sender, AntdUI.PagePageEventArgs e)
         {
-            return $"{pageSize} / {total}条 {pageTotal}页";
+            return $"{e.PageSize} / {e.Total}条 {e.PageTotal}页";
         }
 
         #endregion

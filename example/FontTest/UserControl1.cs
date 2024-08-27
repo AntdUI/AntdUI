@@ -156,12 +156,12 @@ namespace FontTest
             return bmp;
         }
 
-        private void select1_SelectedIndexChanged(object sender, int value)
+        private void select1_SelectedIndexChanged(object sender, AntdUI.IntEventArgs e)
         {
             LoadData();
         }
 
-        private void inputNumber1_ValueChanged(object sender, decimal value)
+        private void inputNumber1_ValueChanged(object sender, AntdUI.DecimalEventArgs e)
         {
             LoadData();
         }
