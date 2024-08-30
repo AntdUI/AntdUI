@@ -22,11 +22,17 @@ namespace Overview.Controls
 {
     public partial class Panel : UserControl
     {
-        Form form;
-        public Panel(Form _form)
+        Main form;
+        public Panel(Main _form)
         {
             form = _form;
             InitializeComponent();
+            button4.Click += button_Click;
+        }
+
+        private void button_Click(object sender, System.EventArgs e)
+        {
+            form.OpenPage("VirtualPanel");
         }
     }
 }

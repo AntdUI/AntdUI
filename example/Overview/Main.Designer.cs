@@ -89,12 +89,14 @@ namespace Overview
             // virtualPanel
             // 
             virtualPanel.Dock = DockStyle.Fill;
+            virtualPanel.JustifyContent = AntdUI.TJustifyContent.SpaceEvenly;
             virtualPanel.Location = new Point(0, 40);
             virtualPanel.Name = "virtualPanel";
             virtualPanel.Shadow = 20;
             virtualPanel.ShadowOpacityAnimation = true;
             virtualPanel.Size = new Size(1300, 680);
             virtualPanel.TabIndex = 2;
+            virtualPanel.Waterfall = true;
             virtualPanel.ItemClick += ItemClick;
             // 
             // windowBar
@@ -122,7 +124,7 @@ namespace Overview
             txt_search.Name = "txt_search";
             txt_search.Padding = new Padding(0, 2, 0, 2);
             txt_search.PlaceholderText = "输入关键字搜索...";
-            txt_search.PrefixSvg = Properties.Resources.icon_search;
+            txt_search.PrefixSvg = "SearchOutlined";
             txt_search.Size = new Size(170, 40);
             txt_search.TabIndex = 9;
             txt_search.PrefixClick += txt_search_PrefixClick;

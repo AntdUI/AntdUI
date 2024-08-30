@@ -115,7 +115,7 @@ namespace Overview.Controls
             // 
             // input5
             // 
-            input5.PrefixSvg = Properties.Resources.icon_poweroff;
+            input5.PrefixSvg = "PoweroffOutlined";
             input5.Location = new Point(18, 101);
             input5.Name = "input5";
             input5.Radius = 10;
@@ -226,7 +226,7 @@ namespace Overview.Controls
             // button2
             // 
             button2.Dock = DockStyle.Right;
-            button2.IconSvg = Properties.Resources.icon_search;
+            button2.IconSvg = "SearchOutlined";
             button2.JoinLeft = true;
             button2.Location = new Point(170, 0);
             button2.Name = "button2";

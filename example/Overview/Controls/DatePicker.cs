@@ -51,9 +51,9 @@ namespace Overview.Controls
             };
         }
 
-        private void datePickerRange4_PresetsClickChanged(object sender, object value)
+        private void datePickerRange4_PresetsClickChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            AntdUI.Message.info(form, "已点击：" + value, Font);
+            AntdUI.Message.info(form, "已点击：" + e.Value, Font);
         }
     }
 }

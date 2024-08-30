@@ -85,7 +85,7 @@ namespace Overview.Controls
             // button7
             // 
             button7.AutoSize = true;
-            button7.IconSvg = Properties.Resources.icon_poweroff;
+            button7.IconSvg = "PoweroffOutlined";
             button7.Items.AddRange(new object[] { "菜单1", "菜单2", "菜单3" });
             button7.Location = new Point(386, 3);
             button7.Name = "button7";
@@ -126,7 +126,7 @@ namespace Overview.Controls
             // 
             button4.AutoSize = true;
             button4.DropDownArrow = true;
-            button4.IconSvg = Properties.Resources.BR;
+            button4.IconSvg = "RadiusBottomrightOutlined";
             button4.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
             button4.Location = new Point(296, 93);
             button4.Name = "button4";
@@ -140,7 +140,7 @@ namespace Overview.Controls
             // 
             button6.AutoSize = true;
             button6.DropDownArrow = true;
-            button6.IconSvg = Properties.Resources.Bottom;
+            button6.IconSvg = "BorderBottomOutlined";
             button6.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
             button6.Location = new Point(171, 93);
             button6.Name = "button6";
@@ -154,7 +154,7 @@ namespace Overview.Controls
             // 
             button2.AutoSize = true;
             button2.DropDownArrow = true;
-            button2.IconSvg = Properties.Resources.TR;
+            button2.IconSvg = "RadiusUprightOutlined";
             button2.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
             button2.Location = new Point(328, 15);
             button2.Name = "button2";
@@ -168,7 +168,7 @@ namespace Overview.Controls
             // 
             button5.AutoSize = true;
             button5.DropDownArrow = true;
-            button5.IconSvg = Properties.Resources.Top;
+            button5.IconSvg = "BorderTopOutlined";
             button5.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
             button5.Location = new Point(187, 15);
             button5.Name = "button5";
@@ -182,7 +182,7 @@ namespace Overview.Controls
             // 
             button3.AutoSize = true;
             button3.DropDownArrow = true;
-            button3.IconSvg = Properties.Resources.BL;
+            button3.IconSvg = "RadiusBottomleftOutlined";
             button3.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
             button3.Location = new Point(14, 93);
             button3.Name = "button3";
@@ -195,7 +195,7 @@ namespace Overview.Controls
             // 
             button8.AutoSize = true;
             button8.DropDownArrow = true;
-            button8.IconSvg = Properties.Resources.TL;
+            button8.IconSvg = "RadiusUpleftOutlined";
             button8.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
             button8.Location = new Point(14, 15);
             button8.Name = "button8";

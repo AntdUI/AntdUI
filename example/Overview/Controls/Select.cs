@@ -28,7 +28,6 @@ namespace Overview.Controls
         {
             form = _form;
             InitializeComponent();
-
             select5.Items.AddRange(new AntdUI.SelectItem[] {
                 new AntdUI.SelectItem("one"){
                     Sub = new List<object>{
@@ -44,16 +43,6 @@ namespace Overview.Controls
                 },
                 new AntdUI.SelectItem("two"){ Sub=new List<object>{ "five menu item", "six six six menu item"} },
             });
-        }
-
-        private void selectMultiple1_SelectedValueChanged(object sender, object value)
-        {
-
-        }
-
-        private void panel4_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

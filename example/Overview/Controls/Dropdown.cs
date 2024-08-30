@@ -65,9 +65,9 @@ namespace Overview.Controls
             });
         }
 
-        private void dropdown1_SelectedValueChanged(object sender, object value)
+        private void dropdown1_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            AntdUI.Message.info(form, "已选中：" + value, Font);
+            AntdUI.Message.info(form, "已选中：" + e.Value, Font);
         }
     }
 }

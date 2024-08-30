@@ -34,7 +34,7 @@ namespace Overview.Controls
             #region Table 1
 
             table1.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.ColumnCheck("check"){ Fixed=true},
+                new AntdUI.ColumnCheck("check"){ Fixed=true, Call=(value,record, i_row, i_col)=>{return !value;} },
                 new AntdUI.Column("name","姓名"){ Fixed=true},
                 new AntdUI.ColumnCheck("checkTitle","不全选标题"){ColAlign=AntdUI.ColumnAlign.Center},
                 new AntdUI.ColumnRadio("radio","单选"),
@@ -237,9 +237,9 @@ namespace Overview.Controls
                 if (i == 2)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("b1") { BorderWidth=1, IconSvg=Properties.Resources.icon_search,IconHoverSvg=Properties.Resources.icon_like,ShowArrow=true},
+                        new AntdUI.CellButton("b1") { BorderWidth=1, IconSvg="SearchOutlined",IconHoverSvg=Properties.Resources.icon_like,ShowArrow=true},
                         new AntdUI.CellButton("b2") {  ShowArrow=true},
-                        new AntdUI.CellButton("b3") { Type= AntdUI.TTypeMini.Primary, IconSvg=Properties.Resources.icon_search }
+                        new AntdUI.CellButton("b3") { Type= AntdUI.TTypeMini.Primary, IconSvg="SearchOutlined" }
                     };
                 }
                 else if (i == 3)

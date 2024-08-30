@@ -248,7 +248,7 @@ namespace Overview.Controls
             button40.BackColor = Color.FromArgb(168, 85, 247);
             button40.BackHover = Color.FromArgb(147, 51, 234);
             button40.Dock = DockStyle.Left;
-            button40.IconSvg = Properties.Resources.icon_search;
+            button40.IconSvg = "SearchOutlined";
             button40.JoinRight = true;
             button40.Location = new Point(0, 0);
             button40.Name = "button40";
@@ -289,7 +289,7 @@ namespace Overview.Controls
             // 
             button30.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button30.BorderWidth = 1F;
-            button30.IconSvg = Properties.Resources.icon_search;
+            button30.IconSvg = "SearchOutlined";
             button30.Location = new Point(3, 3);
             button30.Name = "button30";
             button30.Size = new Size(115, 47);
@@ -303,7 +303,7 @@ namespace Overview.Controls
             button31.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button31.BorderWidth = 1F;
             button31.IconPosition = AntdUI.TAlignMini.Right;
-            button31.IconSvg = Properties.Resources.icon_search;
+            button31.IconSvg = "SearchOutlined";
             button31.Location = new Point(124, 3);
             button31.Name = "button31";
             button31.Size = new Size(115, 47);
@@ -316,7 +316,7 @@ namespace Overview.Controls
             // 
             button36.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button36.BorderWidth = 1F;
-            button36.IconSvg = Properties.Resources.icon_search;
+            button36.IconSvg = "SearchOutlined";
             button36.Location = new Point(3, 56);
             button36.Name = "button36";
             button36.Size = new Size(115, 47);
@@ -329,7 +329,7 @@ namespace Overview.Controls
             button37.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button37.BorderWidth = 1F;
             button37.IconPosition = AntdUI.TAlignMini.Right;
-            button37.IconSvg = Properties.Resources.icon_search;
+            button37.IconSvg = "SearchOutlined";
             button37.Location = new Point(124, 56);
             button37.Name = "button37";
             button37.Size = new Size(115, 47);
@@ -342,7 +342,7 @@ namespace Overview.Controls
             button32.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button32.BorderWidth = 1F;
             button32.IconPosition = AntdUI.TAlignMini.Top;
-            button32.IconSvg = Properties.Resources.icon_search;
+            button32.IconSvg = "SearchOutlined";
             button32.Location = new Point(245, 3);
             button32.Name = "button32";
             button32.Size = new Size(115, 75);
@@ -356,7 +356,7 @@ namespace Overview.Controls
             button33.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button33.BorderWidth = 1F;
             button33.IconPosition = AntdUI.TAlignMini.Bottom;
-            button33.IconSvg = Properties.Resources.icon_search;
+            button33.IconSvg = "SearchOutlined";
             button33.Location = new Point(366, 3);
             button33.Name = "button33";
             button33.Size = new Size(115, 75);
@@ -370,7 +370,7 @@ namespace Overview.Controls
             button34.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button34.BorderWidth = 1F;
             button34.IconPosition = AntdUI.TAlignMini.Top;
-            button34.IconSvg = Properties.Resources.icon_search;
+            button34.IconSvg = "SearchOutlined";
             button34.Location = new Point(487, 3);
             button34.Name = "button34";
             button34.Size = new Size(115, 75);
@@ -383,7 +383,7 @@ namespace Overview.Controls
             button35.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button35.BorderWidth = 1F;
             button35.IconPosition = AntdUI.TAlignMini.Bottom;
-            button35.IconSvg = Properties.Resources.icon_search;
+            button35.IconSvg = "SearchOutlined";
             button35.Location = new Point(608, 3);
             button35.Name = "button35";
             button35.Size = new Size(115, 75);
@@ -434,7 +434,7 @@ namespace Overview.Controls
             // 
             button21.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button21.BorderWidth = 1F;
-            button21.IconSvg = Properties.Resources.icon_search;
+            button21.IconSvg = "SearchOutlined";
             button21.Location = new Point(115, 3);
             button21.Name = "button21";
             button21.ShowArrow = true;
@@ -448,7 +448,7 @@ namespace Overview.Controls
             // 
             button22.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button22.BorderWidth = 1F;
-            button22.IconSvg = Properties.Resources.icon_poweroff;
+            button22.IconSvg = "PoweroffOutlined";
             button22.IsLink = true;
             button22.Location = new Point(254, 3);
             button22.Name = "button22";
@@ -539,7 +539,7 @@ namespace Overview.Controls
             // button50
             // 
             button50.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button50.IconSvg = Properties.Resources.Download;
+            button50.IconSvg = "DownloadOutlined";
             button50.Location = new Point(3, 3);
             button50.Name = "button50";
             button50.Size = new Size(47, 47);
@@ -550,7 +550,7 @@ namespace Overview.Controls
             // button51
             // 
             button51.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button51.IconSvg = Properties.Resources.Download;
+            button51.IconSvg = "DownloadOutlined";
             button51.Location = new Point(56, 3);
             button51.Name = "button51";
             button51.Shape = AntdUI.TShape.Circle;
@@ -562,7 +562,7 @@ namespace Overview.Controls
             // button54
             // 
             button54.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button54.IconSvg = Properties.Resources.Download;
+            button54.IconSvg = "DownloadOutlined";
             button54.Location = new Point(331, 3);
             button54.Name = "button54";
             button54.Size = new Size(143, 47);
@@ -574,7 +574,7 @@ namespace Overview.Controls
             // button52
             // 
             button52.AutoSizeMode = AntdUI.TAutoSize.Height;
-            button52.IconSvg = Properties.Resources.Download;
+            button52.IconSvg = "DownloadOutlined";
             button52.Location = new Point(109, 3);
             button52.Name = "button52";
             button52.Shape = AntdUI.TShape.Round;
@@ -586,7 +586,7 @@ namespace Overview.Controls
             // button53
             // 
             button53.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button53.IconSvg = Properties.Resources.Download;
+            button53.IconSvg = "DownloadOutlined";
             button53.Location = new Point(182, 3);
             button53.Name = "button53";
             button53.Shape = AntdUI.TShape.Round;
@@ -625,7 +625,7 @@ namespace Overview.Controls
             // button10
             // 
             button10.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button10.IconSvg = Properties.Resources.icon_poweroff;
+            button10.IconSvg = "PoweroffOutlined";
             button10.Location = new Point(3, 3);
             button10.Name = "button10";
             button10.Shape = AntdUI.TShape.Circle;
@@ -637,7 +637,7 @@ namespace Overview.Controls
             // button11
             // 
             button11.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button11.IconSvg = Properties.Resources.icon_search;
+            button11.IconSvg = "SearchOutlined";
             button11.Location = new Point(56, 3);
             button11.Name = "button11";
             button11.Size = new Size(95, 47);
@@ -650,7 +650,7 @@ namespace Overview.Controls
             // 
             button12.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button12.BorderWidth = 1F;
-            button12.IconSvg = Properties.Resources.icon_poweroff;
+            button12.IconSvg = "PoweroffOutlined";
             button12.Location = new Point(157, 3);
             button12.Name = "button12";
             button12.Shape = AntdUI.TShape.Circle;
@@ -662,7 +662,7 @@ namespace Overview.Controls
             // 
             button13.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button13.BorderWidth = 1F;
-            button13.IconSvg = Properties.Resources.icon_search;
+            button13.IconSvg = "SearchOutlined";
             button13.Location = new Point(210, 3);
             button13.Name = "button13";
             button13.Size = new Size(95, 47);
@@ -674,7 +674,7 @@ namespace Overview.Controls
             // 
             button14.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button14.BorderWidth = 2F;
-            button14.IconSvg = Properties.Resources.icon_search;
+            button14.IconSvg = "SearchOutlined";
             button14.Location = new Point(311, 3);
             button14.Name = "button14";
             button14.Shape = AntdUI.TShape.Circle;
@@ -686,7 +686,7 @@ namespace Overview.Controls
             // button15
             // 
             button15.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button15.IconSvg = Properties.Resources.icon_search;
+            button15.IconSvg = "SearchOutlined";
             button15.Location = new Point(364, 3);
             button15.Name = "button15";
             button15.Size = new Size(95, 47);
@@ -699,7 +699,7 @@ namespace Overview.Controls
             // 
             button16.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button16.BackExtend = "135, #6253E1, #04BEFE";
-            button16.IconSvg = Properties.Resources.icon_search;
+            button16.IconSvg = "SearchOutlined";
             button16.Location = new Point(465, 3);
             button16.Name = "button16";
             button16.Size = new Size(188, 47);
