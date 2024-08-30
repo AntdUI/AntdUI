@@ -375,6 +375,7 @@ namespace AntdUI
             }
             config.Content.Disposed += (a, b) =>
             {
+                config.Content.SizeChanged -= Content_SizeChanged;
                 Close();
             };
             form.Show(this);
