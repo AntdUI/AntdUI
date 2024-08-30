@@ -43,7 +43,7 @@ namespace AntdUI
                 _config.MarginX = (int)Math.Round(_config.MarginX * dpi);
                 _config.MarginY = (int)Math.Round(_config.MarginY * dpi);
                 _config.Size = (int)Math.Round(_config.Size * dpi);
-                int size = _config.Size, t_size = size + ShadowS, icon_size = (int)(size * 0.45F), xy = (size - icon_size) / 2;
+                int size = _config.Size, gap = size + _config.Gap, t_size = size + ShadowS;
                 int hasx = 0, hasy = 0;
                 if (_config.Vertical)
                 {
@@ -52,10 +52,12 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                        it.rect_icon = new Rectangle(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
-                        hasy += t_size;
+
+                        SetIconSize(it);
+
+                        hasy += gap;
                     }
-                    SetSize(size + ShadowS, t_size * _config.Btns.Length);
+                    SetSize(t_size, hasy + ShadowS);
                 }
                 else
                 {
@@ -64,15 +66,40 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                        it.rect_icon = new Rectangle(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
-                        hasx += t_size;
+
+                        SetIconSize(it);
+
+                        hasx += gap;
                     }
-                    SetSize(t_size * _config.Btns.Length, size + ShadowS);
+                    SetSize(hasx + ShadowS, t_size);
                 }
             });
             SetPoint();
             config.Form.LocationChanged += Form_LSChanged;
             config.Form.SizeChanged += Form_LSChanged;
+        }
+
+        /// <summary>
+        /// 设置图标区域位置大小
+        /// </summary>
+        /// <param name="configBtn"></param>
+        /// <returns></returns>
+        private Rectangle SetIconSize(FloatButton.ConfigBtn configBtn)
+        {
+            int size = config.Size;
+            var icon_size = new Size((int)(size * 0.45F), (int)(size * 0.45F));
+
+            if (configBtn.IconSize.HasValue)
+            {
+                icon_size = configBtn.IconSize.Value;
+                if (!configBtn.rect_read.Contains(new Rectangle(configBtn.rect_read.Location, icon_size)))
+                {
+                    icon_size = configBtn.rect_read.Size;
+                }
+            }
+
+            var point = new Point((config.Size - icon_size.Width) / 2, (size - icon_size.Height) / 2);
+            return configBtn.rect_icon = new Rectangle(configBtn.rect_read.X + point.X, configBtn.rect_read.Y + point.Y, icon_size.Width, icon_size.Height);
         }
 
         private void Notify_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -192,6 +219,9 @@ namespace AntdUI
                                 fore = Style.Db.Text;
                                 break;
                         }
+
+                        fore = it.ForeColor ?? fore;
+
                         using (var brush = new SolidBrush(back))
                         {
                             g.FillPath(brush, path);
@@ -205,12 +235,14 @@ namespace AntdUI
                         }
                         if (it.IconSvg != null)
                         {
+                            SetIconSize(it);
+
                             using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.rect_icon, fore))
                             {
                                 if (_bmp != null) g.DrawImage(_bmp, it.rect_icon);
                             }
                         }
-                        else if (it.Icon != null) g.DrawImage(it.Icon, it.rect_icon);
+                        else if (it.Icon != null) g.DrawImage(it.Icon, SetIconSize(it));
                         else
                         {
                             using (var brush = new SolidBrush(fore))

@@ -168,6 +168,11 @@ namespace AntdUI
             public int MarginY { get; set; } = 24;
 
             /// <summary>
+            /// 间距
+            /// </summary>
+            public int Gap { get; set; } = 40;
+
+            /// <summary>
             /// 按钮列表
             /// </summary>
             public ConfigBtn[] Btns { get; set; }
@@ -239,6 +244,38 @@ namespace AntdUI
                     if (iconSvg == value) return;
                     iconSvg = value;
                     OnPropertyChanged("IconSvg");
+                }
+            }
+
+            private Color? foreColor;
+
+            /// <summary>
+            /// 文字颜色
+            /// </summary>
+            public Color? ForeColor
+            {
+                get => foreColor;
+                set
+                {
+                    if (foreColor == value) return;
+                    foreColor = value;
+                    OnPropertyChanged("foreColor");
+                }
+            }
+
+            private Size? iconSize;
+
+            /// <summary>
+            /// 图标大小
+            /// </summary>
+            public Size? IconSize
+            {
+                get => iconSize;
+                set
+                {
+                    if (iconSize == value) return;
+                    iconSize = value;
+                    OnPropertyChanged("iconSize");
                 }
             }
 
