@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SVGView", "example\SVGView\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatUI", "example\ChatUI\ChatUI.csproj", "{796C3020-70CB-464D-A67A-66BCC566C6D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FontTest", "example\FontTest\FontTest.csproj", "{94493153-4FF8-4F33-8589-D72A8563AF52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FontTest", "example\FontTest\FontTest.csproj", "{94493153-4FF8-4F33-8589-D72A8563AF52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
