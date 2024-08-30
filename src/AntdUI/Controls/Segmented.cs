@@ -320,138 +320,132 @@ namespace AntdUI
         void SetRect(int old, int value)
         {
             if (items == null || items.Count == 0) return;
+            if (items.ListExceed(value)) { Invalidate(); return; }
             var _new = items[value];
-            if (_new == null) return;
-            if (old > -1)
-            {
-                var _old = items[old];
-                if (_old == null) AnimationBarValue = TabSelectRect = _new.Rect;
-                else
-                {
-                    ThreadBar?.Dispose();
-                    RectangleF OldValue = _old.Rect, NewValue = _new.Rect;
-                    if (Config.Animation)
-                    {
-                        if (vertical)
-                        {
-                            if (OldValue.X == NewValue.X)
-                            {
-                                AnimationBar = true;
-                                TabSelectRect = NewValue;
-                                float p_val = Math.Abs(NewValue.Y - AnimationBarValue.Y) * 0.09F, p_w_val = Math.Abs(NewValue.Height - AnimationBarValue.Height) * 0.1F, p_val2 = (NewValue.Y - AnimationBarValue.Y) * 0.5F;
-                                ThreadBar = new ITask(this, () =>
-                                {
-                                    if (AnimationBarValue.Height != NewValue.Height)
-                                    {
-                                        if (NewValue.Height > OldValue.Height)
-                                        {
-                                            AnimationBarValue.Height += p_w_val;
-                                            if (AnimationBarValue.Height > NewValue.Height) AnimationBarValue.Height = NewValue.Height;
-                                        }
-                                        else
-                                        {
-                                            AnimationBarValue.Height -= p_w_val;
-                                            if (AnimationBarValue.Height < NewValue.Height) AnimationBarValue.Height = NewValue.Height;
-                                        }
-                                    }
-                                    if (NewValue.Y > OldValue.Y)
-                                    {
-                                        if (AnimationBarValue.Y > p_val2) AnimationBarValue.Y += p_val / 2F;
-                                        else AnimationBarValue.Y += p_val;
-                                        if (AnimationBarValue.Y > NewValue.Y)
-                                        {
-                                            AnimationBarValue.Y = NewValue.Y;
-                                            Invalidate();
-                                            return false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        AnimationBarValue.Y -= p_val;
-                                        if (AnimationBarValue.Y < NewValue.Y)
-                                        {
-                                            AnimationBarValue.Y = NewValue.Y;
-                                            Invalidate();
-                                            return false;
-                                        }
-                                    }
-                                    Invalidate();
-                                    return true;
-                                }, 10, () =>
-                                {
-                                    AnimationBarValue = NewValue;
-                                    AnimationBar = false;
-                                    Invalidate();
-                                });
-                            }
-                        }
-                        else
-                        {
-                            if (OldValue.Y == NewValue.Y)
-                            {
-                                AnimationBar = true;
-                                TabSelectRect = NewValue;
-                                float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
-                                ThreadBar = new ITask(this, () =>
-                                {
-                                    if (AnimationBarValue.Width != NewValue.Width)
-                                    {
-                                        if (NewValue.Width > OldValue.Width)
-                                        {
-                                            AnimationBarValue.Width += p_w_val;
-                                            if (AnimationBarValue.Width > NewValue.Width) AnimationBarValue.Width = NewValue.Width;
-                                        }
-                                        else
-                                        {
-                                            AnimationBarValue.Width -= p_w_val;
-                                            if (AnimationBarValue.Width < NewValue.Width) AnimationBarValue.Width = NewValue.Width;
-                                        }
-                                    }
-                                    if (NewValue.X > OldValue.X)
-                                    {
-                                        if (AnimationBarValue.X > p_val2) AnimationBarValue.X += p_val / 2F;
-                                        else AnimationBarValue.X += p_val;
-                                        if (AnimationBarValue.X > NewValue.X)
-                                        {
-                                            AnimationBarValue.X = NewValue.X;
-                                            Invalidate();
-                                            return false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        AnimationBarValue.X -= p_val;
-                                        if (AnimationBarValue.X < NewValue.X)
-                                        {
-                                            AnimationBarValue.X = NewValue.X;
-                                            Invalidate();
-                                            return false;
-                                        }
-                                    }
-                                    Invalidate();
-                                    return true;
-                                }, 10, () =>
-                                {
-                                    AnimationBarValue = NewValue;
-                                    AnimationBar = false;
-                                    Invalidate();
-                                });
-                            }
-                        }
-                        return;
-                    }
-                    else
-                    {
-                        TabSelectRect = AnimationBarValue = NewValue;
-                        Invalidate();
-                        return;
-                    }
-                }
-            }
-            else
+            if (items.ListExceed(old))
             {
                 AnimationBarValue = TabSelectRect = _new.Rect;
                 Invalidate();
+                return;
+            }
+            var _old = items[old];
+            ThreadBar?.Dispose();
+            RectangleF OldValue = _old.Rect, NewValue = _new.Rect;
+            if (Config.Animation)
+            {
+                if (vertical)
+                {
+                    if (OldValue.X == NewValue.X)
+                    {
+                        AnimationBar = true;
+                        TabSelectRect = NewValue;
+                        float p_val = Math.Abs(NewValue.Y - AnimationBarValue.Y) * 0.09F, p_w_val = Math.Abs(NewValue.Height - AnimationBarValue.Height) * 0.1F, p_val2 = (NewValue.Y - AnimationBarValue.Y) * 0.5F;
+                        ThreadBar = new ITask(this, () =>
+                        {
+                            if (AnimationBarValue.Height != NewValue.Height)
+                            {
+                                if (NewValue.Height > OldValue.Height)
+                                {
+                                    AnimationBarValue.Height += p_w_val;
+                                    if (AnimationBarValue.Height > NewValue.Height) AnimationBarValue.Height = NewValue.Height;
+                                }
+                                else
+                                {
+                                    AnimationBarValue.Height -= p_w_val;
+                                    if (AnimationBarValue.Height < NewValue.Height) AnimationBarValue.Height = NewValue.Height;
+                                }
+                            }
+                            if (NewValue.Y > OldValue.Y)
+                            {
+                                if (AnimationBarValue.Y > p_val2) AnimationBarValue.Y += p_val / 2F;
+                                else AnimationBarValue.Y += p_val;
+                                if (AnimationBarValue.Y > NewValue.Y)
+                                {
+                                    AnimationBarValue.Y = NewValue.Y;
+                                    Invalidate();
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                AnimationBarValue.Y -= p_val;
+                                if (AnimationBarValue.Y < NewValue.Y)
+                                {
+                                    AnimationBarValue.Y = NewValue.Y;
+                                    Invalidate();
+                                    return false;
+                                }
+                            }
+                            Invalidate();
+                            return true;
+                        }, 10, () =>
+                        {
+                            AnimationBarValue = NewValue;
+                            AnimationBar = false;
+                            Invalidate();
+                        });
+                    }
+                }
+                else
+                {
+                    if (OldValue.Y == NewValue.Y)
+                    {
+                        AnimationBar = true;
+                        TabSelectRect = NewValue;
+                        float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
+                        ThreadBar = new ITask(this, () =>
+                        {
+                            if (AnimationBarValue.Width != NewValue.Width)
+                            {
+                                if (NewValue.Width > OldValue.Width)
+                                {
+                                    AnimationBarValue.Width += p_w_val;
+                                    if (AnimationBarValue.Width > NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                }
+                                else
+                                {
+                                    AnimationBarValue.Width -= p_w_val;
+                                    if (AnimationBarValue.Width < NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                }
+                            }
+                            if (NewValue.X > OldValue.X)
+                            {
+                                if (AnimationBarValue.X > p_val2) AnimationBarValue.X += p_val / 2F;
+                                else AnimationBarValue.X += p_val;
+                                if (AnimationBarValue.X > NewValue.X)
+                                {
+                                    AnimationBarValue.X = NewValue.X;
+                                    Invalidate();
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                AnimationBarValue.X -= p_val;
+                                if (AnimationBarValue.X < NewValue.X)
+                                {
+                                    AnimationBarValue.X = NewValue.X;
+                                    Invalidate();
+                                    return false;
+                                }
+                            }
+                            Invalidate();
+                            return true;
+                        }, 10, () =>
+                        {
+                            AnimationBarValue = NewValue;
+                            AnimationBar = false;
+                            Invalidate();
+                        });
+                    }
+                }
+                return;
+            }
+            else
+            {
+                TabSelectRect = AnimationBarValue = NewValue;
+                Invalidate();
+                return;
             }
         }
 

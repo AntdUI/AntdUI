@@ -53,6 +53,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 支持清除
+        /// </summary>
+        [Description("支持清除"), Category("行为"), DefaultValue(false)]
+        public bool AllowClear { get; set; }
+
+        /// <summary>
         /// 是否允许半选
         /// </summary>
         [Description("是否允许半选"), Category("行为"), DefaultValue(false)]
@@ -142,7 +148,9 @@ namespace AntdUI
             var rect = ClientRectangle.PaddingRect(Padding);
             if (rect.Width == 0 || rect.Height == 0 || count < 1) return;
 
-            int size = rect.Height;//6
+            int size = rect.Height;
+
+            var g = e.Graphics.High();
 
             #region 初始化位图
 
@@ -150,6 +158,7 @@ namespace AntdUI
             {
                 icon?.Dispose();
                 icon = SvgExtend.SvgToBmp(character ?? SvgDb.IcoStar, size, size, Style.Db.FillSecondary);
+
             }
             if (icon_active == null || icon_active.Width != size)
             {
@@ -157,9 +166,49 @@ namespace AntdUI
                 icon_active = SvgExtend.SvgToBmp(character ?? SvgDb.IcoStar, size, size, fill);
             }
 
+            if (icon == null || icon_active == null)
+            {
+                icon = new Bitmap(size, size);
+                icon_active = new Bitmap(size, size);
+                using (var font = new Font(Font.FontFamily, size, Font.Style))
+                {
+                    var font_size = g.MeasureString(character, font).Size();
+                    int bmp_size = (font_size.Width > font_size.Height ? font_size.Width : font_size.Height);
+                    using (var bmp_diy = new Bitmap(bmp_size, bmp_size))
+                    using (var bmp_diy_active = new Bitmap(bmp_size, bmp_size))
+                    {
+                        Rectangle rect_diy = new Rectangle(0, 0, bmp_size, bmp_size), rect_icon = new Rectangle(0, 0, size, size);
+                        using (var s_f = Helper.SF())
+                        {
+                            using (var g2 = Graphics.FromImage(bmp_diy).HighLay())
+                            {
+                                using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                                {
+                                    g2.DrawStr(character, font, brush, rect_diy, s_f);
+                                }
+                            }
+                            using (var g2 = Graphics.FromImage(bmp_diy_active).HighLay())
+                            {
+                                using (var brush = new SolidBrush(fill))
+                                {
+                                    g2.DrawStr(character, font, brush, rect_diy, s_f);
+                                }
+                            }
+                        }
+                        using (var g2 = Graphics.FromImage(icon).High())
+                        {
+                            g2.DrawImage(bmp_diy, rect_icon);
+                        }
+                        using (var g2 = Graphics.FromImage(icon_active).High())
+                        {
+                            g2.DrawImage(bmp_diy_active, rect_icon);
+                        }
+                    }
+                }
+            }
+
             #endregion
 
-            var g = e.Graphics.High();
             for (int i = 0; i < rect_stars.Length; i++)
             {
                 var it = rect_stars[i];
@@ -428,9 +477,11 @@ namespace AntdUI
         }
 
         #endregion
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (setvalue) { setvalue = false; return; }
             for (int i = 0; i < rect_stars.Length; i++)
             {
                 var it = rect_stars[i];
@@ -469,6 +520,7 @@ namespace AntdUI
             }
         }
 
+        bool setvalue = false;
         protected override void OnMouseClick(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -477,17 +529,31 @@ namespace AntdUI
                 {
                     if (rect_stars[i].rect_mouse.Contains(e.Location))
                     {
+                        float old = AllowClear ? _value : -10;
                         var it = rect_stars[i];
                         if (AllowHalf)
                         {
                             if (new Rectangle(it.rect.X, it.rect.Y, it.rect.Width / 2, it.rect.Height).Contains(e.Location))
                             {
-                                Value = i + 0.5F;
+                                float valuef = i + 0.5F;
+                                if (valuef == old)
+                                {
+                                    Value = 0;
+                                    setvalue = true;
+                                    _Leave();
+                                }
+                                else Value = valuef;
                                 return;
                             }
                         }
                         int value = i + 1;
-                        Value = value;
+                        if (value == old)
+                        {
+                            Value = 0;
+                            setvalue = true;
+                            _Leave();
+                        }
+                        else Value = value;
                         return;
                     }
                 }

@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -2050,6 +2051,12 @@ namespace AntdUI
             {
                 return true;
             }
+        }
+
+        public static bool ListExceed(this IList? list, int index)
+        {
+            if (list == null || list.Count <= index || index < 0) return true;
+            return false;
         }
     }
 

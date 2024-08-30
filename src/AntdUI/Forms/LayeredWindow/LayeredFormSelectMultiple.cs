@@ -72,11 +72,10 @@ namespace AntdUI
                     else if (ui_icon || ui_online) b_w += font_size;
                     if (ui_arrow) b_w += (int)Math.Ceiling(font_size * 0.6F) * 2;
                     else b_w += (int)Math.Ceiling(font_size * 0.6F);
+                    if (b_w > w) w = r_w = b_w + gap_y;
                 }
-                else
-                {
-                    stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter; stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
-                }
+                else stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter;
+                stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
 
                 int selY = -1;
                 int item_count = 0, divider_count = 0;

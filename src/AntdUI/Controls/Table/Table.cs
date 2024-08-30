@@ -687,6 +687,8 @@ namespace AntdUI
 
         internal bool NoTitle { get; set; } = true;
 
+        public Func<bool, object?, int, int, bool>? Call { get; set; }
+
         /// <summary>
         /// 插槽
         /// </summary>
@@ -712,6 +714,8 @@ namespace AntdUI
         /// 点击时自动改变选中状态
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+
+        public Func<bool, object?, int, int, bool>? Call { get; set; }
 
         /// <summary>
         /// 插槽

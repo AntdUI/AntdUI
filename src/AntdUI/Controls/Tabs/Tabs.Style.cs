@@ -505,132 +505,131 @@ namespace AntdUI
             void SetRect(int old, int value)
             {
                 if (owner == null || owner.items == null) return;
-                if (value > -1 && rects.Length == owner.items.Count)
+                if (owner.items.ListExceed(value)) return;
+                if (owner.items.ListExceed(old))
                 {
-                    if (old > -1 && owner.items.Count > old)
-                    {
-                        ThreadBar?.Dispose();
-                        Helper.GDI(g =>
-                        {
-                            RectangleF OldValue = rects[old].Rect_Line, NewValue = rects[value].Rect_Line;
-                            if (AnimationBarValue.Height == 0) AnimationBarValue = OldValue;
-                            if (Config.Animation)
-                            {
-                                if (owner.alignment == TabAlignment.Left || owner.alignment == TabAlignment.Right)
-                                {
-                                    if (OldValue.X == NewValue.X)
-                                    {
-                                        AnimationBarValue.X = OldValue.X;
-                                        AnimationBar = true;
-                                        float p_val = Math.Abs(NewValue.Y - AnimationBarValue.Y) * 0.09F, p_w_val = Math.Abs(NewValue.Height - AnimationBarValue.Height) * 0.1F, p_val2 = (NewValue.Y - AnimationBarValue.Y) * 0.5F;
-                                        ThreadBar = new ITask(owner, () =>
-                                        {
-                                            if (AnimationBarValue.Height != NewValue.Height)
-                                            {
-                                                if (NewValue.Height > OldValue.Height)
-                                                {
-                                                    AnimationBarValue.Height += p_w_val;
-                                                    if (AnimationBarValue.Height > NewValue.Height) AnimationBarValue.Height = NewValue.Height;
-                                                }
-                                                else
-                                                {
-                                                    AnimationBarValue.Height -= p_w_val;
-                                                    if (AnimationBarValue.Height < NewValue.Height) AnimationBarValue.Height = NewValue.Height;
-                                                }
-                                            }
-                                            if (NewValue.Y > OldValue.Y)
-                                            {
-                                                if (AnimationBarValue.Y > p_val2) AnimationBarValue.Y += p_val / 2F;
-                                                else AnimationBarValue.Y += p_val;
-                                                if (AnimationBarValue.Y > NewValue.Y)
-                                                {
-                                                    AnimationBarValue.Y = NewValue.Y;
-                                                    owner.Invalidate();
-                                                    return false;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                AnimationBarValue.Y -= p_val;
-                                                if (AnimationBarValue.Y < NewValue.Y)
-                                                {
-                                                    AnimationBarValue.Y = NewValue.Y;
-                                                    owner.Invalidate();
-                                                    return false;
-                                                }
-                                            }
-                                            owner.Invalidate();
-                                            return true;
-                                        }, 10, () =>
-                                        {
-                                            AnimationBarValue = NewValue;
-                                            AnimationBar = false;
-                                            owner.Invalidate();
-                                        });
-                                        return;
-                                    }
-                                }
-                                else
-                                {
-                                    if (OldValue.Y == NewValue.Y)
-                                    {
-                                        AnimationBarValue.Y = OldValue.Y;
-                                        AnimationBar = true;
-                                        float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
-                                        ThreadBar = new ITask(owner, () =>
-                                        {
-                                            if (AnimationBarValue.Width != NewValue.Width)
-                                            {
-                                                if (NewValue.Width > OldValue.Width)
-                                                {
-                                                    AnimationBarValue.Width += p_w_val;
-                                                    if (AnimationBarValue.Width > NewValue.Width) AnimationBarValue.Width = NewValue.Width;
-                                                }
-                                                else
-                                                {
-                                                    AnimationBarValue.Width -= p_w_val;
-                                                    if (AnimationBarValue.Width < NewValue.Width) AnimationBarValue.Width = NewValue.Width;
-                                                }
-                                            }
-                                            if (NewValue.X > OldValue.X)
-                                            {
-                                                if (AnimationBarValue.X > p_val2) AnimationBarValue.X += p_val / 2F;
-                                                else AnimationBarValue.X += p_val;
-                                                if (AnimationBarValue.X > NewValue.X)
-                                                {
-                                                    AnimationBarValue.X = NewValue.X;
-                                                    owner.Invalidate();
-                                                    return false;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                AnimationBarValue.X -= p_val;
-                                                if (AnimationBarValue.X < NewValue.X)
-                                                {
-                                                    AnimationBarValue.X = NewValue.X;
-                                                    owner.Invalidate();
-                                                    return false;
-                                                }
-                                            }
-                                            owner.Invalidate();
-                                            return true;
-                                        }, 10, () =>
-                                        {
-                                            AnimationBarValue = NewValue;
-                                            AnimationBar = false;
-                                            owner.Invalidate();
-                                        });
-                                        return;
-                                    }
-                                }
-                            }
-                            AnimationBarValue = NewValue;
-                            owner.Invalidate();
-                        });
-                    }
-                    else AnimationBarValue = rects[value].Rect_Line;
+                    AnimationBarValue = rects[value].Rect_Line;
+                    return;
                 }
+                ThreadBar?.Dispose();
+                Helper.GDI(g =>
+                {
+                    RectangleF OldValue = rects[old].Rect_Line, NewValue = rects[value].Rect_Line;
+                    if (AnimationBarValue.Height == 0) AnimationBarValue = OldValue;
+                    if (Config.Animation)
+                    {
+                        if (owner.alignment == TabAlignment.Left || owner.alignment == TabAlignment.Right)
+                        {
+                            if (OldValue.X == NewValue.X)
+                            {
+                                AnimationBarValue.X = OldValue.X;
+                                AnimationBar = true;
+                                float p_val = Math.Abs(NewValue.Y - AnimationBarValue.Y) * 0.09F, p_w_val = Math.Abs(NewValue.Height - AnimationBarValue.Height) * 0.1F, p_val2 = (NewValue.Y - AnimationBarValue.Y) * 0.5F;
+                                ThreadBar = new ITask(owner, () =>
+                                {
+                                    if (AnimationBarValue.Height != NewValue.Height)
+                                    {
+                                        if (NewValue.Height > OldValue.Height)
+                                        {
+                                            AnimationBarValue.Height += p_w_val;
+                                            if (AnimationBarValue.Height > NewValue.Height) AnimationBarValue.Height = NewValue.Height;
+                                        }
+                                        else
+                                        {
+                                            AnimationBarValue.Height -= p_w_val;
+                                            if (AnimationBarValue.Height < NewValue.Height) AnimationBarValue.Height = NewValue.Height;
+                                        }
+                                    }
+                                    if (NewValue.Y > OldValue.Y)
+                                    {
+                                        if (AnimationBarValue.Y > p_val2) AnimationBarValue.Y += p_val / 2F;
+                                        else AnimationBarValue.Y += p_val;
+                                        if (AnimationBarValue.Y > NewValue.Y)
+                                        {
+                                            AnimationBarValue.Y = NewValue.Y;
+                                            owner.Invalidate();
+                                            return false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        AnimationBarValue.Y -= p_val;
+                                        if (AnimationBarValue.Y < NewValue.Y)
+                                        {
+                                            AnimationBarValue.Y = NewValue.Y;
+                                            owner.Invalidate();
+                                            return false;
+                                        }
+                                    }
+                                    owner.Invalidate();
+                                    return true;
+                                }, 10, () =>
+                                {
+                                    AnimationBarValue = NewValue;
+                                    AnimationBar = false;
+                                    owner.Invalidate();
+                                });
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (OldValue.Y == NewValue.Y)
+                            {
+                                AnimationBarValue.Y = OldValue.Y;
+                                AnimationBar = true;
+                                float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
+                                ThreadBar = new ITask(owner, () =>
+                                {
+                                    if (AnimationBarValue.Width != NewValue.Width)
+                                    {
+                                        if (NewValue.Width > OldValue.Width)
+                                        {
+                                            AnimationBarValue.Width += p_w_val;
+                                            if (AnimationBarValue.Width > NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                        }
+                                        else
+                                        {
+                                            AnimationBarValue.Width -= p_w_val;
+                                            if (AnimationBarValue.Width < NewValue.Width) AnimationBarValue.Width = NewValue.Width;
+                                        }
+                                    }
+                                    if (NewValue.X > OldValue.X)
+                                    {
+                                        if (AnimationBarValue.X > p_val2) AnimationBarValue.X += p_val / 2F;
+                                        else AnimationBarValue.X += p_val;
+                                        if (AnimationBarValue.X > NewValue.X)
+                                        {
+                                            AnimationBarValue.X = NewValue.X;
+                                            owner.Invalidate();
+                                            return false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        AnimationBarValue.X -= p_val;
+                                        if (AnimationBarValue.X < NewValue.X)
+                                        {
+                                            AnimationBarValue.X = NewValue.X;
+                                            owner.Invalidate();
+                                            return false;
+                                        }
+                                    }
+                                    owner.Invalidate();
+                                    return true;
+                                }, 10, () =>
+                                {
+                                    AnimationBarValue = NewValue;
+                                    AnimationBar = false;
+                                    owner.Invalidate();
+                                });
+                                return;
+                            }
+                        }
+                    }
+                    AnimationBarValue = NewValue;
+                    owner.Invalidate();
+                });
             }
 
             #endregion

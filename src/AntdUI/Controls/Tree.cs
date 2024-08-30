@@ -179,7 +179,7 @@ namespace AntdUI
         {
             if (items != null && items.Count > 0)
             {
-                foreach (TreeItem it in items)
+                foreach (var it in items)
                 {
                     it.Expand = value;
                     ExpandAll(it.Sub, value);
@@ -203,24 +203,24 @@ namespace AntdUI
             var list = new List<TreeItem>();
             if (Indeterminate)
             {
-                foreach (TreeItem it in items)
+                foreach (var it in items)
                 {
                     if (it.CheckState != CheckState.Unchecked) list.Add(it);
-                    if (it.Sub != null && it.Sub.Count > 0)
+                    if (it.items != null && it.items.Count > 0)
                     {
-                        var list_sub = GetCheckeds(it.Sub, Indeterminate);
+                        var list_sub = GetCheckeds(it.items, Indeterminate);
                         if (list_sub.Count > 0) list.AddRange(list_sub);
                     }
                 }
             }
             else
             {
-                foreach (TreeItem it in items)
+                foreach (var it in items)
                 {
                     if (it.Checked) list.Add(it);
-                    if (it.Sub != null && it.Sub.Count > 0)
+                    if (it.items != null && it.items.Count > 0)
                     {
-                        var list_sub = GetCheckeds(it.Sub, Indeterminate);
+                        var list_sub = GetCheckeds(it.items, Indeterminate);
                         if (list_sub.Count > 0) list.AddRange(list_sub);
                     }
                 }
@@ -248,10 +248,10 @@ namespace AntdUI
         }
         void SetCheckeds(TreeItemCollection items, bool check)
         {
-            foreach (TreeItem it in items)
+            foreach (var it in items)
             {
                 it.Checked = check;
-                if (it.Sub != null && it.Sub.Count > 0) SetCheckeds(it.Sub, check);
+                if (it.items != null && it.items.Count > 0) SetCheckeds(it.items, check);
             }
         }
 
@@ -388,7 +388,7 @@ namespace AntdUI
                     foreach (var item in dir)
                     {
                         int check_count = 0;
-                        foreach (TreeItem sub in item.Sub)
+                        foreach (var sub in item.Sub)
                         { if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++; }
                         if (check_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
                         else item.CheckState = CheckState.Unchecked;
@@ -402,7 +402,7 @@ namespace AntdUI
 
         bool HasSub(TreeItemCollection items)
         {
-            foreach (TreeItem it in items)
+            foreach (var it in items)
             {
                 if (it.CanExpand) return true;
             }
@@ -410,7 +410,7 @@ namespace AntdUI
         }
         void TestSub(ref List<TreeItem> dir, TreeItemCollection items)
         {
-            foreach (TreeItem it in items)
+            foreach (var it in items)
             {
                 if (it.CanExpand)
                 {
@@ -422,7 +422,7 @@ namespace AntdUI
 
         void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
         {
-            foreach (TreeItem it in items)
+            foreach (var it in items)
             {
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
@@ -484,15 +484,15 @@ namespace AntdUI
 
         void PaintItem(Graphics g, Rectangle rect, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
         {
-            foreach (TreeItem it in items)
+            foreach (var it in items)
             {
                 it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
                 if (it.show)
                 {
                     PaintItem(g, it, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
-                    if (it.Expand && it.Sub != null && it.Sub.Count > 0)
+                    if (it.Expand && it.items != null && it.items.Count > 0)
                     {
-                        PaintItem(g, rect, sx, sy, it.Sub, fore, fore_active, hover, active, brushTextTertiary, radius);
+                        PaintItem(g, rect, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
                         if (it.ExpandThread)
                         {
                             using (var brush = new SolidBrush(BackColor))
@@ -745,7 +745,7 @@ namespace AntdUI
             if (scrollBar.MouseDownY(e.Location) && scrollBar.MouseDownX(e.Location))
             {
                 if (items == null || items.Count == 0) return;
-                foreach (TreeItem it in items)
+                foreach (var it in items)
                 {
                     if (IMouseDown(e, it, null)) return;
                 }
@@ -784,7 +784,7 @@ namespace AntdUI
                         if (fitem != null)
                         {
                             int check_count = 0;
-                            foreach (TreeItem sub in fitem.Sub)
+                            foreach (var sub in fitem.Sub)
                             { if (sub.Checked) check_count++; }
                             if (check_count > 0) fitem.CheckState = check_count == fitem.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
                             else fitem.CheckState = CheckState.Unchecked;
@@ -802,7 +802,7 @@ namespace AntdUI
             }
             if (can && item.Expand)
             {
-                foreach (TreeItem sub in item.Sub)
+                foreach (var sub in item.Sub)
                 {
                     if (IMouseDown(e, sub, item)) return true;
                 }
@@ -812,9 +812,9 @@ namespace AntdUI
 
         void SetCheck(TreeItem item, bool value)
         {
-            if (item.Sub != null && item.Sub.Count > 0)
+            if (item.items != null && item.items.Count > 0)
             {
-                foreach (TreeItem it in item.Sub)
+                foreach (var it in item.items)
                 {
                     it.Checked = value;
                     SetCheck(it, value);
@@ -829,7 +829,7 @@ namespace AntdUI
             {
                 if (items == null || items.Count == 0) return;
                 int hand = 0;
-                foreach (TreeItem it in items) IMouseMove(it, e.Location, ref hand);
+                foreach (var it in items) IMouseMove(it, e.Location, ref hand);
                 SetCursor(hand > 0);
             }
             else ILeave();
@@ -840,7 +840,7 @@ namespace AntdUI
             if (item.show)
             {
                 if (item.Contains(point, blockNode ? 0 : scrollBar.ValueX, scrollBar.ValueY, checkable) > 0) hand++;
-                if (item.Sub != null) foreach (TreeItem sub in item.Sub) IMouseMove(sub, point, ref hand);
+                if (item.items != null) foreach (var sub in item.items) IMouseMove(sub, point, ref hand);
             }
         }
 
@@ -868,7 +868,7 @@ namespace AntdUI
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int count = 0;
-            foreach (TreeItem it in items)
+            foreach (var it in items)
             {
                 ILeave(it, ref count);
             }
@@ -878,21 +878,19 @@ namespace AntdUI
         {
             if (item.Hover) count++;
             item.Hover = false;
-            if (item.Sub != null)
-                foreach (TreeItem sub in item.Sub)
-                {
-                    ILeave(sub, ref count);
-                }
+            if (item.items != null)
+                foreach (var sub in item.items) ILeave(sub, ref count);
         }
 
         internal void IUSelect()
         {
-            foreach (TreeItem it in Items) IUSelect(it);
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items) IUSelect(it);
         }
         void IUSelect(TreeItem item)
         {
             item.Select = false;
-            if (item.Sub != null) foreach (TreeItem sub in item.Sub) IUSelect(sub);
+            if (item.items != null) foreach (var sub in item.items) IUSelect(sub);
         }
 
         #endregion
@@ -1051,7 +1049,7 @@ namespace AntdUI
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
-        TreeItemCollection? items;
+        internal TreeItemCollection? items;
         /// <summary>
         /// 获取列表中所有列表项的集合
         /// </summary>
@@ -1165,7 +1163,7 @@ namespace AntdUI
             if (it.items != null && it.items.Count > 0)
             {
                 count += it.items.Count;
-                foreach (TreeItem item in it.items)
+                foreach (var item in it.items)
                 {
                     if (item.Expand) count += ExpandCount(item);
                 }

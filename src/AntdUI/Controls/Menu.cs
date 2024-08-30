@@ -186,52 +186,102 @@ namespace AntdUI
         public void SelectIndex(int i1)
         {
             if (items == null || items.Count == 0) return;
-            var it1 = items[i1];
-            if (it1 != null)
+            IUSelect(items);
+            if (items.ListExceed(i1))
             {
-                IUSelect();
-                it1.Select = true;
-                OnSelectIndexChanged(it1);
-                Invalidate();
+                Invalidate(); return;
             }
+            var it1 = items[i1];
+            it1.Select = true;
+            OnSelectIndexChanged(it1);
         }
         public void SelectIndex(int i1, int i2)
         {
             if (items == null || items.Count == 0) return;
-            var it1 = items[i1];
-            if (it1 != null)
+            IUSelect(items);
+            if (items.ListExceed(i1))
             {
-                if (it1.Sub == null || it1.Sub.Count == 0) return;
-                var it2 = it1.Sub[i2];
-                if (it2 != null)
-                {
-                    IUSelect();
-                    it1.Select = it2.Select = true;
-                    OnSelectIndexChanged(it2);
-                    Invalidate();
-                }
+                Invalidate(); return;
             }
+            var it1 = items[i1];
+            if (it1.items.ListExceed(i2))
+            {
+                Invalidate(); return;
+            }
+            var it2 = it1.Sub[i2];
+            it1.Select = it2.Select = true;
+            OnSelectIndexChanged(it2);
+            Invalidate();
         }
         public void SelectIndex(int i1, int i2, int i3)
         {
             if (items == null || items.Count == 0) return;
-            var it1 = items[i1];
-            if (it1 != null)
+            IUSelect(items);
+            if (items.ListExceed(i1))
             {
-                if (it1.Sub == null || it1.Sub.Count == 0) return;
-                var it2 = it1.Sub[i2];
-                if (it2 != null)
+                Invalidate();
+                return;
+            }
+            var it1 = items[i1];
+            if (it1.items.ListExceed(i2))
+            {
+                Invalidate(); return;
+            }
+            var it2 = it1.Sub[i2];
+            if (it2.items.ListExceed(i3))
+            {
+                Invalidate();
+                return;
+            }
+            var it3 = it2.Sub[i3];
+            it1.Select = it2.Select = it3.Select = true;
+            OnSelectIndexChanged(it3);
+            Invalidate();
+        }
+
+        /// <summary>
+        /// 选中菜单
+        /// </summary>
+        /// <param name="item">项</param>
+        public void Select(MenuItem item)
+        {
+            if (items == null || items.Count == 0) return;
+            IUSelect(items);
+            Select(item, items);
+        }
+        void Select(MenuItem item, MenuItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it == item)
                 {
-                    if (it2.Sub == null || it2.Sub.Count == 0) return;
-                    var it3 = it2.Sub[i3];
-                    if (it3 != null)
-                    {
-                        IUSelect();
-                        it1.Select = it2.Select = it3.Select = true;
-                        OnSelectIndexChanged(it3);
-                        Invalidate();
-                    }
+                    it.Select = true;
+                    OnSelectIndexChanged(it);
+                    return;
                 }
+                else if (it.items != null && it.items.Count > 0) Select(item, it.items);
+            }
+        }
+
+        /// <summary>
+        /// 移除菜单
+        /// </summary>
+        /// <param name="item">项</param>
+        public void Remove(MenuItem item)
+        {
+            if (items == null || items.Count == 0) return;
+            Remove(item, items);
+        }
+        void Remove(MenuItem item, MenuItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it == item)
+                {
+                    items.Remove(it);
+                    return;
+                }
+                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
             }
         }
 
@@ -338,7 +388,7 @@ namespace AntdUI
         int ChangeList(Rectangle rect, Graphics g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapI, int depth)
         {
             int collapsedWidth = 0;
-            foreach (MenuItem it in items)
+            foreach (var it in items)
             {
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
@@ -382,7 +432,7 @@ namespace AntdUI
         }
         void ChangeListHorizontal(Rectangle rect, Graphics g, MenuItemCollection items, int x, int icon_size, int gap, int gapI)
         {
-            foreach (MenuItem it in items)
+            foreach (var it in items)
             {
                 it.PARENT = this;
                 int size;
@@ -395,7 +445,7 @@ namespace AntdUI
 
         void ChangeUTitle(MenuItemCollection items)
         {
-            foreach (MenuItem it in items)
+            foreach (var it in items)
             {
                 var rect = it.Rect;
                 it.ico_rect = new Rectangle(rect.X + (rect.Width - it.ico_rect.Width) / 2, it.ico_rect.Y, it.ico_rect.Width, it.ico_rect.Height);
@@ -465,18 +515,18 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintItems(Graphics g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
+        void PaintItems(Graphics g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
         {
-            foreach (MenuItem it in items)
+            foreach (var it in items)
             {
                 it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
                 if (it.show)
                 {
                     PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                    if (!collapsed && it.Expand && it.Sub != null && it.Sub.Count > 0)
+                    if (!collapsed && it.Expand && it.items != null && it.items.Count > 0)
                     {
                         if (ShowSubBack) g.FillRectangle(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
-                        PaintItemExpand(g, rect, sy, it.Sub, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+                        PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius);
                         if (it.ExpandThread)
                         {
                             using (var brush = new SolidBrush(BackColor))
@@ -490,15 +540,15 @@ namespace AntdUI
         }
         void PaintItemExpand(Graphics g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
-            foreach (MenuItem it in items)
+            foreach (var it in items)
             {
                 it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
                 if (it.show)
                 {
                     PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                    if (it.Expand && it.Sub != null && it.Sub.Count > 0)
+                    if (it.Expand && it.items != null && it.items.Count > 0)
                     {
-                        PaintItemExpand(g, rect, sy, it.Sub, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+                        PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius);
                         if (it.ExpandThread)
                         {
                             using (var brush = new SolidBrush(BackColor))
@@ -705,10 +755,10 @@ namespace AntdUI
             if (scroll.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
-                foreach (MenuItem it in items)
+                foreach (var it in items)
                 {
                     var list = new List<MenuItem> { it };
-                    if (IMouseDown(it, list, e.Location)) return;
+                    if (IMouseDown(items, it, list, e.Location)) return;
                 }
             }
         }
@@ -718,7 +768,7 @@ namespace AntdUI
             scroll.MouseUp();
         }
 
-        bool IMouseDown(MenuItem item, List<MenuItem> list, Point point)
+        bool IMouseDown(MenuItemCollection items, MenuItem item, List<MenuItem> list, Point point)
         {
             if (item.Visible)
             {
@@ -728,10 +778,10 @@ namespace AntdUI
                     if (can) item.Expand = !item.Expand;
                     else
                     {
-                        IUSelect();
+                        IUSelect(items);
                         if (list.Count > 1)
                         {
-                            foreach (MenuItem it in list) it.Select = true;
+                            foreach (var it in list) it.Select = true;
                         }
                         item.Select = true;
                         OnSelectIndexChanged(item);
@@ -741,12 +791,12 @@ namespace AntdUI
                 }
                 if (can && item.Expand && !collapsed)
                 {
-                    foreach (MenuItem sub in item.Sub)
+                    foreach (var sub in item.Sub)
                     {
                         var list_ = new List<MenuItem>(list.Count + 1);
                         list_.AddRange(list);
                         list_.Add(sub);
-                        if (IMouseDown(sub, list_, point)) return true;
+                        if (IMouseDown(items, sub, list_, point)) return true;
                     }
                 }
             }
@@ -764,7 +814,7 @@ namespace AntdUI
                 if (collapsed)
                 {
                     int i = 0, hoveindex = -1;
-                    foreach (MenuItem it in items)
+                    foreach (var it in items)
                     {
                         if (it.show)
                         {
@@ -792,10 +842,10 @@ namespace AntdUI
                             if (it == null) return;
                             var Rect = it.Rect;
                             var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
-                            if (it.Sub != null && it.Sub.Count > 0)
+                            if (it.items != null && it.items.Count > 0)
                             {
                                 select_x = 0;
-                                subForm = new LayeredFormMenuDown(this, radius, rect, it.Sub);
+                                subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
                                 subForm.Show(this);
                             }
                             else
@@ -819,12 +869,12 @@ namespace AntdUI
                 }
                 else if (mode == TMenuMode.Inline)
                 {
-                    foreach (MenuItem it in items) IMouseMove(it, e.Location, ref count, ref hand);
+                    foreach (var it in items) IMouseMove(it, e.Location, ref count, ref hand);
                 }
                 else
                 {
                     int i = 0, hoveindex = -1;
-                    foreach (MenuItem it in items)
+                    foreach (var it in items)
                     {
                         if (it.show)
                         {
@@ -852,10 +902,10 @@ namespace AntdUI
                             if (it == null) return;
                             var Rect = it.Rect;
                             var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
-                            if (it.Sub != null && it.Sub.Count > 0)
+                            if (it.items != null && it.items.Count > 0)
                             {
                                 select_x = 0;
-                                subForm = new LayeredFormMenuDown(this, radius, rect, it.Sub);
+                                subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
                                 subForm.Show(this);
                             }
                         }
@@ -876,7 +926,7 @@ namespace AntdUI
                     hand++;
                 }
                 if (change) count++;
-                if (it.Sub != null && it.Sub.Count > 0) foreach (MenuItem sub in it.Sub) IMouseMove(sub, point, ref count, ref hand);
+                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, point, ref count, ref hand);
             }
         }
 
@@ -908,24 +958,24 @@ namespace AntdUI
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int count = 0;
-            foreach (MenuItem it in items) ILeave(it, ref count);
+            foreach (var it in items) ILeave(it, ref count);
             if (count > 0) Invalidate();
         }
         void ILeave(MenuItem it, ref int count)
         {
             if (it.Hover) count++;
             it.Hover = false;
-            if (it.Sub != null && it.Sub.Count > 0) foreach (MenuItem sub in it.Sub) ILeave(sub, ref count);
+            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) ILeave(sub, ref count);
         }
 
-        void IUSelect()
+        void IUSelect(MenuItemCollection items)
         {
-            foreach (MenuItem it in Items) IUSelect(it);
+            foreach (var it in items) IUSelect(it);
         }
         void IUSelect(MenuItem it)
         {
             it.Select = false;
-            if (it.Sub != null && it.Sub.Count > 0) foreach (MenuItem sub in it.Sub) IUSelect(sub);
+            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IUSelect(sub);
         }
 
         #endregion
@@ -941,16 +991,16 @@ namespace AntdUI
         {
             select_x = 0;
             subForm = null;
-            IUSelect();
             if (items == null || items.Count == 0) return;
-            foreach (MenuItem it in items)
+            IUSelect(items);
+            foreach (var it in items)
             {
                 var list = new List<MenuItem> { it };
-                if (IDropDownChange(it, list, value)) return;
+                if (IDropDownChange(items, it, list, value)) return;
             }
             Invalidate();
         }
-        bool IDropDownChange(MenuItem item, List<MenuItem> list, MenuItem value)
+        bool IDropDownChange(MenuItemCollection items, MenuItem item, List<MenuItem> list, MenuItem value)
         {
             bool can = item.CanExpand;
             if (item.Enabled && item == value)
@@ -958,10 +1008,10 @@ namespace AntdUI
                 if (can) item.Expand = !item.Expand;
                 else
                 {
-                    IUSelect();
+                    IUSelect(items);
                     if (list.Count > 1)
                     {
-                        foreach (MenuItem it in list)
+                        foreach (var it in list)
                         {
                             it.Select = true;
                         }
@@ -974,12 +1024,12 @@ namespace AntdUI
             }
             if (can)
             {
-                foreach (MenuItem sub in item.Sub)
+                foreach (var sub in item.Sub)
                 {
                     var list_ = new List<MenuItem>(list.Count + 1);
                     list_.AddRange(list);
                     list_.Add(sub);
-                    if (IDropDownChange(sub, list_, value)) return true;
+                    if (IDropDownChange(items, sub, list_, value)) return true;
                 }
             }
             return false;
@@ -1133,7 +1183,7 @@ namespace AntdUI
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
-        MenuItemCollection? items;
+        internal MenuItemCollection? items;
         /// <summary>
         /// 获取列表中所有列表项的集合
         /// </summary>
@@ -1265,7 +1315,7 @@ namespace AntdUI
             if (it.Sub != null && it.Sub.Count > 0)
             {
                 count += it.Sub.Count;
-                foreach (MenuItem item in it.Sub)
+                foreach (var item in it.Sub)
                 {
                     if (item.Expand) count += ExpandCount(item);
                 }

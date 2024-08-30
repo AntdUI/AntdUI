@@ -43,7 +43,7 @@ namespace AntdUI
         /// <returns>Bitmap</returns>
         public static Bitmap? SvgToBmp(this string svg, int width, int height, Color? color)
         {
-            var doc = Svg.SvgDocument.FromSvg<Svg.SvgDocument>(svg);
+            var doc = SvgDocument(svg);
             if (doc == null) return null;
             if (color.HasValue) ((Svg.SvgColourServer)doc.Color).Colour = color.Value;
             doc.Width = width;
@@ -58,7 +58,7 @@ namespace AntdUI
         /// <returns>Bitmap</returns>
         public static Bitmap? SvgToBmp(this string svg)
         {
-            var doc = Svg.SvgDocument.FromSvg<Svg.SvgDocument>(svg);
+            var doc = SvgDocument(svg);
             if (doc == null) return null;
             float dpi = Config.Dpi;
             if (dpi != 1F)
@@ -67,6 +67,13 @@ namespace AntdUI
                 doc.Height = doc.Height * dpi;
             }
             return doc.Draw();
+        }
+
+        static Svg.SvgDocument? SvgDocument(string svg)
+        {
+            if (svg.StartsWith("<svg")) return Svg.SvgDocument.FromSvg<Svg.SvgDocument>(svg);
+            else if (SvgDb.Custom.TryGetValue(svg, out var rsvg)) return Svg.SvgDocument.FromSvg<Svg.SvgDocument>(rsvg);
+            return null;
         }
     }
 }
