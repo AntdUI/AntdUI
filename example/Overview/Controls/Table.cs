@@ -34,7 +34,7 @@ namespace Overview.Controls
             #region Table 1
 
             table1.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.ColumnCheck("check"){ Fixed=true, Call=(value,record, i_row, i_col)=>{return !value;} },
+                new AntdUI.ColumnCheck("check"){ Fixed=true },
                 new AntdUI.Column("name","姓名"){ Fixed=true},
                 new AntdUI.ColumnCheck("checkTitle","不全选标题"){ColAlign=AntdUI.ColumnAlign.Center},
                 new AntdUI.ColumnRadio("radio","单选"),
