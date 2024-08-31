@@ -117,24 +117,23 @@ namespace AntdUI
                 if (ok && end != null) end();
             }));
         }
-        public ITask(Func<int, bool> action, int interval, int totalFrames, Action end)
+        public ITask(Func<int, bool> action, int interval, int totalFrames, Action end, int sleep = 0)
         {
             IsRun = true;
             bool ok = true;
             Run(() =>
             {
+                if (sleep > 0) Thread.Sleep(sleep);
                 for (int i = 0; i < totalFrames; i++)
                 {
                     if (token == null || token.Token.IsCancellationRequested)
                     {
-                        ok = false; return;
+                        ok = false;
+                        return;
                     }
                     else
                     {
-                        if (action(i + 1))
-                        {
-                            Thread.Sleep(interval);
-                        }
+                        if (action(i + 1)) Thread.Sleep(interval);
                         else return;
                     }
                 }

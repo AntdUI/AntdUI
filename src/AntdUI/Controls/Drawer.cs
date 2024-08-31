@@ -70,32 +70,20 @@ namespace AntdUI
                     }));
                     return form;
                 }
-                var frm = new LayeredFormDrawer(config);
                 if (config.Mask)
                 {
-                    var formMask = config.Form.FormMask(config.MaskClosable, frm);
-                    if (config.MaskClosable)
-                    {
-                        formMask.Click += (s1, e1) =>
-                        {
-                            frm.IClose();
-                        };
-                    }
-                    frm.Disposed += (s1, e1) =>
-                    {
-                        formMask.IClose();
-                    };
-                    ITask.Run(() =>
-                    {
-                        System.Threading.Thread.Sleep(200);
-                        config.Form.BeginInvoke(new Action(() =>
-                        {
-                            frm.Show(formMask);
-                        }));
-                    });
+                    var formMask = new LayeredFormMask(config.Form);
+                    formMask.Show(config.Form);
+                    var frm = new LayeredFormDrawer(config, formMask);
+                    frm.Show(formMask);
+                    return frm;
                 }
-                else frm.Show(config.Form);
-                return frm;
+                else
+                {
+                    var frm = new LayeredFormDrawer(config);
+                    frm.Show(config.Form);
+                    return frm;
+                }
             }
             return null;
         }
