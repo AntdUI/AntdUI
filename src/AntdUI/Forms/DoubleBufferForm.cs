@@ -22,8 +22,9 @@ namespace AntdUI
 {
     internal class DoubleBufferForm : Form
     {
-        public DoubleBufferForm(Control control) : this()
+        public DoubleBufferForm(Form form, Control control) : this()
         {
+            Tag = form;
             control.Dock = DockStyle.Fill;
             Controls.Add(control);
         }

@@ -205,58 +205,35 @@ namespace AntdUI
                     {
                         if (cell is TCellCheck checkCell)
                         {
-                            if (checkCell.Contains(r_x, r_y))
+                            if (checkCell.AutoCheck && checkCell.Contains(r_x, r_y))
                             {
-                                if (checkCell.column.Call != null)
-                                {
-                                    var value = checkCell.column.Call(!checkCell.Checked, it.RECORD, i_r, i_c);
-                                    if (checkCell.Checked != value)
-                                    {
-                                        checkCell.Checked = value;
-                                        SetValue(cell, checkCell.Checked);
-                                        CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
-                                    }
-                                }
-                                else if (checkCell.AutoCheck)
-                                {
-                                    checkCell.Checked = !checkCell.Checked;
-                                    SetValue(cell, checkCell.Checked);
-                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
-                                }
+                                checkCell.Checked = !checkCell.Checked;
+                                SetValue(cell, checkCell.Checked);
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
                             }
                         }
                         else if (cell is TCellRadio radioCell)
                         {
-                            if (radioCell.Contains(r_x, r_y) && !radioCell.Checked)
+                            if (radioCell.AutoCheck && radioCell.Contains(r_x, r_y) && !radioCell.Checked)
                             {
-                                bool isok = false;
-                                if (radioCell.column.Call != null)
+                                if (rows != null)
                                 {
-                                    var value = radioCell.column.Call(true, it.RECORD, i_r, i_c);
-                                    if (value) isok = true;
-                                }
-                                else if (radioCell.AutoCheck) isok = true;
-                                if (isok)
-                                {
-                                    if (rows != null)
+                                    for (int i = 0; i < rows.Length; i++)
                                     {
-                                        for (int i = 0; i < rows.Length; i++)
+                                        if (i != i_r)
                                         {
-                                            if (i != i_r)
+                                            var cell_selno = rows[i].cells[i_c];
+                                            if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
                                             {
-                                                var cell_selno = rows[i].cells[i_c];
-                                                if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
-                                                {
-                                                    radioCell2.Checked = false;
-                                                    SetValue(cell_selno, false);
-                                                }
+                                                radioCell2.Checked = false;
+                                                SetValue(cell_selno, false);
                                             }
                                         }
                                     }
-                                    radioCell.Checked = true;
-                                    SetValue(cell, radioCell.Checked);
-                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.RECORD, i_r, i_c));
                                 }
+                                radioCell.Checked = true;
+                                SetValue(cell, radioCell.Checked);
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.RECORD, i_r, i_c));
                             }
                         }
                         else if (cell is TCellSwitch switchCell)
