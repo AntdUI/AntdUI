@@ -395,6 +395,7 @@ namespace AntdUI
         /// 文本
         /// </summary>
         [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public string? Text { get; set; }
 
         [Description("颜色类型"), Category("外观"), DefaultValue(TTypeMini.Primary)]
