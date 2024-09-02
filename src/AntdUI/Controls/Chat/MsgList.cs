@@ -49,6 +49,12 @@ namespace AntdUI.Chat
             set => items = value.BindData(this);
         }
 
+        /// <summary>
+        /// 滚动条
+        /// </summary>
+        [Browsable(false)]
+        public ScrollBar ScrollBar;
+
         #endregion
 
         #region 渲染
@@ -60,7 +66,7 @@ namespace AntdUI.Chat
             if (rect.Width == 0 || rect.Height == 0) return;
 
             var g = e.Graphics.High();
-            int sy = scroll.Value;
+            int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
             using (var font_text = new Font(Font.FontFamily, Font.Size * 0.9F))
             using (var font_time = new Font(Font.FontFamily, Font.Size * 0.82F))
@@ -69,7 +75,7 @@ namespace AntdUI.Chat
             }
 
             g.ResetTransform();
-            scroll.Paint(g);
+            ScrollBar.Paint(g);
             base.OnPaint(e);
         }
 
@@ -78,7 +84,7 @@ namespace AntdUI.Chat
         StringFormat SFR = Helper.SF_ALL(lr: StringAlignment.Far);
         void PaintItem(Graphics g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time)
         {
-            it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height && it.rect.Bottom < scroll.Value + scroll.ReadSize + it.rect.Height;
+            it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
             if (it.show)
             {
                 if (it.Select)
@@ -156,12 +162,11 @@ namespace AntdUI.Chat
             }
         }
 
-        internal ScrollBar scroll;
-        public MsgList() { scroll = new ScrollBar(this); }
+        public MsgList() { ScrollBar = new ScrollBar(this); }
 
         protected override void Dispose(bool disposing)
         {
-            scroll.Dispose();
+            ScrollBar.Dispose();
             base.Dispose(disposing);
         }
 
@@ -172,12 +177,12 @@ namespace AntdUI.Chat
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (scroll.MouseDown(e.Location))
+            if (ScrollBar.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 foreach (MsgItem it in Items)
                 {
-                    if (it.Visible && it.Contains(e.Location, 0, scroll.Value, out _))
+                    if (it.Visible && it.Contains(e.Location, 0, ScrollBar.Value, out _))
                     {
                         it.Select = true;
                         // 触发ItemSelected事件
@@ -190,13 +195,13 @@ namespace AntdUI.Chat
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scroll.MouseUp();
+            ScrollBar.MouseUp();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scroll.MouseMove(e.Location))
+            if (ScrollBar.MouseMove(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 int count = 0, hand = 0;
@@ -204,7 +209,7 @@ namespace AntdUI.Chat
                 {
                     if (it.show)
                     {
-                        if (it.Contains(e.Location, 0, scroll.Value, out var change))
+                        if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
                         {
                             hand++;
                         }
@@ -220,14 +225,14 @@ namespace AntdUI.Chat
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scroll.Leave();
+            ScrollBar.Leave();
             ILeave();
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scroll.Leave();
+            ScrollBar.Leave();
             ILeave();
         }
 
@@ -246,7 +251,7 @@ namespace AntdUI.Chat
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scroll.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 
@@ -267,14 +272,14 @@ namespace AntdUI.Chat
         protected override void OnFontChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scroll.SizeChange(rect);
+            ScrollBar.SizeChange(rect);
             base.OnFontChanged(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scroll.SizeChange(rect);
+            ScrollBar.SizeChange(rect);
             base.OnSizeChanged(e);
         }
         internal Rectangle ChangeList()
@@ -309,7 +314,7 @@ namespace AntdUI.Chat
                     }
                 }
             });
-            scroll.SetVrSize(y);
+            ScrollBar.SetVrSize(y);
             return rect;
         }
 

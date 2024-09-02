@@ -44,7 +44,7 @@ namespace AntdUI
             {
                 rows_Expand.Clear();
                 // 空数据
-                scrollBar.ValueX = scrollBar.ValueY = 0;
+                ScrollBar.ValueX = ScrollBar.ValueY = 0;
                 return;
             }
             if (dataSource is DataTable table)

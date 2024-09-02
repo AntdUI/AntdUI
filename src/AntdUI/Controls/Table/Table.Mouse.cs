@@ -30,7 +30,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (ClipboardCopy) Focus();
-            if (scrollBar.MouseDownY(e.Location) && scrollBar.MouseDownX(e.Location))
+            if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
             {
                 base.OnMouseDown(e);
                 if (rows == null) return;
@@ -178,7 +178,7 @@ namespace AntdUI
                     return;
                 }
             }
-            if (scrollBar.MouseUpY() && scrollBar.MouseUpX())
+            if (ScrollBar.MouseUpY() && ScrollBar.MouseUpX())
             {
                 if (rows == null) return;
                 for (int i_row = 0; i_row < rows.Length; i_row++)
@@ -417,7 +417,7 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
-            if (scrollBar.MouseMoveY(e.Location) && scrollBar.MouseMoveX(e.Location))
+            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location))
             {
                 if (rows == null || inEditMode) return;
                 var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
@@ -643,7 +643,7 @@ namespace AntdUI
         TCell? CellContains(RowTemplate[] rows, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
         {
             mode = 0;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
             foreach (RowTemplate it in rows)
             {
@@ -894,14 +894,14 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scrollBar.Leave();
+            ScrollBar.Leave();
             ILeave();
             CloseTip(true);
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scrollBar.Leave();
+            ScrollBar.Leave();
             ILeave();
             CloseTip(true);
         }
@@ -928,7 +928,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
     }

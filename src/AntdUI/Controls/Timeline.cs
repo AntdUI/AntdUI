@@ -76,7 +76,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scroll.SizeChange(rect);
+            ScrollBar.SizeChange(rect);
             base.OnSizeChanged(e);
         }
 
@@ -97,6 +97,12 @@ namespace AntdUI
                 }
             }
         }
+
+        /// <summary>
+        /// 滚动条
+        /// </summary>
+        [Browsable(false)]
+        public ScrollBar ScrollBar;
 
         internal Rectangle ChangeList()
         {
@@ -153,7 +159,7 @@ namespace AntdUI
                 splits = _splits.ToArray();
                 y = y - gap_y + gap_x;
             });
-            scroll.SetVrSize(y);
+            ScrollBar.SetVrSize(y);
             return rect;
         }
 
@@ -161,7 +167,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scroll.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 
@@ -169,8 +175,7 @@ namespace AntdUI
 
         #region 渲染
 
-        ScrollBar scroll;
-        public Timeline() { scroll = new ScrollBar(this); }
+        public Timeline() { ScrollBar = new ScrollBar(this); }
 
         readonly StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
 
@@ -180,7 +185,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            g.TranslateTransform(0, -scroll.Value);
+            g.TranslateTransform(0, -ScrollBar.Value);
             Color color_fore = fore ?? Style.Db.Text;
             using (var brush_split = new SolidBrush(Style.Db.Split))
             {
@@ -241,7 +246,7 @@ namespace AntdUI
                 }
             }
             g.ResetTransform();
-            scroll.Paint(g);
+            ScrollBar.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
@@ -253,18 +258,18 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            scroll.MouseDown(e.Location);
+            ScrollBar.MouseDown(e.Location);
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scroll.MouseUp();
+            ScrollBar.MouseUp();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scroll.MouseMove(e.Location))
+            if (ScrollBar.MouseMove(e.Location))
             {
                 if (items == null || items.Count == 0 || ItemClick == null) return;
                 for (int i = 0; i < items.Count; i++)
@@ -272,7 +277,7 @@ namespace AntdUI
                     var it = items[i];
                     if (it != null)
                     {
-                        if (it.rect.Contains(e.X, e.Y + scroll.Value))
+                        if (it.rect.Contains(e.X, e.Y + ScrollBar.Value))
                         {
                             SetCursor(true);
                             return;
@@ -286,12 +291,12 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scroll.Leave();
+            ScrollBar.Leave();
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scroll.Leave();
+            ScrollBar.Leave();
         }
 
         #endregion
@@ -313,7 +318,7 @@ namespace AntdUI
                 var it = items[i];
                 if (it != null)
                 {
-                    if (it.rect.Contains(e.X, e.Y + scroll.Value))
+                    if (it.rect.Contains(e.X, e.Y + ScrollBar.Value))
                     {
                         ItemClick(this, new TimelineItemEventArgs(it, e));
                         return;
@@ -326,7 +331,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            scroll.Dispose();
+            ScrollBar.Dispose();
             base.Dispose(disposing);
         }
     }

@@ -183,7 +183,7 @@ namespace AntdUI
 
         #region 集合操作
 
-        public void SelectIndex(int i1)
+        public void SelectIndex(int i1, bool focus = true)
         {
             if (items == null || items.Count == 0) return;
             IUSelect(items);
@@ -194,8 +194,10 @@ namespace AntdUI
             var it1 = items[i1];
             it1.Select = true;
             OnSelectIndexChanged(it1);
+            if (focus) ScrollBar.ValueY = it1.rect.Y;
+            Invalidate();
         }
-        public void SelectIndex(int i1, int i2)
+        public void SelectIndex(int i1, int i2, bool focus = true)
         {
             if (items == null || items.Count == 0) return;
             IUSelect(items);
@@ -211,9 +213,10 @@ namespace AntdUI
             var it2 = it1.Sub[i2];
             it1.Select = it2.Select = true;
             OnSelectIndexChanged(it2);
+            if (focus) ScrollBar.ValueY = it2.rect.Y;
             Invalidate();
         }
-        public void SelectIndex(int i1, int i2, int i3)
+        public void SelectIndex(int i1, int i2, int i3, bool focus = true)
         {
             if (items == null || items.Count == 0) return;
             IUSelect(items);
@@ -236,6 +239,7 @@ namespace AntdUI
             var it3 = it2.Sub[i3];
             it1.Select = it2.Select = it3.Select = true;
             OnSelectIndexChanged(it3);
+            if (focus) ScrollBar.ValueY = it3.rect.Y;
             Invalidate();
         }
 
@@ -243,13 +247,14 @@ namespace AntdUI
         /// 选中菜单
         /// </summary>
         /// <param name="item">项</param>
-        public void Select(MenuItem item)
+        /// <param name="focus">设置焦点</param>
+        public void Select(MenuItem item, bool focus = true)
         {
             if (items == null || items.Count == 0) return;
             IUSelect(items);
-            Select(item, items);
+            Select(item, focus, items);
         }
-        void Select(MenuItem item, MenuItemCollection items)
+        void Select(MenuItem item, bool focus, MenuItemCollection items)
         {
             foreach (var it in items)
             {
@@ -257,9 +262,10 @@ namespace AntdUI
                 {
                     it.Select = true;
                     OnSelectIndexChanged(it);
+                    if (focus) ScrollBar.ValueY = it.rect.Y;
                     return;
                 }
-                else if (it.items != null && it.items.Count > 0) Select(item, it.items);
+                else if (it.items != null && it.items.Count > 0) Select(item, focus, it.items);
             }
         }
 
@@ -335,6 +341,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 滚动条
+        /// </summary>
+        [Browsable(false)]
+        public ScrollBar ScrollBar;
+
         #endregion
 
         #region 布局
@@ -342,14 +354,14 @@ namespace AntdUI
         protected override void OnFontChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scroll.SizeChange(rect);
+            ScrollBar.SizeChange(rect);
             base.OnFontChanged(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scroll.SizeChange(rect);
+            ScrollBar.SizeChange(rect);
             base.OnSizeChanged(e);
         }
 
@@ -381,7 +393,7 @@ namespace AntdUI
                     if (collapsed) ChangeUTitle(lists);
                 }
             });
-            scroll.SetVrSize(y);
+            ScrollBar.SetVrSize(y);
             return _rect;
         }
 
@@ -457,15 +469,14 @@ namespace AntdUI
 
         #region 渲染
 
-        internal ScrollBar scroll;
-        public Menu() { scroll = new ScrollBar(this); }
+        public Menu() { ScrollBar = new ScrollBar(this); }
         protected override void OnPaint(PaintEventArgs e)
         {
             if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            int sy = scroll.Value;
+            int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
             Color scroll_color, color_fore, color_fore_active, fore_enabled, back_hover, back_active;
 
@@ -510,7 +521,7 @@ namespace AntdUI
                 PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
             g.ResetTransform();
-            scroll.Paint(g, scroll_color);
+            ScrollBar.Paint(g, scroll_color);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
@@ -752,7 +763,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (scroll.MouseDown(e.Location))
+            if (ScrollBar.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 foreach (var it in items)
@@ -765,7 +776,7 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scroll.MouseUp();
+            ScrollBar.MouseUp();
         }
 
         bool IMouseDown(MenuItemCollection items, MenuItem item, List<MenuItem> list, Point point)
@@ -773,7 +784,7 @@ namespace AntdUI
             if (item.Visible)
             {
                 bool can = item.CanExpand;
-                if (item.Enabled && item.Contains(point, 0, scroll.Value, out _))
+                if (item.Enabled && item.Contains(point, 0, ScrollBar.Value, out _))
                 {
                     if (can) item.Expand = !item.Expand;
                     else
@@ -807,7 +818,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scroll.MouseMove(e.Location))
+            if (ScrollBar.MouseMove(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 int count = 0, hand = 0;
@@ -818,7 +829,7 @@ namespace AntdUI
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.Location, 0, scroll.Value, out var change))
+                            if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
                             {
                                 hoveindex = i;
                                 hand++;
@@ -878,7 +889,7 @@ namespace AntdUI
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.Location, 0, scroll.Value, out var change))
+                            if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
                             {
                                 hoveindex = i;
                                 hand++;
@@ -921,7 +932,7 @@ namespace AntdUI
         {
             if (it.show)
             {
-                if (it.Contains(point, 0, scroll.Value, out var change))
+                if (it.Contains(point, 0, ScrollBar.Value, out var change))
                 {
                     hand++;
                 }
@@ -936,20 +947,20 @@ namespace AntdUI
             hoveindexold = -1;
             tooltipForm?.Close();
             tooltipForm = null;
-            scroll.Leave();
+            ScrollBar.Leave();
             ILeave();
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scroll.Leave();
+            ScrollBar.Leave();
             ILeave();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scroll.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 
@@ -1040,7 +1051,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            scroll.Dispose();
+            ScrollBar.Dispose();
             base.Dispose(disposing);
         }
     }
@@ -1337,7 +1348,7 @@ namespace AntdUI
             get
             {
                 if (PARENT == null) return rect;
-                int y = PARENT.scroll.Value;
+                int y = PARENT.ScrollBar.Value;
                 if (y != 0F) return new Rectangle(rect.X, rect.Y - y, rect.Width, rect.Height);
                 return rect;
             }

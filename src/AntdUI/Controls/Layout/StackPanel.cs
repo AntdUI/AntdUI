@@ -34,8 +34,6 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class StackPanel : IControl
     {
-        internal ScrollBar? scroll;
-
         bool autoscroll = false;
         /// <summary>
         /// 是否显示滚动条
@@ -48,20 +46,27 @@ namespace AntdUI
             {
                 if (autoscroll == value) return;
                 autoscroll = value;
-                if (autoscroll) scroll = new ScrollBar(this);
-                else scroll = null;
+                if (autoscroll) ScrollBar = new ScrollBar(this);
+                else ScrollBar = null;
                 IOnSizeChanged();
             }
         }
+
+        /// <summary>
+        /// 滚动条
+        /// </summary>
+        [Browsable(false)]
+        public ScrollBar? ScrollBar;
+
         public override Rectangle DisplayRectangle
         {
             get
             {
                 var rect = ClientRectangle.DeflateRect(Padding);
-                if (scroll != null && scroll.Show)
+                if (ScrollBar != null && ScrollBar.Show)
                 {
-                    if (scroll.EnabledY) rect.Width -= scroll.SIZE;
-                    else rect.Height -= scroll.SIZE;
+                    if (ScrollBar.EnabledY) rect.Width -= ScrollBar.SIZE;
+                    else rect.Height -= ScrollBar.SIZE;
                 }
                 return rect;
             }
@@ -78,8 +83,8 @@ namespace AntdUI
             {
                 if (layoutengine.Vertical == value) return;
                 layoutengine.Vertical = value;
-                if (autoscroll) scroll = new ScrollBar(this);
-                else scroll = null;
+                if (autoscroll) ScrollBar = new ScrollBar(this);
+                else ScrollBar = null;
                 IOnSizeChanged();
             }
         }
@@ -115,7 +120,7 @@ namespace AntdUI
         }
         protected override void OnPaint(PaintEventArgs e)
         {
-            scroll?.Paint(e.Graphics.High());
+            ScrollBar?.Paint(e.Graphics.High());
             base.OnPaint(e);
         }
 
@@ -124,7 +129,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle;
-            scroll?.SizeChange(rect);
+            ScrollBar?.SizeChange(rect);
             base.OnSizeChanged(e);
         }
 
@@ -166,11 +171,11 @@ namespace AntdUI
                             else if (int.TryParse(ItemSize, out var i)) val = HandLayout(parent, controls, rect, (int)Math.Round(i * Config.Dpi));
                             else val = HandLayoutFill(controls, rect);
                         }
-                        if (parent.scroll != null)
+                        if (parent.ScrollBar != null)
                         {
-                            bool old = parent.scroll.Show;
-                            parent.scroll.SetVrSize(val);
-                            if (old != parent.scroll.Show) parent.BeginInvoke(new Action(parent.IOnSizeChanged));
+                            bool old = parent.ScrollBar.Show;
+                            parent.ScrollBar.SetVrSize(val);
+                            if (old != parent.ScrollBar.Show) parent.BeginInvoke(new Action(parent.IOnSizeChanged));
                         }
                     }
                 }
@@ -181,7 +186,7 @@ namespace AntdUI
             {
                 int count = controls.Count;
                 int offset = 0, use = 0, last_len = 0, gap = 0;
-                if (parent.scroll != null) offset = parent.scroll.Value;
+                if (parent.ScrollBar != null) offset = parent.ScrollBar.Value;
                 if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
                 if (Vertical)
                 {
@@ -215,7 +220,7 @@ namespace AntdUI
             {
                 int count = controls.Count;
                 int offset = 0, use = 0, last_len = 0, gap = 0;
-                if (parent.scroll != null) offset = parent.scroll.Value;
+                if (parent.ScrollBar != null) offset = parent.ScrollBar.Value;
                 if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
                 if (Vertical)
                 {
@@ -286,36 +291,36 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (scroll != null && scroll.MouseDown(e.Location)) return;
+            if (ScrollBar != null && ScrollBar.MouseDown(e.Location)) return;
             base.OnMouseDown(e);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (scroll != null && scroll.MouseMove(e.Location)) return;
+            if (ScrollBar != null && ScrollBar.MouseMove(e.Location)) return;
             base.OnMouseMove(e);
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scroll?.MouseUp();
+            ScrollBar?.MouseUp();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scroll?.Leave();
+            ScrollBar?.Leave();
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scroll?.Leave();
+            ScrollBar?.Leave();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (scroll != null && scroll.EnabledY) scroll.MouseWheel(e.Delta);
+            if (ScrollBar != null && ScrollBar.EnabledY) ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 
@@ -323,7 +328,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            scroll?.Dispose();
+            ScrollBar?.Dispose();
             base.Dispose(disposing);
         }
     }

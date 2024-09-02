@@ -32,7 +32,7 @@ namespace AntdUI
         {
             if (inEditMode)
             {
-                scrollBar.OnInvalidate = null;
+                ScrollBar.OnInvalidate = null;
                 Focus();
                 inEditMode = false;
             }
@@ -60,7 +60,7 @@ namespace AntdUI
                 if (!isok) return;
                 inEditMode = true;
 
-                scrollBar.OnInvalidate = () => EditModeClose();
+                ScrollBar.OnInvalidate = () => EditModeClose();
                 BeginInvoke(new Action(() =>
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
@@ -105,7 +105,7 @@ namespace AntdUI
                         if (!isok) return;
                         inEditMode = true;
 
-                        scrollBar.OnInvalidate = () => EditModeClose();
+                        ScrollBar.OnInvalidate = () => EditModeClose();
                         BeginInvoke(new Action(() =>
                         {
                             for (int i = 0; i < rows.Length; i++)
@@ -230,7 +230,7 @@ namespace AntdUI
                     {
                         isone = false;
                         b.Handled = true;
-                        scrollBar.OnInvalidate = null;
+                        ScrollBar.OnInvalidate = null;
                         if (old_text != input.Text) call(input.Text);
                         inEditMode = false;
                         input.Dispose();
@@ -242,7 +242,7 @@ namespace AntdUI
                 if (a is Input input && isone)
                 {
                     isone = false;
-                    scrollBar.OnInvalidate = null;
+                    ScrollBar.OnInvalidate = null;
                     if (old_text != input.Text) call(input.Text);
                     inEditMode = false;
                     input.Dispose();

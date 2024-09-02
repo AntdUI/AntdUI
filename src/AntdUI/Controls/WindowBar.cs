@@ -32,7 +32,7 @@ namespace AntdUI
     [Description("WindowBar 窗口栏")]
     [ToolboxItem(true)]
     [Designer(typeof(IControlDesigner))]
-    public class WindowBar : IControl, IButtonControl, IEventListener
+    public class WindowBar : IControl, IEventListener
     {
         #region 属性
 
@@ -103,6 +103,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("点击退出关闭"), Category("行为"), DefaultValue(false)]
+        public bool CancelButton { get; set; } = false;
 
         #region 图标
 
@@ -775,20 +778,19 @@ namespace AntdUI
 
         #region 按钮点击
 
-        [DefaultValue(DialogResult.None)]
-        public DialogResult DialogResult { get; set; } = DialogResult.None;
-
-        /// <summary>
-        /// 是否默认按钮
-        /// </summary>
-        public void NotifyDefault(bool value)
+        protected override bool ProcessDialogKey(Keys keyData)
         {
-
-        }
-
-        public void PerformClick()
-        {
-            Parent.FindPARENT()?.Close();
+            if (CancelButton && (keyData & (Keys.Alt | Keys.Control)) == Keys.None)
+            {
+                Keys keyCode = keyData & Keys.KeyCode;
+                switch (keyCode)
+                {
+                    case Keys.Escape:
+                        Parent.FindPARENT()?.Close();
+                        return true;
+                }
+            }
+            return base.ProcessDialogKey(keyData);
         }
 
         #endregion

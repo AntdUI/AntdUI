@@ -92,8 +92,6 @@ namespace AntdUI
                                         font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
                                     }
                                 }
-
-
                                 return true;
                             });
                             if (HasEmoji)
@@ -191,8 +189,6 @@ namespace AntdUI
                                         }
                                     }
                                 }
-
-
                                 return true;
                             });
 
@@ -223,10 +219,10 @@ namespace AntdUI
         bool IsEmoji(UnicodeCategory unicodeInfo)
         {
             return unicodeInfo == UnicodeCategory.Surrogate || unicodeInfo == UnicodeCategory.OtherSymbol ||
-                 unicodeInfo == UnicodeCategory.MathSymbol ||
-                  unicodeInfo == UnicodeCategory.EnclosingMark ||
-                   unicodeInfo == UnicodeCategory.NonSpacingMark ||
-                  unicodeInfo == UnicodeCategory.ModifierLetter;
+                unicodeInfo == UnicodeCategory.MathSymbol ||
+                unicodeInfo == UnicodeCategory.EnclosingMark ||
+                unicodeInfo == UnicodeCategory.NonSpacingMark ||
+                unicodeInfo == UnicodeCategory.ModifierLetter;
         }
 
         class CacheFont
@@ -661,7 +657,7 @@ namespace AntdUI
             if (multiline)
             {
                 int y = rect.Y + sps, h = rect.Height - sps2;
-                rect_l = new Rectangle(rect.X + sps, y, w, h);
+                rect_l = new Rectangle(rect.X + sps, y, w, read_height);
                 if (useLeft > 0) rect_text = new Rectangle(rect.X + hasx + useLeft, y, rect.Width - hasx2 - useLeft, h);
                 else rect_text = new Rectangle(rect.X + hasx, y, rect.Width - hasx2, h);
             }
@@ -712,7 +708,7 @@ namespace AntdUI
             if (multiline)
             {
                 rect_text = new Rectangle(rect.X + sps, rect.Y + sps, rect.Width - sps2 - w - sp, rect.Height - sps2);
-                rect_r = new Rectangle(rect_text.Right + sp, rect_text.Y, w, rect_text.Height);
+                rect_r = new Rectangle(rect_text.Right + sp, rect_text.Y, w, read_height);
             }
             else
             {

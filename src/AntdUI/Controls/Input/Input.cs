@@ -39,7 +39,7 @@ namespace AntdUI
         public Input()
         {
             base.BackColor = Color.Transparent;
-            SetStyle(ControlStyles.Selectable, true);
+            SetStyle(ControlStyles.Selectable | ControlStyles.UseTextForAccessibility, true);
             UpdateStyles();
             CurrentCaret.Width = (int)(1 * Config.Dpi);
         }
