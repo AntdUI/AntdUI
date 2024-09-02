@@ -30,11 +30,21 @@ namespace AntdUI
         bool HasBor = false;
         Drawer.Config config;
         int padding = 24;
+        ILayeredForm? formMask = null;
+        public LayeredFormDrawer(Drawer.Config _config, ILayeredForm mask) : this(_config)
+        {
+            formMask = mask;
+            if (config.MaskClosable)
+            {
+                mask.Click += (s1, e1) =>
+                {
+                    IClose();
+                };
+            }
+        }
         public LayeredFormDrawer(Drawer.Config _config)
         {
             config = _config;
-            if (config.Content is Form form) form.FormBorderStyle = FormBorderStyle.None;
-            else config.Content.Parent = this;
             TopMost = config.Form.TopMost;
             Font = config.Form.Font;
 
@@ -65,6 +75,7 @@ namespace AntdUI
                 if (Config.Dpi != 1F) Helper.DpiAuto(Config.Dpi, config.Content);
             }
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
+            LoadContent();
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
             config.Form.LocationChanged += Form_LocationChanged;
             config.Form.SizeChanged += Form_SizeChanged;
@@ -218,9 +229,11 @@ namespace AntdUI
                 SetSize(end_W, end_H);
                 if (form != null)
                 {
+                    isok = false;
                     var rect = Ang();
                     form.Location = rect.Location;
                     form.Size = rect.Size;
+                    isok = true;
                 }
                 Print();
             }
@@ -309,6 +322,7 @@ namespace AntdUI
             if (Config.Animation)
             {
                 var t = Animation.TotalFrames(10, 100);
+                int sleep = config.Mask ? 200 : 0;
                 task_start = new ITask(vertical ? i =>
                 {
                     var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
@@ -322,20 +336,17 @@ namespace AntdUI
                     return true;
                 }, 10, t, () =>
                 {
-                    if (IsHandleCreated)
-                    {
-                        BeginInvoke(new Action(LoadContent));
-                    }
+                    if (IsHandleCreated) BeginInvoke(new Action(ShowContent));
                     SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
                     task_start = null;
-                });
+                }, sleep);
                 base.OnLoad(e);
             }
             else
             {
                 SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
                 base.OnLoad(e);
-                LoadContent();
+                ShowContent();
             }
         }
 
@@ -345,21 +356,22 @@ namespace AntdUI
         void LoadContent()
         {
             var rect = Ang();
+            var hidelocation = new Point(-rect.Width, -rect.Height);
             if (config.Content is Form form_)
             {
                 form_.BackColor = Style.Db.BgElevated;
                 form_.FormBorderStyle = FormBorderStyle.None;
-                form_.Location = rect.Location;
+                form_.Location = hidelocation;
                 form_.Size = rect.Size;
                 form = form_;
             }
             else
             {
-                form = new DoubleBufferForm(config.Content)
+                form = new DoubleBufferForm(this, config.Content)
                 {
                     BackColor = Style.Db.BgElevated,
                     FormBorderStyle = FormBorderStyle.None,
-                    Location = rect.Location,
+                    Location = hidelocation,
                     Size = rect.Size
                 };
             }
@@ -375,15 +387,25 @@ namespace AntdUI
             }
             config.Content.Disposed += (a, b) =>
             {
+                config.Content.SizeChanged -= Content_SizeChanged;
                 Close();
             };
             form.Show(this);
+            form.Location = hidelocation;
+            form.Size = rect.Size;
+        }
+
+        void ShowContent()
+        {
+            if (form == null) return;
+            var rect = Ang();
             form.Location = rect.Location;
             form.Size = rect.Size;
             tempContent?.Dispose();
             tempContent = null;
             config.OnLoad?.Invoke();
             LoadOK?.Invoke();
+            if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
             config.Content.SizeChanged += Content_SizeChanged;
         }
 
@@ -525,6 +547,12 @@ namespace AntdUI
         }
 
         #endregion
+
+        protected override void DestroyHandle()
+        {
+            base.DestroyHandle();
+            formMask?.IClose();
+        }
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -703,5 +731,10 @@ namespace AntdUI
         }
 
         #endregion
+    }
+
+    public interface DrawerLoad
+    {
+        void LoadOK();
     }
 }

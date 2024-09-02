@@ -27,7 +27,7 @@ namespace AntdUI
     internal class LayeredFormFloatButton : ILayeredFormOpacity, IEventListener
     {
         FloatButton.Config config;
-        int BadgeSize = 6, ShadowXY = 20, ShadowS = 40;
+        int BadgeSize = 6, ShadowXY;
         public LayeredFormFloatButton(FloatButton.Config _config)
         {
             maxalpha = 255;
@@ -43,7 +43,9 @@ namespace AntdUI
                 _config.MarginX = (int)Math.Round(_config.MarginX * dpi);
                 _config.MarginY = (int)Math.Round(_config.MarginY * dpi);
                 _config.Size = (int)Math.Round(_config.Size * dpi);
-                int size = _config.Size, gap = size + _config.Gap, t_size = size + ShadowS;
+                _config.Gap = (int)Math.Round(_config.Gap * dpi);
+                ShadowXY = _config.Gap / 2;
+                int size = _config.Size, t_size = size + _config.Gap, icon_size = (int)(size * 0.45F), xy = (size - icon_size) / 2;
                 int hasx = 0, hasy = 0;
                 if (_config.Vertical)
                 {
@@ -52,12 +54,10 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-
-                        SetIconSize(it);
-
-                        hasy += gap;
+                        SetIconSize(it, size, xy, icon_size, dpi);
+                        hasy += t_size;
                     }
-                    SetSize(t_size, hasy + ShadowS);
+                    SetSize(size + _config.Gap, hasy);
                 }
                 else
                 {
@@ -66,40 +66,15 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-
-                        SetIconSize(it);
-
-                        hasx += gap;
+                        SetIconSize(it, size, xy, icon_size, dpi);
+                        hasx += t_size;
                     }
-                    SetSize(hasx + ShadowS, t_size);
+                    SetSize(hasx, size + _config.Gap);
                 }
             });
             SetPoint();
             config.Form.LocationChanged += Form_LSChanged;
             config.Form.SizeChanged += Form_LSChanged;
-        }
-
-        /// <summary>
-        /// 设置图标区域位置大小
-        /// </summary>
-        /// <param name="configBtn"></param>
-        /// <returns></returns>
-        private Rectangle SetIconSize(FloatButton.ConfigBtn configBtn)
-        {
-            int size = config.Size;
-            var icon_size = new Size((int)(size * 0.45F), (int)(size * 0.45F));
-
-            if (configBtn.IconSize.HasValue)
-            {
-                icon_size = configBtn.IconSize.Value;
-                if (!configBtn.rect_read.Contains(new Rectangle(configBtn.rect_read.Location, icon_size)))
-                {
-                    icon_size = configBtn.rect_read.Size;
-                }
-            }
-
-            var point = new Point((config.Size - icon_size.Width) / 2, (size - icon_size.Height) / 2);
-            return configBtn.rect_icon = new Rectangle(configBtn.rect_read.X + point.X, configBtn.rect_read.Y + point.Y, icon_size.Width, icon_size.Height);
         }
 
         private void Notify_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -166,6 +141,24 @@ namespace AntdUI
             }
         }
 
+        void SetIconSize(FloatButton.ConfigBtn it, int size, int xy, int icon_size, float dpi)
+        {
+            if (it.IconSize.HasValue)
+            {
+                if (it.IconSize.Value.Width == it.IconSize.Value.Height)
+                {
+                    int icon_size_div = (int)(it.IconSize.Value.Width * dpi);
+                    it.rect_icon = new Rectangle(it.rect_read.X + (size - icon_size_div) / 2, it.rect_read.Y + (size - icon_size_div) / 2, icon_size_div, icon_size_div);
+                }
+                else
+                {
+                    int icon_size_w = (int)(it.IconSize.Value.Width * dpi), icon_size_h = (int)(it.IconSize.Value.Height * dpi);
+                    it.rect_icon = new Rectangle(it.rect_read.X + (size - icon_size_w) / 2, it.rect_read.Y + (size - icon_size_h) / 2, icon_size_w, icon_size_h);
+                }
+            }
+            else it.rect_icon = new Rectangle(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
+        }
+
         private void Form_LSChanged(object? sender, EventArgs e)
         {
             if (SetPoint()) Print();
@@ -219,8 +212,7 @@ namespace AntdUI
                                 fore = Style.Db.Text;
                                 break;
                         }
-
-                        fore = it.ForeColor ?? fore;
+                        if (it.Fore.HasValue) fore = it.Fore.Value;
 
                         using (var brush = new SolidBrush(back))
                         {
@@ -235,14 +227,12 @@ namespace AntdUI
                         }
                         if (it.IconSvg != null)
                         {
-                            SetIconSize(it);
-
                             using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.rect_icon, fore))
                             {
                                 if (_bmp != null) g.DrawImage(_bmp, it.rect_icon);
                             }
                         }
-                        else if (it.Icon != null) g.DrawImage(it.Icon, SetIconSize(it));
+                        else if (it.Icon != null) g.DrawImage(it.Icon, it.rect_icon);
                         else
                         {
                             using (var brush = new SolidBrush(fore))

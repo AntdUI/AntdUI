@@ -217,6 +217,21 @@ namespace AntdUI
             /// </summary>
             public string Name { get; set; }
 
+            Color? fore;
+            /// <summary>
+            /// 文字颜色
+            /// </summary>
+            public Color? Fore
+            {
+                get => fore;
+                set
+                {
+                    if (fore == value) return;
+                    fore = value;
+                    OnPropertyChanged("Fore");
+                }
+            }
+
             Bitmap? icon;
             /// <summary>
             /// 自定义图标
@@ -247,24 +262,7 @@ namespace AntdUI
                 }
             }
 
-            private Color? foreColor;
-
-            /// <summary>
-            /// 文字颜色
-            /// </summary>
-            public Color? ForeColor
-            {
-                get => foreColor;
-                set
-                {
-                    if (foreColor == value) return;
-                    foreColor = value;
-                    OnPropertyChanged("foreColor");
-                }
-            }
-
-            private Size? iconSize;
-
+            Size? iconSize;
             /// <summary>
             /// 图标大小
             /// </summary>
@@ -275,7 +273,7 @@ namespace AntdUI
                 {
                     if (iconSize == value) return;
                     iconSize = value;
-                    OnPropertyChanged("iconSize");
+                    OnPropertyChanged("IconSize");
                 }
             }
 

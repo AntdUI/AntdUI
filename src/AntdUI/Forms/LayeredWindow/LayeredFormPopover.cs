@@ -197,7 +197,7 @@ namespace AntdUI
         {
             var flocation = new Point(TargetRect.Location.X + (int)rectContent.X, TargetRect.Location.Y + (int)rectContent.Y);
             var fsize = new Size((int)rectContent.Width, (int)rectContent.Height);
-            form = new DoubleBufferForm(control)
+            form = new DoubleBufferForm(this, control)
             {
                 FormBorderStyle = FormBorderStyle.None,
                 Location = flocation,
