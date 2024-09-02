@@ -27,7 +27,7 @@ namespace AntdUI
     internal class LayeredFormFloatButton : ILayeredFormOpacity, IEventListener
     {
         FloatButton.Config config;
-        int BadgeSize = 6, ShadowXY = 20, ShadowS = 40;
+        int BadgeSize = 6, ShadowXY;
         public LayeredFormFloatButton(FloatButton.Config _config)
         {
             maxalpha = 255;
@@ -43,7 +43,9 @@ namespace AntdUI
                 _config.MarginX = (int)Math.Round(_config.MarginX * dpi);
                 _config.MarginY = (int)Math.Round(_config.MarginY * dpi);
                 _config.Size = (int)Math.Round(_config.Size * dpi);
-                int size = _config.Size, t_size = size + ShadowS, icon_size = (int)(size * 0.45F), xy = (size - icon_size) / 2;
+                _config.Gap = (int)Math.Round(_config.Gap * dpi);
+                ShadowXY = _config.Gap / 2;
+                int size = _config.Size, t_size = size + _config.Gap, icon_size = (int)(size * 0.45F), xy = (size - icon_size) / 2;
                 int hasx = 0, hasy = 0;
                 if (_config.Vertical)
                 {
@@ -52,10 +54,10 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                        it.rect_icon = new Rectangle(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
+                        SetIconSize(it, size, xy, icon_size, dpi);
                         hasy += t_size;
                     }
-                    SetSize(size + ShadowS, t_size * _config.Btns.Length);
+                    SetSize(size + _config.Gap, hasy);
                 }
                 else
                 {
@@ -64,10 +66,10 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                        it.rect_icon = new Rectangle(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
+                        SetIconSize(it, size, xy, icon_size, dpi);
                         hasx += t_size;
                     }
-                    SetSize(t_size * _config.Btns.Length, size + ShadowS);
+                    SetSize(hasx, size + _config.Gap);
                 }
             });
             SetPoint();
@@ -139,6 +141,24 @@ namespace AntdUI
             }
         }
 
+        void SetIconSize(FloatButton.ConfigBtn it, int size, int xy, int icon_size, float dpi)
+        {
+            if (it.IconSize.HasValue)
+            {
+                if (it.IconSize.Value.Width == it.IconSize.Value.Height)
+                {
+                    int icon_size_div = (int)(it.IconSize.Value.Width * dpi);
+                    it.rect_icon = new Rectangle(it.rect_read.X + (size - icon_size_div) / 2, it.rect_read.Y + (size - icon_size_div) / 2, icon_size_div, icon_size_div);
+                }
+                else
+                {
+                    int icon_size_w = (int)(it.IconSize.Value.Width * dpi), icon_size_h = (int)(it.IconSize.Value.Height * dpi);
+                    it.rect_icon = new Rectangle(it.rect_read.X + (size - icon_size_w) / 2, it.rect_read.Y + (size - icon_size_h) / 2, icon_size_w, icon_size_h);
+                }
+            }
+            else it.rect_icon = new Rectangle(it.rect_read.X + xy, it.rect_read.Y + xy, icon_size, icon_size);
+        }
+
         private void Form_LSChanged(object? sender, EventArgs e)
         {
             if (SetPoint()) Print();
@@ -192,6 +212,8 @@ namespace AntdUI
                                 fore = Style.Db.Text;
                                 break;
                         }
+                        if (it.Fore.HasValue) fore = it.Fore.Value;
+
                         using (var brush = new SolidBrush(back))
                         {
                             g.FillPath(brush, path);

@@ -172,10 +172,71 @@ namespace Overview.Controls
         {
             if (e.Item is VItem item)
             {
-                Clipboard.SetText(item.Key);
-                AntdUI.Message.success(form, item.Key + " 复制成功");
+                try
+                {
+                    Clipboard.SetText(item.Key);
+                    AntdUI.Message.success(form, item.Key + " 复制成功");
+                }
+                catch
+                {
+                    if (SetClipBoardText(item.Key)) AntdUI.Message.success(form, item.Key + " 复制成功");
+                    else AntdUI.Message.error(form, item.Key + " 复制失败");
+                }
             }
         }
+
+        #region Win32操作剪贴板
+
+        private static bool SetClipBoardText(string Text)
+        {
+            try
+            {
+                uint uformat = 1;
+                if (!OpenClipboard(IntPtr.Zero)) return false;
+                if (!EmptyClipboard()) return false;
+                var r = SetClipboardData(uformat, System.Runtime.InteropServices.Marshal.StringToCoTaskMemAnsi(Text));
+                if (r == IntPtr.Zero) return false;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                CloseClipboard();
+            }
+        }
+
+        /// <summary>
+        /// 打开剪切板
+        /// </summary>
+        /// <param name="hWndNewOwner"></param>
+        /// <returns></returns>
+        [System.Runtime.InteropServices.DllImport("User32.dll")]
+        extern static bool OpenClipboard(IntPtr hWndNewOwner);
+
+        /// <summary>
+        /// 关闭剪切板
+        /// </summary>
+        /// <returns></returns>
+        [System.Runtime.InteropServices.DllImport("User32.dll")]
+        extern static bool CloseClipboard();
+
+        // 清空剪贴板
+        [System.Runtime.InteropServices.DllImport("User32.dll")]
+        extern static bool EmptyClipboard();
+
+        /// <summary>
+        /// 设置剪切板内容
+        /// </summary>
+        /// <param name="uFormat"></param>
+        /// <param name="hMem"></param>
+        /// <returns></returns>
+        [System.Runtime.InteropServices.DllImport("User32.dll")]
+        extern static IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+
+        #endregion
 
         #region 搜索
 
