@@ -450,7 +450,7 @@ namespace AntdUI.Chat
                 {
                     var _text = GetSelectionText(text);
                     if (_text == null) return;
-                    Clipboard.SetText(_text);
+                    this.ClipboardSetText(_text);
                     return;
                 }
             }

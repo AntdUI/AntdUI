@@ -2059,11 +2059,79 @@ namespace AntdUI
             }
         }
 
+        public static bool Wait(this System.Threading.CancellationTokenSource? token)
+        {
+            try
+            {
+                if (token == null || token.IsCancellationRequested) return true;
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        public static bool Wait(this System.Threading.CancellationTokenSource? token, Control control)
+        {
+            try
+            {
+                if (token == null || token.IsCancellationRequested || control.IsDisposed) return true;
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
         public static bool ListExceed(this IList? list, int index)
         {
             if (list == null || list.Count <= index || index < 0) return true;
             return false;
         }
+
+        #region 剪贴板
+
+        public static bool ClipboardSetText(this Control control, string? text)
+        {
+            if (control.InvokeRequired)
+            {
+                bool r = false;
+                control.Invoke(new Action(() =>
+                {
+                    r = ClipboardSetText(control, text);
+                }));
+                return r;
+            }
+            try
+            {
+                if (text == null) Clipboard.Clear();
+                else Clipboard.SetText(text);
+                return true;
+            }
+            catch
+            {
+                if (Win32.SetClipBoardText(text)) return true;
+            }
+            return false;
+        }
+        public static bool ClipboardSetText(string? text)
+        {
+            try
+            {
+                if (text == null) Clipboard.Clear();
+                else Clipboard.SetText(text);
+                return true;
+            }
+            catch
+            {
+                if (Win32.SetClipBoardText(text)) return true;
+            }
+            return false;
+        }
+
+        #endregion
     }
 
     internal class AnchorDock

@@ -227,5 +227,59 @@ namespace AntdUI
         }
 
         #endregion
+
+        #region 剪贴板
+
+        internal static bool SetClipBoardText(string? text)
+        {
+            try
+            {
+                uint uformat = 1;
+                if (!OpenClipboard(IntPtr.Zero)) return false;
+                if (!EmptyClipboard()) return false;
+                if (text == null) return true;
+                var r = SetClipboardData(uformat, Marshal.StringToCoTaskMemAnsi(text));
+                if (r == IntPtr.Zero) return false;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                CloseClipboard();
+            }
+        }
+
+        /// <summary>
+        /// 打开剪切板
+        /// </summary>
+        /// <param name="hWndNewOwner"></param>
+        [DllImport("User32.dll")]
+        extern static bool OpenClipboard(IntPtr hWndNewOwner);
+
+        /// <summary>
+        /// 关闭剪切板
+        /// </summary>
+        [DllImport("User32.dll")]
+        extern static bool CloseClipboard();
+
+        /// <summary>
+        /// 清空剪贴板
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("User32.dll")]
+        extern static bool EmptyClipboard();
+
+        /// <summary>
+        /// 设置剪切板内容
+        /// </summary>
+        /// <param name="uFormat"></param>
+        /// <param name="hMem"></param>
+        [DllImport("User32.dll")]
+        extern static IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+
+        #endregion
     }
 }

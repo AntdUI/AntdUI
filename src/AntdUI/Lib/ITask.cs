@@ -43,9 +43,10 @@ namespace AntdUI
                 int val = 0;
                 while (true)
                 {
-                    if (token == null || control.IsDisposed || token.Token.IsCancellationRequested)
+                    if (token.Wait(control))
                     {
-                        ok = false; return;
+                        ok = false;
+                        return;
                     }
                     else
                     {
@@ -70,9 +71,10 @@ namespace AntdUI
                 float val = 0;
                 while (true)
                 {
-                    if (token == null || control.IsDisposed || token.Token.IsCancellationRequested)
+                    if (token.Wait(control))
                     {
-                        ok = false; return;
+                        ok = false;
+                        return;
                     }
                     else
                     {
@@ -97,17 +99,14 @@ namespace AntdUI
             {
                 while (true)
                 {
-                    if (token == null || control.IsDisposed || token.Token.IsCancellationRequested)
+                    if (token.Wait(control))
                     {
                         ok = false;
                         return;
                     }
                     else
                     {
-                        if (action())
-                        {
-                            Thread.Sleep(interval);
-                        }
+                        if (action()) Thread.Sleep(interval);
                         else return;
                     }
                 }
@@ -126,7 +125,7 @@ namespace AntdUI
                 if (sleep > 0) Thread.Sleep(sleep);
                 for (int i = 0; i < totalFrames; i++)
                 {
-                    if (token == null || token.Token.IsCancellationRequested)
+                    if (token.Wait())
                     {
                         ok = false;
                         return;
@@ -155,9 +154,10 @@ namespace AntdUI
                     if (cold > -1) init_val = cold;
                     for (int i = 0; i < totalFrames; i++)
                     {
-                        if (token == null || token.Token.IsCancellationRequested)
+                        if (token.Wait())
                         {
-                            ok = false; return;
+                            ok = false;
+                            return;
                         }
                         else
                         {
@@ -176,9 +176,10 @@ namespace AntdUI
                     else init_val = 0;
                     for (int i = 0; i < totalFrames; i++)
                     {
-                        if (token == null || token.Token.IsCancellationRequested)
+                        if (token.Wait())
                         {
-                            ok = false; return;
+                            ok = false;
+                            return;
                         }
                         else
                         {

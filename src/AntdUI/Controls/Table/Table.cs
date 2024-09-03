@@ -502,14 +502,7 @@ namespace AntdUI
                     var _row = rows[row];
                     var vals = new List<string?>(_row.cells.Length);
                     foreach (var cell in _row.cells) vals.Add(cell.ToString());
-                    if (InvokeRequired)
-                    {
-                        Invoke(new Action(() =>
-                        {
-                            Clipboard.SetText(string.Join("\t", vals));
-                        }));
-                    }
-                    else Clipboard.SetText(string.Join("\t", vals));
+                    this.ClipboardSetText(string.Join("\t", vals));
                     return true;
                 }
                 catch { }

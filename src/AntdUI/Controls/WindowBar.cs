@@ -234,7 +234,17 @@ namespace AntdUI
             }
         }
 
-        public bool IsMax = false;
+        bool isMax = false;
+        public bool IsMax
+        {
+            get => isMax;
+            set
+            {
+                if (isMax == value) return;
+                isMax = value;
+                Invalidate();
+            }
+        }
 
         #endregion
 
@@ -768,6 +778,9 @@ namespace AntdUI
                 case EventType.THEME:
                     DisposeBmp();
                     Invalidate();
+                    break;
+                case EventType.WINDOW_STATE:
+                    if (tag is bool state) IsMax = state;
                     break;
             }
         }
