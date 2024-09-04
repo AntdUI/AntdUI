@@ -157,7 +157,7 @@ namespace AntdUI
             {
                 var dpi = Config.Dpi;
 
-                int butt_h = (int)Math.Round(config.BtnHeight * dpi), gap = (int)Math.Round(8F * dpi), paddingx = (int)Math.Round(24 * dpi), paddingy = (int)Math.Round(20 * dpi),
+                int butt_h = (int)Math.Round(config.BtnHeight * dpi), gap = (int)Math.Round(8F * dpi), paddingx = (int)Math.Round(config.Padding.Width * dpi), paddingy = (int)Math.Round(config.Padding.Height * dpi),
                     w = (int)Math.Round(config.Width * dpi), wp = w - paddingx * 2;
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
                 if (panel_main != null) panel_main.Height = butt_h;
