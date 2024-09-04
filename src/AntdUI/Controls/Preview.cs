@@ -74,6 +74,39 @@ namespace AntdUI
             {
                 Form = form;
                 Content = bmps;
+                ContentCount = bmps.Count;
+            }
+
+            /// <summary>
+            /// Preview 配置
+            /// </summary>
+            /// <param name="form">所属窗口</param>
+            /// <param name="list">数据</param>
+            /// <param name="call">回调</param>
+            public Config(Form form, IList<object> list, Func<int, object, Image?> call)
+            {
+                Form = form;
+                Content = new object[] {
+                    list,
+                    call
+                };
+                ContentCount = list.Count;
+            }
+
+            /// <summary>
+            /// Preview 配置
+            /// </summary>
+            /// <param name="form">所属窗口</param>
+            /// <param name="list">数据</param>
+            /// <param name="call">回调</param>
+            public Config(Form form, IList<object> list, Func<int, object, Action<float, string?>, Image?> call)
+            {
+                Form = form;
+                Content = new object[] {
+                    list,
+                    call
+                };
+                ContentCount = list.Count;
             }
 
             /// <summary>
@@ -84,7 +117,12 @@ namespace AntdUI
             /// <summary>
             /// 内容
             /// </summary>
-            public IList<Image> Content { get; set; }
+            public object Content { get; set; }
+
+            /// <summary>
+            /// 内容数量
+            /// </summary>
+            public int ContentCount { get; set; }
 
             /// <summary>
             /// 用户定义数据

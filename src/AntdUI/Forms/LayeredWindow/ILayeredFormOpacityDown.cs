@@ -172,7 +172,7 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
-        internal void CLocation(Control control, Point point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int t_width, int height, Rectangle rect_read, ref bool Inverted, ref TAlign ArrowAlign)
+        internal void CLocation(Control Control, Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
         {
             switch (Placement)
             {
@@ -181,52 +181,148 @@ namespace AntdUI
                     if (DropDownArrow)
                     {
                         ArrowAlign = TAlign.Top;
-                        SetLocation(point.X + (control.Width - (t_width + 20)) / 2, point.Y - height + 10 - ArrowSize);
+                        SetLocation(Point.X + (Control.Width - (Width + 20)) / 2, Point.Y - Height + 10 - ArrowSize);
                     }
-                    else SetLocation(point.X + (control.Width - (t_width + 20)) / 2, point.Y - height + 10);
+                    else SetLocation(Point.X + (Control.Width - (Width + 20)) / 2, Point.Y - Height + 10);
                     break;
                 case TAlignFrom.TL:
                     Inverted = true;
                     if (DropDownArrow)
                     {
+                        int x = Point.X + Rect.X - 10, y = Point.Y - Height + 10 - ArrowSize;
                         ArrowAlign = TAlign.TL;
-                        SetLocation(point.X + rect_read.X - 10, point.Y - height + 10 - ArrowSize);
+                        SetLocation(x, y);
+                        if (Collision)
+                        {
+                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                            if (x > (screen.X + screen.Width) - TargetRect.Width)
+                            {
+                                ArrowAlign = TAlign.TR;
+                                x = Point.X + (Rect.X + Rect.Width) - Width - 10;
+                                SetLocation(x, y);
+                            }
+                        }
                     }
-                    else SetLocation(point.X + rect_read.X - 10, point.Y - height + 10);
+                    else
+                    {
+                        int x = Point.X + Rect.X - 10, y = Point.Y - Height + 10;
+                        SetLocation(x, y);
+                        if (Collision)
+                        {
+                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                            if (x > (screen.X + screen.Width) - TargetRect.Width)
+                            {
+                                x = Point.X + (Rect.X + Rect.Width) - Width - 10;
+                                SetLocation(x, y);
+                            }
+                        }
+                    }
                     break;
                 case TAlignFrom.TR:
                     Inverted = true;
                     if (DropDownArrow)
                     {
+                        int x = Point.X + (Rect.X + Rect.Width) - Width - 10, y = Point.Y - Height + 10 - ArrowSize;
                         ArrowAlign = TAlign.TR;
-                        SetLocation(point.X + (rect_read.X + rect_read.Width) - t_width - 10, point.Y - height + 10 - ArrowSize);
+                        SetLocation(x, y);
+                        if (Collision)
+                        {
+                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                            if (x < 0)
+                            {
+                                ArrowAlign = TAlign.TL;
+                                x = Point.X + Rect.X - 10;
+                                SetLocation(x, y);
+                            }
+                        }
                     }
-                    else SetLocation(point.X + (rect_read.X + rect_read.Width) - t_width - 10, point.Y - height + 10);
+                    else
+                    {
+                        int x = Point.X + (Rect.X + Rect.Width) - Width - 10, y = Point.Y - Height + 10;
+                        SetLocation(x, y);
+                        if (Collision)
+                        {
+                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                            if (x < 0)
+                            {
+                                x = Point.X + Rect.X - 10;
+                                SetLocation(x, y);
+                            }
+                        }
+                    }
                     break;
                 case TAlignFrom.Bottom:
                     if (DropDownArrow)
                     {
                         ArrowAlign = TAlign.Bottom;
-                        SetLocation(point.X + (control.Width - (t_width + 20)) / 2, point.Y + control.Height - 10 + ArrowSize);
+                        SetLocation(Point.X + (Control.Width - (Width + 20)) / 2, Point.Y + Control.Height - 10 + ArrowSize);
                     }
-                    else SetLocation(point.X + (control.Width - (t_width + 20)) / 2, point.Y + control.Height - 10);
+                    else SetLocation(Point.X + (Control.Width - (Width + 20)) / 2, Point.Y + Control.Height - 10);
                     break;
                 case TAlignFrom.BR:
                     if (DropDownArrow)
                     {
                         ArrowAlign = TAlign.BR;
-                        SetLocation(point.X + (rect_read.X + rect_read.Width) - t_width - 10, point.Y + control.Height - 10 + ArrowSize);
+                        int x = Point.X + (Rect.X + Rect.Width) - Width - 10, y = Point.Y + Control.Height - 10 + ArrowSize;
+                        SetLocation(x, y);
+                        if (Collision)
+                        {
+                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                            if (x < 0)
+                            {
+                                ArrowAlign = TAlign.BL;
+                                x = Point.X + Rect.X - 10;
+                                SetLocation(x, y);
+                            }
+                        }
                     }
-                    else SetLocation(point.X + (rect_read.X + rect_read.Width) - t_width - 10, point.Y + control.Height - 10);
+                    else
+                    {
+                        int x = Point.X + (Rect.X + Rect.Width) - Width - 10, y = Point.Y + Control.Height - 10;
+                        SetLocation(x, y);
+                        if (Collision)
+                        {
+                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                            if (x < 0)
+                            {
+                                x = Point.X + Rect.X - 10;
+                                SetLocation(x, y);
+                            }
+                        }
+                    }
                     break;
                 case TAlignFrom.BL:
                 default:
                     if (DropDownArrow)
                     {
+                        int x = Point.X + Rect.X - 10, y = Point.Y + Control.Height - 10 + ArrowSize;
                         ArrowAlign = TAlign.BL;
-                        SetLocation(point.X + rect_read.X - 10, point.Y + control.Height - 10 + ArrowSize);
+                        SetLocation(x, y);
+                        if (Collision)
+                        {
+                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                            if (x > (screen.X + screen.Width) - TargetRect.Width)
+                            {
+                                ArrowAlign = TAlign.BR;
+                                x = Point.X + (Rect.X + Rect.Width) - Width - 10;
+                                SetLocation(x, y);
+                            }
+                        }
                     }
-                    else SetLocation(point.X + rect_read.X - 10, point.Y + control.Height - 10);
+                    else
+                    {
+                        int x = Point.X + Rect.X - 10, y = Point.Y + Control.Height - 10;
+                        SetLocation(x, y);
+                        if (Collision)
+                        {
+                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                            if (x > (screen.X + screen.Width) - TargetRect.Width)
+                            {
+                                x = Point.X + (Rect.X + Rect.Width) - Width - 10;
+                                SetLocation(x, y);
+                            }
+                        }
+                    }
                     break;
             }
         }

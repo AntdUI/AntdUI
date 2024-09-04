@@ -28,15 +28,15 @@ namespace AntdUI
     {
         internal float Radius = 10;
         TAlign ArrowAlign = TAlign.None;
-        int ArrowSize = 8;
+        readonly int ArrowSize = 8;
         int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28;//260
         Color Value, ValueNAlpha, ValueHue;
         Action<Color> action;
-        Input input;
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             control.Parent.SetTopMost(Handle);
             Font = control.Font;
+            MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
             color_alpha = Value = control.Value;
             ValueNAlpha = Color.FromArgb(255, Value);
             var hsv = ValueNAlpha.ToHSV();
@@ -58,16 +58,25 @@ namespace AntdUI
                 w = (int)(w * Config.Dpi);
                 h = (int)(h * Config.Dpi);
             }
+
             rect_colors = new Rectangle(10 + gap, 10 + gap, w - gap * 2, colors_h);
             rect_color = new Rectangle(10 + gap + (w - gap * 2) - panel_color, rect_colors.Bottom + gap, panel_color, panel_color);
             rect_hue = new Rectangle(10 + gap, rect_colors.Bottom + gap, w - gap * 3 - panel_color, line_h);
-            rect_alpha = new Rectangle(rect_hue.X, rect_hue.Bottom + gap, rect_hue.Width, line_h);
 
+            int yb = rect_hue.Bottom + gap;
             int line_h2 = line_h / 2;
+            if (control.DisabledAlpha)
+            {
+                rect_alpha = rect_alpha_big = new Rectangle(-1, -1, 0, 0);
+                rect_hue.Offset(0, line_h);
+            }
+            else
+            {
+                rect_alpha = new Rectangle(rect_hue.X, rect_hue.Bottom + gap, rect_hue.Width, line_h);
+                rect_alpha_big = new Rectangle(rect_alpha.X - line_h2, rect_alpha.Y - line_h2, rect_alpha.Width + line_h, rect_alpha.Height + line_h);
+            }
             rect_colors_big = new Rectangle(rect_colors.X - line_h2, rect_colors.Y - line_h2, rect_colors.Width + line_h, rect_colors.Height + line_h);
             rect_hue_big = new Rectangle(rect_hue.X - line_h2, rect_hue.Y - line_h2, rect_hue.Width + line_h, rect_hue.Height + line_h);
-            rect_alpha_big = new Rectangle(rect_alpha.X - line_h2, rect_alpha.Y - line_h2, rect_alpha.Width + line_h, rect_alpha.Height + line_h);
-
 
             bmp_dot_12 = new Bitmap(gap + 12, gap + 12);
             using (var g2 = Graphics.FromImage(bmp_dot_12).High())
@@ -83,61 +92,139 @@ namespace AntdUI
                 }
             }
 
-            rect_input = new Rectangle(rect_colors_big.X + 4, rect_alpha.Bottom + gap, rect_colors_big.Width - 8, panel_color);
             h += panel_color + gap;
 
-            SetSizeW(w + 20);
+            SetSize(w + 20, 0);
             EndHeight = h + 20;
-            var point = control.PointToScreen(Point.Empty);
 
-            ArrowAlign = TAlign.BL;
-            int x = point.X + rect_read.X - 10;
-            SetLocation(x, point.Y + control.Height - 10 + ArrowSize);
-
-            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-            if (x > (screen.X + screen.Width) - TargetRect.Width)
-            {
-                ArrowAlign = TAlign.BR;
-                x = point.X + rect_read.X - w + 30;
-                SetLocation(x, point.Y + control.Height - 10 + ArrowSize);
-            }
+            CLocation(control, control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, w, h + 20, rect_read, ref Inverted, ref ArrowAlign, true);
 
             Location = TargetRect.Location;
             Size = TargetRect.Size;
-            input = new Input
-            {
-                Padding = new Padding(rect_colors_big.X + 4, 0, rect_colors_big.X + 4, 0),
-                Location = new Point(0, rect_input.Y),
-                Size = new Size(w + 20, rect_input.Height),
-                TextAlign = HorizontalAlignment.Center,
-                Text = "#" + Value.ToHex()
-            };
-            input.TakePaint = () =>
-            {
-                Print();
-            };
-            input.TextChanged += (a, b) =>
-            {
-                if (isinput)
-                {
-                    var color = input.Text.ToColor();
-                    color_alpha = Value = color;
-                    ValueNAlpha = Color.FromArgb(255, Value);
-                    var hsv = ValueNAlpha.ToHSV();
-                    hsv.s = hsv.v = 1;
-                    ValueHue = hsv.HSVToColor();
 
-                    action(Value);
-                    bmp_colors?.Dispose();
-                    bmp_colors = null;
-                    bmp_hue?.Dispose();
-                    bmp_hue = null;
-                    bmp_alpha?.Dispose();
-                    bmp_alpha = null;
-                    Print();
-                }
-            };
-            Controls.Add(input);
+            var rect_input = new Rectangle(rect_colors_big.X + 4, yb + line_h + gap, rect_colors_big.Width - 8, panel_color);
+            int wsize = (int)(4 * Config.Dpi);
+            switch (control.Mode)
+            {
+                case TColorMode.Rgb:
+
+                    int wr4 = rect_input.Width / 4 - wsize;
+                    Rectangle rect_r = new Rectangle(rect_input.X, rect_input.Y, wr4, rect_input.Height),
+                        rect_g = new Rectangle(rect_input.X + wr4 + wsize, rect_input.Y, wr4, rect_input.Height),
+                        rect_b = new Rectangle(rect_input.X + wr4 * 2 + wsize * 2, rect_input.Y, wr4, rect_input.Height),
+                        rect_a = new Rectangle(rect_input.X + wr4 * 3 + wsize * 3, rect_input.Y, wr4, rect_input.Height);
+
+                    var input_r = new Input
+                    {
+                        RECTDIV = rect_r,
+                        Location = rect_r.Location,
+                        Size = rect_r.Size,
+                        Text = Value.R.ToString()
+                    };
+                    input_r.TakePaint = () =>
+                    {
+                        Print();
+                    };
+                    input_r.TextChanged += (a, b) =>
+                    {
+                    };
+                    Controls.Add(input_r);
+
+                    var input_g = new Input
+                    {
+                        RECTDIV = rect_g,
+                        Location = rect_g.Location,
+                        Size = rect_g.Size,
+                        Text = Value.G.ToString()
+                    };
+                    input_g.TakePaint = () =>
+                    {
+                        Print();
+                    };
+                    input_g.TextChanged += (a, b) =>
+                    {
+                    };
+                    Controls.Add(input_g);
+
+                    var input_b = new Input
+                    {
+                        RECTDIV = rect_b,
+                        Location = rect_b.Location,
+                        Size = rect_b.Size,
+                        Text = Value.B.ToString()
+                    };
+                    input_b.TakePaint = () =>
+                    {
+                        Print();
+                    };
+                    input_b.TextChanged += (a, b) =>
+                    {
+                    };
+                    Controls.Add(input_b);
+
+                    var input_a = new Input
+                    {
+                        RECTDIV = rect_a,
+                        Location = rect_a.Location,
+                        Size = rect_a.Size,
+                        Text = Value.B.ToString()
+                    };
+                    input_a.TakePaint = () =>
+                    {
+                        Print();
+                    };
+                    input_a.TextChanged += (a, b) =>
+                    {
+                    };
+                    Controls.Add(input_a);
+
+                    inputs = new InputRect[] {
+                        new InputRect(input_r,  rect_r, wsize, wsize*2),
+                        new InputRect(input_g, rect_g, wsize, wsize*2),
+                        new InputRect(input_b,  rect_b, wsize, wsize*2),
+                        new InputRect(input_a,  rect_a, wsize, wsize*2)
+                    };
+                    break;
+                case TColorMode.Hex:
+                default:
+                    var input = new Input
+                    {
+                        RECTDIV = rect_input,
+                        Padding = new Padding(rect_colors_big.X + 4, 0, rect_colors_big.X + 4, 0),
+                        Location = new Point(0, rect_input.Y),
+                        Size = new Size(w + 20, rect_input.Height),
+                        TextAlign = HorizontalAlignment.Center,
+                        Text = "#" + Value.ToHex()
+                    };
+                    input.TakePaint = () =>
+                    {
+                        Print();
+                    };
+                    input.TextChanged += (a, b) =>
+                    {
+                        if (isinput)
+                        {
+                            var color = input.Text.ToColor();
+                            color_alpha = Value = color;
+                            ValueNAlpha = Color.FromArgb(255, Value);
+                            var hsv = ValueNAlpha.ToHSV();
+                            hsv.s = hsv.v = 1;
+                            ValueHue = hsv.HSVToColor();
+
+                            action(Value);
+                            bmp_colors?.Dispose();
+                            bmp_colors = null;
+                            bmp_hue?.Dispose();
+                            bmp_hue = null;
+                            bmp_alpha?.Dispose();
+                            bmp_alpha = null;
+                            Print();
+                        }
+                    };
+                    Controls.Add(input);
+                    inputs = new InputRect[] { new InputRect(input, rect_input, wsize, wsize * 2) };
+                    break;
+            }
         }
 
         public override void LoadOK()
@@ -162,7 +249,7 @@ namespace AntdUI
         void SetValue()
         {
             isinput = false;
-            input.Text = "#" + Value.ToHex();
+            inputs[0].input.Text = "#" + Value.ToHex();
             action(Value);
             isinput = true;
         }
@@ -347,28 +434,33 @@ namespace AntdUI
 
                     #region 透明度
 
-                    if (bmp_alpha_read == null)
+                    if (rect_alpha.Width > 0)
                     {
-                        bmp_alpha_read = new Bitmap(rect_alpha.Width, rect_alpha.Height);
-                        using (var g2 = Graphics.FromImage(bmp_alpha_read).High())
+                        if (bmp_alpha_read == null)
                         {
-                            PaintAlpha(g2, new Rectangle(0, 0, bmp_alpha_read.Width, bmp_alpha_read.Height), false);
+                            bmp_alpha_read = new Bitmap(rect_alpha.Width, rect_alpha.Height);
+                            using (var g2 = Graphics.FromImage(bmp_alpha_read).High())
+                            {
+                                PaintAlpha(g2, new Rectangle(0, 0, bmp_alpha_read.Width, bmp_alpha_read.Height), false);
+                            }
+                            GetAlphaPoint(bmp_alpha_read);
                         }
-                        GetAlphaPoint(bmp_alpha_read);
-                    }
-                    if (bmp_alpha == null)
-                    {
-                        bmp_alpha = new Bitmap(rect_alpha.Width, rect_alpha.Height);
-                        using (var g2 = Graphics.FromImage(bmp_alpha).High())
+
+                        if (bmp_alpha == null)
                         {
-                            PaintAlpha(g2, new Rectangle(0, 0, bmp_alpha.Width, bmp_alpha.Height), true);
+                            bmp_alpha = new Bitmap(rect_alpha.Width, rect_alpha.Height);
+                            using (var g2 = Graphics.FromImage(bmp_alpha).High())
+                            {
+                                PaintAlpha(g2, new Rectangle(0, 0, bmp_alpha.Width, bmp_alpha.Height), true);
+                            }
                         }
-                    }
-                    g.DrawImage(bmp_alpha, rect_alpha);
-                    using (var path = rect_alpha.RoundPath(rect_alpha.Height))
-                    {
-                        path.AddRectangle(new Rectangle(rect_alpha.X - 1, rect_alpha.Y - 1, rect_alpha.Width + 2, rect_alpha.Height + 2));
-                        g.FillPath(brush_bg, path);
+                        g.DrawImage(bmp_alpha, rect_alpha);
+
+                        using (var path = rect_alpha.RoundPath(rect_alpha.Height))
+                        {
+                            path.AddRectangle(new Rectangle(rect_alpha.X - 1, rect_alpha.Y - 1, rect_alpha.Width + 2, rect_alpha.Height + 2));
+                            g.FillPath(brush_bg, path);
+                        }
                     }
 
                     #endregion
@@ -399,12 +491,15 @@ namespace AntdUI
 
                         #region 透明度
 
-                        brush_val.Color = color_alpha;
-                        var _rect_alpha = new Rectangle(rect_alpha.X + point_alpha - gap / 2, rect_alpha.Y + rect_alpha.Height / 2 - gap / 2, gap, gap);
+                        if (rect_alpha.Width > 0)
+                        {
+                            brush_val.Color = color_alpha;
+                            var _rect_alpha = new Rectangle(rect_alpha.X + point_alpha - gap / 2, rect_alpha.Y + rect_alpha.Height / 2 - gap / 2, gap, gap);
 
-                        g.DrawImage(bmp_dot_12, new Rectangle(rect_alpha.X + point_alpha - bmp_dot_12.Height / 2, rect_alpha.Y + (rect_alpha.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
-                        g.FillEllipse(brush_val, _rect_alpha);
-                        g.DrawEllipse(pen, _rect_alpha);
+                            g.DrawImage(bmp_dot_12, new Rectangle(rect_alpha.X + point_alpha - bmp_dot_12.Height / 2, rect_alpha.Y + (rect_alpha.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
+                            g.FillEllipse(brush_val, _rect_alpha);
+                            g.DrawEllipse(pen, _rect_alpha);
+                        }
 
                         #endregion
 
@@ -418,13 +513,24 @@ namespace AntdUI
 
                     #endregion
                 }
-                g.TranslateTransform(0, rect_input.Y);
-                input.IPaint(g, rect_input);
+                foreach (var input in inputs) input.input.IPaint(g, input.rect, input.rect_read);
             }
             return original_bmp;
         }
 
-        Rectangle rect_input;
+        class InputRect
+        {
+            public InputRect(Input _input, Rectangle _rect_read, int wsize, int wsize2)
+            {
+                input = _input;
+                rect = new Rectangle(_rect_read.X - wsize, _rect_read.Y - wsize, _rect_read.Width + wsize2, _rect_read.Height + wsize2);
+                rect_read = _rect_read;
+            }
+            public Input input { get; set; }
+            public Rectangle rect { get; set; }
+            public Rectangle rect_read { get; set; }
+        }
+        InputRect[] inputs;
 
         #region 渲染帮助
 
@@ -569,17 +675,17 @@ namespace AntdUI
         {
             if (add)
             {
-                int he = rect.Height / 2;
-                int u_x = 0;
-                bool ad = false;
-                while (u_x < rect.Width)
+                using (var brush = new SolidBrush(Style.Db.FillSecondary))
                 {
-                    ad = !ad;
-                    using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                    int he = rect.Height / 2;
+                    int u_x = 0;
+                    bool ad = false;
+                    while (u_x < rect.Width)
                     {
+                        ad = !ad;
                         g.FillRectangle(brush, new Rectangle(u_x, ad ? 0 : he, he, he));
+                        u_x += he;
                     }
-                    u_x += he;
                 }
             }
             rect.Offset(1, 0);
@@ -641,12 +747,23 @@ namespace AntdUI
 
         public bool IProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            return input.IProcessCmdKey(ref msg, keyData);
+            foreach (var input in inputs)
+            {
+                if (input.input.Focused) return input.input.IProcessCmdKey(ref msg, keyData);
+            }
+            return false;
         }
 
         public void IKeyPress(KeyPressEventArgs e)
         {
-            input.IKeyPress(e);
+            foreach (var input in inputs)
+            {
+                if (input.input.Focused)
+                {
+                    input.input.IKeyPress(e);
+                    return;
+                }
+            }
         }
     }
 }

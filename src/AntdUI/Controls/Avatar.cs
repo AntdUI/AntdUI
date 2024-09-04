@@ -383,8 +383,8 @@ namespace AntdUI
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
             if (loading)
             {
-                using (Pen pen = new Pen(Color.FromArgb(220, Style.Db.PrimaryColor), 6 * Config.Dpi))
-                using (Pen penpro = new Pen(Style.Db.Primary, pen.Width))
+                using (var pen = new Pen(Color.FromArgb(220, Style.Db.PrimaryColor), 6 * Config.Dpi))
+                using (var penpro = new Pen(Style.Db.Primary, pen.Width))
                 {
                     int loading_size = (int)(40 * Config.Dpi);
                     var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);

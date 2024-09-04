@@ -39,12 +39,16 @@ namespace AntdUI
         }
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect_read = ReadRectangle;
-            if (rect_read.Width > 0 && rect_read.Height > 0) IPaint(e.Graphics.High(), rect_read);
+            var _rect = ClientRectangle;
+            if (_rect.Width > 0 && _rect.Height > 0)
+            {
+                Rectangle rect = _rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
+                IPaint(e.Graphics.High(), rect, rect_read);
+            }
             base.OnPaint(e);
         }
 
-        internal void IPaint(Graphics g, Rectangle rect_read)
+        internal void IPaint(Graphics g, Rectangle rect, Rectangle rect_read)
         {
             float _radius = round ? rect_read.Height : radius * Config.Dpi;
             bool enabled = Enabled;
@@ -76,7 +80,7 @@ namespace AntdUI
                         break;
                 }
 
-                PaintClick(g, path, _borderActive, _radius);
+                PaintClick(g, path, rect, _borderActive, _radius);
 
                 if (enabled)
                 {
@@ -233,6 +237,7 @@ namespace AntdUI
         void PaintText(Graphics g, Color _fore, int w, int h)
         {
             if (multiline) g.SetClip(rect_text);
+            else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
             else g.SetClip(new Rectangle(rect_text.X, 0, rect_text.Width, Height));
             if (cache_font != null)
             {
@@ -310,7 +315,7 @@ namespace AntdUI
 
         #region 点击动画
 
-        internal void PaintClick(Graphics g, GraphicsPath path, Color color, float radius)
+        internal void PaintClick(Graphics g, GraphicsPath path, Rectangle rect, Color color, float radius)
         {
             if (AnimationFocus)
             {
@@ -318,7 +323,6 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Helper.ToColor(AnimationFocusValue, color)))
                     {
-                        var rect = ClientRectangle.PaddingRect(Padding);
                         using (var path_click = Helper.RoundPath(rect, radius, round))
                         {
                             path_click.AddPath(path, false);
@@ -331,7 +335,6 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Color.FromArgb(30, color)))
                 {
-                    var rect = ClientRectangle.PaddingRect(Padding);
                     using (var path_click = Helper.RoundPath(rect, radius, round))
                     {
                         path_click.AddPath(path, false);

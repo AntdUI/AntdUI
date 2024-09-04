@@ -250,9 +250,11 @@ namespace AntdUI
 
         internal Rectangle rect_text, rect_l, rect_r;
         internal Rectangle rect_d_ico, rect_d_l, rect_d_r;
+
+        internal Rectangle? RECTDIV = null;
         internal void CalculateRect()
         {
-            var rect = ReadRectangle;
+            var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight) : ReadRectangle;
             int sps = (int)(CurrentCaret.Height * .4F), sps2 = sps * 2;
             RectAuto(rect, sps, sps2);
             if (cache_font == null)

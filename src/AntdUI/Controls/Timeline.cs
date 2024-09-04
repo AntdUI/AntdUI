@@ -205,8 +205,7 @@ namespace AntdUI
                     {
                         g.DrawStr(it.Text, Font, brush_fore, it.txt_rect, stringFormatLeft);
                         g.DrawStr(it.Description, font_Description, brush_fore2, it.description_rect, stringFormatLeft);
-                        if (it.Icon != null) g.DrawImage(it.Icon, it.ico_rect);
-                        else
+                        if (PaintIcon(g, it, color_fore))
                         {
                             Color fill;
                             if (it.Fill.HasValue) fill = it.Fill.Value;
@@ -249,6 +248,19 @@ namespace AntdUI
             ScrollBar.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);
+        }
+
+        bool PaintIcon(Graphics g, TimelineItem it, Color fore)
+        {
+            if (it.Icon != null) { g.DrawImage(it.Icon, it.ico_rect); return false; }
+            else if (it.IconSvg != null)
+            {
+                using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.ico_rect, fore))
+                {
+                    if (_bmp != null) { g.DrawImage(_bmp, it.ico_rect); return false; }
+                }
+            }
+            return true;
         }
 
         #endregion
@@ -383,6 +395,12 @@ namespace AntdUI
         /// </summary>
         [Description("图标"), Category("外观"), DefaultValue(null)]
         public Image? Icon { get; set; }
+
+        /// <summary>
+        /// 图标SVG
+        /// </summary>
+        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconSvg { get; set; }
 
         /// <summary>
         /// 名称
