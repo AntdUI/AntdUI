@@ -32,6 +32,7 @@ namespace Overview.Controls
             InitializeComponent();
             LoadData();
         }
+
         #region 数据
 
         private void segmented1_SelectIndexChanged(object sender, AntdUI.IntEventArgs e)
@@ -172,16 +173,8 @@ namespace Overview.Controls
         {
             if (e.Item is VItem item)
             {
-                try
-                {
-                    Clipboard.SetText(item.Key);
-                    AntdUI.Message.success(form, item.Key + " 复制成功");
-                }
-                catch
-                {
-                    if (SetClipBoardText(item.Key)) AntdUI.Message.success(form, item.Key + " 复制成功");
-                    else AntdUI.Message.error(form, item.Key + " 复制失败");
-                }
+                if (AntdUI.Helper.ClipboardSetText(this, item.Key)) AntdUI.Message.success(form, item.Key + " 复制成功");
+                else AntdUI.Message.error(form, item.Key + " 复制失败");
             }
         }
 
