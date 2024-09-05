@@ -22,6 +22,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Imaging;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -38,6 +40,10 @@ namespace AntdUI
         public VirtualPanel()
         {
             ScrollBar = new ScrollBar(this);
+            new Thread(LongTask)
+            {
+                IsBackground = true
+            }.Start();
         }
 
         #region 属性
@@ -394,7 +400,34 @@ namespace AntdUI
                     var size = it.Size(g, new VirtualPanelArgs(this, rect, r));
                     it.WIDTH = size.Width;
                     it.HEIGHT = size.Height;
-                    if (tmps.Count > 0 && use_x + size.Width > rect.Width)
+                }
+
+                int readcount = -1;
+                if (waterfall)
+                {
+                    var counts = new List<int>(items.Count);
+                    int count = 0;
+                    foreach (var it in items)
+                    {
+                        if (use_x + it.WIDTH >= rect.Width)
+                        {
+                            use_x = rect.X;
+                            use_y += max_height + gap;
+                            if (count > 0)
+                                counts.Add(count);
+                            count = 0;
+                        }
+                        use_x += it.WIDTH + gap;
+                        count++;
+                    }
+
+                    use_x = rect.X;
+                    use_y = rect.Y + gap;
+                    if (counts.Count > 0) readcount = counts.Max();
+                }
+                foreach (var it in items)
+                {
+                    if (tmps.Count > 0 && use_x + it.WIDTH >= rect.Width)
                     {
                         rows.Add(new RItem(use_x, use_y, max_height, tmps, true));
                         tmps.Clear();
@@ -405,23 +438,25 @@ namespace AntdUI
                     if (max_height < it.HEIGHT) max_height = it.HEIGHT;
                     if (it is VirtualShadowItem virtualShadow)
                     {
-                        it.RECT.Width = size.Width - shadow2;
-                        it.RECT.Height = size.Height - shadow2;
+                        it.RECT.Width = it.WIDTH - shadow2;
+                        it.RECT.Height = it.HEIGHT - shadow2;
                         it.RECT.X = use_x + shadow;
                         it.RECT.Y = use_y + shadow;
 
-                        virtualShadow.RECT_S.Size = size;
+                        virtualShadow.RECT_S.Width = it.WIDTH;
+                        virtualShadow.RECT_S.Height = it.HEIGHT;
                         virtualShadow.RECT_S.X = use_x;
                         virtualShadow.RECT_S.Y = use_y;
                     }
                     else
                     {
-                        it.RECT.Size = size;
+                        it.RECT.Width = it.WIDTH;
+                        it.RECT.Height = it.HEIGHT;
                         it.RECT.X = use_x;
                         it.RECT.Y = use_y;
                     }
-                    use_x += size.Width + gap;
-                    last_len = use_y + size.Height + gap;
+                    use_x += it.WIDTH + gap;
+                    last_len = use_y + it.HEIGHT + gap;
                     it.SHOW = true;
                     tmps.Add(it);
                 }
@@ -431,7 +466,6 @@ namespace AntdUI
                 #region 布局
 
                 if (last_len > rect.Height) rect.Height = last_len;
-
                 switch (justifycontent)
                 {
                     case TJustifyContent.Start:
@@ -448,9 +482,14 @@ namespace AntdUI
                         {
                             if (row.cel.Count > 1)
                             {
-                                int totalWidth = 0;
-                                foreach (var cell in row.cel) totalWidth += cell.RECT.Width;
-                                int sp = (rect.Width - totalWidth) / (row.cel.Count - 1);
+                                int totalCount = row.cel.Count, totalWidth = 0;
+                                if (readcount == -1 || readcount <= row.cel.Count) totalWidth = row.cel.Sum(a => a.RECT.Width);
+                                else
+                                {
+                                    totalCount = readcount;
+                                    totalWidth = row.cel.Sum(a => a.RECT.Width) + (readcount - row.cel.Count) * row.cel[0].RECT.Width;
+                                }
+                                int sp = (rect.Width - totalWidth) / (totalCount - 1);
                                 int ux = rect.X;
                                 foreach (var item in row.cel)
                                 {
@@ -461,13 +500,18 @@ namespace AntdUI
                         }
                         break;
                     case TJustifyContent.SpaceEvenly:
-                        foreach (var row in rows)
+                        if (waterfall)
                         {
-                            if (row.cel.Count > 1)
+                            foreach (var row in rows)
                             {
-                                int totalWidth = 0;
-                                foreach (var cell in row.cel) totalWidth += cell.RECT.Width;
-                                int sp = (rect.Width - totalWidth) / (row.cel.Count + 1),
+                                int totalCount = row.cel.Count, totalWidth = 0;
+                                if (readcount == -1 || readcount <= row.cel.Count) totalWidth = row.cel.Sum(a => a.RECT.Width);
+                                else
+                                {
+                                    totalCount = readcount;
+                                    totalWidth = row.cel.Sum(a => a.RECT.Width) + (readcount - row.cel.Count) * row.cel[0].RECT.Width;
+                                }
+                                int sp = (rect.Width - totalWidth) / (totalCount + 1),
                                 ux = rect.X + sp;
                                 foreach (var item in row.cel)
                                 {
@@ -475,10 +519,27 @@ namespace AntdUI
                                     ux += item.RECT.Width + sp;
                                 }
                             }
-                            else
+                        }
+                        else
+                        {
+                            foreach (var row in rows)
                             {
-                                int x = (rect.Width - row.use_x + gap) / 2;
-                                HandLayout(rect, row.cel, x, 0);
+                                if (row.cel.Count > 1)
+                                {
+                                    int totalCount = row.cel.Count, totalWidth = totalWidth = row.cel.Sum(a => a.RECT.Width);
+                                    int sp = (rect.Width - totalWidth) / (totalCount + 1),
+                                    ux = rect.X + sp;
+                                    foreach (var item in row.cel)
+                                    {
+                                        HandLayout(rect, item, ux - item.RECT.X, 0);
+                                        ux += item.RECT.Width + sp;
+                                    }
+                                }
+                                else
+                                {
+                                    int x = (rect.Width - row.use_x + gap) / 2;
+                                    HandLayout(rect, row.cel, x, 0);
+                                }
                             }
                         }
                         break;
@@ -487,8 +548,7 @@ namespace AntdUI
                         {
                             if (row.cel.Count > 1)
                             {
-                                int totalWidth = 0;
-                                foreach (var cell in row.cel) totalWidth += cell.RECT.Width;
+                                int totalWidth = row.cel.Sum(a => a.RECT.Width);
                                 int availableSpace = rect.Width - totalWidth, spaceBetweenItems = availableSpace / row.cel.Count, spaceAroundItems = availableSpace / (row.cel.Count + 1),
                                 ux = rect.X + spaceAroundItems / 2;
                                 foreach (var item in row.cel)
@@ -621,6 +681,20 @@ namespace AntdUI
                             }
                         }
                     }
+
+                    int last_h = 0;
+                    foreach (var row in rows)
+                    {
+                        foreach (var item in row.cel)
+                        {
+                            if (item is VirtualShadowItem shadowItem)
+                            {
+                                if (last_h < shadowItem.RECT_S.Bottom) last_h = shadowItem.RECT_S.Bottom;
+                            }
+                            else if (last_h < item.RECT.Bottom) last_h = item.RECT.Bottom;
+                        }
+                    }
+                    last_len = last_h + Padding.Bottom + gap;
                 }
                 else
                 {
@@ -738,8 +812,75 @@ namespace AntdUI
             }
             g.ResetTransform();
             ScrollBar.Paint(g);
+            if (Config.Animation && BlurBar != null) _event.Set();
             base.OnPaint(e);
         }
+
+        #region 模糊标题
+
+        public Control? BlurBar = null;
+        ManualResetEvent _event = new ManualResetEvent(false);
+        void LongTask()
+        {
+            while (true)
+            {
+                if (_event.Wait()) return;
+                if (items != null && items.Count > 0 && BlurBar != null)
+                {
+                    int sy = ScrollBar.Value;
+                    int BlurBarHeight = BlurBar.Height;
+                    if (sy > BlurBarHeight)
+                    {
+                        sy -= BlurBarHeight;
+                        var rect = ClientRectangle;
+                        var bmp = new Bitmap(rect.Width, BlurBarHeight);
+                        using (var g = Graphics.FromImage(bmp).HighLay())
+                        {
+                            rect.Offset(0, sy);
+                            g.TranslateTransform(0, -sy);
+                            int r = (int)(radius * Config.Dpi);
+                            foreach (var it in items)
+                            {
+                                if (it.SHOW && it.SHOW_RECT)
+                                {
+                                    if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
+                                    it.Paint(g, new VirtualPanelArgs(this, it.RECT, r));
+                                }
+                            }
+                            g.ResetTransform();
+
+                            using (var brush = new SolidBrush(Color.FromArgb(45, BlurBar.BackColor)))
+                            {
+                                g.FillRectangle(brush, 0, 0, bmp.Width, bmp.Height);
+                            }
+                        }
+                        Helper.Blur(bmp, BlurBarHeight * 6);
+                        IBlurBar(BlurBar, bmp);
+                    }
+                    else IBlurBar(BlurBar, null);
+                }
+                else if (BlurBar != null) IBlurBar(BlurBar, null);
+                _event.Reset();
+            }
+        }
+
+        void IBlurBar(Control BlurBar, Bitmap? bmp)
+        {
+            Invoke(new Action(() =>
+            {
+                BlurBar.BackgroundImage?.Dispose();
+                BlurBar.BackgroundImage = bmp;
+            }));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            BlurBar = null;
+            _event?.Dispose();
+            base.Dispose(disposing);
+        }
+
+        #endregion
 
         Dictionary<string, Bitmap> shadow_dir_tmp = new Dictionary<string, Bitmap>();
         /// <summary>
