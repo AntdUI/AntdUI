@@ -32,10 +32,12 @@ namespace AntdUI
         int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28;//260
         Color Value, ValueNAlpha, ValueHue;
         Action<Color> action;
+        TColorMode mode;
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             control.Parent.SetTopMost(Handle);
             Font = control.Font;
+            mode = control.Mode;
             MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
             color_alpha = Value = control.Value;
             ValueNAlpha = Color.FromArgb(255, Value);
@@ -59,16 +61,39 @@ namespace AntdUI
                 h = (int)(h * Config.Dpi);
             }
 
+            if (control.Mode == TColorMode.Rgb)
+            {
+                if (control.DisabledAlpha)
+                {
+                    w = Helper.GDI(g =>
+                    {
+                        var size = g.MeasureString("255%", Font);
+                        return (int)Math.Ceiling((size.Width + size.Height) * 3.4F);
+                    });
+                }
+                else
+                {
+                    w = Helper.GDI(g =>
+                    {
+                        var size = g.MeasureString("255%", Font);
+                        return (int)Math.Ceiling((size.Width + size.Height) * 4.4F);
+                    });
+                }
+                int chtmp = (int)Math.Ceiling(w * .62F);
+                int chxc = chtmp - colors_h;
+                colors_h = chtmp;
+                h += chxc;
+            }
+
             rect_colors = new Rectangle(10 + gap, 10 + gap, w - gap * 2, colors_h);
             rect_color = new Rectangle(10 + gap + (w - gap * 2) - panel_color, rect_colors.Bottom + gap, panel_color, panel_color);
             rect_hue = new Rectangle(10 + gap, rect_colors.Bottom + gap, w - gap * 3 - panel_color, line_h);
-
             int yb = rect_hue.Bottom + gap;
             int line_h2 = line_h / 2;
             if (control.DisabledAlpha)
             {
                 rect_alpha = rect_alpha_big = new Rectangle(-1, -1, 0, 0);
-                rect_hue.Offset(0, line_h);
+                rect_hue.Offset(0, line_h + line_h2 / 2);
             }
             else
             {
@@ -103,87 +128,152 @@ namespace AntdUI
             Size = TargetRect.Size;
 
             var rect_input = new Rectangle(rect_colors_big.X + 4, yb + line_h + gap, rect_colors_big.Width - 8, panel_color);
-            int wsize = (int)(4 * Config.Dpi);
+            int wsize = (int)(4 * Config.Dpi), wsize2 = wsize * 2;
             switch (control.Mode)
             {
                 case TColorMode.Rgb:
+                    if (control.DisabledAlpha)
+                    {
+                        int wr4 = rect_input.Width / 3 - wsize;
+                        Rectangle rect_r = new Rectangle(rect_input.X, rect_input.Y, wr4, rect_input.Height),
+                            rect_g = new Rectangle(rect_input.X + wr4 + wsize, rect_input.Y, wr4, rect_input.Height),
+                            rect_b = new Rectangle(rect_input.X + wr4 * 2 + wsize2, rect_input.Y, wr4, rect_input.Height);
 
-                    int wr4 = rect_input.Width / 4 - wsize;
-                    Rectangle rect_r = new Rectangle(rect_input.X, rect_input.Y, wr4, rect_input.Height),
-                        rect_g = new Rectangle(rect_input.X + wr4 + wsize, rect_input.Y, wr4, rect_input.Height),
-                        rect_b = new Rectangle(rect_input.X + wr4 * 2 + wsize * 2, rect_input.Y, wr4, rect_input.Height),
-                        rect_a = new Rectangle(rect_input.X + wr4 * 3 + wsize * 3, rect_input.Y, wr4, rect_input.Height);
+                        var input_r = new InputNumber
+                        {
+                            ShowControl = false,
+                            PrefixText = "R",
+                            Location = rect_r.Location,
+                            Size = rect_r.Size,
+                            Value = Value.R,
+                            Maximum = 255
+                        };
+                        input_r.ValueChanged += (a, e) =>
+                        {
+                            if (isinput) ChangeColor(Color.FromArgb(Value.A, (int)e.Value, Value.G, Value.B));
+                        };
 
-                    var input_r = new Input
-                    {
-                        RECTDIV = rect_r,
-                        Location = rect_r.Location,
-                        Size = rect_r.Size,
-                        Text = Value.R.ToString()
-                    };
-                    input_r.TakePaint = () =>
-                    {
-                        Print();
-                    };
-                    input_r.TextChanged += (a, b) =>
-                    {
-                    };
-                    Controls.Add(input_r);
+                        var input_g = new InputNumber
+                        {
+                            ShowControl = false,
+                            PrefixText = "G",
+                            Location = rect_g.Location,
+                            Size = rect_g.Size,
+                            Value = Value.G,
+                            Maximum = 255
+                        };
+                        input_g.ValueChanged += (a, e) =>
+                        {
+                            if (isinput) ChangeColor(Color.FromArgb(Value.A, Value.R, (int)e.Value, Value.B));
+                        };
 
-                    var input_g = new Input
-                    {
-                        RECTDIV = rect_g,
-                        Location = rect_g.Location,
-                        Size = rect_g.Size,
-                        Text = Value.G.ToString()
-                    };
-                    input_g.TakePaint = () =>
-                    {
-                        Print();
-                    };
-                    input_g.TextChanged += (a, b) =>
-                    {
-                    };
-                    Controls.Add(input_g);
+                        var input_b = new InputNumber
+                        {
+                            ShowControl = false,
+                            PrefixText = "B",
+                            Location = rect_b.Location,
+                            Size = rect_b.Size,
+                            Value = Value.B,
+                            Maximum = 255
+                        };
+                        input_b.ValueChanged += (a, e) =>
+                        {
+                            if (isinput) ChangeColor(Color.FromArgb(Value.A, Value.R, Value.G, (int)e.Value));
+                        };
+                        inputs = new InputRect[] {
+                            new InputRect(input_r, rect_r, wsize, wsize2),
+                            new InputRect(input_g, rect_g, wsize, wsize2),
+                            new InputRect(input_b, rect_b, wsize, wsize2)
+                        };
 
-                    var input_b = new Input
+                        input_r.TakePaint = input_g.TakePaint = input_b.TakePaint = () =>
+                        {
+                            Print();
+                        };
+                        Controls.Add(input_r);
+                        Controls.Add(input_g);
+                        Controls.Add(input_b);
+                    }
+                    else
                     {
-                        RECTDIV = rect_b,
-                        Location = rect_b.Location,
-                        Size = rect_b.Size,
-                        Text = Value.B.ToString()
-                    };
-                    input_b.TakePaint = () =>
-                    {
-                        Print();
-                    };
-                    input_b.TextChanged += (a, b) =>
-                    {
-                    };
-                    Controls.Add(input_b);
+                        int wr4 = rect_input.Width / 4 - wsize;
+                        Rectangle rect_r = new Rectangle(rect_input.X, rect_input.Y, wr4, rect_input.Height),
+                            rect_g = new Rectangle(rect_input.X + wr4 + wsize, rect_input.Y, wr4, rect_input.Height),
+                            rect_b = new Rectangle(rect_input.X + wr4 * 2 + wsize2, rect_input.Y, wr4, rect_input.Height),
+                            rect_a = new Rectangle(rect_input.X + wr4 * 3 + wsize * 3, rect_input.Y, wr4, rect_input.Height);
 
-                    var input_a = new Input
-                    {
-                        RECTDIV = rect_a,
-                        Location = rect_a.Location,
-                        Size = rect_a.Size,
-                        Text = Value.B.ToString()
-                    };
-                    input_a.TakePaint = () =>
-                    {
-                        Print();
-                    };
-                    input_a.TextChanged += (a, b) =>
-                    {
-                    };
-                    Controls.Add(input_a);
+                        var input_r = new InputNumber
+                        {
+                            ShowControl = false,
+                            PrefixText = "R",
+                            Location = rect_r.Location,
+                            Size = rect_r.Size,
+                            Value = Value.R,
+                            Maximum = 255
+                        };
+                        input_r.ValueChanged += (a, e) =>
+                        {
+                            if (isinput) ChangeColor(Color.FromArgb(Value.A, (int)e.Value, Value.G, Value.B));
+                        };
 
-                    inputs = new InputRect[] {
-                        new InputRect(input_r,  rect_r, wsize, wsize*2),
-                        new InputRect(input_g, rect_g, wsize, wsize*2),
-                        new InputRect(input_b,  rect_b, wsize, wsize*2),
-                        new InputRect(input_a,  rect_a, wsize, wsize*2)
-                    };
+                        var input_g = new InputNumber
+                        {
+                            ShowControl = false,
+                            PrefixText = "G",
+                            Location = rect_g.Location,
+                            Size = rect_g.Size,
+                            Value = Value.G,
+                            Maximum = 255
+                        };
+                        input_g.ValueChanged += (a, e) =>
+                        {
+                            if (isinput) ChangeColor(Color.FromArgb(Value.A, Value.R, (int)e.Value, Value.B));
+                        };
+
+                        var input_b = new InputNumber
+                        {
+                            ShowControl = false,
+                            PrefixText = "B",
+                            Location = rect_b.Location,
+                            Size = rect_b.Size,
+                            Value = Value.B,
+                            Maximum = 255
+                        };
+                        input_b.ValueChanged += (a, e) =>
+                        {
+                            if (isinput) ChangeColor(Color.FromArgb(Value.A, Value.R, Value.G, (int)e.Value));
+                        };
+
+                        var input_a = new InputNumber
+                        {
+                            ShowControl = false,
+                            SuffixText = "%",
+                            Location = rect_a.Location,
+                            Size = rect_a.Size,
+                            Value = (int)(Value.A / 255F * 100F),
+                            Maximum = 100
+                        };
+                        input_a.ValueChanged += (s, e) =>
+                        {
+                            if (isinput) ChangeColor(Color.FromArgb((int)(255F * ((int)e.Value / 100F)), Value.R, Value.G, Value.B), true);
+                        };
+
+                        inputs = new InputRect[] {
+                            new InputRect(input_r, rect_r, wsize, wsize2),
+                            new InputRect(input_g, rect_g, wsize, wsize2),
+                            new InputRect(input_b, rect_b, wsize, wsize2),
+                            new InputRect(input_a, rect_a, wsize, wsize2)
+                        };
+
+                        input_r.TakePaint = input_g.TakePaint = input_b.TakePaint = input_a.TakePaint = () =>
+                        {
+                            Print();
+                        };
+                        Controls.Add(input_r);
+                        Controls.Add(input_g);
+                        Controls.Add(input_b);
+                        Controls.Add(input_a);
+                    }
                     break;
                 case TColorMode.Hex:
                 default:
@@ -202,29 +292,35 @@ namespace AntdUI
                     };
                     input.TextChanged += (a, b) =>
                     {
-                        if (isinput)
-                        {
-                            var color = input.Text.ToColor();
-                            color_alpha = Value = color;
-                            ValueNAlpha = Color.FromArgb(255, Value);
-                            var hsv = ValueNAlpha.ToHSV();
-                            hsv.s = hsv.v = 1;
-                            ValueHue = hsv.HSVToColor();
-
-                            action(Value);
-                            bmp_colors?.Dispose();
-                            bmp_colors = null;
-                            bmp_hue?.Dispose();
-                            bmp_hue = null;
-                            bmp_alpha?.Dispose();
-                            bmp_alpha = null;
-                            Print();
-                        }
+                        if (isinput) ChangeColor(input.Text.ToColor());
                     };
                     Controls.Add(input);
-                    inputs = new InputRect[] { new InputRect(input, rect_input, wsize, wsize * 2) };
+                    inputs = new InputRect[] { new InputRect(input, rect_input, wsize, wsize2) };
                     break;
             }
+        }
+
+        void ChangeColor(Color color, bool a = false)
+        {
+            color_alpha = Value = color;
+            ValueNAlpha = Color.FromArgb(255, Value);
+            var hsv = ValueNAlpha.ToHSV();
+            hsv.s = hsv.v = 1;
+            ValueHue = hsv.HSVToColor();
+
+            action(Value);
+            bmp_colors?.Dispose();
+            bmp_colors = null;
+            bmp_hue?.Dispose();
+            bmp_hue = null;
+            bmp_alpha?.Dispose();
+            bmp_alpha = null;
+            if (a)
+            {
+                bmp_alpha_read?.Dispose();
+                bmp_alpha_read = null;
+            }
+            Print();
         }
 
         public override void LoadOK()
@@ -249,7 +345,19 @@ namespace AntdUI
         void SetValue()
         {
             isinput = false;
-            inputs[0].input.Text = "#" + Value.ToHex();
+            switch (mode)
+            {
+                case TColorMode.Rgb:
+                    ((InputNumber)inputs[0].input).Value = Value.R;
+                    ((InputNumber)inputs[1].input).Value = Value.G;
+                    ((InputNumber)inputs[2].input).Value = Value.B;
+                    ((InputNumber)inputs[3].input).Value = (int)(Value.A / 255F * 100F);
+                    break;
+                case TColorMode.Hex:
+                default:
+                    inputs[0].input.Text = "#" + Value.ToHex();
+                    break;
+            }
             action(Value);
             isinput = true;
         }
@@ -259,6 +367,7 @@ namespace AntdUI
             {
                 if (rect_colors_big.Contains(e.Location))
                 {
+                    //顶部渐变色卡
                     if (bmp_colors != null)
                     {
                         point_colors = new Point(e.X - 10 - gap, e.Y - 10 - gap);
@@ -266,7 +375,7 @@ namespace AntdUI
                         else if (point_colors.X > bmp_colors.Width - 1) point_colors.X = bmp_colors.Width - 1;
                         if (point_colors.Y < 0) point_colors.Y = 0;
                         else if (point_colors.Y > bmp_colors.Height - 1) point_colors.Y = bmp_colors.Height - 1;
-                        color_alpha = Value = bmp_colors.GetPixel(point_colors.X, point_colors.Y);
+                        color_alpha = Value = Color.FromArgb(Value.A, bmp_colors.GetPixel(point_colors.X, point_colors.Y));
                         ValueNAlpha = Color.FromArgb(255, Value);
                         SetValue();
                         bmp_alpha?.Dispose();
@@ -277,6 +386,7 @@ namespace AntdUI
                 }
                 else if (rect_hue_big.Contains(e.Location))
                 {
+                    //色相
                     if (bmp_hue != null)
                     {
                         point_hue = e.X - 10 - gap;
@@ -287,7 +397,7 @@ namespace AntdUI
                         var hsv = ValueHue.ToHSV();
                         var hsv_value = Value.ToHSV();
                         hsv_value.h = hsv.h;
-                        color_alpha = Value = hsv_value.HSVToColor();
+                        color_alpha = Value = Color.FromArgb(Value.A, hsv_value.HSVToColor());
                         ValueNAlpha = Color.FromArgb(255, Value);
                         SetValue();
                         bmp_colors?.Dispose();
@@ -300,6 +410,7 @@ namespace AntdUI
                 }
                 else if (rect_alpha_big.Contains(e.Location))
                 {
+                    //透明度
                     if (bmp_alpha_read != null)
                     {
                         point_alpha = e.X - 10 - gap;
@@ -324,7 +435,7 @@ namespace AntdUI
                 else if (point_colors.X > bmp_colors.Width - 1) point_colors.X = bmp_colors.Width - 1;
                 if (point_colors.Y < 0) point_colors.Y = 0;
                 else if (point_colors.Y > bmp_colors.Height - 1) point_colors.Y = bmp_colors.Height - 1;
-                color_alpha = Value = bmp_colors.GetPixel(point_colors.X, point_colors.Y);
+                color_alpha = Value = Color.FromArgb(Value.A, bmp_colors.GetPixel(point_colors.X, point_colors.Y));
                 ValueNAlpha = Color.FromArgb(255, Value);
                 SetValue();
                 bmp_alpha?.Dispose();
@@ -341,7 +452,7 @@ namespace AntdUI
                 var hsv = ValueHue.ToHSV();
                 var hsv_value = Value.ToHSV();
                 hsv_value.h = hsv.h;
-                color_alpha = Value = hsv_value.HSVToColor();
+                color_alpha = Value = Color.FromArgb(Value.A, hsv_value.HSVToColor());
                 ValueNAlpha = Color.FromArgb(255, Value);
                 SetValue();
                 bmp_colors?.Dispose();
@@ -523,7 +634,7 @@ namespace AntdUI
             public InputRect(Input _input, Rectangle _rect_read, int wsize, int wsize2)
             {
                 input = _input;
-                rect = new Rectangle(_rect_read.X - wsize, _rect_read.Y - wsize, _rect_read.Width + wsize2, _rect_read.Height + wsize2);
+                _input.RECTDIV = rect = new Rectangle(_rect_read.X - wsize, _rect_read.Y - wsize, _rect_read.Width + wsize2, _rect_read.Height + wsize2);
                 rect_read = _rect_read;
             }
             public Input input { get; set; }

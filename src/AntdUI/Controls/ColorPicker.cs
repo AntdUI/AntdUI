@@ -375,7 +375,6 @@ namespace AntdUI
                     using (var path_color = rect_color.RoundPath(r))
                     {
                         PaintAlpha(g, r, rect_color);
-
                         using (var brush = new SolidBrush(_value))
                         {
                             g.FillPath(brush, path_color);
@@ -411,21 +410,22 @@ namespace AntdUI
 
         void PaintAlpha(Graphics g, Rectangle rect)
         {
-            int size = rect.Height / 4;
-            int u_x = 0;
+            int u_y = 0, size = rect.Height / 4;
             bool ad = false;
             using (var brush = new SolidBrush(Style.Db.FillSecondary))
             {
-                while (u_x < rect.Width)
+                while (u_y < rect.Height)
                 {
-                    int u_y = 0;
-                    while (u_y < rect.Height)
+                    int u_x = 0;
+                    bool adsub = ad;
+                    while (u_x < rect.Width)
                     {
-                        ad = !ad;
-                        if (ad) g.FillRectangle(brush, new Rectangle(u_x, u_y, size, size));
-                        u_y += size;
+                        if (adsub) g.FillRectangle(brush, new Rectangle(u_x, u_y, size, size));
+                        u_x += size;
+                        adsub = !adsub;
                     }
-                    u_x += size;
+                    u_y += size;
+                    ad = !ad;
                 }
             }
         }
