@@ -241,6 +241,31 @@ namespace AntdUI
             }
         }
 
+        #region 为空
+
+        bool isEmpty = false;
+
+        [Description("是否显示空样式"), Category("外观"), DefaultValue(false)]
+        public bool Empty { get; set; } = false;
+
+        string? emptyText;
+        [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        public string? EmptyText
+        {
+            get => emptyText;
+            set
+            {
+                if (emptyText == value) return;
+                emptyText = value;
+                Invalidate();
+            }
+        }
+
+        [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
+        public Image? EmptyImage { get; set; }
+
+        #endregion
+
         #region 布局
 
         bool wrap = true;
@@ -377,12 +402,15 @@ namespace AntdUI
                 }
                 if (controls.Count > 0)
                 {
+                    isEmpty = false;
                     int val = HandLayout(controls);
                     ScrollBar.SetVrSize(val);
                 }
+                else isEmpty = true;
             }
         }
 
+        internal int CellCount = -1;
         int HandLayout(List<VirtualItem> items)
         {
             var _rect = ClientRectangle;
@@ -402,28 +430,28 @@ namespace AntdUI
                     it.HEIGHT = size.Height;
                 }
 
-                int readcount = -1;
                 if (waterfall)
                 {
-                    var counts = new List<int>(items.Count);
-                    int count = 0;
-                    foreach (var it in items)
+                    if (CellCount == -1)
                     {
-                        if (use_x + it.WIDTH >= rect.Width)
+                        var counts = new List<int>(items.Count);
+                        int count = 0;
+                        foreach (var it in items)
                         {
-                            use_x = rect.X;
-                            use_y += max_height + gap;
-                            if (count > 0)
-                                counts.Add(count);
-                            count = 0;
+                            if (use_x + it.WIDTH >= rect.Width)
+                            {
+                                use_x = rect.X;
+                                use_y += max_height + gap;
+                                if (count > 0) counts.Add(count);
+                                count = 0;
+                            }
+                            use_x += it.WIDTH + gap;
+                            count++;
                         }
-                        use_x += it.WIDTH + gap;
-                        count++;
+                        use_x = rect.X;
+                        use_y = rect.Y + gap;
+                        if (counts.Count > 0) CellCount = counts.Max();
                     }
-
-                    use_x = rect.X;
-                    use_y = rect.Y + gap;
-                    if (counts.Count > 0) readcount = counts.Max();
                 }
                 foreach (var it in items)
                 {
@@ -483,11 +511,11 @@ namespace AntdUI
                             if (row.cel.Count > 1)
                             {
                                 int totalCount = row.cel.Count, totalWidth = 0;
-                                if (readcount == -1 || readcount <= row.cel.Count) totalWidth = row.cel.Sum(a => a.RECT.Width);
+                                if (CellCount == -1 || CellCount <= row.cel.Count) totalWidth = row.cel.Sum(a => a.RECT.Width);
                                 else
                                 {
-                                    totalCount = readcount;
-                                    totalWidth = row.cel.Sum(a => a.RECT.Width) + (readcount - row.cel.Count) * row.cel[0].RECT.Width;
+                                    totalCount = CellCount;
+                                    totalWidth = row.cel.Sum(a => a.RECT.Width) + (CellCount - row.cel.Count) * row.cel[0].RECT.Width;
                                 }
                                 int sp = (rect.Width - totalWidth) / (totalCount - 1);
                                 int ux = rect.X;
@@ -505,11 +533,11 @@ namespace AntdUI
                             foreach (var row in rows)
                             {
                                 int totalCount = row.cel.Count, totalWidth = 0;
-                                if (readcount == -1 || readcount <= row.cel.Count) totalWidth = row.cel.Sum(a => a.RECT.Width);
+                                if (CellCount == -1 || CellCount <= row.cel.Count) totalWidth = row.cel.Sum(a => a.RECT.Width);
                                 else
                                 {
-                                    totalCount = readcount;
-                                    totalWidth = row.cel.Sum(a => a.RECT.Width) + (readcount - row.cel.Count) * row.cel[0].RECT.Width;
+                                    totalCount = CellCount;
+                                    totalWidth = row.cel.Sum(a => a.RECT.Width) + (CellCount - row.cel.Count) * row.cel[0].RECT.Width;
                                 }
                                 int sp = (rect.Width - totalWidth) / (totalCount + 1),
                                 ux = rect.X + sp;
@@ -790,7 +818,11 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
+            if (items == null || items.Count == 0 || isEmpty)
+            {
+                if (Empty) PaintEmpty(e.Graphics.High(), ClientRectangle);
+                return;
+            }
             var g = e.Graphics.High();
             int sy = ScrollBar.Value;
             var rect = ClientRectangle;
@@ -814,6 +846,25 @@ namespace AntdUI
             ScrollBar.Paint(g);
             if (Config.Animation && BlurBar != null) _event.Set();
             base.OnPaint(e);
+        }
+
+        StringFormat stringCenter = Helper.SF_NoWrap();
+        void PaintEmpty(Graphics g, Rectangle rect)
+        {
+            using (var fore = new SolidBrush(Style.Db.Text))
+            {
+                string emptytext = EmptyText ?? Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
+                if (EmptyImage == null) g.DrawStr(emptytext, Font, fore, rect, stringCenter);
+                else
+                {
+                    int _gap = (int)(gap * Config.Dpi);
+                    var size = g.MeasureString(emptytext, Font);
+                    RectangleF rect_img = new RectangleF(rect.X + (rect.Width - EmptyImage.Width) / 2F, rect.Y + (rect.Height - EmptyImage.Height) / 2F - size.Height, EmptyImage.Width, EmptyImage.Height),
+                        rect_font = new RectangleF(rect.X, rect_img.Bottom + _gap, rect.Width, size.Height);
+                    g.DrawImage(EmptyImage, rect_img);
+                    g.DrawStr(emptytext, Font, fore, rect_font, stringCenter);
+                }
+            }
         }
 
         #region 模糊标题
@@ -1083,7 +1134,7 @@ namespace AntdUI
         {
             action = render =>
             {
-                if (render) it.LoadLayout();
+                if (render) { it.CellCount = -1; it.LoadLayout(); }
                 it.Invalidate();
             };
             return this;
