@@ -170,21 +170,9 @@ namespace AntdUI
             base.OnMouseClick(e);
         }
 
-        bool mousein = true;
         protected override void OnMouseEnter(EventArgs e)
         {
-            mousein = true;
-            if (Trigger == Trigger.Hover && subForm == null)
-            {
-                ITask.Run(() =>
-                {
-                    System.Threading.Thread.Sleep(100);
-                    if (subForm == null && mousein)
-                    {
-                        BeginInvoke(new Action(ClickDown));
-                    }
-                });
-            }
+            if (Trigger == Trigger.Hover && subForm == null) ClickDown();
             base.OnMouseEnter(e);
         }
 

@@ -54,6 +54,7 @@ namespace AntdUI
                 if (winState == value) return;
                 winState = value;
                 if (IsHandleCreated) HandMessage();
+                EventHub.Dispatch(EventType.WINDOW_STATE, winState == WState.Maximize);
             }
         }
 
@@ -87,8 +88,17 @@ namespace AntdUI
             handle = new HWND(Handle);
             base.OnHandleCreated(e);
             SetTheme();
+            SetWindowPos(handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_FRAMECHANGED);
             DisableProcessWindowsGhosting();
             HandMessage();
+        }
+
+        private void InvalidateNonclient()
+        {
+            if (!IsHandleCreated || IsDisposed) return;
+            RedrawWindow(handle, null, HWND.NULL, RedrawWindowFlags.RDW_FRAME | RedrawWindowFlags.RDW_UPDATENOW | RedrawWindowFlags.RDW_VALIDATE);
+            UpdateWindow(handle);
+            SetWindowPos(handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_FRAMECHANGED | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOCOPYBITS | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOREPOSITION | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOZORDER);
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -109,7 +119,23 @@ namespace AntdUI
                     WmSize(ref m);
                     break;
             }
+            if (WmGhostingHandler(m)) return;
             base.WndProc(ref m);
+        }
+
+        static IntPtr FALSE = new IntPtr(0);
+        bool WmGhostingHandler(System.Windows.Forms.Message m)
+        {
+            switch (m.Msg)
+            {
+                case 0x00AE:
+                case 0x00AF:
+                case 0xC1BC:
+                    m.Result = FALSE;
+                    InvalidateNonclient();
+                    break;
+            }
+            return false;
         }
 
         bool iszoomed = false;
@@ -348,7 +374,12 @@ namespace AntdUI
         {
             if (m.WParam == SIZE_MINIMIZED) WinState = WState.Minimize;
             else if (m.WParam == SIZE_MAXIMIZED) WinState = WState.Maximize;
-            else if (m.WParam == SIZE_RESTORED) WinState = WState.Restore;
+            else if (m.WParam == SIZE_RESTORED)
+            {
+                WinState = WState.Restore;
+                InvalidateNonclient();
+                Invalidate();
+            }
         }
 
         bool WmNCCalcSize(ref System.Windows.Forms.Message m)

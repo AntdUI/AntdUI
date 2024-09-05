@@ -698,7 +698,7 @@ namespace AntdUI
             if (IsPassWord && !PasswordCopy) return;
             var text = GetSelectionText();
             if (string.IsNullOrEmpty(text)) return;
-            Clipboard.SetText(text);
+            this.ClipboardSetText(text);
         }
 
         /// <summary>
@@ -709,7 +709,7 @@ namespace AntdUI
             if (IsPassWord && !PasswordCopy) return;
             var text = GetSelectionText();
             if (string.IsNullOrEmpty(text)) return;
-            Clipboard.SetText(text);
+            this.ClipboardSetText(text);
             ProcessBackSpaceKey();
         }
 

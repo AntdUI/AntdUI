@@ -25,46 +25,39 @@ namespace AntdUI
 {
     internal class Win32
     {
-        internal static void SetBits(Bitmap bitmap, Win32Point topLoc, Win32Size topSize, IntPtr intPtr, byte a = 255)
+        #region LayeredWindowSDK
+
+        #region 初始化
+
+        static IntPtr screenDC, memDc;
+        static Win32()
         {
-            IntPtr oldBits = IntPtr.Zero, screenDC = GetDC(IntPtr.Zero), hBitmap = IntPtr.Zero, memDc = CreateCompatibleDC(screenDC);
-            try
-            {
-                Win32Point srcLoc = new Win32Point(0, 0);
-                BLENDFUNCTION blendFunc = new BLENDFUNCTION();
-                hBitmap = bitmap.GetHbitmap(Color.FromArgb(0));
-                oldBits = SelectObject(memDc, hBitmap);
-                blendFunc.BlendOp = AC_SRC_OVER;
-                blendFunc.SourceConstantAlpha = a;
-                blendFunc.AlphaFormat = AC_SRC_ALPHA;
-                blendFunc.BlendFlags = 0;
-                UpdateLayeredWindow(intPtr, screenDC, ref topLoc, ref topSize, memDc, ref srcLoc, 0, ref blendFunc, ULW_ALPHA);
-            }
-            finally
-            {
-                if (hBitmap != IntPtr.Zero)
-                {
-                    SelectObject(memDc, oldBits);
-                    DeleteObject(hBitmap);
-                }
-                ReleaseDC(IntPtr.Zero, screenDC);
-                DeleteDC(memDc);
-            }
+            screenDC = GetDC(IntPtr.Zero);
+            memDc = CreateCompatibleDC(screenDC);
         }
 
-        internal static void SetBits(Bitmap bitmap, Rectangle rect, IntPtr intPtr, byte a = 255)
+        ~Win32()
         {
-            IntPtr oldBits = IntPtr.Zero, screenDC = GetDC(IntPtr.Zero), hBitmap = IntPtr.Zero, memDc = CreateCompatibleDC(screenDC);
+            DeleteDC(memDc);
+            ReleaseDC(IntPtr.Zero, screenDC);
+        }
+
+        #endregion
+
+        public static void SetBits(Bitmap? bmp, Rectangle rect, IntPtr intPtr, byte a = 255)
+        {
+            if (bmp == null) return;
+            IntPtr hBitmap = bmp.GetHbitmap(Color.FromArgb(0)), oldBits = SelectObject(memDc, hBitmap);
             try
             {
                 var srcLoc = new Win32Point(0, 0);
-                var blendFunc = new BLENDFUNCTION();
-                hBitmap = bitmap.GetHbitmap(Color.FromArgb(0));
-                oldBits = SelectObject(memDc, hBitmap);
-                blendFunc.BlendOp = AC_SRC_OVER;
-                blendFunc.SourceConstantAlpha = a;
-                blendFunc.AlphaFormat = AC_SRC_ALPHA;
-                blendFunc.BlendFlags = 0;
+                var blendFunc = new BLENDFUNCTION
+                {
+                    BlendOp = AC_SRC_OVER,
+                    SourceConstantAlpha = a,
+                    AlphaFormat = AC_SRC_ALPHA,
+                    BlendFlags = 0
+                };
                 var topLoc = new Win32Point(rect.X, rect.Y);
                 var topSize = new Win32Size(rect.Width, rect.Height);
                 UpdateLayeredWindow(intPtr, screenDC, ref topLoc, ref topSize, memDc, ref srcLoc, 0, ref blendFunc, ULW_ALPHA);
@@ -76,22 +69,13 @@ namespace AntdUI
                     SelectObject(memDc, oldBits);
                     DeleteObject(hBitmap);
                 }
-                ReleaseDC(IntPtr.Zero, screenDC);
-                DeleteDC(memDc);
             }
         }
 
-        public const int WM_CONTEXTMENU = 0x007B;
-        public const int GWL_EXSTYLE = -20;
-        public const int WS_EX_TRANSPARENT = 0x00000020;
-        public const int WS_EX_LAYERED = 0x00080000;
-
         [StructLayout(LayoutKind.Sequential)]
-        public struct Win32Size
+        struct Win32Size
         {
-            public int cx;
-            public int cy;
-
+            public int cx, cy;
             public Win32Size(int x, int y)
             {
                 cx = x;
@@ -99,21 +83,10 @@ namespace AntdUI
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct BLENDFUNCTION
-        {
-            public byte BlendOp;
-            public byte BlendFlags;
-            public byte SourceConstantAlpha;
-            public byte AlphaFormat;
-        }
-
         [StructLayout(LayoutKind.Sequential)]
-        public struct Win32Point
+        struct Win32Point
         {
-            public int x;
-            public int y;
-
+            public int x, y;
             public Win32Point(int x, int y)
             {
                 this.x = x;
@@ -121,64 +94,39 @@ namespace AntdUI
             }
         }
 
-        public const byte AC_SRC_OVER = 0;
-        public const int ULW_ALPHA = 2;
-        public const byte AC_SRC_ALPHA = 1;
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        struct BLENDFUNCTION
+        {
+            public byte BlendOp;
+            public byte BlendFlags;
+            public byte SourceConstantAlpha;
+            public byte AlphaFormat;
+        }
 
-        [DllImport("User32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr GetWindowDC(IntPtr handle);
-
-        /// <summary>
-        /// <para>该函数将指定的消息发送到一个或多个窗口。</para>
-        /// <para>此函数为指定的窗口调用窗口程序直到窗口程序处理完消息再返回。</para>
-        /// <para>而函数PostMessage不同，将一个消息寄送到一个线程的消息队列后立即返回。</para>
-        /// return 返回值 : 指定消息处理的结果，依赖于所发送的消息。
-        /// </summary>
-        /// <param name="hWnd">要接收消息的那个窗口的句柄</param>
-        /// <param name="Msg">消息的标识符</param>
-        /// <param name="wParam">具体取决于消息</param>
-        /// <param name="lParam">具体取决于消息</param>
-        [DllImport("User32.dll", CharSet = CharSet.Auto, EntryPoint = "SendMessageA")]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
-        [DllImport("user32")]
-        public static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
-
-        [DllImport("gdi32.dll")]
-        public static extern int CreateRoundRectRgn(int x1, int y1, int x2, int y2, int x3, int y3);
-
-        [DllImport("user32.dll")]
-        public static extern int SetWindowRgn(IntPtr hwnd, int hRgn, bool bRedraw);
-
-        [DllImport("user32", EntryPoint = "GetWindowLong")]
-        public static extern int GetWindowLong(IntPtr hwnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        public static extern int SetWindowLong(IntPtr hwnd, int nIndex, int dwNewLong);
+        const byte AC_SRC_OVER = 0;
+        const int ULW_ALPHA = 2;
+        const byte AC_SRC_ALPHA = 1;
 
         [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+        static extern IntPtr CreateCompatibleDC(IntPtr hDC);
 
         [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-        public static extern IntPtr GetDC(IntPtr hWnd);
+        static extern IntPtr GetDC(IntPtr hWnd);
 
         [DllImport("gdi32.dll", ExactSpelling = true)]
-        public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObj);
+        static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObj);
 
         [DllImport("user32.dll", ExactSpelling = true)]
-        public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+        static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        public static extern int DeleteDC(IntPtr hDC);
+        static extern int DeleteDC(IntPtr hDC);
 
         [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        public static extern int DeleteObject(IntPtr hObj);
+        static extern int DeleteObject(IntPtr hObj);
 
         /// <summary>
-        /// 
+        /// 分层窗口
         /// </summary>
         /// <param name="hwnd">一个分层窗口的句柄。分层窗口在用CreateWindowEx函数创建窗口时应指定WS_EX_LAYERED扩展样式。 Windows 8： WS_EX_LAYERED扩展样式支持顶级窗口和子窗口。之前的Windows版本中WS_EX_LAYERED扩展样式仅支持顶级窗口</param>
         /// <param name="hdcDst">屏幕的设备上下文(DC)句柄。如果指定为NULL，那么将会在调用函数时自己获得。它用来在窗口内容更新时与调色板颜色匹配。如果hdcDst为NULL，将会使用默认调色板。如果hdcSrc指定为NULL，那么hdcDst必须指定为NULL。</param>
@@ -191,38 +139,9 @@ namespace AntdUI
         /// <param name="dwFlags">可以是以下值之一。如果hdcSrc指定为NULL，dwFlags应该指定为0。</param>
         /// <returns></returns>
         [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-        public static extern int UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst, ref Win32Point pptDst, ref Win32Size psize, IntPtr hdcSrc, ref Win32Point pptSrc, int crKey, ref BLENDFUNCTION pblend, int dwFlags);
+        static extern int UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst, ref Win32Point pptDst, ref Win32Size psize, IntPtr hdcSrc, ref Win32Point pptSrc, int crKey, ref BLENDFUNCTION pblend, int dwFlags);
 
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        public static extern IntPtr ExtCreateRegion(IntPtr lpXform, uint nCount, IntPtr rgnData);
-
-        public const int WM_MOUSEMOVE = 0x0200;
-        public const int WM_LBUTTONDOWN = 0x0201;
-        public const int WM_LBUTTONUP = 0x0202;
-        public const int WM_RBUTTONDOWN = 0x0204;
-        public const int WM_LBUTTONDBLCLK = 0x0203;
-
-        public const int WM_MOUSELEAVE = 0x02A3;
-
-
-
-        public const int WM_PAINT = 0x000F;
-        public const int WM_ERASEBKGND = 0x0014;
-
-        public const int WM_PRINT = 0x0317;
-
-        //const int EN_HSCROLL       =   0x0601;
-        //const int EN_VSCROLL       =   0x0602;
-
-        public const int WM_HSCROLL = 0x0114;
-        public const int WM_VSCROLL = 0x0115;
-
-
-        public const int EM_GETSEL = 0x00B0;
-        public const int EM_LINEINDEX = 0x00BB;
-        public const int EM_LINEFROMCHAR = 0x00C9;
-
-        public const int EM_POSFROMCHAR = 0x00D6;
+        #endregion
 
         #region 文本框
 
@@ -306,6 +225,60 @@ namespace AntdUI
             int nLen = ImmGetCompositionString(hIMC, dwIndex, m_byString, m_byString.Length);
             return Encoding.Unicode.GetString(m_byString, 0, nLen);
         }
+
+        #endregion
+
+        #region 剪贴板
+
+        internal static bool SetClipBoardText(string? text)
+        {
+            try
+            {
+                uint uformat = 1;
+                if (!OpenClipboard(IntPtr.Zero)) return false;
+                if (!EmptyClipboard()) return false;
+                if (text == null) return true;
+                var r = SetClipboardData(uformat, Marshal.StringToCoTaskMemAnsi(text));
+                if (r == IntPtr.Zero) return false;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                CloseClipboard();
+            }
+        }
+
+        /// <summary>
+        /// 打开剪切板
+        /// </summary>
+        /// <param name="hWndNewOwner"></param>
+        [DllImport("User32.dll")]
+        extern static bool OpenClipboard(IntPtr hWndNewOwner);
+
+        /// <summary>
+        /// 关闭剪切板
+        /// </summary>
+        [DllImport("User32.dll")]
+        extern static bool CloseClipboard();
+
+        /// <summary>
+        /// 清空剪贴板
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("User32.dll")]
+        extern static bool EmptyClipboard();
+
+        /// <summary>
+        /// 设置剪切板内容
+        /// </summary>
+        /// <param name="uFormat"></param>
+        /// <param name="hMem"></param>
+        [DllImport("User32.dll")]
+        extern static IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
 
         #endregion
     }

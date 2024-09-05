@@ -66,7 +66,7 @@ namespace AntdUI
                 Size = form.Size;
                 Location = form.Location;
             }
-            PageSize = config.Content.Count;
+            PageSize = config.ContentCount;
 
             var btnwiths = new PreBtns[] {
                 new PreBtns("@t_flipY",SvgDb.IcoFlip.Insert(28," transform=\"rotate(90),translate(0 -100%)\"")),
@@ -126,15 +126,13 @@ namespace AntdUI
                 Size = form.Size;
                 Location = form.Location;
             }
-            Paints();
+            Print();
         }
 
         protected override void Dispose(bool disposing)
         {
             form.LocationChanged -= Form_LSChanged;
             form.SizeChanged -= Form_LSChanged;
-            temp?.Dispose();
-            temp = null;
             base.Dispose(disposing);
         }
 
@@ -142,15 +140,95 @@ namespace AntdUI
 
         #region 渲染图片
 
+        bool loading = false;
+        /// <summary>
+        /// 加载状态
+        /// </summary>
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                Print();
+            }
+        }
+
+        string? LoadingProgressStr = null;
+        float _value = -1F;
+        /// <summary>
+        /// 加载进度
+        /// </summary>
+        public float LoadingProgress
+        {
+            get => _value;
+            set
+            {
+                if (_value == value) return;
+                if (value < 0) value = 0;
+                else if (value > 1) value = 1;
+                _value = value;
+                if (loading) Print();
+            }
+        }
+
         Image? Img = null;
         int SelectIndex = 0;
         Size ImgSize = new Size();
         void LoadImg()
         {
             autoDpi = true;
-            Img = config.Content[SelectIndex];
-            ImgSize = Img.Size;
-            FillScaleImg();
+            if (config.Content is IList<Image> images)
+            {
+                Img = images[SelectIndex];
+                ImgSize = Img.Size;
+                FillScaleImg();
+            }
+            else if (config.Content is object[] list && list[0] is IList<object> data)
+            {
+                if (list[1] is Func<int, object, Image?> call)
+                {
+                    Img?.Dispose();
+                    Img = call.Invoke(SelectIndex, data[SelectIndex]);
+                    if (Img == null)
+                    {
+                        Print();
+                        return;
+                    }
+                    ImgSize = Img.Size;
+                    FillScaleImg();
+                }
+                else if (list[1] is Func<int, object, Action<float, string?>, Image?> callprog)
+                {
+                    LoadingProgressStr = null;
+                    _value = -1F;
+                    Loading = true;
+                    ITask.Run(() =>
+                    {
+                        var img = callprog.Invoke(SelectIndex, data[SelectIndex], (prog, progstr) => { LoadingProgressStr = progstr; LoadingProgress = prog; });
+                        if (img == null)
+                        {
+                            Img?.Dispose();
+                            Img = null;
+                            return;
+                        }
+                        LoadingProgressStr = null;
+                        Img?.Dispose();
+                        Img = img;
+                        ImgSize = Img.Size;
+                        FillScaleImg();
+                    }, () =>
+                    {
+                        Loading = false;
+                    });
+                }
+            }
+            else
+            {
+                Img = null;
+                Print();
+            }
         }
 
         #region 缩放
@@ -235,63 +313,98 @@ namespace AntdUI
 
         #endregion
 
-        void Paints()
-        {
-            temp?.Dispose();
-            temp = null;
-            Print();
-        }
-        Bitmap? temp = null;
         public override Bitmap PrintBit()
         {
-            if (temp == null || (temp.Width != TargetRect.Width || temp.Height != TargetRect.Height))
+            var original_bmp = new Bitmap(TargetRect.Width, TargetRect.Height);
+            using (var g = Graphics.FromImage(original_bmp).High())
             {
-                temp?.Dispose();
-                temp = new Bitmap(TargetRect.Width, TargetRect.Height);
-                using (var g = Graphics.FromImage(temp).High())
+                using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
+                    if (Radius > 0)
                     {
-                        if (Radius > 0)
-                        {
-                            using (var path = rect_read.RoundPath(Radius))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
-                        else g.FillRectangle(brush, rect_read);
-                    }
-
-                    if (Img != null) g.DrawImage(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
-
-                    using (var path = rect_panel.RoundPath(rect_panel.Height))
-                    {
-                        using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
+                        using (var path = rect_read.RoundPath(Radius))
                         {
                             g.FillPath(brush, path);
-                            PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
-                            if (PageSize > 1)
-                            {
-                                PaintBtn(g, brush, rect_left, rect_left_icon, SvgDb.IcoLeft, hoverLeft, enabledLeft);
-                                PaintBtn(g, brush, rect_right, rect_right_icon, SvgDb.IcoRight, hoverRight, enabledRight);
-                            }
                         }
                     }
-                    foreach (var it in btns)
-                    {
-                        using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
-                        {
-                            if (bmp != null)
-                            {
-                                if (it.enabled) g.DrawImage(bmp, it.rect);
-                                else g.DrawImage(bmp, it.rect, 0.3F);
-                            }
-                        }
-                    }
+                    else g.FillRectangle(brush, rect_read);
+                }
 
+                if (Img != null)
+                {
+                    try
+                    {
+                        g.DrawImage(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
+                    }
+                    catch { }
+                }
+                if (loading)
+                {
+                    using (var pen = new Pen(Color.FromArgb(220, Style.Db.PrimaryColor), 6 * Config.Dpi))
+                    using (var penpro = new Pen(Style.Db.Primary, pen.Width))
+                    {
+                        int loading_size = (int)(40 * Config.Dpi);
+                        var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
+                        g.DrawEllipse(pen, rect_loading);
+                        if (_value > -1)
+                        {
+                            try
+                            {
+                                g.DrawArc(penpro, rect_loading, -90, 360F * _value);
+                            }
+                            catch { }
+
+                            if (LoadingProgressStr != null)
+                            {
+                                rect_loading.Offset(0, loading_size);
+                                using (var brush = new SolidBrush(Style.Db.PrimaryColor))
+                                {
+                                    g.DrawString(LoadingProgressStr, Font, brush, rect_loading, Helper.stringFormatCenter2);
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (LoadingProgressStr != null)
+                {
+                    using (var pen = new Pen(Style.Db.Error, 6 * Config.Dpi))
+                    {
+                        int loading_size = (int)(40 * Config.Dpi);
+                        var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
+                        g.DrawEllipse(pen, rect_loading);
+                        rect_loading.Offset(0, loading_size);
+                        using (var brush = new SolidBrush(Style.Db.ErrorColor))
+                        {
+                            g.DrawString(LoadingProgressStr, Font, brush, rect_loading, Helper.stringFormatCenter2);
+                        }
+                    }
+                }
+                using (var path = rect_panel.RoundPath(rect_panel.Height))
+                {
+                    using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
+                    {
+                        g.FillPath(brush, path);
+                        PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
+                        if (PageSize > 1)
+                        {
+                            PaintBtn(g, brush, rect_left, rect_left_icon, SvgDb.IcoLeft, hoverLeft, enabledLeft);
+                            PaintBtn(g, brush, rect_right, rect_right_icon, SvgDb.IcoRight, hoverRight, enabledRight);
+                        }
+                    }
+                }
+                foreach (var it in btns)
+                {
+                    using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
+                    {
+                        if (bmp != null)
+                        {
+                            if (it.enabled) g.DrawImage(bmp, it.rect);
+                            else g.DrawImage(bmp, it.rect, 0.3F);
+                        }
+                    }
                 }
             }
-            return (Bitmap)temp.Clone();
+            return original_bmp;
         }
 
         void PaintBtn(Graphics g, SolidBrush brush, Rectangle rect, Rectangle rect_ico, string svg, bool hover, bool enabled)
@@ -410,7 +523,7 @@ namespace AntdUI
                     Dpi -= 0.1F;
                     SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
                 }
-                Paints();
+                Print();
             }
             base.OnMouseWheel(e);
         }
@@ -434,7 +547,7 @@ namespace AntdUI
                     offsetX = offsetXOld + e.Location.X - movePos.X;
                     offsetY = offsetYOld + e.Location.Y - movePos.Y;
                     Dpi = _dpi;
-                    Paints();
+                    Print();
                     return;
                 }
             }
@@ -485,7 +598,7 @@ namespace AntdUI
             SetCursor(hand > 0);
             if (count > 0)
             {
-                Paints();
+                Print();
             }
         }
 
@@ -544,14 +657,14 @@ namespace AntdUI
                                 if (Img != null)
                                 {
                                     Img.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                                    Paints();
+                                    Print();
                                 }
                                 break;
                             case "@t_flipX":
                                 if (Img != null)
                                 {
                                     Img.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                                    Paints();
+                                    Print();
                                 }
                                 break;
                             case "@t_rotateL":
@@ -565,7 +678,7 @@ namespace AntdUI
                                     FillScaleImg();
                                     Dpi = old;
                                     autoDpi = oldautoDpi;
-                                    Paints();
+                                    Print();
                                 }
                                 break;
                             case "@t_rotateR":
@@ -579,18 +692,18 @@ namespace AntdUI
                                     FillScaleImg();
                                     Dpi = old;
                                     autoDpi = oldautoDpi;
-                                    Paints();
+                                    Print();
                                 }
                                 break;
                             case "@t_zoomOut":
                                 Dpi -= 0.1F;
                                 SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
-                                Paints();
+                                Print();
                                 break;
                             case "@t_zoomIn":
                                 Dpi += 0.1F;
                                 SetBtnEnabled("@t_zoomOut", true);
-                                Paints();
+                                Print();
                                 break;
                             default:
                                 config.OnBtns?.Invoke(it.id, it.tag);
@@ -611,14 +724,14 @@ namespace AntdUI
                 {
                     SelectIndex--;
                     LoadImg();
-                    Paints();
+                    Print();
                     return;
                 }
                 if (enabledRight && rect_right.Contains(e.Location))
                 {
                     SelectIndex++;
                     LoadImg();
-                    Paints();
+                    Print();
                     return;
                 }
             }

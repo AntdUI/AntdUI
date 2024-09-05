@@ -504,7 +504,7 @@ namespace AntdUI
 
             void SetRect(int old, int value)
             {
-                if (owner == null || owner.items == null) return;
+                if (owner == null || owner.items == null || rects.Length == 0) return;
                 if (owner.items.ListExceed(value)) return;
                 if (owner.items.ListExceed(old))
                 {

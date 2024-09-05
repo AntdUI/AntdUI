@@ -291,26 +291,26 @@ namespace AntdUI
         internal void OnNodeMouseMove(TreeItem item, bool hover)
         {
             if (NodeMouseMove == null) return;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             NodeMouseMove(this, new TreeHoverEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), hover));
         }
 
         internal void OnSelectChanged(TreeItem item, MouseEventArgs args)
         {
             if (SelectChanged == null) return;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             SelectChanged(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
         }
         internal void OnNodeMouseClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseClick == null) return;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             NodeMouseClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
         }
         internal void OnNodeMouseDoubleClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseDoubleClick == null) return;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
         }
         internal void OnCheckedChanged(TreeItem item, bool value)
@@ -356,6 +356,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 滚动条
+        /// </summary>
+        [Browsable(false)]
+        public ScrollBar ScrollBar;
+
         #endregion
 
         #region 布局
@@ -363,7 +369,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ChangeList();
-            scrollBar.SizeChange(rect);
+            ScrollBar.SizeChange(rect);
             base.OnSizeChanged(e);
         }
 
@@ -396,7 +402,7 @@ namespace AntdUI
                 }
                 ChangeList(g, rect, null, items, has, ref x, ref y, height, icon_size, gap, gapI, 0, true);
             });
-            scrollBar.SetVrSize(x, y);
+            ScrollBar.SetVrSize(x, y);
             return rect;
         }
 
@@ -452,11 +458,10 @@ namespace AntdUI
 
         #region 渲染
 
-        ScrollBar scrollBar;
         float check_radius = 0F;
         public Tree()
         {
-            scrollBar = new ScrollBar(this, true, true);
+            ScrollBar = new ScrollBar(this, true, true);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -465,7 +470,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
             float _radius = radius * Config.Dpi;
             using (var brush_fore = new SolidBrush(fore ?? Style.Db.TextBase))
@@ -477,7 +482,7 @@ namespace AntdUI
                 PaintItem(g, rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
             }
             g.ResetTransform();
-            scrollBar.Paint(g);
+            ScrollBar.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
@@ -742,12 +747,12 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (scrollBar.MouseDownY(e.Location) && scrollBar.MouseDownX(e.Location))
+            if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 foreach (var it in items)
                 {
-                    if (IMouseDown(e, it, null)) return;
+                    if (IMouseDown(e, it)) return;
                 }
             }
         }
@@ -755,14 +760,14 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            scrollBar.MouseUpY();
-            scrollBar.MouseUpX();
+            ScrollBar.MouseUpY();
+            ScrollBar.MouseUpX();
         }
 
-        bool IMouseDown(MouseEventArgs e, TreeItem item, TreeItem? fitem)
+        bool IMouseDown(MouseEventArgs e, TreeItem item)
         {
             bool can = item.CanExpand;
-            int down = item.Contains(e.Location, blockNode ? 0 : scrollBar.ValueX, scrollBar.ValueY, checkable);
+            int down = item.Contains(e.Location, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable);
             if (down > 0)
             {
                 if (e.Clicks > 1) OnNodeMouseDoubleClick(item, e);
@@ -780,15 +785,7 @@ namespace AntdUI
                     if (CheckStrictly)
                     {
                         SetCheck(item, item.Checked);
-
-                        if (fitem != null)
-                        {
-                            int check_count = 0;
-                            foreach (var sub in fitem.Sub)
-                            { if (sub.Checked) check_count++; }
-                            if (check_count > 0) fitem.CheckState = check_count == fitem.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
-                            else fitem.CheckState = CheckState.Unchecked;
-                        }
+                        SetCheckStrictly(item.PARENTITEM);
                     }
                 }
                 else if (down == 2 && can) item.Expand = !item.Expand;
@@ -804,7 +801,7 @@ namespace AntdUI
             {
                 foreach (var sub in item.Sub)
                 {
-                    if (IMouseDown(e, sub, item)) return true;
+                    if (IMouseDown(e, sub)) return true;
                 }
             }
             return false;
@@ -822,10 +819,24 @@ namespace AntdUI
             }
         }
 
+        void SetCheckStrictly(TreeItem? item)
+        {
+            if (item == null) return;
+            int check_count = 0;
+            foreach (var sub in item.Sub)
+            {
+                if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++;
+            }
+            if (check_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
+            else item.CheckState = CheckState.Unchecked;
+            SetCheckStrictly(item.PARENTITEM);
+
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scrollBar.MouseMoveY(e.Location) && scrollBar.MouseMoveX(e.Location))
+            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location))
             {
                 if (items == null || items.Count == 0) return;
                 int hand = 0;
@@ -839,7 +850,7 @@ namespace AntdUI
         {
             if (item.show)
             {
-                if (item.Contains(point, blockNode ? 0 : scrollBar.ValueX, scrollBar.ValueY, checkable) > 0) hand++;
+                if (item.Contains(point, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable) > 0) hand++;
                 if (item.items != null) foreach (var sub in item.items) IMouseMove(sub, point, ref hand);
             }
         }
@@ -847,19 +858,19 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scrollBar.Leave();
+            ScrollBar.Leave();
             ILeave();
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scrollBar.Leave();
+            ScrollBar.Leave();
             ILeave();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 
@@ -897,7 +908,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            scrollBar.Dispose();
+            ScrollBar.Dispose();
             base.Dispose(disposing);
         }
     }
@@ -1151,7 +1162,7 @@ namespace AntdUI
                 else
                 {
                     ExpandProg = 1F;
-                    ArrowProg = 0F;
+                    ArrowProg = value ? 90F : 0F;
                     Invalidates();
                 }
             }

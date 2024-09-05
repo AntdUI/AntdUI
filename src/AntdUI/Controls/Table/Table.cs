@@ -66,7 +66,7 @@ namespace AntdUI
             {
                 dataSource = value;
                 SortData = null;
-                scrollBar.Clear();
+                ScrollBar.Clear();
                 ExtractHeaderFixed();
                 ExtractData();
                 LoadLayout();
@@ -135,7 +135,7 @@ namespace AntdUI
             {
                 if (visibleHeader == value) return;
                 visibleHeader = value;
-                scrollBar.RB = !value;
+                ScrollBar.RB = !value;
                 LoadLayout();
                 Invalidate();
             }
@@ -198,7 +198,7 @@ namespace AntdUI
             set
             {
                 if (radius == value) return;
-                scrollBar.Radius = radius = value;
+                ScrollBar.Radius = radius = value;
                 Invalidate();
             }
         }
@@ -436,6 +436,12 @@ namespace AntdUI
         [Description("省略文字提示"), Category("行为"), DefaultValue(true)]
         public bool ShowTip { get; set; } = true;
 
+        /// <summary>
+        /// 滚动条
+        /// </summary>
+        [Browsable(false)]
+        public ScrollBar ScrollBar;
+
         #region 编辑模式
 
         TEditMode editmode = TEditMode.None;
@@ -460,13 +466,12 @@ namespace AntdUI
 
         #region 初始化
 
-        readonly ScrollBar scrollBar;
-        public Table() { scrollBar = new ScrollBar(this, true, true, radius, !visibleHeader); }
+        public Table() { ScrollBar = new ScrollBar(this, true, true, radius, !visibleHeader); }
 
         protected override void Dispose(bool disposing)
         {
             ThreadState?.Dispose();
-            scrollBar.Dispose();
+            ScrollBar.Dispose();
             base.Dispose(disposing);
         }
 
@@ -480,8 +485,8 @@ namespace AntdUI
         /// <param name="i"></param>
         public void ScrollLine(int i)
         {
-            if (rows == null || !scrollBar.ShowY) return;
-            scrollBar.ValueY = rows[i].RECT.Y;
+            if (rows == null || !ScrollBar.ShowY) return;
+            ScrollBar.ValueY = rows[i].RECT.Y;
         }
 
         /// <summary>
@@ -497,14 +502,7 @@ namespace AntdUI
                     var _row = rows[row];
                     var vals = new List<string?>(_row.cells.Length);
                     foreach (var cell in _row.cells) vals.Add(cell.ToString());
-                    if (InvokeRequired)
-                    {
-                        Invoke(new Action(() =>
-                        {
-                            Clipboard.SetText(string.Join("\t", vals));
-                        }));
-                    }
-                    else Clipboard.SetText(string.Join("\t", vals));
+                    this.ClipboardSetText(string.Join("\t", vals));
                     return true;
                 }
                 catch { }
@@ -555,9 +553,9 @@ namespace AntdUI
                     var _row = rows[row];
                     var item = _row.cells[column];
                     EditModeClose();
-                    if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, row, column, 0, scrollBar.ValueY);
-                    else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, row, column, sFixedR, scrollBar.ValueY);
-                    else OnEditMode(_row, item, row, column, scrollBar.ValueX, scrollBar.ValueY);
+                    if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, row, column, 0, ScrollBar.ValueY);
+                    else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, row, column, sFixedR, ScrollBar.ValueY);
+                    else OnEditMode(_row, item, row, column, ScrollBar.ValueX, ScrollBar.ValueY);
                     return true;
                 }
                 catch { }
@@ -687,6 +685,8 @@ namespace AntdUI
 
         internal bool NoTitle { get; set; } = true;
 
+        public Func<bool, object?, int, int, bool>? Call { get; set; }
+
         /// <summary>
         /// 插槽
         /// </summary>
@@ -712,6 +712,8 @@ namespace AntdUI
         /// 点击时自动改变选中状态
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+
+        public Func<bool, object?, int, int, bool>? Call { get; set; }
 
         /// <summary>
         /// 插槽

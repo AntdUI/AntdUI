@@ -71,7 +71,7 @@ namespace AntdUI
         void LoadLayout(Rectangle rect_t)
         {
             var rect = LayoutDesign(rect_t);
-            scrollBar.SizeChange(rect);
+            ScrollBar.SizeChange(rect);
         }
 
         bool has_check = false;
@@ -86,12 +86,12 @@ namespace AntdUI
                 {
                     var _rows = LayoutDesign(new TempTable(new TempiColumn[0], new IRow[0]), out var _columns, out int processing, out var col_width, out int KeyTreeINDEX);
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
-                    scrollBar.SetVrSize(is_exceed ? x : 0, y);
+                    ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     return rect;
                 }
                 else
                 {
-                    scrollBar.SetVrSize(0, 0);
+                    ScrollBar.SetVrSize(0, 0);
                     dividers = new Rectangle[0];
                     rows = null;
                 }
@@ -102,14 +102,14 @@ namespace AntdUI
                 if (visibleHeader && EmptyHeader && _rows.Count == 0)
                 {
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
-                    scrollBar.SetVrSize(is_exceed ? x : 0, y);
+                    ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     ThreadState?.Dispose(); ThreadState = null;
                     return rect;
                 }
                 else if (_rows.Count > 0)
                 {
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
-                    scrollBar.SetVrSize(is_exceed ? x : 0, y);
+                    ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     if (processing == 0) { ThreadState?.Dispose(); ThreadState = null; }
                     else
                     {
@@ -127,7 +127,7 @@ namespace AntdUI
                 else
                 {
                     ThreadState?.Dispose(); ThreadState = null;
-                    scrollBar.SetVrSize(0, 0);
+                    ScrollBar.SetVrSize(0, 0);
                     dividers = new Rectangle[0];
                     rows = null;
                 }

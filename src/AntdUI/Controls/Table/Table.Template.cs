@@ -171,14 +171,17 @@ namespace AntdUI
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="value">值</param>
-            /// <param name="column">表头</param>
-            public TCellCheck(Table table, PropertyDescriptor? prop, object? ov, bool value, ColumnCheck column) : base(table, prop, ov)
+            /// <param name="_column">表头</param>
+            public TCellCheck(Table table, PropertyDescriptor? prop, object? ov, bool value, ColumnCheck _column) : base(table, prop, ov)
             {
+                column = _column;
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
-                NoTitle = column.NoTitle;
-                AutoCheck = column.AutoCheck;
+                NoTitle = _column.NoTitle;
+                AutoCheck = _column.AutoCheck;
             }
+
+            public ColumnCheck column { get; set; }
 
             #region 选中状态
 
@@ -283,13 +286,16 @@ namespace AntdUI
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="value">值</param>
-            /// <param name="column">表头</param>
-            public TCellRadio(Table table, PropertyDescriptor? prop, object? ov, bool value, ColumnRadio column) : base(table, prop, ov)
+            /// <param name="_column">表头</param>
+            public TCellRadio(Table table, PropertyDescriptor? prop, object? ov, bool value, ColumnRadio _column) : base(table, prop, ov)
             {
+                column = _column;
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
-                AutoCheck = column.AutoCheck;
+                AutoCheck = _column.AutoCheck;
             }
+
+            public ColumnRadio column { get; set; }
 
             #region 选中状态
 

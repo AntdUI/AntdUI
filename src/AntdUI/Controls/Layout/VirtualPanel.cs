@@ -35,10 +35,9 @@ namespace AntdUI
     [DefaultEvent("ItemClick")]
     public class VirtualPanel : IControl
     {
-        ScrollBar scroll;
         public VirtualPanel()
         {
-            scroll = new ScrollBar(this);
+            ScrollBar = new ScrollBar(this);
         }
 
         #region 属性
@@ -342,6 +341,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 滚动条
+        /// </summary>
+        [Browsable(false)]
+        public ScrollBar ScrollBar;
+
         #endregion
 
         #region 布局
@@ -356,7 +361,7 @@ namespace AntdUI
         {
             if (IsHandleCreated)
             {
-                if (items == null || items.Count == 0) { scroll.Value = 0; return; }
+                if (items == null || items.Count == 0) { ScrollBar.Value = 0; return; }
                 if (pauseLayout) return;
                 var controls = new List<VirtualItem>(items.Count);
                 foreach (var it in items)
@@ -367,7 +372,7 @@ namespace AntdUI
                 if (controls.Count > 0)
                 {
                     int val = HandLayout(controls);
-                    scroll.SetVrSize(val);
+                    ScrollBar.SetVrSize(val);
                 }
             }
         }
@@ -376,7 +381,7 @@ namespace AntdUI
         {
             var _rect = ClientRectangle;
             if (_rect.Width == 0 || _rect.Height == 0) return 0;
-            scroll.SizeChange(_rect);
+            ScrollBar.SizeChange(_rect);
             var rect = _rect.PaddingRect(Padding);
             return Helper.GDI(g =>
             {
@@ -713,7 +718,7 @@ namespace AntdUI
         {
             if (items == null || items.Count == 0) return;
             var g = e.Graphics.High();
-            int sy = scroll.Value;
+            int sy = ScrollBar.Value;
             var rect = ClientRectangle;
             rect.Offset(0, sy);
             g.TranslateTransform(0, -sy);
@@ -732,7 +737,7 @@ namespace AntdUI
                 else it.SHOW_RECT = false;
             }
             g.ResetTransform();
-            scroll.Paint(g);
+            ScrollBar.Paint(g);
             base.OnPaint(e);
         }
 
@@ -786,10 +791,10 @@ namespace AntdUI
         {
             base.OnMouseDown(e);
             MDown = null;
-            if (scroll.MouseDown(e.Location))
+            if (ScrollBar.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
-                int x = e.X, y = e.Y + scroll.Value;
+                int x = e.X, y = e.Y + ScrollBar.Value;
                 foreach (var it in items)
                 {
                     if (it.SHOW && it.SHOW_RECT && it.CanClick && it.RECT.Contains(x, y))
@@ -804,10 +809,10 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (scroll.MouseMove(e.Location))
+            if (ScrollBar.MouseMove(e.Location))
             {
                 if (items == null || items.Count == 0) return;
-                int x = e.X, y = e.Y + scroll.Value;
+                int x = e.X, y = e.Y + ScrollBar.Value;
                 int count = 0, hand = 0;
                 foreach (var it in items)
                 {
@@ -880,7 +885,7 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            if (scroll.MouseUp())
+            if (ScrollBar.MouseUp())
             {
                 if (MDown != null) ItemClick?.Invoke(this, new VirtualItemEventArgs(MDown, e));
             }
@@ -889,14 +894,14 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scroll.Leave();
+            ScrollBar.Leave();
             ILeave();
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scroll.Leave();
+            ScrollBar.Leave();
             ILeave();
         }
 
@@ -919,7 +924,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scroll.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
 

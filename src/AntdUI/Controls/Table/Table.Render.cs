@@ -48,14 +48,14 @@ namespace AntdUI
             }
             else PaintTable(g, rows, rect, columnfont);
             if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect);
-            scrollBar.Paint(g);
+            ScrollBar.Paint(g);
             base.OnPaint(e);
         }
 
         void PaintTable(Graphics g, RowTemplate[] rows, Rectangle rect, Font column_font)
         {
             float _radius = radius * Config.Dpi;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             using (var fore = new SolidBrush(Style.Db.Text))
             using (var forecolumn = new SolidBrush(columnfore ?? Style.Db.Text))
             using (var brush_split = new SolidBrush(borderColor ?? Style.Db.BorderColor))
@@ -542,7 +542,7 @@ namespace AntdUI
         }
         void PaintFixedColumnR(Graphics g, Rectangle rect, RowTemplate[] rows, List<StyleRow> shows, SolidBrush fore, SolidBrush forecolumn, Font column_font, SolidBrush brush_split, int sx, int sy, float radius)
         {
-            if (fixedColumnR != null && scrollBar.ShowX)
+            if (fixedColumnR != null && ScrollBar.ShowX)
             {
                 var lastrow = shows[shows.Count - 1];
                 TCell first = lastrow.row.cells[fixedColumnR[fixedColumnR.Count - 1]], last = lastrow.row.cells[fixedColumnR[0]];

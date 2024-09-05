@@ -61,14 +61,7 @@ namespace AntdUI
                     {
                         if (bmp_tmp == null) bmp_tmp = PrintBit();
                         if (bmp_tmp == null) return;
-                        if (InvokeRequired)
-                        {
-                            Invoke(new Action(() =>
-                            {
-                                Win32.SetBits(bmp_tmp, TargetRect, Handle, alpha);
-                            }));
-                        }
-                        else Win32.SetBits(bmp_tmp, TargetRect, Handle, alpha);
+                        Render(bmp_tmp);
                         GC.Collect();
                     }
                     catch { }

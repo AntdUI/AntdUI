@@ -30,7 +30,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (ClipboardCopy) Focus();
-            if (scrollBar.MouseDownY(e.Location) && scrollBar.MouseDownX(e.Location))
+            if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
             {
                 base.OnMouseDown(e);
                 if (rows == null) return;
@@ -178,7 +178,7 @@ namespace AntdUI
                     return;
                 }
             }
-            if (scrollBar.MouseUpY() && scrollBar.MouseUpX())
+            if (ScrollBar.MouseUpY() && ScrollBar.MouseUpX())
             {
                 if (rows == null) return;
                 for (int i_row = 0; i_row < rows.Length; i_row++)
@@ -205,35 +205,58 @@ namespace AntdUI
                     {
                         if (cell is TCellCheck checkCell)
                         {
-                            if (checkCell.AutoCheck && checkCell.Contains(r_x, r_y))
+                            if (checkCell.Contains(r_x, r_y))
                             {
-                                checkCell.Checked = !checkCell.Checked;
-                                SetValue(cell, checkCell.Checked);
-                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
+                                if (checkCell.column.Call != null)
+                                {
+                                    var value = checkCell.column.Call(!checkCell.Checked, it.RECORD, i_r, i_c);
+                                    if (checkCell.Checked != value)
+                                    {
+                                        checkCell.Checked = value;
+                                        SetValue(cell, checkCell.Checked);
+                                        CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
+                                    }
+                                }
+                                else if (checkCell.AutoCheck)
+                                {
+                                    checkCell.Checked = !checkCell.Checked;
+                                    SetValue(cell, checkCell.Checked);
+                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
+                                }
                             }
                         }
                         else if (cell is TCellRadio radioCell)
                         {
-                            if (radioCell.AutoCheck && radioCell.Contains(r_x, r_y) && !radioCell.Checked)
+                            if (radioCell.Contains(r_x, r_y) && !radioCell.Checked)
                             {
-                                if (rows != null)
+                                bool isok = false;
+                                if (radioCell.column.Call != null)
                                 {
-                                    for (int i = 0; i < rows.Length; i++)
+                                    var value = radioCell.column.Call(true, it.RECORD, i_r, i_c);
+                                    if (value) isok = true;
+                                }
+                                else if (radioCell.AutoCheck) isok = true;
+                                if (isok)
+                                {
+                                    if (rows != null)
                                     {
-                                        if (i != i_r)
+                                        for (int i = 0; i < rows.Length; i++)
                                         {
-                                            var cell_selno = rows[i].cells[i_c];
-                                            if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
+                                            if (i != i_r)
                                             {
-                                                radioCell2.Checked = false;
-                                                SetValue(cell_selno, false);
+                                                var cell_selno = rows[i].cells[i_c];
+                                                if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
+                                                {
+                                                    radioCell2.Checked = false;
+                                                    SetValue(cell_selno, false);
+                                                }
                                             }
                                         }
                                     }
+                                    radioCell.Checked = true;
+                                    SetValue(cell, radioCell.Checked);
+                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.RECORD, i_r, i_c));
                                 }
-                                radioCell.Checked = true;
-                                SetValue(cell, radioCell.Checked);
-                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.RECORD, i_r, i_c));
                             }
                         }
                         else if (cell is TCellSwitch switchCell)
@@ -394,7 +417,7 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
-            if (scrollBar.MouseMoveY(e.Location) && scrollBar.MouseMoveX(e.Location))
+            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location))
             {
                 if (rows == null || inEditMode) return;
                 var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
@@ -620,7 +643,7 @@ namespace AntdUI
         TCell? CellContains(RowTemplate[] rows, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
         {
             mode = 0;
-            int sx = scrollBar.ValueX, sy = scrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
             foreach (RowTemplate it in rows)
             {
@@ -871,14 +894,14 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            scrollBar.Leave();
+            ScrollBar.Leave();
             ILeave();
             CloseTip(true);
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            scrollBar.Leave();
+            ScrollBar.Leave();
             ILeave();
             CloseTip(true);
         }
@@ -905,7 +928,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            scrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
     }

@@ -59,6 +59,10 @@ namespace AntdUI
         /// <summary>
         /// 主题 改变
         /// </summary>
-        THEME = 2
+        THEME = 2,
+        /// <summary>
+        /// Window 状态改变
+        /// </summary>
+        WINDOW_STATE = 70
     }
 }

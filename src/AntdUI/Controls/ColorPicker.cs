@@ -153,7 +153,7 @@ namespace AntdUI
             }
         }
 
-        internal bool round = false;
+        bool round = false;
         /// <summary>
         /// 圆角样式
         /// </summary>
@@ -184,6 +184,9 @@ namespace AntdUI
         }
 
         bool showText = false;
+        /// <summary>
+        /// 显示Hex文字
+        /// </summary>
         [Description("显示Hex文字"), Category("值"), DefaultValue(false)]
         public bool ShowText
         {
@@ -195,6 +198,36 @@ namespace AntdUI
                 if (BeforeAutoSize()) Invalidate();
             }
         }
+
+        /// <summary>
+        /// 禁用透明度
+        /// </summary>
+        [Description("禁用透明度"), Category("行为"), DefaultValue(false)]
+        public bool DisabledAlpha { get; set; } = false;
+
+        /// <summary>
+        /// 颜色模式
+        /// </summary>
+        [Description("颜色模式"), Category("行为"), DefaultValue(TColorMode.Hex)]
+        public TColorMode Mode { get; set; } = TColorMode.Hex;
+
+        /// <summary>
+        /// 触发下拉的行为
+        /// </summary>
+        [Description("触发下拉的行为"), Category("行为"), DefaultValue(Trigger.Click)]
+        public Trigger Trigger { get; set; } = Trigger.Click;
+
+        /// <summary>
+        /// 菜单弹出位置
+        /// </summary>
+        [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
+        public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
+
+        /// <summary>
+        /// 下拉箭头是否显示
+        /// </summary>
+        [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(true)]
+        public bool DropDownArrow { get; set; } = true;
 
         bool joinLeft = false;
         /// <summary>
@@ -259,7 +292,7 @@ namespace AntdUI
                     _borderHover = BorderHover ?? Style.Db.PrimaryHover,
                 _borderActive = BorderActive ?? Style.Db.Primary;
                 PaintClick(g, path, rect, _borderActive, radius);
-                float size_color = rect_read.Height * 0.75F;
+                int size_color = (int)(rect_read.Height * 0.75F);
                 if (enabled)
                 {
                     using (var brush = new SolidBrush(_back))
@@ -316,12 +349,14 @@ namespace AntdUI
                         }
                     }
                 }
+                var r = _radius * 0.75F;
                 if (showText)
                 {
-                    float gap = (rect_read.Height - size_color) / 2F;
-                    var rect_color = new RectangleF(rect_read.X + gap, rect_read.Y + gap, size_color, size_color);
-                    using (var path_color = rect_color.RoundPath(_radius * 0.75F))
+                    int gap = (rect_read.Height - size_color) / 2;
+                    var rect_color = new Rectangle(rect_read.X + gap, rect_read.Y + gap, size_color, size_color);
+                    using (var path_color = rect_color.RoundPath(r))
                     {
+                        PaintAlpha(g, r, rect_color);
                         using (var brush = new SolidBrush(_value))
                         {
                             g.FillPath(brush, path_color);
@@ -330,15 +365,16 @@ namespace AntdUI
                     using (var brush = new SolidBrush(_fore))
                     {
                         var wi = gap * 2 + size_color;
-                        g.DrawStr("#" + _value.ToHex(), Font, brush, new RectangleF(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                        g.DrawStr("#" + _value.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
                     }
                 }
                 else
                 {
-                    float size_colorw = rect_read.Width * 0.75F;
-                    var rect_color = new RectangleF(rect_read.X + (rect_read.Width - size_colorw) / 2, rect_read.Y + (rect_read.Height - size_color) / 2, size_colorw, size_color);
-                    using (var path_color = rect_color.RoundPath(_radius * 0.75F))
+                    int size_colorw = (int)(rect_read.Width * 0.75F);
+                    var rect_color = new Rectangle(rect_read.X + (rect_read.Width - size_colorw) / 2, rect_read.Y + (rect_read.Height - size_color) / 2, size_colorw, size_color);
+                    using (var path_color = rect_color.RoundPath(r))
                     {
+                        PaintAlpha(g, r, rect_color);
                         using (var brush = new SolidBrush(_value))
                         {
                             g.FillPath(brush, path_color);
@@ -348,6 +384,50 @@ namespace AntdUI
             }
             this.PaintBadge(g);
             base.OnPaint(e);
+        }
+
+        Bitmap? bmp_alpha = null;
+        void PaintAlpha(Graphics g, float radius, Rectangle rect)
+        {
+            if (bmp_alpha == null || bmp_alpha.Width != rect.Width || bmp_alpha.Height != rect.Height)
+            {
+                bmp_alpha?.Dispose();
+                bmp_alpha = new Bitmap(rect.Width, rect.Height);
+                using (var tmp = new Bitmap(rect.Width, rect.Height))
+                {
+                    using (var g2 = Graphics.FromImage(tmp).High())
+                    {
+                        PaintAlpha(g2, rect);
+                    }
+                    using (var g2 = Graphics.FromImage(bmp_alpha).High())
+                    {
+                        Helper.PaintImg(g2, new Rectangle(0, 0, rect.Width, rect.Height), tmp, TFit.Fill, radius, false);
+                    }
+                }
+            }
+            g.DrawImage(bmp_alpha, rect);
+        }
+
+        void PaintAlpha(Graphics g, Rectangle rect)
+        {
+            int u_y = 0, size = rect.Height / 4;
+            bool ad = false;
+            using (var brush = new SolidBrush(Style.Db.FillSecondary))
+            {
+                while (u_y < rect.Height)
+                {
+                    int u_x = 0;
+                    bool adsub = ad;
+                    while (u_x < rect.Width)
+                    {
+                        if (adsub) g.FillRectangle(brush, new Rectangle(u_x, u_y, size, size));
+                        u_x += size;
+                        adsub = !adsub;
+                    }
+                    u_y += size;
+                    ad = !ad;
+                }
+            }
         }
 
         #region 渲染帮助
@@ -522,6 +602,7 @@ namespace AntdUI
             Cursor = Cursors.Hand;
             base.OnMouseEnter(e);
             ExtraMouseHover = true;
+            if (Trigger == Trigger.Hover && subForm == null) ClickDown();
         }
         protected override void OnMouseLeave(EventArgs e)
         {
@@ -541,26 +622,31 @@ namespace AntdUI
         public ILayeredForm? SubForm() => subForm;
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && Trigger == Trigger.Click)
             {
                 ImeMode = ImeMode.Disable;
                 Focus();
-                ExtraMouseDown = true;
-                if (subForm == null)
-                {
-                    subForm = new LayeredFormColorPicker(this, ReadRectangle, color =>
-                    {
-                        Value = color;
-                    });
-                    subForm.Disposed += (a, b) =>
-                    {
-                        ExtraMouseDown = false;
-                        subForm = null;
-                    };
-                    subForm.Show();
-                }
+                ClickDown();
             }
             base.OnMouseClick(e);
+        }
+
+        void ClickDown()
+        {
+            ExtraMouseDown = true;
+            if (subForm == null)
+            {
+                subForm = new LayeredFormColorPicker(this, ReadRectangle, color =>
+                {
+                    Value = color;
+                });
+                subForm.Disposed += (a, b) =>
+                {
+                    ExtraMouseDown = false;
+                    subForm = null;
+                };
+                subForm.Show(this);
+            }
         }
 
         #endregion

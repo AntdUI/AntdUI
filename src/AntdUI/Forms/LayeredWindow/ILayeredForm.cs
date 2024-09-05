@@ -154,7 +154,7 @@ namespace AntdUI
             }
         }
 
-        void Render(Bitmap bmp)
+        internal void Render(Bitmap bmp)
         {
             try
             {
