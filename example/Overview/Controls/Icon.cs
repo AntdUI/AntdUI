@@ -46,48 +46,95 @@ namespace Overview.Controls
             var svgs = new List<AntdUI.VirtualItem>(data.Count);
             foreach (var it in data)
             {
-                if (it.Value == null) svgs.Add(new TItem(it.Key));
-                else svgs.Add(new VItem(it.Key, it.Value));
+                svgs.Add(new TItem(it.Key, it.Value));
+                svgs.AddRange(it.Value);
             }
             vpanel.Items.Clear();
             txt_search.Text = "";
             vpanel.Items.AddRange(svgs);
         }
 
-        Dictionary<string, string> GetData()
+        Dictionary<string, List<VItem>> GetData()
         {
-            var svgs = new Dictionary<string, string>(AntdUI.SvgDb.Custom.Count);
+            var dir = new Dictionary<string, List<VItem>>(AntdUI.SvgDb.Custom.Count);
+            var tmp = new List<VItem>(AntdUI.SvgDb.Custom.Count);
             if (segmented1.SelectIndex == 0)
             {
-                svgs.Add("方向性图标", null);
                 foreach (var it in AntdUI.SvgDb.Custom)
                 {
-                    if (it.Key == "StepBackwardFilled") return svgs;
-                    else if (it.Key == "QuestionOutlined") svgs.Add("提示建议性图标", null);
-                    else if (it.Key == "EditOutlined") svgs.Add("编辑类图标", null);
-                    else if (it.Key == "AreaChartOutlined") svgs.Add("数据类图标", null);
-                    else if (it.Key == "AndroidOutlined") svgs.Add("品牌和标识", null);
-                    else if (it.Key == "AccountBookOutlined") svgs.Add("网站通用图标", null);
-                    svgs.Add(it.Key, it.Value);
+                    if (it.Key == "QuestionOutlined")
+                    {
+                        dir.Add("方向性图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "EditOutlined")
+                    {
+                        dir.Add("提示建议性图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "AreaChartOutlined")
+                    {
+                        dir.Add("编辑类图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "AndroidOutlined")
+                    {
+                        dir.Add("数据类图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "AccountBookOutlined")
+                    {
+                        dir.Add("品牌和标识", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "StepBackwardFilled")
+                    {
+                        dir.Add("网站通用图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                        return dir;
+                    }
+                    tmp.Add(new VItem(it.Key, it.Value));
                 }
+                dir.Add("网站通用图标", new List<VItem>(tmp));
+                tmp.Clear();
             }
             else
             {
-                svgs.Add("方向性图标", null);
                 bool isadd = false;
                 foreach (var it in AntdUI.SvgDb.Custom)
                 {
-                    if (it.Key == "UpCircleTwoTone") return svgs;
-                    else if (it.Key == "StepBackwardFilled") isadd = true;
-                    else if (it.Key == "QuestionCircleFilled") svgs.Add("提示建议性图标", null);
-                    else if (it.Key == "EditFilled") svgs.Add("编辑类图标", null);
-                    else if (it.Key == "PieChartFilled") svgs.Add("数据类图标", null);
-                    else if (it.Key == "AndroidFilled") svgs.Add("品牌和标识", null);
-                    else if (it.Key == "AccountBookFilled") svgs.Add("网站通用图标", null);
-                    if (isadd) svgs.Add(it.Key, it.Value);
+                    if (it.Key == "StepBackwardFilled") isadd = true;
+                    else if (it.Key == "QuestionCircleFilled")
+                    {
+                        dir.Add("方向性图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "EditFilled")
+                    {
+                        dir.Add("提示建议性图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "PieChartFilled")
+                    {
+                        dir.Add("编辑类图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "AndroidFilled")
+                    {
+                        dir.Add("数据类图标", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    else if (it.Key == "AccountBookFilled")
+                    {
+                        dir.Add("品牌和标识", new List<VItem>(tmp));
+                        tmp.Clear();
+                    }
+                    if (isadd) tmp.Add(new VItem(it.Key, it.Value));
                 }
+                dir.Add("网站通用图标", new List<VItem>(tmp));
+                tmp.Clear();
             }
-            return svgs;
+            return dir;
         }
 
         #endregion
@@ -96,27 +143,51 @@ namespace Overview.Controls
 
         class TItem : AntdUI.VirtualItem
         {
-            string Key;
-            public TItem(string key) { Tag = Key = key; }
+            string title, count;
+            public List<VItem> data;
+            public TItem(string t, List<VItem> d)
+            {
+                CanClick = false;
+                data = d;
+                title = t;
+                count = d.Count.ToString();
+            }
 
             StringFormat s_f = AntdUI.Helper.SF_NoWrap(lr: StringAlignment.Near);
+            StringFormat s_c = AntdUI.Helper.SF_NoWrap();
             public override void Paint(Graphics g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
-                using (var fore = new SolidBrush(AntdUI.Style.Db.TextBase))
+
+                using (var fore = new SolidBrush(AntdUI.Style.Db.Text))
                 {
-                    using (var font_title = new Font(e.Panel.Font.FontFamily, 12F, FontStyle.Bold))
+                    using (var font_title = new Font(e.Panel.Font, FontStyle.Bold))
+                    using (var font_count = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * .74F, e.Panel.Font.Style))
                     {
-                        AntdUI.CorrectionTextRendering.DrawStr(g, Key, font_title, fore, new Rectangle(e.Rect.X, e.Rect.Y + y, e.Rect.Width, e.Rect.Height - y), s_f);
+                        var size = AntdUI.Helper.Size(g.MeasureString(title, font_title));
+                        AntdUI.CorrectionTextRendering.DrawStr(g, title, font_title, fore, e.Rect, s_f);
+
+                        var rect_count = new Rectangle(e.Rect.X + size.Width, e.Rect.Y + (e.Rect.Height - size.Height) / 2, size.Height, size.Height);
+                        using (var path = AntdUI.Helper.RoundPath(rect_count, e.Radius))
+                        {
+                            using (var brush = new SolidBrush(AntdUI.Style.Db.TagDefaultBg))
+                            {
+                                g.FillPath(brush, path);
+                            }
+                            using (var pen = new Pen(AntdUI.Style.Db.DefaultBorder, 1 * dpi))
+                            {
+                                g.DrawPath(pen, path);
+                            }
+                        }
+                        AntdUI.CorrectionTextRendering.DrawStr(g, count, font_count, fore, rect_count, s_c);
                     }
                 }
             }
-            int y = 0;
+
             public override Size Size(Graphics g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
-                y = (int)(8 * dpi);
-                return new Size(e.Rect.Width, (int)(36 * dpi) + y);
+                return new Size(e.Rect.Width, (int)(44 * dpi));
             }
         }
         class VItem : AntdUI.VirtualItem
@@ -245,13 +316,26 @@ namespace Overview.Controls
                 if (string.IsNullOrEmpty(search))
                 {
                     foreach (var it in vpanel.Items) it.Visible = true;
+                    vpanel.Empty = false;
                 }
                 else
                 {
+                    vpanel.Empty = true;
                     string searchLower = search.ToLower();
+                    var titles = new List<TItem>(vpanel.Items.Count);
                     foreach (var it in vpanel.Items)
                     {
                         if (it is VItem item) it.Visible = item.Key.ToLower().Contains(search);
+                        else if (it is TItem itemTitle) titles.Add(itemTitle);
+                    }
+                    foreach (var it in titles)
+                    {
+                        int count = 0;
+                        foreach (var item in it.data)
+                        {
+                            if (item.Visible) count++;
+                        }
+                        it.Visible = count > 0;
                     }
                 }
                 vpanel.PauseLayout = false;
