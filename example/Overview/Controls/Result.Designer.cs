@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             label1 = new AntdUI.Label();
             label2 = new AntdUI.Label();
             button1 = new AntdUI.Button();
@@ -59,20 +59,21 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "用于反馈一系列操作任务的处理结果。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(677, 79);
-            header1.TabIndex = 5;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(677, 74);
+            header1.TabIndex = 0;
             header1.Text = "Result 结果";
-            header1.TextDesc = "用于反馈一系列操作任务的处理结果。";
+            header1.UseTitleFont = true;
             // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label1.Font = new Font("HarmonyOS Sans SC", 18F, FontStyle.Regular, GraphicsUnit.Point);
+            label1.Font = new Font("HarmonyOS Sans SC", 18F);
             label1.Location = new Point(70, 223);
             label1.Name = "label1";
             label1.Size = new Size(537, 42);
@@ -94,9 +95,9 @@ namespace Overview.Controls
             // button1
             // 
             button1.Anchor = AnchorStyles.Top;
-            button1.Location = new Point(212, 380);
+            button1.Location = new Point(207, 380);
             button1.Name = "button1";
-            button1.Size = new Size(112, 46);
+            button1.Size = new Size(117, 46);
             button1.TabIndex = 2;
             button1.Text = "Go Console";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -127,7 +128,7 @@ namespace Overview.Controls
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Result";
             Size = new Size(677, 450);
             ResumeLayout(false);
@@ -135,7 +136,7 @@ namespace Overview.Controls
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private AntdUI.Label label1;
         private AntdUI.Label label2;
         private AntdUI.Button button1;

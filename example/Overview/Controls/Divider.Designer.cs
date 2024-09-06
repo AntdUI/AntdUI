@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             flowLayoutPanel1 = new FlowLayoutPanel();
             panel1 = new System.Windows.Forms.Panel();
             divider2 = new AntdUI.Divider();
@@ -63,15 +63,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "区隔内容的分割线。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(740, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(740, 74);
+            header1.TabIndex = 0;
             header1.Text = "Divider 分割线";
-            header1.TextDesc = "区隔内容的分割线。";
+            header1.UseTitleFont = true;
             // 
             // flowLayoutPanel1
             // 
@@ -79,9 +80,9 @@ namespace Overview.Controls
             flowLayoutPanel1.Controls.Add(panel1);
             flowLayoutPanel1.Controls.Add(divider3);
             flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.Location = new Point(0, 79);
+            flowLayoutPanel1.Location = new Point(0, 74);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(740, 323);
+            flowLayoutPanel1.Size = new Size(740, 328);
             flowLayoutPanel1.TabIndex = 5;
             // 
             // panel1
@@ -90,7 +91,7 @@ namespace Overview.Controls
             panel1.Controls.Add(label2);
             panel1.Controls.Add(divider1);
             panel1.Controls.Add(label1);
-            panel1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            panel1.Font = new Font("Microsoft YaHei UI", 12F);
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
             panel1.Size = new Size(512, 213);
@@ -99,7 +100,7 @@ namespace Overview.Controls
             // divider2
             // 
             divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            divider2.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold);
             divider2.Location = new Point(0, 116);
             divider2.Name = "divider2";
             divider2.Size = new Size(512, 20);
@@ -147,7 +148,7 @@ namespace Overview.Controls
             // 
             Controls.Add(flowLayoutPanel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Divider";
             Size = new Size(740, 402);
             flowLayoutPanel1.ResumeLayout(false);
@@ -157,7 +158,7 @@ namespace Overview.Controls
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.Divider divider1;
         private System.Windows.Forms.Panel panel1;

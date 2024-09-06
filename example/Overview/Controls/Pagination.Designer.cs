@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             pagination2 = new AntdUI.Pagination();
             pagination1 = new AntdUI.Pagination();
@@ -58,15 +58,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "采用分页的形式分隔长列表，每次只加载一个页面。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(1300, 79);
-            header1.TabIndex = 5;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(1300, 74);
+            header1.TabIndex = 0;
             header1.Text = "Pagination 分页";
-            header1.TextDesc = "采用分页的形式分隔长列表，每次只加载一个页面。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -74,9 +75,9 @@ namespace Overview.Controls
             panel1.Controls.Add(pagination2);
             panel1.Controls.Add(pagination1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1300, 597);
+            panel1.Size = new Size(1300, 602);
             panel1.TabIndex = 7;
             // 
             // pagination2
@@ -111,7 +112,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Pagination pagination2;
         private AntdUI.Pagination pagination1;

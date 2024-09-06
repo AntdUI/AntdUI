@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             alert12 = new AntdUI.Alert();
             alert10 = new AntdUI.Alert();
@@ -77,15 +77,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "警告提示，展现需要关注的信息。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(614, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(614, 74);
+            header1.TabIndex = 0;
             header1.Text = "Alert 警告提示";
-            header1.TextDesc = "警告提示，展现需要关注的信息。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -98,16 +99,16 @@ namespace Overview.Controls
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(614, 601);
+            panel1.Size = new Size(614, 606);
             panel1.TabIndex = 5;
             // 
             // alert12
             // 
             alert12.BackColor = Color.Black;
             alert12.Dock = DockStyle.Top;
-            alert12.Font = new Font("楷体", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            alert12.Font = new Font("楷体", 12F, FontStyle.Bold);
             alert12.ForeColor = Color.White;
             alert12.Location = new Point(0, 436);
             alert12.Loop = true;
@@ -132,7 +133,7 @@ namespace Overview.Controls
             // divider3
             // 
             divider3.Dock = DockStyle.Top;
-            divider3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.Location = new Point(0, 384);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
@@ -147,7 +148,7 @@ namespace Overview.Controls
             panel3.Controls.Add(alert11);
             panel3.Controls.Add(alert13);
             panel3.Dock = DockStyle.Top;
-            panel3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            panel3.Font = new Font("Microsoft YaHei UI", 10F);
             panel3.Location = new Point(0, 133);
             panel3.Name = "panel3";
             panel3.Size = new Size(614, 251);
@@ -204,7 +205,7 @@ namespace Overview.Controls
             // divider2
             // 
             divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.Location = new Point(0, 111);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
@@ -315,7 +316,7 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -327,7 +328,7 @@ namespace Overview.Controls
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Alert";
             Size = new Size(614, 680);
             panel1.ResumeLayout(false);
@@ -337,7 +338,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Alert alert4;
         private AntdUI.Alert alert3;

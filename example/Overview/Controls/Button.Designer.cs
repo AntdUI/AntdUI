@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel_main = new System.Windows.Forms.Panel();
             panel5 = new System.Windows.Forms.Panel();
             panel6 = new AntdUI.Panel();
@@ -82,9 +82,9 @@ namespace Overview.Controls
             flowLayoutPanel1 = new FlowLayoutPanel();
             button50 = new AntdUI.Button();
             button51 = new AntdUI.Button();
-            button54 = new AntdUI.Button();
             button52 = new AntdUI.Button();
             button53 = new AntdUI.Button();
+            button54 = new AntdUI.Button();
             divider6 = new AntdUI.Divider();
             panel2 = new FlowLayoutPanel();
             button10 = new AntdUI.Button();
@@ -115,15 +115,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "按钮用于开始一个即时操作。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(845, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(845, 74);
+            header1.TabIndex = 0;
             header1.Text = "Button 按钮";
-            header1.TextDesc = "按钮用于开始一个即时操作。";
+            header1.UseTitleFont = true;
             // 
             // panel_main
             // 
@@ -141,9 +142,9 @@ namespace Overview.Controls
             panel_main.Controls.Add(panel1);
             panel_main.Controls.Add(divider1);
             panel_main.Dock = DockStyle.Fill;
-            panel_main.Location = new Point(0, 79);
+            panel_main.Location = new Point(0, 74);
             panel_main.Name = "panel_main";
-            panel_main.Size = new Size(845, 682);
+            panel_main.Size = new Size(845, 687);
             panel_main.TabIndex = 6;
             // 
             // panel5
@@ -559,18 +560,6 @@ namespace Overview.Controls
             button51.Type = AntdUI.TTypeMini.Primary;
             button51.Click += Btn2;
             // 
-            // button54
-            // 
-            button54.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button54.IconSvg = "DownloadOutlined";
-            button54.Location = new Point(331, 3);
-            button54.Name = "button54";
-            button54.Size = new Size(143, 47);
-            button54.TabIndex = 4;
-            button54.Text = "Download";
-            button54.Type = AntdUI.TTypeMini.Primary;
-            button54.Click += Btn2;
-            // 
             // button52
             // 
             button52.AutoSizeMode = AntdUI.TAutoSize.Height;
@@ -595,6 +584,18 @@ namespace Overview.Controls
             button53.Text = "Download";
             button53.Type = AntdUI.TTypeMini.Primary;
             button53.Click += Btn2;
+            // 
+            // button54
+            // 
+            button54.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button54.IconSvg = "DownloadOutlined";
+            button54.Location = new Point(331, 3);
+            button54.Name = "button54";
+            button54.Size = new Size(143, 47);
+            button54.TabIndex = 4;
+            button54.Text = "Download";
+            button54.Type = AntdUI.TTypeMini.Primary;
+            button54.Click += Btn2;
             // 
             // divider6
             // 
@@ -827,7 +828,7 @@ namespace Overview.Controls
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel_main;
         private AntdUI.Divider divider1;
         private FlowLayoutPanel panel1;

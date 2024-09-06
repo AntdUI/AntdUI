@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel3 = new System.Windows.Forms.Panel();
             checkbox8 = new AntdUI.Checkbox();
@@ -68,15 +68,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "多选框。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(1300, 79);
-            header1.TabIndex = 5;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(1300, 74);
+            header1.TabIndex = 0;
             header1.Text = "Checkbox 多选框";
-            header1.TextDesc = "多选框。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -84,9 +85,9 @@ namespace Overview.Controls
             panel1.Controls.Add(panel3);
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1300, 597);
+            panel1.Size = new Size(1300, 602);
             panel1.TabIndex = 7;
             // 
             // panel3
@@ -102,11 +103,12 @@ namespace Overview.Controls
             // 
             // checkbox8
             // 
+            checkbox8.AutoCheck = true;
             checkbox8.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox8.Checked = true;
-            checkbox8.Fill = Color.FromArgb(100, 0, 0);
             checkbox8.Dock = DockStyle.Left;
             checkbox8.Enabled = false;
+            checkbox8.Fill = Color.FromArgb(100, 0, 0);
             checkbox8.Location = new Point(456, 0);
             checkbox8.Name = "checkbox8";
             checkbox8.Size = new Size(154, 50);
@@ -115,9 +117,10 @@ namespace Overview.Controls
             // 
             // checkbox7
             // 
+            checkbox7.AutoCheck = true;
             checkbox7.AutoSizeMode = AntdUI.TAutoSize.Width;
-            checkbox7.Fill = Color.FromArgb(150, 0, 0);
             checkbox7.Dock = DockStyle.Left;
+            checkbox7.Fill = Color.FromArgb(150, 0, 0);
             checkbox7.Location = new Point(304, 0);
             checkbox7.Name = "checkbox7";
             checkbox7.Size = new Size(152, 50);
@@ -126,9 +129,10 @@ namespace Overview.Controls
             // 
             // checkbox6
             // 
+            checkbox6.AutoCheck = true;
             checkbox6.AutoSizeMode = AntdUI.TAutoSize.Width;
-            checkbox6.Fill = Color.FromArgb(200, 0, 0);
             checkbox6.Dock = DockStyle.Left;
+            checkbox6.Fill = Color.FromArgb(200, 0, 0);
             checkbox6.Location = new Point(153, 0);
             checkbox6.Name = "checkbox6";
             checkbox6.Size = new Size(151, 50);
@@ -137,9 +141,10 @@ namespace Overview.Controls
             // 
             // checkbox5
             // 
+            checkbox5.AutoCheck = true;
             checkbox5.AutoSizeMode = AntdUI.TAutoSize.Width;
-            checkbox5.Fill = Color.FromArgb(250, 0, 0);
             checkbox5.Dock = DockStyle.Left;
+            checkbox5.Fill = Color.FromArgb(250, 0, 0);
             checkbox5.Location = new Point(0, 0);
             checkbox5.Name = "checkbox5";
             checkbox5.Size = new Size(153, 50);
@@ -159,6 +164,7 @@ namespace Overview.Controls
             // 
             // checkbox4
             // 
+            checkbox4.AutoCheck = true;
             checkbox4.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox4.Dock = DockStyle.Left;
             checkbox4.Enabled = false;
@@ -170,6 +176,7 @@ namespace Overview.Controls
             // 
             // checkbox3
             // 
+            checkbox3.AutoCheck = true;
             checkbox3.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox3.Dock = DockStyle.Left;
             checkbox3.Location = new Point(300, 0);
@@ -180,6 +187,7 @@ namespace Overview.Controls
             // 
             // checkbox2
             // 
+            checkbox2.AutoCheck = true;
             checkbox2.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox2.Dock = DockStyle.Left;
             checkbox2.Location = new Point(150, 0);
@@ -190,6 +198,7 @@ namespace Overview.Controls
             // 
             // checkbox1
             // 
+            checkbox1.AutoCheck = true;
             checkbox1.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox1.Dock = DockStyle.Left;
             checkbox1.Location = new Point(0, 0);
@@ -202,17 +211,19 @@ namespace Overview.Controls
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Checkbox";
             Size = new Size(1300, 676);
             panel1.ResumeLayout(false);
             panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel3;
         private AntdUI.Checkbox checkbox8;

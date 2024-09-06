@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel3 = new System.Windows.Forms.Panel();
             buttonRB = new AntdUI.Button();
@@ -76,15 +76,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "弹出气泡式的卡片浮层。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(840, 79);
-            header1.TabIndex = 5;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(840, 74);
+            header1.TabIndex = 0;
             header1.Text = "Popover 气泡卡片";
-            header1.TextDesc = "弹出气泡式的卡片浮层。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -94,9 +95,9 @@ namespace Overview.Controls
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider3);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(840, 597);
+            panel1.Size = new Size(840, 602);
             panel1.TabIndex = 7;
             // 
             // panel3
@@ -242,7 +243,7 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.Location = new Point(0, 218);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -262,10 +263,10 @@ namespace Overview.Controls
             // 
             // button2
             // 
-            button2.AutoSize = true;
+            button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button2.Location = new Point(145, 17);
             button2.Name = "button2";
-            button2.Size = new Size(186, 50);
+            button2.Size = new Size(182, 47);
             button2.TabIndex = 7;
             button2.Text = "自定义控件内容弹出";
             button2.Type = AntdUI.TTypeMini.Primary;
@@ -273,10 +274,10 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.AutoSize = true;
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.Location = new Point(14, 17);
             button1.Name = "button1";
-            button1.Size = new Size(104, 50);
+            button1.Size = new Size(100, 47);
             button1.TabIndex = 7;
             button1.Text = "普通弹出";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -285,7 +286,7 @@ namespace Overview.Controls
             // divider3
             // 
             divider3.Dock = DockStyle.Top;
-            divider3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.Location = new Point(0, 0);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
@@ -297,17 +298,18 @@ namespace Overview.Controls
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Popover";
             Size = new Size(840, 676);
             panel1.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel3;
         private AntdUI.Divider divider1;

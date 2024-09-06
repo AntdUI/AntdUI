@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             flowLayoutPanel1 = new FlowLayoutPanel();
             panel8 = new AntdUI.Panel();
             label5 = new Label();
@@ -80,15 +80,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "内容区域。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(835, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(835, 74);
+            header1.TabIndex = 0;
             header1.Text = "Panel 面板";
-            header1.TextDesc = "内容区域。";
+            header1.UseTitleFont = true;
             // 
             // flowLayoutPanel1
             // 
@@ -98,9 +99,9 @@ namespace Overview.Controls
             flowLayoutPanel1.Controls.Add(panel9);
             flowLayoutPanel1.Controls.Add(panel4);
             flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.Location = new Point(0, 79);
+            flowLayoutPanel1.Location = new Point(0, 74);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(835, 555);
+            flowLayoutPanel1.Size = new Size(835, 560);
             flowLayoutPanel1.TabIndex = 5;
             // 
             // panel8
@@ -123,7 +124,7 @@ namespace Overview.Controls
             // 
             label5.BackColor = Color.Transparent;
             label5.Dock = DockStyle.Fill;
-            label5.Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            label5.Font = new Font("Microsoft YaHei UI", 11F);
             label5.Location = new Point(24, 73);
             label5.Name = "label5";
             label5.Padding = new Padding(20, 10, 0, 0);
@@ -145,7 +146,7 @@ namespace Overview.Controls
             // 
             label7.BackColor = Color.Transparent;
             label7.Dock = DockStyle.Top;
-            label7.Font = new Font("Microsoft YaHei UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            label7.Font = new Font("Microsoft YaHei UI", 15.75F, FontStyle.Bold);
             label7.Location = new Point(24, 24);
             label7.Name = "label7";
             label7.Padding = new Padding(20, 0, 0, 0);
@@ -174,7 +175,7 @@ namespace Overview.Controls
             // 
             label1.BackColor = Color.Transparent;
             label1.Dock = DockStyle.Fill;
-            label1.Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            label1.Font = new Font("Microsoft YaHei UI", 11F);
             label1.Location = new Point(24, 73);
             label1.Name = "label1";
             label1.Padding = new Padding(20, 10, 0, 0);
@@ -196,7 +197,7 @@ namespace Overview.Controls
             // 
             label3.BackColor = Color.Transparent;
             label3.Dock = DockStyle.Top;
-            label3.Font = new Font("Microsoft YaHei UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            label3.Font = new Font("Microsoft YaHei UI", 15.75F, FontStyle.Bold);
             label3.Location = new Point(24, 24);
             label3.Name = "label3";
             label3.Padding = new Padding(20, 0, 0, 0);
@@ -228,7 +229,7 @@ namespace Overview.Controls
             // 
             label9.BackColor = Color.Transparent;
             label9.Dock = DockStyle.Fill;
-            label9.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            label9.Font = new Font("Microsoft YaHei UI", 10F);
             label9.Location = new Point(38, 178);
             label9.Name = "label9";
             label9.Padding = new Padding(2, 0, 2, 0);
@@ -240,7 +241,7 @@ namespace Overview.Controls
             // 
             label8.BackColor = Color.Transparent;
             label8.Dock = DockStyle.Top;
-            label8.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
+            label8.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Bold);
             label8.Location = new Point(38, 148);
             label8.Name = "label8";
             label8.Size = new Size(244, 30);
@@ -279,7 +280,7 @@ namespace Overview.Controls
             // 
             label12.BackColor = Color.Transparent;
             label12.Dock = DockStyle.Fill;
-            label12.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            label12.Font = new Font("Microsoft YaHei UI", 10F);
             label12.Location = new Point(38, 178);
             label12.Name = "label12";
             label12.Padding = new Padding(2, 0, 2, 0);
@@ -291,7 +292,7 @@ namespace Overview.Controls
             // 
             label13.BackColor = Color.Transparent;
             label13.Dock = DockStyle.Top;
-            label13.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
+            label13.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Bold);
             label13.Location = new Point(38, 148);
             label13.Name = "label13";
             label13.Size = new Size(244, 30);
@@ -327,7 +328,7 @@ namespace Overview.Controls
             button3.BackColor = Color.FromArgb(217, 217, 217);
             button3.BorderWidth = 1.4F;
             button3.Dock = DockStyle.Right;
-            button3.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            button3.Font = new Font("Microsoft YaHei UI", 10F);
             button3.Location = new Point(98, 0);
             button3.Name = "button3";
             button3.Size = new Size(73, 40);
@@ -337,7 +338,7 @@ namespace Overview.Controls
             // button4
             // 
             button4.Dock = DockStyle.Right;
-            button4.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            button4.Font = new Font("Microsoft YaHei UI", 10F);
             button4.Location = new Point(171, 0);
             button4.Name = "button4";
             button4.Size = new Size(73, 40);
@@ -349,7 +350,7 @@ namespace Overview.Controls
             // 
             Controls.Add(flowLayoutPanel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Panel";
             Size = new Size(835, 634);
             flowLayoutPanel1.ResumeLayout(false);
@@ -362,7 +363,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.Panel panel9;
         private Label label9;

@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel4 = new System.Windows.Forms.Panel();
             datePickerRange3 = new AntdUI.DatePickerRange();
@@ -74,15 +74,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "输入或选择日期的控件。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(770, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(770, 74);
+            header1.TabIndex = 0;
             header1.Text = "DatePicker 日期选择框";
-            header1.TextDesc = "输入或选择日期的控件。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -94,9 +95,9 @@ namespace Overview.Controls
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(770, 491);
+            panel1.Size = new Size(770, 496);
             panel1.TabIndex = 6;
             // 
             // panel4
@@ -264,7 +265,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Divider divider1;
         private System.Windows.Forms.Panel panel2;

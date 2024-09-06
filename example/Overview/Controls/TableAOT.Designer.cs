@@ -50,7 +50,7 @@ namespace Overview.Controls
         private void InitializeComponent()
         {
             AntdUI.Tabs.StyleLine styleLine1 = new AntdUI.Tabs.StyleLine();
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             pagination1 = new AntdUI.Pagination();
             table2 = new AntdUI.Table();
             table1 = new AntdUI.Table();
@@ -73,15 +73,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "展示行列数据。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(1300, 79);
-            header1.TabIndex = 5;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(1300, 74);
+            header1.TabIndex = 0;
             header1.Text = "Table 表格";
-            header1.TextDesc = "展示行列数据。";
+            header1.UseTitleFont = true;
             // 
             // pagination1
             // 
@@ -116,7 +117,7 @@ namespace Overview.Controls
             table1.Location = new Point(3, 46);
             table1.Name = "table1";
             table1.Radius = 6;
-            table1.Size = new Size(1288, 503);
+            table1.Size = new Size(1288, 508);
             table1.TabIndex = 0;
             table1.Text = "table1";
             table1.CellClick += table1_CellClick;
@@ -127,12 +128,12 @@ namespace Overview.Controls
             tabs1.Dock = DockStyle.Fill;
             tabs1.Font = new Font("Microsoft YaHei UI", 12F);
             tabs1.Gap = 12;
-            tabs1.Location = new Point(0, 79);
+            tabs1.Location = new Point(0, 74);
             tabs1.Name = "tabs1";
             tabs1.Padding = new Padding(0, 4, 0, 0);
             tabs1.Pages.Add(tabPage1);
             tabs1.Pages.Add(tabPage2);
-            tabs1.Size = new Size(1300, 597);
+            tabs1.Size = new Size(1300, 602);
             styleLine1.Radius = 2;
             tabs1.Style = styleLine1;
             tabs1.TabIndex = 0;
@@ -145,7 +146,7 @@ namespace Overview.Controls
             tabPage1.Location = new Point(3, 42);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1294, 552);
+            tabPage1.Size = new Size(1294, 557);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "常规";
             // 
@@ -273,7 +274,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private AntdUI.Table table1;
         private AntdUI.Table table2;
         private AntdUI.Pagination pagination1;

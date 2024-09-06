@@ -55,7 +55,7 @@ namespace Overview.Controls
             input4 = new AntdUI.Input();
             input5 = new AntdUI.Input();
             input6 = new AntdUI.Input();
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel3 = new System.Windows.Forms.Panel();
             panel5 = new AntdUI.Panel();
@@ -115,9 +115,9 @@ namespace Overview.Controls
             // 
             // input5
             // 
-            input5.PrefixSvg = "PoweroffOutlined";
             input5.Location = new Point(18, 101);
             input5.Name = "input5";
+            input5.PrefixSvg = "PoweroffOutlined";
             input5.Radius = 10;
             input5.Size = new Size(220, 44);
             input5.TabIndex = 4;
@@ -134,16 +134,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "通过鼠标或键盘输入内容，是最基础的表单域的包装。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(555, 79);
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(555, 74);
             header1.TabIndex = 0;
-            header1.TabStop = false;
             header1.Text = "Input 输入框";
-            header1.TextDesc = "通过鼠标或键盘输入内容，是最基础的表单域的包装。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -153,9 +153,9 @@ namespace Overview.Controls
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(555, 475);
+            panel1.Size = new Size(555, 480);
             panel1.TabIndex = 6;
             // 
             // panel3
@@ -191,7 +191,6 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.AutoSize = true;
             button1.AutoSizeMode = AntdUI.TAutoSize.Width;
             button1.Dock = DockStyle.Left;
             button1.JoinRight = true;
@@ -257,7 +256,6 @@ namespace Overview.Controls
             // 
             // button3
             // 
-            button3.AutoSize = true;
             button3.AutoSizeMode = AntdUI.TAutoSize.Width;
             button3.Dock = DockStyle.Right;
             button3.JoinLeft = true;
@@ -272,7 +270,7 @@ namespace Overview.Controls
             // divider2
             // 
             divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.Location = new Point(0, 184);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
@@ -298,7 +296,7 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -311,14 +309,16 @@ namespace Overview.Controls
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Input";
             Size = new Size(555, 554);
             panel1.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel5.ResumeLayout(false);
+            panel5.PerformLayout();
             panel6.ResumeLayout(false);
             panel4.ResumeLayout(false);
+            panel4.PerformLayout();
             panel2.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -331,7 +331,7 @@ namespace Overview.Controls
         private AntdUI.Input input4;
         private AntdUI.Input input5;
         private AntdUI.Input input6;
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private AntdUI.Divider divider1;

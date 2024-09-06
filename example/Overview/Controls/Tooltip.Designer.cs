@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel3 = new System.Windows.Forms.Panel();
             button9 = new AntdUI.Button();
@@ -89,15 +89,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "简单的文字提示气泡框。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(589, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(589, 74);
+            header1.TabIndex = 0;
             header1.Text = "Tooltip 文字提示";
-            header1.TextDesc = "简单的文字提示气泡框。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -107,9 +108,9 @@ namespace Overview.Controls
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(589, 379);
+            panel1.Size = new Size(589, 384);
             panel1.TabIndex = 6;
             // 
             // panel3
@@ -255,7 +256,7 @@ namespace Overview.Controls
             // divider2
             // 
             divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.Location = new Point(0, 84);
             divider2.Margin = new Padding(10);
             divider2.Name = "divider2";
@@ -297,7 +298,7 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.Location = new Point(0, 0);
             divider1.Margin = new Padding(10);
             divider1.Name = "divider1";
@@ -308,72 +309,72 @@ namespace Overview.Controls
             // 
             // tooltipComponent1
             // 
-            tooltipComponent1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipComponent1.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipTL
             // 
             tooltipTL.ArrowAlign = AntdUI.TAlign.TL;
-            tooltipTL.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipTL.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipTop
             // 
-            tooltipTop.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipTop.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipTR
             // 
             tooltipTR.ArrowAlign = AntdUI.TAlign.TR;
-            tooltipTR.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipTR.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipRT
             // 
             tooltipRT.ArrowAlign = AntdUI.TAlign.RT;
-            tooltipRT.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipRT.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipRight
             // 
             tooltipRight.ArrowAlign = AntdUI.TAlign.Right;
-            tooltipRight.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipRight.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipRB
             // 
             tooltipRB.ArrowAlign = AntdUI.TAlign.RB;
-            tooltipRB.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipRB.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipBR
             // 
             tooltipBR.ArrowAlign = AntdUI.TAlign.BR;
-            tooltipBR.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipBR.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipBottom
             // 
             tooltipBottom.ArrowAlign = AntdUI.TAlign.Bottom;
-            tooltipBottom.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipBottom.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipBL
             // 
             tooltipBL.ArrowAlign = AntdUI.TAlign.BL;
-            tooltipBL.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipBL.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipLB
             // 
             tooltipLB.ArrowAlign = AntdUI.TAlign.LB;
-            tooltipLB.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipLB.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipLeft
             // 
             tooltipLeft.ArrowAlign = AntdUI.TAlign.Left;
-            tooltipLeft.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipLeft.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipLT
             // 
             tooltipLT.ArrowAlign = AntdUI.TAlign.LT;
-            tooltipLT.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tooltipLT.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // Tooltip
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Tooltip";
             Size = new Size(589, 458);
             panel1.ResumeLayout(false);
@@ -384,7 +385,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Divider divider1;
         private System.Windows.Forms.Panel panel2;

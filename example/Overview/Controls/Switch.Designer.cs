@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             switch8 = new AntdUI.Switch();
             switch4 = new AntdUI.Switch();
             switch7 = new AntdUI.Switch();
@@ -62,18 +62,20 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "开关选择器。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(543, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(543, 74);
+            header1.TabIndex = 0;
             header1.Text = "Switch 开关";
-            header1.TextDesc = "开关选择器。";
+            header1.UseTitleFont = true;
             // 
             // switch8
             // 
+            switch8.AutoCheck = true;
             switch8.Enabled = false;
             switch8.Location = new Point(323, 167);
             switch8.Name = "switch8";
@@ -82,15 +84,17 @@ namespace Overview.Controls
             // 
             // switch4
             // 
+            switch4.AutoCheck = true;
+            switch4.CheckedText = "on";
             switch4.Location = new Point(109, 167);
             switch4.Name = "switch4";
-            switch4.CheckedText = "on";
-            switch4.UnCheckedText = "off";
             switch4.Size = new Size(90, 38);
             switch4.TabIndex = 6;
+            switch4.UnCheckedText = "off";
             // 
             // switch7
             // 
+            switch7.AutoCheck = true;
             switch7.Checked = true;
             switch7.Enabled = false;
             switch7.Location = new Point(231, 167);
@@ -100,7 +104,7 @@ namespace Overview.Controls
             // 
             // switch2
             // 
-            switch2.Checked = false;
+            switch2.AutoCheck = true;
             switch2.Location = new Point(17, 167);
             switch2.Name = "switch2";
             switch2.Size = new Size(60, 38);
@@ -108,6 +112,7 @@ namespace Overview.Controls
             // 
             // switch6
             // 
+            switch6.AutoCheck = true;
             switch6.Enabled = false;
             switch6.Location = new Point(323, 96);
             switch6.Name = "switch6";
@@ -116,16 +121,18 @@ namespace Overview.Controls
             // 
             // switch3
             // 
+            switch3.AutoCheck = true;
             switch3.Checked = true;
+            switch3.CheckedText = "开启";
             switch3.Location = new Point(109, 96);
             switch3.Name = "switch3";
-            switch3.CheckedText = "开启";
-            switch3.UnCheckedText = "关闭";
             switch3.Size = new Size(90, 38);
             switch3.TabIndex = 10;
+            switch3.UnCheckedText = "关闭";
             // 
             // switch5
             // 
+            switch5.AutoCheck = true;
             switch5.Checked = true;
             switch5.Enabled = false;
             switch5.Location = new Point(231, 96);
@@ -135,6 +142,7 @@ namespace Overview.Controls
             // 
             // switch1
             // 
+            switch1.AutoCheck = true;
             switch1.Checked = true;
             switch1.Location = new Point(17, 96);
             switch1.Name = "switch1";
@@ -152,7 +160,7 @@ namespace Overview.Controls
             Controls.Add(switch5);
             Controls.Add(switch1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 9F);
             Name = "Switch";
             Size = new Size(543, 275);
             ResumeLayout(false);
@@ -160,7 +168,7 @@ namespace Overview.Controls
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private AntdUI.Switch switch8;
         private AntdUI.Switch switch4;
         private AntdUI.Switch switch7;

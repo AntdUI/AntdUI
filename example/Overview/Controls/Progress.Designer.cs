@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             progress1 = new AntdUI.Progress();
             progress2 = new AntdUI.Progress();
             progress3 = new AntdUI.Progress();
@@ -74,15 +74,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "展示操作的当前进度。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(650, 79);
-            header1.TabIndex = 5;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(650, 74);
+            header1.TabIndex = 0;
             header1.Text = "Progress 进度条";
-            header1.TextDesc = "展示操作的当前进度。";
+            header1.UseTitleFont = true;
             // 
             // progress1
             // 
@@ -244,9 +245,9 @@ namespace Overview.Controls
             panel9.Controls.Add(panel10);
             panel9.Controls.Add(divider1);
             panel9.Dock = DockStyle.Fill;
-            panel9.Location = new Point(0, 79);
+            panel9.Location = new Point(0, 74);
             panel9.Name = "panel9";
-            panel9.Size = new Size(650, 333);
+            panel9.Size = new Size(650, 338);
             panel9.TabIndex = 7;
             // 
             // divider3
@@ -312,7 +313,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private AntdUI.Progress progress3;
         private AntdUI.Progress progress2;
         private AntdUI.Progress progress1;
