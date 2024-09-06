@@ -49,37 +49,38 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             vpanel = new AntdUI.VirtualPanel();
             panel1 = new System.Windows.Forms.Panel();
+            checkbox1 = new AntdUI.Checkbox();
             select3 = new AntdUI.Select();
             select2 = new AntdUI.Select();
             select1 = new AntdUI.Select();
             button1 = new System.Windows.Forms.Button();
-            checkbox1 = new AntdUI.Checkbox();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
             // 
+            header1.Description = "内容区域。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(835, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(835, 74);
+            header1.TabIndex = 0;
             header1.Text = "VirtualPanel 虚拟容器";
-            header1.TextDesc = "内容区域。";
+            header1.UseTitleFont = true;
             // 
             // vpanel
             // 
             vpanel.Dock = DockStyle.Fill;
             vpanel.Gap = 10;
-            vpanel.Location = new Point(0, 178);
+            vpanel.Location = new Point(0, 173);
             vpanel.Name = "vpanel";
             vpanel.Radius = 20;
-            vpanel.Size = new Size(835, 456);
+            vpanel.Size = new Size(835, 461);
             vpanel.TabIndex = 1;
             // 
             // panel1
@@ -89,10 +90,20 @@ namespace Overview.Controls
             panel1.Controls.Add(select2);
             panel1.Controls.Add(select1);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
             panel1.Size = new Size(835, 99);
             panel1.TabIndex = 5;
+            // 
+            // checkbox1
+            // 
+            checkbox1.AutoCheck = true;
+            checkbox1.Location = new Point(229, 54);
+            checkbox1.Name = "checkbox1";
+            checkbox1.Size = new Size(91, 30);
+            checkbox1.TabIndex = 1;
+            checkbox1.Text = "瀑布流";
+            checkbox1.CheckedChanged += checkbox1_CheckedChanged;
             // 
             // select3
             // 
@@ -131,16 +142,6 @@ namespace Overview.Controls
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
-            // checkbox1
-            // 
-            checkbox1.AutoCheck = true;
-            checkbox1.Location = new Point(229, 54);
-            checkbox1.Name = "checkbox1";
-            checkbox1.Size = new Size(91, 30);
-            checkbox1.TabIndex = 1;
-            checkbox1.Text = "瀑布流";
-            checkbox1.CheckedChanged += checkbox1_CheckedChanged;
-            // 
             // VirtualPanel
             // 
             Controls.Add(button1);
@@ -155,7 +156,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private AntdUI.VirtualPanel vpanel;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Select select1;

@@ -49,26 +49,27 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             slider1 = new AntdUI.Slider();
             slider3 = new AntdUI.Slider();
-            slider2 = new AntdUI.Slider();
             slider4 = new AntdUI.Slider();
+            slider2 = new AntdUI.Slider();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
             // 
+            header1.Description = "滑动型输入器，展示当前值和可选范围。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(1300, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(1300, 74);
+            header1.TabIndex = 0;
             header1.Text = "Slider 滑动输入条";
-            header1.TextDesc = "滑动型输入器，展示当前值和可选范围。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -78,9 +79,9 @@ namespace Overview.Controls
             panel1.Controls.Add(slider4);
             panel1.Controls.Add(slider2);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1300, 597);
+            panel1.Size = new Size(1300, 602);
             panel1.TabIndex = 5;
             // 
             // slider1
@@ -93,7 +94,13 @@ namespace Overview.Controls
             // 
             // slider3
             // 
-            slider3.Dots = new int[] { 20, 50, 70, 80 };
+            slider3.Dots = new int[]
+    {
+    20,
+    50,
+    70,
+    80
+    };
             slider3.DotSize = 18;
             slider3.DotSizeActive = 24;
             slider3.Location = new Point(138, 68);
@@ -102,20 +109,16 @@ namespace Overview.Controls
             slider3.Size = new Size(485, 38);
             slider3.TabIndex = 2;
             // 
-            // slider2
-            // 
-            slider2.DotSize = 18;
-            slider2.DotSizeActive = 24;
-            slider2.Location = new Point(15, 17);
-            slider2.Name = "slider2";
-            slider2.ShowValue = true;
-            slider2.Size = new Size(40, 406);
-            slider2.TabIndex = 3;
-            slider2.Align = AntdUI.TAlignMini.Top;
-            // 
             // slider4
             // 
-            slider4.Dots = new int[] { 20, 50, 70, 80 };
+            slider4.Align = AntdUI.TAlignMini.Bottom;
+            slider4.Dots = new int[]
+    {
+    20,
+    50,
+    70,
+    80
+    };
             slider4.DotSize = 18;
             slider4.DotSizeActive = 24;
             slider4.Location = new Point(75, 17);
@@ -123,13 +126,23 @@ namespace Overview.Controls
             slider4.ShowValue = true;
             slider4.Size = new Size(40, 406);
             slider4.TabIndex = 3;
-            slider4.Align = AntdUI.TAlignMini.Bottom;
+            // 
+            // slider2
+            // 
+            slider2.Align = AntdUI.TAlignMini.Top;
+            slider2.DotSize = 18;
+            slider2.DotSizeActive = 24;
+            slider2.Location = new Point(15, 17);
+            slider2.Name = "slider2";
+            slider2.ShowValue = true;
+            slider2.Size = new Size(40, 406);
+            slider2.TabIndex = 3;
             // 
             // Slider
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Slider";
             Size = new Size(1300, 676);
             panel1.ResumeLayout(false);
@@ -138,7 +151,7 @@ namespace Overview.Controls
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Slider slider3;
         private AntdUI.Slider slider2;

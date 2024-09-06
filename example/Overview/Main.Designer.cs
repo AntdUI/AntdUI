@@ -49,28 +49,14 @@ namespace Overview
         /// </summary>
         private void InitializeComponent()
         {
-            btn_back = new AntdUI.Button();
             btn_mode = new AntdUI.Button();
             virtualPanel = new AntdUI.VirtualPanel();
-            windowBar = new AntdUI.WindowBar();
+            windowBar = new AntdUI.PageHeader();
             txt_search = new AntdUI.Input();
             colorTheme = new AntdUI.ColorPicker();
             btn_setting = new AntdUI.Button();
             windowBar.SuspendLayout();
             SuspendLayout();
-            // 
-            // btn_back
-            // 
-            btn_back.Dock = DockStyle.Left;
-            btn_back.Ghost = true;
-            btn_back.IconSvg = Properties.Resources.app_back;
-            btn_back.Location = new Point(0, 0);
-            btn_back.Name = "btn_back";
-            btn_back.Size = new Size(90, 40);
-            btn_back.TabIndex = 7;
-            btn_back.Text = "返回";
-            btn_back.Visible = false;
-            btn_back.Click += btn_back_Click;
             // 
             // btn_mode
             // 
@@ -101,21 +87,25 @@ namespace Overview
             // 
             // windowBar
             // 
+            windowBar.BackgroundImageLayout = ImageLayout.Stretch;
             windowBar.Controls.Add(txt_search);
             windowBar.Controls.Add(colorTheme);
             windowBar.Controls.Add(btn_mode);
-            windowBar.Controls.Add(btn_back);
             windowBar.Controls.Add(btn_setting);
             windowBar.DividerMargin = 3;
             windowBar.DividerShow = true;
             windowBar.Dock = DockStyle.Top;
+            windowBar.Font = new Font("Microsoft YaHei UI", 12F);
             windowBar.Icon = Properties.Resources.logo;
             windowBar.Location = new Point(0, 0);
             windowBar.Name = "windowBar";
+            windowBar.ShowButton = true;
+            windowBar.ShowIcon = true;
             windowBar.Size = new Size(1300, 40);
             windowBar.SubText = "Overview";
             windowBar.TabIndex = 0;
             windowBar.Text = "Ant Design 5.0";
+            windowBar.BackClick += btn_back_Click;
             // 
             // txt_search
             // 
@@ -172,8 +162,7 @@ namespace Overview
         #endregion
         private AntdUI.Button btn_mode;
         private AntdUI.VirtualPanel virtualPanel;
-        private AntdUI.Button btn_back;
-        private AntdUI.WindowBar windowBar;
+        private AntdUI.PageHeader windowBar;
         private AntdUI.ColorPicker colorTheme;
         private AntdUI.Input txt_search;
         private AntdUI.Button btn_setting;

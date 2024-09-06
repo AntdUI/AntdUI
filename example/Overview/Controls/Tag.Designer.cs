@@ -49,8 +49,11 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
+            panel5 = new System.Windows.Forms.Panel();
+            tag16 = new AntdUI.Tag();
+            divider3 = new AntdUI.Divider();
             panel4 = new System.Windows.Forms.Panel();
             tag15 = new AntdUI.Tag();
             tag10 = new AntdUI.Tag();
@@ -71,27 +74,25 @@ namespace Overview.Controls
             tag2 = new AntdUI.Tag();
             tag1 = new AntdUI.Tag();
             divider1 = new AntdUI.Divider();
-            divider3 = new AntdUI.Divider();
-            panel5 = new System.Windows.Forms.Panel();
-            tag16 = new AntdUI.Tag();
             panel1.SuspendLayout();
+            panel5.SuspendLayout();
             panel4.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
-            panel5.SuspendLayout();
             SuspendLayout();
             // 
             // header1
             // 
+            header1.Description = "进行标记和分类的小标签";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(1300, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(1300, 74);
+            header1.TabIndex = 0;
             header1.Text = "Tag 标签";
-            header1.TextDesc = "进行标记和分类的小标签";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -103,10 +104,42 @@ namespace Overview.Controls
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1300, 597);
+            panel1.Size = new Size(1300, 602);
             panel1.TabIndex = 5;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(tag16);
+            panel5.Dock = DockStyle.Top;
+            panel5.Location = new Point(0, 213);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(1300, 61);
+            panel5.TabIndex = 6;
+            // 
+            // tag16
+            // 
+            tag16.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            tag16.BackColor = Color.FromArgb(59, 89, 153);
+            tag16.ForeColor = Color.White;
+            tag16.Image = Properties.Resources.img1;
+            tag16.Location = new Point(13, 13);
+            tag16.Name = "tag16";
+            tag16.Size = new Size(107, 27);
+            tag16.TabIndex = 0;
+            tag16.Text = "自定义图标";
+            // 
+            // divider3
+            // 
+            divider3.Dock = DockStyle.Top;
+            divider3.Location = new Point(0, 191);
+            divider3.Margin = new Padding(10);
+            divider3.Name = "divider3";
+            divider3.Orientation = AntdUI.TOrientation.Left;
+            divider3.Size = new Size(1300, 22);
+            divider3.TabIndex = 5;
+            divider3.Text = "图标按钮";
             // 
             // panel4
             // 
@@ -128,103 +161,103 @@ namespace Overview.Controls
             // 
             // tag15
             // 
-            tag15.AutoSize = true;
+            tag15.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag15.BorderWidth = 0F;
             tag15.Location = new Point(265, 45);
             tag15.Name = "tag15";
-            tag15.Size = new Size(65, 26);
+            tag15.Size = new Size(65, 27);
             tag15.TabIndex = 2;
             tag15.Text = "default";
             // 
             // tag10
             // 
-            tag10.AutoSize = true;
+            tag10.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag10.Location = new Point(265, 13);
             tag10.Name = "tag10";
-            tag10.Size = new Size(65, 26);
+            tag10.Size = new Size(65, 27);
             tag10.TabIndex = 2;
             tag10.Text = "default";
             // 
             // tag14
             // 
-            tag14.AutoSize = true;
+            tag14.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag14.BorderWidth = 0F;
             tag14.Location = new Point(216, 45);
             tag14.Name = "tag14";
-            tag14.Size = new Size(45, 26);
+            tag14.Size = new Size(45, 27);
             tag14.TabIndex = 2;
             tag14.Text = "info";
             tag14.Type = AntdUI.TTypeMini.Info;
             // 
             // tag9
             // 
-            tag9.AutoSize = true;
+            tag9.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag9.Location = new Point(216, 13);
             tag9.Name = "tag9";
-            tag9.Size = new Size(45, 26);
+            tag9.Size = new Size(45, 27);
             tag9.TabIndex = 2;
             tag9.Text = "info";
             tag9.Type = AntdUI.TTypeMini.Info;
             // 
             // tag13
             // 
-            tag13.AutoSize = true;
+            tag13.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag13.BorderWidth = 0F;
             tag13.Location = new Point(139, 45);
             tag13.Name = "tag13";
-            tag13.Size = new Size(72, 26);
+            tag13.Size = new Size(72, 27);
             tag13.TabIndex = 2;
             tag13.Text = "warning";
             tag13.Type = AntdUI.TTypeMini.Warn;
             // 
             // tag8
             // 
-            tag8.AutoSize = true;
+            tag8.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag8.Location = new Point(139, 13);
             tag8.Name = "tag8";
-            tag8.Size = new Size(72, 26);
+            tag8.Size = new Size(72, 27);
             tag8.TabIndex = 2;
             tag8.Text = "warning";
             tag8.Type = AntdUI.TTypeMini.Warn;
             // 
             // tag12
             // 
-            tag12.AutoSize = true;
+            tag12.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag12.BorderWidth = 0F;
             tag12.Location = new Point(85, 45);
             tag12.Name = "tag12";
-            tag12.Size = new Size(51, 26);
+            tag12.Size = new Size(51, 27);
             tag12.TabIndex = 2;
             tag12.Text = "error";
             tag12.Type = AntdUI.TTypeMini.Error;
             // 
             // tag7
             // 
-            tag7.AutoSize = true;
+            tag7.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag7.Location = new Point(85, 13);
             tag7.Name = "tag7";
-            tag7.Size = new Size(51, 26);
+            tag7.Size = new Size(51, 27);
             tag7.TabIndex = 2;
             tag7.Text = "error";
             tag7.Type = AntdUI.TTypeMini.Error;
             // 
             // tag11
             // 
-            tag11.AutoSize = true;
+            tag11.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag11.BorderWidth = 0F;
             tag11.Location = new Point(13, 45);
             tag11.Name = "tag11";
-            tag11.Size = new Size(68, 26);
+            tag11.Size = new Size(68, 27);
             tag11.TabIndex = 2;
             tag11.Text = "success";
             tag11.Type = AntdUI.TTypeMini.Success;
             // 
             // tag6
             // 
-            tag6.AutoSize = true;
+            tag6.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag6.Location = new Point(13, 13);
             tag6.Name = "tag6";
-            tag6.Size = new Size(68, 26);
+            tag6.Size = new Size(68, 27);
             tag6.TabIndex = 2;
             tag6.Text = "success";
             tag6.Type = AntdUI.TTypeMini.Success;
@@ -263,56 +296,56 @@ namespace Overview.Controls
             // 
             // tag5
             // 
-            tag5.AutoSize = true;
+            tag5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag5.CloseIcon = true;
             tag5.Dock = DockStyle.Left;
             tag5.Location = new Point(148, 0);
             tag5.Name = "tag5";
             tag5.Padding = new Padding(0, 0, 6, 0);
-            tag5.Size = new Size(74, 26);
+            tag5.Size = new Size(74, 27);
             tag5.TabIndex = 3;
             tag5.Text = "Tag 3";
             // 
             // tag4
             // 
-            tag4.AutoSize = true;
+            tag4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag4.CloseIcon = true;
             tag4.Dock = DockStyle.Left;
             tag4.Location = new Point(74, 0);
             tag4.Name = "tag4";
             tag4.Padding = new Padding(0, 0, 6, 0);
-            tag4.Size = new Size(74, 26);
+            tag4.Size = new Size(74, 27);
             tag4.TabIndex = 2;
             tag4.Text = "Tag 2";
             // 
             // tag3
             // 
-            tag3.AutoSize = true;
+            tag3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag3.CloseIcon = true;
             tag3.Dock = DockStyle.Left;
             tag3.Location = new Point(0, 0);
             tag3.Name = "tag3";
             tag3.Padding = new Padding(0, 0, 6, 0);
-            tag3.Size = new Size(74, 26);
+            tag3.Size = new Size(74, 27);
             tag3.TabIndex = 1;
             tag3.Text = "Tag 1";
             // 
             // tag2
             // 
-            tag2.AutoSize = true;
+            tag2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag2.CloseIcon = true;
             tag2.Location = new Point(72, 13);
             tag2.Name = "tag2";
-            tag2.Size = new Size(139, 26);
+            tag2.Size = new Size(140, 27);
             tag2.TabIndex = 2;
             tag2.Text = "Prevent Default";
             // 
             // tag1
             // 
-            tag1.AutoSize = true;
+            tag1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag1.Location = new Point(13, 13);
             tag1.Name = "tag1";
-            tag1.Size = new Size(55, 26);
+            tag1.Size = new Size(55, 27);
             tag1.TabIndex = 1;
             tag1.Text = "Tag 1";
             // 
@@ -327,56 +360,28 @@ namespace Overview.Controls
             divider1.TabIndex = 1;
             divider1.Text = "基本";
             // 
-            // divider3
-            // 
-            divider3.Dock = DockStyle.Top;
-            divider3.Location = new Point(0, 191);
-            divider3.Margin = new Padding(10);
-            divider3.Name = "divider3";
-            divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(1300, 22);
-            divider3.TabIndex = 5;
-            divider3.Text = "图标按钮";
-            // 
-            // panel5
-            // 
-            panel5.Controls.Add(tag16);
-            panel5.Dock = DockStyle.Top;
-            panel5.Location = new Point(0, 213);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(1300, 61);
-            panel5.TabIndex = 6;
-            // 
-            // tag16
-            // 
-            tag16.AutoSize = true;
-            tag16.BackColor = Color.FromArgb(59, 89, 153);
-            tag16.ForeColor = Color.White;
-            tag16.Image = Properties.Resources.img1;
-            tag16.Location = new Point(13, 13);
-            tag16.Name = "tag16";
-            tag16.Size = new Size(106, 26);
-            tag16.TabIndex = 0;
-            tag16.Text = "自定义图标";
-            // 
             // Tag
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 10F);
             Name = "Tag";
             Size = new Size(1300, 676);
             panel1.ResumeLayout(false);
-            panel4.ResumeLayout(false);
-            panel2.ResumeLayout(false);
-            panel3.ResumeLayout(false);
             panel5.ResumeLayout(false);
+            panel5.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private AntdUI.Divider divider1;

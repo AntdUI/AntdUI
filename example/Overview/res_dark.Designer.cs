@@ -96,6 +96,15 @@ namespace Overview {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 149 22&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-546.000000, -1162.000000)&quot;&gt;&lt;g id=&quot;Breadcrumb&quot; transform=&quot;translate(546.000000, 1162.000000)&quot;&gt;&lt;rect id=&quot;矩形复制-48&quot; fill-opacity=&quot;0.15&quot; fill=&quot;#FFFFFF&quot; fill-rule=&quot;nonzero&quot; opacity=&quot;0.999255952&quot; x=&quot;0&quot; y=&quot;6&quot; width=&quot;32&quot; height=&quot;10&quot;&gt;&lt;/rect&gt;&lt;rect id=&quot;矩形复制-49&quot; fill-opacity=&quot;0.15&quot; fill=&quot;#FFFFFF&quot; fill-rule=&quot;nonzero&quot; opacity=&quot;0.9992 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Breadcrumb {
+            get {
+                return ResourceManager.GetString("Breadcrumb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; viewBox=&quot;0 0 80 111&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版&quot; transform=&quot;translate(-204.000000, -424.000000)&quot;&gt;&lt;g id=&quot;Button&quot; transform=&quot;translate(204.000000, 424.000000)&quot;&gt;&lt;rect id=&quot;矩形&quot; fill=&quot;#1677FF&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;79&quot; height=&quot;31&quot; rx=&quot;6&quot;/&gt;&lt;text id=&quot;||||||||||||||||||&quot; fill-rule=&quot;nonzero&quot; font-family=&quot;PingFangSC-Regular, PingFang SC&quot; font-size=&quot;14&quot; font-weight=&quot;normal&quot; fill=&quot;#FFFFFF&quot;&gt;&lt;tspan x=&quot;16&quot; y=&quot;2 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Button {
@@ -119,6 +128,15 @@ namespace Overview {
         internal static string Checkbox {
             get {
                 return ResourceManager.GetString("Checkbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 150 102&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-543.000000, -3247.000000)&quot;&gt;&lt;g id=&quot;Collapse&quot; transform=&quot;translate(543.000000, 3247.000000)&quot;&gt;&lt;path d=&quot;M2,0 L148,0 C149.104569,0 150,0.8954305 150,2 L150,24 L150,24 L0,24 L0,2 C0,0.8954305 0.8954305,0 2,0 Z&quot; id=&quot;矩形&quot; fill-opacity=&quot;0.04&quot; fill=&quot;#FFFFFF&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M0,78 L150,78 L150,100 C150,101.104569 149.104569,102 1 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Collapse {
+            get {
+                return ResourceManager.GetString("Collapse", resourceCulture);
             }
         }
         
@@ -245,6 +263,15 @@ namespace Overview {
         internal static string Notification {
             get {
                 return ResourceManager.GetString("Notification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 150 44&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;页面-1&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;Popconfirm备份&quot; transform=&quot;translate(-208.000000, -48.000000)&quot;&gt;&lt;g id=&quot;PageHeader&quot; transform=&quot;translate(208.000000, 48.000000)&quot;&gt;&lt;rect id=&quot;矩形&quot; stroke=&quot;#D9D9D9&quot; x=&quot;0.5&quot; y=&quot;0.5&quot; width=&quot;149&quot; height=&quot;43&quot; rx=&quot;2&quot;&gt;&lt;/rect&gt;&lt;rect id=&quot;矩形&quot; fill=&quot;#D9D9D9&quot; x=&quot;48&quot; y=&quot;14&quot; width=&quot;1&quot; height=&quot;16&quot;&gt;&lt;/rect&gt;&lt;g id=&quot;arrowleft&quot; opacity=&quot;0.65&quot; transform=&quot;translate(20.000000, 14.000000)&quot; f [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string PageHeader {
+            get {
+                return ResourceManager.GetString("PageHeader", resourceCulture);
             }
         }
         

@@ -64,7 +64,7 @@ namespace Overview.Controls
             AntdUI.CarouselItem carouselItem13 = new AntdUI.CarouselItem();
             AntdUI.CarouselItem carouselItem14 = new AntdUI.CarouselItem();
             AntdUI.CarouselItem carouselItem15 = new AntdUI.CarouselItem();
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             flowLayoutPanel1 = new FlowLayoutPanel();
             carousel2 = new AntdUI.Carousel();
             carousel3 = new AntdUI.Carousel();
@@ -79,15 +79,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "旋转木马，一组轮播的区域。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(1300, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(1300, 74);
+            header1.TabIndex = 0;
             header1.Text = "Carousel 走马灯";
-            header1.TextDesc = "旋转木马，一组轮播的区域。";
+            header1.UseTitleFont = true;
             // 
             // flowLayoutPanel1
             // 
@@ -98,9 +99,9 @@ namespace Overview.Controls
             flowLayoutPanel1.Controls.Add(image3d1);
             flowLayoutPanel1.Controls.Add(image3d2);
             flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.Location = new Point(0, 79);
+            flowLayoutPanel1.Location = new Point(0, 74);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(1300, 597);
+            flowLayoutPanel1.Size = new Size(1300, 602);
             flowLayoutPanel1.TabIndex = 5;
             // 
             // carousel2
@@ -110,7 +111,10 @@ namespace Overview.Controls
             carouselItem2.Img = Properties.Resources.bg1;
             carouselItem3.Img = Properties.Resources.bg7;
             carouselItem4.Img = Properties.Resources.bg2;
-            carousel2.Image.AddRange(new AntdUI.CarouselItem[] { carouselItem1, carouselItem2, carouselItem3, carouselItem4 });
+            carousel2.Image.Add(carouselItem1);
+            carousel2.Image.Add(carouselItem2);
+            carousel2.Image.Add(carouselItem3);
+            carousel2.Image.Add(carouselItem4);
             carousel2.Location = new Point(3, 3);
             carousel2.Name = "carousel2";
             carousel2.Radius = 8;
@@ -128,7 +132,14 @@ namespace Overview.Controls
             carouselItem10.Img = Properties.Resources.bg4;
             carouselItem11.Img = Properties.Resources.bg5;
             carouselItem12.Img = Properties.Resources.bg6;
-            carousel3.Image.AddRange(new AntdUI.CarouselItem[] { carouselItem5, carouselItem6, carouselItem7, carouselItem8, carouselItem9, carouselItem10, carouselItem11, carouselItem12 });
+            carousel3.Image.Add(carouselItem5);
+            carousel3.Image.Add(carouselItem6);
+            carousel3.Image.Add(carouselItem7);
+            carousel3.Image.Add(carouselItem8);
+            carousel3.Image.Add(carouselItem9);
+            carousel3.Image.Add(carouselItem10);
+            carousel3.Image.Add(carouselItem11);
+            carousel3.Image.Add(carouselItem12);
             carousel3.Location = new Point(402, 3);
             carousel3.Name = "carousel3";
             carousel3.Size = new Size(393, 211);
@@ -152,7 +163,9 @@ namespace Overview.Controls
             carouselItem13.Img = Properties.Resources.bg1;
             carouselItem14.Img = Properties.Resources.bg7;
             carouselItem15.Img = Properties.Resources.bg2;
-            carousel1.Image.AddRange(new AntdUI.CarouselItem[] { carouselItem13, carouselItem14, carouselItem15 });
+            carousel1.Image.Add(carouselItem13);
+            carousel1.Image.Add(carouselItem14);
+            carousel1.Image.Add(carouselItem15);
             carousel1.Location = new Point(0, 0);
             carousel1.Name = "carousel1";
             carousel1.Radius = 60;
@@ -198,7 +211,7 @@ namespace Overview.Controls
             // 
             Controls.Add(flowLayoutPanel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Carousel";
             Size = new Size(1300, 676);
             flowLayoutPanel1.ResumeLayout(false);
@@ -208,7 +221,7 @@ namespace Overview.Controls
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.Carousel carousel2;
         private AntdUI.Carousel carousel1;

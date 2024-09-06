@@ -351,7 +351,7 @@ namespace AntdUI
                     ((InputNumber)inputs[0].input).Value = Value.R;
                     ((InputNumber)inputs[1].input).Value = Value.G;
                     ((InputNumber)inputs[2].input).Value = Value.B;
-                    ((InputNumber)inputs[3].input).Value = (int)(Value.A / 255F * 100F);
+                    if (inputs.Length > 3) ((InputNumber)inputs[3].input).Value = (int)(Value.A / 255F * 100F);
                     break;
                 case TColorMode.Hex:
                 default:

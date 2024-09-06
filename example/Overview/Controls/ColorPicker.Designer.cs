@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             flowLayoutPanel1 = new FlowLayoutPanel();
             colorPicker3 = new AntdUI.ColorPicker();
             colorPicker1 = new AntdUI.ColorPicker();
@@ -58,15 +58,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "提供颜色选取的组件。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(740, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(740, 74);
+            header1.TabIndex = 0;
             header1.Text = "ColorPicker 颜色选择器";
-            header1.TextDesc = "提供颜色选取的组件。";
+            header1.UseTitleFont = true;
             // 
             // flowLayoutPanel1
             // 
@@ -74,14 +75,14 @@ namespace Overview.Controls
             flowLayoutPanel1.Controls.Add(colorPicker3);
             flowLayoutPanel1.Controls.Add(colorPicker1);
             flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.Location = new Point(0, 79);
+            flowLayoutPanel1.Location = new Point(0, 74);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(740, 323);
+            flowLayoutPanel1.Size = new Size(740, 328);
             flowLayoutPanel1.TabIndex = 5;
             // 
             // colorPicker3
             // 
-            colorPicker3.AutoSize = true;
+            colorPicker3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             colorPicker3.Location = new Point(3, 3);
             colorPicker3.Name = "colorPicker3";
             colorPicker3.Size = new Size(47, 47);
@@ -90,7 +91,7 @@ namespace Overview.Controls
             // 
             // colorPicker1
             // 
-            colorPicker1.AutoSize = true;
+            colorPicker1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             colorPicker1.Location = new Point(56, 3);
             colorPicker1.Name = "colorPicker1";
             colorPicker1.ShowText = true;
@@ -102,16 +103,17 @@ namespace Overview.Controls
             // 
             Controls.Add(flowLayoutPanel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "ColorPicker";
             Size = new Size(740, 402);
             flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.ColorPicker colorPicker3;
         private AntdUI.ColorPicker colorPicker1;

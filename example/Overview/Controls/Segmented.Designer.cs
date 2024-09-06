@@ -49,6 +49,11 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            AntdUI.SegmentedItem segmentedItem1 = new AntdUI.SegmentedItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Segmented));
+            AntdUI.SegmentedItem segmentedItem2 = new AntdUI.SegmentedItem();
+            AntdUI.SegmentedItem segmentedItem3 = new AntdUI.SegmentedItem();
+            AntdUI.SegmentedItem segmentedItem4 = new AntdUI.SegmentedItem();
             AntdUI.SegmentedItem segmentedItem5 = new AntdUI.SegmentedItem();
             AntdUI.SegmentedItem segmentedItem6 = new AntdUI.SegmentedItem();
             AntdUI.SegmentedItem segmentedItem7 = new AntdUI.SegmentedItem();
@@ -58,32 +63,28 @@ namespace Overview.Controls
             AntdUI.SegmentedItem segmentedItem11 = new AntdUI.SegmentedItem();
             AntdUI.SegmentedItem segmentedItem12 = new AntdUI.SegmentedItem();
             AntdUI.SegmentedItem segmentedItem13 = new AntdUI.SegmentedItem();
-            AntdUI.SegmentedItem segmentedItem1 = new AntdUI.SegmentedItem();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Segmented));
-            AntdUI.SegmentedItem segmentedItem2 = new AntdUI.SegmentedItem();
-            AntdUI.SegmentedItem segmentedItem3 = new AntdUI.SegmentedItem();
-            AntdUI.SegmentedItem segmentedItem4 = new AntdUI.SegmentedItem();
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
-            segmented2 = new AntdUI.Segmented();
-            segmented1 = new AntdUI.Segmented();
             segmented3 = new AntdUI.Segmented();
-            divider1 = new AntdUI.Divider();
             divider2 = new AntdUI.Divider();
+            segmented2 = new AntdUI.Segmented();
+            divider1 = new AntdUI.Divider();
+            segmented1 = new AntdUI.Segmented();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
             // 
+            header1.Description = "分段控制器。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(1300, 79);
-            header1.TabIndex = 5;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(1300, 74);
+            header1.TabIndex = 0;
             header1.Text = "Segmented 分段控制器";
-            header1.TextDesc = "分段控制器。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -94,45 +95,10 @@ namespace Overview.Controls
             panel1.Controls.Add(divider1);
             panel1.Controls.Add(segmented1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1300, 597);
+            panel1.Size = new Size(1300, 602);
             panel1.TabIndex = 7;
-            // 
-            // segmented2
-            // 
-            segmented2.Dock = DockStyle.Top;
-            segmentedItem5.IconSvg = resources.GetString("segmentedItem5.IconSvg");
-            segmentedItem5.Text = "Daily";
-            segmentedItem6.IconSvg = resources.GetString("segmentedItem6.IconSvg");
-            segmentedItem6.Text = "Weekly";
-            segmentedItem7.IconSvg = resources.GetString("segmentedItem7.IconSvg");
-            segmentedItem7.Text = "Monthly";
-            segmentedItem8.IconActiveSvg = resources.GetString("segmentedItem8.IconActiveSvg");
-            segmentedItem8.IconSvg = resources.GetString("segmentedItem8.IconSvg");
-            segmentedItem8.Text = "Quarterly";
-            segmented2.Items.AddRange(new AntdUI.SegmentedItem[] { segmentedItem5, segmentedItem6, segmentedItem7, segmentedItem8 });
-            segmented2.Location = new Point(0, 56);
-            segmented2.Margin = new Padding(1);
-            segmented2.Name = "segmented2";
-            segmented2.SelectIndex = 0;
-            segmented2.Size = new Size(1300, 73);
-            segmented2.TabIndex = 12;
-            // 
-            // segmented1
-            // 
-            segmented1.Dock = DockStyle.Top;
-            segmentedItem9.Text = "Daily";
-            segmentedItem10.Text = "Weekly";
-            segmentedItem11.Text = "Monthly";
-            segmentedItem12.Text = "Quarterly";
-            segmentedItem13.Text = "Yearly";
-            segmented1.Items.AddRange(new AntdUI.SegmentedItem[] { segmentedItem9, segmentedItem10, segmentedItem11, segmentedItem12, segmentedItem13 });
-            segmented1.Location = new Point(0, 0);
-            segmented1.Name = "segmented1";
-            segmented1.Size = new Size(1300, 36);
-            segmented1.TabIndex = 13;
-            segmented1.Text = "segmented1";
             // 
             // segmented3
             // 
@@ -147,20 +113,15 @@ namespace Overview.Controls
             segmentedItem4.IconActiveSvg = resources.GetString("segmentedItem4.IconActiveSvg");
             segmentedItem4.IconSvg = resources.GetString("segmentedItem4.IconSvg");
             segmentedItem4.Text = "Quarterly";
-            segmented3.Items.AddRange(new AntdUI.SegmentedItem[] { segmentedItem1, segmentedItem2, segmentedItem3, segmentedItem4 });
+            segmented3.Items.Add(segmentedItem1);
+            segmented3.Items.Add(segmentedItem2);
+            segmented3.Items.Add(segmentedItem3);
+            segmented3.Items.Add(segmentedItem4);
             segmented3.Location = new Point(0, 149);
             segmented3.Name = "segmented3";
             segmented3.SelectIndex = 0;
             segmented3.Size = new Size(1300, 36);
             segmented3.TabIndex = 12;
-            // 
-            // divider1
-            // 
-            divider1.Dock = DockStyle.Top;
-            divider1.Location = new Point(0, 36);
-            divider1.Name = "divider1";
-            divider1.Size = new Size(1300, 20);
-            divider1.TabIndex = 14;
             // 
             // divider2
             // 
@@ -170,11 +131,61 @@ namespace Overview.Controls
             divider2.Size = new Size(1300, 20);
             divider2.TabIndex = 15;
             // 
+            // segmented2
+            // 
+            segmented2.Dock = DockStyle.Top;
+            segmentedItem5.IconSvg = resources.GetString("segmentedItem5.IconSvg");
+            segmentedItem5.Text = "Daily";
+            segmentedItem6.IconSvg = resources.GetString("segmentedItem6.IconSvg");
+            segmentedItem6.Text = "Weekly";
+            segmentedItem7.IconSvg = resources.GetString("segmentedItem7.IconSvg");
+            segmentedItem7.Text = "Monthly";
+            segmentedItem8.IconActiveSvg = resources.GetString("segmentedItem8.IconActiveSvg");
+            segmentedItem8.IconSvg = resources.GetString("segmentedItem8.IconSvg");
+            segmentedItem8.Text = "Quarterly";
+            segmented2.Items.Add(segmentedItem5);
+            segmented2.Items.Add(segmentedItem6);
+            segmented2.Items.Add(segmentedItem7);
+            segmented2.Items.Add(segmentedItem8);
+            segmented2.Location = new Point(0, 56);
+            segmented2.Margin = new Padding(1);
+            segmented2.Name = "segmented2";
+            segmented2.SelectIndex = 0;
+            segmented2.Size = new Size(1300, 73);
+            segmented2.TabIndex = 12;
+            // 
+            // divider1
+            // 
+            divider1.Dock = DockStyle.Top;
+            divider1.Location = new Point(0, 36);
+            divider1.Name = "divider1";
+            divider1.Size = new Size(1300, 20);
+            divider1.TabIndex = 14;
+            // 
+            // segmented1
+            // 
+            segmented1.Dock = DockStyle.Top;
+            segmentedItem9.Text = "Daily";
+            segmentedItem10.Text = "Weekly";
+            segmentedItem11.Text = "Monthly";
+            segmentedItem12.Text = "Quarterly";
+            segmentedItem13.Text = "Yearly";
+            segmented1.Items.Add(segmentedItem9);
+            segmented1.Items.Add(segmentedItem10);
+            segmented1.Items.Add(segmentedItem11);
+            segmented1.Items.Add(segmentedItem12);
+            segmented1.Items.Add(segmentedItem13);
+            segmented1.Location = new Point(0, 0);
+            segmented1.Name = "segmented1";
+            segmented1.Size = new Size(1300, 36);
+            segmented1.TabIndex = 13;
+            segmented1.Text = "segmented1";
+            // 
             // Segmented
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 10F);
             Name = "Segmented";
             Size = new Size(1300, 676);
             panel1.ResumeLayout(false);
@@ -182,7 +193,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Segmented segmented2;
         private AntdUI.Segmented segmented1;

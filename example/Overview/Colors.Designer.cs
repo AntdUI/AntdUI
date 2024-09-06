@@ -62,7 +62,7 @@ namespace Overview
             colorPanel3 = new AntdUI.ColorPanel();
             colorPanel2 = new AntdUI.ColorPanel();
             colorPanel1 = new AntdUI.ColorPanel();
-            textBox1 = new TextBox();
+            textBox1 = new AntdUI.Input();
             panel11 = new AntdUI.Panel();
             color_dark = new AntdUI.ColorPanelLeft();
             panel_primary.SuspendLayout();
@@ -85,7 +85,7 @@ namespace Overview
             // color_primary
             // 
             color_primary.Dock = DockStyle.Fill;
-            color_primary.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            color_primary.Font = new Font("Microsoft YaHei UI", 14F);
             color_primary.Location = new Point(0, 0);
             color_primary.Name = "color_primary";
             color_primary.Padding = new Padding(13, 0, 0, 0);
@@ -128,7 +128,7 @@ namespace Overview
             // colorPanel10
             // 
             colorPanel10.Dock = DockStyle.Fill;
-            colorPanel10.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel10.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel10.Location = new Point(864, 20);
             colorPanel10.Margin = new Padding(0, 20, 0, 0);
             colorPanel10.Name = "colorPanel10";
@@ -143,7 +143,7 @@ namespace Overview
             // colorPanel9
             // 
             colorPanel9.Dock = DockStyle.Fill;
-            colorPanel9.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel9.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel9.Location = new Point(768, 20);
             colorPanel9.Margin = new Padding(0, 20, 0, 0);
             colorPanel9.Name = "colorPanel9";
@@ -158,7 +158,7 @@ namespace Overview
             // colorPanel8
             // 
             colorPanel8.Dock = DockStyle.Fill;
-            colorPanel8.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel8.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel8.Location = new Point(672, 20);
             colorPanel8.Margin = new Padding(0, 20, 0, 0);
             colorPanel8.Name = "colorPanel8";
@@ -173,7 +173,7 @@ namespace Overview
             // colorPanel7
             // 
             colorPanel7.Dock = DockStyle.Fill;
-            colorPanel7.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel7.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel7.Location = new Point(576, 20);
             colorPanel7.Margin = new Padding(0, 20, 0, 0);
             colorPanel7.Name = "colorPanel7";
@@ -188,7 +188,7 @@ namespace Overview
             // colorPanel6
             // 
             colorPanel6.Dock = DockStyle.Fill;
-            colorPanel6.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel6.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel6.Location = new Point(480, 20);
             colorPanel6.Margin = new Padding(0, 20, 0, 0);
             colorPanel6.Name = "colorPanel6";
@@ -203,7 +203,7 @@ namespace Overview
             // colorPanel5
             // 
             colorPanel5.Dock = DockStyle.Fill;
-            colorPanel5.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel5.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel5.Location = new Point(384, 20);
             colorPanel5.Margin = new Padding(0, 20, 0, 0);
             colorPanel5.Name = "colorPanel5";
@@ -218,7 +218,7 @@ namespace Overview
             // colorPanel4
             // 
             colorPanel4.Dock = DockStyle.Fill;
-            colorPanel4.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel4.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel4.Location = new Point(288, 20);
             colorPanel4.Margin = new Padding(0, 20, 0, 0);
             colorPanel4.Name = "colorPanel4";
@@ -233,7 +233,7 @@ namespace Overview
             // colorPanel3
             // 
             colorPanel3.Dock = DockStyle.Fill;
-            colorPanel3.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel3.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel3.Location = new Point(192, 20);
             colorPanel3.Margin = new Padding(0, 20, 0, 0);
             colorPanel3.Name = "colorPanel3";
@@ -248,7 +248,7 @@ namespace Overview
             // colorPanel2
             // 
             colorPanel2.Dock = DockStyle.Fill;
-            colorPanel2.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel2.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel2.Location = new Point(96, 20);
             colorPanel2.Margin = new Padding(0, 20, 0, 0);
             colorPanel2.Name = "colorPanel2";
@@ -263,7 +263,7 @@ namespace Overview
             // colorPanel1
             // 
             colorPanel1.Dock = DockStyle.Fill;
-            colorPanel1.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            colorPanel1.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel1.Location = new Point(0, 20);
             colorPanel1.Margin = new Padding(0, 20, 0, 0);
             colorPanel1.Name = "colorPanel1";
@@ -277,10 +277,10 @@ namespace Overview
             // 
             // textBox1
             // 
-            textBox1.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox1.Font = new Font("Microsoft YaHei UI", 14F);
             textBox1.Location = new Point(13, 100);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(100, 31);
+            textBox1.Size = new Size(114, 38);
             textBox1.TabIndex = 3;
             textBox1.Text = "#1890FF";
             textBox1.TextChanged += textBox1_TextChanged;
@@ -301,7 +301,7 @@ namespace Overview
             // color_dark
             // 
             color_dark.Dock = DockStyle.Fill;
-            color_dark.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            color_dark.Font = new Font("Microsoft YaHei UI", 14F);
             color_dark.Location = new Point(0, 0);
             color_dark.Name = "color_dark";
             color_dark.Padding = new Padding(13, 0, 0, 0);
@@ -311,8 +311,6 @@ namespace Overview
             // 
             // Colors
             // 
-            AutoScaleDimensions = new SizeF(7F, 17F);
-            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(969, 284);
             Controls.Add(textBox1);
             Controls.Add(tablePanel);
@@ -326,14 +324,13 @@ namespace Overview
             tablePanel.ResumeLayout(false);
             panel11.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
         private AntdUI.Panel panel_primary;
         private TableLayoutPanel tablePanel;
-        private TextBox textBox1;
+        private AntdUI.Input textBox1;
         private AntdUI.Panel panel11;
         private AntdUI.ColorPanel colorPanel1;
         private AntdUI.ColorPanel colorPanel10;

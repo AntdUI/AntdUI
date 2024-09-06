@@ -56,7 +56,7 @@ namespace Overview.Controls
             AntdUI.CarouselItem carouselItem4 = new AntdUI.CarouselItem();
             AntdUI.Tabs.StyleCard styleCard1 = new AntdUI.Tabs.StyleCard();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Tabs));
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             tabs1 = new AntdUI.Tabs();
             tabPage1 = new AntdUI.TabPage();
             carousel2 = new AntdUI.Carousel();
@@ -87,20 +87,21 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "选项卡切换组件。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(663, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(663, 74);
+            header1.TabIndex = 0;
             header1.Text = "Tabs 标签页";
-            header1.TextDesc = "选项卡切换组件。";
+            header1.UseTitleFont = true;
             // 
             // tabs1
             // 
             tabs1.Dock = DockStyle.Top;
-            tabs1.Location = new Point(0, 79);
+            tabs1.Location = new Point(0, 74);
             tabs1.Name = "tabs1";
             tabs1.Padding = new Padding(4);
             tabs1.Pages.Add(tabPage1);
@@ -116,10 +117,10 @@ namespace Overview.Controls
             tabPage1.Controls.Add(carousel2);
             tabPage1.Controls.Add(label1);
             tabPage1.Dock = DockStyle.Fill;
-            tabPage1.Location = new Point(7, 32);
+            tabPage1.Location = new Point(7, 36);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(649, 275);
+            tabPage1.Size = new Size(649, 271);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Tab 1";
             // 
@@ -130,7 +131,10 @@ namespace Overview.Controls
             carouselItem2.Img = Properties.Resources.bg1;
             carouselItem3.Img = Properties.Resources.bg7;
             carouselItem4.Img = Properties.Resources.bg2;
-            carousel2.Image.AddRange(new AntdUI.CarouselItem[] { carouselItem1, carouselItem2, carouselItem3, carouselItem4 });
+            carousel2.Image.Add(carouselItem1);
+            carousel2.Image.Add(carouselItem2);
+            carousel2.Image.Add(carouselItem3);
+            carousel2.Image.Add(carouselItem4);
             carousel2.Location = new Point(22, 43);
             carousel2.Name = "carousel2";
             carousel2.Radius = 8;
@@ -214,13 +218,13 @@ namespace Overview.Controls
             // 
             tabs2.Alignment = TabAlignment.Left;
             tabs2.Dock = DockStyle.Fill;
-            tabs2.Location = new Point(0, 393);
+            tabs2.Location = new Point(0, 388);
             tabs2.Margin = new Padding(8);
             tabs2.Name = "tabs2";
             tabs2.Pages.Add(tabPage5);
             tabs2.Pages.Add(tabPage6);
             tabs2.Pages.Add(tabPage7);
-            tabs2.Size = new Size(663, 162);
+            tabs2.Size = new Size(663, 167);
             styleCard1.Gap = 8;
             tabs2.Style = styleCard1;
             tabs2.TabIndex = 7;
@@ -230,10 +234,10 @@ namespace Overview.Controls
             // 
             tabPage5.Controls.Add(label5);
             tabPage5.Dock = DockStyle.Fill;
-            tabPage5.Location = new Point(72, 8);
+            tabPage5.Location = new Point(83, 8);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new Padding(3);
-            tabPage5.Size = new Size(583, 146);
+            tabPage5.Size = new Size(572, 151);
             tabPage5.TabIndex = 6;
             tabPage5.Text = "Tab 1";
             // 
@@ -296,7 +300,7 @@ namespace Overview.Controls
             Controls.Add(tabs2);
             Controls.Add(tabs1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 11F);
             Name = "Tabs";
             Size = new Size(663, 555);
             tabs1.ResumeLayout(false);
@@ -320,7 +324,7 @@ namespace Overview.Controls
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private AntdUI.Tabs tabs1;
         private AntdUI.TabPage tabPage1;
         private AntdUI.Carousel carousel2;

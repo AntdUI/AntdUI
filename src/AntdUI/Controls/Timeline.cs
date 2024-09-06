@@ -412,6 +412,7 @@ namespace AntdUI
         /// 描述，可选
         /// </summary>
         [Description("描述，可选"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public string? Description { get; set; }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel3 = new System.Windows.Forms.Panel();
             button7 = new AntdUI.Button();
@@ -72,15 +72,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "全局展示通知提醒信息。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(543, 79);
-            header1.TabIndex = 5;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(543, 74);
+            header1.TabIndex = 0;
             header1.Text = "Notification 通知提醒框";
-            header1.TextDesc = "全局展示通知提醒信息。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -90,9 +91,9 @@ namespace Overview.Controls
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(543, 378);
+            panel1.Size = new Size(543, 383);
             panel1.TabIndex = 6;
             // 
             // panel3
@@ -154,7 +155,7 @@ namespace Overview.Controls
             // divider2
             // 
             divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.Location = new Point(0, 217);
             divider2.Margin = new Padding(10);
             divider2.Name = "divider2";
@@ -180,11 +181,11 @@ namespace Overview.Controls
             // 
             // button4
             // 
-            button4.AutoSize = true;
+            button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button4.IconSvg = "RadiusBottomrightOutlined";
             button4.Location = new Point(169, 69);
             button4.Name = "button4";
-            button4.Size = new Size(166, 54);
+            button4.Size = new Size(163, 47);
             button4.TabIndex = 1;
             button4.Text = "bottomRight";
             button4.Type = AntdUI.TTypeMini.Primary;
@@ -192,11 +193,11 @@ namespace Overview.Controls
             // 
             // button6
             // 
-            button6.AutoSize = true;
+            button6.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button6.IconSvg = "BorderBottomOutlined";
             button6.Location = new Point(169, 129);
             button6.Name = "button6";
-            button6.Size = new Size(124, 54);
+            button6.Size = new Size(121, 47);
             button6.TabIndex = 1;
             button6.Text = "bottom";
             button6.Type = AntdUI.TTypeMini.Primary;
@@ -204,11 +205,11 @@ namespace Overview.Controls
             // 
             // button2
             // 
-            button2.AutoSize = true;
+            button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button2.IconSvg = "RadiusUprightOutlined";
             button2.Location = new Point(169, 9);
             button2.Name = "button2";
-            button2.Size = new Size(134, 54);
+            button2.Size = new Size(131, 47);
             button2.TabIndex = 1;
             button2.Text = "topRight";
             button2.Type = AntdUI.TTypeMini.Primary;
@@ -216,11 +217,11 @@ namespace Overview.Controls
             // 
             // button5
             // 
-            button5.AutoSize = true;
+            button5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button5.IconSvg = "BorderTopOutlined";
             button5.Location = new Point(14, 129);
             button5.Name = "button5";
-            button5.Size = new Size(92, 54);
+            button5.Size = new Size(89, 47);
             button5.TabIndex = 1;
             button5.Text = "top";
             button5.Type = AntdUI.TTypeMini.Primary;
@@ -228,11 +229,11 @@ namespace Overview.Controls
             // 
             // button3
             // 
-            button3.AutoSize = true;
+            button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button3.IconSvg = "RadiusBottomleftOutlined";
             button3.Location = new Point(14, 69);
             button3.Name = "button3";
-            button3.Size = new Size(153, 54);
+            button3.Size = new Size(151, 47);
             button3.TabIndex = 1;
             button3.Text = "bottomLeft";
             button3.Type = AntdUI.TTypeMini.Primary;
@@ -240,11 +241,11 @@ namespace Overview.Controls
             // 
             // button1
             // 
-            button1.AutoSize = true;
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.IconSvg = "RadiusUpleftOutlined";
             button1.Location = new Point(14, 9);
             button1.Name = "button1";
-            button1.Size = new Size(121, 54);
+            button1.Size = new Size(119, 47);
             button1.TabIndex = 1;
             button1.Text = "topLeft";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -253,7 +254,7 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.Location = new Point(0, 0);
             divider1.Margin = new Padding(10);
             divider1.Name = "divider1";
@@ -266,18 +267,19 @@ namespace Overview.Controls
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Notification";
             Size = new Size(543, 457);
             panel1.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Divider divider1;
         private System.Windows.Forms.Panel panel2;

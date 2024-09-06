@@ -52,7 +52,7 @@ namespace Overview.Controls
             AntdUI.SegmentedItem segmentedItem1 = new AntdUI.SegmentedItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Icon));
             AntdUI.SegmentedItem segmentedItem2 = new AntdUI.SegmentedItem();
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             segmented1 = new AntdUI.Segmented();
             panel1 = new System.Windows.Forms.Panel();
             txt_search = new AntdUI.Input();
@@ -62,15 +62,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "语义化的矢量图形。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(845, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(845, 74);
+            header1.TabIndex = 0;
             header1.Text = "Icon 图标";
-            header1.TextDesc = "语义化的矢量图形。";
+            header1.UseTitleFont = true;
             // 
             // segmented1
             // 
@@ -94,7 +95,7 @@ namespace Overview.Controls
             panel1.Controls.Add(txt_search);
             panel1.Controls.Add(segmented1);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(10, 0, 10, 0);
             panel1.Size = new Size(845, 40);
@@ -116,10 +117,10 @@ namespace Overview.Controls
             // 
             vpanel.Dock = DockStyle.Fill;
             vpanel.JustifyContent = AntdUI.TJustifyContent.SpaceEvenly;
-            vpanel.Location = new Point(0, 119);
+            vpanel.Location = new Point(0, 114);
             vpanel.Name = "vpanel";
             vpanel.Padding = new Padding(10);
-            vpanel.Size = new Size(845, 642);
+            vpanel.Size = new Size(845, 647);
             vpanel.TabIndex = 6;
             vpanel.Waterfall = true;
             vpanel.ItemClick += vpanel_ItemClick;
@@ -138,7 +139,7 @@ namespace Overview.Controls
 
         #endregion
 
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private AntdUI.Segmented segmented1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Input txt_search;

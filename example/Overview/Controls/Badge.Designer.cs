@@ -73,7 +73,7 @@ namespace Overview.Controls
             tBadge28 = new AntdUI.Badge();
             tBadge29 = new AntdUI.Badge();
             tBadge30 = new AntdUI.Badge();
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             flowLayoutPanel1 = new FlowLayoutPanel();
             divider1 = new AntdUI.Divider();
             label2 = new Label();
@@ -141,7 +141,7 @@ namespace Overview.Controls
             panel1.Controls.Add(tBadge3);
             panel1.Controls.Add(tBadge2);
             panel1.Controls.Add(tBadge1);
-            panel1.Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            panel1.Font = new Font("Microsoft YaHei UI", 16F);
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(6);
@@ -156,7 +156,7 @@ namespace Overview.Controls
             panel3.Controls.Add(tBadge9);
             panel3.Controls.Add(tBadge10);
             panel3.Dock = DockStyle.Top;
-            panel3.Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            panel3.Font = new Font("Microsoft YaHei UI", 16F);
             panel3.Location = new Point(6, 166);
             panel3.Name = "panel3";
             panel3.Size = new Size(202, 48);
@@ -214,7 +214,7 @@ namespace Overview.Controls
             panel5.Controls.Add(tBadge28);
             panel5.Controls.Add(tBadge29);
             panel5.Controls.Add(tBadge30);
-            panel5.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            panel5.Font = new Font("Microsoft YaHei UI", 10F);
             panel5.Location = new Point(223, 3);
             panel5.Name = "panel5";
             panel5.Padding = new Padding(6);
@@ -229,7 +229,7 @@ namespace Overview.Controls
             panel6.Controls.Add(tBadge24);
             panel6.Controls.Add(tBadge25);
             panel6.Dock = DockStyle.Top;
-            panel6.Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            panel6.Font = new Font("Microsoft YaHei UI", 16F);
             panel6.Location = new Point(6, 166);
             panel6.Name = "panel6";
             panel6.Size = new Size(202, 38);
@@ -330,15 +330,16 @@ namespace Overview.Controls
             // 
             // header1
             // 
+            header1.Description = "图标右上角的圆形徽标数字。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(543, 79);
-            header1.TabIndex = 3;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(543, 74);
+            header1.TabIndex = 0;
             header1.Text = "Badge 徽标数";
-            header1.TextDesc = "图标右上角的圆形徽标数字。";
+            header1.UseTitleFont = true;
             // 
             // flowLayoutPanel1
             // 
@@ -346,16 +347,16 @@ namespace Overview.Controls
             flowLayoutPanel1.Controls.Add(panel1);
             flowLayoutPanel1.Controls.Add(panel5);
             flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.Location = new Point(0, 101);
+            flowLayoutPanel1.Location = new Point(0, 96);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(543, 484);
+            flowLayoutPanel1.Size = new Size(543, 489);
             flowLayoutPanel1.TabIndex = 4;
             // 
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            divider1.Location = new Point(0, 79);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.Location = new Point(0, 74);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
             divider1.Size = new Size(543, 22);
@@ -377,7 +378,7 @@ namespace Overview.Controls
             Controls.Add(flowLayoutPanel1);
             Controls.Add(divider1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Badge";
             Size = new Size(543, 585);
             panel1.ResumeLayout(false);
@@ -414,7 +415,7 @@ namespace Overview.Controls
         private AntdUI.Badge tBadge28;
         private AntdUI.Badge tBadge29;
         private AntdUI.Badge tBadge30;
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.Divider divider1;
         private Label label2;

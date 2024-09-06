@@ -57,6 +57,21 @@ namespace AntdUI
 
         #region 阴影
 
+        Padding _padding = new Padding(0);
+        [Description("内边距"), Category("外观"), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
+        public Padding padding
+        {
+            get => _padding;
+            set
+            {
+                if (_padding == value) return;
+                _padding = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
+                OnSizeChanged(EventArgs.Empty);
+            }
+        }
+
         int shadow = 0;
         /// <summary>
         /// 阴影大小
@@ -387,7 +402,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle
         {
-            get => ClientRectangle.PaddingRect(this, shadowAlign, borderWidth);
+            get => ClientRectangle.DeflateRect(_padding).PaddingRect(this, shadowAlign, borderWidth);
         }
 
         public override GraphicsPath RenderRegion

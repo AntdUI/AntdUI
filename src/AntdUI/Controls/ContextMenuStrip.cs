@@ -47,7 +47,11 @@ namespace AntdUI
         /// <param name="items">内容</param>
         public static Form? open(Control control, NotifyIcon notifyIcon, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
         {
-            return open(new Config(control, call, items, sleep) { TopMost = true });
+            return open(new Config(control, call, items, sleep)
+            {
+                TopMost = true,
+                Align = TAlign.TL
+            });
         }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             avatar4 = new AntdUI.Avatar();
             avatar1 = new AntdUI.Avatar();
             avatar6 = new AntdUI.Avatar();
@@ -59,23 +59,24 @@ namespace Overview.Controls
             avatar2 = new AntdUI.Avatar();
             avatar11 = new AntdUI.Avatar();
             panel1 = new System.Windows.Forms.Panel();
-            avatar12 = new AntdUI.Avatar();
             avatar5 = new AntdUI.Avatar();
             avatar7 = new AntdUI.Avatar();
+            avatar12 = new AntdUI.Avatar();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
             // 
+            header1.Description = "用来代表用户或事物，支持图片、图标或字符展示。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(614, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(614, 74);
+            header1.TabIndex = 0;
             header1.Text = "Avatar 头像";
-            header1.TextDesc = "用来代表用户或事物，支持图片、图标或字符展示。";
+            header1.UseTitleFont = true;
             // 
             // avatar4
             // 
@@ -123,7 +124,7 @@ namespace Overview.Controls
             // 
             avatar10.BackColor = Color.FromArgb(0, 144, 255);
             avatar10.Badge = "0";
-            avatar10.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            avatar10.Font = new Font("Microsoft YaHei UI", 14F);
             avatar10.ForeColor = Color.White;
             avatar10.Location = new Point(248, 6);
             avatar10.Name = "avatar10";
@@ -176,22 +177,10 @@ namespace Overview.Controls
             panel1.Controls.Add(avatar10);
             panel1.Controls.Add(avatar3);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(614, 367);
+            panel1.Size = new Size(614, 372);
             panel1.TabIndex = 6;
-            // 
-            // avatar12
-            // 
-            avatar12.BackColor = Color.FromArgb(135, 208, 104);
-            avatar12.Badge = "999+";
-            avatar12.ForeColor = Color.White;
-            avatar12.Location = new Point(8, 141);
-            avatar12.Name = "avatar12";
-            avatar12.Radius = 10;
-            avatar12.Size = new Size(155, 60);
-            avatar12.TabIndex = 9;
-            avatar12.Text = "U";
             // 
             // avatar5
             // 
@@ -221,11 +210,23 @@ namespace Overview.Controls
             avatar7.TabIndex = 16;
             avatar7.Text = "U";
             // 
+            // avatar12
+            // 
+            avatar12.BackColor = Color.FromArgb(135, 208, 104);
+            avatar12.Badge = "999+";
+            avatar12.ForeColor = Color.White;
+            avatar12.Location = new Point(8, 141);
+            avatar12.Name = "avatar12";
+            avatar12.Radius = 10;
+            avatar12.Size = new Size(155, 60);
+            avatar12.TabIndex = 9;
+            avatar12.Text = "U";
+            // 
             // Avatar
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Avatar";
             Size = new Size(614, 446);
             panel1.ResumeLayout(false);
@@ -233,7 +234,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private AntdUI.Avatar avatar3;
         private AntdUI.Avatar avatar2;
         private AntdUI.Avatar avatar4;

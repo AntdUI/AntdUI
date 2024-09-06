@@ -55,7 +55,7 @@ namespace Overview.Controls
             input4 = new AntdUI.InputNumber();
             input5 = new AntdUI.InputNumber();
             input6 = new AntdUI.InputNumber();
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel2 = new System.Windows.Forms.Panel();
             divider1 = new AntdUI.Divider();
@@ -66,25 +66,22 @@ namespace Overview.Controls
             // input1
             // 
             input1.Location = new Point(18, 6);
-            input1.Maximum = 10;
             input1.Name = "input1";
             input1.Size = new Size(220, 44);
             input1.TabIndex = 0;
             input1.Text = "1";
-            input1.Value = 1;
+            input1.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // input2
             // 
+            input2.DecimalPlaces = 1;
+            input2.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             input2.Location = new Point(18, 54);
-            input2.Maximum = 10;
-            input2.Minimum = 1;
             input2.Name = "input2";
             input2.Size = new Size(220, 44);
             input2.TabIndex = 2;
-            input2.Increment = (decimal)0.1;
-            input2.DecimalPlaces = 1;
-            input2.Text = "1";
-            input2.Value = 1;
+            input2.Text = "1.0";
+            input2.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // input3
             // 
@@ -94,30 +91,30 @@ namespace Overview.Controls
             input3.Radius = 0;
             input3.Size = new Size(220, 44);
             input3.TabIndex = 1;
+            input3.Text = "0";
             // 
             // input4
             // 
+            input4.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
             input4.Location = new Point(244, 54);
             input4.Name = "input4";
-            input4.ThousandsSeparator = true;
             input4.Radius = 0;
             input4.ReadOnly = true;
             input4.Size = new Size(220, 44);
-            input4.Increment = 1000;
             input4.TabIndex = 3;
-            input4.Text = "10000";
-            input4.Maximum = 1000000;
-            input4.Value = 10000;
+            input4.Text = "10,000";
+            input4.ThousandsSeparator = true;
+            input4.Value = new decimal(new int[] { 10000, 0, 0, 0 });
             // 
             // input5
             // 
-            input5.PrefixSvg = "PoweroffOutlined";
             input5.Location = new Point(18, 101);
             input5.Name = "input5";
+            input5.PrefixSvg = "PoweroffOutlined";
             input5.Size = new Size(220, 44);
             input5.TabIndex = 4;
             input5.Text = "10";
-            input5.Value = 10;
+            input5.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
             // input6
             // 
@@ -127,20 +124,20 @@ namespace Overview.Controls
             input6.Size = new Size(220, 44);
             input6.TabIndex = 5;
             input6.Text = "1";
-            input6.Value = 1;
+            input6.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // header1
             // 
+            header1.Description = "通过鼠标或键盘，输入范围内的数值。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(555, 79);
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(555, 74);
             header1.TabIndex = 0;
-            header1.TabStop = false;
             header1.Text = "InputNumber 数字输入框";
-            header1.TextDesc = "通过鼠标或键盘，输入范围内的数值。";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
@@ -148,9 +145,9 @@ namespace Overview.Controls
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 79);
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(555, 475);
+            panel1.Size = new Size(555, 480);
             panel1.TabIndex = 6;
             // 
             // panel2
@@ -170,7 +167,7 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -183,7 +180,7 @@ namespace Overview.Controls
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "InputNumber";
             Size = new Size(555, 554);
             panel1.ResumeLayout(false);
@@ -199,7 +196,7 @@ namespace Overview.Controls
         private AntdUI.InputNumber input4;
         private AntdUI.InputNumber input5;
         private AntdUI.InputNumber input6;
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private AntdUI.Divider divider1;

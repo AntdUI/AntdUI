@@ -31,6 +31,7 @@ namespace AntdUI
         Popover.Config config;
         public override bool MessageEnable => true;
         public override bool MessageCloseSub => true;
+
         Form? form = null;
         public LayeredFormPopover(Popover.Config _config)
         {

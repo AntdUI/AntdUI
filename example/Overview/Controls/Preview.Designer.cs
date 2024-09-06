@@ -49,35 +49,46 @@ namespace Overview.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            header1 = new AntdUI.Header();
+            header1 = new AntdUI.PageHeader();
             panel2 = new System.Windows.Forms.Panel();
+            button2 = new AntdUI.Button();
             button1 = new AntdUI.Button();
             divider1 = new AntdUI.Divider();
-            button2 = new AntdUI.Button();
             panel2.SuspendLayout();
             SuspendLayout();
             // 
             // header1
             // 
+            header1.Description = "图片预览框。";
             header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
-            header1.Padding = new Padding(6);
-            header1.Size = new Size(614, 79);
-            header1.TabIndex = 4;
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(614, 74);
+            header1.TabIndex = 0;
             header1.Text = "Preview 图片预览";
-            header1.TextDesc = "图片预览框。";
+            header1.UseTitleFont = true;
             // 
             // panel2
             // 
             panel2.Controls.Add(button2);
             panel2.Controls.Add(button1);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 101);
+            panel2.Location = new Point(0, 96);
             panel2.Name = "panel2";
             panel2.Size = new Size(614, 62);
             panel2.TabIndex = 6;
+            // 
+            // button2
+            // 
+            button2.BorderWidth = 1F;
+            button2.Location = new Point(169, 3);
+            button2.Name = "button2";
+            button2.Size = new Size(160, 41);
+            button2.TabIndex = 0;
+            button2.Text = "弹出多张图片预览";
+            button2.Click += button2_Click;
             // 
             // button1
             // 
@@ -92,30 +103,20 @@ namespace Overview.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            divider1.Location = new Point(0, 79);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.Location = new Point(0, 74);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
             divider1.Size = new Size(614, 22);
             divider1.TabIndex = 5;
             divider1.Text = "基本";
             // 
-            // button2
-            // 
-            button2.BorderWidth = 1F;
-            button2.Location = new Point(169, 3);
-            button2.Name = "button2";
-            button2.Size = new Size(160, 41);
-            button2.TabIndex = 0;
-            button2.Text = "弹出多张图片预览";
-            button2.Click += button2_Click;
-            // 
             // Preview
             // 
             Controls.Add(panel2);
             Controls.Add(divider1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Preview";
             Size = new Size(614, 446);
             panel2.ResumeLayout(false);
@@ -123,7 +124,7 @@ namespace Overview.Controls
         }
 
         #endregion
-        private AntdUI.Header header1;
+        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel2;
         private AntdUI.Divider divider1;
         private AntdUI.Button button1;
