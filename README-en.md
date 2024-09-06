@@ -49,7 +49,8 @@ Winform UI library use Ant Design 5.0
 ➡️| **FlowPanel** | ❎ | ❎ |
 ➡️| **GridPanel** | ❎ | ❎ |
 ||||
-⬇️| Navigation `5` | Animation | Disable |
+⬇️| Navigation `6` | Animation | Disable |
+➡️| [**Breadcrumb**](https://gitee.com/antdui/AntdUI/wikis/控件/Breadcrumb) | ✅ | ✅ |
 ➡️| [**Dropdown**](https://gitee.com/antdui/AntdUI/wikis/控件/Dropdown) | ✅ | ✅ |
 ➡️| [**Menu**](https://gitee.com/antdui/AntdUI/wikis/控件/Menu) | ✅ | ❎ |
 ➡️| [**PageHeader**](https://gitee.com/antdui/AntdUI/wikis/控件/PageHeader) | ✅ | ❎ |
