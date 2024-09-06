@@ -501,7 +501,7 @@ namespace AntdUI
 
         public void Insert(int index, T item)
         {
-            if (item == null || index < 0 || index >= count) return;
+            if (item == null || index < 0 || (index >= count && count > 0)) return;
             var m_arrItem = EnsureSpace(1);
             for (int i = count; i > index; i--) m_arrItem[i] = m_arrItem[i - 1];
             m_arrItem[index] = item;
