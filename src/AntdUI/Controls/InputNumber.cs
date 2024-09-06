@@ -405,8 +405,11 @@ namespace AntdUI
                         while (isdownup || isdowndown && _downid == downid)
                         {
                             var old = currentValue;
-                            if (isdownup) Value = currentValue + Increment;
-                            else if (isdowndown) Value = currentValue - Increment;
+                            Invoke(new Action(() =>
+                            {
+                                if (isdownup) Value = currentValue + Increment;
+                                else if (isdowndown) Value = currentValue - Increment;
+                            }));
                             if (old == currentValue) return;
                             System.Threading.Thread.Sleep(200);
                         }

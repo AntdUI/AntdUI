@@ -1862,6 +1862,8 @@ namespace AntdUI
                 }
                 return;
             }
+            else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
+
             DpiLSS(dpi, control);
             if (last)
             {

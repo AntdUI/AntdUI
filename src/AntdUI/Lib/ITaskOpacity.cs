@@ -58,46 +58,48 @@ namespace AntdUI
             get => _switch;
             set
             {
-                if (_switch != value)
+                if (_switch == value) return;
+                _switch = value;
+                if (Config.Animation)
                 {
-                    _switch = value;
-                    if (Config.Animation)
+                    Thread?.Dispose();
+                    Animation = true;
+                    var prog = (int)(MaxValue * .078F);
+                    if (value)
                     {
-                        Thread?.Dispose();
-                        Animation = true;
-                        var prog = (int)(MaxValue * 0.078F);
-                        if (value)
+                        Thread = new ITask(control, () =>
                         {
-                            Thread = new ITask(control, () =>
-                            {
-                                Value += prog;
-                                if (Value > MaxValue) { Value = MaxValue; return false; }
-                                action();
-                                return true;
-                            }, 10, () =>
-                            {
-                                Value = MaxValue;
-                                Animation = false;
-                                action();
-                            });
-                        }
-                        else
+                            Value += prog;
+                            if (Value > MaxValue) { Value = MaxValue; return false; }
+                            action();
+                            return true;
+                        }, 10, () =>
                         {
-                            Thread = new ITask(control, () =>
-                            {
-                                Value -= prog;
-                                if (Value < 1) { Value = 0; return false; }
-                                action();
-                                return true;
-                            }, 10, () =>
-                            {
-                                Value = 0;
-                                Animation = false;
-                                action();
-                            });
-                        }
+                            Value = MaxValue;
+                            Animation = false;
+                            action();
+                        });
                     }
-                    else { Value = _switch ? MaxValue : 0; action(); }
+                    else
+                    {
+                        Thread = new ITask(control, () =>
+                        {
+                            Value -= prog;
+                            if (Value < 1) { Value = 0; return false; }
+                            action();
+                            return true;
+                        }, 10, () =>
+                        {
+                            Value = 0;
+                            Animation = false;
+                            action();
+                        });
+                    }
+                }
+                else
+                {
+                    Value = _switch ? MaxValue : 0;
+                    action();
                 }
             }
         }

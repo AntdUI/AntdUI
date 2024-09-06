@@ -199,8 +199,10 @@ namespace AntdUI
                 {
                     if (keys == Keys.Escape)
                     {
-                        Dispose(); return true;
+                        Dispose();
+                        return true;
                     }
+                    if (nodata) return false;
                     if (keys == Keys.Enter)
                     {
                         if (hoveindex > -1)

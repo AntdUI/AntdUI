@@ -25,19 +25,23 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormContextMenuStrip : ILayeredFormOpacity
+    internal class LayeredFormContextMenuStrip : ILayeredFormOpacity, SubLayeredForm
     {
         ContextMenuStrip.Config config;
-        bool uf = false;
-        public override bool UFocus => uf;
         public override bool MessageEnable => true;
+        public override bool MessageCloseSub => true;
+
         Font FontSub;
         float radius = 0;
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config)
         {
-            uf = _config.UFocus;
-            TopMost = _config.TopMost;
-            if (!_config.TopMost) _config.Control.SetTopMost(Handle);
+            if (_config.TopMost)
+            {
+                PARENT = this;
+                Helper.SetTopMost(Handle);
+                MessageCloseMouseLeave = true;
+            }
+            else _config.Control.SetTopMost(Handle);
             var point = _config.Location ?? MousePosition;
             maxalpha = 250;
             config = _config;
@@ -87,23 +91,82 @@ namespace AntdUI
                     point.Offset(-10, -10);
                     break;
             }
-            var screen = Screen.FromPoint(point).WorkingArea;
-            if (point.X < screen.X) point.X = screen.X;
-            else if (point.X > (screen.X + screen.Width) - TargetRect.Width) point.X = screen.X + screen.Width - TargetRect.Width;
-            if (point.Y < screen.Y) point.Y = screen.Y;
-            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height)
+            Init(point);
+
+            KeyCall = keys =>
             {
-                if (TargetRect.Height > (screen.Height - point.Y))
+                if (keys == Keys.Escape)
                 {
-                    int gap_y = rectsContent[0].y / 2 / 2, vr = TargetRect.Height, height = screen.Height - point.Y;
-                    scrollY.Rect = new Rectangle(TargetRect.Width - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
-                    scrollY.Show = true;
-                    scrollY.SetVrSize(vr, height);
-                    SetSizeH(height);
+                    IClose();
+                    return true;
                 }
-                else point.Y = screen.Y + screen.Height - TargetRect.Height;
-            }
-            SetLocation(point);
+                if (keys == Keys.Enter)
+                {
+                    if (select_index > -1)
+                    {
+                        var it = rectsContent[select_index];
+                        if (ClickItem(it)) return true;
+                    }
+                }
+                else if (keys == Keys.Up)
+                {
+                    select_index--;
+                    if (select_index < 0) select_index = rectsContent.Length - 1;
+                    while (rectsContent[select_index].Tag == null)
+                    {
+                        select_index--;
+                        if (select_index < 0) select_index = rectsContent.Length - 1;
+                    }
+                    foreach (var it in rectsContent) it.Hover = false;
+                    FocusItem(rectsContent[select_index]);
+                    return true;
+                }
+                else if (keys == Keys.Down)
+                {
+                    if (select_index == -1) select_index = 0;
+                    else
+                    {
+                        select_index++;
+                        if (select_index > rectsContent.Length - 1) select_index = 0;
+                    }
+                    while (rectsContent[select_index].Tag == null)
+                    {
+                        select_index++;
+                        if (select_index > rectsContent.Length - 1) select_index = 0;
+                    }
+                    foreach (var it in rectsContent) it.Hover = false;
+                    FocusItem(rectsContent[select_index]);
+                    return true;
+                }
+                else if (keys == Keys.Left)
+                {
+                    IClose();
+                    return true;
+                }
+                else if (keys == Keys.Right)
+                {
+                    if (select_index > -1)
+                    {
+                        var it = rectsContent[select_index];
+                        if (it.Tag != null && it.Tag.Sub != null && it.Tag.Sub.Length > 0)
+                        {
+                            if (subForm == null)
+                            {
+                                subForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20 - (scrollY.Show ? (int)scrollY.Value : 0)), it.Tag.Sub);
+                                subForm.Show(this);
+                            }
+                            else
+                            {
+                                subForm?.IClose();
+                                subForm = null;
+                            }
+                            return true;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            };
         }
 
         ScrollY scrollY;
@@ -111,31 +174,36 @@ namespace AntdUI
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, IContextMenuStripItem[] subs)
         {
             PARENT = parent;
-            uf = true;
+            MessageCloseMouseLeave = true;
             maxalpha = 250;
             config = _config;
             Font = config.Font ?? config.Control.Font;
             FontSub = Font;
-            TopMost = _config.TopMost;
-            if (!_config.TopMost) _config.Control.SetTopMost(Handle);
+            if (_config.TopMost) Helper.SetTopMost(Handle);
+            else _config.Control.SetTopMost(Handle);
             rectsContent = Init(subs);
             scrollY = new ScrollY(this);
+            Init(point);
+        }
+
+        void Init(Point point)
+        {
             var screen = Screen.FromPoint(point).WorkingArea;
             if (point.X < screen.X) point.X = screen.X;
             else if (point.X > (screen.X + screen.Width) - TargetRect.Width) point.X = screen.X + screen.Width - TargetRect.Width;
-            if (point.Y < screen.Y) point.Y = screen.Y;
-            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height)
+
+            if (TargetRect.Height > screen.Height)
             {
-                if (TargetRect.Height > (screen.Height - point.Y))
-                {
-                    int gap_y = rectsContent[0].y / 2 / 2, vr = TargetRect.Height, height = screen.Height - point.Y;
-                    scrollY.Rect = new Rectangle(TargetRect.Width - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
-                    scrollY.Show = true;
-                    scrollY.SetVrSize(vr, height);
-                    SetSizeH(height);
-                }
-                else point.Y = screen.Y + screen.Height - TargetRect.Height;
+                int gap_y = rectsContent[0].y / 2 / 2, vr = TargetRect.Height, height = screen.Height;
+                scrollY.Rect = new Rectangle(TargetRect.Width - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
+                scrollY.Show = true;
+                scrollY.SetVrSize(vr, height);
+                SetSizeH(height);
             }
+
+            if (point.Y < screen.Y) point.Y = screen.Y;
+            else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height) point.Y = screen.Y + screen.Height - TargetRect.Height;
+
             SetLocation(point);
         }
 
@@ -173,15 +241,24 @@ namespace AntdUI
                 }
                 if (has_subtext) FontSub = new Font(FontSub.FontFamily, FontSub.Size * 0.8F);
 
-                int sp2 = sp * 2, use_r = (has_icon > 0 ? has_icon + spm : 0) + (has_checked > 0 ? has_checked + spm : 0), x = padding + use_r;
-                usew = usew + use_r;
+                int use_r;
+                if (has_icon > 0 || has_checked > 0)
+                {
+                    if (has_icon > 0 && has_checked > 0) use_r = has_icon + has_checked + spm * 3;
+                    else if (has_icon > 0) use_r = has_icon + spm;
+                    else use_r = has_checked + spm;
+                }
+                else use_r = 0;
+
+                int sp2 = sp * 2, x = padding + use_r;
+                usew += use_r;
+                int readw = usew + has_sub + padding2 + sp2;
                 foreach (var it in _rectsContent)
                 {
-                    if (it.Tag == null) it.Rect = new Rectangle(10, it.y + (it.h - split) / 2, usew + padding2 + sp2 - 20, split);
+                    if (it.Tag == null) it.Rect = new Rectangle(10, it.y + (it.h - split) / 2, readw - 20, split);
                     else
                     {
                         it.Rect = new Rectangle(padding, it.y, usew + has_sub + sp2, it.h);
-                        it.RectT = new Rectangle(x + sp, it.y, usew - use_r, it.h);
 
                         if (it.Tag.Sub != null && it.Tag.Sub.Length > 0) it.RectSub = new Rectangle(it.Rect.Right - spm - has_sub, it.y + (it.h - has_sub) / 2, has_sub, has_sub);
 
@@ -190,12 +267,14 @@ namespace AntdUI
                         {
                             if (it.Tag.Checked) it.RectCheck = new Rectangle(usex + spm, it.y + (it.h - has_checked) / 2, has_checked, has_checked);
                             usex += has_checked + sp;
+                            it.RectT = new Rectangle(x + sp, it.y, usew - use_r - spm, it.h);
                         }
+                        else it.RectT = new Rectangle(x + sp, it.y, usew - use_r, it.h);
                         if (has_icon > 0 && it.Tag.Icon != null || it.Tag.IconSvg != null) it.RectIcon = new Rectangle(usex + spm, it.y + (it.h - has_icon) / 2, has_icon, has_icon);
                     }
                 }
 
-                SetSize(usew + has_sub + padding2 + sp2, useh - spm + padding2);
+                SetSize(readw, useh - spm + padding2);
                 return _rectsContent.ToArray();
             });
         }
@@ -203,16 +282,16 @@ namespace AntdUI
         protected override void OnDeactivate(EventArgs e)
         {
             IClose();
-            SubForm?.IClose();
-            SubForm = null;
+            subForm?.IClose();
+            subForm = null;
             base.OnDeactivate(e);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (has_subtext) FontSub.Dispose();
-            SubForm?.IClose();
-            SubForm = null;
+            subForm?.IClose();
+            subForm = null;
             resetEvent?.Set();
             resetEvent?.Dispose();
             resetEvent = null;
@@ -340,7 +419,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        internal PointF[] PaintArrow(RectangleF rect)
+        internal PointF[] PaintArrow(Rectangle rect)
         {
             float size = rect.Height * 0.15F, size2 = rect.Height * 0.2F, size3 = rect.Height * 0.26F;
             return new PointF[] {
@@ -357,7 +436,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, RectangleF rect_read)
+        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath(radius);
             if (Config.ShadowEnabled)
@@ -376,17 +455,21 @@ namespace AntdUI
 
         #region 鼠标
 
+        int select_index = -1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (scrollY.MouseDown(e.Location))
             {
+                select_index = -1;
                 if (e.Button == MouseButtons.Left)
                 {
                     int y = scrollY.Show ? (int)scrollY.Value : 0;
-                    foreach (var it in rectsContent)
+                    for (int i = 0; i < rectsContent.Length; i++)
                     {
+                        var it = rectsContent[i];
                         if (it.Tag != null && it.Tag.Enabled && it.Rect.Contains(e.X, e.Y + y))
                         {
+                            select_index = i;
                             it.Down = true;
                             base.OnMouseDown(e);
                             return;
@@ -401,7 +484,6 @@ namespace AntdUI
         {
             if (scrollY.MouseUp(e.Location))
             {
-
                 int y = scrollY.Show ? (int)scrollY.Value : 0;
                 foreach (var it in rectsContent)
                 {
@@ -415,7 +497,7 @@ namespace AntdUI
                                 {
                                     IClose();
                                     LayeredFormContextMenuStrip item = this;
-                                    while (item.PARENT is LayeredFormContextMenuStrip form)
+                                    while (item.PARENT is LayeredFormContextMenuStrip form && item.PARENT != form)
                                     {
                                         form.IClose();
                                         item = form;
@@ -441,7 +523,57 @@ namespace AntdUI
             base.OnMouseUp(e);
         }
 
-        LayeredFormContextMenuStrip? SubForm = null;
+        bool ClickItem(InRect it)
+        {
+            if (it.Tag != null)
+            {
+                if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
+                {
+                    IClose();
+                    LayeredFormContextMenuStrip item = this;
+                    while (item.PARENT is LayeredFormContextMenuStrip form)
+                    {
+                        form.IClose();
+                        item = form;
+                    }
+                    resetEvent = new ManualResetEvent(false);
+                    ITask.Run(() =>
+                    {
+                        if (resetEvent.Wait()) return;
+                        if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
+                        config.Control.BeginInvoke(new Action(() =>
+                        {
+                            config.Call(it.Tag);
+                        }));
+                    });
+                }
+                else
+                {
+                    if (subForm == null)
+                    {
+                        subForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20 - (scrollY.Show ? (int)scrollY.Value : 0)), it.Tag.Sub);
+                        subForm.Show(this);
+                    }
+                    else
+                    {
+                        subForm?.IClose();
+                        subForm = null;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        void FocusItem(InRect it)
+        {
+            if (it.SetHover(true))
+            {
+                if (scrollY.Show) scrollY.Value = it.Rect.Y - it.Rect.Height;
+                Print();
+            }
+        }
+
         int oldSub = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -474,38 +606,42 @@ namespace AntdUI
                 }
                 SetCursor(hand > 0);
                 if (count > 0) Print();
+                select_index = hand;
                 if (hand > -1)
                 {
                     SetCursor(true);
                     if (oldSub == hand) return;
                     var it = rectsContent[hand];
                     oldSub = hand;
-                    SubForm?.IClose();
-                    SubForm = null;
+                    subForm?.IClose();
+                    subForm = null;
                     if (it.Tag != null && it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                     {
-                        SubForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20 - (scrollY.Show ? (int)scrollY.Value : 0)), it.Tag.Sub);
-                        SubForm.Show(this);
+                        subForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20 - (scrollY.Show ? (int)scrollY.Value : 0)), it.Tag.Sub);
+                        subForm.Show(this);
                     }
                 }
                 else
                 {
                     oldSub = -1;
-                    SubForm?.IClose();
-                    SubForm = null;
+                    subForm?.IClose();
+                    subForm = null;
                     SetCursor(false);
                 }
             }
             base.OnMouseMove(e);
         }
 
-        ManualResetEvent? resetEvent;
-
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             scrollY.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
+
+        ManualResetEvent? resetEvent;
+
+        LayeredFormContextMenuStrip? subForm = null;
+        ILayeredForm? SubLayeredForm.SubForm() => subForm;
 
         #endregion
 
@@ -532,6 +668,22 @@ namespace AntdUI
             public Rectangle Rect { get; set; }
             public int y { get; set; }
             public int h { get; set; }
+
+            internal bool SetHover(bool val)
+            {
+                bool change = false;
+                if (val)
+                {
+                    if (!Hover) change = true;
+                    Hover = true;
+                }
+                else
+                {
+                    if (Hover) change = true;
+                    Hover = false;
+                }
+                return change;
+            }
         }
     }
 }
