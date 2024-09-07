@@ -278,6 +278,12 @@ namespace AntdUI
 
     #endregion
 
+    #region ColorPicker
+
+    public delegate string ColorFormatEventHandler(object sender, ColorEventArgs e);
+
+    #endregion
+
     #region Steps
 
     public class StepsItemEventArgs : VMEventArgs<StepsItem>
