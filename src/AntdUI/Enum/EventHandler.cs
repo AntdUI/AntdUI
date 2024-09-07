@@ -217,6 +217,20 @@ namespace AntdUI
 
     #endregion
 
+    #region Breadcrumb
+
+    public class BreadcrumbItemEventArgs : VMEventArgs<BreadcrumbItem>
+    {
+        public BreadcrumbItemEventArgs(BreadcrumbItem item, MouseEventArgs e) : base(item, e) { }
+    }
+
+    /// <summary>
+    /// 点击事件
+    /// </summary>
+    public delegate void BreadcrumbItemEventHandler(object sender, BreadcrumbItemEventArgs e);
+
+    #endregion
+
     #region Segmented
 
     public class SegmentedItemEventArgs : VMEventArgs<SegmentedItem>
@@ -261,6 +275,12 @@ namespace AntdUI
     #region Slider
 
     public delegate string ValueFormatEventHandler(object sender, IntEventArgs e);
+
+    #endregion
+
+    #region ColorPicker
+
+    public delegate string ColorFormatEventHandler(object sender, ColorEventArgs e);
 
     #endregion
 

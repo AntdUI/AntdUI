@@ -205,11 +205,21 @@ namespace AntdUI
         [Description("禁用透明度"), Category("行为"), DefaultValue(false)]
         public bool DisabledAlpha { get; set; } = false;
 
+        TColorMode mode = TColorMode.Hex;
         /// <summary>
         /// 颜色模式
         /// </summary>
         [Description("颜色模式"), Category("行为"), DefaultValue(TColorMode.Hex)]
-        public TColorMode Mode { get; set; } = TColorMode.Hex;
+        public TColorMode Mode
+        {
+            get => mode;
+            set
+            {
+                if (mode == value) return;
+                mode = value;
+                if (BeforeAutoSize()) Invalidate();
+            }
+        }
 
         /// <summary>
         /// 触发下拉的行为
@@ -270,6 +280,12 @@ namespace AntdUI
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
         public event ColorEventHandler? ValueChanged = null;
+
+        /// <summary>
+        /// Value格式化时发生
+        /// </summary>
+        [Description("Value格式化时发生"), Category("行为")]
+        public event ColorFormatEventHandler? ValueFormatChanged;
 
         #endregion
 
@@ -365,7 +381,20 @@ namespace AntdUI
                     using (var brush = new SolidBrush(_fore))
                     {
                         var wi = gap * 2 + size_color;
-                        g.DrawStr("#" + _value.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                        if (ValueFormatChanged == null)
+                        {
+                            switch (mode)
+                            {
+                                case TColorMode.Hex:
+                                    g.DrawStr("#" + _value.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                    break;
+                                case TColorMode.Rgb:
+                                    if (_value.A == 255) g.DrawStr(string.Format("rgb({0},{1},{2})", _value.R, _value.G, _value.B), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                    else g.DrawStr(string.Format("rgba({0},{1},{2},{3})", _value.R, _value.G, _value.B, Math.Round(_value.A / 255D, 2)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                    break;
+                            }
+                        }
+                        else g.DrawStr(ValueFormatChanged(this, new ColorEventArgs(_value)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
                     }
                 }
                 else
@@ -724,16 +753,30 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(_value.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font);
+                    Size font_size;
+                    if (ValueFormatChanged == null)
+                    {
+                        switch (mode)
+                        {
+                            case TColorMode.Rgb:
+                                font_size = g.MeasureString(_value.A == 255 ? "rgb(255,255,255)" : "rgba(255,255,255,0.99)", Font).Size();
+                                break;
+                            case TColorMode.Hex:
+                            default:
+                                font_size = g.MeasureString(_value.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font).Size();
+                                break;
+                        }
+                    }
+                    else font_size = g.MeasureString(ValueFormatChanged(this, new ColorEventArgs(_value)), Font).Size();
                     int gap = (int)((20 + WaveSize) * Config.Dpi);
                     if (showText)
                     {
-                        int s = (int)Math.Ceiling(font_size.Height + gap);
-                        return new Size(s + (int)font_size.Width, s);
+                        int s = font_size.Height + gap;
+                        return new Size(s + font_size.Width, s);
                     }
                     else
                     {
-                        int s = (int)Math.Ceiling(font_size.Height + gap);
+                        int s = font_size.Height + gap;
                         return new Size(s, s);
                     }
                 });
