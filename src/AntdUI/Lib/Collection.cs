@@ -28,6 +28,8 @@ namespace AntdUI
         #region 刷新UI
 
         internal Action<bool>? action;
+        internal Action<T>? action_add;
+        internal Action<T>? action_del;
         internal void PropertyChanged(T value)
         {
             if (value is NotifyProperty notify)
@@ -51,8 +53,15 @@ namespace AntdUI
             get => list[index];
             set
             {
-                list[index] = value;
+                if (action_add == null && action_del == null) list[index] = value;
+                else
+                {
+                    action_del?.Invoke(list[index]);
+                    list[index] = value;
+                    action_add?.Invoke(value);
+                }
                 PropertyChanged(value);
+
             }
         }
         object? IList.this[int index]
@@ -62,7 +71,13 @@ namespace AntdUI
             {
                 if (value is T item)
                 {
-                    list[index] = item;
+                    if (action_add == null && action_del == null) list[index] = item;
+                    else
+                    {
+                        action_del?.Invoke(list[index]);
+                        list[index] = item;
+                        action_add?.Invoke(item);
+                    }
                     PropertyChanged(item);
                 }
             }
@@ -102,6 +117,7 @@ namespace AntdUI
         {
             list.Add(item);
             PropertyChanged(item);
+            action_add?.Invoke(item);
             action?.Invoke(true);
         }
         public int Add(object? value)
@@ -110,6 +126,7 @@ namespace AntdUI
             {
                 list.Add(item);
                 PropertyChanged(item);
+                action_add?.Invoke(item);
                 action?.Invoke(true);
             }
             return list.Count;
@@ -118,7 +135,11 @@ namespace AntdUI
         public void AddRange(IEnumerable<T> collection)
         {
             list.AddRange(collection);
-            foreach (var item in collection) PropertyChanged(item);
+            foreach (var item in collection)
+            {
+                PropertyChanged(item);
+                action_add?.Invoke(item);
+            }
             action?.Invoke(true);
         }
 
@@ -126,6 +147,7 @@ namespace AntdUI
         {
             list.Insert(index, item);
             PropertyChanged(item);
+            action_add?.Invoke(item);
             action?.Invoke(true);
         }
         public void Insert(int index, object? value)
@@ -133,12 +155,17 @@ namespace AntdUI
             if (value is T item)
             {
                 list.Insert(index, item);
+                action_add?.Invoke(item);
             }
         }
         public void InsertRange(int index, IEnumerable<T> collection)
         {
             list.InsertRange(index, collection);
-            foreach (var item in collection) PropertyChanged(item);
+            foreach (var item in collection)
+            {
+                PropertyChanged(item);
+                action_add?.Invoke(item);
+            }
             action?.Invoke(true);
         }
 
@@ -187,6 +214,10 @@ namespace AntdUI
 
         public void Clear()
         {
+            if (action_del != null)
+            {
+                foreach (var item in list) action_del?.Invoke(item);
+            }
             list.Clear();
             action?.Invoke(true);
         }
@@ -196,17 +227,30 @@ namespace AntdUI
             if (value is T item)
             {
                 list.Remove(item);
+                action_del?.Invoke(item);
                 action?.Invoke(true);
             }
         }
         public bool Remove(T item)
         {
             bool flag = list.Remove(item);
-            if (flag) action?.Invoke(true);
+            if (flag)
+            {
+                action_del?.Invoke(item);
+                action?.Invoke(true);
+            }
             return flag;
         }
         public void RemoveAt(int index)
         {
+            if (action_del != null)
+            {
+                try
+                {
+                    action_del?.Invoke(list[index]);
+                }
+                catch { }
+            }
             list.RemoveAt(index);
             action?.Invoke(true);
         }

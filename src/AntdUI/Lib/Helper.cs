@@ -1764,6 +1764,10 @@ namespace AntdUI
                 {
                     foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
                 }
+                else if (control is Collapse collapse)
+                {
+                    foreach (var page in collapse.Items) DpiSuspend(ref dir, page.Controls);
+                }
             }
             return dir;
         }
@@ -1776,6 +1780,10 @@ namespace AntdUI
                 if (control is Tabs tabs)
                 {
                     foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
+                }
+                else if (control is Collapse collapse)
+                {
+                    foreach (var page in collapse.Items) DpiSuspend(ref dir, page.Controls);
                 }
             }
         }
@@ -1793,6 +1801,10 @@ namespace AntdUI
                 if (control is Tabs tabs)
                 {
                     foreach (var page in tabs.Pages) DpiResume(dir, page.Controls);
+                }
+                else if (control is Collapse collapse)
+                {
+                    foreach (var page in collapse.Items) DpiResume(dir, page.Controls);
                 }
             }
         }
@@ -1855,6 +1867,16 @@ namespace AntdUI
             else if (control is Tabs tabs)
             {
                 foreach (var page in tabs.Pages) DpiLS(dpi, page);
+                if (last)
+                {
+                    control.Size = size;
+                    control.Location = point;
+                }
+                return;
+            }
+            else if (control is Collapse collapse)
+            {
+                foreach (var page in collapse.Items) DpiLS(dpi, page);
                 if (last)
                 {
                     control.Size = size;
