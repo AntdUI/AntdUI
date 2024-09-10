@@ -50,7 +50,7 @@ Winform UI library use Ant Design 5.0
 ➡️| **GridPanel** | ❎ | ❎ |
 ||||
 ⬇️| Navigation `6` | Animation | Disable |
-➡️| [**Breadcrumb**](https://gitee.com/antdui/AntdUI/wikis/控件/Breadcrumb) | ✅ | ✅ |
+➡️| [**Breadcrumb**](https://gitee.com/antdui/AntdUI/wikis/控件/Breadcrumb) | ✅ | ❎ |
 ➡️| [**Dropdown**](https://gitee.com/antdui/AntdUI/wikis/控件/Dropdown) | ✅ | ✅ |
 ➡️| [**Menu**](https://gitee.com/antdui/AntdUI/wikis/控件/Menu) | ✅ | ❎ |
 ➡️| [**PageHeader**](https://gitee.com/antdui/AntdUI/wikis/控件/PageHeader) | ✅ | ❎ |
@@ -71,15 +71,16 @@ Winform UI library use Ant Design 5.0
 ➡️| [**Switch**](https://gitee.com/antdui/AntdUI/wikis/控件/Switch) | ✅ | ✅ |
 ➡️| [**TimePicker**](https://gitee.com/antdui/AntdUI/wikis/控件/TimePicker) | ✅ | ✅ |
 ||||
-⬇️| Data Display `15` | Animation | Disable |
+⬇️| Data Display `16` | Animation | Disable |
 ➡️| [**Avatar**](https://gitee.com/antdui/AntdUI/wikis/控件/Avatar) | ❎ | ❎ |
 ➡️| [**Badge**](https://gitee.com/antdui/AntdUI/wikis/控件/Badge) | ✅ | ❎ |
 ➡️| [**Calendar**](https://gitee.com/antdui/AntdUI/wikis/控件/Calendar) | ✅ | ❎ |
 ➡️| [**Panel**](https://gitee.com/antdui/AntdUI/wikis/控件/Panel) | ✅ | ❎ |
 ➡️| [**Carousel**](https://gitee.com/antdui/AntdUI/wikis/控件/Carousel) | ✅ | ❎ |
+➡️| [**Collapse**](https://gitee.com/antdui/AntdUI/wikis/控件/Collapse) | ✅ | ❎ |
 ➡️| [**Preview**](https://gitee.com/antdui/AntdUI/wikis/控件/Preview) | ✅ | ✅ |
 ➡️| [**Popover**](https://gitee.com/antdui/AntdUI/wikis/控件/Popover) | ✅ | ❎ |
-➡️| [**Segmented**](https://gitee.com/antdui/AntdUI/wikis/控件/Segmented) | ✅ | ❎ |
+➡️| [**Segmented**](https://gitee.com/antdui/AntdUI/wikis/控件/Segmented) | ✅ | ✅ |
 ➡️| [**Table**](https://gitee.com/antdui/AntdUI/wikis/控件/Table) | ✅ | ❎ |
 ➡️| [**Tabs**](https://gitee.com/antdui/AntdUI/wikis/控件/Tabs) | ✅ | ❎ |
 ➡️| [**Tag**](https://gitee.com/antdui/AntdUI/wikis/控件/Tag) | ✅ | ❎ |
