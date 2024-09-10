@@ -1764,6 +1764,10 @@ namespace AntdUI
                 {
                     foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
                 }
+                else if (control is Collapse collapse)
+                {
+                    foreach (var page in collapse.Items) DpiSuspend(ref dir, page.Controls);
+                }
             }
             return dir;
         }
@@ -1776,6 +1780,10 @@ namespace AntdUI
                 if (control is Tabs tabs)
                 {
                     foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
+                }
+                else if (control is Collapse collapse)
+                {
+                    foreach (var page in collapse.Items) DpiSuspend(ref dir, page.Controls);
                 }
             }
         }
@@ -1793,6 +1801,10 @@ namespace AntdUI
                 if (control is Tabs tabs)
                 {
                     foreach (var page in tabs.Pages) DpiResume(dir, page.Controls);
+                }
+                else if (control is Collapse collapse)
+                {
+                    foreach (var page in collapse.Items) DpiResume(dir, page.Controls);
                 }
             }
         }
@@ -1824,6 +1836,7 @@ namespace AntdUI
                     if (size.Width > screen.WorkingArea.Width) size.Width = screen.WorkingArea.Width;
                     if (size.Height > screen.WorkingArea.Height) size.Height = screen.WorkingArea.Height;
                     point = new Point(control.Left + (control.Width - size.Width) / 2, control.Top + (control.Height - size.Height) / 2);
+                    if (point.X < 0 || point.Y < 0) point = control.Location;
                 }
             }
             else point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
@@ -1855,6 +1868,16 @@ namespace AntdUI
             else if (control is Tabs tabs)
             {
                 foreach (var page in tabs.Pages) DpiLS(dpi, page);
+                if (last)
+                {
+                    control.Size = size;
+                    control.Location = point;
+                }
+                return;
+            }
+            else if (control is Collapse collapse)
+            {
+                foreach (var page in collapse.Items) DpiLS(dpi, page);
                 if (last)
                 {
                     control.Size = size;

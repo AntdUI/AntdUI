@@ -32,7 +32,7 @@ namespace AntdUI
     [Description("Tabs 标签页")]
     [ToolboxItem(true)]
     [DefaultEvent("SelectedIndexChanged")]
-    [DefaultProperty("TabPages")]
+    [DefaultProperty("Pages")]
     [Designer(typeof(TabControlDesigner))]
     public partial class Tabs : IControl
     {
@@ -776,7 +776,6 @@ namespace AntdUI
 
         #region 坐标
 
-        internal bool HDPI = false;
         internal bool MDown = false;
         internal Rectangle Rect = new Rectangle(-10, -10, 0, 0);
         internal bool Contains(int x, int y)

@@ -607,7 +607,7 @@ namespace AntdUI
                 if (AnimationBack) backW = (int)(backW * AnimationBackValue);
                 if (showback)
                 {
-                    rect_back = new Rectangle(rect.X + u_x, rect.Y, backW, rect.Height);
+                    rect_back = new Rectangle(rect.X + u_x, rect.Y, backW + _gap, rect.Height);
                     var rect_icon = new Rectangle(rect.X + u_x + _gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                     if (hove_back.Down) PrintBackDown(g, rect_icon);
                     else if (hove_back.Animation) PrintBackHover(g, fore, rect_icon);
