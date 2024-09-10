@@ -80,7 +80,7 @@ Winform UI library use Ant Design 5.0
 ➡️| [**Collapse**](https://gitee.com/antdui/AntdUI/wikis/控件/Collapse) | ✅ | ❎ |
 ➡️| [**Preview**](https://gitee.com/antdui/AntdUI/wikis/控件/Preview) | ✅ | ✅ |
 ➡️| [**Popover**](https://gitee.com/antdui/AntdUI/wikis/控件/Popover) | ✅ | ❎ |
-➡️| [**Segmented**](https://gitee.com/antdui/AntdUI/wikis/控件/Segmented) | ✅ | ❎ |
+➡️| [**Segmented**](https://gitee.com/antdui/AntdUI/wikis/控件/Segmented) | ✅ | ✅ |
 ➡️| [**Table**](https://gitee.com/antdui/AntdUI/wikis/控件/Table) | ✅ | ❎ |
 ➡️| [**Tabs**](https://gitee.com/antdui/AntdUI/wikis/控件/Tabs) | ✅ | ❎ |
 ➡️| [**Tag**](https://gitee.com/antdui/AntdUI/wikis/控件/Tag) | ✅ | ❎ |
