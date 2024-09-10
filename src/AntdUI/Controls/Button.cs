@@ -1682,6 +1682,7 @@ namespace AntdUI
                 if (enabled)
                 {
                     var backHover = GetColorO();
+                    int alpha = backHover.A;
                     if (Config.Animation)
                     {
                         if (IconHoverAnimation > 0 && ((toggle && HasToggleIcon && (ToggleIconHoverSvg != null || ToggleIconHover != null)) || (HasIcon && (IconHoverSvg != null || IconHover != null))))
@@ -1718,9 +1719,9 @@ namespace AntdUI
                                 });
                             }
                         }
-                        if (backHover.A > 0)
+                        if (alpha > 0)
                         {
-                            int addvalue = backHover.A / 12;
+                            int addvalue = alpha / 12;
                             ThreadHover?.Dispose();
                             AnimationHover = true;
                             if (value)
@@ -1728,7 +1729,7 @@ namespace AntdUI
                                 ThreadHover = new ITask(control, () =>
                                 {
                                     AnimationHoverValue += addvalue;
-                                    if (AnimationHoverValue > backHover.A) { AnimationHoverValue = backHover.A; return false; }
+                                    if (AnimationHoverValue > alpha) { AnimationHoverValue = alpha; return false; }
                                     Invalidate();
                                     return true;
                                 }, 10, () =>
@@ -1741,7 +1742,8 @@ namespace AntdUI
                             {
                                 ThreadHover = new ITask(control, () =>
                                 {
-                                    AnimationHoverValue -= addvalue;
+                                    if (AnimationHoverValue > alpha) AnimationHoverValue = alpha;
+                                    else AnimationHoverValue -= addvalue;
                                     if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
                                     Invalidate();
                                     return true;
@@ -1754,11 +1756,11 @@ namespace AntdUI
                         }
                         else
                         {
-                            AnimationHoverValue = backHover.A;
+                            AnimationHoverValue = alpha;
                             Invalidate();
                         }
                     }
-                    else AnimationHoverValue = backHover.A;
+                    else AnimationHoverValue = alpha;
                     Invalidate();
                 }
             }

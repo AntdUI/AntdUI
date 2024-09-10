@@ -1836,6 +1836,7 @@ namespace AntdUI
                     if (size.Width > screen.WorkingArea.Width) size.Width = screen.WorkingArea.Width;
                     if (size.Height > screen.WorkingArea.Height) size.Height = screen.WorkingArea.Height;
                     point = new Point(control.Left + (control.Width - size.Width) / 2, control.Top + (control.Height - size.Height) / 2);
+                    if (point.X < 0 || point.Y < 0) point = control.Location;
                 }
             }
             else point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
