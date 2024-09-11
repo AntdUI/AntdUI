@@ -75,8 +75,8 @@ namespace AntdUI
 
             #region 布局
 
-            float size_time_one = t_time * 0.857F;
-            float size_time_height_one = t_time_height * 0.93F;
+            int size_time_one = (int)(t_time * 0.857F);
+            int size_time_height_one = (int)(t_time_height * 0.93F);
 
             var rect_s_h = new Rectangle(10, 18, t_time, t_height - 8);
             rect_read_h = new Rectangle(rect_s_h.Right - t_time, rect_s_h.Y, t_time, rect_s_h.Height);
@@ -93,11 +93,11 @@ namespace AntdUI
             scrollY_m.SetVrSize(t_time_height * 60, endh2);
             scrollY_s.SetVrSize(t_time_height * 60, endh2);
 
-            float _x = (t_time - size_time_one) / 2F, _y = (t_time_height - size_time_height_one) / 2F;
+            int _x = (t_time - size_time_one) / 2, _y = (t_time_height - size_time_height_one) / 2;
             foreach (var it in calendar_time)
             {
-                it.rect = new RectangleF(10 + t_time * it.x, 10 + 4 + t_time_height * it.y, t_time, t_time_height);
-                it.rect_read = new RectangleF(it.rect.X + _x, it.rect.Y + _y, size_time_one, size_time_height_one);
+                it.rect = new Rectangle(10 + t_time * it.x, 10 + 4 + t_time_height * it.y, t_time, t_time_height);
+                it.rect_read = new Rectangle(it.rect.X + _x, it.rect.Y + _y, size_time_one, size_time_height_one);
             }
 
             var find_h = calendar_time.Find(a => a.x == 0 && a.t == SelDate.Hours);
@@ -149,7 +149,7 @@ namespace AntdUI
 
         string button_text = Localization.Provider?.GetLocalizedString("Now") ?? "此刻";
         string OKButton = Localization.Provider?.GetLocalizedString("OK") ?? "确定";
-        StringFormat stringFormatC = Helper.SF();
+        StringFormat s_f = Helper.SF();
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
@@ -209,7 +209,7 @@ namespace AntdUI
                                             g2.FillPath(brush_hove, path);
                                         }
                                     }
-                                    g2.DrawStr(it.v, Font, brush_fore, it.rect_read, stringFormatC);
+                                    g2.DrawStr(it.v, Font, brush_fore, it.rect_read, s_f);
                                 }
                             }
                         }
@@ -223,37 +223,37 @@ namespace AntdUI
                     {
                         if (hover_button.Animation)
                         {
-                            g.DrawStr(button_text, Font, brush_active, rect_button, stringFormatC);
+                            g.DrawStr(button_text, Font, brush_active, rect_button, s_f);
                             using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
                             {
-                                g.DrawStr(button_text, Font, brush_hove, rect_button, stringFormatC);
+                                g.DrawStr(button_text, Font, brush_hove, rect_button, s_f);
                             }
                         }
                         else if (hover_button.Switch)
                         {
                             using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                             {
-                                g.DrawStr(button_text, Font, brush_hove, rect_button, stringFormatC);
+                                g.DrawStr(button_text, Font, brush_hove, rect_button, s_f);
                             }
                         }
-                        else g.DrawStr(button_text, Font, brush_active, rect_button, stringFormatC);
+                        else g.DrawStr(button_text, Font, brush_active, rect_button, s_f);
 
                         if (hover_buttonok.Animation)
                         {
-                            g.DrawStr(OKButton, Font, brush_active, rect_buttonok, stringFormatC);
+                            g.DrawStr(OKButton, Font, brush_active, rect_buttonok, s_f);
                             using (var brush_hove = new SolidBrush(Helper.ToColor(hover_buttonok.Value, Style.Db.PrimaryActive)))
                             {
-                                g.DrawStr(OKButton, Font, brush_hove, rect_buttonok, stringFormatC);
+                                g.DrawStr(OKButton, Font, brush_hove, rect_buttonok, s_f);
                             }
                         }
                         else if (hover_buttonok.Switch)
                         {
                             using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                             {
-                                g.DrawStr(OKButton, Font, brush_hove, rect_buttonok, stringFormatC);
+                                g.DrawStr(OKButton, Font, brush_hove, rect_buttonok, s_f);
                             }
                         }
-                        else g.DrawStr(OKButton, Font, brush_active, rect_buttonok, stringFormatC);
+                        else g.DrawStr(OKButton, Font, brush_active, rect_buttonok, s_f);
                     }
                 }
             }

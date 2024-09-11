@@ -107,6 +107,18 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 最小日期
+        /// </summary>
+        [Description("最小日期"), Category("数据"), DefaultValue(null)]
+        public DateTime? MinDate { get; set; }
+
+        /// <summary>
+        /// 最大日期
+        /// </summary>
+        [Description("最大日期"), Category("数据"), DefaultValue(null)]
+        public DateTime? MaxDate { get; set; }
+
         protected override void OnTextChanged(EventArgs e)
         {
             if (isempty) showS = showE = true;

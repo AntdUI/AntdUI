@@ -52,12 +52,25 @@ namespace AntdUI
 
         ITask? Thread = null;
 
+        bool enable = true;
+        public bool Enable
+        {
+            get => enable;
+            set
+            {
+                if (enable == value) return;
+                enable = value;
+                action();
+            }
+        }
+
         bool _switch = false;
         public bool Switch
         {
             get => _switch;
             set
             {
+                if (value && !enable) value = false;
                 if (_switch == value) return;
                 _switch = value;
                 if (Config.Animation)

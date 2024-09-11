@@ -99,6 +99,23 @@ namespace AntdUI
             }
         }
 
+        bool showButtonToDay = true;
+        /// <summary>
+        /// 显示今天
+        /// </summary>
+        [Description("显示今天"), Category("外观"), DefaultValue(true)]
+        public bool ShowButtonToDay
+        {
+            get => showButtonToDay;
+            set
+            {
+                if (showButtonToDay == value) return;
+                showButtonToDay = value;
+                OnSizeChanged(EventArgs.Empty);
+                Invalidate();
+            }
+        }
+
         Dictionary<string, DateBadge> badge_list = new Dictionary<string, DateBadge>();
         /// <summary>
         /// 日期徽标回调
@@ -128,6 +145,40 @@ namespace AntdUI
             }
         }
 
+        DateTime? minDate;
+        /// <summary>
+        /// 最小日期
+        /// </summary>
+        [Description("最小日期"), Category("数据"), DefaultValue(null)]
+        public DateTime? MinDate
+        {
+            get => minDate;
+            set
+            {
+                if (minDate == value) return;
+                minDate = value;
+                Date = _Date;
+                Invalidate();
+            }
+        }
+
+        DateTime? maxDate = null;
+        /// <summary>
+        /// 最大日期
+        /// </summary>
+        [Description("最大日期"), Category("数据"), DefaultValue(null)]
+        public DateTime? MaxDate
+        {
+            get => maxDate;
+            set
+            {
+                if (maxDate == value) return;
+                maxDate = value;
+                Date = _Date;
+                Invalidate();
+            }
+        }
+
         DateTime _Date;
         DateTime DateNow = DateTime.Now;
         DateTime Date
@@ -145,7 +196,7 @@ namespace AntdUI
                 for (int i = 0; i < 12; i++)
                 {
                     var d_m = new DateTime(value.Year, i + 1, 1);
-                    _calendar_month.Add(new Calendari(0, x_m, y_m, d_m.ToString("MM") + MonthButton, d_m, d_m.ToString("yyyy-MM")));
+                    _calendar_month.Add(new Calendari(0, x_m, y_m, d_m.ToString("MM") + MonthButton, d_m, d_m.ToString("yyyy-MM"), minDate, maxDate));
                     x_m++;
                     if (x_m > 2)
                     {
@@ -171,7 +222,7 @@ namespace AntdUI
                 for (int i = 0; i < 12; i++)
                 {
                     var d_y = new DateTime(syear + i, value.Month, 1);
-                    _calendar_year.Add(new Calendari(i == 0 ? 0 : 1, x_y, y_y, d_y.ToString("yyyy"), d_y, d_y.ToString("yyyy")));
+                    _calendar_year.Add(new Calendari(i == 0 ? 0 : 1, x_y, y_y, d_y.ToString("yyyy"), d_y, d_y.ToString("yyyy"), minDate, maxDate));
                     x_y++;
                     if (x_y > 2)
                     {
@@ -187,6 +238,11 @@ namespace AntdUI
                 OnSizeChanged(EventArgs.Empty);
 
                 LoadBadge();
+
+                hover_left.Enable = Helper.DateExceed(value.AddMonths(-1), minDate, maxDate);
+                hover_right.Enable = Helper.DateExceed(value.AddMonths(1), minDate, maxDate);
+                hover_lefts.Enable = Helper.DateExceed(value.AddYears(-1), minDate, maxDate);
+                hover_rights.Enable = Helper.DateExceed(value.AddYears(1), minDate, maxDate);
             }
         }
 
@@ -225,14 +281,14 @@ namespace AntdUI
                 for (int i = 0; i < day_; i++)
                 {
                     int day3 = days2 - i;
-                    calendaris.Insert(0, new Calendari(0, (day_ - 1) - i, 0, day3.ToString(), new DateTime(date1.Year, date1.Month, day3)));
+                    calendaris.Insert(0, new Calendari(0, (day_ - 1) - i, 0, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
                 }
             }
             int x = day_, y = 0;
             for (int i = 0; i < days; i++)
             {
                 int day = i + 1;
-                calendaris.Add(new Calendari(1, x, y, day.ToString(), new DateTime(now.Year, now.Month, day)));
+                calendaris.Add(new Calendari(1, x, y, day.ToString(), new DateTime(now.Year, now.Month, day), minDate, maxDate));
                 x++;
                 if (x > 6)
                 {
@@ -247,7 +303,7 @@ namespace AntdUI
                 for (int i = x; i < 7; i++)
                 {
                     int day3 = day2 + 1;
-                    calendaris.Add(new Calendari(2, x, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3)));
+                    calendaris.Add(new Calendari(2, x, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
                     x++; day2++;
                 }
                 if (y < 5)
@@ -256,7 +312,7 @@ namespace AntdUI
                     for (int i = 0; i < 7; i++)
                     {
                         int day3 = day2 + 1;
-                        calendaris.Add(new Calendari(2, i, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3)));
+                        calendaris.Add(new Calendari(2, i, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
                         day2++;
                     }
                 }
@@ -316,10 +372,10 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat stringFormatC = Helper.SF();
-        StringFormat stringFormatL = Helper.SF(lr: StringAlignment.Far);
-        StringFormat stringFormatLE = Helper.SF_Ellipsis(lr: StringAlignment.Near);
-        StringFormat stringFormatR = Helper.SF(lr: StringAlignment.Near);
+        StringFormat s_f = Helper.SF();
+        StringFormat s_f_L = Helper.SF(lr: StringAlignment.Far);
+        StringFormat s_f_LE = Helper.SF_Ellipsis(lr: StringAlignment.Near);
+        StringFormat s_f_R = Helper.SF(lr: StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
@@ -336,13 +392,14 @@ namespace AntdUI
 
             #region 方向
 
-            using (var pen_arrow = new Pen(Style.Db.TextTertiary, 1.6F))
-            using (var pen_arrow_hover = new Pen(Style.Db.Text, 1.6F))
+            using (var pen_arrow = new Pen(Style.Db.TextTertiary, 1.6F * Config.Dpi))
+            using (var pen_arrow_hover = new Pen(Style.Db.Text, pen_arrow.Width))
+            using (var pen_arrow_enable = new Pen(Style.Db.FillSecondary, pen_arrow.Width))
             {
                 if (hover_lefts.Animation)
                 {
-                    PointF[] tl1 = TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F),
-                        tl2 = TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F);
+                    PointF[] tl1 = TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F),
+                        tl2 = TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F);
                     g.DrawLines(pen_arrow, tl1);
                     g.DrawLines(pen_arrow, tl2);
                     using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_lefts.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
@@ -353,20 +410,24 @@ namespace AntdUI
                 }
                 else if (hover_lefts.Switch)
                 {
-                    g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F));
-                    g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F));
-
+                    g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
+                    g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
+                }
+                else if (hover_lefts.Enable)
+                {
+                    g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
+                    g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
                 }
                 else
                 {
-                    g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F));
-                    g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F));
+                    g.DrawLines(pen_arrow_enable, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
+                    g.DrawLines(pen_arrow_enable, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
                 }
 
                 if (hover_rights.Animation)
                 {
-                    PointF[] tl1 = TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F),
-                        tl2 = TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F);
+                    PointF[] tl1 = TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F),
+                        tl2 = TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F);
                     g.DrawLines(pen_arrow, tl1);
                     g.DrawLines(pen_arrow, tl2);
                     using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_rights.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
@@ -377,55 +438,47 @@ namespace AntdUI
                 }
                 else if (hover_rights.Switch)
                 {
-                    g.DrawLines(pen_arrow_hover, TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F));
-                    g.DrawLines(pen_arrow_hover, TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F));
-
+                    g.DrawLines(pen_arrow_hover, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
+                    g.DrawLines(pen_arrow_hover, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
+                }
+                else if (hover_rights.Enable)
+                {
+                    g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
+                    g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
                 }
                 else
                 {
-                    g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F));
-                    g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F));
+                    g.DrawLines(pen_arrow_enable, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
+                    g.DrawLines(pen_arrow_enable, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
                 }
 
                 if (showType == 0)
                 {
                     if (hover_left.Animation)
                     {
-                        var tl = TAlignMini.Left.TriangleLines(rect_left, 0.26F);
+                        var tl = TAlignMini.Left.TriangleLines(rect_left, .26F);
                         g.DrawLines(pen_arrow, tl);
                         using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_left.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                         {
                             g.DrawLines(pen_arrow_hovers, tl);
                         }
                     }
-                    else if (hover_left.Switch)
-                    {
-                        g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(rect_left, 0.26F));
-
-                    }
-                    else
-                    {
-                        g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(rect_left, 0.26F));
-                    }
+                    else if (hover_left.Switch) g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(rect_left, .26F));
+                    else if (hover_left.Enable) g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(rect_left, .26F));
+                    else g.DrawLines(pen_arrow_enable, TAlignMini.Left.TriangleLines(rect_left, .26F));
 
                     if (hover_right.Animation)
                     {
-                        var tl = TAlignMini.Right.TriangleLines(rect_right, 0.26F);
+                        var tl = TAlignMini.Right.TriangleLines(rect_right, .26F);
                         g.DrawLines(pen_arrow, tl);
                         using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_right.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                         {
                             g.DrawLines(pen_arrow_hovers, tl);
                         }
                     }
-                    else if (hover_right.Switch)
-                    {
-                        g.DrawLines(pen_arrow_hover, TAlignMini.Right.TriangleLines(rect_right, 0.26F));
-
-                    }
-                    else
-                    {
-                        g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(rect_right, 0.26F));
-                    }
+                    else if (hover_right.Switch) g.DrawLines(pen_arrow_hover, TAlignMini.Right.TriangleLines(rect_right, .26F));
+                    else if (hover_right.Enable) g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(rect_right, .26F));
+                    else g.DrawLines(pen_arrow_enable, TAlignMini.Right.TriangleLines(rect_right, .26F));
                 }
             }
 
@@ -442,7 +495,7 @@ namespace AntdUI
 
         #region 年模式
 
-        RectangleF rect_year_l;
+        Rectangle rect_year_l;
         /// <summary>
         /// 渲染年模式
         /// </summary>
@@ -451,64 +504,74 @@ namespace AntdUI
         /// <param name="datas">数据</param>
         void PrintYear(Graphics g, Rectangle rect_read, float radius, List<Calendari> datas)
         {
+            using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
+            using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
             using (var brush_fore = new SolidBrush(Style.Db.TextBase))
             {
                 using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                 {
                     if (hover_year.Animation)
                     {
-                        g.DrawStr(year_str, font, brush_fore, rect_year_l, stringFormatC);
+                        g.DrawStr(year_str, font, brush_fore, rect_year_l, s_f);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
-                            g.DrawStr(year_str, font, brush_hove, rect_year_l, stringFormatC);
+                            g.DrawStr(year_str, font, brush_hove, rect_year_l, s_f);
                         }
                     }
                     else if (hover_year.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawStr(year_str, font, brush_hove, rect_year_l, stringFormatC);
+                            g.DrawStr(year_str, font, brush_hove, rect_year_l, s_f);
                         }
                     }
-                    else g.DrawStr(year_str, font, brush_fore, rect_year_l, stringFormatC);
+                    else g.DrawStr(year_str, font, brush_fore, rect_year_l, s_f);
                 }
-                using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
+                foreach (var it in datas)
                 {
-                    foreach (var it in datas)
+                    using (var path = it.rect_read.RoundPath(radius))
                     {
-                        using (var path = it.rect_read.RoundPath(radius))
+                        if (_value.ToString("yyyy") == it.date_str)
                         {
-                            if (_value.ToString("yyyy") == it.date_str)
+                            using (var brush_hove = new SolidBrush(Style.Db.Primary))
                             {
-                                using (var brush_hove = new SolidBrush(Style.Db.Primary))
+                                g.FillPath(brush_hove, path);
+                            }
+
+                            using (var brush_active_fore = new SolidBrush(Style.Db.PrimaryColor))
+                            {
+                                g.DrawStr(it.v, Font, brush_active_fore, it.rect, s_f);
+                            }
+                        }
+                        else if (it.enable)
+                        {
+                            if (it.hover)
+                            {
+                                using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
                                 {
                                     g.FillPath(brush_hove, path);
                                 }
-
-                                using (var brush_active_fore = new SolidBrush(Style.Db.PrimaryColor))
-                                {
-                                    g.DrawStr(it.v, Font, brush_active_fore, it.rect, stringFormatC);
-                                }
                             }
-                            else
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
                             {
-                                if (it.hover)
+                                using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
                                 {
-                                    using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                    {
-                                        g.FillPath(brush_hove, path);
-                                    }
+                                    g.DrawPath(brush_hove, path);
                                 }
-                                if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
-                                {
-                                    using (var brush_hove = new Pen(Style.Db.Primary, 0.1F))
-                                    {
-                                        g.DrawPath(brush_hove, path);
-                                    }
-                                }
-
-                                g.DrawStr(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, stringFormatC);
                             }
+                            g.DrawStr(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
+                        }
+                        else
+                        {
+                            g.FillRectangle(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
+                            {
+                                using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
+                                {
+                                    g.DrawPath(brush_hove, path);
+                                }
+                            }
+                            g.DrawStr(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
                 }
@@ -519,7 +582,7 @@ namespace AntdUI
 
         #region 月模式
 
-        RectangleF rect_month_l;
+        Rectangle rect_month_l;
         /// <summary>
         /// 渲染月模式
         /// </summary>
@@ -528,26 +591,28 @@ namespace AntdUI
         /// <param name="datas">数据</param>
         void PrintMonth(Graphics g, Rectangle rect_read, float radius, List<Calendari> datas)
         {
+            using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
+            using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
             using (var brush_fore = new SolidBrush(Style.Db.TextBase))
             {
                 using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                 {
                     if (hover_year.Animation)
                     {
-                        g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_month_l, stringFormatC);
+                        g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_month_l, s_f);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
-                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_month_l, stringFormatC);
+                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_month_l, s_f);
                         }
                     }
                     else if (hover_year.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_month_l, stringFormatC);
+                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_month_l, s_f);
                         }
                     }
-                    else g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_month_l, stringFormatC);
+                    else g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_month_l, s_f);
                 }
 
                 foreach (var it in datas)
@@ -563,10 +628,10 @@ namespace AntdUI
 
                             using (var brush_active_fore = new SolidBrush(Style.Db.PrimaryColor))
                             {
-                                g.DrawStr(it.v, Font, brush_active_fore, it.rect, stringFormatC);
+                                g.DrawStr(it.v, Font, brush_active_fore, it.rect, s_f);
                             }
                         }
-                        else
+                        else if (it.enable)
                         {
                             if (it.hover)
                             {
@@ -577,13 +642,24 @@ namespace AntdUI
                             }
                             if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
                             {
-                                using (var brush_hove = new Pen(Style.Db.Primary, 0.1F))
+                                using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
                                 {
                                     g.DrawPath(brush_hove, path);
                                 }
                             }
-
-                            g.DrawStr(it.v, Font, brush_fore, it.rect, stringFormatC);
+                            g.DrawStr(it.v, Font, brush_fore, it.rect, s_f);
+                        }
+                        else
+                        {
+                            g.FillRectangle(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
+                            {
+                                using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
+                                {
+                                    g.DrawPath(brush_hove, path);
+                                }
+                            }
+                            g.DrawStr(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
                 }
@@ -594,8 +670,9 @@ namespace AntdUI
 
         #region 天模式
 
-        RectangleF rect_day_l, rect_day_r, rect_day_split1, rect_day_split2;
-        RectangleF[]? rect_day_s;
+        Rectangle rect_day_l, rect_day_r;
+        RectangleF rect_day_split1, rect_day_split2;
+        Rectangle[]? rect_day_s;
 
         /// <summary>
         /// 渲染天模式
@@ -612,75 +689,65 @@ namespace AntdUI
                 {
                     if (hover_year.Animation)
                     {
-                        g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_day_l, stringFormatL);
+                        g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_day_l, s_f_L);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
-                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_day_l, stringFormatL);
+                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_day_l, s_f_L);
                         }
                     }
                     else if (hover_year.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_day_l, stringFormatL);
+                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_day_l, s_f_L);
                         }
                     }
-                    else g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_day_l, stringFormatL);
+                    else g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_day_l, s_f_L);
 
                     if (hover_month.Animation)
                     {
-                        g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_day_r, stringFormatR);
+                        g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_day_r, s_f_R);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_month.Value, Style.Db.Primary)))
                         {
-                            g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_day_r, stringFormatR);
+                            g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_day_r, s_f_R);
                         }
                     }
                     else if (hover_month.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_day_r, stringFormatR);
+                            g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_day_r, s_f_R);
                         }
                     }
-                    else g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_day_r, stringFormatR);
+                    else g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_day_r, s_f_R);
                 }
 
                 using (var brush_split = new SolidBrush(Style.Db.Split))
                 {
                     g.FillRectangle(brush_split, rect_day_split1);
-                    g.FillRectangle(brush_split, rect_day_split2);
+                    if (showButtonToDay) g.FillRectangle(brush_split, rect_day_split2);
                 }
                 using (var brush = new SolidBrush(Style.Db.Text))
                 {
-                    g.DrawStr(MondayButton, Font, brush, rect_day_s[0], stringFormatC);
-                    g.DrawStr(TuesdayButton, Font, brush, rect_day_s[1], stringFormatC);
-                    g.DrawStr(WednesdayButton, Font, brush, rect_day_s[2], stringFormatC);
-                    g.DrawStr(ThursdayButton, Font, brush, rect_day_s[3], stringFormatC);
-                    g.DrawStr(FridayButton, Font, brush, rect_day_s[4], stringFormatC);
-                    g.DrawStr(SaturdayButton, Font, brush, rect_day_s[5], stringFormatC);
-                    g.DrawStr(SundayButton, Font, brush, rect_day_s[6], stringFormatC);
+                    g.DrawStr(MondayButton, Font, brush, rect_day_s[0], s_f);
+                    g.DrawStr(TuesdayButton, Font, brush, rect_day_s[1], s_f);
+                    g.DrawStr(WednesdayButton, Font, brush, rect_day_s[2], s_f);
+                    g.DrawStr(ThursdayButton, Font, brush, rect_day_s[3], s_f);
+                    g.DrawStr(FridayButton, Font, brush, rect_day_s[4], s_f);
+                    g.DrawStr(SaturdayButton, Font, brush, rect_day_s[5], s_f);
+                    g.DrawStr(SundayButton, Font, brush, rect_day_s[6], s_f);
                 }
                 using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
+                using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
                 using (var brush_active = new SolidBrush(Style.Db.Primary))
                 using (var brush_active_fore = new SolidBrush(Style.Db.PrimaryColor))
                 using (var brush_error = new SolidBrush(Style.Db.Error))
                 {
+                    PaintToDayFrame(g, datas, DateNow.ToString("yyyy-MM-dd"), radius);
+
                     if (chinese)
                     {
-                        foreach (var it in datas)
-                        {
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
-                            {
-                                using (var path = it.rect_read.RoundPath(radius))
-                                {
-                                    using (var pen_active = new Pen(Style.Db.Primary, 0.1F))
-                                    {
-                                        g.DrawPath(pen_active, path);
-                                    }
-                                }
-                            }
-                        }
-                        using (var font4 = new Font(Font.FontFamily, Font.Size * 0.76F, Font.Style))
+                        using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
                         {
                             using (var brush_fore_c = new SolidBrush(Style.Db.TextSecondary))
                             {
@@ -692,10 +759,10 @@ namespace AntdUI
                                         if (_value.ToString("yyyy-MM-dd") == it.date_str)
                                         {
                                             g.FillPath(brush_active, path);
-                                            g.DrawStr(cdate.DayString, font4, brush_active_fore, it.rect_l, stringFormatC);
-                                            g.DrawStr(it.v, Font, brush_active_fore, it.rect_f, stringFormatC);
+                                            g.DrawStr(cdate.DayString, font4, brush_active_fore, it.rect_l, s_f);
+                                            g.DrawStr(it.v, Font, brush_active_fore, it.rect_f, s_f);
                                         }
-                                        else
+                                        else if (it.enable)
                                         {
                                             if (it.hover)
                                             {
@@ -704,8 +771,14 @@ namespace AntdUI
                                                     g.FillPath(brush_hove, path);
                                                 }
                                             }
-                                            g.DrawStr(cdate.DayString, font4, brush_fore_c, it.rect_l, stringFormatC);
-                                            g.DrawStr(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect_f, stringFormatC);
+                                            g.DrawStr(cdate.DayString, font4, brush_fore_c, it.rect_l, s_f);
+                                            g.DrawStr(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect_f, s_f);
+                                        }
+                                        else
+                                        {
+                                            g.FillRectangle(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                                            g.DrawStr(cdate.DayString, font4, brush_fore_disable, it.rect_l, s_f);
+                                            g.DrawStr(it.v, Font, brush_fore_disable, it.rect_f, s_f);
                                         }
                                     }
                                 }
@@ -716,27 +789,14 @@ namespace AntdUI
                     {
                         foreach (var it in datas)
                         {
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
-                            {
-                                using (var path = it.rect_read.RoundPath(radius))
-                                {
-                                    using (var pen_active = new Pen(Style.Db.Primary, 0.1F))
-                                    {
-                                        g.DrawPath(pen_active, path);
-                                    }
-                                }
-                            }
-                        }
-                        foreach (var it in datas)
-                        {
                             using (var path = it.rect_read.RoundPath(radius))
                             {
                                 if (_value.ToString("yyyy-MM-dd") == it.date_str)
                                 {
                                     g.FillPath(brush_active, path);
-                                    g.DrawStr(it.v, Font, brush_active_fore, it.rect, stringFormatC);
+                                    g.DrawStr(it.v, Font, brush_active_fore, it.rect, s_f);
                                 }
-                                else
+                                else if (it.enable)
                                 {
                                     if (it.hover)
                                     {
@@ -745,28 +805,35 @@ namespace AntdUI
                                             g.FillPath(brush_hove, path);
                                         }
                                     }
-                                    g.DrawStr(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, stringFormatC);
+                                    g.DrawStr(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
+                                }
+                                else
+                                {
+                                    g.FillRectangle(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                                    g.DrawStr(it.v, Font, brush_fore_disable, it.rect, s_f);
                                 }
                             }
                         }
                     }
-                    if (hover_button.Animation)
+                    if (showButtonToDay)
                     {
-                        g.DrawStr(button_text, Font, brush_active, rect_button, stringFormatC);
-                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
+                        if (hover_button.Animation)
                         {
-                            g.DrawStr(button_text, Font, brush_hove, rect_button, stringFormatC);
+                            g.DrawStr(button_text, Font, brush_active, rect_button, s_f);
+                            using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
+                            {
+                                g.DrawStr(button_text, Font, brush_hove, rect_button, s_f);
+                            }
                         }
-                    }
-                    else if (hover_button.Switch)
-                    {
-                        using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
+                        else if (hover_button.Switch)
                         {
-                            g.DrawStr(button_text, Font, brush_hove, rect_button, stringFormatC);
+                            using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
+                            {
+                                g.DrawStr(button_text, Font, brush_hove, rect_button, s_f);
+                            }
                         }
+                        else g.DrawStr(button_text, Font, brush_active, rect_button, s_f);
                     }
-                    else g.DrawStr(button_text, Font, brush_active, rect_button, stringFormatC);
-
                     if (badge_list.Count > 0)
                     {
                         using (var font = new Font(Font.FontFamily, Font.Size * BadgeSize))
@@ -777,6 +844,27 @@ namespace AntdUI
                             }
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制今天边框
+        /// </summary>
+        internal static void PaintToDayFrame(Graphics g, IList<Calendari> datas, string dateNow, float radius)
+        {
+            foreach (var it in datas)
+            {
+                if (dateNow == it.date_str)
+                {
+                    using (var path = it.rect_read.RoundPath(radius))
+                    {
+                        using (var pen_active = new Pen(Style.Db.Primary, Config.Dpi))
+                        {
+                            g.DrawPath(pen_active, path);
+                        }
+                    }
+                    return;
                 }
             }
         }
@@ -805,25 +893,25 @@ namespace AntdUI
         #region 鼠标
 
         ITaskOpacity hover_button, hover_lefts, hover_left, hover_rights, hover_right, hover_year, hover_month;
-        RectangleF rect_button = new RectangleF(-20, -20, 10, 10);
-        RectangleF rect_lefts = new RectangleF(-20, -20, 10, 10), rect_left = new RectangleF(-20, -20, 10, 10);
-        RectangleF rect_rights = new RectangleF(-20, -20, 10, 10), rect_right = new RectangleF(-20, -20, 10, 10);
-        RectangleF rect_year = new RectangleF(-20, -20, 10, 10), rect_year2 = new RectangleF(-20, -20, 10, 10), rect_month = new RectangleF(-20, -20, 10, 10);
+        Rectangle rect_button = new Rectangle(-20, -20, 10, 10);
+        Rectangle rect_lefts = new Rectangle(-20, -20, 10, 10), rect_left = new Rectangle(-20, -20, 10, 10);
+        Rectangle rect_rights = new Rectangle(-20, -20, 10, 10), rect_right = new Rectangle(-20, -20, 10, 10);
+        Rectangle rect_year = new Rectangle(-20, -20, 10, 10), rect_year2 = new Rectangle(-20, -20, 10, 10), rect_month = new Rectangle(-20, -20, 10, 10);
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             int count = 0, hand = 0;
-            bool _hover_lefts = rect_lefts.Contains(e.Location),
-             _hover_rights = rect_rights.Contains(e.Location),
-             _hover_left = (showType == 0 && rect_left.Contains(e.Location)),
-             _hover_right = (showType == 0 && rect_right.Contains(e.Location)),
-             _hover_button = (showType == 0 && rect_button.Contains(e.Location));
+            bool _hover_lefts = rect_lefts.Contains(e.X, e.Y),
+             _hover_rights = rect_rights.Contains(e.X, e.Y),
+             _hover_left = (showType == 0 && rect_left.Contains(e.X, e.Y)),
+             _hover_right = (showType == 0 && rect_right.Contains(e.X, e.Y)),
+             _hover_button = (showType == 0 && showButtonToDay && rect_button.Contains(e.X, e.Y));
 
             bool _hover_year = false, _hover_month = false;
             if (showType != 2)
             {
-                _hover_year = showType == 0 ? rect_year.Contains(e.Location) : rect_year2.Contains(e.Location);
-                _hover_month = rect_month.Contains(e.Location);
+                _hover_year = showType == 0 ? rect_year.Contains(e.X, e.Y) : rect_year2.Contains(e.X, e.Y);
+                _hover_month = rect_month.Contains(e.X, e.Y);
             }
 
             if (_hover_lefts != hover_lefts.Switch) count++;
@@ -842,10 +930,7 @@ namespace AntdUI
             hover_year.Switch = _hover_year;
             hover_month.Switch = _hover_month;
             hover_button.Switch = _hover_button;
-            if (hover_lefts.Switch || hover_left.Switch || hover_rights.Switch || hover_right.Switch || hover_year.Switch || hover_month.Switch || hover_button.Switch)
-            {
-                hand++;
-            }
+            if (hover_lefts.Switch || hover_left.Switch || hover_rights.Switch || hover_right.Switch || hover_year.Switch || hover_month.Switch || hover_button.Switch) hand++;
             else
             {
                 if (showType == 1)
@@ -854,7 +939,7 @@ namespace AntdUI
                     {
                         foreach (var it in calendar_month)
                         {
-                            bool hove = it.rect.Contains(e.Location);
+                            bool hove = it.enable && it.rect.Contains(e.X, e.Y);
                             if (it.hover != hove) count++;
                             it.hover = hove;
                             if (it.hover) hand++;
@@ -867,7 +952,7 @@ namespace AntdUI
                     {
                         foreach (var it in calendar_year)
                         {
-                            bool hove = it.rect.Contains(e.Location);
+                            bool hove = it.enable && it.rect.Contains(e.X, e.Y);
                             if (it.hover != hove) count++;
                             it.hover = hove;
                             if (it.hover) hand++;
@@ -880,7 +965,7 @@ namespace AntdUI
                     {
                         foreach (var it in calendar_day)
                         {
-                            bool hove = it.rect.Contains(e.Location);
+                            bool hove = it.enable && it.rect.Contains(e.X, e.Y);
                             if (it.hover != hove) count++;
                             it.hover = hove;
                             if (it.hover) hand++;
@@ -932,43 +1017,55 @@ namespace AntdUI
         {
             if (e.Button == MouseButtons.Left)
             {
-                if (rect_lefts.Contains(e.Location))
+                if (rect_lefts.Contains(e.X, e.Y))
                 {
-                    if (showType == 2) Date = _Date.AddYears(-10);
-                    else Date = _Date.AddYears(-1);
-                    Invalidate();
+                    if (hover_lefts.Enable)
+                    {
+                        if (showType == 2) Date = _Date.AddYears(-10);
+                        else Date = _Date.AddYears(-1);
+                        Invalidate();
+                    }
                     return;
                 }
-                else if (rect_rights.Contains(e.Location))
+                else if (rect_rights.Contains(e.X, e.Y))
                 {
-                    if (showType == 2) Date = _Date.AddYears(10);
-                    else Date = _Date.AddYears(1);
-                    Invalidate();
+                    if (hover_rights.Enable)
+                    {
+                        if (showType == 2) Date = _Date.AddYears(10);
+                        else Date = _Date.AddYears(1);
+                        Invalidate();
+                    }
                     return;
                 }
-                else if (showType == 0 && rect_left.Contains(e.Location))
+                else if (showType == 0 && rect_left.Contains(e.X, e.Y))
                 {
-                    Date = _Date.AddMonths(-1);
-                    Invalidate();
+                    if (hover_left.Enable)
+                    {
+                        Date = _Date.AddMonths(-1);
+                        Invalidate();
+                    }
                     return;
                 }
-                else if (showType == 0 && rect_right.Contains(e.Location))
+                else if (showType == 0 && rect_right.Contains(e.X, e.Y))
                 {
-                    Date = _Date.AddMonths(1);
-                    Invalidate();
+                    if (hover_right.Enable)
+                    {
+                        Date = _Date.AddMonths(1);
+                        Invalidate();
+                    }
                     return;
                 }
-                else if ((showType == 0 && rect_year.Contains(e.Location)) || (showType != 0 && rect_year2.Contains(e.Location)))
+                else if ((showType == 0 && rect_year.Contains(e.X, e.Y)) || (showType != 0 && rect_year2.Contains(e.X, e.Y)))
                 {
                     ChangeType(2);
                     return;
                 }
-                else if (showType == 0 && rect_button.Contains(e.Location))
+                else if (showType == 0 && showButtonToDay && rect_button.Contains(e.X, e.Y))
                 {
                     Value = Date = DateNow = DateTime.Now;
                     return;
                 }
-                else if (rect_month.Contains(e.Location))
+                else if (rect_month.Contains(e.X, e.Y))
                 {
                     ChangeType(1);
                     return;
@@ -981,7 +1078,7 @@ namespace AntdUI
                         {
                             foreach (var it in calendar_month)
                             {
-                                if (it.rect.Contains(e.Location))
+                                if (it.enable && it.rect.Contains(e.X, e.Y))
                                 {
                                     Date = it.date;
                                     ChangeType(0);
@@ -996,7 +1093,7 @@ namespace AntdUI
                         {
                             foreach (var it in calendar_year)
                             {
-                                if (it.rect.Contains(e.Location))
+                                if (it.enable && it.rect.Contains(e.X, e.Y))
                                 {
                                     Date = it.date;
                                     ChangeType(1);
@@ -1011,7 +1108,7 @@ namespace AntdUI
                         {
                             foreach (var it in calendar_day)
                             {
-                                if (it.rect.Contains(e.Location))
+                                if (it.enable && it.rect.Contains(e.X, e.Y))
                                 {
                                     Value = it.date;
                                     return;
@@ -1034,16 +1131,40 @@ namespace AntdUI
         {
             if (e.Delta > 0)
             {
-                if (showType == 1) Date = _Date.AddYears(-1);
-                else if (showType == 2) Date = _Date.AddYears(-10);
-                else Date = _Date.AddMonths(-1);
+                if (showType == 1)
+                {
+                    if (hover_lefts.Enable) Date = _Date.AddYears(-1);
+                    else return;
+                }
+                else if (showType == 2)
+                {
+                    if (hover_lefts.Enable) Date = _Date.AddYears(-10);
+                    else return;
+                }
+                else
+                {
+                    if (hover_left.Enable) Date = _Date.AddMonths(-1);
+                    else return;
+                }
                 Invalidate();
             }
             else
             {
-                if (showType == 1) Date = _Date.AddYears(1);
-                else if (showType == 2) Date = _Date.AddYears(10);
-                else Date = _Date.AddMonths(1);
+                if (showType == 1)
+                {
+                    if (hover_rights.Enable) Date = _Date.AddYears(1);
+                    else return;
+                }
+                else if (showType == 2)
+                {
+                    if (hover_rights.Enable) Date = _Date.AddYears(10);
+                    else return;
+                }
+                else
+                {
+                    if (hover_right.Enable) Date = _Date.AddMonths(1);
+                    else return;
+                }
                 Invalidate();
             }
         }
@@ -1059,140 +1180,139 @@ namespace AntdUI
 
             var rect = ReadRectangle;
 
-            int t_top = 34, t_button = 38;
+            int t_top = 34, t_button = showButtonToDay ? 38 : 0;
             int year_width = 60, year2_width = 88, month_width = 40;
             if (dpi != 1F)
             {
                 t_top = (int)(t_top * dpi);
-                t_button = (int)(t_button * dpi);
+                if (showButtonToDay) t_button = (int)(t_button * dpi);
                 year_width = (int)(year_width * dpi);
                 year2_width = (int)(year2_width * dpi);
                 month_width = (int)(month_width * dpi);
             }
 
-            rect_lefts = new RectangleF(rect.X, rect.Y, t_top, t_top);
-            rect_left = new RectangleF(rect.X + t_top, rect.Y, t_top, t_top);
-            rect_rights = new RectangleF(rect.X + rect.Width - t_top, rect.Y, t_top, t_top);
-            rect_right = new RectangleF(rect.X + rect.Width - t_top * 2, rect.Y, t_top, t_top);
+            rect_lefts = new Rectangle(rect.X, rect.Y, t_top, t_top);
+            rect_left = new Rectangle(rect.X + t_top, rect.Y, t_top, t_top);
+            rect_rights = new Rectangle(rect.X + rect.Width - t_top, rect.Y, t_top, t_top);
+            rect_right = new Rectangle(rect.X + rect.Width - t_top * 2, rect.Y, t_top, t_top);
 
-            rect_year = new RectangleF(rect.X + rect.Width / 2 - year_width, rect.Y, year_width, t_top);
-            rect_year2 = new RectangleF(rect.X + (rect.Width - year2_width) / 2, rect.Y, year2_width, t_top);
-            rect_month = new RectangleF(rect.X + rect.Width / 2, rect.Y, month_width, t_top);
-            rect_button = new RectangleF(rect.X, rect.Bottom - t_button, rect.Width, t_button);
+            rect_year = new Rectangle(rect.X + rect.Width / 2 - year_width, rect.Y, year_width, t_top);
+            rect_year2 = new Rectangle(rect.X + (rect.Width - year2_width) / 2, rect.Y, year2_width, t_top);
+            rect_month = new Rectangle(rect.X + rect.Width / 2, rect.Y, month_width, t_top);
+            rect_button = new Rectangle(rect.X, rect.Bottom - t_button, rect.Width, t_button);
 
             #region 计算坐标
 
-            float gap_day = (int)(8 * dpi), gap_day2 = gap_day * 2;
+            int gap_day = (int)(8 * dpi), gap_day2 = gap_day * 2;
             if (showType == 1)
             {
                 //月
-                rect_month_l = new RectangleF(rect.X, rect.Y, rect.Width, t_top);
-                float y = rect.Y + t_top;
-                float size_w = (rect.Width - gap_day2) / 3F, size_h = (rect.Height - t_top - gap_day2) / 4F;
+                rect_month_l = new Rectangle(rect.X, rect.Y, rect.Width, t_top);
+                int y = rect.Y + t_top;
+                int size_w = (rect.Width - gap_day2) / 3, size_h = (rect.Height - t_top - gap_day2) / 4;
                 if (calendar_month != null)
                 {
-                    foreach (var it in calendar_month) it.rect = new RectangleF(rect.X + gap_day + (size_w * it.x), y + gap_day + (size_h * it.y), size_w, size_h);
+                    foreach (var it in calendar_month) it.rect = new Rectangle(rect.X + gap_day + (size_w * it.x), y + gap_day + (size_h * it.y), size_w, size_h);
                 }
             }
             else if (showType == 2)
             {
                 //年
-                rect_year_l = new RectangleF(rect.X, rect.Y, rect.Width, t_top);
-                float y = rect.Y + t_top;
-                float size_w = (rect.Width - gap_day2) / 3F, size_h = (rect.Height - t_top - gap_day2) / 4F;
+                rect_year_l = new Rectangle(rect.X, rect.Y, rect.Width, t_top);
+                int y = rect.Y + t_top;
+                int size_w = (rect.Width - gap_day2) / 3, size_h = (rect.Height - t_top - gap_day2) / 4;
                 if (calendar_year != null)
                 {
-                    foreach (var it in calendar_year) it.rect = new RectangleF(rect.X + gap_day + (size_w * it.x), y + gap_day + (size_h * it.y), size_w, size_h);
+                    foreach (var it in calendar_year) it.rect = new Rectangle(rect.X + gap_day + (size_w * it.x), y + gap_day + (size_h * it.y), size_w, size_h);
                 }
             }
             else
             {
                 if (chinese)
                 {
-                    float y = rect.Y + t_top + 12, xm = rect.Width / 2F;
-                    float size_w = (rect.Width - gap_day2) / 7F, size_h = (rect.Height - t_top - t_button - gap_day2) / 7F;
+                    int y = rect.Y + t_top + 12, xm = rect.Width / 2;
+                    int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7;
 
-                    rect_day_l = new RectangleF(rect.X, rect.Y, xm, t_top);
-                    rect_day_r = new RectangleF(rect.X + xm, rect.Y, xm, t_top);
+                    rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
+                    rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, 1F);
-                    rect_day_split2 = new RectangleF(rect.X, rect_button.Y - 0.5F, rect.Width, 1);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, 1);
 
-                    rect_day_s = new RectangleF[]{
-                        new RectangleF(rect.X + gap_day, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 2F, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 3F, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 4F, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 5F, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 6F, y, size_w, size_h)
+                    rect_day_s = new Rectangle[]{
+                        new Rectangle(rect.X + gap_day, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 2, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 3, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 4, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 5, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 6, y, size_w, size_h)
                     };
                     y += size_h;
                     if (calendar_day != null)
                     {
                         foreach (var it in calendar_day)
                         {
-                            it.SetRectG(new RectangleF(rect.X + gap_day + (size_w * it.x), y + (size_h * it.y), size_w, size_h), 0.92F);
-                            it.rect_f = new RectangleF(it.rect_read.X, it.rect_read.Y, it.rect_read.Width, it.rect_read.Height - it.rect_read.Height / 4);
-                            it.rect_l = new RectangleF(it.rect_read.X, it.rect_read.Y + it.rect_read.Height / 2, it.rect_read.Width, it.rect_read.Height / 2);
+                            it.SetRectG(new Rectangle(rect.X + gap_day + (size_w * it.x), y + (size_h * it.y), size_w, size_h), .92F);
+                            it.rect_f = new Rectangle(it.rect_read.X, it.rect_read.Y, it.rect_read.Width, it.rect_read.Height - it.rect_read.Height / 4);
+                            it.rect_l = new Rectangle(it.rect_read.X, it.rect_read.Y + it.rect_read.Height / 2, it.rect_read.Width, it.rect_read.Height / 2);
                         }
                     }
                 }
                 else if (full)
                 {
-                    float y = rect.Y + t_top + 12, xm = rect.Width / 2F;
-                    float size_w = (rect.Width - gap_day2) / 7F, size_h = (rect.Height - t_top - t_button - gap_day2) / 7F;
+                    int y = rect.Y + t_top + 12, xm = rect.Width / 2;
+                    int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7;
 
-                    rect_day_l = new RectangleF(rect.X, rect.Y, xm, t_top);
-                    rect_day_r = new RectangleF(rect.X + xm, rect.Y, xm, t_top);
+                    rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
+                    rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, 1F);
-                    rect_day_split2 = new RectangleF(rect.X, rect_button.Y - 0.5F, rect.Width, 1);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, 1);
 
-                    rect_day_s = new RectangleF[]{
-                        new RectangleF(rect.X + gap_day, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 2F, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 3F, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 4F, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 5F, y, size_w, size_h),
-                        new RectangleF(rect.X + gap_day + size_w * 6F, y, size_w, size_h)
+                    rect_day_s = new Rectangle[]{
+                        new Rectangle(rect.X + gap_day, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 2, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 3, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 4, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 5, y, size_w, size_h),
+                        new Rectangle(rect.X + gap_day + size_w * 6, y, size_w, size_h)
                     };
                     y += size_h;
                     if (calendar_day != null)
                     {
-                        foreach (var it in calendar_day) it.SetRectG(new RectangleF(rect.X + gap_day + (size_w * it.x), y + (size_h * it.y), size_w, size_h), 0.92F);
+                        foreach (var it in calendar_day) it.SetRectG(new Rectangle(rect.X + gap_day + (size_w * it.x), y + (size_h * it.y), size_w, size_h), .92F);
                     }
                 }
                 else
                 {
-                    float y = rect.Y + t_top + 12, xm = rect.Width / 2F;
-                    float size_w = (rect.Width - gap_day2) / 7F, size_h = (rect.Height - t_top - t_button - gap_day2) / 7F;
-                    float size = size_w;
+                    int y = rect.Y + t_top + 12, xm = rect.Width / 2;
+                    int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7, size = size_w;
                     if (size_w > size_h)
                     {
                         size = size_h;
-                        gap_day2 = rect.Width - size * 7F;
+                        gap_day2 = rect.Width - size * 7;
                         gap_day = gap_day2 / 2;
                     }
 
-                    rect_day_l = new RectangleF(rect.X, rect.Y, xm, t_top);
-                    rect_day_r = new RectangleF(rect.X + xm, rect.Y, xm, t_top);
+                    rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
+                    rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, 1F);
-                    rect_day_split2 = new RectangleF(rect.X, rect_button.Y - 0.5F, rect.Width, 1);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, 1);
 
-                    rect_day_s = new RectangleF[]{
-                        new RectangleF(rect.X + gap_day, y, size, size),
-                        new RectangleF(rect.X + gap_day + size, y, size, size),
-                        new RectangleF(rect.X + gap_day + size * 2F, y, size, size),
-                        new RectangleF(rect.X + gap_day + size * 3F, y, size, size),
-                        new RectangleF(rect.X + gap_day + size * 4F, y, size, size),
-                        new RectangleF(rect.X + gap_day + size * 5F, y, size, size),
-                        new RectangleF(rect.X + gap_day + size * 6F, y, size, size)
+                    rect_day_s = new Rectangle[]{
+                        new Rectangle(rect.X + gap_day, y, size, size),
+                        new Rectangle(rect.X + gap_day + size, y, size, size),
+                        new Rectangle(rect.X + gap_day + size * 2, y, size, size),
+                        new Rectangle(rect.X + gap_day + size * 3, y, size, size),
+                        new Rectangle(rect.X + gap_day + size * 4, y, size, size),
+                        new Rectangle(rect.X + gap_day + size * 5, y, size, size),
+                        new Rectangle(rect.X + gap_day + size * 6, y, size, size)
                     };
                     y += size;
                     if (calendar_day != null)
                     {
-                        float size_one = size * 0.666F;
-                        foreach (var it in calendar_day) it.SetRect(new RectangleF(rect.X + gap_day + (size * it.x), y + (size * it.y), size, size), size_one);
+                        int size_one = (int)(size * .666F);
+                        foreach (var it in calendar_day) it.SetRect(new Rectangle(rect.X + gap_day + (size * it.x), y + (size * it.y), size, size), size_one);
                     }
                 }
             }
