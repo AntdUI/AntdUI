@@ -325,6 +325,11 @@ namespace AntdUI
             public int Width { get; set; } = 416;
 
             /// <summary>
+            /// 边距
+            /// </summary>
+            public Size Padding { get; set; } = new Size(24, 20);
+
+            /// <summary>
             /// 字体
             /// </summary>
             public Font? Font { get; set; }
