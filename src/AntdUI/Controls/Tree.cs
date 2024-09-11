@@ -716,14 +716,22 @@ namespace AntdUI
 
         void PaintArrow(Graphics g, TreeItem item, SolidBrush color, int sx, int sy)
         {
-            int size = item.arr_rect.Width, size_arrow = size / 2;
-            g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
-            g.RotateTransform(-90F + item.ArrowProg);
             using (var pen = new Pen(color, 2F))
             {
                 pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .4F));
+
+                if (item.ExpandThread) PaintArrow(g, item, pen, sx, sy, -90F + (90F * item.ExpandProg));
+                else if (item.Expand) g.DrawLines(pen, item.arr_rect.TriangleLines(-1, .4F));
+                else PaintArrow(g, item, pen, sx, sy, -90F);
             }
+        }
+
+        void PaintArrow(Graphics g, TreeItem item, Pen pen, int sx, int sy, float rotate)
+        {
+            int size = item.arr_rect.Width, size_arrow = size / 2;
+            g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
+            g.RotateTransform(rotate);
+            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .4F));
             g.ResetTransform();
             g.TranslateTransform(-sx, -sy);
         }
@@ -1125,11 +1133,9 @@ namespace AntdUI
                             ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
                             {
                                 ExpandProg = val;
-                                ArrowProg = Animation.Animate(i, t, 90F, AnimationType.Ball);
                                 Invalidates();
                             }, () =>
                             {
-                                ArrowProg = 90F;
                                 ExpandProg = 1F;
                                 ExpandThread = false;
                                 Invalidates();
@@ -1141,13 +1147,11 @@ namespace AntdUI
                             ThreadExpand = new ITask(true, 10, t, oldval, AnimationType.Ball, (i, val) =>
                             {
                                 ExpandProg = val;
-                                ArrowProg = 90F - Animation.Animate(i, t, 90F, AnimationType.Ball);
                                 Invalidates();
                             }, () =>
                             {
                                 ExpandProg = 1F;
                                 ExpandThread = false;
-                                ArrowProg = 0F;
                                 Invalidates();
                             });
                         }
@@ -1155,14 +1159,12 @@ namespace AntdUI
                     else
                     {
                         ExpandProg = 1F;
-                        ArrowProg = value ? 90F : 0F;
                         Invalidates();
                     }
                 }
                 else
                 {
                     ExpandProg = 1F;
-                    ArrowProg = value ? 90F : 0F;
                     Invalidates();
                 }
             }
@@ -1395,7 +1397,6 @@ namespace AntdUI
         }
 
         public int Depth { get; private set; }
-        internal float ArrowProg { get; set; } = 0F;
         internal Tree? PARENT { get; set; }
         public TreeItem? PARENTITEM { get; set; }
 

@@ -640,6 +640,12 @@ namespace AntdUI
         [Description("密码可以复制"), Category("行为"), DefaultValue(false)]
         public bool PasswordCopy { get; set; }
 
+        /// <summary>
+        /// 密码可以粘贴
+        /// </summary>
+        [Description("密码可以粘贴"), Category("行为"), DefaultValue(false)]
+        public bool PasswordPaste { get; set; }
+
         void SetPassWord()
         {
             if (passwordChar != '\0')
@@ -718,7 +724,7 @@ namespace AntdUI
         /// </summary>
         public void Paste()
         {
-            if (IsPassWord && !PasswordCopy) return;
+            if (IsPassWord && !PasswordPaste) return;
             string strText = Clipboard.GetText();
             if (string.IsNullOrEmpty(strText)) return;
             var chars = new List<string>(strText.Length);
