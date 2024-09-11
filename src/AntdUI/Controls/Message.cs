@@ -205,6 +205,11 @@ namespace AntdUI
             public TAlignFrom Align { get; set; } = TAlignFrom.Top;
 
             /// <summary>
+            /// 边距
+            /// </summary>
+            public Size Padding { get; set; } = new Size(12, 9);
+
+            /// <summary>
             /// 弹出在窗口
             /// </summary>
             public bool ShowInWindow { get; set; } = false;
@@ -245,10 +250,12 @@ namespace AntdUI
     internal class MessageFrm : ILayeredFormAnimate
     {
         Message.Config config;
+        int shadow_size = 10;
         public MessageFrm(Message.Config _config)
         {
             config = _config;
             config.Form.SetTopMost(Handle);
+            shadow_size = (int)(shadow_size * Config.Dpi);
             loading = _config.Call != null;
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;
@@ -256,7 +263,7 @@ namespace AntdUI
             Icon = config.Form.Icon;
             Helper.GDI(g =>
             {
-                SetSize(RenderMeasure(g));
+                SetSize(RenderMeasure(g, shadow_size));
             });
             IInit();
         }
@@ -323,7 +330,7 @@ namespace AntdUI
             {
                 Helper.GDI(g =>
                 {
-                    SetSize(RenderMeasure(g));
+                    SetSize(RenderMeasure(g, shadow_size));
                 });
                 SetPositionCenter(oldw);
                 return false;
@@ -339,10 +346,11 @@ namespace AntdUI
 
         #region 渲染
 
+        readonly StringFormat s_f_left = Helper.SF_ALL(lr: StringAlignment.Near);
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
-            var rect_read = rect.PaddingRect(Padding, 10);
+            var rect_read = rect.PaddingRect(Padding, shadow_size);
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
@@ -368,7 +376,7 @@ namespace AntdUI
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
                 using (var brush = new SolidBrush(Style.Db.TextBase))
                 {
-                    g.DrawStr(config.Text, Font, brush, rect_txt, Helper.stringFormatLeft);
+                    g.DrawStr(config.Text, Font, brush, rect_txt, s_f_left);
                 }
             }
             return original_bmp;
@@ -397,35 +405,35 @@ namespace AntdUI
         }
 
         Rectangle rect_icon, rect_loading, rect_txt;
-        Size RenderMeasure(Graphics g)
+        Size RenderMeasure(Graphics g, int shadow)
         {
+            int shadow2 = shadow * 2;
             float dpi = Config.Dpi;
-            var size = g.MeasureString(config.Text, Font);
-            int px = (int)(14 * dpi), sp = (int)(8 * dpi);
-            int width = (int)Math.Ceiling(size.Width), height = (int)Math.Ceiling(size.Height + (12 * dpi) * 2);
-
+            var size = g.MeasureString(config.Text, Font, 10000, s_f_left).Size();
+            int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi),
+                sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
             if (loading)
             {
-                int icon_size = (int)(size.Height * 0.86F);
-                rect_icon = new Rectangle(px, (height - icon_size) / 2, icon_size, icon_size);
-                rect_txt = new Rectangle(rect_icon.Right + sp, 0, width, height);
+                int icon_size = (int)(size.Height * .86F);
+                rect_icon = new Rectangle(shadow + paddingx, shadow + (height - icon_size) / 2, icon_size, icon_size);
+                rect_txt = new Rectangle(rect_icon.Right + sp, shadow, size.Width, height);
 
-                int loading_size = (int)(icon_size * 0.86F);
+                int loading_size = (int)(icon_size * .86F);
                 rect_loading = new Rectangle(rect_icon.X + (rect_icon.Width - loading_size) / 2, rect_icon.Y + (rect_icon.Height - loading_size) / 2, loading_size, loading_size);
 
-                return new Size(width + icon_size + sp + px * 2, height);
+                return new Size(size.Width + icon_size + sp + paddingx * 2 + shadow2, height + shadow2);
             }
             else if (config.Icon == TType.None)
             {
-                rect_txt = new Rectangle(px, 0, width, height);
-                return new Size(width + px * 2, height);
+                rect_txt = new Rectangle(shadow + paddingx, shadow, size.Width, height);
+                return new Size(size.Width + paddingx * 2 + shadow2, height + shadow2);
             }
             else
             {
-                int icon_size = (int)(size.Height * 0.86F);
-                rect_icon = new Rectangle(px, (height - icon_size) / 2, icon_size, icon_size);
-                rect_txt = new Rectangle(rect_icon.Right + sp, 0, width, height);
-                return new Size(width + icon_size + sp + px * 2, height);
+                int icon_size = (int)(size.Height * .86F);
+                rect_icon = new Rectangle(shadow + paddingx, shadow + (height - icon_size) / 2, icon_size, icon_size);
+                rect_txt = new Rectangle(rect_icon.Right + sp, shadow, size.Width, height);
+                return new Size(size.Width + icon_size + sp + paddingx * 2 + shadow2, height + shadow2);
             }
         }
 

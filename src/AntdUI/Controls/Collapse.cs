@@ -260,7 +260,8 @@ namespace AntdUI
                 it.RectText = new Rectangle(rect.X + gap_x + size.Height + gap_y / 2, y + gap_y, rect.Width - (gap_x * 2 - size.Height - gap_y / 2), size.Height);
 
                 Rectangle Rect;
-                if (it.Expand)
+                if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
+                else if (it.Expand)
                 {
                     it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
                     it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
@@ -437,10 +438,7 @@ namespace AntdUI
                             }
                             else if (i == items.Count - 1)
                             {
-                                if (item.Expand)
-                                {
-                                    g.FillRectangle(brush, item.RectTitle);
-                                }
+                                if (item.Expand) g.FillRectangle(brush, item.RectTitle);
                                 else
                                 {
                                     using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
@@ -452,10 +450,7 @@ namespace AntdUI
                             }
                             else
                             {
-                                if (item.Expand)
-                                {
-                                    g.FillRectangle(brush, item.RectTitle);
-                                }
+                                if (item.Expand) g.FillRectangle(brush, item.RectTitle);
                                 else
                                 {
                                     using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
@@ -468,40 +463,45 @@ namespace AntdUI
                         }
                     }
                 }
-
             }
             base.OnPaint(e);
         }
 
         void PaintItem(Graphics g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
-            if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
-            else
-            {
-                var rect_arr = item.RectArrow;
-                int size_arrow = rect_arr.Width / 2;
-                g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
-                g.RotateTransform(-90F);
-                g.DrawLines(pen_arr, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
-                g.ResetTransform();
-            }
+            if (item.ExpandThread) PaintArrow(g, item, pen_arr, -90 + (90F * item.ExpandProg));
+            else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
+            else PaintArrow(g, item, pen_arr, -90F);
 
             g.DrawStr(item.Text, Font, fore, item.RectText, s_l);
         }
+
         void PaintItem(Graphics g, CollapseItem item, SolidBrush fore)
         {
-            if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLines(-1, .56F));
-            else
-            {
-                var rect_arr = item.RectArrow;
-                int size_arrow = rect_arr.Width / 2;
-                g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
-                g.RotateTransform(-90F);
-                g.FillPolygon(fore, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
-                g.ResetTransform();
-            }
+            if (item.ExpandThread) PaintArrow(g, item, fore, -90 + (90F * item.ExpandProg));
+            else if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLines(-1, .56F));
+            else PaintArrow(g, item, fore, -90F);
 
             g.DrawStr(item.Text, Font, fore, item.RectText, s_l);
+        }
+
+        void PaintArrow(Graphics g, CollapseItem item, Pen pen, float rotate)
+        {
+            var rect_arr = item.RectArrow;
+            int size_arrow = rect_arr.Width / 2;
+            g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
+            g.RotateTransform(rotate);
+            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
+            g.ResetTransform();
+        }
+        void PaintArrow(Graphics g, CollapseItem item, SolidBrush brush, float rotate)
+        {
+            var rect_arr = item.RectArrow;
+            int size_arrow = rect_arr.Width / 2;
+            g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
+            g.RotateTransform(rotate);
+            g.FillPolygon(brush, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
+            g.ResetTransform();
         }
 
         #endregion
@@ -623,6 +623,12 @@ namespace AntdUI
 
         #region 属性
 
+        #region 展开
+
+        ITask? ThreadExpand = null;
+        internal float ExpandProg { get; set; }
+        internal bool ExpandThread { get; set; }
+
         bool expand = false;
         /// <summary>
         /// 是否展开
@@ -636,10 +642,50 @@ namespace AntdUI
                 if (expand == value) return;
                 expand = value;
                 if (value) PARENT?.UniqueOne(this);
-                PARENT?.LoadLayout();
-                if (!value) Location = new Point(-Width, -Height);
+                if (PARENT != null && PARENT.IsHandleCreated && Config.Animation)
+                {
+                    Location = new Point(-Width, -Height);
+                    ThreadExpand?.Dispose();
+                    float oldval = -1;
+                    if (ThreadExpand?.Tag is float oldv) oldval = oldv;
+                    ExpandThread = true;
+                    var t = Animation.TotalFrames(10, 200);
+                    if (value)
+                    {
+                        ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
+                        {
+                            ExpandProg = val;
+                            PARENT.LoadLayout();
+                        }, () =>
+                        {
+                            ExpandProg = 1F;
+                            ExpandThread = false;
+                            PARENT.LoadLayout();
+                        });
+                    }
+                    else
+                    {
+                        ThreadExpand = new ITask(true, 10, t, oldval, AnimationType.Ball, (i, val) =>
+                        {
+                            ExpandProg = val;
+                            PARENT.LoadLayout();
+                        }, () =>
+                        {
+                            ExpandProg = 1F;
+                            ExpandThread = false;
+                            PARENT.LoadLayout();
+                        });
+                    }
+                }
+                else
+                {
+                    PARENT?.LoadLayout();
+                    if (!value) Location = new Point(-Width, -Height);
+                }
             }
         }
+
+        #endregion
 
         #endregion
 
@@ -676,6 +722,11 @@ namespace AntdUI
         bool canset = true;
         public void SetSize()
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(SetSize));
+                return;
+            }
             canset = false;
             Size = RectCcntrol.Size;
             Location = RectCcntrol.Location;

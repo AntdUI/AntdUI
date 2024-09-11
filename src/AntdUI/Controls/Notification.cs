@@ -247,6 +247,11 @@ namespace AntdUI
             public Action? OnClose { get; set; }
 
             /// <summary>
+            /// 边距
+            /// </summary>
+            public Size Padding { get; set; } = new Size(24, 20);
+
+            /// <summary>
             /// 弹出在窗口
             /// </summary>
             public bool ShowInWindow { get; set; } = false;
@@ -276,11 +281,13 @@ namespace AntdUI
     {
         Font font_title;
         Notification.Config config;
+        int shadow_size = 10;
         public NotificationFrm(Notification.Config _config)
         {
             config = _config;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Form.SetTopMost(Handle);
+            shadow_size = (int)(shadow_size * Config.Dpi);
             if (config.Font != null) Font = config.Font;
             else if (Config.Font != null) Font = Config.Font;
             else Font = config.Form.Font;
@@ -288,7 +295,7 @@ namespace AntdUI
             Icon = config.Form.Icon;
             Helper.GDI(g =>
             {
-                SetSize(RenderMeasure(g));
+                SetSize(RenderMeasure(g, shadow_size));
             });
             close_button = new ITaskOpacity(this);
             IInit();
@@ -317,12 +324,13 @@ namespace AntdUI
 
         #region 渲染
 
-        private readonly StringFormat stringFormat = Helper.SF_Ellipsis(StringAlignment.Near, StringAlignment.Near);
+
+        readonly StringFormat s_f = Helper.SF_ALL(), s_f_left = Helper.SF_ALL(lr: StringAlignment.Near), s_f_left_left = Helper.SF_Ellipsis(StringAlignment.Near, StringAlignment.Near);
 
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
-            var rect_read = rect.PaddingRect(Padding, 10);
+            var rect_read = rect.PaddingRect(Padding, shadow_size);
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
@@ -363,15 +371,15 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(Style.Db.TextBase))
                 {
-                    g.DrawStr(config.Title, font_title, brush, rect_title, Helper.stringFormatLeft);
-                    g.DrawStr(config.Text, Font, brush, rect_txt, stringFormat);
+                    g.DrawStr(config.Title, font_title, brush, rect_title, s_f_left);
+                    g.DrawStr(config.Text, Font, brush, rect_txt, s_f_left_left);
                 }
                 if (config.Link != null)
                 {
                     using (var brush = new SolidBrush(Style.Db.Primary))
                     using (var pen = new Pen(Style.Db.Primary, 1F * Config.Dpi))
                     {
-                        g.DrawStr(config.Link.Text, Font, brush, rect_link_text, Helper.stringFormatLeft);
+                        g.DrawStr(config.Link.Text, Font, brush, rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
                     }
                 }
@@ -403,65 +411,65 @@ namespace AntdUI
 
         Rectangle rect_icon, rect_title, rect_txt, rect_close;
         Rectangle rect_link_text, rect_links;
-        Size RenderMeasure(Graphics g)
+        Size RenderMeasure(Graphics g, int shadow)
         {
+            int shadow2 = shadow * 2;
             float dpi = Config.Dpi;
 
-            var size_title = g.MeasureString(config.Title, font_title);
-            int px = (int)(24 * dpi), py = (int)(20 * dpi), t_max_width = (int)Math.Ceiling(360 * dpi);
-            int sp = (int)(8 * dpi), close_size = (int)Math.Ceiling(22F * dpi), icon_size = (int)Math.Ceiling(size_title.Height * 1.14F);
+            var size_title = g.MeasureString(config.Title, font_title, 10000, s_f_left).Size();
+            int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), t_max_width = (int)Math.Ceiling(360 * dpi);
+            int sp = (int)(8 * dpi), close_size = (int)Math.Ceiling(22F * dpi);
             if (size_title.Width > t_max_width)
             {
-                t_max_width = (int)Math.Ceiling(size_title.Width);
+                t_max_width = size_title.Width;
                 if (config.CloseIcon) t_max_width += close_size + sp;
             }
-            var size_desc = g.MeasureString(config.Text, Font, t_max_width);
+            var size_desc = g.MeasureString(config.Text, Font, t_max_width, s_f_left).Size();
             float width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
             int max_width = (int)Math.Ceiling(width_desc > width_title ? width_desc : width_title);
             if (config.Icon == TType.None)
             {
-                int titleH = (int)Math.Ceiling(size_title.Height), descH = (int)Math.Ceiling(size_desc.Height); ;
+                rect_title = new Rectangle(shadow + paddingx, shadow + paddingy, max_width, size_title.Height);
 
-                rect_title = new Rectangle(px, py, max_width, titleH);
+                int h = size_title.Height;
 
                 if (config.CloseIcon) rect_close = new Rectangle(rect_title.Right - close_size, rect_title.Y, close_size, close_size);
 
-                int desc_y = rect_title.Bottom + sp;
+                rect_txt = new Rectangle(shadow + paddingx, rect_title.Bottom + sp, rect_title.Width, size_desc.Height);
 
-                rect_txt = new Rectangle(px, desc_y, rect_title.Width, descH);
-                int temp_height = rect_txt.Bottom;
+                if (size_desc.Height > 0) h += size_desc.Height + sp;
+
                 if (config.Link != null)
                 {
-                    var size_link = g.MeasureString(config.Link.Text, Font);
-                    int link_w = (int)Math.Ceiling(size_link.Width), link_h = (int)Math.Ceiling(size_link.Height);
-                    rect_link_text = new Rectangle(rect_title.X, temp_height + sp, link_w, link_h);
+                    var size_link = g.MeasureString(config.Link.Text, Font, 10000, s_f).Size();
+                    rect_link_text = new Rectangle(rect_title.X, rect_txt.Bottom + sp, size_link.Width, size_link.Height);
                     rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
-                    temp_height = rect_link_text.Bottom;
+                    h += size_link.Height + sp;
                 }
-                return new Size(rect_title.Right + px, temp_height + py);
+                return new Size(max_width + paddingx * 2 + shadow2, h + paddingy * 2 + shadow2);
             }
             else
             {
-                int descH = (int)Math.Ceiling(size_desc.Height);
+                int icon_size = (int)Math.Ceiling(size_title.Height * 1.14F), icon_sp = icon_size / 2;
 
-                rect_icon = new Rectangle(px, px, icon_size, icon_size);
-                rect_title = new Rectangle(rect_icon.X + rect_icon.Width + icon_size / 2, px, max_width, icon_size);
+                rect_icon = new Rectangle(shadow + paddingx, shadow + paddingy, icon_size, icon_size);
+                rect_title = new Rectangle(rect_icon.X + rect_icon.Width + icon_sp, shadow + paddingy, max_width, icon_size);
 
-                var desc_y = rect_title.Bottom + sp;
-                rect_txt = new Rectangle(rect_title.X, desc_y, rect_title.Width, descH);
+                int h = icon_size;
+
+                rect_txt = new Rectangle(rect_title.X, rect_title.Bottom + sp, rect_title.Width, size_desc.Height);
                 if (config.CloseIcon) rect_close = new Rectangle(rect_title.Right - close_size, rect_title.Y, close_size, close_size);
 
-                int temp_height = rect_txt.Bottom;
+                if (size_desc.Height > 0) h += size_desc.Height + sp;
+
                 if (config.Link != null)
                 {
-                    var size_link = g.MeasureString(config.Link.Text, Font);
-                    int link_w = (int)Math.Ceiling(size_link.Width), link_h = (int)Math.Ceiling(size_link.Height);
-                    rect_link_text = new Rectangle(rect_title.X, temp_height + sp, link_w, link_h);
+                    var size_link = g.MeasureString(config.Link.Text, Font, 10000, s_f).Size();
+                    rect_link_text = new Rectangle(rect_title.X, rect_txt.Bottom + sp, size_link.Width, size_link.Height);
                     rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
-                    temp_height = rect_link_text.Bottom;
+                    h += size_link.Height + sp;
                 }
-
-                return new Size(rect_title.Right + px, temp_height + py);
+                return new Size(max_width + icon_size + icon_sp + paddingx * 2 + shadow2, h + paddingy * 2 + shadow2);
             }
         }
 

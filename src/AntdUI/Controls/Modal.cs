@@ -325,11 +325,6 @@ namespace AntdUI
             public int Width { get; set; } = 416;
 
             /// <summary>
-            /// 边距
-            /// </summary>
-            public Size Padding { get; set; } = new Size(24, 20);
-
-            /// <summary>
             /// 字体
             /// </summary>
             public Font? Font { get; set; }
@@ -368,6 +363,11 @@ namespace AntdUI
             /// 按钮栏高度
             /// </summary>
             public int BtnHeight { get; set; } = 38;
+
+            /// <summary>
+            /// 边距
+            /// </summary>
+            public Size Padding { get; set; } = new Size(24, 20);
 
             string? canceltext = Localization.Provider?.GetLocalizedString("Cancel") ?? "取消";
             /// <summary>
