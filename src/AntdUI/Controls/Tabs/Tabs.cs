@@ -229,25 +229,15 @@ namespace AntdUI
             }
         }
 
-        internal Dictionary<TabPage, Size> HandItemSize(Dictionary<TabPage, Size> rect_dir)
+        internal Dictionary<TabPage, Size> HandItemSize(Dictionary<TabPage, Size> rect_dir, ref int sizewh)
         {
             if (_itemSize.HasValue)
             {
                 int Size = (int)Math.Ceiling(_itemSize.Value * Config.Dpi);
-                switch (alignment)
-                {
-                    case TabAlignment.Left:
-                    case TabAlignment.Right:
-                        var rect_dirtmp = new Dictionary<TabPage, Size>(rect_dir.Count);
-                        foreach (var it in rect_dir) rect_dirtmp.Add(it.Key, new Size(it.Value.Width, Size));
-                        return rect_dirtmp;
-                    case TabAlignment.Top:
-                    case TabAlignment.Bottom:
-                    default:
-                        var rect_dirtmph = new Dictionary<TabPage, Size>(rect_dir.Count);
-                        foreach (var it in rect_dir) rect_dirtmph.Add(it.Key, new Size(Size, it.Value.Height));
-                        return rect_dirtmph;
-                }
+                var rect_dirtmp = new Dictionary<TabPage, Size>(rect_dir.Count);
+                foreach (var it in rect_dir) rect_dirtmp.Add(it.Key, new Size(Size, it.Value.Height));
+                if (alignment == TabAlignment.Left || alignment == TabAlignment.Right) sizewh = Size;
+                return rect_dirtmp;
             }
             return rect_dir;
         }
