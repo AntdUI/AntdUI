@@ -144,7 +144,7 @@ namespace AntdUI.Svg
                     else if (Math.Round(dy, 4) == 0)
                     {
                         points[0] = new PointF(midPoint.X, midPoint.Y - dx / 2 * bounds.Height / bounds.Width);
-                        points[1] = new PointF(midPoint.X, midPoint.Y + dx / 2 * bounds.Height / bounds.Width); ;
+                        points[1] = new PointF(midPoint.X, midPoint.Y + dx / 2 * bounds.Height / bounds.Width);
                     }
                     else
                     {

@@ -104,26 +104,7 @@ namespace AntdUI
         /// Notification 通知提醒框
         /// </summary>
         /// <param name="config">配置</param>
-        public static void open(this Config config)
-        {
-            if (config.Form.IsHandleCreated)
-            {
-                try
-                {
-                    if (config.Form.InvokeRequired)
-                    {
-                        config.Form.BeginInvoke(new Action(() =>
-                        {
-                            open(config);
-                        }));
-                        return;
-                    }
-                    if (config.TopMost) new NotificationFrm(config).Show();
-                    else new NotificationFrm(config).Show(config.Form);
-                }
-                catch { }
-            }
-        }
+        public static void open(this Config config) => MsgQueue.Add(config);
 
         /// <summary>
         /// 关闭全部
@@ -138,10 +119,26 @@ namespace AntdUI
                     if (item is NotificationFrm notification) close_list.Add(notification);
                 }
             }
-            if (close_list.Count > 0)
+            if (close_list.Count == 0) return;
+            foreach (var it in close_list) it.CloseMe(false);
+        }
+
+        /// <summary>
+        /// 关闭指定id
+        /// </summary>
+        public static void close_id(string id)
+        {
+            MsgQueue.volley.Add("N" + id);
+            var close_list = new System.Collections.Generic.List<NotificationFrm>();
+            foreach (var it in ILayeredFormAnimate.list)
             {
-                foreach (var item in close_list) item.IClose();
+                foreach (var item in it.Value)
+                {
+                    if (item is NotificationFrm notification && notification.config.ID == id) close_list.Add(notification);
+                }
             }
+            if (close_list.Count == 0) return;
+            foreach (var it in close_list) it.CloseMe(false);
         }
 
         /// <summary>
@@ -176,6 +173,12 @@ namespace AntdUI
                 Icon = _icon;
                 if (autoClose.HasValue) AutoClose = autoClose.Value;
             }
+
+            /// <summary>
+            /// ID
+            /// </summary>
+            public string? ID { get; set; }
+
             /// <summary>
             /// 所属窗口
             /// </summary>
@@ -280,7 +283,7 @@ namespace AntdUI
     internal class NotificationFrm : ILayeredFormAnimate
     {
         Font font_title;
-        Notification.Config config;
+        internal Notification.Config config;
         int shadow_size = 10;
         public NotificationFrm(Notification.Config _config)
         {
@@ -298,7 +301,6 @@ namespace AntdUI
                 SetSize(RenderMeasure(g, shadow_size));
             });
             close_button = new ITaskOpacity(this);
-            IInit();
         }
         protected override void Dispose(bool disposing)
         {
@@ -308,22 +310,24 @@ namespace AntdUI
             base.Dispose(disposing);
         }
         internal override TAlignFrom Align => config.Align;
+        internal override bool ActiveAnimation => false;
 
-        public void IInit()
+        public bool IInit()
         {
-            SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByNotification);
+            if (SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByNotification)) return true;
             if (config.AutoClose > 0)
             {
                 ITask.Run(() =>
                 {
                     Thread.Sleep(config.AutoClose * 1000);
-                    IClose();
+                    CloseMe(true);
                 });
             }
+            PlayAnimation();
+            return false;
         }
 
         #region 渲染
-
 
         readonly StringFormat s_f = Helper.SF_ALL(), s_f_left = Helper.SF_ALL(lr: StringAlignment.Near), s_f_left_left = Helper.SF_Ellipsis(StringAlignment.Near, StringAlignment.Near);
 
@@ -498,7 +502,7 @@ namespace AntdUI
         protected override void OnMouseClick(MouseEventArgs e)
         {
             if (config.Link != null && rect_link_text.Contains(e.Location)) config.Link.Call();
-            IClose();
+            CloseMe(false);
             base.OnMouseClick(e);
         }
 

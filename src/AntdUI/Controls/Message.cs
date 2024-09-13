@@ -99,25 +99,7 @@ namespace AntdUI
         /// Message 全局提示
         /// </summary>
         /// <param name="config">配置</param>
-        public static void open(this Config config)
-        {
-            if (config.Form.IsHandleCreated)
-            {
-                try
-                {
-                    if (config.Form.InvokeRequired)
-                    {
-                        config.Form.BeginInvoke(new Action(() =>
-                        {
-                            open(config);
-                        }));
-                        return;
-                    }
-                    new MessageFrm(config).Show(config.Form);
-                }
-                catch { }
-            }
-        }
+        public static void open(this Config config) => MsgQueue.Add(config);
 
         /// <summary>
         /// 关闭全部
@@ -132,10 +114,26 @@ namespace AntdUI
                     if (item is MessageFrm message) close_list.Add(message);
                 }
             }
-            if (close_list.Count > 0)
+            if (close_list.Count == 0) return;
+            foreach (var it in close_list) it.CloseMe(false);
+        }
+
+        /// <summary>
+        /// 关闭指定id
+        /// </summary>
+        public static void close_id(string id)
+        {
+            MsgQueue.volley.Add("M" + id);
+            var close_list = new System.Collections.Generic.List<MessageFrm>();
+            foreach (var it in ILayeredFormAnimate.list)
             {
-                foreach (var item in close_list) item.IClose();
+                foreach (var item in it.Value)
+                {
+                    if (item is MessageFrm message && message.config.ID == id) close_list.Add(message);
+                }
             }
+            if (close_list.Count == 0) return;
+            foreach (var it in close_list) it.CloseMe(false);
         }
 
         /// <summary>
@@ -164,6 +162,12 @@ namespace AntdUI
                 Icon = _icon;
                 if (autoClose.HasValue) AutoClose = autoClose.Value;
             }
+
+            /// <summary>
+            /// ID
+            /// </summary>
+            public string? ID { get; set; }
+
             /// <summary>
             /// 所属窗口
             /// </summary>
@@ -249,7 +253,7 @@ namespace AntdUI
 
     internal class MessageFrm : ILayeredFormAnimate
     {
-        Message.Config config;
+        internal Message.Config config;
         int shadow_size = 10;
         public MessageFrm(Message.Config _config)
         {
@@ -265,16 +269,18 @@ namespace AntdUI
             {
                 SetSize(RenderMeasure(g, shadow_size));
             });
-            IInit();
         }
+
         internal override TAlignFrom Align => config.Align;
+        internal override bool ActiveAnimation => false;
 
         bool loading = false, loadingend = true;
         int AnimationLoadingValue = 0;
         ITask? ThreadLoading = null;
-        public void IInit()
+        public bool IInit()
         {
-            SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByMessage);
+            if (SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByMessage)) return true;
+
             if (loading)
             {
                 ThreadLoading = new ITask(this, i =>
@@ -316,11 +322,13 @@ namespace AntdUI
                     ITask.Run(() =>
                     {
                         Thread.Sleep(config.AutoClose * 1000);
-                        IClose();
+                        CloseMe(true);
                     });
                 }
-                else IClose();
+                else CloseMe(true);
             });
+            PlayAnimation();
+            return false;
         }
 
         bool IRefresh()
@@ -332,6 +340,7 @@ namespace AntdUI
                 {
                     SetSize(RenderMeasure(g, shadow_size));
                 });
+                DisposeAnimation();
                 SetPositionCenter(oldw);
                 return false;
             }
@@ -340,7 +349,7 @@ namespace AntdUI
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (loadingend) IClose();
+            if (loadingend) CloseMe(false);
             base.OnMouseClick(e);
         }
 

@@ -430,7 +430,7 @@ namespace AntdUI
                         break;
                 }
 
-                return owner.HandItemSize(rect_dir);
+                return owner.HandItemSize(rect_dir, ref sizewh);
             }
 
             void PaintText(Graphics g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
@@ -1406,7 +1406,7 @@ namespace AntdUI
                         break;
                 }
 
-                return owner.HandItemSize(rect_dir);
+                return owner.HandItemSize(rect_dir, ref sizewh);
             }
 
             void PaintText(Graphics g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
@@ -2437,7 +2437,7 @@ namespace AntdUI
                         break;
                 }
 
-                return owner.HandItemSize(rect_dir);
+                return owner.HandItemSize(rect_dir, ref sizewh);
             }
 
             void PaintText(Graphics g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush, bool closshow = false)

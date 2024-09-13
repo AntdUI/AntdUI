@@ -38,7 +38,7 @@ namespace AntdUI
         {
             bool ok = true;
             IsRun = true;
-            Run(() =>
+            task = Run(() =>
             {
                 int val = 0;
                 while (true)
@@ -66,7 +66,7 @@ namespace AntdUI
         {
             bool ok = true;
             IsRun = true;
-            Run(() =>
+            task = Run(() =>
             {
                 float val = 0;
                 while (true)
@@ -95,7 +95,7 @@ namespace AntdUI
         {
             bool ok = true;
             IsRun = true;
-            Run(() =>
+            task = Run(() =>
             {
                 while (true)
                 {
@@ -120,7 +120,7 @@ namespace AntdUI
         {
             IsRun = true;
             bool ok = true;
-            Run(() =>
+            task = Run(() =>
             {
                 if (sleep > 0) Thread.Sleep(sleep);
                 for (int i = 0; i < totalFrames; i++)
@@ -146,7 +146,7 @@ namespace AntdUI
         {
             IsRun = true;
             bool ok = true;
-            Run(() =>
+            task = Run(() =>
             {
                 double init_val = 1D;
                 if (_is)
@@ -203,6 +203,10 @@ namespace AntdUI
                 }
             }));
         }
+
+        Task task;
+        public void Wait() => task.Wait();
+
         public object? Tag { get; set; } = null;
 
         public void Cancel()

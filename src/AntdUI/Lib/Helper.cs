@@ -2116,6 +2116,20 @@ namespace AntdUI
             return false;
         }
 
+        public static bool DateExceed(DateTime date, DateTime? min, DateTime? max)
+        {
+            if (min.HasValue && min.Value >= date) return false;
+            if (max.HasValue && max.Value <= date) return false;
+            return true;
+        }
+
+        public static bool DateExceedRelax(DateTime date, DateTime? min, DateTime? max)
+        {
+            if (min.HasValue && min.Value > date) return false;
+            if (max.HasValue && max.Value < date) return false;
+            return true;
+        }
+
         #region 剪贴板
 
         public static bool ClipboardSetText(this Control control, string? text)

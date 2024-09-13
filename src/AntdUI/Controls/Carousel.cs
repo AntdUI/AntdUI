@@ -84,11 +84,23 @@ namespace AntdUI
         [Description("面板指示点边距"), Category("面板"), DefaultValue(12)]
         public int DotMargin { get; set; } = 12;
 
+        TAlignMini dotPosition = TAlignMini.None;
+        bool dotPV = false;
         /// <summary>
         /// 面板指示点位置
         /// </summary>
         [Description("面板指示点位置"), Category("面板"), DefaultValue(TAlignMini.None)]
-        public TAlignMini DotPosition { get; set; } = TAlignMini.None;
+        public TAlignMini DotPosition
+        {
+            get => dotPosition;
+            set
+            {
+                if (dotPosition == value) return;
+                dotPosition = value;
+                dotPV = (value == TAlignMini.Left || value == TAlignMini.Right);
+                Invalidate();
+            }
+        }
 
         int radius = 0;
         /// <summary>
@@ -187,47 +199,115 @@ namespace AntdUI
 
         void SetSelectIndex(int value, bool auto = false)
         {
-            int width = ClientRectangle.Width - Padding.Horizontal;
-            if (items != null && IsHandleCreated && Config.Animation)
+            if (dotPV)
             {
-                ThreadChange?.Dispose();
-                AnimationChangeAuto = false;
-                float end = value * width;
-                int len = items.Count;
-                bool left = value * width > AnimationChangeValue;
-                AnimationChangeMax = len * width;
-                AnimationChangeMaxW = AnimationChangeMax - width;
-                AnimationChange = true;
-                var old = selectIndex;
-                selectIndex = value;
-                SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
-                var speed = Math.Abs(end - AnimationChangeValue) / 50F;
-                if (speed < 8) speed = 8F;
-                if (left)
+                int height = ClientRectangle.Height - Padding.Vertical;
+                if (items != null && IsHandleCreated && Config.Animation)
                 {
-                    float modera = end - width * 0.05F;
-                    ThreadChange = new ITask(this, () =>
+                    ThreadChange?.Dispose();
+                    AnimationChangeAuto = false;
+                    float end = value * height;
+                    int len = items.Count;
+                    bool left = value * height > AnimationChangeValue;
+                    AnimationChangeMax = len * height;
+                    AnimationChangeMaxWH = AnimationChangeMax - height;
+                    AnimationChange = true;
+                    var old = selectIndex;
+                    selectIndex = value;
+                    SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
+                    var speed = Math.Abs(end - AnimationChangeValue) / 50F;
+                    if (speed < 8) speed = 8F;
+                    if (left)
                     {
-                        AnimationChangeValue = AnimationChangeValue.Calculate(Speed(speed, modera));
-                        if (AnimationChangeValue > end)
+                        float modera = end - height * 0.05F;
+                        ThreadChange = new ITask(this, () =>
                         {
-                            AnimationChangeValue = end;
-                            return false;
-                        }
-                        Invalidate();
-                        return true;
-                    }, 10, () =>
+                            AnimationChangeValue = AnimationChangeValue.Calculate(Speed(speed, modera));
+                            if (AnimationChangeValue > end)
+                            {
+                                AnimationChangeValue = end;
+                                return false;
+                            }
+                            Invalidate();
+                            return true;
+                        }, 10, () =>
+                        {
+                            AnimationChange = false;
+                            Invalidate();
+                        });
+                    }
+                    else
                     {
-                        AnimationChange = false;
-                        Invalidate();
-                    });
+                        if (auto && value == 0 && len > 2 && old == len - 1)
+                        {
+                            AnimationChangeAuto = true;
+                            end = len * height;
+                            float modera = end - height * 0.05F;
+                            ThreadChange = new ITask(this, () =>
+                            {
+                                AnimationChangeValue = AnimationChangeValue.Calculate(Speed(speed, modera));
+                                if (AnimationChangeValue > end)
+                                {
+                                    AnimationChangeValue = end;
+                                    return false;
+                                }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationChange = false;
+                                AnimationChangeValue = 0;
+                                Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            float modera = end + height * 0.05F;
+                            ThreadChange = new ITask(this, () =>
+                            {
+                                AnimationChangeValue -= Speed2(speed, modera);
+                                if (AnimationChangeValue <= end)
+                                {
+                                    AnimationChangeValue = end;
+                                    return false;
+                                }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationChange = false;
+                                Invalidate();
+                            });
+                        }
+                    }
                 }
                 else
                 {
-                    if (auto && value == 0 && len > 2 && old == len - 1)
+                    selectIndex = value;
+                    AnimationChangeValue = value * height;
+                    Invalidate();
+                }
+            }
+            else
+            {
+                int width = ClientRectangle.Width - Padding.Horizontal;
+                if (items != null && IsHandleCreated && Config.Animation)
+                {
+                    ThreadChange?.Dispose();
+                    AnimationChangeAuto = false;
+                    float end = value * width;
+                    int len = items.Count;
+                    bool left = value * width > AnimationChangeValue;
+                    AnimationChangeMax = len * width;
+                    AnimationChangeMaxWH = AnimationChangeMax - width;
+                    AnimationChange = true;
+                    var old = selectIndex;
+                    selectIndex = value;
+                    SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
+                    var speed = Math.Abs(end - AnimationChangeValue) / 50F;
+                    if (speed < 8) speed = 8F;
+                    if (left)
                     {
-                        AnimationChangeAuto = true;
-                        end = len * width;
                         float modera = end - width * 0.05F;
                         ThreadChange = new ITask(this, () =>
                         {
@@ -242,36 +322,60 @@ namespace AntdUI
                         }, 10, () =>
                         {
                             AnimationChange = false;
-                            AnimationChangeValue = 0;
                             Invalidate();
                         });
                     }
                     else
                     {
-                        float modera = end + width * 0.05F;
-                        ThreadChange = new ITask(this, () =>
+                        if (auto && value == 0 && len > 2 && old == len - 1)
                         {
-                            AnimationChangeValue -= Speed2(speed, modera);
-                            if (AnimationChangeValue <= end)
+                            AnimationChangeAuto = true;
+                            end = len * width;
+                            float modera = end - width * 0.05F;
+                            ThreadChange = new ITask(this, () =>
                             {
-                                AnimationChangeValue = end;
-                                return false;
-                            }
-                            Invalidate();
-                            return true;
-                        }, 10, () =>
+                                AnimationChangeValue = AnimationChangeValue.Calculate(Speed(speed, modera));
+                                if (AnimationChangeValue > end)
+                                {
+                                    AnimationChangeValue = end;
+                                    return false;
+                                }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationChange = false;
+                                AnimationChangeValue = 0;
+                                Invalidate();
+                            });
+                        }
+                        else
                         {
-                            AnimationChange = false;
-                            Invalidate();
-                        });
+                            float modera = end + width * 0.05F;
+                            ThreadChange = new ITask(this, () =>
+                            {
+                                AnimationChangeValue -= Speed2(speed, modera);
+                                if (AnimationChangeValue <= end)
+                                {
+                                    AnimationChangeValue = end;
+                                    return false;
+                                }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationChange = false;
+                                Invalidate();
+                            });
+                        }
                     }
                 }
-            }
-            else
-            {
-                selectIndex = value;
-                AnimationChangeValue = value * width;
-                Invalidate();
+                else
+                {
+                    selectIndex = value;
+                    AnimationChangeValue = value * width;
+                    Invalidate();
+                }
             }
         }
 
@@ -291,14 +395,22 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            int width = ClientRectangle.Width;
-            AnimationChangeValue = selectIndex * width;
+            if (dotPV)
+            {
+                int height = ClientRectangle.Height;
+                AnimationChangeValue = selectIndex * height;
+            }
+            else
+            {
+                int width = ClientRectangle.Width;
+                AnimationChangeValue = selectIndex * width;
+            }
             base.OnHandleCreated(e);
         }
 
         bool AnimationChangeAuto = false;
         int AnimationChangeMax = 0;
-        int AnimationChangeMaxW = 0;
+        int AnimationChangeMaxWH = 0;
         float AnimationChangeValue = 0F;
         bool AnimationChange = false;
         protected override void Dispose(bool disposing)
@@ -406,7 +518,8 @@ namespace AntdUI
                         bmpcode = select_range.i;
                         bmp = PaintBmp(items, select_range, rect, _radius);
                     }
-                    g.DrawImage(bmp, (int)(rect.X - AnimationChangeValue), rect.Y, bmp.Width, bmp.Height);
+                    if (dotPV) g.DrawImage(bmp, rect.X, (int)(rect.Y - AnimationChangeValue), bmp.Width, bmp.Height);
+                    else g.DrawImage(bmp, (int)(rect.X - AnimationChangeValue), rect.Y, bmp.Width, bmp.Height);
                 }
                 else g.PaintImg(rect, image, imageFit, _radius, round);
             }
@@ -449,22 +562,46 @@ namespace AntdUI
         {
             bmpcode = select_range.i;
             Bitmap bmp;
-            if (AnimationChangeAuto)
+            if (dotPV)
             {
-                bmp = new Bitmap(AnimationChangeMax + rect.Width, rect.Height);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                if (AnimationChangeAuto)
                 {
-                    PaintBmp(items, select_range, g2, radius);
-                    var bmo = items[0].Img;
-                    if (bmo != null) g2.PaintImg(new RectangleF(AnimationChangeMax, 0, rect.Width, rect.Height), bmo, imageFit, radius, round);
+                    bmp = new Bitmap(rect.Width, AnimationChangeMax + rect.Height);
+                    using (var g2 = Graphics.FromImage(bmp).High())
+                    {
+                        PaintBmp(items, select_range, g2, radius);
+                        var bmo = items[0].Img;
+                        if (bmo != null) g2.PaintImg(new RectangleF(AnimationChangeMax, 0, rect.Width, rect.Height), bmo, imageFit, radius, round);
+                    }
+                }
+                else
+                {
+                    bmp = new Bitmap(rect.Width, AnimationChangeMax);
+                    using (var g2 = Graphics.FromImage(bmp).High())
+                    {
+                        PaintBmp(items, select_range, g2, radius);
+                    }
                 }
             }
             else
             {
-                bmp = new Bitmap(AnimationChangeMax, rect.Height);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                if (AnimationChangeAuto)
                 {
-                    PaintBmp(items, select_range, g2, radius);
+                    bmp = new Bitmap(AnimationChangeMax + rect.Width, rect.Height);
+                    using (var g2 = Graphics.FromImage(bmp).High())
+                    {
+                        PaintBmp(items, select_range, g2, radius);
+                        var bmo = items[0].Img;
+                        if (bmo != null) g2.PaintImg(new RectangleF(AnimationChangeMax, 0, rect.Width, rect.Height), bmo, imageFit, radius, round);
+                    }
+                }
+                else
+                {
+                    bmp = new Bitmap(AnimationChangeMax, rect.Height);
+                    using (var g2 = Graphics.FromImage(bmp).High())
+                    {
+                        PaintBmp(items, select_range, g2, radius);
+                    }
                 }
             }
             return bmp;
@@ -474,10 +611,7 @@ namespace AntdUI
             foreach (var it in select_range.list)
             {
                 var bmo = items[it.i].Img;
-                if (bmo != null)
-                {
-                    g2.PaintImg(it.rect, bmo, imageFit, radius, round);
-                }
+                if (bmo != null) g2.PaintImg(it.rect, bmo, imageFit, radius, round);
             }
         }
 
@@ -493,43 +627,85 @@ namespace AntdUI
             };
             var indes = new List<int>(len);
             int temp = 0;
-            for (int i = 0; i < len; i++)
+            if (dotPV)
             {
-                var rect1 = new RectangleF(temp, 0, rect.Width, rect.Height);
-                if (rect1.Contains(AnimationChangeValue, 0))
+                for (int i = 0; i < len; i++)
                 {
-                    indes.Add(i);
-                    r.list.Add(new CarouselRect
+                    var rect1 = new RectangleF(0, temp, rect.Width, rect.Height);
+                    if (rect1.Contains(0, AnimationChangeValue))
                     {
-                        i = i,
-                        rect = rect1,
-                    });
-                }
-                if (i < len - 1)
-                {
-                    var rect2 = new RectangleF(temp + rect.Width, 0, rect.Width, rect.Height);
-                    if (rect2.Contains(AnimationChangeValue + rect.Width, 0))
-                    {
-                        indes.Add(i + 1);
+                        indes.Add(i);
                         r.list.Add(new CarouselRect
                         {
-                            i = i + 1,
-                            rect = rect2,
+                            i = i,
+                            rect = rect1,
                         });
                     }
+                    if (i < len - 1)
+                    {
+                        var rect2 = new RectangleF(0, temp + rect.Height, rect.Width, rect.Height);
+                        if (rect2.Contains(0, AnimationChangeValue + rect.Height))
+                        {
+                            indes.Add(i + 1);
+                            r.list.Add(new CarouselRect
+                            {
+                                i = i + 1,
+                                rect = rect2,
+                            });
+                        }
+                    }
+                    temp += rect.Height;
+                    if (temp > AnimationChangeValue + rect.Height) break;
                 }
-                temp += rect.Width;
-                if (temp > AnimationChangeValue + rect.Width)
-                    break;
-            }
-            if (r.list.Count == 0 && AnimationChangeValue < 0)
-            {
-                indes.Add(0);
-                r.list.Add(new CarouselRect
+                if (r.list.Count == 0 && AnimationChangeValue < 0)
                 {
-                    i = 0,
-                    rect = new RectangleF(0, 0, rect.Width, rect.Height),
-                });
+                    indes.Add(0);
+                    r.list.Add(new CarouselRect
+                    {
+                        i = 0,
+                        rect = new RectangleF(0, 0, rect.Width, rect.Height),
+                    });
+                }
+            }
+            else
+            {
+                for (int i = 0; i < len; i++)
+                {
+                    var rect1 = new RectangleF(temp, 0, rect.Width, rect.Height);
+                    if (rect1.Contains(AnimationChangeValue, 0))
+                    {
+                        indes.Add(i);
+                        r.list.Add(new CarouselRect
+                        {
+                            i = i,
+                            rect = rect1,
+                        });
+                    }
+                    if (i < len - 1)
+                    {
+                        var rect2 = new RectangleF(temp + rect.Width, 0, rect.Width, rect.Height);
+                        if (rect2.Contains(AnimationChangeValue + rect.Width, 0))
+                        {
+                            indes.Add(i + 1);
+                            r.list.Add(new CarouselRect
+                            {
+                                i = i + 1,
+                                rect = rect2,
+                            });
+                        }
+                    }
+                    temp += rect.Width;
+                    if (temp > AnimationChangeValue + rect.Width) break;
+                }
+                if (r.list.Count == 0 && AnimationChangeValue < 0)
+                {
+                    indes.Add(0);
+                    r.list.Add(new CarouselRect
+                    {
+                        i = 0,
+                        rect = new RectangleF(0, 0, rect.Width, rect.Height),
+                    });
+                }
             }
             r.i = string.Join("", indes);
             return r;
@@ -538,22 +714,43 @@ namespace AntdUI
         {
             var r = new List<CarouselRect>(len);
             int temp = 0;
-            for (int i = 0; i < len; i++)
+            if (dotPV)
             {
-                int cen = (temp + rect.Width / 2);
-                if (AnimationChangeValue > cen - rect.Width && AnimationChangeValue < cen + rect.Width)
+                for (int i = 0; i < len; i++)
                 {
-                    var prog = AnimationChangeValue / cen;
-                    r.Add(new CarouselRect
+                    int cen = (temp + rect.Height / 2);
+                    if (AnimationChangeValue > cen - rect.Height && AnimationChangeValue < cen + rect.Height)
                     {
-                        p = prog,
-                        i = i,
-                        rect = new RectangleF(temp, 0, rect.Width, rect.Height),
-                    });
+                        var prog = AnimationChangeValue / cen;
+                        r.Add(new CarouselRect
+                        {
+                            p = prog,
+                            i = i,
+                            rect = new RectangleF(0, temp, rect.Width, rect.Height),
+                        });
+                    }
+                    temp += rect.Height;
+                    if (temp > AnimationChangeValue + rect.Height) break;
                 }
-                temp += rect.Width;
-                if (temp > AnimationChangeValue + rect.Width)
-                    break;
+            }
+            else
+            {
+                for (int i = 0; i < len; i++)
+                {
+                    int cen = (temp + rect.Width / 2);
+                    if (AnimationChangeValue > cen - rect.Width && AnimationChangeValue < cen + rect.Width)
+                    {
+                        var prog = AnimationChangeValue / cen;
+                        r.Add(new CarouselRect
+                        {
+                            p = prog,
+                            i = i,
+                            rect = new RectangleF(temp, 0, rect.Width, rect.Height),
+                        });
+                    }
+                    temp += rect.Width;
+                    if (temp > AnimationChangeValue + rect.Width) break;
+                }
             }
             if (r.Count > 0)
             {
@@ -598,7 +795,7 @@ namespace AntdUI
         }
 
         bool down = false;
-        float x = 0;
+        float tvaluexy = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && items != null)
@@ -616,11 +813,22 @@ namespace AntdUI
                 }
                 if (Touch)
                 {
-                    x = AnimationChangeValue + e.Location.X;
-                    int width = ClientRectangle.Width;
-                    int len = items.Count;
-                    AnimationChangeMax = len * width;
-                    AnimationChangeMaxW = AnimationChangeMax - width;
+                    if (dotPV)
+                    {
+                        tvaluexy = AnimationChangeValue + e.Location.Y;
+                        int height = ClientRectangle.Height;
+                        int len = items.Count;
+                        AnimationChangeMax = len * height;
+                        AnimationChangeMaxWH = AnimationChangeMax - height;
+                    }
+                    else
+                    {
+                        tvaluexy = AnimationChangeValue + e.Location.X;
+                        int width = ClientRectangle.Width;
+                        int len = items.Count;
+                        AnimationChangeMax = len * width;
+                        AnimationChangeMaxWH = AnimationChangeMax - width;
+                    }
                     down = true;
                 }
             }
@@ -631,11 +839,11 @@ namespace AntdUI
         {
             if (down)
             {
-                var val = x - e.Location.X;
+                var val = tvaluexy - (dotPV ? e.Location.Y : e.Location.X);
                 if (!TouchOut)
                 {
                     if (val < 0) val = 0;
-                    else if (val > AnimationChangeMaxW) val = AnimationChangeMaxW;
+                    else if (val > AnimationChangeMaxWH) val = AnimationChangeMaxWH;
                 }
                 AnimationChange = true;
                 AnimationChangeValue = val;
@@ -651,13 +859,26 @@ namespace AntdUI
                 if (items == null) { down = false; return; }
                 int len = items.Count;
                 var rect = ClientRectangle;
-                int width = rect.Width;
-                var val = x - e.Location.X;
-                var select_range = SelectRangeOne(len, rect);
-                AnimationChange = false;
-                if (select_range != null) SetSelectIndex(select_range.i);
-                else if (val > AnimationChangeMax - width) SetSelectIndex(items.Count - 1);
-                else if (val < 0) SetSelectIndex(0);
+                if (dotPV)
+                {
+                    int height = rect.Height;
+                    var val = tvaluexy - e.Location.Y;
+                    var select_range = SelectRangeOne(len, rect);
+                    AnimationChange = false;
+                    if (select_range != null) SetSelectIndex(select_range.i);
+                    else if (val > AnimationChangeMax - height) SetSelectIndex(items.Count - 1);
+                    else if (val < 0) SetSelectIndex(0);
+                }
+                else
+                {
+                    int width = rect.Width;
+                    var val = tvaluexy - e.Location.X;
+                    var select_range = SelectRangeOne(len, rect);
+                    AnimationChange = false;
+                    if (select_range != null) SetSelectIndex(select_range.i);
+                    else if (val > AnimationChangeMax - width) SetSelectIndex(items.Count - 1);
+                    else if (val < 0) SetSelectIndex(0);
+                }
                 Invalidate();
             }
             down = false;

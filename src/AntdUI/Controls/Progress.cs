@@ -18,7 +18,6 @@
 
 using System;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
@@ -37,13 +36,6 @@ namespace AntdUI
     [DefaultProperty("Value")]
     public class Progress : IControl
     {
-        public Progress() { }
-
-        public Progress(ContainerControl parentControl)
-        {
-            ContainerControl = parentControl;
-        }
-
         #region 属性
 
         Color? fore;
@@ -330,6 +322,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 动画铺满
+        /// </summary>
+        [Description("动画铺满"), Category("外观"), DefaultValue(false)]
+        public bool LoadingFull { get; set; } = false;
+
+        /// <summary>
         /// 动画时长
         /// </summary>
         [Description("动画时长"), Category("外观"), DefaultValue(200)]
@@ -351,23 +349,28 @@ namespace AntdUI
         #region 任务栏
 
         ContainerControl? ownerForm;
+        /// <summary>
+        /// 窗口对象
+        /// </summary>
+        [Description("窗口对象"), Category("任务栏"), DefaultValue(null)]
         public ContainerControl? ContainerControl
         {
             get => ownerForm;
             set => ownerForm = value;
         }
 
-        public override ISite? Site
+        protected override void OnHandleCreated(EventArgs e)
         {
-            set
+            base.OnHandleCreated(e);
+            if (showInTaskbar)
             {
-                // Runs at design time, ensures designer initializes ContainerControl
-                base.Site = value;
-                if (value == null) return;
-                var service = value.GetService(typeof(IDesignerHost)) as IDesignerHost;
-                if (service == null) return;
-                IComponent rootComponent = service.RootComponent;
-                ContainerControl = (ContainerControl)rootComponent;
+                if (ownerForm == null) ownerForm = Parent.FindPARENT();
+                ITask.Run(() =>
+                {
+                    Thread.Sleep(100);
+                    canTaskbar = true;
+                    ShowTaskbar();
+                });
             }
         }
 
@@ -383,42 +386,50 @@ namespace AntdUI
             {
                 if (showInTaskbar == value) return;
                 showInTaskbar = value;
-                if (showInTaskbar) ShowTaskbar();
-                else if (ownerForm != null) TaskbarProgressState(ownerForm, ThumbnailProgressState.NoProgress);
+                if (canTaskbar)
+                {
+                    if (showInTaskbar) ShowTaskbar();
+                    else if (ownerForm != null) TaskbarProgressState(ownerForm, ThumbnailProgressState.NoProgress);
+                }
             }
         }
+
+        bool canTaskbar = false;
         void ShowTaskbar(bool sl = false)
         {
-            if (ownerForm == null) return;
-            if (state == TType.None)
+            if (canTaskbar)
             {
-                if (_value_show == 0 && loading)
+                if (ownerForm == null) return;
+                if (state == TType.None)
                 {
-                    TaskbarProgressValue(ownerForm, 0);
-                    TaskbarProgressState(ownerForm, ThumbnailProgressState.Indeterminate);
+                    if (_value_show == 0 && loading)
+                    {
+                        TaskbarProgressValue(ownerForm, 0);
+                        TaskbarProgressState(ownerForm, ThumbnailProgressState.Indeterminate);
+                    }
+                    else
+                    {
+                        if (sl && old_state == ThumbnailProgressState.Indeterminate) TaskbarProgressState(ownerForm, ThumbnailProgressState.NoProgress);
+                        TaskbarProgressState(ownerForm, ThumbnailProgressState.Normal);
+                        TaskbarProgressValue(ownerForm, (ulong)(_value_show * 100));
+                    }
                 }
                 else
                 {
-                    if (sl && old_state == ThumbnailProgressState.Indeterminate) TaskbarProgressState(ownerForm, ThumbnailProgressState.NoProgress);
-                    TaskbarProgressState(ownerForm, ThumbnailProgressState.Normal);
+                    switch (state)
+                    {
+                        case TType.Error:
+                            TaskbarProgressState(ownerForm, ThumbnailProgressState.Error);
+                            break;
+                        case TType.Warn:
+                            TaskbarProgressState(ownerForm, ThumbnailProgressState.Paused);
+                            break;
+                        default:
+                            TaskbarProgressState(ownerForm, ThumbnailProgressState.Normal);
+                            break;
+                    }
                     TaskbarProgressValue(ownerForm, (ulong)(_value_show * 100));
                 }
-            }
-            else
-            {
-                switch (state)
-                {
-                    case TType.Error:
-                        TaskbarProgressState(ownerForm, ThumbnailProgressState.Error);
-                        break;
-                    case TType.Warn:
-                        TaskbarProgressState(ownerForm, ThumbnailProgressState.Paused);
-                        break;
-                    default:
-                        TaskbarProgressState(ownerForm, ThumbnailProgressState.Normal);
-                        break;
-                }
-                TaskbarProgressValue(ownerForm, (ulong)(_value_show * 100));
             }
         }
 
@@ -504,16 +515,22 @@ namespace AntdUI
                 {
                     g.DrawEllipse(brush, icon_rect);
                 }
+
+                #region 进度条
+
+                int max = 0;
                 if (_value_show > 0)
                 {
-                    int max = (int)Math.Round(360 * _value_show);
+                    max = (int)Math.Round(360 * _value_show);
                     using (var brush = new Pen(_color, w))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
                         g.DrawArc(brush, icon_rect, -90, max);
                     }
-
-                    if (loading && AnimationLoadingValue > 0)
+                }
+                if (loading && AnimationLoadingValue > 0)
+                {
+                    if (_value_show > 0)
                     {
                         float alpha = 60 * (1F - AnimationLoadingValue);
                         using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
@@ -522,7 +539,19 @@ namespace AntdUI
                             g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
                         }
                     }
+                    else if (LoadingFull)
+                    {
+                        max = 360;
+                        float alpha = 80 * (1F - AnimationLoadingValue);
+                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
+                        }
+                    }
                 }
+
+                #endregion
             }
             else
             {
@@ -539,15 +568,22 @@ namespace AntdUI
                     {
                         g.DrawEllipse(brush, rect_prog);
                     }
+
+                    #region 进度条
+
+                    int max = 0;
                     if (_value_show > 0)
                     {
-                        int max = (int)Math.Round(360 * _value_show);
+                        max = (int)Math.Round(360 * _value_show);
                         using (var brush = new Pen(_color, w))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
                             g.DrawArc(brush, rect_prog, -90, max);
                         }
-                        if (loading && AnimationLoadingValue > 0)
+                    }
+                    if (loading && AnimationLoadingValue > 0)
+                    {
+                        if (_value_show > 0)
                         {
                             float alpha = 60 * (1F - AnimationLoadingValue);
                             using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
@@ -556,7 +592,22 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
                             }
                         }
+                        else if (LoadingFull)
+                        {
+                            max = 360;
+                            float alpha = 80 * (1F - AnimationLoadingValue);
+                            using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
+                            {
+                                brush.StartCap = brush.EndCap = LineCap.Round;
+                                g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
+                            }
+                        }
+                    }
 
+                    #endregion
+
+                    if (_value_show > 0)
+                    {
                         if (state == TType.None)
                         {
                             using (var brush = new SolidBrush(fore ?? Style.Db.Text))
@@ -659,6 +710,7 @@ namespace AntdUI
                 {
                     g.FillPath(brush, path);
                 }
+                bool handloading = true;
                 if (_value_show > 0)
                 {
                     var _w = rect.Width * _value_show;
@@ -673,6 +725,7 @@ namespace AntdUI
                         }
                         if (loading && AnimationLoadingValue > 0)
                         {
+                            handloading = false;
                             var alpha = 60 * (1F - AnimationLoadingValue);
                             using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.BgBase)))
                             {
@@ -698,6 +751,7 @@ namespace AntdUI
                                 }
                                 if (loading && AnimationLoadingValue > 0)
                                 {
+                                    handloading = false;
                                     var alpha = 60 * (1F - AnimationLoadingValue);
                                     using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.BgBase)))
                                     {
@@ -713,6 +767,18 @@ namespace AntdUI
                                 brush.TranslateTransform(rect.X, rect.Y);
                                 g.FillPath(brush, path);
                             }
+                        }
+                    }
+                }
+
+                if (loading && AnimationLoadingValue > 0 && handloading && LoadingFull)
+                {
+                    var alpha = 80 * (1F - AnimationLoadingValue);
+                    using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.BgBase)))
+                    {
+                        using (var path_prog = new RectangleF(rect.X, rect.Y, rect.Width * AnimationLoadingValue, rect.Height).RoundPath(radius))
+                        {
+                            g.FillPath(brush, path_prog);
                         }
                     }
                 }

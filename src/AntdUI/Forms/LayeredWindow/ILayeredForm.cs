@@ -221,7 +221,6 @@ namespace AntdUI
                         }));
                         return;
                     }
-                    Enabled = false;
                     Close();
                     if (isdispose) Dispose();
                 }
