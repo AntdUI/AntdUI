@@ -332,10 +332,14 @@ namespace AntdUI
                     }, () =>
                     {
                         IClose(true);
+                        if (list[key].Remove(this)) MsgQueue.Add(new object[] { Align, key });
                     });
                 }
-                else IClose(true);
-                if (list[key].Remove(this)) MsgQueue.Add(new object[] { Align, key });
+                else
+                {
+                    IClose(true);
+                    if (list[key].Remove(this)) MsgQueue.Add(new object[] { Align, key });
+                }
             }
         }
 
@@ -352,8 +356,6 @@ namespace AntdUI
     public static class MsgQueue
     {
         static ManualResetEvent _event = new ManualResetEvent(false);
-        static int waitd = 0;
-        static ManualResetEvent _eventd = new ManualResetEvent(true);
         static ConcurrentQueue<object> queue = new ConcurrentQueue<object>();
         internal static List<string> volley = new List<string>();
 
@@ -369,22 +371,9 @@ namespace AntdUI
             queue.Enqueue(config);
             _event.Set();
         }
+
         public static void Add(object?[] command)
         {
-            if (waitd > 0)
-            {
-                if (waitd == 2) return;
-                waitd = 2;
-                ITask.Run(() =>
-                {
-                    if (command[0] is TAlignFrom align && command[1] is string key) Close(align, key);
-                    _eventd.Set();
-                }).ContinueWith(action =>
-                {
-                    waitd = 0;
-                });
-                return;
-            }
             queue.Enqueue(command);
             _event.Set();
         }
@@ -451,13 +440,7 @@ namespace AntdUI
                         else from.Show(config.Form);
                     }
                 }));
-                if (ishand)
-                {
-                    waitd = 1;
-                    _eventd.Reset();
-                    if (_eventd.Wait()) return;
-                    Open(config);
-                }
+                if (ishand) Add(config);
             }
         }
 
@@ -477,14 +460,7 @@ namespace AntdUI
                     }
                     else from.Show(config.Form);
                 }));
-                if (ishand)
-                {
-                    Add(config);
-                    //waitd = 1;
-                    //_eventd.Reset();
-                    //if (_eventd.Wait()) return;
-                    //Open(config);
-                }
+                if (ishand) Add(config);
             }
         }
 
