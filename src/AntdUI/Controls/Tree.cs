@@ -1423,14 +1423,12 @@ namespace AntdUI
                 x += icon_size + gap;
             }
 
-            var size = g.MeasureString(Text, font);
-            int width = (int)Math.Ceiling(size.Width += gap);
-            int height = (int)Math.Ceiling(size.Height += gap);
-            txt_rect = new Rectangle(x, _rect.Y + (_rect.Height - height) / 2, width, height);
+            var size = g.MeasureString(Text, font).Size();
+            txt_rect = new Rectangle(x, _rect.Y + (_rect.Height - size.Height) / 2, size.Width, size.Height);
             if (SubTitle != null)
             {
-                var sizesub = g.MeasureString(SubTitle, font);
-                subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, (int)Math.Ceiling(sizesub.Width), txt_rect.Height);
+                var sizesub = g.MeasureString(SubTitle, font).Size();
+                subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
                 if (!blockNode) rect = new Rectangle(txt_rect.X, txt_rect.Y, txt_rect.Width + subtxt_rect.Width, subtxt_rect.Height);
             }
             else if (!blockNode) rect = txt_rect;

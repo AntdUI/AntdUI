@@ -431,7 +431,7 @@ namespace AntdUI
                 }
                 if (value)
                 {
-                    if (FocusExpandDropdown && !ReadOnly && items != null && items.Count > 0)
+                    if (!ReadOnly && items != null && items.Count > 0)
                     {
                         if (subForm == null)
                         {
@@ -469,9 +469,10 @@ namespace AntdUI
         {
             if (ReadShowCaret)
             {
-                base.OnGotFocus(e); return;
+                base.OnGotFocus(e);
+                return;
             }
-            TextFocus = true;
+            if (FocusExpandDropdown) TextFocus = true;
             base.OnGotFocus(e);
         }
 

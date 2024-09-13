@@ -84,9 +84,9 @@ namespace AntdUI
 
         string? description = null;
         /// <summary>
-        /// 详情描述
+        /// 描述文本
         /// </summary>
-        [Description("详情描述"), Category("外观"), DefaultValue(null)]
+        [Description("描述文本"), Category("外观"), DefaultValue(null)]
         public string? Description
         {
             get => description;

@@ -282,7 +282,7 @@ namespace AntdUI
             {
                 if (textFocus == value) return;
                 textFocus = value;
-                if (FocusExpandDropdown && !ReadOnly && value)
+                if (!ReadOnly && value)
                 {
                     if (subForm == null)
                     {
@@ -328,7 +328,7 @@ namespace AntdUI
         {
             if (!StartFocused && !EndFocused) StartFocused = true;
             StartEndFocused();
-            TextFocus = true;
+            if (FocusExpandDropdown) TextFocus = true;
             base.OnGotFocus(e);
         }
 
