@@ -120,7 +120,7 @@ namespace AntdUI
                 }
             }
             if (close_list.Count == 0) return;
-            foreach (var it in close_list) it.IClose();
+            foreach (var it in close_list) it.CloseMe(false);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace AntdUI
                 }
             }
             if (close_list.Count == 0) return;
-            foreach (var it in close_list) it.IClose();
+            foreach (var it in close_list) it.CloseMe(false);
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace AntdUI
                 ITask.Run(() =>
                 {
                     Thread.Sleep(config.AutoClose * 1000);
-                    IClose();
+                    CloseMe(true);
                 });
             }
             PlayAnimation();
@@ -502,7 +502,7 @@ namespace AntdUI
         protected override void OnMouseClick(MouseEventArgs e)
         {
             if (config.Link != null && rect_link_text.Contains(e.Location)) config.Link.Call();
-            IClose();
+            CloseMe(false);
             base.OnMouseClick(e);
         }
 

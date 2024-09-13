@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -29,6 +28,7 @@ namespace AntdUI
     public abstract class ILayeredFormAnimate : ILayeredForm
     {
         internal static Dictionary<string, List<ILayeredFormAnimate>> list = new Dictionary<string, List<ILayeredFormAnimate>>();
+
         internal string key = "";
         internal virtual TAlignFrom Align => TAlignFrom.TR;
         internal virtual bool ActiveAnimation => true;
@@ -188,7 +188,6 @@ namespace AntdUI
         #endregion
 
         ITask? task_start = null;
-        bool run_end = false, ok_end = false;
         protected override void OnLoad(EventArgs e)
         {
             if (ActiveAnimation) PlayAnimation();
@@ -232,12 +231,11 @@ namespace AntdUI
 
         #region 关闭动画
 
-        void StopAnimation()
+        internal ITask StopAnimation()
         {
             task_start?.Dispose();
-            run_end = true;
             var t = Animation.TotalFrames(10, 200);
-            new ITask(start_X == end_X ? (i) =>
+            return new ITask(start_X == end_X ? (i) =>
             {
                 var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                 SetAnimateValueY(end_Y - (int)((end_Y - start_Y) * val), (byte)(240 * (1F - val)));
@@ -251,9 +249,6 @@ namespace AntdUI
             }, 10, t, () =>
             {
                 DisposeAnimation();
-                ok_end = true;
-                CloseRemove();
-                IClose(true);
             });
         }
         public void DisposeAnimation()
@@ -290,7 +285,7 @@ namespace AntdUI
         }
         internal void SetAnimateValueY(int y)
         {
-            if (close) return;
+            if (closepassive) return;
             if (TargetRect.Y != y)
             {
                 SetLocationY(y);
@@ -315,37 +310,41 @@ namespace AntdUI
 
         #endregion
 
-        void CloseRemove()
-        {
-            if (list[key].Remove(this)) MsgQueue.Add(new object[] { Align, key });
-        }
+        #region 关闭
 
-        bool close = false;
-        protected override void OnClosing(CancelEventArgs e)
+        bool handclose = false;
+        bool closepassive = false;
+        public void CloseMe(bool passive)
         {
-            close = true;
+            if (handclose) return;
+            handclose = true;
             task_start?.Dispose();
-            if (!ok_end)
+            if (passive) MsgQueue.Add(this);
+            else
             {
-                e.Cancel = true;
+                closepassive = true;
+                //执行关闭动画
                 if (Config.Animation)
                 {
-                    if (!run_end) StopAnimation();
+                    ITask.Run(() =>
+                    {
+                        StopAnimation().Wait();
+                    }, () =>
+                    {
+                        IClose(true);
+                    });
                 }
-                else
-                {
-                    ok_end = true;
-                    CloseRemove();
-                    IClose(true);
-                }
+                else IClose(true);
+                if (list[key].Remove(this)) MsgQueue.Add(new object[] { Align, key });
             }
-            base.OnClosing(e);
         }
+
+        #endregion
 
         protected override void Dispose(bool disposing)
         {
-            CloseRemove();
             task_start?.Dispose();
+            list[key].Remove(this);
             base.Dispose(disposing);
         }
     }
@@ -353,7 +352,7 @@ namespace AntdUI
     public static class MsgQueue
     {
         static ManualResetEvent _event = new ManualResetEvent(false);
-        static bool waitd = false;
+        static int waitd = 0;
         static ManualResetEvent _eventd = new ManualResetEvent(true);
         static ConcurrentQueue<object> queue = new ConcurrentQueue<object>();
         internal static List<string> volley = new List<string>();
@@ -372,16 +371,26 @@ namespace AntdUI
         }
         public static void Add(object?[] command)
         {
-            if (waitd)
+            if (waitd > 0)
             {
-                waitd = false;
+                if (waitd == 2) return;
+                waitd = 2;
                 ITask.Run(() =>
                 {
                     if (command[0] is TAlignFrom align && command[1] is string key) Close(align, key);
                     _eventd.Set();
+                }).ContinueWith(action =>
+                {
+                    waitd = 0;
                 });
                 return;
             }
+            queue.Enqueue(command);
+            _event.Set();
+        }
+
+        internal static void Add(ILayeredFormAnimate command)
+        {
             queue.Enqueue(command);
             _event.Set();
         }
@@ -404,6 +413,12 @@ namespace AntdUI
                     {
                         if (d is Notification.Config configNotification) Open(configNotification);
                         else if (d is Message.Config configMessage) Open(configMessage);
+                        else if (d is ILayeredFormAnimate formAnimate)
+                        {
+                            formAnimate.StopAnimation().Wait();
+                            formAnimate.IClose(true);
+                            Close(formAnimate.Align, formAnimate.key);
+                        }
                         else if (d is object?[] command)
                         {
                             if (command[0] is TAlignFrom align && command[1] is string key) Close(align, key);
@@ -421,14 +436,14 @@ namespace AntdUI
             if (config.Form.IsHandleCreated)
             {
                 if (config.ID != null && volley.Contains("N" + config.ID)) return;
-                bool ishand = true;
+                bool ishand = false;
                 config.Form.Invoke(new Action(() =>
                 {
                     var from = new NotificationFrm(config);
                     if (from.IInit())
                     {
                         from.Dispose();
-                        ishand = false;
+                        ishand = true;
                     }
                     else
                     {
@@ -436,10 +451,9 @@ namespace AntdUI
                         else from.Show(config.Form);
                     }
                 }));
-                if (ishand) Thread.Sleep(800);
-                else
+                if (ishand)
                 {
-                    waitd = true;
+                    waitd = 1;
                     _eventd.Reset();
                     if (_eventd.Wait()) return;
                     Open(config);
@@ -452,24 +466,24 @@ namespace AntdUI
             if (config.Form.IsHandleCreated)
             {
                 if (config.ID != null && volley.Contains("M" + config.ID)) return;
-                bool ishand = true;
+                bool ishand = false;
                 config.Form.Invoke(new Action(() =>
                 {
                     var from = new MessageFrm(config);
                     if (from.IInit())
                     {
                         from.Dispose();
-                        ishand = false;
+                        ishand = true;
                     }
                     else from.Show(config.Form);
                 }));
-                if (ishand) Thread.Sleep(800);
-                else
+                if (ishand)
                 {
-                    waitd = true;
-                    _eventd.Reset();
-                    if (_eventd.Wait()) return;
-                    Open(config);
+                    Add(config);
+                    //waitd = 1;
+                    //_eventd.Reset();
+                    //if (_eventd.Wait()) return;
+                    //Open(config);
                 }
             }
         }
@@ -498,13 +512,11 @@ namespace AntdUI
 
         static void CloseT(string key)
         {
-            var list = ILayeredFormAnimate.list[key];
-
             var arr = key.Split('|');
             int y = int.Parse(arr[2]);
-
             int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
             int y_temp = y + offset;
+            var list = ILayeredFormAnimate.list[key];
             var dir = new Dictionary<ILayeredFormAnimate, int[]>(list.Count);
             foreach (var it in list)
             {
@@ -531,20 +543,16 @@ namespace AntdUI
                         it.SetAnimateValueY(y_temp);
                         y_temp += it.TargetRect.Height;
                     }
-                });
-                Thread.Sleep(1000);
+                }).Wait();
             }
         }
         static void CloseB(string key)
         {
-            var list = ILayeredFormAnimate.list[key];
-
             var arr = key.Split('|');
             int b = int.Parse(arr[4]);
-
             int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
             int y_temp = b - offset;
-
+            var list = ILayeredFormAnimate.list[key];
             var dir = new Dictionary<ILayeredFormAnimate, int[]>(list.Count);
             foreach (var it in list)
             {
@@ -571,8 +579,7 @@ namespace AntdUI
                         it.SetPositionY(y_temp);
                         it.SetAnimateValueY(y_temp);
                     }
-                });
-                Thread.Sleep(1000);
+                }).Wait();
             }
         }
     }
