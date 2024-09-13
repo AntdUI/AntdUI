@@ -302,6 +302,7 @@ namespace AntdUI
             });
             close_button = new ITaskOpacity(this);
         }
+
         protected override void Dispose(bool disposing)
         {
             config.OnClose?.Invoke();
@@ -309,6 +310,7 @@ namespace AntdUI
             close_button.Dispose();
             base.Dispose(disposing);
         }
+
         internal override TAlignFrom Align => config.Align;
         internal override bool ActiveAnimation => false;
 
