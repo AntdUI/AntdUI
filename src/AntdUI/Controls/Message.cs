@@ -280,7 +280,6 @@ namespace AntdUI
         public bool IInit()
         {
             if (SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByMessage)) return true;
-
             if (loading)
             {
                 ThreadLoading = new ITask(this, i =>
@@ -316,14 +315,13 @@ namespace AntdUI
                         return;
                     }
                 }
+            }, () =>
+            {
                 loadingend = true;
                 if (config.AutoClose > 0)
                 {
-                    ITask.Run(() =>
-                    {
-                        Thread.Sleep(config.AutoClose * 1000);
-                        CloseMe(true);
-                    });
+                    Thread.Sleep(config.AutoClose * 1000);
+                    CloseMe(true);
                 }
                 else CloseMe(true);
             });

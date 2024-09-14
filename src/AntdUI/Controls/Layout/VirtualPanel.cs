@@ -429,7 +429,6 @@ namespace AntdUI
                     it.WIDTH = size.Width;
                     it.HEIGHT = size.Height;
                 }
-
                 if (waterfall)
                 {
                     if (CellCount == -1)
@@ -488,12 +487,17 @@ namespace AntdUI
                     it.SHOW = true;
                     tmps.Add(it);
                 }
-                if (tmps.Count > 0) rows.Add(new RItem(use_x, use_y, max_height, tmps));
+                if (tmps.Count > 0)
+                {
+                    rows.Add(new RItem(use_x, use_y, max_height, tmps));
+                    last_len = use_y + max_height + gap;
+                }
                 tmps.Clear();
 
                 #region 布局
 
                 if (last_len > rect.Height) rect.Height = last_len;
+
                 switch (justifycontent)
                 {
                     case TJustifyContent.Start:
@@ -666,64 +670,7 @@ namespace AntdUI
                         break;
                 }
 
-                if (waterfall)
-                {
-                    var celdir = new Dictionary<int, int>(rows[0].cel.Count);
-                    for (int i = 1; i < rows.Count; i++)
-                    {
-                        var rowold = rows[i - 1];
-                        var row = rows[i];
-                        if (rowold.cel.Count >= row.cel.Count)
-                        {
-                            for (int j = 0; j < row.cel.Count; j++)
-                            {
-                                int rj = j;
-                                if (rowold.cel.Count > row.cel.Count)
-                                {
-                                    switch (justifycontent)
-                                    {
-                                        case TJustifyContent.Start:
-                                            break;
-                                        case TJustifyContent.End:
-                                            rj = rowold.cel.Count - 1 - j;
-                                            break;
-                                        case TJustifyContent.Center:
-                                            rj = rowold.cel.Count / 2;
-                                            break;
-                                        default:
-                                            HandLayout(rect, row.cel[j], rowold.cel[j].RECT.X - row.cel[j].RECT.X, 0);
-                                            break;
-                                    }
-                                }
-
-                                var item = rowold.cel[rj];
-                                if (item.HEIGHT < rowold.h)
-                                {
-                                    int xc = rowold.h - item.HEIGHT;
-                                    celdir.TryGetValue(rj, out int tmpY);
-                                    HandLayout(rect, row.cel[j], 0, -xc - tmpY);
-                                    if (celdir.ContainsKey(rj)) celdir[rj] += xc;
-                                    else celdir.Add(rj, xc);
-                                }
-                                else if (celdir.TryGetValue(rj, out int tmpY)) HandLayout(rect, row.cel[j], 0, -tmpY);
-                            }
-                        }
-                    }
-
-                    int last_h = 0;
-                    foreach (var row in rows)
-                    {
-                        foreach (var item in row.cel)
-                        {
-                            if (item is VirtualShadowItem shadowItem)
-                            {
-                                if (last_h < shadowItem.RECT_S.Bottom) last_h = shadowItem.RECT_S.Bottom;
-                            }
-                            else if (last_h < item.RECT.Bottom) last_h = item.RECT.Bottom;
-                        }
-                    }
-                    last_len = last_h + Padding.Bottom + gap;
-                }
+                if (waterfall) last_len = WaterfallLayout(rect, rows);
                 else
                 {
                     switch (alignitems)
@@ -759,6 +706,157 @@ namespace AntdUI
                 return last_len + gap * 2;
             });
         }
+
+        #region 瀑布流
+
+        int WaterfallLayout(Rectangle rect, List<RItem> rows)
+        {
+            switch (justifycontent)
+            {
+                case TJustifyContent.Start:
+                    WaterfallLayoutStart(rect, rows);
+                    break;
+                case TJustifyContent.End:
+                    WaterfallLayoutEnd(rect, rows);
+                    break;
+                case TJustifyContent.Center:
+                default:
+                    WaterfallLayoutCenter(rect, rows);
+                    break;
+            }
+
+            int last_h = 0;
+            foreach (var row in rows)
+            {
+                foreach (var item in row.cel)
+                {
+                    if (item is VirtualShadowItem shadowItem)
+                    {
+                        if (last_h < shadowItem.RECT_S.Bottom) last_h = shadowItem.RECT_S.Bottom;
+                    }
+                    else if (last_h < item.RECT.Bottom) last_h = item.RECT.Bottom;
+                }
+            }
+            return last_h + Padding.Bottom + gap;
+        }
+        void WaterfallLayoutStart(Rectangle rect, List<RItem> rows)
+        {
+            var celdir = new Dictionary<int, int>(rows[0].cel.Count);
+            for (int i = 1; i < rows.Count; i++)
+            {
+                RItem row_new = rows[i], row_old = rows[i - 1];
+                if (row_old.cel.Count >= row_new.cel.Count)
+                {
+                    for (int j = 0; j < row_new.cel.Count; j++)
+                    {
+                        VirtualItem item_new = row_new.cel[j], item_old = row_old.cel[j];
+                        if (item_old.HEIGHT < row_old.h)
+                        {
+                            int xc = row_old.h - item_old.HEIGHT;
+                            if (celdir.ContainsKey(j)) celdir[j] += xc;
+                            else celdir.Add(j, xc);
+                        }
+                        if (celdir.TryGetValue(j, out int tmpY)) HandLayout(rect, item_new, 0, -tmpY);
+                    }
+                }
+            }
+        }
+        void WaterfallLayoutEnd(Rectangle rect, List<RItem> rows)
+        {
+            var celdir = new Dictionary<int, int>(rows[0].cel.Count);
+            for (int i = 1; i < rows.Count; i++)
+            {
+                RItem row_new = rows[i], row_old = rows[i - 1];
+                if (row_old.cel.Count == row_new.cel.Count)
+                {
+                    for (int j = 0; j < row_new.cel.Count; j++)
+                    {
+                        VirtualItem item_new = row_new.cel[j], item_old = row_old.cel[j];
+                        if (item_old.HEIGHT < row_old.h)
+                        {
+                            int xc = row_old.h - item_old.HEIGHT;
+                            if (celdir.ContainsKey(j)) celdir[j] += xc;
+                            else celdir.Add(j, xc);
+                        }
+                        if (celdir.TryGetValue(j, out int tmpY)) HandLayout(rect, item_new, 0, -tmpY);
+                    }
+                }
+                else if (row_old.cel.Count > row_new.cel.Count)
+                {
+                    for (int j = 0; j < row_new.cel.Count; j++)
+                    {
+                        int rj = row_old.cel.Count - row_new.cel.Count + j;
+                        VirtualItem item_new = row_new.cel[j], item_old = row_old.cel[rj];
+                        if (item_old.HEIGHT < row_old.h)
+                        {
+                            int xc = row_old.h - item_old.HEIGHT;
+                            if (celdir.ContainsKey(rj)) celdir[rj] += xc;
+                            else celdir.Add(rj, xc);
+                        }
+                        if (celdir.TryGetValue(rj, out int tmpY)) HandLayout(rect, item_new, 0, -tmpY);
+                    }
+                }
+            }
+        }
+        void WaterfallLayoutCenter(Rectangle rect, List<RItem> rows)
+        {
+            var celdir = new Dictionary<int, int>(rows[0].cel.Count);
+            for (int i = 1; i < rows.Count; i++)
+            {
+                RItem row_new = rows[i], row_old = rows[i - 1];
+                if (row_old.cel.Count == row_new.cel.Count)
+                {
+                    for (int j = 0; j < row_new.cel.Count; j++)
+                    {
+                        VirtualItem item_new = row_new.cel[j], item_old = row_old.cel[j];
+                        if (item_old.HEIGHT < row_old.h)
+                        {
+                            int xc = row_old.h - item_old.HEIGHT;
+                            if (celdir.ContainsKey(j)) celdir[j] += xc;
+                            else celdir.Add(j, xc);
+                        }
+                        if (celdir.TryGetValue(j, out int tmpY)) HandLayout(rect, item_new, 0, -tmpY);
+                    }
+                }
+                else if (row_old.cel.Count > row_new.cel.Count)
+                {
+                    #region 挑选最短的插入
+
+                    var hasi = new List<int>(row_new.cel.Count);
+                    foreach (var item_new in row_new.cel)
+                    {
+                        int y = -1, rj = 0;
+                        for (int j = 0; j < row_old.cel.Count; j++)
+                        {
+                            if (hasi.Contains(j)) continue;
+                            if (row_old.cel[j].RECT.Y < y || y == -1)
+                            {
+                                rj = j;
+                                y = row_old.cel[j].RECT.Y;
+                            }
+                        }
+                        hasi.Add(rj);
+                        var item_old = row_old.cel[rj];
+
+                        if (item_old.HEIGHT < row_old.h)
+                        {
+                            int xc = row_old.h - item_old.HEIGHT;
+                            if (celdir.ContainsKey(rj)) celdir[rj] += xc;
+                            else celdir.Add(rj, xc);
+                        }
+
+                        if (celdir.TryGetValue(rj, out int tmpY))
+                        {
+                            HandLayout(rect, item_new, item_old.RECT.X - item_new.RECT.X, -tmpY);
+                        }
+                    }
+
+                    #endregion
+                }
+            }
+        }
+
+        #endregion
 
         int GetTotalHeight(List<RItem> rows)
         {

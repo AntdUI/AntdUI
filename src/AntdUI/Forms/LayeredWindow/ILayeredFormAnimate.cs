@@ -331,14 +331,16 @@ namespace AntdUI
                         StopAnimation().Wait();
                     }, () =>
                     {
+                        bool isRemove = list[key].Remove(this);
                         IClose(true);
-                        if (list[key].Remove(this)) MsgQueue.Add(new object[] { Align, key });
+                        if (isRemove) MsgQueue.Add(new object[] { Align, key });
                     });
                 }
                 else
                 {
+                    bool isRemove = list[key].Remove(this);
                     IClose(true);
-                    if (list[key].Remove(this)) MsgQueue.Add(new object[] { Align, key });
+                    if (isRemove) MsgQueue.Add(new object[] { Align, key });
                 }
             }
         }
@@ -404,7 +406,7 @@ namespace AntdUI
                         else if (d is Message.Config configMessage) Open(configMessage);
                         else if (d is ILayeredFormAnimate formAnimate)
                         {
-                            formAnimate.StopAnimation().Wait();
+                            if (Config.Animation) formAnimate.StopAnimation().Wait();
                             formAnimate.IClose(true);
                             Close(formAnimate.Align, formAnimate.key);
                         }
@@ -502,24 +504,39 @@ namespace AntdUI
             }
             if (dir.Count > 0)
             {
-                var t = Animation.TotalFrames(10, 200);
-                new ITask(i =>
+                if (Config.Animation)
                 {
-                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                    foreach (var it in dir) it.Key.SetAnimateValueY(it.Value[0] + (it.Value[1] - (int)(it.Value[1] * val)));
-                    return true;
-                }, 10, t, () =>
+                    var t = Animation.TotalFrames(10, 200);
+                    new ITask(i =>
+                    {
+                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                        foreach (var it in dir) it.Key.SetAnimateValueY(it.Value[0] + (it.Value[1] - (int)(it.Value[1] * val)));
+                        return true;
+                    }, 10, t, () =>
+                    {
+                        y_temp = y + offset;
+                        for (int i = 0; i < list.Count; i++)
+                        {
+                            var it = list[i];
+                            it.DisposeAnimation();
+                            it.SetAnimateValueY(y_temp);
+                            it.SetPositionY(y_temp);
+                            y_temp += it.TargetRect.Height;
+                        }
+                    }).Wait();
+                }
+                else
                 {
                     y_temp = y + offset;
                     for (int i = 0; i < list.Count; i++)
                     {
                         var it = list[i];
                         it.DisposeAnimation();
-                        it.SetPositionY(y_temp);
                         it.SetAnimateValueY(y_temp);
+                        it.SetPositionY(y_temp);
                         y_temp += it.TargetRect.Height;
                     }
-                }).Wait();
+                }
             }
         }
         static void CloseB(string key)
@@ -538,13 +555,28 @@ namespace AntdUI
             }
             if (dir.Count > 0)
             {
-                var t = Animation.TotalFrames(10, 200);
-                new ITask(i =>
+                if (Config.Animation)
                 {
-                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                    foreach (var it in dir) it.Key.SetAnimateValueY(it.Value[0] + (it.Value[1] - (int)(it.Value[1] * val)));
-                    return true;
-                }, 10, t, () =>
+                    var t = Animation.TotalFrames(10, 200);
+                    new ITask(i =>
+                    {
+                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                        foreach (var it in dir) it.Key.SetAnimateValueY(it.Value[0] + (it.Value[1] - (int)(it.Value[1] * val)));
+                        return true;
+                    }, 10, t, () =>
+                    {
+                        y_temp = b - offset;
+                        for (int i = 0; i < list.Count; i++)
+                        {
+                            var it = list[i];
+                            it.DisposeAnimation();
+                            y_temp -= it.TargetRect.Height;
+                            it.SetAnimateValueY(y_temp);
+                            it.SetPositionY(y_temp);
+                        }
+                    }).Wait();
+                }
+                else
                 {
                     y_temp = b - offset;
                     for (int i = 0; i < list.Count; i++)
@@ -552,10 +584,10 @@ namespace AntdUI
                         var it = list[i];
                         it.DisposeAnimation();
                         y_temp -= it.TargetRect.Height;
-                        it.SetPositionY(y_temp);
                         it.SetAnimateValueY(y_temp);
+                        it.SetPositionY(y_temp);
                     }
-                }).Wait();
+                }
             }
         }
     }

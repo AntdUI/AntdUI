@@ -331,7 +331,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_f = Helper.SF_ALL(), s_f_left = Helper.SF_ALL(lr: StringAlignment.Near), s_f_left_left = Helper.SF_Ellipsis(StringAlignment.Near, StringAlignment.Near);
+        readonly StringFormat s_f = Helper.SF_ALL(), s_f_left = Helper.SF_ALL(lr: StringAlignment.Near), s_f_left_left = Helper.SF(StringAlignment.Near, StringAlignment.Near);
 
         public override Bitmap PrintBit()
         {
@@ -431,8 +431,8 @@ namespace AntdUI
                 if (config.CloseIcon) t_max_width += close_size + sp;
             }
             var size_desc = g.MeasureString(config.Text, Font, t_max_width, s_f_left).Size();
-            float width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
-            int max_width = (int)Math.Ceiling(width_desc > width_title ? width_desc : width_title);
+            int width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
+            int max_width = width_desc > width_title ? width_desc : width_title;
             if (config.Icon == TType.None)
             {
                 rect_title = new Rectangle(shadow + paddingx, shadow + paddingy, max_width, size_title.Height);

@@ -192,6 +192,15 @@ namespace AntdUI
             /// 配置 按钮
             /// </summary>
             /// <param name="name">名称</param>
+            public ConfigBtn(string name)
+            {
+                Name = name;
+            }
+
+            /// <summary>
+            /// 配置 按钮
+            /// </summary>
+            /// <param name="name">名称</param>
             /// <param name="icon">图标</param>
             public ConfigBtn(string name, Bitmap icon)
             {
