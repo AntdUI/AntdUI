@@ -525,7 +525,6 @@ namespace AntdUI
             {
                 var size_t = g.MeasureString(Config.NullText, Font);
                 int text_heigth = (int)Math.Ceiling(size_t.Height), sp = (int)(4 * Config.Dpi), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
-
                 if (Full)
                 {
                     int imgsize = (int)(size_t.Height * 1.8F);
@@ -537,42 +536,46 @@ namespace AntdUI
                         {
                             case TAlignMini.Top:
                                 int imgsize_t = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectTop(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t, text_heigth, sp);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t);
+                                    else it.SetRectTop(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t, text_heigth, sp);
                                     y += heightone + _igap;
                                 }
                                 break;
                             case TAlignMini.Bottom:
                                 int imgsize_b = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectBottom(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b, text_heigth, sp);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b);
+                                    else it.SetRectBottom(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b, text_heigth, sp);
                                     y += heightone + _igap;
                                 }
                                 break;
                             case TAlignMini.Left:
                                 int imgsize_l = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectLeft(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_l, sp, gap);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_l);
+                                    else it.SetRectLeft(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_l, sp, gap);
                                     y += heightone + _igap;
                                 }
                                 break;
                             case TAlignMini.Right:
                                 int imgsize_r = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectRight(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_r, sp, gap);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_r);
+                                    else it.SetRectRight(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_r, sp, gap);
                                     y += heightone + _igap;
                                 }
                                 break;
                             default:
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
                                     it.SetRectNone(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone));
@@ -588,42 +591,46 @@ namespace AntdUI
                         {
                             case TAlignMini.Top:
                                 int imgsize_t = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectTop(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_t, text_heigth, sp);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_t);
+                                    else it.SetRectTop(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_t, text_heigth, sp);
                                     x += widthone + _igap;
                                 }
                                 break;
                             case TAlignMini.Bottom:
                                 int imgsize_b = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_b, text_heigth, sp);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_b);
+                                    else it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_b, text_heigth, sp);
                                     x += widthone + _igap;
                                 }
                                 break;
                             case TAlignMini.Left:
                                 int imgsize_l = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_l, sp, gap);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_l);
+                                    else it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_l, sp, gap);
                                     x += widthone + _igap;
                                 }
                                 break;
                             case TAlignMini.Right:
                                 int imgsize_r = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectRight(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_r, sp, gap);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_r);
+                                    else it.SetRectRight(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_r, sp, gap);
                                     x += widthone + _igap;
                                 }
                                 break;
                             default:
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
                                     it.SetRectNone(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height));
@@ -643,43 +650,47 @@ namespace AntdUI
                         {
                             case TAlignMini.Top:
                                 int imgsize_t = (int)(size_t.Height * 1.8F), heigth_t = (int)Math.Ceiling(size_t.Height * 2.4F + gap2);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectTop(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t, text_heigth, sp);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t);
+                                    else it.SetRectTop(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t, text_heigth, sp);
                                     y += it.Rect.Height + _igap;
                                 }
                                 break;
                             case TAlignMini.Bottom:
                                 int imgsize_b = (int)(size_t.Height * 1.8F), heigth_b = (int)Math.Ceiling(size_t.Height * 2.4F + gap2);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectBottom(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b, text_heigth, sp);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b);
+                                    else it.SetRectBottom(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b, text_heigth, sp);
                                     y += it.Rect.Height + _igap;
                                 }
                                 break;
                             case TAlignMini.Left:
                                 int imgsize_l = (int)(size_t.Height * 1.2F), heigth_l = (int)Math.Ceiling(size_t.Height + gap2);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectLeft(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_l), imgsize_l, sp, gap);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_l), imgsize_l);
+                                    else it.SetRectLeft(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_l), imgsize_l, sp, gap);
                                     y += it.Rect.Height + _igap;
                                 }
                                 break;
                             case TAlignMini.Right:
                                 int imgsize_r = (int)(size_t.Height * 1.2F), heigth_r = (int)Math.Ceiling(size_t.Height + gap2);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    it.SetRectRight(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_r), imgsize_r, sp, gap);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_r), imgsize_r);
+                                    else it.SetRectRight(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_r), imgsize_r, sp, gap);
                                     y += it.Rect.Height + _igap;
                                 }
                                 break;
                             default:
                                 int heigth = (int)Math.Ceiling(size_t.Height + gap);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
                                     it.SetRectNone(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth));
@@ -687,7 +698,7 @@ namespace AntdUI
                                 }
                                 break;
                         }
-                        Rect = new RectangleF(_rect.X, _rect.Y, _rect.Height, y - _igap + Margin.Vertical);
+                        Rect = new RectangleF(_rect.X, _rect.Y, _rect.Width, y - _igap + Margin.Vertical);
                     }
                     else
                     {
@@ -696,46 +707,62 @@ namespace AntdUI
                         {
                             case TAlignMini.Top:
                                 int imgsize_t = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    var size = g.MeasureString(it.Text, Font).Size();
-                                    it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, text_heigth, sp);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_t + gap2, rect.Height), imgsize_t);
+                                    else
+                                    {
+                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, text_heigth, sp);
+                                    }
                                     x += it.Rect.Width + _igap;
                                 }
                                 break;
                             case TAlignMini.Bottom:
                                 int imgsize_b = (int)(size_t.Height * 1.8F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    var size = g.MeasureString(it.Text, Font).Size();
-                                    it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, text_heigth, sp);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_b + gap2, rect.Height), imgsize_b);
+                                    else
+                                    {
+                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, text_heigth, sp);
+                                    }
                                     x += it.Rect.Width + _igap;
                                 }
                                 break;
                             case TAlignMini.Left:
                                 int imgsize_l = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    var size = g.MeasureString(it.Text, Font).Size();
-                                    it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_l + sp + gap2, rect.Height), imgsize_l, sp, gap);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_l + gap2, rect.Height), imgsize_l);
+                                    else
+                                    {
+                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_l + sp + gap2, rect.Height), imgsize_l, sp, gap);
+                                    }
                                     x += it.Rect.Width + _igap;
                                 }
                                 break;
                             case TAlignMini.Right:
                                 int imgsize_r = (int)(size_t.Height * 1.2F);
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    var size = g.MeasureString(it.Text, Font).Size();
-                                    it.SetRectRight(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_r + sp + gap2, rect.Height), imgsize_r, sp, gap);
+                                    if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_r + gap2, rect.Height), imgsize_r);
+                                    else
+                                    {
+                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        it.SetRectRight(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_r + sp + gap2, rect.Height), imgsize_r, sp, gap);
+                                    }
                                     x += it.Rect.Width + _igap;
                                 }
                                 break;
                             default:
-                                foreach (SegmentedItem it in items)
+                                foreach (var it in items)
                                 {
                                     it.PARENT = this;
                                     var size = g.MeasureString(it.Text, Font).Size();
@@ -923,7 +950,7 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (items == null || items.Count == 0) return;
             int hand = 0, change = 0;
-            foreach (SegmentedItem it in items)
+            foreach (var it in items)
             {
                 bool hover = it.Rect.Contains(e.Location);
                 if (it.Hover != hover)
@@ -943,7 +970,7 @@ namespace AntdUI
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int change = 0;
-            foreach (SegmentedItem it in items)
+            foreach (var it in items)
             {
                 if (it.Hover)
                 {
@@ -960,7 +987,7 @@ namespace AntdUI
             SetCursor(false);
             if (items == null || items.Count == 0) return;
             int change = 0;
-            foreach (SegmentedItem it in items)
+            foreach (var it in items)
             {
                 if (it.Hover)
                 {
@@ -1086,6 +1113,13 @@ namespace AntdUI
 
         internal bool Hover { get; set; }
 
+        internal bool HasEmptyText => text == null || string.IsNullOrEmpty(text);
+
+        internal void SetIconNoText(Rectangle rect, int imgsize)
+        {
+            Rect = rect;
+            RectImg = RectText = new Rectangle(rect.X + (rect.Width - imgsize) / 2, rect.Y + (rect.Height - imgsize) / 2, imgsize, imgsize);
+        }
         internal void SetRectTop(Rectangle rect, int imgsize, int text_heigth, int gap)
         {
             Rect = rect;
@@ -1128,6 +1162,7 @@ namespace AntdUI
             }
             else RectText = rect;
         }
+
         internal void SetRectNone(Rectangle rect)
         {
             Rect = rect;

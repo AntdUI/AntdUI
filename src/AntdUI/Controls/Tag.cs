@@ -543,7 +543,7 @@ namespace AntdUI
             {
                 bool isclose = false;
                 if (CloseChanged == null || CloseChanged(this, EventArgs.Empty)) isclose = true;
-                if (isclose && Parent is Control control) control.Controls.Remove(this);
+                if (isclose) Dispose();
                 return;
             }
             base.OnMouseClick(e);
