@@ -643,8 +643,8 @@ namespace AntdUI
         /// <summary>
         /// 密码可以粘贴
         /// </summary>
-        [Description("密码可以粘贴"), Category("行为"), DefaultValue(false)]
-        public bool PasswordPaste { get; set; }
+        [Description("密码可以粘贴"), Category("行为"), DefaultValue(true)]
+        public bool PasswordPaste { get; set; } = true;
 
         void SetPassWord()
         {

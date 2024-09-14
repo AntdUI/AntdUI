@@ -135,8 +135,11 @@ namespace AntdUI
             {
                 if (mode == value) return;
                 mode = value;
-                ChangeList();
-                Invalidate();
+                if (IsHandleCreated)
+                {
+                    ChangeList();
+                    Invalidate();
+                }
             }
         }
 
@@ -194,7 +197,7 @@ namespace AntdUI
             var it1 = items[i1];
             it1.Select = true;
             OnSelectIndexChanged(it1);
-            if (focus) ScrollBar.ValueY = it1.rect.Y;
+            if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it1.rect.Y;
             Invalidate();
         }
         public void SelectIndex(int i1, int i2, bool focus = true)
@@ -213,7 +216,7 @@ namespace AntdUI
             var it2 = it1.Sub[i2];
             it1.Select = it2.Select = true;
             OnSelectIndexChanged(it2);
-            if (focus) ScrollBar.ValueY = it2.rect.Y;
+            if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it2.rect.Y;
             Invalidate();
         }
         public void SelectIndex(int i1, int i2, int i3, bool focus = true)
@@ -239,7 +242,7 @@ namespace AntdUI
             var it3 = it2.Sub[i3];
             it1.Select = it2.Select = it3.Select = true;
             OnSelectIndexChanged(it3);
-            if (focus) ScrollBar.ValueY = it3.rect.Y;
+            if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it3.rect.Y;
             Invalidate();
         }
 
@@ -262,7 +265,7 @@ namespace AntdUI
                 {
                     it.Select = true;
                     OnSelectIndexChanged(it);
-                    if (focus) ScrollBar.ValueY = it.rect.Y;
+                    if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it.rect.Y;
                     return;
                 }
                 else if (it.items != null && it.items.Count > 0) Select(item, focus, it.items);
@@ -351,6 +354,13 @@ namespace AntdUI
 
         #region 布局
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            var rect = ChangeList();
+            ScrollBar.SizeChange(rect);
+            base.OnHandleCreated(e);
+        }
+
         protected override void OnFontChanged(EventArgs e)
         {
             var rect = ChangeList();
@@ -360,8 +370,11 @@ namespace AntdUI
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            if (IsHandleCreated)
+            {
+                var rect = ChangeList();
+                ScrollBar.SizeChange(rect);
+            }
             base.OnSizeChanged(e);
         }
 
@@ -369,10 +382,8 @@ namespace AntdUI
         internal Rectangle ChangeList()
         {
             var _rect = ClientRectangle;
-            if (pauseLayout || items == null || items.Count == 0) return _rect;
-            if (_rect.Width == 0 || _rect.Height == 0) return _rect;
+            if (_rect.Width == 0 || _rect.Height == 0 || pauseLayout || items == null || items.Count == 0) return _rect;
             var rect = _rect.PaddingRect(Padding);
-
             int y = 0;
             int icon_count = 0;
             Helper.GDI(g =>
