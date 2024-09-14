@@ -50,7 +50,6 @@ namespace Overview.Controls
         private void InitializeComponent()
         {
             AntdUI.SegmentedItem segmentedItem1 = new AntdUI.SegmentedItem();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Segmented));
             AntdUI.SegmentedItem segmentedItem2 = new AntdUI.SegmentedItem();
             AntdUI.SegmentedItem segmentedItem3 = new AntdUI.SegmentedItem();
             AntdUI.SegmentedItem segmentedItem4 = new AntdUI.SegmentedItem();
@@ -104,14 +103,14 @@ namespace Overview.Controls
             // 
             segmented3.Dock = DockStyle.Top;
             segmented3.IconAlign = AntdUI.TAlignMini.Left;
-            segmentedItem1.IconSvg = resources.GetString("segmentedItem1.IconSvg");
+            segmentedItem1.IconSvg = "GiftFilled";
             segmentedItem1.Text = "Daily";
-            segmentedItem2.IconSvg = resources.GetString("segmentedItem2.IconSvg");
+            segmentedItem2.IconSvg = "TrophyFilled";
             segmentedItem2.Text = "Weekly";
-            segmentedItem3.IconSvg = resources.GetString("segmentedItem3.IconSvg");
+            segmentedItem3.IconSvg = "DashboardFilled";
             segmentedItem3.Text = "Monthly";
-            segmentedItem4.IconActiveSvg = resources.GetString("segmentedItem4.IconActiveSvg");
-            segmentedItem4.IconSvg = resources.GetString("segmentedItem4.IconSvg");
+            segmentedItem4.IconActiveSvg = "HeartFilled";
+            segmentedItem4.IconSvg = "LikeFilled";
             segmentedItem4.Text = "Quarterly";
             segmented3.Items.Add(segmentedItem1);
             segmented3.Items.Add(segmentedItem2);
@@ -134,14 +133,14 @@ namespace Overview.Controls
             // segmented2
             // 
             segmented2.Dock = DockStyle.Top;
-            segmentedItem5.IconSvg = resources.GetString("segmentedItem5.IconSvg");
+            segmentedItem5.IconSvg = "GiftFilled";
             segmentedItem5.Text = "Daily";
-            segmentedItem6.IconSvg = resources.GetString("segmentedItem6.IconSvg");
+            segmentedItem6.IconSvg = "TrophyFilled";
             segmentedItem6.Text = "Weekly";
-            segmentedItem7.IconSvg = resources.GetString("segmentedItem7.IconSvg");
+            segmentedItem7.IconSvg = "DashboardFilled";
             segmentedItem7.Text = "Monthly";
-            segmentedItem8.IconActiveSvg = resources.GetString("segmentedItem8.IconActiveSvg");
-            segmentedItem8.IconSvg = resources.GetString("segmentedItem8.IconSvg");
+            segmentedItem8.IconActiveSvg = "HeartFilled";
+            segmentedItem8.IconSvg = "LikeFilled";
             segmentedItem8.Text = "Quarterly";
             segmented2.Items.Add(segmentedItem5);
             segmented2.Items.Add(segmentedItem6);
