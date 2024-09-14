@@ -230,27 +230,81 @@ namespace AntdUI
 
         #region 剪贴板
 
-        internal static bool SetClipBoardText(string? text)
+        internal static string? GetClipBoardText()
         {
+            IntPtr handle = default, pointer = default;
             try
             {
-                uint uformat = 1;
-                if (!OpenClipboard(IntPtr.Zero)) return false;
-                if (!EmptyClipboard()) return false;
-                if (text == null) return true;
-                var r = SetClipboardData(uformat, Marshal.StringToCoTaskMemAnsi(text));
-                if (r == IntPtr.Zero) return false;
-                return true;
+                if (!OpenClipboard(IntPtr.Zero)) return null;
+                handle = GetClipboardData(13);
+                if (handle == default) return null;
+                pointer = GlobalLock(handle);
+                if (pointer == default) return null;
+                var size = GlobalSize(handle);
+                var buff = new byte[size];
+                Marshal.Copy(pointer, buff, 0, size);
+                return Encoding.Unicode.GetString(buff).TrimEnd('\0');
             }
             catch
             {
-                return false;
+                return null;
             }
             finally
             {
+                if (pointer != default) GlobalUnlock(handle);
                 CloseClipboard();
             }
         }
+        internal static bool SetClipBoardText(string? text)
+        {
+            IntPtr hGlobal = default;
+            try
+            {
+                if (!OpenClipboard(IntPtr.Zero)) return false;
+                if (!EmptyClipboard()) return false;
+                if (text == null) return true;
+
+                var bytes = (text.Length + 1) * 2;
+                hGlobal = Marshal.AllocHGlobal(bytes);
+                if (hGlobal == default) return false;
+                var target = GlobalLock(hGlobal);
+                if (target == default) return false;
+                try
+                {
+                    Marshal.Copy(text.ToCharArray(), 0, target, text.Length);
+                }
+                finally
+                {
+                    GlobalUnlock(target);
+                }
+                if (SetClipboardData(13, hGlobal) == default) return false;
+                hGlobal = default;
+                return true;
+            }
+            catch { return false; }
+            finally
+            {
+                if (hGlobal != default) Marshal.FreeHGlobal(hGlobal);
+                CloseClipboard();
+            }
+        }
+
+        [DllImport("User32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        extern static bool IsClipboardFormatAvailable(uint format);
+
+        [DllImport("User32.dll", SetLastError = true)]
+        extern static IntPtr GetClipboardData(uint uFormat);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        extern static IntPtr GlobalLock(IntPtr hMem);
+
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        extern static int GlobalSize(IntPtr hMem);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        extern static bool GlobalUnlock(IntPtr hMem);
 
         /// <summary>
         /// 打开剪切板

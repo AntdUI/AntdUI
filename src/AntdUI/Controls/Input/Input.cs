@@ -725,8 +725,8 @@ namespace AntdUI
         public void Paste()
         {
             if (IsPassWord && !PasswordPaste) return;
-            string strText = Clipboard.GetText();
-            if (string.IsNullOrEmpty(strText)) return;
+            var strText = this.ClipboardGetText();
+            if (strText == null || string.IsNullOrEmpty(strText)) return;
             var chars = new List<string>(strText.Length);
             foreach (char key in strText)
             {
