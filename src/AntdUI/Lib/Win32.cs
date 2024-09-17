@@ -145,16 +145,6 @@ namespace AntdUI
 
         #region 文本框
 
-        [DllImport("user32.dll")]
-        public static extern bool CreateCaret(IntPtr hWnd, IntPtr hBitmap, int nWidth, int nHeight);
-        [DllImport("user32.dll")]
-        public static extern bool ShowCaret(IntPtr hWnd);
-        [DllImport("User32.dll")]
-        public static extern bool HideCaret(IntPtr hWnd);
-        [DllImport("User32.dll")]
-        public static extern bool SetCaretPos(int x, int y);
-        [DllImport("user32.dll")]
-        public static extern bool DestroyCaret();
         [DllImport("imm32.dll")]
         public static extern IntPtr ImmGetContext(IntPtr hWnd);
         [DllImport("Imm32.dll")]

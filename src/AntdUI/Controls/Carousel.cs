@@ -204,7 +204,7 @@ namespace AntdUI
             if (dotPV) SetSelectIndexVertical(value, auto);
             else SetSelectIndexHorizontal(value, auto);
         }
-        void SetSelectIndexHorizontal(int value, bool auto = false)
+        void SetSelectIndexVertical(int value, bool auto = false)
         {
             int height = ClientRectangle.Height - Padding.Vertical;
             if (items != null && IsHandleCreated && Config.Animation)
@@ -293,7 +293,7 @@ namespace AntdUI
                 Invalidate();
             }
         }
-        void SetSelectIndexVertical(int value, bool auto = false)
+        void SetSelectIndexHorizontal(int value, bool auto = false)
         {
             int width = ClientRectangle.Width - Padding.Horizontal;
             if (items != null && IsHandleCreated && Config.Animation)

@@ -76,6 +76,8 @@ namespace AntdUI
             }
         }
 
+        #region AntList
+
         public void Binding<T>(AntList<T> list)
         {
             dataOne = true;
@@ -173,6 +175,98 @@ namespace AntdUI
             LoadLayout();
             Invalidate();
         }
+
+        #endregion
+
+        #region BindingList
+
+        public void Binding<T>(BindingList<T> list)
+        {
+            dataOne = true;
+            if (list == null) return;
+            list.ListChanged += (Sender, Args) =>
+            {
+                BindingItem<T>(Sender, Args);
+            };
+            DataSource = list;
+        }
+        void BindingItem<T>(object? sender, ListChangedEventArgs args)
+        {
+            switch (args.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                    BindingItemAdded<T>(sender, args.NewIndex);
+                    break;
+                case ListChangedType.ItemDeleted:
+                    BindingItemDeleted<T>(sender, args.NewIndex);
+                    break;
+                case ListChangedType.ItemChanged:
+                    BindingItemChanged<T>(sender, args.NewIndex);
+                    break;
+                case ListChangedType.Reset:
+                    if (dataTmp == null) return;
+                    dataTmp.rows = new IRow[0];
+                    LoadLayout();
+                    Invalidate();
+                    break;
+                case ListChangedType.ItemMoved:
+                default:
+                    if (sender is IList<T> list) DataSource = list;
+                    break;
+            }
+        }
+        void BindingItemAdded<T>(object? sender, int i)
+        {
+            if (dataTmp == null) return;
+            if (sender is IList<T> list)
+            {
+                var row = list[i];
+                if (row == null) return;
+                var cells = GetRow(row, dataTmp.columns.Length);
+                if (cells.Count == 0) return;
+                int len = dataTmp.rows.Length + 1;
+                if (len < i) return;
+                var rows = new List<IRow>(len);
+                rows.AddRange(dataTmp.rows);
+                rows.Insert(i, new IRow(i, row, cells));
+                dataTmp.rows = ChangeList(rows);
+                LoadLayout();
+                Invalidate();
+            }
+        }
+        void BindingItemChanged<T>(object? sender, int i)
+        {
+            if (dataTmp == null) return;
+            if (sender is IList<T> list)
+            {
+                var row = list[i];
+                if (row == null) return;
+                var cells = GetRow(row, dataTmp.columns.Length);
+                if (cells.Count == 0) return;
+                int len = dataTmp.rows.Length;
+                var rows = new List<IRow>(len);
+                rows.AddRange(dataTmp.rows);
+                rows[i] = new IRow(i, row, cells);
+                dataTmp.rows = ChangeList(rows);
+                LoadLayout();
+                Invalidate();
+            }
+        }
+        void BindingItemDeleted<T>(object? sender, int i)
+        {
+            if (dataTmp == null) return;
+            if (sender is IList<T> list)
+            {
+                var rows = new List<IRow>(dataTmp.rows.Length);
+                rows.AddRange(dataTmp.rows);
+                rows.RemoveAt(i);
+                dataTmp.rows = ChangeList(rows);
+                LoadLayout();
+                Invalidate();
+            }
+        }
+
+        #endregion
 
         IRow[] ChangeList(List<IRow> rows)
         {

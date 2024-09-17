@@ -132,6 +132,23 @@ namespace AntdUI
             }
         }
 
+        #region 光标
+
+        /// <summary>
+        /// 光标颜色
+        /// </summary>
+        [Description("光标颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? CaretColor { get; set; }
+
+        /// <summary>
+        /// 光标速度
+        /// </summary>
+        [Description("光标速度"), Category("外观"), DefaultValue(1000)]
+        public int CaretSpeed { get; set; } = 1000;
+
+        #endregion
+
         #region 边框
 
         internal float borderWidth = 1F;
@@ -643,8 +660,8 @@ namespace AntdUI
         /// <summary>
         /// 密码可以粘贴
         /// </summary>
-        [Description("密码可以粘贴"), Category("行为"), DefaultValue(false)]
-        public bool PasswordPaste { get; set; }
+        [Description("密码可以粘贴"), Category("行为"), DefaultValue(true)]
+        public bool PasswordPaste { get; set; } = true;
 
         void SetPassWord()
         {
@@ -973,6 +990,7 @@ namespace AntdUI
 
         internal bool ReadShowCaret = false;
         bool showCaret = false;
+        bool showCaretFlag = false;
         internal bool ShowCaret
         {
             get => showCaret;
@@ -980,8 +998,10 @@ namespace AntdUI
             {
                 if (showCaret == value) return;
                 showCaret = value;
+                CaretPrint?.Dispose();
                 if (IsHandleCreated)
                 {
+                    showCaretFlag = true;
                     if (showCaret)
                     {
                         if (ReadShowCaret)
@@ -989,21 +1009,26 @@ namespace AntdUI
                             showCaret = false;
                             return;
                         }
-                        Win32.CreateCaret(Handle, IntPtr.Zero, CurrentCaret.Width, CurrentCaret.Height);
-                        Win32.ShowCaret(Handle);
+                        CaretPrint = new ITask(this, () =>
+                        {
+                            showCaretFlag = !showCaretFlag;
+                            Invalidate();
+                            return showCaret;
+                        }, CaretSpeed);
                         SetCaretPostion();
                     }
                     else
                     {
-                        Win32.HideCaret(Handle);
-                        Win32.DestroyCaret();
+                        CaretPrint = null;
                         Invalidate();
                     }
                 }
             }
         }
 
-        internal Rectangle CurrentCaret = new Rectangle(0, 0, 1, 0);
+        ITask? CaretPrint;
+
+        internal Rectangle CurrentCaret = new Rectangle(-1, -1000, 1, 0);
 
         #region 得到光标位置
 
@@ -1138,7 +1163,6 @@ namespace AntdUI
                         if (textalign == HorizontalAlignment.Center) CurrentCaret.X = rect_text.X + rect_text.Width / 2;
                         else if (textalign == HorizontalAlignment.Right) CurrentCaret.X = rect_text.Right;
                     }
-                    Win32.SetCaretPos(CurrentCaret.X - scrollx, CurrentCaret.Y - scrolly);
                 }
                 else
                 {
@@ -1177,9 +1201,10 @@ namespace AntdUI
                         }
                     }
                     if (ModeRange) ModeRangeCaretPostion(false);
-                    Win32.SetCaretPos(CurrentCaret.X - scrollx, CurrentCaret.Y - scrolly);
                     ScrollTo(r);
                 }
+                showCaretFlag = true;
+                Invalidate();
             }
         }
 
