@@ -298,6 +298,13 @@ namespace AntdUI
                         }
                     }
                 }
+                if (showCaret && showCaretFlag)
+                {
+                    using (var brush = new SolidBrush(CaretColor ?? _fore))
+                    {
+                        g.FillRectangle(brush, CurrentCaret);
+                    }
+                }
                 g.ResetTransform();
             }
             else if (placeholderText != null && showplaceholder)
@@ -399,7 +406,6 @@ namespace AntdUI
                 if (scrollx == value) return;
                 scrollx = value;
                 Invalidate();
-                if (showCaret) Win32.SetCaretPos(CurrentCaret.X - scrollx, CurrentCaret.Y - scrolly);
             }
         }
         int ScrollY
@@ -411,8 +417,8 @@ namespace AntdUI
                 if (value < 0) value = 0;
                 if (scrolly == value) return;
                 scrolly = value;
+                showCaretFlag = true;
                 Invalidate();
-                if (showCaret) Win32.SetCaretPos(CurrentCaret.X - scrollx, CurrentCaret.Y - scrolly);
             }
         }
 
@@ -421,15 +427,45 @@ namespace AntdUI
         {
             if (ScrollYShow)
             {
-                int y = CurrentCaret.Y - scrolly;
-                if (y < rect_text.Y) ScrollY -= rect_text.Height;
-                else if (y + CurrentCaret.Height > rect_text.Height) ScrollY += rect_text.Height;
+                int tosize = CurrentCaret.Height;
+                while (true)
+                {
+                    int y = CurrentCaret.Y - scrolly;
+                    if (y < rect_text.Y)
+                    {
+                        int value = ScrollY - tosize;
+                        if (value < 0) return;
+                        ScrollY = value;
+                    }
+                    else if (y + CurrentCaret.Height > rect_text.Height)
+                    {
+                        int value = ScrollY + tosize;
+                        if (value > ScrollYMax) return;
+                        ScrollY = value;
+                    }
+                    else return;
+                }
             }
             else if (ScrollXShow)
             {
-                int x = CurrentCaret.X - scrollx;
-                if (x < rect_text.X) ScrollX -= r.Width;
-                else if (x + CurrentCaret.Width > rect_text.Width) ScrollX += r.Width;
+                int tosize = r.Width / 2;
+                while (true)
+                {
+                    int x = CurrentCaret.X - scrollx;
+                    if (x < rect_text.X)
+                    {
+                        int value = ScrollX - tosize;
+                        if (value < 0) return;
+                        ScrollX = value;
+                    }
+                    else if (x + CurrentCaret.Width > rect_text.Width)
+                    {
+                        int value = ScrollX + tosize;
+                        if (value > ScrollXMax) return;
+                        ScrollX = value;
+                    }
+                    else return;
+                }
             }
             else ScrollX = ScrollY = 0;
         }
