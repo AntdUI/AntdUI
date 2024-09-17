@@ -101,9 +101,10 @@ Winform UI library use Ant Design 5.0
 ➡️| **MsgList** Friend message list | ✅ | ❎ |
 ➡️| **ChatList** Chat bubble list | ✅ | ❎ |
 ||||
-⬇️| Other `4` | Animation | Disable |
+⬇️| Other `5` | Animation | Disable |
 ➡️| [**WindowBar**](https://gitee.com/antdui/AntdUI/wikis/控件/WindowBar) | ✅ | ❎ |
 ➡️| [**Battery**](https://gitee.com/antdui/AntdUI/wikis/控件/Battery) | ✅ | ❎ |
+➡️| [**Signal**](https://gitee.com/antdui/AntdUI/wikis/控件/Signal) | ✅ | ❎ |
 ➡️| [**ContextMenuStrip**](https://gitee.com/antdui/AntdUI/wikis/控件/ContextMenuStrip) | ✅ | ❎ |
 ➡️| **Image3D** | ✅ | ❎ |
 
