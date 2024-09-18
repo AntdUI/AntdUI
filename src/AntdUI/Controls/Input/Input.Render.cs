@@ -298,13 +298,6 @@ namespace AntdUI
                         }
                     }
                 }
-                if (showCaret && showCaretFlag)
-                {
-                    using (var brush = new SolidBrush(CaretColor ?? _fore))
-                    {
-                        g.FillRectangle(brush, CurrentCaret);
-                    }
-                }
                 g.ResetTransform();
             }
             else if (placeholderText != null && showplaceholder)
@@ -313,6 +306,16 @@ namespace AntdUI
                 {
                     g.DrawStr(placeholderText, Font, fore, rect_text, sf_placeholder);
                 }
+            }
+
+            if (showCaret && showCaretFlag)
+            {
+                g.TranslateTransform(-ScrollX, -ScrollY);
+                using (var brush = new SolidBrush(CaretColor ?? _fore))
+                {
+                    g.FillRectangle(brush, CurrentCaret);
+                }
+                g.ResetTransform();
             }
         }
 

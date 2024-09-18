@@ -130,7 +130,7 @@ namespace AntdUI
 
         #endregion
 
-        Color fillfully { get; set; } = Color.FromArgb(0, 210, 121);
+        Color fillfully = Color.FromArgb(0, 210, 121);
         [Description("满电颜色"), Category("外观"), DefaultValue(typeof(Color), "0, 210, 121")]
         public Color FillFully
         {

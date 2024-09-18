@@ -267,7 +267,7 @@ namespace AntdUI
                     rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
                     rect_d_r = new Rectangle(rect_d_l.Right + CurrentCaret.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
                 }
-                CurrentCaret.Location = rect_text.Location;
+                SetCaretXY(rect_text.X, rect_text.Y);
             }
             else
             {

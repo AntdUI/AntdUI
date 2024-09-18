@@ -245,6 +245,18 @@ namespace AntdUI
             get => suffixSvg != null || suffix != null;
         }
 
+        /// <summary>
+        /// 超出文字显示 Tooltip
+        /// </summary>
+        [Description("超出文字显示 Tooltip"), Category("外观"), DefaultValue(true)]
+        public bool ShowTooltip { get; set; } = true;
+
+        /// <summary>
+        /// 超出文字提示配置
+        /// </summary>
+        [Browsable(false)]
+        public TooltipConfig? TooltipConfig { get; set; }
+
         #endregion
 
         #region 阴影
@@ -562,11 +574,11 @@ namespace AntdUI
         {
             tooltipForm?.Close();
             tooltipForm = null;
-            if (ellipsis && text != null)
+            if (ellipsis && ShowTooltip && text != null)
             {
                 if (tooltipForm == null)
                 {
-                    tooltipForm = new TooltipForm(this, text, new TooltipConfig
+                    tooltipForm = new TooltipForm(this, text, TooltipConfig ?? new TooltipConfig
                     {
                         Font = Font,
                         ArrowAlign = TAlign.Top,

@@ -50,6 +50,15 @@ namespace AntdUI
             }
         }
 
+        [Description("满格颜色"), Category("外观"), DefaultValue(null)]
+        public Color? FillFully { get; set; }
+
+        [Description("警告颜色"), Category("外观"), DefaultValue(null)]
+        public Color? FillWarn { get; set; }
+
+        [Description("危险颜色"), Category("外观"), DefaultValue(null)]
+        public Color? FillDanger { get; set; }
+
         int vol = 0;
         /// <summary>
         /// 信号强度
@@ -125,7 +134,7 @@ namespace AntdUI
                 else if (vol == 1)
                 {
                     using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
-                    using (var brush = new SolidBrush(Style.Db.Error))
+                    using (var brush = new SolidBrush(FillDanger ?? Style.Db.Error))
                     {
                         g.FillRectangle(brush, rect_1);
                         g.FillRectangle(brush_bg, rect_2);
@@ -137,7 +146,7 @@ namespace AntdUI
                 else if (vol == 2)
                 {
                     using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
-                    using (var brush = new SolidBrush(Style.Db.Error))
+                    using (var brush = new SolidBrush(FillDanger ?? Style.Db.Error))
                     {
                         g.FillRectangle(brush, rect_1);
                         g.FillRectangle(brush, rect_2);
@@ -149,7 +158,7 @@ namespace AntdUI
                 else if (vol == 3)
                 {
                     using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
-                    using (var brush = new SolidBrush(Style.Db.Warning))
+                    using (var brush = new SolidBrush(FillWarn ?? Style.Db.Warning))
                     {
                         g.FillRectangle(brush, rect_1);
                         g.FillRectangle(brush, rect_2);
@@ -161,7 +170,7 @@ namespace AntdUI
                 else if (vol == 4)
                 {
                     using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
-                    using (var brush = new SolidBrush(Style.Db.Success))
+                    using (var brush = new SolidBrush(FillFully ?? Style.Db.Success))
                     {
                         g.FillRectangle(brush, rect_1);
                         g.FillRectangle(brush, rect_2);
@@ -172,7 +181,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    using (var brush = new SolidBrush(Style.Db.Success))
+                    using (var brush = new SolidBrush(FillFully ?? Style.Db.Success))
                     {
                         g.FillRectangle(brush, rect_1);
                         g.FillRectangle(brush, rect_2);
@@ -211,7 +220,7 @@ namespace AntdUI
                 else if (vol == 1)
                 {
                     using (var pen = new Pen(fill ?? Style.Db.FillQuaternary, onew))
-                    using (var brush = new SolidBrush(Style.Db.Error))
+                    using (var brush = new SolidBrush(FillDanger ?? Style.Db.Error))
                     {
                         g.DrawArc(pen, rect_1, -135, 90);
                         g.DrawArc(pen, rect_2, -135, 90);
@@ -221,8 +230,8 @@ namespace AntdUI
                 else if (vol == 2)
                 {
                     using (var pen = new Pen(fill ?? Style.Db.FillQuaternary, onew))
-                    using (var penw = new Pen(Style.Db.Warning, onew))
-                    using (var brush = new SolidBrush(Style.Db.Warning))
+                    using (var brush = new SolidBrush(FillWarn ?? Style.Db.Warning))
+                    using (var penw = new Pen(brush.Color, onew))
                     {
                         g.DrawArc(pen, rect_1, -135, 90);
                         g.DrawArc(pen, rect_2, -135, 90);
@@ -232,8 +241,8 @@ namespace AntdUI
                 else if (vol == 3)
                 {
                     using (var pen = new Pen(fill ?? Style.Db.FillQuaternary, onew))
-                    using (var penw = new Pen(Style.Db.Warning, onew))
-                    using (var brush = new SolidBrush(Style.Db.Warning))
+                    using (var brush = new SolidBrush(FillWarn ?? Style.Db.Warning))
+                    using (var penw = new Pen(brush.Color, onew))
                     {
                         g.DrawArc(pen, rect_1, -135, 90);
                         g.DrawArc(penw, rect_2, -135, 90);
@@ -242,7 +251,7 @@ namespace AntdUI
                 }
                 else if (vol == 4)
                 {
-                    using (var pen = new Pen(Style.Db.Success, onew))
+                    using (var pen = new Pen(FillFully ?? Style.Db.Success, onew))
                     using (var brush = new SolidBrush(pen.Color))
                     {
                         g.DrawArc(pen, rect_1, -135, 90);
@@ -252,7 +261,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    using (var pen = new Pen(Style.Db.SuccessActive, onew))
+                    using (var pen = new Pen(FillFully ?? Style.Db.SuccessActive, onew))
                     using (var brush = new SolidBrush(pen.Color))
                     {
                         g.DrawArc(pen, rect_1, -135, 90);

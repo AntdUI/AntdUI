@@ -38,7 +38,7 @@ namespace AntdUI
             UpdateStyles();
 
             Resizable = false;
-
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             config = _config;
             if (config.Form != null) TopMost = config.Form.TopMost;
             close_button = new ITaskOpacity(this);
@@ -134,12 +134,6 @@ namespace AntdUI
                 Controls.Add(panel_main);
                 panel_main.MouseMove += Window_MouseDown;
             }
-            var tmp = new System.Windows.Forms.Panel
-            {
-                Location = new Point(386, 62 + config.BtnHeight),
-                Size = new Size(60, 90)
-            };
-            Controls.Add(tmp);
 
             if (config.Keyboard)
             {
@@ -301,7 +295,6 @@ namespace AntdUI
                     return new RectangleF[0];
                 }
             });
-            tmp.Location = new Point(Width - 30, Height - 30);
             ResumeLayout();
             config.Layered = this;
         }
