@@ -1030,6 +1030,29 @@ namespace AntdUI
 
         internal Rectangle CurrentCaret = new Rectangle(-1, -1000, 1, 0);
 
+        internal void SetCaretX(int x)
+        {
+            if (CurrentCaret.X == x && showCaretFlag) return;
+            CurrentCaret.X = x;
+            showCaretFlag = true;
+            Invalidate();
+        }
+        internal void SetCaretY(int y)
+        {
+            if (CurrentCaret.Y == y && showCaretFlag) return;
+            CurrentCaret.Y = y;
+            showCaretFlag = true;
+            Invalidate();
+        }
+        internal void SetCaretXY(int x, int y)
+        {
+            if (CurrentCaret.X == x && CurrentCaret.Y == y && showCaretFlag) return;
+            CurrentCaret.X = x;
+            CurrentCaret.Y = y;
+            showCaretFlag = true;
+            Invalidate();
+        }
+
         #region 得到光标位置
 
         /// <summary>
@@ -1160,8 +1183,8 @@ namespace AntdUI
                     if (ModeRange) ModeRangeCaretPostion(true);
                     else
                     {
-                        if (textalign == HorizontalAlignment.Center) CurrentCaret.X = rect_text.X + rect_text.Width / 2;
-                        else if (textalign == HorizontalAlignment.Right) CurrentCaret.X = rect_text.Right;
+                        if (textalign == HorizontalAlignment.Center) SetCaretX(rect_text.X + rect_text.Width / 2);
+                        else if (textalign == HorizontalAlignment.Right) SetCaretX(rect_text.Right);
                     }
                 }
                 else
@@ -1171,8 +1194,7 @@ namespace AntdUI
                     {
                         var it = cache_font[cache_font.Length - 1];
                         r = it.rect;
-                        CurrentCaret.X = r.Right;
-                        CurrentCaret.Y = r.Y;
+                        SetCaretXY(r.Right, r.Y);
                     }
                     else
                     {
@@ -1183,21 +1205,18 @@ namespace AntdUI
                             {
                                 it = cache_font[PosIndex - 1];
                                 r = it.rect;
-                                CurrentCaret.X = r.Right;
-                                CurrentCaret.Y = r.Y;
+                                SetCaretXY(r.Right, r.Y);
                             }
                             else
                             {
                                 r = it.rect_old;
-                                CurrentCaret.X = r.X;
-                                CurrentCaret.Y = r.Y;
+                                SetCaretXY(r.X, r.Y);
                             }
                         }
                         else
                         {
                             r = it.rect;
-                            CurrentCaret.X = r.X;
-                            CurrentCaret.Y = r.Y;
+                            SetCaretXY(r.X, r.Y);
                         }
                     }
                     if (ModeRange) ModeRangeCaretPostion(false);
