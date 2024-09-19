@@ -316,6 +316,7 @@ namespace AntdUI
                             rect_left_txts = _rect_left_txt.ToArray();
                             rect_left_dels = _rect_left_del.ToArray();
                             rect_lefts = _rect_left.ToArray();
+                            if (_rect_left_txt.Count == 1) return size2.Width + gap;
                             return use + size2.Width + gap;
                         }
 
@@ -352,46 +353,49 @@ namespace AntdUI
 
         protected override void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
-            if (selectedValue.Length > 0 && rect_lefts.Length > 0 && style_left.Length == rect_lefts.Length)
+            if (selectedValue.Length > 0 && style_left.Length == rect_lefts.Length)
             {
                 using (var brush = new SolidBrush(Style.Db.TagDefaultColor))
                 {
-                    for (int i = 0; i < rect_lefts.Length; i++)
+                    if (rect_lefts.Length > 0)
                     {
-                        var it = selectedValue[i];
-                        var style = style_left[i];
-                        using (var path = rect_lefts[i].RoundPath(radius))
+                        for (int i = 0; i < rect_lefts.Length; i++)
                         {
-                            if (style == null)
+                            var it = selectedValue[i];
+                            var style = style_left[i];
+                            using (var path = rect_lefts[i].RoundPath(radius))
                             {
-                                using (var brushbg = new SolidBrush(Style.Db.TagDefaultBg))
+                                if (style == null)
                                 {
-                                    g.FillPath(brushbg, path);
-                                }
-                                var rect_del = rect_left_dels[i];
-                                if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
-                                g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
-                            }
-                            else
-                            {
-                                using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Style.Db.TagDefaultBg))
-                                {
-                                    g.FillPath(brushbg, path);
-                                }
-                                if (style.TagFore.HasValue)
-                                {
-                                    var rect_del = rect_left_dels[i];
-                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, style.TagFore.Value);
-                                    using (var brushf = new SolidBrush(style.TagFore.Value))
+                                    using (var brushbg = new SolidBrush(Style.Db.TagDefaultBg))
                                     {
-                                        g.DrawStr(it.ToString(), Font, brushf, rect_left_txts[i], sf_center);
+                                        g.FillPath(brushbg, path);
                                     }
-                                }
-                                else
-                                {
                                     var rect_del = rect_left_dels[i];
                                     if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
                                     g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
+                                }
+                                else
+                                {
+                                    using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Style.Db.TagDefaultBg))
+                                    {
+                                        g.FillPath(brushbg, path);
+                                    }
+                                    if (style.TagFore.HasValue)
+                                    {
+                                        var rect_del = rect_left_dels[i];
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, style.TagFore.Value);
+                                        using (var brushf = new SolidBrush(style.TagFore.Value))
+                                        {
+                                            g.DrawStr(it.ToString(), Font, brushf, rect_left_txts[i], sf_center);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var rect_del = rect_left_dels[i];
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
+                                        g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
+                                    }
                                 }
                             }
                         }
