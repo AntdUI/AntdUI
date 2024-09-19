@@ -58,7 +58,7 @@ namespace AntdUI
             }
         }
 
-        protected virtual bool UseMessageFilter { get => false; }
+        protected virtual bool UseMessageFilter => false;
         void HandMessage()
         {
             ReadMessage = winState == WState.Restore && resizable;

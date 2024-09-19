@@ -52,7 +52,7 @@ namespace AntdUI
 
         string? text = null;
         [Description("文字"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        public override string? Text
         {
             get => text;
             set
@@ -60,6 +60,7 @@ namespace AntdUI
                 if (text == value) return;
                 text = value;
                 Invalidate();
+                OnTextChanged(EventArgs.Empty);
             }
         }
 

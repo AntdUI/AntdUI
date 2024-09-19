@@ -106,7 +106,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        internal override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -160,19 +160,19 @@ namespace AntdUI
 
         protected override void OnGotFocus(EventArgs e)
         {
-            if (FocusExpandDropdown) TextFocus = true;
             base.OnGotFocus(e);
+            if (FocusExpandDropdown) TextFocus = true;
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
+            base.OnLostFocus(e);
             TextFocus = false;
             if (IsHandleCreated)
             {
                 if (DateTime.TryParse("1997-1-1 " + Text, out var _d)) Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
                 else Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
             }
-            base.OnLostFocus(e);
         }
 
         #region 动画
@@ -186,23 +186,19 @@ namespace AntdUI
 
         #region 鼠标
 
-        internal override void OnClearValue()
+        protected override void OnClearValue()
         {
             Value = new TimeSpan(0, 0, 0);
         }
-        protected override void OnMouseClick(MouseEventArgs e)
+
+        protected override void OnFocusClick(bool SetFocus)
         {
-            if (e.Button == MouseButtons.Left && _mouseHover)
+            if (HasFocus)
             {
-                if (HasFocus)
-                {
-                    if (textFocus) return;
-                    TextFocus = !textFocus;
-                }
-                else Focus();
-                return;
+                if (textFocus) return;
+                TextFocus = !textFocus;
             }
-            base.OnMouseClick(e);
+            else Focus();
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)

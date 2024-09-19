@@ -22,7 +22,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -37,7 +36,7 @@ namespace AntdUI
     {
         #region 属性
 
-        internal override bool inhibitInput { get => _list; }
+        protected override bool BanInput => _list;
 
         bool _list = false;
         /// <summary>
@@ -91,6 +90,12 @@ namespace AntdUI
         /// </summary>
         [Description("焦点时展开下拉"), Category("行为"), DefaultValue(true)]
         public bool FocusExpandDropdown { get; set; } = true;
+
+        /// <summary>
+        /// 点击切换下拉
+        /// </summary>
+        [Description("点击切换下拉"), Category("行为"), DefaultValue(true)]
+        public bool ClickSwitchDropdown { get; set; } = true;
 
         #region 数据
 
@@ -346,7 +351,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        internal override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -467,46 +472,36 @@ namespace AntdUI
 
         protected override void OnGotFocus(EventArgs e)
         {
-            if (ReadShowCaret)
-            {
-                base.OnGotFocus(e);
-                return;
-            }
-            if (FocusExpandDropdown) TextFocus = true;
             base.OnGotFocus(e);
+            if (ReadShowCaret) return;
+            if (FocusExpandDropdown) TextFocus = true;
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
-            TextFocus = false;
             base.OnLostFocus(e);
+            TextFocus = false;
         }
 
         #endregion
 
         #region 鼠标
 
-        internal override void OnClearValue()
+        protected override void OnClearValue()
         {
             if (selectedIndex > -1 || selectedValue != null || !isempty)
             {
                 ChangeValueNULL();
                 Invalidate();
             }
-            else ClickDown();
         }
 
-        protected override void OnMouseClick(MouseEventArgs e)
+        protected override void OnFocusClick(bool SetFocus)
         {
-            ClickDown();
-            base.OnMouseClick(e);
-        }
-
-        void ClickDown()
-        {
-            if (_list)
+            if (_list) TextFocus = !textFocus;
+            else if (ClickSwitchDropdown)
             {
-                Focus();
+                if (SetFocus) return;
                 TextFocus = !textFocus;
             }
             else
@@ -598,10 +593,26 @@ namespace AntdUI
 
         public object Tag { get; set; }
 
-        public override string ToString()
-        {
-            return Text;
-        }
+        #region 标签
+
+        /// <summary>
+        /// 标签文字颜色
+        /// </summary>
+        public Color? TagFore { get; set; }
+
+        /// <summary>
+        /// 标签背景颜色
+        /// </summary>
+        public Color? TagBack { get; set; }
+
+        /// <summary>
+        /// 标签背景渐变色
+        /// </summary>
+        public string? TagBackExtend { get; set; }
+
+        #endregion
+
+        public override string ToString() => Text;
     }
     public class GroupSelectItem : ISelectItem
     {
@@ -727,7 +738,7 @@ namespace AntdUI
         internal bool Group { get; set; }
         internal bool NoIndex { get; set; }
 
-        internal bool ShowAndID { get => ID == -1 || !Show; }
+        internal bool ShowAndID => ID == -1 || !Show;
 
         internal Rectangle arr_rect { get; set; }
 

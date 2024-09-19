@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Drawing;
 
 namespace AntdUI
@@ -239,38 +238,6 @@ namespace AntdUI
                 OnPropertyChanged(true);
             }
         }
-
-        #region Obsolete
-
-        [Obsolete("请使用 Icon 代替")]
-        public Image? Image
-        {
-            get => Icon;
-            set => Icon = value;
-        }
-
-        [Obsolete("请使用 IconSvg 代替")]
-        public string? ImageSvg
-        {
-            get => IconSvg;
-            set => IconSvg = value;
-        }
-
-        [Obsolete("请使用 IconHover 代替")]
-        public Image? ImageHover
-        {
-            get => IconHover;
-            set => IconHover = value;
-        }
-
-        [Obsolete("请使用 IconHoverSvg 代替")]
-        public string? ImageHoverSvg
-        {
-            get => IconHoverSvg;
-            set => IconHoverSvg = value;
-        }
-
-        #endregion
 
         #endregion
 

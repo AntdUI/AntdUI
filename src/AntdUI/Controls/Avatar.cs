@@ -64,7 +64,7 @@ namespace AntdUI
         /// 文本
         /// </summary>
         [Description("文本"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        public override string? Text
         {
             get => text;
             set
@@ -73,6 +73,7 @@ namespace AntdUI
                 if (value != null && value.Length > 1) value = value.Substring(0, 1);
                 text = value;
                 Invalidate();
+                OnTextChanged(EventArgs.Empty);
             }
         }
 

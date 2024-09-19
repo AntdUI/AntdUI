@@ -73,7 +73,7 @@ namespace AntdUI
         /// 水印文本
         /// </summary>
         [Browsable(false), Description("水印文本"), Category("行为"), DefaultValue(null)]
-        public override string? PlaceholderText { get => null; }
+        public override string? PlaceholderText => null;
 
         string dateFormat = "yyyy-MM-dd";
         bool ShowTime = false;
@@ -244,7 +244,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        internal override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -326,14 +326,15 @@ namespace AntdUI
 
         protected override void OnGotFocus(EventArgs e)
         {
+            base.OnGotFocus(e);
             if (!StartFocused && !EndFocused) StartFocused = true;
             StartEndFocused();
             if (FocusExpandDropdown) TextFocus = true;
-            base.OnGotFocus(e);
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
+            base.OnLostFocus(e);
             TextFocus = StartFocused = EndFocused = false;
             StartEndFocused();
             AnimationBarValue = RectangleF.Empty;
@@ -347,7 +348,6 @@ namespace AntdUI
                     if (DateTime.TryParse(stext, out var date_s) && DateTime.TryParse(etext, out var date_e)) Value = new DateTime[] { date_s, date_e };
                 }
             }
-            base.OnLostFocus(e);
         }
 
         #region 动画
@@ -361,24 +361,16 @@ namespace AntdUI
 
         #region 鼠标
 
-        internal override void OnClearValue()
-        {
-            Value = null;
-        }
+        protected override void OnClearValue() => Value = null;
 
-        protected override void OnMouseClick(MouseEventArgs e)
+        protected override void OnFocusClick(bool SetFocus)
         {
-            if (e.Button == MouseButtons.Left && _mouseHover)
+            if (HasFocus)
             {
-                if (HasFocus)
-                {
-                    if (textFocus) return;
-                    TextFocus = !textFocus;
-                }
-                else Focus();
-                return;
+                if (textFocus) return;
+                TextFocus = !textFocus;
             }
-            base.OnMouseClick(e);
+            else Focus();
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
@@ -457,7 +449,7 @@ namespace AntdUI
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        internal override bool IMouseDown(Point e)
+        protected override bool IMouseDown(Point e)
         {
             if (rect_d_l.Contains(e) || rect_d_ico.Contains(e))
             {
@@ -478,8 +470,8 @@ namespace AntdUI
 
         #region 渲染
 
-        internal override bool ModeRange { get => true; }
-        internal override void ModeRangeCaretPostion(bool Null)
+        protected override bool ModeRange => true;
+        protected override void ModeRangeCaretPostion(bool Null)
         {
             if (Null)
             {
@@ -511,7 +503,7 @@ namespace AntdUI
                 }
             }
         }
-        internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
+        protected override void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
             if ((showS && placeholderS != null) || (showE && placeholderE != null))
             {

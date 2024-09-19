@@ -49,7 +49,7 @@ namespace AntdUI
             get => base.FormBorderStyle;
         }
 
-        bool CanMessageFilter { get => shadow < 4; }
+        bool CanMessageFilter => shadow < 4;
 
         int shadow = 10;
         /// <summary>

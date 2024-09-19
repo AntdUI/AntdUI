@@ -31,15 +31,21 @@ namespace AntdUI
     {
         bool mouseDown = false, mouseDownMove = false;
         Point oldMouseDown;
+        bool MouseDownSetFocus = false;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            Focus();
-            Select();
+            if (HasFocus && (DateTime.Now - HasFocusTime).TotalMilliseconds > 200) MouseDownSetFocus = false;
+            else
+            {
+                MouseDownSetFocus = true;
+                Focus();
+                Select();
+            }
             is_prefix_down = is_suffix_down = false;
             if (e.Button == MouseButtons.Left)
             {
-                if (cache_font != null && e.Clicks > 1 && !inhibitInput)
+                if (cache_font != null && e.Clicks > 1 && !BanInput)
                 {
                     mouseDownMove = mouseDown = false;
 
@@ -81,7 +87,7 @@ namespace AntdUI
                 }
                 mouseDownMove = false;
                 oldMouseDown = e.Location;
-                if (inhibitInput) return;
+                if (BanInput) return;
                 int indeX = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
                 if (ModifierKeys.HasFlag(Keys.Shift))
                 {
@@ -106,11 +112,6 @@ namespace AntdUI
                 if (cache_font != null) mouseDown = true;
                 else if (ModeRange) SetCaretPostion();
             }
-        }
-
-        internal virtual bool IMouseDown(Point e)
-        {
-            return false;
         }
 
         bool hover_clear = false;
@@ -174,15 +175,6 @@ namespace AntdUI
             base.OnMouseWheel(e);
         }
 
-        internal virtual bool IMouseMove(Point e)
-        {
-            return false;
-        }
-
-        internal virtual void OnClearValue()
-        {
-            Text = "";
-        }
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
@@ -221,8 +213,10 @@ namespace AntdUI
                     ScrollX = x;
                 }
             }
+            else OnFocusClick(MouseDownSetFocus);
             mouseDown = false;
         }
+
 
         List<string> sptext = new List<string>{
             "，",
@@ -375,8 +369,6 @@ namespace AntdUI
                 }
             }
         }
-
-        internal virtual void ChangeMouseHover(bool Hover, bool Focus) { }
 
         #endregion
 

@@ -256,10 +256,15 @@ namespace AntdUI
         /// </summary>
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         [Description("文本"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        public override string? Text
         {
             get => button.Text;
-            set => button.Text = value;
+            set
+            {
+                var old = button.Text;
+                button.Text = value;
+                if (old != value) OnTextChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -380,38 +385,6 @@ namespace AntdUI
             get => button.IconPosition;
             set => button.IconPosition = value;
         }
-
-        #region Obsolete
-
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Obsolete("请使用 Icon 代替")]
-        [Description("请使用 Icon 代替"), Category("外观"), DefaultValue(null)]
-        public Image? Image { get => Icon; set => Icon = value; }
-
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Obsolete("请使用 IconSvg 代替")]
-        [Description("请使用 IconSvg 代替"), Category("外观"), DefaultValue(null)]
-        public string? ImageSvg { get => IconSvg; set => IconSvg = value; }
-
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Obsolete("请使用 IconSize 代替")]
-        [Description("请使用 IconSize 代替"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
-        public Size ImageSize { get => IconSize; set => IconSize = value; }
-
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Obsolete("请使用 IconHover 代替")]
-        [Description("请使用 IconHover 代替"), Category("外观"), DefaultValue(null)]
-        public Image? ImageHover { get => IconHover; set => IconHover = value; }
-
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Obsolete("请使用 IconHoverSvg 代替")]
-        [Description("请使用 IconHoverSvg 代替"), Category("外观"), DefaultValue(null)]
-        public string? ImageHoverSvg { get => IconHoverSvg; set => IconHoverSvg = value; }
-
-        [Obsolete("请使用 HasIcon 代替")]
-        public bool HasImage => HasIcon;
-
-        #endregion
 
         #endregion
 

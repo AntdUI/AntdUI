@@ -241,7 +241,7 @@ namespace AntdUI
             return false;
         }
 
-        internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)
+        protected override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)
         {
             if (hover_button.Animation || hover_button.Switch)
             {
@@ -344,7 +344,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        internal override void ChangeMouseHover(bool Hover, bool Focus)
+        protected override void ChangeMouseHover(bool Hover, bool Focus)
         {
             hover_button.Switch = showcontrol && !ReadOnly && (Hover || Focus);
         }
