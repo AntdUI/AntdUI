@@ -245,9 +245,6 @@ namespace AntdUI
 
         #endregion
 
-        internal virtual bool ModeRange { get => false; }
-        internal virtual void ModeRangeCaretPostion(bool Null) { }
-
         internal Rectangle rect_text, rect_l, rect_r;
         internal Rectangle rect_d_ico, rect_d_l, rect_d_r;
 
@@ -539,8 +536,6 @@ namespace AntdUI
             }
             SetCaretPostion();
         }
-        internal virtual bool HasLeft() => false;
-        internal virtual int UseLeft(Rectangle rect, bool delgap) => 0;
 
         #region 最终区域计算
 

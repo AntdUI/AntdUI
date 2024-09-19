@@ -44,7 +44,7 @@ namespace AntdUI
         /// 文本
         /// </summary>
         [Description("文本"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        public override string? Text
         {
             get => text;
             set
@@ -53,6 +53,7 @@ namespace AntdUI
                 text = value;
                 spin_core.Clear();
                 Invalidate();
+                OnTextChanged(EventArgs.Empty);
             }
         }
 

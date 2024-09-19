@@ -84,7 +84,7 @@ namespace AntdUI
 
                 if (enabled)
                 {
-                    using (var brush = new SolidBrush(_back))
+                    using (var brush = backExtend.BrushEx(rect_read, _back))
                     {
                         g.FillPath(brush, path);
                     }
@@ -233,7 +233,6 @@ namespace AntdUI
             else PaintRIcon(g, rect_r);
         }
 
-        internal virtual bool showplaceholder { get => true; }
         void PaintText(Graphics g, Color _fore, int w, int h)
         {
             if (multiline) g.SetClip(rect_text);
@@ -242,7 +241,7 @@ namespace AntdUI
             if (cache_font != null)
             {
                 g.TranslateTransform(-ScrollX, -ScrollY);
-                if (selectionLength > 0 && cache_font.Length > selectionStartTemp && !inhibitInput)
+                if (selectionLength > 0 && cache_font.Length > selectionStartTemp && !BanInput)
                 {
                     try
                     {
@@ -300,9 +299,9 @@ namespace AntdUI
                 }
                 g.ResetTransform();
             }
-            else if (placeholderText != null && showplaceholder)
+            else if (placeholderText != null && ShowPlaceholder)
             {
-                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Style.Db.TextQuaternary))
                 {
                     g.DrawStr(placeholderText, Font, fore, rect_text, sf_placeholder);
                 }
@@ -319,9 +318,9 @@ namespace AntdUI
             }
         }
 
-        internal virtual void PaintRIcon(Graphics g, Rectangle rect) { }
+        protected virtual void PaintRIcon(Graphics g, Rectangle rect) { }
 
-        internal virtual void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive) { }
+        protected virtual void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive) { }
 
         #region 点击动画
 
@@ -437,35 +436,39 @@ namespace AntdUI
                     if (y < rect_text.Y)
                     {
                         int value = ScrollY - tosize;
-                        if (value < 0) return;
                         ScrollY = value;
+                        if (ScrollY != value) return;
+                        System.Threading.Thread.Sleep(50);
                     }
                     else if (y + CurrentCaret.Height > rect_text.Height)
                     {
                         int value = ScrollY + tosize;
-                        if (value > ScrollYMax) return;
                         ScrollY = value;
+                        if (ScrollY != value) return;
+                        System.Threading.Thread.Sleep(50);
                     }
                     else return;
                 }
             }
             else if (ScrollXShow)
             {
-                int tosize = r.Width / 2;
+                int tosize = r.Width;
                 while (true)
                 {
                     int x = CurrentCaret.X - scrollx;
                     if (x < rect_text.X)
                     {
                         int value = ScrollX - tosize;
-                        if (value < 0) return;
                         ScrollX = value;
+                        if (ScrollX != value) return;
+                        System.Threading.Thread.Sleep(50);
                     }
                     else if (x + CurrentCaret.Width > rect_text.Width)
                     {
                         int value = ScrollX + tosize;
-                        if (value > ScrollXMax) return;
                         ScrollX = value;
+                        if (ScrollX != value) return;
+                        System.Threading.Thread.Sleep(50);
                     }
                     else return;
                 }

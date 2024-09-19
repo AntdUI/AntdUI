@@ -65,7 +65,7 @@ namespace AntdUI
 
         #region 背景
 
-        internal Color? back;
+        Color? back;
         /// <summary>
         /// 背景颜色
         /// </summary>
@@ -78,6 +78,22 @@ namespace AntdUI
             {
                 if (back == value) return;
                 back = value;
+                Invalidate();
+            }
+        }
+
+        string? backExtend = null;
+        /// <summary>
+        /// 背景渐变色
+        /// </summary>
+        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        public string? BackExtend
+        {
+            get => backExtend;
+            set
+            {
+                if (backExtend == value) return;
+                backExtend = value;
                 Invalidate();
             }
         }
@@ -411,7 +427,6 @@ namespace AntdUI
             }
         }
 
-        internal virtual bool HasValue { get => false; }
         void OnAllowClear()
         {
             bool _is_clear = !ReadOnly && allowclear && _mouseHover && (!isempty || HasValue);
@@ -531,8 +546,6 @@ namespace AntdUI
         [Description("只读"), Category("行为"), DefaultValue(false)]
         public bool ReadOnly { get; set; }
 
-        internal virtual bool inhibitInput { get => false; }
-
         bool multiline = false;
         /// <summary>
         /// 多行文本
@@ -592,6 +605,8 @@ namespace AntdUI
             }
         }
 
+        #region 水印
+
         string? placeholderText = null;
         /// <summary>
         /// 水印文本
@@ -604,9 +619,44 @@ namespace AntdUI
             {
                 if (placeholderText == value) return;
                 placeholderText = value;
-                Invalidate();
+                if (isempty && ShowPlaceholder) Invalidate();
             }
         }
+
+        Color? placeholderColor = null;
+        /// <summary>
+        /// 水印颜色
+        /// </summary>
+        [Description("水印颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? PlaceholderColor
+        {
+            get => placeholderColor;
+            set
+            {
+                if (placeholderColor == value) return;
+                placeholderColor = value;
+                if (isempty && ShowPlaceholder) Invalidate();
+            }
+        }
+
+        string? placeholderColorExtend = null;
+        /// <summary>
+        /// 水印渐变色
+        /// </summary>
+        [Description("水印渐变色"), Category("外观"), DefaultValue(null)]
+        public string? PlaceholderColorExtend
+        {
+            get => placeholderColorExtend;
+            set
+            {
+                if (placeholderColorExtend == value) return;
+                placeholderColorExtend = value;
+                if (isempty && ShowPlaceholder) Invalidate();
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// 文本最大长度
@@ -831,7 +881,7 @@ namespace AntdUI
 
         void EnterText(string text, bool ismax = true)
         {
-            if (ReadOnly || inhibitInput) return;
+            if (ReadOnly || BanInput) return;
             AddHistoryRecord();
             int len = 0;
             GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
@@ -936,19 +986,21 @@ namespace AntdUI
 
         bool AnimationFocus = false;
         int AnimationFocusValue = 0;
+        DateTime HasFocusTime;
         public bool HasFocus { get; internal set; }
         protected override void OnGotFocus(EventArgs e)
         {
-            HasFocus = true;
             base.OnGotFocus(e);
+            HasFocusTime = DateTime.Now;
+            HasFocus = true;
             ShowCaret = true;
             ExtraMouseDown = true;
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
-            HasFocus = false;
             base.OnLostFocus(e);
+            HasFocus = false;
             ShowCaret = false;
             if (LostFocusClearSelection) SelectionLength = 0;
             ExtraMouseDown = false;
@@ -981,6 +1033,49 @@ namespace AntdUI
             }
             base.WndProc(ref m);
         }
+
+        #endregion
+
+        #region 虚拟
+
+        /// <summary>
+        /// 禁止输入
+        /// </summary>
+        protected virtual bool BanInput => false;
+        protected virtual bool HasValue => false;
+        protected virtual bool ModeRange => false;
+        protected virtual void ModeRangeCaretPostion(bool Null) { }
+
+        /// <summary>
+        /// 是否显示水印
+        /// </summary>
+        protected virtual bool ShowPlaceholder => true;
+        protected virtual bool HasLeft() => false;
+        protected virtual int UseLeft(Rectangle rect, bool delgap) => 0;
+
+        protected virtual void IBackSpaceKey() { }
+
+        protected virtual bool IMouseDown(Point e) => false;
+
+        protected virtual bool IMouseMove(Point e) => false;
+
+        /// <summary>
+        /// 清空值
+        /// </summary>
+        protected virtual void OnClearValue() => Text = "";
+
+        /// <summary>
+        /// 焦点点击
+        /// </summary>
+        /// <param name="SetFocus">是否已经设置过焦点</param>
+        protected virtual void OnFocusClick(bool SetFocus) { }
+
+        /// <summary>
+        /// 改变鼠标状态
+        /// </summary>
+        /// <param name="Hover">移入</param>
+        /// <param name="Focus">焦点</param>
+        protected virtual void ChangeMouseHover(bool Hover, bool Focus) { }
 
         #endregion
 
@@ -1220,7 +1315,7 @@ namespace AntdUI
                         }
                     }
                     if (ModeRange) ModeRangeCaretPostion(false);
-                    ScrollTo(r);
+                    ITask.Run(() => { ScrollTo(r); });
                 }
                 showCaretFlag = true;
                 Invalidate();

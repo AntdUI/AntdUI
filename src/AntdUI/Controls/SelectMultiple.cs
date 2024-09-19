@@ -22,7 +22,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -37,7 +36,7 @@ namespace AntdUI
     {
         #region 属性
 
-        internal override bool inhibitInput { get => _list; }
+        protected override bool BanInput => _list;
 
         bool _list = false;
         /// <summary>
@@ -130,7 +129,7 @@ namespace AntdUI
 
         #region 操作值
 
-        internal override bool HasValue { get => selectedValue.Length > 0; }
+        protected override bool HasValue => selectedValue.Length > 0;
         /// <summary>
         /// 选中值
         /// </summary>
@@ -154,7 +153,7 @@ namespace AntdUI
             }
         }
 
-        internal override bool showplaceholder { get => selectedValue.Length == 0; }
+        protected override bool ShowPlaceholder => selectedValue.Length == 0;
 
         /// <summary>
         /// 全选项目
@@ -211,7 +210,7 @@ namespace AntdUI
             subForm.selectedValue = new List<object>(0);
             subForm.Print();
         }
-        internal override void IBackSpaceKey()
+        protected override void IBackSpaceKey()
         {
             if (selectedValue.Length > 0)
             {
@@ -259,7 +258,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        internal override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -276,24 +275,31 @@ namespace AntdUI
         Rectangle[] rect_lefts = new Rectangle[0];
         Rectangle[] rect_left_txts = new Rectangle[0];
         Rectangle[] rect_left_dels = new Rectangle[0];
+        SelectItem?[] style_left = new SelectItem?[0];
 
-        internal override bool HasLeft() => selectedValue.Length > 0;
+        protected override bool HasLeft() => selectedValue.Length > 0;
 
-        internal override int UseLeft(Rectangle rect_read, bool delgap)
+        protected override int UseLeft(Rectangle rect_read, bool delgap)
         {
             if (selectedValue.Length > 0)
             {
+                var style_dir = new Dictionary<object, SelectItem?>(selectedValue.Length);
                 var enable_dir = new List<object>(selectedValue.Length);
                 if (items != null && items.Count > 0)
                 {
                     foreach (var it in items)
                     {
-                        if (it is SelectItem item && !item.Enable) enable_dir.Add(item.Tag);
+                        if (it is SelectItem item)
+                        {
+                            style_dir.Add(item.Tag, item);
+                            if (!item.Enable) enable_dir.Add(item.Tag);
+                        }
                     }
                 }
                 return Helper.GDI(g =>
                 {
                     int height = g.MeasureString(Config.NullText, Font).Size().Height, del_icon = (int)(height * 0.4);
+                    var _style_left = new List<SelectItem?>(selectedValue.Length);
                     List<Rectangle> _rect_left = new List<Rectangle>(selectedValue.Length), _rect_left_txt = new List<Rectangle>(selectedValue.Length), _rect_left_del = new List<Rectangle>(selectedValue.Length);
                     int y = (rect_read.Height - height) / 2, use = delgap ? 0 : y, gap = (int)(2 * Config.Dpi);
                     for (int i = 0; i < selectedValue.Length; i++)
@@ -306,11 +312,16 @@ namespace AntdUI
                         {
                             //超出
                             _rect_left_txt.Add(new Rectangle(rect_read.X + use, rect_read.Y + y, size2.Width, height));
+                            style_left = _style_left.ToArray();
                             rect_left_txts = _rect_left_txt.ToArray();
                             rect_left_dels = _rect_left_del.ToArray();
                             rect_lefts = _rect_left.ToArray();
+                            if (_rect_left_txt.Count == 1) return size2.Width + gap;
                             return use + size2.Width + gap;
                         }
+
+                        if (style_dir.TryGetValue(it, out var find)) _style_left.Add(find);
+                        else _style_left.Add(null);
                         if (enable_dir.Contains(it) || !canDelete)
                         {
                             var rect = new Rectangle(rect_read.X + use, rect_read.Y + y, size.Width, height);
@@ -330,6 +341,7 @@ namespace AntdUI
                             use += size.Width + height + gap;
                         }
                     }
+                    style_left = _style_left.ToArray();
                     rect_left_txts = _rect_left_txt.ToArray();
                     rect_left_dels = _rect_left_del.ToArray();
                     rect_lefts = _rect_left.ToArray();
@@ -339,25 +351,54 @@ namespace AntdUI
             return 0;
         }
 
-        internal override void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
+        protected override void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
-            if (selectedValue.Length > 0 && rect_lefts.Length > 0)
+            if (selectedValue.Length > 0 && style_left.Length == rect_lefts.Length)
             {
                 using (var brush = new SolidBrush(Style.Db.TagDefaultColor))
                 {
-                    for (int i = 0; i < rect_lefts.Length; i++)
+                    if (rect_lefts.Length > 0)
                     {
-                        var it = selectedValue[i];
-                        using (var path = rect_lefts[i].RoundPath(radius))
+                        for (int i = 0; i < rect_lefts.Length; i++)
                         {
-                            using (var brushbg = new SolidBrush(Style.Db.TagDefaultBg))
+                            var it = selectedValue[i];
+                            var style = style_left[i];
+                            using (var path = rect_lefts[i].RoundPath(radius))
                             {
-                                g.FillPath(brushbg, path);
+                                if (style == null)
+                                {
+                                    using (var brushbg = new SolidBrush(Style.Db.TagDefaultBg))
+                                    {
+                                        g.FillPath(brushbg, path);
+                                    }
+                                    var rect_del = rect_left_dels[i];
+                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
+                                    g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
+                                }
+                                else
+                                {
+                                    using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Style.Db.TagDefaultBg))
+                                    {
+                                        g.FillPath(brushbg, path);
+                                    }
+                                    if (style.TagFore.HasValue)
+                                    {
+                                        var rect_del = rect_left_dels[i];
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, style.TagFore.Value);
+                                        using (var brushf = new SolidBrush(style.TagFore.Value))
+                                        {
+                                            g.DrawStr(it.ToString(), Font, brushf, rect_left_txts[i], sf_center);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var rect_del = rect_left_dels[i];
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
+                                        g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
+                                    }
+                                }
                             }
                         }
-                        var rect_del = rect_left_dels[i];
-                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
-                        g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                     }
                     if (rect_lefts.Length != selectedValue.Length)
                     {
@@ -366,11 +407,12 @@ namespace AntdUI
                 }
             }
         }
-        internal override bool IMouseDown(Point e)
+        protected override bool IMouseDown(Point e)
         {
-            if (selectedValue.Length > 0 && rect_left_dels.Length == selectedValue.Length)
+            if (selectedValue.Length > 0 && rect_left_dels.Length > 0)
             {
-                for (int i = 0; i < selectedValue.Length; i++)
+                int len = selectedValue.Length > rect_left_dels.Length ? rect_left_dels.Length : selectedValue.Length;
+                for (int i = 0; i < len; i++)
                 {
                     if (rect_left_dels[i].Contains(e))
                     {
@@ -389,11 +431,12 @@ namespace AntdUI
             }
             return false;
         }
-        internal override bool IMouseMove(Point e)
+        protected override bool IMouseMove(Point e)
         {
-            if (selectedValue.Length > 0 && rect_left_dels.Length == selectedValue.Length)
+            if (selectedValue.Length > 0 && rect_left_dels.Length > 0)
             {
-                for (int i = 0; i < selectedValue.Length; i++)
+                int len = selectedValue.Length > rect_left_dels.Length ? rect_left_dels.Length : selectedValue.Length;
+                for (int i = 0; i < len; i++)
                 {
                     if (rect_left_dels[i].Contains(e)) return true;
                 }
@@ -463,11 +506,8 @@ namespace AntdUI
             get => textFocus;
             set
             {
-                if (textFocus != value)
-                {
-                    textFocus = value;
-                    subForm?.IClose();
-                }
+                if (textFocus == value) return;
+                textFocus = value;
                 if (value)
                 {
                     if (!ReadOnly && items != null && items.Count > 0)
@@ -490,60 +530,49 @@ namespace AntdUI
                             subForm.Show(this);
                         }
                     }
-                    else { textFocus = false; return; }
+                    else
+                    {
+                        subForm?.IClose();
+                        textFocus = false;
+                    }
                 }
-                else filtertext = "";
+                else
+                {
+                    subForm?.IClose();
+                    filtertext = "";
+                }
             }
         }
 
         protected override void OnGotFocus(EventArgs e)
         {
-            if (ReadShowCaret)
-            {
-                base.OnGotFocus(e);
-                return;
-            }
-            if (FocusExpandDropdown) TextFocus = true;
             base.OnGotFocus(e);
+            if (ReadShowCaret) return;
+            if (FocusExpandDropdown) TextFocus = true;
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
-            TextFocus = false;
             base.OnLostFocus(e);
+            TextFocus = false;
         }
 
         #endregion
 
         #region 鼠标
 
-        internal override void OnClearValue()
+        protected override void OnClearValue()
         {
             if (selectedValue.Length > 0) ClearSelect();
-            else ClickDown();
         }
 
-        protected override void OnMouseClick(MouseEventArgs e)
+        protected override void OnFocusClick(bool SetFocus)
         {
-            ClickDown();
-            base.OnMouseClick(e);
-        }
-
-        void ClickDown()
-        {
-            if (_list)
-            {
-                Focus();
-                TextFocus = !textFocus;
-            }
+            if (_list) TextFocus = !textFocus;
             else
             {
-                if (HasFocus)
-                {
-                    if (textFocus) return;
-                    TextFocus = !textFocus;
-                }
-                else Focus();
+                if (SetFocus) return;
+                TextFocus = !textFocus;
             }
         }
 

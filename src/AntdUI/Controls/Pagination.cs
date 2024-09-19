@@ -798,7 +798,11 @@ namespace AntdUI
                 prog = p;
             }
             internal Rectangle _rect;
-            public Rectangle rect { get => _rect; set => _rect = value; }
+            public Rectangle rect
+            {
+                get => _rect;
+                set => _rect = value;
+            }
 
             public string key { get; set; }
             public int num { get; set; }

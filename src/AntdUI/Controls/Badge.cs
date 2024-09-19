@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -74,7 +75,7 @@ namespace AntdUI
         /// 文本
         /// </summary>
         [Description("文本"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        public override string? Text
         {
             get => text;
             set
@@ -82,6 +83,25 @@ namespace AntdUI
                 if (text == value) return;
                 text = value;
                 has_text = string.IsNullOrEmpty(text);
+                if (BeforeAutoSize()) Invalidate();
+                OnTextChanged(EventArgs.Empty);
+            }
+        }
+
+        StringFormat stringFormat = Helper.SF_ALL(lr: StringAlignment.Near);
+        ContentAlignment textAlign = ContentAlignment.MiddleLeft;
+        /// <summary>
+        /// 文本位置
+        /// </summary>
+        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleLeft)]
+        public ContentAlignment TextAlign
+        {
+            get => textAlign;
+            set
+            {
+                if (textAlign == value) return;
+                textAlign = value;
+                textAlign.SetAlignment(ref stringFormat);
                 Invalidate();
             }
         }
@@ -175,7 +195,7 @@ namespace AntdUI
                 }
                 using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
                 {
-                    g.DrawStr(text, Font, brush, new RectangleF(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), Helper.stringFormatLeft);
+                    g.DrawStr(text, Font, brush, new RectangleF(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
                 }
             }
             this.PaintBadge(g);
@@ -203,6 +223,122 @@ namespace AntdUI
         }
 
         #endregion
+
+        #endregion
+
+        #region 自动大小
+
+        /// <summary>
+        /// 自动大小
+        /// </summary>
+        [Browsable(true)]
+        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        public override bool AutoSize
+        {
+            get => base.AutoSize;
+            set
+            {
+                if (base.AutoSize == value) return;
+                base.AutoSize = value;
+                if (value)
+                {
+                    if (autoSize == TAutoSize.None) autoSize = TAutoSize.Auto;
+                }
+                else autoSize = TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        TAutoSize autoSize = TAutoSize.None;
+        /// <summary>
+        /// 自动大小模式
+        /// </summary>
+        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        public TAutoSize AutoSizeMode
+        {
+            get => autoSize;
+            set
+            {
+                if (autoSize == value) return;
+                autoSize = value;
+                base.AutoSize = autoSize != TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            BeforeAutoSize();
+            base.OnFontChanged(e);
+        }
+
+        public override Size GetPreferredSize(Size proposedSize)
+        {
+            if (autoSize == TAutoSize.None) return base.GetPreferredSize(proposedSize);
+            else if (autoSize == TAutoSize.Width) return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
+            else if (autoSize == TAutoSize.Height) return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
+            return PSize;
+        }
+
+        internal Size PSize
+        {
+            get
+            {
+                return Helper.GDI(g =>
+                {
+                    if (has_text)
+                    {
+                        var font_size = g.MeasureString(Config.NullText, Font).Size();
+                        font_size.Width = font_size.Height;
+                        return font_size;
+                    }
+                    else
+                    {
+                        var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+                        font_size.Width += font_size.Height;
+                        return font_size;
+                    }
+                });
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            BeforeAutoSize();
+            base.OnResize(e);
+        }
+
+        internal bool BeforeAutoSize()
+        {
+            if (autoSize == TAutoSize.None) return true;
+            if (InvokeRequired)
+            {
+                bool flag = false;
+                Invoke(new Action(() =>
+                {
+                    flag = BeforeAutoSize();
+                }));
+                return flag;
+            }
+            var PS = PSize;
+            switch (autoSize)
+            {
+                case TAutoSize.Width:
+                    if (Width == PS.Width) return true;
+                    Width = PS.Width;
+                    break;
+                case TAutoSize.Height:
+                    if (Height == PS.Height) return true;
+                    Height = PS.Height;
+                    break;
+                case TAutoSize.Auto:
+                default:
+                    if (Width == PS.Width && Height == PS.Height) return true;
+                    Size = PS;
+                    break;
+            }
+            return false;
+        }
 
         #endregion
     }

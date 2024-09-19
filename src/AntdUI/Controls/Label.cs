@@ -60,7 +60,7 @@ namespace AntdUI
         /// </summary>
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         [Description("文本"), Category("外观"), DefaultValue(null)]
-        public new string? Text
+        public override string? Text
         {
             get => text;
             set
@@ -68,7 +68,6 @@ namespace AntdUI
                 if (text == value) return;
                 text = value;
                 if (BeforeAutoSize()) Invalidate();
-
                 OnTextChanged(EventArgs.Empty);
             }
         }

@@ -153,7 +153,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        internal override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -215,12 +215,13 @@ namespace AntdUI
 
         protected override void OnGotFocus(EventArgs e)
         {
-            if (FocusExpandDropdown) TextFocus = true;
             base.OnGotFocus(e);
+            if (FocusExpandDropdown) TextFocus = true;
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
+            base.OnLostFocus(e);
             TextFocus = false;
             if (IsHandleCreated)
             {
@@ -239,7 +240,6 @@ namespace AntdUI
                     else Text = "";
                 }
             }
-            base.OnLostFocus(e);
         }
 
         #region 动画
@@ -253,23 +253,16 @@ namespace AntdUI
 
         #region 鼠标
 
-        internal override void OnClearValue()
+        protected override void OnClearValue() => Value = null;
+
+        protected override void OnFocusClick(bool SetFocus)
         {
-            Value = null;
-        }
-        protected override void OnMouseClick(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && _mouseHover)
+            if (HasFocus)
             {
-                if (HasFocus)
-                {
-                    if (textFocus) return;
-                    TextFocus = !textFocus;
-                }
-                else Focus();
-                return;
+                if (textFocus) return;
+                TextFocus = !textFocus;
             }
-            base.OnMouseClick(e);
+            else Focus();
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)

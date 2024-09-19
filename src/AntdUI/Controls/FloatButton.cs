@@ -316,22 +316,6 @@ namespace AntdUI
             /// </summary>
             public int Radius { get; set; } = 6;
 
-            TShape shape = TShape.Round;
-            /// <summary>
-            /// 设置按钮形状
-            /// </summary>
-            [Obsolete("已废弃，请使用 Round")]
-            public TShape Shape
-            {
-                get => shape;
-                set
-                {
-                    if (shape == value) return;
-                    shape = value;
-                    OnPropertyChanged("Shape");
-                }
-            }
-
             bool round = true;
             /// <summary>
             /// 圆角样式
