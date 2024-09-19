@@ -1781,10 +1781,6 @@ namespace AntdUI
                 {
                     foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
                 }
-                else if (control is Collapse collapse)
-                {
-                    foreach (var page in collapse.Items) DpiSuspend(ref dir, page.Controls);
-                }
             }
         }
 
@@ -1802,21 +1798,19 @@ namespace AntdUI
                 {
                     foreach (var page in tabs.Pages) DpiResume(dir, page.Controls);
                 }
-                else if (control is Collapse collapse)
-                {
-                    foreach (var page in collapse.Items) DpiResume(dir, page.Controls);
-                }
             }
         }
 
         static void DpiLS(float dpi, Control control)
         {
-            var size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
+            Size size;
             Point point;
             bool last = false;
-            if (control is Form)
+            if (control is Form form)
             {
                 last = true;
+                var csize = form.ClientSize;
+                size = new Size((int)(csize.Width * dpi), (int)(csize.Height * dpi));
                 var screen = Screen.FromPoint(control.Location);
                 if (size.Width > screen.WorkingArea.Width && size.Height > screen.WorkingArea.Height)
                 {
@@ -1839,7 +1833,11 @@ namespace AntdUI
                     if (point.X < 0 || point.Y < 0) point = control.Location;
                 }
             }
-            else point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
+            else
+            {
+                size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
+                point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
+            }
 
             if (!control.MinimumSize.IsEmpty) control.MinimumSize = new Size((int)(control.MinimumSize.Width * dpi), (int)(control.MinimumSize.Height * dpi));
             if (!control.MaximumSize.IsEmpty) control.MaximumSize = new Size((int)(control.MaximumSize.Width * dpi), (int)(control.MaximumSize.Height * dpi));
@@ -1875,22 +1873,12 @@ namespace AntdUI
                 }
                 return;
             }
-            else if (control is Collapse collapse)
-            {
-                foreach (var page in collapse.Items) DpiLS(dpi, page);
-                if (last)
-                {
-                    control.Size = size;
-                    control.Location = point;
-                }
-                return;
-            }
             else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
 
             DpiLSS(dpi, control);
             if (last)
             {
-                control.Size = size;
+                control.ClientSize = size;
                 control.Location = point;
             }
         }
