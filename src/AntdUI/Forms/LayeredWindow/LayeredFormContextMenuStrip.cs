@@ -460,6 +460,7 @@ namespace AntdUI
         {
             if (scrollY.MouseDown(e.Location))
             {
+                OnTouchDown(e.X, e.Y);
                 select_index = -1;
                 if (e.Button == MouseButtons.Left)
                 {
@@ -482,7 +483,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (scrollY.MouseUp(e.Location))
+            if (scrollY.MouseUp(e.Location) && OnTouchUp())
             {
                 int y = scrollY.Show ? (int)scrollY.Value : 0;
                 foreach (var it in rectsContent)
@@ -577,7 +578,7 @@ namespace AntdUI
         int oldSub = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (scrollY.MouseMove(e.Location))
+            if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
             {
                 int count = 0, hand = -1;
                 int y = scrollY.Show ? (int)scrollY.Value : 0;
@@ -637,6 +638,7 @@ namespace AntdUI
             scrollY.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
+        protected override void OnTouchScrollY(int value) => scrollY.MouseWheel(value);
 
         ManualResetEvent? resetEvent;
 

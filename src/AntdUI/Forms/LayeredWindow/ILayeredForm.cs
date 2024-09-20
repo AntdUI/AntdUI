@@ -344,6 +344,103 @@ namespace AntdUI
             catch { }
             return count;
         }
+
+        #region 触屏
+
+        bool mdown = false;
+        int mdownd = 0, oldX, oldY;
+        protected virtual void OnTouchDown(int x, int y)
+        {
+            oldMY = 0;
+            oldX = x;
+            oldY = y;
+            if (Config.TouchEnabled)
+            {
+                mdownd = 0;
+                mdown = true;
+            }
+        }
+
+        int oldMY = 0;
+        protected virtual bool OnTouchMove(int x, int y)
+        {
+            if (mdown)
+            {
+                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY);
+                oldMY = moveY;
+                if (mdownd > 0)
+                {
+                    if (mdownd == 1) OnTouchScrollY(-moveY);
+                    else OnTouchScrollX(-moveX);
+                    oldX = x;
+                    oldY = y;
+                    return false;
+                }
+                else if (moveXa > 2 || moveYa > 2)
+                {
+                    if (moveYa > moveXa)
+                    {
+                        mdownd = 1;
+                        OnTouchScrollY(-moveY);
+                    }
+                    else
+                    {
+                        mdownd = 2;
+                        OnTouchScrollX(-moveX);
+                    }
+                    oldX = x;
+                    oldY = y;
+                    return false;
+                }
+            }
+            return true;
+        }
+        protected virtual bool OnTouchUp()
+        {
+            mdown = false;
+            if (mdownd > 0)
+            {
+                if (mdownd == 1)
+                {
+                    int moveY = oldMY, moveYa = Math.Abs(moveY);
+                    if (moveYa > 2)
+                    {
+                        // 缓冲动画
+                        int duration = (int)(moveYa * .1F), incremental = moveYa / 2, sleep = 20;
+                        if (moveY > 0)
+                        {
+                            ITask.Run(() =>
+                            {
+                                while (moveYa > 0)
+                                {
+                                    OnTouchScrollY(-incremental);
+                                    moveYa -= duration;
+                                    System.Threading.Thread.Sleep(sleep);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            ITask.Run(() =>
+                            {
+                                while (moveYa > 0)
+                                {
+                                    OnTouchScrollY(incremental);
+                                    moveYa -= duration;
+                                    System.Threading.Thread.Sleep(sleep);
+                                }
+                            });
+                        }
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+        protected virtual void OnTouchScrollX(int value) { }
+        protected virtual void OnTouchScrollY(int value) { }
+
+        #endregion
     }
 
     internal interface SubLayeredForm

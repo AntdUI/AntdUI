@@ -27,13 +27,16 @@ namespace AntdUI
     {
         #region 鼠标按下
 
+        TCell? cellMouseDown = null;
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            cellMouseDown = null;
             if (ClipboardCopy) Focus();
             if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
             {
                 base.OnMouseDown(e);
                 if (rows == null) return;
+                OnTouchDown(e.X, e.Y);
                 var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out _, out _, out _, out int i_row, out int i_cel, out int mode);
                 if (cel_sel == null) return;
                 else
@@ -57,6 +60,7 @@ namespace AntdUI
                         }
                         var cell = (TCellColumn)it.cells[i_cel];
                         cell.MouseDown = e.Clicks > 1 ? 2 : 1;
+                        cellMouseDown = cell;
                         if (cell.MouseDown == 1 && cell.column is ColumnCheck columnCheck && columnCheck.NoTitle)
                         {
                             if (e.Button == MouseButtons.Left && cell.Contains(r_x, r_y))
@@ -93,6 +97,7 @@ namespace AntdUI
 
         void MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
         {
+            cellMouseDown = cell;
             cell.MouseDown = e.Clicks > 1 ? 2 : 1;
             if (cell is Template template && e.Button == MouseButtons.Left)
             {
@@ -181,20 +186,25 @@ namespace AntdUI
             if (ScrollBar.MouseUpY() && ScrollBar.MouseUpX())
             {
                 if (rows == null) return;
-                for (int i_row = 0; i_row < rows.Length; i_row++)
+                if (OnTouchUp())
                 {
-                    var it = rows[i_row];
-                    for (int i_col = 0; i_col < it.cells.Length; i_col++)
+                    if (cellMouseDown == null) return;
+                    for (int i_row = 0; i_row < rows.Length; i_row++)
                     {
-                        if (MouseUpRow(rows, it, it.cells[i_col], e, i_row, i_col)) return;
+                        var it = rows[i_row];
+                        for (int i_col = 0; i_col < it.cells.Length; i_col++)
+                        {
+                            if (MouseUpRow(rows, it, it.cells[i_col], e, i_row, i_col)) return;
+                        }
                     }
                 }
             }
+            cellMouseDown = null;
         }
 
         bool MouseUpRow(RowTemplate[] rows, RowTemplate it, TCell cell, MouseEventArgs e, int i_r, int i_c)
         {
-            if (cell.MouseDown > 0)
+            if (cellMouseDown == cell && cell.MouseDown > 0)
             {
                 var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
                 if (cel_sel == null || (i_r != i_row || i_c != i_cel)) cell.MouseDown = 0;
@@ -417,7 +427,7 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
-            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location))
+            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location) && OnTouchMove(e.X, e.Y))
             {
                 if (rows == null || inEditMode) return;
                 var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
@@ -931,5 +941,7 @@ namespace AntdUI
             ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
+        protected override void OnTouchScrollX(int value) => ScrollBar.MouseWheelX(value);
+        protected override void OnTouchScrollY(int value) => ScrollBar.MouseWheelY(value);
     }
 }

@@ -771,43 +771,76 @@ namespace AntdUI
 
         #region 鼠标
 
+        MenuItem? MDown = null;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             if (ScrollBar.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
+                OnTouchDown(e.X, e.Y);
                 foreach (var it in items)
                 {
-                    var list = new List<MenuItem> { it };
-                    if (IMouseDown(items, it, list, e.Location)) return;
+                    if (IMouseDown(items, it, e.Location)) return;
                 }
             }
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            ScrollBar.MouseUp();
+            if (ScrollBar.MouseUp() && OnTouchUp())
+            {
+                if (items == null || items.Count == 0 || MDown == null) return;
+                foreach (var it in items)
+                {
+                    var list = new List<MenuItem> { it };
+                    if (IMouseUp(items, it, list, e.Location, MDown)) return;
+                }
+            }
         }
 
-        bool IMouseDown(MenuItemCollection items, MenuItem item, List<MenuItem> list, Point point)
+        bool IMouseDown(MenuItemCollection items, MenuItem item, Point point)
         {
             if (item.Visible)
             {
                 bool can = item.CanExpand;
                 if (item.Enabled && item.Contains(point, 0, ScrollBar.Value, out _))
                 {
-                    if (can) item.Expand = !item.Expand;
-                    else
+                    MDown = item;
+                    return true;
+                }
+                if (can && item.Expand && !collapsed)
+                {
+                    foreach (var sub in item.Sub)
                     {
-                        IUSelect(items);
-                        if (list.Count > 1)
+                        if (IMouseDown(items, sub, point)) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        bool IMouseUp(MenuItemCollection items, MenuItem item, List<MenuItem> list, Point point, MenuItem MDown)
+        {
+            if (item.Visible)
+            {
+                bool can = item.CanExpand;
+                if (MDown == item)
+                {
+                    if (item.Enabled && item.Contains(point, 0, ScrollBar.Value, out _))
+                    {
+                        if (can) item.Expand = !item.Expand;
+                        else
                         {
-                            foreach (var it in list) it.Select = true;
+                            IUSelect(items);
+                            if (list.Count > 1)
+                            {
+                                foreach (var it in list) it.Select = true;
+                            }
+                            item.Select = true;
+                            OnSelectIndexChanged(item);
+                            Invalidate();
                         }
-                        item.Select = true;
-                        OnSelectIndexChanged(item);
-                        Invalidate();
                     }
                     return true;
                 }
@@ -818,7 +851,7 @@ namespace AntdUI
                         var list_ = new List<MenuItem>(list.Count + 1);
                         list_.AddRange(list);
                         list_.Add(sub);
-                        if (IMouseDown(items, sub, list_, point)) return true;
+                        if (IMouseUp(items, sub, list_, point, MDown)) return true;
                     }
                 }
             }
@@ -831,110 +864,113 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (ScrollBar.MouseMove(e.Location))
             {
-                if (items == null || items.Count == 0) return;
-                int count = 0, hand = 0;
-                if (collapsed)
+                if (OnTouchMove(e.X, e.Y))
                 {
-                    int i = 0, hoveindex = -1;
-                    foreach (var it in items)
+                    if (items == null || items.Count == 0) return;
+                    int count = 0, hand = 0;
+                    if (collapsed)
                     {
-                        if (it.show)
+                        int i = 0, hoveindex = -1;
+                        foreach (var it in items)
                         {
-                            if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
+                            if (it.show)
                             {
-                                hoveindex = i;
-                                hand++;
-                            }
-                            if (change) count++;
-                        }
-                        i++;
-                    }
-                    if (hoveindex != hoveindexold)
-                    {
-                        hoveindexold = hoveindex;
-
-                        subForm?.Close();
-                        subForm = null;
-                        tooltipForm?.Close();
-                        tooltipForm = null;
-                        if (hoveindex > -1)
-                        {
-                            var _rect = RectangleToScreen(ClientRectangle);
-                            var it = items[hoveindex];
-                            if (it == null) return;
-                            var Rect = it.Rect;
-                            var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
-                            if (it.items != null && it.items.Count > 0)
-                            {
-                                select_x = 0;
-                                subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
-                                subForm.Show(this);
-                            }
-                            else
-                            {
-                                if (it.Text != null)
+                                if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
                                 {
-                                    if (tooltipForm == null)
+                                    hoveindex = i;
+                                    hand++;
+                                }
+                                if (change) count++;
+                            }
+                            i++;
+                        }
+                        if (hoveindex != hoveindexold)
+                        {
+                            hoveindexold = hoveindex;
+
+                            subForm?.Close();
+                            subForm = null;
+                            tooltipForm?.Close();
+                            tooltipForm = null;
+                            if (hoveindex > -1)
+                            {
+                                var _rect = RectangleToScreen(ClientRectangle);
+                                var it = items[hoveindex];
+                                if (it == null) return;
+                                var Rect = it.Rect;
+                                var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
+                                if (it.items != null && it.items.Count > 0)
+                                {
+                                    select_x = 0;
+                                    subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
+                                    subForm.Show(this);
+                                }
+                                else
+                                {
+                                    if (it.Text != null)
                                     {
-                                        tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
+                                        if (tooltipForm == null)
                                         {
-                                            Font = it.Font ?? Font,
-                                            ArrowAlign = TAlign.Right,
-                                        });
-                                        tooltipForm.Show(this);
+                                            tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
+                                            {
+                                                Font = it.Font ?? Font,
+                                                ArrowAlign = TAlign.Right,
+                                            });
+                                            tooltipForm.Show(this);
+                                        }
+                                        else tooltipForm.SetText(rect, it.Text);
                                     }
-                                    else tooltipForm.SetText(rect, it.Text);
                                 }
                             }
                         }
                     }
-                }
-                else if (mode == TMenuMode.Inline)
-                {
-                    foreach (var it in items) IMouseMove(it, e.Location, ref count, ref hand);
-                }
-                else
-                {
-                    int i = 0, hoveindex = -1;
-                    foreach (var it in items)
+                    else if (mode == TMenuMode.Inline)
                     {
-                        if (it.show)
-                        {
-                            if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
-                            {
-                                hoveindex = i;
-                                hand++;
-                            }
-                            if (change) count++;
-                        }
-                        i++;
+                        foreach (var it in items) IMouseMove(it, e.Location, ref count, ref hand);
                     }
-                    if (hoveindex != hoveindexold)
+                    else
                     {
-                        hoveindexold = hoveindex;
+                        int i = 0, hoveindex = -1;
+                        foreach (var it in items)
+                        {
+                            if (it.show)
+                            {
+                                if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
+                                {
+                                    hoveindex = i;
+                                    hand++;
+                                }
+                                if (change) count++;
+                            }
+                            i++;
+                        }
+                        if (hoveindex != hoveindexold)
+                        {
+                            hoveindexold = hoveindex;
 
-                        subForm?.Close();
-                        subForm = null;
-                        tooltipForm?.Close();
-                        tooltipForm = null;
-                        if (hoveindex > -1)
-                        {
-                            var _rect = RectangleToScreen(ClientRectangle);
-                            var it = items[hoveindex];
-                            if (it == null) return;
-                            var Rect = it.Rect;
-                            var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
-                            if (it.items != null && it.items.Count > 0)
+                            subForm?.Close();
+                            subForm = null;
+                            tooltipForm?.Close();
+                            tooltipForm = null;
+                            if (hoveindex > -1)
                             {
-                                select_x = 0;
-                                subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
-                                subForm.Show(this);
+                                var _rect = RectangleToScreen(ClientRectangle);
+                                var it = items[hoveindex];
+                                if (it == null) return;
+                                var Rect = it.Rect;
+                                var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
+                                if (it.items != null && it.items.Count > 0)
+                                {
+                                    select_x = 0;
+                                    subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
+                                    subForm.Show(this);
+                                }
                             }
                         }
                     }
+                    SetCursor(hand > 0);
+                    if (count > 0) Invalidate();
                 }
-                SetCursor(hand > 0);
-                if (count > 0) Invalidate();
             }
             else ILeave();
         }
@@ -974,6 +1010,8 @@ namespace AntdUI
             ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
+        protected override void OnTouchScrollX(int value) => ScrollBar.MouseWheelX(value);
+        protected override void OnTouchScrollY(int value) => ScrollBar.MouseWheelY(value);
 
         void ILeave()
         {

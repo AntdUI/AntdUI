@@ -384,6 +384,7 @@ namespace AntdUI
 
         protected override void OnSizeChanged(EventArgs e)
         {
+            CellCount = -1;
             LoadLayout();
             base.OnSizeChanged(e);
         }
@@ -1084,6 +1085,7 @@ namespace AntdUI
             if (ScrollBar.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
+                OnTouchDown(e.X, e.Y);
                 int x = e.X, y = e.Y + ScrollBar.Value;
                 foreach (var it in items)
                 {
@@ -1099,7 +1101,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMove(e.Location))
+            if (ScrollBar.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 int x = e.X, y = e.Y + ScrollBar.Value;
@@ -1175,10 +1177,15 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            if (ScrollBar.MouseUp())
+            if (ScrollBar.MouseUp() && OnTouchUp())
             {
-                if (MDown != null) ItemClick?.Invoke(this, new VirtualItemEventArgs(MDown, e));
+                if (MDown != null)
+                {
+                    int x = e.X, y = e.Y + ScrollBar.Value;
+                    if (MDown.RECT.Contains(x, y)) ItemClick?.Invoke(this, new VirtualItemEventArgs(MDown, e));
+                }
             }
+            MDown = null;
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -1217,6 +1224,8 @@ namespace AntdUI
             ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
+        protected override void OnTouchScrollX(int value) => ScrollBar.MouseWheelX(value);
+        protected override void OnTouchScrollY(int value) => ScrollBar.MouseWheelY(value);
 
         #endregion
     }
