@@ -325,7 +325,7 @@ namespace AntdUI
 
         internal void ShowPage()
         {
-            if (IsHandleCreated)
+            if (showok)
             {
                 BeginInvoke(new Action(() =>
                 {
@@ -333,6 +333,7 @@ namespace AntdUI
                     if (items == null) return;
                     if (items.Count <= _select || _select < 0) return;
                     var item = items[_select];
+                    item.DpiAuto();
                     Controls.Add(item);
                 }));
             }
@@ -356,10 +357,12 @@ namespace AntdUI
 
         #region 布局
 
+        bool showok = false;
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             LoadLayout(false);
+            showok = true;
             ShowPage();
         }
 
@@ -797,6 +800,19 @@ namespace AntdUI
         {
             PARENT?.LoadLayout();
             base.OnVisibleChanged(e);
+        }
+
+        bool isdpi = false;
+        public void DpiAuto()
+        {
+            if (isdpi) return;
+            isdpi = true;
+            if (Config.Dpi != 1F)
+            {
+                SuspendLayout();
+                Helper.DpiAuto(Config.Dpi, this);
+                ResumeLayout();
+            }
         }
 
         #endregion

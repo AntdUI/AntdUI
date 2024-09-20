@@ -201,6 +201,10 @@ namespace AntdUI
             set => items = value.BindData(this);
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new ControlCollection Controls => base.Controls;
+
         #endregion
 
         #endregion
