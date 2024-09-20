@@ -116,7 +116,7 @@ namespace AntdUI.Chat
                             g.FillRectangle(brush, it.rect);
                         }
                     }
-                    using (var brush = new SolidBrush(Color.Black))
+                    using (var brush = new SolidBrush(ForeColor))
                     {
                         try
                         {
