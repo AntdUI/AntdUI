@@ -1749,7 +1749,8 @@ namespace AntdUI
         internal static void DpiAuto(float dpi, Control control)
         {
             var dir = DpiSuspend(control.Controls);
-            DpiLS(dpi, control);
+            if (control is Form form) DpiLS(dpi, form);
+            else DpiLS(dpi, control);
             DpiResume(dir, control.Controls);
         }
 
@@ -1760,14 +1761,6 @@ namespace AntdUI
             {
                 if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
                 if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
-                if (control is Tabs tabs)
-                {
-                    foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
-                }
-                else if (control is Collapse collapse)
-                {
-                    foreach (var page in collapse.Items) DpiSuspend(ref dir, page.Controls);
-                }
             }
             return dir;
         }
@@ -1777,14 +1770,6 @@ namespace AntdUI
             {
                 if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
                 if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
-                if (control is Tabs tabs)
-                {
-                    foreach (var page in tabs.Pages) DpiSuspend(ref dir, page.Controls);
-                }
-                else if (control is Collapse collapse)
-                {
-                    foreach (var page in collapse.Items) DpiSuspend(ref dir, page.Controls);
-                }
             }
         }
 
@@ -1798,58 +1783,20 @@ namespace AntdUI
                     control.Anchor = find.Anchor;
                 }
                 if (controls.Count > 0) DpiResume(dir, control.Controls);
-                if (control is Tabs tabs)
-                {
-                    foreach (var page in tabs.Pages) DpiResume(dir, page.Controls);
-                }
-                else if (control is Collapse collapse)
-                {
-                    foreach (var page in collapse.Items) DpiResume(dir, page.Controls);
-                }
             }
         }
 
         static void DpiLS(float dpi, Control control)
         {
             var size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
-            Point point;
-            bool last = false;
-            if (control is Form)
-            {
-                last = true;
-                var screen = Screen.FromPoint(control.Location);
-                if (size.Width > screen.WorkingArea.Width && size.Height > screen.WorkingArea.Height)
-                {
-                    if (control.Width > screen.WorkingArea.Width && control.Height > screen.WorkingArea.Height)
-                    {
-                        size = screen.WorkingArea.Size;
-                        point = screen.WorkingArea.Location;
-                    }
-                    else
-                    {
-                        size = control.Size;
-                        point = control.Location;
-                    }
-                }
-                else
-                {
-                    if (size.Width > screen.WorkingArea.Width) size.Width = screen.WorkingArea.Width;
-                    if (size.Height > screen.WorkingArea.Height) size.Height = screen.WorkingArea.Height;
-                    point = new Point(control.Left + (control.Width - size.Width) / 2, control.Top + (control.Height - size.Height) / 2);
-                    if (point.X < 0 || point.Y < 0) point = control.Location;
-                }
-            }
-            else point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
+            var point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
 
             if (!control.MinimumSize.IsEmpty) control.MinimumSize = new Size((int)(control.MinimumSize.Width * dpi), (int)(control.MinimumSize.Height * dpi));
             if (!control.MaximumSize.IsEmpty) control.MaximumSize = new Size((int)(control.MaximumSize.Width * dpi), (int)(control.MaximumSize.Height * dpi));
             control.Padding = SetPadding(dpi, control.Padding);
             control.Margin = SetPadding(dpi, control.Margin);
-            if (!last)
-            {
-                control.Size = size;
-                control.Location = point;
-            }
+            control.Size = size;
+            control.Location = point;
             if (control is TableLayoutPanel tableLayout)
             {
                 foreach (ColumnStyle it in tableLayout.ColumnStyles)
@@ -1865,34 +1812,45 @@ namespace AntdUI
             {
                 tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
             }
-            else if (control is Tabs tabs)
-            {
-                foreach (var page in tabs.Pages) DpiLS(dpi, page);
-                if (last)
-                {
-                    control.Size = size;
-                    control.Location = point;
-                }
-                return;
-            }
-            else if (control is Collapse collapse)
-            {
-                foreach (var page in collapse.Items) DpiLS(dpi, page);
-                if (last)
-                {
-                    control.Size = size;
-                    control.Location = point;
-                }
-                return;
-            }
             else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
-
             DpiLSS(dpi, control);
-            if (last)
+        }
+        static void DpiLS(float dpi, Form form)
+        {
+            Size size;
+            Point point;
+            var csize = form.ClientSize;
+            size = new Size((int)(csize.Width * dpi), (int)(csize.Height * dpi));
+            var screen = Screen.FromPoint(form.Location);
+            if (size.Width > screen.WorkingArea.Width && size.Height > screen.WorkingArea.Height)
             {
-                control.Size = size;
-                control.Location = point;
+                if (form.Width > screen.WorkingArea.Width && form.Height > screen.WorkingArea.Height)
+                {
+                    size = screen.WorkingArea.Size;
+                    point = screen.WorkingArea.Location;
+                }
+                else
+                {
+                    size = form.Size;
+                    point = form.Location;
+                }
             }
+            else
+            {
+                if (size.Width > screen.WorkingArea.Width) size.Width = screen.WorkingArea.Width;
+                if (size.Height > screen.WorkingArea.Height) size.Height = screen.WorkingArea.Height;
+                point = new Point(form.Left + (form.Width - size.Width) / 2, form.Top + (form.Height - size.Height) / 2);
+                if (point.X < 0 || point.Y < 0) point = form.Location;
+            }
+
+            if (!form.MinimumSize.IsEmpty) form.MinimumSize = new Size((int)(form.MinimumSize.Width * dpi), (int)(form.MinimumSize.Height * dpi));
+            if (!form.MaximumSize.IsEmpty) form.MaximumSize = new Size((int)(form.MaximumSize.Width * dpi), (int)(form.MaximumSize.Height * dpi));
+            form.Padding = SetPadding(dpi, form.Padding);
+            form.Margin = SetPadding(dpi, form.Margin);
+
+            DpiLSS(dpi, form);
+            form.ClientSize = size;
+            form.Location = point;
         }
 
         static void DpiLSS(float dpi, Control control)

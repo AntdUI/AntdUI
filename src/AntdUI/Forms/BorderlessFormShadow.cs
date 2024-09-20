@@ -103,11 +103,7 @@ namespace AntdUI
             if (form.IsMax) Visible = false;
             else
             {
-                if (form.Visible)
-                {
-                    Visible = true;
-                }
-
+                if (form.Visible) Visible = true;
                 ISize();
                 Print();
             }

@@ -806,6 +806,26 @@ namespace AntdUI
             return true;
         }
 
+
+        public bool MouseWheelX(int delta)
+        {
+            if (EnabledX && ShowX && delta != 0)
+            {
+                ValueX -= delta;
+                return true;
+            }
+            return false;
+        }
+
+        public bool MouseWheelY(int delta)
+        {
+            if (EnabledY && ShowY && delta != 0)
+            {
+                ValueY -= delta;
+                return true;
+            }
+            return false;
+        }
         public bool MouseWheel(int delta)
         {
             if (EnabledY)

@@ -423,13 +423,16 @@ namespace AntdUI
         bool down = false;
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (scrollY.MouseDown(e.Location)) down = true;
+            if (scrollY.MouseDown(e.Location))
+            {
+                OnTouchDown(e.X, e.Y);
+                down = true;
+            }
             base.OnMouseDown(e);
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            scrollY.MouseUp(e.Location);
-            if (down)
+            if (scrollY.MouseUp(e.Location) && OnTouchUp() && down)
             {
                 foreach (var it in Items)
                 {
@@ -493,7 +496,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             hoveindex = -1;
-            if (scrollY.MouseMove(e.Location))
+            if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
             {
                 int count = 0;
                 for (int i = 0; i < Items.Count; i++)
@@ -803,6 +806,7 @@ namespace AntdUI
             scrollY.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
+        protected override void OnTouchScrollY(int value) => scrollY.MouseWheel(value);
 
         #endregion
     }

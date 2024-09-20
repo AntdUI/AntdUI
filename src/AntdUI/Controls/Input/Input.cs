@@ -1289,7 +1289,7 @@ namespace AntdUI
                     {
                         var it = cache_font[cache_font.Length - 1];
                         r = it.rect;
-                        SetCaretXY(1 == it.retun ? r.X : r.Right, r.Y);
+                        SetCaretXY(it.retun == 1 ? r.X : r.Right, r.Y);
                     }
                     else
                     {

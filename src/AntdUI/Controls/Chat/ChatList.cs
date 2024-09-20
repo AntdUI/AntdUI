@@ -66,22 +66,30 @@ namespace AntdUI.Chat
 
         #region 方法
 
-        public void AddToBottom(IChatItem it)
+        public bool AddToBottom(IChatItem it, bool force = false)
         {
-            Items.Add(it);
-            ScrollBar.Value = ScrollBar.VrValueI;
-        }
-
-        public bool AddIsBottom(IChatItem it)
-        {
-            if (ScrollBar.Show)
+            if (force)
             {
-                bool isbutt = ScrollBar.Value == ScrollBar.VrValueI;
                 Items.Add(it);
-                if (isbutt) ScrollBar.Value = ScrollBar.VrValueI;
+                ToBottom();
+                return true;
+            }
+            else
+            {
+                bool isbutt = IsBottom;
+                Items.Add(it);
+                if (isbutt) ToBottom();
                 return isbutt;
             }
-            else { Items.Add(it); return true; }
+        }
+
+        public bool IsBottom
+        {
+            get
+            {
+                if (ScrollBar.Show) return ScrollBar.Value == ScrollBar.VrValueI;
+                else return true;
+            }
         }
 
         public void ToBottom()
@@ -194,42 +202,53 @@ namespace AntdUI.Chat
             {
                 using (var font = new Font(EmojiFont, Font.Size))
                 {
-                    foreach (var itt in text.cache_font)
+                    foreach (var it in text.cache_font)
                     {
-                        if (itt.svgImage != null)
+                        switch (it.type)
                         {
-                            g.PaintImg(itt.rect, itt.svgImage, TFit.Cover, 0, false);
-                        }
-                        else if (itt.isImage) // 检查是否是图片
-                        {
-                            g.PaintImg(itt.rect, itt.image, TFit.Contain, 0, false);
-                        }
-                        else if (itt.emoji)
-                        {
-                            g.DrawStr(itt.text, font, fore, itt.rect, m_sf);
-                        }
-                        else
-                        {
-                            g.DrawStr(itt.text, Font, fore, itt.rect, m_sf);
+                            case GraphemeSplitter.STRE_TYPE.STR:
+                                if (it.emoji) g.DrawStr(it.text, font, fore, it.rect, m_sf);
+                                else g.DrawStr(it.text, Font, fore, it.rect, m_sf);
+                                break;
+                            case GraphemeSplitter.STRE_TYPE.SVG:
+                                using (var bmp_svg = SvgExtend.SvgToBmp(it.text))
+                                {
+                                    if (bmp_svg != null) g.PaintImg(it.rect, bmp_svg, TFit.Cover, 0, false);
+                                }
+                                break;
+                            case GraphemeSplitter.STRE_TYPE.BASE64IMG:
+                                using (var ms = new MemoryStream(Convert.FromBase64String(it.text.Substring(it.text.IndexOf(";base64,") + 8))))
+                                using (var bmp_base64 = Image.FromStream(ms))
+                                {
+                                    g.PaintImg(it.rect, bmp_base64, TFit.Contain, 0, false);
+                                }
+                                break;
                         }
                     }
                 }
             }
             else
             {
-                foreach (var itt in text.cache_font)
+                foreach (var it in text.cache_font)
                 {
-                    if (itt.svgImage != null)
+                    switch (it.type)
                     {
-                        g.PaintImg(itt.rect, itt.svgImage, TFit.Cover, 0, false);
-                    }
-                    else if (itt.isImage) // 检查是否是图片
-                    {
-                        g.PaintImg(itt.rect, itt.image, TFit.Contain, 0, false);
-                    }
-                    else
-                    {
-                        g.DrawStr(itt.text, Font, fore, itt.rect, m_sf);
+                        case GraphemeSplitter.STRE_TYPE.STR:
+                            g.DrawStr(it.text, Font, fore, it.rect, m_sf);
+                            break;
+                        case GraphemeSplitter.STRE_TYPE.SVG:
+                            using (var bmp_svg = SvgExtend.SvgToBmp(it.text))
+                            {
+                                if (bmp_svg != null) g.PaintImg(it.rect, bmp_svg, TFit.Cover, 0, false);
+                            }
+                            break;
+                        case GraphemeSplitter.STRE_TYPE.BASE64IMG:
+                            using (var ms = new MemoryStream(Convert.FromBase64String(it.text.Substring(it.text.IndexOf(";base64,") + 8))))
+                            using (var bmp_base64 = Image.FromStream(ms))
+                            {
+                                g.PaintImg(it.rect, bmp_base64, TFit.Contain, 0, false);
+                            }
+                            break;
                     }
                 }
             }
@@ -589,10 +608,9 @@ namespace AntdUI.Chat
                 switch (type)
                 {
                     case GraphemeSplitter.STRE_TYPE.BASE64IMG:
-                        var imageBytes = Convert.FromBase64String(it.Substring(it.IndexOf(";base64,") + 8));
-                        using (var ms = new MemoryStream(imageBytes))
+                        using (var ms = new MemoryStream(Convert.FromBase64String(it.Substring(it.IndexOf(";base64,") + 8))))
+                        using (var image = Image.FromStream(ms))
                         {
-                            var image = Image.FromStream(ms);
                             int imgWidth = image.Width;
                             int imgHeight = image.Height;
                             if (imgWidth > max_width)
@@ -601,18 +619,24 @@ namespace AntdUI.Chat
                                 imgWidth = max_width;
                                 imgHeight = (int)(imgHeight * scaleRatio);
                             }
-                            font_widths.Add(new CacheFont(it, false, imgWidth) { isImage = true, image = image, width = imgWidth });
-                            font_height = Math.Max(font_height, imgHeight);
+                            font_widths.Add(new CacheFont(it, false, imgWidth, type)
+                            {
+                                imageHeight = imgHeight
+                            });
                         }
                         break;
                     case GraphemeSplitter.STRE_TYPE.SVG:
-                        var svgImage = SvgExtend.SvgToBmp(it);
-                        if (svgImage != null)
+                        using (var svgImage = SvgExtend.SvgToBmp(it, font_height, font_height, null))
                         {
-                            int svgWidth = svgImage.Width;
-                            int svgHeight = svgImage.Height;
-                            if (font_height < svgHeight) font_height = svgHeight;
-                            font_widths.Add(new CacheFont(it, false, svgWidth, svgImage, _isSvg: true));
+                            if (svgImage != null)
+                            {
+                                int svgWidth = svgImage.Width;
+                                int svgHeight = svgImage.Height;
+                                font_widths.Add(new CacheFont(it, false, svgWidth, type)
+                                {
+                                    imageHeight = svgHeight
+                                });
+                            }
                         }
                         break;
                     default:
@@ -620,21 +644,21 @@ namespace AntdUI.Chat
                         if (IsEmoji(unicodeInfo))
                         {
                             item.HasEmoji = true;
-                            font_widths.Add(new CacheFont(it, true, 0));
+                            font_widths.Add(new CacheFont(it, true, 0, type));
                         }
                         else
                         {
-                            if (it == "\t" || it == "\n")
+                            if (it == "\t" || it == "\n" || it == "\r\n")
                             {
                                 var sizefont = g.MeasureString(" ", Font, 10000, m_sf);
                                 if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                                font_widths.Add(new CacheFont(it, false, (int)Math.Ceiling(sizefont.Width * 8F)));
+                                font_widths.Add(new CacheFont(it, false, (int)Math.Ceiling(sizefont.Width * 8F), type));
                             }
                             else
                             {
                                 var sizefont = g.MeasureString(it, Font, 10000, m_sf);
                                 if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                                font_widths.Add(new CacheFont(it, false, (int)Math.Ceiling(sizefont.Width)));
+                                font_widths.Add(new CacheFont(it, false, (int)Math.Ceiling(sizefont.Width), type));
                             }
                         }
                         break;
@@ -669,7 +693,7 @@ namespace AntdUI.Chat
                     it.retun = true;
                     continue;
                 }
-                if (it.text == "\n")
+                if (it.text == "\n" || it.text == "\r\n")
                 {
                     it.retun = true;
                     usey += font_height;
@@ -681,7 +705,8 @@ namespace AntdUI.Chat
                     usey += font_height;
                     usex = 0;
                 }
-                it.rect = new Rectangle(usex, usey, it.width, font_height);
+                if (it.imageHeight.HasValue) it.rect = new Rectangle(usex, usey, it.width, it.imageHeight.Value);
+                else it.rect = new Rectangle(usex, usey, it.width, font_height);
                 if (maxx < it.rect.Right) maxx = it.rect.Right;
                 if (maxy < it.rect.Bottom) maxy = it.rect.Bottom;
                 usex += it.width;
@@ -956,13 +981,12 @@ namespace AntdUI.Chat
 
     internal class CacheFont
     {
-        public CacheFont(string _text, bool _emoji, int _width, Image? _svgImage = null, bool _isSvg = false)
+        public CacheFont(string _text, bool _emoji, int _width, GraphemeSplitter.STRE_TYPE Type)
         {
             text = _text;
             emoji = _emoji;
             width = _width;
-            svgImage = _svgImage;
-            isSvg = _isSvg;
+            type = Type;
         }
         public int i { get; set; }
         public string text { get; set; }
@@ -979,10 +1003,7 @@ namespace AntdUI.Chat
         public bool emoji { get; set; }
         public bool retun { get; set; }
         public int width { get; set; }
-        public Image? svgImage { get; set; } // 新增svgImage字段
-        public bool isSvg { get; set; } // 新增isSvg字段
-        // 新增 isImage 和 image 属性
-        public bool isImage { get; set; } = false;
-        public Image? image { get; set; } = null;
+        public GraphemeSplitter.STRE_TYPE type { get; set; }
+        public int? imageHeight { get; set; }
     }
 }

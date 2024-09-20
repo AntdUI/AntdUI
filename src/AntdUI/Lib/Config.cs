@@ -69,6 +69,11 @@ namespace AntdUI
         public static bool Animation { get; set; } = true;
 
         /// <summary>
+        /// 触屏使能
+        /// </summary>
+        public static bool TouchEnabled { get; set; } = true;
+
+        /// <summary>
         /// 阴影使能
         /// </summary>
         public static bool ShadowEnabled { get; set; } = true;
