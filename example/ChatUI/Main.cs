@@ -33,9 +33,14 @@ namespace ChatUI
                 chatList.AddToBottom(new AntdUI.Chat.TextChatItem("阿威十八式 🙌🖖🤘👋", Properties.Resources.aduskin, "AduSkin"));
                 Thread.Sleep(700);
 
+                if (File.Exists("../../../../../screenshot/Pre/banner.png") && File.Exists("../../../../../src/logo.png"))
+                {
+                    chatList.AddToBottom(new AntdUI.Chat.TextChatItem("Winform UI library use Ant Design 5.0\n" + "data:image/png;base64," + Convert.ToBase64String(File.ReadAllBytes("../../../../../screenshot/Pre/banner.png")), (Bitmap)Image.FromFile("../../../../../src/logo.png"), "AntdUI"));
+                    Thread.Sleep(700);
+                }
+
                 chatList.AddToBottom(new AntdUI.Chat.TextChatItem("搭配 Nuget Tom.HttpLib 可以轻松实现GPT流式传输\n\nhttps://gitee.com/EVA-SS/HttpLib", Properties.Resources.av1, "Tom") { Me = true });
                 Thread.Sleep(700);
-
 
                 chatList.AddToBottom(new AntdUI.Chat.TextChatItem("估计还是因为长得帅把", Properties.Resources.av1, "Tom") { Me = true });
                 Thread.Sleep(700);
@@ -58,11 +63,9 @@ namespace ChatUI
                 #region 模拟GPT
 
                 var msg = new AntdUI.Chat.TextChatItem("", Properties.Resources.av2, "2.0T 银");
-                bool isbut = chatList.AddIsBottom(msg);
+                chatList.AddToBottom(msg);
                 msg.Loading = true;
                 Thread.Sleep(1200);
-
-                if (isbut) chatList.ToBottom();
 
                 var strs = new List<string>() {
                     "It seems like your question",
@@ -112,17 +115,12 @@ namespace ChatUI
                     }
                     if (len > 0)
                     {
+                        bool isbut = chatList.IsBottom;
                         msg.Text += text.Substring(i, len);
                         if (isbut) chatList.ToBottom();
                         i += len;
                     }
                 }
-                //foreach (var it in strs)
-                //{
-                //    Thread.Sleep(ran.Next(100, 600));
-                //    msg.Text += it;
-                //    if (isbut) chatList.ToBottom();
-                //}
                 msg.Loading = false;
 
                 #endregion
