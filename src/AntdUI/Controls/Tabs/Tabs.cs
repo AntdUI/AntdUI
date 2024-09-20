@@ -262,6 +262,7 @@ namespace AntdUI
                 items ??= new TabCollection(this);
                 return items;
             }
+            set => items = value.BindData(this);
         }
 
         [Browsable(false)]
@@ -513,7 +514,6 @@ namespace AntdUI
             if (items == null) { base.OnMouseUp(e); return; }
             if (style.ScrollMouseEvent("up", e.X, e.Y))
             {
-                //Invalidate();
                 base.OnMouseUp(e);
                 return;
             }
@@ -644,6 +644,47 @@ namespace AntdUI
         public event ClosingPageEventHandler? ClosingPage;
 
         #endregion
+    }
+
+    public class TabCollection : iCollection<TabPage>
+    {
+        public TabCollection(Tabs it)
+        {
+            BindData(it);
+        }
+
+        internal TabCollection BindData(Tabs it)
+        {
+            action = render =>
+            {
+                if (render) it.LoadLayout(false);
+                it.Invalidate();
+            };
+            action_add = item =>
+            {
+                item.PARENT = it;
+                item.Dock = DockStyle.Fill;
+                it.ShowPage();
+            };
+            action_del = item =>
+            {
+                int old = it.SelectedIndex;
+                int index = IndexOf(item);
+                if (old == index)
+                {
+                    it.Controls.Remove(item);
+                    int _new = index - 1;
+                    if (_new > -1) it.SelectedIndex = _new;
+                    else it.ShowPage();
+                }
+                else
+                {
+                    it.Controls.Remove(item);
+                    it.SelectedIndex = old - 1;
+                }
+            };
+            return this;
+        }
     }
 
     [ToolboxItem(false)]
