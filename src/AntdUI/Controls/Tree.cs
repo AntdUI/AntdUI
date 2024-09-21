@@ -510,7 +510,7 @@ namespace AntdUI
             }
         }
 
-        StringFormat sf_center = Helper.SF_Ellipsis();
+        readonly StringFormat s_c = Helper.SF_Ellipsis(), s_l = Helper.SF_ALL(lr: StringAlignment.Near);
         void PaintItem(Graphics g, TreeItem item, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy)
         {
             if (item.Select)
@@ -684,11 +684,11 @@ namespace AntdUI
                 color = item.Fore.Value;
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawStr(item.Text, Font, brush, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
+                    g.DrawStr(item.Text, Font, brush, item.txt_rect, blockNode ? s_l : s_c);
                 }
             }
-            else g.DrawStr(item.Text, Font, fore, item.txt_rect, blockNode ? Helper.stringFormatLeft : sf_center);
-            if (item.SubTitle != null) g.DrawStr(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, Helper.stringFormatLeft);
+            else g.DrawStr(item.Text, Font, fore, item.txt_rect, blockNode ? s_l : s_c);
+            if (item.SubTitle != null) g.DrawStr(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
             if (item.Icon != null) g.DrawImage(item.Icon, item.ico_rect);
             else if (item.IconSvg != null)
             {

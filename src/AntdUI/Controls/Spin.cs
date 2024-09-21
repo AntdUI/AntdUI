@@ -266,6 +266,7 @@ namespace AntdUI
             }, 10);
         }
 
+        readonly StringFormat s_f = Helper.SF_ALL();
         public void Paint(Graphics g, Rectangle rect, string? text, Color color, Font? font, Control control)
         {
             if (prog_size == 0) prog_size = g.MeasureString(text ?? Config.NullText, font ?? control.Font).Height;
@@ -279,7 +280,7 @@ namespace AntdUI
                 rect_prog.Offset(0, -size2);
                 using (var brush = new SolidBrush(control.ForeColor))
                 {
-                    g.DrawStr(text, font ?? control.Font, brush, new RectangleF(rect.X, y, rect.Width, prog_size), Helper.stringFormatCenter);
+                    g.DrawStr(text, font ?? control.Font, brush, new RectangleF(rect.X, y, rect.Width, prog_size), s_f);
                 }
             }
             using (var brush = new Pen(color, size))

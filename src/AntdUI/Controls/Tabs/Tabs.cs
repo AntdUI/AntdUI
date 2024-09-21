@@ -408,7 +408,7 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat s_c = Helper.SF_ALL();
+        readonly StringFormat s_c = Helper.SF_ALL(), s_f = Helper.SF_NoWrap();
         protected override void OnPaint(PaintEventArgs e)
         {
             if (items == null || items.Count == 0 || !_tabMenuVisible) return;
@@ -455,7 +455,7 @@ namespace AntdUI
                                         g.DrawEllipse(pen, rect_badge);
                                     }
                                 }
-                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, Helper.stringFormatCenter2);
+                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, s_f);
                             }
                             else
                             {
@@ -472,7 +472,7 @@ namespace AntdUI
                                         }
                                     }
                                 }
-                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, Helper.stringFormatCenter2);
+                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, s_f);
                             }
                         }
                     }

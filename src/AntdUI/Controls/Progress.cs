@@ -472,8 +472,7 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat s_c = Helper.SF_ALL();
-        StringFormat s_r = Helper.SF_ALL(lr: StringAlignment.Far);
+        readonly StringFormat s_c = Helper.SF_ALL(), s_r = Helper.SF_ALL(lr: StringAlignment.Far), s_l = Helper.SF_ALL(lr: StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect_t = ClientRectangle;
@@ -507,8 +506,8 @@ namespace AntdUI
                 if (icon_rect.Width == 0 || icon_rect.Height == 0) return;
                 using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                 {
-                    if (showText) g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), Helper.stringFormatLeft);
-                    else g.DrawStr(text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), Helper.stringFormatLeft);
+                    if (showText) g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), s_l);
+                    else g.DrawStr(text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), s_l);
                 }
 
                 float w = radius * Config.Dpi;

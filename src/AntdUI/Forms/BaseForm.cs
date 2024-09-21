@@ -184,7 +184,7 @@ namespace AntdUI
 
         public void AutoDpi(float dpi, Control control)
         {
-            if (dpi != 1F) Helper.DpiAuto(dpi, control);
+            Helper.DpiAuto(dpi, control);
         }
 
         #endregion

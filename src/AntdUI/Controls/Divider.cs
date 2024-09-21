@@ -141,7 +141,7 @@ namespace AntdUI
 
         #endregion
 
-        StringFormat s_f = Helper.SF_Ellipsis();
+        readonly StringFormat s_f_all = Helper.SF_ALL(), s_f = Helper.SF_Ellipsis();
         protected override void OnPaint(PaintEventArgs e)
         {
             var _rect = ClientRectangle;
@@ -155,7 +155,7 @@ namespace AntdUI
                     if (Vertical)
                     {
                         var text_ = string.Join(Environment.NewLine, text.ToCharArray());
-                        var size = g.MeasureString(text_, Font, 0, Helper.stringFormatCenter).Size();
+                        var size = g.MeasureString(text_, Font, 0, s_f_all).Size();
 
                         int f_margin = (int)(rect.Height * orientationMargin), font_margin = (int)(size.Width * textPadding);
                         float x = rect.X + (rect.Width - thickness) / 2F;
@@ -212,13 +212,13 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.X + f_margin + font_margin, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.FillRectangle(brush, new RectangleF(rect.X, y, f_margin, thickness));
                                     g.FillRectangle(brush, new RectangleF(font_irect.Right + font_margin, y, rect.Width - size.Width - f_margin - font_margin * 2F, thickness));
-                                    PaintText(g, text, font_irect, Helper.stringFormatCenter, Enabled);
+                                    PaintText(g, text, font_irect, s_f_all, Enabled);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.FillRectangle(brush, new RectangleF(font_irect.Right + font_margin, y, rect.Width - size.Width - font_margin, thickness));
-                                    PaintText(g, text, font_irect, Helper.stringFormatCenter, Enabled);
+                                    PaintText(g, text, font_irect, s_f_all, Enabled);
                                 }
                                 break;
                             case TOrientation.Right:
@@ -227,20 +227,20 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.Right - size.Width - f_margin - font_margin, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.FillRectangle(brush, new RectangleF(rect.X, y, rect.Width - size.Width - f_margin - font_margin * 2F, thickness));
                                     g.FillRectangle(brush, new RectangleF(font_irect.Right + font_margin, y, f_margin, thickness));
-                                    PaintText(g, text, font_irect, Helper.stringFormatCenter, Enabled);
+                                    PaintText(g, text, font_irect, s_f_all, Enabled);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.Right - size.Width, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.FillRectangle(brush, new RectangleF(rect.X, y, rect.Width - size.Width - font_margin, thickness));
-                                    PaintText(g, text, font_irect, Helper.stringFormatCenter, Enabled);
+                                    PaintText(g, text, font_irect, s_f_all, Enabled);
                                 }
                                 break;
                             default:
                                 float f_w = (rect.Width - size.Width) / 2 - f_margin - font_margin;
                                 g.FillRectangle(brush, new RectangleF(rect.X, y, f_w, thickness));
                                 g.FillRectangle(brush, new RectangleF(rect.X + f_w + size.Width + (f_margin + font_margin) * 2F, y, f_w, thickness));
-                                PaintText(g, text, _rect, Helper.stringFormatCenter, Enabled);
+                                PaintText(g, text, _rect, s_f_all, Enabled);
                                 break;
                         }
                     }

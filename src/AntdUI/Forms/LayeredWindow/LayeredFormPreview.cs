@@ -41,7 +41,7 @@ namespace AntdUI
             if (form.WindowState != FormWindowState.Maximized)
             {
                 if (form is BorderlessForm borderless) Radius = (int)(borderless.Radius * Config.Dpi);
-                else if (Helper.OSVersionWin11) Radius = (int)(8 * Config.Dpi); //Win11
+                else if (OS.Win11) Radius = (int)(8 * Config.Dpi); //Win11
                 if (form is Window || form is FormNoBar)
                 {
                     //无边框处理
@@ -313,6 +313,7 @@ namespace AntdUI
 
         #endregion
 
+        readonly StringFormat s_f = Helper.SF_NoWrap();
         public override Bitmap PrintBit()
         {
             var original_bmp = new Bitmap(TargetRect.Width, TargetRect.Height);
@@ -359,7 +360,7 @@ namespace AntdUI
                                 rect_loading.Offset(0, loading_size);
                                 using (var brush = new SolidBrush(Style.Db.PrimaryColor))
                                 {
-                                    g.DrawString(LoadingProgressStr, Font, brush, rect_loading, Helper.stringFormatCenter2);
+                                    g.DrawString(LoadingProgressStr, Font, brush, rect_loading, s_f);
                                 }
                             }
                         }
@@ -375,7 +376,7 @@ namespace AntdUI
                         rect_loading.Offset(0, loading_size);
                         using (var brush = new SolidBrush(Style.Db.ErrorColor))
                         {
-                            g.DrawString(LoadingProgressStr, Font, brush, rect_loading, Helper.stringFormatCenter2);
+                            g.DrawString(LoadingProgressStr, Font, brush, rect_loading, s_f);
                         }
                     }
                 }

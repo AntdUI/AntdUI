@@ -50,7 +50,7 @@ namespace AntdUI
 
             padding = (int)Math.Round(config.Padding * Config.Dpi);
             Padding = new Padding(padding);
-            var version = Helper.OSVersion;
+            var version = OS.Version;
             if (version.Major >= 10 && version.Build > 22000) FrmRadius = 8; //Win11
             if (config.Form is Window)
             {
@@ -72,7 +72,7 @@ namespace AntdUI
             else
             {
                 config.Content.Tag = config.Content.Size;
-                if (Config.Dpi != 1F) Helper.DpiAuto(Config.Dpi, config.Content);
+                Helper.DpiAuto(Config.Dpi, config.Content);
             }
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
             LoadContent();

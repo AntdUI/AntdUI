@@ -772,6 +772,7 @@ namespace AntdUI
 
         #endregion
 
+        readonly StringFormat s_f = Helper.SF_NoWrap();
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
@@ -791,7 +792,7 @@ namespace AntdUI
                     {
                         string emptytext = Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
                         using (var brush = new SolidBrush(Color.FromArgb(180, Style.Db.Text)))
-                        { g.DrawStr(emptytext, Font, brush, rect_read, Helper.stringFormatCenter2); }
+                        { g.DrawStr(emptytext, Font, brush, rect_read, s_f); }
                     }
                     else
                     {
