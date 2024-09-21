@@ -27,14 +27,6 @@ namespace Demo
         public Main()
         {
             InitializeComponent();
-
-            panel_top.MouseDown += Window_MouseDown;
-            label_title.MouseDown += Window_MouseDown;
-        }
-
-        void Window_MouseDown(object sender, MouseEventArgs e)
-        {
-            DraggableMouseDown();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -159,13 +151,6 @@ namespace Demo
         private void btn_min_Click(object sender, EventArgs e)
         {
             Min();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            if (WindowState == FormWindowState.Maximized) btn_max.Icon = Properties.Resources.app_max2b;
-            else btn_max.Icon = Properties.Resources.app_maxb;
-            base.OnSizeChanged(e);
         }
 
         private void btn_max_Click(object sender, EventArgs e)

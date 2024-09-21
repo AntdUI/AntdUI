@@ -117,31 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="app_back" xml:space="preserve">
+    <value>&lt;svg viewBox="0 0 1024 1024"&gt;&lt;path d="M137.6 262.144a52.8 52.8 0 0 1 4.608-5.632l0.064-0.128 168.64-177.472a46.528 46.528 0 0 1 68.48 0.256c17.088 18.24 18.56 46.784 4.48 66.816l-4.736 5.76-85.312 89.728h231.04C728.704 241.536 896 401.152 896 600.832c0 194.816-159.168 351.424-356.352 358.976L524.8 960H176.448C149.696 960 128 937.024 128 908.672c0-25.984 18.24-47.424 41.856-50.816l6.592-0.512H524.8c152.576 0 274.368-116.16 274.368-256.64 0-136.128-114.496-249.472-260.544-256.256L524.8 344.128H174.528a45.952 45.952 0 0 1-3.008-0.256l4.928 0.256a46.08 46.08 0 0 1-29.248-10.368 50.432 50.432 0 0 1-9.408-9.984l4.288 5.248a51.072 51.072 0 0 1-13.376-27.52A51.84 51.84 0 0 1 128 292.864v-1.984l0.192-2.752L128 292.8a54.592 54.592 0 0 1 6.4-25.472l0.192-0.384 3.008-4.8z"&gt;&lt;/path&gt;&lt;/svg&gt;</value>
+  </data>
+  <data name="app_dark" xml:space="preserve">
+    <value>&lt;svg viewBox="0 0 1024 1024"&gt;&lt;path d="M186.86 493.94h-70.39c-10.79 0-19.42 8.63-19.42 19.42 0 10.79 8.63 19.42 19.42 19.42h70.39c10.79 0 19.42-8.63 19.42-19.42 0-10.79-8.63-19.42-19.42-19.42z m77.86-200.71c7.47 7.47 19.59 7.47 27.39 0 7.47-7.8 7.47-19.92 0-27.39l-45.98-45.98c-7.8-7.8-19.92-7.8-27.39 0-7.8 7.47-7.8 19.76 0 27.39-0.01 0 45.98 45.98 45.98 45.98z m5.64 434.62l-51.63 51.63c-7.8 7.47-7.8 19.59 0 27.39 7.47 7.47 19.76 7.47 27.39 0l51.63-51.63c7.47-7.8 7.47-19.92 0-27.39-7.47-7.81-19.92-7.81-27.39 0z m241.71-530.74c10.79 0 19.42-8.63 19.42-19.42v-60.1c0-10.79-8.63-19.42-19.42-19.42-10.79 0-19.42 8.63-19.42 19.42v60.26c0 10.63 8.63 19.26 19.42 19.26z m395.27 296.83h-61.76c-10.79 0-19.42 8.63-19.42 19.42 0 10.79 8.63 19.42 19.42 19.42h61.76c10.79 0 19.42-8.63 19.42-19.42 0-10.79-8.8-19.42-19.42-19.42zM512.07 817.49c-10.79 0-19.42 8.96-19.42 19.42v71.88c0 10.79 8.63 19.42 19.42 19.42 10.79 0 19.42-8.63 19.42-19.42v-71.88c0-10.46-8.63-19.42-19.42-19.42z m265.78-597.63l-41.67 41.5c-7.47 7.8-7.47 19.92 0 27.39 7.8 7.8 19.92 7.8 27.39 0l41.67-41.5c7.47-7.8 7.47-19.92 0-27.39-7.63-7.81-19.92-7.81-27.39 0z m-20.25 511.8c-7.47-7.47-19.76-7.47-27.39 0-7.47 7.8-7.47 19.92 0 27.39l47.64 47.64c7.47 7.47 19.76 7.47 27.39 0 7.47-7.8 7.47-19.92 0-27.39l-47.64-47.64zM516.22 256.21c-138.62 0-251.34 112.39-251.34 251.17 0 138.95 112.72 251.5 251.34 251.5s251.01-112.39 251.01-251.5c0-138.61-112.39-251.17-251.01-251.17z m0 459.02c-114.71 0-207.84-93.13-207.84-207.84 0-100.44 71.22-184.27 166.01-203.69-14.28 28.06-22.08 59.93-22.08 93.3 0 114.88 92.97 207.84 207.84 207.84 14.28 0 28.39-1.49 41.67-4.15-34.2 68.06-104.59 114.54-185.6 114.54z"&gt;&lt;/path&gt;&lt;/svg&gt;</value>
+  </data>
+  <data name="app_light" xml:space="preserve">
+    <value>&lt;svg viewBox="0 0 1024 1024"&gt;&lt;path d="M186.86 493.94h-70.39c-10.79 0-19.42 8.63-19.42 19.42 0 10.79 8.63 19.42 19.42 19.42h70.39c10.79 0 19.42-8.63 19.42-19.42 0-10.79-8.63-19.42-19.42-19.42zM264.72 293.23c7.47 7.47 19.59 7.47 27.39 0 7.47-7.8 7.47-19.92 0-27.39l-45.98-45.98c-7.8-7.8-19.92-7.8-27.39 0-7.8 7.47-7.8 19.76 0 27.39-0.01 0 45.98 45.98 45.98 45.98zM270.36 727.85l-51.63 51.63c-7.8 7.47-7.8 19.59 0 27.39 7.47 7.47 19.76 7.47 27.39 0l51.63-51.63c7.47-7.8 7.47-19.92 0-27.39-7.47-7.81-19.92-7.81-27.39 0zM512.07 197.11c10.79 0 19.42-8.63 19.42-19.42v-60.1c0-10.79-8.63-19.42-19.42-19.42-10.79 0-19.42 8.63-19.42 19.42v60.26c0 10.63 8.63 19.26 19.42 19.26zM907.34 493.94h-61.76c-10.79 0-19.42 8.63-19.42 19.42 0 10.79 8.63 19.42 19.42 19.42h61.76c10.79 0 19.42-8.63 19.42-19.42 0-10.79-8.8-19.42-19.42-19.42zM512.07 817.49c-10.79 0-19.42 8.96-19.42 19.42v71.88c0 10.79 8.63 19.42 19.42 19.42 10.79 0 19.42-8.63 19.42-19.42v-71.88c0-10.46-8.63-19.42-19.42-19.42zM777.85 219.86l-41.67 41.5c-7.47 7.8-7.47 19.92 0 27.39 7.8 7.8 19.92 7.8 27.39 0l41.67-41.5c7.47-7.8 7.47-19.92 0-27.39-7.63-7.81-19.92-7.81-27.39 0zM757.6 731.66c-7.47-7.47-19.76-7.47-27.39 0-7.47 7.8-7.47 19.92 0 27.39l47.64 47.64c7.47 7.47 19.76 7.47 27.39 0 7.47-7.8 7.47-19.92 0-27.39l-47.64-47.64zM516.22 256.21c-138.62 0-251.34 112.39-251.34 251.17 0 138.95 112.72 251.5 251.34 251.5s251.01-112.39 251.01-251.5c0-138.61-112.39-251.17-251.01-251.17z"&gt;&lt;/path&gt;&lt;/svg&gt;</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="app_close" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\App\app_close.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="app_closeb" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\App\app_closeb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="app_max" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\App\app_max.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="app_max2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\App\app_max2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="app_max2b" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\App\app_max2b.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="app_maxb" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\App\app_maxb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="app_min" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\App\app_min.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="app_minb" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\App\app_minb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="bg1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bg\bg1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -151,13 +136,28 @@
   <data name="bg3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bg\bg3.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="close" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\close.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bg4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bg\bg4.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bg5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bg\bg5.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bg6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bg\bg6.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bg7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bg\bg7.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_like" xml:space="preserve">
+    <value>&lt;svg viewBox="0 0 1024 1024"&gt;&lt;path d="M923 283.6c-13.4-31.1-32.6-58.9-56.9-82.8-24.3-23.8-52.5-42.4-84-55.5-32.5-13.5-66.9-20.3-102.4-20.3-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5-24.4 23.9-43.5 51.7-56.9 82.8-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3 56-51.7 101.1-102.7 133.9-151.6 20.7-30.9 37-61.5 48.2-91 13.5-35.3 20.3-70 20.3-103.3 0.1-35.3-7-69.6-20.9-101.9z"&gt;&lt;/path&gt;&lt;/svg&gt;</value>
   </data>
   <data name="img1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="setting" xml:space="preserve">
+    <value>&lt;svg viewBox="0 0 1024 1024"&gt;&lt;path d="M372.134088 1004.846981a509.94041 509.94041 0 0 1-159.298198-76.821527l2.164315-103.514738a93.088793 93.088793 0 0 0-74.238313-93.088794l-101.536602-20.991523A509.428422 509.428422 0 0 1 0.011636 537.983409l82.243949-62.834935a93.088793 93.088793 0 0 0 26.507034-116.104998l-46.89348-92.390627A514.152678 514.152678 0 0 1 172.225904 128.415991l100.419536 25.133974a93.088793 93.088793 0 0 0 107.284834-51.664281l43.007023-94.252403a515.246472 515.246472 0 0 1 88.434354-7.610009c30.137497 0 59.669917 2.606486 88.411081 7.610009l43.007023 94.252403a93.088793 93.088793 0 0 0 107.284834 51.664281l100.396264-25.133974a514.152678 514.152678 0 0 1 110.356765 138.236858l-46.870208 92.390627a93.088793 93.088793 0 0 0 26.483762 116.104998l82.243949 62.834935a509.428422 509.428422 0 0 1-39.213654 172.44699l-101.51333 20.968251a93.088793 93.088793 0 0 0-74.238312 93.088793l2.141042 103.538011a509.94041 509.94041 0 0 1-159.298198 76.798255l-79.684007-66.279221a93.088793 93.088793 0 0 0-119.060567 0l-79.684007 66.302493zM511.348378 721.461421a209.449785 209.449785 0 1 0 0-418.89957 209.449785 209.449785 0 0 0 0 418.89957z"&gt;&lt;/path&gt;&lt;/svg&gt;</value>
   </data>
 </root>
