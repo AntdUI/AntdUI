@@ -47,8 +47,9 @@ namespace AntdUI
 
             SuspendLayout();
 
+            int butt_h = (int)Math.Round(config.BtnHeight * Config.Dpi);
             BackColor = Style.Db.BgElevated;
-            Size = new Size(416, 122 + config.BtnHeight);
+            Size = new Size(416, 122 + butt_h);
             if (config.Form == null) { if (config.Font != null) Font = config.Font; }
             else Font = config.Font ?? config.Form.Font;
             ForeColor = Style.Db.TextBase;
@@ -56,7 +57,7 @@ namespace AntdUI
             if (config.Form == null) StartPosition = FormStartPosition.CenterScreen;
             else StartPosition = FormStartPosition.CenterParent;
 
-            if (config.BtnHeight > 0)
+            if (butt_h > 0)
             {
                 btn_ok = new Button
                 {
@@ -64,7 +65,7 @@ namespace AntdUI
                     Dock = DockStyle.Right,
                     Location = new Point(304, 0),
                     Name = "btn_ok",
-                    Size = new Size(64, config.BtnHeight),
+                    Size = new Size(64, butt_h),
                     TabIndex = 0,
                     Type = config.OkType,
                     Text = config.OkText
@@ -82,7 +83,7 @@ namespace AntdUI
                         Dock = DockStyle.Right,
                         Location = new Point(240, 0),
                         Name = "btn_no",
-                        Size = new Size(64, config.BtnHeight),
+                        Size = new Size(64, butt_h),
                         TabIndex = 1,
                         Text = config.CancelText
                     };
@@ -95,7 +96,7 @@ namespace AntdUI
                 {
                     Dock = DockStyle.Bottom,
                     Back = Style.Db.BgElevated,
-                    Size = new Size(368, config.BtnHeight)
+                    Size = new Size(368, butt_h)
                 };
                 if (btn_no != null) panel_main.Controls.Add(btn_no);
                 panel_main.Controls.Add(btn_ok);
@@ -109,7 +110,7 @@ namespace AntdUI
                         {
                             AutoSizeMode = TAutoSize.Width,
                             Dock = DockStyle.Right,
-                            Size = new Size(64, config.BtnHeight),
+                            Size = new Size(64, butt_h),
                             Name = btn.Name,
                             Text = btn.Text,
                             Type = btn.Type,
@@ -126,8 +127,35 @@ namespace AntdUI
                         btn.BringToFront();
                         btn.Click += (a, b) =>
                         {
-                            config.OnBtns?.Invoke(btn);
-                            Close();
+                            isclose = false;
+                            btn.Loading = true;
+                            bool DisableCancel = false;
+                            if (config.LoadingDisableCancel && btn_no != null)
+                            {
+                                btn_no.Enabled = false;
+                                DisableCancel = true;
+                            }
+                            ITask.Run(() =>
+                            {
+                                bool result = config.OnBtns?.Invoke(btn) ?? true;
+                                btn.Loading = false;
+                                isclose = true;
+                                if (result)
+                                {
+                                    System.Threading.Thread.Sleep(10);
+                                    BeginInvoke(new Action(() =>
+                                    {
+                                        if (IsHandleCreated && !IsDisposed) Close();
+                                    }));
+                                }
+                                else if (DisableCancel && btn_no != null)
+                                {
+                                    BeginInvoke(new Action(() =>
+                                    {
+                                        if (btn_no.IsHandleCreated && !btn_no.IsDisposed) btn_no.Enabled = true;
+                                    }));
+                                }
+                            });
                         };
                     }
                 }
@@ -151,7 +179,7 @@ namespace AntdUI
             {
                 var dpi = Config.Dpi;
 
-                int butt_h = (int)Math.Round(config.BtnHeight * dpi), gap = (int)Math.Round(8F * dpi), paddingx = (int)Math.Round(config.Padding.Width * dpi), paddingy = (int)Math.Round(config.Padding.Height * dpi),
+                int gap = (int)Math.Round(8F * dpi), paddingx = (int)Math.Round(config.Padding.Width * dpi), paddingy = (int)Math.Round(config.Padding.Height * dpi),
                     w = (int)Math.Round(config.Width * dpi), wp = w - paddingx * 2;
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
                 if (panel_main != null) panel_main.Height = butt_h;
@@ -467,29 +495,22 @@ namespace AntdUI
                     catch { }
                     isclose = true;
                     btn_ok.Loading = false;
-
                     // 等待窗口关闭
                     if (IsHandleCreated && !IsDisposed)
                     {
                         if (result)
                         {
-                            System.Threading.Thread.Sleep(100);
+                            System.Threading.Thread.Sleep(10);
                             BeginInvoke(new Action(() =>
                             {
-                                if (IsHandleCreated && !IsDisposed)
-                                {
-                                    DialogResult = DialogResult.OK;
-                                }
+                                if (IsHandleCreated && !IsDisposed) DialogResult = DialogResult.OK;
                             }));
                         }
                         else if (DisableCancel && btn_no != null)
                         {
                             BeginInvoke(new Action(() =>
                             {
-                                if (btn_no.IsHandleCreated && !btn_no.IsDisposed)
-                                {
-                                    btn_no.Enabled = true;
-                                }
+                                if (btn_no.IsHandleCreated && !btn_no.IsDisposed) btn_no.Enabled = true;
                             }));
                         }
                     }
