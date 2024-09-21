@@ -436,7 +436,7 @@ namespace AntdUI
             /// <summary>
             /// 自定义按钮回调
             /// </summary>
-            public Action<Button>? OnBtns { get; set; }
+            public Func<Button, bool>? OnBtns { get; set; }
 
             #endregion
 
