@@ -218,6 +218,7 @@ namespace AntdUI
 
         #region 渲染
 
+        readonly StringFormat s_f = Helper.SF_ALL();
         protected override void OnPaint(PaintEventArgs e)
         {
             if (items == null || items.Count == 0) return;
@@ -226,7 +227,7 @@ namespace AntdUI
             using (var brush = new SolidBrush(fore ?? Style.Db.TextSecondary))
             using (var brush_active = new SolidBrush(ForeActive ?? Style.Db.Text))
             {
-                foreach (var it in hs) g.DrawStr("/", Font, brush, it, Helper.stringFormatCenter);
+                foreach (var it in hs) g.DrawStr("/", Font, brush, it, s_f);
                 for (int i = 0; i < items.Count; i++)
                 {
                     var it = items[i];
@@ -235,7 +236,7 @@ namespace AntdUI
                     {
                         //最后一个
                         PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                        g.DrawStr(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
+                        g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
                     }
                     else
                     {
@@ -249,12 +250,12 @@ namespace AntdUI
                                 }
                             }
                             PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
+                            g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
                         }
                         else
                         {
                             PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush, it.RectText, Helper.stringFormatCenter);
+                            g.DrawStr(it.Text, Font, brush, it.RectText, s_f);
                         }
                     }
                 }

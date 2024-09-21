@@ -34,7 +34,7 @@ namespace AntdUI
             if (form.WindowState != FormWindowState.Maximized)
             {
                 if (form is BorderlessForm borderless) Radius = (int)(borderless.Radius * Config.Dpi);
-                else if (Helper.OSVersionWin11) Radius = (int)(8 * Config.Dpi); //Win11
+                else if (OS.Win11) Radius = (int)(8 * Config.Dpi); //Win11
                 if (form is Window || form is FormNoBar)
                 {
                     //无边框处理

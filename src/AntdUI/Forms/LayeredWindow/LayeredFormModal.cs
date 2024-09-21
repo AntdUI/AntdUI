@@ -161,7 +161,7 @@ namespace AntdUI
                     if (config.Content is Control control)
                     {
                         w = (int)Math.Round(control.Width * dpi);
-                        if (dpi != 1F) Helper.DpiAuto(dpi, control);
+                        Helper.DpiAuto(dpi, control);
                         wp = w - paddingx * 2;
                         Controls.Add(control);
                         control.Disposed += (a, b) =>

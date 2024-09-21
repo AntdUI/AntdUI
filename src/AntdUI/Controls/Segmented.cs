@@ -790,6 +790,7 @@ namespace AntdUI
 
         #region 渲染
 
+        readonly StringFormat s_f = Helper.SF_ALL();
         protected override void OnPaint(PaintEventArgs e)
         {
             if (items == null || items.Count == 0) return;
@@ -903,7 +904,7 @@ namespace AntdUI
                         using (var brush_active = new SolidBrush(enabled ? (foreactive ?? Style.Db.Text) : Style.Db.TextQuaternary))
                         {
                             if (PaintImg(g, it, brush_active.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
+                            g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
                         }
                     }
                     else
@@ -913,13 +914,13 @@ namespace AntdUI
                             using (var brush_active = new SolidBrush(ForeHover ?? Style.Db.HoverColor))
                             {
                                 PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                                g.DrawStr(it.Text, Font, brush_active, it.RectText, Helper.stringFormatCenter);
+                                g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
                             }
                         }
                         else
                         {
                             PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush, it.RectText, Helper.stringFormatCenter);
+                            g.DrawStr(it.Text, Font, brush, it.RectText, s_f);
                         }
                     }
                 }

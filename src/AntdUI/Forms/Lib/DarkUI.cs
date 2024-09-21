@@ -44,7 +44,7 @@ namespace AntdUI
 
         static bool IsWindows10OrGreater(int build = -1)
         {
-            var os = Helper.OSVersion;
+            var os = OS.Version;
             return os.Major >= 10 && os.Build >= build;
         }
     }
