@@ -57,6 +57,7 @@ namespace Demo.Controls
                 OnBtns = btn =>
                 {
                     MessageBox.Show("´¥·¢µÄName£º" + btn.Name);
+                    return true;
                 },
                 OnOk = config =>
                 {

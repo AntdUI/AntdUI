@@ -108,3 +108,40 @@ Winform UI library use Ant Design 5.0
 ➡️| [**Signal** 信号强度](https://gitee.com/antdui/AntdUI/wikis/控件/Signal) | ✅ | ❎ |
 ➡️| [**ContextMenuStrip** 右键菜单](https://gitee.com/antdui/AntdUI/wikis/控件/ContextMenuStrip) | ✅ | ❎ |
 ➡️| **Image3D** 图片3D | ✅ | ❎ |
+
+### 🐿️捐赠 🥣💲🐖👚
+![Payment](screenshot/Pre/Payment.png?raw=true)
+
+### 🎨截图
+
+#### ChatUI
+
+> 纯GDI，不是TextBox等拖控件
+
+![ChatUI](screenshot/ChatUI.gif?raw=true)
+
+#### 控件
+
+| **Button** 按钮 | **Badge** 徽标数 |
+| :--: | :--: |
+| ![Button](screenshot/Button.gif?raw=true) | ![Badge](screenshot/Badge.gif?raw=true) |
+| **Carousel** 走马灯 | **Input** 输入框 |
+| ![Carousel](screenshot/Carousel.gif?raw=true) | ![Input](screenshot/Input.gif?raw=true) |
+| **Progress** 进度条 | **Avatar** 头像 |
+| ![Progress](screenshot/Progress.gif?raw=true) | ![Avatar](screenshot/Avatar.gif?raw=true) |
+| **Checkbox** 多选框 | **Radio** 单选框 |
+| ![Checkbox](screenshot/Checkbox.gif?raw=true) | ![Radio](screenshot/Radio.gif?raw=true) |
+| **Tooltip** 提示 | **Panel** 面板 |
+| ![Tooltip](screenshot/Tooltip.gif?raw=true) | ![Panel](screenshot/Panel.gif?raw=true) |
+| **Tabs** 标签页 | **Alert** 警告提示 |
+| ![Tabs](screenshot/Tabs.gif?raw=true) | ![Alert](screenshot/Alert.gif?raw=true) |
+| **Segmented** 分段控制器 | **Menu** 导航菜单 |
+| ![Segmented](screenshot/Segmented.gif?raw=true) | ![Menu](screenshot/Menu.gif?raw=true) |
+| **Divider** 分割线 | **Slider** 滑动条 |
+| ![Divider](screenshot/Divider.gif?raw=true) | ![Slider](screenshot/Slider.gif?raw=true) |
+| **Message** 全局提示 | **Notification** 通知提醒框 |
+| ![Message](screenshot/Message.gif?raw=true) | ![Notification](screenshot/Notification.gif?raw=true) |
+| **Switch** 开关 | **Table** 表格 |
+| ![Switch](screenshot/Switch.gif?raw=true) | ![Table](screenshot/Table.gif?raw=true) |
+
+🦦 招募小伙伴一起维护项目
