@@ -425,6 +425,26 @@ namespace AntdUI
         }
 
         bool ScrollXShow = false, ScrollYShow = false, ScrollYDown = false;
+        void ScrollIFTo(Rectangle r)
+        {
+            if (SpeedScrollTo)
+            {
+                if (ScrollYShow)
+                {
+                    int y = CurrentCaret.Y - scrolly;
+                    if (y < rect_text.Y) ScrollY = r.Y;
+                    else if (y + CurrentCaret.Height > rect_text.Height) ScrollY = r.Bottom;
+                }
+                else if (ScrollXShow)
+                {
+                    int x = CurrentCaret.X - scrollx;
+                    if (x < rect_text.X) ScrollX = r.X;
+                    else if (x + CurrentCaret.Width > rect_text.Width) ScrollX = r.Right;
+                }
+                else ScrollX = ScrollY = 0;
+            }
+            ITask.Run(() => { ScrollTo(r); });
+        }
         void ScrollTo(Rectangle r)
         {
             if (ScrollYShow)

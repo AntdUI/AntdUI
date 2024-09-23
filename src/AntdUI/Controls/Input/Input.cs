@@ -1056,8 +1056,8 @@ namespace AntdUI
         protected virtual void IBackSpaceKey() { }
 
         protected virtual bool IMouseDown(Point e) => false;
-
         protected virtual bool IMouseMove(Point e) => false;
+        protected virtual bool IMouseUp(Point e) => false;
 
         /// <summary>
         /// 清空值
@@ -1315,12 +1315,14 @@ namespace AntdUI
                         }
                     }
                     if (ModeRange) ModeRangeCaretPostion(false);
-                    ITask.Run(() => { ScrollTo(r); });
+                    ScrollIFTo(r);
                 }
                 showCaretFlag = true;
                 Invalidate();
             }
         }
+
+        bool SpeedScrollTo = false;
 
         void OnImeStartPrivate(IntPtr hIMC)
         {

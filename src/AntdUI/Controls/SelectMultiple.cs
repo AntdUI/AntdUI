@@ -407,26 +407,17 @@ namespace AntdUI
                 }
             }
         }
+
+        int select_del = -1;
         protected override bool IMouseDown(Point e)
         {
+            select_del = -1;
             if (selectedValue.Length > 0 && rect_left_dels.Length > 0)
             {
                 int len = selectedValue.Length > rect_left_dels.Length ? rect_left_dels.Length : selectedValue.Length;
                 for (int i = 0; i < len; i++)
                 {
-                    if (rect_left_dels[i].Contains(e))
-                    {
-                        var tmp = new List<object>(selectedValue.Length);
-                        tmp.AddRange(selectedValue);
-                        tmp.RemoveAt(i);
-                        SelectedValue = tmp.ToArray();
-
-                        if (subForm == null) return true;
-                        subForm.selectedValue = new List<object>(selectedValue.Length);
-                        subForm.selectedValue.AddRange(selectedValue);
-                        subForm.Print();
-                        return true;
-                    }
+                    if (rect_left_dels[i].Contains(e)) { select_del = i; return true; }
                 }
             }
             return false;
@@ -441,6 +432,28 @@ namespace AntdUI
                     if (rect_left_dels[i].Contains(e)) return true;
                 }
             }
+            return false;
+        }
+        protected override bool IMouseUp(Point e)
+        {
+            if (select_del > -1)
+            {
+                if (rect_left_dels[select_del].Contains(e))
+                {
+                    var tmp = new List<object>(selectedValue.Length);
+                    tmp.AddRange(selectedValue);
+                    tmp.RemoveAt(select_del);
+                    SelectedValue = tmp.ToArray();
+
+                    if (subForm == null) return true;
+                    subForm.selectedValue = new List<object>(selectedValue.Length);
+                    subForm.selectedValue.AddRange(selectedValue);
+                    subForm.Print();
+                }
+                select_del = -1;
+                return true;
+            }
+            select_del = -1;
             return false;
         }
 

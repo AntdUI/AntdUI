@@ -69,28 +69,44 @@ namespace AntdUI
                     else ProcessRightKey(false);
                     return true;
                 case Keys.Home:
+                    SpeedScrollTo = true;
                     ProcessHomeKey(false, false);
+                    SpeedScrollTo = false;
                     return true;
                 case Keys.End:
+                    SpeedScrollTo = true;
                     ProcessEndKey(false, false);
+                    SpeedScrollTo = false;
                     return true;
                 case Keys.Control | Keys.Home:
+                    SpeedScrollTo = true;
                     ProcessHomeKey(true, false);
+                    SpeedScrollTo = false;
                     return true;
                 case Keys.Control | Keys.End:
+                    SpeedScrollTo = true;
                     ProcessEndKey(true, false);
+                    SpeedScrollTo = false;
                     return true;
                 case Keys.Shift | Keys.Home:
+                    SpeedScrollTo = true;
                     ProcessHomeKey(false, true);
+                    SpeedScrollTo = false;
                     return true;
                 case Keys.Shift | Keys.End:
+                    SpeedScrollTo = true;
                     ProcessEndKey(false, true);
+                    SpeedScrollTo = false;
                     return true;
                 case Keys.Control | Keys.Shift | Keys.Home:
+                    SpeedScrollTo = true;
                     ProcessHomeKey(true, true);
+                    SpeedScrollTo = false;
                     return true;
                 case Keys.Control | Keys.Shift | Keys.End:
+                    SpeedScrollTo = true;
                     ProcessEndKey(true, true);
+                    SpeedScrollTo = false;
                     return true;
                 //========================================================
                 case Keys.Tab:
@@ -129,18 +145,22 @@ namespace AntdUI
                 case Keys.PageUp:
                     if (ScrollYShow && cache_font != null)
                     {
+                        SpeedScrollTo = true;
                         SelectionLength = 0;
                         var index = GetCaretPostion(CurrentCaret.X, CurrentCaret.Y - (rect_text.Height - cache_font[0].rect.Height));
                         SelectionStart = index;
+                        SpeedScrollTo = false;
                         return true;
                     }
                     break;
                 case Keys.PageDown:
                     if (ScrollYShow && cache_font != null)
                     {
+                        SpeedScrollTo = true;
                         SelectionLength = 0;
                         var index = GetCaretPostion(CurrentCaret.X, CurrentCaret.Y + (rect_text.Height - cache_font[0].rect.Height));
                         SelectionStart = index;
+                        SpeedScrollTo = false;
                         return true;
                     }
                     break;

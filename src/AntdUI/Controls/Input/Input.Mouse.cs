@@ -196,6 +196,7 @@ namespace AntdUI
                 is_prefix_down = is_suffix_down = false;
                 return;
             }
+            if (IMouseUp(e.Location)) return;
             if (mouseDown && mouseDownMove && cache_font != null)
             {
                 var index = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
