@@ -90,7 +90,6 @@ namespace AntdUI
                     }
                     PaintIcon(g, _fore);
                     PaintText(g, _fore, rect_read.Right, rect_read.Bottom);
-                    g.ResetClip();
                     PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
                     PaintScroll(g, rect_read, _radius);
                     if (borderWidth > 0)
@@ -137,7 +136,6 @@ namespace AntdUI
                     }
                     PaintIcon(g, Style.Db.TextQuaternary);
                     PaintText(g, Style.Db.TextQuaternary, rect_read.Right, rect_read.Bottom);
-                    g.ResetClip();
                     PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
                     PaintScroll(g, rect_read, _radius);
                     if (borderWidth > 0)
@@ -282,7 +280,7 @@ namespace AntdUI
                     g.DrawStr(placeholderText, Font, fore, rect_text, sf_placeholder);
                 }
             }
-
+            g.ResetClip();
             if (showCaret && showCaretFlag)
             {
                 g.TranslateTransform(-ScrollX, -ScrollY);
@@ -449,6 +447,7 @@ namespace AntdUI
             if (ScrollYShow)
             {
                 int tosize = CurrentCaret.Height;
+                int count = 0;
                 while (true)
                 {
                     int y = CurrentCaret.Y - scrolly;
@@ -457,14 +456,16 @@ namespace AntdUI
                         int value = ScrollY - tosize;
                         ScrollY = value;
                         if (ScrollY != value) return;
-                        System.Threading.Thread.Sleep(50);
+                        count++;
+                        if (count < 4) System.Threading.Thread.Sleep(50);
                     }
                     else if (y + CurrentCaret.Height > rect_text.Height)
                     {
                         int value = ScrollY + tosize;
                         ScrollY = value;
                         if (ScrollY != value) return;
-                        System.Threading.Thread.Sleep(50);
+                        count++;
+                        if (count < 4) System.Threading.Thread.Sleep(50);
                     }
                     else return;
                 }
@@ -472,6 +473,7 @@ namespace AntdUI
             else if (ScrollXShow)
             {
                 int tosize = r.Width;
+                int count = 0;
                 while (true)
                 {
                     int x = CurrentCaret.X - scrollx;
@@ -480,17 +482,20 @@ namespace AntdUI
                         int value = ScrollX - tosize;
                         ScrollX = value;
                         if (ScrollX != value) return;
-                        System.Threading.Thread.Sleep(50);
+                        count++;
+                        if (count < 5) System.Threading.Thread.Sleep(50);
                     }
                     else if (x + CurrentCaret.Width > rect_text.Width)
                     {
                         int value = ScrollX + tosize;
                         ScrollX = value;
                         if (ScrollX != value) return;
-                        System.Threading.Thread.Sleep(50);
+                        count++;
+                        if (count < 5) System.Threading.Thread.Sleep(50);
                     }
                     else return;
                 }
+
             }
             else ScrollX = ScrollY = 0;
         }

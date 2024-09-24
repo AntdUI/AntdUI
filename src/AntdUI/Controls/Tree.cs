@@ -1162,7 +1162,9 @@ namespace AntdUI
                         ExpandThread = true;
                         if (value)
                         {
-                            var t = Animation.TotalFrames(10, ExpandCount(this) * 50);
+                            int time = ExpandCount(this) * 10;
+                            if (time > 1000) time = 1000;
+                            int t = Animation.TotalFrames(10, time);
                             ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
                             {
                                 ExpandProg = val;
