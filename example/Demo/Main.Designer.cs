@@ -49,10 +49,10 @@ namespace Demo
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.CarouselItem carouselItem5 = new AntdUI.CarouselItem();
-            AntdUI.CarouselItem carouselItem6 = new AntdUI.CarouselItem();
-            AntdUI.CarouselItem carouselItem7 = new AntdUI.CarouselItem();
-            AntdUI.CarouselItem carouselItem8 = new AntdUI.CarouselItem();
+            AntdUI.CarouselItem carouselItem1 = new AntdUI.CarouselItem();
+            AntdUI.CarouselItem carouselItem2 = new AntdUI.CarouselItem();
+            AntdUI.CarouselItem carouselItem3 = new AntdUI.CarouselItem();
+            AntdUI.CarouselItem carouselItem4 = new AntdUI.CarouselItem();
             button1 = new AntdUI.Button();
             button2 = new AntdUI.Button();
             button3 = new AntdUI.Button();
@@ -377,10 +377,8 @@ namespace Demo
             progress1.Loading = true;
             progress1.Location = new Point(40, 332);
             progress1.Name = "progress1";
-            progress1.ShowText = true;
             progress1.Size = new Size(480, 30);
             progress1.TabIndex = 10;
-            progress1.Text = "%";
             progress1.Value = 0.5F;
             progress1.Click += Progress_Blue_1;
             // 
@@ -389,11 +387,9 @@ namespace Demo
             progress2.ContainerControl = this;
             progress2.Location = new Point(40, 378);
             progress2.Name = "progress2";
-            progress2.ShowText = true;
             progress2.Size = new Size(480, 30);
             progress2.State = AntdUI.TType.Success;
             progress2.TabIndex = 10;
-            progress2.Text = "%";
             progress2.Value = 1F;
             // 
             // progress3
@@ -401,11 +397,9 @@ namespace Demo
             progress3.ContainerControl = this;
             progress3.Location = new Point(40, 424);
             progress3.Name = "progress3";
-            progress3.ShowText = true;
             progress3.Size = new Size(480, 30);
             progress3.State = AntdUI.TType.Error;
             progress3.TabIndex = 10;
-            progress3.Text = "%";
             progress3.Value = 0.7F;
             progress3.Click += Progress_Red;
             // 
@@ -417,11 +411,9 @@ namespace Demo
             progress4.Location = new Point(42, 488);
             progress4.Name = "progress4";
             progress4.Radius = 5;
-            progress4.Shape = AntdUI.TShape.Circle;
-            progress4.ShowText = true;
+            progress4.Shape = AntdUI.TShapeProgress.Circle;
             progress4.Size = new Size(110, 110);
             progress4.TabIndex = 10;
-            progress4.Text = "%";
             progress4.Value = 0.68F;
             progress4.Click += Progress_Blue_2;
             // 
@@ -432,12 +424,10 @@ namespace Demo
             progress5.Location = new Point(201, 488);
             progress5.Name = "progress5";
             progress5.Radius = 5;
-            progress5.Shape = AntdUI.TShape.Circle;
-            progress5.ShowText = true;
+            progress5.Shape = AntdUI.TShapeProgress.Circle;
             progress5.Size = new Size(110, 110);
             progress5.State = AntdUI.TType.Success;
             progress5.TabIndex = 10;
-            progress5.Text = "%";
             progress5.Value = 1F;
             // 
             // progress6
@@ -447,12 +437,10 @@ namespace Demo
             progress6.Location = new Point(360, 488);
             progress6.Name = "progress6";
             progress6.Radius = 5;
-            progress6.Shape = AntdUI.TShape.Circle;
-            progress6.ShowText = true;
+            progress6.Shape = AntdUI.TShapeProgress.Circle;
             progress6.Size = new Size(110, 110);
             progress6.State = AntdUI.TType.Error;
             progress6.TabIndex = 10;
-            progress6.Text = "%";
             progress6.Value = 0.7F;
             progress6.Click += Progress_Red;
             // 
@@ -461,12 +449,13 @@ namespace Demo
             progress7.Back = Color.FromArgb(40, 22, 119, 255);
             progress7.ContainerControl = this;
             progress7.Location = new Point(42, 622);
-            progress7.Mini = true;
             progress7.Name = "progress7";
             progress7.Radius = 4;
+            progress7.Shape = AntdUI.TShapeProgress.Mini;
             progress7.Size = new Size(139, 36);
             progress7.TabIndex = 10;
             progress7.Text = "In Progress";
+            progress7.UseSystemText = true;
             progress7.Value = 0.68F;
             progress7.Click += Progress_Blue_2;
             // 
@@ -475,13 +464,14 @@ namespace Demo
             progress8.Back = Color.FromArgb(40, 0, 204, 0);
             progress8.ContainerControl = this;
             progress8.Location = new Point(201, 622);
-            progress8.Mini = true;
             progress8.Name = "progress8";
             progress8.Radius = 4;
+            progress8.Shape = AntdUI.TShapeProgress.Mini;
             progress8.Size = new Size(128, 36);
             progress8.State = AntdUI.TType.Success;
             progress8.TabIndex = 10;
             progress8.Text = "Success";
+            progress8.UseSystemText = true;
             progress8.Value = 1F;
             // 
             // progress9
@@ -489,13 +479,14 @@ namespace Demo
             progress9.Back = Color.FromArgb(40, 255, 79, 87);
             progress9.ContainerControl = this;
             progress9.Location = new Point(360, 622);
-            progress9.Mini = true;
             progress9.Name = "progress9";
             progress9.Radius = 4;
+            progress9.Shape = AntdUI.TShapeProgress.Mini;
             progress9.Size = new Size(128, 36);
             progress9.State = AntdUI.TType.Error;
             progress9.TabIndex = 10;
             progress9.Text = "Failed";
+            progress9.UseSystemText = true;
             progress9.Value = 0.7F;
             progress9.Click += Progress_Red;
             // 
@@ -520,14 +511,14 @@ namespace Demo
             avatar2.BackColor = Color.Transparent;
             avatar2.Dock = DockStyle.Top;
             avatar2.DotPosition = AntdUI.TAlignMini.Bottom;
-            carouselItem5.Img = Properties.Resources.img1;
-            carouselItem6.Img = Properties.Resources.bg2;
-            carouselItem7.Img = Properties.Resources.bg3;
-            carouselItem8.Img = Properties.Resources.bg1;
-            avatar2.Image.Add(carouselItem5);
-            avatar2.Image.Add(carouselItem6);
-            avatar2.Image.Add(carouselItem7);
-            avatar2.Image.Add(carouselItem8);
+            carouselItem1.Img = Properties.Resources.img1;
+            carouselItem2.Img = Properties.Resources.bg2;
+            carouselItem3.Img = Properties.Resources.bg3;
+            carouselItem4.Img = Properties.Resources.bg1;
+            avatar2.Image.Add(carouselItem1);
+            avatar2.Image.Add(carouselItem2);
+            avatar2.Image.Add(carouselItem3);
+            avatar2.Image.Add(carouselItem4);
             avatar2.Location = new Point(38, 38);
             avatar2.Name = "avatar2";
             avatar2.Radius = 6;
