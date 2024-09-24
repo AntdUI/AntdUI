@@ -219,8 +219,8 @@ namespace AntdUI
             var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
             bool enabled = Enabled;
-            var font_size = g.MeasureString(text ?? Config.NullText, Font);
-            rect.IconRectL(font_size, out var icon_rect, out var text_rect);
+            var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+            rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
             bool right = rightToLeft == RightToLeft.Yes;
             PaintChecked(g, rect, enabled, icon_rect, right);
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;

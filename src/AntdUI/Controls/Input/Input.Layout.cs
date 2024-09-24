@@ -238,7 +238,8 @@ namespace AntdUI
             public Rectangle rect_old { get; set; }
             public Rectangle rect { get; set; }
             public bool emoji { get; set; }
-            public int retun { get; set; }
+            public bool ret { get; set; }
+            public bool ret_has { get; set; }
             public int width { get; set; }
             internal bool show { get; set; }
         }
@@ -272,18 +273,21 @@ namespace AntdUI
                 {
                     int lineHeight = CurrentCaret.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
                     int usex = 0, usey = 0;
+
+                    CacheFont? ret_select = null;
                     foreach (var it in cache_font)
                     {
                         it.show = false;
                         if (it.text == "\r")
                         {
-                            it.retun = 2;
+                            ret_select = null;
                             it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
                             continue;
                         }
                         else if (it.text == "\n" || it.text == "\r\n")
                         {
-                            it.retun = 1;
+                            ret_select = it;
+                            it.ret = true;
                             it.rect_old = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
                             usey += lineHeight;
                             usex = 0;
@@ -292,11 +296,14 @@ namespace AntdUI
                         }
                         else if (usex + it.width > rect_text.Width)
                         {
+                            ret_select = null;
                             usey += lineHeight;
                             usex = 0;
                         }
+                        if (ret_select != null) ret_select.ret_has = true;
                         it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
                         usex += it.width;
+                        ret_select = null;
                     }
                 }
                 else

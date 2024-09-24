@@ -384,7 +384,7 @@ namespace AntdUI
                     if (index > cache_font.Length - 1) return;
                     var it = cache_font[index];
                     CacheFont? nearest;
-                    if (it.retun == 1) nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
+                    if (it.ret) nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
                     else nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out _);
                     if (nearest == null || nearest.i == index) SelectionLength++;
                     else SelectionLength += nearest.i - index;
@@ -402,7 +402,7 @@ namespace AntdUI
                     if (end > cache_font.Length - 1) return;
                     var it = cache_font[end];
                     CacheFont? nearest;
-                    if (it.retun == 1) nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
+                    if (it.ret) nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
                     else nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out _);
                     if (nearest == null || nearest.i == selectionStart) SelectionStart++;
                     else SelectionStart = nearest.i;

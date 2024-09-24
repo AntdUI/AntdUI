@@ -849,14 +849,14 @@ namespace AntdUI
                     int len = items.Count;
                     if (dotPV)
                     {
-                        tvaluexy = AnimationChangeValue + e.Location.Y;
+                        tvaluexy = AnimationChangeValue + e.Y;
                         int height = ClientRectangle.Height;
                         AnimationChangeMax = len * height;
                         AnimationChangeMaxWH = AnimationChangeMax - height;
                     }
                     else
                     {
-                        tvaluexy = AnimationChangeValue + e.Location.X;
+                        tvaluexy = AnimationChangeValue + e.X;
                         int width = ClientRectangle.Width;
                         AnimationChangeMax = len * width;
                         AnimationChangeMaxWH = AnimationChangeMax - width;
@@ -871,7 +871,7 @@ namespace AntdUI
         {
             if (down)
             {
-                var val = tvaluexy - (dotPV ? e.Location.Y : e.Location.X);
+                var val = tvaluexy - (dotPV ? e.Y : e.X);
                 if (!TouchOut)
                 {
                     if (val < 0) val = 0;
@@ -894,7 +894,7 @@ namespace AntdUI
                 AnimationChange = false;
                 if (dotPV)
                 {
-                    var val = tvaluexy - e.Location.Y;
+                    var val = tvaluexy - e.Y;
                     var select_range = SelectRangeOneVertical(len, rect);
                     if (select_range != null) SetSelectIndexVertical(select_range.i);
                     else if (val > AnimationChangeMax - rect.Height) SetSelectIndexVertical(items.Count - 1);
@@ -902,7 +902,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    var val = tvaluexy - e.Location.X;
+                    var val = tvaluexy - e.X;
                     var select_range = SelectRangeOneHorizontal(len, rect);
                     if (select_range != null) SetSelectIndexHorizontal(select_range.i);
                     else if (val > AnimationChangeMax - rect.Width) SetSelectIndexHorizontal(items.Count - 1);

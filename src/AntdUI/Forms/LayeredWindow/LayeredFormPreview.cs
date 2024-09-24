@@ -542,11 +542,11 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (moveImg)
             {
-                if ((offsetXOld != e.Location.X && offsetYOld != e.Location.Y) || moveImging)
+                if ((offsetXOld != e.X && offsetYOld != e.Y) || moveImging)
                 {
                     moveImging = true;
-                    offsetX = offsetXOld + e.Location.X - movePos.X;
-                    offsetY = offsetYOld + e.Location.Y - movePos.Y;
+                    offsetX = offsetXOld + e.X - movePos.X;
+                    offsetY = offsetYOld + e.Y - movePos.Y;
                     Dpi = _dpi;
                     Print();
                     return;
