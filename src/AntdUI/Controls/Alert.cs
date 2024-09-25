@@ -145,6 +145,12 @@ namespace AntdUI
             if (loop) StartTask();
         }
 
+        protected override void OnFontChanged(EventArgs e)
+        {
+            font_size = null;
+            base.OnFontChanged(e);
+        }
+
         /// <summary>
         /// 文本轮播速率
         /// </summary>

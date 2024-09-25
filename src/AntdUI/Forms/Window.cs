@@ -376,6 +376,7 @@ namespace AntdUI
             else if (m.WParam == SIZE_MAXIMIZED) WinState = WState.Maximize;
             else if (m.WParam == SIZE_RESTORED)
             {
+                sizeNormal = ClientSize;
                 WinState = WState.Restore;
                 InvalidateNonclient();
                 Invalidate();
@@ -403,6 +404,7 @@ namespace AntdUI
         }
 
         internal Size? sizeInit;
+        Size? sizeNormal;
         bool WmNCActivate(ref System.Windows.Forms.Message m)
         {
             if (sizeInit == null) sizeInit = ClientSize;
@@ -437,8 +439,14 @@ namespace AntdUI
             };
         }
 
-        #endregion
+        protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
+        {
+            if (DesignMode) base.SetBoundsCore(x, y, width, height, specified);
+            else if (WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, specified);
+            else base.SetBoundsCore(x, y, width, height, specified);
+        }
 
+        #endregion
     }
 
     public enum WState

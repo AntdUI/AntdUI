@@ -38,6 +38,8 @@ namespace AntdUI
         internal override void Paint(Graphics g, Font font, SolidBrush fore)
         {
             if (PARENT == null) return;
+            var state = g.Save();
+            g.SetClip(Rect);
             if (Fore.HasValue)
             {
                 using (var brush = new SolidBrush(Fore.Value))
@@ -46,7 +48,7 @@ namespace AntdUI
                 }
             }
             else g.DrawStr(Text, Font ?? font, fore, Rect, Table.StringF(PARENT.column));
-
+            g.Restore(state);
             if (PrefixSvg != null)
             {
                 using (var _bmp = SvgExtend.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color))

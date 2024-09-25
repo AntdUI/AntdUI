@@ -307,7 +307,7 @@ namespace AntdUI.Chat
                             if (e.Button == MouseButtons.Left && text.ContainsRead(e.Location, 0, scrolly))
                             {
                                 oldMouseDown = e.Location;
-                                text.SelectionStart = GetCaretPostion(text, e.Location.X, e.Location.Y + scrolly);
+                                text.SelectionStart = GetCaretPostion(text, e.X, e.Y + scrolly);
 
                                 mouseDown = text;
                             }
@@ -328,7 +328,7 @@ namespace AntdUI.Chat
             {
                 mouseDownMove = true;
                 Cursor = Cursors.IBeam;
-                var index = GetCaretPostion(mouseDown, oldMouseDown.X + (e.Location.X - oldMouseDown.X), oldMouseDown.Y + scrolly + (e.Location.Y - oldMouseDown.Y));
+                var index = GetCaretPostion(mouseDown, oldMouseDown.X + (e.X - oldMouseDown.X), oldMouseDown.Y + scrolly + (e.Y - oldMouseDown.Y));
                 mouseDown.SelectionLength = Math.Abs(index - mouseDown.selectionStart);
                 if (index > mouseDown.selectionStart) mouseDown.selectionStartTemp = mouseDown.selectionStart;
                 else mouseDown.selectionStartTemp = index;
@@ -364,7 +364,7 @@ namespace AntdUI.Chat
             if (mouseDown != null && mouseDownMove)
             {
                 int scrolly = ScrollBar.Value;
-                var index = GetCaretPostion(mouseDown, e.Location.X, e.Location.Y + scrolly);
+                var index = GetCaretPostion(mouseDown, e.X, e.Y + scrolly);
                 if (mouseDown.selectionStart == index) mouseDown.SelectionLength = 0;
                 else if (index > mouseDown.selectionStart)
                 {
@@ -529,6 +529,9 @@ namespace AntdUI.Chat
         /// </summary>
         CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font)
         {
+            CacheFont first = cache_font[0], last = cache_font[cache_font.Length - 1];
+            if (x < first.rect.X && y < first.rect.Y) return first;
+            else if (x > last.rect.X && y > last.rect.Y) return last;
             double minDistance = int.MaxValue;
             CacheFont? result = null;
             for (int i = 0; i < cache_font.Length; i++)

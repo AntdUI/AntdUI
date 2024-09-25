@@ -1056,8 +1056,8 @@ namespace AntdUI
         protected virtual void IBackSpaceKey() { }
 
         protected virtual bool IMouseDown(Point e) => false;
-
         protected virtual bool IMouseMove(Point e) => false;
+        protected virtual bool IMouseUp(Point e) => false;
 
         /// <summary>
         /// 清空值
@@ -1186,6 +1186,17 @@ namespace AntdUI
         /// </summary>
         CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font, out bool isold)
         {
+            CacheFont first = cache_font[0], last = cache_font[cache_font.Length - 1];
+            if (x < first.rect.X && y < first.rect.Y)
+            {
+                isold = false;
+                return first;
+            }
+            else if (x > last.rect.X && y > last.rect.Y)
+            {
+                isold = false;
+                return last;
+            }
             var findy = FindNearestFontY(y, cache_font, out isold);
             CacheFont? result = null;
             if (findy == null)
@@ -1214,7 +1225,7 @@ namespace AntdUI
                 for (int i = 0; i < cache_font.Length; i++)
                 {
                     var it = cache_font[i];
-                    if (it.rect.Y == ry || (it.retun == 1 && it.rect_old.Y == ry))
+                    if (it.rect.Y == ry || (it.ret && it.rect_old.Y == ry))
                     {
                         // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
                         int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
@@ -1247,7 +1258,7 @@ namespace AntdUI
                     minDistance = currentMinDistance;
                     result = it;
                 }
-                if (it.retun == 1)
+                if (it.ret)
                 {
                     int currentMinDistance2 = Math.Abs(y - (it.rect_old.Y + it.rect_old.Height / 2));
                     if (currentMinDistance2 < minDistance)
@@ -1289,12 +1300,12 @@ namespace AntdUI
                     {
                         var it = cache_font[cache_font.Length - 1];
                         r = it.rect;
-                        SetCaretXY(it.retun == 1 ? r.X : r.Right, r.Y);
+                        SetCaretXY(it.ret ? r.X : r.Right, r.Y);
                     }
                     else
                     {
                         var it = cache_font[PosIndex];
-                        if (it.retun == 1)
+                        if (it.ret)
                         {
                             if (PosIndex > 0)
                             {
@@ -1315,12 +1326,14 @@ namespace AntdUI
                         }
                     }
                     if (ModeRange) ModeRangeCaretPostion(false);
-                    ITask.Run(() => { ScrollTo(r); });
+                    ScrollIFTo(r);
                 }
                 showCaretFlag = true;
                 Invalidate();
             }
         }
+
+        bool SpeedScrollTo = false;
 
         void OnImeStartPrivate(IntPtr hIMC)
         {

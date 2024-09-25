@@ -278,6 +278,12 @@ namespace AntdUI
 
     #endregion
 
+    #region Progress
+
+    public delegate string ProgressFormatEventHandler(object sender, FloatEventArgs e);
+
+    #endregion
+
     #region ColorPicker
 
     public delegate string ColorFormatEventHandler(object sender, ColorEventArgs e);

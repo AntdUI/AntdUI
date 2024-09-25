@@ -49,7 +49,7 @@ namespace AntdUI
                 {
                     mouseDownMove = mouseDown = false;
 
-                    var index = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
+                    var index = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
 
                     int start = 0, end;
 
@@ -88,7 +88,7 @@ namespace AntdUI
                 mouseDownMove = false;
                 oldMouseDown = e.Location;
                 if (BanInput) return;
-                int indeX = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
+                int indeX = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
                 if (ModifierKeys.HasFlag(Keys.Shift))
                 {
                     if (indeX > selectionStartTemp)
@@ -105,7 +105,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    SelectionStart = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
+                    SelectionStart = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
                     SelectionLength = 0;
                     SetCaretPostion(selectionStart);
                 }
@@ -128,7 +128,7 @@ namespace AntdUI
             {
                 mouseDownMove = true;
                 Cursor = Cursors.IBeam;
-                var index = GetCaretPostion(oldMouseDown.X + scrollx + (e.Location.X - oldMouseDown.X), oldMouseDown.Y + scrolly + (e.Location.Y - oldMouseDown.Y));
+                var index = GetCaretPostion(oldMouseDown.X + scrollx + (e.X - oldMouseDown.X), oldMouseDown.Y + scrolly + (e.Y - oldMouseDown.Y));
                 SelectionLength = Math.Abs(index - selectionStart);
                 if (index > selectionStart) selectionStartTemp = selectionStart;
                 else selectionStartTemp = index;
@@ -196,9 +196,10 @@ namespace AntdUI
                 is_prefix_down = is_suffix_down = false;
                 return;
             }
+            if (IMouseUp(e.Location)) return;
             if (mouseDown && mouseDownMove && cache_font != null)
             {
-                var index = GetCaretPostion(e.Location.X + scrollx, e.Location.Y + scrolly);
+                var index = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
                 if (selectionStart == index) SelectionLength = 0;
                 else if (index > selectionStart)
                 {

@@ -241,31 +241,7 @@ namespace AntdUI
             if (cache_font != null)
             {
                 g.TranslateTransform(-ScrollX, -ScrollY);
-                if (selectionLength > 0 && cache_font.Length > selectionStartTemp && !BanInput)
-                {
-                    try
-                    {
-                        int end = selectionStartTemp + selectionLength - 1;
-                        if (end > cache_font.Length - 1) end = cache_font.Length - 1;
-                        var first = cache_font[selectionStartTemp];
-                        using (var brush = new SolidBrush(selection))
-                        {
-                            for (int i = selectionStartTemp; i <= end; i++)
-                            {
-                                var last = cache_font[i];
-                                if (first.rect.Y != last.rect.Y || last.retun > 0)
-                                {
-                                    //先渲染上一行
-                                    if (i > 0) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, cache_font[i - 1].rect.Right - first.rect.X, first.rect.Height));
-                                    if (i == end) g.FillRectangle(brush, last.rect);
-                                    first = last;
-                                }
-                                else if (i == end) g.FillRectangle(brush, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
-                            }
-                        }
-                    }
-                    catch { }
-                }
+                PaintTextSelected(g, cache_font);
                 using (var fore = new SolidBrush(_fore))
                 {
                     if (HasEmoji)
@@ -315,6 +291,29 @@ namespace AntdUI
                     g.FillRectangle(brush, CurrentCaret);
                 }
                 g.ResetTransform();
+            }
+        }
+        void PaintTextSelected(Graphics g, CacheFont[] cache_font)
+        {
+            if (selectionLength > 0 && cache_font.Length > selectionStartTemp && !BanInput)
+            {
+                try
+                {
+                    int start = selectionStartTemp, end = start + selectionLength - 1;
+                    if (end > cache_font.Length - 1) end = cache_font.Length - 1;
+                    var first = cache_font[start];
+                    using (var brush = new SolidBrush(selection))
+                    {
+                        for (int i = start; i <= end; i++)
+                        {
+                            var it = cache_font[i];
+                            bool p = true;
+                            if (it.ret && it.ret_has) p = false;
+                            if (p) g.FillRectangle(brush, it.rect);
+                        }
+                    }
+                }
+                catch { }
             }
         }
 
@@ -425,6 +424,26 @@ namespace AntdUI
         }
 
         bool ScrollXShow = false, ScrollYShow = false, ScrollYDown = false;
+        void ScrollIFTo(Rectangle r)
+        {
+            if (SpeedScrollTo)
+            {
+                if (ScrollYShow)
+                {
+                    int y = CurrentCaret.Y - scrolly;
+                    if (y < rect_text.Y) ScrollY = r.Y;
+                    else if (y + CurrentCaret.Height > rect_text.Height) ScrollY = r.Bottom;
+                }
+                else if (ScrollXShow)
+                {
+                    int x = CurrentCaret.X - scrollx;
+                    if (x < rect_text.X) ScrollX = r.X;
+                    else if (x + CurrentCaret.Width > rect_text.Width) ScrollX = r.Right;
+                }
+                else ScrollX = ScrollY = 0;
+            }
+            ITask.Run(() => { ScrollTo(r); });
+        }
         void ScrollTo(Rectangle r)
         {
             if (ScrollYShow)

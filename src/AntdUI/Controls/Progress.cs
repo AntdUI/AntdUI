@@ -93,11 +93,11 @@ namespace AntdUI
 
         #endregion
 
-        int radius = 6;
+        int radius = 0;
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category("外观"), DefaultValue(0)]
         public int Radius
         {
             get => radius;
@@ -109,18 +109,12 @@ namespace AntdUI
             }
         }
 
-        /// <summary>
-        /// MINI模式
-        /// </summary>
-        [Description("MINI模式"), Category("外观"), DefaultValue(false)]
-        public bool Mini { get; set; } = false;
-
-        TShape shape = TShape.Round;
+        TShapeProgress shape = TShapeProgress.Round;
         /// <summary>
         /// 形状
         /// </summary>
-        [Description("形状"), Category("外观"), DefaultValue(TShape.Round)]
-        public TShape Shape
+        [Description("形状"), Category("外观"), DefaultValue(TShapeProgress.Round)]
+        public TShapeProgress Shape
         {
             get => shape;
             set
@@ -145,40 +139,39 @@ namespace AntdUI
             {
                 if (text == value) return;
                 text = value;
-                Invalidate();
+                if (useSystemText) Invalidate();
                 OnTextChanged(EventArgs.Empty);
             }
         }
 
-        bool showText = false;
+        string? textUnit = "%";
         /// <summary>
-        /// 显示进度文本
+        /// 单位文本
         /// </summary>
-        [Description("显示进度文本"), Category("外观"), DefaultValue(false)]
-        public bool ShowText
+        [Description("单位文本"), Category("外观"), DefaultValue("%")]
+        public string? TextUnit
         {
-            get => showText;
+            get => textUnit;
             set
             {
-                if (showText == value) return;
-                showText = value;
+                if (textUnit == value) return;
+                textUnit = value;
                 Invalidate();
             }
         }
 
-        bool showInfo = true;
+        bool useSystemText = false;
         /// <summary>
-        /// 显示信息
+        /// 使用系统文本
         /// </summary>
-        [Description("显示信息"), Category("外观"), DefaultValue(true)]
-        public bool ShowInfo
+        [Description("使用系统文本"), Category("外观"), DefaultValue(false)]
+        public bool UseSystemText
         {
-            get => showInfo;
+            get => useSystemText;
             set
             {
-                if (showInfo == value) return;
-                showInfo = value;
-                if (Mini || shape == TShape.Circle) return;
+                if (useSystemText == value) return;
+                useSystemText = value;
                 Invalidate();
             }
         }
@@ -204,6 +197,7 @@ namespace AntdUI
                 if (state == value) return;
                 state = value;
                 Invalidate();
+                if (showInTaskbar) ShowTaskbar();
             }
         }
 
@@ -219,6 +213,22 @@ namespace AntdUI
             {
                 if (iconratio == value) return;
                 iconratio = value;
+                Invalidate();
+            }
+        }
+
+        float valueratio = .4F;
+        /// <summary>
+        /// 进度条比例
+        /// </summary>
+        [Description("进度条比例"), Category("外观"), DefaultValue(.4F)]
+        public float ValueRatio
+        {
+            get => valueratio;
+            set
+            {
+                if (valueratio == value) return;
+                valueratio = value;
                 Invalidate();
             }
         }
@@ -283,6 +293,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// Value格式化时发生
+        /// </summary>
+        [Description("Value格式化时发生"), Category("行为")]
+        public event ProgressFormatEventHandler? ValueFormatChanged;
+
         #endregion
 
         bool loading = false;
@@ -334,6 +350,58 @@ namespace AntdUI
         [Description("动画时长"), Category("外观"), DefaultValue(200)]
         public int Animation { get; set; } = 200;
 
+        #region 步骤
+
+        int steps = 3;
+        /// <summary>
+        /// 进度条总共步数
+        /// </summary>
+        [Description("进度条总共步数"), Category("外观"), DefaultValue(3)]
+        public int Steps
+        {
+            get => steps;
+            set
+            {
+                if (steps == value) return;
+                steps = value;
+                if (shape == TShapeProgress.Steps) Invalidate();
+            }
+        }
+
+        int stepSize = 14;
+        /// <summary>
+        /// 步数大小
+        /// </summary>
+        [Description("步数大小"), Category("外观"), DefaultValue(14)]
+        public int StepSize
+        {
+            get => stepSize;
+            set
+            {
+                if (stepSize == value) return;
+                stepSize = value;
+                if (shape == TShapeProgress.Steps) Invalidate();
+            }
+        }
+
+        int stepGap = 2;
+        /// <summary>
+        /// 步数间隔
+        /// </summary>
+        [Description("步数间隔"), Category("外观"), DefaultValue(2)]
+        public int StepGap
+        {
+            get => stepGap;
+            set
+            {
+                if (stepGap == value) return;
+                stepGap = value;
+                if (shape == TShapeProgress.Steps) Invalidate();
+            }
+        }
+
+        #endregion
+
         #region 动画
 
         protected override void Dispose(bool disposing)
@@ -363,16 +431,13 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            if (showInTaskbar)
+            if (ownerForm == null) ownerForm = Parent.FindPARENT();
+            ITask.Run(() =>
             {
-                if (ownerForm == null) ownerForm = Parent.FindPARENT();
-                ITask.Run(() =>
-                {
-                    Thread.Sleep(100);
-                    canTaskbar = true;
-                    ShowTaskbar();
-                });
-            }
+                Thread.Sleep(100);
+                canTaskbar = true;
+                if (showInTaskbar) ShowTaskbar();
+            });
         }
 
         bool showInTaskbar = false;
@@ -403,7 +468,7 @@ namespace AntdUI
                 if (ownerForm == null) return;
                 if (state == TType.None)
                 {
-                    if (_value_show == 0 && loading)
+                    if (_value == 0 && loading)
                     {
                         TaskbarProgressValue(ownerForm, 0);
                         TaskbarProgressState(ownerForm, ThumbnailProgressState.Indeterminate);
@@ -412,7 +477,7 @@ namespace AntdUI
                     {
                         if (sl && old_state == ThumbnailProgressState.Indeterminate) TaskbarProgressState(ownerForm, ThumbnailProgressState.NoProgress);
                         TaskbarProgressState(ownerForm, ThumbnailProgressState.Normal);
-                        TaskbarProgressValue(ownerForm, (ulong)(_value_show * 100));
+                        TaskbarProgressValue(ownerForm, (ulong)(_value * 100));
                     }
                 }
                 else
@@ -429,7 +494,7 @@ namespace AntdUI
                             TaskbarProgressState(ownerForm, ThumbnailProgressState.Normal);
                             break;
                     }
-                    TaskbarProgressValue(ownerForm, (ulong)(_value_show * 100));
+                    TaskbarProgressValue(ownerForm, (ulong)(_value * 100));
                 }
             }
         }
@@ -478,228 +543,272 @@ namespace AntdUI
             var rect_t = ClientRectangle;
             var rect = rect_t.PaddingRect(Padding);
             var g = e.Graphics.High();
-            Color _color, _back;
+            Color color;
             switch (state)
             {
                 case TType.Success:
-                    _color = fill ?? Style.Db.Success;
+                    color = fill ?? Style.Db.Success;
                     break;
                 case TType.Info:
-                    _color = fill ?? Style.Db.Info;
+                    color = fill ?? Style.Db.Info;
                     break;
                 case TType.Warn:
-                    _color = fill ?? Style.Db.Warning;
+                    color = fill ?? Style.Db.Warning;
                     break;
                 case TType.Error:
-                    _color = fill ?? Style.Db.Error;
+                    color = fill ?? Style.Db.Error;
                     break;
                 case TType.None:
                 default:
-                    _color = fill ?? Style.Db.Primary;
+                    color = fill ?? Style.Db.Primary;
                     break;
             }
-            if (Mini)
+            switch (shape)
             {
-                _back = back ?? Color.FromArgb(40, _color);
-                var font_size = g.MeasureString(text, Font);
-                rect.IconRectL(font_size, out var icon_rect, out var text_rect, iconratio);
-                if (icon_rect.Width == 0 || icon_rect.Height == 0) return;
-                using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                case TShapeProgress.Circle:
+                    PaintShapeCircle(g, rect, color);
+                    break;
+                case TShapeProgress.Mini:
+                    PaintShapeMini(g, rect, color);
+                    break;
+                case TShapeProgress.Steps:
+                    PaintShapeSteps(g, rect_t, rect, color);
+                    break;
+                case TShapeProgress.Round:
+                    PaintShapeRound(g, rect_t, rect, color, true);
+                    break;
+                case TShapeProgress.Default:
+                default:
+                    PaintShapeRound(g, rect_t, rect, color, false);
+                    break;
+            }
+            this.PaintBadge(g);
+            base.OnPaint(e);
+        }
+
+        void PaintShapeMini(Graphics g, Rectangle rect, Color color)
+        {
+            var _back = back ?? Color.FromArgb(40, color);
+            var font_size = g.MeasureString("100" + textUnit, Font).Size();
+            rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect, iconratio);
+            if (icon_rect.Width == 0 || icon_rect.Height == 0) return;
+            using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+            {
+                string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                g.DrawStr(textShow, Font, brush, new Rectangle(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), s_l);
+            }
+
+            int w = radius == 0 ? (int)Math.Round(icon_rect.Width * .2F) : (int)(radius * Config.Dpi);
+            using (var brush = new Pen(_back, w))
+            {
+                g.DrawEllipse(brush, icon_rect);
+            }
+
+            #region 进度条
+
+            int max = 0;
+            if (_value_show > 0)
+            {
+                max = (int)Math.Round(360 * _value_show);
+                using (var brush = new Pen(color, w))
                 {
-                    if (showText) g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), s_l);
-                    else g.DrawStr(text, Font, brush, new RectangleF(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), s_l);
+                    brush.StartCap = brush.EndCap = LineCap.Round;
+                    g.DrawArc(brush, icon_rect, -90, max);
                 }
-
-                float w = radius * Config.Dpi;
-                using (var brush = new Pen(_back, w))
-                {
-                    g.DrawEllipse(brush, icon_rect);
-                }
-
-                #region 进度条
-
-                int max = 0;
+            }
+            if (loading && AnimationLoadingValue > 0)
+            {
                 if (_value_show > 0)
                 {
-                    max = (int)Math.Round(360 * _value_show);
-                    using (var brush = new Pen(_color, w))
+                    float alpha = 60 * (1F - AnimationLoadingValue);
+                    using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, icon_rect, -90, max);
+                        g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
                     }
                 }
-                if (loading && AnimationLoadingValue > 0)
+                else if (LoadingFull)
                 {
-                    if (_value_show > 0)
+                    max = 360;
+                    float alpha = 80 * (1F - AnimationLoadingValue);
+                    using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
                     {
-                        float alpha = 60 * (1F - AnimationLoadingValue);
-                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
-                        }
-                    }
-                    else if (LoadingFull)
-                    {
-                        max = 360;
-                        float alpha = 80 * (1F - AnimationLoadingValue);
-                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
-                        }
+                        brush.StartCap = brush.EndCap = LineCap.Round;
+                        g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
                     }
                 }
+            }
 
-                #endregion
+            #endregion
+        }
+        void PaintShapeSteps(Graphics g, Rectangle rect_t, Rectangle rect, Color color)
+        {
+            var _back = back ?? Style.Db.FillSecondary;
+            var font_size = g.MeasureString("100" + textUnit, Font).Size();
+            int pro_gap = (int)(stepGap * Config.Dpi), pro_w = (int)(stepSize * Config.Dpi), pro_h = (int)(font_size.Height * valueratio);
+
+            int pro_y = rect.Y + (rect.Height - pro_h) / 2, has_x = 0;
+
+            var prog = steps * _value_show;
+            using (var brush = new SolidBrush(_back))
+            using (var brush_fill = new SolidBrush(color))
+            {
+                for (int i = 0; i < steps; i++)
+                {
+                    g.FillRectangle(prog > i ? brush_fill : brush, new Rectangle(rect.X + has_x, pro_y, pro_w, pro_h));
+                    has_x += pro_w + pro_gap;
+                }
+            }
+
+            if (state == TType.None)
+            {
+                has_x += pro_h / 2;
+                using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                {
+                    string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                    g.DrawStr(textShow, Font, brush, new Rectangle(rect.X + has_x, rect.Y, rect.Width - has_x, rect.Height), s_l);
+                }
             }
             else
             {
-                _back = back ?? Style.Db.FillSecondary;
-                if (shape == TShape.Circle)
+                int ico_size = (int)(font_size.Height * (iconratio + 0.1F)), size_font_w = pro_h + ico_size;
+                g.PaintIcons(state, new Rectangle((rect.X + has_x + size_font_w) - ico_size, rect_t.Y + (rect_t.Height - ico_size) / 2, ico_size, ico_size));
+            }
+        }
+        void PaintShapeRound(Graphics g, Rectangle rect_t, Rectangle rect, Color color, bool round)
+        {
+            var _back = back ?? Style.Db.FillSecondary;
+            float _radius = radius * Config.Dpi;
+            if (round) _radius = rect.Height;
+
+            if (state == TType.None)
+            {
+                string showtmp, textShow;
+
+                if (ValueFormatChanged == null)
                 {
-                    float w = radius * Config.Dpi;
-                    float prog_size;
-                    if (rect.Width == rect.Height) prog_size = rect.Width - w;
-                    else if (rect.Width > rect.Height) prog_size = rect.Height - w;
-                    else prog_size = rect.Width - w;
-                    var rect_prog = new RectangleF(rect.X + (rect.Width - prog_size) / 2, rect.Y + (rect.Height - prog_size) / 2, prog_size, prog_size);
-                    using (var brush = new Pen(_back, w))
-                    {
-                        g.DrawEllipse(brush, rect_prog);
-                    }
-
-                    #region 进度条
-
-                    int max = 0;
-                    if (_value_show > 0)
-                    {
-                        max = (int)Math.Round(360 * _value_show);
-                        using (var brush = new Pen(_color, w))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, rect_prog, -90, max);
-                        }
-                    }
-                    if (loading && AnimationLoadingValue > 0)
-                    {
-                        if (_value_show > 0)
-                        {
-                            float alpha = 60 * (1F - AnimationLoadingValue);
-                            using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
-                            }
-                        }
-                        else if (LoadingFull)
-                        {
-                            max = 360;
-                            float alpha = 80 * (1F - AnimationLoadingValue);
-                            using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
-                            }
-                        }
-                    }
-
-                    #endregion
-
-                    if (_value_show > 0)
-                    {
-                        if (state == TType.None)
-                        {
-                            using (var brush = new SolidBrush(fore ?? Style.Db.Text))
-                            {
-                                if (showText) g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
-                                else g.DrawStr(text, Font, brush, rect, s_c);
-                            }
-                        }
-                        else
-                        {
-                            int size = (int)(rect_prog.Width * .26F);
-                            g.PaintIconGhosts(state, new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size), _color);
-                        }
-                    }
+                    if (useSystemText) showtmp = textShow = text ?? "";
                     else
                     {
-                        using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                        string basetext = (_value_show * 100F).ToString("F" + ShowTextDot);
+                        var chars = new char[basetext.Length];
+                        chars[0] = basetext[0];
+                        for (int i = 1; i < basetext.Length; i++)
                         {
-                            if (showText) g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
-                            else g.DrawStr(text, Font, brush, rect, s_c);
+                            if (basetext[i] == '.') chars[i] = '.';
+                            else chars[i] = '0';
                         }
+                        showtmp = string.Join("", chars) + textUnit;
+                        textShow = basetext + textUnit;
+                    }
+                }
+                else showtmp = textShow = ValueFormatChanged(this, new FloatEventArgs(_value_show));
+
+                var sizef = g.MeasureString(showtmp, Font).Size();
+                int pro_h = (int)(sizef.Height * valueratio), size_font_w = (int)Math.Ceiling(sizef.Width + sizef.Height * .2F);
+                var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
+                rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                rect.Height = pro_h;
+                rect.Width -= size_font_w;
+                PaintProgress(g, _radius, rect, _back, color);
+
+                using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                {
+                    g.DrawStr(textShow, Font, brush, rect_rext, s_r);
+                }
+            }
+            else
+            {
+                string showtext = (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit;
+                var sizef = g.MeasureString(showtext, Font).Size();
+                int pro_h = (int)(sizef.Height * valueratio), ico_size = (int)(sizef.Height * (iconratio + 0.1F));
+                int size_font_w = pro_h + ico_size;
+                var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
+                rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                rect.Height = pro_h;
+                rect.Width -= size_font_w;
+                PaintProgress(g, _radius, rect, _back, color);
+                g.PaintIcons(state, new Rectangle(rect_rext.Right - ico_size, rect_rext.Y + (rect_rext.Height - ico_size) / 2, ico_size, ico_size));
+            }
+        }
+        void PaintShapeCircle(Graphics g, Rectangle rect, Color color)
+        {
+            var _back = back ?? Style.Db.FillSecondary;
+
+            int prog_size;
+            if (rect.Width == rect.Height) prog_size = rect.Width;
+            else if (rect.Width > rect.Height) prog_size = rect.Height;
+            else prog_size = rect.Width;
+            int w = radius == 0 ? (int)Math.Round(prog_size * .04F) : (int)(radius * Config.Dpi);
+            prog_size -= w;
+            var rect_prog = new Rectangle(rect.X + (rect.Width - prog_size) / 2, rect.Y + (rect.Height - prog_size) / 2, prog_size, prog_size);
+
+            using (var brush = new Pen(_back, w))
+            {
+                g.DrawEllipse(brush, rect_prog);
+            }
+
+            #region 进度条
+
+            int max = 0;
+            if (_value_show > 0)
+            {
+                max = (int)Math.Round(360 * _value_show);
+                using (var brush = new Pen(color, w))
+                {
+                    brush.StartCap = brush.EndCap = LineCap.Round;
+                    g.DrawArc(brush, rect_prog, -90, max);
+                }
+            }
+            if (loading && AnimationLoadingValue > 0)
+            {
+                if (_value_show > 0)
+                {
+                    float alpha = 60 * (1F - AnimationLoadingValue);
+                    using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
+                    {
+                        brush.StartCap = brush.EndCap = LineCap.Round;
+                        g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
+                    }
+                }
+                else if (LoadingFull)
+                {
+                    max = 360;
+                    float alpha = 80 * (1F - AnimationLoadingValue);
+                    using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), w))
+                    {
+                        brush.StartCap = brush.EndCap = LineCap.Round;
+                        g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
+                    }
+                }
+            }
+
+            #endregion
+
+            if (_value_show > 0)
+            {
+                if (state == TType.None)
+                {
+                    using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                    {
+                        string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                        g.DrawStr(textShow, Font, brush, rect, s_c);
                     }
                 }
                 else
                 {
-                    float _radius = radius * Config.Dpi;
-                    if (shape == TShape.Round) _radius = rect.Height;
-                    if (showText)
-                    {
-                        if (showInfo)
-                        {
-                            if (state == TType.None)
-                            {
-                                string basetext = (_value_show * 100F).ToString("F" + ShowTextDot);
-                                var chars = new char[basetext.Length];
-                                chars[0] = basetext[0];
-                                for (int i = 1; i < basetext.Length; i++)
-                                {
-                                    if (basetext[i] == '.') chars[i] = '.';
-                                    else chars[i] = '0';
-                                }
-                                string showtmp = string.Join("", chars) + text;
-
-                                var sizef = g.MeasureString(showtmp, Font);
-                                int pro_h = (int)Math.Ceiling(sizef.Height / 2);
-                                int size_font_w = (int)Math.Ceiling(sizef.Width + sizef.Height * .2F);
-                                var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
-                                rect.Y = rect.Y + (rect.Height - pro_h) / 2;
-                                rect.Height = pro_h;
-                                rect.Width -= size_font_w;
-                                PaintProgress(g, _radius, rect, _back, _color);
-
-                                using (var brush = new SolidBrush(fore ?? Style.Db.Text))
-                                {
-                                    g.DrawStr(basetext + text, Font, brush, rect_rext, s_r);
-                                }
-                            }
-                            else
-                            {
-                                string showtext = (_value_show * 100F).ToString("F" + ShowTextDot) + text;
-                                var sizef = g.MeasureString(showtext, Font);
-                                int pro_h = (int)Math.Ceiling(sizef.Height / 2), ico_size = (int)Math.Ceiling(sizef.Height);
-                                int size_font_w = (int)Math.Ceiling(pro_h + sizef.Height);
-                                var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
-                                rect.Y = rect.Y + (rect.Height - pro_h) / 2;
-                                rect.Height = pro_h;
-                                rect.Width -= size_font_w;
-                                PaintProgress(g, _radius, rect, _back, _color);
-                                g.PaintIcons(state, new Rectangle(rect_rext.Right - ico_size, rect_rext.Y + (rect_rext.Height - ico_size) / 2, ico_size, ico_size));
-                            }
-                        }
-                        else
-                        {
-                            PaintProgress(g, _radius, rect, _back, _color);
-                            using (var brush = new SolidBrush(fore ?? Style.Db.Text))
-                            {
-                                g.DrawStr((_value_show * 100F).ToString("F" + ShowTextDot) + text, Font, brush, rect, s_c);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        PaintProgress(g, _radius, rect, _back, _color);
-                        using (var brush = new SolidBrush(fore ?? Style.Db.Text))
-                        {
-                            g.DrawStr(text, Font, brush, rect, s_c);
-                        }
-                    }
+                    int size = (int)(rect_prog.Width * .26F);
+                    g.PaintIconGhosts(state, new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size), color);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            else
+            {
+                using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                {
+                    string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                    g.DrawStr(textShow, Font, brush, rect, s_c);
+                }
+            }
         }
 
         void PaintProgress(Graphics g, float radius, Rectangle rect, Color back, Color color)
