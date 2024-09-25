@@ -172,7 +172,7 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
-        internal void CLocation(Control Control, Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
+        internal void CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Padding, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
         {
             switch (Placement)
             {
@@ -181,15 +181,15 @@ namespace AntdUI
                     if (DropDownArrow)
                     {
                         ArrowAlign = TAlign.Top;
-                        SetLocation(Point.X + (Control.Width - (Width + 20)) / 2, Point.Y - Height + 10 - ArrowSize);
+                        SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y - Height + Rect.Y - ArrowSize);
                     }
-                    else SetLocation(Point.X + (Control.Width - (Width + 20)) / 2, Point.Y - Height + 10);
+                    else SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y - Height + Rect.Y);
                     break;
                 case TAlignFrom.TL:
                     Inverted = true;
                     if (DropDownArrow)
                     {
-                        int x = Point.X + Rect.X - 10, y = Point.Y - Height + 10 - ArrowSize;
+                        int x = Point.X + Rect.X - Padding, y = Point.Y - Height + Rect.Y - ArrowSize;
                         ArrowAlign = TAlign.TL;
                         SetLocation(x, y);
                         if (Collision)
@@ -198,21 +198,21 @@ namespace AntdUI
                             if (x > (screen.X + screen.Width) - TargetRect.Width)
                             {
                                 ArrowAlign = TAlign.TR;
-                                x = Point.X + (Rect.X + Rect.Width) - Width - 10;
+                                x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
                                 SetLocation(x, y);
                             }
                         }
                     }
                     else
                     {
-                        int x = Point.X + Rect.X - 10, y = Point.Y - Height + 10;
+                        int x = Point.X + Rect.X - Padding, y = Point.Y - Height + Rect.Y;
                         SetLocation(x, y);
                         if (Collision)
                         {
                             var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
                             if (x > (screen.X + screen.Width) - TargetRect.Width)
                             {
-                                x = Point.X + (Rect.X + Rect.Width) - Width - 10;
+                                x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
                                 SetLocation(x, y);
                             }
                         }
@@ -222,7 +222,7 @@ namespace AntdUI
                     Inverted = true;
                     if (DropDownArrow)
                     {
-                        int x = Point.X + (Rect.X + Rect.Width) - Width - 10, y = Point.Y - Height + 10 - ArrowSize;
+                        int x = Point.X + (Rect.X + Rect.Width) - Width + Padding, y = Point.Y - Height + Rect.Y - ArrowSize;
                         ArrowAlign = TAlign.TR;
                         SetLocation(x, y);
                         if (Collision)
@@ -231,21 +231,21 @@ namespace AntdUI
                             if (x < 0)
                             {
                                 ArrowAlign = TAlign.TL;
-                                x = Point.X + Rect.X - 10;
+                                x = Point.X + Rect.X - Padding;
                                 SetLocation(x, y);
                             }
                         }
                     }
                     else
                     {
-                        int x = Point.X + (Rect.X + Rect.Width) - Width - 10, y = Point.Y - Height + 10;
+                        int x = Point.X + (Rect.X + Rect.Width) - Width + Padding, y = Point.Y - Height + Rect.Y;
                         SetLocation(x, y);
                         if (Collision)
                         {
                             var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
                             if (x < 0)
                             {
-                                x = Point.X + Rect.X - 10;
+                                x = Point.X + Rect.X - Padding;
                                 SetLocation(x, y);
                             }
                         }
@@ -255,15 +255,15 @@ namespace AntdUI
                     if (DropDownArrow)
                     {
                         ArrowAlign = TAlign.Bottom;
-                        SetLocation(Point.X + (Control.Width - (Width + 20)) / 2, Point.Y + Control.Height - 10 + ArrowSize);
+                        SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y + Rect.Bottom + ArrowSize);
                     }
-                    else SetLocation(Point.X + (Control.Width - (Width + 20)) / 2, Point.Y + Control.Height - 10);
+                    else SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y + Rect.Bottom);
                     break;
                 case TAlignFrom.BR:
                     if (DropDownArrow)
                     {
                         ArrowAlign = TAlign.BR;
-                        int x = Point.X + (Rect.X + Rect.Width) - Width - 10, y = Point.Y + Control.Height - 10 + ArrowSize;
+                        int x = Point.X + (Rect.X + Rect.Width) - Width + Padding, y = Point.Y + Rect.Bottom + ArrowSize;
                         SetLocation(x, y);
                         if (Collision)
                         {
@@ -271,21 +271,21 @@ namespace AntdUI
                             if (x < 0)
                             {
                                 ArrowAlign = TAlign.BL;
-                                x = Point.X + Rect.X - 10;
+                                x = Point.X + Rect.X - Padding;
                                 SetLocation(x, y);
                             }
                         }
                     }
                     else
                     {
-                        int x = Point.X + (Rect.X + Rect.Width) - Width - 10, y = Point.Y + Control.Height - 10;
+                        int x = Point.X + (Rect.X + Rect.Width) - Width + Padding, y = Point.Y + Rect.Bottom;
                         SetLocation(x, y);
                         if (Collision)
                         {
                             var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
                             if (x < 0)
                             {
-                                x = Point.X + Rect.X - 10;
+                                x = Point.X + Rect.X - Padding;
                                 SetLocation(x, y);
                             }
                         }
@@ -295,7 +295,7 @@ namespace AntdUI
                 default:
                     if (DropDownArrow)
                     {
-                        int x = Point.X + Rect.X - 10, y = Point.Y + Control.Height - 10 + ArrowSize;
+                        int x = Point.X + Rect.X - Padding, y = Point.Y + Rect.Bottom + ArrowSize;
                         ArrowAlign = TAlign.BL;
                         SetLocation(x, y);
                         if (Collision)
@@ -304,21 +304,21 @@ namespace AntdUI
                             if (x > (screen.X + screen.Width) - TargetRect.Width)
                             {
                                 ArrowAlign = TAlign.BR;
-                                x = Point.X + (Rect.X + Rect.Width) - Width - 10;
+                                x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
                                 SetLocation(x, y);
                             }
                         }
                     }
                     else
                     {
-                        int x = Point.X + Rect.X - 10, y = Point.Y + Control.Height - 10;
+                        int x = Point.X + Rect.X - Padding, y = Point.Y + Rect.Bottom;
                         SetLocation(x, y);
                         if (Collision)
                         {
                             var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
                             if (x > (screen.X + screen.Width) - TargetRect.Width)
                             {
-                                x = Point.X + (Rect.X + Rect.Width) - Width - 10;
+                                x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
                                 SetLocation(x, y);
                             }
                         }

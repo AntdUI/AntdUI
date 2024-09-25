@@ -94,12 +94,13 @@ namespace AntdUI
             var point = _control.PointToScreen(Point.Empty);
             if (calendar_day == null) EndHeight = 348 + 20;
             else EndHeight = (t_top + t_button) + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
-            SetSize(t_width + 20, 0);
+            int r_w = t_width + 20;
+            SetSize(r_w, 0);
             rect_button = new Rectangle(t_x + 10 + (t_one_width - year_width) / 2, EndHeight - t_button - (20 - 8), year_width, t_button);
 
             int t_time_w = t_time * 3;
             rect_buttonok = new Rectangle(t_x + 10 + t_one_width, rect_button.Y, t_time_w, t_button);
-            CLocation(_control, point, _control.Placement, _control.DropDownArrow, ArrowSize, t_width, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
+            CLocation(point, _control.Placement, _control.DropDownArrow, ArrowSize, 10, r_w, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
         }
 
         #region 属性

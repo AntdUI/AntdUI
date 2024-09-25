@@ -35,7 +35,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("ItemClick")]
-    public class VirtualPanel : IControl
+    public class VirtualPanel : IControl, IEventListener
     {
         public VirtualPanel()
         {
@@ -1028,6 +1028,25 @@ namespace AntdUI
             BlurBar = null;
             _event?.Dispose();
             base.Dispose(disposing);
+        }
+
+        #endregion
+
+        #region 主题变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.THEME:
+                    if (Config.Animation && BlurBar != null) _event.Set();
+                    break;
+            }
         }
 
         #endregion

@@ -97,7 +97,7 @@ namespace AntdUI
             if (filtertext == null || string.IsNullOrEmpty(filtertext)) EndHeight = y + 10;
             else EndHeight = TextChangeCore(filtertext);
             var point = control.PointToScreen(Point.Empty);
-            MyPoint(point, control, EndHeight, Placement, ShowArrow, rect_read);
+            MyPoint(point, control, Placement, ShowArrow, rect_read);
 
             KeyCall = keys =>
             {
@@ -149,7 +149,7 @@ namespace AntdUI
             };
         }
 
-        void MyPoint(Point point, Control control, int height, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(control, point, Placement, ShowArrow, ArrowSize, r_w, height, rect_read, ref Inverted, ref ArrowAlign);
+        void MyPoint(Point point, Control control, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(point, Placement, ShowArrow, ArrowSize, 10, r_w + 20, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
 
         void ReadList(object obj, int i, int w, int y2, int gap_x, int gap_y, int gap, int font_size, int text_height, ref int item_count, ref int divider_count, ref int y, ref int selY, bool NoIndex = true)
         {
@@ -326,7 +326,7 @@ namespace AntdUI
                     height = y;
                 }
                 EndHeight = height;
-                if (PARENT is SelectMultiple control) MyPoint(control, height);
+                if (PARENT is SelectMultiple control) MyPoint(control);
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 Print();
@@ -406,7 +406,7 @@ namespace AntdUI
             }
         }
 
-        void MyPoint(SelectMultiple control, int height) => MyPoint(control.PointToScreen(Point.Empty), control, height, control.Placement, control.DropDownArrow, control.ReadRectangle);
+        void MyPoint(SelectMultiple control) => MyPoint(control.PointToScreen(Point.Empty), control, control.Placement, control.DropDownArrow, control.ReadRectangle);
 
         #endregion
 
