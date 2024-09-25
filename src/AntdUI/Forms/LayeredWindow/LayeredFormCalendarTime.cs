@@ -71,7 +71,8 @@ namespace AntdUI
 
             var point = _control.PointToScreen(Point.Empty);
             EndHeight = t_height + t_button + 20;
-            SetSize(t_width + 20, 0);
+            int r_w = t_width + 20;
+            SetSize(r_w, 0);
 
             #region 布局
 
@@ -111,7 +112,7 @@ namespace AntdUI
 
             rect_button = new Rectangle(10, 10 + t_height, t_width / 2, t_button);
             rect_buttonok = new Rectangle(rect_button.Right, rect_button.Top, rect_button.Width, rect_button.Height);
-            CLocation(_control, point, _control.Placement, _control.DropDownArrow, ArrowSize, t_width, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
+            CLocation(point, _control.Placement, _control.DropDownArrow, ArrowSize, 10, r_w, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
         }
 
         #region 属性

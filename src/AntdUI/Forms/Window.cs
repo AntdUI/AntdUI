@@ -85,12 +85,32 @@ namespace AntdUI
         {
             handle = new HWND(Handle);
             base.OnHandleCreated(e);
-            SetTheme();
+            if (FormBorderStyle == FormBorderStyle.None)
+            {
+                SetTheme();
+                DisableProcessWindowsGhosting();
+                HandMessage();
+                DwmArea();
+            }
+            else
+            {
+                Size max = MaximumSize, min = MinimumSize;
+                sizeInit = ClientSize;
+                MaximumSize = MinimumSize = ClientSize = sizeInit.Value;
+                SetTheme();
+                DisableProcessWindowsGhosting();
+                HandMessage();
+                DwmArea();
+                ClientSize = sizeInit.Value;
+                MinimumSize = min;
+                MaximumSize = max;
+            }
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
             SetWindowPos(handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_FRAMECHANGED);
-            DisableProcessWindowsGhosting();
-            HandMessage();
-            DwmArea();
-            if (sizeInit.HasValue) ClientSize = sizeInit.Value;
+            base.OnLoad(e);
         }
 
         private void InvalidateNonclient()
@@ -407,7 +427,6 @@ namespace AntdUI
         Size? sizeNormal;
         bool WmNCActivate(ref System.Windows.Forms.Message m)
         {
-            if (sizeInit == null) sizeInit = ClientSize;
             if (m.HWnd == IntPtr.Zero) return false;
             if (IsIconic(m.HWnd)) return false;
             m.Result = DefWindowProc(m.HWnd, (uint)m.Msg, m.WParam, new IntPtr(-1));

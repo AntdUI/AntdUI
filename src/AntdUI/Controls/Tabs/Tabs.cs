@@ -367,6 +367,18 @@ namespace AntdUI
             ShowPage();
         }
 
+        protected override void OnMarginChanged(EventArgs e)
+        {
+            LoadLayout(true);
+            base.OnMarginChanged(e);
+        }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            LoadLayout(false);
+            base.OnFontChanged(e);
+        }
+
         protected override void OnSizeChanged(EventArgs e)
         {
             LoadLayout(false);

@@ -119,10 +119,10 @@ namespace AntdUI
 
             h += panel_color + gap;
 
-            SetSize(w + 20, 0);
+            int r_w = w + 20;
+            SetSize(r_w, 0);
             EndHeight = h + 20;
-
-            CLocation(control, control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, w, h + 20, rect_read, ref Inverted, ref ArrowAlign, true);
+            CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, EndHeight, rect_read, ref Inverted, ref ArrowAlign, true);
 
             Location = TargetRect.Location;
             Size = TargetRect.Size;

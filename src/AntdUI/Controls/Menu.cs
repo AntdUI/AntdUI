@@ -1194,7 +1194,7 @@ namespace AntdUI
         /// </summary>
         internal bool HasIcon
         {
-            get => iconSvg != null || icon != null;
+            get => !string.IsNullOrWhiteSpace(iconSvg) || icon != null;
         }
 
         #endregion

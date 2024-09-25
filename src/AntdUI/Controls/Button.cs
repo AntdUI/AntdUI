@@ -785,6 +785,17 @@ namespace AntdUI
 
         #region 按钮点击
 
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            if (e.KeyCode is Keys.Enter or Keys.Space)
+            {
+                button.OnClick();
+                OnClick(EventArgs.Empty);
+                e.Handled = true;
+            }
+            base.OnKeyUp(e);
+        }
+
         [DefaultValue(DialogResult.None)]
         public DialogResult DialogResult { get; set; } = DialogResult.None;
 
@@ -798,6 +809,7 @@ namespace AntdUI
 
         public void PerformClick()
         {
+            button.OnClick();
             OnClick(EventArgs.Empty);
         }
 

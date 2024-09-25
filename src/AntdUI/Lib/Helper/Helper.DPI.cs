@@ -30,7 +30,7 @@ namespace AntdUI
             {
                 if (control is Window window && window.StartPosition == FormStartPosition.CenterScreen)
                 {
-                    var size = window.sizeInit ?? control.Size;
+                    var size = window.sizeInit ?? window.ClientSize;
                     var screen = Screen.FromPoint(window.Location).WorkingArea;
                     window.Location = new Point(screen.X + (screen.Width - size.Width) / 2, screen.Y + (screen.Height - size.Height) / 2);
                 }
