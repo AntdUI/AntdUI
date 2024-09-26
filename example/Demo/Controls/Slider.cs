@@ -28,5 +28,10 @@ namespace Demo.Controls
             form = _form;
             InitializeComponent();
         }
+
+        private string slider7_ValueFormatChanged(object sender, AntdUI.IntEventArgs e)
+        {
+            return e.Value + "¡æ";
+        }
     }
 }
