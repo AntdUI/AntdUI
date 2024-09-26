@@ -104,6 +104,8 @@ namespace AntdUI
             Db.HoverBg = style.HoverBg.ToColor();
             Db.HoverColor = style.HoverColor.ToColor();
 
+            Db.SliderHandleColorDisabled = style.SliderHandleColorDisabled.ToColor();
+
             EventHub.Dispatch(EventType.THEME);
         }
 

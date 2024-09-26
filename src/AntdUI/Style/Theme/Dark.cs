@@ -124,5 +124,7 @@ namespace AntdUI.Theme
         public Color HoverBg { get; set; } = Style.rgba(255, 255, 255, 0.06F);
 
         public Color HoverColor { get; set; } = Style.rgba(255, 255, 255, 0.88F);
+
+        public Color SliderHandleColorDisabled { get; set; } = "#4F4F4F".ToColor();
     }
 }

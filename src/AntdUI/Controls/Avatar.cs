@@ -34,6 +34,7 @@ namespace AntdUI
     [Description("Avatar 头像")]
     [ToolboxItem(true)]
     [DefaultProperty("Image")]
+    [Designer(typeof(IControlDesigner))]
     public class Avatar : IControl, ShadowConfig
     {
         public Avatar()

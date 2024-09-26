@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -35,12 +36,6 @@ namespace AntdUI
     public class Slider : IControl
     {
         #region 属性
-
-        /// <summary>
-        /// 固定点
-        /// </summary>
-        [Description("固定点"), Category("数据"), DefaultValue(null)]
-        public int[]? Dots { get; set; }
 
         Color? fill;
         /// <summary>
@@ -204,11 +199,11 @@ namespace AntdUI
             }
         }
 
-        int dotSize = 14;
+        int dotSize = 10;
         /// <summary>
         /// 点大小
         /// </summary>
-        [Description("点大小"), Category("外观"), DefaultValue(14)]
+        [Description("点大小"), Category("外观"), DefaultValue(10)]
         public int DotSize
         {
             get => dotSize;
@@ -220,11 +215,11 @@ namespace AntdUI
             }
         }
 
-        int dotSizeActive = 20;
+        int dotSizeActive = 12;
         /// <summary>
         /// 点激活大小
         /// </summary>
-        [Description("点激活大小"), Category("外观"), DefaultValue(20)]
+        [Description("点激活大小"), Category("外观"), DefaultValue(12)]
         public int DotSizeActive
         {
             get => dotSizeActive;
@@ -236,96 +231,202 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 是否只能拖拽到刻度上
+        /// </summary>
+        [Description("是否只能拖拽到刻度上"), Category("数据"), DefaultValue(false)]
+        public bool Dots { get; set; }
+
+        SliderMarkItemCollection? marks;
+        /// <summary>
+        /// 刻度标记
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("刻度标记"), Category("数据"), DefaultValue(null)]
+        public SliderMarkItemCollection Marks
+        {
+            get
+            {
+                marks ??= new SliderMarkItemCollection(this);
+                return marks;
+            }
+            set => marks = value.BindData(this);
+        }
+
+        /// <summary>
+        /// 刻度文本间距
+        /// </summary>
+        [Description("刻度文本间距"), Category("外观"), DefaultValue(4)]
+        public int MarkTextGap { get; set; } = 4;
+
         #endregion
 
         #region 渲染
 
+        Rectangle rect_read;
         protected override void OnPaint(PaintEventArgs e)
         {
+            var padding = Padding;
+            var _rect = ClientRectangle.PaddingRect(padding);
+            int LineSize = (int)(lineSize * Config.Dpi), DotS = (int)((dotSizeActive > dotSize ? dotSizeActive : dotSize) * Config.Dpi), DotS2 = DotS * 2;
+            if (align == TAlignMini.Top || align == TAlignMini.Bottom)
+            {
+                if (padding.Top > DotS || padding.Bottom > DotS)
+                {
+                    if (padding.Top > DotS && padding.Bottom > DotS) rect_read = new Rectangle(_rect.X + (_rect.Width - LineSize) / 2, _rect.Y, LineSize, _rect.Height);
+                    else if (padding.Top > DotS) rect_read = new Rectangle(_rect.X + (_rect.Width - LineSize) / 2, _rect.Y, LineSize, _rect.Height - DotS);
+                    else rect_read = new Rectangle(_rect.X + (_rect.Width - LineSize) / 2, _rect.Y + DotS, LineSize, _rect.Height - DotS);
+                }
+                else rect_read = new Rectangle(_rect.X + (_rect.Width - LineSize) / 2, _rect.Y + DotS, LineSize, _rect.Height - DotS2);
+            }
+            else
+            {
+                if (padding.Left > DotS || padding.Right > DotS)
+                {
+                    if (padding.Left > DotS && padding.Right > DotS) rect_read = new Rectangle(_rect.X, _rect.Y + (_rect.Height - LineSize) / 2, _rect.Width, LineSize);
+                    else if (padding.Left > DotS) rect_read = new Rectangle(_rect.X, _rect.Y + (_rect.Height - LineSize) / 2, _rect.Width - DotS, LineSize);
+                    else rect_read = new Rectangle(_rect.X + DotS, _rect.Y + (_rect.Height - LineSize) / 2, _rect.Width - DotS, LineSize);
+                }
+                else rect_read = new Rectangle(_rect.X + DotS, _rect.Y + (_rect.Height - LineSize) / 2, _rect.Width - DotS2, LineSize);
+            }
+            bool enabled = Enabled;
+            Color color = enabled ? fill ?? Style.Db.InfoBorder : Style.Db.FillTertiary, color_dot = enabled ? fill ?? Style.Db.InfoBorder : Style.Db.SliderHandleColorDisabled, color_hover = FillHover ?? Style.Db.InfoHover, color_active = FillActive ?? Style.Db.Primary;
+
             var g = e.Graphics.High();
-            var _rect = ClientRectangle;
 
-            var back = Style.Db.FillQuaternary;
-            using (var brush = new SolidBrush(back))
-            {
-                g.FillRectangle(brush, rect_read);
-
-                if (AnimationHover)
-                {
-                    using (var brush2 = new SolidBrush(Helper.ToColorN(AnimationHoverValue, back)))
-                    {
-                        g.FillRectangle(brush2, rect_read);
-                    }
-                }
-                else if (ExtraMouseHover) g.FillRectangle(brush, rect_read);
-            }
             float prog = ProgValue(_value, rect_read.Width, rect_read.Height);
-            if (_value > _minValue)
+
+            #region 线条
+
+            using (var path = rect_read.RoundPath(rect_read.Height / 2))
             {
-                var rect_prog = RectLine(rect_read, prog);
-                Color color = fill ?? Style.Db.InfoBorder, color_hover = FillHover ?? Style.Db.InfoHover;
-                if (AnimationHover)
+                using (var brush = new SolidBrush(Style.Db.FillQuaternary))
                 {
-                    using (var brush = new SolidBrush(color))
+                    g.FillPath(brush, path);
+                    if (AnimationHover)
                     {
-                        g.FillRectangle(brush, rect_prog);
+                        using (var brush_hover = new SolidBrush(Helper.ToColorN(AnimationHoverValue, brush.Color)))
+                        {
+                            g.FillPath(brush_hover, path);
+                        }
                     }
-                    using (var brush = new SolidBrush(Helper.ToColor(255 * AnimationHoverValue, color_hover)))
-                    {
-                        g.FillRectangle(brush, rect_prog);
-                    }
+                    else if (ExtraMouseHover) g.FillPath(brush, path);
                 }
-                else
+
+                if (prog > 0)
                 {
-                    using (var brush = new SolidBrush(ExtraMouseHover ? color_hover : color))
+                    g.SetClip(RectLine(rect_read, prog));
+                    if (AnimationHover)
                     {
-                        g.FillRectangle(brush, rect_prog);
+                        using (var brush = new SolidBrush(color))
+                        {
+                            g.FillPath(brush, path);
+                        }
+                        using (var brush = new SolidBrush(Helper.ToColor(255 * AnimationHoverValue, color_hover)))
+                        {
+                            g.FillPath(brush, path);
+                        }
                     }
+                    else
+                    {
+                        using (var brush = new SolidBrush(ExtraMouseHover ? color_hover : color))
+                        {
+                            g.FillPath(brush, path);
+                        }
+                    }
+                    g.ResetClip();
                 }
             }
-            PaintEllipse(g, _rect, rect_read, prog);
+
+            #endregion
+
+            PaintEllipse(g, _rect, rect_read, prog, color_dot, color_hover, color_active, LineSize);
             this.PaintBadge(g);
         }
 
-        internal void PaintEllipse(Graphics g, Rectangle _rect, RectangleF rect, float prog)
+        readonly StringFormat s_f = Helper.SF_NoWrap();
+        RectangleF rectEllipse;
+        internal void PaintEllipse(Graphics g, Rectangle rect, RectangleF rect_read, float prog, Color color, Color color_hover, Color color_active, int LineSize)
         {
-            var color = fill ?? Style.Db.InfoBorder;
-            var color_active = FillActive ?? Style.Db.Primary;
             int DotSize = (int)(dotSize * Config.Dpi), DotSizeActive = (int)(dotSizeActive * Config.Dpi);
 
+            using (var fore = new SolidBrush(Style.Db.Text))
             using (var brush = new SolidBrush(Style.Db.BgBase))
             {
-                if (Dots != null && Dots.Length > 0)
+                if (marks != null && marks.Count > 0)
                 {
-                    foreach (var it in Dots)
+                    int markTextGap = (int)(MarkTextGap * Config.Dpi);
+                    int size2 = LineSize, size = size2 * 2;
+                    foreach (var it in marks)
                     {
-                        float size = DotSize * 0.9F;
-                        float uks = ProgValue(it, rect.Width, rect.Height);
-                        var rect_dot = RectDot(_rect, rect, uks, size);
-                        g.FillEllipse(brush, rect_dot);
-                        PaintEllipse(g, rect_dot, color, 1);
+                        float uks = ProgValue(it.Value, rect_read.Width, rect_read.Height);
+                        if (!string.IsNullOrWhiteSpace(it.Text))
+                        {
+                            if (it.Fore.HasValue)
+                            {
+                                using (var fore2 = new SolidBrush(it.Fore.Value))
+                                {
+                                    g.DrawStr(it.Text, Font, fore2, RectDotText(rect, rect_read, uks, markTextGap, g.MeasureString(it.Text, Font).Size()), s_f);
+                                }
+                            }
+                            else g.DrawStr(it.Text, Font, fore, RectDotText(rect, rect_read, uks, markTextGap, g.MeasureString(it.Text, Font).Size()), s_f);
+                        }
+                        using (var brush_dot = new SolidBrush(color))
+                        {
+                            g.FillEllipse(brush_dot, RectDot(rect, rect_read, uks, size));
+                        }
+                        g.FillEllipse(brush, RectDot(rect, rect_read, uks, size2));
                     }
                 }
-                var rect_ellipse_rl = RectDot(_rect, rect, prog, DotSize);
+                rectEllipse = RectDot(rect, rect_read, prog, DotSizeActive + LineSize);
+                var rect_ellipse_rl = RectDot(rect, rect_read, prog, DotSize + LineSize);
                 if (ShowValue && _mouseHover) ShowTips(rect_ellipse_rl);
-                if (AnimationHover)
+
+                if (AnimationDotHover)
                 {
-                    int size2 = DotSizeActive - DotSize;
-                    var size = DotSize + size2 * AnimationHoverValue;
-                    var rect_ellipse = RectDot(_rect, rect, prog, size);
-                    g.FillEllipse(brush, rect_ellipse);
-                    PaintEllipse(g, rect_ellipse, color_active, 2 + 2 * AnimationHoverValue);
+                    float value = ((DotSizeActive - DotSize) * AnimationDotHoverValue);
+                    using (var brush_shadow = new SolidBrush(color_active.rgba(.2F)))
+                    {
+                        g.FillEllipse(brush_shadow, RectDot(rect, rect_read, prog, DotSizeActive + LineSize + LineSize * 2 * AnimationDotHoverValue));
+                    }
+                    using (var brush_dot = new SolidBrush(color_active))
+                    {
+                        g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSize + LineSize + value));
+                    }
+                    g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize + value));
                 }
-                else if (ExtraMouseHover)
+                else if (ExtraMouseDotHover)
                 {
-                    var rect_ellipse = RectDot(_rect, rect, prog, DotSizeActive);
-                    g.FillEllipse(brush, rect_ellipse);
-                    PaintEllipse(g, rect_ellipse, color_active, 4);
+                    using (var brush_shadow = new SolidBrush(color_active.rgba(.2F)))
+                    {
+                        g.FillEllipse(brush_shadow, RectDot(rect, rect_read, prog, DotSizeActive + LineSize * 3));
+                    }
+                    using (var brush_dot = new SolidBrush(color_active))
+                    {
+                        g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSizeActive + LineSize));
+                    }
+                    g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSizeActive));
                 }
                 else
                 {
-                    g.FillEllipse(brush, rect_ellipse_rl);
-                    PaintEllipse(g, rect_ellipse_rl, color, 2);
+                    if (AnimationHover)
+                    {
+                        using (var brush_dot_old = new SolidBrush(color))
+                        using (var brush_dot = new SolidBrush(Helper.ToColor(255 * AnimationHoverValue, color_hover)))
+                        {
+                            var rect_dot = RectDot(rect, rect_read, prog, DotSize + LineSize);
+                            g.FillEllipse(brush_dot_old, rect_dot);
+                            g.FillEllipse(brush_dot, rect_dot);
+                        }
+                    }
+                    else
+                    {
+                        using (var brush_dot = new SolidBrush(ExtraMouseHover ? color_hover : color))
+                        {
+                            g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSize + LineSize));
+                        }
+                    }
+                    g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize));
                 }
             }
         }
@@ -350,68 +451,59 @@ namespace AntdUI
             switch (align)
             {
                 case TAlignMini.Right:
-                    return new RectangleF(rect_read.X + rect_read.Width - prog, rect_read.Y, prog, rect_read.Height);
+                    return new RectangleF(rect.X + rect.Width - prog, rect.Y, prog, rect.Height);
                 case TAlignMini.Top:
-                    return new RectangleF(rect_read.X, rect_read.Y, rect_read.Width, prog);
+                    return new RectangleF(rect.X, rect.Y, rect.Width, prog);
                 case TAlignMini.Bottom:
-                    return new RectangleF(rect_read.X, rect_read.Y + rect_read.Height - prog, rect_read.Width, prog);
+                    return new RectangleF(rect.X, rect.Y + rect.Height - prog, rect.Width, prog);
                 default:
-                    return new RectangleF(rect_read.X, rect_read.Y, prog, rect_read.Height);
+                    return new RectangleF(rect.X, rect.Y, prog, rect.Height);
             }
         }
-        internal RectangleF RectDot(Rectangle _rect, RectangleF rect, float prog, float size)
+        internal RectangleF RectDot(Rectangle rect, RectangleF rect_read, float prog, float size)
         {
             switch (align)
             {
                 case TAlignMini.Right:
-                    return new RectangleF(rect.X + (rect.Width - prog - (size / 2F)), _rect.Y + (_rect.Height - size) / 2F, size, size);
+                    return new RectangleF(rect_read.X + (rect_read.Width - prog - (size / 2F)), rect.Y + (rect.Height - size) / 2F, size, size);
                 case TAlignMini.Top:
-                    return new RectangleF(_rect.X + (_rect.Width - size) / 2F, rect.Y + prog - size / 2F, size, size);
+                    return new RectangleF(rect.X + (rect.Width - size) / 2F, rect_read.Y + prog - size / 2F, size, size);
                 case TAlignMini.Bottom:
-                    return new RectangleF(_rect.X + (_rect.Width - size) / 2F, rect.Y + (rect.Height - prog - (size / 2F)), size, size);
+                    return new RectangleF(rect.X + (rect.Width - size) / 2F, rect_read.Y + (rect_read.Height - prog - (size / 2F)), size, size);
                 default:
-                    return new RectangleF(rect.X + prog - size / 2F, _rect.Y + (_rect.Height - size) / 2F, size, size);
+                    return new RectangleF(rect_read.X + prog - size / 2F, rect.Y + (rect.Height - size) / 2F, size, size);
             }
         }
-        internal RectangleF RectDotH(Rectangle rect_read, RectangleF _rect, float prog, int DotSize)
+        internal RectangleF RectDotText(Rectangle rect, RectangleF rect_read, float prog, int gap, Size size)
         {
             switch (align)
             {
                 case TAlignMini.Right:
-                    return new RectangleF(rect_read.X + (rect_read.Width - prog - (DotSize / 2)), _rect.Y, DotSize, _rect.Height);
+                    return new RectangleF(rect_read.X + (rect_read.Width - prog - size.Width / 2F), rect_read.Bottom + rect_read.Height + gap, size.Width, size.Height);
                 case TAlignMini.Top:
-                    return new RectangleF(_rect.X, rect_read.Y + prog - DotSize / 2, _rect.Width, DotSize);
+                    return new RectangleF(rect_read.Right + rect_read.Width + gap, rect_read.Y + prog - size.Height / 2F, size.Width, size.Height);
                 case TAlignMini.Bottom:
-                    return new RectangleF(_rect.X, rect_read.Y + (rect_read.Height - prog - (DotSize / 2)), _rect.Width, DotSize);
+                    return new RectangleF(rect_read.Right + rect_read.Width + gap, rect_read.Y + (rect_read.Height - prog - size.Height / 2F), size.Width, size.Height);
                 default:
-                    return new RectangleF(rect_read.X + prog - DotSize / 2, _rect.Y, DotSize, _rect.Height);
+                    return new RectangleF(rect_read.X + prog - size.Width / 2F, rect_read.Bottom + rect_read.Height + gap, size.Width, size.Height);
             }
         }
-
-        #endregion
-
-        internal void PaintEllipse(Graphics g, RectangleF rect_ellipse, Color color, float size)
+        internal RectangleF RectDotH(Rectangle rect, Rectangle rect_read, float prog, int DotSize)
         {
-            using (var brush = new Pen(color, size))
+            switch (align)
             {
-                g.DrawEllipse(brush, rect_ellipse);
+                case TAlignMini.Right:
+                    return new RectangleF(rect_read.X + (rect_read.Width - prog - DotSize / 2F), rect.Y, DotSize, rect.Height);
+                case TAlignMini.Top:
+                    return new RectangleF(rect.X, rect_read.Y + prog - DotSize / 2F, rect.Width, DotSize);
+                case TAlignMini.Bottom:
+                    return new RectangleF(rect.X, rect_read.Y + (rect_read.Height - prog - DotSize / 2F), rect.Width, DotSize);
+                default:
+                    return new RectangleF(rect_read.X + prog - DotSize / 2F, rect.Y, DotSize, rect.Height);
             }
         }
 
         #endregion
-
-        #region 坐标计算
-
-        Rectangle rect_read;
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            var _rect = ClientRectangle;
-            float dpi = Config.Dpi;
-            int LineSize = (int)(lineSize * dpi), DotSizeActive = (int)(dotSizeActive * dpi), DotSizeActive2 = DotSizeActive * 2;
-            if (align == TAlignMini.Top || align == TAlignMini.Bottom) rect_read = new Rectangle(_rect.Left + (_rect.Width - LineSize) / 2, DotSizeActive, LineSize, _rect.Height - DotSizeActive2);
-            else rect_read = new Rectangle(DotSizeActive, _rect.Top + (_rect.Height - LineSize) / 2, _rect.Width - DotSizeActive2, LineSize);
-            base.OnSizeChanged(e);
-        }
 
         #endregion
 
@@ -422,72 +514,8 @@ namespace AntdUI
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Left)
             {
-                int max = _maxValue - _minValue;
-                Value = _MouseDown(ClientRectangle, e.Location, max);
+                Value = FindIndex(e.X, e.Y, true);
                 mouseFlat = true;
-            }
-        }
-
-        int _MouseDown(Rectangle _rect, Point loc, int max)
-        {
-            switch (align)
-            {
-                case TAlignMini.Right:
-                    if (Dots != null && Dots.Length > 0)
-                    {
-                        int DotSize = (int)(dotSize * Config.Dpi);
-                        foreach (var it in Dots)
-                        {
-                            float uks = ProgValue(it, rect_read.Width, rect_read.Height);
-                            var rect_dot = RectDotH(rect_read, _rect, uks, DotSize);
-                            if (rect_dot.Contains(loc)) return it;
-                        }
-                    }
-                    float xr = 1F - ((loc.X - rect_read.X) * 1.0F / rect_read.Width);
-                    if (xr > 0) return (int)Math.Round(xr * max) + _minValue;
-                    else return _minValue;
-                case TAlignMini.Top:
-                    if (Dots != null && Dots.Length > 0)
-                    {
-                        int DotSize = (int)(dotSize * Config.Dpi);
-                        foreach (var it in Dots)
-                        {
-                            float uks = ProgValue(it, rect_read.Width, rect_read.Height);
-                            var rect_dot = RectDotH(rect_read, _rect, uks, DotSize);
-                            if (rect_dot.Contains(loc)) return it;
-                        }
-                    }
-                    float yt = (loc.Y - rect_read.Y) * 1.0F / rect_read.Height;
-                    if (yt > 0) return (int)Math.Round(yt * max) + _minValue;
-                    else return _minValue;
-                case TAlignMini.Bottom:
-                    if (Dots != null && Dots.Length > 0)
-                    {
-                        int DotSize = (int)(dotSize * Config.Dpi);
-                        foreach (var it in Dots)
-                        {
-                            float uks = ProgValue(it, rect_read.Width, rect_read.Height);
-                            var rect_dot = RectDotH(rect_read, _rect, uks, DotSize);
-                            if (rect_dot.Contains(loc)) return it;
-                        }
-                    }
-                    float yb = 1F - ((loc.Y - rect_read.Y) * 1.0F / rect_read.Height);
-                    if (yb > 0) return (int)Math.Round(yb * max) + _minValue;
-                    else return _minValue;
-                default:
-                    if (Dots != null && Dots.Length > 0)
-                    {
-                        int DotSize = (int)(dotSize * Config.Dpi);
-                        foreach (var it in Dots)
-                        {
-                            float uks = ProgValue(it, rect_read.Width, rect_read.Height);
-                            var rect_dot = RectDotH(rect_read, _rect, uks, DotSize);
-                            if (rect_dot.Contains(loc)) return it;
-                        }
-                    }
-                    float xl = (loc.X - rect_read.X) * 1.0F / rect_read.Width;
-                    if (xl > 0) return (int)Math.Round(xl * max) + _minValue;
-                    else return _minValue;
             }
         }
 
@@ -496,31 +524,95 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (mouseFlat)
             {
-                int max = _maxValue - _minValue;
-                switch (align)
+                ExtraMouseDotHover = true;
+                Value = FindIndex(e.X, e.Y, false);
+            }
+            else ExtraMouseDotHover = rectEllipse.Contains(e.X, e.Y);
+        }
+
+        int FindIndex(int x, int y, bool mark)
+        {
+            int max = _maxValue - _minValue;
+            if (marks != null && marks.Count > 0)
+            {
+                if (Dots)
                 {
-                    case TAlignMini.Right:
-                        float xr = 1F - ((e.X - rect_read.X) * 1.0F / rect_read.Width);
-                        if (xr > 0) Value = (int)Math.Round(xr * max) + _minValue;
-                        else Value = _minValue;
-                        break;
-                    case TAlignMini.Top:
-                        float yt = (e.Y - rect_read.Y) * 1.0F / rect_read.Height;
-                        if (yt > 0) Value = (int)Math.Round(yt * max) + _minValue;
-                        else Value = _minValue;
-                        break;
-                    case TAlignMini.Bottom:
-                        float yb = 1F - ((e.Y - rect_read.Y) * 1.0F / rect_read.Height);
-                        if (yb > 0) Value = (int)Math.Round(yb * max) + _minValue;
-                        else Value = _minValue;
-                        break;
-                    default:
-                        float xl = (e.X - rect_read.X) * 1.0F / rect_read.Width;
-                        if (xl > 0) Value = (int)Math.Round(xl * max) + _minValue;
-                        else Value = _minValue;
-                        break;
+                    var rect = ClientRectangle;
+                    int DotSize = (int)(dotSize * Config.Dpi);
+                    var mark_list = new List<float>(marks.Count);
+                    int i = 0;
+                    switch (align)
+                    {
+                        case TAlignMini.Right:
+                            foreach (var it in marks) mark_list.Add(rect_read.Width - (it.Value >= _maxValue ? rect_read.Width : rect_read.Width * ((it.Value - _minValue) * 1F / max)));
+
+                            i = FindNumber(x, mark_list);
+                            break;
+                        case TAlignMini.Top:
+                            foreach (var it in marks) mark_list.Add(it.Value >= _maxValue ? rect_read.Height : rect_read.Height * ((it.Value - _minValue) * 1F / max));
+
+                            i = FindNumber(y, mark_list);
+                            break;
+                        case TAlignMini.Bottom:
+                            foreach (var it in marks) mark_list.Add(rect_read.Height - (it.Value >= _maxValue ? rect_read.Height : rect_read.Height * ((it.Value - _minValue) * 1F / max)));
+
+                            i = FindNumber(y, mark_list);
+                            break;
+                        default:
+                            foreach (var it in marks) mark_list.Add(it.Value >= _maxValue ? rect_read.Width : rect_read.Width * ((it.Value - _minValue) * 1F / max));
+
+                            i = FindNumber(x, mark_list);
+                            break;
+                    }
+                    return marks[i].Value;
+                }
+                if (mark)
+                {
+                    var rect = ClientRectangle;
+                    int DotSize = (int)(dotSize * Config.Dpi);
+                    foreach (var it in marks)
+                    {
+                        float uks = ProgValue(it.Value, rect_read.Width, rect_read.Height);
+                        var rect_dot = RectDotH(rect, rect_read, uks, DotSize);
+                        if (rect_dot.Contains(x, y)) return it.Value;
+                    }
                 }
             }
+            switch (align)
+            {
+                case TAlignMini.Right:
+                    float xr = 1F - ((x - rect_read.X) * 1.0F / rect_read.Width);
+                    if (xr > 0) return (int)Math.Round(xr * max) + _minValue;
+                    else return _minValue;
+                case TAlignMini.Top:
+                    float yt = (y - rect_read.Y) * 1.0F / rect_read.Height;
+                    if (yt > 0) return (int)Math.Round(yt * max) + _minValue;
+                    else return _minValue;
+                case TAlignMini.Bottom:
+                    float yb = 1F - ((y - rect_read.Y) * 1.0F / rect_read.Height);
+                    if (yb > 0) return (int)Math.Round(yb * max) + _minValue;
+                    else return _minValue;
+                default:
+                    float xl = (x - rect_read.X) * 1.0F / rect_read.Width;
+                    if (xl > 0) return (int)Math.Round(xl * max) + _minValue;
+                    else return _minValue;
+            }
+        }
+
+        int FindNumber(int target, List<float> array)
+        {
+            int Index = 0;
+            float Difference = int.MaxValue;
+            for (int i = 0; i < array.Count; i++)
+            {
+                float difference = Math.Abs(target - array[i]);
+                if (difference < Difference)
+                {
+                    Difference = difference;
+                    Index = i;
+                }
+            }
+            return Index;
         }
 
         bool mouseFlat = false;
@@ -580,14 +672,65 @@ namespace AntdUI
             }
         }
 
+        float AnimationDotHoverValue = 0F;
+        bool AnimationDotHover = false;
+        bool _mouseDotHover = false;
+        bool ExtraMouseDotHover
+        {
+            get => _mouseDotHover;
+            set
+            {
+                if (_mouseDotHover == value) return;
+                _mouseDotHover = value;
+                if (Config.Animation)
+                {
+                    ThreadHover?.Dispose();
+                    ThreadHover = null;
+                    ThreadDotHover?.Dispose();
+                    AnimationDotHover = true;
+                    if (value)
+                    {
+                        ThreadDotHover = new ITask(this, () =>
+                        {
+                            AnimationDotHoverValue = AnimationDotHoverValue.Calculate(0.1F);
+                            if (AnimationDotHoverValue > 1) { AnimationDotHoverValue = 1; return false; }
+                            Invalidate();
+                            return true;
+                        }, 10, () =>
+                        {
+                            AnimationDotHover = false;
+                            Invalidate();
+                        });
+                    }
+                    else
+                    {
+                        ThreadDotHover = new ITask(this, () =>
+                        {
+                            AnimationDotHoverValue = AnimationDotHoverValue.Calculate(-0.1F);
+                            if (AnimationDotHoverValue <= 0) { AnimationDotHoverValue = 0F; return false; }
+                            Invalidate();
+                            return true;
+                        }, 10, () =>
+                        {
+                            AnimationDotHover = false;
+                            Invalidate();
+                        });
+                    }
+                }
+                else Invalidate();
+            }
+        }
+
         #region 动画
 
         protected override void Dispose(bool disposing)
         {
             ThreadHover?.Dispose();
+            ThreadDotHover?.Dispose();
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;
+        ITask? ThreadDotHover = null;
 
         #endregion
 
@@ -600,15 +743,98 @@ namespace AntdUI
         {
             base.OnMouseLeave(e);
             CloseTips();
-            ExtraMouseHover = false;
+            ExtraMouseHover = ExtraMouseDotHover = false;
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
             CloseTips();
-            ExtraMouseHover = false;
+            ExtraMouseHover = ExtraMouseDotHover = false;
         }
 
         #endregion
+    }
+
+    public class SliderMarkItemCollection : iCollection<SliderMarkItem>
+    {
+        public SliderMarkItemCollection(Slider it)
+        {
+            BindData(it);
+        }
+
+        internal SliderMarkItemCollection BindData(Slider it)
+        {
+            action = render =>
+            {
+                it.Invalidate();
+            };
+            return this;
+        }
+    }
+
+    public class SliderMarkItem
+    {
+        int _value = 0;
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("值"), Category("外观"), DefaultValue(0)]
+        public int Value
+        {
+            get => _value;
+            set
+            {
+                if (_value == value) return;
+                _value = value;
+                Invalidates();
+            }
+        }
+
+
+        Color? fore = null;
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
+        [Description("文本颜色"), Category("外观"), DefaultValue(null)]
+        public Color? Fore
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) return;
+                fore = value;
+                Invalidates();
+            }
+        }
+
+        string? text = null;
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category("外观"), DefaultValue(null)]
+        public string? Text
+        {
+            get => text;
+            set
+            {
+                if (text == value) return;
+                text = value;
+                Invalidates();
+            }
+        }
+
+        /// <summary>
+        /// 用户定义数据
+        /// </summary>
+        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        public object? Tag { get; set; }
+
+        internal Slider? PARENT { get; set; }
+
+        void Invalidates()
+        {
+            if (PARENT == null) return;
+            PARENT.Invalidate();
+        }
     }
 }

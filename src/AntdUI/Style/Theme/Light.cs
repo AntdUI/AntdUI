@@ -117,6 +117,7 @@ namespace AntdUI.Theme
         public Color FillQuaternary { get; set; } = Style.rgba(0, 0, 0, 0.02F);//5.1
 
         public Color BorderColor { get; set; } = "#D9D9D9".ToColor();
+        public Color BorderEnabledColor { get; set; } = "#BFBFBF".ToColor();
         public Color BorderSecondary { get; set; } = "#F0F0F0".ToColor();
 
         public Color BorderColorDisable { get; set; } = Color.FromArgb(217, 217, 217);
@@ -126,5 +127,7 @@ namespace AntdUI.Theme
         public Color HoverBg { get; set; } = Style.rgba(0, 0, 0, 0.06F);
 
         public Color HoverColor { get; set; } = Style.rgba(0, 0, 0, 0.88F);
+
+        public Color SliderHandleColorDisabled { get; set; } = "#BFBFBF".ToColor();
     }
 }
