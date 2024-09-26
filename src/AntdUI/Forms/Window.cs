@@ -235,7 +235,12 @@ namespace AntdUI
                 if (winState == WState.Restore) return base.Size;
                 return ScreenRectangle.Size;
             }
-            set { base.Size = value; }
+            set
+            {
+                sizeNormal = null;
+                base.Size = value;
+                sizeInit = ClientSize;
+            }
         }
 
         /// <summary>
@@ -244,7 +249,12 @@ namespace AntdUI
         public new int Width
         {
             get => Size.Width;
-            set { base.Width = value; }
+            set
+            {
+                sizeNormal = null;
+                base.Width = value;
+                sizeInit = ClientSize;
+            }
         }
 
         /// <summary>
@@ -253,7 +263,12 @@ namespace AntdUI
         public new int Height
         {
             get => Size.Height;
-            set { base.Height = value; }
+            set
+            {
+                sizeNormal = null;
+                base.Height = value;
+                sizeInit = ClientSize;
+            }
         }
 
         /// <summary>
@@ -273,8 +288,10 @@ namespace AntdUI
             }
             set
             {
+                sizeNormal = null;
                 base.Location = value.Location;
                 base.Size = value.Size;
+                sizeInit = ClientSize;
             }
         }
 

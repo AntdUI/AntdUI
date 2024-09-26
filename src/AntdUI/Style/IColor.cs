@@ -296,5 +296,7 @@ namespace AntdUI.Theme
         /// 选项悬浮态文本颜色
         /// </summary>
         T HoverColor { get; set; }
+
+        T SliderHandleColorDisabled { get; set; }
     }
 }
