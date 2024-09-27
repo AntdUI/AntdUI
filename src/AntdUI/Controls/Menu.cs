@@ -545,17 +545,13 @@ namespace AntdUI
                 if (it.show)
                 {
                     PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                    if (!collapsed && it.Expand && it.items != null && it.items.Count > 0)
+                    if (!collapsed && (it.Expand|| it.ExpandThread) && it.items != null && it.items.Count > 0)
                     {
                         if (ShowSubBack) g.FillRectangle(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
+                        var state = g.Save();
+                        if (it.ExpandThread) g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, it.ExpandHeight * it.ExpandProg));
                         PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                        if (it.ExpandThread)
-                        {
-                            using (var brush = new SolidBrush(BackColor))
-                            {
-                                g.FillRectangle(brush, new RectangleF(rect.X, it.rect.Bottom + it.ExpandHeight * it.ExpandProg, rect.Width, it.ExpandHeight));
-                            }
-                        }
+                        g.Restore(state);
                     }
                 }
             }
