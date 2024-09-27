@@ -27,10 +27,9 @@ namespace AntdUI
     {
         #region 刷新UI
 
-        internal Action<bool>? action;
-        internal Action<T>? action_add;
-        internal Action<T>? action_del;
-        internal void PropertyChanged(T value)
+        public Action<bool>? action;
+        public Action<T>? action_add, action_del;
+        void PropertyChanged(T value)
         {
             if (value is NotifyProperty notify)
             {
@@ -295,8 +294,8 @@ namespace AntdUI
 
     public class BaseCollection : IList
     {
-        internal Action<bool>? action;
-        internal void PropertyChanged(object value)
+        public Action<bool>? action;
+        void PropertyChanged(object value)
         {
             if (value is NotifyProperty notify)
             {
@@ -313,12 +312,12 @@ namespace AntdUI
             set => set(index, value);
         }
 
-        internal object? get(int index)
+        object? get(int index)
         {
             if (list == null || index < 0 || index >= count) return default;
             return list[index];
         }
-        internal void set(int index, object? value)
+        void set(int index, object? value)
         {
             if (value == null || list == null || index < 0 || index >= count) return;
             list[index] = value;
@@ -415,8 +414,8 @@ namespace AntdUI
 
         #region 核心
 
-        internal object[]? list;
-        internal object[] EnsureSpace(int elements)
+        object[]? list;
+        object[] EnsureSpace(int elements)
         {
             if (list == null) list = new object[Math.Max(elements, 4)];
             else if (count + elements > list.Length)
@@ -439,7 +438,7 @@ namespace AntdUI
         public object SyncRoot => this;
 
 
-        internal int count = 0;
+        int count = 0;
 
         #endregion
     }
@@ -461,7 +460,7 @@ namespace AntdUI
 
         #region 通知
 
-        internal Action<string, object>? action;
+        public Action<string, object>? action;
 
         #endregion
 

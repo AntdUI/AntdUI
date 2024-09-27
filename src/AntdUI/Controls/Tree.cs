@@ -495,7 +495,7 @@ namespace AntdUI
                 if (it.show)
                 {
                     PaintItem(g, it, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
-                    if ((it.Expand||it. ExpandThread) && it.items != null && it.items.Count > 0)
+                    if ((it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
                     {
                         var state = g.Save();
                         if (it.ExpandThread) g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, it.ExpandHeight * it.ExpandProg));

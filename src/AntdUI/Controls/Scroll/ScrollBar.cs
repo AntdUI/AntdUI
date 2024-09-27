@@ -347,7 +347,10 @@ namespace AntdUI
 
         #region 布局
 
-        internal void SizeChange(Rectangle rect)
+        /// <summary>
+        /// 设置容器大小
+        /// </summary>
+        public void SizeChange(Rectangle rect)
         {
             RectX = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
             RectY = new Rectangle(rect.Right - SIZE, rect.Top, SIZE, rect.Height);
@@ -358,7 +361,7 @@ namespace AntdUI
         /// <summary>
         /// 设置容器虚拟宽度
         /// </summary>
-        internal void SetVrSize(int x, int y)
+        public void SetVrSize(int x, int y)
         {
             oldx = x; oldy = y;
             SetShow(oldx, oldy);
@@ -421,11 +424,11 @@ namespace AntdUI
 
         #region 渲染
 
-        internal virtual void Paint(Graphics g)
+        public virtual void Paint(Graphics g)
         {
             Paint(g, Style.Db.TextBase);
         }
-        internal virtual void Paint(Graphics g, Color baseColor)
+        public virtual void Paint(Graphics g, Color baseColor)
         {
             if (Config.ScrollBarHide)
             {
@@ -944,7 +947,7 @@ namespace AntdUI
 
         #endregion
 
-        internal void Dispose()
+        public void Dispose()
         { ThreadHoverY?.Dispose(); ThreadHoverX?.Dispose(); }
     }
 }

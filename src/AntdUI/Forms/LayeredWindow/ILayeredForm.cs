@@ -38,11 +38,11 @@ namespace AntdUI
             Size = new Size(0, 0);
         }
 
-        internal Control? PARENT = null;
-        internal Func<Keys, bool>? KeyCall = null;
+        public Control? PARENT = null;
+        public Func<Keys, bool>? KeyCall = null;
 
-        internal virtual bool CanLoadMessage { get; set; } = true;
-        internal virtual void LoadMessage()
+        public virtual bool CanLoadMessage { get; set; } = true;
+        public virtual void LoadMessage()
         {
             if (InvokeRequired)
             {
@@ -154,7 +154,7 @@ namespace AntdUI
             }
         }
 
-        internal void Render(Bitmap bmp)
+        public void Render(Bitmap bmp)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace AntdUI
             catch { }
         }
 
-        internal void SetCursor(bool val)
+        public void SetCursor(bool val)
         {
             if (InvokeRequired)
             {
@@ -443,7 +443,7 @@ namespace AntdUI
         #endregion
     }
 
-    internal interface SubLayeredForm
+    public interface SubLayeredForm
     {
         ILayeredForm? SubForm();
     }

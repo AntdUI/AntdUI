@@ -23,7 +23,6 @@ using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
 
 namespace AntdUI
 {
@@ -533,7 +532,7 @@ namespace AntdUI
         #endregion
     }
 
-    internal class IControlDesigner : ParentControlDesigner
+    internal class IControlDesigner : System.Windows.Forms.Design.ParentControlDesigner
     {
 
     }

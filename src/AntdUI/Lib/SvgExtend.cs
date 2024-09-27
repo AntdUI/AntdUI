@@ -22,12 +22,12 @@ namespace AntdUI
 {
     public static class SvgExtend
     {
-        internal static Bitmap? GetImgExtend(string svg, Rectangle rect, Color? color = null)
+        public static Bitmap? GetImgExtend(string svg, Rectangle rect, Color? color = null)
         {
             if (rect.Width > 0 && rect.Height > 0) return SvgToBmp(svg, rect.Width, rect.Height, color);
             return null;
         }
-        internal static Bitmap? GetImgExtend(string svg, RectangleF rect, Color? color = null)
+        public static Bitmap? GetImgExtend(string svg, RectangleF rect, Color? color = null)
         {
             if (rect.Width > 0 && rect.Height > 0) return SvgToBmp(svg, (int)rect.Width, (int)rect.Height, color);
             return null;

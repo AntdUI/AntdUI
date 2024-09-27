@@ -416,7 +416,7 @@ namespace AntdUI
             return string.Format("{0:X2}{1:X2}{2:X2}{3:X2}", color.R, color.G, color.B, color.A);
         }
 
-        internal static int HexToInt(this string str)
+        static int HexToInt(this string str)
         {
             return int.Parse(str, System.Globalization.NumberStyles.AllowHexSpecifier);
         }

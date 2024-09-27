@@ -82,7 +82,7 @@ namespace AntdUI
         public RectangleF Slider;
 
         internal float val = 0;
-        internal float SetValue(float value)
+        public float SetValue(float value)
         {
             if (value < 0) return 0;
             if (value > VrValueI) return VrValueI;

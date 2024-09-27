@@ -35,7 +35,7 @@ namespace AntdUI
         /// <param name="icon_r">右边图标</param>
         /// <param name="right">左右翻转</param>
         /// <param name="muit">多选</param>
-        internal static RectTextLR IconRect(this Rectangle rect, int text_height, bool icon_l, bool icon_r, bool right, bool muit, float gap_ratio = .4F, float sp_ratio = .25F, float icon_ratio = .7F)
+        public static RectTextLR IconRect(this Rectangle rect, int text_height, bool icon_l, bool icon_r, bool right, bool muit, float gap_ratio = .4F, float sp_ratio = .25F, float icon_ratio = .7F)
         {
             var rectlr = new RectTextLR();
             int sps = (int)(text_height * gap_ratio), h = (int)(text_height * icon_ratio), sps2 = sps * 2;
@@ -128,7 +128,7 @@ namespace AntdUI
             return rectlr;
         }
 
-        internal static void IconRectL(this Rectangle rect, int text_height, out Rectangle icon_rect, out Rectangle text_rect, float size = 0.8F)
+        public static void IconRectL(this Rectangle rect, int text_height, out Rectangle icon_rect, out Rectangle text_rect, float size = 0.8F)
         {
             int h = (int)(text_height * size);
             int dot_size_ = h / 2;
@@ -348,7 +348,7 @@ namespace AntdUI
         /// <param name="shape">形状</param>
         /// <param name="joinLeft">连接左边</param>
         /// <param name="joinRight">连接右边</param>
-        internal static Rectangle ReadRect(this Rectangle rect, float size, TShape shape, bool joinLeft, bool joinRight)
+        public static Rectangle ReadRect(this Rectangle rect, float size, TShape shape, bool joinLeft, bool joinRight)
         {
             if (shape == TShape.Circle)
             {
@@ -374,7 +374,7 @@ namespace AntdUI
         /// <param name="size">动画区域</param>
         /// <param name="joinLeft">连接左边</param>
         /// <param name="joinRight">连接右边</param>
-        internal static Rectangle ReadRect(this Rectangle rect, float size, bool joinLeft, bool joinRight)
+        public static Rectangle ReadRect(this Rectangle rect, float size, bool joinLeft, bool joinRight)
         {
             int pr = (int)Math.Round(size), pr2 = pr * 2;
             if (joinLeft && joinRight) return new Rectangle(rect.X, rect.Y + pr, rect.Width, rect.Height - pr2);
@@ -399,7 +399,7 @@ namespace AntdUI
 
         #region 文本方向
 
-        internal static void SetAlignment(this ContentAlignment textAlign, ref StringFormat stringFormat)
+        public static void SetAlignment(this ContentAlignment textAlign, ref StringFormat stringFormat)
         {
             switch (textAlign)
             {
@@ -454,7 +454,7 @@ namespace AntdUI
                     break;
             }
         }
-        internal static void SetAlignment(this HorizontalAlignment textAlign, ref StringFormat stringFormat)
+        public static void SetAlignment(this HorizontalAlignment textAlign, ref StringFormat stringFormat)
         {
             switch (textAlign)
             {
@@ -477,7 +477,7 @@ namespace AntdUI
 
         #region 三角
 
-        internal static PointF[] TriangleLines(this Rectangle rect, float prog, float d = 0.7F)
+        public static PointF[] TriangleLines(this Rectangle rect, float prog, float d = 0.7F)
         {
             float size = rect.Width * d, size2 = size / 2;
             float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height / 2F;
@@ -508,7 +508,7 @@ namespace AntdUI
             }
         }
 
-        internal static PointF[] TriangleLines(this TAlignMini align, RectangleF rect, float b = 0.375F)
+        public static PointF[] TriangleLines(this TAlignMini align, RectangleF rect, float b = 0.375F)
         {
             float size = rect.Height * b, size2 = size / 2F;
             float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height / 2F;
@@ -551,7 +551,7 @@ namespace AntdUI
         /// <param name="arrow_size">三角大小</param>
         /// <param name="rect">全局区域</param>
         /// <param name="rect_read">内容区域</param>
-        internal static PointF[] AlignLines(this TAlign align, float arrow_size, RectangleF rect, RectangleF rect_read)
+        public static PointF[] AlignLines(this TAlign align, float arrow_size, RectangleF rect, RectangleF rect_read)
         {
             if (align == TAlign.Top)
             {
@@ -628,7 +628,7 @@ namespace AntdUI
         /// 转换大致位置
         /// </summary>
         /// <param name="align">方向</param>
-        internal static TAlignMini AlignMini(this TAlign align)
+        public static TAlignMini AlignMini(this TAlign align)
         {
             if (align == TAlign.BL || align == TAlign.Bottom || align == TAlign.BR)
                 return TAlignMini.Bottom;
@@ -646,7 +646,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="align">方向</param>
         /// <param name="vertical">是否竖向</param>
-        internal static TAlign AlignMiniReverse(this TAlign align, bool vertical)
+        public static TAlign AlignMiniReverse(this TAlign align, bool vertical)
         {
             if (vertical)
             {
@@ -668,7 +668,7 @@ namespace AntdUI
         /// <param name="size">控件大小</param>
         /// <param name="width">提示框宽度</param>
         /// <param name="height">提示框高度</param>
-        internal static Point AlignPoint(this TAlign align, Point point, Size size, int width, int height)
+        public static Point AlignPoint(this TAlign align, Point point, Size size, int width, int height)
         {
             switch (align)
             {
@@ -697,12 +697,12 @@ namespace AntdUI
             }
         }
 
-        internal static Point AlignPoint(this TAlign align, Rectangle rect, Rectangle size)
+        public static Point AlignPoint(this TAlign align, Rectangle rect, Rectangle size)
         {
             return AlignPoint(align, rect.Location, rect.Size, size.Width, size.Height);
         }
 
-        internal static Point AlignPoint(this TAlign align, Rectangle rect, int width, int height)
+        public static Point AlignPoint(this TAlign align, Rectangle rect, int width, int height)
         {
             return AlignPoint(align, rect.Location, rect.Size, width, height);
         }
