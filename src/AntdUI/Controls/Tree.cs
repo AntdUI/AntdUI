@@ -462,6 +462,7 @@ namespace AntdUI
         public Tree()
         {
             ScrollBar = new ScrollBar(this, true, true);
+            Cursor = Cursors.Hand;
         }
 
         protected override void OnPaint(PaintEventArgs e)

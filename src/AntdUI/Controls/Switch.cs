@@ -35,6 +35,11 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Switch : IControl
     {
+        public Switch()
+        {
+            Cursor = Cursors.Hand;
+        }
+
         #region 属性
 
         Color? fore;

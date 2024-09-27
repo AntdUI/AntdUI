@@ -201,6 +201,7 @@ namespace AntdUI
             hover_button = new ITaskOpacity(this);
             hover_button_up = new ITaskOpacity(this);
             hover_button_bottom = new ITaskOpacity(this);
+            Cursor = Cursors.Hand;
         }
 
         protected override void Dispose(bool disposing)

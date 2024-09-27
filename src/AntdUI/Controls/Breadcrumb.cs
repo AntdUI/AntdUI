@@ -35,6 +35,11 @@ namespace AntdUI
     [DefaultEvent("ItemClick")]
     public class Breadcrumb : IControl
     {
+        public Breadcrumb()
+        {
+            Cursor = Cursors.Hand;
+        }
+
         #region 属性
 
         int gap = 12;

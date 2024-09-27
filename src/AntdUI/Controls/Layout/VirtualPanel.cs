@@ -40,6 +40,7 @@ namespace AntdUI
         public VirtualPanel()
         {
             ScrollBar = new ScrollBar(this);
+            Cursor = Cursors.Hand;
             new Thread(LongTask)
             {
                 IsBackground = true

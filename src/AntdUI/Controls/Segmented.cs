@@ -37,6 +37,7 @@ namespace AntdUI
         public Segmented()
         {
             base.BackColor = Color.Transparent;
+            Cursor = Cursors.Hand;
         }
 
         #region 属性

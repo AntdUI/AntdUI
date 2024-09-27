@@ -35,6 +35,11 @@ namespace AntdUI
     [DefaultEvent("ValueChanged")]
     public class Slider : IControl
     {
+        public Slider()
+        {
+            Cursor = Cursors.Hand;
+        }
+
         #region 属性
 
         Color? fill;

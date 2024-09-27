@@ -175,7 +175,11 @@ namespace AntdUI
 
         #region 渲染
 
-        public Timeline() { ScrollBar = new ScrollBar(this); }
+        public Timeline()
+        {
+            ScrollBar = new ScrollBar(this);
+            Cursor = Cursors.Hand;
+        }
 
         readonly StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
 

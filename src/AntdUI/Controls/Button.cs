@@ -41,6 +41,7 @@ namespace AntdUI
             SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
             base.BackColor = Color.Transparent;
             button = new IButton(this, () => BeforeAutoSize());
+            Cursor = Cursors.Hand;
         }
 
         #region 属性

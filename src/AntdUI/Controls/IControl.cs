@@ -116,6 +116,14 @@ namespace AntdUI
 
         #endregion
 
+        private Cursor _cursor;
+
+        public override Cursor Cursor
+        {
+            get => base.Cursor;
+            set => base.Cursor = _cursor = value;
+        }
+
         #endregion
 
         /// <summary>
@@ -185,7 +193,6 @@ namespace AntdUI
             OnSizeChanged(EventArgs.Empty);
         }
 
-
         internal void SetCursor(bool val)
         {
             if (InvokeRequired)
@@ -196,7 +203,8 @@ namespace AntdUI
                 }));
                 return;
             }
-            Cursor = val ? Cursors.Hand : DefaultCursor;
+
+            base.Cursor = val ? _cursor : DefaultCursor;
         }
 
         #region 渲染文本

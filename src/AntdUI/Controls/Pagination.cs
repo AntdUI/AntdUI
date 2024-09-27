@@ -35,6 +35,11 @@ namespace AntdUI
     [DefaultEvent("ValueChanged")]
     public class Pagination : IControl
     {
+        public Pagination()
+        {
+            Cursor = Cursors.Hand;
+        }
+
         #region 属性
 
         int current = 1;

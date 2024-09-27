@@ -35,6 +35,11 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Radio : IControl
     {
+        public Radio()
+        {
+            Cursor = Cursors.Hand;
+        }
+
         #region 属性
 
         Color? fore;

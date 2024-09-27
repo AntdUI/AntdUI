@@ -535,6 +535,7 @@ namespace AntdUI
         {
             base.BackColor = Color.Transparent;
             hover_close = new ITaskOpacity(this);
+            Cursor = Cursors.Hand;
         }
 
         RectangleF rect_close;

@@ -466,7 +466,11 @@ namespace AntdUI
 
         #region 初始化
 
-        public Table() { ScrollBar = new ScrollBar(this, true, true, radius, !visibleHeader); }
+        public Table()
+        {
+            ScrollBar = new ScrollBar(this, true, true, radius, !visibleHeader);
+            Cursor = Cursors.Hand;
+        }
 
         protected override void Dispose(bool disposing)
         {

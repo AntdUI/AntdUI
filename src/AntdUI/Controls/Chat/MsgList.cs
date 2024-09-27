@@ -162,7 +162,11 @@ namespace AntdUI.Chat
             }
         }
 
-        public MsgList() { ScrollBar = new ScrollBar(this); }
+        public MsgList()
+        {
+            ScrollBar = new ScrollBar(this);
+            Cursor = Cursors.Hand;
+        }
 
         protected override void Dispose(bool disposing)
         {

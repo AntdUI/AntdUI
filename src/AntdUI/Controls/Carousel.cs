@@ -36,6 +36,11 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class Carousel : IControl
     {
+        public Carousel()
+        {
+            Cursor = Cursors.Hand;
+        }
+
         #region 属性
 
         /// <summary>

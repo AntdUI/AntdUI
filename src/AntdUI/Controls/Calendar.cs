@@ -45,6 +45,7 @@ namespace AntdUI
             hover_month = new ITaskOpacity(this);
             hover_button = new ITaskOpacity(this);
             Date = DateNow;
+            Cursor = Cursors.Hand;
         }
 
         #region 属性

@@ -480,7 +480,11 @@ namespace AntdUI
 
         #region 渲染
 
-        public Menu() { ScrollBar = new ScrollBar(this); }
+        public Menu()
+        {
+            ScrollBar = new ScrollBar(this);
+            Cursor = Cursors.Hand;
+        }
         protected override void OnPaint(PaintEventArgs e)
         {
             if (items == null || items.Count == 0) return;

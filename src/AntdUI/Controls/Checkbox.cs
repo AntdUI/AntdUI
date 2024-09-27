@@ -34,6 +34,11 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Checkbox : IControl
     {
+        public Checkbox()
+        {
+            Cursor = Cursors.Hand;
+        }
+
         #region 属性
 
         Color? fore;

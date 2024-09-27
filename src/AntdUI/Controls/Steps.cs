@@ -35,6 +35,11 @@ namespace AntdUI
     [DefaultEvent("ItemClick")]
     public class Steps : IControl
     {
+        public Steps()
+        {
+            Cursor = Cursors.Hand;
+        }
+
         #region 属性
 
         Color? fore;
