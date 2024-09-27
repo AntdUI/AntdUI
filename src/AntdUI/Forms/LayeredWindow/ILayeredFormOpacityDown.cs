@@ -28,8 +28,8 @@ namespace AntdUI
         ITask? task_start = null;
         bool run_end = false, ok_end = false;
 
-        internal int EndHeight = 0;
-        internal bool Inverted = false;
+        public int EndHeight = 0;
+        public bool Inverted = false;
 
         public override bool MessageEnable => true;
 
@@ -112,7 +112,7 @@ namespace AntdUI
 
         #endregion
 
-        internal override bool CanLoadMessage { get; set; } = false;
+        public override bool CanLoadMessage { get; set; } = false;
         public virtual void LoadOK() { CanLoadMessage = true; LoadMessage(); }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -172,7 +172,7 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
-        internal void CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Padding, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
+        public void CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Padding, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
         {
             switch (Placement)
             {

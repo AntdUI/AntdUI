@@ -25,7 +25,7 @@ namespace AntdUI
     {
         ITask? task_start = null;
         bool run_end = false, ok_end = false;
-        internal byte maxalpha = 240;
+        public byte maxalpha = 240;
         protected override void OnLoad(EventArgs e)
         {
             if (Config.Animation)

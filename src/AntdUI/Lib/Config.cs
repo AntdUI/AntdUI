@@ -146,7 +146,7 @@ namespace AntdUI
 
         #endregion
 
-        internal const string NullText = "龍Qq";
+        public const string NullText = "龍Qq";
 
         internal static void SetDpi(float dpi)
         {
