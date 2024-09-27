@@ -1504,5 +1504,7 @@ namespace AntdUI
         internal Rectangle txt_rect { get; set; }
         internal Rectangle subtxt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
+
+        public override string? ToString() => text;
     }
 }
