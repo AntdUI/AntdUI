@@ -453,5 +453,7 @@ namespace AntdUI
             PARENT.ChangeItems();
             PARENT.Invalidate();
         }
+
+        public override string? ToString() => text;
     }
 }

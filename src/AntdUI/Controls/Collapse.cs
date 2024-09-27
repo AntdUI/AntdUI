@@ -738,5 +738,7 @@ namespace AntdUI
         }
 
         #endregion
+
+        public override string ToString() => Text;
     }
 }

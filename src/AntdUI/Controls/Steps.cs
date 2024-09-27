@@ -664,5 +664,7 @@ namespace AntdUI
         internal Rectangle subtitle_rect { get; set; }
         internal Rectangle description_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
+
+        public override string ToString() => title + " " + subTitle;
     }
 }

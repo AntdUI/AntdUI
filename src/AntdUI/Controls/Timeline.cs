@@ -471,5 +471,7 @@ namespace AntdUI
         internal RectangleF txt_rect { get; set; }
         internal RectangleF description_rect { get; set; }
         internal RectangleF ico_rect { get; set; }
+
+        public override string? ToString() => Text;
     }
 }

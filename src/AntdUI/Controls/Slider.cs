@@ -129,7 +129,7 @@ namespace AntdUI
 
         TooltipForm? tooltipForm = null;
         string? tooltipText = null;
-        void ShowTips(RectangleF dot_rect)
+        internal void ShowTips(int Value, RectangleF dot_rect)
         {
             var text = ValueFormatChanged == null ? Value.ToString() : ValueFormatChanged.Invoke(this, new IntEventArgs(Value));
             if (text == tooltipText && tooltipForm != null) return;
@@ -148,7 +148,7 @@ namespace AntdUI
             else tooltipForm.SetText(rect, tooltipText);
         }
 
-        void CloseTips()
+        internal void CloseTips()
         {
             tooltipForm?.IClose();
             tooltipForm = null;
@@ -199,7 +199,7 @@ namespace AntdUI
             }
         }
 
-        int dotSize = 10;
+        internal int dotSize = 10;
         /// <summary>
         /// 点大小
         /// </summary>
@@ -215,7 +215,7 @@ namespace AntdUI
             }
         }
 
-        int dotSizeActive = 12;
+        internal int dotSizeActive = 12;
         /// <summary>
         /// 点激活大小
         /// </summary>
@@ -263,7 +263,7 @@ namespace AntdUI
 
         #region 渲染
 
-        Rectangle rect_read;
+        internal Rectangle rect_read;
         protected override void OnPaint(PaintEventArgs e)
         {
             var padding = Padding;
@@ -289,12 +289,18 @@ namespace AntdUI
                 }
                 else rect_read = new Rectangle(_rect.X + DotS, _rect.Y + (_rect.Height - LineSize) / 2, _rect.Width - DotS2, LineSize);
             }
+
             bool enabled = Enabled;
             Color color = enabled ? fill ?? Style.Db.InfoBorder : Style.Db.FillTertiary, color_dot = enabled ? fill ?? Style.Db.InfoBorder : Style.Db.SliderHandleColorDisabled, color_hover = FillHover ?? Style.Db.InfoHover, color_active = FillActive ?? Style.Db.Primary;
 
             var g = e.Graphics.High();
+            IPaint(g, _rect, enabled, color, color_dot, color_hover, color_active);
+            this.PaintBadge(g);
+        }
 
-            float prog = ProgValue(_value, rect_read.Width, rect_read.Height);
+        internal virtual void IPaint(Graphics g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)
+        {
+            float prog = ProgValue(_value);
 
             #region 线条
 
@@ -340,26 +346,81 @@ namespace AntdUI
 
             #endregion
 
-            PaintEllipse(g, _rect, rect_read, prog, color_dot, color_hover, color_active, LineSize);
-            this.PaintBadge(g);
+            using (var brush = new SolidBrush(Style.Db.BgBase))
+            {
+                PaintMarksEllipse(g, rect, rect_read, brush, color, LineSize);
+                PaintEllipse(g, rect, rect_read, prog, brush, color_dot, color_hover, color_active, LineSize);
+            }
         }
 
         readonly StringFormat s_f = Helper.SF_NoWrap();
-        RectangleF rectEllipse;
-        internal void PaintEllipse(Graphics g, Rectangle rect, RectangleF rect_read, float prog, Color color, Color color_hover, Color color_active, int LineSize)
+        internal RectangleF rectEllipse;
+        internal void PaintEllipse(Graphics g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
         {
             int DotSize = (int)(dotSize * Config.Dpi), DotSizeActive = (int)(dotSizeActive * Config.Dpi);
+            rectEllipse = RectDot(rect, rect_read, prog, DotSizeActive + LineSize);
 
-            using (var fore = new SolidBrush(Style.Db.Text))
-            using (var brush = new SolidBrush(Style.Db.BgBase))
+            var rect_ellipse_rl = RectDot(rect, rect_read, prog, DotSize + LineSize);
+            if (ShowValue && ExtraMouseDotHover) ShowTips(_value, rect_ellipse_rl);
+
+            if (AnimationDotHover)
             {
-                if (marks != null && marks.Count > 0)
+                float value = ((DotSizeActive - DotSize) * AnimationDotHoverValue);
+                using (var brush_shadow = new SolidBrush(color_active.rgba(.2F)))
+                {
+                    g.FillEllipse(brush_shadow, RectDot(rect, rect_read, prog, DotSizeActive + LineSize + LineSize * 2 * AnimationDotHoverValue));
+                }
+                using (var brush_dot = new SolidBrush(color_active))
+                {
+                    g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSize + LineSize + value));
+                }
+                g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize + value));
+            }
+            else if (ExtraMouseDotHover)
+            {
+                using (var brush_shadow = new SolidBrush(color_active.rgba(.2F)))
+                {
+                    g.FillEllipse(brush_shadow, RectDot(rect, rect_read, prog, DotSizeActive + LineSize * 3));
+                }
+                using (var brush_dot = new SolidBrush(color_active))
+                {
+                    g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSizeActive + LineSize));
+                }
+                g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSizeActive));
+            }
+            else
+            {
+                if (AnimationHover)
+                {
+                    using (var brush_dot_old = new SolidBrush(color))
+                    using (var brush_dot = new SolidBrush(Helper.ToColor(255 * AnimationHoverValue, color_hover)))
+                    {
+                        var rect_dot = RectDot(rect, rect_read, prog, DotSize + LineSize);
+                        g.FillEllipse(brush_dot_old, rect_dot);
+                        g.FillEllipse(brush_dot, rect_dot);
+                    }
+                }
+                else
+                {
+                    using (var brush_dot = new SolidBrush(ExtraMouseHover ? color_hover : color))
+                    {
+                        g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSize + LineSize));
+                    }
+                }
+                g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize));
+            }
+        }
+        internal void PaintMarksEllipse(Graphics g, Rectangle rect, RectangleF rect_read, SolidBrush brush, Color color, int LineSize)
+        {
+            if (marks != null && marks.Count > 0)
+            {
+                using (var fore = new SolidBrush(Style.Db.Text))
                 {
                     int markTextGap = (int)(MarkTextGap * Config.Dpi);
                     int size2 = LineSize, size = size2 * 2;
                     foreach (var it in marks)
                     {
-                        float uks = ProgValue(it.Value, rect_read.Width, rect_read.Height);
+                        float uks = ProgValue(it.Value);
                         if (!string.IsNullOrWhiteSpace(it.Text))
                         {
                             if (it.Fore.HasValue)
@@ -378,70 +439,22 @@ namespace AntdUI
                         g.FillEllipse(brush, RectDot(rect, rect_read, uks, size2));
                     }
                 }
-                rectEllipse = RectDot(rect, rect_read, prog, DotSizeActive + LineSize);
-                var rect_ellipse_rl = RectDot(rect, rect_read, prog, DotSize + LineSize);
-                if (ShowValue && _mouseHover) ShowTips(rect_ellipse_rl);
-
-                if (AnimationDotHover)
-                {
-                    float value = ((DotSizeActive - DotSize) * AnimationDotHoverValue);
-                    using (var brush_shadow = new SolidBrush(color_active.rgba(.2F)))
-                    {
-                        g.FillEllipse(brush_shadow, RectDot(rect, rect_read, prog, DotSizeActive + LineSize + LineSize * 2 * AnimationDotHoverValue));
-                    }
-                    using (var brush_dot = new SolidBrush(color_active))
-                    {
-                        g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSize + LineSize + value));
-                    }
-                    g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize + value));
-                }
-                else if (ExtraMouseDotHover)
-                {
-                    using (var brush_shadow = new SolidBrush(color_active.rgba(.2F)))
-                    {
-                        g.FillEllipse(brush_shadow, RectDot(rect, rect_read, prog, DotSizeActive + LineSize * 3));
-                    }
-                    using (var brush_dot = new SolidBrush(color_active))
-                    {
-                        g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSizeActive + LineSize));
-                    }
-                    g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSizeActive));
-                }
-                else
-                {
-                    if (AnimationHover)
-                    {
-                        using (var brush_dot_old = new SolidBrush(color))
-                        using (var brush_dot = new SolidBrush(Helper.ToColor(255 * AnimationHoverValue, color_hover)))
-                        {
-                            var rect_dot = RectDot(rect, rect_read, prog, DotSize + LineSize);
-                            g.FillEllipse(brush_dot_old, rect_dot);
-                            g.FillEllipse(brush_dot, rect_dot);
-                        }
-                    }
-                    else
-                    {
-                        using (var brush_dot = new SolidBrush(ExtraMouseHover ? color_hover : color))
-                        {
-                            g.FillEllipse(brush_dot, RectDot(rect, rect_read, prog, DotSize + LineSize));
-                        }
-                    }
-                    g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize));
-                }
             }
         }
 
         #region 计算区域
 
-        internal float ProgValue(int val, float w, float h)
+        internal float ProgValue(int val)
         {
             int max = _maxValue - _minValue;
             switch (align)
             {
                 case TAlignMini.Top:
                 case TAlignMini.Bottom:
+                    float h = rect_read.Height;
                     return val >= _maxValue ? h : h * ((val - _minValue) * 1F / max);
                 default:
+                    float w = rect_read.Width;
                     return val >= _maxValue ? w : w * ((val - _minValue) * 1F / max);
             }
         }
@@ -530,7 +543,7 @@ namespace AntdUI
             else ExtraMouseDotHover = rectEllipse.Contains(e.X, e.Y);
         }
 
-        int FindIndex(int x, int y, bool mark)
+        internal int FindIndex(int x, int y, bool mark)
         {
             int max = _maxValue - _minValue;
             if (marks != null && marks.Count > 0)
@@ -572,7 +585,7 @@ namespace AntdUI
                     int DotSize = (int)(dotSize * Config.Dpi);
                     foreach (var it in marks)
                     {
-                        float uks = ProgValue(it.Value, rect_read.Width, rect_read.Height);
+                        float uks = ProgValue(it.Value);
                         var rect_dot = RectDotH(rect, rect_read, uks, DotSize);
                         if (rect_dot.Contains(x, y)) return it.Value;
                     }
@@ -599,7 +612,7 @@ namespace AntdUI
             }
         }
 
-        int FindNumber(int target, List<float> array)
+        internal int FindNumber(int target, List<float> array)
         {
             int Index = 0;
             float Difference = int.MaxValue;
@@ -623,10 +636,10 @@ namespace AntdUI
             Invalidate();
         }
 
-        float AnimationHoverValue = 0F;
-        bool AnimationHover = false;
+        internal float AnimationHoverValue = 0F;
+        internal bool AnimationHover = false;
         bool _mouseHover = false;
-        bool ExtraMouseHover
+        internal bool ExtraMouseHover
         {
             get => _mouseHover;
             set
@@ -672,16 +685,17 @@ namespace AntdUI
             }
         }
 
-        float AnimationDotHoverValue = 0F;
-        bool AnimationDotHover = false;
+        internal float AnimationDotHoverValue = 0F;
+        internal bool AnimationDotHover = false;
         bool _mouseDotHover = false;
-        bool ExtraMouseDotHover
+        internal bool ExtraMouseDotHover
         {
             get => _mouseDotHover;
             set
             {
                 if (_mouseDotHover == value) return;
                 _mouseDotHover = value;
+                if (!value) CloseTips();
                 if (Config.Animation)
                 {
                     ThreadHover?.Dispose();
@@ -729,7 +743,7 @@ namespace AntdUI
             ThreadDotHover?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadHover = null;
+        internal ITask? ThreadHover = null;
         ITask? ThreadDotHover = null;
 
         #endregion
@@ -757,12 +771,12 @@ namespace AntdUI
 
     public class SliderMarkItemCollection : iCollection<SliderMarkItem>
     {
-        public SliderMarkItemCollection(Slider it)
+        public SliderMarkItemCollection(IControl it)
         {
             BindData(it);
         }
 
-        internal SliderMarkItemCollection BindData(Slider it)
+        internal SliderMarkItemCollection BindData(IControl it)
         {
             action = render =>
             {
@@ -836,5 +850,7 @@ namespace AntdUI
             if (PARENT == null) return;
             PARENT.Invalidate();
         }
+
+        public override string ToString() => _value + " " + text;
     }
 }
