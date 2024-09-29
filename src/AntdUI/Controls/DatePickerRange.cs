@@ -346,6 +346,11 @@ namespace AntdUI
                 {
                     string stext = text.Substring(0, index), etext = text.Substring(index + 1);
                     if (DateTime.TryParse(stext, out var date_s) && DateTime.TryParse(etext, out var date_e)) Value = new DateTime[] { date_s, date_e };
+                    else
+                    {
+                        if (_value == null) Text = "";
+                        else Text = _value[0].ToString(Format) + "\t" + _value[1].ToString(Format);
+                    }
                 }
             }
         }
