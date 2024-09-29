@@ -753,7 +753,7 @@ namespace AntdUI
                 {
                     if (Online > -1 && HasIcon)
                     {
-                        int h2 = (int)(rect_text.Height * 0.7F);
+                        int h2 = (int)(rect_text.Height * .7F);
                         RectOnline = new Rectangle(rect_text.X + (h2 - gap_y) / 2, rect_text.Y + gap, gap_y, gap_y);
                         RectIcon = new Rectangle(rect_text.X + h2, rect_text.Y, rect_text.Height, rect_text.Height);
                         RectText = new Rectangle(rect_text.X + h2 + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - h2, rect_text.Height);

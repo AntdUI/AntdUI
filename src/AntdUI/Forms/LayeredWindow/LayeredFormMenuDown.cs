@@ -63,41 +63,42 @@ namespace AntdUI
             int y = 10, w = rect_read.Width;
             Helper.GDI(g =>
             {
-                var size = g.MeasureString(Config.NullText, Font).Size(2);
-                int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
-                int font_size = size.Height + gap_y * 2;
-                var y2 = gap_y * 2;
+                var size = g.MeasureString(Config.NullText, Font).Size();
+                int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+                int font_size = size.Height + gap_y2;
                 y += gap_y;
 
                 #region AutoWidth
 
-                string btext = "";
+                int b_w = size.Width + gap_x2;
                 bool ui_icon = false, ui_arrow = false;
                 foreach (MenuItem obj in items)
                 {
-                    if (obj.Text != null) if (obj.Text.Length > btext.Length) btext = obj.Text;
+                    if (obj.Text != null)
+                    {
+                        var size3 = g.MeasureString(obj.Text, Font).Size();
+                        if (size3.Width > b_w) b_w = size3.Width;
+                    }
                     if (obj.HasIcon) ui_icon = true;
                     if (obj.CanExpand) ui_arrow = true;
                 }
-                var size3 = g.MeasureString(btext, Font);
-                int b_w = (int)Math.Ceiling(size3.Width) + 42;
                 if (ui_icon) b_w += font_size;
                 if (ui_arrow) b_w += (int)Math.Ceiling(font_size * 0.6F);
-                w = b_w + gap_y;
+                w = b_w + gap_x2;
 
                 #endregion
 
                 int item_count = 0, divider_count = 0;
-                int text_height = font_size - y2;
+                int text_height = font_size - gap_y2;
                 foreach (MenuItem it in items)
                 {
                     item_count++;
-                    Rectangle rect_bg = new Rectangle(10 + gap_y, y, w - y2, font_size), rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
+                    Rectangle rect_bg = new Rectangle(10 + gap_y, y, w - gap_y2, font_size), rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
                     Items.Add(new OMenuItem(it, rect_bg, gap_y, rect_text));
                     y += font_size;
                 }
                 var vr = (font_size * item_count) + (gap_y * divider_count);
-                y = 10 + gap_y * 2 + vr;
+                y = 10 + gap_y2 + vr;
             });
             SetSizeW(w + 20);
             EndHeight = y + 10;

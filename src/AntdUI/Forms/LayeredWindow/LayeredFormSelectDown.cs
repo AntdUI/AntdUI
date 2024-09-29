@@ -125,31 +125,27 @@ namespace AntdUI
             var point = control.PointToScreen(Point.Empty);
             Helper.GDI(g =>
             {
-                var size = g.MeasureString(Config.NullText, Font).Size(2);
-                int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
-                int font_size = size.Height + gap_y * 2;
-                var y2 = gap_y * 2;
+                var size = g.MeasureString(Config.NullText, Font).Size();
+                int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+                int font_size = size.Height + gap_y2;
                 y += gap_y;
-
                 if (ListAutoWidth)
                 {
-                    string btext = "";
+                    int b_w = size.Width + gap_x2;
                     bool ui_online = false, ui_icon = false, ui_arrow = false;
-                    foreach (var obj in items) InitReadList(obj, ref btext, ref ui_online, ref ui_icon, ref ui_arrow);
-                    var size3 = g.MeasureString(btext, Font);
-                    int b_w = (int)Math.Ceiling(size3.Width) + 42;
+                    foreach (var obj in items) InitReadList(g, obj, ref b_w, ref ui_online, ref ui_icon, ref ui_arrow);
                     if (ui_icon && ui_online) b_w += font_size * 2;
                     else if (ui_icon || ui_online) b_w += font_size;
-                    if (ui_arrow) b_w += (int)Math.Ceiling(font_size * 0.6F);
-                    if (b_w > w || control is LayeredFormSelectDown) w = r_w = b_w + gap_y;
+                    if (ui_arrow) b_w += (int)Math.Ceiling(font_size * .6F);
+                    w = r_w = b_w + gap_x2;
                 }
                 else stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter;
                 stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
 
                 int selY = -1;
                 int item_count = 0, divider_count = 0;
-                int text_height = font_size - y2, gap = (text_height - gap_y) / 2;
-                for (int i = 0; i < items.Count; i++) ReadList(items[i], i, w, y2, gap_x, gap_y, gap, font_size, text_height, ref item_count, ref divider_count, ref y, ref selY);
+                int text_height = font_size - gap_y2, gap = (text_height - gap_y) / 2;
+                for (int i = 0; i < items.Count; i++) ReadList(items[i], i, w, gap_y2, gap_x, gap_y, gap, font_size, text_height, ref item_count, ref divider_count, ref y, ref selY);
                 var vr = (font_size * item_count) + (gap_y * divider_count);
                 if (MaxCount > 0)
                 {
@@ -310,12 +306,13 @@ namespace AntdUI
                 y += font_size;
             }
         }
-        void InitReadList(object obj, ref string btext, ref bool ui_online, ref bool ui_icon, ref bool ui_arrow)
+        void InitReadList(Graphics g, object obj, ref int btext, ref bool ui_online, ref bool ui_icon, ref bool ui_arrow)
         {
             if (obj is SelectItem it)
             {
                 string text = it.Text + it.SubText;
-                if (text.Length > btext.Length) btext = text;
+                var size = g.MeasureString(text, Font).Size();
+                if (size.Width > btext) btext = size.Width;
                 if (it.Online > -1) ui_online = true;
                 if (it.Icon != null) ui_icon = true;
                 else if (it.IconSvg != null) ui_icon = true;
@@ -323,15 +320,17 @@ namespace AntdUI
             }
             else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
             {
-                foreach (var item in group.Sub) InitReadList(item, ref btext, ref ui_online, ref ui_icon, ref ui_arrow);
+                foreach (var item in group.Sub) InitReadList(g, item, ref btext, ref ui_online, ref ui_icon, ref ui_arrow);
             }
             else if (obj is DividerSelectItem)
             {
             }
             else
             {
-                string? text = obj.ToString();
-                if (text != null) if (text.Length > btext.Length) btext = text;
+                var text = obj.ToString();
+                if (text == null) return;
+                var size = g.MeasureString(text, Font).Size();
+                if (size.Width > btext) btext = size.Width;
             }
         }
 
@@ -413,20 +412,19 @@ namespace AntdUI
                     int y = 10, w = r_w, list_count = 0;
                     Helper.GDI(g =>
                     {
-                        var size = g.MeasureString(Config.NullText, Font).Size(2);
-                        int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
-                        int font_size = size.Height + gap_y * 2;
-                        var y2 = gap_y * 2;
+                        var size = g.MeasureString(Config.NullText, Font).Size();
+                        int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+                        int font_size = size.Height + gap_y2;
                         y += gap_y;
 
-                        int text_height = font_size - y2, gap = (text_height - gap_y) / 2;
+                        int text_height = font_size - gap_y2, gap = (text_height - gap_y) / 2;
                         foreach (var it in Items)
                         {
                             if (it.ID > -1 && it.Show)
                             {
                                 list_count++;
-                                var rect_bg = new Rectangle(10 + gap_y, y, w - y2, font_size);
-                                it.SetRect(rect_bg, new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, rect_bg.Height - y2), gap, gap_y);
+                                var rect_bg = new Rectangle(10 + gap_y, y, w - gap_y2, font_size);
+                                it.SetRect(rect_bg, new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, rect_bg.Height - gap_y2), gap, gap_y);
                                 y += font_size;
                             }
                         }
@@ -525,20 +523,19 @@ namespace AntdUI
                     int y = 10, w = r_w, list_count = 0;
                     Helper.GDI(g =>
                     {
-                        var size = g.MeasureString(Config.NullText, Font).Size(2);
-                        int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
-                        int font_size = size.Height + gap_y * 2;
-                        var y2 = gap_y * 2;
+                        var size = g.MeasureString(Config.NullText, Font).Size();
+                        int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+                        int font_size = size.Height + gap_y2;
                         y += gap_y;
 
-                        int text_height = font_size - y2, gap = (text_height - gap_y) / 2;
+                        int text_height = font_size - gap_y2, gap = (text_height - gap_y) / 2;
                         foreach (var it in Items)
                         {
                             if (it.ID > -1 && it.Show)
                             {
                                 list_count++;
-                                var rect_bg = new Rectangle(10 + gap_y, y, w - y2, font_size);
-                                it.SetRect(rect_bg, new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, rect_bg.Height - y2), gap, gap_y);
+                                var rect_bg = new Rectangle(10 + gap_y, y, w - gap_y2, font_size);
+                                it.SetRect(rect_bg, new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, rect_bg.Height - gap_y2), gap, gap_y);
                                 y += font_size;
                             }
                         }
@@ -546,14 +543,14 @@ namespace AntdUI
                         var vr = font_size * list_count;
                         if (list_count > MaxCount)
                         {
-                            y = 10 + gap_y * 2 + (font_size * MaxCount);
+                            y = 10 + gap_y2 + (font_size * MaxCount);
                             scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
                             scrollY.Show = true;
                             scrollY.SetVrSize(vr, scrollY.Rect.Height);
                         }
                         else
                         {
-                            y = 10 + gap_y * 2 + vr;
+                            y = 10 + gap_y2 + vr;
                             scrollY.Show = false;
                         }
                         y += 10;
@@ -606,20 +603,19 @@ namespace AntdUI
                 int y = 10, w = r_w, list_count = 0;
                 Helper.GDI(g =>
                 {
-                    var size = g.MeasureString(Config.NullText, Font).Size(2);
-                    int gap_y = (int)Math.Ceiling(size.Height * 0.227F), gap_x = (int)Math.Ceiling(size.Height * 0.54F);
-                    int font_size = size.Height + gap_y * 2;
-                    var y2 = gap_y * 2;
+                    var size = g.MeasureString(Config.NullText, Font).Size();
+                    int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+                    int font_size = size.Height + gap_y2;
                     y += gap_y;
 
-                    int text_height = font_size - y2, gap = (text_height - gap_y) / 2;
+                    int text_height = font_size - gap_y2, gap = (text_height - gap_y) / 2;
                     foreach (var it in Items)
                     {
                         if (it.ID > -1 && it.Show)
                         {
                             list_count++;
-                            var rect_bg = new Rectangle(10 + gap_y, y, w - y2, font_size);
-                            it.SetRect(rect_bg, new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, rect_bg.Height - y2), gap, gap_y);
+                            var rect_bg = new Rectangle(10 + gap_y, y, w - gap_y2, font_size);
+                            it.SetRect(rect_bg, new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, rect_bg.Height - gap_y2), gap, gap_y);
                             y += font_size;
                         }
                     }
@@ -627,14 +623,14 @@ namespace AntdUI
                     var vr = font_size * list_count;
                     if (list_count > MaxCount)
                     {
-                        y = 10 + gap_y * 2 + (font_size * MaxCount);
+                        y = 10 + gap_y2 + (font_size * MaxCount);
                         scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
                         scrollY.Show = true;
                         scrollY.SetVrSize(vr, scrollY.Rect.Height);
                     }
                     else
                     {
-                        y = 10 + gap_y * 2 + vr;
+                        y = 10 + gap_y2 + vr;
                         scrollY.Show = false;
                     }
                 });
@@ -869,18 +865,21 @@ namespace AntdUI
 
         void DrawTextIconSelect(Graphics g, ObjectItem it)
         {
-            if (it.Enable)
+            using (var font = new Font(Font, FontStyle.Bold))
             {
-                using (var fore = new SolidBrush(Style.Db.TextBase))
+                if (it.Enable)
                 {
-                    g.DrawStr(it.Text, Font, fore, it.RectText, stringFormatLeft);
+                    using (var fore = new SolidBrush(Style.Db.TextBase))
+                    {
+                        g.DrawStr(it.Text, font, fore, it.RectText, stringFormatLeft);
+                    }
                 }
-            }
-            else
-            {
-                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                else
                 {
-                    g.DrawStr(it.Text, Font, fore, it.RectText, stringFormatLeft);
+                    using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                    {
+                        g.DrawStr(it.Text, font, fore, it.RectText, stringFormatLeft);
+                    }
                 }
             }
             DrawIcon(g, it, Style.Db.TextBase);

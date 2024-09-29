@@ -724,7 +724,7 @@ namespace AntdUI
 
         void PaintArrow(Graphics g, TreeItem item, Pen pen, int sx, int sy, float rotate)
         {
-            int size = item.arr_rect.Width, size_arrow = size / 2;
+            int size_arrow = item.arr_rect.Width / 2;
             g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
             g.RotateTransform(rotate);
             g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .4F));
