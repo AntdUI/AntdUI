@@ -29,16 +29,15 @@ namespace Demo
         [STAThread]
         static void Main(string[] arge)
         {
-            bool istop = false;
-            if (arge.Length > 0 && arge[0] == "t") istop = true;
+            var command = string.Join(" ", arge);
             //AntdUI.Localization.Provider = new Localizer();
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
             AntdUI.Config.SetCorrectionTextRendering("Microsoft YaHei UI");
-            //Application.Run(new Main());
-            //return;
-            Application.Run(new Overview(istop));
+            if (command == "m") Application.Run(new Main());
+            else if (command == "color") Application.Run(new Colors());
+            else Application.Run(new Overview(command == "t"));
         }
     }
     public class Localizer : AntdUI.ILocalization
