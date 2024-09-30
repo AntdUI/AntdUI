@@ -486,7 +486,15 @@ namespace AntdUI
         public void ScrollLine(int i)
         {
             if (rows == null || !ScrollBar.ShowY) return;
-            ScrollBar.ValueY = rows[i].RECT.Y;
+            if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
+            else ScrollBar.ValueY = rows[i].RECT.Y;
+        }
+
+        void ScrollLine(int i, RowTemplate[] rows)
+        {
+            if (!ScrollBar.ShowY) return;
+            if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
+            else ScrollBar.ValueY = rows[i].RECT.Y;
         }
 
         /// <summary>

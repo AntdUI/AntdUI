@@ -32,6 +32,7 @@ namespace AntdUI
             SetStyle(
                 ControlStyles.UserPaint |
                 ControlStyles.DoubleBuffer |
+                ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
         }

@@ -449,7 +449,11 @@ namespace AntdUI
                 Marshal.StructureToPtr(nccsp, m.LParam, false);
                 return false;
             }
-            else return true;
+            else
+            {
+                m.Result = new IntPtr(1);
+                return true;
+            }
         }
 
         internal Size? sizeInit;

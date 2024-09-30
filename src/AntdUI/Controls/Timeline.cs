@@ -314,8 +314,8 @@ namespace AntdUI
             base.OnLeave(e);
             ScrollBar.Leave();
         }
-        protected override void OnTouchScrollX(int value) => ScrollBar.MouseWheelX(value);
-        protected override void OnTouchScrollY(int value) => ScrollBar.MouseWheelY(value);
+        protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelX(value);
+        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelY(value);
 
         #endregion
 
