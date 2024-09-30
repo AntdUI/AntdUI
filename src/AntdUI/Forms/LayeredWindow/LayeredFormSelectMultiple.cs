@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -56,38 +55,40 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font).Size();
-                int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
-                int font_size = size.Height + gap_y2;
-                y += gap_y;
-
+                int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
+                gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
+                text_height = size.Height, item_height = text_height + gap_y2;
+                y += gap;
+                ListAutoWidth = true;
                 if (ListAutoWidth)
                 {
                     int b_w = size.Width + gap_x2;
                     bool ui_online = false, ui_icon = false, ui_arrow = false;
                     foreach (var obj in items) InitReadList(g, obj, ref b_w, ref ui_online, ref ui_icon, ref ui_arrow);
-                    if (ui_icon && ui_online) b_w += font_size * 2;
-                    else if (ui_icon || ui_online) b_w += font_size;
-                    if (ui_arrow) b_w += (int)Math.Ceiling(font_size * 0.6F) * 2;
-                    else b_w += (int)Math.Ceiling(font_size * 0.6F);
-                    w = r_w = b_w + gap_x2;
+                    if (ui_icon || ui_online)
+                    {
+                        if (ui_icon && ui_online) b_w += text_height + gap_y2;
+                        else if (ui_icon) b_w += text_height;
+                        else b_w += gap_y;
+                    }
+                    w = r_w = b_w + gap_x2 + gap2 + gap_y2;
                 }
                 else stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter;
                 stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
 
                 int selY = -1;
                 int item_count = 0, divider_count = 0;
-                int text_height = font_size - gap_y2, gap = (text_height - gap_y) / 2;
-                for (int i = 0; i < items.Count; i++) ReadList(items[i], i, w, gap_y2, gap_x, gap_y, gap, font_size, text_height, ref item_count, ref divider_count, ref y, ref selY);
-                var vr = (font_size * item_count) + (gap_y * divider_count);
+                for (int i = 0; i < items.Count; i++) ReadList(items[i], i, w, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref selY);
+                var vr = (item_height * item_count) + (gap_y * divider_count);
                 if (Items.Count > MaxCount)
                 {
-                    y = 10 + gap_y2 + (font_size * MaxCount);
-                    scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
+                    y = 10 + gap2 + (item_height * MaxCount);
+                    scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
                     scrollY.Show = true;
                     scrollY.SetVrSize(vr, scrollY.Rect.Height);
                     if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap_y);
                 }
-                else y = 10 + gap_y2 + vr;
+                else y = 10 + gap2 + vr;
             });
 
             SetSizeW(w + 20);
@@ -148,40 +149,59 @@ namespace AntdUI
 
         void MyPoint(Point point, Control control, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(point, Placement, ShowArrow, ArrowSize, 10, r_w + 20, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
 
-        void ReadList(object obj, int i, int w, int y2, int gap_x, int gap_y, int gap, int font_size, int text_height, ref int item_count, ref int divider_count, ref int y, ref int selY, bool NoIndex = true)
+        /// <summary>
+        /// 计算坐标
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="i">序号</param>
+        /// <param name="width">宽度</param>
+        /// <param name="item_height">项高度</param>
+        /// <param name="text_height">字体高度</param>
+        /// <param name="gap"></param>
+        /// <param name="gap2"></param>
+        /// <param name="gap_x"></param>
+        /// <param name="gap_x2"></param>
+        /// <param name="gap_y"></param>
+        /// <param name="gap_y2"></param>
+        /// <param name="sp">分割线大小</param>
+        /// <param name="item_count">项数量</param>
+        /// <param name="divider_count">分隔线数量</param>
+        /// <param name="y">Y</param>
+        /// <param name="select_y">选中序号</param>
+        void ReadList(object value, int i, int width, int item_height, int text_height, int gap, int gap2, int gap_x, int gap_x2, int gap_y, int gap_y2, int sp, ref int item_count, ref int divider_count, ref int y, ref int select_y, bool NoIndex = true)
         {
-            if (obj is SelectItem it)
-            {
-                item_count++;
-                Rectangle rect_bg = new Rectangle(10 + gap_y, y, w - y2, font_size), rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
-                Items.Add(new ObjectItem(it, i, rect_bg, gap_y, gap, rect_text) { NoIndex = NoIndex });
-                if (selectedValue == it.Tag) selY = y;
-                y += font_size;
-            }
-            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
-            {
-                item_count++;
-                Rectangle rect_bg = new Rectangle(10 + gap_y, y, w - y2, font_size), rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
-                Items.Add(new ObjectItem(group, i, rect_bg, rect_text));
-                if (selectedValue == obj) selY = y;
-                y += font_size;
-                foreach (var item in group.Sub) ReadList(item, i, w, y2, gap_x, gap_y, gap, font_size, text_height, ref item_count, ref divider_count, ref y, ref selY, false);
-            }
-            else if (obj is DividerSelectItem)
+            if (value is DividerSelectItem)
             {
                 divider_count++;
-                Items.Add(new ObjectItem(new Rectangle(10 + gap_y, y + (gap_y - 1) / 2, w - y2, 1)));
+                Items.Add(new ObjectItem(new Rectangle(10 + gap_y, y + (gap_y - sp) / 2, width - gap_y2, sp)));
                 y += gap_y;
             }
             else
             {
                 item_count++;
-                Rectangle rect_bg = new Rectangle(10 + gap_y, y, w - y2, font_size), rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x * 2, text_height);
-                Items.Add(new ObjectItem(obj, i, rect_bg, rect_text) { NoIndex = NoIndex });
-                if (selectedValue == obj) selY = y;
-                y += font_size;
+                Rectangle rect = new Rectangle(10 + gap, y, width - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
+                if (value is SelectItem it)
+                {
+                    Items.Add(new ObjectItem(it, i, rect, rect_text, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
+                    if (selectedValue == it.Tag) select_y = y;
+                    y += item_height;
+                }
+                else if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
+                {
+                    Items.Add(new ObjectItem(group, i, rect, rect_text));
+                    if (selectedValue == value) select_y = y;
+                    y += item_height;
+                    foreach (var item in group.Sub) ReadList(item, i, width, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref select_y, false);
+                }
+                else
+                {
+                    Items.Add(new ObjectItem(value, i, rect, rect_text) { NoIndex = NoIndex });
+                    if (selectedValue == value) select_y = y;
+                    y += item_height;
+                }
             }
         }
+
         void InitReadList(Graphics g, object obj, ref int btext, ref bool ui_online, ref bool ui_icon, ref bool ui_arrow)
         {
             if (obj is SelectItem it)
@@ -215,7 +235,7 @@ namespace AntdUI
         {
             if (item.SetHover(true))
             {
-                scrollY.Value = item.Rect.Y - item.Rect.Height;
+                if (scrollY.Show) scrollY.Value = item.Rect.Y - item.Rect.Height;
                 Print();
             }
         }
@@ -290,33 +310,33 @@ namespace AntdUI
                     Helper.GDI(g =>
                     {
                         var size = g.MeasureString(Config.NullText, Font).Size();
-                        int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
-                        int font_size = size.Height + gap_y2;
-                        y += gap_y;
-
-                        int text_height = font_size - gap_y2, gap = (text_height - gap_y) / 2;
+                        int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
+                        gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
+                        text_height = size.Height, item_height = text_height + gap_y2;
+                        y += gap;
                         foreach (var it in Items)
                         {
                             if (it.ID > -1 && it.Show)
                             {
                                 list_count++;
-                                var rect_bg = new Rectangle(10 + gap_y, y, w - gap_y2, font_size);
-                                it.SetRect(rect_bg, new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, rect_bg.Height - gap_y2), gap, gap_y);
-                                y += font_size;
+                                Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
+                                rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
+                                it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+                                y += item_height;
                             }
                         }
 
-                        var vr = font_size * list_count;
+                        var vr = item_height * list_count;
                         if (list_count > MaxCount)
                         {
-                            y = 10 + gap_y2 + (font_size * MaxCount);
-                            scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
+                            y = 10 + gap2 + (item_height * MaxCount);
+                            scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
                             scrollY.Show = true;
                             scrollY.SetVrSize(vr, scrollY.Rect.Height);
                         }
                         else
                         {
-                            y = 10 + gap_y2 + vr;
+                            y = 10 + gap2 + vr;
                             scrollY.Show = false;
                         }
                         y += 10;
@@ -370,33 +390,33 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font).Size();
-                    int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
-                    int font_size = size.Height + gap_y2;
-                    y += gap_y;
-
-                    int text_height = font_size - gap_y2, gap = (text_height - gap_y) / 2;
+                    int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
+                    gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
+                    text_height = size.Height, item_height = text_height + gap_y2;
+                    y += gap;
                     foreach (var it in Items)
                     {
                         if (it.ID > -1 && it.Show)
                         {
                             list_count++;
-                            var rect_bg = new Rectangle(10 + gap_y, y, w - gap_y2, font_size);
-                            it.SetRect(rect_bg, new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, rect_bg.Height - gap_y2), gap, gap_y);
-                            y += font_size;
+                            Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
+                            rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
+                            it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+                            y += item_height;
                         }
                     }
 
-                    var vr = font_size * list_count;
+                    var vr = item_height * list_count;
                     if (list_count > MaxCount)
                     {
-                        y = 10 + gap_y2 + (font_size * MaxCount);
-                        scrollY.Rect = new Rectangle(w - gap_y, 10 + gap_y, 20, (font_size * MaxCount));
+                        y = 10 + gap2 + (item_height * MaxCount);
+                        scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
                         scrollY.Show = true;
                         scrollY.SetVrSize(vr, scrollY.Rect.Height);
                     }
                     else
                     {
-                        y = 10 + gap_y2 + vr;
+                        y = 10 + gap2 + vr;
                         scrollY.Show = false;
                     }
                 });

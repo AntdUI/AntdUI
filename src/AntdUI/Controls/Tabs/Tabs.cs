@@ -923,6 +923,22 @@ namespace AntdUI
             get => iconSvg != null || icon != null;
         }
 
+        bool readOnly = false;
+        /// <summary>
+        /// 只读
+        /// </summary>
+        [Description("只读"), Category("行为"), DefaultValue(false)]
+        public bool ReadOnly
+        {
+            get => readOnly;
+            set
+            {
+                if (readOnly == value) return;
+                readOnly = value;
+                PARENT?.LoadLayout();
+            }
+        }
+
         #region 徽标
 
         string? badge = null;

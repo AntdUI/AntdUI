@@ -792,17 +792,19 @@ namespace AntdUI
 
                     var rect_list = new List<TabPageRect>(items.Count);
                     var rect_dir = GetDir(tabs, g, items, gap, out int ico_size, out int close_size, out xy2);
-                    if (closable)
+
+                    switch (tabs.Alignment)
                     {
-                        switch (tabs.Alignment)
-                        {
-                            case TabAlignment.Bottom:
-                                int y = rect.Bottom - xy2;
-                                foreach (var it in rect_dir)
+                        case TabAlignment.Bottom:
+                            int y = rect.Bottom - xy2;
+                            foreach (var it in rect_dir)
+                            {
+                                if (it.Key.Visible)
                                 {
-                                    if (it.Key.Visible)
+                                    bool close = closable && !it.Key.ReadOnly;
+                                    Rectangle rect_it;
+                                    if (close)
                                     {
-                                        Rectangle rect_it;
                                         if (it.Key.HasIcon)
                                         {
                                             rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2);
@@ -813,94 +815,9 @@ namespace AntdUI
                                             rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + close_size + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
                                         }
-                                        it.Key.SetRect(rect_it);
-                                        xy += rect_it.Width + cardgap;
                                     }
-                                    else rect_list.Add(new TabPageRect());
-                                }
-                                xy -= cardgap;
-                                tabs.SetPadding(0, 0, 0, xy2);
-                                owner.scroll_max = xy - rect.Width;
-                                scroll_show = xy > rect.Width;
-                                break;
-                            case TabAlignment.Left:
-                                foreach (var it in rect_dir)
-                                {
-                                    if (it.Key.Visible)
+                                    else
                                     {
-                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
-                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
-                                        it.Key.SetRect(rect_it);
-                                        xy += rect_it.Height + cardgap;
-                                    }
-                                    else rect_list.Add(new TabPageRect());
-                                }
-                                xy -= cardgap;
-                                tabs.SetPadding(xy2, 0, 0, 0);
-                                owner.scroll_max = xy - rect.Height;
-                                scroll_show = xy > rect.Height;
-                                break;
-                            case TabAlignment.Right:
-                                int x = rect.Right - xy2;
-                                foreach (var it in rect_dir)
-                                {
-                                    if (it.Key.Visible)
-                                    {
-                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
-                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
-
-                                        it.Key.SetRect(rect_it);
-                                        xy += rect_it.Height + cardgap;
-                                    }
-                                    else rect_list.Add(new TabPageRect());
-                                }
-                                xy -= cardgap;
-                                tabs.SetPadding(0, 0, xy2, 0);
-                                owner.scroll_max = xy - rect.Height;
-                                scroll_show = xy > rect.Height;
-                                break;
-                            case TabAlignment.Top:
-                            default:
-                                foreach (var it in rect_dir)
-                                {
-                                    if (it.Key.Visible)
-                                    {
-                                        Rectangle rect_it;
-                                        if (it.Key.HasIcon)
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
-                                        }
-                                        else
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + close_size + gap, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
-                                        }
-                                        it.Key.SetRect(rect_it);
-                                        xy += rect_it.Width + cardgap;
-                                    }
-                                    else rect_list.Add(new TabPageRect());
-                                }
-                                xy -= cardgap;
-                                tabs.SetPadding(0, xy2, 0, 0);
-                                owner.scroll_max = xy - rect.Width;
-                                scroll_show = xy > rect.Width;
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch (tabs.Alignment)
-                        {
-                            case TabAlignment.Bottom:
-                                int y = rect.Bottom - xy2;
-                                foreach (var it in rect_dir)
-                                {
-                                    if (it.Key.Visible)
-                                    {
-                                        Rectangle rect_it;
                                         if (it.Key.HasIcon)
                                         {
                                             rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + ico_size + gap, xy2);
@@ -911,61 +828,99 @@ namespace AntdUI
                                             rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it));
                                         }
-                                        it.Key.SetRect(rect_it);
-                                        xy += rect_it.Width + cardgap;
                                     }
-                                    else rect_list.Add(new TabPageRect());
+                                    it.Key.SetRect(rect_it);
+                                    xy += rect_it.Width + cardgap;
                                 }
-                                xy -= cardgap;
-                                tabs.SetPadding(0, 0, 0, xy2);
-                                owner.scroll_max = xy - rect.Width;
-                                scroll_show = xy > rect.Width;
-                                break;
-                            case TabAlignment.Left:
-                                foreach (var it in rect_dir)
+                                else rect_list.Add(new TabPageRect());
+                            }
+                            xy -= cardgap;
+                            tabs.SetPadding(0, 0, 0, xy2);
+                            owner.scroll_max = xy - rect.Width;
+                            scroll_show = xy > rect.Width;
+                            break;
+                        case TabAlignment.Left:
+                            foreach (var it in rect_dir)
+                            {
+                                if (it.Key.Visible)
                                 {
-                                    if (it.Key.Visible)
+                                    bool close = closable && !it.Key.ReadOnly;
+                                    Rectangle rect_it;
+                                    if (close)
                                     {
-                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
+                                        rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
+                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                    }
+                                    else
+                                    {
+                                        rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
                                         if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         else rect_list.Add(new TabPageRect(rect_it));
-                                        it.Key.SetRect(rect_it);
-                                        xy += rect_it.Height + cardgap;
                                     }
-                                    else rect_list.Add(new TabPageRect());
+                                    it.Key.SetRect(rect_it);
+                                    xy += rect_it.Height + cardgap;
                                 }
-                                xy -= cardgap;
-                                tabs.SetPadding(xy2, 0, 0, 0);
-                                owner.scroll_max = xy - rect.Height;
-                                scroll_show = xy > rect.Height;
-                                break;
-                            case TabAlignment.Right:
-                                int x = rect.Right - xy2;
-                                foreach (var it in rect_dir)
+                                else rect_list.Add(new TabPageRect());
+                            }
+                            xy -= cardgap;
+                            tabs.SetPadding(xy2, 0, 0, 0);
+                            owner.scroll_max = xy - rect.Height;
+                            scroll_show = xy > rect.Height;
+                            break;
+                        case TabAlignment.Right:
+                            int x = rect.Right - xy2;
+                            foreach (var it in rect_dir)
+                            {
+                                if (it.Key.Visible)
                                 {
-                                    if (it.Key.Visible)
+                                    bool close = closable && !it.Key.ReadOnly;
+                                    Rectangle rect_it;
+                                    if (close)
                                     {
-                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
+                                        rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
+                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                    }
+                                    else
+                                    {
+                                        rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
                                         if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         else rect_list.Add(new TabPageRect(rect_it));
-
-                                        it.Key.SetRect(rect_it);
-                                        xy += rect_it.Height + cardgap;
                                     }
-                                    else rect_list.Add(new TabPageRect());
+                                    it.Key.SetRect(rect_it);
+                                    xy += rect_it.Height + cardgap;
                                 }
-                                xy -= cardgap;
-                                tabs.SetPadding(0, 0, xy2, 0);
-                                owner.scroll_max = xy - rect.Height;
-                                scroll_show = xy > rect.Height;
-                                break;
-                            case TabAlignment.Top:
-                            default:
-                                foreach (var it in rect_dir)
+                                else rect_list.Add(new TabPageRect());
+                            }
+                            xy -= cardgap;
+                            tabs.SetPadding(0, 0, xy2, 0);
+                            owner.scroll_max = xy - rect.Height;
+                            scroll_show = xy > rect.Height;
+                            break;
+                        case TabAlignment.Top:
+                        default:
+                            foreach (var it in rect_dir)
+                            {
+                                if (it.Key.Visible)
                                 {
-                                    if (it.Key.Visible)
+                                    bool close = closable && !it.Key.ReadOnly;
+                                    Rectangle rect_it;
+                                    if (close)
                                     {
-                                        Rectangle rect_it;
+                                        if (it.Key.HasIcon)
+                                        {
+                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2);
+                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                        }
+                                        else
+                                        {
+                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + close_size + gap, xy2);
+                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                        }
+                                    }
+                                    else
+                                    {
                                         if (it.Key.HasIcon)
                                         {
                                             rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + gap, xy2);
@@ -976,19 +931,18 @@ namespace AntdUI
                                             rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it));
                                         }
-                                        it.Key.SetRect(rect_it);
-                                        xy += rect_it.Width + cardgap;
                                     }
-                                    else rect_list.Add(new TabPageRect());
+                                    it.Key.SetRect(rect_it);
+                                    xy += rect_it.Width + cardgap;
                                 }
-                                xy -= cardgap;
-                                tabs.SetPadding(0, xy2, 0, 0);
-                                owner.scroll_max = xy - rect.Width;
-                                scroll_show = xy > rect.Width;
-                                break;
-                        }
+                                else rect_list.Add(new TabPageRect());
+                            }
+                            xy -= cardgap;
+                            tabs.SetPadding(0, xy2, 0, 0);
+                            owner.scroll_max = xy - rect.Width;
+                            scroll_show = xy > rect.Width;
+                            break;
                     }
-
                     if (scroll_show) owner.scroll_max += owner.SizeExceed(owner.ClientRectangle, rect_list[0].Rect, rect_list[rect_list.Count - 1].Rect, out rect_ctls);
                     else
                     {
@@ -1452,7 +1406,7 @@ namespace AntdUI
             public bool MouseClick(TabPage page, int i, int x, int y)
             {
                 if (owner == null) return false;
-                if (closable)
+                if (closable && !page.ReadOnly)
                 {
                     if (rects[i].Rect_Close.Contains(x, y))
                     {
