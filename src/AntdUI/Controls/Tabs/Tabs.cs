@@ -416,6 +416,171 @@ namespace AntdUI
             }
         }
 
+        #region 绘制超出部分
+
+        public virtual int SizeExceed(Rectangle rect, Rectangle first, Rectangle last, out Rectangle rect_cr)
+        {
+            int size = last.Height;
+            switch (alignment)
+            {
+                case TabAlignment.Left:
+                case TabAlignment.Right:
+                    rect_cr = new Rectangle(last.X, rect.Bottom - size, last.Width, size);
+                    break;
+                case TabAlignment.Top:
+                case TabAlignment.Bottom:
+                default:
+                    rect_cr = new Rectangle(rect.Right - size, last.Y, size, size);
+                    break;
+            }
+            return size;
+        }
+
+        public virtual void PaintExceedPre(Graphics g, Rectangle rect, int size)
+        {
+            switch (alignment)
+            {
+                case TabAlignment.Left:
+                case TabAlignment.Right:
+                    if (scroll_max != scroll_y) g.SetClip(new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - size));
+                    else g.SetClip(rect);
+                    break;
+                case TabAlignment.Top:
+                case TabAlignment.Bottom:
+                default:
+                    if (scroll_max != scroll_x) g.SetClip(new Rectangle(rect.X, rect.Y, rect.Width - size, rect.Height));
+                    else g.SetClip(rect);
+                    break;
+            }
+        }
+
+        Bitmap? bitblock_l = null, bitblock_r = null;
+        public virtual void PaintExceed(Graphics g, Color color, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        {
+            g.ResetClip();
+            g.ResetTransform();
+            switch (alignment)
+            {
+                case TabAlignment.Left:
+                case TabAlignment.Right:
+                    if (scroll_y > 0 || scroll_max != scroll_y)
+                    {
+                        int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2;
+                        int size = last.Height, icosize = (int)(size * 0.4F);
+                        var rect_cr = new Rectangle(last.X, rect.Bottom - size, last.Width, size);
+                        if (scroll_y > 0)
+                        {
+                            var rect_l = new Rectangle(first.X, first.Y, rect_cr.Width, gap2);
+                            if (full) rect_l.Y = 0;
+                            if (bitblock_l == null || bitblock_l.Width != rect_l.Width || bitblock_l.Height != rect_l.Height)
+                            {
+                                bitblock_l?.Dispose();
+                                bitblock_l = new Bitmap(rect_l.Width, rect_l.Height);
+                                using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay())
+                                {
+                                    using (var brush = new SolidBrush(color))
+                                    {
+                                        using (var path = new Rectangle(0, 0, bitblock_l.Width, gap).RoundPath(gap, false, false, true, true))
+                                        {
+                                            g_bmp.FillPath(brush, path);
+                                        }
+                                    }
+                                }
+                                Helper.Blur(bitblock_l, gap);
+                            }
+                            g.DrawImage(bitblock_l, rect_l, .1F);
+                        }
+                        if (scroll_max != scroll_y)
+                        {
+                            var rect_r = new Rectangle(rect_cr.X, rect_cr.Y - gap2, rect_cr.Width, gap2);
+                            if (bitblock_r == null || bitblock_r.Width != rect_r.Width || bitblock_r.Height != rect_r.Height)
+                            {
+                                bitblock_r?.Dispose();
+                                bitblock_r = new Bitmap(rect_r.Width, rect_r.Height);
+                                using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay())
+                                {
+                                    using (var brush = new SolidBrush(color))
+                                    {
+                                        using (var path = new Rectangle(0, gap, bitblock_r.Width, gap).RoundPath(gap, true, true, false, false))
+                                        {
+                                            g_bmp.FillPath(brush, path);
+                                        }
+                                    }
+                                }
+                                Helper.Blur(bitblock_r, gap);
+                            }
+                            g.DrawImage(bitblock_r, rect_r, .1F);
+                        }
+                        var rect_ico = new Rectangle(rect_cr.X + (rect_cr.Width - icosize) / 2, rect_cr.Y + (rect_cr.Height - icosize) / 2, icosize, icosize);
+                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoMore, rect_ico, color))
+                        {
+                            if (bmp != null) g.DrawImage(bmp, rect_ico);
+                        }
+                    }
+                    break;
+                case TabAlignment.Top:
+                case TabAlignment.Bottom:
+                default:
+                    if (scroll_x > 0 || scroll_max != scroll_x)
+                    {
+                        int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2;
+                        int size = last.Height, icosize = (int)(size * 0.4F);
+                        var rect_cr = new Rectangle(rect.Right - size, last.Y, size, size);
+                        if (scroll_x > 0)
+                        {
+                            var rect_l = new Rectangle(first.X, first.Y, gap2, size);
+                            if (full) rect_l.X = 0;
+                            if (bitblock_l == null || bitblock_l.Width != rect_l.Width || bitblock_l.Height != rect_l.Height)
+                            {
+                                bitblock_l?.Dispose();
+                                bitblock_l = new Bitmap(rect_l.Width, rect_l.Height);
+                                using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay())
+                                {
+                                    using (var brush = new SolidBrush(color))
+                                    {
+                                        using (var path = new Rectangle(0, 0, gap, bitblock_l.Height).RoundPath(gap, false, true, true, false))
+                                        {
+                                            g_bmp.FillPath(brush, path);
+                                        }
+                                    }
+                                }
+                                Helper.Blur(bitblock_l, gap);
+                            }
+                            g.DrawImage(bitblock_l, rect_l, .1F);
+                        }
+                        if (scroll_max != scroll_x)
+                        {
+                            var rect_r = new Rectangle(rect_cr.X - gap2, rect_cr.Y, gap2, size);
+                            if (bitblock_r == null || bitblock_r.Width != rect_r.Width || bitblock_r.Height != rect_r.Height)
+                            {
+                                bitblock_r?.Dispose();
+                                bitblock_r = new Bitmap(rect_r.Width, rect_r.Height);
+                                using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay())
+                                {
+                                    using (var brush = new SolidBrush(color))
+                                    {
+                                        using (var path = new Rectangle(gap, 0, gap, bitblock_r.Height).RoundPath(gap, true, false, false, true))
+                                        {
+                                            g_bmp.FillPath(brush, path);
+                                        }
+                                    }
+                                }
+                                Helper.Blur(bitblock_r, gap);
+                            }
+                            g.DrawImage(bitblock_r, rect_r, .1F);
+                        }
+                        var rect_ico = new Rectangle(rect_cr.X + (rect_cr.Width - icosize) / 2, rect_cr.Y + (rect_cr.Height - icosize) / 2, icosize, icosize);
+                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoMore, rect_ico, color))
+                        {
+                            if (bmp != null) g.DrawImage(bmp, rect_ico);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region 渲染
@@ -756,6 +921,22 @@ namespace AntdUI
         public bool HasIcon
         {
             get => iconSvg != null || icon != null;
+        }
+
+        bool readOnly = false;
+        /// <summary>
+        /// 只读
+        /// </summary>
+        [Description("只读"), Category("行为"), DefaultValue(false)]
+        public bool ReadOnly
+        {
+            get => readOnly;
+            set
+            {
+                if (readOnly == value) return;
+                readOnly = value;
+                PARENT?.LoadLayout();
+            }
         }
 
         #region 徽标

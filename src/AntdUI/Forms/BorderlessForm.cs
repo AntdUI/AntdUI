@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Vanara.PInvoke;
+using static Vanara.PInvoke.DwmApi;
 using static Vanara.PInvoke.User32;
 
 namespace AntdUI
@@ -37,6 +38,16 @@ namespace AntdUI
                 ControlStyles.DoubleBuffer, true);
             UpdateStyles();
             base.FormBorderStyle = FormBorderStyle.None;
+            if (UseDwm && OS.Version.Major >= 6)
+            {
+                try
+                {
+                    int enabled = 0;
+                    DarkUI.DwmIsCompositionEnabled(ref enabled);
+                    DwmEnabled = enabled == 1;
+                }
+                catch { }
+            }
         }
 
         #region 属性
@@ -49,7 +60,7 @@ namespace AntdUI
             get => base.FormBorderStyle;
         }
 
-        bool CanMessageFilter => shadow < 4;
+        bool CanMessageFilter => DwmEnabled || shadow < 4;
 
         int shadow = 10;
         /// <summary>
@@ -63,6 +74,7 @@ namespace AntdUI
             {
                 if (shadow == value) return;
                 shadow = value;
+                if (DwmEnabled) return;
                 if (value > 0)
                 {
                     ShowSkin();
@@ -72,10 +84,17 @@ namespace AntdUI
                 }
                 else
                 {
-                    skin?.Close(); skin = null;
+                    skin?.Close();
+                    skin = null;
                 }
             }
         }
+
+        /// <summary>
+        /// 使用DWM阴影
+        /// </summary>
+        [Description("使用DWM阴影"), Category("行为"), DefaultValue(true)]
+        public bool UseDwm { get; set; } = true;
 
         [Description("鼠标穿透"), Category("行为"), DefaultValue(false)]
         public bool ShadowPierce { get; set; }
@@ -154,6 +173,7 @@ namespace AntdUI
             base.OnLoad(e);
         }
 
+        bool DwmEnabled = false;
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
@@ -163,7 +183,8 @@ namespace AntdUI
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            skin?.Close(); skin = null;
+            skin?.Close();
+            skin = null;
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -179,7 +200,8 @@ namespace AntdUI
         BorderlessFormShadow? skin = null;
         void ShowSkin()
         {
-            if (Visible && !ismax && shadow > 0 && !DesignMode)
+            if (DwmEnabled) return;
+            if (Visible && WindowState == FormWindowState.Normal && shadow > 0 && !DesignMode)
             {
                 if (skin != null) skin.Visible = true;
                 else
@@ -211,6 +233,13 @@ namespace AntdUI
             var msg = (WindowMessage)m.Msg;
             switch (msg)
             {
+                case WindowMessage.WM_ERASEBKGND:
+                    m.Result = IntPtr.Zero;
+                    return;
+                case WindowMessage.WM_ACTIVATE:
+                case WindowMessage.WM_NCPAINT:
+                    DwmArea();
+                    break;
                 case WindowMessage.WM_NCHITTEST:
                     m.Result = TRUE;
                     return;
@@ -227,6 +256,22 @@ namespace AntdUI
                     break;
             }
             base.WndProc(ref m);
+        }
+
+        int oldm = 0;
+        void DwmArea()
+        {
+            if (DwmEnabled && shadow > 0)
+            {
+                int margin;
+                if (WindowState == FormWindowState.Normal) margin = 1;
+                else margin = 0;
+                if (oldm == margin) return;
+                oldm = margin;
+                var v = 2;
+                DarkUI.DwmSetWindowAttribute(Handle, 2, ref v, 4);
+                DwmExtendFrameIntoClientArea(handle, new MARGINS(margin));
+            }
         }
 
         const nint SIZE_RESTORED = 0;
@@ -263,6 +308,7 @@ namespace AntdUI
                 if (IsMax) Region = new Region(rect);
                 else
                 {
+                    if (UseDwm && OS.Win11) return;
                     using (var path = rect.RoundPath(radius * Config.Dpi))
                     {
                         var region = new Region(path);
@@ -341,19 +387,48 @@ namespace AntdUI
         /// </summary>
         public override void DraggableMouseDown()
         {
-            if (isMax)
+            var mouseOffset = MousePosition;
+            bool end = true, handmax = false;
+            Size min = MinimumSize, max = MaximumSize;
+            if (DwmEnabled && WindowState == FormWindowState.Maximized)
             {
-                isMax = false;
-                var mousePosition2 = MousePosition;
-                float offsetXRatio = 1F - (float)old.Width / Width, offsetYRatio = (float)old.Height / Height;
-                Size = old.Size;
-                Location = new Point((int)(mousePosition2.X * offsetXRatio), (int)(mousePosition2.Y * offsetYRatio));
+                ITask.Run(() =>
+                {
+                    while (end)
+                    {
+                        var mousePosition = MousePosition;
+                        if (mouseOffset != mousePosition)
+                        {
+                            if ((Math.Abs(mousePosition.X - mouseOffset.X) >= 6 || Math.Abs(mousePosition.Y - mouseOffset.Y) >= 6))
+                            {
+                                handmax = true;
+                                Invoke(new Action(() =>
+                                {
+                                    WindowState = FormWindowState.Normal;
+                                    isMax = false;
+                                }));
+                                return;
+                            }
+                        }
+                        else System.Threading.Thread.Sleep(10);
+                    }
+                });
             }
             ReleaseCapture();
             SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
-            var mousePosition = MousePosition;
-            var screen = Screen.FromPoint(mousePosition);
-            if (mousePosition.Y == screen.WorkingArea.Top && MaximizeBox) Max();
+            end = false;
+            if (handmax)
+            {
+                MaximumSize = max;
+                MinimumSize = min;
+                return;
+            }
+            else
+            {
+                var mousePosition = MousePosition;
+                var screen = Screen.FromPoint(mousePosition);
+                if (mousePosition.Y == screen.WorkingArea.Top && MaximizeBox) Max();
+            }
         }
 
         #endregion
@@ -366,7 +441,7 @@ namespace AntdUI
         /// <returns>可以调整</returns>
         public override bool ResizableMouseMove()
         {
-            if (!isMax && winState == WState.Restore)
+            if (winState == WState.Restore)
             {
                 var retval = HitTest(PointToClient(MousePosition));
                 if (retval != HitTestValues.HTNOWHERE)
@@ -388,7 +463,7 @@ namespace AntdUI
         /// <returns>可以调整</returns>
         public override bool ResizableMouseMove(Point point)
         {
-            if (!isMax && winState == WState.Restore)
+            if (winState == WState.Restore)
             {
                 var retval = HitTest(point);
                 if (retval != HitTestValues.HTNOWHERE)
@@ -463,35 +538,28 @@ namespace AntdUI
 
         #region 程序
 
-        public override bool IsMax
-        {
-            get => isMax || WindowState == FormWindowState.Maximized;
-        }
-
         /// <summary>
         /// 最大化/还原
         /// </summary>
         public override bool MaxRestore()
         {
-            if (isMax)
+            if (WindowState == FormWindowState.Maximized)
             {
+                WindowState = FormWindowState.Normal;
                 isMax = false;
-                Size = old.Size;
-                Location = old.Location;
+                return false;
             }
             else
             {
+                Screen screen = Screen.FromPoint(Location);
+                if (screen.Primary) MaximizedBounds = screen.WorkingArea;
+                else MaximizedBounds = new Rectangle(0, 0, 0, 0);
+                WindowState = FormWindowState.Maximized;
                 isMax = true;
-                old = new Rectangle(Location, Size);
-                var rect = Screen.FromPoint(MousePosition).WorkingArea;
-                WindowState = FormWindowState.Normal;
-                Location = rect.Location;
-                Size = rect.Size;
+                return true;
             }
-            return isMax;
         }
 
-        Rectangle old;
         bool ismax = false;
         bool isMax
         {
@@ -502,6 +570,7 @@ namespace AntdUI
                 ismax = value;
                 if (value) { if (skin != null) skin.Visible = false; }
                 else ShowSkin();
+                DwmArea();
             }
         }
 
@@ -510,13 +579,12 @@ namespace AntdUI
         /// </summary>
         public override void Max()
         {
-            if (isMax) return;
+            if (ismax) return;
+            Screen screen = Screen.FromPoint(Location);
+            if (screen.Primary) MaximizedBounds = screen.WorkingArea;
+            else MaximizedBounds = new Rectangle(0, 0, 0, 0);
+            WindowState = FormWindowState.Maximized;
             isMax = true;
-            old = new Rectangle(Location, Size);
-            var rect = Screen.FromPoint(MousePosition).WorkingArea;
-            WindowState = FormWindowState.Normal;
-            Location = rect.Location;
-            Size = rect.Size;
         }
 
         /// <summary>
@@ -527,11 +595,13 @@ namespace AntdUI
             if (WindowState == FormWindowState.Maximized)
             {
                 WindowState = FormWindowState.Normal;
+                isMax = false;
                 return false;
             }
             else
             {
                 WindowState = FormWindowState.Maximized;
+                isMax = true;
                 return true;
             }
         }
@@ -542,11 +612,13 @@ namespace AntdUI
         public override void Full()
         {
             WindowState = FormWindowState.Maximized;
+            isMax = true;
         }
 
         public override void NoFull()
         {
             WindowState = FormWindowState.Normal;
+            isMax = false;
         }
 
         #endregion

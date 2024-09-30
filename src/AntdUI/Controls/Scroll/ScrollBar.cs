@@ -814,7 +814,9 @@ namespace AntdUI
         {
             if (EnabledX && ShowX && delta != 0)
             {
-                ValueX -= delta;
+                int value = ValueX - delta;
+                ValueX = value;
+                if (ValueX != value) return false;
                 return true;
             }
             return false;
@@ -824,7 +826,9 @@ namespace AntdUI
         {
             if (EnabledY && ShowY && delta != 0)
             {
-                ValueY -= delta;
+                int value = ValueY - delta;
+                ValueY = value;
+                if (ValueY != value) return false;
                 return true;
             }
             return false;

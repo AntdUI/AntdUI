@@ -324,13 +324,15 @@ namespace AntdUI
             if (ScrollBar != null && ScrollBar.EnabledY) ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
-        protected override void OnTouchScrollX(int value)
+        protected override bool OnTouchScrollX(int value)
         {
-            if (ScrollBar != null && ScrollBar.EnabledX) ScrollBar.MouseWheelX(value);
+            if (ScrollBar != null && ScrollBar.EnabledX) return ScrollBar.MouseWheelX(value);
+            return false;
         }
-        protected override void OnTouchScrollY(int value)
+        protected override bool OnTouchScrollY(int value)
         {
-            if (ScrollBar != null && ScrollBar.EnabledY) ScrollBar.MouseWheelY(value);
+            if (ScrollBar != null && ScrollBar.EnabledY) return ScrollBar.MouseWheelY(value);
+            return false;
         }
 
         #endregion

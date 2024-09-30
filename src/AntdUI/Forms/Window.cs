@@ -188,7 +188,11 @@ namespace AntdUI
                 if (winState == WState.Restore) return base.Location;
                 return ScreenRectangle.Location;
             }
-            set { base.Location = value; }
+            set
+            {
+                sizeNormal = null;
+                base.Location = value;
+            }
         }
 
         /// <summary>
@@ -197,7 +201,11 @@ namespace AntdUI
         public new int Top
         {
             get => Location.Y;
-            set { base.Top = value; }
+            set
+            {
+                sizeNormal = null;
+                base.Top = value;
+            }
         }
 
         /// <summary>
@@ -206,7 +214,11 @@ namespace AntdUI
         public new int Left
         {
             get => Location.X;
-            set { base.Left = value; }
+            set
+            {
+                sizeNormal = null;
+                base.Left = value;
+            }
         }
 
         /// <summary>
@@ -437,7 +449,11 @@ namespace AntdUI
                 Marshal.StructureToPtr(nccsp, m.LParam, false);
                 return false;
             }
-            else return true;
+            else
+            {
+                m.Result = new IntPtr(1);
+                return true;
+            }
         }
 
         internal Size? sizeInit;

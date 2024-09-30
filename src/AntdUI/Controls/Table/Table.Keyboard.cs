@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -29,6 +30,55 @@ namespace AntdUI
                 case Keys.Control | Keys.C:
                     if (ClipboardCopy && rows != null && selectedIndex > -1) return CopyData(selectedIndex);
                     return base.ProcessCmdKey(ref msg, keyData);
+                case Keys.Down:
+                    if (rows != null)
+                    {
+                        if (selectedIndex < rows.Length - 1)
+                        {
+                            SelectedIndex++;
+                            var selectRow = rows[selectedIndex];
+                            int sy = ScrollBar.ValueY;
+                            if (selectRow.RECT.Y < sy || selectRow.RECT.Bottom > sy + rect_read.Height) ScrollLine(selectedIndex, rows);
+                        }
+                        return true;
+                    }
+                    break;
+                case Keys.Up:
+                    if (rows != null)
+                    {
+                        if (selectedIndex > 1)
+                        {
+                            SelectedIndex--;
+                            var selectRow = rows[selectedIndex];
+                            int sy = ScrollBar.ValueY;
+                            if (selectRow.RECT.Y < sy || selectRow.RECT.Bottom > sy + rect_read.Height) ScrollLine(selectedIndex, rows);
+                        }
+                        return true;
+                    }
+                    break;
+                case Keys.PageUp:
+                    if (ScrollBar.ShowY)
+                    {
+                        ScrollBar.ValueY -= rect_read.Height;
+                        return true;
+                    }
+                    break;
+                case Keys.PageDown:
+                    if (ScrollBar.ShowY)
+                    {
+                        ScrollBar.ValueY += rect_read.Height;
+                        return true;
+                    }
+                    break;
+                case Keys.Enter:
+                case Keys.Space:
+                    if (rows != null && selectedIndex > -1)
+                    {
+                        var it = rows[selectedIndex];
+                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex, 0, new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height), new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0)));
+                        return true;
+                    }
+                    break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }

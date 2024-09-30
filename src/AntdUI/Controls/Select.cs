@@ -661,7 +661,7 @@ namespace AntdUI
             SetRect(rect, rect_text);
         }
 
-        public ObjectItem(SelectItem _val, int _i, Rectangle rect, int gap_y, int gap, Rectangle rect_text)
+        public ObjectItem(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
         {
             Sub = _val.Sub;
             if (Sub != null && Sub.Count > 0) has_sub = true;
@@ -677,7 +677,7 @@ namespace AntdUI
             PY = Pinyin.GetPinyin(_val.Text + _val.SubText).ToLower();
             PYS = Pinyin.GetInitials(_val.Text + _val.SubText).ToLower();
             ID = _i;
-            SetRect(rect, rect_text, gap, gap_y);
+            SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
         }
 
         public ObjectItem(Rectangle rect)
@@ -744,7 +744,7 @@ namespace AntdUI
 
         public Rectangle Rect { get; set; }
 
-        internal void SetRect(Rectangle rect, Rectangle rect_text, int gap, int gap_y)
+        internal void SetRect(Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
         {
             Rect = rect;
             if (Val is SelectItem)
@@ -753,20 +753,19 @@ namespace AntdUI
                 {
                     if (Online > -1 && HasIcon)
                     {
-                        int h2 = (int)(rect_text.Height * 0.7F);
-                        RectOnline = new Rectangle(rect_text.X + (h2 - gap_y) / 2, rect_text.Y + gap, gap_y, gap_y);
-                        RectIcon = new Rectangle(rect_text.X + h2, rect_text.Y, rect_text.Height, rect_text.Height);
-                        RectText = new Rectangle(rect_text.X + h2 + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - h2, rect_text.Height);
+                        RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
+                        RectIcon = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Height, rect_text.Height);
+                        RectText = new Rectangle(rect_text.X + gap_y + gap_y2 + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - gap_y2, rect_text.Height);
                     }
                     else if (Online > -1)
                     {
-                        RectOnline = new Rectangle(rect_text.X + gap, rect_text.Y + gap, gap_y, gap_y);
-                        RectText = new Rectangle(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
+                        RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
+                        RectText = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Width - gap_y2, rect_text.Height);
                     }
                     else
                     {
-                        RectIcon = new Rectangle(rect_text.X, rect_text.Y, rect_text.Height, rect_text.Height);
-                        RectText = new Rectangle(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
+                        RectIcon = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
+                        RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
                     }
                 }
                 else RectText = rect_text;

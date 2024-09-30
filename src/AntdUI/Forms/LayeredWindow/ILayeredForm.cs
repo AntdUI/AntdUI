@@ -413,9 +413,12 @@ namespace AntdUI
                             {
                                 while (moveYa > 0)
                                 {
-                                    OnTouchScrollY(-incremental);
-                                    moveYa -= duration;
-                                    System.Threading.Thread.Sleep(sleep);
+                                    if (OnTouchScrollY(-incremental))
+                                    {
+                                        moveYa -= duration;
+                                        System.Threading.Thread.Sleep(sleep);
+                                    }
+                                    else return;
                                 }
                             });
                         }
@@ -425,9 +428,12 @@ namespace AntdUI
                             {
                                 while (moveYa > 0)
                                 {
-                                    OnTouchScrollY(incremental);
-                                    moveYa -= duration;
-                                    System.Threading.Thread.Sleep(sleep);
+                                    if (OnTouchScrollY(incremental))
+                                    {
+                                        moveYa -= duration;
+                                        System.Threading.Thread.Sleep(sleep);
+                                    }
+                                    else return;
                                 }
                             });
                         }
@@ -437,8 +443,8 @@ namespace AntdUI
             }
             return true;
         }
-        protected virtual void OnTouchScrollX(int value) { }
-        protected virtual void OnTouchScrollY(int value) { }
+        protected virtual bool OnTouchScrollX(int value) => false;
+        protected virtual bool OnTouchScrollY(int value) => false;
 
         #endregion
     }
