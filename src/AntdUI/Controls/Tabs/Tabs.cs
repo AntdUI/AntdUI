@@ -1041,6 +1041,7 @@ namespace AntdUI
         {
             if (isdpi) return;
             isdpi = true;
+            if (DesignMode) return;
             if (Config.Dpi != 1F)
             {
                 SuspendLayout();
