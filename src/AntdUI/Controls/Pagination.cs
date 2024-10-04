@@ -436,7 +436,7 @@ namespace AntdUI
                     }
                     if (btn.hover) count_hand++;
                 }
-                if (count_no > 0) Cursor = Cursors.No;
+                if (count_no > 0) SetCursor(CursorType.No);
                 else SetCursor(count_hand > 0);
                 if (count > 0) Invalidate();
             }

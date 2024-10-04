@@ -750,7 +750,7 @@ namespace AntdUI
             {
                 if (item.Visible && item.Contains(x, y))
                 {
-                    Cursor = Cursors.Hand;
+                    SetCursor(CursorType.Hand);
                     Hover_i = i;
                     style.MouseMove(x, y);
                     return;

@@ -127,7 +127,7 @@ namespace AntdUI
             else if (mouseDown && cache_font != null)
             {
                 mouseDownMove = true;
-                Cursor = Cursors.IBeam;
+                SetCursor(CursorType.IBeam);
                 var index = GetCaretPostion(oldMouseDown.X + scrollx + (e.X - oldMouseDown.X), oldMouseDown.Y + scrolly + (e.Y - oldMouseDown.Y));
                 SelectionLength = Math.Abs(index - selectionStart);
                 if (index > selectionStart) selectionStartTemp = selectionStart;
@@ -145,26 +145,23 @@ namespace AntdUI
                         hover_clear = hover;
                         Invalidate();
                     }
-                    if (hover) { Cursor = Cursors.Hand; return; }
+                    if (hover) { SetCursor(true); return; }
                 }
-                if (HasPrefix && rect_l.Contains(e.Location) && PrefixClick != null)
+                if ((HasPrefix && rect_l.Contains(e.Location) && PrefixClick != null) || (HasSuffix && rect_r.Contains(e.Location) && SuffixClick != null))
                 {
-                    Cursor = Cursors.Hand; return;
+                    SetCursor(true);
+                    return;
                 }
-                if (HasSuffix && rect_r.Contains(e.Location) && SuffixClick != null)
-                {
-                    Cursor = Cursors.Hand; return;
-                }
-                if (IMouseMove(e.Location)) Cursor = Cursors.Hand;
+                if (IMouseMove(e.Location)) SetCursor(true);
                 else if (ReadShowCaret)
                 {
-                    if (rect_text.Contains(e.Location)) Cursor = Cursors.Hand;
-                    else Cursor = DefaultCursor;
+                    if (rect_text.Contains(e.Location)) SetCursor(true);
+                    else SetCursor(false);
                 }
                 else
                 {
-                    if (rect_text.Contains(e.Location)) Cursor = Cursors.IBeam;
-                    else Cursor = DefaultCursor;
+                    if (rect_text.Contains(e.Location)) SetCursor(CursorType.IBeam);
+                    else SetCursor(false);
                 }
             }
         }

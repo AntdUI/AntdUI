@@ -327,7 +327,7 @@ namespace AntdUI.Chat
             if (mouseDown != null)
             {
                 mouseDownMove = true;
-                Cursor = Cursors.IBeam;
+                SetCursor(CursorType.IBeam);
                 var index = GetCaretPostion(mouseDown, oldMouseDown.X + (e.X - oldMouseDown.X), oldMouseDown.Y + scrolly + (e.Y - oldMouseDown.Y));
                 mouseDown.SelectionLength = Math.Abs(index - mouseDown.selectionStart);
                 if (index > mouseDown.selectionStart) mouseDown.selectionStartTemp = mouseDown.selectionStart;
@@ -353,7 +353,7 @@ namespace AntdUI.Chat
                         //if (change) count++;
                     }
                 }
-                if (ibeam > 0) Cursor = Cursors.IBeam;
+                if (ibeam > 0) SetCursor(CursorType.IBeam);
                 else SetCursor(hand > 0);
                 if (count > 0) Invalidate();
             }
