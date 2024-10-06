@@ -185,19 +185,40 @@ namespace AntdUI
             OnSizeChanged(EventArgs.Empty);
         }
 
+        #region 鼠标
 
-        public void SetCursor(bool val)
+        CursorType oldcursor = CursorType.Default;
+        public void SetCursor(bool val) => SetCursor(val ? CursorType.Hand : CursorType.Default);
+        public void SetCursor(CursorType cursor = CursorType.Default)
         {
+            if (oldcursor == cursor) return;
+            oldcursor = cursor;
             if (InvokeRequired)
             {
                 Invoke(new Action(() =>
                 {
-                    SetCursor(val);
+                    SetCursor(cursor);
                 }));
                 return;
             }
-            Cursor = val ? Cursors.Hand : DefaultCursor;
+            switch (cursor)
+            {
+                case CursorType.Default:
+                    Cursor = DefaultCursor;
+                    break;
+                case CursorType.Hand:
+                    Cursor = HandCursor;
+                    break;
+                case CursorType.No:
+                    Cursor = Cursors.No;
+                    break;
+            }
         }
+
+        [Description("悬停光标"), Category("光标"), DefaultValue(typeof(Cursor), "Hand")]
+        public virtual Cursor HandCursor { get; set; } = Cursors.Hand;
+
+        #endregion
 
         #region 渲染文本
 
@@ -231,6 +252,8 @@ namespace AntdUI
             oldY = y;
             if (Config.TouchEnabled)
             {
+                taskTouch?.Dispose();
+                taskTouch = null;
                 mdownd = 0;
                 mdown = true;
             }
@@ -270,47 +293,45 @@ namespace AntdUI
             }
             return true;
         }
+
+        ITask? taskTouch = null;
         protected virtual bool OnTouchUp()
         {
+            taskTouch?.Dispose();
+            taskTouch = null;
             mdown = false;
             if (mdownd > 0)
             {
                 if (mdownd == 1)
                 {
                     int moveY = oldMY, moveYa = Math.Abs(moveY);
-                    if (moveYa > 2)
+                    if (moveYa > 10)
                     {
                         // 缓冲动画
-                        int duration = (int)(moveYa * .1F), incremental = moveYa / 2, sleep = 20;
+                        int duration = (int)Math.Ceiling(moveYa * .1F), incremental = moveYa / 2, sleep = 20;
                         if (moveY > 0)
                         {
-                            ITask.Run(() =>
+                            taskTouch = new ITask(this, () =>
                             {
-                                while (moveYa > 0)
+                                if (moveYa > 0 && OnTouchScrollY(-incremental))
                                 {
-                                    if (OnTouchScrollY(-incremental))
-                                    {
-                                        moveYa -= duration;
-                                        System.Threading.Thread.Sleep(sleep);
-                                    }
-                                    else return;
+                                    moveYa -= duration;
+                                    return true;
                                 }
-                            });
+                                return false;
+                            }, sleep);
                         }
                         else
                         {
-                            ITask.Run(() =>
+                            taskTouch = new ITask(this, () =>
                             {
-                                while (moveYa > 0)
+                                if (moveYa > 0 && OnTouchScrollY(incremental))
                                 {
-                                    if (OnTouchScrollY(incremental))
-                                    {
-                                        moveYa -= duration;
-                                        System.Threading.Thread.Sleep(sleep);
-                                    }
-                                    else return;
+                                    moveYa -= duration;
+                                    return true;
                                 }
-                            });
+                                return false;
+                            }, sleep);
                         }
                     }
                 }
@@ -321,7 +342,22 @@ namespace AntdUI
         protected virtual bool OnTouchScrollX(int value) => false;
         protected virtual bool OnTouchScrollY(int value) => false;
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            taskTouch?.Dispose();
+            taskTouch = null;
+            base.OnMouseWheel(e);
+        }
+
         #endregion
+    }
+
+    public enum CursorType
+    {
+        Default,
+        Hand,
+        IBeam,
+        No
     }
 
     public interface BadgeConfig

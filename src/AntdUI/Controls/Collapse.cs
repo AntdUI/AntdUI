@@ -548,11 +548,11 @@ namespace AntdUI
             {
                 if (item.Contains(e.X, e.Y))
                 {
-                    Cursor = Cursors.Hand;
+                    SetCursor(true);
                     return;
                 }
             }
-            Cursor = DefaultCursor;
+            SetCursor(false);
             base.OnMouseMove(e);
         }
 

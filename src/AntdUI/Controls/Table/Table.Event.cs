@@ -156,5 +156,16 @@ namespace AntdUI
             /// </summary>
             public Color? ForeColor { get; set; }
         }
+
+        /// <summary>
+        /// 点击事件
+        /// </summary>
+        public delegate void SortEventHandler(object sender, TableClickEventArgs e);
+
+        /// <summary>
+        /// 行排序时发生
+        /// </summary>
+        [Description("行排序时发生"), Category("行为")]
+        public event IntEventHandler? SortRows;
     }
 }

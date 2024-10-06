@@ -329,6 +329,7 @@ namespace AntdUI
                                         break;
                                 }
                                 LoadLayout();
+                                SortRows?.Invoke(this, new IntEventArgs(i_c));
                             }
                         }
                         else if (cell is Template template)
