@@ -2208,7 +2208,8 @@ namespace AntdUI
                     }
                     if (scrollable && scroll_show)
                     {
-                        g.TranslateTransform(owner.scroll_x, owner.scroll_y);
+                        //g.TranslateTransform(owner.scroll_x, owner.scroll_y);
+                        g.ResetTransform();
                         using (var scrool_bg = new SolidBrush(ScrollFill ?? AntdUI.Style.Db.Primary))
                         using (var scrool_bg_hover = new SolidBrush(ScrollFillHover ?? AntdUI.Style.Db.PrimaryHover))
                         using (var scrool_bg_active = new SolidBrush(ScrollFillActive ?? AntdUI.Style.Db.PrimaryActive))
