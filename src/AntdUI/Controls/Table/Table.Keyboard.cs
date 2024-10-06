@@ -33,7 +33,8 @@ namespace AntdUI
                 case Keys.Down:
                     if (rows != null)
                     {
-                        if (selectedIndex < rows.Length - 1)
+                        if (selectedIndex == -1) ScrollBar.ValueY += 50;
+                        else if (selectedIndex < rows.Length - 1)
                         {
                             SelectedIndex++;
                             var selectRow = rows[selectedIndex];
@@ -46,7 +47,8 @@ namespace AntdUI
                 case Keys.Up:
                     if (rows != null)
                     {
-                        if (selectedIndex > 1)
+                        if (selectedIndex == -1) ScrollBar.ValueY -= 50;
+                        else if (selectedIndex > 1)
                         {
                             SelectedIndex--;
                             var selectRow = rows[selectedIndex];
@@ -67,6 +69,20 @@ namespace AntdUI
                     if (ScrollBar.ShowY)
                     {
                         ScrollBar.ValueY += rect_read.Height;
+                        return true;
+                    }
+                    break;
+                case Keys.Left:
+                    if (ScrollBar.ShowX)
+                    {
+                        ScrollBar.ValueX -= 50;
+                        return true;
+                    }
+                    break;
+                case Keys.Right:
+                    if (ScrollBar.ShowX)
+                    {
+                        ScrollBar.ValueX += 50;
                         return true;
                     }
                     break;

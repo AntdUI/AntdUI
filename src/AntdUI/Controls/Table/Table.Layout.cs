@@ -255,8 +255,8 @@ namespace AntdUI
                 split = (int)(1F * dpi), split2 = split / 2,
                 split_move = (int)(6F * dpi), split_move2 = split_move / 2;
 
-                check_radius = check_size * 0.12F * dpi;
-                check_border = check_size * 0.04F * dpi;
+                check_radius = check_size * .12F * dpi;
+                check_border = check_size * .04F * dpi;
 
                 #region 布局高宽
 
