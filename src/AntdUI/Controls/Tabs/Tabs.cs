@@ -120,6 +120,76 @@ namespace AntdUI
             }
         }
 
+        TabTypExceed typExceed = TabTypExceed.Button;
+        /// <summary>
+        /// 超出UI类型
+        /// </summary>
+        [Description("超出UI类型"), Category("外观"), DefaultValue(TabTypExceed.Button)]
+        public TabTypExceed TypExceed
+        {
+            get => typExceed;
+            set
+            {
+                if (typExceed == value) return;
+                typExceed = value;
+                bitblock_l?.Dispose();
+                bitblock_r?.Dispose();
+                bitblock_l = bitblock_r = null;
+                LoadLayout();
+            }
+        }
+
+        Color? scrollback;
+        /// <summary>
+        /// 滚动条颜色
+        /// </summary>
+        [Description("滚动条颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ScrollBack
+        {
+            get => scrollback;
+            set
+            {
+                if (scrollback == value) return;
+                scrollback = value;
+                bitblock_l?.Dispose();
+                bitblock_r?.Dispose();
+                bitblock_l = bitblock_r = null;
+                Invalidate();
+            }
+        }
+
+        Color? scrollfore;
+        /// <summary>
+        /// 滚动条文本颜色
+        /// </summary>
+        [Description("滚动条文本颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ScrollFore
+        {
+            get => scrollfore;
+            set
+            {
+                if (scrollfore == value) return;
+                scrollfore = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 滚动条悬停文本颜色
+        /// </summary>
+        [Description("滚动条悬停文本颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ScrollForeHover { get; set; }
+
+        /// <summary>
+        /// 滚动条悬停颜色
+        /// </summary>
+        [Description("滚动条悬停颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ScrollBackHover { get; set; }
+
         #region 样式
 
         IStyle style;
@@ -416,46 +486,439 @@ namespace AntdUI
             }
         }
 
-        #region 绘制超出部分
+        #endregion
 
-        public virtual int SizeExceed(Rectangle rect, Rectangle first, Rectangle last, out Rectangle rect_cr)
+        #region 渲染
+
+        readonly StringFormat s_c = Helper.SF_ALL(), s_f = Helper.SF_NoWrap();
+        protected override void OnPaint(PaintEventArgs e)
         {
-            int size = last.Height;
-            switch (alignment)
-            {
-                case TabAlignment.Left:
-                case TabAlignment.Right:
-                    rect_cr = new Rectangle(last.X, rect.Bottom - size, last.Width, size);
-                    break;
-                case TabAlignment.Top:
-                case TabAlignment.Bottom:
-                default:
-                    rect_cr = new Rectangle(rect.Right - size, last.Y, size, size);
-                    break;
-            }
-            return size;
+            if (items == null || items.Count == 0 || !_tabMenuVisible) return;
+            var g = e.Graphics.High();
+            style.Paint(this, g, items);
+            base.OnPaint(e);
         }
 
-        public virtual void PaintExceedPre(Graphics g, Rectangle rect, int size)
+        void PaintBadge(Graphics g, TabPage page, Rectangle rect)
+        {
+            if (page.Badge != null)
+            {
+                var color = page.BadgeBack ?? AntdUI.Style.Db.Error;
+                using (var brush_fore = new SolidBrush(AntdUI.Style.Db.ErrorColor))
+                {
+                    float borsize = 1F * Config.Dpi;
+                    using (var font = new Font(Font.FontFamily, Font.Size * page.BadgeSize))
+                    {
+                        if (string.IsNullOrEmpty(page.Badge) || page.Badge == "" || page.Badge == " ")
+                        {
+                            var size = (int)Math.Floor(g.MeasureString(Config.NullText, font).Width / 2);
+                            var rect_badge = new RectangleF(rect.Right - size - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, size, size);
+                            using (var brush = new SolidBrush(color))
+                            {
+                                g.FillEllipse(brush, rect_badge);
+                                using (var pen = new Pen(brush_fore.Color, borsize))
+                                {
+                                    g.DrawEllipse(pen, rect_badge);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var size = g.MeasureString(page.Badge, font);
+                            var size_badge = size.Height * 1.2F;
+                            if (size.Height > size.Width)
+                            {
+                                var rect_badge = new RectangleF(rect.Right - size_badge - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, size_badge, size_badge);
+                                using (var brush = new SolidBrush(color))
+                                {
+                                    g.FillEllipse(brush, rect_badge);
+                                    using (var pen = new Pen(brush_fore.Color, borsize))
+                                    {
+                                        g.DrawEllipse(pen, rect_badge);
+                                    }
+                                }
+                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, s_f);
+                            }
+                            else
+                            {
+                                var w_badge = size.Width * 1.2F;
+                                var rect_badge = new RectangleF(rect.Right - w_badge - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, w_badge, size_badge);
+                                using (var brush = new SolidBrush(color))
+                                {
+                                    using (var path = rect_badge.RoundPath(rect_badge.Height))
+                                    {
+                                        g.FillPath(brush, path);
+                                        using (var pen = new Pen(brush_fore.Color, borsize))
+                                        {
+                                            g.DrawPath(pen, path);
+                                        }
+                                    }
+                                }
+                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, s_f);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region 鼠标
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (items == null)
+            {
+                base.OnMouseDown(e);
+                return;
+            }
+            if (MouseDownPre(e.X, e.Y)) return;
+            if (_tabMenuVisible)
+            {
+                int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
+                foreach (var item in items)
+                {
+                    if (item.Visible && item.Contains(x, y))
+                    {
+                        item.MDown = true;
+                        Invalidate();
+                        return;
+                    }
+                    i++;
+                }
+            }
+            base.OnMouseDown(e);
+        }
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (items == null) { base.OnMouseUp(e); return; }
+            if (_tabMenuVisible)
+            {
+                int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
+                foreach (var item in items)
+                {
+                    if (item.MDown)
+                    {
+                        item.MDown = false;
+                        if (item.Contains(x, y))
+                        {
+                            if (style.MouseClick(item, i, x, y)) return;
+                            SelectedIndex = i;
+                        }
+                        else Invalidate();
+                        return;
+                    }
+                    i++;
+                }
+            }
+            base.OnMouseUp(e);
+        }
+
+        int hover_i = -1;
+        int Hover_i
+        {
+            get => hover_i;
+            set
+            {
+                if (hover_i == value) return;
+                hover_i = value;
+                Invalidate();
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (items == null) return;
+            if (MouseMovePre(e.X, e.Y))
+            {
+                Hover_i = -1;
+                SetCursor(true);
+                base.OnMouseMove(e);
+                return;
+            }
+            int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
+            foreach (var item in items)
+            {
+                if (item.Visible && item.Contains(x, y))
+                {
+                    SetCursor(true);
+                    Hover_i = i;
+                    style.MouseMove(x, y);
+                    return;
+                }
+                i++;
+            }
+            style.MouseMove(x, y);
+            SetCursor(false);
+            base.OnMouseMove(e);
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            style.MouseLeave();
+            Hover_l = Hover_r = false;
+            Hover_i = -1;
+            SetCursor(false);
+            base.OnMouseLeave(e);
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            style.MouseWheel(e.Delta);
+            base.OnMouseWheel(e);
+        }
+
+        #endregion
+
+        #region 滚动条
+
+        internal bool scroll_show = false;
+
+        int _scroll_x = 0, _scroll_y = 0, scroll_max = 0;
+        int scroll_x
+        {
+            get => _scroll_x;
+            set
+            {
+                if (value < 0) value = 0;
+                else if (scroll_max > 0 && value > scroll_max) value = scroll_max;
+                if (value == _scroll_x) return;
+                _scroll_x = value;
+                Invalidate();
+            }
+        }
+
+        int scroll_y
+        {
+            get => _scroll_y;
+            set
+            {
+                if (value < 0) value = 0;
+                else if (scroll_max > 0 && value > scroll_max) value = scroll_max;
+                if (value == _scroll_y) return;
+                _scroll_y = value;
+                Invalidate();
+            }
+        }
+
+        #region 超出
+
+        LayeredFormSelectDown? subForm = null;
+        bool MouseMovePre(int x, int y)
+        {
+            if (items == null) return false;
+            switch (typExceed)
+            {
+                case TabTypExceed.Button:
+                    if (scroll_show && rect_r.Contains(x, y))
+                    {
+                        if (subForm == null)
+                        {
+                            var objs = new List<SelectItem>(items.Count);
+                            foreach (var item in items) objs.Add(new SelectItem(item.Text, item));
+                            subForm = new LayeredFormSelectDown(this, 6, objs.ToArray(), SelectedTab, rect_r);
+                            subForm.Disposed += (a, b) =>
+                            {
+                                subForm = null;
+                            };
+                            subForm.MouseEnter += (a, b) =>
+                            {
+                                if (a is LayeredFormSelectDown form) form.tag1 = false;
+                            };
+                            subForm.MouseLeave += (a, b) =>
+                            {
+                                if (a is LayeredFormSelectDown form) form.IClose();
+                            };
+                            subForm.Leave += (a, b) =>
+                            {
+                                if (a is LayeredFormSelectDown form) form.IClose();
+                            };
+                            subForm.Show(this);
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        subForm?.IClose();
+                        subForm = null;
+                    }
+                    break;
+                case TabTypExceed.LR:
+                case TabTypExceed.LR_Shadow:
+                    if (scroll_show)
+                    {
+                        if (MouseDownLRL(x, y, out bool lr))
+                        {
+                            Hover_l = true;
+                            return true;
+                        }
+                        else Hover_l = false;
+                        if (MouseDownLRR(x, y, out _))
+                        {
+                            Hover_r = true;
+                            return true;
+                        }
+                        else Hover_r = false;
+                    }
+                    break;
+            }
+            return false;
+        }
+        bool MouseDownPre(int x, int y)
+        {
+            if (items == null) return false;
+            if (scroll_show && (typExceed == TabTypExceed.LR || typExceed == TabTypExceed.LR_Shadow))
+            {
+                if (MouseDownLRL(x, y, out bool lr))
+                {
+                    if (lr) scroll_y -= 120;
+                    else scroll_x -= 120;
+                    return true;
+                }
+                else if (MouseDownLRR(x, y, out bool lr2))
+                {
+                    if (lr2) scroll_y += 120;
+                    else scroll_x += 120;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool MouseDownLRL(int x, int y, out bool lr)
         {
             switch (alignment)
             {
                 case TabAlignment.Left:
                 case TabAlignment.Right:
-                    if (scroll_max != scroll_y) g.SetClip(new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - size));
-                    else g.SetClip(rect);
-                    break;
+                    lr = true;
+                    if (scroll_y > 0 && rect_l.Contains(x, y)) return true;
+                    return false;
                 case TabAlignment.Top:
                 case TabAlignment.Bottom:
                 default:
-                    if (scroll_max != scroll_x) g.SetClip(new Rectangle(rect.X, rect.Y, rect.Width - size, rect.Height));
-                    else g.SetClip(rect);
-                    break;
+                    lr = false;
+                    if (scroll_x > 0 && rect_l.Contains(x, y)) return true;
+                    return false;
+            }
+        }
+        bool MouseDownLRR(int x, int y, out bool lr)
+        {
+            switch (alignment)
+            {
+                case TabAlignment.Left:
+                case TabAlignment.Right:
+                    lr = true;
+                    if (scroll_max != scroll_y && rect_r.Contains(x, y)) return true;
+                    return false;
+                case TabAlignment.Top:
+                case TabAlignment.Bottom:
+                default:
+                    lr = false;
+                    if (scroll_max != scroll_x && rect_r.Contains(x, y)) return true;
+                    return false;
+            }
+        }
+
+        #region 绘制超出部分
+
+        public virtual int SizeExceed(Rectangle rect, Rectangle first, Rectangle last)
+        {
+            switch (typExceed)
+            {
+                case TabTypExceed.Button:
+                    int size = last.Height;
+                    switch (alignment)
+                    {
+                        case TabAlignment.Left:
+                        case TabAlignment.Right:
+                            rect_r = new Rectangle(last.X, rect.Bottom - size, last.Width, size);
+                            break;
+                        case TabAlignment.Top:
+                        case TabAlignment.Bottom:
+                        default:
+                            rect_r = new Rectangle(rect.Right - size, last.Y, size, size);
+                            break;
+                    }
+                    return size;
+                case TabTypExceed.None:
+                default:
+                    rect_r = Rectangle.Empty;
+                    return 0;
+            }
+        }
+
+        public virtual Rectangle PaintExceedPre(Rectangle rect, int size)
+        {
+            switch (typExceed)
+            {
+                case TabTypExceed.Button:
+                    switch (alignment)
+                    {
+                        case TabAlignment.Left:
+                        case TabAlignment.Right:
+                            if (scroll_max != scroll_y) return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - size);
+                            else return rect;
+                        case TabAlignment.Top:
+                        case TabAlignment.Bottom:
+                        default:
+                            if (scroll_max != scroll_x) return new Rectangle(rect.X, rect.Y, rect.Width - size, rect.Height);
+                            else return rect;
+                    }
+                case TabTypExceed.LR:
+                case TabTypExceed.LR_Shadow:
+                    switch (alignment)
+                    {
+                        case TabAlignment.Left:
+                        case TabAlignment.Right:
+                            int sizeLR2 = (int)(size * .6F);
+                            if (scroll_max != scroll_y)
+                            {
+                                if (scroll_y > 0) return new Rectangle(rect.X, rect.Y + sizeLR2, rect.Width, rect.Height - sizeLR2 * 2);
+                                else return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - sizeLR2);
+                            }
+                            else if (scroll_y > 0) return new Rectangle(rect.X, rect.Y + sizeLR2, rect.Width, rect.Height - sizeLR2);
+                            else return rect;
+                        case TabAlignment.Top:
+                        case TabAlignment.Bottom:
+                        default:
+                            int sizeLR = (int)(size * .6F);
+                            if (scroll_max != scroll_x)
+                            {
+                                if (scroll_x > 0) return new Rectangle(rect.X + sizeLR, rect.Y, rect.Width - sizeLR * 2, rect.Height);
+                                else return new Rectangle(rect.X, rect.Y, rect.Width - sizeLR, rect.Height);
+                            }
+                            else if (scroll_x > 0) return new Rectangle(rect.X + sizeLR, rect.Y, rect.Width - sizeLR, rect.Height);
+                            else return rect;
+                    }
+                case TabTypExceed.None:
+                default:
+                    return rect;
             }
         }
 
         Bitmap? bitblock_l = null, bitblock_r = null;
-        public virtual void PaintExceed(Graphics g, Color color, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceed(Graphics g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        {
+            switch (typExceed)
+            {
+                case TabTypExceed.Button:
+                    PaintExceedButton(g, color, radius, rect, first, last, full);
+                    break;
+                case TabTypExceed.LR:
+                    PaintExceedLR(g, color, radius, rect, first, last, full);
+                    break;
+                case TabTypExceed.LR_Shadow:
+                    PaintExceedLR_Shadow(g, color, radius, rect, first, last, full);
+                    break;
+                case TabTypExceed.None:
+                default:
+                    break;
+            }
+        }
+
+        public virtual void PaintExceedButton(Graphics g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             g.ResetClip();
             g.ResetTransform();
@@ -578,231 +1041,307 @@ namespace AntdUI
                     break;
             }
         }
-
-        #endregion
-
-        #endregion
-
-        #region 渲染
-
-        readonly StringFormat s_c = Helper.SF_ALL(), s_f = Helper.SF_NoWrap();
-        protected override void OnPaint(PaintEventArgs e)
+        public virtual void PaintExceedLR(Graphics g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
-            if (items == null || items.Count == 0 || !_tabMenuVisible) return;
-            var g = e.Graphics.High();
-            style.Paint(this, g, items);
-            base.OnPaint(e);
-        }
-
-        void PaintBadge(Graphics g, TabPage page, Rectangle rect)
-        {
-            if (page.Badge != null)
+            g.ResetClip();
+            g.ResetTransform();
+            switch (alignment)
             {
-                var color = page.BadgeBack ?? AntdUI.Style.Db.Error;
-                using (var brush_fore = new SolidBrush(AntdUI.Style.Db.ErrorColor))
-                {
-                    float borsize = 1F * Config.Dpi;
-                    using (var font = new Font(Font.FontFamily, Font.Size * page.BadgeSize))
+                case TabAlignment.Left:
+                case TabAlignment.Right:
+                    if (scroll_y > 0 || scroll_max != scroll_y)
                     {
-                        if (string.IsNullOrEmpty(page.Badge) || page.Badge == "" || page.Badge == " ")
+                        int size = (int)(last.Height * .6F);
+                        using (var brush = new SolidBrush(scrollback ?? AntdUI.Style.Db.FillSecondary))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? AntdUI.Style.Db.Primary))
+                        using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? AntdUI.Style.Db.PrimaryColor, 2F * Config.Dpi))
                         {
-                            var size = (int)Math.Floor(g.MeasureString(Config.NullText, font).Width / 2);
-                            var rect_badge = new RectangleF(rect.Right - size - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, size, size);
-                            using (var brush = new SolidBrush(color))
+                            if (scroll_y > 0)
                             {
-                                g.FillEllipse(brush, rect_badge);
-                                using (var pen = new Pen(brush_fore.Color, borsize))
+                                rect_l = new Rectangle(last.X, rect.Y, last.Width, size);
+                                using (var path = Helper.RoundPath(rect_l, radius))
                                 {
-                                    g.DrawEllipse(pen, rect_badge);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var size = g.MeasureString(page.Badge, font);
-                            var size_badge = size.Height * 1.2F;
-                            if (size.Height > size.Width)
-                            {
-                                var rect_badge = new RectangleF(rect.Right - size_badge - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, size_badge, size_badge);
-                                using (var brush = new SolidBrush(color))
-                                {
-                                    g.FillEllipse(brush, rect_badge);
-                                    using (var pen = new Pen(brush_fore.Color, borsize))
+                                    if (hover_l)
                                     {
-                                        g.DrawEllipse(pen, rect_badge);
+                                        g.FillPath(brush_hover, path);
+                                        g.DrawLines(pen_hover, TAlignMini.Top.TriangleLines(rect_l, .5F));
                                     }
-                                }
-                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, s_f);
-                            }
-                            else
-                            {
-                                var w_badge = size.Width * 1.2F;
-                                var rect_badge = new RectangleF(rect.Right - w_badge - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, w_badge, size_badge);
-                                using (var brush = new SolidBrush(color))
-                                {
-                                    using (var path = rect_badge.RoundPath(rect_badge.Height))
+                                    else
                                     {
                                         g.FillPath(brush, path);
-                                        using (var pen = new Pen(brush_fore.Color, borsize))
-                                        {
-                                            g.DrawPath(pen, path);
-                                        }
+                                        g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_l, .5F));
                                     }
                                 }
-                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, s_f);
+                            }
+                            if (scroll_max != scroll_y)
+                            {
+                                rect_r = new Rectangle(last.X, rect.Y + rect.Height - size, last.Width, size);
+                                using (var path = Helper.RoundPath(rect_r, radius))
+                                {
+                                    if (hover_r)
+                                    {
+                                        g.FillPath(brush_hover, path);
+                                        g.DrawLines(pen_hover, TAlignMini.Bottom.TriangleLines(rect_r, .5F));
+                                    }
+                                    else
+                                    {
+                                        g.FillPath(brush, path);
+                                        g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_r, .5F));
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                    break;
+                case TabAlignment.Top:
+                case TabAlignment.Bottom:
+                default:
+                    if (scroll_x > 0 || scroll_max != scroll_x)
+                    {
+                        int size = (int)(last.Height * .6F);
+                        using (var brush = new SolidBrush(scrollback ?? AntdUI.Style.Db.FillSecondary))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? AntdUI.Style.Db.Primary))
+                        using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? AntdUI.Style.Db.PrimaryColor, 2F * Config.Dpi))
+                        {
+                            if (scroll_x > 0)
+                            {
+                                rect_l = new Rectangle(rect.X, last.Y, size, last.Height);
+                                using (var path = Helper.RoundPath(rect_l, radius))
+                                {
+                                    if (hover_l)
+                                    {
+                                        g.FillPath(brush_hover, path);
+                                        g.DrawLines(pen_hover, TAlignMini.Left.TriangleLines(rect_l, .5F));
+                                    }
+                                    else
+                                    {
+                                        g.FillPath(brush, path);
+                                        g.DrawLines(pen, TAlignMini.Left.TriangleLines(rect_l, .5F));
+                                    }
+                                }
+                            }
+                            if (scroll_max != scroll_x)
+                            {
+                                rect_r = new Rectangle(rect.X + rect.Width - size, last.Y, size, last.Height);
+                                using (var path = Helper.RoundPath(rect_r, radius))
+                                {
+                                    if (hover_r)
+                                    {
+                                        g.FillPath(brush_hover, path);
+                                        g.DrawLines(pen_hover, TAlignMini.Right.TriangleLines(rect_r, .5F));
+                                    }
+                                    else
+                                    {
+                                        g.FillPath(brush, path);
+                                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_r, .5F));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        public virtual void PaintExceedLR_Shadow(Graphics g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        {
+            g.ResetClip();
+            g.ResetTransform();
+            switch (alignment)
+            {
+                case TabAlignment.Left:
+                case TabAlignment.Right:
+                    if (scroll_y > 0 || scroll_max != scroll_y)
+                    {
+                        int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
+                        using (var brush = new SolidBrush(scrollback ?? AntdUI.Style.Db.FillSecondary))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? AntdUI.Style.Db.Primary))
+                        using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? AntdUI.Style.Db.PrimaryColor, 2F * Config.Dpi))
+                        {
+                            if (scroll_y > 0)
+                            {
+                                rect_l = new Rectangle(last.X, rect.Y, last.Width, size);
+
+                                var Rect_l = new Rectangle(rect_l.X, rect_l.Bottom, rect_l.Width, gap2);
+                                if (bitblock_l == null || bitblock_l.Width != Rect_l.Width || bitblock_l.Height != Rect_l.Height)
+                                {
+                                    bitblock_l?.Dispose();
+                                    bitblock_l = new Bitmap(Rect_l.Width, Rect_l.Height);
+                                    using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay())
+                                    {
+                                        using (var path = new Rectangle(0, 0, bitblock_l.Width, gap).RoundPath(gap, false, false, true, true))
+                                        {
+                                            g_bmp.FillPath(brush, path);
+                                        }
+                                    }
+                                    Helper.Blur(bitblock_l, gap);
+                                }
+                                g.DrawImage(bitblock_l, Rect_l, .1F);
+
+                                using (var path = Helper.RoundPath(rect_l, radius, true, true, false, false))
+                                {
+                                    if (hover_l)
+                                    {
+                                        g.FillPath(brush_hover, path);
+                                        g.DrawLines(pen_hover, TAlignMini.Top.TriangleLines(rect_l, .5F));
+                                    }
+                                    else
+                                    {
+                                        g.FillPath(brush, path);
+                                        g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_l, .5F));
+                                    }
+                                }
+                            }
+                            if (scroll_max != scroll_y)
+                            {
+                                rect_r = new Rectangle(last.X, rect.Y + rect.Height - size, last.Width, size);
+
+                                var Rect_r = new Rectangle(rect_r.X, rect_r.Y - gap2, rect_r.Width, gap2);
+                                if (bitblock_r == null || bitblock_r.Width != Rect_r.Width || bitblock_r.Height != Rect_r.Height)
+                                {
+                                    bitblock_r?.Dispose();
+                                    bitblock_r = new Bitmap(Rect_r.Width, Rect_r.Height);
+                                    using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay())
+                                    {
+                                        using (var path = new Rectangle(0, gap, bitblock_r.Width, gap).RoundPath(gap, true, true, false, false))
+                                        {
+                                            g_bmp.FillPath(brush, path);
+                                        }
+                                    }
+                                    Helper.Blur(bitblock_r, gap);
+                                }
+                                g.DrawImage(bitblock_r, Rect_r, .1F);
+
+                                using (var path = Helper.RoundPath(rect_r, radius, false, false, true, true))
+                                {
+                                    if (hover_r)
+                                    {
+                                        g.FillPath(brush_hover, path);
+                                        g.DrawLines(pen_hover, TAlignMini.Bottom.TriangleLines(rect_r, .5F));
+                                    }
+                                    else
+                                    {
+                                        g.FillPath(brush, path);
+                                        g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_r, .5F));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case TabAlignment.Top:
+                case TabAlignment.Bottom:
+                default:
+                    if (scroll_x > 0 || scroll_max != scroll_x)
+                    {
+                        int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
+                        using (var brush = new SolidBrush(scrollback ?? AntdUI.Style.Db.FillSecondary))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? AntdUI.Style.Db.Primary))
+                        using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? AntdUI.Style.Db.PrimaryColor, 2F * Config.Dpi))
+                        {
+                            if (scroll_x > 0)
+                            {
+                                rect_l = new Rectangle(rect.X, last.Y, size, last.Height);
+
+                                var Rect_l = new Rectangle(rect_l.Right, rect_l.Y, gap2, rect_l.Height);
+                                if (bitblock_l == null || bitblock_l.Width != Rect_l.Width || bitblock_l.Height != Rect_l.Height)
+                                {
+                                    bitblock_l?.Dispose();
+                                    bitblock_l = new Bitmap(Rect_l.Width, Rect_l.Height);
+                                    using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay())
+                                    {
+                                        using (var path = new Rectangle(0, 0, gap, bitblock_l.Height).RoundPath(gap, false, true, true, false))
+                                        {
+                                            g_bmp.FillPath(brush, path);
+                                        }
+                                    }
+                                    Helper.Blur(bitblock_l, gap);
+                                }
+                                g.DrawImage(bitblock_l, Rect_l, .1F);
+
+                                using (var path = Helper.RoundPath(rect_l, radius, true, false, false, true))
+                                {
+                                    if (hover_l)
+                                    {
+                                        g.FillPath(brush_hover, path);
+                                        g.DrawLines(pen_hover, TAlignMini.Left.TriangleLines(rect_l, .5F));
+                                    }
+                                    else
+                                    {
+                                        g.FillPath(brush, path);
+                                        g.DrawLines(pen, TAlignMini.Left.TriangleLines(rect_l, .5F));
+                                    }
+                                }
+                            }
+                            if (scroll_max != scroll_x)
+                            {
+                                rect_r = new Rectangle(rect.X + rect.Width - size, last.Y, size, last.Height);
+
+                                var Rect_r = new Rectangle(rect_r.X - gap2, rect_r.Y, gap2, rect_r.Height);
+                                if (bitblock_r == null || bitblock_r.Width != Rect_r.Width || bitblock_r.Height != Rect_r.Height)
+                                {
+                                    bitblock_r?.Dispose();
+                                    bitblock_r = new Bitmap(Rect_r.Width, Rect_r.Height);
+                                    using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay())
+                                    {
+                                        using (var path = new Rectangle(gap, 0, gap, bitblock_r.Height).RoundPath(gap, true, false, false, true))
+                                        {
+                                            g_bmp.FillPath(brush, path);
+                                        }
+                                    }
+                                    Helper.Blur(bitblock_r, gap);
+                                }
+                                g.DrawImage(bitblock_r, Rect_r, .1F);
+
+                                using (var path = Helper.RoundPath(rect_r, radius, false, true, true, false))
+                                {
+                                    if (hover_r)
+                                    {
+                                        g.FillPath(brush_hover, path);
+                                        g.DrawLines(pen_hover, TAlignMini.Right.TriangleLines(rect_r, .5F));
+                                    }
+                                    else
+                                    {
+                                        g.FillPath(brush, path);
+                                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_r, .5F));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+
+        Rectangle rect_l, rect_r;
+        bool hover_l, hover_r = false;
+        bool Hover_l
+        {
+            get => hover_l;
+            set
+            {
+                if (hover_l == value) return;
+                hover_l = value;
+                Invalidate();
+            }
+        }
+        bool Hover_r
+        {
+            get => hover_r;
+            set
+            {
+                if (hover_r == value) return;
+                hover_r = value;
+                Invalidate();
             }
         }
 
         #endregion
 
-        #region 鼠标
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (items == null) { base.OnMouseDown(e); return; }
-            if (style.ScrollMouseEvent("down", e.X, e.Y))
-            {
-                Invalidate();
-                base.OnMouseDown(e);
-                return;
-            }
-            if (_tabMenuVisible)
-            {
-                int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
-                foreach (var item in items)
-                {
-                    if (item.Visible && item.Contains(x, y))
-                    {
-                        item.MDown = true;
-                        Invalidate();
-                        return;
-                    }
-                    i++;
-                }
-            }
-            base.OnMouseDown(e);
-        }
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (items == null) { base.OnMouseUp(e); return; }
-            if (style.ScrollMouseEvent("up", e.X, e.Y))
-            {
-                base.OnMouseUp(e);
-                return;
-            }
-            if (_tabMenuVisible)
-            {
-                int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
-                foreach (var item in items)
-                {
-                    if (item.MDown)
-                    {
-                        item.MDown = false;
-                        if (item.Contains(x, y))
-                        {
-                            if (style.MouseClick(item, i, x, y)) return;
-                            SelectedIndex = i;
-                        }
-                        else Invalidate();
-                        return;
-                    }
-                    i++;
-                }
-            }
-            base.OnMouseUp(e);
-        }
-
-        int hover_i = -1;
-        int Hover_i
-        {
-            get => hover_i;
-            set
-            {
-                if (hover_i == value) return;
-                hover_i = value;
-                Invalidate();
-            }
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (items == null) return;
-            if (style.ScrollMouseEvent("move", e.X, e.Y))
-            {
-                hover_i = -1;
-                Invalidate();
-                Cursor = DefaultCursor;
-                base.OnMouseMove(e);
-                return;
-            }
-            if (style.MouseMovePre(e.X, e.Y))
-            {
-                Cursor = DefaultCursor;
-                base.OnMouseMove(e);
-                return;
-            }
-            int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
-            foreach (var item in items)
-            {
-                if (item.Visible && item.Contains(x, y))
-                {
-                    SetCursor(CursorType.Hand);
-                    Hover_i = i;
-                    style.MouseMove(x, y);
-                    return;
-                }
-                i++;
-            }
-            style.MouseMove(x, y);
-            Cursor = DefaultCursor;
-            base.OnMouseMove(e);
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            style.ScrollMouseEvent("leave");
-            if (Hover_i == -1) Invalidate();
-            Hover_i = -1;
-            style.MouseLeave();
-            Cursor = DefaultCursor;
-            base.OnMouseLeave(e);
-        }
-
-        int _scroll_x = 0, _scroll_y = 0, scroll_max = 0;
-        int scroll_x
-        {
-            get => _scroll_x;
-            set
-            {
-                if (value < 0) value = 0;
-                else if (scroll_max > 0 && value > scroll_max) value = scroll_max;
-                if (value == _scroll_x) return;
-                _scroll_x = value;
-                Invalidate();
-            }
-        }
-
-        int scroll_y
-        {
-            get => _scroll_y;
-            set
-            {
-                if (value < 0) value = 0;
-                else if (scroll_max > 0 && value > scroll_max) value = scroll_max;
-                if (value == _scroll_y) return;
-                _scroll_y = value;
-                Invalidate();
-            }
-        }
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            style.MouseWheel(e.Delta);
-            base.OnMouseWheel(e);
-        }
+        #endregion
 
         #endregion
 

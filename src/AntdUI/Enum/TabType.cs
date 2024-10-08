@@ -24,4 +24,24 @@ namespace AntdUI
         Card,
         Card2
     }
+
+    public enum TabTypExceed
+    {
+        /// <summary>
+        /// 不显示
+        /// </summary>
+        None,
+        /// <summary>
+        /// 超出按钮
+        /// </summary>
+        Button,
+        /// <summary>
+        /// 左右按钮
+        /// </summary>
+        LR,
+        /// <summary>
+        /// 左右按钮+阴影
+        /// </summary>
+        LR_Shadow
+    }
 }
