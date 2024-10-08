@@ -506,7 +506,7 @@ namespace AntdUI
                                     resetEvent = new ManualResetEvent(false);
                                     ITask.Run(() =>
                                     {
-                                        if (resetEvent.Wait()) return;
+                                        if (Config.Animation && resetEvent.Wait()) return;
                                         if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
                                         config.Control.BeginInvoke(new Action(() =>
                                         {
