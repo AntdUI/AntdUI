@@ -379,13 +379,7 @@ namespace AntdUI
                 if (page.HasIcon)
                 {
                     if (page.Icon != null) g.DrawImage(page.Icon, rects.Rect_Ico);
-                    else if (page.IconSvg != null)
-                    {
-                        using (var bmp = SvgExtend.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color))
-                        {
-                            if (bmp != null) g.DrawImage(bmp, rects.Rect_Ico);
-                        }
-                    }
+                    else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
                 }
                 g.DrawStr(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
@@ -1294,13 +1288,7 @@ namespace AntdUI
                 if (page.HasIcon)
                 {
                     if (page.Icon != null) g.DrawImage(page.Icon, rects.Rect_Ico);
-                    else if (page.IconSvg != null)
-                    {
-                        using (var bmp = SvgExtend.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color))
-                        {
-                            if (bmp != null) g.DrawImage(bmp, rects.Rect_Ico);
-                        }
-                    }
+                    else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
                 }
                 if (closable)
                 {
@@ -2151,13 +2139,7 @@ namespace AntdUI
                 if (page.HasIcon)
                 {
                     if (page.Icon != null) g.DrawImage(page.Icon, rects.Rect_Ico);
-                    else if (page.IconSvg != null)
-                    {
-                        using (var bmp = SvgExtend.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color))
-                        {
-                            if (bmp != null) g.DrawImage(bmp, rects.Rect_Ico);
-                        }
-                    }
+                    else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
                 }
                 if (closable != CloseType.none && closshow)
                 {

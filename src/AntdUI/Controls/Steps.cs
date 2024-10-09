@@ -419,10 +419,7 @@ namespace AntdUI
             if (it.Icon != null) { g.DrawImage(it.Icon, it.ico_rect); return false; }
             else if (it.IconSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.ico_rect, fore))
-                {
-                    if (_bmp != null) { g.DrawImage(_bmp, it.ico_rect); return false; }
-                }
+                if (g.GetImgExtend(it.IconSvg, it.ico_rect, fore)) return false;
             }
             return true;
         }

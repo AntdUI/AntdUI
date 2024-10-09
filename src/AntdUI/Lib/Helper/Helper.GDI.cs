@@ -611,11 +611,7 @@ namespace AntdUI
             {
                 g.FillEllipse(brush, rect);
             }
-            using (var bmp = SvgExtend.GetImgExtend(svg, rect, fore))
-            {
-                if (bmp == null) return;
-                g.DrawImage(bmp, rect);
-            }
+            g.GetImgExtend(svg, rect, fore);
         }
         internal static void PaintIconCore(this Graphics g, Rectangle rect, string svg, Color back, Color fore)
         {
@@ -623,29 +619,14 @@ namespace AntdUI
             {
                 g.FillEllipse(brush, new Rectangle(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
             }
-            using (var bmp = SvgExtend.GetImgExtend(svg, rect, fore))
-            {
-                if (bmp == null) return;
-                g.DrawImage(bmp, rect);
-            }
+            g.GetImgExtend(svg, rect, fore);
         }
-        internal static void PaintIconCore(this Graphics g, Rectangle rect, string svg, Color color)
-        {
-            using (var bmp = SvgExtend.GetImgExtend(svg, rect, color))
-            {
-                if (bmp == null) return;
-                g.DrawImage(bmp, rect);
-            }
-        }
+        internal static void PaintIconCore(this Graphics g, Rectangle rect, string svg, Color color) => g.GetImgExtend(svg, rect, color);
         internal static void PaintIconCore(this Graphics g, Rectangle rect, string svg, Color color, float dot)
         {
             int size = (int)(rect.Height * dot);
             var rect_ico = new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
-            using (var bmp = SvgExtend.GetImgExtend(svg, rect_ico, color))
-            {
-                if (bmp == null) return;
-                g.DrawImage(bmp, rect_ico);
-            }
+            g.GetImgExtend(svg, rect_ico, color);
         }
 
         #endregion
@@ -664,7 +645,7 @@ namespace AntdUI
 
         public static void DrawImage(this Graphics g, Image bmp, Rectangle rect, float opacity)
         {
-            if (opacity == 1F)
+            if (opacity >= 1F)
             {
                 g.DrawImage(bmp, rect);
                 return;

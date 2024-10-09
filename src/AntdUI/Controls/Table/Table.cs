@@ -587,7 +587,7 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 获取排序序号
+        /// 获取排序数据
         /// </summary>
         public object[] SortList()
         {

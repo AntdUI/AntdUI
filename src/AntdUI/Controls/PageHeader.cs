@@ -678,10 +678,7 @@ namespace AntdUI
                     g.FillRectangle(brush, rect_close);
                 }
                 PrintClose(g, fore, rect_close_icon);
-                using (var _bmp = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Style.Db.ErrorColor)))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_close_icon);
-                }
+                g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Style.Db.ErrorColor));
             }
             else if (hove_close.Switch)
             {
@@ -763,10 +760,7 @@ namespace AntdUI
         void PrintBackHover(Graphics g, Color color, Rectangle rect_icon)
         {
             PrintBack(g, color, rect_icon);
-            using (var bmp = SvgExtend.GetImgExtend("ArrowLeftOutlined", rect_icon, Helper.ToColor(hove_back.Value, Style.Db.Primary)))
-            {
-                if (bmp != null) g.DrawImage(bmp, rect_icon);
-            }
+            g.GetImgExtend("ArrowLeftOutlined", rect_icon, Helper.ToColor(hove_back.Value, Style.Db.Primary));
         }
         void PrintBackHover(Graphics g, Rectangle rect_icon)
         {

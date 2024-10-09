@@ -537,11 +537,7 @@ namespace AntdUI
                     else g.FillRectangle(brush, new RectangleF(rect_d_r.X, rect_read.Bottom - h, rect_d_r.Width, h));
                 }
             }
-            using (var bmp = SvgExtend.GetImgExtend(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Style.Db.TextQuaternary))
-            {
-                if (bmp == null) return;
-                g.DrawImage(bmp, rect_d_ico);
-            }
+            g.GetImgExtend(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Style.Db.TextQuaternary);
         }
 
         #endregion

@@ -78,12 +78,7 @@ namespace AntdUI.Icon
                     g.FillEllipse(brush, new RectangleF(rect_dot.X + 1, rect_dot.Y + 1, rect_dot.Width - 2, rect_dot.Height - 2));
                 }
             }
-            using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, back ?? Style.Db.Error))
-            {
-                if (bmp == null) return;
-                g.DrawImage(bmp, rect);
-            }
-
+            g.GetImgExtend(SvgDb.IcoError, rect, back ?? Style.Db.Error);
             this.PaintBadge(g);
             base.OnPaint(e);
         }

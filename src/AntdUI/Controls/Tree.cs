@@ -686,13 +686,7 @@ namespace AntdUI
             else g.DrawStr(item.Text, Font, fore, item.txt_rect, blockNode ? s_l : s_c);
             if (item.SubTitle != null) g.DrawStr(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
             if (item.Icon != null) g.DrawImage(item.Icon, item.ico_rect);
-            else if (item.IconSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(item.IconSvg, item.ico_rect, color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, item.ico_rect);
-                }
-            }
+            else if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
         }
 
         internal RectangleF PaintBlock(RectangleF rect)

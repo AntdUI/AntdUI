@@ -49,22 +49,10 @@ namespace AntdUI
             }
             else g.DrawStr(Text, Font ?? font, fore, Rect, Table.StringF(PARENT.column));
             g.Restore(state);
-            if (PrefixSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, RectL);
-                }
-            }
+            if (PrefixSvg != null) g.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color);
             else if (Prefix != null) g.DrawImage(Prefix, RectL);
 
-            if (SuffixSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(SuffixSvg, RectR, Fore ?? fore.Color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, RectR);
-                }
-            }
+            if (SuffixSvg != null) g.GetImgExtend(SuffixSvg, RectR, Fore ?? fore.Color);
             else if (Suffix != null) g.DrawImage(Suffix, RectR);
         }
 

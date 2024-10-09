@@ -225,13 +225,7 @@ namespace AntdUI
                                 g.FillPath(brush, path);
                             }
                         }
-                        if (it.IconSvg != null)
-                        {
-                            using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.rect_icon, fore))
-                            {
-                                if (_bmp != null) g.DrawImage(_bmp, it.rect_icon);
-                            }
-                        }
+                        if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.rect_icon, fore);
                         else if (it.Icon != null) g.DrawImage(it.Icon, it.rect_icon);
                         else
                         {

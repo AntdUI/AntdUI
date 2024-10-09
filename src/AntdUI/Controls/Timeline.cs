@@ -113,8 +113,9 @@ namespace AntdUI
             int y = rect.Y;
             Helper.GDI(g =>
             {
-                var size_def = g.MeasureString(Config.NullText, Font);
-                float text_size = size_def.Height, pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
+                var size_def = g.MeasureString(Config.NullText, Font).Size();
+                int text_size = size_def.Height;
+                float pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
                 int gap = (int)Math.Round(8F * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D),
                     ico_size = (int)Math.Round(text_size * 0.636D);
 
@@ -123,7 +124,7 @@ namespace AntdUI
                 var _splits = new List<RectangleF>(items.Count);
                 int i = 0;
                 var font_Description = FontDescription ?? Font;
-                float gap2 = gap * 2F;
+                int gap2 = gap * 2;
                 foreach (TimelineItem it in items)
                 {
                     it.PARENT = this;
@@ -133,27 +134,23 @@ namespace AntdUI
                     {
                         var size = g.MeasureString(it.Text, Font, max_w).Size();
 
-                        it.ico_rect = new RectangleF(rect.X + gap_x, y + (text_size - ico_size) / 2F, ico_size, ico_size);
-                        it.txt_rect = new RectangleF(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
+                        it.ico_rect = new Rectangle(rect.X + gap_x, y + (text_size - ico_size) / 2, ico_size, ico_size);
+                        it.txt_rect = new Rectangle(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
                         if (!string.IsNullOrEmpty(it.Description))
                         {
                             var DescriptionSize = g.MeasureString(it.Description, font_Description, max_w).Size();
-                            it.description_rect = new RectangleF(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
+                            it.description_rect = new Rectangle(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
                             y += gap * 2 + DescriptionSize.Height;
                         }
-                        it.rect = new RectangleF(it.ico_rect.X - gap, y - gap, it.txt_rect.Width + ico_size + gap_x_icon + gap2, size.Height + gap2);
+                        it.rect = new Rectangle(it.ico_rect.X - gap, y - gap, it.txt_rect.Width + ico_size + gap_x_icon + gap2, size.Height + gap2);
                         y += size.Height + gap_y;
 
                         if (i > 0)
                         {
                             var old = items[i - 1];
-                            if (old != null)
-                            {
-                                _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
-                            }
+                            if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
                         }
                     }
-
                     i++;
                 }
                 splits = _splits.ToArray();
@@ -164,7 +161,6 @@ namespace AntdUI
         }
 
         RectangleF[] splits = new RectangleF[0];
-
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             ScrollBar.MouseWheel(e.Delta);
@@ -255,10 +251,7 @@ namespace AntdUI
             if (it.Icon != null) { g.DrawImage(it.Icon, it.ico_rect); return false; }
             else if (it.IconSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.ico_rect, fore))
-                {
-                    if (_bmp != null) { g.DrawImage(_bmp, it.ico_rect); return false; }
-                }
+                if (g.GetImgExtend(it.IconSvg, it.ico_rect, fore)) return false;
             }
             return true;
         }
@@ -467,10 +460,10 @@ namespace AntdUI
         internal Timeline? PARENT { get; set; }
 
         internal float pen_w { get; set; } = 3F;
-        internal RectangleF rect { get; set; }
-        internal RectangleF txt_rect { get; set; }
-        internal RectangleF description_rect { get; set; }
-        internal RectangleF ico_rect { get; set; }
+        internal Rectangle rect { get; set; }
+        internal Rectangle txt_rect { get; set; }
+        internal Rectangle description_rect { get; set; }
+        internal Rectangle ico_rect { get; set; }
 
         public override string? ToString() => Text;
     }

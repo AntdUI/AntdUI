@@ -645,34 +645,53 @@ namespace AntdUI
         {
             var _back = back ?? Style.Db.FillSecondary;
             var font_size = g.MeasureString("100" + textUnit, Font).Size();
-            int pro_gap = (int)(stepGap * Config.Dpi), pro_w = (int)(stepSize * Config.Dpi), pro_h = (int)(font_size.Height * valueratio);
-
-            int pro_y = rect.Y + (rect.Height - pro_h) / 2, has_x = 0;
+            int pro_gap = (int)(stepGap * Config.Dpi), pro_h = (int)(font_size.Height * valueratio);
+            float pro_w = (int)(stepSize * Config.Dpi), has_x = 0;
+            int pro_y = rect.Y + (rect.Height - pro_h) / 2;
 
             var prog = steps * _value_show;
             using (var brush = new SolidBrush(_back))
             using (var brush_fill = new SolidBrush(color))
             {
-                for (int i = 0; i < steps; i++)
+                if (pro_w <= 0)
                 {
-                    g.FillRectangle(prog > i ? brush_fill : brush, new Rectangle(rect.X + has_x, pro_y, pro_w, pro_h));
-                    has_x += pro_w + pro_gap;
+                    float w = rect.Width;
+                    if (state == TType.None)
+                    {
+                        string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                        w -= g.MeasureString(textShow, Font).Size().Width + pro_h / 2;
+                    }
+                    else
+                    {
+                        int ico_size = (int)(font_size.Height * (iconratio + 0.1F));
+                        w -= ico_size + pro_h * 2 + pro_h / 2;
+                    }
+                    pro_w = (w - pro_gap * (steps - 1F)) / steps;
+                }
+                if (pro_w > 0)
+                {
+                    for (int i = 0; i < steps; i++)
+                    {
+                        g.FillRectangle(prog > i ? brush_fill : brush, new RectangleF(rect.X + has_x, pro_y, pro_w, pro_h));
+                        has_x += pro_w + pro_gap;
+                    }
                 }
             }
 
             if (state == TType.None)
             {
-                has_x += pro_h / 2;
+                int has_x2 = (int)Math.Ceiling(has_x + pro_h / 2);
                 using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                 {
                     string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
-                    g.DrawStr(textShow, Font, brush, new Rectangle(rect.X + has_x, rect.Y, rect.Width - has_x, rect.Height), s_l);
+                    g.DrawStr(textShow, Font, brush, new Rectangle(rect.X + has_x2, rect.Y, rect.Width - has_x2, rect.Height), s_l);
                 }
             }
             else
             {
+                int has_x2 = (int)Math.Ceiling(has_x);
                 int ico_size = (int)(font_size.Height * (iconratio + 0.1F)), size_font_w = pro_h + ico_size;
-                g.PaintIcons(state, new Rectangle((rect.X + has_x + size_font_w) - ico_size, rect_t.Y + (rect_t.Height - ico_size) / 2, ico_size, ico_size));
+                g.PaintIcons(state, new Rectangle((rect.X + has_x2 + size_font_w) - ico_size, rect_t.Y + (rect_t.Height - ico_size) / 2, ico_size, ico_size));
             }
         }
         void PaintShapeRound(Graphics g, Rectangle rect_t, Rectangle rect, Color color, bool round)
@@ -683,11 +702,11 @@ namespace AntdUI
 
             if (state == TType.None)
             {
-                string showtmp, textShow;
+                string? showtmp, textShow;
 
                 if (ValueFormatChanged == null)
                 {
-                    if (useSystemText) showtmp = textShow = text ?? "";
+                    if (useSystemText) showtmp = textShow = text;
                     else
                     {
                         string basetext = (_value_show * 100F).ToString("F" + ShowTextDot);
@@ -704,17 +723,28 @@ namespace AntdUI
                 }
                 else showtmp = textShow = ValueFormatChanged(this, new FloatEventArgs(_value_show));
 
-                var sizef = g.MeasureString(showtmp, Font).Size();
-                int pro_h = (int)(sizef.Height * valueratio), size_font_w = (int)Math.Ceiling(sizef.Width + sizef.Height * .2F);
-                var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
-                rect.Y = rect.Y + (rect.Height - pro_h) / 2;
-                rect.Height = pro_h;
-                rect.Width -= size_font_w;
-                PaintProgress(g, _radius, rect, _back, color);
-
-                using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                if (showtmp == null && textShow == null)
                 {
-                    g.DrawStr(textShow, Font, brush, rect_rext, s_r);
+                    var sizef = g.MeasureString(Config.NullText, Font).Size();
+                    int pro_h = (int)(sizef.Height * valueratio);
+                    rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                    rect.Height = pro_h;
+                    PaintProgress(g, _radius, rect, _back, color);
+                }
+                else
+                {
+                    var sizef = g.MeasureString(showtmp, Font).Size();
+                    int pro_h = (int)(sizef.Height * valueratio), size_font_w = (int)Math.Ceiling(sizef.Width + sizef.Height * .2F);
+                    var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
+                    rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                    rect.Height = pro_h;
+                    rect.Width -= size_font_w;
+                    PaintProgress(g, _radius, rect, _back, color);
+
+                    using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                    {
+                        g.DrawStr(textShow, Font, brush, rect_rext, s_r);
+                    }
                 }
             }
             else
