@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -536,6 +537,71 @@ namespace AntdUI
             get => button.Loading;
             set => button.Loading = value;
         }
+
+        /// <summary>
+        /// 加载进度
+        /// </summary>
+        [Description("加载进度"), Category("加载"), DefaultValue(0.3F)]
+        public float LoadingValue
+        {
+            get => button.LoadingValue;
+            set => button.LoadingValue = value;
+        }
+
+        #region 水波进度
+
+        /// <summary>
+        /// 水波进度
+        /// </summary>
+        [Description("水波进度"), Category("加载"), DefaultValue(0F)]
+        public float LoadingWaveValue
+        {
+            get => button.LoadingWaveValue;
+            set => button.LoadingWaveValue = value;
+        }
+
+        /// <summary>
+        /// 水波颜色
+        /// </summary>
+        [Description("水波颜色"), Category("加载"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? LoadingWaveColor
+        {
+            get => button.LoadingWaveColor;
+            set => button.LoadingWaveColor = value;
+        }
+
+        /// <summary>
+        /// 水波是否垂直
+        /// </summary>
+        [Description("水波是否垂直"), Category("加载"), DefaultValue(false)]
+        public bool LoadingWaveVertical
+        {
+            get => button.LoadingWaveVertical;
+            set => button.LoadingWaveVertical = value;
+        }
+
+        /// <summary>
+        /// 水波大小
+        /// </summary>
+        [Description("水波大小"), Category("加载"), DefaultValue(2)]
+        public int LoadingWaveSize
+        {
+            get => button.LoadingWaveSize;
+            set => button.LoadingWaveSize = value;
+        }
+
+        /// <summary>
+        /// 水波数量
+        /// </summary>
+        [Description("水波数量"), Category("加载"), DefaultValue(1)]
+        public int LoadingWaveCount
+        {
+            get => button.LoadingWaveCount;
+            set => button.LoadingWaveCount = value;
+        }
+
+        #endregion
 
         #endregion
 
@@ -1528,6 +1594,7 @@ namespace AntdUI
 
         bool loading = false;
         int AnimationLoadingValue = 0;
+        int AnimationLoadingWaveValue = 0;
         /// <summary>
         /// 加载状态
         /// </summary>
@@ -1547,6 +1614,8 @@ namespace AntdUI
                     AnimationClickValue = 0;
                     ThreadLoading = new ITask(control, i =>
                     {
+                        AnimationLoadingWaveValue += 1;
+                        if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
                         AnimationLoadingValue = i;
                         Invalidate();
                         return loading;
@@ -1558,6 +1627,40 @@ namespace AntdUI
                 else Invalidate();
             }
         }
+
+        /// <summary>
+        /// 加载进度
+        /// </summary>
+        public float LoadingValue { get; set; } = 0.3F;
+
+        #region 水波进度
+
+        /// <summary>
+        /// 水波进度
+        /// </summary>
+        public float LoadingWaveValue { get; set; } = 0;
+
+        /// <summary>
+        /// 水波颜色
+        /// </summary>
+        public Color? LoadingWaveColor { get; set; }
+
+        /// <summary>
+        /// 水波是否垂直
+        /// </summary>
+        public bool LoadingWaveVertical { get; set; }
+
+        /// <summary>
+        /// 水波大小
+        /// </summary>
+        public int LoadingWaveSize { get; set; } = 2;
+
+        /// <summary>
+        /// 水波数量
+        /// </summary>
+        public int LoadingWaveCount { get; set; } = 1;
+
+        #endregion
 
         #endregion
 
@@ -1820,6 +1923,7 @@ namespace AntdUI
                         }
                         if (borderWidth > 0)
                         {
+                            PaintLoadingWave(g, path, rect_read);
                             float border = borderWidth * Config.Dpi;
                             if (MouseDown)
                             {
@@ -1882,11 +1986,13 @@ namespace AntdUI
                                     g.FillPath(brush, path);
                                 }
                             }
+                            PaintLoadingWave(g, path, rect_read);
                             PaintTextLoading(g, text, _fore, rect_read, enabled);
                         }
                     }
                     else
                     {
+                        PaintLoadingWave(g, path, rect_read);
                         if (borderWidth > 0)
                         {
                             using (var brush = new SolidBrush(Style.Db.FillTertiary))
@@ -1928,6 +2034,8 @@ namespace AntdUI
 
                     if (ghost)
                     {
+                        PaintLoadingWave(g, path, rect_read);
+
                         #region 绘制背景
 
                         if (borderWidth > 0)
@@ -2071,6 +2179,7 @@ namespace AntdUI
 
                         #endregion
 
+                        PaintLoadingWave(g, path, rect_read);
                         PaintTextLoading(g, text, enabled ? _fore : Style.Db.TextQuaternary, rect_read, enabled);
                     }
                 }
@@ -2079,6 +2188,101 @@ namespace AntdUI
 
         #region 渲染帮助
 
+        void PaintLoadingWave(Graphics g, GraphicsPath path, Rectangle rect)
+        {
+            if (loading && LoadingWaveValue > 0)
+            {
+                using (var brush = new SolidBrush(LoadingWaveColor ?? Style.Db.Fill))
+                {
+                    if (LoadingWaveValue >= 1) g.FillPath(brush, path);
+                    else if (LoadingWaveCount > 0)
+                    {
+                        var state = g.Save();
+                        g.SetClip(path);
+                        g.ResetTransform();
+                        int len = (int)(LoadingWaveSize * Config.Dpi), count = LoadingWaveCount * 2 + 2;
+                        if (count < 6) count = 6;
+                        if (LoadingWaveVertical)
+                        {
+                            int pvalue = (int)(rect.Height * LoadingWaveValue);
+                            if (pvalue > 0)
+                            {
+                                pvalue = rect.Height - pvalue + rect.Y;
+                                int wd = rect.Width / LoadingWaveCount, wd2 = wd * 2, pvalue2 = pvalue - len, rr = rect.X + wd * count;
+                                using (var path_line = new GraphicsPath())
+                                {
+                                    g.TranslateTransform(-(wd + wd2 * (AnimationLoadingWaveValue / 100F)), 0);
+                                    path_line.AddLine(rr, pvalue, rr, rect.Bottom);
+                                    path_line.AddLine(rr, rect.Bottom, rect.X, rect.Bottom);
+                                    path_line.AddLine(rect.X, rect.Bottom, rect.X, pvalue);
+                                    bool to = true;
+                                    var line = new List<PointF>(count);
+                                    for (int i = 0; i < count + 1; i++)
+                                    {
+                                        line.Add(new PointF(rect.X + wd * i, to ? pvalue : pvalue2));
+                                        to = !to;
+                                    }
+                                    path_line.AddCurve(line.ToArray());
+                                    g.FillPath(brush, path_line);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            int pvalue = (int)(rect.Width * LoadingWaveValue);
+                            if (pvalue > 0)
+                            {
+                                pvalue += rect.X;
+                                int wd = rect.Height / LoadingWaveCount, wd2 = wd * 2, pvalue2 = pvalue + len, rb = rect.Y + wd * count;
+
+                                using (var path_line = new GraphicsPath())
+                                {
+                                    g.TranslateTransform(0, -(wd + wd2 * (AnimationLoadingWaveValue / 100F)));
+                                    path_line.AddLine(pvalue, rb, rect.X, rb);
+                                    path_line.AddLine(rect.X, rb, rect.X, rect.Y);
+                                    path_line.AddLine(rect.X, rect.Y, pvalue, rect.Y);
+                                    bool to = true;
+                                    var line = new List<PointF>(count);
+                                    for (int i = 0; i < count + 1; i++)
+                                    {
+                                        line.Add(new PointF(to ? pvalue : pvalue2, rect.Y + wd * i));
+                                        to = !to;
+                                    }
+                                    path_line.AddCurve(line.ToArray());
+                                    g.FillPath(brush, path_line);
+                                }
+                            }
+                        }
+                        g.Restore(state);
+                    }
+                    else
+                    {
+                        if (LoadingWaveVertical)
+                        {
+                            int pvalue = (int)(rect.Height * LoadingWaveValue);
+                            if (pvalue > 0)
+                            {
+                                var state = g.Save();
+                                g.SetClip(new Rectangle(rect.X, rect.Y + rect.Height - pvalue, rect.Width, pvalue));
+                                g.FillPath(brush, path);
+                                g.Restore(state);
+                            }
+                        }
+                        else
+                        {
+                            int pvalue = (int)(rect.Width * LoadingWaveValue);
+                            if (pvalue > 0)
+                            {
+                                var state = g.Save();
+                                g.SetClip(new Rectangle(rect.X, rect.Y, pvalue, rect.Height));
+                                g.FillPath(brush, path);
+                                g.Restore(state);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         void PaintTextLoading(Graphics g, string? text, Color color, Rectangle rect_read, bool enabled)
         {
             var font_size = g.MeasureString(text ?? Config.NullText, Font()).Size();
@@ -2092,7 +2296,7 @@ namespace AntdUI
                     using (var brush = new Pen(color, loading_size))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, rect, AnimationLoadingValue, 100);
+                        g.DrawArc(brush, rect, AnimationLoadingValue, LoadingValue * 360F);
                     }
                 }
                 else
@@ -2133,7 +2337,7 @@ namespace AntdUI
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, AnimationLoadingValue, 100);
+                                g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
                         else PaintIcon(g, color, rect_l, true, enabled);
@@ -2165,7 +2369,7 @@ namespace AntdUI
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, AnimationLoadingValue, 100);
+                                g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
                         else PaintIcon(g, color, rect_l, true, enabled);
@@ -2217,7 +2421,7 @@ namespace AntdUI
                     using (var brush = new Pen(color, loading_size))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, rect, AnimationLoadingValue, 100);
+                        g.DrawArc(brush, rect, AnimationLoadingValue, LoadingValue * 360F);
                     }
                 }
                 else
@@ -2270,7 +2474,7 @@ namespace AntdUI
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, AnimationLoadingValue, 100);
+                                g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
                         else
@@ -2314,7 +2518,7 @@ namespace AntdUI
                             using (var brush = new Pen(color, loading_size))
                             {
                                 brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, AnimationLoadingValue, 100);
+                                g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
                         else
