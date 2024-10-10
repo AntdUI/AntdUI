@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Demo
@@ -29,6 +30,7 @@ namespace Demo
         [STAThread]
         static void Main(string[] arge)
         {
+            ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
             var command = string.Join(" ", arge);
             //AntdUI.Localization.Provider = new Localizer();
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;

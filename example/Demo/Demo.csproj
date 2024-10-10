@@ -14,6 +14,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
     <PublishAot>true</PublishAot>
+	<OptimizationPreference>Size</OptimizationPreference>
   </PropertyGroup>
 
   <ItemGroup>
