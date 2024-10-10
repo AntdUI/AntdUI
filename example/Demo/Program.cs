@@ -30,8 +30,8 @@ namespace Demo
         [STAThread]
         static void Main(string[] arge)
         {
-            var command = string.Join(" ", arge);
             ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
+            var command = string.Join(" ", arge);
             //AntdUI.Localization.Provider = new Localizer();
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);

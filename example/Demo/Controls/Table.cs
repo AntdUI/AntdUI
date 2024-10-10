@@ -120,7 +120,7 @@ namespace Demo.Controls
 
         void checkSortOrder_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            if (table1.Columns != null) table1.Columns[4].SortOrder = table1.Columns[5].SortOrder = e.Value;
+            if (table1.Columns != null) table1.Columns[6].SortOrder = table1.Columns[7].SortOrder = e.Value;
         }
 
         void checkEnableHeaderResizing_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
