@@ -203,14 +203,21 @@ namespace AntdUI
             }
             switch (cursor)
             {
-                case CursorType.Default:
-                    Cursor = DefaultCursor;
-                    break;
                 case CursorType.Hand:
                     Cursor = HandCursor;
                     break;
                 case CursorType.No:
                     Cursor = Cursors.No;
+                    break;
+                case CursorType.SizeAll:
+                    Cursor = Cursors.SizeAll;
+                    break;
+                case CursorType.VSplit:
+                    Cursor = Cursors.VSplit;
+                    break;
+                case CursorType.Default:
+                default:
+                    Cursor = DefaultCursor;
                     break;
             }
         }
@@ -339,6 +346,12 @@ namespace AntdUI
             }
             return true;
         }
+        protected void OnTouchCancel()
+        {
+            taskTouch?.Dispose();
+            taskTouch = null;
+            mdown = false;
+        }
         protected virtual bool OnTouchScrollX(int value) => false;
         protected virtual bool OnTouchScrollY(int value) => false;
 
@@ -357,7 +370,9 @@ namespace AntdUI
         Default,
         Hand,
         IBeam,
-        No
+        No,
+        SizeAll,
+        VSplit,
     }
 
     public interface BadgeConfig

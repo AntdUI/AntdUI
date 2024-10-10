@@ -486,13 +486,7 @@ namespace AntdUI
         void PaintIcon(Graphics g, OMenuItem it, Color fore)
         {
             if (it.Val.Icon != null) g.DrawImage(it.Val.Icon, it.RectIcon);
-            else if (it.Val.IconSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(it.Val.IconSvg, it.RectIcon, fore))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, it.RectIcon);
-                }
-            }
+            else if (it.Val.IconSvg != null) g.GetImgExtend(it.Val.IconSvg, it.RectIcon, fore);
         }
         void PaintArrow(Graphics g, OMenuItem item, Color color)
         {

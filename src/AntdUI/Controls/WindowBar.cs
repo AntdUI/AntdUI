@@ -454,10 +454,7 @@ namespace AntdUI
                     g.FillRectangle(brush, rect_close);
                 }
                 PrintClose(g, fore, rect_close_icon);
-                using (var _bmp = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Style.Db.ErrorColor)))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_close_icon);
-                }
+                g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Style.Db.ErrorColor));
             }
             else if (hove_close.Switch)
             {

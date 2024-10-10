@@ -268,10 +268,7 @@ namespace AntdUI
         {
             if (svg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(svg, it.RectImg, color))
-                {
-                    if (_bmp != null) { g.DrawImage(_bmp, it.RectImg); return false; }
-                }
+                if (g.GetImgExtend(svg, it.RectImg, color)) return false;
             }
             else if (bmp != null) { g.DrawImage(bmp, it.RectImg); return false; }
             return true;

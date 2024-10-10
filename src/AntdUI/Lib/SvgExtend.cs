@@ -27,10 +27,18 @@ namespace AntdUI
             if (rect.Width > 0 && rect.Height > 0) return SvgToBmp(svg, rect.Width, rect.Height, color);
             return null;
         }
-        public static Bitmap? GetImgExtend(string svg, RectangleF rect, Color? color = null)
+        public static bool GetImgExtend(this Graphics g, string svg, Rectangle rect, Color? color = null)
         {
-            if (rect.Width > 0 && rect.Height > 0) return SvgToBmp(svg, (int)rect.Width, (int)rect.Height, color);
-            return null;
+            if (rect.Width > 0 && rect.Height > 0)
+            {
+                using (var bmp = SvgToBmp(svg, rect.Width, rect.Height, color))
+                {
+                    if (bmp == null) return false;
+                    g.DrawImage(bmp, rect);
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

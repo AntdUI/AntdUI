@@ -278,13 +278,7 @@ namespace AntdUI
                                         else if (sub.Hover) PaintBack(g, sub, hover);
 
                                         if (sub.Icon != null) g.DrawImage(sub.Icon, sub.ico_rect);
-                                        else if (sub.IconSvg != null)
-                                        {
-                                            using (var _bmp = SvgExtend.GetImgExtend(sub.IconSvg, sub.ico_rect, fore_active.Color))
-                                            {
-                                                if (_bmp != null) g.DrawImage(_bmp, sub.ico_rect);
-                                            }
-                                        }
+                                        else if (sub.IconSvg != null) g.GetImgExtend(sub.IconSvg, sub.ico_rect, fore_active.Color);
                                         g.DrawStr(sub.Text, Font, fore_active, sub.txt_rect, s_c);
                                     }
                                     else
@@ -299,26 +293,14 @@ namespace AntdUI
                                         else if (sub.Hover) PaintBack(g, sub, hover);
 
                                         if (sub.Icon != null) g.DrawImage(sub.Icon, sub.ico_rect);
-                                        else if (sub.IconSvg != null)
-                                        {
-                                            using (var _bmp = SvgExtend.GetImgExtend(sub.IconSvg, sub.ico_rect, fore.Color))
-                                            {
-                                                if (_bmp != null) g.DrawImage(_bmp, sub.ico_rect);
-                                            }
-                                        }
+                                        else if (sub.IconSvg != null) g.GetImgExtend(sub.IconSvg, sub.ico_rect, fore.Color);
                                         g.DrawStr(sub.Text, Font, fore, sub.txt_rect, s_c);
                                     }
                                 }
                                 else
                                 {
                                     if (sub.Icon != null) g.DrawImage(sub.Icon, sub.ico_rect);
-                                    else if (sub.IconSvg != null)
-                                    {
-                                        using (var _bmp = SvgExtend.GetImgExtend(sub.IconSvg, sub.ico_rect, brush_TextQuaternary.Color))
-                                        {
-                                            if (_bmp != null) g.DrawImage(_bmp, sub.ico_rect);
-                                        }
-                                    }
+                                    else if (sub.IconSvg != null) g.GetImgExtend(sub.IconSvg, sub.ico_rect, brush_TextQuaternary.Color);
                                     g.DrawStr(sub.Text, Font, brush_TextQuaternary, sub.txt_rect, s_c);
                                 }
                             }

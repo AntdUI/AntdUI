@@ -437,11 +437,7 @@ namespace AntdUI
         {
             if (imageSvg != null)
             {
-                var rect = GetImageRectCenter(font_size, rect_read);
-                using (var _bmp = SvgExtend.GetImgExtend(imageSvg, rect, color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect);
-                }
+                g.GetImgExtend(imageSvg, GetImageRectCenter(font_size, rect_read), color);
                 return false;
             }
             else if (image != null)
@@ -479,20 +475,8 @@ namespace AntdUI
         /// <param name="rectl">图标区域</param>
         void PaintImage(Graphics g, Color? color, Rectangle rectl)
         {
-            if (imageSvg != null)
-            {
-                var rect = GetImageRect(rectl);
-                using (var _bmp = SvgExtend.GetImgExtend(imageSvg, rect, color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect);
-                }
-                return;
-            }
-            else if (image != null)
-            {
-                g.DrawImage(image, GetImageRect(rectl));
-                return;
-            }
+            if (imageSvg != null) g.GetImgExtend(imageSvg, GetImageRect(rectl), color);
+            else if (image != null) g.DrawImage(image, GetImageRect(rectl));
         }
 
         /// <summary>

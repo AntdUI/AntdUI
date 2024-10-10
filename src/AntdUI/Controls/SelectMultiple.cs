@@ -283,7 +283,7 @@ namespace AntdUI
         {
             if (selectedValue.Length > 0)
             {
-                var style_dir = new Dictionary<object, SelectItem?>(selectedValue.Length);
+                var style_dir = new Dictionary<object, SelectItem>(selectedValue.Length);
                 var enable_dir = new List<object>(selectedValue.Length);
                 if (items != null && items.Count > 0)
                 {
@@ -305,7 +305,12 @@ namespace AntdUI
                     for (int i = 0; i < selectedValue.Length; i++)
                     {
                         var it = selectedValue[i];
-                        var size = g.MeasureString(it.ToString(), Font).Size();
+                        string? showtext;
+                        SelectItem? style = null;
+                        if (style_dir.TryGetValue(it, out var find)) { style = find; showtext = find.Text; }
+                        else showtext = it.ToString();
+
+                        var size = g.MeasureString(showtext, Font).Size();
                         var size2 = g.MeasureString("+" + (selectedValue.Length - i), Font).Size();
                         int use_base = use + size.Width + height + gap;
                         if (use_base + (size2.Width + gap) > rect_read.Width)
@@ -319,9 +324,7 @@ namespace AntdUI
                             if (_rect_left_txt.Count == 1) return size2.Width + gap;
                             return use + size2.Width + gap;
                         }
-
-                        if (style_dir.TryGetValue(it, out var find)) _style_left.Add(find);
-                        else _style_left.Add(null);
+                        _style_left.Add(style);
                         if (enable_dir.Contains(it) || !canDelete)
                         {
                             var rect = new Rectangle(rect_read.X + use, rect_read.Y + y, size.Width, height);
@@ -387,14 +390,14 @@ namespace AntdUI
                                         if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, style.TagFore.Value);
                                         using (var brushf = new SolidBrush(style.TagFore.Value))
                                         {
-                                            g.DrawStr(it.ToString(), Font, brushf, rect_left_txts[i], sf_center);
+                                            g.DrawStr(style.Text, Font, brushf, rect_left_txts[i], sf_center);
                                         }
                                     }
                                     else
                                     {
                                         var rect_del = rect_left_dels[i];
                                         if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
-                                        g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
+                                        g.DrawStr(style.Text, Font, brush, rect_left_txts[i], sf_center);
                                     }
                                 }
                             }

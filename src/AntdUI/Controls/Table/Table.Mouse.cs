@@ -139,6 +139,7 @@ namespace AntdUI
                         Window.CanHandMessage = true;
                         LoadLayout();
                         Invalidate();
+                        OnTouchCancel();
                         return;
                     }
                 }
@@ -180,6 +181,7 @@ namespace AntdUI
                 if (hand)
                 {
                     Invalidate();
+                    OnTouchCancel();
                     return;
                 }
             }
@@ -399,14 +401,14 @@ namespace AntdUI
                         else tmpcol_width.Add(item.i, width);
                         LoadLayout();
                         Invalidate();
-                        Cursor = Cursors.VSplit;
+                        SetCursor(CursorType.VSplit);
                         return;
                     }
                 }
             }
             if (dragHeader != null)
             {
-                Cursor = Cursors.SizeAll;
+                SetCursor(CursorType.SizeAll);
                 dragHeader.hand = true;
                 dragHeader.xr = e.X - dragHeader.x;
                 if (rows == null) return;
@@ -476,7 +478,7 @@ namespace AntdUI
                             {
                                 if (item.rect.Contains(r_x, r_y))
                                 {
-                                    Cursor = Cursors.VSplit;
+                                    SetCursor(CursorType.VSplit);
                                     return;
                                 }
                             }
@@ -485,7 +487,7 @@ namespace AntdUI
                         else if (has_check && cel.column is ColumnCheck columnCheck && columnCheck.NoTitle && cel.Contains(r_x, r_y)) SetCursor(true);
                         else if (ColumnDragSort)
                         {
-                            Cursor = Cursors.SizeAll;
+                            SetCursor(CursorType.SizeAll);
                             return;
                         }
                         else SetCursor(false);

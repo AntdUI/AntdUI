@@ -975,10 +975,7 @@ namespace AntdUI
                             g.DrawImage(bitblock_r, rect_r, .1F);
                         }
                         var rect_ico = new Rectangle(rect_cr.X + (rect_cr.Width - icosize) / 2, rect_cr.Y + (rect_cr.Height - icosize) / 2, icosize, icosize);
-                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoMore, rect_ico, color))
-                        {
-                            if (bmp != null) g.DrawImage(bmp, rect_ico);
-                        }
+                        g.GetImgExtend(SvgDb.IcoMore, rect_ico, color);
                     }
                     break;
                 case TabAlignment.Top:
@@ -1033,10 +1030,7 @@ namespace AntdUI
                             g.DrawImage(bitblock_r, rect_r, .1F);
                         }
                         var rect_ico = new Rectangle(rect_cr.X + (rect_cr.Width - icosize) / 2, rect_cr.Y + (rect_cr.Height - icosize) / 2, icosize, icosize);
-                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoMore, rect_ico, color))
-                        {
-                            if (bmp != null) g.DrawImage(bmp, rect_ico);
-                        }
+                        g.GetImgExtend(SvgDb.IcoMore, rect_ico, color);
                     }
                     break;
             }

@@ -686,13 +686,7 @@ namespace AntdUI
             else g.DrawStr(item.Text, Font, fore, item.txt_rect, blockNode ? s_l : s_c);
             if (item.SubTitle != null) g.DrawStr(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
             if (item.Icon != null) g.DrawImage(item.Icon, item.ico_rect);
-            else if (item.IconSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(item.IconSvg, item.ico_rect, color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, item.ico_rect);
-                }
-            }
+            if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
         }
 
         internal RectangleF PaintBlock(RectangleF rect)
@@ -1161,7 +1155,8 @@ namespace AntdUI
                         if (value)
                         {
                             int time = ExpandCount(this) * 10;
-                            if (time > 1000) time = 1000;
+                            if (time < 100) time = 100;
+                            else if (time > 1000) time = 1000;
                             int t = Animation.TotalFrames(10, time);
                             ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
                             {

@@ -38,16 +38,6 @@ namespace AntdUI
                 ControlStyles.DoubleBuffer, true);
             UpdateStyles();
             base.FormBorderStyle = FormBorderStyle.None;
-            if (UseDwm && OS.Version.Major >= 6)
-            {
-                try
-                {
-                    int enabled = 0;
-                    DarkUI.DwmIsCompositionEnabled(ref enabled);
-                    DwmEnabled = enabled == 1;
-                }
-                catch { }
-            }
         }
 
         #region 属性
@@ -167,16 +157,11 @@ namespace AntdUI
 
         #region 重载事件
 
-        protected override void OnLoad(EventArgs e)
-        {
-            SetReion();
-            base.OnLoad(e);
-        }
-
         bool DwmEnabled = false;
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
+            SetReion();
             ShowSkin();
         }
 
@@ -373,6 +358,16 @@ namespace AntdUI
         {
             handle = new HWND(Handle);
             base.OnHandleCreated(e);
+            if (UseDwm && OS.Version.Major >= 6)
+            {
+                try
+                {
+                    int enabled = 0;
+                    DarkUI.DwmIsCompositionEnabled(ref enabled);
+                    DwmEnabled = enabled == 1;
+                }
+                catch { }
+            }
             SetTheme();
             DisableProcessWindowsGhosting();
             HandMessage();

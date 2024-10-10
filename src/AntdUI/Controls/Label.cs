@@ -416,10 +416,7 @@ namespace AntdUI
                     hx = icon_size;
                     rect_l.X = 0;
                 }
-                using (var _bmp = SvgExtend.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_l);
-                }
+                g.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color);
             }
             if (has_suffixText)
             {
@@ -471,10 +468,7 @@ namespace AntdUI
                     hr = icon_size;
                     rect_r.X = rect_read.Right - icon_size;
                 }
-                using (var _bmp = SvgExtend.GetImgExtend(suffixSvg, rect_r, SuffixColor ?? color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_r);
-                }
+                g.GetImgExtend(suffixSvg, rect_r, SuffixColor ?? color);
             }
             if (has_prefixText)
             {
@@ -491,10 +485,7 @@ namespace AntdUI
                 int icon_size = (int)(font_size.Height * iconratio);
                 int x = rect_read.Right - hr - font_size.Width - icon_size, w = icon_size;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
-                using (var _bmp = SvgExtend.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_l);
-                }
+                g.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color);
             }
             if (hr > 0) return new Rectangle(rect_read.X, rect_read.Y, rect_read.Width - hr, rect_read.Height);
             return rect_read;
@@ -515,10 +506,7 @@ namespace AntdUI
             {
                 int icon_size = (int)(font_size.Height * iconratio);
                 var rect_l = RecFixAuto(cex - icon_size, icon_size, rect_read, font_size);
-                using (var _bmp = SvgExtend.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_l);
-                }
+                g.GetImgExtend(prefixSvg, rect_l, PrefixColor ?? color);
             }
             if (has_suffixText)
             {
@@ -532,10 +520,7 @@ namespace AntdUI
             {
                 int icon_size = (int)(font_size.Height * iconratio);
                 var rect_r = RecFixAuto(cex + font_size.Width, icon_size, rect_read, font_size);
-                using (var _bmp = SvgExtend.GetImgExtend(suffixSvg, rect_r, SuffixColor ?? color))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_r);
-                }
+                g.GetImgExtend(suffixSvg, rect_r, SuffixColor ?? color);
             }
             return rect_read;
         }

@@ -739,13 +739,7 @@ namespace AntdUI
         void PaintIcon(Graphics g, MenuItem it, Color fore)
         {
             if (it.Icon != null) g.DrawImage(it.Icon, it.ico_rect);
-            else if (it.IconSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(it.IconSvg, it.ico_rect, fore))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, it.ico_rect);
-                }
-            }
+            else if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
         }
 
         void PaintBack(Graphics g, Color color, Rectangle rect, float radius)
