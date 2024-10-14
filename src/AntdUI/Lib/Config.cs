@@ -112,10 +112,19 @@ namespace AntdUI
         /// </summary>
         public static Font? Font { get; set; } = null;
 
+        #region 滚动条
+
         /// <summary>
         /// 滚动条隐藏样式
         /// </summary>
         public static bool ScrollBarHide { get; set; }
+
+        /// <summary>
+        /// 滚动条最小大小Y
+        /// </summary>
+        public static int ScrollMinSizeY { get; set; } = 30;
+
+        #endregion
 
         #region DPI
 

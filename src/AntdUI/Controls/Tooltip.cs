@@ -37,6 +37,22 @@ namespace AntdUI
     {
         #region 参数
 
+        string text = null;
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category("外观"), DefaultValue(null)]
+        public override string? Text
+        {
+            get => text;
+            set
+            {
+                if (text == value) return;
+                text = value;
+                Invalidate();
+            }
+        }
+
         int radius = 6;
         /// <summary>
         /// 圆角

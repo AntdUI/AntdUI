@@ -186,6 +186,7 @@ namespace AntdUI
 
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
+                    int tmpicon = 0;
                     if (config.Content is Control control)
                     {
                         w = (int)Math.Round(control.Width * dpi);
@@ -208,7 +209,8 @@ namespace AntdUI
                         }
                         else
                         {
-                            int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
+                            var sizeT = g.MeasureString(Config.NullText, fontTitle).Size();
+                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size();
                             int h = sizeTitle.Height + gap + control.Height + butt_h;
@@ -222,7 +224,8 @@ namespace AntdUI
                         }
                         if (config.CloseIcon)
                         {
-                            int close_size = (int)Math.Round(22 * dpi);
+                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Size().Height;
+                            int close_size = tmpicon;
                             rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
                         control.Location = new Point((int)rectContent.X, (int)rectContent.Y);
@@ -256,7 +259,8 @@ namespace AntdUI
                         }
                         else
                         {
-                            int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
+                            var sizeT = g.MeasureString(Config.NullText, fontTitle).Size();
+                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size();
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
@@ -281,7 +285,8 @@ namespace AntdUI
                         }
                         if (config.CloseIcon)
                         {
-                            int close_size = (int)Math.Round(22 * dpi);
+                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Size().Height;
+                            int close_size = tmpicon;
                             rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
                         return texts.ToArray();
@@ -302,7 +307,8 @@ namespace AntdUI
                         }
                         else
                         {
-                            int icon_size = (int)Math.Round(22 * dpi), icon_size_x = (int)Math.Round(12 * dpi);
+                            var sizeT = g.MeasureString(Config.NullText, fontTitle).Size();
+                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
                             Size sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size(), sizeContent = g.MeasureString(content, Font, wp).Size();
                             int h = sizeTitle.Height + gap + sizeContent.Height + butt_h;
@@ -316,7 +322,8 @@ namespace AntdUI
                         }
                         if (config.CloseIcon)
                         {
-                            int close_size = (int)Math.Round(22 * dpi);
+                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Size().Height;
+                            int close_size = tmpicon;
                             rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
                     }

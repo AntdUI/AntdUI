@@ -259,6 +259,40 @@ namespace AntdUI
         [Description("列宽自动调整模式"), Category("行为"), DefaultValue(ColumnsMode.Auto)]
         public ColumnsMode AutoSizeColumnsMode { get; set; } = ColumnsMode.Auto;
 
+        int? rowHeight = null;
+        /// <summary>
+        /// 行高
+        /// </summary>
+        [Description("行高"), Category("外观"), DefaultValue(null)]
+        public int? RowHeight
+        {
+            get => rowHeight;
+            set
+            {
+                if (rowHeight == value) return;
+                rowHeight = value;
+                LoadLayout();
+                Invalidate();
+            }
+        }
+
+        int? rowHeightHeader = null;
+        /// <summary>
+        /// 表头行高
+        /// </summary>
+        [Description("表头行高"), Category("外观"), DefaultValue(null)]
+        public int? RowHeightHeader
+        {
+            get => rowHeightHeader;
+            set
+            {
+                if (rowHeightHeader == value) return;
+                rowHeightHeader = value;
+                LoadLayout();
+                Invalidate();
+            }
+        }
+
         #region 为空
 
         [Description("是否显示空样式"), Category("外观"), DefaultValue(true)]

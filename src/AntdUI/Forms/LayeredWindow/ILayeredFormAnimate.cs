@@ -37,10 +37,8 @@ namespace AntdUI
 
         #region 位置
 
-        public int readY
-        {
-            get => TargetRect.Y + TargetRect.Height;
-        }
+        public int ReadY => end_Y;
+        public int ReadB => end_Y + TargetRect.Height;
 
         internal bool SetPosition(Form form, bool InWindow)
         {
@@ -114,11 +112,11 @@ namespace AntdUI
         {
             if (list.TryGetValue(key, out var its) && its.Count > 0)
             {
-                int tmp = its[its.Count - 1].TargetRect.Bottom;
+                int tmp = its[its.Count - 1].ReadB;
                 for (int i = 0; i < its.Count - 1; i++)
                 {
                     var it = its[i];
-                    if (it.TargetRect.Bottom > tmp) tmp = it.TargetRect.Bottom;
+                    if (it.ReadB > tmp) tmp = it.ReadB;
                 }
                 return tmp;
             }
@@ -143,11 +141,11 @@ namespace AntdUI
         {
             if (list.TryGetValue(key, out var its) && its.Count > 0)
             {
-                int tmp = its[its.Count - 1].TargetRect.Y;
+                int tmp = its[its.Count - 1].ReadY;
                 for (int i = 0; i < its.Count - 1; i++)
                 {
                     var it = its[i];
-                    if (it.TargetRect.Y < tmp) tmp = it.TargetRect.Y;
+                    if (it.ReadY < tmp) tmp = it.ReadY;
                 }
                 return tmp;
             }
@@ -498,7 +496,7 @@ namespace AntdUI
             var dir = new Dictionary<ILayeredFormAnimate, int[]>(list.Count);
             foreach (var it in list)
             {
-                int y2 = it.TargetRect.Y;
+                int y2 = it.ReadY;
                 if (y2 != y_temp) dir.Add(it, new int[] { y_temp, y2 - y_temp });
                 y_temp += it.TargetRect.Height;
             }
@@ -550,7 +548,7 @@ namespace AntdUI
             foreach (var it in list)
             {
                 y_temp -= it.TargetRect.Height;
-                int y2 = it.TargetRect.Y;
+                int y2 = it.ReadY;
                 if (y2 != y_temp) dir.Add(it, new int[] { y_temp, y2 - y_temp });
             }
             if (dir.Count > 0)

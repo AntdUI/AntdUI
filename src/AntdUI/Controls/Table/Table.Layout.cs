@@ -289,6 +289,9 @@ namespace AntdUI
                                     if (read_width_cell[cel_i].minvalue < it.MinWidth) read_width_cell[cel_i].minvalue = it.MinWidth;
                                 }
                             }
+                            if (rowHeightHeader.HasValue) row.Height = (int)(rowHeightHeader.Value * dpi);
+                            else if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
+                            else row.Height = (int)Math.Round(max_height) + gap2;
                         }
                         else
                         {
@@ -313,8 +316,10 @@ namespace AntdUI
                                     if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
                                 }
                             }
+
+                            if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
+                            else row.Height = (int)Math.Round(max_height) + gap2;
                         }
-                        row.Height = (int)Math.Round(max_height) + gap2;
                     }
                 }
                 foreach (var it in read_width_cell)
