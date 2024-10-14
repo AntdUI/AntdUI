@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -670,10 +671,55 @@ namespace AntdUI
                 }
                 if (pro_w > 0)
                 {
+                    var rects = new List<RectangleF>(steps);
                     for (int i = 0; i < steps; i++)
                     {
-                        g.FillRectangle(prog > i ? brush_fill : brush, new RectangleF(rect.X + has_x, pro_y, pro_w, pro_h));
+                        rects.Add(new RectangleF(rect.X + has_x, pro_y, pro_w, pro_h));
                         has_x += pro_w + pro_gap;
+                    }
+                    if (prog > 0)
+                    {
+                        for (int i = 0; i < steps; i++)
+                        {
+                            g.FillRectangle(prog > i ? brush_fill : brush, rects[i]);
+                        }
+                        if (loading && AnimationLoadingValue > 0)
+                        {
+                            using (var path = new GraphicsPath())
+                            {
+                                foreach (var it in rects) path.AddRectangle(it);
+                                var alpha = 60 * (1F - AnimationLoadingValue);
+                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Style.Db.TextBase)))
+                                {
+                                    var state = g.Save();
+                                    g.SetClip(new RectangleF(rect.X, rect.Y, rect.Width * AnimationLoadingValue, rect.Height));
+                                    g.FillPath(brush_prog, path);
+                                    g.Restore(state);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (loading && LoadingFull)
+                        {
+                            using (var path = new GraphicsPath())
+                            {
+                                foreach (var it in rects) path.AddRectangle(it);
+                                var alpha = 80 * (1F - AnimationLoadingValue);
+                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Style.Db.TextBase)))
+                                {
+                                    var state = g.Save();
+                                    g.SetClip(new RectangleF(rect.X, rect.Y, rect.Width * AnimationLoadingValue, rect.Height));
+                                    g.FillPath(brush_prog, path);
+                                    g.Restore(state);
+                                }
+                            }
+                        }
+                        for (int i = 0; i < steps; i++)
+                        {
+                            g.FillRectangle(brush, rects[i]);
+                        }
                     }
                 }
             }

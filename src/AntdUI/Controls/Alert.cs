@@ -283,6 +283,7 @@ namespace AntdUI
                 }
                 using (var path = rect.RoundPath(_radius))
                 {
+                    var sizeT = g.MeasureString(Config.NullText, Font);
                     using (var brush = new SolidBrush(back))
                     {
                         g.FillPath(brush, path);
@@ -292,7 +293,7 @@ namespace AntdUI
                         if (font_size == null && !string.IsNullOrEmpty(text)) font_size = g.MeasureString(text, Font);
                         if (font_size.HasValue)
                         {
-                            int icon_size = (int)(font_size.Value.Height * .86F), gap = (int)(icon_size * .4F);
+                            int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_icon = new Rectangle(gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             PaintText(g, rect, rect_icon, font_size.Value, color, back, _radius);
                             g.ResetClip();
@@ -305,7 +306,7 @@ namespace AntdUI
                         font_size = size;
                         if (string.IsNullOrEmpty(textTitle))
                         {
-                            int icon_size = (int)(font_size.Value.Height * .86F), gap = (int)(icon_size * .4F);
+                            int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
                             using (var brush = new SolidBrush(color))
@@ -319,7 +320,7 @@ namespace AntdUI
                             using (var font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style))
                             {
                                 var size_title = g.MeasureString(textTitle, font_title);
-                                int icon_size = (int)(font_size.Value.Height * 1.2F), gap = (int)(icon_size * .5F);
+                                int icon_size = (int)(sizeT.Height * 1.2F), gap = (int)(icon_size * .5F);
 
                                 var rect_icon = new Rectangle(rect.X + gap, rect.Y + gap, icon_size, icon_size);
                                 g.PaintIcons(icon, rect_icon, Style.Db.BgBase);

@@ -206,6 +206,9 @@ namespace AntdUI
                 case CursorType.Hand:
                     Cursor = HandCursor;
                     break;
+                case CursorType.IBeam:
+                    Cursor = Cursors.IBeam;
+                    break;
                 case CursorType.No:
                     Cursor = Cursors.No;
                     break;
