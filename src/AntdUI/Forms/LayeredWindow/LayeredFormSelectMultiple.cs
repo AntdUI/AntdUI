@@ -59,7 +59,6 @@ namespace AntdUI
                 gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                 text_height = size.Height, item_height = text_height + gap_y2;
                 y += gap;
-                ListAutoWidth = true;
                 if (ListAutoWidth)
                 {
                     int b_w = size.Width + gap_x2;
