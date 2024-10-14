@@ -50,20 +50,20 @@ namespace Demo
         private void InitializeComponent()
         {
             btn_mode = new AntdUI.Button();
+            btn_setting = new AntdUI.Button();
             virtualPanel = new AntdUI.VirtualPanel();
             windowBar = new AntdUI.PageHeader();
             txt_search = new AntdUI.Input();
             colorTheme = new AntdUI.ColorPicker();
-            btn_setting = new AntdUI.Button();
             windowBar.SuspendLayout();
             SuspendLayout();
             // 
             // btn_mode
             // 
             btn_mode.Dock = DockStyle.Right;
-            btn_mode.Font = new Font("Microsoft YaHei UI", 18F);
             btn_mode.Ghost = true;
-            btn_mode.IconSvg = Properties.Resources.app_light;
+            btn_mode.IconSvg = "SunOutlined";
+            btn_mode.ToggleIconSvg = "MoonOutlined";
             btn_mode.Location = new Point(1056, 0);
             btn_mode.Name = "btn_mode";
             btn_mode.Radius = 0;
@@ -71,6 +71,19 @@ namespace Demo
             btn_mode.TabIndex = 6;
             btn_mode.WaveSize = 0;
             btn_mode.Click += btn_mode_Click;
+            // 
+            // btn_setting
+            // 
+            btn_setting.Dock = DockStyle.Right;
+            btn_setting.Ghost = true;
+            btn_setting.IconSvg = "SettingOutlined";
+            btn_setting.Location = new Point(1106, 0);
+            btn_setting.Name = "btn_setting";
+            btn_setting.Radius = 0;
+            btn_setting.Size = new Size(50, 40);
+            btn_setting.TabIndex = 7;
+            btn_setting.WaveSize = 0;
+            btn_setting.Click += btn_setting_Click;
             // 
             // virtualPanel
             // 
@@ -130,19 +143,6 @@ namespace Demo
             colorTheme.TabIndex = 8;
             colorTheme.Value = Color.FromArgb(22, 119, 255);
             // 
-            // btn_setting
-            // 
-            btn_setting.Dock = DockStyle.Right;
-            btn_setting.Ghost = true;
-            btn_setting.IconSvg = Properties.Resources.setting;
-            btn_setting.Location = new Point(1106, 0);
-            btn_setting.Name = "btn_setting";
-            btn_setting.Radius = 0;
-            btn_setting.Size = new Size(50, 40);
-            btn_setting.TabIndex = 7;
-            btn_setting.WaveSize = 0;
-            btn_setting.Click += btn_setting_Click;
-            // 
             // Overview
             // 
             BackColor = Color.White;
@@ -161,10 +161,10 @@ namespace Demo
 
         #endregion
         private AntdUI.Button btn_mode;
+        private AntdUI.Button btn_setting;
         private AntdUI.VirtualPanel virtualPanel;
         private AntdUI.PageHeader windowBar;
         private AntdUI.ColorPicker colorTheme;
         private AntdUI.Input txt_search;
-        private AntdUI.Button btn_setting;
     }
 }
