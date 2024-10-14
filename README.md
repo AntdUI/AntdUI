@@ -144,4 +144,12 @@ Winform UI library use Ant Design 5.0
 | **Switch** 开关 | **Table** 表格 |
 | ![Switch](screenshot/Switch.gif?raw=true) | ![Table](screenshot/Table.gif?raw=true) |
 
+
+## 特别声明
+
+AntdUI 项目已加入 [dotNET China](https://gitee.com/dotnetchina)  组织。<br/>
+
+![dotnetchina](https://gitee.com/dotnetchina/home/raw/master/assets/dotnetchina-raw.png "dotNET China LOGO")
+
+
 🦦 招募小伙伴一起维护项目
