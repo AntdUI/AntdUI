@@ -1118,8 +1118,7 @@ namespace AntdUI
         #region 光标
 
         internal bool ReadShowCaret = false;
-        bool showCaret = false;
-        bool showCaretFlag = false;
+        bool showCaret = false, showCaretFlag = false;
         internal bool ShowCaret
         {
             get => showCaret;
@@ -1130,9 +1129,9 @@ namespace AntdUI
                 CaretPrint?.Dispose();
                 if (IsHandleCreated)
                 {
-                    showCaretFlag = true;
                     if (showCaret)
                     {
+                        showCaretFlag = true;
                         if (ReadShowCaret)
                         {
                             showCaret = false;
@@ -1140,18 +1139,24 @@ namespace AntdUI
                         }
                         CaretPrint = new ITask(this, () =>
                         {
-                            showCaretFlag = !showCaretFlag;
-                            Invalidate();
+                            ShowCaretFlag = !showCaretFlag;
                             return showCaret;
-                        }, CaretSpeed);
+                        }, CaretSpeed, null, CaretSpeed);
                         SetCaretPostion();
                     }
-                    else
-                    {
-                        CaretPrint = null;
-                        Invalidate();
-                    }
+                    else CaretPrint = null;
+                    Invalidate();
                 }
+            }
+        }
+        bool ShowCaretFlag
+        {
+            get => showCaretFlag;
+            set
+            {
+                if (showCaretFlag == value) return;
+                showCaretFlag = value;
+                if (showCaret) Invalidate();
             }
         }
 

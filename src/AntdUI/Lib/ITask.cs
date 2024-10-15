@@ -91,12 +91,13 @@ namespace AntdUI
             }));
         }
 
-        public ITask(Control control, Func<bool> action, int interval, Action? end = null)
+        public ITask(Control control, Func<bool> action, int interval, Action? end = null, int sleep = 0)
         {
             bool ok = true;
             IsRun = true;
             task = Run(() =>
             {
+                if (sleep > 0) Thread.Sleep(sleep);
                 while (true)
                 {
                     if (token.Wait(control))

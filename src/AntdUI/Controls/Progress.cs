@@ -679,11 +679,17 @@ namespace AntdUI
                     }
                     if (prog > 0)
                     {
+                        float tmpw = LoadingFull ? rect.Width : 0;
                         for (int i = 0; i < steps; i++)
                         {
-                            g.FillRectangle(prog > i ? brush_fill : brush, rects[i]);
+                            if (prog > i) g.FillRectangle(brush_fill, rects[i]);
+                            else
+                            {
+                                g.FillRectangle(brush, rects[i]);
+                                tmpw = rects[i].Right;
+                            }
                         }
-                        if (loading && AnimationLoadingValue > 0)
+                        if (loading && AnimationLoadingValue > 0 && tmpw > 0)
                         {
                             using (var path = new GraphicsPath())
                             {
@@ -692,7 +698,7 @@ namespace AntdUI
                                 using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Style.Db.TextBase)))
                                 {
                                     var state = g.Save();
-                                    g.SetClip(new RectangleF(rect.X, rect.Y, rect.Width * AnimationLoadingValue, rect.Height));
+                                    g.SetClip(new RectangleF(rect.X, rect.Y, tmpw * _value_show * AnimationLoadingValue, rect.Height));
                                     g.FillPath(brush_prog, path);
                                     g.Restore(state);
                                 }

@@ -324,7 +324,23 @@ namespace AntdUI
             {
                 if (borderColor == value) return;
                 borderColor = value;
-                Invalidate();
+                if (borderWidth > 0) Invalidate();
+            }
+        }
+
+        DashStyle borderStyle = DashStyle.Solid;
+        /// <summary>
+        /// 边框样式
+        /// </summary>
+        [Description("边框样式"), Category("边框"), DefaultValue(DashStyle.Solid)]
+        public DashStyle BorderStyle
+        {
+            get => borderStyle;
+            set
+            {
+                if (borderStyle == value) return;
+                borderStyle = value;
+                if (borderWidth > 0) Invalidate();
             }
         }
 
@@ -357,6 +373,7 @@ namespace AntdUI
                         {
                             using (var brush_bor = new Pen(borderColor ?? Style.Db.BorderColor, borderWidth * Config.Dpi))
                             {
+                                brush_bor.DashStyle = borderStyle;
                                 g.DrawPath(brush_bor, path);
                             }
                         }
