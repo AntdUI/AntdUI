@@ -214,7 +214,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal void PaintChecked(Graphics g, Rectangle rect, bool enabled, RectangleF icon_rect, bool right)
+        internal void PaintChecked(Graphics g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
         {
             float dot_size = icon_rect.Height;
             float radius = dot_size * .2F;
@@ -233,7 +233,7 @@ namespace AntdUI
                         }
                         using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), 3F))
                         {
-                            g.DrawLines(brush, PaintArrow(icon_rect));
+                            g.DrawLines(brush, icon_rect.CheckArrow());
                         }
                         if (_checked)
                         {
@@ -256,7 +256,7 @@ namespace AntdUI
                         }
                         using (var brush = new Pen(Style.Db.BgBase, 3F))
                         {
-                            g.DrawLines(brush, PaintArrow(icon_rect));
+                            g.DrawLines(brush, icon_rect.CheckArrow());
                         }
                     }
                     else
@@ -298,7 +298,7 @@ namespace AntdUI
                     {
                         using (var brush = new Pen(Style.Db.TextQuaternary, 3F))
                         {
-                            g.DrawLines(brush, PaintArrow(icon_rect));
+                            g.DrawLines(brush, icon_rect.CheckArrow());
                         }
                     }
                     using (var brush = new Pen(Style.Db.BorderColorDisable, 2F))
@@ -307,16 +307,6 @@ namespace AntdUI
                     }
                 }
             }
-        }
-
-        internal PointF[] PaintArrow(RectangleF rect)
-        {
-            float size = rect.Height * 0.15F, size2 = rect.Height * 0.2F, size3 = rect.Height * 0.26F;
-            return new PointF[] {
-                new PointF(rect.X+size,rect.Y+rect.Height/2),
-                new PointF(rect.X+rect.Width*0.4F,rect.Y+(rect.Height-size3)),
-                new PointF(rect.X+rect.Width-size2,rect.Y+size2),
-            };
         }
 
         #endregion

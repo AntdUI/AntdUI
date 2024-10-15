@@ -324,10 +324,41 @@ namespace AntdUI
             }
         }
 
+        string? prefixText = null;
+        [Description("前缀文本"), Category("外观"), DefaultValue(null)]
+        public string? PrefixText
+        {
+            get => prefixText;
+            set
+            {
+                if (prefixText == value) return;
+                prefixText = value;
+                CalculateRect();
+                Invalidate();
+            }
+        }
+
+        Color? prefixFore;
+        /// <summary>
+        /// 前缀前景色
+        /// </summary>
+        [Description("前缀前景色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? PrefixFore
+        {
+            get => prefixFore;
+            set
+            {
+                if (prefixFore == value) return;
+                prefixFore = value;
+                if (HasPrefix) Invalidate();
+            }
+        }
+
         /// <summary>
         /// 是否包含前缀
         /// </summary>
-        public bool HasPrefix => prefixSvg != null || prefix != null;
+        public virtual bool HasPrefix => prefixSvg != null || prefix != null;
 
         Image? suffix = null;
         /// <summary>
@@ -363,25 +394,6 @@ namespace AntdUI
             }
         }
 
-        /// <summary>
-        /// 是否包含后缀
-        /// </summary>
-        public virtual bool HasSuffix => suffixSvg != null || suffix != null;
-
-        string? prefixText = null;
-        [Description("前缀文本"), Category("外观"), DefaultValue(null)]
-        public string? PrefixText
-        {
-            get => prefixText;
-            set
-            {
-                if (prefixText == value) return;
-                prefixText = value;
-                CalculateRect();
-                Invalidate();
-            }
-        }
-
         string? suffixText = null;
         [Description("后缀文本"), Category("外观"), DefaultValue(null)]
         public string? SuffixText
@@ -395,6 +407,28 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        Color? suffixFore;
+        /// <summary>
+        /// 后缀前景色
+        /// </summary>
+        [Description("后缀前景色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? SuffixFore
+        {
+            get => suffixFore;
+            set
+            {
+                if (suffixFore == value) return;
+                suffixFore = value;
+                if (HasSuffix) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 是否包含后缀
+        /// </summary>
+        public virtual bool HasSuffix => suffixSvg != null || suffix != null;
 
         #endregion
 
@@ -1084,8 +1118,7 @@ namespace AntdUI
         #region 光标
 
         internal bool ReadShowCaret = false;
-        bool showCaret = false;
-        bool showCaretFlag = false;
+        bool showCaret = false, showCaretFlag = false;
         internal bool ShowCaret
         {
             get => showCaret;
@@ -1096,9 +1129,9 @@ namespace AntdUI
                 CaretPrint?.Dispose();
                 if (IsHandleCreated)
                 {
-                    showCaretFlag = true;
                     if (showCaret)
                     {
+                        showCaretFlag = true;
                         if (ReadShowCaret)
                         {
                             showCaret = false;
@@ -1106,18 +1139,24 @@ namespace AntdUI
                         }
                         CaretPrint = new ITask(this, () =>
                         {
-                            showCaretFlag = !showCaretFlag;
-                            Invalidate();
+                            ShowCaretFlag = !showCaretFlag;
                             return showCaret;
-                        }, CaretSpeed);
+                        }, CaretSpeed, null, CaretSpeed);
                         SetCaretPostion();
                     }
-                    else
-                    {
-                        CaretPrint = null;
-                        Invalidate();
-                    }
+                    else CaretPrint = null;
+                    Invalidate();
                 }
+            }
+        }
+        bool ShowCaretFlag
+        {
+            get => showCaretFlag;
+            set
+            {
+                if (showCaretFlag == value) return;
+                showCaretFlag = value;
+                if (showCaret) Invalidate();
             }
         }
 

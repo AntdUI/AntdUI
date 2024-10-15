@@ -585,7 +585,7 @@ namespace AntdUI
                 }
                 if (showButton) IPaintButton(g, rect, fore, fillsecondary, size);
             }
-
+            this.PaintBadge(g);
             if (showDivider)
             {
                 int thickness = (int)(dividerthickness * Config.Dpi), margin = (int)(dividerMargin * Config.Dpi);
@@ -887,6 +887,7 @@ namespace AntdUI
                 var form = Parent.FindPARENT();
                 if (form != null)
                 {
+                    if (form is LayeredFormDrawer) return;
                     if (form is BaseForm form_win) IsMax = form_win.IsMax;
                     else IsMax = form.WindowState == FormWindowState.Maximized;
                 }
@@ -953,6 +954,7 @@ namespace AntdUI
                     var form = Parent.FindPARENT();
                     if (form != null)
                     {
+                        if (form is LayeredFormDrawer) return;
                         if (e.Clicks > 1)
                         {
                             if (maximizeBox)
@@ -998,6 +1000,7 @@ namespace AntdUI
                     var form = Parent.FindPARENT();
                     if (form != null)
                     {
+                        if (form is LayeredFormDrawer) return;
                         if (form is BaseForm form_win) IsMax = form_win.MaxRestore();
                         else
                         {
@@ -1017,7 +1020,11 @@ namespace AntdUI
                 else if (hove_min.Down && rect_min.Contains(e.Location))
                 {
                     var form = Parent.FindPARENT();
-                    if (form != null) form.WindowState = FormWindowState.Minimized;
+                    if (form != null)
+                    {
+                        if (form is LayeredFormDrawer) return;
+                        form.WindowState = FormWindowState.Minimized;
+                    }
                 }
             }
             if (showback)

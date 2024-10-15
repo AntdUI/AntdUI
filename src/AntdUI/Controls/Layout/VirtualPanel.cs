@@ -935,8 +935,11 @@ namespace AntdUI
                     it.SHOW_RECT = rect.Contains(rect.X, it.RECT.Y) || rect.Contains(rect.X, it.RECT.Bottom);
                     if (it.SHOW_RECT)
                     {
+                        var state = g.Save();
                         if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
-                        it.Paint(g, new VirtualPanelArgs(this, it.RECT, r));
+                        g.TranslateTransform(it.RECT.X, it.RECT.Y);
+                        it.Paint(g, new VirtualPanelArgs(this, new Rectangle(0, 0, it.RECT.Width, it.RECT.Height), r));
+                        g.Restore(state);
                     }
                 }
                 else it.SHOW_RECT = false;
@@ -1097,6 +1100,7 @@ namespace AntdUI
         public event VirtualItemEventHandler? ItemClick = null;
 
         VirtualItem? MDown = null;
+        int isdouclick = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -1110,6 +1114,7 @@ namespace AntdUI
                 {
                     if (it.SHOW && it.SHOW_RECT && it.CanClick && it.RECT.Contains(x, y))
                     {
+                        isdouclick = e.Clicks;
                         MDown = it;
                         return;
                     }
@@ -1129,7 +1134,7 @@ namespace AntdUI
                 {
                     if (it.SHOW && it.SHOW_RECT && it.CanClick && it.RECT.Contains(x, y))
                     {
-                        hand++;
+                        if (it.MouseMove(this, new VirtualPanelMouseArgs(it, it.RECT, x, y, e))) hand++;
                         if (!it.Hover)
                         {
                             it.Hover = true;
@@ -1141,13 +1146,13 @@ namespace AntdUI
                     {
                         if (it.Hover)
                         {
+                            it.MouseLeave(this, new VirtualPanelMouseArgs(it, it.RECT, x, y, e));
                             it.Hover = false;
                             count++;
                             SetHover(it, false);
                         }
                     }
                 }
-
                 if (count > 0) Invalidate();
                 SetCursor(hand > 0);
             }
@@ -1201,7 +1206,11 @@ namespace AntdUI
                 if (MDown != null)
                 {
                     int x = e.X, y = e.Y + ScrollBar.Value;
-                    if (MDown.RECT.Contains(x, y)) ItemClick?.Invoke(this, new VirtualItemEventArgs(MDown, e));
+                    if (MDown.RECT.Contains(x, y))
+                    {
+                        ItemClick?.Invoke(this, new VirtualItemEventArgs(MDown, e));
+                        MDown.MouseClick(this, new VirtualPanelMouseArgs(MDown, MDown.RECT, x, y, e, isdouclick));
+                    }
                 }
             }
             MDown = null;
@@ -1282,6 +1291,9 @@ namespace AntdUI
         public object? Tag { get; set; }
         public abstract Size Size(Graphics g, VirtualPanelArgs e);
         public abstract void Paint(Graphics g, VirtualPanelArgs e);
+        public virtual bool MouseMove(VirtualPanel sender, VirtualPanelMouseArgs e) => true;
+        public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
+        public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }
 
         internal bool SHOW = false;
         internal bool SHOW_RECT = false;
@@ -1301,5 +1313,21 @@ namespace AntdUI
         public VirtualPanel Panel { get; private set; }
         public Rectangle Rect { get; private set; }
         public int Radius { get; private set; }
+    }
+
+    public class VirtualPanelMouseArgs : MouseEventArgs
+    {
+        public VirtualPanelMouseArgs(VirtualItem item, Rectangle rect, int x, int y, MouseEventArgs e) : base(e.Button, e.Clicks, x - rect.X, y - rect.Y, e.Delta)
+        {
+            Item = item;
+            Rect = rect;
+        }
+        public VirtualPanelMouseArgs(VirtualItem item, Rectangle rect, int x, int y, MouseEventArgs e, int doubleclick) : base(e.Button, doubleclick, x - rect.X, y - rect.Y, e.Delta)
+        {
+            Item = item;
+            Rect = rect;
+        }
+        public VirtualItem Item { get; private set; }
+        public Rectangle Rect { get; private set; }
     }
 }

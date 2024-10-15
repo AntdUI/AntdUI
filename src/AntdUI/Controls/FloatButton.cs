@@ -346,6 +346,36 @@ namespace AntdUI
                 }
             }
 
+            string? badgeSvg = null;
+            /// <summary>
+            /// 徽标SVG
+            /// </summary>
+            public string? BadgeSvg
+            {
+                get => badgeSvg;
+                set
+                {
+                    if (badgeSvg == value) return;
+                    badgeSvg = value;
+                    OnPropertyChanged("Badge");
+                }
+            }
+
+            TAlignFrom badgeAlign = TAlignFrom.TR;
+            /// <summary>
+            /// 徽标方向
+            /// </summary>
+            public TAlignFrom BadgeAlign
+            {
+                get => badgeAlign;
+                set
+                {
+                    if (badgeAlign == value) return;
+                    badgeAlign = value;
+                    OnPropertyChanged("Badge");
+                }
+            }
+
             /// <summary>
             /// 徽标大小
             /// </summary>
