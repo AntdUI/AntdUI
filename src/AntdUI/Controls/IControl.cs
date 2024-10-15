@@ -57,6 +57,32 @@ namespace AntdUI
             }
         }
 
+        string? badgeSvg = null;
+        [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
+        public string? BadgeSvg
+        {
+            get => badgeSvg;
+            set
+            {
+                if (badgeSvg == value) return;
+                badgeSvg = value;
+                Invalidate();
+            }
+        }
+
+        TAlignFrom badgeAlign = TAlignFrom.TR;
+        [Description("徽标方向"), Category("徽标"), DefaultValue(TAlignFrom.TR)]
+        public TAlignFrom BadgeAlign
+        {
+            get => badgeAlign;
+            set
+            {
+                if (badgeAlign == value) return;
+                badgeAlign = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
         float badgeSize = .6F;
         [Description("徽标比例"), Category("徽标"), DefaultValue(.6F)]
         public float BadgeSize
@@ -64,11 +90,9 @@ namespace AntdUI
             get => badgeSize;
             set
             {
-                if (badgeSize != value)
-                {
-                    badgeSize = value;
-                    if (badge != null) Invalidate();
-                }
+                if (badgeSize == value) return;
+                badgeSize = value;
+                if (badge != null || badgeSvg != null) Invalidate();
             }
         }
 
@@ -79,11 +103,9 @@ namespace AntdUI
             get => badgeMode;
             set
             {
-                if (badgeMode != value)
-                {
-                    badgeMode = value;
-                    if (badge != null) Invalidate();
-                }
+                if (badgeMode == value) return;
+                badgeMode = value;
+                if (badge != null || badgeSvg != null) Invalidate();
             }
         }
 
@@ -94,25 +116,42 @@ namespace AntdUI
             get => badgeback;
             set
             {
-                if (badgeback != value)
-                {
-                    badgeback = value;
-                    if (badge != null) Invalidate();
-                }
+                if (badgeback == value) return;
+                badgeback = value;
+                if (badge != null || badgeSvg != null) Invalidate();
             }
         }
 
+        int badgeOffsetX = 1, badgeOffsetY = 1;
         /// <summary>
         /// 徽标偏移X
         /// </summary>
         [Description("徽标偏移X"), Category("徽标"), DefaultValue(1)]
-        public int BadgeOffsetX { get; set; } = 1;
+        public int BadgeOffsetX
+        {
+            get => badgeOffsetX;
+            set
+            {
+                if (badgeOffsetX == value) return;
+                badgeOffsetX = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
 
         /// <summary>
         /// 徽标偏移Y
         /// </summary>
         [Description("徽标偏移Y"), Category("徽标"), DefaultValue(1)]
-        public int BadgeOffsetY { get; set; } = 1;
+        public int BadgeOffsetY
+        {
+            get => badgeOffsetY;
+            set
+            {
+                if (badgeOffsetY == value) return;
+                badgeOffsetY = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
 
         #endregion
 
@@ -384,6 +423,16 @@ namespace AntdUI
         /// 徽标内容
         /// </summary>
         string? Badge { get; set; }
+
+        /// <summary>
+        /// 徽标SVG
+        /// </summary>
+        string? BadgeSvg { get; set; }
+
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
+        TAlignFrom BadgeAlign { get; set; }
 
         /// <summary>
         /// 徽标大小

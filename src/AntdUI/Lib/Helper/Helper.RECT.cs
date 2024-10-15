@@ -477,6 +477,16 @@ namespace AntdUI
 
         #region 三角
 
+        public static PointF[] CheckArrow(this Rectangle rect)
+        {
+            float size = rect.Height * 0.15F, size2 = rect.Height * 0.2F, size3 = rect.Height * 0.26F;
+            return new PointF[] {
+                new PointF(rect.X+size,rect.Y+rect.Height/2),
+                new PointF(rect.X+rect.Width*0.4F,rect.Y+(rect.Height-size3)),
+                new PointF(rect.X+rect.Width-size2,rect.Y+size2),
+            };
+        }
+
         public static PointF[] TriangleLines(this Rectangle rect, float prog, float d = 0.7F)
         {
             float size = rect.Width * d, size2 = size / 2;

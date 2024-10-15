@@ -246,7 +246,7 @@ namespace AntdUI
             if (items == null) return;
             SetCheckeds(items, check);
         }
-        void SetCheckeds(TreeItemCollection items, bool check)
+        public void SetCheckeds(TreeItemCollection items, bool check)
         {
             foreach (var it in items)
             {
@@ -797,8 +797,6 @@ namespace AntdUI
                 int down = item.Contains(e.Location, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable);
                 if (down > 0)
                 {
-                    if (doubleClick) OnNodeMouseDoubleClick(item, e);
-                    else OnNodeMouseClick(item, e);
                     if (blockNode)
                     {
                         if (can) item.Expand = !item.Expand;
@@ -822,6 +820,8 @@ namespace AntdUI
                         OnSelectChanged(item, e);
                         Invalidate();
                     }
+                    if (doubleClick) OnNodeMouseDoubleClick(item, e);
+                    OnNodeMouseClick(item, e);
                 }
                 return true;
             }

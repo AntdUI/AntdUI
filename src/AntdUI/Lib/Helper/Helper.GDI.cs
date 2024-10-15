@@ -666,24 +666,30 @@ namespace AntdUI
 
         public static void PaintBadge(this IControl control, Graphics g)
         {
-            control.PaintBadge(control.ReadRectangle, g);
-        }
-
-        public static void PaintBadge(this IControl control, RectangleF rect, Graphics g)
-        {
-            var color = control.BadgeBack ?? Style.Db.Error;
-            if (control.Badge != null)
+            if (control.BadgeSvg != null)
             {
+                int hasx = (int)(control.BadgeOffsetX * Config.Dpi), hasy = (int)(control.BadgeOffsetY * Config.Dpi);
+                using (var font = new Font(control.Font.FontFamily, control.Font.Size * control.BadgeSize))
+                {
+                    var size_badge = g.MeasureString(Config.NullText, font).Size().Height;
+                    var rect_badge = PaintBadge(control.ClientRectangle, control.BadgeAlign, hasx, hasy, size_badge, size_badge);
+                    g.GetImgExtend(control.BadgeSvg, rect_badge, control.BadgeBack ?? Style.Db.Error);
+                }
+            }
+            else if (control.Badge != null)
+            {
+                var color = control.BadgeBack ?? Style.Db.Error;
+                var rect = control.ClientRectangle;
                 using (var brush_fore = new SolidBrush(Style.Db.ErrorColor))
                 {
                     float borsize = 1F * Config.Dpi;
                     using (var font = new Font(control.Font.FontFamily, control.Font.Size * control.BadgeSize))
                     {
-                        if (string.IsNullOrEmpty(control.Badge) || control.Badge == "" || control.Badge == " ")
+                        int hasx = (int)(control.BadgeOffsetX * Config.Dpi), hasy = (int)(control.BadgeOffsetY * Config.Dpi);
+                        if (string.IsNullOrWhiteSpace(control.Badge))
                         {
-                            var size = (int)Math.Floor(g.MeasureString(Config.NullText, font).Width / 2);
-                            var rect_badge = new RectangleF(rect.Right - size - control.BadgeOffsetX * Config.Dpi, control.BadgeOffsetY * Config.Dpi, size, size);
-
+                            var size = (int)(g.MeasureString(Config.NullText, font).Height);
+                            var rect_badge = PaintBadge(rect, control.BadgeAlign, hasx, hasy, size, size);
                             using (var brush = new SolidBrush(color))
                             {
                                 if (control.BadgeMode)
@@ -708,27 +714,27 @@ namespace AntdUI
                         }
                         else
                         {
+                            var size = g.MeasureString(control.Badge, font).Size();
                             using (var s_f = SF_NoWrap())
                             {
-                                var size = g.MeasureString(control.Badge, font);
-                                var size_badge = size.Height * 1.2F;
+                                int size_badge = (int)(size.Height * 1.2F);
                                 if (size.Height > size.Width)
                                 {
-                                    var rect_badge = new RectangleF(rect.Right - size_badge - control.BadgeOffsetX * Config.Dpi, control.BadgeOffsetY * Config.Dpi, size_badge, size_badge);
+                                    var rect_badge = PaintBadge(rect, control.BadgeAlign, hasx, hasy, size_badge, size_badge);
                                     using (var brush = new SolidBrush(color))
                                     {
                                         g.FillEllipse(brush, rect_badge);
-                                        using (var pen = new Pen(brush_fore.Color, borsize))
-                                        {
-                                            g.DrawEllipse(pen, rect_badge);
-                                        }
+                                    }
+                                    using (var pen = new Pen(brush_fore.Color, borsize))
+                                    {
+                                        g.DrawEllipse(pen, rect_badge);
                                     }
                                     g.DrawStr(control.Badge, font, brush_fore, rect_badge, s_f);
                                 }
                                 else
                                 {
-                                    var w_badge = size.Width * 1.2F;
-                                    var rect_badge = new RectangleF(rect.Right - w_badge - control.BadgeOffsetX * Config.Dpi, control.BadgeOffsetY * Config.Dpi, w_badge, size_badge);
+                                    int w_badge = (int)(size.Width * 1.2F);
+                                    var rect_badge = PaintBadge(rect, control.BadgeAlign, hasx, hasy, w_badge, size_badge);
                                     using (var brush = new SolidBrush(color))
                                     {
                                         using (var path = rect_badge.RoundPath(rect_badge.Height))
@@ -749,6 +755,25 @@ namespace AntdUI
             }
         }
 
+        static Rectangle PaintBadge(Rectangle rect, TAlignFrom align, int x, int y, int w, int h)
+        {
+            switch (align)
+            {
+                case TAlignFrom.TL:
+                    return new Rectangle(rect.X + x, rect.Y + y, w, h);
+                case TAlignFrom.BL:
+                    return new Rectangle(rect.X + x, rect.Bottom - y - h, w, h);
+                case TAlignFrom.BR:
+                    return new Rectangle(rect.Right - x - w, rect.Bottom - y - h, w, h);
+                case TAlignFrom.Top:
+                    return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + y, w, h);
+                case TAlignFrom.Bottom:
+                    return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Bottom - y - h, w, h);
+                case TAlignFrom.TR:
+                default:
+                    return new Rectangle(rect.Right - x - w, rect.Y + y, w, h);
+            }
+        }
         public static void PaintBadge(this IControl control, DateBadge badge, Font font, RectangleF rect, Graphics g)
         {
             var color = badge.Fill ?? control.BadgeBack ?? Style.Db.Error;

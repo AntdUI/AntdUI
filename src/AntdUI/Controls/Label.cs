@@ -256,6 +256,7 @@ namespace AntdUI
         /// 超出文字提示配置
         /// </summary>
         [Browsable(false)]
+        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
         public TooltipConfig? TooltipConfig { get; set; }
 
         #endregion

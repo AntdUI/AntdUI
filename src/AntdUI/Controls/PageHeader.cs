@@ -585,7 +585,7 @@ namespace AntdUI
                 }
                 if (showButton) IPaintButton(g, rect, fore, fillsecondary, size);
             }
-
+            this.PaintBadge(g);
             if (showDivider)
             {
                 int thickness = (int)(dividerthickness * Config.Dpi), margin = (int)(dividerMargin * Config.Dpi);

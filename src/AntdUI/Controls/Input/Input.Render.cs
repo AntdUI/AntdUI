@@ -192,41 +192,23 @@ namespace AntdUI
         {
             if (prefixText != null)
             {
-                using (var fore = new SolidBrush(_fore))
+                using (var fore = new SolidBrush(prefixFore ?? _fore))
                 {
                     g.DrawStr(prefixText, Font, fore, rect_l, sf_center);
                 }
             }
-            else if (prefixSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(prefixSvg, rect_l, fore ?? Style.Db.Text))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_l);
-                }
-            }
+            else if (prefixSvg != null) g.GetImgExtend(prefixSvg, rect_l, prefixFore ?? fore ?? Style.Db.Text);
             else if (prefix != null) g.DrawImage(prefix, rect_l);
 
-            if (is_clear)
-            {
-                using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect_r, hover_clear ? Style.Db.TextTertiary : Style.Db.TextQuaternary))
-                {
-                    if (bmp != null) g.DrawImage(bmp, rect_r);
-                }
-            }
+            if (is_clear) g.GetImgExtend(SvgDb.IcoError, rect_r, hover_clear ? Style.Db.TextTertiary : Style.Db.TextQuaternary);
             else if (suffixText != null)
             {
-                using (var fore = new SolidBrush(_fore))
+                using (var fore = new SolidBrush(suffixFore ?? _fore))
                 {
                     g.DrawStr(suffixText, Font, fore, rect_r, sf_center);
                 }
             }
-            else if (suffixSvg != null)
-            {
-                using (var _bmp = SvgExtend.GetImgExtend(suffixSvg, rect_r, fore ?? Style.Db.Text))
-                {
-                    if (_bmp != null) g.DrawImage(_bmp, rect_r);
-                }
-            }
+            else if (suffixSvg != null) g.GetImgExtend(suffixSvg, rect_r, suffixFore ?? fore ?? Style.Db.Text);
             else if (suffix != null) g.DrawImage(suffix, rect_r);
             else PaintRIcon(g, rect_r);
         }
