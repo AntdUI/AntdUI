@@ -57,7 +57,7 @@ Winform UI library use Ant Design 5.0
 ➡️| [**Pagination**](https://gitee.com/antdui/AntdUI/wikis/控件/Pagination) | ✅ | ✅ |
 ➡️| [**Steps**](https://gitee.com/antdui/AntdUI/wikis/控件/Steps) | ❎ | ❎ |
 ||||
-⬇️| Data Entry `12` | Animation | Disable |
+⬇️| Data Entry `13` | Animation | Disable |
 ➡️| [**Checkbox**](https://gitee.com/antdui/AntdUI/wikis/控件/Checkbox) | ✅ | ✅ |
 ➡️| [**ColorPicker**](https://gitee.com/antdui/AntdUI/wikis/控件/ColorPicker) | ✅ | ✅ |
 ➡️| [**DatePicker**](https://gitee.com/antdui/AntdUI/wikis/控件/DatePicker) | ✅ | ✅ |
@@ -70,6 +70,7 @@ Winform UI library use Ant Design 5.0
 ➡️| [**Slider**](https://gitee.com/antdui/AntdUI/wikis/控件/Slider) | ✅ | ❎ |
 ➡️| [**Switch**](https://gitee.com/antdui/AntdUI/wikis/控件/Switch) | ✅ | ✅ |
 ➡️| [**TimePicker**](https://gitee.com/antdui/AntdUI/wikis/控件/TimePicker) | ✅ | ✅ |
+➡️| [**UploadDragger**](https://gitee.com/antdui/AntdUI/wikis/控件/UploadDragger) | ✅ | ❎ |
 ||||
 ⬇️| Data Display `16` | Animation | Disable |
 ➡️| [**Avatar**](https://gitee.com/antdui/AntdUI/wikis/控件/Avatar) | ❎ | ❎ |

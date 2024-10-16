@@ -323,7 +323,6 @@ namespace AntdUI
                     Thread.Sleep(config.AutoClose * 1000);
                     CloseMe(true);
                 }
-                else CloseMe(true);
             });
             PlayAnimation();
             return false;

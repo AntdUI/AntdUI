@@ -444,6 +444,15 @@ namespace AntdUI
             /// 自定义按钮样式回调
             /// </summary>
             public Action<string, Button>? OnButtonStyle { get; set; }
+
+            public void Close()
+            {
+                if (Layered == null) return;
+                Layered.BeginInvoke(new Action(() =>
+                {
+                    Layered?.Close();
+                }));
+            }
         }
 
         /// <summary>
