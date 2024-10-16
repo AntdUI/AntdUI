@@ -430,7 +430,7 @@ namespace AntdUI
                 t_max_width = size_title.Width;
                 if (config.CloseIcon) t_max_width += close_size + sp;
             }
-            var size_desc = g.MeasureString(config.Text, Font, t_max_width, s_f_left).Size();
+            var size_desc = g.MeasureString(config.Text, Font, t_max_width).Size();
             int width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
             int max_width = width_desc > width_title ? width_desc : width_title;
             if (config.Icon == TType.None)

@@ -320,10 +320,7 @@ namespace AntdUI
                         {
                             foreach (var it in cache_font)
                             {
-                                if (it.text == "\t")
-                                {
-                                    return it.i;
-                                }
+                                if (it.text == "\t") return it.i;
                             }
                             return -1;
                         }

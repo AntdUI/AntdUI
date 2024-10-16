@@ -229,6 +229,7 @@ namespace AntdUI
 
             "\r","\t","\n","\r\n"
         };
+        #region 查找
 
         /// <summary>
         /// 查找前面
@@ -254,6 +255,39 @@ namespace AntdUI
             }
             return end;
         }
+
+        /// <summary>
+        /// 查找行前面
+        /// </summary>
+        int FindStartY(CacheFont[] cache_font, int index)
+        {
+            int y = cache_font[index].rect.Y;
+            int tmp = 0;
+            for (int i = index; i >= 0; i--)
+            {
+                if (cache_font[i].rect.Y == y) tmp = i + 1;
+                else return tmp;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// 查找行后面
+        /// </summary>
+        int FindEndY(CacheFont[] cache_font, int index)
+        {
+            int y = cache_font[index].rect.Y;
+            int tmp = 0;
+            int end = cache_font.Length;
+            for (int i = index + 1; i < end; i++)
+            {
+                if (cache_font[i].rect.Y == y) tmp = i + 1;
+                else return tmp == 0 ? index : tmp;
+            }
+            return end;
+        }
+
+        #endregion
 
         #region 鼠标进出
 

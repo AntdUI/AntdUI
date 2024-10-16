@@ -430,13 +430,21 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (cache_font == null) return;
-                    int index = selectionStartTemp;
-                    if (index > 0)
+                    if (multiline)
                     {
-                        int start = FindStart(cache_font, index - 1);
-                        if (start == index) return;
-                        SelectionStart = start;
+                        if (cache_font == null) return;
+                        int index = selectionStartTemp;
+                        if (index > 0)
+                        {
+                            int start = FindStartY(cache_font, index - 1);
+                            if (start == index) return;
+                            SelectionStart = start;
+                        }
+                    }
+                    else
+                    {
+                        if (ScrollYShow) ScrollY = 0;
+                        SelectionStart = 0;
                     }
                 }
             }
@@ -462,11 +470,20 @@ namespace AntdUI
                 }
                 else
                 {
-                    int index = selectionStartTemp + selectionLength;
-                    if (index > cache_font.Length - 1) return;
-                    int start = FindEnd(cache_font, index);
-                    if (start == index) return;
-                    SelectionStart = start;
+                    if (multiline)
+                    {
+                        int index = selectionStartTemp + selectionLength;
+                        if (index > cache_font.Length - 1) return;
+                        int start = FindEndY(cache_font, index);
+                        if (start == index) return;
+                        SelectionStart = start;
+                    }
+                    else
+                    {
+                        if (ScrollYShow) ScrollY = ScrollYMax;
+                        SelectionLength = 0;
+                        SelectionStart = cache_font.Length;
+                    }
                 }
             }
         }
