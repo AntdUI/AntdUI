@@ -482,29 +482,29 @@ namespace AntdUI
             {
                 if (TextAlign == HorizontalAlignment.Center)
                 {
-                    if (StartFocused) SetCaretX(rect_d_l.X + rect_d_l.Width / 2);
-                    else if (EndFocused) SetCaretX(rect_d_r.X + rect_d_r.Width / 2);
+                    if (StartFocused) CaretInfo.X = rect_d_l.X + rect_d_l.Width / 2;
+                    else if (EndFocused) CaretInfo.X = rect_d_r.X + rect_d_r.Width / 2;
                 }
                 else if (TextAlign == HorizontalAlignment.Right)
                 {
-                    if (StartFocused) SetCaretX(rect_d_l.Right);
-                    else if (EndFocused) SetCaretX(rect_d_r.Right);
+                    if (StartFocused) CaretInfo.X = rect_d_l.Right;
+                    else if (EndFocused) CaretInfo.X = rect_d_r.Right;
                 }
                 else
                 {
-                    if (StartFocused) SetCaretX(rect_d_l.X);
-                    else if (EndFocused) SetCaretX(rect_d_r.X);
+                    if (StartFocused) CaretInfo.X = rect_d_l.X;
+                    else if (EndFocused) CaretInfo.X = rect_d_r.X;
                 }
             }
             else
             {
                 if (StartFocused)
                 {
-                    if (!rect_d_l.Contains(CurrentCaret)) ModeRangeCaretPostion(true);
+                    if (!rect_d_l.Contains(CaretInfo.Rect)) ModeRangeCaretPostion(true);
                 }
                 else if (EndFocused)
                 {
-                    if (!rect_d_r.Contains(CurrentCaret)) ModeRangeCaretPostion(true);
+                    if (!rect_d_r.Contains(CaretInfo.Rect)) ModeRangeCaretPostion(true);
                 }
             }
         }

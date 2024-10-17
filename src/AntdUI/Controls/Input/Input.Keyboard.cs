@@ -147,7 +147,7 @@ namespace AntdUI
                     {
                         SpeedScrollTo = true;
                         SelectionLength = 0;
-                        var index = GetCaretPostion(CurrentCaret.X, CurrentCaret.Y - (rect_text.Height - cache_font[0].rect.Height));
+                        var index = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - (rect_text.Height - cache_font[0].rect.Height));
                         SelectionStart = index;
                         SpeedScrollTo = false;
                         return true;
@@ -158,7 +158,7 @@ namespace AntdUI
                     {
                         SpeedScrollTo = true;
                         SelectionLength = 0;
-                        var index = GetCaretPostion(CurrentCaret.X, CurrentCaret.Y + (rect_text.Height - cache_font[0].rect.Height));
+                        var index = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + (rect_text.Height - cache_font[0].rect.Height));
                         SelectionStart = index;
                         SpeedScrollTo = false;
                         return true;
@@ -337,10 +337,10 @@ namespace AntdUI
                 }
                 else
                 {
-                    int index = selectionStartTemp;
-                    if (index > cache_font.Length - 1) index = cache_font.Length - 1;
+                    int index = selectionStartTemp, cend = cache_font.Length - 1;
+                    if (index > cend) index = cend;
                     var it = cache_font[index];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out _);
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font);
                     if (nearest == null || nearest.i == selectionStartTemp)
                     {
                         SelectionStart = index - 1;
@@ -349,7 +349,7 @@ namespace AntdUI
                     else
                     {
                         SelectionStart = nearest.i;
-                        SelectionLength += index - nearest.i;
+                        SelectionLength += index - nearest.i + (index >= cend ? 1 : 0);
                     }
                 }
             }
@@ -362,7 +362,7 @@ namespace AntdUI
                     int end = SelectionStart;
                     if (end > cache_font.Length - 1) end = cache_font.Length - 1;
                     var it = cache_font[end];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out _);
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font);
                     if (nearest == null || nearest.i == selectionStart) SelectionStart--;
                     else SelectionStart = nearest.i;
                 }
@@ -383,9 +383,7 @@ namespace AntdUI
                     int index = selectionStartTemp + selectionLength;
                     if (index > cache_font.Length - 1) return;
                     var it = cache_font[index];
-                    CacheFont? nearest;
-                    if (it.ret) nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
-                    else nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out _);
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font);
                     if (nearest == null || nearest.i == index) SelectionLength++;
                     else SelectionLength += nearest.i - index;
                     CurrentPosIndex = selectionStart + selectionLength;
@@ -401,9 +399,7 @@ namespace AntdUI
                     int end = SelectionStart;
                     if (end > cache_font.Length - 1) return;
                     var it = cache_font[end];
-                    CacheFont? nearest;
-                    if (it.ret) nearest = FindNearestFont(it.rect_old.Right, it.rect_old.Bottom + it.rect_old.Height / 2, cache_font, out _);
-                    else nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out _);
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font);
                     if (nearest == null || nearest.i == selectionStart) SelectionStart++;
                     else SelectionStart = nearest.i;
                 }
@@ -438,6 +434,7 @@ namespace AntdUI
                         {
                             int start = FindStartY(cache_font, index - 1);
                             if (start == index) return;
+                            CaretInfo.Place = false;
                             SelectionStart = start;
                         }
                     }
@@ -474,8 +471,9 @@ namespace AntdUI
                     {
                         int index = selectionStartTemp + selectionLength;
                         if (index > cache_font.Length - 1) return;
-                        int start = FindEndY(cache_font, index);
+                        int start = FindEndY(cache_font, index) + 1;
                         if (start == index) return;
+                        CaretInfo.Place = true;
                         SelectionStart = start;
                     }
                     else

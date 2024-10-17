@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -263,12 +264,12 @@ namespace AntdUI
                 }
             }
             g.ResetClip();
-            if (showCaret && showCaretFlag)
+            if (CaretInfo.Show && CaretInfo.Flag)
             {
                 g.TranslateTransform(-ScrollX, -ScrollY);
                 using (var brush = new SolidBrush(CaretColor ?? _fore))
                 {
-                    g.FillRectangle(brush, CurrentCaret);
+                    g.FillRectangle(brush, CaretInfo.Rect);
                 }
                 g.ResetTransform();
             }
@@ -284,13 +285,18 @@ namespace AntdUI
                     var first = cache_font[start];
                     using (var brush = new SolidBrush(selection))
                     {
+                        var list = new Dictionary<int, CacheFont>(6);
                         for (int i = start; i <= end; i++)
                         {
                             var it = cache_font[i];
-                            bool p = true;
-                            if (it.ret && it.ret_has) p = false;
-                            if (p) g.FillRectangle(brush, it.rect);
+                            if (it.ret) list.Add(it.line + 1, it);
+                            else
+                            {
+                                if (list.ContainsKey(it.line)) list.Remove(it.line);
+                                g.FillRectangle(brush, it.rect);
+                            }
                         }
+                        foreach (var it in list) g.FillRectangle(brush, it.Value.rect.X, it.Value.rect.Y, it.Value.width, it.Value.rect.Height);
                     }
                 }
                 catch { }
@@ -398,7 +404,7 @@ namespace AntdUI
                 if (value < 0) value = 0;
                 if (scrolly == value) return;
                 scrolly = value;
-                showCaretFlag = true;
+                CaretInfo.flag = true;
                 Invalidate();
             }
         }
@@ -410,15 +416,15 @@ namespace AntdUI
             {
                 if (ScrollYShow)
                 {
-                    int y = CurrentCaret.Y - scrolly;
+                    int y = CaretInfo.Y - scrolly;
                     if (y < rect_text.Y) ScrollY = r.Y;
-                    else if (y + CurrentCaret.Height > rect_text.Height) ScrollY = r.Bottom;
+                    else if (y + CaretInfo.Height > rect_text.Height) ScrollY = r.Bottom;
                 }
                 else if (ScrollXShow)
                 {
-                    int x = CurrentCaret.X - scrollx;
+                    int x = CaretInfo.X - scrollx;
                     if (x < rect_text.X) ScrollX = r.X;
-                    else if (x + CurrentCaret.Width > rect_text.Width) ScrollX = r.Right;
+                    else if (x + CaretInfo.Width > rect_text.Width) ScrollX = r.Right;
                 }
                 else ScrollX = ScrollY = 0;
             }
@@ -428,11 +434,18 @@ namespace AntdUI
         {
             if (ScrollYShow)
             {
-                int tosize = CurrentCaret.Height;
+                int tosize = CaretInfo.Height;
                 int count = 0;
+                var oldy = new List<int>(2);
                 while (true)
                 {
-                    int y = CurrentCaret.Y - scrolly;
+                    int y = CaretInfo.Y - scrolly;
+                    oldy.Add(y);
+                    if (oldy.Count > 1)
+                    {
+                        if (oldy.Contains(y)) return;
+                        else oldy.Clear();
+                    }
                     if (y < rect_text.Y)
                     {
                         int value = ScrollY - tosize;
@@ -441,7 +454,7 @@ namespace AntdUI
                         count++;
                         if (count < 4) System.Threading.Thread.Sleep(50);
                     }
-                    else if (y + CurrentCaret.Height > rect_text.Height)
+                    else if (y + CaretInfo.Height > rect_text.Height)
                     {
                         int value = ScrollY + tosize;
                         ScrollY = value;
@@ -456,9 +469,16 @@ namespace AntdUI
             {
                 int tosize = r.Width;
                 int count = 0;
+                var oldx = new List<int>(2);
                 while (true)
                 {
-                    int x = CurrentCaret.X - scrollx;
+                    int x = CaretInfo.X - scrollx;
+                    oldx.Add(x);
+                    if (oldx.Count > 1)
+                    {
+                        if (oldx.Contains(x)) return;
+                        else oldx.Clear();
+                    }
                     if (x < rect_text.X)
                     {
                         int value = ScrollX - tosize;
@@ -467,7 +487,7 @@ namespace AntdUI
                         count++;
                         if (count < 5) System.Threading.Thread.Sleep(50);
                     }
-                    else if (x + CurrentCaret.Width > rect_text.Width)
+                    else if (x + CaretInfo.Width > rect_text.Width)
                     {
                         int value = ScrollX + tosize;
                         ScrollX = value;

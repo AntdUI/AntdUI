@@ -105,7 +105,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    SelectionStart = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                    SelectionStart = indeX;
                     SelectionLength = 0;
                     SetCaretPostion(selectionStart);
                 }
@@ -153,7 +153,7 @@ namespace AntdUI
                     return;
                 }
                 if (IMouseMove(e.Location)) SetCursor(true);
-                else if (ReadShowCaret)
+                else if (CaretInfo.ReadShow)
                 {
                     if (rect_text.Contains(e.Location)) SetCursor(true);
                     else SetCursor(false);
@@ -261,27 +261,28 @@ namespace AntdUI
         /// </summary>
         int FindStartY(CacheFont[] cache_font, int index)
         {
-            int y = cache_font[index].rect.Y;
+            int line = cache_font[index].line;
             int tmp = 0;
             for (int i = index; i >= 0; i--)
             {
-                if (cache_font[i].rect.Y == y) tmp = i + 1;
+                if (cache_font[i].line == line) tmp = i;
                 else return tmp;
             }
             return 0;
         }
+
 
         /// <summary>
         /// 查找行后面
         /// </summary>
         int FindEndY(CacheFont[] cache_font, int index)
         {
-            int y = cache_font[index].rect.Y;
+            int line = cache_font[index].line;
             int tmp = 0;
             int end = cache_font.Length;
             for (int i = index + 1; i < end; i++)
             {
-                if (cache_font[i].rect.Y == y) tmp = i + 1;
+                if (cache_font[i].line == line) tmp = i;
                 else return tmp == 0 ? index : tmp;
             }
             return end;

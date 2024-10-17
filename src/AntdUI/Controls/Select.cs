@@ -50,8 +50,8 @@ namespace AntdUI
             {
                 if (_list == value) return;
                 _list = value;
-                ReadShowCaret = value;
-                if (value) ShowCaret = false;
+                CaretInfo.ReadShow = value;
+                if (value) CaretInfo.Show = false;
             }
         }
 
@@ -473,7 +473,7 @@ namespace AntdUI
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
-            if (ReadShowCaret) return;
+            if (CaretInfo.ReadShow) return;
             if (FocusExpandDropdown) TextFocus = true;
         }
 

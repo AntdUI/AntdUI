@@ -113,7 +113,7 @@ namespace AntdUI
                         for (int i = 0; i < font_widths.Count; i++) { font_widths[i].i = i; }
                         cache_font = font_widths.ToArray();
                     }
-                    CurrentCaret.Height = font_height;
+                    CaretInfo.Height = font_height;
                     CalculateRect();
                 });
             }
@@ -132,7 +132,7 @@ namespace AntdUI
                         int font_height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font, 10000, sf_font).Height);
                         if (_text == null)
                         {
-                            CurrentCaret.Height = font_height;
+                            CaretInfo.Height = font_height;
                             return;
                         }
                         var font_widths = new List<CacheFont>(_text.Length);
@@ -210,7 +210,7 @@ namespace AntdUI
                         }
                         for (int i = 0; i < font_widths.Count; i++) { font_widths[i].i = i; }
                         cache_font = font_widths.ToArray();
-                        CurrentCaret.Height = font_height;
+                        CaretInfo.Height = font_height;
                         CalculateRect();
                     });
                 }
@@ -225,7 +225,7 @@ namespace AntdUI
                 unicodeInfo == UnicodeCategory.ModifierLetter;
         }
 
-        class CacheFont
+        internal class CacheFont
         {
             public CacheFont(string _text, bool _emoji, int _width)
             {
@@ -234,14 +234,15 @@ namespace AntdUI
                 width = _width;
             }
             public int i { get; set; }
+            public int line { get; set; }
             public string text { get; set; }
-            public Rectangle rect_old { get; set; }
             public Rectangle rect { get; set; }
-            public bool emoji { get; set; }
             public bool ret { get; set; }
-            public bool ret_has { get; set; }
+            public bool emoji { get; set; }
             public int width { get; set; }
             internal bool show { get; set; }
+
+            public override string ToString() => text;
         }
 
         #endregion
@@ -253,57 +254,55 @@ namespace AntdUI
         internal void CalculateRect()
         {
             var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight) : ReadRectangle;
-            int sps = (int)(CurrentCaret.Height * .4F), sps2 = sps * 2;
+            int sps = (int)(CaretInfo.Height * .4F), sps2 = sps * 2;
             RectAuto(rect, sps, sps2);
             if (cache_font == null)
             {
                 if (ModeRange)
                 {
                     int center = rect_text.Width / 2;
-                    int h2 = CurrentCaret.Height / 2;
-                    rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CurrentCaret.Height) / 2), CurrentCaret.Height, CurrentCaret.Height);
+                    int h2 = CaretInfo.Height / 2;
+                    rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
                     rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
-                    rect_d_r = new Rectangle(rect_d_l.Right + CurrentCaret.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
+                    rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
                 }
-                SetCaretXY(rect_text.X, rect_text.Y);
+                CaretInfo.Place = false;
+                CaretInfo.SetXY(rect_text.X, rect_text.Y);
             }
             else
             {
                 if (multiline)
                 {
-                    int lineHeight = CurrentCaret.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
-                    int usex = 0, usey = 0;
-
-                    CacheFont? ret_select = null;
+                    int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
+                    int usex = 0, usey = 0, line = 0;
                     foreach (var it in cache_font)
                     {
                         it.show = false;
                         if (it.text == "\r")
                         {
-                            ret_select = null;
-                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
+                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CaretInfo.Height);
                             continue;
                         }
                         else if (it.text == "\n" || it.text == "\r\n")
                         {
-                            ret_select = it;
+                            line++;
                             it.ret = true;
-                            it.rect_old = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
                             usey += lineHeight;
                             usex = 0;
-                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
+                            it.line = line;
+                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, 0, CaretInfo.Height);
+                            line++;
                             continue;
                         }
                         else if (usex + it.width > rect_text.Width)
                         {
-                            ret_select = null;
+                            line++;
                             usey += lineHeight;
                             usex = 0;
                         }
-                        if (ret_select != null) ret_select.ret_has = true;
-                        it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CurrentCaret.Height);
+                        it.line = line;
+                        it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CaretInfo.Height);
                         usex += it.width;
-                        ret_select = null;
                     }
                 }
                 else
@@ -312,10 +311,10 @@ namespace AntdUI
                     if (ModeRange)
                     {
                         int center = rect_text.Width / 2;
-                        int h2 = CurrentCaret.Height / 2;
-                        rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CurrentCaret.Height) / 2), CurrentCaret.Height, CurrentCaret.Height);
+                        int h2 = CaretInfo.Height / 2;
+                        rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
                         rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
-                        rect_d_r = new Rectangle(rect_d_l.Right + CurrentCaret.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
+                        rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
                         int GetTabIndex()
                         {
                             foreach (var it in cache_font)
@@ -332,7 +331,7 @@ namespace AntdUI
                             {
                                 var it = cache_font[i];
                                 it.show = true;
-                                it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CurrentCaret.Height);
+                                it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                                 usex += it.width;
                                 i_l.Add(i);
                             }
@@ -343,7 +342,7 @@ namespace AntdUI
                             {
                                 var it = cache_font[i];
                                 it.show = true;
-                                it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CurrentCaret.Height);
+                                it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                                 usex += it.width;
                                 i_l.Add(i);
                             }
@@ -355,7 +354,7 @@ namespace AntdUI
                             {
                                 var it = cache_font[i];
                                 it.show = true;
-                                it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CurrentCaret.Height);
+                                it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
                                 user += it.width;
                                 i_r.Add(i);
                             }
@@ -367,7 +366,7 @@ namespace AntdUI
                             {
                                 var it = cache_font[i];
                                 it.show = true;
-                                it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CurrentCaret.Height);
+                                it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
                                 user += it.width;
                                 i_r.Add(i);
                             }
@@ -428,7 +427,7 @@ namespace AntdUI
                         foreach (var it in cache_font)
                         {
                             it.show = true;
-                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y, it.width, CurrentCaret.Height);
+                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                             usex += it.width;
                         }
 
@@ -545,7 +544,7 @@ namespace AntdUI
 
         void RectAuto(Rectangle rect, int sps, int sps2)
         {
-            int read_height = CurrentCaret.Height;
+            int read_height = CaretInfo.Height;
             bool has_prefixText = prefixText != null, has_suffixText = suffixText != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
 
             if (is_clear)
