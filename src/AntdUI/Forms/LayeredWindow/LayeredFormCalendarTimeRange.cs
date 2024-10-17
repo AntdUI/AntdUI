@@ -952,98 +952,92 @@ namespace AntdUI
                     {
                         if (left_buttons != null)
                         {
-                            using (var bmp = new Bitmap(left_button, rect_read.Height))
+                            var state = g.Save();
+                            g.SetClip(new Rectangle(rect_read.X, rect_read.Y, left_button, rect_read.Height));
+                            g.TranslateTransform(rect_read.X, rect_read.Y - scrollY_left.Value);
+                            foreach (var it in left_buttons)
                             {
-                                using (var g2 = Graphics.FromImage(bmp).HighLay())
+                                using (var path = it.rect_read.RoundPath(Radius))
                                 {
-                                    g2.TranslateTransform(0, -scrollY_left.Value);
-                                    foreach (var it in left_buttons)
+                                    if (it.hover)
                                     {
-                                        using (var path = it.rect_read.RoundPath(Radius))
+                                        using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
                                         {
-                                            if (it.hover)
-                                            {
-                                                using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                                {
-                                                    g2.FillPath(brush_hove, path);
-                                                }
-                                            }
-                                            g2.DrawStr(it.v, Font, brush_fore, it.rect_text, s_f_LE);
+                                            g.FillPath(brush_hove, path);
                                         }
                                     }
+                                    g.DrawStr(it.v, Font, brush_fore, it.rect_text, s_f_LE);
                                 }
-                                g.DrawImage(bmp, new Rectangle(rect_read.X, rect_read.Y, bmp.Width, bmp.Height));
                             }
+                            g.Restore(state);
                             scrollY_left.Paint(g);
                         }
 
                         if (calendar_time != null)
                         {
-                            using (var bmp = new Bitmap(t_time * 3, rect_read.Height - t_button))
+                            var state = g.Save();
+                            int tx = t_x + rect_read.X + t_one_width;
+                            g.SetClip(new Rectangle(tx, rect_read.Y, t_time * 3, rect_button.Y - 10));
                             using (var brush_bg = new SolidBrush(Style.Db.PrimaryBg))
                             {
-                                using (var g2 = Graphics.FromImage(bmp).HighLay())
+                                g.TranslateTransform(tx, 10 - scrollY_h.Value);
+                                for (int i = 0; i < calendar_time.Count; i++)
                                 {
-                                    g2.TranslateTransform(0, -scrollY_h.Value);
-                                    for (int i = 0; i < calendar_time.Count; i++)
+                                    if (i == 24)
                                     {
-                                        if (i == 24)
+                                        g.ResetTransform();
+                                        g.TranslateTransform(tx, 10 - scrollY_m.Value);
+                                    }
+                                    else if (i == 84)
+                                    {
+                                        g.ResetTransform();
+                                        g.TranslateTransform(tx, 10 - scrollY_s.Value);
+                                    }
+                                    var it = calendar_time[i];
+                                    using (var path = it.rect_read.RoundPath(Radius))
+                                    {
+                                        if (ETime.HasValue)
                                         {
-                                            g2.ResetTransform();
-                                            g2.TranslateTransform(0, -scrollY_m.Value);
+                                            switch (it.x)
+                                            {
+                                                case 0:
+                                                    if (it.t == ETime.Value.Hour) g.FillPath(brush_bg, path);
+                                                    break;
+                                                case 1:
+                                                    if (it.t == ETime.Value.Minute) g.FillPath(brush_bg, path);
+                                                    break;
+                                                case 2:
+                                                    if (it.t == ETime.Value.Second) g.FillPath(brush_bg, path);
+                                                    break;
+                                            }
                                         }
-                                        else if (i == 84)
+                                        else if (STime.HasValue)
                                         {
-                                            g2.ResetTransform();
-                                            g2.TranslateTransform(0, -scrollY_s.Value);
+                                            switch (it.x)
+                                            {
+                                                case 0:
+                                                    if (it.t == STime.Value.Hour) g.FillPath(brush_bg, path);
+                                                    break;
+                                                case 1:
+                                                    if (it.t == STime.Value.Minute) g.FillPath(brush_bg, path);
+                                                    break;
+                                                case 2:
+                                                    if (it.t == STime.Value.Second) g.FillPath(brush_bg, path);
+                                                    break;
+                                            }
                                         }
-                                        var it = calendar_time[i];
-                                        using (var path = it.rect_read.RoundPath(Radius))
+                                        if (it.hover)
                                         {
-                                            if (ETime.HasValue)
+                                            using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
                                             {
-                                                switch (it.x)
-                                                {
-                                                    case 0:
-                                                        if (it.t == ETime.Value.Hour) g2.FillPath(brush_bg, path);
-                                                        break;
-                                                    case 1:
-                                                        if (it.t == ETime.Value.Minute) g2.FillPath(brush_bg, path);
-                                                        break;
-                                                    case 2:
-                                                        if (it.t == ETime.Value.Second) g2.FillPath(brush_bg, path);
-                                                        break;
-                                                }
+                                                g.FillPath(brush_hove, path);
                                             }
-                                            else if (STime.HasValue)
-                                            {
-                                                switch (it.x)
-                                                {
-                                                    case 0:
-                                                        if (it.t == STime.Value.Hour) g2.FillPath(brush_bg, path);
-                                                        break;
-                                                    case 1:
-                                                        if (it.t == STime.Value.Minute) g2.FillPath(brush_bg, path);
-                                                        break;
-                                                    case 2:
-                                                        if (it.t == STime.Value.Second) g2.FillPath(brush_bg, path);
-                                                        break;
-                                                }
-                                            }
-                                            if (it.hover)
-                                            {
-                                                using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                                {
-                                                    g2.FillPath(brush_hove, path);
-                                                }
-                                            }
-                                            g2.DrawStr(it.v, Font, brush_fore, it.rect_read, s_f);
                                         }
+                                        g.DrawStr(it.v, Font, brush_fore, it.rect_read, s_f);
                                     }
                                 }
-                                g.DrawImage(bmp, new Rectangle(t_x + rect_read.X + t_one_width, rect_read.Y, bmp.Width, bmp.Height));
                             }
-
+                            g.Restore(state);
                             scrollY_h.Paint(g);
                             scrollY_m.Paint(g);
                             scrollY_s.Paint(g);

@@ -170,52 +170,51 @@ namespace AntdUI
 
                 using (var brush_fore = new SolidBrush(Style.Db.TextBase))
                 {
-                    using (var bmp = new Bitmap(t_width + 20, t_height + 20))
+                    var state = g.Save();
+                    g.SetClip(new Rectangle(0, 10, t_width + 20, t_height));
                     using (var brush_bg = new SolidBrush(Style.Db.PrimaryBg))
                     {
-                        using (var g2 = Graphics.FromImage(bmp).HighLay())
+                        g.TranslateTransform(0, -scrollY_h.Value);
+                        for (int i = 0; i < calendar_time.Count; i++)
                         {
-                            g2.TranslateTransform(0, -scrollY_h.Value);
-                            for (int i = 0; i < calendar_time.Count; i++)
+                            if (i == 24)
                             {
-                                if (i == 24)
+                                g.ResetTransform();
+                                g.TranslateTransform(0, -scrollY_m.Value);
+                            }
+                            else if (i == 84)
+                            {
+                                g.ResetTransform();
+                                g.TranslateTransform(0, -scrollY_s.Value);
+                            }
+                            var it = calendar_time[i];
+                            using (var path = it.rect_read.RoundPath(Radius))
+                            {
+                                switch (it.x)
                                 {
-                                    g2.ResetTransform();
-                                    g2.TranslateTransform(0, -scrollY_m.Value);
+                                    case 0:
+                                        if (it.t == SelDate.Hours) g.FillPath(brush_bg, path);
+                                        break;
+                                    case 1:
+                                        if (it.t == SelDate.Minutes) g.FillPath(brush_bg, path);
+                                        break;
+                                    case 2:
+                                        if (it.t == SelDate.Seconds) g.FillPath(brush_bg, path);
+                                        break;
                                 }
-                                else if (i == 84)
+                                if (it.hover)
                                 {
-                                    g2.ResetTransform();
-                                    g2.TranslateTransform(0, -scrollY_s.Value);
-                                }
-                                var it = calendar_time[i];
-                                using (var path = it.rect_read.RoundPath(Radius))
-                                {
-                                    switch (it.x)
+                                    using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
                                     {
-                                        case 0:
-                                            if (it.t == SelDate.Hours) g2.FillPath(brush_bg, path);
-                                            break;
-                                        case 1:
-                                            if (it.t == SelDate.Minutes) g2.FillPath(brush_bg, path);
-                                            break;
-                                        case 2:
-                                            if (it.t == SelDate.Seconds) g2.FillPath(brush_bg, path);
-                                            break;
+                                        g.FillPath(brush_hove, path);
                                     }
-                                    if (it.hover)
-                                    {
-                                        using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                        {
-                                            g2.FillPath(brush_hove, path);
-                                        }
-                                    }
-                                    g2.DrawStr(it.v, Font, brush_fore, it.rect_read, s_f);
                                 }
+                                g.DrawStr(it.v, Font, brush_fore, it.rect_read, s_f);
                             }
                         }
-                        g.DrawImage(bmp, new Rectangle(0, 10, bmp.Width, bmp.Height), new Rectangle(0, 10, bmp.Width, bmp.Height), GraphicsUnit.Pixel);
                     }
+                    g.Restore(state);
+
                     scrollY_h.Paint(g);
                     scrollY_m.Paint(g);
                     scrollY_s.Paint(g);

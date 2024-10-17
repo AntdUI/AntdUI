@@ -75,6 +75,26 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
+        float iconratio = 1F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(1F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                if (IsHandleCreated)
+                {
+                    ChangeList();
+                    Invalidate();
+                }
+            }
+        }
+
         int radius = 6;
         /// <summary>
         /// 圆角
@@ -382,8 +402,8 @@ namespace AntdUI
             bool has = HasSub(items);
             Helper.GDI(g =>
             {
-                var size = g.MeasureString(Config.NullText, Font);
-                int icon_size = (int)(size.Height), gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
+                var size = g.MeasureString(Config.NullText, Font).Size();
+                int icon_size = (int)(size.Height * iconratio), gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
 
                 check_radius = icon_size * .2F;
                 if (CheckStrictly && has && items[0].PARENT == null && items[0].PARENTITEM == null)

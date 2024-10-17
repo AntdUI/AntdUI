@@ -1292,28 +1292,24 @@ namespace AntdUI
                     {
                         if (left_buttons != null)
                         {
-                            using (var bmp = new Bitmap(left_button, rect_read.Height))
+                            var state = g.Save();
+                            g.SetClip(new Rectangle(rect_read.X, rect_read.Y, left_button, rect_read.Height));
+                            g.TranslateTransform(rect_read.X, rect_read.Y - scrollY_left.Value);
+                            foreach (var it in left_buttons)
                             {
-                                using (var g2 = Graphics.FromImage(bmp).HighLay())
+                                using (var path = it.rect_read.RoundPath(Radius))
                                 {
-                                    g2.TranslateTransform(0, -scrollY_left.Value);
-                                    foreach (var it in left_buttons)
+                                    if (it.hover)
                                     {
-                                        using (var path = it.rect_read.RoundPath(Radius))
+                                        using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
                                         {
-                                            if (it.hover)
-                                            {
-                                                using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                                {
-                                                    g2.FillPath(brush_hove, path);
-                                                }
-                                            }
-                                            g2.DrawStr(it.v, Font, brush_fore, it.rect_text, s_f_LE);
+                                            g.FillPath(brush_hove, path);
                                         }
                                     }
+                                    g.DrawStr(it.v, Font, brush_fore, it.rect_text, s_f_LE);
                                 }
-                                g.DrawImage(bmp, new Rectangle(rect_read.X, rect_read.Y, bmp.Width, bmp.Height));
                             }
+                            g.Restore(state);
                             scrollY_left.Paint(g);
                         }
                     }
