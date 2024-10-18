@@ -63,10 +63,10 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Fore.Value))
                 {
-                    g.DrawStr(Text, font, brush, Rect, Table.StringF(PARENT.column));
+                    g.DrawStr(Text, font, brush, Rect, Table.StringF(PARENT.COLUMN));
                 }
             }
-            else g.DrawStr(Text, font, fore, Rect, Table.StringF(PARENT.column));
+            else g.DrawStr(Text, font, fore, Rect, Table.StringF(PARENT.COLUMN));
         }
 
         internal override Size GetSize(Graphics g, Font font, int gap, int gap2)
@@ -97,7 +97,7 @@ namespace AntdUI
             {
                 Rect = new RectangleF(rect.X + gap + size.Height, rect.Y, rect.Width - size.Height - gap2, rect.Height);
                 if (PARENT == null) return;
-                switch (PARENT.column.Align)
+                switch (PARENT.COLUMN.Align)
                 {
                     case ColumnAlign.Center:
                         var sizec = g.MeasureString(Text, font);

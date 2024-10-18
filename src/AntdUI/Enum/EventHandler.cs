@@ -402,6 +402,7 @@ namespace AntdUI
         /// </summary>
         public Input Input { get; private set; }
     }
+
     public class TableEndEditEventArgs : ITableEventArgs
     {
         public TableEndEditEventArgs(string value, object? record, int rowIndex, int columnIndex) : base(record, rowIndex, columnIndex)
@@ -414,6 +415,7 @@ namespace AntdUI
         /// </summary>
         public string Value { get; private set; }
     }
+
     public class TableSetRowStyleEventArgs : EventArgs
     {
         public TableSetRowStyleEventArgs(object? record, int rowIndex)

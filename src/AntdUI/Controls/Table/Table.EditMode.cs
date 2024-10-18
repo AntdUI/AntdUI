@@ -46,8 +46,7 @@ namespace AntdUI
                 it.ThreadHover?.Dispose();
                 it.ThreadHover = null;
             }
-            TCellColumn column = (TCellColumn)rows[0].cells[i_col];
-            bool multiline = column.column.LineBreak;
+            bool multiline = cell.COLUMN.LineBreak;
             if (cell is TCellText cellText)
             {
                 object? value = null;
@@ -66,7 +65,7 @@ namespace AntdUI
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
                     int height = Helper.GDI(g =>
                     {
-                        if (multiline) return (int)Math.Ceiling(g.MeasureString(value?.ToString(), Font, cell.rect.Width).Height * 1.4F);
+                        if (multiline) return (int)Math.Ceiling(g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height * 1.4F);
                         return (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
                     });
                     var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
@@ -83,8 +82,8 @@ namespace AntdUI
                             }
                         }
                     });
-                    if (cellText.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
-                    else if (cellText.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
+                    if (cellText.COLUMN.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
+                    else if (cellText.COLUMN.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
                     CellBeginEditInputStyle?.Invoke(this, new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, ref edit_input));
                     Controls.Add(edit_input);
                     edit_input.Focus();
@@ -114,7 +113,7 @@ namespace AntdUI
                             }
                             int height = Helper.GDI(g =>
                             {
-                                if (multiline) return (int)Math.Ceiling(g.MeasureString(value?.ToString(), Font, cell.rect.Width).Height * 1.4F);
+                                if (multiline) return (int)Math.Ceiling(g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height * 1.4F);
                                 return (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
                             });
                             var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
@@ -142,8 +141,8 @@ namespace AntdUI
                             CellBeginEditInputStyle?.Invoke(this, new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, ref edit_input));
                             if (template.Value.PARENT != null)
                             {
-                                if (template.Value.PARENT.column.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
-                                else if (template.Value.PARENT.column.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
+                                if (template.Value.PARENT.COLUMN.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
+                                else if (template.Value.PARENT.COLUMN.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
                             }
                             Controls.Add(edit_input);
                             edit_input.Focus();

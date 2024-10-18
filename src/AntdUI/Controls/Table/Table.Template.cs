@@ -168,20 +168,17 @@ namespace AntdUI
             /// 复选框
             /// </summary>
             /// <param name="table">表格</param>
+            /// <param name="column">表头</param>
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="value">值</param>
-            /// <param name="_column">表头</param>
-            public TCellCheck(Table table, PropertyDescriptor? prop, object? ov, bool value, ColumnCheck _column) : base(table, prop, ov)
+            public TCellCheck(Table table, ColumnCheck column, PropertyDescriptor? prop, object? ov, bool value) : base(table, column, prop, ov)
             {
-                column = _column;
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
-                NoTitle = _column.NoTitle;
-                AutoCheck = _column.AutoCheck;
+                NoTitle = column.NoTitle;
+                AutoCheck = column.AutoCheck;
             }
-
-            public ColumnCheck column { get; set; }
 
             #region 选中状态
 
@@ -256,7 +253,7 @@ namespace AntdUI
             public void SetSize(Rectangle _rect, int check_size)
             {
                 RECT = _rect;
-                rect = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
+                RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
             public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
@@ -268,10 +265,7 @@ namespace AntdUI
 
             public bool NoTitle { get; set; }
             public bool AutoCheck { get; set; }
-            public override string ToString()
-            {
-                return Checked.ToString();
-            }
+            public override string ToString() => Checked.ToString();
         }
 
         /// <summary>
@@ -283,19 +277,16 @@ namespace AntdUI
             /// 单选框
             /// </summary>
             /// <param name="table">表格</param>
+            /// <param name="column">表头</param>
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="value">值</param>
-            /// <param name="_column">表头</param>
-            public TCellRadio(Table table, PropertyDescriptor? prop, object? ov, bool value, ColumnRadio _column) : base(table, prop, ov)
+            public TCellRadio(Table table, ColumnRadio column, PropertyDescriptor? prop, object? ov, bool value) : base(table, column, prop, ov)
             {
-                column = _column;
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
-                AutoCheck = _column.AutoCheck;
+                AutoCheck = column.AutoCheck;
             }
-
-            public ColumnRadio column { get; set; }
 
             #region 选中状态
 
@@ -370,7 +361,7 @@ namespace AntdUI
             public void SetSize(Rectangle _rect, int check_size)
             {
                 RECT = _rect;
-                rect = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
+                RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
             public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
@@ -381,10 +372,7 @@ namespace AntdUI
             }
 
             public bool AutoCheck { get; set; }
-            public override string ToString()
-            {
-                return Checked.ToString();
-            }
+            public override string ToString() => Checked.ToString();
         }
 
         /// <summary>
@@ -396,19 +384,16 @@ namespace AntdUI
             /// 开关
             /// </summary>
             /// <param name="table">表格</param>
+            /// <param name="column">表头</param>
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="value">值</param>
-            /// <param name="_column">表头</param>
-            public TCellSwitch(Table table, PropertyDescriptor? prop, object? ov, bool value, ColumnSwitch _column) : base(table, prop, ov)
+            public TCellSwitch(Table table, ColumnSwitch column, PropertyDescriptor? prop, object? ov, bool value) : base(table, column, prop, ov)
             {
-                column = _column;
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
-                AutoCheck = _column.AutoCheck;
+                AutoCheck = column.AutoCheck;
             }
-
-            public ColumnSwitch column { get; set; }
 
             #region 选中状态
 
@@ -583,7 +568,7 @@ namespace AntdUI
             {
                 int check_size2 = check_size * 2;
                 RECT = _rect;
-                rect = new Rectangle(_rect.X + (_rect.Width - check_size2) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size2, check_size);
+                RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size2) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size2, check_size);
             }
 
             public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
@@ -594,10 +579,7 @@ namespace AntdUI
             }
 
             public bool AutoCheck { get; set; }
-            public override string ToString()
-            {
-                return Checked.ToString();
-            }
+            public override string ToString() => Checked.ToString();
         }
 
         /// <summary>
@@ -609,41 +591,39 @@ namespace AntdUI
             /// 普通文本
             /// </summary>
             /// <param name="table">表格</param>
+            /// <param name="column">表头</param>
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
-            /// <param name="_column">表头</param>
-            /// <param name="_value">文本</param>
-            public TCellText(Table table, PropertyDescriptor? prop, object? ov, Column _column, string? _value) : base(table, prop, ov)
+            /// <param name="txt">文本</param>
+            public TCellText(Table table, Column column, PropertyDescriptor? prop, object? ov, string? txt) : base(table, column, prop, ov)
             {
-                column = _column;
-                value = _value;
+                value = txt;
             }
 
             /// <summary>
             /// 值
             /// </summary>
             public string? value { get; set; }
-            public Column column { get; set; }
 
             public override void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
-                rect = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                RECT_REAL = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
             }
 
             public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
-                if (column.LineBreak)
+                if (COLUMN.LineBreak)
                 {
-                    if (column.Width != null)
+                    if (COLUMN.Width != null)
                     {
-                        if (column.Width.EndsWith("%") && float.TryParse(column.Width.TrimEnd('%'), out var f))
+                        if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
                             var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)));
                             MinWidth = (int)Math.Ceiling(size2.Width);
                             return new SizeF(size2.Width + gap2, size2.Height);
                         }
-                        else if (int.TryParse(column.Width, out var i))
+                        else if (int.TryParse(COLUMN.Width, out var i))
                         {
                             var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi));
                             MinWidth = (int)Math.Ceiling(size2.Width);
@@ -656,10 +636,7 @@ namespace AntdUI
                 return new SizeF(size.Width + gap2, size.Height);
             }
 
-            public override string? ToString()
-            {
-                return value;
-            }
+            public override string? ToString() => value;
         }
 
         /// <summary>
@@ -667,24 +644,22 @@ namespace AntdUI
         /// </summary>
         internal class TCellColumn : TCell
         {
-            public TCellColumn(Table table, Column _column) : base(table, null, null)
+            public TCellColumn(Table table, Column column) : base(table, column)
             {
-                column = _column;
-                value = _column.Title;
+                value = column.Title;
             }
 
             /// <summary>
             /// 值
             /// </summary>
             public string value { get; set; }
-            public Column column { get; set; }
 
             public Rectangle rect_up { get; set; }
             public Rectangle rect_down { get; set; }
             public override void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
-                if (column.SortOrder)
+                if (COLUMN.SortOrder)
                 {
                     int icon_sp = (int)(gap * 0.34F), y = _rect.Y + (_rect.Height - (gap * 2) + icon_sp) / 2;
                     rect_up = new Rectangle(_rect.Right - gap2, y, gap, gap);
@@ -695,49 +670,95 @@ namespace AntdUI
             public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
                 var size = g.MeasureString(value, font);
-                SortWidth = column.SortOrder ? (int)(size.Height * 0.8F) : 0;
+                SortWidth = COLUMN.SortOrder ? (int)(size.Height * 0.8F) : 0;
                 MinWidth = (int)Math.Ceiling(size.Width) + gap2 + SortWidth;
                 return new SizeF(size.Width + gap2 + SortWidth, size.Height);
             }
 
             public int SortWidth = 0;
-            public override string ToString()
-            {
-                return value;
-            }
+            public override string ToString() => value;
         }
 
+        /// <summary>
+        /// 单元格
+        /// </summary>
         internal abstract class TCell
         {
-            public TCell(Table table, PropertyDescriptor? prop, object? ov)
+            public TCell(Table table, Column column)
             {
+                COLUMN = column;
+                PARENT = table;
+            }
+
+            public TCell(Table table, Column column, PropertyDescriptor? prop, object? ov)
+            {
+                COLUMN = column;
                 PARENT = table;
                 PROPERTY = prop;
                 VALUE = ov;
             }
+
+            /// <summary>
+            /// 表对象
+            /// </summary>
+            public Table PARENT { get; set; }
+
+            public Column COLUMN { get; set; }
+            /// <summary>
+            /// 列对象
+            /// </summary>
+            public int INDEX { get; set; }
+
             public PropertyDescriptor? PROPERTY { get; set; }
             public object? VALUE { get; set; }
-            public int INDEX { get; set; }
-            public Table PARENT { get; set; }
-            public RowTemplate ROW { get; set; }
+
+            RowTemplate? _ROW = null;
+            /// <summary>
+            /// 行对象
+            /// </summary>
+            public RowTemplate ROW
+            {
+                get
+                {
+                    if (_ROW == null) throw new ArgumentNullException();
+                    return _ROW;
+                }
+            }
+
+            public void SetROW(RowTemplate row)
+            {
+                _ROW = row;
+            }
+
+            #region 区域
+
+            /// <summary>
+            /// 区域
+            /// </summary>
             public Rectangle RECT { get; set; }
-            public Rectangle rect { get; set; }
+
+            /// <summary>
+            /// 显示区域
+            /// </summary>
+            public Rectangle RECT_REAL { get; set; }
+
+            /// <summary>
+            /// 最小宽度
+            /// </summary>
+            public int MinWidth { get; set; }
+
+            /// <summary>
+            /// 鼠标按下
+            /// </summary>
+            public int MouseDown { get; set; }
+
+            public bool CONTAIN(int x, int y) => RECT.Contains(x, y);
+            public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x, y);
 
             public abstract void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2);
             public abstract SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2);
 
-            public int MinWidth { get; set; }
-
-            public int MouseDown { get; set; }
-
-            public bool CONTAINS(int x, int y)
-            {
-                return RECT.Contains(x, y);
-            }
-            public bool Contains(int x, int y)
-            {
-                return rect.Contains(x, y);
-            }
+            #endregion
         }
 
         #region 容器
@@ -747,11 +768,10 @@ namespace AntdUI
         /// </summary>
         internal class Template : TCell
         {
-            public Template(Table table, PropertyDescriptor? prop, object? ov, Column _column, ref int processing, IList<ICell> _value) : base(table, prop, ov)
+            public Template(Table table, Column column, PropertyDescriptor? prop, object? ov, ref int processing, IList<ICell> cels) : base(table, column, prop, ov)
             {
-                column = _column;
-                var list = new List<ITemplate>(_value.Count);
-                foreach (var it in _value)
+                var list = new List<ITemplate>(cels.Count);
+                foreach (var it in cels)
                 {
                     if (it is CellBadge badge)
                     {
@@ -769,7 +789,7 @@ namespace AntdUI
 
             public override void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int _gap, int _gap2)
             {
-                RECT = rect = _rect;
+                RECT = RECT_REAL = _rect;
                 int rx = _rect.X + ox;
                 int gap = _gap / 2, gap2 = _gap;
                 if (value.Count == 1 && (value[0].Value is CellText || value[0].Value is CellProgress))
@@ -782,7 +802,7 @@ namespace AntdUI
                 else
                 {
                     int use_x;
-                    switch (column.Align)
+                    switch (COLUMN.Align)
                     {
                         case ColumnAlign.Center: use_x = rx + (_rect.Width - MinWidth) / 2; break;
                         case ColumnAlign.Right: use_x = _rect.Right - MinWidth; break;
@@ -798,7 +818,6 @@ namespace AntdUI
                     }
                 }
             }
-            public Column column { get; set; }
 
             Size[] SIZES = new Size[0];
             public override SizeF GetSize(Graphics g, Font font, int width, int _gap, int _gap2)
@@ -845,10 +864,7 @@ namespace AntdUI
             /// </summary>
             public Rectangle RECT { get; set; }
 
-            public bool CONTAINS(int x, int y)
-            {
-                return RECT.Contains(x, y);
-            }
+            public bool CONTAINS(int x, int y) => RECT.Contains(x, y);
 
             public void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
             {

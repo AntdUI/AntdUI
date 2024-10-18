@@ -58,12 +58,12 @@ namespace AntdUI
                                 }
                             }
                         }
-                        var cell = (TCellColumn)it.cells[i_cel];
+                        var cell = it.cells[i_cel];
                         cell.MouseDown = e.Clicks > 1 ? 2 : 1;
                         cellMouseDown = cell;
-                        if (cell.MouseDown == 1 && cell.column is ColumnCheck columnCheck && columnCheck.NoTitle)
+                        if (cell.MouseDown == 1 && cell.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
                         {
-                            if (e.Button == MouseButtons.Left && cell.Contains(r_x, r_y))
+                            if (e.Button == MouseButtons.Left && cell.CONTAIN_REAL(r_x, r_y))
                             {
                                 CheckAll(i_cel, columnCheck, !columnCheck.Checked);
                                 return;
@@ -158,14 +158,14 @@ namespace AntdUI
                     {
                         foreach (var item in SortHeader)
                         {
-                            var it = (TCellColumn)cells[item];
-                            if (dragHeader.im == it.INDEX) dim = it.column.INDEX;
-                            if (dragHeader.i == it.INDEX) di = it.column.INDEX;
+                            var it = cells[item];
+                            if (dragHeader.im == it.INDEX) dim = it.COLUMN.INDEX;
+                            if (dragHeader.i == it.INDEX) di = it.COLUMN.INDEX;
                         }
                     }
-                    foreach (TCellColumn it in cells)
+                    foreach (var it in cells)
                     {
-                        int index = it.column.INDEX;
+                        int index = it.COLUMN.INDEX;
                         if (index == dim)
                         {
                             if (dragHeader.last) sortHeader.Add(index);
@@ -217,11 +217,11 @@ namespace AntdUI
                     {
                         if (cell is TCellCheck checkCell)
                         {
-                            if (checkCell.Contains(r_x, r_y))
+                            if (checkCell.CONTAIN_REAL(r_x, r_y))
                             {
-                                if (checkCell.column.Call != null)
+                                if (checkCell.COLUMN is ColumnCheck columnCheck && columnCheck.Call != null)
                                 {
-                                    var value = checkCell.column.Call(!checkCell.Checked, it.RECORD, i_r, i_c);
+                                    var value = columnCheck.Call(!checkCell.Checked, it.RECORD, i_r, i_c);
                                     if (checkCell.Checked != value)
                                     {
                                         checkCell.Checked = value;
@@ -239,12 +239,12 @@ namespace AntdUI
                         }
                         else if (cell is TCellRadio radioCell)
                         {
-                            if (radioCell.Contains(r_x, r_y) && !radioCell.Checked)
+                            if (radioCell.CONTAIN_REAL(r_x, r_y) && !radioCell.Checked)
                             {
                                 bool isok = false;
-                                if (radioCell.column.Call != null)
+                                if (radioCell.COLUMN is ColumnRadio columnRadio && columnRadio.Call != null)
                                 {
-                                    var value = radioCell.column.Call(true, it.RECORD, i_r, i_c);
+                                    var value = columnRadio.Call(true, it.RECORD, i_r, i_c);
                                     if (value) isok = true;
                                 }
                                 else if (radioCell.AutoCheck) isok = true;
@@ -273,14 +273,14 @@ namespace AntdUI
                         }
                         else if (cell is TCellSwitch switchCell)
                         {
-                            if (switchCell.Contains(r_x, r_y) && !switchCell.Loading)
+                            if (switchCell.CONTAIN_REAL(r_x, r_y) && !switchCell.Loading)
                             {
-                                if (switchCell.column.Call != null)
+                                if (switchCell.COLUMN is ColumnSwitch columnSwitch && columnSwitch.Call != null)
                                 {
                                     switchCell.Loading = true;
                                     ITask.Run(() =>
                                     {
-                                        var value = switchCell.column.Call(!switchCell.Checked, it.RECORD, i_r, i_c);
+                                        var value = columnSwitch.Call(!switchCell.Checked, it.RECORD, i_r, i_c);
                                         if (switchCell.Checked == value) return;
                                         switchCell.Checked = value;
                                         SetValue(cell, value);
@@ -297,33 +297,32 @@ namespace AntdUI
                                 }
                             }
                         }
-                        else if (it.IsColumn && ((TCellColumn)cell).column.SortOrder)
+                        else if (it.IsColumn && cell.COLUMN.SortOrder && cell is TCellColumn col)
                         {
                             //点击排序
-                            var col = (TCellColumn)cell;
                             int SortMode;
                             if (col.rect_up.Contains(r_x, r_y)) SortMode = 1;
                             else if (col.rect_down.Contains(r_x, r_y)) SortMode = 2;
                             else
                             {
-                                SortMode = col.column.SortMode + 1;
+                                SortMode = col.COLUMN.SortMode + 1;
                                 if (SortMode > 2) SortMode = 0;
                             }
-                            if (col.column.SortMode != SortMode)
+                            if (col.COLUMN.SortMode != SortMode)
                             {
-                                col.column.SortMode = SortMode;
-                                foreach (TCellColumn item in it.cells)
+                                col.COLUMN.SortMode = SortMode;
+                                foreach (var item in it.cells)
                                 {
-                                    if (item.column.SortOrder && item.INDEX != i_c) item.column.SortMode = 0;
+                                    if (item.COLUMN.SortOrder && item.INDEX != i_c) item.COLUMN.SortMode = 0;
                                 }
                                 Invalidate();
                                 switch (SortMode)
                                 {
                                     case 1:
-                                        SortDataASC(col.column.Key);
+                                        SortDataASC(col.COLUMN.Key);
                                         break;
                                     case 2:
-                                        SortDataDESC(col.column.Key);
+                                        SortDataDESC(col.COLUMN.Key);
                                         break;
                                     case 0:
                                     default:
@@ -484,7 +483,7 @@ namespace AntdUI
                             }
                         }
                         if (cel.SortWidth > 0) SetCursor(true);
-                        else if (has_check && cel.column is ColumnCheck columnCheck && columnCheck.NoTitle && cel.Contains(r_x, r_y)) SetCursor(true);
+                        else if (has_check && cel.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle && cel.CONTAIN_REAL(r_x, r_y)) SetCursor(true);
                         else if (ColumnDragSort)
                         {
                             SetCursor(CursorType.SizeAll);
@@ -524,19 +523,19 @@ namespace AntdUI
         {
             if (cel is TCellCheck checkCell)
             {
-                if (checkCell.AutoCheck && checkCell.Contains(x, y)) return true;
+                if (checkCell.AutoCheck && checkCell.CONTAIN_REAL(x, y)) return true;
                 return false;
             }
             else if (cel is TCellRadio radioCell)
             {
-                if (radioCell.AutoCheck && radioCell.Contains(x, y)) return true;
+                if (radioCell.AutoCheck && radioCell.CONTAIN_REAL(x, y)) return true;
                 return false;
             }
             else if (cel is TCellSwitch switchCell)
             {
-                if ((switchCell.AutoCheck || switchCell.column.Call != null))
+                if ((switchCell.AutoCheck || (switchCell.COLUMN is ColumnSwitch columnSwitch && columnSwitch.Call != null)))
                 {
-                    switchCell.ExtraMouseHover = switchCell.Contains(x, y);
+                    switchCell.ExtraMouseHover = switchCell.CONTAIN_REAL(x, y);
                     if (switchCell.ExtraMouseHover) return true;
                 }
                 else switchCell.ExtraMouseHover = false;
@@ -617,7 +616,7 @@ namespace AntdUI
                 {
                     CloseTip();
                     oldmove = moveid;
-                    if (cel.MinWidth > cel.rect.Width)
+                    if (cel.MinWidth > cel.RECT_REAL.Width)
                     {
                         var text = cel.ToString();
                         if (!string.IsNullOrEmpty(text))
@@ -674,7 +673,7 @@ namespace AntdUI
                                 {
                                     hasi.Add(i);
                                     var cel = it.cells[i];
-                                    if (cel.CONTAINS(ex, ey))
+                                    if (cel.CONTAIN(ex, ey))
                                     {
                                         r_x = ex;
                                         r_y = ey;
@@ -694,7 +693,7 @@ namespace AntdUI
                                 {
                                     hasi.Add(i);
                                     var cel = it.cells[i];
-                                    if (cel.CONTAINS(ex + sFixedR, ey))
+                                    if (cel.CONTAIN(ex + sFixedR, ey))
                                     {
                                         r_x = ex + sFixedR;
                                         r_y = ey;
@@ -713,7 +712,7 @@ namespace AntdUI
                             {
                                 if (hasi.Contains(i)) continue;
                                 var cel = it.cells[i];
-                                if (cel.CONTAINS(px, ey))
+                                if (cel.CONTAIN(px, ey))
                                 {
                                     r_x = px;
                                     r_y = ey;
@@ -738,7 +737,7 @@ namespace AntdUI
                             {
                                 hasi.Add(i);
                                 var cel = it.cells[i];
-                                if (cel.CONTAINS(ex, py))
+                                if (cel.CONTAIN(ex, py))
                                 {
                                     r_x = ex;
                                     r_y = py;
@@ -758,7 +757,7 @@ namespace AntdUI
                             {
                                 hasi.Add(i);
                                 var cel = it.cells[i];
-                                if (cel.CONTAINS(ex + sFixedR, py))
+                                if (cel.CONTAIN(ex + sFixedR, py))
                                 {
                                     r_x = ex + sFixedR;
                                     r_y = py;
@@ -777,7 +776,7 @@ namespace AntdUI
                         {
                             if (hasi.Contains(i)) continue;
                             var cel = it.cells[i];
-                            if (cel.CONTAINS(px, py))
+                            if (cel.CONTAIN(px, py))
                             {
                                 r_x = px;
                                 r_y = py;
@@ -801,7 +800,7 @@ namespace AntdUI
                         {
                             hasi.Add(i);
                             var cel = it.cells[i];
-                            if (cel.CONTAINS(ex, py))
+                            if (cel.CONTAIN(ex, py))
                             {
                                 r_x = ex;
                                 r_y = py;
@@ -821,7 +820,7 @@ namespace AntdUI
                         {
                             hasi.Add(i);
                             var cel = it.cells[i];
-                            if (cel.CONTAINS(ex + sFixedR, py))
+                            if (cel.CONTAIN(ex + sFixedR, py))
                             {
                                 r_x = ex + sFixedR;
                                 r_y = py;
@@ -840,7 +839,7 @@ namespace AntdUI
                     {
                         if (hasi.Contains(i)) continue;
                         var cel = it.cells[i];
-                        if (cel.CONTAINS(px, py))
+                        if (cel.CONTAIN(px, py))
                         {
                             r_x = px;
                             r_y = py;
