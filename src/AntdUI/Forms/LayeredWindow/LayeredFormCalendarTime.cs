@@ -117,7 +117,7 @@ namespace AntdUI
 
         #region 属性
 
-        TimeSpan SelDate;
+        internal TimeSpan SelDate;
 
         #region 参数
 

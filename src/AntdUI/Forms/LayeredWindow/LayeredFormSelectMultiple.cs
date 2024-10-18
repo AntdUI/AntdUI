@@ -30,7 +30,7 @@ namespace AntdUI
         internal List<object> selectedValue;
         int r_w = 0;
         List<ObjectItem> Items;
-        public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, List<object> items, string filtertext)
+        public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, IList<object> items, string filtertext)
         {
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -47,7 +47,7 @@ namespace AntdUI
 
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
-        void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, List<object> items, string? filtertext = null)
+        void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
             int y = 10, w = rect_read.Width;
             r_w = w;
@@ -100,7 +100,7 @@ namespace AntdUI
             {
                 if (keys == Keys.Escape)
                 {
-                    Dispose();
+                    IClose();
                     return true;
                 }
                 if (nodata) return false;

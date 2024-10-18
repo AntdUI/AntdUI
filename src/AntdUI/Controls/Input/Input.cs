@@ -1020,12 +1020,10 @@ namespace AntdUI
 
         bool AnimationFocus = false;
         int AnimationFocusValue = 0;
-        DateTime HasFocusTime;
         public bool HasFocus { get; internal set; }
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
-            HasFocusTime = DateTime.Now;
             HasFocus = true;
             CaretInfo.Show = true;
             ExtraMouseDown = true;
@@ -1099,10 +1097,9 @@ namespace AntdUI
         protected virtual void OnClearValue() => Text = "";
 
         /// <summary>
-        /// 焦点点击
+        /// 点击内容
         /// </summary>
-        /// <param name="SetFocus">是否已经设置过焦点</param>
-        protected virtual void OnFocusClick(bool SetFocus) { }
+        protected virtual void OnClickContent() { }
 
         /// <summary>
         /// 改变鼠标状态

@@ -120,7 +120,7 @@ namespace AntdUI
                 {
                     if (keys == Keys.Escape)
                     {
-                        Dispose();
+                        IClose();
                         return true;
                     }
                     if (nodata) return false;

@@ -70,12 +70,6 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; } = false;
 
-        /// <summary>
-        /// 焦点时展开下拉
-        /// </summary>
-        [Description("焦点时展开下拉"), Category("行为"), DefaultValue(true)]
-        public bool FocusExpandDropdown { get; set; } = true;
-
         protected override void OnHandleCreated(EventArgs e)
         {
             Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
@@ -130,14 +124,17 @@ namespace AntdUI
 
         #region 焦点
 
-        bool textFocus = false;
-        bool TextFocus
+        bool expandDrop = false;
+        /// <summary>
+        /// 展开下拉菜单
+        /// </summary>
+        bool ExpandDrop
         {
-            get => textFocus;
+            get => expandDrop;
             set
             {
-                if (textFocus == value) return;
-                textFocus = value;
+                if (expandDrop == value) return;
+                expandDrop = value;
                 if (!ReadOnly && value)
                 {
                     if (subForm == null)
@@ -149,7 +146,7 @@ namespace AntdUI
                         subForm.Disposed += (a, b) =>
                         {
                             subForm = null;
-                            TextFocus = false;
+                            ExpandDrop = false;
                         };
                         subForm.Show(this);
                     }
@@ -158,16 +155,10 @@ namespace AntdUI
             }
         }
 
-        protected override void OnGotFocus(EventArgs e)
-        {
-            base.OnGotFocus(e);
-            if (FocusExpandDropdown) TextFocus = true;
-        }
-
         protected override void OnLostFocus(EventArgs e)
         {
             base.OnLostFocus(e);
-            TextFocus = false;
+            ExpandDrop = false;
             if (IsHandleCreated)
             {
                 if (DateTime.TryParse("1997-1-1 " + Text, out var _d)) Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
@@ -191,12 +182,12 @@ namespace AntdUI
             Value = new TimeSpan(0, 0, 0);
         }
 
-        protected override void OnFocusClick(bool SetFocus)
+        protected override void OnClickContent()
         {
             if (HasFocus)
             {
-                if (textFocus) return;
-                TextFocus = !textFocus;
+                if (expandDrop) return;
+                ExpandDrop = !expandDrop;
             }
             else Focus();
         }
@@ -208,15 +199,20 @@ namespace AntdUI
                 subForm.IClose();
                 return true;
             }
-            //else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d))
-            //{
-            //    Value = _d;
-            //    if (subForm is LayeredFormCalendar _SubForm)
-            //    {
-            //        _SubForm.SelDate = _SubForm.Date = _d;
-            //        _SubForm.Print();
-            //    }
-            //}
+            else if (keyData == Keys.Down && subForm == null)
+            {
+                ExpandDrop = true;
+                return true;
+            }
+            else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d))
+            {
+                Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
+                if (subForm is LayeredFormCalendarTime _SubForm)
+                {
+                    _SubForm.SelDate = Value;
+                    _SubForm.Print();
+                }
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
