@@ -61,8 +61,7 @@ namespace AntdUI
                     {
                         if (bmp_tmp == null) bmp_tmp = PrintBit();
                         if (bmp_tmp == null) return;
-                        Render(bmp_tmp);
-                        GC.Collect();
+                        Print(bmp_tmp);
                     }
                     catch { }
                 }

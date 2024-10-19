@@ -70,9 +70,8 @@ namespace AntdUI
             SelDate = date;
 
             var point = _control.PointToScreen(Point.Empty);
-            EndHeight = t_height + t_button + 20;
-            int r_w = t_width + 20;
-            SetSize(r_w, 0);
+            int r_w = t_width + 20, r_h = t_height + t_button + 20;
+            SetSize(r_w, r_h);
 
             #region 布局
 
@@ -112,7 +111,7 @@ namespace AntdUI
 
             rect_button = new Rectangle(10, 10 + t_height, t_width / 2, t_button);
             rect_buttonok = new Rectangle(rect_button.Right, rect_button.Top, rect_button.Width, rect_button.Height);
-            CLocation(point, _control.Placement, _control.DropDownArrow, ArrowSize, 10, r_w, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
+            CLocation(point, _control.Placement, _control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
         }
 
         #region 属性
@@ -160,7 +159,7 @@ namespace AntdUI
             {
                 using (var path = rect_read.RoundPath(Radius))
                 {
-                    DrawShadow(g, rect, rect.Width, EndHeight);
+                    DrawShadow(g, rect);
                     using (var brush = new SolidBrush(Style.Db.BgElevated))
                     {
                         g.FillPath(brush, path);
@@ -267,22 +266,20 @@ namespace AntdUI
         /// 绘制阴影
         /// </summary>
         /// <param name="g">GDI</param>
-        /// <param name="rect_client">客户区域</param>
-        /// <param name="shadow_width">最终阴影宽度</param>
-        /// <param name="shadow_height">最终阴影高度</param>
-        void DrawShadow(Graphics g, Rectangle rect_client, int shadow_width, int shadow_height)
+        /// <param name="rect">客户区域</param>
+        void DrawShadow(Graphics g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || (shadow_temp.Width != shadow_width || shadow_temp.Height != shadow_height))
+                if (shadow_temp == null)
                 {
                     shadow_temp?.Dispose();
-                    using (var path = new Rectangle(10, 10, shadow_width - 20, shadow_height - 20).RoundPath(Radius))
+                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
                     {
-                        shadow_temp = path.PaintShadow(shadow_width, shadow_height);
+                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.DrawImage(shadow_temp, rect, 0.2F);
             }
         }
 
@@ -302,8 +299,16 @@ namespace AntdUI
             else if (rect_read_s.Contains(e.Location)) scrollY_s.MouseDown(e.Location);
         }
 
+        bool DisableMouse = true;
+        public override void LoadOK()
+        {
+            DisableMouse = false;
+            base.LoadOK();
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (DisableMouse) return;
             if (scrollY_h.MouseMove(e.Location) && scrollY_m.MouseMove(e.Location) && scrollY_s.MouseMove(e.Location))
             {
                 int count = 0, hand = 0;
