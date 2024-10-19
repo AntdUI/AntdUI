@@ -45,6 +45,7 @@ namespace Demo.Controls
                 Link = new AntdUI.Notification.ConfigLink("前往查看", () =>
                 {
                     MessageBox.Show("点击超链接");
+                    return true;
                 })
             });
         }
