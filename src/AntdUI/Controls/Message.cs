@@ -204,6 +204,11 @@ namespace AntdUI
             public int AutoClose { get; set; } = 6;
 
             /// <summary>
+            /// 是否可以点击关闭
+            /// </summary>
+            public bool ClickClose { get; set; } = true;
+
+            /// <summary>
             /// 方向
             /// </summary>
             public TAlignFrom Align { get; set; } = TAlignFrom.Top;
@@ -346,7 +351,7 @@ namespace AntdUI
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (loadingend) CloseMe(false);
+            if (loadingend && config.ClickClose) CloseMe(false);
             base.OnMouseClick(e);
         }
 

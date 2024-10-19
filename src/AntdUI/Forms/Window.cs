@@ -94,16 +94,19 @@ namespace AntdUI
             }
             else
             {
-                Size max = MaximumSize, min = MinimumSize;
-                sizeInit = ClientSize;
-                MaximumSize = MinimumSize = ClientSize = sizeInit.Value;
                 SetTheme();
                 DisableProcessWindowsGhosting();
+                if (WindowState != FormWindowState.Maximized)
+                {
+                    Size max = MaximumSize, min = MinimumSize;
+                    sizeInit = ClientSize;
+                    MaximumSize = MinimumSize = ClientSize = sizeInit.Value;
+                    ClientSize = sizeInit.Value;
+                    MinimumSize = min;
+                    MaximumSize = max;
+                }
                 HandMessage();
                 DwmArea();
-                ClientSize = sizeInit.Value;
-                MinimumSize = min;
-                MaximumSize = max;
             }
         }
 

@@ -17,7 +17,9 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Concurrent;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -36,7 +38,9 @@ namespace AntdUI
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
+            renderQueue = new RenderQueue(this);
         }
+        RenderQueue renderQueue;
 
         public Control? PARENT = null;
         public Func<Keys, bool>? KeyCall = null;
@@ -58,18 +62,20 @@ namespace AntdUI
             if (CanLoadMessage) LoadMessage();
         }
 
-        bool can_render = true;
         protected override void Dispose(bool disposing)
         {
-            can_render = false;
             base.Dispose(disposing);
             Application.RemoveMessageFilter(this);
+            renderQueue.Dispose();
         }
 
         public virtual bool UFocus => true;
 
         public abstract Bitmap PrintBit();
+
         public byte alpha = 10;
+
+        public bool CanRender => IsHandleCreated && target_rect.Width > 0 && target_rect.Height > 0;
 
         #region 渲染坐标
 
@@ -137,29 +143,48 @@ namespace AntdUI
 
         #endregion
 
-        public void Print()
+        public void Print() => renderQueue.Set();
+        public void Print(Bitmap bmp) => renderQueue.Set(alpha, bmp);
+        public void Print(Bitmap bmp, Rectangle rect) => renderQueue.Set(alpha, bmp, rect);
+
+        void Render()
         {
-            if (IsHandleCreated && can_render && target_rect.Width > 0 && target_rect.Height > 0)
+            try
             {
-                try
+                using (var bmp = PrintBit())
                 {
-                    using (var bmp = PrintBit())
-                    {
-                        if (bmp == null) return;
-                        Render(bmp);
-                    }
-                    GC.Collect();
+                    if (bmp == null) return;
+                    Render(bmp);
                 }
-                catch { }
+                GC.Collect();
             }
+            catch { }
         }
 
-        public void Render(Bitmap bmp)
+        void Render(Bitmap bmp)
         {
             try
             {
                 if (InvokeRequired) Invoke(new Action(() => { Render(bmp); }));
                 else Win32.SetBits(bmp, target_rect, Handle, alpha);
+            }
+            catch { }
+        }
+        void Render(byte alpha, Bitmap bmp)
+        {
+            try
+            {
+                if (InvokeRequired) Invoke(new Action(() => { Render(alpha, bmp); }));
+                else Win32.SetBits(bmp, target_rect, Handle, alpha);
+            }
+            catch { }
+        }
+        void Render(byte alpha, Bitmap bmp, Rectangle rect)
+        {
+            try
+            {
+                if (InvokeRequired) Invoke(new Action(() => { Render(alpha, bmp, rect); }));
+                else Win32.SetBits(bmp, rect, Handle, alpha);
             }
             catch { }
         }
@@ -454,6 +479,105 @@ namespace AntdUI
         }
 
         #endregion
+
+        /// <summary>
+        /// 逐帧渲染
+        /// </summary>
+        class RenderQueue : IDisposable
+        {
+            ILayeredForm call;
+            public RenderQueue(ILayeredForm it)
+            {
+                call = it;
+                new Thread(LongTask) { IsBackground = true }.Start();
+            }
+
+            ConcurrentQueue<M?> Queue = new ConcurrentQueue<M?>();
+            ManualResetEvent Event = new ManualResetEvent(false);
+            /// <summary>
+            /// 渲染
+            /// </summary>
+            public void Set()
+            {
+                Queue.Enqueue(null);
+                Event.Set();
+            }
+            /// <summary>
+            /// 渲染
+            /// </summary>
+            public void Set(byte alpha, Bitmap bmp)
+            {
+                Queue.Enqueue(new M(alpha, bmp));
+                Event.Set();
+            }
+            /// <summary>
+            /// 渲染
+            /// </summary>
+            public void Set(byte alpha, Bitmap bmp, Rectangle rect)
+            {
+                Queue.Enqueue(new M(alpha, bmp, rect));
+                Event.Set();
+            }
+
+            void LongTask()
+            {
+                while (true)
+                {
+                    if (Event.Wait()) return;
+                    int count = 0;
+                    while (Queue.TryDequeue(out var cmd))
+                    {
+                        if (call.CanRender)
+                        {
+                            if (cmd == null)
+                            {
+                                count++;
+                                if (count > 2)
+                                {
+                                    count = 0;
+                                    call.Render();
+                                }
+                            }
+                            else if (cmd.rect.HasValue)
+                            {
+                                using (cmd.bmp) call.Render(cmd.alpha, cmd.bmp, cmd.rect.Value);
+                            }
+                            else call.Render(cmd.alpha, cmd.bmp);
+                        }
+                    }
+                    if (count > 0) call.Render();
+                    Event.Reset();
+                }
+            }
+
+            public void Dispose()
+            {
+#if NET40 || NET45 || NET46 || NET48
+                while (Queue.TryDequeue(out _))
+#else
+                Queue.Clear();
+#endif
+                    Event.Dispose();
+            }
+
+            public class M
+            {
+                public M(byte a, Bitmap b)
+                {
+                    bmp = b;
+                    alpha = a;
+                }
+                public M(byte a, Bitmap b, Rectangle r)
+                {
+                    bmp = b;
+                    alpha = a;
+                    rect = r;
+                }
+                public byte alpha { get; private set; }
+                public Bitmap bmp { get; private set; }
+                public Rectangle? rect { get; private set; }
+            }
+        }
     }
 
     public interface SubLayeredForm

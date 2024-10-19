@@ -230,6 +230,11 @@ namespace AntdUI
             public int AutoClose { get; set; } = 6;
 
             /// <summary>
+            /// 是否可以点击关闭
+            /// </summary>
+            public bool ClickClose { get; set; } = true;
+
+            /// <summary>
             /// 是否显示关闭图标
             /// </summary>
             public bool CloseIcon { get; set; } = true;
@@ -262,7 +267,7 @@ namespace AntdUI
 
         public class ConfigLink
         {
-            public ConfigLink(string text, Action call)
+            public ConfigLink(string text, Func<bool> call)
             {
                 Text = text;
                 Call = call;
@@ -276,7 +281,7 @@ namespace AntdUI
             /// <summary>
             /// 点击回调
             /// </summary>
-            public Action Call { get; set; }
+            public Func<bool> Call { get; set; }
         }
     }
 
@@ -503,8 +508,11 @@ namespace AntdUI
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (config.Link != null && rect_link_text.Contains(e.Location)) config.Link.Call();
-            CloseMe(false);
+            if (config.Link != null && rect_link_text.Contains(e.Location))
+            {
+                if (!config.Link.Call()) return;
+            }
+            if (config.ClickClose) CloseMe(false);
             base.OnMouseClick(e);
         }
 

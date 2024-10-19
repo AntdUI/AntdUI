@@ -88,13 +88,13 @@ namespace AntdUI
             Date = date == null ? DateNow : date[0];
 
             var point = _control.PointToScreen(Point.Empty);
-            int r_w = t_width + 20;
-            SetSize(r_w, 0);
-
-            if (calendar_day == null) EndHeight = 348 + 20;
-            else EndHeight = t_top + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
+            int r_w = t_width + 20, r_h;
+            if (calendar_day == null) r_h = 348 + 20;
+            else r_h = t_top + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
+            SetSize(r_w, r_h);
+            t_h = r_h;
             Placement = _control.Placement;
-            CLocation(point, _control.Placement, _control.DropDownArrow, ArrowSize, 10, r_w, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
+            CLocation(point, _control.Placement, _control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
         }
 
         #region 属性
@@ -103,7 +103,7 @@ namespace AntdUI
 
         IControl control;
         int Radius = 6;
-        int t_one_width = 288, t_width = 288, t_x = 0, left_button = 120, t_top = 34, t_time = 56, t_time_height = 30;
+        int t_one_width = 288, t_width = 288, t_h = 0, t_x = 0, left_button = 120, t_top = 34, t_time = 56, t_time_height = 30;
         int year_width = 60, year2_width = 88, month_width = 40;
         TAlignFrom Placement = TAlignFrom.BL;
         TAlign ArrowAlign = TAlign.None;
@@ -322,8 +322,11 @@ namespace AntdUI
             if (left_buttons != null && rect_read_left.Contains(e.X, e.Y)) if (!scrollY_left.MouseDown(e.Location)) return;
         }
 
+        bool DisableMouse = true;
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (DisableMouse) return;
             if (scrollY_left.MouseMove(e.Location))
             {
                 int count = 0, hand = 0;
@@ -484,19 +487,20 @@ namespace AntdUI
         {
             if (left_buttons != null) t_x = showType == 0 ? left_button : 0;
 
+            int r_h;
             if (showType == 0)
             {
                 t_width = t_x + t_one_width * 2;
-                if (calendar_day == null) EndHeight = 348 + 20;
-                else EndHeight = t_top * 2 + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
+                if (calendar_day == null) r_h = 348 + 20;
+                else r_h = t_top * 2 + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
             }
             else
             {
                 t_width = t_x + t_one_width;
-                if (calendar_day == null) EndHeight = 348 + 20;
-                else EndHeight = t_top * 2 + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
+                if (calendar_day == null) r_h = 348 + 20;
+                else r_h = t_top * 2 + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
             }
-            SetSize(t_width + 20, EndHeight);
+            SetSize(t_width + 20, r_h);
 
             if (showType == 0)
             {
@@ -754,13 +758,21 @@ namespace AntdUI
 
         bool init = false;
         public override void LoadOK()
-        { init = true; Print(); CanLoadMessage = true; LoadMessage(); }
+        {
+            DisableMouse = false;
+            init = true;
+            Print();
+            CanLoadMessage = true;
+            LoadMessage();
+        }
 
         float AnimationBarValue = 0;
         public void SetArrow(float x)
         {
+            if (AnimationBarValue == x) return;
             AnimationBarValue = x;
             if (init) Print();
+            else DisposeTmp();
         }
 
         #region 渲染
@@ -778,7 +790,7 @@ namespace AntdUI
             {
                 using (var path = rect_read.RoundPath(Radius))
                 {
-                    DrawShadow(g, rect, rect.Width, EndHeight);
+                    DrawShadow(g, rect);
                     using (var brush = new SolidBrush(Style.Db.BgElevated))
                     {
                         g.FillPath(brush, path);
@@ -1231,10 +1243,10 @@ namespace AntdUI
                     {
                         int btn_one = (int)(left_button * .9F), btn_height_one = (int)(t_time_height * .93F), btn_one2 = (int)(left_button * .8F);
 
-                        rect_read_left = new Rectangle(rect_read.X, rect_read.Y, t_x, EndHeight - rect_read.Y * 2);
+                        rect_read_left = new Rectangle(rect_read.X, rect_read.Y, t_x, t_h - rect_read.Y * 2);
 
-                        scrollY_left.SizeChange(new Rectangle(rect_read.X, rect_read.Y + 8, t_x, EndHeight - (8 + rect_read.Y) * 2));
-                        scrollY_left.SetVrSize(t_time_height * left_buttons.Count, EndHeight - 20 - rect_read.Y * 2);
+                        scrollY_left.SizeChange(new Rectangle(rect_read.X, rect_read.Y + 8, t_x, t_h - (8 + rect_read.Y) * 2));
+                        scrollY_left.SetVrSize(t_time_height * left_buttons.Count, t_h - 20 - rect_read.Y * 2);
 
                         int _x = (left_button - btn_one) / 2, _x2 = (btn_one - btn_one2) / 2, _y = rect_read.Y + (t_time_height - btn_height_one) / 2;
                         foreach (var it in left_buttons)
@@ -1292,28 +1304,24 @@ namespace AntdUI
                     {
                         if (left_buttons != null)
                         {
-                            using (var bmp = new Bitmap(left_button, rect_read.Height))
+                            var state = g.Save();
+                            g.SetClip(new Rectangle(rect_read.X, rect_read.Y, left_button, rect_read.Height));
+                            g.TranslateTransform(rect_read.X, rect_read.Y - scrollY_left.Value);
+                            foreach (var it in left_buttons)
                             {
-                                using (var g2 = Graphics.FromImage(bmp).HighLay())
+                                using (var path = it.rect_read.RoundPath(Radius))
                                 {
-                                    g2.TranslateTransform(0, -scrollY_left.Value);
-                                    foreach (var it in left_buttons)
+                                    if (it.hover)
                                     {
-                                        using (var path = it.rect_read.RoundPath(Radius))
+                                        using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
                                         {
-                                            if (it.hover)
-                                            {
-                                                using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                                {
-                                                    g2.FillPath(brush_hove, path);
-                                                }
-                                            }
-                                            g2.DrawStr(it.v, Font, brush_fore, it.rect_text, s_f_LE);
+                                            g.FillPath(brush_hove, path);
                                         }
                                     }
+                                    g.DrawStr(it.v, Font, brush_fore, it.rect_text, s_f_LE);
                                 }
-                                g.DrawImage(bmp, new Rectangle(rect_read.X, rect_read.Y, bmp.Width, bmp.Height));
                             }
+                            g.Restore(state);
                             scrollY_left.Paint(g);
                         }
                     }
@@ -1493,22 +1501,20 @@ namespace AntdUI
         /// 绘制阴影
         /// </summary>
         /// <param name="g">GDI</param>
-        /// <param name="rect_client">客户区域</param>
-        /// <param name="shadow_width">最终阴影宽度</param>
-        /// <param name="shadow_height">最终阴影高度</param>
-        void DrawShadow(Graphics g, Rectangle rect_client, int shadow_width, int shadow_height)
+        /// <param name="rect">客户区域</param>
+        void DrawShadow(Graphics g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || (shadow_temp.Width != shadow_width || shadow_temp.Height != shadow_height))
+                if (shadow_temp == null)
                 {
                     shadow_temp?.Dispose();
-                    using (var path = new Rectangle(10, 10, shadow_width - 20, shadow_height - 20).RoundPath(Radius))
+                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
                     {
-                        shadow_temp = path.PaintShadow(shadow_width, shadow_height);
+                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.DrawImage(shadow_temp, rect, 0.2F);
             }
         }
 

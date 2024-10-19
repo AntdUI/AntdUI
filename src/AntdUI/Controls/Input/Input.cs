@@ -41,7 +41,7 @@ namespace AntdUI
             base.BackColor = Color.Transparent;
             SetStyle(ControlStyles.Selectable, true);
             UpdateStyles();
-            CurrentCaret.Width = (int)(1 * Config.Dpi);
+            CaretInfo = new ICaret(this);
         }
 
         #region 属性
@@ -1020,14 +1020,12 @@ namespace AntdUI
 
         bool AnimationFocus = false;
         int AnimationFocusValue = 0;
-        DateTime HasFocusTime;
         public bool HasFocus { get; internal set; }
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
-            HasFocusTime = DateTime.Now;
             HasFocus = true;
-            ShowCaret = true;
+            CaretInfo.Show = true;
             ExtraMouseDown = true;
         }
 
@@ -1035,7 +1033,7 @@ namespace AntdUI
         {
             base.OnLostFocus(e);
             HasFocus = false;
-            ShowCaret = false;
+            CaretInfo.Show = false;
             if (LostFocusClearSelection) SelectionLength = 0;
             ExtraMouseDown = false;
         }
@@ -1099,10 +1097,9 @@ namespace AntdUI
         protected virtual void OnClearValue() => Text = "";
 
         /// <summary>
-        /// 焦点点击
+        /// 点击内容
         /// </summary>
-        /// <param name="SetFocus">是否已经设置过焦点</param>
-        protected virtual void OnFocusClick(bool SetFocus) { }
+        protected virtual void OnClickContent() { }
 
         /// <summary>
         /// 改变鼠标状态
@@ -1117,75 +1114,7 @@ namespace AntdUI
 
         #region 光标
 
-        internal bool ReadShowCaret = false;
-        bool showCaret = false, showCaretFlag = false;
-        internal bool ShowCaret
-        {
-            get => showCaret;
-            set
-            {
-                if (showCaret == value) return;
-                showCaret = value;
-                CaretPrint?.Dispose();
-                if (IsHandleCreated)
-                {
-                    if (showCaret)
-                    {
-                        showCaretFlag = true;
-                        if (ReadShowCaret)
-                        {
-                            showCaret = false;
-                            return;
-                        }
-                        CaretPrint = new ITask(this, () =>
-                        {
-                            ShowCaretFlag = !showCaretFlag;
-                            return showCaret;
-                        }, CaretSpeed, null, CaretSpeed);
-                        SetCaretPostion();
-                    }
-                    else CaretPrint = null;
-                    Invalidate();
-                }
-            }
-        }
-        bool ShowCaretFlag
-        {
-            get => showCaretFlag;
-            set
-            {
-                if (showCaretFlag == value) return;
-                showCaretFlag = value;
-                if (showCaret) Invalidate();
-            }
-        }
-
-        ITask? CaretPrint;
-
-        internal Rectangle CurrentCaret = new Rectangle(-1, -1000, 1, 0);
-
-        internal void SetCaretX(int x)
-        {
-            if (CurrentCaret.X == x && showCaretFlag) return;
-            CurrentCaret.X = x;
-            showCaretFlag = true;
-            Invalidate();
-        }
-        internal void SetCaretY(int y)
-        {
-            if (CurrentCaret.Y == y && showCaretFlag) return;
-            CurrentCaret.Y = y;
-            showCaretFlag = true;
-            Invalidate();
-        }
-        internal void SetCaretXY(int x, int y)
-        {
-            if (CurrentCaret.X == x && CurrentCaret.Y == y && showCaretFlag) return;
-            CurrentCaret.X = x;
-            CurrentCaret.Y = y;
-            showCaretFlag = true;
-            Invalidate();
-        }
+        internal ICaret CaretInfo;
 
         #region 得到光标位置
 
@@ -1194,6 +1123,7 @@ namespace AntdUI
         /// </summary>
         int GetCaretPostion(int x, int y)
         {
+            CaretInfo.Place = false;
             if (cache_font == null) return 0;
             else
             {
@@ -1201,11 +1131,17 @@ namespace AntdUI
                 {
                     if (it.rect.X <= x && it.rect.Right >= x && it.rect.Y <= y && it.rect.Bottom >= y)
                     {
-                        if (x > it.rect.X + it.rect.Width / 2) return it.i + 1;
-                        else return it.i;
+                        if (x > it.rect.X + it.rect.Width / 2)
+                        {
+                            int i = it.i + 1;
+                            if (i > cache_font.Length - 1) return i;
+                            if (cache_font[it.i].rect.Y != cache_font[i].rect.Y) CaretInfo.Place = true;
+                            return i;
+                        }
+                        return it.i;
                     }
                 }
-                var nearest = FindNearestFont(x, y, cache_font, out bool isold);
+                var nearest = FindNearestFont(x, y, cache_font);
                 if (nearest == null)
                 {
                     if (x > cache_font[cache_font.Length - 1].rect.Right) return cache_font.Length;
@@ -1213,9 +1149,14 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (isold) return nearest.i;
-                    else if (x > nearest.rect.X + nearest.rect.Width / 2) return nearest.i + 1;
-                    else return nearest.i;
+                    if (x > nearest.rect.X + nearest.rect.Width / 2)
+                    {
+                        int i = nearest.i + 1;
+                        if (i > cache_font.Length - 1) return i;
+                        if (cache_font[nearest.i].rect.Y != cache_font[i].rect.Y) CaretInfo.Place = true;
+                        return i;
+                    }
+                    return nearest.i;
                 }
             }
         }
@@ -1223,20 +1164,18 @@ namespace AntdUI
         /// <summary>
         /// 寻找最近的矩形和距离的辅助方法
         /// </summary>
-        CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font, out bool isold)
+        CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font)
         {
             CacheFont first = cache_font[0], last = cache_font[cache_font.Length - 1];
             if (x < first.rect.X && y < first.rect.Y)
             {
-                isold = false;
                 return first;
             }
             else if (x > last.rect.X && y > last.rect.Y)
             {
-                isold = false;
                 return last;
             }
-            var findy = FindNearestFontY(y, cache_font, out isold);
+            var findy = FindNearestFontY(y, cache_font);
             CacheFont? result = null;
             if (findy == null)
             {
@@ -1259,12 +1198,12 @@ namespace AntdUI
             }
             else
             {
-                int ry = isold ? findy.rect_old.Y : findy.rect.Y;
+                int ry = findy.rect.Y;
                 int minDistance = int.MaxValue;
                 for (int i = 0; i < cache_font.Length; i++)
                 {
                     var it = cache_font[i];
-                    if (it.rect.Y == ry || (it.ret && it.rect_old.Y == ry))
+                    if (it.rect.Y == ry)
                     {
                         // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
                         int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
@@ -1280,11 +1219,10 @@ namespace AntdUI
             if (result == null) return result;
             return result;
         }
-        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font, out bool old)
+        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font)
         {
             int minDistance = int.MaxValue;
             CacheFont? result = null;
-            old = false;
             for (int i = 0; i < cache_font.Length; i++)
             {
                 var it = cache_font[i];
@@ -1293,19 +1231,8 @@ namespace AntdUI
                 // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
                 if (currentMinDistance < minDistance)
                 {
-                    old = false;
                     minDistance = currentMinDistance;
                     result = it;
-                }
-                if (it.ret)
-                {
-                    int currentMinDistance2 = Math.Abs(y - (it.rect_old.Y + it.rect_old.Height / 2));
-                    if (currentMinDistance2 < minDistance)
-                    {
-                        old = true;
-                        minDistance = currentMinDistance2;
-                        result = it;
-                    }
                 }
             }
             return result;
@@ -1321,53 +1248,24 @@ namespace AntdUI
         internal void SetCaretPostion(int PosIndex)
         {
             CurrentPosIndex = PosIndex;
-            if (showCaret)
+            if (CaretInfo.Show)
             {
                 if (cache_font == null)
                 {
                     if (ModeRange) ModeRangeCaretPostion(true);
                     else
                     {
-                        if (textalign == HorizontalAlignment.Center) SetCaretX(rect_text.X + rect_text.Width / 2);
-                        else if (textalign == HorizontalAlignment.Right) SetCaretX(rect_text.Right);
+                        if (textalign == HorizontalAlignment.Center) CaretInfo.X = rect_text.X + rect_text.Width / 2;
+                        else if (textalign == HorizontalAlignment.Right) CaretInfo.X = rect_text.Right;
                     }
                 }
                 else
                 {
-                    Rectangle r;
-                    if (PosIndex >= cache_font.Length)
-                    {
-                        var it = cache_font[cache_font.Length - 1];
-                        r = it.rect;
-                        SetCaretXY(it.ret ? r.X : r.Right, r.Y);
-                    }
-                    else
-                    {
-                        var it = cache_font[PosIndex];
-                        if (it.ret)
-                        {
-                            if (PosIndex > 0)
-                            {
-                                it = cache_font[PosIndex - 1];
-                                r = it.rect;
-                                SetCaretXY(r.Right, r.Y);
-                            }
-                            else
-                            {
-                                r = it.rect_old;
-                                SetCaretXY(r.X, r.Y);
-                            }
-                        }
-                        else
-                        {
-                            r = it.rect;
-                            SetCaretXY(r.X, r.Y);
-                        }
-                    }
+                    var r = CaretInfo.SetXY(cache_font, PosIndex);
                     if (ModeRange) ModeRangeCaretPostion(false);
                     ScrollIFTo(r);
                 }
-                showCaretFlag = true;
+                CaretInfo.flag = true;
                 Invalidate();
             }
         }
@@ -1376,7 +1274,7 @@ namespace AntdUI
 
         void OnImeStartPrivate(IntPtr hIMC)
         {
-            var point = CurrentCaret.Location;
+            var point = CaretInfo.Rect.Location;
             point.Offset(0, -scrolly);
             var CandidateForm = new Win32.CANDIDATEFORM()
             {
@@ -1392,7 +1290,7 @@ namespace AntdUI
             Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
             var logFont = new Win32.LOGFONT()
             {
-                lfHeight = CurrentCaret.Height,
+                lfHeight = CaretInfo.Rect.Height,
                 lfFaceName = Font.Name + "\0"
             };
             Win32.ImmSetCompositionFont(hIMC, ref logFont);
@@ -1406,7 +1304,7 @@ namespace AntdUI
             var CompositionForm = new Win32.COMPOSITIONFORM()
             {
                 dwStyle = Win32.CFS_FORCE_POSITION,
-                ptCurrentPos = CurrentCaret.Location
+                ptCurrentPos = CaretInfo.Rect.Location
             };
             Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
             if (strResult != null && !string.IsNullOrEmpty(strResult))
@@ -1426,12 +1324,122 @@ namespace AntdUI
             return true;
         }
 
+        internal class ICaret
+        {
+            Input control;
+            public ICaret(Input input) { control = input; }
+
+            public Rectangle Rect = new Rectangle(-1, -1000, (int)(1 * Config.Dpi), 0);
+
+            public bool Place = false;
+
+            public Rectangle SetXY(CacheFont[] cache_font, int i)
+            {
+                if (i >= cache_font.Length)
+                {
+                    var r = cache_font[cache_font.Length - 1].rect;
+                    SetXY(r.Right, r.Y);
+                    return r;
+                }
+                else
+                {
+                    if (Place && i > 0)
+                    {
+                        var nb = cache_font[i - 1].rect;
+                        SetXY(nb.Right, nb.Y);
+                        return nb;
+                    }
+                    var r = cache_font[i].rect;
+                    SetXY(r.X, r.Y);
+                    return r;
+                }
+            }
+            public void SetXY(int x, int y)
+            {
+                if (Rect.X == x && Rect.Y == y && flag) return;
+                Rect.X = x;
+                Rect.Y = y;
+                flag = true;
+                control.Invalidate();
+            }
+
+            public int X
+            {
+                get => Rect.X;
+                set
+                {
+                    if (Rect.X == value && flag) return;
+                    Rect.X = value;
+                    flag = true;
+                    control.Invalidate();
+                }
+            }
+            public int Y => Rect.Y;
+            public int Width => Rect.Width;
+            public int Height
+            {
+                get => Rect.Height;
+                set => Rect.Height = value;
+            }
+
+            public bool ReadShow = false;
+
+            bool show = false;
+            public bool Show
+            {
+                get => show;
+                set
+                {
+                    if (show == value) return;
+                    show = value;
+                    CaretPrint?.Dispose();
+                    if (control.IsHandleCreated)
+                    {
+                        if (show)
+                        {
+                            flag = true;
+                            if (ReadShow)
+                            {
+                                show = false;
+                                return;
+                            }
+                            CaretPrint = new ITask(control, () =>
+                            {
+                                Flag = !flag;
+                                return show;
+                            }, control.CaretSpeed, null, control.CaretSpeed);
+                            control.SetCaretPostion();
+                        }
+                        else CaretPrint = null;
+                        control.Invalidate();
+                    }
+                }
+            }
+
+            internal bool flag = false;
+            public bool Flag
+            {
+                get => flag;
+                set
+                {
+                    if (flag == value) return;
+                    flag = value;
+                    if (show) control.Invalidate();
+                }
+            }
+
+            ITask? CaretPrint;
+
+            public void Dispose() => CaretPrint?.Dispose();
+        }
+
         #endregion
 
         protected override void Dispose(bool disposing)
         {
             ThreadFocus?.Dispose();
             ThreadHover?.Dispose();
+            CaretInfo.Dispose();
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;

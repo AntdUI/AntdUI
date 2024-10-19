@@ -376,18 +376,18 @@ namespace AntdUI
                             else if (it is TCellColumn column)
                             {
                                 it.SetSize(g, Font, _rect, ox, gap, gap2);
-                                if (column.column is ColumnCheck columnCheck && columnCheck.NoTitle)
+                                if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
                                 {
-                                    column.column.SortOrder = false;
+                                    column.COLUMN.SortOrder = false;
                                     columnCheck.PARENT = this;
                                     //全选
-                                    column.rect = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
+                                    column.RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
                                 }
                                 else
                                 {
-                                    if (column.column.SortOrder) column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2 - column.SortWidth, _rect.Height - gap2);
-                                    else column.rect = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
-                                    if (x < column.rect.Right) x = column.rect.Right;
+                                    if (column.COLUMN.SortOrder) column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2 - column.SortWidth, _rect.Height - gap2);
+                                    else column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                                    if (x < column.RECT_REAL.Right) x = column.RECT_REAL.Right;
                                 }
                             }
                             else it.SetSize(g, Font, _rect, ox, gap, gap2);
@@ -430,7 +430,7 @@ namespace AntdUI
                         {
                             for (int i = 0; i < row.cells.Length; i++)
                             {
-                                var it = (TCellColumn)row.cells[i];
+                                var it = row.cells[i];
                                 MoveHeaders.Add(new MoveHeader(moveheaders_dir, new Rectangle(it.RECT.Right - split_move2, rect.Y, split_move, it.RECT.Height), i, it.RECT.Width, it.MinWidth));
                             }
                         }
@@ -440,7 +440,7 @@ namespace AntdUI
                             {
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
-                                    var it = (TCellColumn)row.cells[i];
+                                    var it = row.cells[i];
                                     _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, it.RECT.Height));
                                 }
                             }
@@ -448,7 +448,7 @@ namespace AntdUI
                             {
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
-                                    var it = (TCellColumn)row.cells[i];
+                                    var it = row.cells[i];
                                     _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, rect_read.Height));
                                 }
                             }
@@ -458,8 +458,8 @@ namespace AntdUI
                         {
                             for (int i = 0; i < row.cells.Length - 1; i++)
                             {
-                                var it = (TCellColumn)row.cells[i];
-                                _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.rect.Y, split, it.rect.Height));
+                                var it = row.cells[i];
+                                _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.RECT_REAL.Y, split, it.RECT_REAL.Height));
                             }
                         }
                     }
@@ -723,7 +723,7 @@ namespace AntdUI
         /// <param name="prop">反射</param>
         void AddRows(ref List<TCell> cells, ref int processing, Column column, object? ov, object? value, PropertyDescriptor? prop)
         {
-            if (value == null) cells.Add(new TCellText(this, prop, ov, column, null));
+            if (value == null) cells.Add(new TCellText(this, column, prop, ov, null));
             else
             {
                 if (column is ColumnCheck columnCheck)
@@ -732,7 +732,7 @@ namespace AntdUI
                     has_check = true;
                     bool value_check = false;
                     if (value is bool check) value_check = check;
-                    AddRows(ref cells, new TCellCheck(this, prop, ov, value_check, columnCheck));
+                    AddRows(ref cells, new TCellCheck(this, columnCheck, prop, ov, value_check));
                 }
                 else if (column is ColumnRadio columnRadio)
                 {
@@ -740,18 +740,18 @@ namespace AntdUI
                     has_check = true;
                     bool value_check = false;
                     if (value is bool check) value_check = check;
-                    AddRows(ref cells, new TCellRadio(this, prop, ov, value_check, columnRadio));
+                    AddRows(ref cells, new TCellRadio(this, columnRadio, prop, ov, value_check));
                 }
                 else if (column is ColumnSwitch columnSwitch)
                 {
                     //开关
                     bool value_check = false;
                     if (value is bool check) value_check = check;
-                    AddRows(ref cells, new TCellSwitch(this, prop, ov, value_check, columnSwitch));
+                    AddRows(ref cells, new TCellSwitch(this, columnSwitch, prop, ov, value_check));
                 }
-                else if (value is IList<ICell> icells) AddRows(ref cells, new Template(this, prop, ov, column, ref processing, icells));
-                else if (value is ICell icell) AddRows(ref cells, new Template(this, prop, ov, column, ref processing, new ICell[] { icell }));
-                else cells.Add(new TCellText(this, prop, ov, column, value.ToString()));
+                else if (value is IList<ICell> icells) AddRows(ref cells, new Template(this, column, prop, ov, ref processing, icells));
+                else if (value is ICell icell) AddRows(ref cells, new Template(this, column, prop, ov, ref processing, new ICell[] { icell }));
+                else cells.Add(new TCellText(this, column, prop, ov, value.ToString()));
             }
             if (ov is INotifyPropertyChanged notify)
             {
@@ -780,7 +780,7 @@ namespace AntdUI
         RowTemplate AddRows(ref List<RowTemplate> rows, TCell[] cells, object? record)
         {
             var row = new RowTemplate(this, cells, record);
-            foreach (var it in row.cells) it.ROW = row;
+            foreach (var it in row.cells) it.SetROW(row);
             rows.Add(row);
             return row;
         }
@@ -793,7 +793,7 @@ namespace AntdUI
             for (int i = 0; i < row.cells.Length; i++)
             {
                 var it = row.cells[i];
-                if (it is TCellColumn column && column.column is ColumnCheck checkColumn && checkColumn.NoTitle)
+                if (it.COLUMN is ColumnCheck checkColumn && checkColumn.NoTitle)
                 {
                     if (rows.Count > 0)
                     {
@@ -809,7 +809,7 @@ namespace AntdUI
                     }
                     else checkColumn.CheckState = System.Windows.Forms.CheckState.Unchecked;
                 }
-                it.ROW = row;
+                it.SetROW(row);
             }
             rows.Insert(0, row);
             return row;
@@ -878,8 +878,8 @@ namespace AntdUI
             if (rows == null || key == null) return;
             for (int cel_i = 0; cel_i < rows[0].cells.Length; cel_i++)
             {
-                var column = (TCellColumn)rows[0].cells[cel_i];
-                if (key == column.column.Key)
+                var column = rows[0].cells[cel_i];
+                if (key == column.COLUMN.Key)
                 {
                     if (data is AntItem item)
                     {
@@ -887,7 +887,7 @@ namespace AntdUI
                         {
                             if (row.RECORD is IList<AntItem> items && items.Contains(item))
                             {
-                                RefreshItem(rows, column, row, row.cells[cel_i], cel_i, item.value);
+                                RefreshItem(rows, row, row.cells[cel_i], cel_i, item.value);
                                 return;
                             }
                         }
@@ -899,7 +899,7 @@ namespace AntdUI
                             if (row.RECORD == data)
                             {
                                 var cel = row.cells[cel_i];
-                                if (cel.PROPERTY != null) RefreshItem(rows, column, row, cel, cel_i, cel.PROPERTY.GetValue(data));
+                                if (cel.PROPERTY != null) RefreshItem(rows, row, cel, cel_i, cel.PROPERTY.GetValue(data));
                                 return;
                             }
                         }
@@ -909,7 +909,7 @@ namespace AntdUI
             }
         }
 
-        void RefreshItem(RowTemplate[] rows, TCellColumn column, RowTemplate row, TCell cel, int cel_i, object? value)
+        void RefreshItem(RowTemplate[] rows, RowTemplate row, TCell cel, int cel_i, object? value)
         {
             if (cel is Template template)
             {
@@ -951,7 +951,7 @@ namespace AntdUI
             {
                 if (value is bool b) check.Checked = b;
                 row.Select = RowISelect(row);
-                if (column.column is ColumnCheck checkColumn && checkColumn.NoTitle)
+                if (cel.COLUMN is ColumnCheck checkColumn && checkColumn.NoTitle)
                 {
                     int t_count = rows.Length - 1, check_count = 0;
                     for (int row_i = 1; row_i < rows.Length; row_i++)

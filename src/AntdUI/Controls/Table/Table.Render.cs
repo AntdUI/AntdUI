@@ -79,21 +79,21 @@ namespace AntdUI
                         }
 
                         g.TranslateTransform(0, -sy);
-                        foreach (var it in shows) PaintTableBgFront(g, it);
+                        foreach (var it in shows) PaintBgRowFront(g, it);
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
-                        foreach (var it in shows) PaintItemBack(g, it.row);
+                        foreach (var it in shows) PaintBgRowItem(g, it.row);
 
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
-                        foreach (var it in shows) PaintTableBg(g, it.row);
+                        foreach (var it in shows) PaintBg(g, it.row);
 
                         if (dividers.Length > 0) foreach (var divider in dividers) g.FillRectangle(brush_split, divider);
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
-                        foreach (var it in shows) PaintItemFore(g, rows, it, fore);
+                        foreach (var it in shows) PaintForeItem(g, it, fore);
                         g.ResetTransform();
 
                         g.ResetClip();
@@ -116,12 +116,12 @@ namespace AntdUI
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows)
                         {
-                            if (!it.row.IsColumn) PaintTableBgFront(g, it);
+                            if (!it.row.IsColumn) PaintBgRowFront(g, it);
                         }
                         g.TranslateTransform(-sx, 0);
                         foreach (var it in shows)
                         {
-                            if (!it.row.IsColumn) PaintItemBack(g, it.row);
+                            if (!it.row.IsColumn) PaintBgRowItem(g, it.row);
                         }
 
                         g.ResetTransform();
@@ -129,7 +129,7 @@ namespace AntdUI
                         foreach (var it in shows)
                         {
                             if (it.row.IsColumn) PaintTableBgHeader(g, it.row, _radius);
-                            else PaintTableBg(g, it.row);
+                            else PaintBg(g, it.row);
                         }
 
                         if (dividers.Length > 0) foreach (var divider in dividers) g.FillRectangle(brush_split, divider);
@@ -139,7 +139,7 @@ namespace AntdUI
                         foreach (var it in shows)
                         {
                             if (it.row.IsColumn) PaintTableHeader(g, it.row, forecolumn, column_font, _radius);
-                            else PaintItemFore(g, rows, it, fore);
+                            else PaintForeItem(g, it, fore);
                         }
                         if (bordered)
                         {
@@ -167,21 +167,21 @@ namespace AntdUI
                     }
 
                     g.TranslateTransform(0, -sy);
-                    foreach (var it in shows) PaintTableBgFront(g, it);
+                    foreach (var it in shows) PaintBgRowFront(g, it);
 
                     g.ResetTransform();
                     g.TranslateTransform(-sx, -sy);
-                    foreach (var it in shows) PaintItemBack(g, it.row);
+                    foreach (var it in shows) PaintBgRowItem(g, it.row);
 
                     g.ResetTransform();
                     g.TranslateTransform(0, -sy);
-                    foreach (var it in shows) PaintTableBg(g, it.row);
+                    foreach (var it in shows) PaintBg(g, it.row);
 
                     if (dividers.Length > 0) foreach (var divider in dividers) g.FillRectangle(brush_split, divider);
 
                     g.ResetTransform();
                     g.TranslateTransform(-sx, -sy);
-                    foreach (var it in shows) PaintItemFore(g, rows, it, fore);
+                    foreach (var it in shows) PaintForeItem(g, it, fore);
                     if (bordered)
                     {
                         g.ResetTransform();
@@ -253,68 +253,75 @@ namespace AntdUI
                 }
                 else g.FillRectangle(brush, row.RECT);
             }
-        }
-        void PaintTableHeader(Graphics g, RowTemplate row, SolidBrush fore, Font column_font, float radius)
-        {
-            if (dragHeader != null)
+            foreach (var cel in row.cells)
             {
-                foreach (TCellColumn column in row.cells)
+                if (cel.COLUMN.ColStyle != null && cel.COLUMN.ColStyle.BackColor.HasValue)
                 {
-                    if (column.column.SortOrder)
+                    using (var brush = new SolidBrush(cel.COLUMN.ColStyle.BackColor.Value))
                     {
-                        g.GetImgExtend(SvgDb.IcoArrowUp, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary);
-                        g.GetImgExtend(SvgDb.IcoArrowDown, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary);
-                    }
-                    if (column.column is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
-                    else g.DrawStr(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
-
-                    if (dragHeader.i == column.INDEX)
-                    {
-                        using (var brush = new SolidBrush(Style.Db.FillSecondary))
-                        {
-                            if (radius > 0)
-                            {
-                                if (column.INDEX == 0)
-                                {
-                                    using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
-                                    {
-                                        g.FillPath(brush, path);
-                                    }
-                                }
-                                else if (column.INDEX == row.cells.Length - 1)
-                                {
-                                    using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
-                                    {
-                                        g.FillPath(brush, path);
-                                    }
-                                }
-                                else g.FillRectangle(brush, column.RECT);
-                            }
-                            else g.FillRectangle(brush, column.RECT);
-                        }
-                    }
-                    if (dragHeader.im == column.INDEX)
-                    {
-                        using (var brush_split = new SolidBrush(Style.Db.BorderColor))
-                        {
-                            int sp = (int)(2 * Config.Dpi);
-                            if (dragHeader.last) g.FillRectangle(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
-                            else g.FillRectangle(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
-                        }
+                        g.FillRectangle(brush, cel.RECT);
                     }
                 }
             }
-            else
+        }
+        void PaintTableHeader(Graphics g, RowTemplate row, SolidBrush fore, Font column_font, float radius)
+        {
+            foreach (TCellColumn column in row.cells)
             {
-                foreach (TCellColumn column in row.cells)
+                if (column.COLUMN.SortOrder)
                 {
-                    if (column.column.SortOrder)
+                    g.GetImgExtend(SvgDb.IcoArrowUp, column.rect_up, column.COLUMN.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary);
+                    g.GetImgExtend(SvgDb.IcoArrowDown, column.rect_down, column.COLUMN.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary);
+                }
+                if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
+                else
+                {
+                    if (column.COLUMN.ColStyle != null && column.COLUMN.ColStyle.ForeColor.HasValue)
                     {
-                        g.GetImgExtend(SvgDb.IcoArrowUp, column.rect_up, column.column.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary);
-                        g.GetImgExtend(SvgDb.IcoArrowDown, column.rect_down, column.column.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary);
+                        using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
+                        {
+                            g.DrawStr(column.value, column_font, brush, column.RECT_REAL, StringF(column.COLUMN.ColAlign ?? column.COLUMN.Align));
+                        }
                     }
-                    if (column.column is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
-                    else g.DrawStr(column.value, column_font, fore, column.rect, StringF(column.column.ColAlign ?? column.column.Align));
+                    else g.DrawStr(column.value, column_font, fore, column.RECT_REAL, StringF(column.COLUMN.ColAlign ?? column.COLUMN.Align));
+                }
+            }
+            if (dragHeader == null) return;
+            foreach (var column in row.cells)
+            {
+                if (dragHeader.i == column.INDEX)
+                {
+                    using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                    {
+                        if (radius > 0)
+                        {
+                            if (column.INDEX == 0)
+                            {
+                                using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                            }
+                            else if (column.INDEX == row.cells.Length - 1)
+                            {
+                                using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
+                                {
+                                    g.FillPath(brush, path);
+                                }
+                            }
+                            else g.FillRectangle(brush, column.RECT);
+                        }
+                        else g.FillRectangle(brush, column.RECT);
+                    }
+                }
+                if (dragHeader.im == column.INDEX)
+                {
+                    using (var brush_split = new SolidBrush(Style.Db.BorderColor))
+                    {
+                        int sp = (int)(2 * Config.Dpi);
+                        if (dragHeader.last) g.FillRectangle(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                        else g.FillRectangle(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                    }
                 }
             }
         }
@@ -323,7 +330,10 @@ namespace AntdUI
 
         #region 表体
 
-        void PaintTableBgFront(Graphics g, StyleRow row)
+        /// <summary>
+        /// 渲染背景行（前置）
+        /// </summary>
+        void PaintBgRowFront(Graphics g, StyleRow row)
         {
             if (row.style != null && row.style.BackColor.HasValue)
             {
@@ -346,8 +356,23 @@ namespace AntdUI
                     }
                 }
             }
+
+            foreach (var cel in row.row.cells)
+            {
+                if (cel.COLUMN.Style != null && cel.COLUMN.Style.BackColor.HasValue)
+                {
+                    using (var brush = new SolidBrush(cel.COLUMN.Style.BackColor.Value))
+                    {
+                        g.FillRectangle(brush, cel.RECT);
+                    }
+                }
+            }
         }
-        void PaintTableBg(Graphics g, RowTemplate row)
+
+        /// <summary>
+        /// 渲染背景行
+        /// </summary>
+        void PaintBg(Graphics g, RowTemplate row)
         {
             if (row.AnimationHover)
             {
@@ -367,11 +392,18 @@ namespace AntdUI
 
         #region 单元格
 
-        void PaintItemBack(Graphics g, RowTemplate row)
+        /// <summary>
+        /// 渲染背景行
+        /// </summary>
+        void PaintBgRowItem(Graphics g, RowTemplate row)
         {
-            foreach (var cel in row.cells) PaintItemBack(g, cel);
+            foreach (var cel in row.cells) PaintItemBg(g, cel);
         }
-        void PaintItemBack(Graphics g, TCell it)
+
+        /// <summary>
+        /// 渲染单元格背景
+        /// </summary>
+        void PaintItemBg(Graphics g, TCell it)
         {
             if (it is Template obj)
             {
@@ -379,43 +411,72 @@ namespace AntdUI
             }
         }
 
-        void PaintItemFore(Graphics g, RowTemplate[] rows, StyleRow row, SolidBrush fore)
+        /// <summary>
+        /// 渲染前景行
+        /// </summary>
+        void PaintForeItem(Graphics g, StyleRow row, SolidBrush fore)
         {
             if (selectedIndex == row.row.INDEX && rowSelectedFore.HasValue)
             {
                 using (var brush = new SolidBrush(rowSelectedFore.Value))
                 {
-                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, (TCellColumn)rows[0].cells[i], row.row.cells[i], brush);
+                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], brush);
                 }
             }
             else if (row.style != null && row.style.ForeColor.HasValue)
             {
                 using (var brush = new SolidBrush(row.style.ForeColor.Value))
                 {
-                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, (TCellColumn)rows[0].cells[i], row.row.cells[i], brush);
+                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], brush);
                 }
             }
-            else for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, (TCellColumn)rows[0].cells[i], row.row.cells[i], fore);
+            else for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], fore);
         }
-        void PaintItemFore(Graphics g, TCellColumn column, TCell it, SolidBrush fore, CellStyleInfo? style)
+
+        #region 渲染单元格
+
+        void PaintItem(Graphics g, TCell it, SolidBrush fore)
+        {
+            if (it.COLUMN.Style == null || it.COLUMN.Style.ForeColor == null) PaintItem(g, it.INDEX, it, fore);
+            else
+            {
+                using (var brush = new SolidBrush(it.COLUMN.Style.ForeColor.Value))
+                {
+                    PaintItem(g, it.INDEX, it, brush);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 渲染单元格（浮动）
+        /// </summary>
+        void PaintItemFixed(Graphics g, TCell it, SolidBrush fore, CellStyleInfo? style)
         {
             if (selectedIndex == it.ROW.INDEX && rowSelectedFore.HasValue)
             {
                 using (var brush = new SolidBrush(rowSelectedFore.Value))
                 {
-                    PaintItem(g, column, it, brush);
+                    PaintItem(g, it.INDEX, it, brush);
                 }
             }
             else if (style != null && style.ForeColor.HasValue)
             {
                 using (var brush = new SolidBrush(style.ForeColor.Value))
                 {
-                    PaintItem(g, column, it, brush);
+                    PaintItem(g, it.INDEX, it, brush);
                 }
             }
-            else PaintItem(g, column, it, fore);
+            else if (it.COLUMN.Style == null || it.COLUMN.Style.ForeColor == null) PaintItem(g, it.INDEX, it, fore);
+            else
+            {
+                using (var brush = new SolidBrush(it.COLUMN.Style.ForeColor.Value))
+                {
+                    PaintItem(g, it.INDEX, it, brush);
+                }
+            }
         }
-        void PaintItem(Graphics g, TCellColumn column, TCell it, SolidBrush fore)
+
+        void PaintItem(Graphics g, int columnIndex, TCell it, SolidBrush fore)
         {
             if (it is TCellCheck check) PaintCheck(g, check);
             else if (it is TCellRadio radio) PaintRadio(g, radio);
@@ -428,7 +489,7 @@ namespace AntdUI
             {
                 var state = g.Save();
                 g.SetClip(it.RECT);
-                g.DrawStr(text.value, Font, fore, text.rect, StringF(text.column));
+                g.DrawStr(text.value, Font, fore, text.RECT_REAL, StringF(text.COLUMN));
                 g.Restore(state);
             }
             if (dragHeader != null && dragHeader.i == it.INDEX)
@@ -438,7 +499,7 @@ namespace AntdUI
                     g.FillRectangle(brush, it.RECT);
                 }
             }
-            if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == column.INDEX)
+            if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
             {
                 using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
                 {
@@ -455,6 +516,7 @@ namespace AntdUI
             }
         }
 
+        #endregion
 
         void PaintArrow(Graphics g, RowTemplate item, SolidBrush color, int ArrowProg)
         {
@@ -504,16 +566,16 @@ namespace AntdUI
                     if (row.row.IsColumn) { PaintTableBgHeader(g, row.row, radius); PaintTableHeader(g, row.row, forecolumn, column_font, radius); }
                     else
                     {
-                        PaintTableBgFront(g, row);
-                        PaintItemBack(g, row.row);
-                        PaintTableBg(g, row.row);
+                        PaintBgRowFront(g, row);
+                        PaintBgRowItem(g, row.row);
+                        PaintBg(g, row.row);
                     }
                 }
                 foreach (var row in shows)
                 {
                     foreach (int fixedIndex in fixedColumnL)
                     {
-                        if (!row.row.IsColumn) PaintItemFore(g, (TCellColumn)rows[0].cells[fixedIndex], row.row.cells[fixedIndex], fore, row.style);
+                        if (!row.row.IsColumn) PaintItemFixed(g, row.row.cells[fixedIndex], fore, row.style);
                     }
                 }
                 if (dividers.Length > 0) foreach (var divider in dividers) g.FillRectangle(brush_split, divider);
@@ -572,8 +634,8 @@ namespace AntdUI
                         }
                         else
                         {
-                            PaintTableBgFront(g, row);
-                            PaintTableBg(g, row.row);
+                            PaintBgRowFront(g, row);
+                            PaintBg(g, row.row);
                         }
                     }
                     g.ResetTransform();
@@ -584,8 +646,8 @@ namespace AntdUI
                         {
                             if (!row.row.IsColumn)
                             {
-                                PaintItemBack(g, row.row.cells[fixedIndex]);
-                                PaintItemFore(g, (TCellColumn)rows[0].cells[fixedIndex], row.row.cells[fixedIndex], fore, row.style);
+                                PaintItemBg(g, row.row.cells[fixedIndex]);
+                                PaintItemFixed(g, row.row.cells[fixedIndex], fore, row.style);
                             }
                         }
                     }
@@ -621,7 +683,7 @@ namespace AntdUI
 
         void PaintCheck(Graphics g, TCellColumn check, ColumnCheck columnCheck)
         {
-            using (var path_check = Helper.RoundPath(check.rect, check_radius, false))
+            using (var path_check = Helper.RoundPath(check.RECT_REAL, check_radius, false))
             {
                 if (columnCheck.AnimationCheck)
                 {
@@ -638,7 +700,7 @@ namespace AntdUI
                         }
                         using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.Primary)))
                         {
-                            g.FillRectangle(brush, PaintBlock(check.rect));
+                            g.FillRectangle(brush, PaintBlock(check.RECT_REAL));
                         }
                     }
                     else
@@ -649,14 +711,14 @@ namespace AntdUI
                         }
                         using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), check_border * 2))
                         {
-                            g.DrawLines(brush, PaintArrow(check.rect));
+                            g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                         }
                         if (columnCheck.Checked)
                         {
-                            float max = check.rect.Height + check.rect.Height * columnCheck.AnimationCheckValue, alpha2 = 100 * (1F - columnCheck.AnimationCheckValue);
+                            float max = check.RECT_REAL.Height + check.RECT_REAL.Height * columnCheck.AnimationCheckValue, alpha2 = 100 * (1F - columnCheck.AnimationCheckValue);
                             using (var brush = new SolidBrush(Helper.ToColor(alpha2, Style.Db.Primary)))
                             {
-                                g.FillEllipse(brush, new RectangleF(check.rect.X + (check.rect.Width - max) / 2F, check.rect.Y + (check.rect.Height - max) / 2F, max, max));
+                                g.FillEllipse(brush, new RectangleF(check.RECT_REAL.X + (check.RECT_REAL.Width - max) / 2F, check.RECT_REAL.Y + (check.RECT_REAL.Height - max) / 2F, max, max));
                             }
                         }
                         using (var brush = new Pen(Style.Db.Primary, check_border))
@@ -677,7 +739,7 @@ namespace AntdUI
                     }
                     using (var brush = new SolidBrush(Style.Db.Primary))
                     {
-                        g.FillRectangle(brush, PaintBlock(check.rect));
+                        g.FillRectangle(brush, PaintBlock(check.RECT_REAL));
                     }
                 }
                 else if (columnCheck.Checked)
@@ -688,7 +750,7 @@ namespace AntdUI
                     }
                     using (var brush = new Pen(Style.Db.BgBase, check_border * 2))
                     {
-                        g.DrawLines(brush, PaintArrow(check.rect));
+                        g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                     }
                 }
                 else
@@ -706,7 +768,7 @@ namespace AntdUI
         }
         void PaintCheck(Graphics g, TCellCheck check)
         {
-            using (var path_check = Helper.RoundPath(check.rect, check_radius, false))
+            using (var path_check = Helper.RoundPath(check.RECT_REAL, check_radius, false))
             {
                 if (check.AnimationCheck)
                 {
@@ -723,15 +785,15 @@ namespace AntdUI
                     }
                     using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), check_border * 2))
                     {
-                        g.DrawLines(brush, PaintArrow(check.rect));
+                        g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                     }
 
                     if (check.Checked)
                     {
-                        float max = check.rect.Height + check.rect.Height * check.AnimationCheckValue, alpha2 = 100 * (1F - check.AnimationCheckValue);
+                        float max = check.RECT_REAL.Height + check.RECT_REAL.Height * check.AnimationCheckValue, alpha2 = 100 * (1F - check.AnimationCheckValue);
                         using (var brush = new SolidBrush(Helper.ToColor(alpha2, Style.Db.Primary)))
                         {
-                            g.FillEllipse(brush, new RectangleF(check.rect.X + (check.rect.Width - max) / 2F, check.rect.Y + (check.rect.Height - max) / 2F, max, max));
+                            g.FillEllipse(brush, new RectangleF(check.RECT_REAL.X + (check.RECT_REAL.Width - max) / 2F, check.RECT_REAL.Y + (check.RECT_REAL.Height - max) / 2F, max, max));
                         }
                     }
                     using (var brush = new Pen(Style.Db.Primary, check_border))
@@ -747,7 +809,7 @@ namespace AntdUI
                     }
                     using (var brush = new Pen(Style.Db.BgBase, check_border * 2))
                     {
-                        g.DrawLines(brush, PaintArrow(check.rect));
+                        g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                     }
                 }
                 else
@@ -770,10 +832,10 @@ namespace AntdUI
 
         void PaintRadio(Graphics g, TCellRadio radio)
         {
-            var dot_size = radio.rect.Height;
+            var dot_size = radio.RECT_REAL.Height;
             using (var brush_bg = new SolidBrush(Style.Db.BgBase))
             {
-                g.FillEllipse(brush_bg, radio.rect);
+                g.FillEllipse(brush_bg, radio.RECT_REAL);
             }
             if (radio.AnimationCheck)
             {
@@ -781,8 +843,8 @@ namespace AntdUI
                 using (var path = new GraphicsPath())
                 {
                     float dot_ant = dot_size - dot * radio.AnimationCheckValue, dot_ant2 = dot_ant / 2F, alpha = 255 * radio.AnimationCheckValue;
-                    path.AddEllipse(radio.rect);
-                    path.AddEllipse(new RectangleF(radio.rect.X + dot_ant2, radio.rect.Y + dot_ant2, radio.rect.Width - dot_ant, radio.rect.Height - dot_ant));
+                    path.AddEllipse(radio.RECT_REAL);
+                    path.AddEllipse(new RectangleF(radio.RECT_REAL.X + dot_ant2, radio.RECT_REAL.Y + dot_ant2, radio.RECT_REAL.Width - dot_ant, radio.RECT_REAL.Height - dot_ant));
                     using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.Primary)))
                     {
                         g.FillPath(brush, path);
@@ -790,15 +852,15 @@ namespace AntdUI
                 }
                 if (radio.Checked)
                 {
-                    float max = radio.rect.Height + radio.rect.Height * radio.AnimationCheckValue, alpha2 = 100 * (1F - radio.AnimationCheckValue);
+                    float max = radio.RECT_REAL.Height + radio.RECT_REAL.Height * radio.AnimationCheckValue, alpha2 = 100 * (1F - radio.AnimationCheckValue);
                     using (var brush = new SolidBrush(Helper.ToColor(alpha2, Style.Db.Primary)))
                     {
-                        g.FillEllipse(brush, new RectangleF(radio.rect.X + (radio.rect.Width - max) / 2F, radio.rect.Y + (radio.rect.Height - max) / 2F, max, max));
+                        g.FillEllipse(brush, new RectangleF(radio.RECT_REAL.X + (radio.RECT_REAL.Width - max) / 2F, radio.RECT_REAL.Y + (radio.RECT_REAL.Height - max) / 2F, max, max));
                     }
                 }
                 using (var brush = new Pen(Style.Db.Primary, check_border))
                 {
-                    g.DrawEllipse(brush, radio.rect);
+                    g.DrawEllipse(brush, radio.RECT_REAL);
                 }
             }
             else if (radio.Checked)
@@ -806,18 +868,18 @@ namespace AntdUI
                 float dot = dot_size * 0.3F, dot2 = dot / 2F;
                 using (var brush = new Pen(Color.FromArgb(250, Style.Db.Primary), dot))
                 {
-                    g.DrawEllipse(brush, new RectangleF(radio.rect.X + dot2, radio.rect.Y + dot2, radio.rect.Width - dot, radio.rect.Height - dot));
+                    g.DrawEllipse(brush, new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
                 }
                 using (var brush = new Pen(Style.Db.Primary, check_border))
                 {
-                    g.DrawEllipse(brush, radio.rect);
+                    g.DrawEllipse(brush, radio.RECT_REAL);
                 }
             }
             else
             {
                 using (var brush = new Pen(Style.Db.BorderColor, check_border))
                 {
-                    g.DrawEllipse(brush, radio.rect);
+                    g.DrawEllipse(brush, radio.RECT_REAL);
                 }
             }
         }
@@ -829,7 +891,7 @@ namespace AntdUI
         void PaintSwitch(Graphics g, TCellSwitch _switch)
         {
             var color = Style.Db.Primary;
-            using (var path = _switch.rect.RoundPath(_switch.rect.Height))
+            using (var path = _switch.RECT_REAL.RoundPath(_switch.RECT_REAL.Height))
             {
                 using (var brush = new SolidBrush(Style.Db.TextQuaternary))
                 {
@@ -851,7 +913,7 @@ namespace AntdUI
                     {
                         g.FillPath(brush, path);
                     }
-                    var dot_rect = new RectangleF(_switch.rect.X + gap + (_switch.rect.Width - _switch.rect.Height) * _switch.AnimationCheckValue, _switch.rect.Y + gap, _switch.rect.Height - gap2, _switch.rect.Height - gap2);
+                    var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap + (_switch.RECT_REAL.Width - _switch.RECT_REAL.Height) * _switch.AnimationCheckValue, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
                     using (var brush = new SolidBrush(Style.Db.BgBase))
                     {
                         g.FillEllipse(brush, dot_rect);
@@ -878,7 +940,7 @@ namespace AntdUI
                             g.FillPath(brush, path);
                         }
                     }
-                    var dot_rect = new RectangleF(_switch.rect.X + gap + _switch.rect.Width - _switch.rect.Height, _switch.rect.Y + gap, _switch.rect.Height - gap2, _switch.rect.Height - gap2);
+                    var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap + _switch.RECT_REAL.Width - _switch.RECT_REAL.Height, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
                     using (var brush = new SolidBrush(Style.Db.BgBase))
                     {
                         g.FillEllipse(brush, dot_rect);
@@ -886,7 +948,7 @@ namespace AntdUI
                     if (_switch.Loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                        float size = _switch.rect.Height * .1F;
+                        float size = _switch.RECT_REAL.Height * .1F;
                         using (var brush = new Pen(color, size))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
@@ -900,7 +962,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    var dot_rect = new RectangleF(_switch.rect.X + gap, _switch.rect.Y + gap, _switch.rect.Height - gap2, _switch.rect.Height - gap2);
+                    var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
                     using (var brush = new SolidBrush(Style.Db.BgBase))
                     {
                         g.FillEllipse(brush, dot_rect);
@@ -908,7 +970,7 @@ namespace AntdUI
                     if (_switch.Loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                        float size = _switch.rect.Height * .1F;
+                        float size = _switch.RECT_REAL.Height * .1F;
                         using (var brush = new Pen(color, size))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;

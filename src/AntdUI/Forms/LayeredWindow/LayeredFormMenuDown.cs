@@ -100,8 +100,8 @@ namespace AntdUI
                 var vr = (font_size * item_count) + (gap_y * divider_count);
                 y = 10 + gap_y2 + vr;
             });
-            SetSizeW(w + 20);
-            EndHeight = y + 10;
+            int h = y + 10;
+            SetSize(w + 20, h);
             if (control is LayeredFormMenuDown)
             {
                 var point = control.PointToScreen(Point.Empty);
@@ -120,7 +120,7 @@ namespace AntdUI
                 {
                     if (keys == Keys.Escape)
                     {
-                        Dispose();
+                        IClose();
                         return true;
                     }
                     if (nodata) return false;
@@ -238,9 +238,17 @@ namespace AntdUI
             }
         }
 
+        bool DisableMouse = true;
+        public override void LoadOK()
+        {
+            DisableMouse = false;
+            base.LoadOK();
+        }
+
         int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (DisableMouse) return;
             hoveindex = -1;
 
             int count = 0;
@@ -276,7 +284,7 @@ namespace AntdUI
             {
                 using (var path = rect_read.RoundPath(Radius))
                 {
-                    DrawShadow(g, rect, rect.Width, EndHeight);
+                    DrawShadow(g, rect);
                     if (isauto)
                     {
                         using (var brush = new SolidBrush(Style.Db.BgElevated))
@@ -506,22 +514,20 @@ namespace AntdUI
         /// 绘制阴影
         /// </summary>
         /// <param name="g">GDI</param>
-        /// <param name="rect_client">客户区域</param>
-        /// <param name="shadow_width">最终阴影宽度</param>
-        /// <param name="shadow_height">最终阴影高度</param>
-        void DrawShadow(Graphics g, Rectangle rect_client, int shadow_width, int shadow_height)
+        /// <param name="rect">客户区域</param>
+        void DrawShadow(Graphics g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || (shadow_temp.Width != shadow_width || shadow_temp.Height != shadow_height))
+                if (shadow_temp == null)
                 {
                     shadow_temp?.Dispose();
-                    using (var path = new Rectangle(10, 10, shadow_width - 20, shadow_height - 20).RoundPath(Radius))
+                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
                     {
-                        shadow_temp = path.PaintShadow(shadow_width, shadow_height);
+                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.DrawImage(shadow_temp, rect, 0.2F);
             }
         }
 

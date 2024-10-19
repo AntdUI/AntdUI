@@ -44,10 +44,10 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Fore.Value))
                 {
-                    g.DrawStr(Text, Font ?? font, brush, Rect, Table.StringF(PARENT.column));
+                    g.DrawStr(Text, Font ?? font, brush, Rect, Table.StringF(PARENT.COLUMN));
                 }
             }
-            else g.DrawStr(Text, Font ?? font, fore, Rect, Table.StringF(PARENT.column));
+            else g.DrawStr(Text, Font ?? font, fore, Rect, Table.StringF(PARENT.COLUMN));
             g.Restore(state);
             if (PrefixSvg != null) g.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color);
             else if (Prefix != null) g.DrawImage(Prefix, RectL);

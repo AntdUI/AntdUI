@@ -30,7 +30,7 @@ namespace AntdUI
         internal List<object> selectedValue;
         int r_w = 0;
         List<ObjectItem> Items;
-        public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, List<object> items, string filtertext)
+        public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, IList<object> items, string filtertext)
         {
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -47,7 +47,7 @@ namespace AntdUI
 
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
-        void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, List<object> items, string? filtertext = null)
+        void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
             int y = 10, w = rect_read.Width;
             r_w = w;
@@ -90,9 +90,10 @@ namespace AntdUI
                 else y = 10 + gap2 + vr;
             });
 
-            SetSizeW(w + 20);
-            if (filtertext == null || string.IsNullOrEmpty(filtertext)) EndHeight = y + 10;
-            else EndHeight = TextChangeCore(filtertext);
+            int r_h;
+            if (filtertext == null || string.IsNullOrEmpty(filtertext)) r_h = y + 10;
+            else r_h = TextChangeCore(filtertext);
+            SetSize(w + 20, r_h);
             var point = control.PointToScreen(Point.Empty);
             MyPoint(point, control, Placement, ShowArrow, rect_read);
 
@@ -100,7 +101,7 @@ namespace AntdUI
             {
                 if (keys == Keys.Escape)
                 {
-                    Dispose();
+                    IClose();
                     return true;
                 }
                 if (nodata) return false;
@@ -146,7 +147,7 @@ namespace AntdUI
             };
         }
 
-        void MyPoint(Point point, Control control, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(point, Placement, ShowArrow, ArrowSize, 10, r_w + 20, EndHeight, rect_read, ref Inverted, ref ArrowAlign);
+        void MyPoint(Point point, Control control, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(point, Placement, ShowArrow, ArrowSize, 10, r_w + 20, TargetRect.Height, rect_read, ref Inverted, ref ArrowAlign);
 
         /// <summary>
         /// 计算坐标
@@ -343,7 +344,7 @@ namespace AntdUI
                     });
                     height = y;
                 }
-                EndHeight = height;
+                SetSizeH(height);
                 if (PARENT is SelectMultiple control) MyPoint(control);
                 shadow_temp?.Dispose();
                 shadow_temp = null;
@@ -510,8 +511,16 @@ namespace AntdUI
             return obj;
         }
 
+        bool DisableMouse = true;
+        public override void LoadOK()
+        {
+            DisableMouse = false;
+            base.LoadOK();
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (DisableMouse) return;
             hoveindex = -1;
             if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
             {
@@ -542,7 +551,7 @@ namespace AntdUI
             {
                 using (var path = rect_read.RoundPath(Radius))
                 {
-                    DrawShadow(g, rect, rect.Width, EndHeight);
+                    DrawShadow(g, rect);
                     using (var brush = new SolidBrush(Style.Db.BgElevated))
                     {
                         g.FillPath(brush, path);
@@ -798,22 +807,20 @@ namespace AntdUI
         /// 绘制阴影
         /// </summary>
         /// <param name="g">GDI</param>
-        /// <param name="rect_client">客户区域</param>
-        /// <param name="shadow_width">最终阴影宽度</param>
-        /// <param name="shadow_height">最终阴影高度</param>
-        void DrawShadow(Graphics g, Rectangle rect_client, int shadow_width, int shadow_height)
+        /// <param name="rect">客户区域</param>
+        void DrawShadow(Graphics g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || (shadow_temp.Width != shadow_width || shadow_temp.Height != shadow_height))
+                if (shadow_temp == null)
                 {
                     shadow_temp?.Dispose();
-                    using (var path = new Rectangle(10, 10, shadow_width - 20, shadow_height - 20).RoundPath(Radius))
+                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
                     {
-                        shadow_temp = path.PaintShadow(shadow_width, shadow_height);
+                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.DrawImage(shadow_temp, rect, 0.2F);
             }
         }
 

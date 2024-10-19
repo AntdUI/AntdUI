@@ -29,25 +29,19 @@ namespace AntdUI
     /// </summary>
     partial class Input
     {
-        bool mouseDown = false, mouseDownMove = false;
-        Point oldMouseDown;
-        bool MouseDownSetFocus = false;
+        bool mDown = false, mDownMove = false;
+        Point mDownLocation;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (HasFocus && (DateTime.Now - HasFocusTime).TotalMilliseconds > 200) MouseDownSetFocus = false;
-            else
-            {
-                MouseDownSetFocus = true;
-                Focus();
-                Select();
-            }
+            Focus();
+            Select();
             is_prefix_down = is_suffix_down = false;
             if (e.Button == MouseButtons.Left)
             {
                 if (cache_font != null && e.Clicks > 1 && !BanInput)
                 {
-                    mouseDownMove = mouseDown = false;
+                    mDownMove = mDown = false;
 
                     var index = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
 
@@ -85,8 +79,8 @@ namespace AntdUI
                     ScrollYDown = true;
                     return;
                 }
-                mouseDownMove = false;
-                oldMouseDown = e.Location;
+                mDownMove = false;
+                mDownLocation = e.Location;
                 if (BanInput) return;
                 int indeX = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
                 if (ModifierKeys.HasFlag(Keys.Shift))
@@ -105,11 +99,11 @@ namespace AntdUI
                 }
                 else
                 {
-                    SelectionStart = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                    SelectionStart = indeX;
                     SelectionLength = 0;
                     SetCaretPostion(selectionStart);
                 }
-                if (cache_font != null) mouseDown = true;
+                if (cache_font != null) mDown = true;
                 else if (ModeRange) SetCaretPostion();
             }
         }
@@ -124,11 +118,11 @@ namespace AntdUI
                 ScrollY = (int)(y * VrValue);
                 return;
             }
-            else if (mouseDown && cache_font != null)
+            else if (mDown && cache_font != null)
             {
-                mouseDownMove = true;
+                mDownMove = true;
                 SetCursor(CursorType.IBeam);
-                var index = GetCaretPostion(oldMouseDown.X + scrollx + (e.X - oldMouseDown.X), oldMouseDown.Y + scrolly + (e.Y - oldMouseDown.Y));
+                var index = GetCaretPostion(mDownLocation.X + scrollx + (e.X - mDownLocation.X), mDownLocation.Y + scrolly + (e.Y - mDownLocation.Y));
                 SelectionLength = Math.Abs(index - selectionStart);
                 if (index > selectionStart) selectionStartTemp = selectionStart;
                 else selectionStartTemp = index;
@@ -153,7 +147,7 @@ namespace AntdUI
                     return;
                 }
                 if (IMouseMove(e.Location)) SetCursor(true);
-                else if (ReadShowCaret)
+                else if (CaretInfo.ReadShow)
                 {
                     if (rect_text.Contains(e.Location)) SetCursor(true);
                     else SetCursor(false);
@@ -175,11 +169,14 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            bool md = mDown;
+            mDown = false;
             ScrollYDown = false;
             if (is_clear_down)
             {
                 if (rect_r.Contains(e.Location)) OnClearValue();
                 is_clear_down = false;
+                return;
             }
             if (is_prefix_down && PrefixClick != null)
             {
@@ -194,7 +191,7 @@ namespace AntdUI
                 return;
             }
             if (IMouseUp(e.Location)) return;
-            if (mouseDown && mouseDownMove && cache_font != null)
+            if (md && mDownMove && mDownLocation != e.Location && cache_font != null)
             {
                 var index = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
                 if (selectionStart == index) SelectionLength = 0;
@@ -211,8 +208,7 @@ namespace AntdUI
                     ScrollX = x;
                 }
             }
-            else OnFocusClick(MouseDownSetFocus);
-            mouseDown = false;
+            else OnClickContent();
         }
 
 
@@ -261,27 +257,28 @@ namespace AntdUI
         /// </summary>
         int FindStartY(CacheFont[] cache_font, int index)
         {
-            int y = cache_font[index].rect.Y;
+            int line = cache_font[index].line;
             int tmp = 0;
             for (int i = index; i >= 0; i--)
             {
-                if (cache_font[i].rect.Y == y) tmp = i + 1;
+                if (cache_font[i].line == line) tmp = i;
                 else return tmp;
             }
             return 0;
         }
+
 
         /// <summary>
         /// 查找行后面
         /// </summary>
         int FindEndY(CacheFont[] cache_font, int index)
         {
-            int y = cache_font[index].rect.Y;
+            int line = cache_font[index].line;
             int tmp = 0;
             int end = cache_font.Length;
             for (int i = index + 1; i < end; i++)
             {
-                if (cache_font[i].rect.Y == y) tmp = i + 1;
+                if (cache_font[i].line == line) tmp = i;
                 else return tmp == 0 ? index : tmp;
             }
             return end;

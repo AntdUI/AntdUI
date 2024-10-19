@@ -208,12 +208,6 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(true)]
         public bool DropDownArrow { get; set; } = true;
 
-        /// <summary>
-        /// 焦点时展开下拉
-        /// </summary>
-        [Description("焦点时展开下拉"), Category("行为"), DefaultValue(true)]
-        public bool FocusExpandDropdown { get; set; } = true;
-
         protected override void OnHandleCreated(EventArgs e)
         {
             if (_value != null) Text = _value[0].ToString(Format) + "\t" + _value[1].ToString(Format);
@@ -274,14 +268,17 @@ namespace AntdUI
 
         #region 焦点
 
-        bool textFocus = false;
-        bool TextFocus
+        bool expandDrop = false;
+        /// <summary>
+        /// 展开下拉菜单
+        /// </summary>
+        bool ExpandDrop
         {
-            get => textFocus;
+            get => expandDrop;
             set
             {
-                if (textFocus == value) return;
-                textFocus = value;
+                if (expandDrop == value) return;
+                expandDrop = value;
                 if (!ReadOnly && value)
                 {
                     if (subForm == null)
@@ -298,7 +295,7 @@ namespace AntdUI
                             subForm.Disposed += (a, b) =>
                             {
                                 subForm = null;
-                                TextFocus = false;
+                                ExpandDrop = false;
                             };
                             subForm.Show(this);
                         }
@@ -314,7 +311,7 @@ namespace AntdUI
                             subForm.Disposed += (a, b) =>
                             {
                                 subForm = null;
-                                TextFocus = false;
+                                ExpandDrop = false;
                             };
                             subForm.Show(this);
                         }
@@ -329,13 +326,12 @@ namespace AntdUI
             base.OnGotFocus(e);
             if (!StartFocused && !EndFocused) StartFocused = true;
             StartEndFocused();
-            if (FocusExpandDropdown) TextFocus = true;
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
             base.OnLostFocus(e);
-            TextFocus = StartFocused = EndFocused = false;
+            ExpandDrop = StartFocused = EndFocused = false;
             StartEndFocused();
             AnimationBarValue = RectangleF.Empty;
             if (IsHandleCreated)
@@ -368,12 +364,12 @@ namespace AntdUI
 
         protected override void OnClearValue() => Value = null;
 
-        protected override void OnFocusClick(bool SetFocus)
+        protected override void OnClickContent()
         {
             if (HasFocus)
             {
-                if (textFocus) return;
-                TextFocus = !textFocus;
+                if (expandDrop) return;
+                ExpandDrop = !expandDrop;
             }
             else Focus();
         }
@@ -383,6 +379,11 @@ namespace AntdUI
             if (keyData == Keys.Escape && subForm != null)
             {
                 subForm.IClose();
+                return true;
+            }
+            else if (keyData == Keys.Down && subForm == null)
+            {
+                ExpandDrop = true;
                 return true;
             }
             else if (keyData == Keys.Enter)
@@ -482,29 +483,29 @@ namespace AntdUI
             {
                 if (TextAlign == HorizontalAlignment.Center)
                 {
-                    if (StartFocused) SetCaretX(rect_d_l.X + rect_d_l.Width / 2);
-                    else if (EndFocused) SetCaretX(rect_d_r.X + rect_d_r.Width / 2);
+                    if (StartFocused) CaretInfo.X = rect_d_l.X + rect_d_l.Width / 2;
+                    else if (EndFocused) CaretInfo.X = rect_d_r.X + rect_d_r.Width / 2;
                 }
                 else if (TextAlign == HorizontalAlignment.Right)
                 {
-                    if (StartFocused) SetCaretX(rect_d_l.Right);
-                    else if (EndFocused) SetCaretX(rect_d_r.Right);
+                    if (StartFocused) CaretInfo.X = rect_d_l.Right;
+                    else if (EndFocused) CaretInfo.X = rect_d_r.Right;
                 }
                 else
                 {
-                    if (StartFocused) SetCaretX(rect_d_l.X);
-                    else if (EndFocused) SetCaretX(rect_d_r.X);
+                    if (StartFocused) CaretInfo.X = rect_d_l.X;
+                    else if (EndFocused) CaretInfo.X = rect_d_r.X;
                 }
             }
             else
             {
                 if (StartFocused)
                 {
-                    if (!rect_d_l.Contains(CurrentCaret)) ModeRangeCaretPostion(true);
+                    if (!rect_d_l.Contains(CaretInfo.Rect)) ModeRangeCaretPostion(true);
                 }
                 else if (EndFocused)
                 {
-                    if (!rect_d_r.Contains(CurrentCaret)) ModeRangeCaretPostion(true);
+                    if (!rect_d_r.Contains(CaretInfo.Rect)) ModeRangeCaretPostion(true);
                 }
             }
         }

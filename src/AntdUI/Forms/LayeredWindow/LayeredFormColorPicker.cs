@@ -119,10 +119,9 @@ namespace AntdUI
 
             h += panel_color + gap;
 
-            int r_w = w + 20;
-            SetSize(r_w, 0);
-            EndHeight = h + 20;
-            CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, EndHeight, rect_read, ref Inverted, ref ArrowAlign, true);
+            int r_w = w + 20, r_h = h + 20;
+            SetSize(r_w, r_h);
+            CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign, true);
 
             Location = TargetRect.Location;
             Size = TargetRect.Size;
@@ -325,6 +324,7 @@ namespace AntdUI
 
         public override void LoadOK()
         {
+            DisableMouse = false;
             BeginInvoke(new Action(() =>
             {
                 Location = TargetRect.Location;
@@ -426,8 +426,11 @@ namespace AntdUI
             base.OnMouseDown(e);
         }
 
+        bool DisableMouse = true;
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (DisableMouse) return;
             if (down_colors && bmp_colors != null)
             {
                 point_colors = new Point(e.X - 10 - gap, e.Y - 10 - gap);
@@ -496,8 +499,7 @@ namespace AntdUI
                 {
                     using (var path = rect_read.RoundPath(Radius))
                     {
-                        DrawShadow(g, rect, rect.Width, EndHeight);
-
+                        DrawShadow(g, rect);
                         g.FillPath(brush_bg, path);
                         if (ArrowAlign != TAlign.None) g.FillPolygon(brush_bg, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                     }
@@ -835,22 +837,20 @@ namespace AntdUI
         /// 绘制阴影
         /// </summary>
         /// <param name="g">GDI</param>
-        /// <param name="rect_client">客户区域</param>
-        /// <param name="shadow_width">最终阴影宽度</param>
-        /// <param name="shadow_height">最终阴影高度</param>
-        void DrawShadow(Graphics g, Rectangle rect_client, int shadow_width, int shadow_height)
+        /// <param name="rect">客户区域</param>
+        void DrawShadow(Graphics g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || (shadow_temp.Width != shadow_width || shadow_temp.Height != shadow_height))
+                if (shadow_temp == null)
                 {
                     shadow_temp?.Dispose();
-                    using (var path = new Rectangle(10, 10, shadow_width - 20, shadow_height - 20).RoundPath(Radius))
+                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
                     {
-                        shadow_temp = path.PaintShadow(shadow_width, shadow_height);
+                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.DrawImage(shadow_temp, rect, 0.2F);
             }
         }
 

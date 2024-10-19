@@ -123,6 +123,26 @@ namespace AntdUI
             }
         }
 
+        float iconratio = 1.2F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(1.2F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                if (IsHandleCreated)
+                {
+                    ChangeList();
+                    Invalidate();
+                }
+            }
+        }
+
         TMenuMode mode = TMenuMode.Inline;
         /// <summary>
         /// 菜单类型
@@ -390,7 +410,7 @@ namespace AntdUI
             {
                 var lists = items;
                 var size = g.MeasureString(Config.NullText, Font);
-                int icon_size = (int)Math.Ceiling(size.Height * 1.2F), gap = icon_size / 2, gapI = gap / 2, height = (int)Math.Ceiling(size.Height + gap * 2);
+                int icon_size = (int)Math.Ceiling(size.Height * iconratio), gap = icon_size / 2, gapI = gap / 2, height = (int)Math.Ceiling(size.Height + gap * 2);
                 if (mode == TMenuMode.Horizontal) ChangeListHorizontal(rect, g, lists, 0, icon_size, gap, gapI);
                 else
                 {

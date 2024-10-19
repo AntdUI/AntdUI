@@ -993,6 +993,16 @@ namespace AntdUI
         /// </summary>
         public string? KeyTree { get; set; }
 
+        /// <summary>
+        /// 列样式
+        /// </summary>
+        public Table.CellStyleInfo? Style { get; set; }
+
+        /// <summary>
+        /// 标题列样式
+        /// </summary>
+        public Table.CellStyleInfo? ColStyle { get; set; }
+
         #region 内部
 
         internal Table? PARENT { get; set; }
