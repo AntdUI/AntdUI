@@ -233,7 +233,8 @@ namespace AntdUI
                             badge_list.Clear();
                             if (dir == null)
                             {
-                                Print();
+                                if (RunAnimation) DisposeTmp();
+                                else Print();
                                 return;
                             }
 #if NET40 || NET46 || NET48
@@ -241,7 +242,8 @@ namespace AntdUI
 #else
                             foreach (var it in dir) badge_list.TryAdd(it.Date, it);
 #endif
-                            Print();
+                            if (RunAnimation) DisposeTmp();
+                            else Print();
                         }
                     });
                 }
@@ -1008,8 +1010,8 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             base.OnMouseDown(e);
-
             if (left_buttons != null && rect_read_left.Contains(e.X, e.Y)) if (!scrollY_left.MouseDown(e.Location)) return;
             if (ShowTime)
             {
@@ -1019,16 +1021,9 @@ namespace AntdUI
             }
         }
 
-        bool DisableMouse = true;
-        public override void LoadOK()
-        {
-            DisableMouse = false;
-            base.LoadOK();
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DisableMouse) return;
+            if (RunAnimation) return;
             if (scrollY_left.MouseMove(e.Location) && scrollY_h.MouseMove(e.Location) && scrollY_m.MouseMove(e.Location) && scrollY_s.MouseMove(e.Location))
             {
                 int count = 0, hand = 0;
@@ -1146,6 +1141,7 @@ namespace AntdUI
 
         protected override void OnMouseLeave(EventArgs e)
         {
+            if (RunAnimation) return;
             scrollY_left.Leave();
             scrollY_h.Leave();
             scrollY_m.Leave();
@@ -1214,6 +1210,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             scrollY_left.MouseUp(e.Location);
             scrollY_h.MouseUp(e.Location);
             scrollY_m.MouseUp(e.Location);
@@ -1427,6 +1424,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             if (e.Delta != 0)
             {
                 if (left_buttons != null && rect_read_left.Contains(e.X, e.Y))
@@ -1501,7 +1499,6 @@ namespace AntdUI
                 Print();
             }
         }
-
 
         #endregion
 

@@ -25,6 +25,15 @@ namespace AntdUI
     {
         Control control;
         Action action;
+        public ITaskOpacity(ILayeredFormOpacityDown _control)
+        {
+            control = _control;
+            action = new Action(() =>
+            {
+                if (_control.RunAnimation) return;
+                _control.Print();
+            });
+        }
         public ITaskOpacity(ILayeredForm _control)
         {
             control = _control;

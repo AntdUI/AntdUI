@@ -165,10 +165,7 @@ namespace AntdUI
             selectedValue = selecteds.ToArray();
             CalculateRect();
             SetCaretPostion();
-
-            if (subForm == null) return;
-            subForm.selectedValue = selecteds;
-            subForm.Print();
+            subForm?.SetValues(selecteds);
         }
 
         /// <summary>
@@ -202,10 +199,7 @@ namespace AntdUI
             CalculateRect();
             SetCaretPostion();
             Invalidate();
-
-            if (subForm == null) return;
-            subForm.selectedValue = new List<object>(0);
-            subForm.Print();
+            subForm?.ClearValues();
         }
         protected override void IBackSpaceKey()
         {
@@ -215,11 +209,7 @@ namespace AntdUI
                 tmp.AddRange(selectedValue);
                 tmp.RemoveAt(tmp.Count - 1);
                 SelectedValue = tmp.ToArray();
-
-                if (subForm == null) return;
-                subForm.selectedValue = new List<object>(selectedValue.Length);
-                subForm.selectedValue.AddRange(selectedValue);
-                subForm.Print();
+                subForm?.SetValues(selectedValue);
             }
         }
 
@@ -444,11 +434,8 @@ namespace AntdUI
                     tmp.AddRange(selectedValue);
                     tmp.RemoveAt(select_del);
                     SelectedValue = tmp.ToArray();
-
                     if (subForm == null) return true;
-                    subForm.selectedValue = new List<object>(selectedValue.Length);
-                    subForm.selectedValue.AddRange(selectedValue);
-                    subForm.Print();
+                    subForm.SetValues(selectedValue);
                 }
                 select_del = -1;
                 return true;
@@ -461,7 +448,7 @@ namespace AntdUI
 
         #region 动画
 
-        LayeredFormSelectMultiple? subForm = null;
+        ISelectMultiple? subForm = null;
         public ILayeredForm? SubForm() => subForm;
 
         ITask? ThreadExpand = null;
@@ -597,10 +584,7 @@ namespace AntdUI
             }
         }
 
-        protected override void OnClickContent()
-        {
-            ExpandDrop = !expandDrop;
-        }
+        protected override void OnClickContent() => ExpandDrop = !expandDrop;
 
         #endregion
     }

@@ -711,6 +711,7 @@ namespace AntdUI
         {
             if (scrollY.MouseUp(e.Location) && OnTouchUp() && down)
             {
+                if (RunAnimation) return;
                 foreach (var it in Items)
                 {
                     if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
@@ -774,17 +775,10 @@ namespace AntdUI
             }
         }
 
-        bool DisableMouse = true;
-        public override void LoadOK()
-        {
-            DisableMouse = false;
-            base.LoadOK();
-        }
-
         int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DisableMouse) return;
+            if (RunAnimation) return;
             hoveindex = -1;
             if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
             {
@@ -1004,6 +998,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             scrollY.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }

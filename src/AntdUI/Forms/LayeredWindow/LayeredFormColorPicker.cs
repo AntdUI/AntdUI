@@ -324,7 +324,6 @@ namespace AntdUI
 
         public override void LoadOK()
         {
-            DisableMouse = false;
             BeginInvoke(new Action(() =>
             {
                 Location = TargetRect.Location;
@@ -363,6 +362,7 @@ namespace AntdUI
         }
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             if (e.Button == MouseButtons.Left)
             {
                 if (rect_colors_big.Contains(e.Location))
@@ -426,11 +426,9 @@ namespace AntdUI
             base.OnMouseDown(e);
         }
 
-        bool DisableMouse = true;
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DisableMouse) return;
+            if (RunAnimation) return;
             if (down_colors && bmp_colors != null)
             {
                 point_colors = new Point(e.X - 10 - gap, e.Y - 10 - gap);
@@ -478,6 +476,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             if (down_colors) down_colors = false;
             if (down_hue) down_hue = false;
             if (down_alpha) down_alpha = false;

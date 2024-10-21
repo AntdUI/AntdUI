@@ -33,6 +33,7 @@ namespace AntdUI
         public override bool MessageEnable => true;
 
         Bitmap? bmp_tmp = null;
+        public bool RunAnimation = true;
         protected override void OnLoad(EventArgs e)
         {
             if (Config.Animation)
@@ -52,6 +53,7 @@ namespace AntdUI
                         DisposeTmp();
                         alpha = 255;
                         AnimateHeight = -1;
+                        RunAnimation = false;
                         Print();
                         LoadOK();
                     });
@@ -70,6 +72,7 @@ namespace AntdUI
                         DisposeTmp();
                         alpha = 255;
                         AnimateHeight = -1;
+                        RunAnimation = false;
                         Print();
                         LoadOK();
                     });
@@ -78,6 +81,7 @@ namespace AntdUI
             else
             {
                 alpha = 255;
+                RunAnimation = false;
                 Print();
                 LoadOK();
             }
@@ -162,6 +166,7 @@ namespace AntdUI
                     if (!run_end)
                     {
                         run_end = true;
+                        RunAnimation = true;
                         var t = Animation.TotalFrames(10, 100);
                         if (Inverted)
                         {

@@ -201,6 +201,7 @@ namespace AntdUI
         {
             foreach (var it in Items)
             {
+                if (RunAnimation) return;
                 if (it.Show && it.Contains(e.Location, out _))
                 {
                     if (OnClick(it)) return;
@@ -238,17 +239,10 @@ namespace AntdUI
             }
         }
 
-        bool DisableMouse = true;
-        public override void LoadOK()
-        {
-            DisableMouse = false;
-            base.LoadOK();
-        }
-
         int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DisableMouse) return;
+            if (RunAnimation) return;
             hoveindex = -1;
 
             int count = 0;

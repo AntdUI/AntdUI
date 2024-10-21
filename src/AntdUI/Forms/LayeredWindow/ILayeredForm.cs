@@ -499,6 +499,7 @@ namespace AntdUI
             /// </summary>
             public void Set()
             {
+                if (isDispose) return;
                 Queue.Enqueue(null);
                 Event.Set();
             }
@@ -507,6 +508,7 @@ namespace AntdUI
             /// </summary>
             public void Set(byte alpha, Bitmap bmp)
             {
+                if (isDispose) return;
                 Queue.Enqueue(new M(alpha, bmp));
                 Event.Set();
             }
@@ -515,6 +517,7 @@ namespace AntdUI
             /// </summary>
             public void Set(byte alpha, Bitmap bmp, Rectangle rect)
             {
+                if (isDispose) return;
                 Queue.Enqueue(new M(alpha, bmp, rect));
                 Event.Set();
             }
@@ -546,12 +549,22 @@ namespace AntdUI
                         }
                     }
                     if (count > 0) call.Render();
-                    Event.Reset();
+                    if (isDispose) return;
+                    try
+                    {
+                        Event.Reset();
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 }
             }
 
+            bool isDispose = false;
             public void Dispose()
             {
+                isDispose = true;
 #if NET40 || NET45 || NET46 || NET48
                 while (Queue.TryDequeue(out _))
 #else

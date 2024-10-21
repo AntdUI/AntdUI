@@ -283,7 +283,6 @@ namespace AntdUI
         }
         internal void SetAnimateValueY(int y)
         {
-            if (closepassive) return;
             if (TargetRect.Y != y)
             {
                 SetLocationY(y);
@@ -311,36 +310,12 @@ namespace AntdUI
         #region 关闭
 
         bool handclose = false;
-        bool closepassive = false;
-        public void CloseMe(bool passive)
+        public void CloseMe()
         {
             if (handclose) return;
             handclose = true;
             task_start?.Dispose();
-            if (passive) MsgQueue.Add(this);
-            else
-            {
-                closepassive = true;
-                //执行关闭动画
-                if (Config.Animation)
-                {
-                    ITask.Run(() =>
-                    {
-                        StopAnimation().Wait();
-                    }, () =>
-                    {
-                        bool isRemove = list[key].Remove(this);
-                        IClose(true);
-                        if (isRemove) MsgQueue.Add(new object[] { Align, key });
-                    });
-                }
-                else
-                {
-                    bool isRemove = list[key].Remove(this);
-                    IClose(true);
-                    if (isRemove) MsgQueue.Add(new object[] { Align, key });
-                }
-            }
+            MsgQueue.Add(this);
         }
 
         #endregion
@@ -369,12 +344,6 @@ namespace AntdUI
         public static void Add(Message.Config config)
         {
             queue.Enqueue(config);
-            _event.Set();
-        }
-
-        public static void Add(object?[] command)
-        {
-            queue.Enqueue(command);
             _event.Set();
         }
 
@@ -428,10 +397,6 @@ namespace AntdUI
                     formAnimate.IClose(true);
                     Close(formAnimate.Align, formAnimate.key);
                     if (queue_cache.TryDequeue(out var d_cache)) Hand(d_cache);
-                }
-                else if (d is object?[] command)
-                {
-                    if (command[0] is TAlignFrom align && command[1] is string key) Close(align, key);
                 }
             }
             catch { }
