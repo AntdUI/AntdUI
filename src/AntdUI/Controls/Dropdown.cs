@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 
@@ -64,6 +65,12 @@ namespace AntdUI
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; } = false;
+
+        /// <summary>
+        /// 下拉边距
+        /// </summary>
+        [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "12, 5")]
+        public Size DropDownPadding { get; set; } = new Size(12, 5);
 
         /// <summary>
         /// 点击到最里层（无节点才能点击）

@@ -292,7 +292,6 @@ namespace AntdUI
         int shadow_size = 10;
         public NotificationFrm(Notification.Config _config)
         {
-            _config.AutoClose = 0;
             config = _config;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Form.SetTopMost(Handle);

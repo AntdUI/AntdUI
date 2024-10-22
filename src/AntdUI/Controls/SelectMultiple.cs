@@ -56,6 +56,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 复选框模式
+        /// </summary>
+        [Description("复选框模式"), Category("行为"), DefaultValue(false)]
+        public bool CheckMode { get; set; }
+
         bool canDelete = true;
         /// <summary>
         /// 是否可以删除
@@ -102,6 +108,12 @@ namespace AntdUI
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; } = false;
+
+        /// <summary>
+        /// 下拉边距
+        /// </summary>
+        [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "12, 5")]
+        public Size DropDownPadding { get; set; } = new Size(12, 5);
 
         #region 数据
 
@@ -496,6 +508,8 @@ namespace AntdUI
             }
         }
 
+        internal int select_x = 0;
+
         #endregion
 
         #region 焦点
@@ -544,9 +558,11 @@ namespace AntdUI
                 return;
             }
             Expand = true;
-            subForm = new LayeredFormSelectMultiple(this, ReadRectangle, list, filtertext);
+            if (CheckMode) subForm = new LayeredFormSelectMultipleCheck(this, ReadRectangle, list, filtertext);
+            else subForm = new LayeredFormSelectMultiple(this, ReadRectangle, list, filtertext);
             subForm.Disposed += (a, b) =>
             {
+                select_x = 0;
                 subForm = null;
                 Expand = false;
                 ExpandDrop = false;

@@ -81,6 +81,12 @@ namespace AntdUI
         public bool DropDownArrow { get; set; } = false;
 
         /// <summary>
+        /// 下拉边距
+        /// </summary>
+        [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "12, 5")]
+        public Size DropDownPadding { get; set; } = new Size(12, 5);
+
+        /// <summary>
         /// 点击到最里层（无节点才能点击）
         /// </summary>
         [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
@@ -744,7 +750,7 @@ namespace AntdUI
 
         internal bool ShowAndID => ID == -1 || !Show;
 
-        internal Rectangle arr_rect { get; set; }
+        internal Rectangle RectArrow { get; set; }
 
         public Rectangle Rect { get; set; }
 
@@ -773,7 +779,7 @@ namespace AntdUI
                     }
                 }
                 else RectText = rect_text;
-                arr_rect = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
+                RectArrow = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
             }
             else RectText = rect_text;
         }
@@ -925,32 +931,41 @@ namespace AntdUI
         internal void SetRect(Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
         {
             Rect = rect;
-            RectCheck = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
-            RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
-            //if (Val is SelectItem)
-            //{
-            //    if (Online > -1 || HasIcon)
-            //    {
-            //        if (Online > -1 && HasIcon)
-            //        {
-            //            RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
-            //            RectIcon = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Height, rect_text.Height);
-            //            RectText = new Rectangle(rect_text.X + gap_y + gap_y2 + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - gap_y2, rect_text.Height);
-            //        }
-            //        else if (Online > -1)
-            //        {
-            //            RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
-            //            RectText = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Width - gap_y2, rect_text.Height);
-            //        }
-            //        else
-            //        {
-            //            RectIcon = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
-            //            RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
-            //        }
-            //    }
-            //    else RectText = rect_text;
-            //}
-            //else RectText = rect_text;
+            if (Val is SelectItem)
+            {
+                if (Online > -1 || HasIcon)
+                {
+                    RectCheck = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
+                    int x = rect.X + rect_text.Height + gap_x;
+                    if (Online > -1 && HasIcon)
+                    {
+                        RectOnline = new Rectangle(x + (rect_text.Height - gap_y) / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
+                        RectIcon = new Rectangle(x + rect_text.Height, rect_text.Y, rect_text.Height, rect_text.Height);
+                        RectText = new Rectangle(x + gap_x / 2 + rect_text.Height * 2, rect_text.Y, rect_text.Width - x - rect_text.Height, rect_text.Height);
+                    }
+                    else if (Online > -1)
+                    {
+                        RectOnline = new Rectangle(x + (rect_text.Height - gap_y) / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
+                        RectText = new Rectangle(x + gap_x / 2 + rect_text.Height, rect_text.Y, rect_text.Width - x, rect_text.Height);
+                    }
+                    else
+                    {
+                        RectIcon = new Rectangle(x, rect_text.Y, rect_text.Height, rect_text.Height);
+                        RectText = new Rectangle(x + gap_x / 2 + rect_text.Height, rect_text.Y, rect_text.Width - x, rect_text.Height);
+                    }
+                }
+                else
+                {
+                    RectCheck = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
+                    RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
+                }
+                RectArrow = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
+            }
+            else
+            {
+                RectCheck = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
+                RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
+            }
         }
 
         internal bool SetHover(bool val)
@@ -983,5 +998,6 @@ namespace AntdUI
         }
 
         public RectangleF RectText { get; set; }
+        public Rectangle RectArrow { get; set; }
     }
 }

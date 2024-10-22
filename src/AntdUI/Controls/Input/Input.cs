@@ -523,6 +523,22 @@ namespace AntdUI
 
         #region 原生文本框
 
+        ImeMode imeMode = ImeMode.NoControl;
+        /// <summary>
+        /// IME(输入法编辑器)状态
+        /// </summary>
+        [Description("IME(输入法编辑器)状态"), Category("行为"), DefaultValue(ImeMode.NoControl)]
+        public new ImeMode ImeMode
+        {
+            get => imeMode;
+            set
+            {
+                if (imeMode == value) return;
+                imeMode = value;
+                base.ImeMode = value;
+            }
+        }
+
         int selectionStart = 0, selectionStartTemp = 0, selectionLength = 0;
         /// <summary>
         /// 所选文本的起点
@@ -574,11 +590,21 @@ namespace AntdUI
         [Description("焦点离开清空选中"), Category("行为"), DefaultValue(true)]
         public bool LostFocusClearSelection { get; set; } = true;
 
+        bool readOnly = false;
         /// <summary>
         /// 只读
         /// </summary>
         [Description("只读"), Category("行为"), DefaultValue(false)]
-        public bool ReadOnly { get; set; }
+        public bool ReadOnly
+        {
+            get => readOnly;
+            set
+            {
+                if (readOnly == value) return;
+                readOnly = value;
+                base.ImeMode = value ? ImeMode.Disable : imeMode;
+            }
+        }
 
         bool multiline = false;
         /// <summary>
@@ -760,6 +786,7 @@ namespace AntdUI
                 IsPassWord = true;
             }
             else IsPassWord = false;
+            base.ImeMode = IsPassWord ? ImeMode.Disable : imeMode;
             FixFontWidth(true);
             Invalidate();
         }

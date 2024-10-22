@@ -364,7 +364,12 @@ namespace AntdUI
             try
             {
                 if (control.TargetRect.Contains(mousePosition)) count++;
-                if (control is LayeredFormSelectDown layered && layered.SubForm != null) count += ContainsPosition(layered.SubForm, mousePosition);
+
+                if (control is SubLayeredForm subForm)
+                {
+                    var subform = subForm.SubForm();
+                    if (subform != null) count += ContainsPosition(subform, mousePosition);
+                }
             }
             catch { }
             return count;
