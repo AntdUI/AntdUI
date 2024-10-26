@@ -218,23 +218,23 @@ namespace AntdUI
                 switch (Align)
                 {
                     case TAlignMini.Right:
-                        mark_list.Add(rect_read.Width - (Value >= MaxValue ? rect_read.Width : rect_read.Width * ((Value - MinValue) * 1F / max)));
-                        mark_list.Add(rect_read.Width - (_value2 >= MaxValue ? rect_read.Width : rect_read.Width * ((_value2 - MinValue) * 1F / max)));
+                        mark_list.Add(rect_read.X + (rect_read.Width - (Value >= MaxValue ? rect_read.Width : rect_read.Width * ((Value - MinValue) * 1F / max))));
+                        mark_list.Add(rect_read.X + (rect_read.Width - (_value2 >= MaxValue ? rect_read.Width : rect_read.Width * ((_value2 - MinValue) * 1F / max))));
                         i = FindNumber(e.X, mark_list);
                         break;
                     case TAlignMini.Top:
-                        mark_list.Add(Value >= MaxValue ? rect_read.Height : rect_read.Height * ((Value - MinValue) * 1F / max));
-                        mark_list.Add(_value2 >= MaxValue ? rect_read.Height : rect_read.Height * ((_value2 - MinValue) * 1F / max));
+                        mark_list.Add(rect_read.Y + (Value >= MaxValue ? rect_read.Height : rect_read.Height * ((Value - MinValue) * 1F / max)));
+                        mark_list.Add(rect_read.Y + (_value2 >= MaxValue ? rect_read.Height : rect_read.Height * ((_value2 - MinValue) * 1F / max)));
                         i = FindNumber(e.Y, mark_list);
                         break;
                     case TAlignMini.Bottom:
-                        mark_list.Add(rect_read.Height - (Value >= MaxValue ? rect_read.Height : rect_read.Height * ((Value - MinValue) * 1F / max)));
-                        mark_list.Add(rect_read.Height - (_value2 >= MaxValue ? rect_read.Height : rect_read.Height * ((_value2 - MinValue) * 1F / max)));
+                        mark_list.Add(rect_read.Y + (rect_read.Height - (Value >= MaxValue ? rect_read.Height : rect_read.Height * ((Value - MinValue) * 1F / max))));
+                        mark_list.Add(rect_read.Y + (rect_read.Height - (_value2 >= MaxValue ? rect_read.Height : rect_read.Height * ((_value2 - MinValue) * 1F / max))));
                         i = FindNumber(e.Y, mark_list);
                         break;
                     default:
-                        mark_list.Add(Value >= MaxValue ? rect_read.Width : rect_read.Width * ((Value - MinValue) * 1F / max));
-                        mark_list.Add(_value2 >= MaxValue ? rect_read.Width : rect_read.Width * ((_value2 - MinValue) * 1F / max));
+                        mark_list.Add(rect_read.X + (Value >= MaxValue ? rect_read.Width : rect_read.Width * ((Value - MinValue) * 1F / max)));
+                        mark_list.Add(rect_read.X + (_value2 >= MaxValue ? rect_read.Width : rect_read.Width * ((_value2 - MinValue) * 1F / max)));
                         i = FindNumber(e.X, mark_list);
                         break;
                 }

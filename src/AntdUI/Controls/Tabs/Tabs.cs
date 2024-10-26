@@ -568,12 +568,8 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (items == null)
-            {
-                base.OnMouseDown(e);
-                return;
-            }
-            if (MouseDownPre(e.X, e.Y)) return;
+            base.OnMouseDown(e);
+            if (items == null || MouseDownPre(e.X, e.Y)) return;
             if (_tabMenuVisible)
             {
                 int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
@@ -588,11 +584,11 @@ namespace AntdUI
                     i++;
                 }
             }
-            base.OnMouseDown(e);
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (items == null) { base.OnMouseUp(e); return; }
+            base.OnMouseUp(e);
+            if (items == null) return;
             if (_tabMenuVisible)
             {
                 int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
@@ -612,7 +608,6 @@ namespace AntdUI
                     i++;
                 }
             }
-            base.OnMouseUp(e);
         }
 
         int hover_i = -1;
@@ -629,12 +624,12 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            base.OnMouseMove(e);
             if (items == null) return;
             if (MouseMovePre(e.X, e.Y))
             {
                 Hover_i = -1;
                 SetCursor(true);
-                base.OnMouseMove(e);
                 return;
             }
             int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
@@ -651,7 +646,6 @@ namespace AntdUI
             }
             style.MouseMove(x, y);
             SetCursor(false);
-            base.OnMouseMove(e);
         }
 
         protected override void OnMouseLeave(EventArgs e)
