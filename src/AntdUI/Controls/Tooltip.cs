@@ -145,9 +145,9 @@ namespace AntdUI
                     }));
                     return form;
                 }
-                var popover = new TooltipForm(config.Control, config.Text, config);
-                popover.Show(config.Control);
-                return popover;
+                var tip = new TooltipForm(config.Control, config.Text, config);
+                tip.Show(config.Control);
+                return tip;
             }
             return null;
         }

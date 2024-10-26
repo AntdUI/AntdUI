@@ -94,6 +94,20 @@ namespace AntdUI
 
         #region 程序
 
+        FormBorderStyle formBorderStyle = FormBorderStyle.Sizable;
+        [Description("指示窗体的边框和标题栏的外观和行为"), Category("行为"), DefaultValue(FormBorderStyle.Sizable)]
+        public new FormBorderStyle FormBorderStyle
+        {
+            get => formBorderStyle;
+            set
+            {
+                if (formBorderStyle == value) return;
+                base.FormBorderStyle = formBorderStyle = value;
+            }
+        }
+
+        public virtual void RefreshDWM() { }
+
         /// <summary>
         /// 最小化
         /// </summary>
@@ -112,14 +126,21 @@ namespace AntdUI
         /// </summary>
         public virtual bool MaxRestore()
         {
+            if (IsFull)
+            {
+                base.FormBorderStyle = formBorderStyle;
+                IsFull = false;
+            }
             if (WindowState == FormWindowState.Maximized)
             {
                 WindowState = FormWindowState.Normal;
+                RefreshDWM();
                 return false;
             }
             else
             {
                 WindowState = FormWindowState.Maximized;
+                RefreshDWM();
                 return true;
             }
         }
@@ -129,7 +150,13 @@ namespace AntdUI
         /// </summary>
         public virtual void Max()
         {
+            if (IsFull)
+            {
+                base.FormBorderStyle = formBorderStyle;
+                IsFull = false;
+            }
             WindowState = FormWindowState.Maximized;
+            RefreshDWM();
         }
 
         /// <summary>
@@ -149,19 +176,29 @@ namespace AntdUI
             }
         }
 
+        public bool IsFull = false;
         /// <summary>
         /// 全屏
         /// </summary>
         public virtual void Full()
         {
-            FormBorderStyle = FormBorderStyle.None;
+            if (IsFull) return;
+            IsFull = true;
+            base.FormBorderStyle = FormBorderStyle.None;
+            if (WindowState == FormWindowState.Maximized) WindowState = FormWindowState.Normal;
             WindowState = FormWindowState.Maximized;
+            RefreshDWM();
         }
 
         public virtual void NoFull()
         {
-            FormBorderStyle = FormBorderStyle.Sizable;
-            WindowState = FormWindowState.Normal;
+            if (IsFull)
+            {
+                IsFull = false;
+                base.FormBorderStyle = formBorderStyle;
+                WindowState = FormWindowState.Normal;
+                RefreshDWM();
+            }
         }
 
         #endregion
@@ -199,6 +236,7 @@ namespace AntdUI
         /// </summary>
         public virtual void DraggableMouseDown()
         {
+            if (IsFull) return;
             ReleaseCapture();
             SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
         }
@@ -276,51 +314,36 @@ namespace AntdUI
 
         #region 鼠标
 
+        /// <summary>
+        /// 鼠标拖拽大小使能
+        /// </summary>
+        [Description("鼠标拖拽大小使能"), Category("交互"), DefaultValue(true)]
+        public bool EnableHitTest { get; set; } = true;
         internal HitTestValues HitTest(Point point)
         {
-            float htSize = 8F * Config.Dpi, htSize2 = htSize * 2;
-            GetWindowRect(Handle, out var lpRect);
+            if (EnableHitTest)
+            {
+                float htSize = 8F * Config.Dpi, htSize2 = htSize * 2;
+                GetWindowRect(Handle, out var lpRect);
 
-            var rect = new Rectangle(Point.Empty, lpRect.Size);
+                var rect = new Rectangle(Point.Empty, lpRect.Size);
 
-            var hitTestValue = HitTestValues.HTCLIENT;
-            var x = point.X;
-            var y = point.Y;
+                var hitTestValue = HitTestValues.HTCLIENT;
+                var x = point.X;
+                var y = point.Y;
 
-            if (x < rect.Left + htSize2 && y < rect.Top + htSize2)
-            {
-                hitTestValue = HitTestValues.HTTOPLEFT;
-            }
-            else if (x >= rect.Left + htSize2 && x <= rect.Right - htSize2 && y <= rect.Top + htSize)
-            {
-                hitTestValue = HitTestValues.HTTOP;
-            }
-            else if (x > rect.Right - htSize2 && y <= rect.Top + htSize2)
-            {
-                hitTestValue = HitTestValues.HTTOPRIGHT;
-            }
-            else if (x <= rect.Left + htSize && y >= rect.Top + htSize2 && y <= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTLEFT;
-            }
-            else if (x >= rect.Right - htSize && y >= rect.Top * 2 + htSize && y <= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTRIGHT;
-            }
-            else if (x <= rect.Left + htSize2 && y >= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTBOTTOMLEFT;
-            }
-            else if (x > rect.Left + htSize2 && x < rect.Right - htSize2 && y >= rect.Bottom - htSize)
-            {
-                hitTestValue = HitTestValues.HTBOTTOM;
-            }
-            else if (x >= rect.Right - htSize2 && y >= rect.Bottom - htSize2)
-            {
-                hitTestValue = HitTestValues.HTBOTTOMRIGHT;
-            }
+                if (x < rect.Left + htSize2 && y < rect.Top + htSize2) hitTestValue = HitTestValues.HTTOPLEFT;
+                else if (x >= rect.Left + htSize2 && x <= rect.Right - htSize2 && y <= rect.Top + htSize) hitTestValue = HitTestValues.HTTOP;
+                else if (x > rect.Right - htSize2 && y <= rect.Top + htSize2) hitTestValue = HitTestValues.HTTOPRIGHT;
+                else if (x <= rect.Left + htSize && y >= rect.Top + htSize2 && y <= rect.Bottom - htSize2) hitTestValue = HitTestValues.HTLEFT;
+                else if (x >= rect.Right - htSize && y >= rect.Top * 2 + htSize && y <= rect.Bottom - htSize2) hitTestValue = HitTestValues.HTRIGHT;
+                else if (x <= rect.Left + htSize2 && y >= rect.Bottom - htSize2) hitTestValue = HitTestValues.HTBOTTOMLEFT;
+                else if (x > rect.Left + htSize2 && x < rect.Right - htSize2 && y >= rect.Bottom - htSize) hitTestValue = HitTestValues.HTBOTTOM;
+                else if (x >= rect.Right - htSize2 && y >= rect.Bottom - htSize2) hitTestValue = HitTestValues.HTBOTTOMRIGHT;
 
-            return hitTestValue;
+                return hitTestValue;
+            }
+            else return HitTestValues.HTCLIENT;
         }
 
         internal void SetCursorHit(HitTestValues mode)

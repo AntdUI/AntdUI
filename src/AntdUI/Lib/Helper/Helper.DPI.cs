@@ -36,10 +36,23 @@ namespace AntdUI
                 }
                 return;
             }
-            var dir = DpiSuspend(control.Controls);
-            if (control is Form form) DpiLS(dpi, form);
-            else DpiLS(dpi, control);
-            DpiResume(dir, control.Controls);
+            if (control is Form form)
+            {
+                if (form.WindowState == FormWindowState.Maximized)
+                {
+                    form.Scale(new SizeF(dpi, dpi));
+                    return;
+                }
+                var dir = DpiSuspend(control.Controls);
+                DpiLS(dpi, form);
+                DpiResume(dir, control.Controls);
+            }
+            else
+            {
+                var dir = DpiSuspend(control.Controls);
+                DpiLS(dpi, control);
+                DpiResume(dir, control.Controls);
+            }
         }
 
         static Dictionary<Control, AnchorDock> DpiSuspend(Control.ControlCollection controls)

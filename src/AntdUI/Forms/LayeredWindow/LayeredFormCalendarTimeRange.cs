@@ -1029,6 +1029,21 @@ namespace AntdUI
                                                     break;
                                             }
                                         }
+                                        else if (SelTime != null && SelTime.Length > 0)
+                                        {
+                                            switch (it.x)
+                                            {
+                                                case 0:
+                                                    if (it.t == SelTime[0].Hour) g.FillPath(brush_bg, path);
+                                                    break;
+                                                case 1:
+                                                    if (it.t == SelTime[0].Minute) g.FillPath(brush_bg, path);
+                                                    break;
+                                                case 2:
+                                                    if (it.t == SelTime[0].Second) g.FillPath(brush_bg, path);
+                                                    break;
+                                            }
+                                        }
                                         if (it.hover)
                                         {
                                             using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))

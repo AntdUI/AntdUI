@@ -978,42 +978,46 @@ namespace AntdUI
             while (true)
             {
                 if (_event.Wait()) return;
-                if (items != null && items.Count > 0 && BlurBar != null)
+                try
                 {
-                    int sy = ScrollBar.Value;
-                    int BlurBarHeight = BlurBar.Height;
-                    if (sy > BlurBarHeight)
+                    if (items != null && items.Count > 0 && BlurBar != null)
                     {
-                        sy -= BlurBarHeight;
-                        var rect = ClientRectangle;
-                        var bmp = new Bitmap(rect.Width, BlurBarHeight);
-                        using (var g = Graphics.FromImage(bmp).HighLay())
+                        int sy = ScrollBar.Value;
+                        int BlurBarHeight = BlurBar.Height;
+                        if (sy > BlurBarHeight)
                         {
-                            rect.Offset(0, sy);
-                            g.TranslateTransform(0, -sy);
-                            int r = (int)(radius * Config.Dpi);
-                            foreach (var it in items)
+                            sy -= BlurBarHeight;
+                            var rect = ClientRectangle;
+                            var bmp = new Bitmap(rect.Width, BlurBarHeight);
+                            using (var g = Graphics.FromImage(bmp).HighLay())
                             {
-                                if (it.SHOW && it.SHOW_RECT)
+                                rect.Offset(0, sy);
+                                g.TranslateTransform(0, -sy);
+                                int r = (int)(radius * Config.Dpi);
+                                foreach (var it in items)
                                 {
-                                    if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
-                                    it.Paint(g, new VirtualPanelArgs(this, it.RECT, r));
+                                    if (it.SHOW && it.SHOW_RECT)
+                                    {
+                                        if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
+                                        it.Paint(g, new VirtualPanelArgs(this, it.RECT, r));
+                                    }
+                                }
+                                g.ResetTransform();
+
+                                using (var brush = new SolidBrush(Color.FromArgb(45, BlurBar.BackColor)))
+                                {
+                                    g.FillRectangle(brush, 0, 0, bmp.Width, bmp.Height);
                                 }
                             }
-                            g.ResetTransform();
-
-                            using (var brush = new SolidBrush(Color.FromArgb(45, BlurBar.BackColor)))
-                            {
-                                g.FillRectangle(brush, 0, 0, bmp.Width, bmp.Height);
-                            }
+                            Helper.Blur(bmp, BlurBarHeight * 6);
+                            IBlurBar(BlurBar, bmp);
                         }
-                        Helper.Blur(bmp, BlurBarHeight * 6);
-                        IBlurBar(BlurBar, bmp);
+                        else IBlurBar(BlurBar, null);
                     }
-                    else IBlurBar(BlurBar, null);
+                    else if (BlurBar != null) IBlurBar(BlurBar, null);
+                    _event.Reset();
                 }
-                else if (BlurBar != null) IBlurBar(BlurBar, null);
-                _event.Reset();
+                catch { return; }
             }
         }
 
@@ -1029,6 +1033,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             BlurBar = null;
+            _event?.Set();
             _event?.Dispose();
             base.Dispose(disposing);
         }

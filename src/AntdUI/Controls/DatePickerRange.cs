@@ -90,6 +90,8 @@ namespace AntdUI
                 if (dateFormat == value) return;
                 dateFormat = value;
                 ShowTime = dateFormat.Contains("H");
+                if (_value == null) Text = "";
+                else Text = _value[0].ToString(dateFormat) + "\t" + _value[1].ToString(dateFormat);
             }
         }
 

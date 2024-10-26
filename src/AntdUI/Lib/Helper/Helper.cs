@@ -99,6 +99,7 @@ namespace AntdUI
             try
             {
                 handle.WaitOne();
+                if (handle.SafeWaitHandle.IsClosed) return true;
                 return false;
             }
             catch
@@ -172,11 +173,11 @@ namespace AntdUI
         {
             try
             {
-                return Clipboard.GetText();
+                return Win32.GetClipBoardText();
             }
             catch
             {
-                return Win32.GetClipBoardText();
+                return Clipboard.GetText();
             }
         }
         public static bool ClipboardSetText(this Control control, string? text)
@@ -196,13 +197,13 @@ namespace AntdUI
         {
             try
             {
-                if (text == null) Clipboard.Clear();
-                else Clipboard.SetText(text);
-                return true;
+                if (Win32.SetClipBoardText(text)) return true;
             }
             catch
             {
-                if (Win32.SetClipBoardText(text)) return true;
+                if (text == null) Clipboard.Clear();
+                else Clipboard.SetText(text);
+                return true;
             }
             return false;
         }

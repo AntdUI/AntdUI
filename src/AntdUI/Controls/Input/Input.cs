@@ -535,8 +535,14 @@ namespace AntdUI
             {
                 if (imeMode == value) return;
                 imeMode = value;
-                base.ImeMode = value;
+                SetImeMode(value);
             }
+        }
+
+        void SetImeMode(ImeMode value)
+        {
+            if (InvokeRequired) Invoke(new Action(() => SetImeMode(value)));
+            else base.ImeMode = value;
         }
 
         int selectionStart = 0, selectionStartTemp = 0, selectionLength = 0;
@@ -602,7 +608,7 @@ namespace AntdUI
             {
                 if (readOnly == value) return;
                 readOnly = value;
-                base.ImeMode = value ? ImeMode.Disable : imeMode;
+                SetImeMode(value ? ImeMode.Disable : imeMode);
             }
         }
 
@@ -786,7 +792,7 @@ namespace AntdUI
                 IsPassWord = true;
             }
             else IsPassWord = false;
-            base.ImeMode = IsPassWord ? ImeMode.Disable : imeMode;
+            SetImeMode(IsPassWord ? ImeMode.Disable : imeMode);
             FixFontWidth(true);
             Invalidate();
         }

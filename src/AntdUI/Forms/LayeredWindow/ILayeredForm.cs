@@ -575,6 +575,7 @@ namespace AntdUI
 #else
                 Queue.Clear();
 #endif
+                Event.Set();
                 Event.Dispose();
             }
 

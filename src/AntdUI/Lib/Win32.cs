@@ -280,10 +280,6 @@ namespace AntdUI
         }
 
         [DllImport("User32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        extern static bool IsClipboardFormatAvailable(uint format);
-
-        [DllImport("User32.dll", SetLastError = true)]
         extern static IntPtr GetClipboardData(uint uFormat);
 
         [DllImport("kernel32.dll", SetLastError = true)]
