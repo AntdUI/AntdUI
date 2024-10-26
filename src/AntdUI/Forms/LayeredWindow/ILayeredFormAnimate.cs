@@ -309,10 +309,13 @@ namespace AntdUI
 
         #region 关闭
 
+        DateTime closetime;
         bool handclose = false;
         public void CloseMe()
         {
-            if (handclose) return;
+            var now = DateTime.Now;
+            if (handclose && (now - closetime).TotalSeconds < 2) return;
+            closetime = now;
             handclose = true;
             task_start?.Dispose();
             MsgQueue.Add(this);
@@ -339,18 +342,18 @@ namespace AntdUI
         public static void Add(Notification.Config config)
         {
             queue.Enqueue(config);
-            _event.Set();
+            _event.SetWait();
         }
         public static void Add(Message.Config config)
         {
             queue.Enqueue(config);
-            _event.Set();
+            _event.SetWait();
         }
 
         internal static void Add(ILayeredFormAnimate command)
         {
             queue.Enqueue(command);
-            _event.Set();
+            _event.SetWait();
         }
 
         #endregion
@@ -367,7 +370,7 @@ namespace AntdUI
                 if (_event.Wait()) return;
                 while (queue.TryDequeue(out var d)) Hand(d);
                 volley.Clear();
-                _event.Reset();
+                _event.ResetWait();
             }
         }
 
@@ -377,19 +380,11 @@ namespace AntdUI
             {
                 if (d is Notification.Config configNotification)
                 {
-                    if (Open(configNotification))
-                    {
-                        _event.Reset();
-                        if (_event.Wait()) return;
-                    }
+                    if (Open(configNotification)) _event.ResetWait();
                 }
                 else if (d is Message.Config configMessage)
                 {
-                    if (Open(configMessage))
-                    {
-                        _event.Reset();
-                        if (_event.Wait()) return;
-                    }
+                    if (Open(configMessage)) _event.ResetWait();
                 }
                 else if (d is ILayeredFormAnimate formAnimate)
                 {

@@ -292,8 +292,7 @@ namespace AntdUI
             if (has_subtext) FontSub.Dispose();
             subForm?.IClose();
             subForm = null;
-            resetEvent?.Set();
-            resetEvent?.Dispose();
+            resetEvent?.WaitDispose();
             resetEvent = null;
             base.Dispose(disposing);
         }

@@ -946,7 +946,7 @@ namespace AntdUI
             }
             g.ResetTransform();
             ScrollBar.Paint(g);
-            if (Config.Animation && BlurBar != null) _event.Set();
+            if (Config.Animation && BlurBar != null) _event.SetWait();
             base.OnPaint(e);
         }
 
@@ -1015,7 +1015,7 @@ namespace AntdUI
                         else IBlurBar(BlurBar, null);
                     }
                     else if (BlurBar != null) IBlurBar(BlurBar, null);
-                    _event.Reset();
+                    _event.ResetWait();
                 }
                 catch { return; }
             }
@@ -1033,8 +1033,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             BlurBar = null;
-            _event?.Set();
-            _event?.Dispose();
+            _event?.WaitDispose();
             base.Dispose(disposing);
         }
 
@@ -1052,7 +1051,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
-                    if (Config.Animation && BlurBar != null) _event.Set();
+                    if (Config.Animation && BlurBar != null) _event.SetWait();
                     break;
             }
         }

@@ -94,8 +94,9 @@ namespace AntdUI
             Vanara.PInvoke.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Vanara.PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
         }
 
-        public static bool Wait(this System.Threading.WaitHandle handle)
+        public static bool Wait(this System.Threading.WaitHandle? handle)
         {
+            if (handle == null) return true;
             try
             {
                 handle.WaitOne();
@@ -105,6 +106,48 @@ namespace AntdUI
             catch
             {
                 return true;
+            }
+        }
+        public static bool SetWait(this System.Threading.EventWaitHandle? handle)
+        {
+            if (handle == null) return true;
+            try
+            {
+                if (handle.SafeWaitHandle.IsClosed) return true;
+                handle.Set();
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+        public static bool ResetWait(this System.Threading.EventWaitHandle? handle)
+        {
+            if (handle == null) return true;
+            try
+            {
+                if (handle.SafeWaitHandle.IsClosed) return true;
+                handle.Reset();
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+        public static void WaitDispose(this System.Threading.EventWaitHandle? handle, bool set = true)
+        {
+            if (handle == null) return;
+            try
+            {
+                if (handle.SafeWaitHandle.IsClosed) return;
+                if (set) handle.SetWait();
+                else handle.ResetWait();
+                handle.Dispose();
+            }
+            catch
+            {
             }
         }
 

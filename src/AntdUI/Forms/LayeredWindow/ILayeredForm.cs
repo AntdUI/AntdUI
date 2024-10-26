@@ -143,7 +143,11 @@ namespace AntdUI
 
         #endregion
 
-        public void Print() => renderQueue.Set();
+        public void Print(bool fore = false)
+        {
+            if (fore) Render();
+            else renderQueue.Set();
+        }
         public void Print(Bitmap bmp) => renderQueue.Set(alpha, bmp);
         public void Print(Bitmap bmp, Rectangle rect) => renderQueue.Set(alpha, bmp, rect);
 
@@ -506,7 +510,7 @@ namespace AntdUI
             {
                 if (isDispose) return;
                 Queue.Enqueue(null);
-                Event.Set();
+                Event.SetWait();
             }
             /// <summary>
             /// 渲染
@@ -515,7 +519,7 @@ namespace AntdUI
             {
                 if (isDispose) return;
                 Queue.Enqueue(new M(alpha, bmp));
-                Event.Set();
+                Event.SetWait();
             }
             /// <summary>
             /// 渲染
@@ -524,7 +528,7 @@ namespace AntdUI
             {
                 if (isDispose) return;
                 Queue.Enqueue(new M(alpha, bmp, rect));
-                Event.Set();
+                Event.SetWait();
             }
 
             void LongTask()
@@ -557,7 +561,7 @@ namespace AntdUI
                     if (isDispose) return;
                     try
                     {
-                        Event.Reset();
+                        Event.ResetWait();
                     }
                     catch
                     {
@@ -569,14 +573,14 @@ namespace AntdUI
             bool isDispose = false;
             public void Dispose()
             {
+                if (isDispose) return;
                 isDispose = true;
 #if NET40 || NET45 || NET46 || NET48
-                while (Queue.TryDequeue(out _))
+                while (Queue.TryDequeue(out _)) { }
 #else
                 Queue.Clear();
 #endif
-                Event.Set();
-                Event.Dispose();
+                Event.WaitDispose();
             }
 
             public class M

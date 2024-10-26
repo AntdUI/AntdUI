@@ -196,7 +196,11 @@ namespace AntdUI
                 if (winState == WState.Restore) return base.Location;
                 return ScreenRectangle.Location;
             }
-            set => base.Location = value;
+            set
+            {
+                sizeNormal = null;
+                base.Location = value;
+            }
         }
 
         /// <summary>
@@ -205,7 +209,11 @@ namespace AntdUI
         public new int Top
         {
             get => Location.Y;
-            set => base.Top = value;
+            set
+            {
+                sizeNormal = null;
+                base.Top = value;
+            }
         }
 
         /// <summary>
@@ -214,7 +222,11 @@ namespace AntdUI
         public new int Left
         {
             get => Location.X;
-            set => base.Left = value;
+            set
+            {
+                sizeNormal = null;
+                base.Left = value;
+            }
         }
 
         /// <summary>
@@ -245,6 +257,7 @@ namespace AntdUI
             }
             set
             {
+                sizeNormal = null;
                 base.Size = value;
                 sizeInit = ClientSize;
             }
@@ -258,6 +271,7 @@ namespace AntdUI
             get => Size.Width;
             set
             {
+                sizeNormal = null;
                 base.Width = value;
                 sizeInit = ClientSize;
             }
@@ -271,6 +285,7 @@ namespace AntdUI
             get => Size.Height;
             set
             {
+                sizeNormal = null;
                 base.Height = value;
                 sizeInit = ClientSize;
             }
@@ -293,6 +308,7 @@ namespace AntdUI
             }
             set
             {
+                sizeNormal = null;
                 base.Location = value.Location;
                 base.Size = value.Size;
                 sizeInit = ClientSize;
@@ -417,6 +433,7 @@ namespace AntdUI
             else if (m.WParam == SIZE_MAXIMIZED) WinState = WState.Maximize;
             else if (m.WParam == SIZE_RESTORED)
             {
+                sizeNormal = ClientSize;
                 WinState = WState.Restore;
                 InvalidateNonclient();
                 Invalidate();
@@ -448,6 +465,7 @@ namespace AntdUI
         }
 
         internal Size? sizeInit;
+        Size? sizeNormal;
         bool WmNCActivate(ref System.Windows.Forms.Message m)
         {
             if (m.HWnd == IntPtr.Zero) return false;
@@ -484,7 +502,12 @@ namespace AntdUI
         protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
         {
             if (DesignMode) base.SetBoundsCore(x, y, width, height, specified);
+#if NET40 || NET45 || NET46 || NET48
+            else if (WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
             else base.SetBoundsCore(x, y, width, height, specified);
+#else
+            else base.SetBoundsCore(x, y, width, height, specified);
+#endif
         }
 
         #endregion
