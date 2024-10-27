@@ -28,6 +28,14 @@
 		<PackageProjectUrl>https://gitee.com/andtui</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PackageReleaseNotes>+ OriginalBackColor 设置原装背景色
+* 窗口的最大化全屏交互
+* 窗口初始最大化缩放失效
+* 已知的线程等问题优化
+* ColorPicker 动画与异常
+* Framework 窗口还原Size异常
+* Tabs 开放鼠标事件
+* Slider Mark 点击错位</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net40' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net48'">

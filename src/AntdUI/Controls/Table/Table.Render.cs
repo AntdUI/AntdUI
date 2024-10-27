@@ -1013,9 +1013,9 @@ namespace AntdUI
                 else
                 {
                     int gap = (int)(_gap * Config.Dpi);
-                    var size = g.MeasureString(emptytext, Font);
-                    RectangleF rect_img = new RectangleF(rect.X + (rect.Width - EmptyImage.Width) / 2F, rect.Y + (rect.Height - EmptyImage.Height) / 2F - size.Height, EmptyImage.Width, EmptyImage.Height),
-                        rect_font = new RectangleF(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+                    var size = g.MeasureString(emptytext, Font).Size();
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
+                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                     g.DrawImage(EmptyImage, rect_img);
                     g.DrawStr(emptytext, Font, fore, rect_font, stringCenter);
                 }

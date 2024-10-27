@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Drawing;
 
 namespace AntdUI
@@ -58,19 +57,19 @@ namespace AntdUI
 
         internal override Size GetSize(Graphics g, Font font, int gap, int gap2)
         {
-            var size = g.MeasureString(Text, Font ?? font);
+            var size = g.MeasureString(Text, Font ?? font).Size();
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;
             if (has_prefix && has_suffix)
             {
                 int icon_size = (int)(size.Height * IconRatio);
-                return new Size((icon_size * 2) + gap2 + (int)Math.Ceiling(size.Width) + gap2, (int)Math.Ceiling(size.Height));
+                return new Size((icon_size * 2) + gap2 + size.Width + gap2, size.Height);
             }
             else if (has_prefix || has_suffix)
             {
                 int icon_size = (int)(size.Height * IconRatio);
-                return new Size(icon_size + gap + (int)Math.Ceiling(size.Width) + gap2, (int)Math.Ceiling(size.Height));
+                return new Size(icon_size + gap + size.Width + gap2, size.Height);
             }
-            return new Size((int)Math.Ceiling(size.Width) + gap2, (int)Math.Ceiling(size.Height));
+            return new Size(size.Width + gap2, size.Height);
         }
 
         Rectangle Rect, RectL, RectR;

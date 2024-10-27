@@ -94,13 +94,13 @@ namespace AntdUI
             Vanara.PInvoke.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Vanara.PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
         }
 
-        public static bool Wait(this System.Threading.WaitHandle? handle)
+        public static bool Wait(this System.Threading.WaitHandle? handle, bool close = true)
         {
             if (handle == null) return true;
             try
             {
                 handle.WaitOne();
-                if (handle.SafeWaitHandle.IsClosed) return true;
+                if (handle.SafeWaitHandle.IsClosed) return close;
                 return false;
             }
             catch

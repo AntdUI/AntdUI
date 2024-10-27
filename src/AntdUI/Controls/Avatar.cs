@@ -453,14 +453,7 @@ namespace AntdUI
                         g.DrawPath(pen, path);
                     }
                 }
-                else
-                {
-#if NET40 || NET46 || NET48 || NET6_0
-                    g.DrawRectangles(pen, new RectangleF[] { rect });
-#else
-                    g.DrawRectangle(pen, rect);
-#endif
-                }
+                else g.DrawRectangle(pen, rect);
             }
         }
 
