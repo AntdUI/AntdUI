@@ -597,6 +597,50 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
+        public Rectangle GetTitleRect(Graphics g)
+        {
+            var rect = ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
+            var size = g.MeasureString(text ?? Config.NullText, Font).Size();
+            if (UseTitleFont)
+            {
+                using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
+                {
+                    var sizeTitle = g.MeasureString(text, fontTitle).Size();
+                    rect.X += IPaintS(g, rect, size.Height, 1.36F) / 2;
+                    return new Rectangle(rect.X, rect.Y + (rect.Height - sizeTitle.Height) / 2, sizeTitle.Width, sizeTitle.Height);
+                }
+            }
+            else
+            {
+                rect.X += IPaintS(g, rect, size.Height, 1F) / 2;
+                return new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
+            }
+        }
+
+        int IPaintS(Graphics g, Rectangle rect, int sHeight, float icon_ratio)
+        {
+            int u_x = 0;
+            int _gap = (int)(gap.HasValue ? gap.Value * Config.Dpi : sHeight * .6F);
+            int icon_size = (int)Math.Round(sHeight * .72F);
+            if (showback || AnimationBack)
+            {
+                int backW = icon_size + _gap;
+                if (AnimationBack) backW = (int)(backW * AnimationBackValue);
+                u_x += backW;
+            }
+            if (loading)
+            {
+                icon_size = sHeight;
+                u_x += (icon_size + _gap);
+            }
+            else if (showicon)
+            {
+                icon_size = icon_ratio == 1 ? sHeight : (int)Math.Round(sHeight * icon_ratio);
+                u_x += (icon_size + _gap);
+            }
+            return u_x + _gap;
+        }
+
         int IPaint(Graphics g, Rectangle rect, Color fore, int sHeight, float icon_ratio)
         {
             int u_x = 0;

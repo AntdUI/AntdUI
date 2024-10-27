@@ -292,23 +292,16 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             base.OnMouseDown(e);
-
             if (rect_read_h.Contains(e.Location)) scrollY_h.MouseDown(e.Location);
             else if (rect_read_m.Contains(e.Location)) scrollY_m.MouseDown(e.Location);
             else if (rect_read_s.Contains(e.Location)) scrollY_s.MouseDown(e.Location);
         }
 
-        bool DisableMouse = true;
-        public override void LoadOK()
-        {
-            DisableMouse = false;
-            base.LoadOK();
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DisableMouse) return;
+            if (RunAnimation) return;
             if (scrollY_h.MouseMove(e.Location) && scrollY_m.MouseMove(e.Location) && scrollY_s.MouseMove(e.Location))
             {
                 int count = 0, hand = 0;
@@ -320,10 +313,7 @@ namespace AntdUI
 
                 hover_button.Switch = _hover_button;
                 hover_buttonok.Switch = _hover_buttonok;
-                if (hover_button.Switch || hover_buttonok.Switch)
-                {
-                    hand++;
-                }
+                if (hover_button.Switch || hover_buttonok.Switch) hand++;
                 else
                 {
                     if (calendar_time != null)
@@ -358,6 +348,7 @@ namespace AntdUI
 
         protected override void OnMouseLeave(EventArgs e)
         {
+            if (RunAnimation) return;
             scrollY_h.Leave();
             scrollY_m.Leave();
             scrollY_s.Leave();
@@ -375,6 +366,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             scrollY_h.MouseUp(e.Location);
             scrollY_m.MouseUp(e.Location);
             scrollY_s.MouseUp(e.Location);
@@ -438,6 +430,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             if (e.Delta != 0)
             {
                 if (rect_read_h.Contains(e.Location))

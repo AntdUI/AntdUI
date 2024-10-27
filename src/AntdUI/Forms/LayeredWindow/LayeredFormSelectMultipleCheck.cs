@@ -22,15 +22,15 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormSelectMultiple : ISelectMultiple
+    internal class LayeredFormSelectMultipleCheck : ISelectMultiple, SubLayeredForm
     {
         int MaxCount = 4, MaxChoiceCount = 4;
         Size DPadding;
         internal float Radius = 0;
         internal List<object> selectedValue;
         int r_w = 0;
-        List<ObjectItem> Items;
-        public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, IList<object> items, string filtertext)
+        List<ObjectItemCheck> Items;
+        public LayeredFormSelectMultipleCheck(SelectMultiple control, Rectangle rect_read, IList<object> items, string filtertext)
         {
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -42,13 +42,53 @@ namespace AntdUI
             selectedValue.AddRange(control.SelectedValue);
             Radius = (int)(control.radius * Config.Dpi);
             DPadding = control.DropDownPadding;
-            Items = new List<ObjectItem>(items.Count);
+            Items = new List<ObjectItemCheck>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items, filtertext);
+        }
+
+        public LayeredFormSelectMultipleCheck(SelectMultiple control, int sx, LayeredFormSelectMultipleCheck ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
+        {
+            selectedValue = new List<object>(control.SelectedValue.Length);
+            selectedValue.AddRange(control.SelectedValue);
+            scrollY = new ScrollY(this);
+            Items = new List<ObjectItemCheck>(items.Count);
+            DPadding = control.DropDownPadding;
+            InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
+        }
+
+        public void Rload(List<object> value)
+        {
+            selectedValue = new List<object>(value.Count);
+            selectedValue.AddRange(value);
+            Print();
+        }
+
+        void InitObj(SelectMultiple parent, int sx, LayeredFormSelectMultipleCheck control, float radius, Rectangle rect_read, IList<object> items, int sel)
+        {
+            parent.Parent.SetTopMost(Handle);
+            select_x = sx;
+            PARENT = parent;
+            Font = control.Font;
+            Radius = radius;
+
+            control.Disposed += (a, b) => { Dispose(); };
+
+            Init(control, TAlignFrom.BL, false, true, rect_read, items);
+
+            if (sel > -1)
+            {
+                try
+                {
+                    hoveindex = sel;
+                    Items[hoveindex].SetHover(true);
+                }
+                catch { }
+            }
         }
 
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
-        void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
+        void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
             int y = 10, w = rect_read.Width;
             r_w = w;
@@ -71,7 +111,8 @@ namespace AntdUI
                         else if (ui_icon) b_w += text_height;
                         else b_w += gap_y;
                     }
-                    w = r_w = b_w + gap_x2 + gap2 + gap_y2;
+                    if (ui_arrow) b_w += gap_y2;
+                    w = r_w = b_w + gap_x2 + gap2 + text_height;
                 }
                 else stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter;
                 stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
@@ -96,53 +137,83 @@ namespace AntdUI
             else r_h = TextChangeCore(filtertext);
             SetSize(w + 20, r_h);
             var point = control.PointToScreen(Point.Empty);
-            MyPoint(point, control, Placement, ShowArrow, rect_read);
+            if (control is LayeredFormSelectMultipleCheck) SetLocation(point.X + rect_read.Width, point.Y + rect_read.Y - 10);
+            else MyPoint(point, control, Placement, ShowArrow, rect_read);
 
             KeyCall = keys =>
             {
-                if (keys == Keys.Escape)
+                int _select_x = -1;
+                if (PARENT is SelectMultiple select) _select_x = select.select_x;
+                if (select_x == _select_x)
                 {
-                    IClose();
-                    return true;
-                }
-                if (nodata) return false;
-                if (keys == Keys.Enter)
-                {
-                    if (hoveindex > -1)
+                    if (keys == Keys.Escape)
                     {
-                        var it = Items[hoveindex];
-                        if (it.ID != -1) { OnClick(it); return true; }
+                        IClose();
+                        return true;
                     }
-                }
-                else if (keys == Keys.Up)
-                {
-                    hoveindex--;
-                    if (hoveindex < 0) hoveindex = Items.Count - 1;
-                    while (Items[hoveindex].ShowAndID)
+                    if (nodata) return false;
+                    if (keys == Keys.Enter)
+                    {
+                        if (hoveindex > -1)
+                        {
+                            var it = Items[hoveindex];
+                            if (it.ID != -1) { OnClick(it); return true; }
+                        }
+                    }
+                    else if (keys == Keys.Up)
                     {
                         hoveindex--;
                         if (hoveindex < 0) hoveindex = Items.Count - 1;
-                    }
-                    foreach (var it in Items) it.Hover = false;
-                    FocusItem(Items[hoveindex]);
-                    return true;
-                }
-                else if (keys == Keys.Down)
-                {
-                    if (hoveindex == -1) hoveindex = 0;
-                    else
-                    {
-                        hoveindex++;
-                        if (hoveindex > Items.Count - 1) hoveindex = 0;
                         while (Items[hoveindex].ShowAndID)
+                        {
+                            hoveindex--;
+                            if (hoveindex < 0) hoveindex = Items.Count - 1;
+                        }
+                        foreach (var it in Items) it.Hover = false;
+                        FocusItem(Items[hoveindex]);
+                        return true;
+                    }
+                    else if (keys == Keys.Down)
+                    {
+                        if (hoveindex == -1) hoveindex = 0;
+                        else
                         {
                             hoveindex++;
                             if (hoveindex > Items.Count - 1) hoveindex = 0;
+                            while (Items[hoveindex].ShowAndID)
+                            {
+                                hoveindex++;
+                                if (hoveindex > Items.Count - 1) hoveindex = 0;
+                            }
+                        }
+                        foreach (var it in Items) it.Hover = false;
+                        FocusItem(Items[hoveindex]);
+                        return true;
+                    }
+                    else if (keys == Keys.Left)
+                    {
+                        if (_select_x > 0)
+                        {
+                            if (PARENT is SelectMultiple select2) select2.select_x--;
+                            IClose();
+                            return true;
                         }
                     }
-                    foreach (var it in Items) it.Hover = false;
-                    FocusItem(Items[hoveindex]);
-                    return true;
+                    else if (keys == Keys.Right)
+                    {
+                        if (hoveindex > -1)
+                        {
+                            var it = Items[hoveindex];
+                            if (it.Sub != null && it.Sub.Count > 0)
+                            {
+                                subForm?.IClose();
+                                subForm = null;
+                                OpenDown(it, it.Sub, 0);
+                                if (PARENT is SelectMultiple select2) select2.select_x++;
+                            }
+                            return true;
+                        }
+                    }
                 }
                 return false;
             };
@@ -174,7 +245,7 @@ namespace AntdUI
             if (value is DividerSelectItem)
             {
                 divider_count++;
-                Items.Add(new ObjectItem(new Rectangle(10 + gap_y, y + (gap_y - sp) / 2, width - gap_y2, sp)));
+                Items.Add(new ObjectItemCheck(new Rectangle(10 + gap_y, y + (gap_y - sp) / 2, width - gap_y2, sp)));
                 y += gap_y;
             }
             else
@@ -183,20 +254,20 @@ namespace AntdUI
                 Rectangle rect = new Rectangle(10 + gap, y, width - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
                 if (value is SelectItem it)
                 {
-                    Items.Add(new ObjectItem(it, i, rect, rect_text, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
+                    Items.Add(new ObjectItemCheck(it, i, rect, rect_text, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
                     if (selectedValue == it.Tag) select_y = y;
                     y += item_height;
                 }
                 else if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                 {
-                    Items.Add(new ObjectItem(group, i, rect, rect_text));
+                    Items.Add(new ObjectItemCheck(group, i, rect, rect_text, gap_x, gap_x2, gap_y, gap_y2));
                     if (selectedValue == value) select_y = y;
                     y += item_height;
                     foreach (var item in group.Sub) ReadList(item, i, width, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref select_y, false);
                 }
                 else
                 {
-                    Items.Add(new ObjectItem(value, i, rect, rect_text) { NoIndex = NoIndex });
+                    Items.Add(new ObjectItemCheck(value, i, rect, rect_text, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
                     if (selectedValue == value) select_y = y;
                     y += item_height;
                 }
@@ -232,7 +303,7 @@ namespace AntdUI
         }
 
         StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
-        public void FocusItem(ObjectItem item)
+        public void FocusItem(ObjectItemCheck item)
         {
             if (item.SetHover(true))
             {
@@ -438,6 +509,7 @@ namespace AntdUI
 
         #region 鼠标
 
+        internal int select_x = 0;
         int hoveindex = -1;
         bool down = false;
         protected override void OnMouseDown(MouseEventArgs e)
@@ -458,14 +530,19 @@ namespace AntdUI
                 {
                     if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
                     {
-                        OnClick(it); return;
+                        OnClick(it);
+                        return;
                     }
                 }
             }
             down = false;
             base.OnMouseUp(e);
         }
-        void OnClick(ObjectItem it)
+
+        public ILayeredForm? SubForm() => subForm;
+        LayeredFormSelectMultipleCheck? subForm = null;
+
+        void OnClick(ObjectItemCheck it)
         {
             if (it.Group && it.Val is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
             {
@@ -496,15 +573,44 @@ namespace AntdUI
                     }
                 }
             }
-            else if (selectedValue.Contains(ReadValue(it.Val))) selectedValue.Remove(ReadValue(it.Val));
             else
             {
-                if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) return;
-                selectedValue.Add(ReadValue(it.Val));
+                if (it.Sub == null || it.Sub.Count == 0)
+                {
+                    if (selectedValue.Contains(ReadValue(it.Val))) selectedValue.Remove(ReadValue(it.Val));
+                    else
+                    {
+                        if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) return;
+                        selectedValue.Add(ReadValue(it.Val));
+                    }
+                }
+                else
+                {
+                    if (selectedValue.Contains(ReadValue(it.Val)))
+                    {
+                        selectedValue.Remove(ReadValue(it.Val));
+                        DelValues(it.Sub);
+                    }
+                    else
+                    {
+                        selectedValue.Add(ReadValue(it.Val));
+                        AddValues(it.Sub);
+                    }
+                    subForm?.Rload(selectedValue);
+                }
             }
             if (PARENT is SelectMultiple select) select.SelectedValue = selectedValue.ToArray();
             down = false;
             Print();
+        }
+
+        void OpenDown(ObjectItemCheck it, IList<object> sub, int tag = -1)
+        {
+            if (PARENT is SelectMultiple select)
+            {
+                subForm = new LayeredFormSelectMultipleCheck(select, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
+                subForm.Show(this);
+            }
         }
 
         object ReadValue(object obj)
@@ -512,7 +618,32 @@ namespace AntdUI
             if (obj is SelectItem it) return it.Tag;
             return obj;
         }
+        void AddValues(IList<object> sub)
+        {
+            foreach (var it in sub)
+            {
+                if (it is SelectItem sit)
+                {
+                    if (!selectedValue.Contains(sit.Tag)) selectedValue.Add(sit.Tag);
+                    if (sit.Sub != null && sit.Sub.Count > 0) AddValues(sit.Sub);
+                }
+                else if (!selectedValue.Contains(it)) selectedValue.Add(it);
+            }
+        }
+        void DelValues(IList<object> sub)
+        {
+            foreach (var it in sub)
+            {
+                if (it is SelectItem sit)
+                {
+                    selectedValue.Remove(sit.Tag);
+                    if (sit.Sub != null && sit.Sub.Count > 0) DelValues(sit.Sub);
+                }
+                else selectedValue.Remove(it);
+            }
+        }
 
+        int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (RunAnimation) return;
@@ -532,6 +663,16 @@ namespace AntdUI
                 if (count > 0) Print();
             }
             base.OnMouseMove(e);
+            if (hoveindexold == hoveindex) return;
+            hoveindexold = hoveindex;
+            subForm?.IClose();
+            subForm = null;
+            if (hoveindex > -1)
+            {
+                if (PARENT is SelectMultiple select) select.select_x = select_x;
+                var it = Items[hoveindex];
+                if (it.Sub != null && it.Sub.Count > 0 && PARENT != null) OpenDown(it, it.Sub);
+            }
         }
 
         #endregion
@@ -643,7 +784,7 @@ namespace AntdUI
             return false;
         }
 
-        void DrawItemSelect(Graphics g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_split, ObjectItem it, bool TL, bool TR, bool BR, bool BL)
+        void DrawItemSelect(Graphics g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_split, ObjectItemCheck it, bool TL, bool TR, bool BR, bool BL)
         {
             if (it.ID == -1) g.FillRectangle(brush_split, it.Rect);
             else
@@ -662,7 +803,6 @@ namespace AntdUI
                     g.DrawStr(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
                 DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, .46F);
                 if (it.Online.HasValue)
                 {
                     using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error)))
@@ -670,10 +810,11 @@ namespace AntdUI
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
                 }
+                if (it.has_sub) DrawArrow(g, it, Style.Db.TextBase);
             }
         }
 
-        void DrawItem(Graphics g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
+        void DrawItem(Graphics g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItemCheck it)
         {
             if (it.ID == -1) g.FillRectangle(brush_split, it.Rect);
             else if (it.Group) g.DrawStr(it.Text, Font, brush_fore, it.RectText, stringFormatLeft);
@@ -704,9 +845,10 @@ namespace AntdUI
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
                 }
+                if (it.has_sub) DrawArrow(g, it, Style.Db.TextBase);
             }
         }
-        void DrawItemR(Graphics g, SolidBrush brush, SolidBrush brush_back_hover, SolidBrush brush_split, ObjectItem it)
+        void DrawItemR(Graphics g, SolidBrush brush, SolidBrush brush_back_hover, SolidBrush brush_split, ObjectItemCheck it)
         {
             if (it.ID == -1) g.FillRectangle(brush_split, it.Rect);
             else if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag))
@@ -716,7 +858,6 @@ namespace AntdUI
                     g.FillRectangle(brush_back, it.Rect);
                 }
                 DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, .46F);
             }
             else
             {
@@ -730,9 +871,10 @@ namespace AntdUI
                     g.FillEllipse(brush_online, it.RectOnline);
                 }
             }
+            if (it.has_sub) DrawArrow(g, it, Style.Db.TextBase);
         }
 
-        void DrawTextIconSelect(Graphics g, ObjectItem it)
+        void DrawTextIconSelect(Graphics g, ObjectItemCheck it)
         {
             if (it.Enable)
             {
@@ -749,8 +891,20 @@ namespace AntdUI
                 }
             }
             DrawIcon(g, it, Style.Db.TextBase);
+
+            using (var path = it.RectCheck.RoundPath(Radius / 2))
+            {
+                using (var brush = new SolidBrush(Style.Db.Primary))
+                {
+                    g.FillPath(brush, path);
+                }
+                using (var brush = new Pen(Style.Db.BgBase, 3F))
+                {
+                    g.DrawLines(brush, it.RectCheck.CheckArrow());
+                }
+            }
         }
-        void DrawTextIcon(Graphics g, ObjectItem it, SolidBrush brush)
+        void DrawTextIcon(Graphics g, ObjectItemCheck it, SolidBrush brush)
         {
             if (it.Enable) g.DrawStr(it.Text, Font, brush, it.RectText, stringFormatLeft);
             else
@@ -761,8 +915,16 @@ namespace AntdUI
                 }
             }
             DrawIcon(g, it, brush.Color);
+
+            using (var path = it.RectCheck.RoundPath(Radius / 2))
+            {
+                using (var brushb = new Pen(Style.Db.BorderColor, 2F))
+                {
+                    g.DrawPath(brushb, path);
+                }
+            }
         }
-        void DrawIcon(Graphics g, ObjectItem it, Color color)
+        void DrawIcon(Graphics g, ObjectItemCheck it, Color color)
         {
             if (it.IconSvg != null)
             {
@@ -781,6 +943,19 @@ namespace AntdUI
                 if (it.Enable) g.DrawImage(it.Icon, it.RectIcon);
                 else g.DrawImage(it.Icon, it.RectIcon, 0.25F);
             }
+        }
+        void DrawArrow(Graphics g, ObjectItemCheck item, Color color)
+        {
+            int size = item.RectArrow.Width, size_arrow = size / 2;
+            g.TranslateTransform(item.RectArrow.X + size_arrow, item.RectArrow.Y + size_arrow);
+            g.RotateTransform(-90F);
+            using (var pen = new Pen(color, 2F))
+            {
+                pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectArrow.Width, item.RectArrow.Height).TriangleLines(-1, .2F));
+            }
+            g.ResetTransform();
+            g.TranslateTransform(0, -scrollY.Value);
         }
 
         Bitmap? shadow_temp = null;
@@ -807,6 +982,18 @@ namespace AntdUI
 
         #endregion
 
+        #region 滚动条
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (RunAnimation) return;
+            scrollY.MouseWheel(e.Delta);
+            base.OnMouseWheel(e);
+        }
+        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheel(value);
+
+        #endregion
+
         #region 方法
 
         public override void SetValues(object[] value)
@@ -827,26 +1014,5 @@ namespace AntdUI
         }
 
         #endregion
-
-        #region 滚动条
-
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            if (RunAnimation) return;
-            scrollY.MouseWheel(e.Delta);
-            base.OnMouseWheel(e);
-        }
-        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheel(value);
-
-        #endregion
-    }
-
-    internal abstract class ISelectMultiple : ILayeredFormOpacityDown
-    {
-        public virtual void SetValues(object[] value) { }
-        public virtual void SetValues(List<object> value) { }
-        public virtual void ClearValues() { }
-        public virtual void TextChange(string val)
-        { }
     }
 }

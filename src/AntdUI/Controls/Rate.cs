@@ -449,12 +449,12 @@ namespace AntdUI
 
         TooltipForm? tooltipForm = null;
         string? tooltipText = null;
-        void ShowTips(RectangleF dot_rect, string text)
+        void ShowTips(Rectangle dot_rect, string text)
         {
             if (text == tooltipText && tooltipForm != null) return;
             tooltipText = text;
             var _rect = RectangleToScreen(ClientRectangle);
-            var rect = new Rectangle(_rect.X + (int)dot_rect.X, _rect.Y + (int)dot_rect.Y, (int)dot_rect.Width, (int)dot_rect.Height);
+            var rect = new Rectangle(_rect.X + dot_rect.X, _rect.Y + dot_rect.Y, dot_rect.Width, dot_rect.Height);
             if (tooltipForm == null)
             {
                 tooltipForm = new TooltipForm(this, rect, tooltipText, new TooltipConfig

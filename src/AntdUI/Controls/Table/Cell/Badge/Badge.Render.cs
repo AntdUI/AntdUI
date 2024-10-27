@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Drawing;
 
 namespace AntdUI
@@ -73,15 +72,15 @@ namespace AntdUI
         {
             if (string.IsNullOrEmpty(Text))
             {
-                var size = g.MeasureString(Config.NullText, font);
-                int height = (int)Math.Ceiling(size.Height);
-                return new Size(height + gap2, (int)Math.Ceiling(size.Height));
+                var size = g.MeasureString(Config.NullText, font).Size();
+                int height = size.Height;
+                return new Size(height + gap2, size.Height);
             }
             else
             {
-                var size = g.MeasureString(Text, font);
-                int height = (int)Math.Ceiling(size.Height);
-                return new Size((int)Math.Ceiling(size.Width) + height + gap2, height);
+                var size = g.MeasureString(Text, font).Size();
+                int height = size.Height;
+                return new Size(size.Width + height + gap2, height);
             }
         }
 
@@ -100,11 +99,11 @@ namespace AntdUI
                 switch (PARENT.COLUMN.Align)
                 {
                     case ColumnAlign.Center:
-                        var sizec = g.MeasureString(Text, font);
+                        var sizec = g.MeasureString(Text, font).Size();
                         RectDot = new RectangleF(rect.X + (rect.Width - sizec.Width - sizec.Height + gap2) / 2F, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                         break;
                     case ColumnAlign.Right:
-                        var sizer = g.MeasureString(Text, font);
+                        var sizer = g.MeasureString(Text, font).Size();
                         RectDot = new RectangleF(Rect.Right - sizer.Width - gap2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                         break;
                     case ColumnAlign.Left:

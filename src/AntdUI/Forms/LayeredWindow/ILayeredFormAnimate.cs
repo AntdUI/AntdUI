@@ -283,7 +283,6 @@ namespace AntdUI
         }
         internal void SetAnimateValueY(int y)
         {
-            if (closepassive) return;
             if (TargetRect.Y != y)
             {
                 SetLocationY(y);
@@ -310,37 +309,16 @@ namespace AntdUI
 
         #region 关闭
 
+        DateTime closetime;
         bool handclose = false;
-        bool closepassive = false;
-        public void CloseMe(bool passive)
+        public void CloseMe()
         {
-            if (handclose) return;
+            var now = DateTime.Now;
+            if (handclose && (now - closetime).TotalSeconds < 2) return;
+            closetime = now;
             handclose = true;
             task_start?.Dispose();
-            if (passive) MsgQueue.Add(this);
-            else
-            {
-                closepassive = true;
-                //执行关闭动画
-                if (Config.Animation)
-                {
-                    ITask.Run(() =>
-                    {
-                        StopAnimation().Wait();
-                    }, () =>
-                    {
-                        bool isRemove = list[key].Remove(this);
-                        IClose(true);
-                        if (isRemove) MsgQueue.Add(new object[] { Align, key });
-                    });
-                }
-                else
-                {
-                    bool isRemove = list[key].Remove(this);
-                    IClose(true);
-                    if (isRemove) MsgQueue.Add(new object[] { Align, key });
-                }
-            }
+            MsgQueue.Add(this);
         }
 
         #endregion
@@ -364,24 +342,18 @@ namespace AntdUI
         public static void Add(Notification.Config config)
         {
             queue.Enqueue(config);
-            _event.Set();
+            _event.SetWait();
         }
         public static void Add(Message.Config config)
         {
             queue.Enqueue(config);
-            _event.Set();
-        }
-
-        public static void Add(object?[] command)
-        {
-            queue.Enqueue(command);
-            _event.Set();
+            _event.SetWait();
         }
 
         internal static void Add(ILayeredFormAnimate command)
         {
             queue.Enqueue(command);
-            _event.Set();
+            _event.SetWait();
         }
 
         #endregion
@@ -398,7 +370,7 @@ namespace AntdUI
                 if (_event.Wait()) return;
                 while (queue.TryDequeue(out var d)) Hand(d);
                 volley.Clear();
-                _event.Reset();
+                _event.ResetWait();
             }
         }
 
@@ -408,19 +380,11 @@ namespace AntdUI
             {
                 if (d is Notification.Config configNotification)
                 {
-                    if (Open(configNotification))
-                    {
-                        _event.Reset();
-                        if (_event.Wait()) return;
-                    }
+                    if (Open(configNotification)) _event.ResetWait();
                 }
                 else if (d is Message.Config configMessage)
                 {
-                    if (Open(configMessage))
-                    {
-                        _event.Reset();
-                        if (_event.Wait()) return;
-                    }
+                    if (Open(configMessage)) _event.ResetWait();
                 }
                 else if (d is ILayeredFormAnimate formAnimate)
                 {
@@ -428,10 +392,6 @@ namespace AntdUI
                     formAnimate.IClose(true);
                     Close(formAnimate.Align, formAnimate.key);
                     if (queue_cache.TryDequeue(out var d_cache)) Hand(d_cache);
-                }
-                else if (d is object?[] command)
-                {
-                    if (command[0] is TAlignFrom align && command[1] is string key) Close(align, key);
                 }
             }
             catch { }

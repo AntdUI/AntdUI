@@ -557,23 +557,19 @@ namespace AntdUI
                     switch (align)
                     {
                         case TAlignMini.Right:
-                            foreach (var it in marks) mark_list.Add(rect_read.Width - (it.Value >= _maxValue ? rect_read.Width : rect_read.Width * ((it.Value - _minValue) * 1F / max)));
-
+                            foreach (var it in marks) mark_list.Add(rect_read.X + (rect_read.Width - (it.Value >= _maxValue ? rect_read.Width : rect_read.Width * ((it.Value - _minValue) * 1F / max))));
                             i = FindNumber(x, mark_list);
                             break;
                         case TAlignMini.Top:
-                            foreach (var it in marks) mark_list.Add(it.Value >= _maxValue ? rect_read.Height : rect_read.Height * ((it.Value - _minValue) * 1F / max));
-
+                            foreach (var it in marks) mark_list.Add(rect_read.Y + (it.Value >= _maxValue ? rect_read.Height : rect_read.Height * ((it.Value - _minValue) * 1F / max)));
                             i = FindNumber(y, mark_list);
                             break;
                         case TAlignMini.Bottom:
-                            foreach (var it in marks) mark_list.Add(rect_read.Height - (it.Value >= _maxValue ? rect_read.Height : rect_read.Height * ((it.Value - _minValue) * 1F / max)));
-
+                            foreach (var it in marks) mark_list.Add(rect_read.Y + (rect_read.Height - (it.Value >= _maxValue ? rect_read.Height : rect_read.Height * ((it.Value - _minValue) * 1F / max))));
                             i = FindNumber(y, mark_list);
                             break;
                         default:
-                            foreach (var it in marks) mark_list.Add(it.Value >= _maxValue ? rect_read.Width : rect_read.Width * ((it.Value - _minValue) * 1F / max));
-
+                            foreach (var it in marks) mark_list.Add(rect_read.X + (it.Value >= _maxValue ? rect_read.Width : rect_read.Width * ((it.Value - _minValue) * 1F / max)));
                             i = FindNumber(x, mark_list);
                             break;
                     }

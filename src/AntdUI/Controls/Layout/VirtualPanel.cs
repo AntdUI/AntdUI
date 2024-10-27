@@ -946,7 +946,7 @@ namespace AntdUI
             }
             g.ResetTransform();
             ScrollBar.Paint(g);
-            if (Config.Animation && BlurBar != null) _event.Set();
+            if (Config.Animation && BlurBar != null) _event.SetWait();
             base.OnPaint(e);
         }
 
@@ -960,9 +960,9 @@ namespace AntdUI
                 else
                 {
                     int _gap = (int)(gap * Config.Dpi);
-                    var size = g.MeasureString(emptytext, Font);
-                    RectangleF rect_img = new RectangleF(rect.X + (rect.Width - EmptyImage.Width) / 2F, rect.Y + (rect.Height - EmptyImage.Height) / 2F - size.Height, EmptyImage.Width, EmptyImage.Height),
-                        rect_font = new RectangleF(rect.X, rect_img.Bottom + _gap, rect.Width, size.Height);
+                    var size = g.MeasureString(emptytext, Font).Size();
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
+                        rect_font = new Rectangle(rect.X, rect_img.Bottom + _gap, rect.Width, size.Height);
                     g.DrawImage(EmptyImage, rect_img);
                     g.DrawStr(emptytext, Font, fore, rect_font, stringCenter);
                 }
@@ -978,42 +978,46 @@ namespace AntdUI
             while (true)
             {
                 if (_event.Wait()) return;
-                if (items != null && items.Count > 0 && BlurBar != null)
+                try
                 {
-                    int sy = ScrollBar.Value;
-                    int BlurBarHeight = BlurBar.Height;
-                    if (sy > BlurBarHeight)
+                    if (items != null && items.Count > 0 && BlurBar != null)
                     {
-                        sy -= BlurBarHeight;
-                        var rect = ClientRectangle;
-                        var bmp = new Bitmap(rect.Width, BlurBarHeight);
-                        using (var g = Graphics.FromImage(bmp).HighLay())
+                        int sy = ScrollBar.Value;
+                        int BlurBarHeight = BlurBar.Height;
+                        if (sy > BlurBarHeight)
                         {
-                            rect.Offset(0, sy);
-                            g.TranslateTransform(0, -sy);
-                            int r = (int)(radius * Config.Dpi);
-                            foreach (var it in items)
+                            sy -= BlurBarHeight;
+                            var rect = ClientRectangle;
+                            var bmp = new Bitmap(rect.Width, BlurBarHeight);
+                            using (var g = Graphics.FromImage(bmp).HighLay())
                             {
-                                if (it.SHOW && it.SHOW_RECT)
+                                rect.Offset(0, sy);
+                                g.TranslateTransform(0, -sy);
+                                int r = (int)(radius * Config.Dpi);
+                                foreach (var it in items)
                                 {
-                                    if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
-                                    it.Paint(g, new VirtualPanelArgs(this, it.RECT, r));
+                                    if (it.SHOW && it.SHOW_RECT)
+                                    {
+                                        if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
+                                        it.Paint(g, new VirtualPanelArgs(this, it.RECT, r));
+                                    }
+                                }
+                                g.ResetTransform();
+
+                                using (var brush = new SolidBrush(Color.FromArgb(45, BlurBar.BackColor)))
+                                {
+                                    g.FillRectangle(brush, 0, 0, bmp.Width, bmp.Height);
                                 }
                             }
-                            g.ResetTransform();
-
-                            using (var brush = new SolidBrush(Color.FromArgb(45, BlurBar.BackColor)))
-                            {
-                                g.FillRectangle(brush, 0, 0, bmp.Width, bmp.Height);
-                            }
+                            Helper.Blur(bmp, BlurBarHeight * 6);
+                            IBlurBar(BlurBar, bmp);
                         }
-                        Helper.Blur(bmp, BlurBarHeight * 6);
-                        IBlurBar(BlurBar, bmp);
+                        else IBlurBar(BlurBar, null);
                     }
-                    else IBlurBar(BlurBar, null);
+                    else if (BlurBar != null) IBlurBar(BlurBar, null);
+                    _event.ResetWait();
                 }
-                else if (BlurBar != null) IBlurBar(BlurBar, null);
-                _event.Reset();
+                catch { return; }
             }
         }
 
@@ -1029,7 +1033,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             BlurBar = null;
-            _event?.Dispose();
+            _event?.WaitDispose();
             base.Dispose(disposing);
         }
 
@@ -1047,7 +1051,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
-                    if (Config.Animation && BlurBar != null) _event.Set();
+                    if (Config.Animation && BlurBar != null) _event.SetWait();
                     break;
             }
         }

@@ -24,9 +24,10 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormSelectDown : ILayeredFormOpacityDown
+    internal class LayeredFormSelectDown : ILayeredFormOpacityDown, SubLayeredForm
     {
         int MaxCount = 0;
+        Size DPadding;
         internal float Radius = 0;
         bool ClickEnd = false;
         object? selectedValue;
@@ -43,6 +44,7 @@ namespace AntdUI
             Font = control.Font;
             selectedValue = control.SelectedValue;
             Radius = (int)(control.radius * Config.Dpi);
+            DPadding = control.DropDownPadding;
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items, filtertext);
         }
@@ -57,6 +59,7 @@ namespace AntdUI
             MaxCount = control.MaxCount;
             Font = control.Font;
             Radius = (int)(radius * Config.Dpi);
+            DPadding = control.DropDownPadding;
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items);
         }
@@ -72,6 +75,7 @@ namespace AntdUI
             Font = control.Font;
             selectedValue = sValue;
             Radius = (int)(radius * Config.Dpi);
+            DPadding = new Size(12, 5);
             Items = new List<ObjectItem>(items.Count);
             TAlignFrom align;
             switch (control.Alignment)
@@ -97,6 +101,7 @@ namespace AntdUI
             ClickEnd = control.ClickEnd;
             selectedValue = control.SelectedValue;
             scrollY = new ScrollY(this);
+            DPadding = control.DropDownPadding;
             Items = new List<ObjectItem>(items.Count);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
@@ -104,6 +109,7 @@ namespace AntdUI
         {
             ClickEnd = control.ClickEnd;
             scrollY = new ScrollY(this);
+            DPadding = control.DropDownPadding;
             Items = new List<ObjectItem>(items.Count);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
@@ -133,7 +139,8 @@ namespace AntdUI
 
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
-        internal LayeredFormSelectDown? SubForm = null;
+        public ILayeredForm? SubForm() => subForm;
+        LayeredFormSelectDown? subForm = null;
         void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
             int y = 10, w = rect_read.Width;
@@ -142,7 +149,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font).Size();
-                int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
+                int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
                 gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                 text_height = size.Height, item_height = text_height + gap_y2;
                 y += gap;
@@ -275,8 +282,8 @@ namespace AntdUI
                             var it = Items[hoveindex];
                             if (it.Sub != null && it.Sub.Count > 0)
                             {
-                                SubForm?.IClose();
-                                SubForm = null;
+                                subForm?.IClose();
+                                subForm = null;
                                 OpenDown(it, it.Sub, 0);
                                 if (PARENT is Select select2) select2.select_x++;
                                 else if (PARENT is Dropdown dropdown2) dropdown2.select_x++;
@@ -453,7 +460,7 @@ namespace AntdUI
                     Helper.GDI(g =>
                     {
                         var size = g.MeasureString(Config.NullText, Font).Size();
-                        int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
+                        int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
                         gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                         text_height = size.Height, item_height = text_height + gap_y2;
                         y += gap;
@@ -564,7 +571,7 @@ namespace AntdUI
                     Helper.GDI(g =>
                     {
                         var size = g.MeasureString(Config.NullText, Font).Size();
-                        int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
+                        int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
                         gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                         text_height = size.Height, item_height = text_height + gap_y2;
                         y += gap;
@@ -644,7 +651,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font).Size();
-                    int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
+                    int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
                     gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                     text_height = size.Height, item_height = text_height + gap_y2;
                     y += gap;
@@ -711,6 +718,7 @@ namespace AntdUI
         {
             if (scrollY.MouseUp(e.Location) && OnTouchUp() && down)
             {
+                if (RunAnimation) return;
                 foreach (var it in Items)
                 {
                     if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
@@ -735,11 +743,11 @@ namespace AntdUI
             }
             else
             {
-                if (SubForm == null) OpenDown(it, it.Sub);
+                if (subForm == null) OpenDown(it, it.Sub);
                 else
                 {
-                    SubForm?.IClose();
-                    SubForm = null;
+                    subForm?.IClose();
+                    subForm = null;
                 }
             }
             return false;
@@ -764,27 +772,20 @@ namespace AntdUI
         {
             if (PARENT is Select select)
             {
-                SubForm = new LayeredFormSelectDown(select, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
-                SubForm.Show(this);
+                subForm = new LayeredFormSelectDown(select, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
+                subForm.Show(this);
             }
             else if (PARENT is Dropdown dropdown)
             {
-                SubForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
-                SubForm.Show(this);
+                subForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
+                subForm.Show(this);
             }
-        }
-
-        bool DisableMouse = true;
-        public override void LoadOK()
-        {
-            DisableMouse = false;
-            base.LoadOK();
         }
 
         int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DisableMouse) return;
+            if (RunAnimation) return;
             hoveindex = -1;
             if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
             {
@@ -803,8 +804,8 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (hoveindexold == hoveindex) return;
             hoveindexold = hoveindex;
-            SubForm?.IClose();
-            SubForm = null;
+            subForm?.IClose();
+            subForm = null;
             if (hoveindex > -1)
             {
                 if (PARENT is Select select) select.select_x = select_x;
@@ -966,13 +967,13 @@ namespace AntdUI
         }
         void DrawArrow(Graphics g, ObjectItem item, Color color)
         {
-            int size = item.arr_rect.Width, size_arrow = size / 2;
-            g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
+            int size = item.RectArrow.Width, size_arrow = size / 2;
+            g.TranslateTransform(item.RectArrow.X + size_arrow, item.RectArrow.Y + size_arrow);
             g.RotateTransform(-90F);
             using (var pen = new Pen(color, 2F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .2F));
+                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectArrow.Width, item.RectArrow.Height).TriangleLines(-1, .2F));
             }
             g.ResetTransform();
             g.TranslateTransform(0, -scrollY.Value);
@@ -1004,6 +1005,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             scrollY.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }

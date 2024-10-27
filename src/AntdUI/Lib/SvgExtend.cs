@@ -53,7 +53,7 @@ namespace AntdUI
         {
             var doc = SvgDocument(svg);
             if (doc == null) return null;
-            if (color.HasValue) ((Svg.SvgColourServer)doc.Color).Colour = color.Value;
+            if (color.HasValue) doc.Fill = new Svg.SvgColourServer(color.Value);
             doc.Width = width;
             doc.Height = height;
             return doc.Draw();

@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Drawing;
 
 namespace AntdUI
@@ -95,8 +94,8 @@ namespace AntdUI
 
         internal override Size GetSize(Graphics g, Font font, int gap, int gap2)
         {
-            var size = g.MeasureString(Text, font);
-            return new Size((int)Math.Ceiling(size.Width) + gap2 * 2, (int)Math.Ceiling(size.Height) + gap);
+            var size = g.MeasureString(Text, font).Size();
+            return new Size(size.Width + gap2 * 2, size.Height + gap);
         }
 
         Rectangle Rect;

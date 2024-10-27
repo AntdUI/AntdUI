@@ -94,16 +94,60 @@ namespace AntdUI
             Vanara.PInvoke.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Vanara.PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
         }
 
-        public static bool Wait(this System.Threading.WaitHandle handle)
+        public static bool Wait(this System.Threading.WaitHandle? handle, bool close = true)
         {
+            if (handle == null) return true;
             try
             {
                 handle.WaitOne();
+                if (handle.SafeWaitHandle.IsClosed) return close;
                 return false;
             }
             catch
             {
                 return true;
+            }
+        }
+        public static bool SetWait(this System.Threading.EventWaitHandle? handle)
+        {
+            if (handle == null) return true;
+            try
+            {
+                if (handle.SafeWaitHandle.IsClosed) return true;
+                handle.Set();
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+        public static bool ResetWait(this System.Threading.EventWaitHandle? handle)
+        {
+            if (handle == null) return true;
+            try
+            {
+                if (handle.SafeWaitHandle.IsClosed) return true;
+                handle.Reset();
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+        public static void WaitDispose(this System.Threading.EventWaitHandle? handle, bool set = true)
+        {
+            if (handle == null) return;
+            try
+            {
+                if (handle.SafeWaitHandle.IsClosed) return;
+                if (set) handle.SetWait();
+                else handle.ResetWait();
+                handle.Dispose();
+            }
+            catch
+            {
             }
         }
 
@@ -172,11 +216,11 @@ namespace AntdUI
         {
             try
             {
-                return Clipboard.GetText();
+                return Win32.GetClipBoardText();
             }
             catch
             {
-                return Win32.GetClipBoardText();
+                return Clipboard.GetText();
             }
         }
         public static bool ClipboardSetText(this Control control, string? text)
@@ -196,13 +240,13 @@ namespace AntdUI
         {
             try
             {
-                if (text == null) Clipboard.Clear();
-                else Clipboard.SetText(text);
-                return true;
+                if (Win32.SetClipBoardText(text)) return true;
             }
             catch
             {
-                if (Win32.SetClipBoardText(text)) return true;
+                if (text == null) Clipboard.Clear();
+                else Clipboard.SetText(text);
+                return true;
             }
             return false;
         }

@@ -56,6 +56,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 复选框模式
+        /// </summary>
+        [Description("复选框模式"), Category("行为"), DefaultValue(false)]
+        public bool CheckMode { get; set; }
+
         bool canDelete = true;
         /// <summary>
         /// 是否可以删除
@@ -102,6 +108,12 @@ namespace AntdUI
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; } = false;
+
+        /// <summary>
+        /// 下拉边距
+        /// </summary>
+        [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "12, 5")]
+        public Size DropDownPadding { get; set; } = new Size(12, 5);
 
         #region 数据
 
@@ -165,10 +177,7 @@ namespace AntdUI
             selectedValue = selecteds.ToArray();
             CalculateRect();
             SetCaretPostion();
-
-            if (subForm == null) return;
-            subForm.selectedValue = selecteds;
-            subForm.Print();
+            subForm?.SetValues(selecteds);
         }
 
         /// <summary>
@@ -202,10 +211,7 @@ namespace AntdUI
             CalculateRect();
             SetCaretPostion();
             Invalidate();
-
-            if (subForm == null) return;
-            subForm.selectedValue = new List<object>(0);
-            subForm.Print();
+            subForm?.ClearValues();
         }
         protected override void IBackSpaceKey()
         {
@@ -215,11 +221,7 @@ namespace AntdUI
                 tmp.AddRange(selectedValue);
                 tmp.RemoveAt(tmp.Count - 1);
                 SelectedValue = tmp.ToArray();
-
-                if (subForm == null) return;
-                subForm.selectedValue = new List<object>(selectedValue.Length);
-                subForm.selectedValue.AddRange(selectedValue);
-                subForm.Print();
+                subForm?.SetValues(selectedValue);
             }
         }
 
@@ -444,11 +446,8 @@ namespace AntdUI
                     tmp.AddRange(selectedValue);
                     tmp.RemoveAt(select_del);
                     SelectedValue = tmp.ToArray();
-
                     if (subForm == null) return true;
-                    subForm.selectedValue = new List<object>(selectedValue.Length);
-                    subForm.selectedValue.AddRange(selectedValue);
-                    subForm.Print();
+                    subForm.SetValues(selectedValue);
                 }
                 select_del = -1;
                 return true;
@@ -461,7 +460,7 @@ namespace AntdUI
 
         #region 动画
 
-        LayeredFormSelectMultiple? subForm = null;
+        ISelectMultiple? subForm = null;
         public ILayeredForm? SubForm() => subForm;
 
         ITask? ThreadExpand = null;
@@ -508,6 +507,8 @@ namespace AntdUI
                 else ArrowProg = value ? 1F : -1F;
             }
         }
+
+        internal int select_x = 0;
 
         #endregion
 
@@ -557,9 +558,11 @@ namespace AntdUI
                 return;
             }
             Expand = true;
-            subForm = new LayeredFormSelectMultiple(this, ReadRectangle, list, filtertext);
+            if (CheckMode) subForm = new LayeredFormSelectMultipleCheck(this, ReadRectangle, list, filtertext);
+            else subForm = new LayeredFormSelectMultiple(this, ReadRectangle, list, filtertext);
             subForm.Disposed += (a, b) =>
             {
+                select_x = 0;
                 subForm = null;
                 Expand = false;
                 ExpandDrop = false;
@@ -597,10 +600,7 @@ namespace AntdUI
             }
         }
 
-        protected override void OnClickContent()
-        {
-            ExpandDrop = !expandDrop;
-        }
+        protected override void OnClickContent() => ExpandDrop = !expandDrop;
 
         #endregion
     }

@@ -433,12 +433,16 @@ namespace AntdUI
             {
                 if (Autodelay > 0) Thread.Sleep(Autodelay * 1000);
                 else Thread.Sleep(1000);
-                if (!down && !ExtraMouseHover && DateTime.Now > now)
+                try
                 {
-                    if (items == null) continue;
-                    if (selectIndex >= items.Count - 1) SetSelectIndex(0, true);
-                    else SetSelectIndex(selectIndex + 1, true);
+                    if (!down && !ExtraMouseHover && DateTime.Now > now)
+                    {
+                        if (items == null) continue;
+                        if (selectIndex >= items.Count - 1) SetSelectIndex(0, true);
+                        else SetSelectIndex(selectIndex + 1, true);
+                    }
                 }
+                catch { }
             }
         }
 

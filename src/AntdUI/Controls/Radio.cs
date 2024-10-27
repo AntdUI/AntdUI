@@ -491,9 +491,9 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
-                    float gap = 20 * Config.Dpi;
-                    return new Size((int)Math.Ceiling(font_size.Width + font_size.Height + gap), (int)Math.Ceiling(font_size.Height + gap));
+                    var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+                    int gap = (int)(20 * Config.Dpi);
+                    return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
                 });
             }
         }

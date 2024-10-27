@@ -243,7 +243,7 @@ namespace AntdUI
             base.WndProc(ref m);
         }
 
-        int oldm = 0;
+        int oldmargin = 0;
         void DwmArea()
         {
             if (DwmEnabled && shadow > 0)
@@ -251,8 +251,8 @@ namespace AntdUI
                 int margin;
                 if (WindowState == FormWindowState.Normal) margin = 1;
                 else margin = 0;
-                if (oldm == margin) return;
-                oldm = margin;
+                if (oldmargin == margin) return;
+                oldmargin = margin;
                 var v = 2;
                 DarkUI.DwmSetWindowAttribute(Handle, 2, ref v, 4);
                 DwmExtendFrameIntoClientArea(handle, new MARGINS(margin));
@@ -382,6 +382,7 @@ namespace AntdUI
         /// </summary>
         public override void DraggableMouseDown()
         {
+            if (IsFull) return;
             var mouseOffset = MousePosition;
             bool end = true, handmax = false;
             Size min = MinimumSize, max = MaximumSize;
@@ -533,27 +534,7 @@ namespace AntdUI
 
         #region 程序
 
-        /// <summary>
-        /// 最大化/还原
-        /// </summary>
-        public override bool MaxRestore()
-        {
-            if (WindowState == FormWindowState.Maximized)
-            {
-                WindowState = FormWindowState.Normal;
-                isMax = false;
-                return false;
-            }
-            else
-            {
-                Screen screen = Screen.FromPoint(Location);
-                if (screen.Primary) MaximizedBounds = screen.WorkingArea;
-                else MaximizedBounds = new Rectangle(0, 0, 0, 0);
-                WindowState = FormWindowState.Maximized;
-                isMax = true;
-                return true;
-            }
-        }
+        public override void RefreshDWM() => DwmArea();
 
         bool ismax = false;
         bool isMax
@@ -570,16 +551,43 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 最大化/还原
+        /// </summary>
+        public override bool MaxRestore()
+        {
+            IsFull = false;
+            if (WindowState == FormWindowState.Maximized)
+            {
+                WindowState = FormWindowState.Normal;
+                isMax = false;
+                RefreshDWM();
+                return false;
+            }
+            else
+            {
+                Screen screen = Screen.FromPoint(Location);
+                if (screen.Primary) MaximizedBounds = screen.WorkingArea;
+                else MaximizedBounds = new Rectangle(0, 0, 0, 0);
+                WindowState = FormWindowState.Maximized;
+                isMax = true;
+                RefreshDWM();
+                return true;
+            }
+        }
+
+        /// <summary>
         /// 最大化
         /// </summary>
         public override void Max()
         {
             if (ismax) return;
+            IsFull = false;
             Screen screen = Screen.FromPoint(Location);
             if (screen.Primary) MaximizedBounds = screen.WorkingArea;
             else MaximizedBounds = new Rectangle(0, 0, 0, 0);
             WindowState = FormWindowState.Maximized;
             isMax = true;
+            RefreshDWM();
         }
 
         /// <summary>
@@ -589,13 +597,13 @@ namespace AntdUI
         {
             if (WindowState == FormWindowState.Maximized)
             {
-                WindowState = FormWindowState.Normal;
+                NoFull();
                 isMax = false;
                 return false;
             }
             else
             {
-                WindowState = FormWindowState.Maximized;
+                Full();
                 isMax = true;
                 return true;
             }
@@ -606,14 +614,22 @@ namespace AntdUI
         /// </summary>
         public override void Full()
         {
+            if (IsFull) return;
+            if (WindowState == FormWindowState.Maximized) WindowState = FormWindowState.Normal;
+            MaximizedBounds = new Rectangle(0, 0, 0, 0);
             WindowState = FormWindowState.Maximized;
-            isMax = true;
+            IsFull = isMax = true;
+            RefreshDWM();
         }
 
         public override void NoFull()
         {
-            WindowState = FormWindowState.Normal;
-            isMax = false;
+            if (IsFull)
+            {
+                IsFull = isMax = false;
+                WindowState = FormWindowState.Normal;
+                RefreshDWM();
+            }
         }
 
         #endregion

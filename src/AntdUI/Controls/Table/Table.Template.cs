@@ -256,11 +256,11 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
-            public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
-                var sizef = g.MeasureString(Config.NullText, font);
-                MinWidth = (int)Math.Ceiling(sizef.Width);
-                return sizef;
+                var size = g.MeasureString(Config.NullText, font).Size();
+                MinWidth = size.Width;
+                return size;
             }
 
             public bool NoTitle { get; set; }
@@ -364,11 +364,11 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
-            public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
-                var sizef = g.MeasureString(Config.NullText, font);
-                MinWidth = (int)Math.Ceiling(sizef.Width);
-                return sizef;
+                var size = g.MeasureString(Config.NullText, font).Size();
+                MinWidth = size.Width;
+                return size;
             }
 
             public bool AutoCheck { get; set; }
@@ -571,11 +571,11 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size2) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size2, check_size);
             }
 
-            public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
-                var sizef = g.MeasureString(Config.NullText, font);
-                MinWidth = (int)Math.Ceiling(sizef.Width);
-                return sizef;
+                var size = g.MeasureString(Config.NullText, font).Size();
+                MinWidth = size.Width;
+                return size;
             }
 
             public bool AutoCheck { get; set; }
@@ -611,7 +611,7 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
             }
 
-            public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
                 if (COLUMN.LineBreak)
                 {
@@ -619,21 +619,21 @@ namespace AntdUI
                     {
                         if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)));
-                            MinWidth = (int)Math.Ceiling(size2.Width);
-                            return new SizeF(size2.Width + gap2, size2.Height);
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F))).Size();
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi));
-                            MinWidth = (int)Math.Ceiling(size2.Width);
-                            return new SizeF(size2.Width + gap2, size2.Height);
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi)).Size();
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
                         }
                     }
                 }
-                var size = g.MeasureString(value, font);
-                MinWidth = (int)Math.Ceiling(size.Width);
-                return new SizeF(size.Width + gap2, size.Height);
+                var size = g.MeasureString(value, font).Size();
+                MinWidth = size.Width;
+                return new Size(size.Width + gap2, size.Height);
             }
 
             public override string? ToString() => value;
@@ -667,12 +667,12 @@ namespace AntdUI
                 }
             }
 
-            public override SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Graphics g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(value, font);
+                var size = g.MeasureString(value, font).Size();
                 SortWidth = COLUMN.SortOrder ? (int)(size.Height * 0.8F) : 0;
-                MinWidth = (int)Math.Ceiling(size.Width) + gap2 + SortWidth;
-                return new SizeF(size.Width + gap2 + SortWidth, size.Height);
+                MinWidth = size.Width + gap2 + SortWidth;
+                return new Size(size.Width + gap2 + SortWidth, size.Height);
             }
 
             public int SortWidth = 0;
@@ -756,7 +756,7 @@ namespace AntdUI
             public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x, y);
 
             public abstract void SetSize(Graphics g, Font font, Rectangle _rect, int ox, int gap, int gap2);
-            public abstract SizeF GetSize(Graphics g, Font font, int width, int gap, int gap2);
+            public abstract Size GetSize(Graphics g, Font font, int width, int gap, int gap2);
 
             #endregion
         }
@@ -820,10 +820,10 @@ namespace AntdUI
             }
 
             Size[] SIZES = new Size[0];
-            public override SizeF GetSize(Graphics g, Font font, int width, int _gap, int _gap2)
+            public override Size GetSize(Graphics g, Font font, int width, int _gap, int _gap2)
             {
                 int gap = _gap / 2, gap2 = _gap;
-                float w = 0, h = 0;
+                int w = 0, h = 0;
                 var sizes = new List<Size>(value.Count);
                 foreach (var it in value)
                 {
@@ -832,9 +832,9 @@ namespace AntdUI
                     w += size.Width;
                     if (h < size.Height) h = size.Height;
                 }
-                MinWidth = (int)Math.Ceiling(w);
+                MinWidth = w;
                 SIZES = sizes.ToArray();
-                return new SizeF(MinWidth + _gap2, h);
+                return new Size(MinWidth + _gap2, h);
             }
 
             public override string? ToString()

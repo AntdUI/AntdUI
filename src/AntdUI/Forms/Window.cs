@@ -171,13 +171,18 @@ namespace AntdUI
             return value;
         }
 
+        int oldmargin = -1;
         void DwmArea()
         {
             int margin;
-            if (iszoomed) margin = 0;
+            if (iszoomed || IsFull) margin = 0;
             else margin = 1;
+            if (oldmargin == margin) return;
+            oldmargin = margin;
             DwmExtendFrameIntoClientArea(handle, new MARGINS(margin));
         }
+
+        public override void RefreshDWM() => DwmArea();
 
         #region 区域
 
@@ -497,8 +502,12 @@ namespace AntdUI
         protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
         {
             if (DesignMode) base.SetBoundsCore(x, y, width, height, specified);
-            else if (WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, specified);
+#if NET40 || NET45 || NET46 || NET48
+            else if (WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
             else base.SetBoundsCore(x, y, width, height, specified);
+#else
+            else base.SetBoundsCore(x, y, width, height, specified);
+#endif
         }
 
         #endregion

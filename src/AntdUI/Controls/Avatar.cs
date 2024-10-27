@@ -44,6 +44,16 @@ namespace AntdUI
 
         #region 属性
 
+        /// <summary>
+        /// 原装背景颜色
+        /// </summary>
+        [Description("原装背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        public Color OriginalBackColor
+        {
+            get => base.BackColor;
+            set => base.BackColor = value;
+        }
+
         Color back = Color.Transparent;
         /// <summary>
         /// 背景颜色
@@ -443,14 +453,7 @@ namespace AntdUI
                         g.DrawPath(pen, path);
                     }
                 }
-                else
-                {
-#if NET40 || NET46 || NET48 || NET6_0
-                    g.DrawRectangles(pen, new RectangleF[] { rect });
-#else
-                    g.DrawRectangle(pen, rect);
-#endif
-                }
+                else g.DrawRectangle(pen, rect);
             }
         }
 

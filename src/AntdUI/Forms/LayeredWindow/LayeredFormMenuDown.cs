@@ -24,11 +24,12 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormMenuDown : ILayeredFormOpacityDown
+    internal class LayeredFormMenuDown : ILayeredFormOpacityDown, SubLayeredForm
     {
         internal float Radius = 0;
         bool isauto = true, isdark = false;
         List<OMenuItem> Items;
+        Color? BackHover, BackActive, foreColor, ForeActive;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, MenuItemCollection items)
         {
             MessageCloseMouseLeave = true;
@@ -38,6 +39,10 @@ namespace AntdUI
             PARENT = control;
             select_x = 0;
             Font = control.Font;
+            foreColor = control.ForeColor;
+            ForeActive = control.ForeActive;
+            BackHover = control.BackHover;
+            BackActive = control.BackActive;
             Radius = (int)(radius * Config.Dpi);
             Items = new List<OMenuItem>(items.Count);
             Init(control, rect_read, items);
@@ -51,13 +56,18 @@ namespace AntdUI
             select_x = sx;
             PARENT = parent;
             Font = control.Font;
+            foreColor = control.ForeColor;
+            ForeActive = control.ForeActive;
+            BackHover = control.BackHover;
+            BackActive = control.BackActive;
             Radius = radius;
             control.Disposed += (a, b) => { Dispose(); };
             Items = new List<OMenuItem>(items.Count);
             Init(control, rect_read, items);
         }
 
-        internal LayeredFormMenuDown? SubForm = null;
+        public ILayeredForm? SubForm() => subForm;
+        LayeredFormMenuDown? subForm = null;
         void Init(Control control, Rectangle rect_read, MenuItemCollection items)
         {
             int y = 10, w = rect_read.Width;
@@ -72,7 +82,7 @@ namespace AntdUI
 
                 int b_w = size.Width + gap_x2;
                 bool ui_icon = false, ui_arrow = false;
-                foreach (MenuItem obj in items)
+                foreach (var obj in items)
                 {
                     if (obj.Text != null)
                     {
@@ -168,8 +178,8 @@ namespace AntdUI
                             var it = Items[hoveindex];
                             if (it.Sub != null && it.Sub.Count > 0)
                             {
-                                SubForm?.IClose();
-                                SubForm = null;
+                                subForm?.IClose();
+                                subForm = null;
                                 OpenDown(it);
                                 if (PARENT is Menu menu2) menu2.select_x++;
                             }
@@ -180,8 +190,8 @@ namespace AntdUI
                 return false;
             };
         }
-        StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
 
+        StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
         public void FocusItem(OMenuItem item)
         {
             if (item.SetHover(true)) Print();
@@ -201,6 +211,7 @@ namespace AntdUI
         {
             foreach (var it in Items)
             {
+                if (RunAnimation) return;
                 if (it.Show && it.Contains(e.Location, out _))
                 {
                     if (OnClick(it)) return;
@@ -219,11 +230,11 @@ namespace AntdUI
             }
             else
             {
-                if (SubForm == null) OpenDown(it);
+                if (subForm == null) OpenDown(it);
                 else
                 {
-                    SubForm?.IClose();
-                    SubForm = null;
+                    subForm?.IClose();
+                    subForm = null;
                 }
             }
             return false;
@@ -233,22 +244,15 @@ namespace AntdUI
         {
             if (PARENT is Menu menu)
             {
-                SubForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, new Rectangle(it.Rect.X, it.Rect.Y - 0, it.Rect.Width, it.Rect.Height), it.Sub);
-                SubForm.Show(this);
+                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, new Rectangle(it.Rect.X, it.Rect.Y - 0, it.Rect.Width, it.Rect.Height), it.Sub);
+                subForm.Show(this);
             }
-        }
-
-        bool DisableMouse = true;
-        public override void LoadOK()
-        {
-            DisableMouse = false;
-            base.LoadOK();
         }
 
         int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DisableMouse) return;
+            if (RunAnimation) return;
             hoveindex = -1;
 
             int count = 0;
@@ -262,8 +266,8 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (hoveindexold == hoveindex) return;
             hoveindexold = hoveindex;
-            SubForm?.IClose();
-            SubForm = null;
+            subForm?.IClose();
+            subForm = null;
             if (hoveindex > -1)
             {
                 if (PARENT is Menu menu) menu.select_x = select_x;
@@ -316,7 +320,17 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (isauto)
+                    if (foreColor.HasValue)
+                    {
+                        using (var brush = new SolidBrush(foreColor.Value))
+                        {
+                            foreach (var it in Items)
+                            {
+                                if (it.Show) DrawItem(g, brush, it);
+                            }
+                        }
+                    }
+                    else if (isauto)
                     {
                         using (var brush = new SolidBrush(Style.Db.Text))
                         {
@@ -359,14 +373,14 @@ namespace AntdUI
                 {
                     if (it.Val.Select)
                     {
-                        using (var brush_back = new SolidBrush(Style.Db.Primary))
+                        using (var brush_back = new SolidBrush(BackActive ?? Style.Db.Primary))
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
                                 g.FillPath(brush_back, path);
                             }
                         }
-                        using (var brush_select = new SolidBrush(Style.Db.TextBase))
+                        using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
                         {
                             g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                         }
@@ -376,7 +390,7 @@ namespace AntdUI
                     {
                         if (it.Hover)
                         {
-                            using (var brush_back = new SolidBrush(Style.Db.FillTertiary))
+                            using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
@@ -392,14 +406,14 @@ namespace AntdUI
                 {
                     if (it.Val.Select)
                     {
-                        using (var brush_back = new SolidBrush(Style.Db.PrimaryBg))
+                        using (var brush_back = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
                                 g.FillPath(brush_back, path);
                             }
                         }
-                        using (var brush_select = new SolidBrush(Style.Db.TextBase))
+                        using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
                         {
                             g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                         }
@@ -408,7 +422,7 @@ namespace AntdUI
                     {
                         if (it.Hover)
                         {
-                            using (var brush_back = new SolidBrush(Style.Db.FillTertiary))
+                            using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
@@ -427,14 +441,14 @@ namespace AntdUI
                 {
                     if (it.Val.Select)
                     {
-                        using (var brush_back = new SolidBrush("#1668DC".ToColor()))
+                        using (var brush_back = new SolidBrush(BackActive ?? "#1668DC".ToColor()))
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
                                 g.FillPath(brush_back, path);
                             }
                         }
-                        using (var brush_select = new SolidBrush(Color.White))
+                        using (var brush_select = new SolidBrush(ForeActive ?? Color.White))
                         {
                             g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                         }
@@ -444,7 +458,7 @@ namespace AntdUI
                     {
                         if (it.Hover)
                         {
-                            using (var brush_back = new SolidBrush(Style.rgba(255, 255, 255, 0.08F)))
+                            using (var brush_back = new SolidBrush(BackHover ?? Style.rgba(255, 255, 255, 0.08F)))
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
@@ -460,14 +474,14 @@ namespace AntdUI
                 {
                     if (it.Val.Select)
                     {
-                        using (var brush_back = new SolidBrush(Style.Db.PrimaryBg))
+                        using (var brush_back = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
                                 g.FillPath(brush_back, path);
                             }
                         }
-                        using (var brush_select = new SolidBrush(Style.Db.TextBase))
+                        using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
                         {
                             g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                         }
@@ -476,7 +490,7 @@ namespace AntdUI
                     {
                         if (it.Hover)
                         {
-                            using (var brush_back = new SolidBrush(Style.Db.FillTertiary))
+                            using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {

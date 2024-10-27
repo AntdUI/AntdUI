@@ -52,6 +52,7 @@ namespace AntdUI
                 if (dateFormat == value) return;
                 dateFormat = value;
                 ShowTime = dateFormat.Contains("H");
+                Text = _value.HasValue ? _value.Value.ToString(dateFormat) : "";
             }
         }
 

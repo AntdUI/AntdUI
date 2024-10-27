@@ -239,7 +239,8 @@ namespace AntdUI
                             badge_list.Clear();
                             if (dir == null)
                             {
-                                Print();
+                                if (RunAnimation) DisposeTmp();
+                                else Print();
                                 return;
                             }
 #if NET40 || NET46 || NET48
@@ -247,7 +248,8 @@ namespace AntdUI
 #else
                             foreach (var it in dir) badge_list.TryAdd(it.Date, it);
 #endif
-                            Print();
+                            if (RunAnimation) DisposeTmp();
+                            else Print();
                         }
                     });
                 }
@@ -1027,6 +1029,21 @@ namespace AntdUI
                                                     break;
                                             }
                                         }
+                                        else if (SelTime != null && SelTime.Length > 0)
+                                        {
+                                            switch (it.x)
+                                            {
+                                                case 0:
+                                                    if (it.t == SelTime[0].Hour) g.FillPath(brush_bg, path);
+                                                    break;
+                                                case 1:
+                                                    if (it.t == SelTime[0].Minute) g.FillPath(brush_bg, path);
+                                                    break;
+                                                case 2:
+                                                    if (it.t == SelTime[0].Second) g.FillPath(brush_bg, path);
+                                                    break;
+                                            }
+                                        }
                                         if (it.hover)
                                         {
                                             using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
@@ -1180,25 +1197,17 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             base.OnMouseDown(e);
-
             if (left_buttons != null && rect_read_left.Contains(e.X, e.Y)) if (!scrollY_left.MouseDown(e.Location)) return;
-
             if (rect_read_h.Contains(e.X, e.Y)) scrollY_h.MouseDown(e.Location);
             else if (rect_read_m.Contains(e.X, e.Y)) scrollY_m.MouseDown(e.Location);
             else if (rect_read_s.Contains(e.X, e.Y)) scrollY_s.MouseDown(e.Location);
         }
 
-        bool DisableMouse = true;
-        public override void LoadOK()
-        {
-            DisableMouse = false;
-            base.LoadOK();
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DisableMouse) return;
+            if (RunAnimation) return;
             if (scrollY_left.MouseMove(e.Location) && scrollY_h.MouseMove(e.Location) && scrollY_m.MouseMove(e.Location) && scrollY_s.MouseMove(e.Location))
             {
                 int count = 0, hand = 0;
@@ -1320,6 +1329,7 @@ namespace AntdUI
 
         protected override void OnMouseLeave(EventArgs e)
         {
+            if (RunAnimation) return;
             scrollY_left.Leave();
             scrollY_h.Leave();
             scrollY_m.Leave();
@@ -1388,6 +1398,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             scrollY_left.MouseUp(e.Location);
             scrollY_h.MouseUp(e.Location);
             scrollY_m.MouseUp(e.Location);
@@ -1751,6 +1762,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            if (RunAnimation) return;
             if (e.Delta != 0)
             {
                 if (left_buttons != null && rect_read_left.Contains(e.X, e.Y))

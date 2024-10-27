@@ -292,8 +292,7 @@ namespace AntdUI
             if (has_subtext) FontSub.Dispose();
             subForm?.IClose();
             subForm = null;
-            resetEvent?.Set();
-            resetEvent?.Dispose();
+            resetEvent?.WaitDispose();
             resetEvent = null;
             base.Dispose(disposing);
         }
@@ -506,7 +505,7 @@ namespace AntdUI
                                     resetEvent = new ManualResetEvent(false);
                                     ITask.Run(() =>
                                     {
-                                        if (Config.Animation && resetEvent.Wait()) return;
+                                        if (Config.Animation && resetEvent.Wait(false)) return;
                                         if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
                                         config.Control.BeginInvoke(new Action(() =>
                                         {
@@ -540,7 +539,7 @@ namespace AntdUI
                     resetEvent = new ManualResetEvent(false);
                     ITask.Run(() =>
                     {
-                        if (resetEvent.Wait()) return;
+                        if (resetEvent.Wait(false)) return;
                         if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
                         config.Control.BeginInvoke(new Action(() =>
                         {

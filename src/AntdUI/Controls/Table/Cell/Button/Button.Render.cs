@@ -32,8 +32,8 @@ namespace AntdUI
         {
             if (string.IsNullOrEmpty(Text))
             {
-                var size = g.MeasureString(Config.NullText, font);
-                int sizei = (int)Math.Ceiling(size.Height) + gap;
+                var size = g.MeasureString(Config.NullText, font).Size();
+                int sizei = size.Height + gap;
                 return new Size(sizei + gap2, sizei);
             }
             else

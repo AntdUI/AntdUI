@@ -39,6 +39,16 @@ namespace AntdUI
 
         #region 属性
 
+        /// <summary>
+        /// 原装背景颜色
+        /// </summary>
+        [Description("原装背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        public Color OriginalBackColor
+        {
+            get => base.BackColor;
+            set => base.BackColor = value;
+        }
+
         Color? back;
         /// <summary>
         /// 背景颜色
@@ -157,8 +167,8 @@ namespace AntdUI
         {
             var _rect = ClientRectangle;
             var g = e.Graphics.High();
-            var size = g.MeasureString("100%", Font);
-            var rect = new RectangleF((_rect.Width - size.Width) / 2F, (_rect.Height - size.Height) / 2F, size.Width, size.Height);
+            var size = g.MeasureString("100%", Font).Size();
+            var rect = new Rectangle((_rect.Width - size.Width) / 2, (_rect.Height - size.Height) / 2, size.Width, size.Height);
             float _radius = radius * Config.Dpi;
             using (var path_pain = rect.RoundPath(_radius))
             {

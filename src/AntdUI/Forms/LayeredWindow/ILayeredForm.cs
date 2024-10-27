@@ -143,7 +143,11 @@ namespace AntdUI
 
         #endregion
 
-        public void Print() => renderQueue.Set();
+        public void Print(bool fore = false)
+        {
+            if (fore) Render();
+            else renderQueue.Set();
+        }
         public void Print(Bitmap bmp) => renderQueue.Set(alpha, bmp);
         public void Print(Bitmap bmp, Rectangle rect) => renderQueue.Set(alpha, bmp, rect);
 
@@ -364,7 +368,12 @@ namespace AntdUI
             try
             {
                 if (control.TargetRect.Contains(mousePosition)) count++;
-                if (control is LayeredFormSelectDown layered && layered.SubForm != null) count += ContainsPosition(layered.SubForm, mousePosition);
+
+                if (control is SubLayeredForm subForm)
+                {
+                    var subform = subForm.SubForm();
+                    if (subform != null) count += ContainsPosition(subform, mousePosition);
+                }
             }
             catch { }
             return count;
@@ -499,24 +508,27 @@ namespace AntdUI
             /// </summary>
             public void Set()
             {
+                if (isDispose) return;
                 Queue.Enqueue(null);
-                Event.Set();
+                Event.SetWait();
             }
             /// <summary>
             /// 渲染
             /// </summary>
             public void Set(byte alpha, Bitmap bmp)
             {
+                if (isDispose) return;
                 Queue.Enqueue(new M(alpha, bmp));
-                Event.Set();
+                Event.SetWait();
             }
             /// <summary>
             /// 渲染
             /// </summary>
             public void Set(byte alpha, Bitmap bmp, Rectangle rect)
             {
+                if (isDispose) return;
                 Queue.Enqueue(new M(alpha, bmp, rect));
-                Event.Set();
+                Event.SetWait();
             }
 
             void LongTask()
@@ -546,18 +558,29 @@ namespace AntdUI
                         }
                     }
                     if (count > 0) call.Render();
-                    Event.Reset();
+                    if (isDispose) return;
+                    try
+                    {
+                        Event.ResetWait();
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 }
             }
 
+            bool isDispose = false;
             public void Dispose()
             {
+                if (isDispose) return;
+                isDispose = true;
 #if NET40 || NET45 || NET46 || NET48
-                while (Queue.TryDequeue(out _))
+                while (Queue.TryDequeue(out _)) { }
 #else
                 Queue.Clear();
 #endif
-                    Event.Dispose();
+                Event.WaitDispose();
             }
 
             public class M

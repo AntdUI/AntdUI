@@ -153,8 +153,8 @@ namespace AntdUI
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {
-                            SizeF sizeTitle = g.MeasureString(config.Title, fontTitle), sizeContent = g.MeasureString(content, Font);
-                            int w = (int)Math.Ceiling(sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width), h = (int)Math.Round(sizeTitle.Height + sp + sizeContent.Height);
+                            Size sizeTitle = g.MeasureString(config.Title, fontTitle).Size(), sizeContent = g.MeasureString(content, Font).Size();
+                            int w = sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width, h = sizeTitle.Height + sp + sizeContent.Height;
 
                             rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
                             rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
