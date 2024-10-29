@@ -61,8 +61,8 @@ namespace Demo
             // tablePanel
             // 
             tablePanel.ColumnCount = 2;
-            tablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            tablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            tablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
             tablePanel.Controls.Add(label1, 0, 0);
             tablePanel.Controls.Add(label2, 1, 0);
             tablePanel.Controls.Add(label3, 0, 1);
@@ -80,7 +80,7 @@ namespace Demo
             tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
             tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
             tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            tablePanel.Size = new System.Drawing.Size(265, 212);
+            tablePanel.Size = new System.Drawing.Size(210, 212);
             tablePanel.TabIndex = 0;
             // 
             // label1
@@ -88,15 +88,15 @@ namespace Demo
             label1.Dock = System.Windows.Forms.DockStyle.Fill;
             label1.Location = new System.Drawing.Point(3, 3);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(179, 40);
+            label1.Size = new System.Drawing.Size(134, 40);
             label1.TabIndex = 0;
             label1.Text = "动画使能";
             // 
             // label2
             // 
-            label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             label2.AutoCheck = true;
-            label2.Location = new System.Drawing.Point(188, 8);
+            label2.Location = new System.Drawing.Point(150, 8);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(50, 30);
             label2.TabIndex = 0;
@@ -107,7 +107,7 @@ namespace Demo
             label3.Dock = System.Windows.Forms.DockStyle.Fill;
             label3.Location = new System.Drawing.Point(3, 49);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(179, 40);
+            label3.Size = new System.Drawing.Size(134, 40);
             label3.TabIndex = 0;
             label3.Text = "阴影使能";
             // 
@@ -116,7 +116,7 @@ namespace Demo
             label4.Dock = System.Windows.Forms.DockStyle.Fill;
             label4.Location = new System.Drawing.Point(3, 95);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(179, 40);
+            label4.Size = new System.Drawing.Size(134, 40);
             label4.TabIndex = 0;
             label4.Text = "弹出在窗口";
             // 
@@ -125,15 +125,15 @@ namespace Demo
             label5.Dock = System.Windows.Forms.DockStyle.Fill;
             label5.Location = new System.Drawing.Point(3, 141);
             label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(179, 40);
+            label5.Size = new System.Drawing.Size(134, 40);
             label5.TabIndex = 0;
             label5.Text = "滚动条隐藏样式";
             // 
             // switch1
             // 
-            switch1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            switch1.Anchor = System.Windows.Forms.AnchorStyles.None;
             switch1.AutoCheck = true;
-            switch1.Location = new System.Drawing.Point(188, 54);
+            switch1.Location = new System.Drawing.Point(150, 54);
             switch1.Name = "switch1";
             switch1.Size = new System.Drawing.Size(50, 30);
             switch1.TabIndex = 0;
@@ -141,9 +141,9 @@ namespace Demo
             // 
             // switch2
             // 
-            switch2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            switch2.Anchor = System.Windows.Forms.AnchorStyles.None;
             switch2.AutoCheck = true;
-            switch2.Location = new System.Drawing.Point(188, 100);
+            switch2.Location = new System.Drawing.Point(150, 100);
             switch2.Name = "switch2";
             switch2.Size = new System.Drawing.Size(50, 30);
             switch2.TabIndex = 0;
@@ -151,19 +151,19 @@ namespace Demo
             // 
             // switch3
             // 
-            switch3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            switch3.Anchor = System.Windows.Forms.AnchorStyles.None;
             switch3.AutoCheck = true;
-            switch3.Location = new System.Drawing.Point(188, 146);
+            switch3.Location = new System.Drawing.Point(150, 146);
             switch3.Name = "switch3";
             switch3.Size = new System.Drawing.Size(50, 30);
             switch3.TabIndex = 0;
             switch3.Text = "label1";
             // 
-            // FrmSetting
+            // Setting
             // 
             Controls.Add(tablePanel);
-            Name = "FrmSetting";
-            Size = new System.Drawing.Size(265, 205);
+            Name = "Setting";
+            Size = new System.Drawing.Size(210, 205);
             tablePanel.ResumeLayout(false);
             ResumeLayout(false);
         }
