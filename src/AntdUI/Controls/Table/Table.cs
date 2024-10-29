@@ -566,14 +566,7 @@ namespace AntdUI
                     var _row = rows[row];
                     var vals = _row.cells[column].ToString();
                     if (vals == null) return false;
-                    if (InvokeRequired)
-                    {
-                        Invoke(new Action(() =>
-                        {
-                            Clipboard.SetText(vals);
-                        }));
-                    }
-                    else Clipboard.SetText(vals);
+                    this.ClipboardSetText(vals);
                     return true;
                 }
                 catch { }

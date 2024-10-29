@@ -1081,10 +1081,7 @@ namespace AntdUI
                     IUSelect(items);
                     if (list.Count > 1)
                     {
-                        foreach (var it in list)
-                        {
-                            it.Select = true;
-                        }
+                        foreach (var it in list) it.Select = true;
                     }
                     item.Select = true;
                     OnSelectIndexChanged(item);
@@ -1484,6 +1481,11 @@ namespace AntdUI
                 }
             }
         }
+
+        /// <summary>
+        /// 是否选中
+        /// </summary>
+        [Description("是否选中"), Category("外观"), DefaultValue(false)]
         public bool Select { get; set; }
         internal int Depth { get; set; }
         internal float ArrowProg { get; set; } = 1F;

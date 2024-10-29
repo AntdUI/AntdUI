@@ -212,7 +212,7 @@ namespace AntdUI
             foreach (var it in Items)
             {
                 if (RunAnimation) return;
-                if (it.Show && it.Contains(e.Location, out _))
+                if (it.Show && it.Val.Enabled && it.Contains(e.Location, out _))
                 {
                     if (OnClick(it)) return;
                 }
@@ -259,8 +259,11 @@ namespace AntdUI
             for (int i = 0; i < Items.Count; i++)
             {
                 var it = Items[i];
-                if (it.Contains(e.Location, out var change)) hoveindex = i;
-                if (change) count++;
+                if (it.Show && it.Val.Enabled)
+                {
+                    if (it.Contains(e.Location, out var change)) hoveindex = i;
+                    if (change) count++;
+                }
             }
             if (count > 0) Print();
             base.OnMouseMove(e);
@@ -367,98 +370,154 @@ namespace AntdUI
 
         void DrawItem(Graphics g, SolidBrush brush, OMenuItem it)
         {
-            if (isauto)
+            if (it.Val.Enabled)
             {
-                if (isdark)
+                if (isauto)
                 {
-                    if (it.Val.Select)
+                    if (isdark)
                     {
-                        using (var brush_back = new SolidBrush(BackActive ?? Style.Db.Primary))
+                        if (it.Val.Select)
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.FillPath(brush_back, path);
-                            }
-                        }
-                        using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
-                        {
-                            g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
-                        }
-                        PaintIcon(g, it, brush.Color);
-                    }
-                    else
-                    {
-                        if (it.Hover)
-                        {
-                            using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
+                            using (var brush_back = new SolidBrush(BackActive ?? Style.Db.Primary))
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
                                     g.FillPath(brush_back, path);
                                 }
                             }
+                            using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
+                            {
+                                g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                            }
+                            PaintIcon(g, it, brush.Color);
                         }
-                        g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                        else
+                        {
+                            if (it.Hover)
+                            {
+                                using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
+                                {
+                                    using (var path = it.Rect.RoundPath(Radius))
+                                    {
+                                        g.FillPath(brush_back, path);
+                                    }
+                                }
+                            }
+                            g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                            PaintIcon(g, it, brush.Color);
+                        }
+                    }
+                    else
+                    {
+                        if (it.Val.Select)
+                        {
+                            using (var brush_back = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
+                            {
+                                using (var path = it.Rect.RoundPath(Radius))
+                                {
+                                    g.FillPath(brush_back, path);
+                                }
+                            }
+                            using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
+                            {
+                                g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                            }
+                        }
+                        else
+                        {
+                            if (it.Hover)
+                            {
+                                using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
+                                {
+                                    using (var path = it.Rect.RoundPath(Radius))
+                                    {
+                                        g.FillPath(brush_back, path);
+                                    }
+                                }
+                            }
+                            g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                        }
                         PaintIcon(g, it, brush.Color);
                     }
                 }
                 else
                 {
-                    if (it.Val.Select)
+                    if (isdark)
                     {
-                        using (var brush_back = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
+                        if (it.Val.Select)
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.FillPath(brush_back, path);
-                            }
-                        }
-                        using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
-                        {
-                            g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
-                        }
-                    }
-                    else
-                    {
-                        if (it.Hover)
-                        {
-                            using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
+                            using (var brush_back = new SolidBrush(BackActive ?? "#1668DC".ToColor()))
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
                                     g.FillPath(brush_back, path);
                                 }
                             }
+                            using (var brush_select = new SolidBrush(ForeActive ?? Color.White))
+                            {
+                                g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                            }
+                            PaintIcon(g, it, brush.Color);
                         }
-                        g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                        else
+                        {
+                            if (it.Hover)
+                            {
+                                using (var brush_back = new SolidBrush(BackHover ?? Style.rgba(255, 255, 255, 0.08F)))
+                                {
+                                    using (var path = it.Rect.RoundPath(Radius))
+                                    {
+                                        g.FillPath(brush_back, path);
+                                    }
+                                }
+                            }
+                            g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                            PaintIcon(g, it, brush.Color);
+                        }
                     }
-                    PaintIcon(g, it, brush.Color);
+                    else
+                    {
+                        if (it.Val.Select)
+                        {
+                            using (var brush_back = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
+                            {
+                                using (var path = it.Rect.RoundPath(Radius))
+                                {
+                                    g.FillPath(brush_back, path);
+                                }
+                            }
+                            using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
+                            {
+                                g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                            }
+                        }
+                        else
+                        {
+                            if (it.Hover)
+                            {
+                                using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
+                                {
+                                    using (var path = it.Rect.RoundPath(Radius))
+                                    {
+                                        g.FillPath(brush_back, path);
+                                    }
+                                }
+                            }
+                            g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                        }
+                        PaintIcon(g, it, brush.Color);
+                    }
                 }
             }
             else
             {
-                if (isdark)
+                if (it.Val.Select)
                 {
-                    if (it.Val.Select)
+                    if (isauto)
                     {
-                        using (var brush_back = new SolidBrush(BackActive ?? "#1668DC".ToColor()))
+                        if (isdark)
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.FillPath(brush_back, path);
-                            }
-                        }
-                        using (var brush_select = new SolidBrush(ForeActive ?? Color.White))
-                        {
-                            g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
-                        }
-                        PaintIcon(g, it, brush.Color);
-                    }
-                    else
-                    {
-                        if (it.Hover)
-                        {
-                            using (var brush_back = new SolidBrush(BackHover ?? Style.rgba(255, 255, 255, 0.08F)))
+                            using (var brush_back = new SolidBrush(BackActive ?? Style.Db.Primary))
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
@@ -466,31 +525,9 @@ namespace AntdUI
                                 }
                             }
                         }
-                        g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
-                        PaintIcon(g, it, brush.Color);
-                    }
-                }
-                else
-                {
-                    if (it.Val.Select)
-                    {
-                        using (var brush_back = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
+                        else
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.FillPath(brush_back, path);
-                            }
-                        }
-                        using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
-                        {
-                            g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
-                        }
-                    }
-                    else
-                    {
-                        if (it.Hover)
-                        {
-                            using (var brush_back = new SolidBrush(BackHover ?? Style.Db.FillTertiary))
+                            using (var brush_back = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
@@ -498,10 +535,36 @@ namespace AntdUI
                                 }
                             }
                         }
-                        g.DrawStr(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
                     }
-                    PaintIcon(g, it, brush.Color);
+                    else
+                    {
+                        if (isdark)
+                        {
+                            using (var brush_back = new SolidBrush(BackActive ?? "#1668DC".ToColor()))
+                            {
+                                using (var path = it.Rect.RoundPath(Radius))
+                                {
+                                    g.FillPath(brush_back, path);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (var brush_back = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
+                            {
+                                using (var path = it.Rect.RoundPath(Radius))
+                                {
+                                    g.FillPath(brush_back, path);
+                                }
+                            }
+                        }
+                    }
                 }
+                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                {
+                    g.DrawStr(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, stringFormatLeft);
+                }
+                PaintIcon(g, it, brush.Color);
             }
             if (it.has_sub) PaintArrow(g, it, brush.Color);
         }

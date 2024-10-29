@@ -635,6 +635,25 @@ namespace AntdUI
             set => button.JoinRight = value;
         }
 
+        #region 闪烁动画
+
+        /// <summary>
+        /// 闪烁动画状态
+        /// </summary>
+        [Description("闪烁动画状态"), Category("动画"), DefaultValue(false)]
+        public bool AnimationBlinkState => button.AnimationBlinkState;
+
+        /// <summary>
+        /// 开始闪烁动画
+        /// </summary>
+        /// <param name="interval">动画间隔时长（毫秒）</param>
+        /// <param name="colors">色彩值</param>
+        public void AnimationBlink(int interval, params Color[] colors) => button.AnimationBlink(interval, colors);
+
+        public void StopAnimationBlink() => button.StopAnimationBlink();
+
+        #endregion
+
         #endregion
 
         #region 渲染
@@ -1713,6 +1732,7 @@ namespace AntdUI
             ThreadIconHover?.Dispose();
             ThreadIconToggle?.Dispose();
             ThreadLoading?.Dispose();
+            ThreadAnimateBlink?.Dispose();
         }
 
         ITask? ThreadHover = null;
@@ -1866,6 +1886,52 @@ namespace AntdUI
 
         #endregion
 
+        #region 闪烁动画
+
+        Color? colorBlink;
+        ITask? ThreadAnimateBlink = null;
+        /// <summary>
+        /// 闪烁动画状态
+        /// </summary>
+        public bool AnimationBlinkState = false;
+
+        /// <summary>
+        /// 开始闪烁动画
+        /// </summary>
+        /// <param name="interval">动画间隔时长（毫秒）</param>
+        /// <param name="colors">色彩值</param>
+        public void AnimationBlink(int interval, params Color[] colors)
+        {
+            ThreadAnimateBlink?.Dispose();
+            if (colors.Length > 1)
+            {
+                AnimationBlinkState = true;
+                if (AnimationBlinkState)
+                {
+                    int index = 0, len = colors.Length;
+                    ThreadAnimateBlink = new ITask(control, () =>
+                    {
+                        colorBlink = colors[index];
+                        index++;
+                        if (index > len - 1) index = 0;
+                        Invalidate();
+                        return AnimationBlinkState;
+                    }, interval, () =>
+                    {
+                        Invalidate();
+                    });
+                }
+            }
+        }
+
+        public void StopAnimationBlink()
+        {
+            AnimationBlinkState = false;
+            ThreadAnimateBlink?.Dispose();
+        }
+
+        #endregion
+
         #endregion
 
         #region 渲染
@@ -1966,9 +2032,19 @@ namespace AntdUI
                             }
                             else
                             {
-                                using (var brush = new Pen(defaultbordercolor ?? Style.Db.DefaultBorder, border))
+                                if (AnimationBlinkState && colorBlink.HasValue)
                                 {
-                                    g.DrawPath(brush, path);
+                                    using (var brush = new Pen(colorBlink.Value, border))
+                                    {
+                                        g.DrawPath(brush, path);
+                                    }
+                                }
+                                else
+                                {
+                                    using (var brush = new Pen(defaultbordercolor ?? Style.Db.DefaultBorder, border))
+                                    {
+                                        g.DrawPath(brush, path);
+                                    }
                                 }
                                 PaintTextLoading(g, text, _fore, rect_read, enabled);
                             }
@@ -2003,12 +2079,9 @@ namespace AntdUI
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
-                        if (borderWidth > 0)
+                        using (var brush = new SolidBrush(Style.Db.FillTertiary))
                         {
-                            using (var brush = new SolidBrush(Style.Db.FillTertiary))
-                            {
-                                g.FillPath(brush, path);
-                            }
+                            g.FillPath(brush, path);
                         }
                         PaintTextLoading(g, text, Style.Db.TextQuaternary, rect_read, enabled);
                     }
@@ -2891,6 +2964,7 @@ namespace AntdUI
                 if (BackHover.HasValue) backHover = BackHover.Value;
                 if (BackActive.HasValue) backActive = BackActive.Value;
             }
+            if (AnimationBlinkState && colorBlink.HasValue) Color = colorBlink.Value;
             if (loading)
             {
                 Fore = Color.FromArgb(165, Fore);
@@ -2917,6 +2991,7 @@ namespace AntdUI
             if (back.HasValue) Back = back.Value;
             if (BackHover.HasValue) backHover = BackHover.Value;
             if (BackActive.HasValue) backActive = BackActive.Value;
+            if (AnimationBlinkState && colorBlink.HasValue) back = colorBlink.Value;
             if (loading) Back = Color.FromArgb(165, Back);
         }
 

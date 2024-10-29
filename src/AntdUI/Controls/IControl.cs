@@ -42,6 +42,42 @@ namespace AntdUI
 
         #region 属性
 
+        bool visible = true;
+        /// <summary>
+        /// 确定该控件是可见的还是隐藏的
+        /// </summary>
+        [Description("确定该控件是可见的还是隐藏的"), Category("行为"), DefaultValue(true)]
+        public new bool Visible
+        {
+            get => visible;
+            set
+            {
+                if (visible == value) return;
+                visible = value;
+
+                if (InvokeRequired) Invoke(new Action(() => base.Visible = value));
+                else base.Visible = value;
+            }
+        }
+
+        bool enabled = true;
+        /// <summary>
+        /// 指示是否已启用该控件
+        /// </summary>
+        [Description("指示是否已启用该控件"), Category("行为"), DefaultValue(true)]
+        public new bool Enabled
+        {
+            get => enabled;
+            set
+            {
+                if (enabled == value) return;
+                enabled = value;
+
+                if (InvokeRequired) Invoke(new Action(() => base.Enabled = value));
+                else base.Enabled = value;
+            }
+        }
+
         #region 徽标
 
         string? badge = null;
@@ -232,6 +268,31 @@ namespace AntdUI
         {
             if (oldcursor == cursor) return;
             oldcursor = cursor;
+            switch (cursor)
+            {
+                case CursorType.Hand:
+                    SetCursor(HandCursor);
+                    break;
+                case CursorType.IBeam:
+                    SetCursor(Cursors.IBeam);
+                    break;
+                case CursorType.No:
+                    SetCursor(Cursors.No);
+                    break;
+                case CursorType.SizeAll:
+                    SetCursor(Cursors.SizeAll);
+                    break;
+                case CursorType.VSplit:
+                    SetCursor(Cursors.VSplit);
+                    break;
+                case CursorType.Default:
+                default:
+                    SetCursor(DefaultCursor);
+                    break;
+            }
+        }
+        void SetCursor(Cursor cursor)
+        {
             if (InvokeRequired)
             {
                 Invoke(new Action(() =>
@@ -240,28 +301,7 @@ namespace AntdUI
                 }));
                 return;
             }
-            switch (cursor)
-            {
-                case CursorType.Hand:
-                    Cursor = HandCursor;
-                    break;
-                case CursorType.IBeam:
-                    Cursor = Cursors.IBeam;
-                    break;
-                case CursorType.No:
-                    Cursor = Cursors.No;
-                    break;
-                case CursorType.SizeAll:
-                    Cursor = Cursors.SizeAll;
-                    break;
-                case CursorType.VSplit:
-                    Cursor = Cursors.VSplit;
-                    break;
-                case CursorType.Default:
-                default:
-                    Cursor = DefaultCursor;
-                    break;
-            }
+            Cursor = cursor;
         }
 
         [Description("悬停光标"), Category("光标"), DefaultValue(typeof(Cursor), "Hand")]
