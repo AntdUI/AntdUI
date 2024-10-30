@@ -41,73 +41,73 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 
 ⬇️| General `2` | Animation | Disable |
 :---:|:--|:--:|:--:|
-➡️| [**Button**](doc/en/Control/Button.md) | ✅ | ✅ |
-➡️| [**FloatButton**](doc/en/Control/FloatButton.md) | ✅ | ❎ |
+➡️| [**Button**](doc/wiki/en/Control/Button.md) | ✅ | ✅ |
+➡️| [**FloatButton**](doc/wiki/en/Control/FloatButton.md) | ✅ | ❎ |
 ||||
 ⬇️| Layout `4` | Animation | Disable |
-➡️| [**Divider**](doc/en/Control/Divider.md) | ❎ | ❎ |
-➡️| [**StackPanel**](doc/en/Control/StackPanel.md) | ❎ | ❎ |
-➡️| [**FlowPanel**](doc/en/Control/FlowPanel.md) | ❎ | ❎ |
-➡️| [**GridPanel**](doc/en/Control/GridPanel.md) | ❎ | ❎ |
+➡️| [**Divider**](doc/wiki/en/Control/Divider.md) | ❎ | ❎ |
+➡️| [**StackPanel**](doc/wiki/en/Control/StackPanel.md) | ❎ | ❎ |
+➡️| [**FlowPanel**](doc/wiki/en/Control/FlowPanel.md) | ❎ | ❎ |
+➡️| [**GridPanel**](doc/wiki/en/Control/GridPanel.md) | ❎ | ❎ |
 ||||
 ⬇️| Navigation `6` | Animation | Disable |
-➡️| [**Breadcrumb**](doc/en/Control/Breadcrumb.md) | ✅ | ❎ |
-➡️| [**Dropdown**](doc/en/Control/Dropdown.md) | ✅ | ✅ |
-➡️| [**Menu**](doc/en/Control/Menu.md) | ✅ | ❎ |
-➡️| [**PageHeader**](doc/en/Control/PageHeader.md) | ✅ | ❎ |
-➡️| [**Pagination**](doc/en/Control/Pagination.md) | ✅ | ✅ |
-➡️| [**Steps**](doc/en/Control/Steps.md) | ❎ | ❎ |
+➡️| [**Breadcrumb**](doc/wiki/en/Control/Breadcrumb.md) | ✅ | ❎ |
+➡️| [**Dropdown**](doc/wiki/en/Control/Dropdown.md) | ✅ | ✅ |
+➡️| [**Menu**](doc/wiki/en/Control/Menu.md) | ✅ | ❎ |
+➡️| [**PageHeader**](doc/wiki/en/Control/PageHeader.md) | ✅ | ❎ |
+➡️| [**Pagination**](doc/wiki/en/Control/Pagination.md) | ✅ | ✅ |
+➡️| [**Steps**](doc/wiki/en/Control/Steps.md) | ❎ | ❎ |
 ||||
 ⬇️| Data Entry `13` | Animation | Disable |
-➡️| [**Checkbox**](doc/en/Control/Checkbox.md) | ✅ | ✅ |
-➡️| [**ColorPicker**](doc/en/Control/ColorPicker.md) | ✅ | ✅ |
-➡️| [**DatePicker**](doc/en/Control/DatePicker.md) | ✅ | ✅ |
-➡️| [**DatePickerRange**](doc/en/Control/DatePicker#DatePickerRange.md) | ✅ | ✅ |
-➡️| [**Input**](doc/en/Control/Input.md) | ✅ | ✅ |
-➡️| [**InputNumber**](doc/en/Control/Input#InputNumber.md) | ✅ | ✅ |
-➡️| [**Radio**](doc/en/Control/Radio.md) | ✅ | ✅ |
-➡️| [**Rate**](doc/en/Control/Rate.md) | ✅ | ❎ |
-➡️| [**Select**](doc/en/Control/Select.md) | ✅ | ✅ |
-➡️| [**Slider**](doc/en/Control/Slider.md) | ✅ | ❎ |
-➡️| [**Switch**](doc/en/Control/Switch.md) | ✅ | ✅ |
-➡️| [**TimePicker**](doc/en/Control/TimePicker.md) | ✅ | ✅ |
-➡️| [**UploadDragger**](doc/en/Control/UploadDragger.md) | ✅ | ❎ |
+➡️| [**Checkbox**](doc/wiki/en/Control/Checkbox.md) | ✅ | ✅ |
+➡️| [**ColorPicker**](doc/wiki/en/Control/ColorPicker.md) | ✅ | ✅ |
+➡️| [**DatePicker**](doc/wiki/en/Control/DatePicker.md) | ✅ | ✅ |
+➡️| [**DatePickerRange**](doc/wiki/en/Control/DatePicker#DatePickerRange.md) | ✅ | ✅ |
+➡️| [**Input**](doc/wiki/en/Control/Input.md) | ✅ | ✅ |
+➡️| [**InputNumber**](doc/wiki/en/Control/Input#InputNumber.md) | ✅ | ✅ |
+➡️| [**Radio**](doc/wiki/en/Control/Radio.md) | ✅ | ✅ |
+➡️| [**Rate**](doc/wiki/en/Control/Rate.md) | ✅ | ❎ |
+➡️| [**Select**](doc/wiki/en/Control/Select.md) | ✅ | ✅ |
+➡️| [**Slider**](doc/wiki/en/Control/Slider.md) | ✅ | ❎ |
+➡️| [**Switch**](doc/wiki/en/Control/Switch.md) | ✅ | ✅ |
+➡️| [**TimePicker**](doc/wiki/en/Control/TimePicker.md) | ✅ | ✅ |
+➡️| [**UploadDragger**](doc/wiki/en/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
 ⬇️| Data Display `16` | Animation | Disable |
-➡️| [**Avatar**](doc/en/Control/Avatar.md) | ❎ | ❎ |
-➡️| [**Badge**](doc/en/Control/Badge.md) | ✅ | ❎ |
-➡️| [**Calendar**](doc/en/Control/Calendar.md) | ✅ | ❎ |
-➡️| [**Panel**](doc/en/Control/Panel.md) | ✅ | ❎ |
-➡️| [**Carousel**](doc/en/Control/Carousel.md) | ✅ | ❎ |
-➡️| [**Collapse**](doc/en/Control/Collapse.md) | ✅ | ❎ |
-➡️| [**Preview**](doc/en/Control/Preview.md) | ✅ | ✅ |
-➡️| [**Popover**](doc/en/Control/Popover.md) | ✅ | ❎ |
-➡️| [**Segmented**](doc/en/Control/Segmented.md) | ✅ | ✅ |
-➡️| [**Table**](doc/en/Control/Table.md) | ✅ | ❎ |
-➡️| [**Tabs**](doc/en/Control/Tabs.md) | ✅ | ❎ |
-➡️| [**Tag**](doc/en/Control/Tag.md) | ✅ | ❎ |
-➡️| [**Timeline**](doc/en/Control/Timeline.md) | ❎ | ❎ |
-➡️| [**Tooltip**](doc/en/Control/Tooltip.md) | ✅ | ❎ |
-➡️| [**Tree**](doc/en/Control/Tree.md) | ✅ | ✅ |
-➡️| [**Label**](doc/en/Control/Label.md) | ✅ | ❎ |
+➡️| [**Avatar**](doc/wiki/en/Control/Avatar.md) | ❎ | ❎ |
+➡️| [**Badge**](doc/wiki/en/Control/Badge.md) | ✅ | ❎ |
+➡️| [**Calendar**](doc/wiki/en/Control/Calendar.md) | ✅ | ❎ |
+➡️| [**Panel**](doc/wiki/en/Control/Panel.md) | ✅ | ❎ |
+➡️| [**Carousel**](doc/wiki/en/Control/Carousel.md) | ✅ | ❎ |
+➡️| [**Collapse**](doc/wiki/en/Control/Collapse.md) | ✅ | ❎ |
+➡️| [**Preview**](doc/wiki/en/Control/Preview.md) | ✅ | ✅ |
+➡️| [**Popover**](doc/wiki/en/Control/Popover.md) | ✅ | ❎ |
+➡️| [**Segmented**](doc/wiki/en/Control/Segmented.md) | ✅ | ✅ |
+➡️| [**Table**](doc/wiki/en/Control/Table.md) | ✅ | ❎ |
+➡️| [**Tabs**](doc/wiki/en/Control/Tabs.md) | ✅ | ❎ |
+➡️| [**Tag**](doc/wiki/en/Control/Tag.md) | ✅ | ❎ |
+➡️| [**Timeline**](doc/wiki/en/Control/Timeline.md) | ❎ | ❎ |
+➡️| [**Tooltip**](doc/wiki/en/Control/Tooltip.md) | ✅ | ❎ |
+➡️| [**Tree**](doc/wiki/en/Control/Tree.md) | ✅ | ✅ |
+➡️| [**Label**](doc/wiki/en/Control/Label.md) | ✅ | ❎ |
 ||||
 ⬇️| Feedback `7` | Animation | Disable |
-➡️| [**Alert**](doc/en/Control/Alert.md) | ✅ | ❎ |
-➡️| [**Drawer**](doc/en/Control/Drawer.md) | ✅ | ❎ |
-➡️| [**Message**](doc/en/Control/Message.md) | ✅ | ❎ |
-➡️| [**Modal**](doc/en/Control/Modal.md) | ✅ | ❎ |
-➡️| [**Notification**](doc/en/Control/Notification.md) | ✅ | ❎ |
-➡️| [**Progress**](doc/en/Control/Progress.md) | ✅ | ❎ |
-➡️| [**Spin**](doc/en/Control/Spin.md) | ✅ | ❎ |
+➡️| [**Alert**](doc/wiki/en/Control/Alert.md) | ✅ | ❎ |
+➡️| [**Drawer**](doc/wiki/en/Control/Drawer.md) | ✅ | ❎ |
+➡️| [**Message**](doc/wiki/en/Control/Message.md) | ✅ | ❎ |
+➡️| [**Modal**](doc/wiki/en/Control/Modal.md) | ✅ | ❎ |
+➡️| [**Notification**](doc/wiki/en/Control/Notification.md) | ✅ | ❎ |
+➡️| [**Progress**](doc/wiki/en/Control/Progress.md) | ✅ | ❎ |
+➡️| [**Spin**](doc/wiki/en/Control/Spin.md) | ✅ | ❎ |
 ⬇️| Chat `2` | Animation | Disable |
 ➡️| **MsgList** Friend message list | ✅ | ❎ |
 ➡️| **ChatList** Chat bubble list | ✅ | ❎ |
 ||||
 ⬇️| Other `5` | Animation | Disable |
-➡️| [**WindowBar**](doc/en/Control/WindowBar.md) | ✅ | ❎ |
-➡️| [**Battery**](doc/en/Control/Battery.md) | ✅ | ❎ |
-➡️| [**Signal**](doc/en/Control/Signal.md) | ✅ | ❎ |
-➡️| [**ContextMenuStrip**](doc/en/Control/ContextMenuStrip.md) | ✅ | ❎ |
+➡️| [**WindowBar**](doc/wiki/en/Control/WindowBar.md) | ✅ | ❎ |
+➡️| [**Battery**](doc/wiki/en/Control/Battery.md) | ✅ | ❎ |
+➡️| [**Signal**](doc/wiki/en/Control/Signal.md) | ✅ | ❎ |
+➡️| [**ContextMenuStrip**](doc/wiki/en/Control/ContextMenuStrip.md) | ✅ | ❎ |
 ➡️| **Image3D** | ✅ | ❎ |
 
 ### 🐿️ Donation 🥣💲🐖👚
