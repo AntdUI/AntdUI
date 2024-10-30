@@ -1,4 +1,6 @@
-﻿## Tabs
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[⚙️ Config](../Config.md)・[👚 Theme](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Tabs
 
 Tabs 标签页 👚 [beta]
 

@@ -1,4 +1,6 @@
-﻿## BaseForm
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[⚙️ 配置](../Config.md)・[👚 主题](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## BaseForm
 
 支持DPI的基础原生窗口
 

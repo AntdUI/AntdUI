@@ -1,4 +1,6 @@
-﻿## ColorPicker
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[⚙️ Config](../Config.md)・[👚 Theme](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## ColorPicker
 
 ColorPicker 颜色选择器 👚
 

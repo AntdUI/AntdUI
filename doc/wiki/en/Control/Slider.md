@@ -1,4 +1,6 @@
-﻿## Slider
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[⚙️ Config](../Config.md)・[👚 Theme](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Slider
 
 Slider 滑动输入条 👚
 

@@ -1,4 +1,6 @@
-﻿## Breadcrumb
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[⚙️ Config](../Config.md)・[👚 Theme](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Breadcrumb
 
 Breadcrumb 面包屑 👚
 

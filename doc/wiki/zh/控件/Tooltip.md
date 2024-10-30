@@ -1,4 +1,6 @@
-﻿## Tooltip
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[⚙️ 配置](../Config.md)・[👚 主题](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Tooltip
 
 Tooltip 文字提示 👚
 

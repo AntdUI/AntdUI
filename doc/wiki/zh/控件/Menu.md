@@ -1,4 +1,6 @@
-﻿## Menu
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[⚙️ 配置](../Config.md)・[👚 主题](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Menu
 
 Menu 导航菜单 👚
 

@@ -1,4 +1,6 @@
-﻿## Checkbox
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[⚙️ 配置](../Config.md)・[👚 主题](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Checkbox
 
 Checkbox 多选框 👚
 

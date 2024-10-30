@@ -1,4 +1,6 @@
-﻿## Segmented
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[⚙️ 配置](../Config.md)・[👚 主题](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Segmented
 
 Segmented 分段控制器 👚
 

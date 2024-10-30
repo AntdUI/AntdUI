@@ -1,4 +1,6 @@
-﻿## Rate
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[⚙️ Config](../Config.md)・[👚 Theme](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Rate
 
 Rate 评分 👚
 

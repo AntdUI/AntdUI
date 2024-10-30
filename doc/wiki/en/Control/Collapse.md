@@ -1,4 +1,6 @@
-﻿## Collapse
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[⚙️ Config](../Config.md)・[👚 Theme](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Collapse
 
 Collapse 折叠面板 👚
 

@@ -1,4 +1,6 @@
-﻿## Carousel
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[⚙️ Config](../Config.md)・[👚 Theme](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Carousel
 
 Carousel 走马灯 👚
 

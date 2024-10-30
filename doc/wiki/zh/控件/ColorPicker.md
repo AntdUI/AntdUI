@@ -1,4 +1,6 @@
-﻿## ColorPicker
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[⚙️ 配置](../Config.md)・[👚 主题](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## ColorPicker
 
 ColorPicker 颜色选择器 👚
 

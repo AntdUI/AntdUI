@@ -1,4 +1,6 @@
-﻿## Checkbox
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[⚙️ Config](../Config.md)・[👚 Theme](../Theme.md)・[🦜 SVG](../SVG.md)
+
+## Checkbox
 
 Checkbox 多选框 👚
 
