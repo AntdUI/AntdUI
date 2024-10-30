@@ -1,41 +1,27 @@
-name: 功能建议
-description: 对本项目提出一个功能建议
-labels: ["增强"]
+name: Enhancement
+description: Propose a functional suggestion for this project
+labels: ["enhancement"]
 assignees: []
 body:
   - type: markdown
     attributes:
       value: |
-        感谢提出功能建议，我将仔细考虑！
+        Thank you for providing the feature suggestion, I will carefully consider it!
   - type: textarea
-    id: related-problem
+    id: background
     attributes:
-      label: 你的功能建议是否和某个问题相关？
-      description: 清晰并简洁地描述问题是什么，例如，当我...时，我总是感到困扰。
+      label: Background and motivation
+      description: Please describe the purpose and value of the new API here.
+      placeholder: Purpose
     validations:
       required: true
   - type: textarea
-    id: desired-solution
     attributes:
-      label: 你希望看到什么解决方案？
-      description: 清晰并简洁地描述你希望发生的事情。
-    validations:
-      required: true
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: 你考虑过哪些替代方案？
-      description: 清晰并简洁地描述你考虑过的任何替代解决方案或功能。
-    validations:
-      required: true
-  - type: textarea
-    id: additional-context
-    attributes:
-      label: 你有其他上下文或截图吗？
-      description: 在此处添加有关功能请求的任何其他上下文或截图。
+      label: Requirement
+      description: What you hope to happen.
     validations:
       required: true
   - type: markdown
     attributes:
       value: |
-        🙏 我承诺将本着相互尊重、理解和友善的态度进行交流，共同维护好良好的社区氛围。
+        🙏 I promise to communicate with mutual respect, understanding, and friendliness to jointly maintain a good community atmosphere.
