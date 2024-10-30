@@ -1,0 +1,37 @@
+﻿## Collapse
+
+Collapse 折叠面板 👚
+
+> 可以折叠/展开的内容区域。
+
+- 默认属性：Items
+- 默认事件：Click
+
+### 属性
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**ForeColor** | 文字颜色 | Color`?` | `null` |
+**HeaderBg** | 折叠面板头部背景 | Color`?` | `null` |
+**HeaderPadding** | 折叠面板头部内边距 | Size | 16, 12 |
+**ContentPadding** | 折叠面板内容内边距 | Size | 16, 16 |
+||||
+**BorderWidth** | 边框宽度 | float | 1F |
+**BorderColor** | 边框颜色 | Color`?` | `null` |
+||||
+**Radius** | 圆角 | int |6 |
+**Gap** | 间距 | int | 0 |
+**Unique** | 只保持一个展开 | bool | false |
+||||
+**Items** | 数据 `CollapseItem[]` | [CollapseItem[]](#collapseitem) | [] |
+
+
+### 数据
+
+#### CollapseItem
+
+> 继承于 ScrollableControl
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**Expand** | 展开 | bool | true |
