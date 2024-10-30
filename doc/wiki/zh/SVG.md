@@ -10,21 +10,21 @@
 
 名称 | 描述 | 使用 |
 :--|:--|:--:|
-**IcoAppClose** | APP关闭按钮 | [WindowBar 窗口栏](控件/WindowBar) |
-**IcoAppMax** | APP最大化按钮 | [WindowBar 窗口栏](控件/WindowBar) |
-**IcoAppRestore** | APP还原按钮 | [WindowBar 窗口栏](控件/WindowBar) |
-**IcoAppMin** | APP最小化按钮 | [WindowBar 窗口栏](控件/WindowBar) |
+**IcoAppClose** | APP关闭按钮 | [WindowBar 窗口栏](Control/WindowBar) |
+**IcoAppMax** | APP最大化按钮 | [WindowBar 窗口栏](Control/WindowBar) |
+**IcoAppRestore** | APP还原按钮 | [WindowBar 窗口栏](Control/WindowBar) |
+**IcoAppMin** | APP最小化按钮 | [WindowBar 窗口栏](Control/WindowBar) |
 |||
-**IcoDate** | 日期 | [DatePicker 日期选择框](控件/DatePicker) / [DatePickerRange 日期范围选择框](控件/DatePicker#datepickerrange) |
-**IcoTime** | 时间 | [TimePicker 时间选择框](控件/TimePicker) |
-**IcoSwap** | 交换 | [DatePickerRange 日期范围选择框](控件/DatePicker#datepickerrange) |
-**IcoStar** | 星星 | [Rate 评分](控件/Rate) |
-**IcoArrowUp** | 向上箭头 | [Table 表格](控件/Table) |
-**IcoArrowDown** | 向下箭头 | [Table 表格](控件/Table) |
+**IcoDate** | 日期 | [DatePicker 日期选择框](Control/DatePicker) / [DatePickerRange 日期范围选择框](Control/DatePicker#datepickerrange) |
+**IcoTime** | 时间 | [TimePicker 时间选择框](Control/TimePicker) |
+**IcoSwap** | 交换 | [DatePickerRange 日期范围选择框](Control/DatePicker#datepickerrange) |
+**IcoStar** | 星星 | [Rate 评分](Control/Rate) |
+**IcoArrowUp** | 向上箭头 | [Table 表格](Control/Table) |
+**IcoArrowDown** | 向下箭头 | [Table 表格](Control/Table) |
 |||
-**IcoClose** | 关闭 | [Preview 图片预览](控件/Preview) |
-**IcoLeft** | 左 | [Preview 图片预览](控件/Preview) |
-**IcoRight** | 右 | [Preview 图片预览](控件/Preview) |
+**IcoClose** | 关闭 | [Preview 图片预览](Control/Preview) |
+**IcoLeft** | 左 | [Preview 图片预览](Control/Preview) |
+**IcoRight** | 右 | [Preview 图片预览](Control/Preview) |
 |||
 **IcoSuccess** | 成功 |  |
 **IcoInfo** | 信息 |  |
@@ -36,11 +36,11 @@
 **IcoWarnGhost** | 警告镂空 |  |
 **IcoErrorGhost** | 错误镂空 | `等于 IcoClose` |
 |||
-**IcoFlip** | 翻转 | [Preview 图片预览](控件/Preview) |
-**IcoRotateLeft** | 向左旋转 | [Preview 图片预览](控件/Preview) |
-**IcoRotateRight** | 向右旋转 | [Preview 图片预览](控件/Preview) |
-**IcoZoomOut** | 缩小 | [Preview 图片预览](控件/Preview) |
-**IcoZoomIn** | 放大 | [Preview 图片预览](控件/Preview) |
+**IcoFlip** | 翻转 | [Preview 图片预览](Control/Preview) |
+**IcoRotateLeft** | 向左旋转 | [Preview 图片预览](Control/Preview) |
+**IcoRotateRight** | 向右旋转 | [Preview 图片预览](Control/Preview) |
+**IcoZoomOut** | 缩小 | [Preview 图片预览](Control/Preview) |
+**IcoZoomIn** | 放大 | [Preview 图片预览](Control/Preview) |
 
 ---
 
