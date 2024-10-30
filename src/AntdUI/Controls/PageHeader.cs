@@ -1067,7 +1067,8 @@ namespace AntdUI
                     if (form != null)
                     {
                         if (form is LayeredFormDrawer) return;
-                        form.WindowState = FormWindowState.Minimized;
+                        if (form is BaseForm form_win) form_win.Min();
+                        else form.WindowState = FormWindowState.Minimized;
                     }
                 }
             }

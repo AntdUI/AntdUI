@@ -275,6 +275,12 @@ namespace AntdUI
             }
         }
 
+        public void Focus(TreeItem item)
+        {
+            if (ScrollBar.ShowY) ScrollBar.ValueY = item.rect.Y - (int)(_gap * Config.Dpi);
+            Invalidate();
+        }
+
         #endregion
 
         #region 事件

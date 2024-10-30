@@ -189,9 +189,9 @@ namespace AntdUI
                     int tmpicon = 0;
                     if (config.Content is Control control)
                     {
-                        w = (int)Math.Round(control.Width * dpi);
                         Helper.DpiAuto(dpi, control);
-                        wp = w - paddingx * 2;
+                        w = control.Width + paddingx * 2;
+                        wp = control.Width;
                         Controls.Add(control);
                         control.Disposed += (a, b) =>
                         {
@@ -228,8 +228,8 @@ namespace AntdUI
                             int close_size = tmpicon;
                             rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
-                        control.Location = new Point((int)rectContent.X, (int)rectContent.Y);
-                        control.Size = new Size((int)rectContent.Width, (int)rectContent.Height);
+                        control.Location = new Point(rectContent.X, rectContent.Y);
+                        control.Size = new Size(rectContent.Width, rectContent.Height);
                     }
                     else if (config.Content is IList<Modal.TextLine> list)
                     {
@@ -252,9 +252,7 @@ namespace AntdUI
                             }
 
                             int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
-
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
-
                             MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
                         else
@@ -278,9 +276,7 @@ namespace AntdUI
                             }
 
                             int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
-
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
-
                             MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
                         if (config.CloseIcon)
@@ -560,31 +556,11 @@ namespace AntdUI
                 }
                 return;
             }
-            if (string.IsNullOrEmpty(value))
-            {
-                if (InvokeRequired)
-                {
-                    BeginInvoke(new Action(() =>
-                    {
-                        btn_no.Visible = false;
-                    }));
-                }
-                else btn_no.Visible = false;
-            }
+            if (string.IsNullOrEmpty(value)) btn_no.Visible = false;
             else
             {
                 btn_no.Text = value;
-                if (!btn_no.Visible)
-                {
-                    if (InvokeRequired)
-                    {
-                        BeginInvoke(new Action(() =>
-                        {
-                            btn_no.Visible = true;
-                        }));
-                    }
-                    else btn_no.Visible = true;
-                }
+                btn_no.Visible = true;
             }
         }
 

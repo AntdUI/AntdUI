@@ -1,0 +1,23 @@
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+
+## Signal
+
+Signal 信号强度 👚
+
+> 展示设备信号。
+
+- 默认属性：Value
+- 默认事件：Click
+
+### 属性
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**Value** | 信号强度 | int | 0 `0-5` |
+||||
+**StyleLine** | 启用线样式 | bool | false |
+||||
+**Fill** | 填充颜色 | Color`?` | `null` |
+**FillFully** | 满格颜色 | Color`?` | `null` |
+**FillWarn** | 警告颜色 | Color`?` | `null` |
+**FillDanger** | 危险颜色 | Color`?` | `null` |

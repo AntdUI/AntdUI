@@ -187,6 +187,7 @@ namespace AntdUI
             set
             {
                 if (value == _value) return;
+                if (DisabledAlpha && value.A != 255) value = Color.FromArgb(255, value);
                 _value = value;
                 ValueChanged?.Invoke(this, new ColorEventArgs(value));
                 if (BeforeAutoSize()) Invalidate();
@@ -213,7 +214,7 @@ namespace AntdUI
         /// 禁用透明度
         /// </summary>
         [Description("禁用透明度"), Category("行为"), DefaultValue(false)]
-        public bool DisabledAlpha { get; set; } = false;
+        public bool DisabledAlpha { get; set; }
 
         TColorMode mode = TColorMode.Hex;
         /// <summary>
