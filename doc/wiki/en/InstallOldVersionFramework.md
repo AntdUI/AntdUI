@@ -1,37 +1,39 @@
-﻿### Visual Studio 安装 旧版本(.NET Framework 4.0 和 4.5)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+
+### Installing old versions of Visual Studio (.NET Framework 4.0 and 4.5)
 
 ***
 
-Visual Studio 2022 安装程序中单个组件中没有 **.NET Framework4.0** 或者 **.NET Framework4.5**
+There is no single component in the Visual Studio 2022 installation program **.NET Framework4.0** or **.NET Framework4.5**
 
-> 其他NET版本直接在下载适用于 Visual Studio 的 .NET SDK 中的开发者工具包
+> Other NET versions can be downloaded directly for Visual Studio Developer toolkit in NET SDK
 
 ![1](Img/InstallOldVersionFramework_1.png)
 
-#### 解决方式：
+#### Solution:
 
-**通过 nuget 下载 4.0 安装包**
-下载地址：[https://www.nuget.org/packages/Microsoft.NETFramework.ReferenceAssemblies.net40](https://www.nuget.org/packages/Microsoft.NETFramework.ReferenceAssemblies.net40)
+**Download the 4.0 installation package through Nuget**
+Download link: [https://www.nuget.org/packages/Microsoft.NETFramework.ReferenceAssemblies.net40](https://www.nuget.org/packages/Microsoft.NETFramework.ReferenceAssemblies.net40)
 
-**通过nuget 下载 4.5 安装包**
-下载地址：[https://www.nuget.org/packages/microsoft.netframework.referenceassemblies.net45](https://www.nuget.org/packages/microsoft.netframework.referenceassemblies.net45)
+**Download the 4.5 installation package through Nuget**
+Download link: [https://www.nuget.org/packages/microsoft.netframework.referenceassemblies.net45](https://www.nuget.org/packages/microsoft.netframework.referenceassemblies.net45)
 
 ![2](Img/InstallOldVersionFramework_2.png)
 
-下载得到安装包`.nupkg`
+Download the installation package `.nupkg`
 
 ![3](Img/InstallOldVersionFramework_3.png)
 
-然后后缀名字修改为`.zip`解压后得到里面的内容
+Then change the suffix name to `.zip` and extract the contents inside
 
 ![4](Img/InstallOldVersionFramework_4.png)
 
-解压后，进入`build/.NETFramework`文件夹，找到v4.5文件夹
+After decompression, enter `build/.NETFramework`, find v4.5 folder
 
 ![5](Img/InstallOldVersionFramework_5.png)
 
-将`v4.5`文件夹 复制到 **`C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework`** 直接覆盖替换文件夹和文件
+Copy the `v4.5` folder to **`C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework`** directly overrides replacement folders and files
 
 ![6](Img/InstallOldVersionFramework_6.png)
 
-然后重启 Visual Studio，就能看到4.0和4.5了
+Then restart Visual Studio and you will be able to see 4.0 and 4.5

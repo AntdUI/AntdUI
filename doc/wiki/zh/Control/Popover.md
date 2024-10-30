@@ -1,0 +1,41 @@
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+
+## Popover
+
+Popover 气泡卡片
+
+> 弹出气泡式的卡片浮层。
+
+### Popover.Config
+
+> 配置气泡卡片
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**Control** | 所属控件 | Form | `必填` |
+**Title** | 标题 | string |`null`|
+**Content** | 控件/内容 | object |`必填`|
+**Font** | 字体 | Font |`null`|
+**AutoClose** |自动关闭时间（秒）`0等于不关闭` | int |0|
+**Radius** | 圆角 | int | 6 |
+**ArrowAlign** | 箭头方向 | [TAlign](Enum#talign) | Bottom |
+**ArrowSize** | 箭头大小 | int | 8 |
+**Offset** | 偏移量 | Rectangle / RectangleF | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
+||||
+**OnControlLoad** | 控件显示后回调 | `Action?` | `null` |
+
+### Popover.TextRow
+
+> 多列文本 `使用 数组/集合 给到 Content` 
+> 用于单行显示多个色彩的文本或交互链接![TextRow](Popover.TextRow.jpg)
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**Text** | 文字 | string | `必填` |
+**Gap** | 间距 `左右间距` | int | 0 |
+||||
+**Fore** | 文字颜色 | Color`?` | `null` |
+**Font** | 字体 | Font`?` | `null` |
+||||
+**Call** | 点击回调 `设置后鼠标悬停可点击` | Action | `null` |

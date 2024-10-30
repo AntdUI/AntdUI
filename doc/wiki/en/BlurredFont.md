@@ -1,4 +1,6 @@
-﻿### There are five types of font rendering in Windows：
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+
+### There are five types of font rendering in Windows：
 
 * SingleBitPerPixel
 * SingleBitPerPixelGridFit
@@ -13,7 +15,7 @@ What is the difference between them?
 
 #### SingleBitPerPixel
 
-The System Default in my system is actually `SingleBitPerPixelGridFit`, which has the same display effect. Black fonts are displayed in black without interpolation. Of course, the `SingleBitPerPixel` method also does not interpolate. The difference between the two is that `Grid Fit` is grid corrected, so the displayed font is more polished. You can take a look at the“宋体”, which has the best display effect at 12 o'clock size.
+The System Default in my system is actually `SingleBitPerPixelGridFit`, which has the same display effect. Black fonts are displayed in black without interpolation. Of course, the `SingleBitPerPixel` method also does not interpolate. The difference between the two is that `Grid Fit` is grid corrected, so the displayed font is more polished. You can take a look at the "宋体", which has the best display effect at 12 o'clock size.
 
 #### AntiAlias
 

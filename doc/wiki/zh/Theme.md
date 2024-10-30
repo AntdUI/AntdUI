@@ -1,4 +1,6 @@
-﻿内置AntDesign色彩算法
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+
+内置AntDesign色彩算法
 
 > 参考地址：[https://ant-design.antgroup.com/docs/spec/colors-cn](https://ant-design.antgroup.com/docs/spec/colors-cn)
 
@@ -69,15 +71,15 @@ AndtUI.Style.LoadCustom(db);
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **ToHSV** | 颜色转HSV | HSV | Color color `颜色` |
-**HSVToColor** | HSV转颜色 | Color | HSV hsv, float alpha = 1 `透明度`  |
-**HSVToColor** | HSV转颜色 | Color | float hue `色相`, float saturation `饱和度`, float value `明度`, float alpha = 1 `透明度`  |
+**HSVToColor** | HSV转颜色 | Color | HSV hsv, float alpha = 1 `透明度` |
+**HSVToColor** | HSV转颜色 | Color | float hue `色相`, float saturation `饱和度`, float value `明度`, float alpha = 1 `透明度` |
 ||||
 **ToHSL** | 颜色转HSL | HSL | Color color `颜色` |
-**HSLToColor** | HSL转颜色 | Color | HSL hsl, float alpha = 1 `透明度`  |
-**HSLToColor** | HSL转颜色 | Color | float hue `色相`, float saturation `饱和度`, float lightness `亮度`, float alpha = 1 `透明度`  |
+**HSLToColor** | HSL转颜色 | Color | HSL hsl, float alpha = 1 `透明度` |
+**HSLToColor** | HSL转颜色 | Color | float hue `色相`, float saturation `饱和度`, float lightness `亮度`, float alpha = 1 `透明度` |
 ||||
 **ToColor** | HEX转成RGB | Color | string hex |
 **ToHex** | RGB转成HEX | string | Color color |
 ||||
-**rgba** | 转颜色 | Color | int r, int g, int b, float alpha = 1 `透明度`  |
-**rgba** | 转颜色 | Color | Color color, float alpha = 1 `透明度`  |
+**rgba** | 转颜色 | Color | int r, int g, int b, float alpha = 1 `透明度` |
+**rgba** | 转颜色 | Color | Color color, float alpha = 1 `透明度` |

@@ -1,23 +1,23 @@
 ﻿## SelectItem
 
-> 支持更丰富UI
+> Support richer UI
 
-名称 | 描述 | 类型 | 为空 | 默认值 |
+Name | Description | Type | Empty | Default Value|
 :--|:--|:--|:--:|:--|
-**Online** | 在线状态 `1为绿点，0为红点` | int`?` |✅| `null` |
-**OnlineCustom** | 在线自定义颜色 | Color`?` |✅| `null` |
-**Enable** | 是否启用 | bool |⛔| true |
-**Icon** | 图标 | Image`?` |✅| `null` |
-**IconSvg** | 图标SVG | string`?` |✅| `null` |
-**Text** | 显示文本 | string |⛔| `必填` |
-**SubText** | 显示子文本 | string`?` |✅| `null` |
-**Sub** | 子选项 ♾️ | `List<object>?` |✅| `null` |
-**Tag** | 原数据 | object |⛔| `必填` |
+**Online** | Online status `1 is green dot, 0 is red dot` | int`?` |✅| `null` |
+**OnlineCustom** | Custom colors online | Color`?` |✅| `null` |
+**Enable** | | bool |⛔| true |
+**Icon** | | Image`?` |✅| `null` |
+**IconSvg** | | string`?` |✅| `null` |
+**Text** | Display Text | string |⛔| `Required` |
+**SubText** | Sub text | string`?` |✅| `null` |
+**Sub** | Sub option ♾️ | `List<object>?` |✅| `null` |
+**Tag** | Raw | object |⛔| `Required` |
 |||||
-**TagFore** 🔴 | 标签文字颜色 | Color`?` |✅| `null` |
-**TagBack** 🔴 | 标签背景颜色 | Color`?` |✅| `null` |
-**TagBackExtend** 🔴 | 标签背景渐变色 | string`?` |✅| `null` |
+**TagFore** 🔴 | Tag text color | Color`?` |✅| `null` |
+**TagBack** 🔴 | Tag background color | Color`?` |✅| `null` |
+**TagBackExtend** 🔴 | Tag background gradient color | string`?` |✅| `null` |
 
 ## DividerSelectItem
 
-> 分割线
+> Divider

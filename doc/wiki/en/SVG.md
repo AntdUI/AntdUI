@@ -1,4 +1,6 @@
-﻿### Declaration
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+
+### Declaration
 
 > SVG implementation from [https://github.com/svg-net/SVG](https://github.com/svg-net/SVG)
 

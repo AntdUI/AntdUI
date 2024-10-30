@@ -1,6 +1,6 @@
 ﻿📖 **AntdUI** Ant Design UI
 
-[中文](../zh/Home.md)・English・[UpdateLog](UpdateLog.md)・[⚙️ Config](Config.md)・[👚 Theme](Theme.md)・[🦜 SVG](SVG.md)
+[中文](../zh/Home.md)・English・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
 Interface library based on [dotnet Winforms](https://github.com/dotnet/winforms)
 

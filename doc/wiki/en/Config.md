@@ -1,128 +1,130 @@
-﻿### 色彩模式
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
 
-> 默认浅色模式
+### Color Mode
 
-#### 设置获取色彩模式
+> Default Light color mode
+
+#### Set color mode
 
 ``` csharp
 AntdUI.Config.Mode = AntdUI.TMode.Light;
 ```
 
-#### 是否浅色模式
+#### Is it in light color mode
 
 ``` csharp
 bool islight = AntdUI.Config.IsLight;
-AntdUI.Config.IsLight = true;// 设置为浅色模式
+AntdUI.Config.IsLight = true;// Set to light color mode
 ```
 
-#### 是否深色模式
+#### Is it in dark mode
 
 ``` csharp
 bool isdark = AntdUI.Config.IsDark;
-AntdUI.Config.IsDark = true;// 设置为深色模式
+AntdUI.Config.IsDark = true;// Set to dark mode
 ```
 
-### 关闭动画
+### Animation Off
 
-> 默认开启动画
+> Default animation on
 
 ``` csharp
 AntdUI.Config.Animation = false;
 ```
 
-### 触屏使能 🔴
+### Touch Screen Enabled 🔴
 
-> 默认启用触屏使能
+> Default Enable touch
 
 ``` csharp
 AntdUI.Config.TouchEnabled = true;
 ```
 
-### 阴影使能 🔴
+### Shadow Enabled 🔴
 
-> 默认启用阴影
+> Default shadow on
 
 ``` csharp
 AntdUI.Config.ShadowEnabled = false;
 ```
 
-### 滚动条隐藏样式 🔴
+### ScrollBar Hidden Style 🔴
 
-> 默认一直显示`false`
+> Default continuous display `false`
 
 ``` csharp
 AntdUI.Config.ScrollBarHide = false;
 ```
 
-### 滚动条最小大小Y 🔴
+### MinimumSize of ScrollBar Y 🔴
 
-> 默认 `30`
+> Default `30`
 
 ``` csharp
 AntdUI.Config.ScrollMinSizeY = 30;
 ```
 
-### 窗口内弹出 Message/Notification
+### Popup in the window Message/Notification
 
-> 默认屏幕弹出
+> Default screen popup
 
 ``` csharp
 AntdUI.Config.ShowInWindow = true;
 ```
 
 <details>
-<summary>针对配置 🔴</summary>
+<summary>Separate Config 🔴</summary>
 
-> 弹出是否在窗口里而不是在系统里（Message）
+> Popup in the window（Message）
 ``` csharp
 AntdUI.Config.ShowInWindowByMessage = true;
 ```
 
-> 弹出是否在窗口里而不是在系统里（Notification）
+> Popup in the window（Notification）
 ``` csharp
 AntdUI.Config.ShowInWindowByNotification = true;
 ```
 
 </details>
 
-### 通知消息边界偏移量XY（Message/Notification）
+### Message/Notification Boundary Offset XY
 
-> 默认 0
+> Default 0
 
 ``` csharp
 AntdUI.Config.NoticeWindowOffsetXY = 0;
 ```
 
-### 文本呈现的质量
+### Text Rendering Quality
 
 ``` csharp
 AntdUI.Config.TextRenderingHint = System.Drawing.Text.ClearTypeGridFit;
 ```
 
-### 默认字体
+### Default Font
 
 ``` csharp
-AntdUI.Config.Font = new Font("微软雅黑", 10);
+AntdUI.Config.Font = new Font("Microsoft YaHei UI", 10);
 ```
 
-### 获取DPI
+### Get DPI
 
-> 1=100%、1.25=125%，以此类推
+> 1=100%、1.25=125%，and so on
 
 ``` csharp
 float dpi = AntdUI.Config.Dpi;
 ```
 
-### 自定义DPI
+### Custom DPI
 
 ``` csharp
 AntdUI.Config.SetDpi(1.5F);
 ```
 
-### 设置修正文本渲染
+### Set Correction Text Rendering
 
 ``` csharp
-AntdUI.Config.SetCorrectionTextRendering("Microsoft YaHei UI", "宋体"); //需要修正的字体列表
+AntdUI.Config.SetCorrectionTextRendering("Microsoft YaHei UI", "Microsoft YaHei"); //List of fonts that need to be corrected
 ```
 
-![字体修正效果](Img/CorrectionTextRendering.jpg)
+![CorrectionTextRendering](Img/CorrectionTextRendering.jpg)

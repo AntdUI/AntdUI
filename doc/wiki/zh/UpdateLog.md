@@ -1,4 +1,6 @@
-﻿### `1.6.15` 2024-10-29
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+
+### `1.6.15` 2024-10-29
 - ➕ Button 闪烁动画
 - ✍️ Model UserControl 宽度异常
 - ✍️ Menu 子菜单禁用

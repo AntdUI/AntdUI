@@ -42,74 +42,74 @@
 
 ⬇️| 通用 `2` | 动画 | 禁用 |
 :---:|:--|:--:|:--:|
-➡️| [**Button** 按钮](doc/zh/控件/Button.md) | ✅ | ✅ |
-➡️| [**FloatButton** 悬浮按钮](doc/zh/控件/FloatButton.md) | ✅ | ❎ |
+➡️| [**Button** 按钮](doc/zh/Control/Button.md) | ✅ | ✅ |
+➡️| [**FloatButton** 悬浮按钮](doc/zh/Control/FloatButton.md) | ✅ | ❎ |
 ||||
 ⬇️| 布局 `4` | 动画 | 禁用 |
-➡️| [**Divider** 分割线](doc/zh/控件/Divider.md) | ❎ | ❎ |
-➡️| [**StackPanel** 堆栈布局](doc/zh/控件/StackPanel.md) | ❎ | ❎ |
-➡️| [**FlowPanel** 流动布局](doc/zh/控件/FlowPanel.md) | ❎ | ❎ |
-➡️| [**GridPanel** 格栅布局](doc/zh/控件/GridPanel.md) | ❎ | ❎ |
+➡️| [**Divider** 分割线](doc/zh/Control/Divider.md) | ❎ | ❎ |
+➡️| [**StackPanel** 堆栈布局](doc/zh/Control/StackPanel.md) | ❎ | ❎ |
+➡️| [**FlowPanel** 流动布局](doc/zh/Control/FlowPanel.md) | ❎ | ❎ |
+➡️| [**GridPanel** 格栅布局](doc/zh/Control/GridPanel.md) | ❎ | ❎ |
 ||||
 ⬇️| 导航 `6` | 动画 | 禁用 |
-➡️| [**Breadcrumb** 面包屑](doc/zh/控件/Breadcrumb.md) | ✅ | ❎ |
-➡️| [**Dropdown** 下拉菜单](doc/zh/控件/Dropdown.md) | ✅ | ✅ |
-➡️| [**Menu** 导航菜单](doc/zh/控件/Menu.md) | ✅ | ❎ |
-➡️| [**PageHeader** 页头](doc/zh/控件/PageHeader.md) | ✅ | ❎ |
-➡️| [**Pagination** 分页](doc/zh/控件/Pagination.md) | ✅ | ✅ |
-➡️| [**Steps** 步骤条](doc/zh/控件/Steps.md) | ❎ | ❎ |
+➡️| [**Breadcrumb** 面包屑](doc/zh/Control/Breadcrumb.md) | ✅ | ❎ |
+➡️| [**Dropdown** 下拉菜单](doc/zh/Control/Dropdown.md) | ✅ | ✅ |
+➡️| [**Menu** 导航菜单](doc/zh/Control/Menu.md) | ✅ | ❎ |
+➡️| [**PageHeader** 页头](doc/zh/Control/PageHeader.md) | ✅ | ❎ |
+➡️| [**Pagination** 分页](doc/zh/Control/Pagination.md) | ✅ | ✅ |
+➡️| [**Steps** 步骤条](doc/zh/Control/Steps.md) | ❎ | ❎ |
 ||||
 ⬇️| 数据录入 `13` | 动画 | 禁用 |
-➡️| [**Checkbox** 多选框](doc/zh/控件/Checkbox.md) | ✅ | ✅ |
-➡️| [**ColorPicker** 颜色选择器](doc/zh/控件/ColorPicker.md) | ✅ | ✅ |
-➡️| [**DatePicker** 日期选择框](doc/zh/控件/DatePicker.md) | ✅ | ✅ |
-➡️| [**DatePickerRange** 日期范围选择框](doc/zh/控件/DatePicker#DatePickerRange.md) | ✅ | ✅ |
-➡️| [**Input** 输入框](doc/zh/控件/Input.md) | ✅ | ✅ |
-➡️| [**InputNumber** 数字输入框](doc/zh/控件/Input#InputNumber.md) | ✅ | ✅ |
-➡️| [**Radio** 单选框](doc/zh/控件/Radio.md) | ✅ | ✅ |
-➡️| [**Rate** 评分](doc/zh/控件/Rate.md) | ✅ | ❎ |
-➡️| [**Select** 选择器](doc/zh/控件/Select.md) | ✅ | ✅ |
-➡️| [**Slider** 滑动输入条](doc/zh/控件/Slider.md) | ✅ | ❎ |
-➡️| [**Switch** 开关](doc/zh/控件/Switch.md) | ✅ | ✅ |
-➡️| [**TimePicker** 时间选择框](doc/zh/控件/TimePicker.md) | ✅ | ✅ |
-➡️| [**UploadDragger** 拖拽上传](doc/zh/控件/UploadDragger.md) | ✅ | ❎ |
+➡️| [**Checkbox** 多选框](doc/zh/Control/Checkbox.md) | ✅ | ✅ |
+➡️| [**ColorPicker** 颜色选择器](doc/zh/Control/ColorPicker.md) | ✅ | ✅ |
+➡️| [**DatePicker** 日期选择框](doc/zh/Control/DatePicker.md) | ✅ | ✅ |
+➡️| [**DatePickerRange** 日期范围选择框](doc/zh/Control/DatePicker#DatePickerRange.md) | ✅ | ✅ |
+➡️| [**Input** 输入框](doc/zh/Control/Input.md) | ✅ | ✅ |
+➡️| [**InputNumber** 数字输入框](doc/zh/Control/Input#InputNumber.md) | ✅ | ✅ |
+➡️| [**Radio** 单选框](doc/zh/Control/Radio.md) | ✅ | ✅ |
+➡️| [**Rate** 评分](doc/zh/Control/Rate.md) | ✅ | ❎ |
+➡️| [**Select** 选择器](doc/zh/Control/Select.md) | ✅ | ✅ |
+➡️| [**Slider** 滑动输入条](doc/zh/Control/Slider.md) | ✅ | ❎ |
+➡️| [**Switch** 开关](doc/zh/Control/Switch.md) | ✅ | ✅ |
+➡️| [**TimePicker** 时间选择框](doc/zh/Control/TimePicker.md) | ✅ | ✅ |
+➡️| [**UploadDragger** 拖拽上传](doc/zh/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
 ⬇️| 数据展示 `16` | 动画 | 禁用 |
-➡️| [**Avatar** 头像](doc/zh/控件/Avatar.md) | ❎ | ❎ |
-➡️| [**Badge** 徽标数](doc/zh/控件/Badge.md) | ✅ | ❎ |
-➡️| [**Calendar** 日历](doc/zh/控件/Calendar.md) | ✅ | ❎ |
-➡️| [**Panel** 面板](doc/zh/控件/Panel.md) | ✅ | ❎ |
-➡️| [**Carousel** 走马灯](doc/zh/控件/Carousel.md) | ✅ | ❎ |
-➡️| [**Collapse** 折叠面板](doc/zh/控件/Collapse.md) | ✅ | ❎ |
-➡️| [**Preview** 图片预览](doc/zh/控件/Preview.md) | ✅ | ✅ |
-➡️| [**Popover** 气泡卡片](doc/zh/控件/Popover.md) | ✅ | ❎ |
-➡️| [**Segmented** 分段控制器](doc/zh/控件/Segmented.md) | ✅ | ✅ |
-➡️| [**Table** 表格](doc/zh/控件/Table.md) | ✅ | ❎ |
-➡️| [**Tabs** 标签页](doc/zh/控件/Tabs.md) | ✅ | ❎ |
-➡️| [**Tag** 标签](doc/zh/控件/Tag.md) | ✅ | ❎ |
-➡️| [**Timeline** 时间轴](doc/zh/控件/Timeline.md) | ❎ | ❎ |
-➡️| [**Tooltip** 文字提示](doc/zh/控件/Tooltip.md) | ✅ | ❎ |
-➡️| [**Tree** 树形控件](doc/zh/控件/Tree.md) | ✅ | ✅ |
-➡️| [**Label** 文本](doc/zh/控件/Label.md) | ✅ | ❎ |
+➡️| [**Avatar** 头像](doc/zh/Control/Avatar.md) | ❎ | ❎ |
+➡️| [**Badge** 徽标数](doc/zh/Control/Badge.md) | ✅ | ❎ |
+➡️| [**Calendar** 日历](doc/zh/Control/Calendar.md) | ✅ | ❎ |
+➡️| [**Panel** 面板](doc/zh/Control/Panel.md) | ✅ | ❎ |
+➡️| [**Carousel** 走马灯](doc/zh/Control/Carousel.md) | ✅ | ❎ |
+➡️| [**Collapse** 折叠面板](doc/zh/Control/Collapse.md) | ✅ | ❎ |
+➡️| [**Preview** 图片预览](doc/zh/Control/Preview.md) | ✅ | ✅ |
+➡️| [**Popover** 气泡卡片](doc/zh/Control/Popover.md) | ✅ | ❎ |
+➡️| [**Segmented** 分段控制器](doc/zh/Control/Segmented.md) | ✅ | ✅ |
+➡️| [**Table** 表格](doc/zh/Control/Table.md) | ✅ | ❎ |
+➡️| [**Tabs** 标签页](doc/zh/Control/Tabs.md) | ✅ | ❎ |
+➡️| [**Tag** 标签](doc/zh/Control/Tag.md) | ✅ | ❎ |
+➡️| [**Timeline** 时间轴](doc/zh/Control/Timeline.md) | ❎ | ❎ |
+➡️| [**Tooltip** 文字提示](doc/zh/Control/Tooltip.md) | ✅ | ❎ |
+➡️| [**Tree** 树形控件](doc/zh/Control/Tree.md) | ✅ | ✅ |
+➡️| [**Label** 文本](doc/zh/Control/Label.md) | ✅ | ❎ |
 ||||
 ⬇️| 反馈 `7` | 动画 | 禁用 |
-➡️| [**Alert** 警告提示](doc/zh/控件/Alert.md) | ✅ | ❎ |
-➡️| [**Drawer** 抽屉](doc/zh/控件/Drawer.md) | ✅ | ❎ |
-➡️| [**Message** 全局提示](doc/zh/控件/Message.md) | ✅ | ❎ |
-➡️| [**Modal** 对话框](doc/zh/控件/Modal.md) | ✅ | ❎ |
-➡️| [**Notification** 通知提醒框](doc/zh/控件/Notification.md) | ✅ | ❎ |
-➡️| [**Progress** 进度条](doc/zh/控件/Progress.md) | ✅ | ❎ |
-➡️| [**Spin** 加载中](doc/zh/控件/Spin.md) | ✅ | ❎ |
+➡️| [**Alert** 警告提示](doc/zh/Control/Alert.md) | ✅ | ❎ |
+➡️| [**Drawer** 抽屉](doc/zh/Control/Drawer.md) | ✅ | ❎ |
+➡️| [**Message** 全局提示](doc/zh/Control/Message.md) | ✅ | ❎ |
+➡️| [**Modal** 对话框](doc/zh/Control/Modal.md) | ✅ | ❎ |
+➡️| [**Notification** 通知提醒框](doc/zh/Control/Notification.md) | ✅ | ❎ |
+➡️| [**Progress** 进度条](doc/zh/Control/Progress.md) | ✅ | ❎ |
+➡️| [**Spin** 加载中](doc/zh/Control/Spin.md) | ✅ | ❎ |
 ||||
 ⬇️| 聊天 `2` | 动画 | 禁用 |
 ➡️| **MsgList** 好友消息列表 | ✅ | ❎ |
 ➡️| **ChatList** 气泡聊天列表 | ✅ | ❎ |
 ||||
 ⬇️| 其他 `5` | 动画 | 禁用 |
-➡️| [**WindowBar** 窗口栏](doc/zh/控件/WindowBar.md) | ✅ | ❎ |
-➡️| [**Battery** 电量](doc/zh/控件/Battery.md) | ✅ | ❎ |
-➡️| [**Signal** 信号强度](doc/zh/控件/Signal.md) | ✅ | ❎ |
-➡️| [**ContextMenuStrip** 右键菜单](doc/zh/控件/ContextMenuStrip.md) | ✅ | ❎ |
+➡️| [**WindowBar** 窗口栏](doc/zh/Control/WindowBar.md) | ✅ | ❎ |
+➡️| [**Battery** 电量](doc/zh/Control/Battery.md) | ✅ | ❎ |
+➡️| [**Signal** 信号强度](doc/zh/Control/Signal.md) | ✅ | ❎ |
+➡️| [**ContextMenuStrip** 右键菜单](doc/zh/Control/ContextMenuStrip.md) | ✅ | ❎ |
 ➡️| **Image3D** 图片3D | ✅ | ❎ |
 
 ### 🐿️ 捐赠 🥣💲🐖👚

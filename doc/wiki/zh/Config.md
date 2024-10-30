@@ -1,4 +1,6 @@
-﻿### 色彩模式
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+
+### 色彩模式
 
 > 默认浅色模式
 
@@ -48,7 +50,7 @@ AntdUI.Config.ShadowEnabled = false;
 
 ### 滚动条隐藏样式 🔴
 
-> 默认一直显示`false`
+> 默认一直显示 `false`
 
 ``` csharp
 AntdUI.Config.ScrollBarHide = false;
@@ -93,7 +95,7 @@ AntdUI.Config.ShowInWindowByNotification = true;
 AntdUI.Config.NoticeWindowOffsetXY = 0;
 ```
 
-### 文本呈现的质量
+### 文本呈现质量
 
 ``` csharp
 AntdUI.Config.TextRenderingHint = System.Drawing.Text.ClearTypeGridFit;
@@ -125,4 +127,4 @@ AntdUI.Config.SetDpi(1.5F);
 AntdUI.Config.SetCorrectionTextRendering("Microsoft YaHei UI", "宋体"); //需要修正的字体列表
 ```
 
-![字体修正效果](Img/CorrectionTextRendering.jpg)
+![CorrectionTextRendering](Img/CorrectionTextRendering.jpg)
