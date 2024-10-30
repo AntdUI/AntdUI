@@ -64,8 +64,8 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
             Application.RemoveMessageFilter(this);
+            base.Dispose(disposing);
             renderQueue.Dispose();
         }
 

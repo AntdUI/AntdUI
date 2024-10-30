@@ -156,6 +156,23 @@ namespace AntdUI
             }
         }
 
+        float? iconratio;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(null)]
+        public float? IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                ChangeItems();
+                Invalidate();
+            }
+        }
+
         bool round = false;
         /// <summary>
         /// 圆角样式
@@ -537,7 +554,6 @@ namespace AntdUI
                 int text_heigth = (int)Math.Ceiling(size_t.Height), sp = (int)(4 * Config.Dpi), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
                 if (Full)
                 {
-                    int imgsize = (int)(size_t.Height * 1.8F);
                     int len = items.Count;
                     if (Vertical)
                     {
@@ -545,7 +561,7 @@ namespace AntdUI
                         switch (iconalign)
                         {
                             case TAlignMini.Top:
-                                int imgsize_t = (int)(size_t.Height * 1.8F);
+                                int imgsize_t = (int)(size_t.Height * (iconratio ?? 1.8F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -555,7 +571,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Bottom:
-                                int imgsize_b = (int)(size_t.Height * 1.8F);
+                                int imgsize_b = (int)(size_t.Height * (iconratio ?? 1.8F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -565,7 +581,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Left:
-                                int imgsize_l = (int)(size_t.Height * 1.2F);
+                                int imgsize_l = (int)(size_t.Height * (iconratio ?? 1.2F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -575,7 +591,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Right:
-                                int imgsize_r = (int)(size_t.Height * 1.2F);
+                                int imgsize_r = (int)(size_t.Height * (iconratio ?? 1.2F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -600,7 +616,7 @@ namespace AntdUI
                         switch (iconalign)
                         {
                             case TAlignMini.Top:
-                                int imgsize_t = (int)(size_t.Height * 1.8F);
+                                int imgsize_t = (int)(size_t.Height * (iconratio ?? 1.8F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -610,7 +626,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Bottom:
-                                int imgsize_b = (int)(size_t.Height * 1.8F);
+                                int imgsize_b = (int)(size_t.Height * (iconratio ?? 1.8F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -620,7 +636,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Left:
-                                int imgsize_l = (int)(size_t.Height * 1.2F);
+                                int imgsize_l = (int)(size_t.Height * (iconratio ?? 1.2F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -630,7 +646,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Right:
-                                int imgsize_r = (int)(size_t.Height * 1.2F);
+                                int imgsize_r = (int)(size_t.Height * (iconratio ?? 1.2F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -659,7 +675,7 @@ namespace AntdUI
                         switch (iconalign)
                         {
                             case TAlignMini.Top:
-                                int imgsize_t = (int)(size_t.Height * 1.8F), heigth_t = (int)Math.Ceiling(size_t.Height * 2.4F + gap2);
+                                int imgsize_t = (int)(size_t.Height * (iconratio ?? 1.8F)), heigth_t = (int)Math.Ceiling(size_t.Height * 2.4F + gap2);
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -669,7 +685,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Bottom:
-                                int imgsize_b = (int)(size_t.Height * 1.8F), heigth_b = (int)Math.Ceiling(size_t.Height * 2.4F + gap2);
+                                int imgsize_b = (int)(size_t.Height * (iconratio ?? 1.8F)), heigth_b = (int)Math.Ceiling(size_t.Height * 2.4F + gap2);
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -679,7 +695,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Left:
-                                int imgsize_l = (int)(size_t.Height * 1.2F), heigth_l = (int)Math.Ceiling(size_t.Height + gap2);
+                                int imgsize_l = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_l = (int)Math.Ceiling(size_t.Height + gap2);
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -689,7 +705,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Right:
-                                int imgsize_r = (int)(size_t.Height * 1.2F), heigth_r = (int)Math.Ceiling(size_t.Height + gap2);
+                                int imgsize_r = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_r = (int)Math.Ceiling(size_t.Height + gap2);
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -716,7 +732,7 @@ namespace AntdUI
                         switch (iconalign)
                         {
                             case TAlignMini.Top:
-                                int imgsize_t = (int)(size_t.Height * 1.8F);
+                                int imgsize_t = (int)(size_t.Height * (iconratio ?? 1.8F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -730,7 +746,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Bottom:
-                                int imgsize_b = (int)(size_t.Height * 1.8F);
+                                int imgsize_b = (int)(size_t.Height * (iconratio ?? 1.8F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -744,7 +760,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Left:
-                                int imgsize_l = (int)(size_t.Height * 1.2F);
+                                int imgsize_l = (int)(size_t.Height * (iconratio ?? 1.2F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -758,7 +774,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Right:
-                                int imgsize_r = (int)(size_t.Height * 1.2F);
+                                int imgsize_r = (int)(size_t.Height * (iconratio ?? 1.2F));
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
