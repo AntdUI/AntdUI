@@ -47,6 +47,7 @@ Button 按钮 👚
 **TextMultiLine** | 是否多行 | bool | false |
 ||||
 **IconRatio** | 图标比例 | float | 0.7F |
+**IconGap** 🔴 | 图标与文字间距比例 | float | 0.25F |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
 **IconHover** | 悬停图标 | Image`?` | `null` |

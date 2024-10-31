@@ -2,23 +2,23 @@
 
 ## Window
 
-原生无边框窗口
+Native borderless window
 
-> 拥有原生特性的完美无边框窗口。继承于 [BaseForm](BaseForm)
+> A perfect borderless window with native features. Inherited from [BaseForm](BaseForm)
 
-### 属性
+### Propertie
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Resizable** | 调整窗口大小 | bool | true |
-**Dark** | 深色模式 | bool | false |
-**Mode** | 色彩模式 | [TAMode](../Control/Enum#tamode) | Auto |
-**ScreenRectangle** | 获取或设置窗体屏幕区域 | Rectangle |
+**Resizable** | Adjust window size to enable | bool | true |
+**Dark** | Dark Mode | bool | false |
+**Mode** | Color mode | [TAMode](../Control/Enum#tamode) | Auto 
+**ScreenRectangle** | Get or set the screen area of the form | Rectangle |
 
-### 方法
+### Method
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**DraggableMouseDown** | 拖动窗口 | void ||
-**ResizableMouseDown** | 调整窗口大小（鼠标按下） | bool ||
-**ResizableMouseMove** | 调整窗口大小（鼠标移动） | bool ||
+**DraggableMouseDown** | | void ||
+**ResizableMouseDown** | Adjust window size (mouse press) | bool ||
+**ResizableMouseMove** | Adjust window size (mouse movement) | bool ||

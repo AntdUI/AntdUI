@@ -1,5 +1,17 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)・[SVG](SVG.md)
 
+### `1.6.16` 2024-10-31
+- ➕ Button IconGap
+- ➕ Input IconGap
+- ➕ Segmented IconGap/BarPosition/AutoSize
+- ➕ Collapse ExpandChanged
+- ➕ Label ColorExtend
+- ✍️ Menu 横向下拉错位
+- ✍️ Button 父容器禁用后无效
+- ✍️ 优化 下拉 Trigger.Hover 无法交互
+- ✍️ ColorPicker 下拉箭头对齐
+- ✍️ 补全 Badge
+
 ### `1.6.15` 2024-10-29
 - ➕ Button 闪烁动画
 - ✍️ Model UserControl 宽度异常
