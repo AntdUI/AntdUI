@@ -78,6 +78,18 @@ namespace AntdUI
             }
         }
 
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            visible = base.Visible;
+            base.OnVisibleChanged(e);
+        }
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            enabled = base.Enabled;
+            base.OnEnabledChanged(e);
+        }
+
         #region 徽标
 
         string? badge = null;

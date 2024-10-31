@@ -171,6 +171,21 @@ namespace AntdUI
             }
         }
 
+        float icongap = .25F;
+        /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        public float IconGap
+        {
+            get => icongap;
+            set
+            {
+                if (icongap == value) return;
+                icongap = value;
+                OnPropertyChanged(true);
+            }
+        }
+
         Image? icon = null;
         /// <summary>
         /// 图标
@@ -212,12 +227,12 @@ namespace AntdUI
         /// <summary>
         /// 悬停图标
         /// </summary>
-        public Image? IconHover { get; set; } = null;
+        public Image? IconHover { get; set; }
 
         /// <summary>
         /// 悬停图标SVG
         /// </summary>
-        public string? IconHoverSvg { get; set; } = null;
+        public string? IconHoverSvg { get; set; }
 
         /// <summary>
         /// 悬停图标动画时长

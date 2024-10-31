@@ -487,7 +487,7 @@ namespace AntdUI
             if (showType == 1 && calendar_month != null) PrintMonth(g, rect_read, radius, calendar_month);
             else if (showType == 2 && calendar_year != null) PrintYear(g, rect_read, radius, calendar_year);
             else if (calendar_day != null) PrintDay(g, rect_read, radius, calendar_day);
-
+            this.PaintBadge(g);
             base.OnPaint(e);
         }
 

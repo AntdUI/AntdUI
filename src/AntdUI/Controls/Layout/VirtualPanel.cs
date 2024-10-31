@@ -246,7 +246,7 @@ namespace AntdUI
         bool isEmpty = false;
 
         [Description("是否显示空样式"), Category("外观"), DefaultValue(false)]
-        public bool Empty { get; set; } = false;
+        public bool Empty { get; set; }
 
         string? emptyText;
         [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]

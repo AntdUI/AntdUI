@@ -208,7 +208,7 @@ namespace AntdUI
         Task task;
         public void Wait() => task.Wait();
 
-        public object? Tag { get; set; } = null;
+        public object? Tag { get; set; }
 
         public void Cancel()
         {

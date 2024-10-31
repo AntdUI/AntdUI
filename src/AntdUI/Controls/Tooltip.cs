@@ -177,7 +177,7 @@ namespace AntdUI
             /// <summary>
             /// 偏移量
             /// </summary>
-            public object? Offset { get; set; } = null;
+            public object? Offset { get; set; }
 
             /// <summary>
             /// 字体
@@ -342,7 +342,7 @@ namespace AntdUI
         /// 字体
         /// </summary>
         [Description("字体"), DefaultValue(null)]
-        public Font? Font { get; set; } = null;
+        public Font? Font { get; set; }
 
         /// <summary>
         /// 圆角

@@ -238,6 +238,7 @@ namespace AntdUI
                     }
                 }
             }
+            this.PaintBadge(g);
             base.OnPaint(e);
         }
 

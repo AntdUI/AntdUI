@@ -53,15 +53,18 @@ namespace AntdUI
 
         #region 线条
 
-        bool barstyle = false;
-        [Description("线条样式"), Category("外观"), DefaultValue(false)]
-        public bool BarStyle
+        TAlignMini barPosition = TAlignMini.None;
+        /// <summary>
+        /// 线条位置
+        /// </summary>
+        [Description("线条位置"), Category("条"), DefaultValue(TAlignMini.None)]
+        public TAlignMini BarPosition
         {
-            get => barstyle;
+            get => barPosition;
             set
             {
-                if (barstyle == value) return;
-                barstyle = value;
+                if (barPosition == value) return;
+                barPosition = value;
                 Invalidate();
             }
         }
@@ -78,7 +81,7 @@ namespace AntdUI
             {
                 if (barsize == value) return;
                 barsize = value;
-                if (barstyle) Invalidate();
+                if (barPosition != TAlignMini.None) Invalidate();
             }
         }
 
@@ -94,7 +97,7 @@ namespace AntdUI
             {
                 if (barpadding == value) return;
                 barpadding = value;
-                if (barstyle) Invalidate();
+                if (barPosition != TAlignMini.None) Invalidate();
             }
         }
 
@@ -168,6 +171,23 @@ namespace AntdUI
             {
                 if (iconratio == value) return;
                 iconratio = value;
+                ChangeItems();
+                Invalidate();
+            }
+        }
+
+        float icongap = .2F;
+        /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.2F)]
+        public float IconGap
+        {
+            get => icongap;
+            set
+            {
+                if (icongap == value) return;
+                icongap = value;
                 ChangeItems();
                 Invalidate();
             }
@@ -551,7 +571,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size_t = g.MeasureString(Config.NullText, Font);
-                int text_heigth = (int)Math.Ceiling(size_t.Height), sp = (int)(4 * Config.Dpi), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
+                int text_heigth = (int)Math.Ceiling(size_t.Height), sp = (int)(text_heigth * icongap), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
                 if (Full)
                 {
                     int len = items.Count;
@@ -823,7 +843,6 @@ namespace AntdUI
 
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
-            bool enabled = Enabled;
             using (var path = Rect.RoundPath(_radius, Round))
             {
                 using (var brush = new SolidBrush(back ?? Style.Db.BgLayout))
@@ -839,15 +858,26 @@ namespace AntdUI
                 if (it == null) continue;
                 if (i == _select && !AnimationBar)
                 {
-                    if (BarStyle)
+                    var color_active = backactive ?? Style.Db.BgElevated;
+                    if (barPosition == TAlignMini.None)
+                    {
+                        using (var path = TabSelectRect.RoundPath(_radius, Round))
+                        {
+                            using (var brush = new SolidBrush(color_active))
+                            {
+                                g.FillPath(brush, path);
+                            }
+                        }
+                    }
+                    else
                     {
                         float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
-                        var rect = new RectangleF(TabSelectRect.X + barPadding, TabSelectRect.Bottom - barSize, TabSelectRect.Width - barPadding2, barSize);
+                        var rect = GetBarRect(TabSelectRect, barSize, barPadding, barPadding2);
                         if (BarRadius > 0)
                         {
                             using (var path = rect.RoundPath(BarRadius * Config.Dpi))
                             {
-                                using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                                using (var brush = new SolidBrush(color_active))
                                 {
                                     g.FillPath(brush, path);
                                 }
@@ -855,19 +885,9 @@ namespace AntdUI
                         }
                         else
                         {
-                            using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                            using (var brush = new SolidBrush(color_active))
                             {
                                 g.FillRectangle(brush, rect);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (var path = TabSelectRect.RoundPath(_radius, Round))
-                        {
-                            using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
-                            {
-                                g.FillPath(brush, path);
                             }
                         }
                     }
@@ -887,15 +907,26 @@ namespace AntdUI
             }
             if (AnimationBar)
             {
-                if (BarStyle)
+                var color_active = backactive ?? Style.Db.BgElevated;
+                if (barPosition == TAlignMini.None)
+                {
+                    using (var path = AnimationBarValue.RoundPath(_radius, Round))
+                    {
+                        using (var brush = new SolidBrush(color_active))
+                        {
+                            g.FillPath(brush, path);
+                        }
+                    }
+                }
+                else
                 {
                     float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
-                    var rect = new RectangleF(AnimationBarValue.X + barPadding, AnimationBarValue.Bottom - barSize, AnimationBarValue.Width - barPadding2, barSize);
+                    var rect = GetBarRect(AnimationBarValue, barSize, barPadding, barPadding2);
                     if (BarRadius > 0)
                     {
                         using (var path = rect.RoundPath(BarRadius * Config.Dpi))
                         {
-                            using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                            using (var brush = new SolidBrush(color_active))
                             {
                                 g.FillPath(brush, path);
                             }
@@ -903,31 +934,21 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
+                        using (var brush = new SolidBrush(color_active))
                         {
                             g.FillRectangle(brush, rect);
                         }
                     }
                 }
-                else
-                {
-                    using (var path = AnimationBarValue.RoundPath(_radius, Round))
-                    {
-                        using (var brush = new SolidBrush(backactive ?? Style.Db.BgElevated))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                    }
-                }
             }
-            using (var brush = new SolidBrush(enabled ? (fore ?? Style.Db.TextSecondary) : Style.Db.TextQuaternary))
+            using (var brush = new SolidBrush(Enabled ? (fore ?? Style.Db.TextSecondary) : Style.Db.TextQuaternary))
             {
                 for (int i = 0; i < item_text.Count; i++)
                 {
                     var it = item_text[i];
                     if (i == _select)
                     {
-                        using (var brush_active = new SolidBrush(enabled ? (foreactive ?? Style.Db.Text) : Style.Db.TextQuaternary))
+                        using (var brush_active = new SolidBrush(Enabled ? (foreactive ?? Style.Db.Text) : Style.Db.TextQuaternary))
                         {
                             if (PaintImg(g, it, brush_active.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
                             g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
@@ -963,6 +984,22 @@ namespace AntdUI
             }
             else if (bmp != null) { g.DrawImage(bmp, it.RectImg); return false; }
             return true;
+        }
+
+        RectangleF GetBarRect(RectangleF rect, float barSize, float barPadding, float barPadding2)
+        {
+            switch (barPosition)
+            {
+                case TAlignMini.Top:
+                    return new RectangleF(rect.X + barPadding, rect.Y, rect.Width - barPadding2, barSize);
+                case TAlignMini.Left:
+                    return new RectangleF(rect.X, rect.Y + barPadding, barSize, rect.Height - barPadding2);
+                case TAlignMini.Right:
+                    return new RectangleF(rect.Right - barSize, rect.Y + barPadding, barSize, rect.Height - barPadding2);
+                case TAlignMini.Bottom:
+                default:
+                    return new RectangleF(rect.X + barPadding, rect.Bottom - barSize, rect.Width - barPadding2, barSize);
+            }
         }
 
         #endregion
@@ -1036,6 +1073,72 @@ namespace AntdUI
                     return;
                 }
             }
+        }
+
+        #endregion
+
+        #region 自动大小
+
+        /// <summary>
+        /// 自动大小
+        /// </summary>
+        [Browsable(true)]
+        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        public override bool AutoSize
+        {
+            get => base.AutoSize;
+            set
+            {
+                if (base.AutoSize == value) return;
+                base.AutoSize = value;
+                BeforeAutoSize();
+            }
+        }
+
+        public override Size GetPreferredSize(Size proposedSize)
+        {
+            if (AutoSize)
+            {
+                if (Vertical) return new Size(base.GetPreferredSize(proposedSize).Width, (int)Math.Ceiling(Rect.Height));
+                else return new Size((int)Math.Ceiling(Rect.Width), base.GetPreferredSize(proposedSize).Height);
+            }
+            return base.GetPreferredSize(proposedSize);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            BeforeAutoSize();
+            base.OnResize(e);
+        }
+
+        internal bool BeforeAutoSize()
+        {
+            if (AutoSize)
+            {
+                if (InvokeRequired)
+                {
+                    bool flag = false;
+                    Invoke(new Action(() =>
+                    {
+                        flag = BeforeAutoSize();
+                    }));
+                    return flag;
+                }
+                if (Vertical)
+                {
+                    int height = (int)Math.Ceiling(Rect.Height);
+                    if (Height == height) return true;
+                    Height = height;
+                }
+                else
+                {
+                    int width = (int)Math.Ceiling(Rect.Width);
+                    if (Width == width) return true;
+                    Width = width;
+                }
+                return false;
+            }
+            return true;
         }
 
         #endregion

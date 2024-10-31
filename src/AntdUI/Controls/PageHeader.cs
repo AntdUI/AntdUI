@@ -65,7 +65,7 @@ namespace AntdUI
         }
 
         [Description("使用标题大小"), Category("外观"), DefaultValue(false)]
-        public bool UseTitleFont { get; set; } = false;
+        public bool UseTitleFont { get; set; }
 
         [Description("标题使用粗体"), Category("外观"), DefaultValue(true)]
         public bool UseTextBold { get; set; } = true;
@@ -147,7 +147,7 @@ namespace AntdUI
         }
 
         [Description("点击退出关闭"), Category("行为"), DefaultValue(false)]
-        public bool CancelButton { get; set; } = false;
+        public bool CancelButton { get; set; }
 
         #region 图标
 

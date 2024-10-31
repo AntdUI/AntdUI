@@ -116,7 +116,7 @@ namespace AntdUI
         /// 下拉箭头是否显示
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
-        public bool DropDownArrow { get; set; } = false;
+        public bool DropDownArrow { get; set; }
 
         protected override void OnHandleCreated(EventArgs e)
         {

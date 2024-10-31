@@ -181,7 +181,7 @@ namespace AntdUI
         /// 显示进度文本小数点位数
         /// </summary>
         [Description("显示进度文本小数点位数"), Category("外观"), DefaultValue(0)]
-        public int ShowTextDot { get; set; } = 0;
+        public int ShowTextDot { get; set; }
 
         #endregion
 
@@ -343,7 +343,7 @@ namespace AntdUI
         /// 动画铺满
         /// </summary>
         [Description("动画铺满"), Category("外观"), DefaultValue(false)]
-        public bool LoadingFull { get; set; } = false;
+        public bool LoadingFull { get; set; }
 
         /// <summary>
         /// 动画时长

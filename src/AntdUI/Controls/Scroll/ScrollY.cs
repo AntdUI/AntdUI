@@ -106,8 +106,8 @@ namespace AntdUI
         /// <summary>
         /// 虚拟高度
         /// </summary>
-        public float VrValue { get; set; } = 0F;
-        public float VrValueI { get; set; } = 0F;
+        public float VrValue { get; set; }
+        public float VrValueI { get; set; }
         public int Height { get; set; }
 
         /// <summary>

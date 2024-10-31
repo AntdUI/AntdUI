@@ -496,6 +496,7 @@ namespace AntdUI
             if (items == null || items.Count == 0 || !_tabMenuVisible) return;
             var g = e.Graphics.High();
             style.Paint(this, g, items);
+            this.PaintBadge(g);
             base.OnPaint(e);
         }
 

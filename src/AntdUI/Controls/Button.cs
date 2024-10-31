@@ -323,6 +323,16 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.25F)]
+        public float IconGap
+        {
+            get => button.IconGap;
+            set => button.IconGap = value;
+        }
+
+        /// <summary>
         /// 图标
         /// </summary>
         [Description("图标"), Category("外观"), DefaultValue(null)]
@@ -960,12 +970,6 @@ namespace AntdUI
 
         #endregion
 
-        protected override void OnEnabledChanged(EventArgs e)
-        {
-            button.Enabled = Enabled;
-            base.OnEnabledChanged(e);
-        }
-
         protected override void Dispose(bool disposing)
         {
             button.Dispose();
@@ -989,18 +993,6 @@ namespace AntdUI
         }
 
         #region 属性
-
-        bool enabled = true;
-        public bool Enabled
-        {
-            get => enabled;
-            set
-            {
-                if (enabled == value) return;
-                enabled = value;
-                Invalidate();
-            }
-        }
 
         Color? fore;
         /// <summary>
@@ -1336,6 +1328,22 @@ namespace AntdUI
             }
         }
 
+        float icongap = .25F;
+        /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.25F)]
+        public float IconGap
+        {
+            get => icongap;
+            set
+            {
+                if (icongap == value) return;
+                icongap = value;
+                Invalidate();
+            }
+        }
+
         Image? icon = null;
         /// <summary>
         /// 图标
@@ -1386,13 +1394,13 @@ namespace AntdUI
         /// 悬停图标
         /// </summary>
         [Description("悬停图标"), Category("外观"), DefaultValue(null)]
-        public Image? IconHover { get; set; } = null;
+        public Image? IconHover { get; set; }
 
         /// <summary>
         /// 悬停图标SVG
         /// </summary>
         [Description("悬停图标SVG"), Category("外观"), DefaultValue(null)]
-        public string? IconHoverSvg { get; set; } = null;
+        public string? IconHoverSvg { get; set; }
 
         /// <summary>
         /// 悬停图标动画时长
@@ -1529,13 +1537,13 @@ namespace AntdUI
         /// 切换悬停图标
         /// </summary>
         [Description("切换悬停图标"), Category("切换"), DefaultValue(null)]
-        public Image? ToggleIconHover { get; set; } = null;
+        public Image? ToggleIconHover { get; set; }
 
         /// <summary>
         /// 切换悬停图标SVG
         /// </summary>
         [Description("切换悬停图标SVG"), Category("切换"), DefaultValue(null)]
-        public string? ToggleIconHoverSvg { get; set; } = null;
+        public string? ToggleIconHoverSvg { get; set; }
 
         /// <summary>
         /// 图标切换动画时长
@@ -1635,7 +1643,7 @@ namespace AntdUI
             {
                 if (loading == value) return;
                 loading = value;
-                control.SetCursor(_mouseHover && enabled && !value);
+                control.SetCursor(_mouseHover && control.Enabled && !value);
                 BAutoSize();
                 ThreadLoading?.Dispose();
                 if (loading)
@@ -1667,7 +1675,7 @@ namespace AntdUI
         /// <summary>
         /// 水波进度
         /// </summary>
-        public float LoadingWaveValue { get; set; } = 0;
+        public float LoadingWaveValue { get; set; }
 
         /// <summary>
         /// 水波颜色
@@ -1796,8 +1804,8 @@ namespace AntdUI
             {
                 if (_mouseHover == value) return;
                 _mouseHover = value;
-                control.SetCursor(value && enabled && !loading);
-                if (enabled)
+                control.SetCursor(value && control.Enabled && !loading);
+                if (control.Enabled)
                 {
                     var backHover = GetColorO();
                     int alpha = backHover.A;
@@ -1972,7 +1980,7 @@ namespace AntdUI
 
                     #endregion
 
-                    if (enabled)
+                    if (control.Enabled)
                     {
                         if (!ghost)
                         {
@@ -2007,7 +2015,7 @@ namespace AntdUI
                                 {
                                     g.DrawPath(brush, path);
                                 }
-                                PaintTextLoading(g, text, _back_active, rect_read, enabled);
+                                PaintTextLoading(g, text, _back_active, rect_read, control.Enabled);
                             }
                             else if (AnimationHover)
                             {
@@ -2028,7 +2036,7 @@ namespace AntdUI
                                 {
                                     g.DrawPath(brush, path);
                                 }
-                                PaintTextLoading(g, text, _back_hover, rect_read, enabled);
+                                PaintTextLoading(g, text, _back_hover, rect_read, control.Enabled);
                             }
                             else
                             {
@@ -2046,7 +2054,7 @@ namespace AntdUI
                                         g.DrawPath(brush, path);
                                     }
                                 }
-                                PaintTextLoading(g, text, _fore, rect_read, enabled);
+                                PaintTextLoading(g, text, _fore, rect_read, control.Enabled);
                             }
                         }
                         else
@@ -2073,7 +2081,7 @@ namespace AntdUI
                                 }
                             }
                             PaintLoadingWave(g, path, rect_read);
-                            PaintTextLoading(g, text, _fore, rect_read, enabled);
+                            PaintTextLoading(g, text, _fore, rect_read, control.Enabled);
                         }
                     }
                     else
@@ -2083,7 +2091,7 @@ namespace AntdUI
                         {
                             g.FillPath(brush, path);
                         }
-                        PaintTextLoading(g, text, Style.Db.TextQuaternary, rect_read, enabled);
+                        PaintTextLoading(g, text, Style.Db.TextQuaternary, rect_read, control.Enabled);
                     }
                 }
             }
@@ -2130,12 +2138,12 @@ namespace AntdUI
                                 {
                                     g.DrawPath(brush, path);
                                 }
-                                PaintTextLoading(g, text, _back_active, rect_read, enabled);
+                                PaintTextLoading(g, text, _back_active, rect_read, control.Enabled);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                using (var brush = new Pen(enabled ? _back : Style.Db.FillTertiary, border))
+                                using (var brush = new Pen(control.Enabled ? _back : Style.Db.FillTertiary, border))
                                 {
                                     g.DrawPath(brush, path);
                                 }
@@ -2151,11 +2159,11 @@ namespace AntdUI
                                 {
                                     g.DrawPath(brush, path);
                                 }
-                                PaintTextLoading(g, text, _back_hover, rect_read, enabled);
+                                PaintTextLoading(g, text, _back_hover, rect_read, control.Enabled);
                             }
                             else
                             {
-                                if (enabled)
+                                if (control.Enabled)
                                 {
                                     if (toggle)
                                     {
@@ -2185,10 +2193,10 @@ namespace AntdUI
                                         g.DrawPath(brush, path);
                                     }
                                 }
-                                PaintTextLoading(g, text, enabled ? _back : Style.Db.TextQuaternary, rect_read, enabled);
+                                PaintTextLoading(g, text, control.Enabled ? _back : Style.Db.TextQuaternary, rect_read, control.Enabled);
                             }
                         }
-                        else PaintTextLoading(g, text, enabled ? _back : Style.Db.TextQuaternary, rect_read, enabled);
+                        else PaintTextLoading(g, text, control.Enabled ? _back : Style.Db.TextQuaternary, rect_read, control.Enabled);
 
                         #endregion
                     }
@@ -2196,7 +2204,7 @@ namespace AntdUI
                     {
                         #region 绘制阴影
 
-                        if (enabled && WaveSize > 0)
+                        if (control.Enabled && WaveSize > 0)
                         {
                             using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                             {
@@ -2212,7 +2220,7 @@ namespace AntdUI
 
                         #region 绘制背景
 
-                        if (enabled)
+                        if (control.Enabled)
                         {
                             if (toggle)
                             {
@@ -2263,7 +2271,7 @@ namespace AntdUI
                         #endregion
 
                         PaintLoadingWave(g, path, rect_read);
-                        PaintTextLoading(g, text, enabled ? _fore : Style.Db.TextQuaternary, rect_read, enabled);
+                        PaintTextLoading(g, text, control.Enabled ? _fore : Style.Db.TextQuaternary, rect_read, control.Enabled);
                     }
                 }
             }
@@ -2384,7 +2392,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (PaintIcon(g, color, rect, false, enabled) && showArrow)
+                    if (PaintIcon(g, color, rect, false, control.Enabled) && showArrow)
                     {
                         int size = (int)(font_size.Height * IconRatio);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
@@ -2412,7 +2420,7 @@ namespace AntdUI
                 {
                     if (has_left && has_right)
                     {
-                        rect_text = RectAlignLR(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l, out var rect_r);
+                        rect_text = RectAlignLR(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
 
                         if (loading)
                         {
@@ -2423,7 +2431,7 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
-                        else PaintIcon(g, color, rect_l, true, enabled);
+                        else PaintIcon(g, color, rect_l, true, control.Enabled);
 
                         #region ARROW
 
@@ -2445,7 +2453,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l);
+                        rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
                             float loading_size = rect_l.Height * .14F;
@@ -2455,11 +2463,11 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
-                        else PaintIcon(g, color, rect_l, true, enabled);
+                        else PaintIcon(g, color, rect_l, true, control.Enabled);
                     }
                     else
                     {
-                        rect_text = RectAlignR(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_r);
+                        rect_text = RectAlignR(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
 
                         #region ARROW
 
@@ -2549,7 +2557,7 @@ namespace AntdUI
                 {
                     if (has_left && has_right)
                     {
-                        rect_text = RectAlignLR(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l, out var rect_r);
+                        rect_text = RectAlignLR(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
 
                         if (loading)
                         {
@@ -2594,7 +2602,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_l);
+                        rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
                             float loading_size = rect_l.Height * .14F;
@@ -2612,7 +2620,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        rect_text = RectAlignR(g, textLine, Font(), iconPosition, iconratio, font_size, rect_read, out var rect_r);
+                        rect_text = RectAlignR(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
 
                         #region ARROW
 
@@ -2656,11 +2664,11 @@ namespace AntdUI
             }
         }
 
-        internal static Rectangle RectAlignL(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, Size font_size, Rectangle rect_read, out Rectangle rect_l)
+        internal static Rectangle RectAlignL(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l)
         {
             int font_Height = font_size.Height;
             if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
-            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * .25F);
+            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap);
             Rectangle rect_text;
             switch (iconPosition)
             {
@@ -2688,11 +2696,11 @@ namespace AntdUI
             }
             return rect_text;
         }
-        internal static Rectangle RectAlignLR(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, Size font_size, Rectangle rect_read, out Rectangle rect_l, out Rectangle rect_r)
+        internal static Rectangle RectAlignLR(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l, out Rectangle rect_r)
         {
             int font_Height = font_size.Height;
             if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
-            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * .25F), sps = (int)(font_size.Height * .4F);
+            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_size.Height * .4F);
             Rectangle rect_text;
             switch (iconPosition)
             {
@@ -2724,11 +2732,11 @@ namespace AntdUI
             }
             return rect_text;
         }
-        internal static Rectangle RectAlignR(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, Size font_size, Rectangle rect_read, out Rectangle rect_r)
+        internal static Rectangle RectAlignR(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_r)
         {
             int font_Height = font_size.Height;
             if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
-            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * .25F), sps = (int)(font_size.Height * .4F), rsps = icon_size + sp;
+            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_size.Height * .4F), rsps = icon_size + sp;
             Rectangle rect_text;
             switch (iconPosition)
             {
@@ -2821,7 +2829,7 @@ namespace AntdUI
             }
             else
             {
-                if (enabled)
+                if (control.Enabled)
                 {
                     if (MouseHover)
                     {

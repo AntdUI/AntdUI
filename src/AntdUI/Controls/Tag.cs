@@ -322,13 +322,9 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
-
             var rect_read = ReadRectangle;
-
             if (backImage != null) g.PaintImg(rect_read, backImage, backFit, radius, false);
-
             float _radius = radius * Config.Dpi;
-
             Color _fore, _back, _bor;
             switch (type)
             {
@@ -364,12 +360,9 @@ namespace AntdUI
                     _bor = Style.Db.Primary;
                     break;
             }
-
             if (fore.HasValue) _fore = fore.Value;
             if (back.HasValue) _back = back.Value;
-
             if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
-
             using (var path = rect_read.RoundPath(_radius))
             {
                 #region 绘制背景

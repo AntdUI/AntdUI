@@ -167,7 +167,7 @@ namespace AntdUI
         /// 常规缩进
         /// </summary>
         [Description("常规缩进"), Category("外观"), DefaultValue(false)]
-        public bool Indent { get; set; } = false;
+        public bool Indent { get; set; }
 
         /// <summary>
         /// 只保持一个子菜单的展开
@@ -179,7 +179,7 @@ namespace AntdUI
         /// 显示子菜单背景
         /// </summary>
         [Description("显示子菜单背景"), Category("外观"), DefaultValue(false)]
-        public bool ShowSubBack { get; set; } = false;
+        public bool ShowSubBack { get; set; }
 
         /// <summary>
         /// 自动折叠
@@ -510,7 +510,6 @@ namespace AntdUI
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
             Color scroll_color, color_fore, color_fore_active, fore_enabled, back_hover, back_active;
-
             switch (theme)
             {
                 case TAMode.Light:

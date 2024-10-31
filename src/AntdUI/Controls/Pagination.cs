@@ -103,7 +103,7 @@ namespace AntdUI
         /// 最大显示总页数
         /// </summary>
         [Description("最大显示总页数"), Category("行为"), DefaultValue(0)]
-        public int MaxPageTotal { get; set; } = 0;
+        public int MaxPageTotal { get; set; }
 
         /// <summary>
         /// 总页数
@@ -409,6 +409,7 @@ namespace AntdUI
                     }
                 }
             }
+            this.PaintBadge(g);
         }
 
         #endregion

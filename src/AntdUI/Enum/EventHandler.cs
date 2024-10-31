@@ -490,6 +490,22 @@ namespace AntdUI
 
     #endregion
 
+    #region Collapse
+
+    public class CollapseExpandEventArgs : VEventArgs<CollapseItem>
+    {
+        public CollapseExpandEventArgs(CollapseItem value, bool expand) : base(value) { Expand = expand; }
+
+        public bool Expand { get; private set; }
+    }
+
+    /// <summary>
+    /// Color 类型事件
+    /// </summary>
+    public delegate void CollapseExpandEventHandler(object sender, CollapseExpandEventArgs e);
+
+    #endregion
+
     #region Tree
 
     public class TreeSelectEventArgs : VMEventArgs<TreeItem>

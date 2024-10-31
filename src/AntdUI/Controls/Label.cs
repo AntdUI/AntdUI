@@ -52,6 +52,22 @@ namespace AntdUI
             }
         }
 
+        string? colorExtend = null;
+        /// <summary>
+        /// 文字渐变色
+        /// </summary>
+        [Description("文字渐变色"), Category("外观"), DefaultValue(null)]
+        public string? ColorExtend
+        {
+            get => colorExtend;
+            set
+            {
+                if (colorExtend == value) return;
+                colorExtend = value;
+                Invalidate();
+            }
+        }
+
         #region 文本
 
         internal string? text = null;
@@ -382,7 +398,7 @@ namespace AntdUI
                 else rec = rect_read;
                 if (autoEllipsis) ellipsis = rec.Width < font_size.Width;
                 else ellipsis = false;
-                using (var brush = new SolidBrush(color))
+                using (var brush = colorExtend.BrushEx(rec, color))
                 {
                     g.DrawStr(text, Font, brush, rec, stringFormat);
                 }
