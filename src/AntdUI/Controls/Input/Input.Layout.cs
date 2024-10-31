@@ -630,7 +630,7 @@ namespace AntdUI
         }
         void RectLR(Rectangle rect, int read_height, int sps, int sps2, int w_L, int h_L, int w_R, int h_R)
         {
-            int sp = (int)(read_height * .25F), hasx = sps + w_L + sp, hasr = w_L + w_R + ((sps + sp) * 2),
+            int sp = (int)(read_height * icongap), hasx = sps + w_L + sp, hasr = w_L + w_R + ((sps + sp) * 2),
                 useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasr, rect.Height), true) : 0;
             if (multiline)
             {
@@ -652,7 +652,7 @@ namespace AntdUI
 
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w)
         {
-            int sp = (int)(read_height * .25F), hasx = sps + w + sp, hasx2 = sps2 + w + sp,
+            int sp = (int)(read_height * icongap), hasx = sps + w + sp, hasx2 = sps2 + w + sp,
                 useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), true) : 0;
             if (multiline)
             {
@@ -672,7 +672,7 @@ namespace AntdUI
         }
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
-            int sp = (int)(read_height * .25F), hasx = sps + w + sp, hasx2 = sps2 + w + sp,
+            int sp = (int)(read_height * icongap), hasx = sps + w + sp, hasx2 = sps2 + w + sp,
                 useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), true) : 0;
             if (multiline)
             {
@@ -695,7 +695,7 @@ namespace AntdUI
 
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w)
         {
-            int sp = (int)(read_height * .25F);
+            int sp = (int)(read_height * icongap);
             if (HasLeft())
             {
                 int useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), false);
@@ -719,7 +719,7 @@ namespace AntdUI
         }
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
-            int sp = (int)(read_height * .25F);
+            int sp = (int)(read_height * icongap);
             if (HasLeft())
             {
                 int useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), false);

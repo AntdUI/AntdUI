@@ -94,13 +94,15 @@ namespace AntdUI
                 }
                 if (ui_icon) b_w += font_size;
                 if (ui_arrow) b_w += (int)Math.Ceiling(font_size * 0.6F);
+
                 w = b_w + gap_x2;
+                if (rect_read.Width > w) w = rect_read.Width;
 
                 #endregion
 
                 int item_count = 0, divider_count = 0;
                 int text_height = font_size - gap_y2;
-                foreach (MenuItem it in items)
+                foreach (var it in items)
                 {
                     item_count++;
                     Rectangle rect_bg = new Rectangle(10 + gap_y, y, w - gap_y2, font_size), rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
@@ -119,7 +121,7 @@ namespace AntdUI
             }
             else
             {
-                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) SetLocation(rect_read.X + (rect_read.Width - (w + 20)) / 2, rect_read.Bottom);
+                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) SetLocation(rect_read.X - 10, rect_read.Bottom);
                 else SetLocation(rect_read.Right, rect_read.Y);
             }
             KeyCall = keys =>

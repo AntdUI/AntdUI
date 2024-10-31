@@ -478,6 +478,7 @@ namespace AntdUI
 
         void PaintItem(Graphics g, int columnIndex, TCell it, SolidBrush fore)
         {
+            var state = g.Save();
             if (it is TCellCheck check) PaintCheck(g, check);
             else if (it is TCellRadio radio) PaintRadio(g, radio);
             else if (it is TCellSwitch _switch) PaintSwitch(g, _switch);
@@ -487,10 +488,8 @@ namespace AntdUI
             }
             else if (it is TCellText text)
             {
-                var state = g.Save();
                 g.SetClip(it.RECT);
                 g.DrawStr(text.value, Font, fore, text.RECT_REAL, StringF(text.COLUMN));
-                g.Restore(state);
             }
             if (dragHeader != null && dragHeader.i == it.INDEX)
             {
@@ -514,6 +513,7 @@ namespace AntdUI
                     PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
                 }
             }
+            g.Restore(state);
         }
 
         #endregion

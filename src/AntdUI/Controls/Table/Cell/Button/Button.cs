@@ -171,6 +171,21 @@ namespace AntdUI
             }
         }
 
+        float icongap = .25F;
+        /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        public float IconGap
+        {
+            get => icongap;
+            set
+            {
+                if (icongap == value) return;
+                icongap = value;
+                OnPropertyChanged(true);
+            }
+        }
+
         Image? icon = null;
         /// <summary>
         /// 图标
