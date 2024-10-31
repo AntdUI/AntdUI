@@ -612,7 +612,7 @@ namespace AntdUI
                 item.Location = new Point(-item.Width, -item.Height);
                 it.Controls.Add(item);
             };
-            action_del = item =>
+            action_del = (item, index) =>
             {
                 it.Controls.Remove(item);
             };

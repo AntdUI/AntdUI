@@ -28,7 +28,8 @@ namespace AntdUI
         #region 刷新UI
 
         public Action<bool>? action;
-        public Action<T>? action_add, action_del;
+        public Action<T>? action_add;
+        public Action<T, int>? action_del;
         void PropertyChanged(T value)
         {
             if (value is NotifyProperty notify)
@@ -55,7 +56,7 @@ namespace AntdUI
                 if (action_add == null && action_del == null) list[index] = value;
                 else
                 {
-                    action_del?.Invoke(list[index]);
+                    action_del?.Invoke(list[index], index);
                     list[index] = value;
                     action_add?.Invoke(value);
                 }
@@ -73,7 +74,7 @@ namespace AntdUI
                     if (action_add == null && action_del == null) list[index] = item;
                     else
                     {
-                        action_del?.Invoke(list[index]);
+                        action_del?.Invoke(list[index], index);
                         list[index] = item;
                         action_add?.Invoke(item);
                     }
@@ -215,7 +216,7 @@ namespace AntdUI
         {
             if (action_del != null)
             {
-                foreach (var item in list) action_del?.Invoke(item);
+                foreach (var item in list) action_del?.Invoke(item, -1);
             }
             list.Clear();
             action?.Invoke(true);
@@ -225,17 +226,19 @@ namespace AntdUI
         {
             if (value is T item)
             {
+                int i = IndexOf(item);
                 list.Remove(item);
-                action_del?.Invoke(item);
+                action_del?.Invoke(item, i);
                 action?.Invoke(true);
             }
         }
         public bool Remove(T item)
         {
+            int i = IndexOf(item);
             bool flag = list.Remove(item);
             if (flag)
             {
-                action_del?.Invoke(item);
+                action_del?.Invoke(item, i);
                 action?.Invoke(true);
             }
             return flag;
@@ -246,7 +249,7 @@ namespace AntdUI
             {
                 try
                 {
-                    action_del?.Invoke(list[index]);
+                    action_del?.Invoke(list[index], index);
                 }
                 catch { }
             }

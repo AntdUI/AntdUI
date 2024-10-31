@@ -1371,21 +1371,20 @@ namespace AntdUI
                 item.Dock = DockStyle.Fill;
                 it.ShowPage();
             };
-            action_del = item =>
+            action_del = (item, index) =>
             {
-                int old = it.SelectedIndex;
-                int index = IndexOf(item);
-                if (old == index)
-                {
-                    it.Controls.Remove(item);
-                    int _new = index - 1;
-                    if (_new > -1) it.SelectedIndex = _new;
-                    else it.ShowPage();
-                }
+                if (index == -1) it.SelectedIndex = 0;
                 else
                 {
                     it.Controls.Remove(item);
-                    it.SelectedIndex = old - 1;
+                    int old = it.SelectedIndex;
+                    if (old == index)
+                    {
+                        int _new = index - 1;
+                        if (_new > -1) it.SelectedIndex = _new;
+                        else it.ShowPage();
+                    }
+                    else if (old > index) it.SelectedIndex = old - 1;
                 }
             };
             return this;
