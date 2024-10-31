@@ -33,6 +33,7 @@ namespace AntdUI
         Color Value, ValueNAlpha, ValueHue;
         Action<Color> action;
         TColorMode mode;
+        PointF[]? rect_arrow;
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             control.Parent.SetTopMost(Handle);
@@ -121,7 +122,7 @@ namespace AntdUI
 
             int r_w = w + 20, r_h = h + 20;
             SetSize(r_w, r_h);
-            CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign, true);
+            rect_arrow = CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign, true);
 
             Location = TargetRect.Location;
             Size = TargetRect.Size;
@@ -510,7 +511,11 @@ namespace AntdUI
                     {
                         DrawShadow(g, rect);
                         g.FillPath(brush_bg, path);
-                        if (ArrowAlign != TAlign.None) g.FillPolygon(brush_bg, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
+                        if (ArrowAlign != TAlign.None)
+                        {
+                            if (rect_arrow == null) g.FillPolygon(brush_bg, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
+                            else g.FillPolygon(brush_bg, rect_arrow);
+                        }
                     }
                     #region 渲染
 

@@ -181,7 +181,7 @@ namespace AntdUI
         /// 是否显示数值
         /// </summary>
         [Description("是否显示数值"), Category("行为"), DefaultValue(false)]
-        public bool ShowValue { get; set; } = false;
+        public bool ShowValue { get; set; }
 
         int lineSize = 4;
         /// <summary>
@@ -290,11 +290,10 @@ namespace AntdUI
                 else rect_read = new Rectangle(_rect.X + DotS, _rect.Y + (_rect.Height - LineSize) / 2, _rect.Width - DotS2, LineSize);
             }
 
-            bool enabled = Enabled;
-            Color color = enabled ? fill ?? Style.Db.InfoBorder : Style.Db.FillTertiary, color_dot = enabled ? fill ?? Style.Db.InfoBorder : Style.Db.SliderHandleColorDisabled, color_hover = FillHover ?? Style.Db.InfoHover, color_active = FillActive ?? Style.Db.Primary;
+            Color color = Enabled ? fill ?? Style.Db.InfoBorder : Style.Db.FillTertiary, color_dot = Enabled ? fill ?? Style.Db.InfoBorder : Style.Db.SliderHandleColorDisabled, color_hover = FillHover ?? Style.Db.InfoHover, color_active = FillActive ?? Style.Db.Primary;
 
             var g = e.Graphics.High();
-            IPaint(g, _rect, enabled, color, color_dot, color_hover, color_active);
+            IPaint(g, _rect, Enabled, color, color_dot, color_hover, color_active);
             this.PaintBadge(g);
         }
 

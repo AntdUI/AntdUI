@@ -89,7 +89,7 @@ namespace AntdUI
         /// 是否列表自动宽度
         /// </summary>
         [Description("是否列表自动宽度"), Category("行为"), DefaultValue(false)]
-        public bool ListAutoWidth { get; set; } = false;
+        public bool ListAutoWidth { get; set; }
 
         /// <summary>
         /// 列表最多显示条数
@@ -107,7 +107,7 @@ namespace AntdUI
         /// 下拉箭头是否显示
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
-        public bool DropDownArrow { get; set; } = false;
+        public bool DropDownArrow { get; set; }
 
         /// <summary>
         /// 下拉边距

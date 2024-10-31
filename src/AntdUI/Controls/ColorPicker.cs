@@ -309,9 +309,6 @@ namespace AntdUI
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
             float _radius = round ? rect_read.Height : radius * Config.Dpi;
-
-            bool enabled = Enabled;
-
             using (var path = Path(rect_read, _radius))
             {
                 Color _fore = fore ?? Style.Db.Text, _back = back ?? Style.Db.BgContainer,
@@ -320,7 +317,7 @@ namespace AntdUI
                 _borderActive = BorderActive ?? Style.Db.Primary;
                 PaintClick(g, path, rect, _borderActive, radius);
                 int size_color = (int)(rect_read.Height * 0.75F);
-                if (enabled)
+                if (Enabled)
                 {
                     using (var brush = new SolidBrush(_back))
                     {

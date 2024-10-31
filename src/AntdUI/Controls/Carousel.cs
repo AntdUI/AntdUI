@@ -48,7 +48,7 @@ namespace AntdUI
         /// 滑动到外面
         /// </summary>
         [Description("滑动到外面"), Category("行为"), DefaultValue(false)]
-        public bool TouchOut { get; set; } = false;
+        public bool TouchOut { get; set; }
 
         bool autoplay = false;
         /// <summary>

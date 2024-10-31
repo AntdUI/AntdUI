@@ -202,7 +202,7 @@ namespace AntdUI
         /// 是否竖向
         /// </summary>
         [Description("是否竖向"), Category("动画"), DefaultValue(false)]
-        public bool Vertical { get; set; } = false;
+        public bool Vertical { get; set; }
 
         /// <summary>
         /// 速度

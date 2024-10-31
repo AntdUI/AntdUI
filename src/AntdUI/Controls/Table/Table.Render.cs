@@ -49,6 +49,7 @@ namespace AntdUI
             else PaintTable(g, rows, rect, columnfont);
             if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect);
             ScrollBar.Paint(g);
+            this.PaintBadge(g);
             base.OnPaint(e);
         }
 

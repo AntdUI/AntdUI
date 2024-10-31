@@ -189,11 +189,9 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle;//绘制控件尺寸
+            var rect = ClientRectangle;
             var g = e.Graphics.High();
-
-            var rect_read = ReadRectangle;//读取控件尺寸
-            bool enabled = Enabled;
+            var rect_read = ReadRectangle;
             using (var path = rect_read.RoundPath(rect_read.Height))
             {
                 Color _color = fill ?? Style.Db.Primary;
@@ -219,7 +217,7 @@ namespace AntdUI
                         g.FillPath(brush, path);
                     }
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
                     {
                         g.FillEllipse(brush, dot_rect);
                     }
@@ -227,7 +225,7 @@ namespace AntdUI
                 else if (_checked)
                 {
                     var colorhover = FillHover ?? Style.Db.PrimaryHover;
-                    using (var brush = new SolidBrush(enabled ? _color : Color.FromArgb(200, _color)))
+                    using (var brush = new SolidBrush(Enabled ? _color : Color.FromArgb(200, _color)))
                     {
                         g.FillPath(brush, path);
                     }
@@ -246,7 +244,7 @@ namespace AntdUI
                         }
                     }
                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
                     {
                         g.FillEllipse(brush, dot_rect);
                     }
@@ -254,7 +252,7 @@ namespace AntdUI
                 else
                 {
                     var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
                     {
                         g.FillEllipse(brush, dot_rect);
                     }

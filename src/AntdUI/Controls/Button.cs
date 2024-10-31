@@ -1394,13 +1394,13 @@ namespace AntdUI
         /// 悬停图标
         /// </summary>
         [Description("悬停图标"), Category("外观"), DefaultValue(null)]
-        public Image? IconHover { get; set; } = null;
+        public Image? IconHover { get; set; }
 
         /// <summary>
         /// 悬停图标SVG
         /// </summary>
         [Description("悬停图标SVG"), Category("外观"), DefaultValue(null)]
-        public string? IconHoverSvg { get; set; } = null;
+        public string? IconHoverSvg { get; set; }
 
         /// <summary>
         /// 悬停图标动画时长
@@ -1537,13 +1537,13 @@ namespace AntdUI
         /// 切换悬停图标
         /// </summary>
         [Description("切换悬停图标"), Category("切换"), DefaultValue(null)]
-        public Image? ToggleIconHover { get; set; } = null;
+        public Image? ToggleIconHover { get; set; }
 
         /// <summary>
         /// 切换悬停图标SVG
         /// </summary>
         [Description("切换悬停图标SVG"), Category("切换"), DefaultValue(null)]
-        public string? ToggleIconHoverSvg { get; set; } = null;
+        public string? ToggleIconHoverSvg { get; set; }
 
         /// <summary>
         /// 图标切换动画时长
@@ -1675,7 +1675,7 @@ namespace AntdUI
         /// <summary>
         /// 水波进度
         /// </summary>
-        public float LoadingWaveValue { get; set; } = 0;
+        public float LoadingWaveValue { get; set; }
 
         /// <summary>
         /// 水波颜色

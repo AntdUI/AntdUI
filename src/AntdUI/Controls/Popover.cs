@@ -157,7 +157,7 @@ namespace AntdUI
             /// <summary>
             /// 偏移量
             /// </summary>
-            public object? Offset { get; set; } = null;
+            public object? Offset { get; set; }
 
             /// <summary>
             /// 标题
@@ -182,7 +182,7 @@ namespace AntdUI
             /// <summary>
             /// 自动关闭时间（秒）0等于不关闭
             /// </summary>
-            public int AutoClose { get; set; } = 0;
+            public int AutoClose { get; set; }
 
             /// <summary>
             /// 圆角

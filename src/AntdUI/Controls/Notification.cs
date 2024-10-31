@@ -262,7 +262,7 @@ namespace AntdUI
             /// <summary>
             /// 弹出在窗口
             /// </summary>
-            public bool ShowInWindow { get; set; } = false;
+            public bool ShowInWindow { get; set; }
         }
 
         public class ConfigLink

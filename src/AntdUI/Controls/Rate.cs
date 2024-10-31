@@ -62,7 +62,7 @@ namespace AntdUI
         /// 是否允许半选
         /// </summary>
         [Description("是否允许半选"), Category("行为"), DefaultValue(false)]
-        public bool AllowHalf { get; set; } = false;
+        public bool AllowHalf { get; set; }
 
         int count = 5;
         /// <summary>
@@ -147,11 +147,8 @@ namespace AntdUI
         {
             var rect = ClientRectangle.PaddingRect(Padding);
             if (rect.Width == 0 || rect.Height == 0 || count < 1) return;
-
             int size = rect.Height;
-
             var g = e.Graphics.High();
-
             #region 初始化位图
 
             if (icon == null || icon.Width != size)
@@ -208,7 +205,6 @@ namespace AntdUI
             }
 
             #endregion
-
             for (int i = 0; i < rect_stars.Length; i++)
             {
                 var it = rect_stars[i];
@@ -245,6 +241,7 @@ namespace AntdUI
                 }
                 else g.DrawImage(icon, it.rect_i);
             }
+            this.PaintBadge(g);
         }
 
         #endregion

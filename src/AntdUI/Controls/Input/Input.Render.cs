@@ -43,8 +43,10 @@ namespace AntdUI
             var _rect = ClientRectangle;
             if (_rect.Width > 0 && _rect.Height > 0)
             {
+                var g = e.Graphics.High();
                 Rectangle rect = _rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
-                IPaint(e.Graphics.High(), rect, rect_read);
+                IPaint(g, rect, rect_read);
+                this.PaintBadge(g);
             }
             base.OnPaint(e);
         }
@@ -52,7 +54,6 @@ namespace AntdUI
         internal void IPaint(Graphics g, Rectangle rect, Rectangle rect_read)
         {
             float _radius = round ? rect_read.Height : radius * Config.Dpi;
-            bool enabled = Enabled;
             if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
             using (var path = Path(rect_read, _radius))
             {
@@ -83,7 +84,7 @@ namespace AntdUI
 
                 PaintClick(g, path, rect, _borderActive, _radius);
 
-                if (enabled)
+                if (Enabled)
                 {
                     using (var brush = backExtend.BrushEx(rect_read, _back))
                     {

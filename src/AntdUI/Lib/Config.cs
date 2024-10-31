@@ -105,12 +105,12 @@ namespace AntdUI
         /// <summary>
         /// 文本呈现的质量
         /// </summary>
-        public static System.Drawing.Text.TextRenderingHint? TextRenderingHint { get; set; } = null;
+        public static System.Drawing.Text.TextRenderingHint? TextRenderingHint { get; set; }
 
         /// <summary>
         /// 默认字体
         /// </summary>
-        public static Font? Font { get; set; } = null;
+        public static Font? Font { get; set; }
 
         #region 滚动条
 

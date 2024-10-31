@@ -227,12 +227,12 @@ namespace AntdUI
         /// <summary>
         /// 悬停图标
         /// </summary>
-        public Image? IconHover { get; set; } = null;
+        public Image? IconHover { get; set; }
 
         /// <summary>
         /// 悬停图标SVG
         /// </summary>
-        public string? IconHoverSvg { get; set; } = null;
+        public string? IconHoverSvg { get; set; }
 
         /// <summary>
         /// 悬停图标动画时长

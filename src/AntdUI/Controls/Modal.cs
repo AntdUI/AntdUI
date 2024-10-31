@@ -347,7 +347,7 @@ namespace AntdUI
             /// <summary>
             /// 是否显示关闭图标
             /// </summary>
-            public bool CloseIcon { get; set; } = false;
+            public bool CloseIcon { get; set; }
 
             /// <summary>
             /// 取消按钮字体

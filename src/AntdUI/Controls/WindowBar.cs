@@ -106,7 +106,7 @@ namespace AntdUI
         }
 
         [Description("点击退出关闭"), Category("行为"), DefaultValue(false)]
-        public bool CancelButton { get; set; } = false;
+        public bool CancelButton { get; set; }
 
         #region 图标
 
@@ -521,6 +521,8 @@ namespace AntdUI
             }
 
             #endregion
+
+            this.PaintBadge(g);
 
             if (showDivider)
             {

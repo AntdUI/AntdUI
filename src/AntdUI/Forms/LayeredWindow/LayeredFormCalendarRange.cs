@@ -94,7 +94,7 @@ namespace AntdUI
             SetSize(r_w, r_h);
             t_h = r_h;
             Placement = _control.Placement;
-            CLocation(point, _control.Placement, _control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
+            CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
         }
 
         #region 属性

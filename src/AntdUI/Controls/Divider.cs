@@ -39,7 +39,7 @@ namespace AntdUI
         /// 是否竖向
         /// </summary>
         [Description("是否竖向"), Category("外观"), DefaultValue(false)]
-        public bool Vertical { get; set; } = false;
+        public bool Vertical { get; set; }
 
         TOrientation orientation = TOrientation.None;
         /// <summary>

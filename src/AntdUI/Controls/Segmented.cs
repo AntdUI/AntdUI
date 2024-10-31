@@ -843,7 +843,6 @@ namespace AntdUI
 
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
-            bool enabled = Enabled;
             using (var path = Rect.RoundPath(_radius, Round))
             {
                 using (var brush = new SolidBrush(back ?? Style.Db.BgLayout))
@@ -942,14 +941,14 @@ namespace AntdUI
                     }
                 }
             }
-            using (var brush = new SolidBrush(enabled ? (fore ?? Style.Db.TextSecondary) : Style.Db.TextQuaternary))
+            using (var brush = new SolidBrush(Enabled ? (fore ?? Style.Db.TextSecondary) : Style.Db.TextQuaternary))
             {
                 for (int i = 0; i < item_text.Count; i++)
                 {
                     var it = item_text[i];
                     if (i == _select)
                     {
-                        using (var brush_active = new SolidBrush(enabled ? (foreactive ?? Style.Db.Text) : Style.Db.TextQuaternary))
+                        using (var brush_active = new SolidBrush(Enabled ? (foreactive ?? Style.Db.Text) : Style.Db.TextQuaternary))
                         {
                             if (PaintImg(g, it, brush_active.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
                             g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);

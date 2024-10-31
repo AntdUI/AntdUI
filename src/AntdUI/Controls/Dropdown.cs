@@ -64,7 +64,7 @@ namespace AntdUI
         /// 下拉箭头是否显示
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
-        public bool DropDownArrow { get; set; } = false;
+        public bool DropDownArrow { get; set; }
 
         /// <summary>
         /// 下拉边距
@@ -76,7 +76,7 @@ namespace AntdUI
         /// 点击到最里层（无节点才能点击）
         /// </summary>
         [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
-        public bool ClickEnd { get; set; } = false;
+        public bool ClickEnd { get; set; }
 
         #region 数据
 

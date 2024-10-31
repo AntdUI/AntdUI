@@ -463,13 +463,13 @@ namespace AntdUI
         /// 连接左边
         /// </summary>
         [Description("连接左边"), Category("外观"), DefaultValue(false)]
-        public bool JoinLeft { get; set; } = false;
+        public bool JoinLeft { get; set; }
 
         /// <summary>
         /// 连接右边
         /// </summary>
         [Description("连接右边"), Category("外观"), DefaultValue(false)]
-        public bool JoinRight { get; set; } = false;
+        public bool JoinRight { get; set; }
 
         bool allowclear = false, is_clear = false, is_clear_down = false;
         bool is_prefix_down = false, is_suffix_down = false;
@@ -615,7 +615,7 @@ namespace AntdUI
         /// 多行编辑是否允许输入制表符
         /// </summary>
         [Description("多行编辑是否允许输入制表符"), Category("行为"), DefaultValue(false)]
-        public bool AcceptsTab { get; set; } = false;
+        public bool AcceptsTab { get; set; }
 
         /// <summary>
         /// 焦点离开清空选中

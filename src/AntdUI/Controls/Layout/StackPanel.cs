@@ -140,7 +140,7 @@ namespace AntdUI
             /// <summary>
             /// 是否垂直方向
             /// </summary>
-            public bool Vertical { get; set; } = false;
+            public bool Vertical { get; set; }
             /// <summary>
             /// 内容大小
             /// </summary>

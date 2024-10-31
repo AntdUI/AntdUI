@@ -330,7 +330,7 @@ namespace AntdUI
             config.Layered = this;
         }
 
-        public override bool AutoHandDpi { get; set; } = false;
+        public override bool AutoHandDpi { get; set; }
 
         protected override void DestroyHandle()
         {

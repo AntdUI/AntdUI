@@ -32,6 +32,7 @@ namespace AntdUI
     [Description("Collapse 折叠面板")]
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
+    [DefaultEvent("ExpandChanged")]
     [Designer(typeof(CollapseDesigner))]
     public class Collapse : IControl
     {
@@ -278,6 +279,18 @@ namespace AntdUI
 
         #endregion
 
+        #region 事件
+
+        /// <summary>
+        /// Expand 属性值更改时发生
+        /// </summary>
+        [Description("Expand 属性值更改时发生"), Category("行为")]
+        public event CollapseExpandEventHandler? ExpandChanged = null;
+
+        internal void OnExpandChanged(CollapseItem value, bool expand) => ExpandChanged?.Invoke(this, new CollapseExpandEventArgs(value, expand));
+
+        #endregion
+
         #region 渲染
 
         StringFormat s_l = Helper.SF_ALL(lr: StringAlignment.Near);
@@ -468,6 +481,7 @@ namespace AntdUI
                     }
                 }
             }
+            this.PaintBadge(g);
             base.OnPaint(e);
         }
 
@@ -645,6 +659,7 @@ namespace AntdUI
             {
                 if (expand == value) return;
                 expand = value;
+                PARENT?.OnExpandChanged(this, expand);
                 if (value) PARENT?.UniqueOne(this);
                 if (PARENT != null && PARENT.IsHandleCreated && Config.Animation)
                 {

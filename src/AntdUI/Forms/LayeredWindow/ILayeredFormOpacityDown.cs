@@ -152,7 +152,7 @@ namespace AntdUI
 
         #endregion
 
-        public override bool CanLoadMessage { get; set; } = false;
+        public override bool CanLoadMessage { get; set; }
         public virtual void LoadOK() { CanLoadMessage = true; LoadMessage(); }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -216,159 +216,141 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
-        public void CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Padding, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
+        public void CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int Padding, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
         {
             switch (Placement)
             {
                 case TAlignFrom.Top:
                     Inverted = true;
-                    if (DropDownArrow)
-                    {
-                        ArrowAlign = TAlign.Top;
-                        SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y - Height + Rect.Y - ArrowSize);
-                    }
-                    else SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y - Height + Rect.Y);
+                    if (DropDownArrow) ArrowAlign = TAlign.Top;
+                    SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y - Height + Rect.Y);
                     break;
                 case TAlignFrom.TL:
                     Inverted = true;
-                    if (DropDownArrow)
+                    if (DropDownArrow) ArrowAlign = TAlign.TL;
+                    int xTL = Point.X + Rect.X - Padding, yTL = Point.Y - Height + Rect.Y;
+                    SetLocation(xTL, yTL);
+                    if (Collision)
                     {
-                        int x = Point.X + Rect.X - Padding, y = Point.Y - Height + Rect.Y - ArrowSize;
-                        ArrowAlign = TAlign.TL;
-                        SetLocation(x, y);
-                        if (Collision)
+                        var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                        if (xTL > (screen.X + screen.Width) - TargetRect.Width)
                         {
-                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                            if (x > (screen.X + screen.Width) - TargetRect.Width)
-                            {
-                                ArrowAlign = TAlign.TR;
-                                x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
-                                SetLocation(x, y);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        int x = Point.X + Rect.X - Padding, y = Point.Y - Height + Rect.Y;
-                        SetLocation(x, y);
-                        if (Collision)
-                        {
-                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                            if (x > (screen.X + screen.Width) - TargetRect.Width)
-                            {
-                                x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
-                                SetLocation(x, y);
-                            }
+                            if (DropDownArrow) ArrowAlign = TAlign.TR;
+                            xTL = Point.X + (Rect.X + Rect.Width) - Width + Padding;
+                            SetLocation(xTL, yTL);
                         }
                     }
                     break;
                 case TAlignFrom.TR:
                     Inverted = true;
-                    if (DropDownArrow)
+                    if (DropDownArrow) ArrowAlign = TAlign.TR;
+                    int xTR = Point.X + (Rect.X + Rect.Width) - Width + Padding, yTR = Point.Y - Height + Rect.Y;
+                    SetLocation(xTR, yTR);
+                    if (Collision)
                     {
-                        int x = Point.X + (Rect.X + Rect.Width) - Width + Padding, y = Point.Y - Height + Rect.Y - ArrowSize;
-                        ArrowAlign = TAlign.TR;
-                        SetLocation(x, y);
-                        if (Collision)
+                        var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                        if (xTR < 0)
                         {
-                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                            if (x < 0)
-                            {
-                                ArrowAlign = TAlign.TL;
-                                x = Point.X + Rect.X - Padding;
-                                SetLocation(x, y);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        int x = Point.X + (Rect.X + Rect.Width) - Width + Padding, y = Point.Y - Height + Rect.Y;
-                        SetLocation(x, y);
-                        if (Collision)
-                        {
-                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                            if (x < 0)
-                            {
-                                x = Point.X + Rect.X - Padding;
-                                SetLocation(x, y);
-                            }
+                            if (DropDownArrow) ArrowAlign = TAlign.TL;
+                            xTR = Point.X + Rect.X - Padding;
+                            SetLocation(xTR, yTR);
                         }
                     }
                     break;
                 case TAlignFrom.Bottom:
-                    if (DropDownArrow)
-                    {
-                        ArrowAlign = TAlign.Bottom;
-                        SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y + Rect.Bottom + ArrowSize);
-                    }
-                    else SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y + Rect.Bottom);
+                    if (DropDownArrow) ArrowAlign = TAlign.Bottom;
+                    SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y + Rect.Bottom);
                     break;
                 case TAlignFrom.BR:
-                    if (DropDownArrow)
+                    if (DropDownArrow) ArrowAlign = TAlign.BR;
+                    int xBR = Point.X + (Rect.X + Rect.Width) - Width + Padding, yBR = Point.Y + Rect.Bottom;
+                    SetLocation(xBR, yBR);
+                    if (Collision)
                     {
-                        ArrowAlign = TAlign.BR;
-                        int x = Point.X + (Rect.X + Rect.Width) - Width + Padding, y = Point.Y + Rect.Bottom + ArrowSize;
-                        SetLocation(x, y);
-                        if (Collision)
+                        var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                        if (xBR < 0)
                         {
-                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                            if (x < 0)
-                            {
-                                ArrowAlign = TAlign.BL;
-                                x = Point.X + Rect.X - Padding;
-                                SetLocation(x, y);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        int x = Point.X + (Rect.X + Rect.Width) - Width + Padding, y = Point.Y + Rect.Bottom;
-                        SetLocation(x, y);
-                        if (Collision)
-                        {
-                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                            if (x < 0)
-                            {
-                                x = Point.X + Rect.X - Padding;
-                                SetLocation(x, y);
-                            }
+                            if (DropDownArrow) ArrowAlign = TAlign.BL;
+                            xBR = Point.X + Rect.X - Padding;
+                            SetLocation(xBR, yBR);
                         }
                     }
                     break;
                 case TAlignFrom.BL:
                 default:
-                    if (DropDownArrow)
+                    if (DropDownArrow) ArrowAlign = TAlign.BL;
+                    int x = Point.X + Rect.X - Padding, y = Point.Y + Rect.Bottom;
+                    SetLocation(x, y);
+                    if (Collision)
                     {
-                        int x = Point.X + Rect.X - Padding, y = Point.Y + Rect.Bottom + ArrowSize;
-                        ArrowAlign = TAlign.BL;
-                        SetLocation(x, y);
-                        if (Collision)
+                        var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+                        if (x > (screen.X + screen.Width) - TargetRect.Width)
                         {
-                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                            if (x > (screen.X + screen.Width) - TargetRect.Width)
-                            {
-                                ArrowAlign = TAlign.BR;
-                                x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
-                                SetLocation(x, y);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        int x = Point.X + Rect.X - Padding, y = Point.Y + Rect.Bottom;
-                        SetLocation(x, y);
-                        if (Collision)
-                        {
-                            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                            if (x > (screen.X + screen.Width) - TargetRect.Width)
-                            {
-                                x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
-                                SetLocation(x, y);
-                            }
+                            if (DropDownArrow) ArrowAlign = TAlign.BR;
+                            x = Point.X + (Rect.X + Rect.Width) - Width + Padding;
+                            SetLocation(x, y);
                         }
                     }
                     break;
             }
+        }
+
+        public PointF[]? CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Padding, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
+        {
+            CLocation(Point, Placement, DropDownArrow, Padding, Width, Height, Rect, ref Inverted, ref ArrowAlign, Collision);
+            if (Rect.Height >= Rect.Width)
+            {
+                int ArrowSize2 = ArrowSize * 2;
+                switch (Placement)
+                {
+                    case TAlignFrom.TL:
+                        if (ArrowAlign == TAlign.TR)
+                        {
+                            int x = Width - Rect.Width - Padding + Rect.Width / 2, y = Height - Padding;
+                            return new PointF[] { new PointF(x - ArrowSize, y), new PointF(x + ArrowSize, y), new PointF(x, y + ArrowSize) };
+                        }
+                        else
+                        {
+                            int x = Padding + Rect.Width / 2, y = Height - Padding;
+                            return new PointF[] { new PointF(x - ArrowSize, y), new PointF(x + ArrowSize, y), new PointF(x, y + ArrowSize) };
+                        }
+                    case TAlignFrom.TR:
+                        if (ArrowAlign == TAlign.TL)
+                        {
+                            int x = Padding + Rect.Width / 2, y = Height - Padding;
+                            return new PointF[] { new PointF(x - ArrowSize, y), new PointF(x + ArrowSize, y), new PointF(x, y + ArrowSize) };
+                        }
+                        else
+                        {
+                            int x = Width - Rect.Width - Padding + Rect.Width / 2, y = Height - Padding;
+                            return new PointF[] { new PointF(x - ArrowSize, y), new PointF(x + ArrowSize, y), new PointF(x, y + ArrowSize) };
+                        }
+                    case TAlignFrom.BR:
+                        if (ArrowAlign == TAlign.BL)
+                        {
+                            int x = Padding + Rect.Width / 2, y = Padding - ArrowSize;
+                            return new PointF[] { new PointF(x, y), new PointF(x - ArrowSize, y + ArrowSize), new PointF(x + ArrowSize, y + ArrowSize) };
+                        }
+                        else
+                        {
+                            int x = Width - Rect.Width - Padding + Rect.Width / 2, y = Padding - ArrowSize;
+                            return new PointF[] { new PointF(x, y), new PointF(x - ArrowSize, y + ArrowSize), new PointF(x + ArrowSize, y + ArrowSize) };
+                        }
+                    case TAlignFrom.BL:
+                    default:
+                        if (ArrowAlign == TAlign.BR)
+                        {
+                            int x = Width - Rect.Width - Padding + Rect.Width / 2, y = Padding - ArrowSize;
+                            return new PointF[] { new PointF(x, y), new PointF(x - ArrowSize, y + ArrowSize), new PointF(x + ArrowSize, y + ArrowSize) };
+                        }
+                        else
+                        {
+                            int x = Padding + Rect.Width / 2, y = Padding - ArrowSize;
+                            return new PointF[] { new PointF(x, y), new PointF(x - ArrowSize, y + ArrowSize), new PointF(x + ArrowSize, y + ArrowSize) };
+                        }
+                }
+            }
+            return null;
         }
     }
 }
