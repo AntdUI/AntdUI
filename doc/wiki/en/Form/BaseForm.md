@@ -2,32 +2,32 @@
 
 ## BaseForm
 
-支持DPI的基础原生窗口
+Basic native window supporting DPI
 
-### 属性
+### Propertie
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoHandDpi** | 自动处理DPI | bool | true |
-**Dark** | 深色模式 | bool | false |
-**Mode** | 色彩模式 | [TAMode](../Control/Enum#tamode) | Auto |
-**IsMax** 🔴 | 是否最大化 | bool | false |
+**AutoHandDpi** | Auto process DPI enable | bool | true |
+**Dark** | Dark Mode | bool | false |
+**Mode** | Color mode | [TAMode](../Control/Enum#tamode) | Auto |
+**IsMax** 🔴 | Is it maximizing | bool | false `ReadOnly` |
 
-### 方法
+### Method
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**Min** | 最小化 | void ||
-**Max** | 最大化 | void ||
-**MaxRestore** | 最大化/还原 | void ||
-**FullRestore** | 全屏/还原 | void ||
-**Full** | 全屏 | void ||
-**NoFull** | 取消全屏 | void ||
+**Min** | Minimize | void ||
+**Max** | Maximize | void ||
+**MaxRestore** | Maximize/Restore | void ||
+**FullRestore** | Full screen/Restore | void ||
+**Full** | Full screen | void ||
+**NoFull** | Cancel full screen | void ||
 ||||
-**Dpi** | 获取DPI | float ||
-**AutoDpi** | 处理DPI | void | Control control `控件` |
-**AutoDpi** | 处理DPI | void | float dpi, Control control `控件` |
+**Dpi** | Get DPI | float ||
+**AutoDpi** | DPI Scaling | void | Control control |
+**AutoDpi** | DPI Scaling | void | float dpi, Control control |
 ||||
-**DraggableMouseDown** | 拖动窗口 | void ||
-**ResizableMouseDown** | 调整窗口大小（鼠标按下） | bool ||
-**ResizableMouseMove** | 调整窗口大小（鼠标移动） | bool ||
+**DraggableMouseDown** | | void ||
+**ResizableMouseDown** | Adjust window size (mouse press) | bool ||
+**ResizableMouseMove** | Adjust window size (mouse movement) | bool ||

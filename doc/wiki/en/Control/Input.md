@@ -17,7 +17,7 @@ Input 输入框 👚
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **BackColor** | 背景颜色 | Color`?` | `null` |
-**BackExtend** 🔴 | 背景渐变色 | string`?` | `null` |
+**BackExtend** | 背景渐变色 | string`?` | `null` |
 **BackHover** | 悬停背景颜色 | Color`?` | `null` |
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
 ||||
@@ -29,7 +29,7 @@ Input 输入框 👚
 **BorderHover** | 悬停边框颜色 | Color`?` | `null` |
 **BorderActive** | 激活边框颜色 | Color`?` | `null` |
 ||||
-**SelectionColor** 🔴 | 选中颜色 | Color | 102, 0, 127, 255 |
+**SelectionColor** | 选中颜色 | Color | 102, 0, 127, 255 |
 ||||
 **CaretColor** 🔴 | 光标颜色 | Color`?` | `null` |
 **CaretSpeed** 🔴 | 光标速度 | int | 1000 |
@@ -40,7 +40,7 @@ Input 输入框 👚
 **Status** | 设置校验状态 | [TType](Enum#ttype) | None |
 ||||
 **AllowClear** | 支持清除 | bool | false |
-**AutoScroll** 🔴 | 显示滚动条 | bool | false |
+**AutoScroll** | 显示滚动条 | bool | false |
 **Text** | 文本 | string ||
 **EmojiFont** | Emoji字体 | string | Segoe UI Emoj |
 **AcceptsTab** | 多行编辑是否允许输入制表符 | bool | false |
@@ -59,6 +59,7 @@ Input 输入框 👚
 **MaxLength** | 文本最大长度 | int | 32767 |
 ||||
 **IconRatio** | 图标比例 | float | 0.7F |
+**IconGap** 🔴 | 图标与文字间距比例 | float | 0.25F |
 **Prefix** | 前缀 | Image`?` | `null` |
 **PrefixFore** 🔴 | 前缀前景色 | Color`?` | `null` |
 **PrefixSvg** | 前缀SVG | string`?` | `null` |

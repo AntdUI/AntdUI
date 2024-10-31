@@ -7,7 +7,7 @@ Collapse 折叠面板 👚
 > 可以折叠/展开的内容区域。
 
 - 默认属性：Items
-- 默认事件：Click
+- 默认事件：ExpandChanged
 
 ### 属性
 
@@ -26,6 +26,12 @@ Collapse 折叠面板 👚
 **Unique** | 只保持一个展开 | bool | false |
 ||||
 **Items** | 数据 `CollapseItem[]` | [CollapseItem[]](#collapseitem) | [] |
+
+### 事件 🔴
+
+名称 | 描述 | 返回值 | 参数 |
+:--|:--|:--|:--|
+**ExpandChanged** | Expand 属性值更改时发生 | void | [CollapseItem](#collapseitem) value `对象`, bool Expand `是否展开` |
 
 
 ### 数据

@@ -1,5 +1,17 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
+### `1.6.16` 2024-10-31
+- ➕ Button IconGap
+- ➕ Input IconGap
+- ➕ Segmented IconGap/BarPosition/AutoSize
+- ➕ Collapse ExpandChanged
+- ➕ Label ColorExtend
+- ✍️ Menu Lateral pull-down misalignment
+- ✍️ Button Invalid after disabling the parent container
+- ✍️ Optimize the dropdown trigger Hover cannot interact
+- ✍️ ColorPicker Align dropdown arrows
+- ✍️ Complete Badge
+
 ### `1.6.15` 2024-10-29
 - ➕ Button Flashing animation
 - ✍️ Model UserControl Abnormal width

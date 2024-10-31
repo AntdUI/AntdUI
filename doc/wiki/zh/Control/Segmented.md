@@ -15,6 +15,8 @@ Segmented 分段控制器 👚
 :--|:--|:--|:--|
 **OriginalBackColor** 🔴 | 原装背景颜色 | Color | Transparent |
 ||||
+**AutoSize** 🔴 | 自动大小 | bool | false |
+||||
 **Full** | 是否铺满 | bool | false |
 **Radius** | 圆角 | int | 6 |
 **Round** | 圆角样式 | bool | false |
@@ -26,11 +28,13 @@ Segmented 分段控制器 👚
 **BackHover** | 悬停背景颜色 | Color`?` | `null` |
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
 ||||
-**Gap** 🔴 | 间距 | int | 0 |
-**Vertical** 🔴 | 是否竖向 | bool | false |
+**Gap** | 间距 | int | 0 |
+**Vertical** | 是否竖向 | bool | false |
 **IconAlign** 🔴 | 图标对齐方向 | [TAlignMini](Enum#talignmini) | Top |
+**IconRatio** 🔴 | 图标比例 | float`?` | `null` |
+**IconGap** 🔴 | 图标与文字间距比例 | float | 0.2F |
 ||||
-**BarStyle** 🔴 | 线条样式 | bool | false |
+**BarPosition** 🔴 | 线条位置 | [TAlignMini](Enum#talignmini) | None |
 **BarSize** 🔴 | 条大小 | float | 3F |
 **BarPadding** 🔴 | 条边距 | int | 0 |
 **BarRadius** 🔴 | 条圆角 | int | 0 |

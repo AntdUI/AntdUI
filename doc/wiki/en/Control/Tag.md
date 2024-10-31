@@ -1,4 +1,6 @@
-﻿## Tag
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+
+## Tag
 
 Tag 标签页 👚
 

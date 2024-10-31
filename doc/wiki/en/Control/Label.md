@@ -14,6 +14,7 @@ Label 文本 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **ForeColor** | 文字颜色 | Color`?` | `null` |
+**ColorExtend** 🔴 | 文字渐变色 | string`?` | `null` |
 ||||
 **Text** | 文本 | string ||
 **TextAlign** | 文本位置 | ContentAlignment | MiddleLeft |
@@ -27,7 +28,7 @@ Label 文本 👚
 **Suffix** | 后缀文本 | string`?` | `null` |
 **SuffixSvg** 🔴 | 后缀SVG | string`?` | `null` |
 **SuffixColor** | 后缀颜色 | Color`?` | `null` |
-**Highlight** 🔴 | 缀标完全展示 | bool | true |
+**Highlight** | 缀标完全展示 | bool | true |
 **ShowTooltip** 🔴 | 超出文字显示 Tooltip | bool | true |
 ||||
 **Shadow** | 阴影大小 | int | 0 |
