@@ -380,13 +380,12 @@ namespace AntdUI
                                 {
                                     column.COLUMN.SortOrder = false;
                                     columnCheck.PARENT = this;
-                                    //全选
                                     column.RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
                                 }
                                 else
                                 {
-                                    if (column.COLUMN.SortOrder) column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2 - column.SortWidth, _rect.Height - gap2);
-                                    else column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                                    if (column.COLUMN.SortOrder) column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2 - column.SortWidth, _rect.Height);
+                                    else column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2, _rect.Height);
                                     if (x < column.RECT_REAL.Right) x = column.RECT_REAL.Right;
                                 }
                             }
@@ -459,7 +458,7 @@ namespace AntdUI
                             for (int i = 0; i < row.cells.Length - 1; i++)
                             {
                                 var it = row.cells[i];
-                                _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.RECT_REAL.Y, split, it.RECT_REAL.Height));
+                                _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.RECT.Y + gap, split, it.RECT.Height - gap2));
                             }
                         }
                     }

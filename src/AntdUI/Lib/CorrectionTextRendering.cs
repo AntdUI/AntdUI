@@ -165,7 +165,7 @@ namespace AntdUI
 
         static void CORE(Font font, string? text, ref RectangleF layoutRectangle)
         {
-            if (enable && text != null)
+            if (enable && text != null && (tmpEnglish.Count > 0 || tmpChinese.Count > 0))
             {
                 if (text.ContainsChinese())
                 {
