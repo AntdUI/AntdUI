@@ -87,7 +87,7 @@ namespace FontTest
                 {
                     using (var g_o = AntdUI.Helper.High(Graphics.FromImage(bmp_o)))
                     {
-                        g_o.DrawString(text, font, Brushes.Black, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
+                        g_o.String(text, font, Brushes.Black, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
                     }
 
                     AntdUI.CorrectionTextRendering.TextRealY(bmp_o, out var ry, out var rheight);
@@ -120,7 +120,7 @@ namespace FontTest
                         }
                         using (var brush = new SolidBrush(Color.Green))
                         {
-                            g.DrawString(text, font, brush, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
+                            g.String(text, font, brush, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
                         }
                     }
                     else
@@ -133,11 +133,11 @@ namespace FontTest
                         oy = xc;
                         using (var brush = new SolidBrush(Color.FromArgb(40, 255, 0, 0)))
                         {
-                            g.DrawString(text, font, brush, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
+                            g.String(text, font, brush, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
                         }
                         using (var brush = new SolidBrush(Color.Green))
                         {
-                            g.DrawString(text, font, brush, new Rectangle(0, xc, bmp.Width, bmp.Height), s_f);
+                            g.String(text, font, brush, new Rectangle(0, xc, bmp.Width, bmp.Height), s_f);
                         }
                     }
                 }
