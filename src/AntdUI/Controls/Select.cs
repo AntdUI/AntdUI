@@ -354,7 +354,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(ICanvas g, Rectangle rect_r)
         {
             if (showicon)
             {

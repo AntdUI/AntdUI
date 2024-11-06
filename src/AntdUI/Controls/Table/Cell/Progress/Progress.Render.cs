@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -24,9 +23,9 @@ namespace AntdUI
 {
     partial class CellProgress
     {
-        internal override void PaintBack(Graphics g) { }
+        internal override void PaintBack(ICanvas g) { }
 
-        internal override void Paint(Graphics g, Font font, SolidBrush fore)
+        internal override void Paint(ICanvas g, Font font, SolidBrush fore)
         {
             Color _color = Fill ?? Style.Db.Primary, _back = Back ?? Style.Db.FillSecondary;
             if (Shape == TShape.Circle)
@@ -53,10 +52,7 @@ namespace AntdUI
 
                 using (var path = Rect.RoundPath(radius))
                 {
-                    using (var brush = new SolidBrush(_back))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(_back, path);
                     if (Value > 0)
                     {
                         var _w = Rect.Width * Value;
@@ -64,10 +60,7 @@ namespace AntdUI
                         {
                             using (var path_prog = new RectangleF(Rect.X, Rect.Y, _w, Rect.Height).RoundPath(radius))
                             {
-                                using (var brush = new SolidBrush(_color))
-                                {
-                                    g.FillPath(brush, path_prog);
-                                }
+                                g.Fill(_color, path_prog);
                             }
                         }
                         else
@@ -84,7 +77,7 @@ namespace AntdUI
                                 using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
                                 {
                                     brush.TranslateTransform(Rect.X, Rect.Y);
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
                         }
@@ -93,9 +86,9 @@ namespace AntdUI
             }
         }
 
-        internal override Size GetSize(Graphics g, Font font, int gap, int gap2)
+        internal override Size GetSize(ICanvas g, Font font, int gap, int gap2)
         {
-            int height = (int)Math.Round(g.MeasureString(Config.NullText, font).Height);
+            int height = g.MeasureString(Config.NullText, font).Height;
             if (Shape == TShape.Circle)
             {
                 int size = gap2 + height;
@@ -109,7 +102,7 @@ namespace AntdUI
         }
 
         Rectangle Rect;
-        internal override void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        internal override void SetRect(ICanvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             int w = rect.Width - gap2, h = size.Height;
             if (Shape == TShape.Circle)

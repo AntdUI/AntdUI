@@ -571,7 +571,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size_t = g.MeasureString(Config.NullText, Font);
-                int text_heigth = (int)Math.Ceiling(size_t.Height), sp = (int)(text_heigth * icongap), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
+                int text_heigth = size_t.Height, sp = (int)(text_heigth * icongap), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
                 if (Full)
                 {
                     int len = items.Count;
@@ -715,7 +715,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Left:
-                                int imgsize_l = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_l = (int)Math.Ceiling(size_t.Height + gap2);
+                                int imgsize_l = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_l = size_t.Height + gap2;
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -725,7 +725,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Right:
-                                int imgsize_r = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_r = (int)Math.Ceiling(size_t.Height + gap2);
+                                int imgsize_r = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_r = size_t.Height + gap2;
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -735,7 +735,7 @@ namespace AntdUI
                                 }
                                 break;
                             default:
-                                int heigth = (int)Math.Ceiling(size_t.Height + gap);
+                                int heigth = size_t.Height + gap;
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -759,7 +759,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_t + gap2, rect.Height), imgsize_t);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        var size = g.MeasureString(it.Text, Font);
                                         it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, text_heigth, sp);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -773,7 +773,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_b + gap2, rect.Height), imgsize_b);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        var size = g.MeasureString(it.Text, Font);
                                         it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, text_heigth, sp);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -787,7 +787,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_l + gap2, rect.Height), imgsize_l);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        var size = g.MeasureString(it.Text, Font);
                                         it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_l + sp + gap2, rect.Height), imgsize_l, sp, gap);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -801,7 +801,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_r + gap2, rect.Height), imgsize_r);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        var size = g.MeasureString(it.Text, Font);
                                         it.SetRectRight(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_r + sp + gap2, rect.Height), imgsize_r, sp, gap);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -811,7 +811,7 @@ namespace AntdUI
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    var size = g.MeasureString(it.Text, Font).Size();
+                                    var size = g.MeasureString(it.Text, Font);
                                     it.SetRectNone(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height));
                                     x += it.Rect.Width + _igap;
                                 }
@@ -845,10 +845,7 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             using (var path = Rect.RoundPath(_radius, Round))
             {
-                using (var brush = new SolidBrush(back ?? Style.Db.BgLayout))
-                {
-                    g.FillPath(brush, path);
-                }
+                g.Fill(back ?? Style.Db.BgLayout, path);
             }
             var item_text = new System.Collections.Generic.List<SegmentedItem>(items.Count);
             int _hover = -1;
@@ -863,10 +860,7 @@ namespace AntdUI
                     {
                         using (var path = TabSelectRect.RoundPath(_radius, Round))
                         {
-                            using (var brush = new SolidBrush(color_active))
-                            {
-                                g.FillPath(brush, path);
-                            }
+                            g.Fill(color_active, path);
                         }
                     }
                     else
@@ -877,19 +871,10 @@ namespace AntdUI
                         {
                             using (var path = rect.RoundPath(BarRadius * Config.Dpi))
                             {
-                                using (var brush = new SolidBrush(color_active))
-                                {
-                                    g.FillPath(brush, path);
-                                }
+                                g.Fill(color_active, path);
                             }
                         }
-                        else
-                        {
-                            using (var brush = new SolidBrush(color_active))
-                            {
-                                g.FillRectangle(brush, rect);
-                            }
-                        }
+                        else g.Fill(color_active, rect);
                     }
                 }
                 else if (it.Hover)
@@ -897,10 +882,7 @@ namespace AntdUI
                     _hover = i;
                     using (var path = it.Rect.RoundPath(_radius, Round))
                     {
-                        using (var brush = new SolidBrush(BackHover ?? Style.Db.HoverBg))
-                        {
-                            g.FillPath(brush, path);
-                        }
+                        g.Fill(BackHover ?? Style.Db.HoverBg, path);
                     }
                 }
                 item_text.Add(it);
@@ -912,10 +894,7 @@ namespace AntdUI
                 {
                     using (var path = AnimationBarValue.RoundPath(_radius, Round))
                     {
-                        using (var brush = new SolidBrush(color_active))
-                        {
-                            g.FillPath(brush, path);
-                        }
+                        g.Fill(color_active, path);
                     }
                 }
                 else
@@ -926,19 +905,10 @@ namespace AntdUI
                     {
                         using (var path = rect.RoundPath(BarRadius * Config.Dpi))
                         {
-                            using (var brush = new SolidBrush(color_active))
-                            {
-                                g.FillPath(brush, path);
-                            }
+                            g.Fill(color_active, path);
                         }
                     }
-                    else
-                    {
-                        using (var brush = new SolidBrush(color_active))
-                        {
-                            g.FillRectangle(brush, rect);
-                        }
-                    }
+                    else g.Fill(color_active, rect);
                 }
             }
             using (var brush = new SolidBrush(Enabled ? (fore ?? Style.Db.TextSecondary) : Style.Db.TextQuaternary))
@@ -951,7 +921,7 @@ namespace AntdUI
                         using (var brush_active = new SolidBrush(Enabled ? (foreactive ?? Style.Db.Text) : Style.Db.TextQuaternary))
                         {
                             if (PaintImg(g, it, brush_active.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
+                            g.String(it.Text, Font, brush_active, it.RectText, s_f);
                         }
                     }
                     else
@@ -961,13 +931,13 @@ namespace AntdUI
                             using (var brush_active = new SolidBrush(ForeHover ?? Style.Db.HoverColor))
                             {
                                 PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                                g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
+                                g.String(it.Text, Font, brush_active, it.RectText, s_f);
                             }
                         }
                         else
                         {
                             PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush, it.RectText, s_f);
+                            g.String(it.Text, Font, brush, it.RectText, s_f);
                         }
                     }
                 }
@@ -976,13 +946,13 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        bool PaintImg(Graphics g, SegmentedItem it, Color color, string? svg, Image? bmp)
+        bool PaintImg(ICanvas g, SegmentedItem it, Color color, string? svg, Image? bmp)
         {
             if (svg != null)
             {
                 if (g.GetImgExtend(svg, it.RectImg, color)) return false;
             }
-            else if (bmp != null) { g.DrawImage(bmp, it.RectImg); return false; }
+            else if (bmp != null) { g.Image(bmp, it.RectImg); return false; }
             return true;
         }
 

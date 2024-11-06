@@ -500,7 +500,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintBadge(Graphics g, TabPage page, Rectangle rect)
+        void PaintBadge(ICanvas g, TabPage page, Rectangle rect)
         {
             if (page.Badge != null)
             {
@@ -512,7 +512,7 @@ namespace AntdUI
                     {
                         if (string.IsNullOrEmpty(page.Badge) || page.Badge == "" || page.Badge == " ")
                         {
-                            var size = (int)Math.Floor(g.MeasureString(Config.NullText, font).Width / 2);
+                            var size = g.MeasureString(Config.NullText, font).Width / 2;
                             var rect_badge = new RectangleF(rect.Right - size - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, size, size);
                             using (var brush = new SolidBrush(color))
                             {
@@ -538,7 +538,7 @@ namespace AntdUI
                                         g.DrawEllipse(pen, rect_badge);
                                     }
                                 }
-                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, s_f);
+                                g.String(page.Badge, font, brush_fore, rect_badge, s_f);
                             }
                             else
                             {
@@ -548,14 +548,14 @@ namespace AntdUI
                                 {
                                     using (var path = rect_badge.RoundPath(rect_badge.Height))
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         using (var pen = new Pen(brush_fore.Color, borsize))
                                         {
-                                            g.DrawPath(pen, path);
+                                            g.Draw(pen, path);
                                         }
                                     }
                                 }
-                                g.DrawStr(page.Badge, font, brush_fore, rect_badge, s_f);
+                                g.String(page.Badge, font, brush_fore, rect_badge, s_f);
                             }
                         }
                     }
@@ -894,7 +894,7 @@ namespace AntdUI
         }
 
         Bitmap? bitblock_l = null, bitblock_r = null;
-        public virtual void PaintExceed(Graphics g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceed(ICanvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             switch (typExceed)
             {
@@ -913,7 +913,7 @@ namespace AntdUI
             }
         }
 
-        public virtual void PaintExceedButton(Graphics g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceedButton(ICanvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             g.ResetClip();
             g.ResetTransform();
@@ -940,13 +940,13 @@ namespace AntdUI
                                     {
                                         using (var path = new Rectangle(0, 0, bitblock_l.Width, gap).RoundPath(gap, false, false, true, true))
                                         {
-                                            g_bmp.FillPath(brush, path);
+                                            g_bmp.Fill(brush, path);
                                         }
                                     }
                                 }
                                 Helper.Blur(bitblock_l, gap);
                             }
-                            g.DrawImage(bitblock_l, rect_l, .1F);
+                            g.Image(bitblock_l, rect_l, .1F);
                         }
                         if (scroll_max != scroll_y)
                         {
@@ -961,13 +961,13 @@ namespace AntdUI
                                     {
                                         using (var path = new Rectangle(0, gap, bitblock_r.Width, gap).RoundPath(gap, true, true, false, false))
                                         {
-                                            g_bmp.FillPath(brush, path);
+                                            g_bmp.Fill(brush, path);
                                         }
                                     }
                                 }
                                 Helper.Blur(bitblock_r, gap);
                             }
-                            g.DrawImage(bitblock_r, rect_r, .1F);
+                            g.Image(bitblock_r, rect_r, .1F);
                         }
                         var rect_ico = new Rectangle(rect_cr.X + (rect_cr.Width - icosize) / 2, rect_cr.Y + (rect_cr.Height - icosize) / 2, icosize, icosize);
                         g.GetImgExtend(SvgDb.IcoMore, rect_ico, color);
@@ -995,13 +995,13 @@ namespace AntdUI
                                     {
                                         using (var path = new Rectangle(0, 0, gap, bitblock_l.Height).RoundPath(gap, false, true, true, false))
                                         {
-                                            g_bmp.FillPath(brush, path);
+                                            g_bmp.Fill(brush, path);
                                         }
                                     }
                                 }
                                 Helper.Blur(bitblock_l, gap);
                             }
-                            g.DrawImage(bitblock_l, rect_l, .1F);
+                            g.Image(bitblock_l, rect_l, .1F);
                         }
                         if (scroll_max != scroll_x)
                         {
@@ -1016,13 +1016,13 @@ namespace AntdUI
                                     {
                                         using (var path = new Rectangle(gap, 0, gap, bitblock_r.Height).RoundPath(gap, true, false, false, true))
                                         {
-                                            g_bmp.FillPath(brush, path);
+                                            g_bmp.Fill(brush, path);
                                         }
                                     }
                                 }
                                 Helper.Blur(bitblock_r, gap);
                             }
-                            g.DrawImage(bitblock_r, rect_r, .1F);
+                            g.Image(bitblock_r, rect_r, .1F);
                         }
                         var rect_ico = new Rectangle(rect_cr.X + (rect_cr.Width - icosize) / 2, rect_cr.Y + (rect_cr.Height - icosize) / 2, icosize, icosize);
                         g.GetImgExtend(SvgDb.IcoMore, rect_ico, color);
@@ -1030,7 +1030,7 @@ namespace AntdUI
                     break;
             }
         }
-        public virtual void PaintExceedLR(Graphics g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceedLR(ICanvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             g.ResetClip();
             g.ResetTransform();
@@ -1053,12 +1053,12 @@ namespace AntdUI
                                 {
                                     if (hover_l)
                                     {
-                                        g.FillPath(brush_hover, path);
+                                        g.Fill(brush_hover, path);
                                         g.DrawLines(pen_hover, TAlignMini.Top.TriangleLines(rect_l, .5F));
                                     }
                                     else
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_l, .5F));
                                     }
                                 }
@@ -1070,12 +1070,12 @@ namespace AntdUI
                                 {
                                     if (hover_r)
                                     {
-                                        g.FillPath(brush_hover, path);
+                                        g.Fill(brush_hover, path);
                                         g.DrawLines(pen_hover, TAlignMini.Bottom.TriangleLines(rect_r, .5F));
                                     }
                                     else
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_r, .5F));
                                     }
                                 }
@@ -1101,12 +1101,12 @@ namespace AntdUI
                                 {
                                     if (hover_l)
                                     {
-                                        g.FillPath(brush_hover, path);
+                                        g.Fill(brush_hover, path);
                                         g.DrawLines(pen_hover, TAlignMini.Left.TriangleLines(rect_l, .5F));
                                     }
                                     else
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         g.DrawLines(pen, TAlignMini.Left.TriangleLines(rect_l, .5F));
                                     }
                                 }
@@ -1118,12 +1118,12 @@ namespace AntdUI
                                 {
                                     if (hover_r)
                                     {
-                                        g.FillPath(brush_hover, path);
+                                        g.Fill(brush_hover, path);
                                         g.DrawLines(pen_hover, TAlignMini.Right.TriangleLines(rect_r, .5F));
                                     }
                                     else
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_r, .5F));
                                     }
                                 }
@@ -1133,7 +1133,7 @@ namespace AntdUI
                     break;
             }
         }
-        public virtual void PaintExceedLR_Shadow(Graphics g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceedLR_Shadow(ICanvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             g.ResetClip();
             g.ResetTransform();
@@ -1162,23 +1162,23 @@ namespace AntdUI
                                     {
                                         using (var path = new Rectangle(0, 0, bitblock_l.Width, gap).RoundPath(gap, false, false, true, true))
                                         {
-                                            g_bmp.FillPath(brush, path);
+                                            g_bmp.Fill(brush, path);
                                         }
                                     }
                                     Helper.Blur(bitblock_l, gap);
                                 }
-                                g.DrawImage(bitblock_l, Rect_l, .1F);
+                                g.Image(bitblock_l, Rect_l, .1F);
 
                                 using (var path = Helper.RoundPath(rect_l, radius, true, true, false, false))
                                 {
                                     if (hover_l)
                                     {
-                                        g.FillPath(brush_hover, path);
+                                        g.Fill(brush_hover, path);
                                         g.DrawLines(pen_hover, TAlignMini.Top.TriangleLines(rect_l, .5F));
                                     }
                                     else
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_l, .5F));
                                     }
                                 }
@@ -1196,23 +1196,23 @@ namespace AntdUI
                                     {
                                         using (var path = new Rectangle(0, gap, bitblock_r.Width, gap).RoundPath(gap, true, true, false, false))
                                         {
-                                            g_bmp.FillPath(brush, path);
+                                            g_bmp.Fill(brush, path);
                                         }
                                     }
                                     Helper.Blur(bitblock_r, gap);
                                 }
-                                g.DrawImage(bitblock_r, Rect_r, .1F);
+                                g.Image(bitblock_r, Rect_r, .1F);
 
                                 using (var path = Helper.RoundPath(rect_r, radius, false, false, true, true))
                                 {
                                     if (hover_r)
                                     {
-                                        g.FillPath(brush_hover, path);
+                                        g.Fill(brush_hover, path);
                                         g.DrawLines(pen_hover, TAlignMini.Bottom.TriangleLines(rect_r, .5F));
                                     }
                                     else
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_r, .5F));
                                     }
                                 }
@@ -1244,23 +1244,23 @@ namespace AntdUI
                                     {
                                         using (var path = new Rectangle(0, 0, gap, bitblock_l.Height).RoundPath(gap, false, true, true, false))
                                         {
-                                            g_bmp.FillPath(brush, path);
+                                            g_bmp.Fill(brush, path);
                                         }
                                     }
                                     Helper.Blur(bitblock_l, gap);
                                 }
-                                g.DrawImage(bitblock_l, Rect_l, .1F);
+                                g.Image(bitblock_l, Rect_l, .1F);
 
                                 using (var path = Helper.RoundPath(rect_l, radius, true, false, false, true))
                                 {
                                     if (hover_l)
                                     {
-                                        g.FillPath(brush_hover, path);
+                                        g.Fill(brush_hover, path);
                                         g.DrawLines(pen_hover, TAlignMini.Left.TriangleLines(rect_l, .5F));
                                     }
                                     else
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         g.DrawLines(pen, TAlignMini.Left.TriangleLines(rect_l, .5F));
                                     }
                                 }
@@ -1278,23 +1278,23 @@ namespace AntdUI
                                     {
                                         using (var path = new Rectangle(gap, 0, gap, bitblock_r.Height).RoundPath(gap, true, false, false, true))
                                         {
-                                            g_bmp.FillPath(brush, path);
+                                            g_bmp.Fill(brush, path);
                                         }
                                     }
                                     Helper.Blur(bitblock_r, gap);
                                 }
-                                g.DrawImage(bitblock_r, Rect_r, .1F);
+                                g.Image(bitblock_r, Rect_r, .1F);
 
                                 using (var path = Helper.RoundPath(rect_r, radius, false, true, true, false))
                                 {
                                     if (hover_r)
                                     {
-                                        g.FillPath(brush_hover, path);
+                                        g.Fill(brush_hover, path);
                                         g.DrawLines(pen_hover, TAlignMini.Right.TriangleLines(rect_r, .5F));
                                     }
                                     else
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_r, .5F));
                                     }
                                 }

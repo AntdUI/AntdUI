@@ -818,7 +818,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(button.Text ?? Config.NullText, Font).Size();
+                    var font_size = g.MeasureString(button.Text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
                     if (button.Shape == TShape.Circle || string.IsNullOrEmpty(button.Text))
                     {
@@ -1944,11 +1944,11 @@ namespace AntdUI
 
         #region 渲染
 
-        public void Paint(Graphics g, Rectangle rect, Rectangle rect_read)
+        public void Paint(ICanvas g, Rectangle rect, Rectangle rect_read)
         {
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
 
-            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, shape);
+            if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
 
             bool is_default = type == TTypeMini.Default;
             if (toggle && typeToggle.HasValue) is_default = typeToggle.Value == TTypeMini.Default;
@@ -1968,13 +1968,10 @@ namespace AntdUI
                             else maxh = maxw;
                         }
                         float alpha = 100 * (1F - AnimationClickValue);
-                        using (var brush = new SolidBrush(Helper.ToColor(alpha, _color)))
+                        using (var path_click = new RectangleF(rect.X + (rect.Width - maxw) / 2F, rect.Y + (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, shape))
                         {
-                            using (var path_click = new RectangleF(rect.X + (rect.Width - maxw) / 2F, rect.Y + (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, shape))
-                            {
-                                path_click.AddPath(path, false);
-                                g.FillPath(brush, path_click);
-                            }
+                            path_click.AddPath(path, false);
+                            g.Fill(Helper.ToColor(alpha, _color), path_click);
                         }
                     }
 
@@ -1991,19 +1988,13 @@ namespace AntdUI
                                 using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                                 {
                                     path_shadow.AddPath(path, false);
-                                    using (var brush = new SolidBrush(Style.Db.FillQuaternary))
-                                    {
-                                        g.FillPath(brush, path_shadow);
-                                    }
+                                    g.Fill(Style.Db.FillQuaternary, path_shadow);
                                 }
                             }
 
                             #endregion
 
-                            using (var brush = new SolidBrush(defaultback ?? Style.Db.DefaultBg))
-                            {
-                                g.FillPath(brush, path);
-                            }
+                            g.Fill(defaultback ?? Style.Db.DefaultBg, path);
                         }
                         if (borderWidth > 0)
                         {
@@ -2013,7 +2004,7 @@ namespace AntdUI
                             {
                                 using (var brush = new Pen(_back_active, border))
                                 {
-                                    g.DrawPath(brush, path);
+                                    g.Draw(brush, path);
                                 }
                                 PaintTextLoading(g, text, _back_active, rect_read, control.Enabled);
                             }
@@ -2022,11 +2013,11 @@ namespace AntdUI
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
                                 using (var brush = new Pen(Style.Db.DefaultBorder, border))
                                 {
-                                    g.DrawPath(brush, path);
+                                    g.Draw(brush, path);
                                 }
                                 using (var brush = new Pen(colorHover, border))
                                 {
-                                    g.DrawPath(brush, path);
+                                    g.Draw(brush, path);
                                 }
                                 PaintTextLoading(g, text, _fore, colorHover, rect_read);
                             }
@@ -2034,7 +2025,7 @@ namespace AntdUI
                             {
                                 using (var brush = new Pen(_back_hover, border))
                                 {
-                                    g.DrawPath(brush, path);
+                                    g.Draw(brush, path);
                                 }
                                 PaintTextLoading(g, text, _back_hover, rect_read, control.Enabled);
                             }
@@ -2044,14 +2035,14 @@ namespace AntdUI
                                 {
                                     using (var brush = new Pen(colorBlink.Value, border))
                                     {
-                                        g.DrawPath(brush, path);
+                                        g.Draw(brush, path);
                                     }
                                 }
                                 else
                                 {
                                     using (var brush = new Pen(defaultbordercolor ?? Style.Db.DefaultBorder, border))
                                     {
-                                        g.DrawPath(brush, path);
+                                        g.Draw(brush, path);
                                     }
                                 }
                                 PaintTextLoading(g, text, _fore, rect_read, control.Enabled);
@@ -2059,27 +2050,9 @@ namespace AntdUI
                         }
                         else
                         {
-                            if (MouseDown)
-                            {
-                                using (var brush = new SolidBrush(_back_active))
-                                {
-                                    g.FillPath(brush, path);
-                                }
-                            }
-                            else if (AnimationHover)
-                            {
-                                using (var brush = new SolidBrush(Helper.ToColor(AnimationHoverValue, _back_hover)))
-                                {
-                                    g.FillPath(brush, path);
-                                }
-                            }
-                            else if (MouseHover)
-                            {
-                                using (var brush = new SolidBrush(_back_hover))
-                                {
-                                    g.FillPath(brush, path);
-                                }
-                            }
+                            if (MouseDown) g.Fill(_back_active, path);
+                            else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
+                            else if (MouseHover) g.Fill(_back_hover, path);
                             PaintLoadingWave(g, path, rect_read);
                             PaintTextLoading(g, text, _fore, rect_read, control.Enabled);
                         }
@@ -2087,10 +2060,7 @@ namespace AntdUI
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
-                        using (var brush = new SolidBrush(Style.Db.FillTertiary))
-                        {
-                            g.FillPath(brush, path);
-                        }
+                        g.Fill(Style.Db.FillTertiary, path);
                         PaintTextLoading(g, text, Style.Db.TextQuaternary, rect_read, control.Enabled);
                     }
                 }
@@ -2111,13 +2081,10 @@ namespace AntdUI
                             else maxh = maxw;
                         }
                         float alpha = 100 * (1F - AnimationClickValue);
-                        using (var brush = new SolidBrush(Helper.ToColor(alpha, _back)))
+                        using (var path_click = new RectangleF(rect.X + (rect.Width - maxw) / 2F, rect.Y + (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, shape))
                         {
-                            using (var path_click = new RectangleF(rect.X + (rect.Width - maxw) / 2F, rect.Y + (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, shape))
-                            {
-                                path_click.AddPath(path, false);
-                                g.FillPath(brush, path_click);
-                            }
+                            path_click.AddPath(path, false);
+                            g.Fill(Helper.ToColor(alpha, _back), path_click);
                         }
                     }
 
@@ -2136,7 +2103,7 @@ namespace AntdUI
                             {
                                 using (var brush = new Pen(_back_active, border))
                                 {
-                                    g.DrawPath(brush, path);
+                                    g.Draw(brush, path);
                                 }
                                 PaintTextLoading(g, text, _back_active, rect_read, control.Enabled);
                             }
@@ -2145,11 +2112,11 @@ namespace AntdUI
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
                                 using (var brush = new Pen(control.Enabled ? _back : Style.Db.FillTertiary, border))
                                 {
-                                    g.DrawPath(brush, path);
+                                    g.Draw(brush, path);
                                 }
                                 using (var brush = new Pen(colorHover, border))
                                 {
-                                    g.DrawPath(brush, path);
+                                    g.Draw(brush, path);
                                 }
                                 PaintTextLoading(g, text, _back, colorHover, rect_read);
                             }
@@ -2157,7 +2124,7 @@ namespace AntdUI
                             {
                                 using (var brush = new Pen(_back_hover, border))
                                 {
-                                    g.DrawPath(brush, path);
+                                    g.Draw(brush, path);
                                 }
                                 PaintTextLoading(g, text, _back_hover, rect_read, control.Enabled);
                             }
@@ -2171,7 +2138,7 @@ namespace AntdUI
                                         {
                                             using (var brush = new Pen(brushback, border))
                                             {
-                                                g.DrawPath(brush, path);
+                                                g.Draw(brush, path);
                                             }
                                         }
                                     }
@@ -2181,7 +2148,7 @@ namespace AntdUI
                                         {
                                             using (var brush = new Pen(brushback, border))
                                             {
-                                                g.DrawPath(brush, path);
+                                                g.Draw(brush, path);
                                             }
                                         }
                                     }
@@ -2190,7 +2157,7 @@ namespace AntdUI
                                 {
                                     using (var brush = new Pen(Style.Db.FillTertiary, border))
                                     {
-                                        g.DrawPath(brush, path);
+                                        g.Draw(brush, path);
                                     }
                                 }
                                 PaintTextLoading(g, text, control.Enabled ? _back : Style.Db.TextQuaternary, rect_read, control.Enabled);
@@ -2209,10 +2176,7 @@ namespace AntdUI
                             using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                             {
                                 path_shadow.AddPath(path, false);
-                                using (var brush = new SolidBrush(_back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F)))
-                                {
-                                    g.FillPath(brush, path_shadow);
-                                }
+                                g.Fill(_back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), path_shadow);
                             }
                         }
 
@@ -2226,47 +2190,22 @@ namespace AntdUI
                             {
                                 using (var brush = backExtendToggle.BrushEx(rect_read, _back))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
                             else
                             {
                                 using (var brush = backExtend.BrushEx(rect_read, _back))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
                         }
-                        else
-                        {
-                            using (var brush = new SolidBrush(Style.Db.FillTertiary))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
+                        else g.Fill(Style.Db.FillTertiary, path);
 
-                        if (MouseDown)
-                        {
-                            using (var brush = new SolidBrush(_back_active))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
-                        else if (AnimationHover)
-                        {
-                            var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                            using (var brush = new SolidBrush(colorHover))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
-                        else if (MouseHover)
-                        {
-                            using (var brush = new SolidBrush(_back_hover))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
+                        if (MouseDown) g.Fill(_back_active, path);
+                        else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
+                        else if (MouseHover) g.Fill(_back_hover, path);
 
                         #endregion
 
@@ -2279,13 +2218,13 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        void PaintLoadingWave(Graphics g, GraphicsPath path, Rectangle rect)
+        void PaintLoadingWave(ICanvas g, GraphicsPath path, Rectangle rect)
         {
             if (loading && LoadingWaveValue > 0)
             {
                 using (var brush = new SolidBrush(LoadingWaveColor ?? Style.Db.Fill))
                 {
-                    if (LoadingWaveValue >= 1) g.FillPath(brush, path);
+                    if (LoadingWaveValue >= 1) g.Fill(brush, path);
                     else if (LoadingWaveCount > 0)
                     {
                         var state = g.Save();
@@ -2314,7 +2253,7 @@ namespace AntdUI
                                         to = !to;
                                     }
                                     path_line.AddCurve(line.ToArray());
-                                    g.FillPath(brush, path_line);
+                                    g.Fill(brush, path_line);
                                 }
                             }
                         }
@@ -2340,7 +2279,7 @@ namespace AntdUI
                                         to = !to;
                                     }
                                     path_line.AddCurve(line.ToArray());
-                                    g.FillPath(brush, path_line);
+                                    g.Fill(brush, path_line);
                                 }
                             }
                         }
@@ -2355,7 +2294,7 @@ namespace AntdUI
                             {
                                 var state = g.Save();
                                 g.SetClip(new Rectangle(rect.X, rect.Y + rect.Height - pvalue, rect.Width, pvalue));
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                                 g.Restore(state);
                             }
                         }
@@ -2366,7 +2305,7 @@ namespace AntdUI
                             {
                                 var state = g.Save();
                                 g.SetClip(new Rectangle(rect.X, rect.Y, pvalue, rect.Height));
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                                 g.Restore(state);
                             }
                         }
@@ -2374,9 +2313,9 @@ namespace AntdUI
                 }
             }
         }
-        void PaintTextLoading(Graphics g, string? text, Color color, Rectangle rect_read, bool enabled)
+        void PaintTextLoading(ICanvas g, string? text, Color color, Rectangle rect_read, bool enabled)
         {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font()).Size();
+            var font_size = g.MeasureString(text ?? Config.NullText, Font());
             if (text == null)
             {
                 //没有文字
@@ -2496,13 +2435,13 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawStr(text, Font(), brush, rect_text, stringFormat);
+                    g.String(text, Font(), brush, rect_text, stringFormat);
                 }
             }
         }
-        void PaintTextLoading(Graphics g, string? text, Color color, Color colorHover, Rectangle rect_read)
+        void PaintTextLoading(ICanvas g, string? text, Color color, Color colorHover, Rectangle rect_read)
         {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font()).Size();
+            var font_size = g.MeasureString(text ?? Config.NullText, Font());
             if (text == null)
             {
                 var rect = GetIconRectCenter(font_size, rect_read);
@@ -2658,16 +2597,16 @@ namespace AntdUI
                 using (var brush = new SolidBrush(color))
                 using (var brushHover = new SolidBrush(colorHover))
                 {
-                    g.DrawStr(text, Font(), brush, rect_text, stringFormat);
-                    g.DrawStr(text, Font(), brushHover, rect_text, stringFormat);
+                    g.String(text, Font(), brush, rect_text, stringFormat);
+                    g.String(text, Font(), brushHover, rect_text, stringFormat);
                 }
             }
         }
 
-        internal static Rectangle RectAlignL(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l)
+        internal static Rectangle RectAlignL(ICanvas g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l)
         {
             int font_Height = font_size.Height;
-            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
+            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Height;
             int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap);
             Rectangle rect_text;
             switch (iconPosition)
@@ -2696,10 +2635,10 @@ namespace AntdUI
             }
             return rect_text;
         }
-        internal static Rectangle RectAlignLR(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l, out Rectangle rect_r)
+        internal static Rectangle RectAlignLR(ICanvas g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l, out Rectangle rect_r)
         {
             int font_Height = font_size.Height;
-            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
+            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Height;
             int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_size.Height * .4F);
             Rectangle rect_text;
             switch (iconPosition)
@@ -2732,10 +2671,10 @@ namespace AntdUI
             }
             return rect_text;
         }
-        internal static Rectangle RectAlignR(Graphics g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_r)
+        internal static Rectangle RectAlignR(ICanvas g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_r)
         {
             int font_Height = font_size.Height;
-            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Size().Height;
+            if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Height;
             int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_size.Height * .4F), rsps = icon_size + sp;
             Rectangle rect_text;
             switch (iconPosition)
@@ -2803,7 +2742,7 @@ namespace AntdUI
         /// <param name="rect_o">区域</param>
         /// <param name="hastxt">包含文本</param>
         /// <param name="enabled">使能</param>
-        bool PaintIcon(Graphics g, Color? color, Rectangle rect_o, bool hastxt, bool enabled)
+        bool PaintIcon(ICanvas g, Color? color, Rectangle rect_o, bool hastxt, bool enabled)
         {
             var rect = hastxt ? GetIconRect(rect_o) : rect_o;
             if (AnimationIconHover)
@@ -2863,10 +2802,10 @@ namespace AntdUI
             else return rectl;
         }
 
-        bool PaintCoreIcon(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => toggle ? PaintCoreIcon(g, iconToggle, iconSvgToggle, rect, color, opacity) : PaintCoreIcon(g, icon, iconSvg, rect, color, opacity);
-        bool PaintCoreIconHover(Graphics g, Rectangle rect, Color? color, float opacity = 1F) => toggle ? PaintCoreIcon(g, ToggleIconHover, ToggleIconHoverSvg, rect, color, opacity) : PaintCoreIcon(g, IconHover, IconHoverSvg, rect, color, opacity);
+        bool PaintCoreIcon(ICanvas g, Rectangle rect, Color? color, float opacity = 1F) => toggle ? PaintCoreIcon(g, iconToggle, iconSvgToggle, rect, color, opacity) : PaintCoreIcon(g, icon, iconSvg, rect, color, opacity);
+        bool PaintCoreIconHover(ICanvas g, Rectangle rect, Color? color, float opacity = 1F) => toggle ? PaintCoreIcon(g, ToggleIconHover, ToggleIconHoverSvg, rect, color, opacity) : PaintCoreIcon(g, IconHover, IconHoverSvg, rect, color, opacity);
 
-        bool PaintCoreIcon(Graphics g, Image? icon, string? iconSvg, Rectangle rect, Color? color, float opacity = 1F)
+        bool PaintCoreIcon(ICanvas g, Image? icon, string? iconSvg, Rectangle rect, Color? color, float opacity = 1F)
         {
             if (iconSvg != null)
             {
@@ -2874,14 +2813,14 @@ namespace AntdUI
                 {
                     if (_bmp != null)
                     {
-                        g.DrawImage(_bmp, rect, opacity);
+                        g.Image(_bmp, rect, opacity);
                         return true;
                     }
                 }
             }
             else if (icon != null)
             {
-                g.DrawImage(icon, rect, opacity);
+                g.Image(icon, rect, opacity);
                 return true;
             }
             return false;

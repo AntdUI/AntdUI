@@ -46,14 +46,14 @@ namespace ChineseCalendar
                 throw new ArgumentOutOfRangeException(nameof(day), $"[1,{maxDays}]", "日期超出范围");
             }
 
-            this.Name = name;
-            this.Month = month;
-            this.Day = day;
-            this.FirstYear = firstYear;
-            this.Description = description;
-            if (this.FirstYear.HasValue)
+            Name = name;
+            Month = month;
+            Day = day;
+            FirstYear = firstYear;
+            Description = description;
+            if (FirstYear.HasValue)
             {
-                this.First = new DateTime(firstYear, month, day);
+                First = new DateTime(firstYear, month, day);
             }
         }
         /// <summary> 元旦 </summary>
@@ -103,7 +103,7 @@ namespace ChineseCalendar
         /// <inheritdoc/>
         public override bool IsThisFestival(DateTime date)
         {
-            return date.Month == this.Month && date.Day == this.Day;
+            return date.Month == Month && date.Day == Day;
         }
     }
 }

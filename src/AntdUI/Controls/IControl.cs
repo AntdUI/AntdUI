@@ -323,18 +323,18 @@ namespace AntdUI
 
         #region 渲染文本
 
-        internal void PaintText(Graphics g, string? text, Rectangle path, StringFormat stringFormat, bool enabled)
+        internal void PaintText(ICanvas g, string? text, Rectangle path, StringFormat stringFormat, bool enabled)
         {
             using (var brush = new SolidBrush(enabled ? ForeColor : Style.Db.TextQuaternary))
             {
-                g.DrawStr(text, Font, brush, path, stringFormat);
+                g.String(text, Font, brush, path, stringFormat);
             }
         }
-        internal void PaintText(Graphics g, string? text, RectangleF path, StringFormat stringFormat, bool enabled)
+        internal void PaintText(ICanvas g, string? text, RectangleF path, StringFormat stringFormat, bool enabled)
         {
             using (var brush = new SolidBrush(enabled ? ForeColor : Style.Db.TextQuaternary))
             {
-                g.DrawStr(text, Font, brush, path, stringFormat);
+                g.String(text, Font, brush, path, stringFormat);
             }
         }
 

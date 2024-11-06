@@ -36,12 +36,12 @@ namespace ChineseCalendar
             }
             try
             {
-                this.Name = name;
-                this.Year = year;
-                this.Month = month;
-                this.Day = day;
-                this.Description = description;
-                this.First = this.Date = new DateTime(year, month, day);
+                Name = name;
+                Year = year;
+                Month = month;
+                Day = day;
+                Description = description;
+                First = Date = new DateTime(year, month, day);
             }
             catch (Exception ex)
             {
@@ -61,12 +61,12 @@ namespace ChineseCalendar
             {
                 throw new ArgumentNullException(nameof(name));
             }
-            this.Name = name;
-            this.Year = date.Year;
-            this.Month = date.Month;
-            this.Day = date.Day;
-            this.Description = description;
-            this.Date = date;
+            Name = name;
+            Year = date.Year;
+            Month = date.Month;
+            Day = date.Day;
+            Description = description;
+            Date = date;
         }
 
         /// <inheritdoc/>
@@ -77,9 +77,9 @@ namespace ChineseCalendar
             {
                 return date2;
             }
-            if (this.Date < date2)
+            if (Date < date2)
             {
-                return this.Date;
+                return Date;
             }
             return null;
         }
@@ -92,9 +92,9 @@ namespace ChineseCalendar
             {
                 return date2;
             }
-            if (this.Date > date2)
+            if (Date > date2)
             {
-                return this.Date;
+                return Date;
             }
             return null;
         }

@@ -44,7 +44,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     float dpi = Config.Dpi;
-                    int font_height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font, 10000, sf_font).Height);
+                    int font_height = g.MeasureString(Config.NullText, Font, 10000, sf_font).Height;
                     if (isempty)
                     {
                         ScrollX = ScrollY = 0;
@@ -56,8 +56,8 @@ namespace AntdUI
                         if (IsPassWord)
                         {
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
-                            int w = (int)Math.Ceiling(sizefont.Width);
-                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
+                            int w = sizefont.Width;
+                            if (font_height < sizefont.Height) font_height = sizefont.Height;
                             foreach (char it in _text) font_widths.Add(new CacheFont(it.ToString(), false, w));
                         }
                         else
@@ -76,20 +76,20 @@ namespace AntdUI
                                     if (txt == "\t")
                                     {
                                         var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
-                                        if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
+                                        if (font_height < sizefont.Height) font_height = sizefont.Height;
                                         font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
                                     }
                                     else if (txt == "\n" || txt == "\r\n")
                                     {
                                         var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
-                                        if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                                        font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
+                                        if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                        font_widths.Add(new CacheFont(txt, false, sizefont.Width));
                                     }
                                     else
                                     {
                                         var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
-                                        if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                                        font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
+                                        if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                        font_widths.Add(new CacheFont(txt, false, sizefont.Width));
                                     }
                                 }
                                 return true;
@@ -103,8 +103,8 @@ namespace AntdUI
                                         if (it.emoji)
                                         {
                                             var sizefont = g.MeasureString(it.text, font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                                            it.width = (int)Math.Ceiling(sizefont.Width);
+                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                            it.width = sizefont.Width;
                                         }
                                     }
                                 }
@@ -129,7 +129,7 @@ namespace AntdUI
                 {
                     Helper.GDI(g =>
                     {
-                        int font_height = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font, 10000, sf_font).Height);
+                        int font_height = g.MeasureString(Config.NullText, Font, 10000, sf_font).Height;
                         if (_text == null)
                         {
                             CaretInfo.Height = font_height;
@@ -139,8 +139,8 @@ namespace AntdUI
                         if (IsPassWord)
                         {
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
-                            int w = (int)Math.Ceiling(sizefont.Width);
-                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
+                            int w = sizefont.Width;
+                            if (font_height < sizefont.Height) font_height = sizefont.Height;
                             foreach (char it in _text) font_widths.Add(new CacheFont(it.ToString(), false, w));
                         }
                         else
@@ -172,20 +172,20 @@ namespace AntdUI
                                         if (txt == "\t")
                                         {
                                             var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
+                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
                                             font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
                                         }
                                         else if (txt == "\n" || txt == "\r\n")
                                         {
                                             var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                                            font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
+                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                            font_widths.Add(new CacheFont(txt, false, sizefont.Width));
                                         }
                                         else
                                         {
                                             var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                                            font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width)));
+                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                            font_widths.Add(new CacheFont(txt, false, sizefont.Width));
                                         }
                                     }
                                 }
@@ -201,8 +201,8 @@ namespace AntdUI
                                         if (it.emoji)
                                         {
                                             var sizefont = g.MeasureString(it.text, font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = (int)Math.Ceiling(sizefont.Height);
-                                            it.width = (int)Math.Ceiling(sizefont.Width);
+                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                            it.width = sizefont.Width;
                                         }
                                     }
                                 }
@@ -554,7 +554,7 @@ namespace AntdUI
                 {
                     Helper.GDI(g =>
                     {
-                        RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width, read_height, icon_size, icon_size);
+                        RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, icon_size, icon_size);
                     });
                 }
                 else if (has_prefix) RectLR(rect, read_height, sps, sps2, icon_size, icon_size, icon_size, icon_size);
@@ -568,7 +568,7 @@ namespace AntdUI
                     {
                         Helper.GDI(g =>
                         {
-                            if (has_prefixText && has_suffixText) RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width, read_height, g.MeasureString(suffixText, Font).Size().Width, read_height);
+                            if (has_prefixText && has_suffixText) RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, g.MeasureString(suffixText, Font).Width, read_height);
                             else
                             {
                                 if (has_prefix || has_suffix)
@@ -578,24 +578,24 @@ namespace AntdUI
                                         if (has_suffix)
                                         {
                                             int icon_size = (int)(read_height * iconratio);
-                                            RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width, read_height, icon_size, icon_size);
+                                            RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, icon_size, icon_size);
                                         }
-                                        else RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width);
+                                        else RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width);
                                     }
                                     else
                                     {
                                         if (has_prefix)
                                         {
                                             int icon_size = (int)(read_height * iconratio);
-                                            RectLR(rect, read_height, sps, sps2, icon_size, icon_size, g.MeasureString(suffixText, Font).Size().Width, read_height);
+                                            RectLR(rect, read_height, sps, sps2, icon_size, icon_size, g.MeasureString(suffixText, Font).Width, read_height);
                                         }
-                                        else RectR(rect, read_height, sps, sps2, g.MeasureString(suffixText, Font).Size().Width);
+                                        else RectR(rect, read_height, sps, sps2, g.MeasureString(suffixText, Font).Width);
                                     }
                                 }
                                 else
                                 {
-                                    if (has_prefixText) RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Size().Width);
-                                    else RectR(rect, read_height, sps, sps2, g.MeasureString(suffixText, Font).Size().Width);
+                                    if (has_prefixText) RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width);
+                                    else RectR(rect, read_height, sps, sps2, g.MeasureString(suffixText, Font).Width);
                                 }
                             }
                         });

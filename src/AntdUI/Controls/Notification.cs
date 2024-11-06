@@ -349,7 +349,7 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Style.Db.BgElevated))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                     }
                 }
                 if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
@@ -362,7 +362,7 @@ namespace AntdUI
                         {
                             using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                             {
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                             }
                         }
                         g.PaintIconClose(rect_close, Style.Db.Text, .6F);
@@ -373,7 +373,7 @@ namespace AntdUI
                         {
                             using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                             {
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                             }
                         }
                         g.PaintIconClose(rect_close, Style.Db.Text, .6F);
@@ -382,15 +382,15 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(Style.Db.TextBase))
                 {
-                    g.DrawStr(config.Title, font_title, brush, rect_title, s_f_left);
-                    g.DrawStr(config.Text, Font, brush, rect_txt, s_f_left_left);
+                    g.String(config.Title, font_title, brush, rect_title, s_f_left);
+                    g.String(config.Text, Font, brush, rect_txt, s_f_left_left);
                 }
                 if (config.Link != null)
                 {
                     using (var brush = new SolidBrush(Style.Db.Primary))
                     using (var pen = new Pen(Style.Db.Primary, 1F * Config.Dpi))
                     {
-                        g.DrawStr(config.Link.Text, Font, brush, rect_link_text, s_f);
+                        g.String(config.Link.Text, Font, brush, rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
                     }
                 }
@@ -405,7 +405,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, Rectangle rect_read)
+        GraphicsPath DrawShadow(ICanvas g, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
             if (Config.ShadowEnabled)
@@ -415,19 +415,19 @@ namespace AntdUI
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.Image(shadow_temp, rect_client, 0.2F);
             }
             return path;
         }
 
         Rectangle rect_icon, rect_title, rect_txt, rect_close;
         Rectangle rect_link_text, rect_links;
-        Size RenderMeasure(Graphics g, int shadow)
+        Size RenderMeasure(ICanvas g, int shadow)
         {
             int shadow2 = shadow * 2;
             float dpi = Config.Dpi;
 
-            var size_title = g.MeasureString(config.Title, font_title, 10000, s_f_left).Size();
+            var size_title = g.MeasureString(config.Title, font_title, 10000, s_f_left);
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), t_max_width = (int)Math.Ceiling(360 * dpi);
             int sp = (int)(8 * dpi), close_size = (int)Math.Ceiling(22F * dpi);
             if (size_title.Width > t_max_width)
@@ -435,7 +435,7 @@ namespace AntdUI
                 t_max_width = size_title.Width;
                 if (config.CloseIcon) t_max_width += close_size + sp;
             }
-            var size_desc = g.MeasureString(config.Text, Font, t_max_width).Size();
+            var size_desc = g.MeasureString(config.Text, Font, t_max_width);
             int width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
             int max_width = width_desc > width_title ? width_desc : width_title;
             if (config.Icon == TType.None)
@@ -452,7 +452,7 @@ namespace AntdUI
 
                 if (config.Link != null)
                 {
-                    var size_link = g.MeasureString(config.Link.Text, Font, 10000, s_f).Size();
+                    var size_link = g.MeasureString(config.Link.Text, Font, 10000, s_f);
                     rect_link_text = new Rectangle(rect_title.X, rect_txt.Bottom + sp, size_link.Width, size_link.Height);
                     rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
                     h += size_link.Height + sp;
@@ -475,7 +475,7 @@ namespace AntdUI
 
                 if (config.Link != null)
                 {
-                    var size_link = g.MeasureString(config.Link.Text, Font, 10000, s_f).Size();
+                    var size_link = g.MeasureString(config.Link.Text, Font, 10000, s_f);
                     rect_link_text = new Rectangle(rect_title.X, rect_txt.Bottom + sp, size_link.Width, size_link.Height);
                     rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
                     h += size_link.Height + sp;

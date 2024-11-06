@@ -196,14 +196,14 @@ namespace AntdUI
         {
             var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
-            var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+            var font_size = g.MeasureString(text ?? Config.NullText, Font);
             rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
             bool right = rightToLeft == RightToLeft.Yes;
             PaintChecked(g, rect, Enabled, icon_rect, right);
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
             using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
             {
-                g.DrawStr(text, Font, brush, text_rect, stringFormat);
+                g.String(text, Font, brush, text_rect, stringFormat);
             }
             this.PaintBadge(g);
             base.OnPaint(e);
@@ -211,7 +211,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal void PaintChecked(Graphics g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
+        internal void PaintChecked(ICanvas g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
         {
             float dot_size = icon_rect.Height;
             float radius = dot_size * .2F;
@@ -224,11 +224,8 @@ namespace AntdUI
                     if (AnimationCheck)
                     {
                         float dot = dot_size * 0.3F, alpha = 255 * AnimationCheckValue;
-                        using (var brush = new SolidBrush(Helper.ToColor(alpha, color)))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), 3F))
+                        g.Fill(Helper.ToColor(alpha, color), path);
+                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), 3F * Config.Dpi))
                         {
                             g.DrawLines(brush, icon_rect.CheckArrow());
                         }
@@ -240,18 +237,15 @@ namespace AntdUI
                                 g.FillEllipse(brush, new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
                             }
                         }
-                        using (var brush = new Pen(color, 2F))
+                        using (var brush = new Pen(color, 2F * Config.Dpi))
                         {
-                            g.DrawPath(brush, path);
+                            g.Draw(brush, path);
                         }
                     }
                     else if (_checked)
                     {
-                        using (var brush = new SolidBrush(color))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                        using (var brush = new Pen(Style.Db.BgBase, 3F))
+                        g.Fill(color, path);
+                        using (var brush = new Pen(Style.Db.BgBase, 3F * Config.Dpi))
                         {
                             g.DrawLines(brush, icon_rect.CheckArrow());
                         }
@@ -260,47 +254,44 @@ namespace AntdUI
                     {
                         if (AnimationHover)
                         {
-                            using (var brush = new Pen(Style.Db.BorderColor, 2F))
+                            using (var brush = new Pen(Style.Db.BorderColor, 2F * Config.Dpi))
                             {
-                                g.DrawPath(brush, path);
+                                g.Draw(brush, path);
                             }
-                            using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, color), 2F))
+                            using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, color), 2F * Config.Dpi))
                             {
-                                g.DrawPath(brush, path);
+                                g.Draw(brush, path);
                             }
                         }
                         else if (ExtraMouseHover)
                         {
-                            using (var brush = new Pen(color, 2F))
+                            using (var brush = new Pen(color, 2F * Config.Dpi))
                             {
-                                g.DrawPath(brush, path);
+                                g.Draw(brush, path);
                             }
                         }
                         else
                         {
-                            using (var brush = new Pen(Style.Db.BorderColor, 2F))
+                            using (var brush = new Pen(Style.Db.BorderColor, 2F * Config.Dpi))
                             {
-                                g.DrawPath(brush, path);
+                                g.Draw(brush, path);
                             }
                         }
                     }
                 }
                 else
                 {
-                    using (var brush = new SolidBrush(Style.Db.FillQuaternary))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(Style.Db.FillQuaternary, path);
                     if (_checked)
                     {
-                        using (var brush = new Pen(Style.Db.TextQuaternary, 3F))
+                        using (var brush = new Pen(Style.Db.TextQuaternary, 3F * Config.Dpi))
                         {
                             g.DrawLines(brush, icon_rect.CheckArrow());
                         }
                     }
-                    using (var brush = new Pen(Style.Db.BorderColorDisable, 2F))
+                    using (var brush = new Pen(Style.Db.BorderColorDisable, 2F * Config.Dpi))
                     {
-                        g.DrawPath(brush, path);
+                        g.Draw(brush, path);
                     }
                 }
             }
@@ -468,7 +459,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi);
                     return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
                 });

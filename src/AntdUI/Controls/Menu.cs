@@ -410,7 +410,7 @@ namespace AntdUI
             {
                 var lists = items;
                 var size = g.MeasureString(Config.NullText, Font);
-                int icon_size = (int)Math.Ceiling(size.Height * iconratio), gap = icon_size / 2, gapI = gap / 2, height = (int)Math.Ceiling(size.Height + gap * 2);
+                int icon_size = (int)Math.Ceiling(size.Height * iconratio), gap = icon_size / 2, gapI = gap / 2, height = size.Height + gap * 2;
                 if (mode == TMenuMode.Horizontal) ChangeListHorizontal(rect, g, lists, 0, icon_size, gap, gapI);
                 else
                 {
@@ -428,7 +428,7 @@ namespace AntdUI
             return _rect;
         }
 
-        int ChangeList(Rectangle rect, Graphics g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapI, int depth)
+        int ChangeList(Rectangle rect, ICanvas g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapI, int depth)
         {
             int collapsedWidth = 0;
             foreach (var it in items)
@@ -439,7 +439,7 @@ namespace AntdUI
                 it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
-                    int size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width);
+                    int size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + gapI;
                     if (mode == TMenuMode.Inline && it.CanExpand)
@@ -473,14 +473,14 @@ namespace AntdUI
             }
             return collapsedWidth;
         }
-        void ChangeListHorizontal(Rectangle rect, Graphics g, MenuItemCollection items, int x, int icon_size, int gap, int gapI)
+        void ChangeListHorizontal(Rectangle rect, ICanvas g, MenuItemCollection items, int x, int icon_size, int gap, int gapI)
         {
             foreach (var it in items)
             {
                 it.PARENT = this;
                 int size;
-                if (it.HasIcon) size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size);
-                else size = (int)Math.Ceiling(g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 2);
+                if (it.HasIcon) size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size;
+                else size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 2;
                 it.SetRectNoArr(0, new Rectangle(rect.X + x, rect.Y, size, rect.Height), icon_size, gap);
                 if (it.Visible) x += size;
             }
@@ -556,7 +556,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintItems(Graphics g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
+        void PaintItems(ICanvas g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
         {
             foreach (var it in items)
             {
@@ -566,7 +566,7 @@ namespace AntdUI
                     PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
                     if (!collapsed && (it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
                     {
-                        if (ShowSubBack) g.FillRectangle(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
+                        if (ShowSubBack) g.Fill(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
                         var state = g.Save();
                         if (it.ExpandThread) g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, it.ExpandHeight * it.ExpandProg));
                         PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius);
@@ -575,7 +575,7 @@ namespace AntdUI
                 }
             }
         }
-        void PaintItemExpand(Graphics g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        void PaintItemExpand(ICanvas g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             foreach (var it in items)
             {
@@ -590,7 +590,7 @@ namespace AntdUI
                         {
                             using (var brush = new SolidBrush(BackColor))
                             {
-                                g.FillRectangle(brush, new RectangleF(rect.X, it.rect.Bottom + it.ExpandHeight * it.ExpandProg, rect.Width, it.ExpandHeight));
+                                g.Fill(brush, new RectangleF(rect.X, it.rect.Bottom + it.ExpandHeight * it.ExpandProg, rect.Width, it.ExpandHeight));
                             }
                         }
                     }
@@ -598,13 +598,13 @@ namespace AntdUI
             }
         }
 
-        void PaintIt(Graphics g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        void PaintIt(ICanvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             if (collapsed) PaintItemMini(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
             else PaintItem(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
         }
 
-        void PaintItemMini(Graphics g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        void PaintItemMini(ICanvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             if (it.Enabled)
             {
@@ -648,7 +648,7 @@ namespace AntdUI
             }
         }
 
-        void PaintItem(Graphics g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        void PaintItem(ICanvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             if (it.Enabled)
             {
@@ -720,15 +720,15 @@ namespace AntdUI
         }
 
         readonly StringFormat SL = Helper.SF_ALL(lr: StringAlignment.Near);
-        void PaintTextIcon(Graphics g, MenuItem it, Color fore)
+        void PaintTextIcon(ICanvas g, MenuItem it, Color fore)
         {
             using (var brush = new SolidBrush(fore))
             {
-                g.DrawStr(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                g.String(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }
-        void PaintTextIconExpand(Graphics g, MenuItem it, Color fore)
+        void PaintTextIconExpand(ICanvas g, MenuItem it, Color fore)
         {
             if (it.CanExpand)
             {
@@ -751,29 +751,26 @@ namespace AntdUI
             }
             using (var brush = new SolidBrush(fore))
             {
-                g.DrawStr(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                g.String(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }
-        void PaintIcon(Graphics g, MenuItem it, Color fore)
+        void PaintIcon(ICanvas g, MenuItem it, Color fore)
         {
-            if (it.Icon != null) g.DrawImage(it.Icon, it.ico_rect);
+            if (it.Icon != null) g.Image(it.Icon, it.ico_rect);
             else if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
         }
 
-        void PaintBack(Graphics g, Color color, Rectangle rect, float radius)
+        void PaintBack(ICanvas g, Color color, Rectangle rect, float radius)
         {
-            using (var brush = new SolidBrush(color))
+            if (Round || radius > 0)
             {
-                if (Round || radius > 0)
+                using (var path = rect.RoundPath(radius, Round))
                 {
-                    using (var path = rect.RoundPath(radius, Round))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(color, path);
                 }
-                else g.FillRectangle(brush, rect);
             }
+            else g.Fill(color, rect);
         }
 
         #endregion

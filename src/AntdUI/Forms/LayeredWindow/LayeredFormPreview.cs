@@ -325,17 +325,17 @@ namespace AntdUI
                     {
                         using (var path = rect_read.RoundPath(Radius))
                         {
-                            g.FillPath(brush, path);
+                            g.Fill(brush, path);
                         }
                     }
-                    else g.FillRectangle(brush, rect_read);
+                    else g.Fill(brush, rect_read);
                 }
 
                 if (Img != null)
                 {
                     try
                     {
-                        g.DrawImage(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
+                        g.Image(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
                     }
                     catch { }
                 }
@@ -360,7 +360,7 @@ namespace AntdUI
                                 rect_loading.Offset(0, loading_size);
                                 using (var brush = new SolidBrush(Style.Db.PrimaryColor))
                                 {
-                                    g.DrawString(LoadingProgressStr, Font, brush, rect_loading, s_f);
+                                    g.String(LoadingProgressStr, Font, brush, rect_loading, s_f);
                                 }
                             }
                         }
@@ -376,7 +376,7 @@ namespace AntdUI
                         rect_loading.Offset(0, loading_size);
                         using (var brush = new SolidBrush(Style.Db.ErrorColor))
                         {
-                            g.DrawString(LoadingProgressStr, Font, brush, rect_loading, s_f);
+                            g.String(LoadingProgressStr, Font, brush, rect_loading, s_f);
                         }
                     }
                 }
@@ -384,7 +384,7 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                         PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
                         if (PageSize > 1)
                         {
@@ -399,8 +399,8 @@ namespace AntdUI
                     {
                         if (bmp != null)
                         {
-                            if (it.enabled) g.DrawImage(bmp, it.rect);
-                            else g.DrawImage(bmp, it.rect, 0.3F);
+                            if (it.enabled) g.Image(bmp, it.rect);
+                            else g.Image(bmp, it.rect, 0.3F);
                         }
                     }
                 }
@@ -408,7 +408,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        void PaintBtn(Graphics g, SolidBrush brush, Rectangle rect, Rectangle rect_ico, string svg, bool hover, bool enabled)
+        void PaintBtn(ICanvas g, SolidBrush brush, Rectangle rect, Rectangle rect_ico, string svg, bool hover, bool enabled)
         {
             using (var bmp = SvgExtend.GetImgExtend(svg, rect_ico, Color.White))
             {
@@ -420,8 +420,8 @@ namespace AntdUI
                         { g.FillEllipse(brush_hover, rect); }
                     }
                     else g.FillEllipse(brush, rect);
-                    if (enabled) g.DrawImage(bmp, rect_ico);
-                    else g.DrawImage(bmp, rect_ico, 0.3F);
+                    if (enabled) g.Image(bmp, rect_ico);
+                    else g.Image(bmp, rect_ico, 0.3F);
                 }
             }
         }

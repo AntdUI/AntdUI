@@ -148,14 +148,14 @@ namespace AntdUI
             get => showicon;
         }
 
-        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(ICanvas g, Rectangle rect_r)
         {
             if (showicon)
             {
                 using (var bmp = SvgDb.IcoDate.SvgToBmp(rect_r.Width, rect_r.Height, Style.Db.TextQuaternary))
                 {
                     if (bmp == null) return;
-                    g.DrawImage(bmp, rect_r);
+                    g.Image(bmp, rect_r);
                 }
             }
         }

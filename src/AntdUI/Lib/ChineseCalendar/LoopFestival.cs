@@ -84,7 +84,7 @@ namespace ChineseCalendar
         /// <inheritdoc/>
         public override bool IsThisFestival(DateTime date)
         {
-            return date.Month == this.Month && date.Day == this.Day;
+            return date.Month == Month && date.Day == Day;
         }
     }
 }

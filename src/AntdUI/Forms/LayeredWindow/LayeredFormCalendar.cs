@@ -353,7 +353,7 @@ namespace AntdUI
                     DrawShadow(g, rect);
                     using (var brush = new SolidBrush(Style.Db.BgElevated))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                         if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                     }
                 }
@@ -470,7 +470,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintYear(Graphics g, Rectangle rect_read, List<Calendari> datas)
+        void PrintYear(ICanvas g, Rectangle rect_read, List<Calendari> datas)
         {
             using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
             using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
@@ -482,20 +482,20 @@ namespace AntdUI
 
                     if (hover_year.Animation)
                     {
-                        g.DrawStr(year_str, font, brush_fore, rect_l, s_f);
+                        g.String(year_str, font, brush_fore, rect_l, s_f);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
-                            g.DrawStr(year_str, font, brush_hove, rect_l, s_f);
+                            g.String(year_str, font, brush_hove, rect_l, s_f);
                         }
                     }
                     else if (hover_year.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawStr(year_str, font, brush_hove, rect_l, s_f);
+                            g.String(year_str, font, brush_hove, rect_l, s_f);
                         }
                     }
-                    else g.DrawStr(year_str, font, brush_fore, rect_l, s_f);
+                    else g.String(year_str, font, brush_fore, rect_l, s_f);
                 }
 
                 int size_w = (rect_read.Width - 16) / 3, size_h = (rect_read.Width - 16) / 7 * 2;
@@ -514,45 +514,32 @@ namespace AntdUI
                     {
                         if (SelDate.HasValue && SelDate.Value.ToString("yyyy") == it.date_str)
                         {
-                            using (var brush_hove = new SolidBrush(Style.Db.Primary))
-                            {
-                                g.FillPath(brush_hove, path);
-                            }
-
-                            using (var brush_active_fore = new SolidBrush(Style.Db.PrimaryColor))
-                            {
-                                g.DrawStr(it.v, Font, brush_active_fore, it.rect, s_f);
-                            }
+                            g.Fill(Style.Db.Primary, path);
+                            g.String(it.v, Font, Style.Db.PrimaryColor, it.rect, s_f);
                         }
                         else if (it.enable)
                         {
-                            if (it.hover)
-                            {
-                                using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                {
-                                    g.FillPath(brush_hove, path);
-                                }
-                            }
+                            if (it.hover) g.Fill(Style.Db.FillTertiary, path);
                             if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
                             {
                                 using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
                                 {
-                                    g.DrawPath(brush_hove, path);
+                                    g.Draw(brush_hove, path);
                                 }
                             }
-                            g.DrawStr(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
+                            g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
                         }
                         else
                         {
-                            g.FillRectangle(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                            g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
                             if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
                             {
                                 using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
                                 {
-                                    g.DrawPath(brush_hove, path);
+                                    g.Draw(brush_hove, path);
                                 }
                             }
-                            g.DrawStr(it.v, Font, brush_fore_disable, it.rect, s_f);
+                            g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
                 }
@@ -569,7 +556,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintMonth(Graphics g, Rectangle rect_read, List<Calendari> datas)
+        void PrintMonth(ICanvas g, Rectangle rect_read, List<Calendari> datas)
         {
             using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
             using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
@@ -581,20 +568,20 @@ namespace AntdUI
 
                     if (hover_year.Animation)
                     {
-                        g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, s_f);
+                        g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, s_f);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
-                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, s_f);
+                            g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, s_f);
                         }
                     }
                     else if (hover_year.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, s_f);
+                            g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, s_f);
                         }
                     }
-                    else g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, s_f);
+                    else g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, s_f);
                 }
 
                 int size_w = (rect_read.Width - 16) / 3, size_h = (rect_read.Width - 16) / 7 * 2;
@@ -613,45 +600,32 @@ namespace AntdUI
                     {
                         if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM") == it.date_str)
                         {
-                            using (var brush_hove = new SolidBrush(Style.Db.Primary))
-                            {
-                                g.FillPath(brush_hove, path);
-                            }
-
-                            using (var brush_active_fore = new SolidBrush(Style.Db.PrimaryColor))
-                            {
-                                g.DrawStr(it.v, Font, brush_active_fore, it.rect, s_f);
-                            }
+                            g.Fill(Style.Db.Primary, path);
+                            g.String(it.v, Font, Style.Db.PrimaryColor, it.rect, s_f);
                         }
                         else if (it.enable)
                         {
-                            if (it.hover)
-                            {
-                                using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                {
-                                    g.FillPath(brush_hove, path);
-                                }
-                            }
+                            if (it.hover) g.Fill(Style.Db.FillTertiary, path);
                             if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
                             {
                                 using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
                                 {
-                                    g.DrawPath(brush_hove, path);
+                                    g.Draw(brush_hove, path);
                                 }
                             }
-                            g.DrawStr(it.v, Font, brush_fore, it.rect, s_f);
+                            g.String(it.v, Font, brush_fore, it.rect, s_f);
                         }
                         else
                         {
-                            g.FillRectangle(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                            g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
                             if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
                             {
                                 using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
                                 {
-                                    g.DrawPath(brush_hove, path);
+                                    g.Draw(brush_hove, path);
                                 }
                             }
-                            g.DrawStr(it.v, Font, brush_fore_disable, it.rect, s_f);
+                            g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
                 }
@@ -669,7 +643,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintDay(Graphics g, Rectangle rect_read, List<Calendari> datas)
+        void PrintDay(ICanvas g, Rectangle rect_read, List<Calendari> datas)
         {
             using (var brush_fore = new SolidBrush(Style.Db.TextBase))
             {
@@ -680,57 +654,57 @@ namespace AntdUI
 
                     if (hover_year.Animation)
                     {
-                        g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, s_f_L);
+                        g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, s_f_L);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
                         {
-                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, s_f_L);
+                            g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, s_f_L);
                         }
                     }
                     else if (hover_year.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, s_f_L);
+                            g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_l, s_f_L);
                         }
                     }
-                    else g.DrawStr(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, s_f_L);
+                    else g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_l, s_f_L);
 
                     if (hover_month.Animation)
                     {
-                        g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_r, s_f_R);
+                        g.String(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_r, s_f_R);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_month.Value, Style.Db.Primary)))
                         {
-                            g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_r, s_f_R);
+                            g.String(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_r, s_f_R);
                         }
                     }
                     else if (hover_month.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.Primary))
                         {
-                            g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_r, s_f_R);
+                            g.String(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_r, s_f_R);
                         }
                     }
-                    else g.DrawStr(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_r, s_f_R);
+                    else g.String(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_r, s_f_R);
                 }
 
                 using (var brush_split = new SolidBrush(Style.Db.Split))
                 {
-                    g.FillRectangle(brush_split, new Rectangle(t_x + rect_read.X, rect_read.Y + t_top, t_one_width, 1));
-                    g.FillRectangle(brush_split, new Rectangle(t_x + rect_read.X, rect_button.Y, rect_read.Width - t_x, 1));
-                    if (ShowTime) g.FillRectangle(brush_split, new Rectangle(t_x + rect_read.X + t_one_width, rect_read.Y, 1, rect_read.Height));
-                    if (left_buttons != null) g.FillRectangle(brush_split, new Rectangle(t_x + rect_read.X, rect_read.Y, 1, rect_read.Height));
+                    g.Fill(brush_split, new Rectangle(t_x + rect_read.X, rect_read.Y + t_top, t_one_width, 1));
+                    g.Fill(brush_split, new Rectangle(t_x + rect_read.X, rect_button.Y, rect_read.Width - t_x, 1));
+                    if (ShowTime) g.Fill(brush_split, new Rectangle(t_x + rect_read.X + t_one_width, rect_read.Y, 1, rect_read.Height));
+                    if (left_buttons != null) g.Fill(brush_split, new Rectangle(t_x + rect_read.X, rect_read.Y, 1, rect_read.Height));
                 }
                 int y = rect_read.Y + t_top + 12;
                 int size = (t_one_width - 16) / 7;
                 using (var brush = new SolidBrush(Style.Db.Text))
                 {
-                    g.DrawStr(MondayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8, y, size, size), s_f);
-                    g.DrawStr(TuesdayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size, y, size, size), s_f);
-                    g.DrawStr(WednesdayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 2, y, size, size), s_f);
-                    g.DrawStr(ThursdayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 3, y, size, size), s_f);
-                    g.DrawStr(FridayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 4, y, size, size), s_f);
-                    g.DrawStr(SaturdayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 5, y, size, size), s_f);
-                    g.DrawStr(SundayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 6, y, size, size), s_f);
+                    g.String(MondayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8, y, size, size), s_f);
+                    g.String(TuesdayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size, y, size, size), s_f);
+                    g.String(WednesdayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 2, y, size, size), s_f);
+                    g.String(ThursdayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 3, y, size, size), s_f);
+                    g.String(FridayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 4, y, size, size), s_f);
+                    g.String(SaturdayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 5, y, size, size), s_f);
+                    g.String(SundayButton, Font, brush, new Rectangle(t_x + rect_read.X + 8 + size * 6, y, size, size), s_f);
                 }
                 y += size;
                 if (sizeday)
@@ -812,7 +786,7 @@ namespace AntdUI
                             {
                                 using (var pen_active = new Pen(Style.Db.Primary, Config.Dpi))
                                 {
-                                    g.DrawPath(pen_active, path);
+                                    g.Draw(pen_active, path);
                                 }
                             }
                         }
@@ -824,24 +798,18 @@ namespace AntdUI
                         {
                             if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM-dd") == it.date_str)
                             {
-                                g.FillPath(brush_active, path);
-                                g.DrawStr(it.v, Font, brush_active_fore, it.rect, s_f);
+                                g.Fill(brush_active, path);
+                                g.String(it.v, Font, brush_active_fore, it.rect, s_f);
                             }
                             else if (it.enable)
                             {
-                                if (it.hover)
-                                {
-                                    using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                    {
-                                        g.FillPath(brush_hove, path);
-                                    }
-                                }
-                                g.DrawStr(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
+                                if (it.hover) g.Fill(Style.Db.FillTertiary, path);
+                                g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
                             }
                             else
                             {
-                                g.FillRectangle(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                                g.DrawStr(it.v, Font, brush_fore_disable, it.rect, s_f);
+                                g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                                g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                             }
                         }
                     }
@@ -856,14 +824,8 @@ namespace AntdUI
                             {
                                 using (var path = it.rect_read.RoundPath(Radius))
                                 {
-                                    if (it.hover)
-                                    {
-                                        using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                        {
-                                            g.FillPath(brush_hove, path);
-                                        }
-                                    }
-                                    g.DrawStr(it.v, Font, brush_fore, it.rect_text, s_f_LE);
+                                    if (it.hover) g.Fill(Style.Db.FillTertiary, path);
+                                    g.String(it.v, Font, brush_fore, it.rect_text, s_f_LE);
                                 }
                             }
                             g.Restore(state);
@@ -911,11 +873,11 @@ namespace AntdUI
                                     {
                                         using (var path = it.rect_read.RoundPath(Radius))
                                         {
-                                            if (hashover) g.FillPath(brush_bg, path);
-                                            if (it.hover) g.FillPath(brush_hove, path);
+                                            if (hashover) g.Fill(brush_bg, path);
+                                            if (it.hover) g.Fill(brush_hove, path);
                                         }
                                     }
-                                    g.DrawStr(it.v, Font, brush_fore, it.rect_read, s_f);
+                                    g.String(it.v, Font, brush_fore, it.rect_read, s_f);
                                 }
                             }
                             g.Restore(state);
@@ -925,38 +887,38 @@ namespace AntdUI
 
                             if (hover_buttonok.Animation)
                             {
-                                g.DrawStr(OKButton, Font, brush_active, rect_buttonok, s_f);
+                                g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
                                 using (var brush_hove = new SolidBrush(Helper.ToColor(hover_buttonok.Value, Style.Db.PrimaryActive)))
                                 {
-                                    g.DrawStr(OKButton, Font, brush_hove, rect_buttonok, s_f);
+                                    g.String(OKButton, Font, brush_hove, rect_buttonok, s_f);
                                 }
                             }
                             else if (hover_buttonok.Switch)
                             {
                                 using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                                 {
-                                    g.DrawStr(OKButton, Font, brush_hove, rect_buttonok, s_f);
+                                    g.String(OKButton, Font, brush_hove, rect_buttonok, s_f);
                                 }
                             }
-                            else g.DrawStr(OKButton, Font, brush_active, rect_buttonok, s_f);
+                            else g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
                         }
                     }
                     if (hover_button.Animation)
                     {
-                        g.DrawStr(button_text, Font, brush_active, rect_button, s_f);
+                        g.String(button_text, Font, brush_active, rect_button, s_f);
                         using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
                         {
-                            g.DrawStr(button_text, Font, brush_hove, rect_button, s_f);
+                            g.String(button_text, Font, brush_hove, rect_button, s_f);
                         }
                     }
                     else if (hover_button.Switch)
                     {
                         using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                         {
-                            g.DrawStr(button_text, Font, brush_hove, rect_button, s_f);
+                            g.String(button_text, Font, brush_hove, rect_button, s_f);
                         }
                     }
-                    else g.DrawStr(button_text, Font, brush_active, rect_button, s_f);
+                    else g.String(button_text, Font, brush_active, rect_button, s_f);
 
                     if (badge_list.Count > 0)
                     {
@@ -982,7 +944,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="rect">客户区域</param>
-        void DrawShadow(Graphics g, Rectangle rect)
+        void DrawShadow(ICanvas g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {
@@ -994,7 +956,7 @@ namespace AntdUI
                         shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.DrawImage(shadow_temp, rect, 0.2F);
+                g.Image(shadow_temp, rect, 0.2F);
             }
         }
 

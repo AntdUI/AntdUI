@@ -65,7 +65,7 @@ namespace AntdUI
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, w);
-                            h = (int)Math.Round(sizeTitle.Height + sp + control.Height);
+                            h = sizeTitle.Height + sp + control.Height;
                             rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
                             rectContent = new RectangleF(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
                         }
@@ -145,7 +145,7 @@ namespace AntdUI
                     if (_config.Title == null)
                     {
                         var sizeContent = g.MeasureString(content, Font);
-                        int w = (int)Math.Ceiling(sizeContent.Width), h = (int)Math.Round(sizeContent.Height);
+                        int w = sizeContent.Width, h = sizeContent.Height;
                         rectContent = new RectangleF(padding, padding, w, h);
                         SetSize(w + padding2, h + padding2);
                     }
@@ -153,7 +153,7 @@ namespace AntdUI
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {
-                            Size sizeTitle = g.MeasureString(config.Title, fontTitle).Size(), sizeContent = g.MeasureString(content, Font).Size();
+                            Size sizeTitle = g.MeasureString(config.Title, fontTitle), sizeContent = g.MeasureString(content, Font);
                             int w = sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width, h = sizeTitle.Height + sp + sizeContent.Height;
 
                             rectTitle = new RectangleF(padding, padding, w, sizeTitle.Height + sp);
@@ -264,10 +264,10 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Style.Db.BgElevated))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                         if (config.ArrowAlign != TAlign.None) g.FillPolygon(brush, config.ArrowAlign.AlignLines(config.ArrowSize, rect, rect_read));
                     }
-                    if (tempContent != null) g.DrawImage(tempContent, rectContent);
+                    if (tempContent != null) g.Image(tempContent, rectContent);
                 }
 
                 if (config.Title != null || rtext)
@@ -276,7 +276,7 @@ namespace AntdUI
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {
-                            g.DrawStr(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                            g.String(config.Title, fontTitle, brush, rectTitle, stringLeft);
                         }
                         if (rtext)
                         {
@@ -289,13 +289,13 @@ namespace AntdUI
                                     {
                                         using (var fore = new SolidBrush(txt.Fore.Value))
                                         {
-                                            g.DrawStr(txt.Text, txt.Font ?? Font, fore, rectsContent[i].Rect, stringCenter);
+                                            g.String(txt.Text, txt.Font ?? Font, fore, rectsContent[i].Rect, stringCenter);
                                         }
                                     }
-                                    else g.DrawStr(txt.Text, txt.Font ?? Font, brush, rectsContent[i].Rect, stringCenter);
+                                    else g.String(txt.Text, txt.Font ?? Font, brush, rectsContent[i].Rect, stringCenter);
                                 }
                             }
-                            else g.DrawStr(config.Content.ToString(), Font, brush, rectContent, stringLeft);
+                            else g.String(config.Content.ToString(), Font, brush, rectContent, stringLeft);
                         }
                     }
                 }
@@ -310,7 +310,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, RectangleF rect_read)
+        GraphicsPath DrawShadow(ICanvas g, Rectangle rect_client, RectangleF rect_read)
         {
             var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
             if (Config.ShadowEnabled)
@@ -320,7 +320,7 @@ namespace AntdUI
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.Image(shadow_temp, rect_client, 0.2F);
             }
             return path;
         }

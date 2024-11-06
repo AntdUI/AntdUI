@@ -367,10 +367,7 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    using (var brush = new SolidBrush(Style.Db.BgElevated))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(Style.Db.BgElevated, path);
                 }
                 if (loading)
                 {
@@ -387,7 +384,7 @@ namespace AntdUI
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
                 using (var brush = new SolidBrush(Style.Db.TextBase))
                 {
-                    g.DrawStr(config.Text, Font, brush, rect_txt, s_f_left);
+                    g.String(config.Text, Font, brush, rect_txt, s_f_left);
                 }
             }
             return original_bmp;
@@ -400,7 +397,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, Rectangle rect_read)
+        GraphicsPath DrawShadow(ICanvas g, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
             if (Config.ShadowEnabled)
@@ -410,17 +407,17 @@ namespace AntdUI
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.Image(shadow_temp, rect_client, .2F);
             }
             return path;
         }
 
         Rectangle rect_icon, rect_loading, rect_txt;
-        Size RenderMeasure(Graphics g, int shadow)
+        Size RenderMeasure(ICanvas g, int shadow)
         {
             int shadow2 = shadow * 2;
             float dpi = Config.Dpi;
-            var size = g.MeasureString(config.Text, Font, 10000, s_f_left).Size();
+            var size = g.MeasureString(config.Text, Font, 10000, s_f_left);
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi),
                 sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
             if (loading)

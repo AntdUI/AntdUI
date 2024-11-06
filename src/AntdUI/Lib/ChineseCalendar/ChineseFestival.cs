@@ -39,14 +39,14 @@ namespace ChineseCalendar
             {
                 throw new ArgumentOutOfRangeException(nameof(day), "[-30,-1],[1,30]", "日期超出范围");
             }
-            this.Name = name;
-            this.Month = month;
-            this.Day = day;
-            this.FirstYear = firstYear;
-            this.Description = description;
-            if (this.FirstYear.HasValue)
+            Name = name;
+            Month = month;
+            Day = day;
+            FirstYear = firstYear;
+            Description = description;
+            if (FirstYear.HasValue)
             {
-                this.First = ChineseDate.From(firstYear.Value, month, day);
+                First = ChineseDate.From(firstYear.Value, month, day);
             }
         }
         /// <summary> 春节 </summary>

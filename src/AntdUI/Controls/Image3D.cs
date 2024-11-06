@@ -103,12 +103,12 @@ namespace AntdUI
                             using (var g = Graphics.FromImage(bmpo).High())
                             {
                                 if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
-                                g.PaintImg(rect, image, imageFit, _radius, round);
+                                g.Image(rect, image, imageFit, _radius, round);
                             }
                             using (var g = Graphics.FromImage(bmpo2).High())
                             {
                                 if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
-                                g.PaintImg(rect, value, imageFit, _radius, round);
+                                g.Image(rect, value, imageFit, _radius, round);
                             }
                             var images = new List<Bitmap>(t);
                             if (Vertical)
@@ -307,11 +307,11 @@ namespace AntdUI
             var rect = _rect.PaddingRect(Padding);
             float _radius = radius * Config.Dpi;
             FillRect(g, rect, back, _radius, round);
-            if (run != null && run.Tag is PointF point) g.DrawImage(run, point.X, point.Y, run.Width, run.Height);
+            if (run != null && run.Tag is PointF point) g.Image(run, point.X, point.Y, run.Width, run.Height);
             else
             {
                 if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
-                g.PaintImg(rect, image, imageFit, _radius, round);
+                g.Image(rect, image, imageFit, _radius, round);
             }
             this.PaintBadge(g);
             base.OnPaint(e);
@@ -319,7 +319,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        void FillRect(Graphics g, RectangleF rect, Color color, float radius, bool round)
+        void FillRect(ICanvas g, RectangleF rect, Color color, float radius, bool round)
         {
             using (var brush = new SolidBrush(color))
             {
@@ -331,13 +331,10 @@ namespace AntdUI
                 {
                     using (var path = rect.RoundPath(radius))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                     }
                 }
-                else
-                {
-                    g.FillRectangle(brush, rect);
-                }
+                else g.Fill(brush, rect);
             }
         }
 

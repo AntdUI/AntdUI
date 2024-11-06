@@ -167,7 +167,7 @@ namespace AntdUI
         {
             var _rect = ClientRectangle;
             var g = e.Graphics.High();
-            var size = g.MeasureString("100%", Font).Size();
+            var size = g.MeasureString("100%", Font);
             var rect = new Rectangle((_rect.Width - size.Width) / 2, (_rect.Height - size.Height) / 2, size.Width, size.Height);
             float _radius = radius * Config.Dpi;
             using (var path_pain = rect.RoundPath(_radius))
@@ -176,13 +176,13 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(fillfully))
                     {
-                        g.FillPath(brush, path_pain);
+                        g.Fill(brush, path_pain);
                         if (dotsize > 0)
                         {
                             float _dotsize = dotsize * Config.Dpi;
                             using (var path = new RectangleF(rect.Right, rect.Top + (rect.Height - _dotsize) / 2F, _dotsize / 2F, _dotsize).RoundPath(_radius / 2, false, true, true, false))
                             {
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                             }
                         }
                     }
@@ -190,7 +190,7 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawStr("100%", Font, brush, rect, c);
+                            g.String("100%", Font, brush, rect, c);
                         }
                     }
                 }
@@ -198,13 +198,13 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(back ?? Style.Db.FillSecondary))
                     {
-                        g.FillPath(brush, path_pain);
+                        g.Fill(brush, path_pain);
                         if (dotsize > 0)
                         {
                             float _dotsize = dotsize * Config.Dpi;
                             using (var path = new RectangleF(rect.Right, rect.Top + (rect.Height - _dotsize) / 2F, _dotsize / 2F, _dotsize).RoundPath(_radius / 2, false, true, true, false))
                             {
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                             }
                         }
                     }
@@ -218,22 +218,19 @@ namespace AntdUI
                                 if (_value > 30) _color = fillfully;
                                 else if (_value > 20) _color = FillWarn;
                                 else _color = FillDanger;
-                                using (var brush = new SolidBrush(_color))
-                                {
-                                    g2.FillPath(brush, path_pain);
-                                }
+                                g2.Fill(_color, path_pain);
                                 var _w = rect.Width * (_value / 100F);
                                 g2.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                                g2.FillRectangle(Brushes.Transparent, new RectangleF(rect.X + _w, 0, rect.Width, bmp.Height));
+                                g2.Fill(Brushes.Transparent, new RectangleF(rect.X + _w, 0, rect.Width, bmp.Height));
                             }
-                            g.DrawImage(bmp, _rect);
+                            g.Image(bmp, _rect);
                         }
                     }
                     if (ShowText)
                     {
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawStr(_value + "%", Font, brush, rect, c);
+                            g.String(_value + "%", Font, brush, rect, c);
                         }
                     }
                 }

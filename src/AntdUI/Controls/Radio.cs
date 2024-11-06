@@ -218,14 +218,14 @@ namespace AntdUI
         {
             var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
-            var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+            var font_size = g.MeasureString(text ?? Config.NullText, Font);
             rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
             bool right = rightToLeft == RightToLeft.Yes;
             PaintChecked(g, rect, Enabled, icon_rect, right);
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
             using (var brush = new SolidBrush(Enabled ? (fore ?? Style.Db.Text) : Style.Db.TextQuaternary))
             {
-                g.DrawStr(text, Font, brush, text_rect, stringFormat);
+                g.String(text, Font, brush, text_rect, stringFormat);
             }
             this.PaintBadge(g);
             base.OnPaint(e);
@@ -233,7 +233,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal void PaintChecked(Graphics g, Rectangle rect, bool enabled, RectangleF icon_rect, bool right)
+        internal void PaintChecked(ICanvas g, Rectangle rect, bool enabled, RectangleF icon_rect, bool right)
         {
             float dot_size = icon_rect.Height;
             if (right) icon_rect.X = rect.Width - icon_rect.X - icon_rect.Width;
@@ -248,10 +248,7 @@ namespace AntdUI
                         float dot_ant = dot_size - dot * AnimationCheckValue, dot_ant2 = dot_ant / 2F, alpha = 255 * AnimationCheckValue;
                         path.AddEllipse(icon_rect);
                         path.AddEllipse(new RectangleF(icon_rect.X + dot_ant2, icon_rect.Y + dot_ant2, icon_rect.Width - dot_ant, icon_rect.Height - dot_ant));
-                        using (var brush = new SolidBrush(Helper.ToColor(alpha, color)))
-                        {
-                            g.FillPath(brush, path);
-                        }
+                        g.Fill(Helper.ToColor(alpha, color), path);
                     }
                     if (_checked)
                     {
@@ -490,7 +487,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi);
                     return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
                 });

@@ -195,7 +195,7 @@ namespace AntdUI
                 }
                 using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
                 {
-                    g.DrawStr(text, Font, brush, new RectangleF(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
+                    g.String(text, Font, brush, new RectangleF(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
                 }
             }
             this.PaintBadge(g);
@@ -288,13 +288,13 @@ namespace AntdUI
                 {
                     if (has_text)
                     {
-                        var font_size = g.MeasureString(Config.NullText, Font).Size();
+                        var font_size = g.MeasureString(Config.NullText, Font);
                         font_size.Width = font_size.Height;
                         return font_size;
                     }
                     else
                     {
-                        var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+                        var font_size = g.MeasureString(text ?? Config.NullText, Font);
                         font_size.Width += font_size.Height;
                         return font_size;
                     }

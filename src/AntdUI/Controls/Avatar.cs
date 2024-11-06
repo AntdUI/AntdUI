@@ -380,7 +380,7 @@ namespace AntdUI
             {
                 lock (_lock)
                 {
-                    g.PaintImg(rect, image, imageFit, _radius, round);
+                    g.Image(rect, image, imageFit, _radius, round);
                 }
             }
             else if (imageSvg != null)
@@ -388,7 +388,7 @@ namespace AntdUI
                 using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))
                 {
                     if (bmp == null) PaintText(g, text, rect, stringCenter, Enabled);
-                    else g.PaintImg(rect, bmp, imageFit, _radius, round);
+                    else g.Image(rect, bmp, imageFit, _radius, round);
                 }
             }
             else PaintText(g, text, rect, stringCenter, Enabled);
@@ -416,7 +416,7 @@ namespace AntdUI
 
         readonly StringFormat stringCenter = Helper.SF_ALL();
 
-        void FillRect(Graphics g, Rectangle rect, Color color, float radius, bool round)
+        void FillRect(ICanvas g, Rectangle rect, Color color, float radius, bool round)
         {
             using (var brush = new SolidBrush(color))
             {
@@ -428,17 +428,17 @@ namespace AntdUI
                 {
                     using (var path = rect.RoundPath(radius))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                     }
                 }
                 else
                 {
-                    g.FillRectangle(brush, rect);
+                    g.Fill(brush, rect);
                 }
             }
         }
 
-        void DrawRect(Graphics g, Rectangle rect, Color color, float width, float radius, bool round)
+        void DrawRect(ICanvas g, Rectangle rect, Color color, float width, float radius, bool round)
         {
             using (var pen = new Pen(color, width))
             {
@@ -450,10 +450,10 @@ namespace AntdUI
                 {
                     using (var path = rect.RoundPath(radius))
                     {
-                        g.DrawPath(pen, path);
+                        g.Draw(pen, path);
                     }
                 }
-                else g.DrawRectangle(pen, rect);
+                else g.Draw(pen, rect);
             }
         }
 

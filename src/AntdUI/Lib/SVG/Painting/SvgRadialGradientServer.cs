@@ -161,7 +161,7 @@ namespace AntdUI.Svg
                             newClip.Exclude(path);
                             renderer.SetClip(newClip);
 
-                            var renderPath = (GraphicsPath)renderingElement.Path(renderer);
+                            var renderPath = renderingElement.Path(renderer);
                             if (forStroke)
                             {
                                 using (var pen = new Pen(solidBrush, renderingElement.StrokeWidth.ToDeviceValue(renderer, UnitRenderingType.Other, renderingElement)))

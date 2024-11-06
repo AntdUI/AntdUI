@@ -339,8 +339,8 @@ namespace AntdUI.Svg
             // Ratio of height/width of the original SVG size, to be used for scaling transformation
             float ratio = size.Height / size.Width;
 
-            size.Width = rasterWidth > 0 ? (float)rasterWidth : size.Width;
-            size.Height = rasterHeight > 0 ? (float)rasterHeight : size.Height;
+            size.Width = rasterWidth > 0 ? rasterWidth : size.Width;
+            size.Height = rasterHeight > 0 ? rasterHeight : size.Height;
 
             if (rasterHeight == 0 && rasterWidth > 0) size.Height = (int)(rasterWidth * ratio);
             else if (rasterHeight > 0 && rasterWidth == 0) size.Width = (int)(rasterHeight / ratio);

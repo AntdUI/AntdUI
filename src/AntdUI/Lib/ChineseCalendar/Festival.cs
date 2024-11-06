@@ -46,7 +46,7 @@ namespace ChineseCalendar
         /// <inheritdoc/>
         public override string ToString()
         {
-            return this.Name;
+            return Name;
         }
         /// <summary>
         /// 返回所有预定义的节日

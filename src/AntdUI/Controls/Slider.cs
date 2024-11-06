@@ -297,7 +297,7 @@ namespace AntdUI
             this.PaintBadge(g);
         }
 
-        internal virtual void IPaint(Graphics g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)
+        internal virtual void IPaint(ICanvas g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)
         {
             float prog = ProgValue(_value);
 
@@ -307,15 +307,9 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Style.Db.FillQuaternary))
                 {
-                    g.FillPath(brush, path);
-                    if (AnimationHover)
-                    {
-                        using (var brush_hover = new SolidBrush(Helper.ToColorN(AnimationHoverValue, brush.Color)))
-                        {
-                            g.FillPath(brush_hover, path);
-                        }
-                    }
-                    else if (ExtraMouseHover) g.FillPath(brush, path);
+                    g.Fill(brush, path);
+                    if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
+                    else if (ExtraMouseHover) g.Fill(brush, path);
                 }
 
                 if (prog > 0)
@@ -323,22 +317,10 @@ namespace AntdUI
                     g.SetClip(RectLine(rect_read, prog));
                     if (AnimationHover)
                     {
-                        using (var brush = new SolidBrush(color))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                        using (var brush = new SolidBrush(Helper.ToColor(255 * AnimationHoverValue, color_hover)))
-                        {
-                            g.FillPath(brush, path);
-                        }
+                        g.Fill(color, path);
+                        g.Fill(Helper.ToColor(255 * AnimationHoverValue, color_hover), path);
                     }
-                    else
-                    {
-                        using (var brush = new SolidBrush(ExtraMouseHover ? color_hover : color))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                    }
+                    else g.Fill(ExtraMouseHover ? color_hover : color, path);
                     g.ResetClip();
                 }
             }
@@ -354,7 +336,7 @@ namespace AntdUI
 
         readonly StringFormat s_f = Helper.SF_NoWrap();
         internal RectangleF rectEllipse;
-        internal void PaintEllipse(Graphics g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
+        internal void PaintEllipse(ICanvas g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
         {
             int DotSize = (int)(dotSize * Config.Dpi), DotSizeActive = (int)(dotSizeActive * Config.Dpi);
             rectEllipse = RectDot(rect, rect_read, prog, DotSizeActive + LineSize);
@@ -409,7 +391,7 @@ namespace AntdUI
                 g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize));
             }
         }
-        internal void PaintMarksEllipse(Graphics g, Rectangle rect, RectangleF rect_read, SolidBrush brush, Color color, int LineSize)
+        internal void PaintMarksEllipse(ICanvas g, Rectangle rect, RectangleF rect_read, SolidBrush brush, Color color, int LineSize)
         {
             if (marks != null && marks.Count > 0)
             {
@@ -426,10 +408,10 @@ namespace AntdUI
                             {
                                 using (var fore2 = new SolidBrush(it.Fore.Value))
                                 {
-                                    g.DrawStr(it.Text, Font, fore2, RectDotText(rect, rect_read, uks, markTextGap, g.MeasureString(it.Text, Font).Size()), s_f);
+                                    g.String(it.Text, Font, fore2, RectDotText(rect, rect_read, uks, markTextGap, g.MeasureString(it.Text, Font)), s_f);
                                 }
                             }
-                            else g.DrawStr(it.Text, Font, fore, RectDotText(rect, rect_read, uks, markTextGap, g.MeasureString(it.Text, Font).Size()), s_f);
+                            else g.String(it.Text, Font, fore, RectDotText(rect, rect_read, uks, markTextGap, g.MeasureString(it.Text, Font)), s_f);
                         }
                         using (var brush_dot = new SolidBrush(color))
                         {

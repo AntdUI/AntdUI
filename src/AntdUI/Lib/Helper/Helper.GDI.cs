@@ -100,45 +100,45 @@ namespace AntdUI
             return new SolidBrush(def);
         }
 
-        public static Graphics High(this Graphics g)
+        public static ICanvas High(this Graphics g)
         {
             Config.SetDpi(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             if (Config.TextRenderingHint.HasValue) g.TextRenderingHint = Config.TextRenderingHint.Value;
-            return g;
+            return new Core.Canvas(g);
         }
-        public static Graphics HighLay(this Graphics g)
+        public static ICanvas HighLay(this Graphics g)
         {
             Config.SetDpi(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-            return g;
+            return new Core.Canvas(g);
         }
 
-        public static void GDI(Action<Graphics> action)
+        public static void GDI(Action<ICanvas> action)
         {
             using (var bmp = new Bitmap(1, 1))
             {
                 using (var g = Graphics.FromImage(bmp))
                 {
                     Config.SetDpi(g);
-                    action(g);
+                    action(g.HighLay());
                 }
             }
         }
 
-        public static T GDI<T>(Func<Graphics, T> action)
+        public static T GDI<T>(Func<ICanvas, T> action)
         {
             using (var bmp = new Bitmap(1, 1))
             {
                 using (var g = Graphics.FromImage(bmp))
                 {
                     Config.SetDpi(g);
-                    return action(g);
+                    return action(g.HighLay());
                 }
             }
         }
@@ -361,133 +361,9 @@ namespace AntdUI
 
         #endregion
 
-        #region 图片渲染
-
-        public static void PaintImg(this Graphics g, RectangleF rect, Image image, TFit fit, float radius, bool round)
-        {
-            if (round || radius > 0)
-            {
-                using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
-                {
-                    using (var g2 = Graphics.FromImage(bmp).High())
-                    {
-                        PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
-                    }
-                    using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
-                    {
-                        brush.TranslateTransform(rect.X, rect.Y);
-                        if (round) g.FillEllipse(brush, rect);
-                        else
-                        {
-                            using (var path = rect.RoundPath(radius))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
-                    }
-                }
-            }
-            else PaintImg(g, rect, image, fit);
-        }
-        public static void PaintImg(this Graphics g, RectangleF rect, Image image, TFit fit, float radius, TShape shape)
-        {
-            if (shape == TShape.Circle || shape == TShape.Round || radius > 0)
-            {
-                using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
-                {
-                    using (var g2 = Graphics.FromImage(bmp).High())
-                    {
-                        PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
-                    }
-                    using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
-                    {
-                        brush.TranslateTransform(rect.X, rect.Y);
-                        if (shape == TShape.Circle) g.FillEllipse(brush, rect);
-                        else
-                        {
-                            using (var path = rect.RoundPath(radius))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
-                    }
-                }
-            }
-            else PaintImg(g, rect, image, fit);
-        }
-
-        internal static void PaintImg(this Graphics g, RectangleF rect, Image image, TFit fit)
-        {
-            switch (fit)
-            {
-                case TFit.Fill:
-                    g.DrawImage(image, rect);
-                    break;
-                case TFit.None:
-                    g.DrawImage(image, new RectangleF(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2, image.Width, image.Height));
-                    break;
-                case TFit.Contain:
-                    PaintImgContain(g, image, rect);
-                    break;
-                case TFit.Cover:
-                    PaintImgCover(g, image, rect);
-                    break;
-            }
-        }
-        internal static void PaintImgCover(this Graphics g, Image image, RectangleF rect)
-        {
-            float originWidth = image.Width, originHeight = image.Height;
-            if (originWidth == originHeight)
-            {
-                if (rect.Width == rect.Height) g.DrawImage(image, rect);
-                else if (rect.Width > rect.Height) g.DrawImage(image, new RectangleF(0, (rect.Height - rect.Width) / 2, rect.Width, rect.Width));
-                else g.DrawImage(image, new RectangleF((rect.Width - rect.Height) / 2, 0, rect.Height, rect.Height));
-                return;
-            }
-            float destWidth = rect.Width, destHeight = rect.Height;
-            float currentWidth, currentHeight;
-            if ((originWidth * destHeight) > (originHeight * destWidth))
-            {
-                currentHeight = destHeight;
-                currentWidth = (originWidth * destHeight) / originHeight;
-            }
-            else
-            {
-                currentWidth = destWidth;
-                currentHeight = (destWidth * originHeight) / originWidth;
-            }
-            g.DrawImage(image, new RectangleF(rect.X + (destWidth - currentWidth) / 2, rect.Y + (destHeight - currentHeight) / 2, currentWidth, currentHeight), new RectangleF(0, 0, originWidth, originHeight), GraphicsUnit.Pixel);
-        }
-        internal static void PaintImgContain(this Graphics g, Image image, RectangleF rect)
-        {
-            float originWidth = image.Width, originHeight = image.Height;
-            if (originWidth == originHeight)
-            {
-                if (rect.Width == rect.Height) g.DrawImage(image, rect);
-                else if (rect.Width > rect.Height) g.DrawImage(image, new RectangleF((rect.Width - rect.Height) / 2, 0, rect.Height, rect.Height));
-                else g.DrawImage(image, new RectangleF(0, (rect.Height - rect.Width) / 2, rect.Width, rect.Width));
-                return;
-            }
-            float destWidth = rect.Width, destHeight = rect.Height;
-            float currentWidth, currentHeight;
-            if ((originWidth * destHeight) > (originHeight * destWidth))
-            {
-                currentWidth = destWidth;
-                currentHeight = (destWidth * originHeight) / originWidth;
-            }
-            else
-            {
-                currentHeight = destHeight;
-                currentWidth = (originWidth * destHeight) / originHeight;
-            }
-            g.DrawImage(image, new RectangleF(rect.X + (destWidth - currentWidth) / 2, rect.Y + (destHeight - currentHeight) / 2, currentWidth, currentHeight), new RectangleF(0, 0, originWidth, originHeight), GraphicsUnit.Pixel);
-        }
-
-        #endregion
-
         #region 图标渲染
 
-        internal static void PaintIcons(this Graphics g, TType icon, Rectangle rect)
+        internal static void PaintIcons(this ICanvas g, TType icon, Rectangle rect)
         {
             switch (icon)
             {
@@ -495,33 +371,33 @@ namespace AntdUI
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccess, rect, Style.Db.Success))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Info:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, Style.Db.Info))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Warn:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarn, rect, Style.Db.Warning))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Error:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, Style.Db.Error))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
             }
         }
-        internal static void PaintIcons(this Graphics g, TType icon, Rectangle rect, Color back)
+        internal static void PaintIcons(this ICanvas g, TType icon, Rectangle rect, Color back)
         {
             using (var brush = new SolidBrush(back))
             {
@@ -533,33 +409,33 @@ namespace AntdUI
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccess, rect, Style.Db.Success))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Info:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, Style.Db.Info))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Warn:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarn, rect, Style.Db.Warning))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Error:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, Style.Db.Error))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
             }
         }
-        internal static void PaintIconGhosts(this Graphics g, TType icon, Rectangle rect, Color color)
+        internal static void PaintIconGhosts(this ICanvas g, TType icon, Rectangle rect, Color color)
         {
             switch (icon)
             {
@@ -567,37 +443,37 @@ namespace AntdUI
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccessGhost, rect, color))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Info:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfoGhost, rect, color))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Warn:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarnGhost, rect, color))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
                 case TType.Error:
                     using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoErrorGhost, rect, color))
                     {
                         if (bmp == null) return;
-                        g.DrawImage(bmp, rect);
+                        g.Image(bmp, rect);
                     }
                     break;
             }
         }
-        internal static void PaintIconClose(this Graphics g, Rectangle rect, Color color)
+        internal static void PaintIconClose(this ICanvas g, Rectangle rect, Color color)
         {
             PaintIconCore(g, rect, SvgDb.IcoErrorGhost, color);
         }
-        internal static void PaintIconClose(this Graphics g, Rectangle rect, Color color, float dot)
+        internal static void PaintIconClose(this ICanvas g, Rectangle rect, Color color, float dot)
         {
             PaintIconCore(g, rect, SvgDb.IcoErrorGhost, color, dot);
         }
@@ -605,7 +481,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制带圆背景的镂空图标
         /// </summary>
-        internal static void PaintIconCoreGhost(this Graphics g, Rectangle rect, string svg, Color back, Color fore)
+        internal static void PaintIconCoreGhost(this ICanvas g, Rectangle rect, string svg, Color back, Color fore)
         {
             using (var brush = new SolidBrush(back))
             {
@@ -613,7 +489,7 @@ namespace AntdUI
             }
             g.GetImgExtend(svg, rect, fore);
         }
-        internal static void PaintIconCore(this Graphics g, Rectangle rect, string svg, Color back, Color fore)
+        internal static void PaintIconCore(this ICanvas g, Rectangle rect, string svg, Color back, Color fore)
         {
             using (var brush = new SolidBrush(back))
             {
@@ -621,8 +497,8 @@ namespace AntdUI
             }
             g.GetImgExtend(svg, rect, fore);
         }
-        internal static void PaintIconCore(this Graphics g, Rectangle rect, string svg, Color color) => g.GetImgExtend(svg, rect, color);
-        internal static void PaintIconCore(this Graphics g, Rectangle rect, string svg, Color color, float dot)
+        internal static void PaintIconCore(this ICanvas g, Rectangle rect, string svg, Color color) => g.GetImgExtend(svg, rect, color);
+        internal static void PaintIconCore(this ICanvas g, Rectangle rect, string svg, Color color, float dot)
         {
             int size = (int)(rect.Height * dot);
             var rect_ico = new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
@@ -631,47 +507,18 @@ namespace AntdUI
 
         #endregion
 
-        #region 图片透明度
-
-        public static void DrawImage(this Graphics g, Bitmap bmp, Rectangle rect, float opacity)
-        {
-            using (var attributes = new ImageAttributes())
-            {
-                var matrix = new ColorMatrix { Matrix33 = opacity };
-                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-            }
-        }
-
-        public static void DrawImage(this Graphics g, Image bmp, Rectangle rect, float opacity)
-        {
-            if (opacity >= 1F)
-            {
-                g.DrawImage(bmp, rect);
-                return;
-            }
-            using (var attributes = new ImageAttributes())
-            {
-                var matrix = new ColorMatrix { Matrix33 = opacity };
-                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-            }
-        }
-
-        #endregion
-
         #region 阴影/徽标
 
         #region 徽标
 
-        public static void PaintBadge(this IControl control, Graphics g)
+        public static void PaintBadge(this IControl control, ICanvas g)
         {
             if (control.BadgeSvg != null)
             {
                 int hasx = (int)(control.BadgeOffsetX * Config.Dpi), hasy = (int)(control.BadgeOffsetY * Config.Dpi);
                 using (var font = new Font(control.Font.FontFamily, control.Font.Size * control.BadgeSize))
                 {
-                    var size_badge = g.MeasureString(Config.NullText, font).Size().Height;
+                    var size_badge = g.MeasureString(Config.NullText, font).Height;
                     var rect_badge = PaintBadge(control.ClientRectangle, control.BadgeAlign, hasx, hasy, size_badge, size_badge);
                     g.GetImgExtend(control.BadgeSvg, rect_badge, control.BadgeBack ?? Style.Db.Error);
                 }
@@ -688,7 +535,7 @@ namespace AntdUI
                         int hasx = (int)(control.BadgeOffsetX * Config.Dpi), hasy = (int)(control.BadgeOffsetY * Config.Dpi);
                         if (string.IsNullOrWhiteSpace(control.Badge))
                         {
-                            var size = (int)(g.MeasureString(Config.NullText, font).Height);
+                            var size = g.MeasureString(Config.NullText, font).Height;
                             var rect_badge = PaintBadge(rect, control.BadgeAlign, hasx, hasy, size, size);
                             using (var brush = new SolidBrush(color))
                             {
@@ -699,7 +546,7 @@ namespace AntdUI
                                     using (var path = rect_badge.RoundPath(1, true))
                                     {
                                         path.AddEllipse(new RectangleF(rect_badge.X + rr, rect_badge.Y + rr, rect_badge.Width - rr2, rect_badge.Height - rr2));
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                     }
                                 }
                                 else
@@ -714,7 +561,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            var size = g.MeasureString(control.Badge, font).Size();
+                            var size = g.MeasureString(control.Badge, font);
                             using (var s_f = SF_NoWrap())
                             {
                                 int size_badge = (int)(size.Height * 1.2F);
@@ -729,24 +576,24 @@ namespace AntdUI
                                     {
                                         g.DrawEllipse(pen, rect_badge);
                                     }
-                                    g.DrawStr(control.Badge, font, brush_fore, rect_badge, s_f);
+                                    g.String(control.Badge, font, brush_fore, rect_badge, s_f);
                                 }
                                 else
                                 {
-                                    int w_badge = (int)(size.Width * 1.2F);
+                                    int w_badge = size.Width + (size_badge - size.Height);
                                     var rect_badge = PaintBadge(rect, control.BadgeAlign, hasx, hasy, w_badge, size_badge);
                                     using (var brush = new SolidBrush(color))
                                     {
                                         using (var path = rect_badge.RoundPath(rect_badge.Height))
                                         {
-                                            g.FillPath(brush, path);
+                                            g.Fill(brush, path);
                                             using (var pen = new Pen(brush_fore.Color, borsize))
                                             {
-                                                g.DrawPath(pen, path);
+                                                g.Draw(pen, path);
                                             }
                                         }
                                     }
-                                    g.DrawStr(control.Badge, font, brush_fore, rect_badge, s_f);
+                                    g.String(control.Badge, font, brush_fore, rect_badge, s_f);
                                 }
                             }
                         }
@@ -774,7 +621,7 @@ namespace AntdUI
                     return new Rectangle(rect.Right - x - w, rect.Y + y, w, h);
             }
         }
-        public static void PaintBadge(this IControl control, DateBadge badge, Font font, RectangleF rect, Graphics g)
+        public static void PaintBadge(this IControl control, DateBadge badge, Font font, RectangleF rect, ICanvas g)
         {
             var color = badge.Fill ?? control.BadgeBack ?? Style.Db.Error;
             using (var brush_fore = new SolidBrush(Style.Db.ErrorColor))
@@ -803,7 +650,7 @@ namespace AntdUI
                         else countStr = badge.Count.ToString();
 
                         var size = g.MeasureString(countStr, font);
-                        var size_badge = size.Height * 1.2F;
+                        int size_badge = (int)(size.Height * 1.2F);
                         if (size.Height > size.Width)
                         {
                             var rect_badge = new RectangleF(rect.Right - size_badge + 6F, rect.Top - 8F, size_badge, size_badge);
@@ -815,24 +662,21 @@ namespace AntdUI
                                     g.DrawEllipse(pen, rect_badge);
                                 }
                             }
-                            g.DrawStr(countStr, font, brush_fore, rect_badge, s_f);
+                            g.String(countStr, font, brush_fore, rect_badge, s_f);
                         }
                         else
                         {
-                            var w_badge = size.Width * 1.2F;
+                            int w_badge = size.Width + (size_badge - size.Height);
                             var rect_badge = new RectangleF(rect.Right - w_badge + 6F, rect.Top - 8F, w_badge, size_badge);
                             using (var brush = new SolidBrush(color))
                             {
                                 using (var path = rect_badge.RoundPath(rect_badge.Height))
                                 {
-                                    g.FillPath(brush, path);
-                                    using (var pen = new Pen(brush_fore.Color, borsize))
-                                    {
-                                        g.DrawPath(pen, path);
-                                    }
+                                    g.Fill(brush, path);
+                                    g.Draw(brush_fore.Color, borsize, path);
                                 }
                             }
-                            g.DrawStr(countStr, font, brush_fore, rect_badge, s_f);
+                            g.String(countStr, font, brush_fore, rect_badge, s_f);
                         }
                     }
                 }
@@ -841,7 +685,7 @@ namespace AntdUI
 
         #endregion
 
-        public static void PaintShadow(this Graphics g, ShadowConfig config, Rectangle _rect, Rectangle rect, float radius, bool round)
+        public static void PaintShadow(this ICanvas g, ShadowConfig config, Rectangle _rect, Rectangle rect, float radius, bool round)
         {
             int shadow = (int)(config.Shadow * Config.Dpi), shadowOffsetX = (int)(config.ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(config.ShadowOffsetY * Config.Dpi);
             using (var bmp_shadow = new Bitmap(_rect.Width, _rect.Height))
@@ -864,7 +708,7 @@ namespace AntdUI
                         Matrix33 = config.ShadowOpacity
                     };
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(bmp_shadow, new Rectangle(_rect.X + shadowOffsetX, _rect.Y + shadowOffsetY, _rect.Width, _rect.Height), 0, 0, _rect.Width, _rect.Height, GraphicsUnit.Pixel, attributes);
+                    g.Image(bmp_shadow, new Rectangle(_rect.X + shadowOffsetX, _rect.Y + shadowOffsetY, _rect.Width, _rect.Height), 0, 0, _rect.Width, _rect.Height, GraphicsUnit.Pixel, attributes);
                 }
             }
         }
@@ -1025,10 +869,7 @@ namespace AntdUI
 
         #region 阴影
 
-        public static Bitmap PaintShadow(this GraphicsPath path, int width, int height, int range = 10)
-        {
-            return PaintShadow(path, width, height, Color.Black, range);
-        }
+        public static Bitmap PaintShadow(this GraphicsPath path, int width, int height, int range = 10) => PaintShadow(path, width, height, Color.Black, range);
         public static Bitmap PaintShadow(this GraphicsPath path, int width, int height, Color color, int range = 10)
         {
             var bmp_shadow = new Bitmap(width, height);

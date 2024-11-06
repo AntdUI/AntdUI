@@ -22,9 +22,9 @@ namespace AntdUI
 {
     partial class CellBadge
     {
-        internal override void PaintBack(Graphics g) { }
+        internal override void PaintBack(ICanvas g) { }
 
-        internal override void Paint(Graphics g, Font font, SolidBrush fore)
+        internal override void Paint(ICanvas g, Font font, SolidBrush fore)
         {
             if (PARENT == null) return;
             Color color;
@@ -62,23 +62,23 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Fore.Value))
                 {
-                    g.DrawStr(Text, font, brush, Rect, Table.StringF(PARENT.COLUMN));
+                    g.String(Text, font, brush, Rect, Table.StringF(PARENT.COLUMN));
                 }
             }
-            else g.DrawStr(Text, font, fore, Rect, Table.StringF(PARENT.COLUMN));
+            else g.String(Text, font, fore, Rect, Table.StringF(PARENT.COLUMN));
         }
 
-        internal override Size GetSize(Graphics g, Font font, int gap, int gap2)
+        internal override Size GetSize(ICanvas g, Font font, int gap, int gap2)
         {
             if (string.IsNullOrEmpty(Text))
             {
-                var size = g.MeasureString(Config.NullText, font).Size();
+                var size = g.MeasureString(Config.NullText, font);
                 int height = size.Height;
                 return new Size(height + gap2, size.Height);
             }
             else
             {
-                var size = g.MeasureString(Text, font).Size();
+                var size = g.MeasureString(Text, font);
                 int height = size.Height;
                 return new Size(size.Width + height + gap2, height);
             }
@@ -87,7 +87,7 @@ namespace AntdUI
         int TxtHeight = 0;
         RectangleF Rect;
         RectangleF RectDot;
-        internal override void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        internal override void SetRect(ICanvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             TxtHeight = size.Height;
             float dot_size = size.Height / 2.5F;
@@ -99,11 +99,11 @@ namespace AntdUI
                 switch (PARENT.COLUMN.Align)
                 {
                     case ColumnAlign.Center:
-                        var sizec = g.MeasureString(Text, font).Size();
+                        var sizec = g.MeasureString(Text, font);
                         RectDot = new RectangleF(rect.X + (rect.Width - sizec.Width - sizec.Height + gap2) / 2F, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                         break;
                     case ColumnAlign.Right:
-                        var sizer = g.MeasureString(Text, font).Size();
+                        var sizer = g.MeasureString(Text, font);
                         RectDot = new RectangleF(Rect.Right - sizer.Width - gap2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                         break;
                     case ColumnAlign.Left:

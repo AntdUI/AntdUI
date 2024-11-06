@@ -214,24 +214,15 @@ namespace AntdUI
                         }
                         if (it.Fore.HasValue) fore = it.Fore.Value;
 
-                        using (var brush = new SolidBrush(back))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                        if (it.hover)
-                        {
-                            using (var brush = new SolidBrush(back_hover))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
+                        g.Fill(back, path);
+                        if (it.hover) g.Fill(back_hover, path);
                         if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.rect_icon, fore);
-                        else if (it.Icon != null) g.DrawImage(it.Icon, it.rect_icon);
+                        else if (it.Icon != null) g.Image(it.Icon, it.rect_icon);
                         else
                         {
                             using (var brush = new SolidBrush(fore))
                             {
-                                g.DrawStr(it.Text, Font, brush, it.rect_read, stringCenter);
+                                g.String(it.Text, Font, brush, it.rect_read, stringCenter);
                             }
                         }
                         PrintBadge(g, it);
@@ -243,7 +234,7 @@ namespace AntdUI
 
         readonly StringFormat stringBadge = Helper.SF_NoWrap();
 
-        void PrintBadge(Graphics g, FloatButton.ConfigBtn it)
+        void PrintBadge(ICanvas g, FloatButton.ConfigBtn it)
         {
             if (it.Badge != null)
             {
@@ -280,7 +271,7 @@ namespace AntdUI
                                         g.DrawEllipse(pen, rect_badge);
                                     }
                                 }
-                                g.DrawStr(it.Badge, font, brush_fore, rect_badge, stringBadge);
+                                g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
                             else
                             {
@@ -290,14 +281,14 @@ namespace AntdUI
                                 {
                                     using (var path = rect_badge.RoundPath(rect_badge.Height))
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                         using (var pen = new Pen(brush_fore.Color, 1F))
                                         {
-                                            g.DrawPath(pen, path);
+                                            g.Draw(pen, path);
                                         }
                                     }
                                 }
-                                g.DrawStr(it.Badge, font, brush_fore, rect_badge, stringBadge);
+                                g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
                         }
                     }
@@ -309,7 +300,7 @@ namespace AntdUI
         /// 绘制阴影
         /// </summary>
         /// <param name="g">GDI</param>
-        GraphicsPath DrawShadow(Graphics g, FloatButton.ConfigBtn it)
+        GraphicsPath DrawShadow(ICanvas g, FloatButton.ConfigBtn it)
         {
             bool round = it.Round;
             float radius = round ? it.rect_read.Height : it.Radius * Config.Dpi;
@@ -328,7 +319,7 @@ namespace AntdUI
                 {
                     var matrix = new ColorMatrix { Matrix33 = 0.2F };
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + 6, it.rect.Width, it.rect.Height), 0, 0, it.rect.Width, it.rect.Height, GraphicsUnit.Pixel, attributes);
+                    g.Image(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + 6, it.rect.Width, it.rect.Height), 0, 0, it.rect.Width, it.rect.Height, GraphicsUnit.Pixel, attributes);
                 }
             }
             return path;

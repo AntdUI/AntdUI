@@ -241,7 +241,7 @@ namespace AntdUI
             return false;
         }
 
-        protected override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)
+        protected override void PaintOtherBor(ICanvas g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)
         {
             if (hover_button.Animation || hover_button.Switch)
             {
@@ -253,8 +253,7 @@ namespace AntdUI
 
                 using (var path = rect_button.RoundPath(radius, false, true, true, false))
                 {
-                    using (var brush = new SolidBrush(back))
-                    { g.FillPath(brush, path); }
+                    g.Fill(back, path);
                 }
 
                 if (hover_button.Animation)
@@ -263,11 +262,11 @@ namespace AntdUI
                     {
                         using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
                         {
-                            g.DrawPath(pen, path);
+                            g.Draw(pen, path);
                         }
                         using (var path = rect_button_bottom.RoundPath(radius, false, false, true, false))
                         {
-                            g.DrawPath(pen, path);
+                            g.Draw(pen, path);
                         }
                     }
                 }
@@ -277,11 +276,11 @@ namespace AntdUI
                     {
                         using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
                         {
-                            g.DrawPath(pen, path);
+                            g.Draw(pen, path);
                         }
                         using (var path = rect_button_bottom.RoundPath(radius, false, false, true, false))
                         {
-                            g.DrawPath(pen, path);
+                            g.Draw(pen, path);
                         }
                     }
                 }

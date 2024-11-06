@@ -37,9 +37,9 @@ namespace AntdUI
 
             public Point3D(float x, float y, float z)
             {
-                X = (double)x;
-                Y = (double)y;
-                Z = (double)z;
+                X = x;
+                Y = y;
+                Z = z;
             }
 
             public Point3D(double x, double y, double z)
