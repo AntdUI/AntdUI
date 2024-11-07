@@ -946,7 +946,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        bool PaintImg(ICanvas g, SegmentedItem it, Color color, string? svg, Image? bmp)
+        bool PaintImg(Canvas g, SegmentedItem it, Color color, string? svg, Image? bmp)
         {
             if (svg != null)
             {

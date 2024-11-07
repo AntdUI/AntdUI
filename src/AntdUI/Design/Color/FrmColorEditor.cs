@@ -296,7 +296,7 @@ namespace AntdUI.Design
         Rectangle rect_colors_big;
         Rectangle rect_colors;
         Bitmap? bmp_colors = null;
-        void PaintColors(ICanvas g, Rectangle rect)
+        void PaintColors(Canvas g, Rectangle rect)
         {
             using (var brush = new SolidBrush(ValueHue))
             {
@@ -340,7 +340,7 @@ namespace AntdUI.Design
         Rectangle rect_hue_big;
         Rectangle rect_hue;
         Bitmap? bmp_hue = null;
-        void PaintHue(ICanvas g, Rectangle rect)
+        void PaintHue(Canvas g, Rectangle rect)
         {
             int width = (rect.Width - 4) / 6;
             Rectangle rect1 = new Rectangle(2, 0, width, rect.Height), rect2 = new Rectangle(rect1.X + width, 0, width, rect.Height),
@@ -423,7 +423,7 @@ namespace AntdUI.Design
         Rectangle rect_alpha;
         Bitmap? bmp_alpha = null, bmp_alpha_read = null;
         Color color_alpha = Color.White;
-        void PaintAlpha(ICanvas g, Rectangle rect, bool add)
+        void PaintAlpha(Canvas g, Rectangle rect, bool add)
         {
             if (add)
             {

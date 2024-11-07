@@ -229,10 +229,7 @@ namespace AntdUI
                             }
 
                             g.FillEllipse(brush_dotback, it.ico_rect);
-                            using (var pen = new Pen(fill, it.pen_w))
-                            {
-                                g.DrawEllipse(pen, it.ico_rect);
-                            }
+                            g.DrawEllipse(fill, it.pen_w, it.ico_rect);
                         }
                     }
                 }
@@ -243,7 +240,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        bool PaintIcon(ICanvas g, TimelineItem it, Color fore)
+        bool PaintIcon(Canvas g, TimelineItem it, Color fore)
         {
             if (it.Icon != null) { g.Image(it.Icon, it.ico_rect); return false; }
             else if (it.IconSvg != null)

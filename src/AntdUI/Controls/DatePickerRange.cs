@@ -240,7 +240,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        protected override void PaintRIcon(ICanvas g, Rectangle rect_r)
+        protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -511,7 +511,7 @@ namespace AntdUI
                 }
             }
         }
-        protected override void PaintOtherBor(ICanvas g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
+        protected override void PaintOtherBor(Canvas g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
             if ((showS && placeholderS != null) || (showE && placeholderE != null))
             {

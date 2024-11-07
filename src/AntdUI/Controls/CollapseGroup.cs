@@ -195,7 +195,7 @@ namespace AntdUI
             return _rect;
         }
 
-        void ChangeList(ICanvas g, Rectangle rect, CollapseGroupItem Parent, CollapseGroupSubCollection items, ref int y, int font_height, int csize, int icon_size, int gap)
+        void ChangeList(Canvas g, Rectangle rect, CollapseGroupItem Parent, CollapseGroupSubCollection items, ref int y, int font_height, int csize, int icon_size, int gap)
         {
             int hasI = 0, tmp = 0;
             foreach (var it in items)
@@ -248,7 +248,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintItem(ICanvas g, Rectangle rect, int sx, int sy, CollapseGroupItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brush_TextQuaternary, float radius)
+        void PaintItem(Canvas g, Rectangle rect, int sx, int sy, CollapseGroupItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brush_TextQuaternary, float radius)
         {
             foreach (var it in items)
             {
@@ -311,7 +311,7 @@ namespace AntdUI
             }
         }
 
-        void PaintBack(ICanvas g, CollapseGroupSub sub, SolidBrush brush)
+        void PaintBack(Canvas g, CollapseGroupSub sub, SolidBrush brush)
         {
             if (radius > 0)
             {
@@ -335,7 +335,7 @@ namespace AntdUI
             };
         }
 
-        void PaintArrow(ICanvas g, CollapseGroupItem item, SolidBrush color, int sx, int sy)
+        void PaintArrow(Canvas g, CollapseGroupItem item, SolidBrush color, int sx, int sy)
         {
             using (var pen = new Pen(color, 2F))
             {
@@ -346,7 +346,7 @@ namespace AntdUI
             }
         }
 
-        void PaintArrow(ICanvas g, CollapseGroupItem item, Pen pen, int sx, int sy, float rotate)
+        void PaintArrow(Canvas g, CollapseGroupItem item, Pen pen, int sx, int sy, float rotate)
         {
             int size = item.arr_rect.Width, size_arrow = size / 2;
             g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
@@ -724,7 +724,7 @@ namespace AntdUI
 
         internal CollapseGroup? PARENT { get; set; }
 
-        internal void SetRect(ICanvas g, Rectangle _rect, int icon_size, int gap)
+        internal void SetRect(Canvas g, Rectangle _rect, int icon_size, int gap)
         {
             rect = _rect;
             int x = _rect.X + gap, y = _rect.Y + (_rect.Height - icon_size) / 2;
@@ -989,7 +989,7 @@ namespace AntdUI
         internal CollapseGroup? PARENT { get; set; }
         public CollapseGroupItem? PARENTITEM { get; set; }
 
-        internal void SetRect(ICanvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
+        internal void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
         {
             rect = rect_read;
             int sp = (int)(font_height * .25F), t_x = rect_read.Y + ((rect_read.Height - (font_height + icon_size + sp)) / 2);

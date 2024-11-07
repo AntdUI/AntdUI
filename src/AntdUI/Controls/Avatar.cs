@@ -395,17 +395,13 @@ namespace AntdUI
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
             if (loading)
             {
-                using (var pen = new Pen(Color.FromArgb(220, Style.Db.PrimaryColor), 6 * Config.Dpi))
-                using (var penpro = new Pen(Style.Db.Primary, pen.Width))
+                var bor6 = 6F * Config.Dpi;
+                int loading_size = (int)(40 * Config.Dpi);
+                var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
+                g.DrawEllipse(Color.FromArgb(220, Style.Db.PrimaryColor), bor6, rect_loading);
+                using (var penpro = new Pen(Style.Db.Primary, bor6))
                 {
-                    int loading_size = (int)(40 * Config.Dpi);
-                    var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
-                    g.DrawEllipse(pen, rect_loading);
-                    try
-                    {
-                        g.DrawArc(penpro, rect_loading, -90, 360F * _value);
-                    }
-                    catch { }
+                    g.DrawArc(penpro, rect_loading, -90, 360F * _value);
                 }
             }
             this.PaintBadge(g);
@@ -416,7 +412,7 @@ namespace AntdUI
 
         readonly StringFormat stringCenter = Helper.SF_ALL();
 
-        void FillRect(ICanvas g, Rectangle rect, Color color, float radius, bool round)
+        void FillRect(Canvas g, Rectangle rect, Color color, float radius, bool round)
         {
             using (var brush = new SolidBrush(color))
             {
@@ -438,23 +434,17 @@ namespace AntdUI
             }
         }
 
-        void DrawRect(ICanvas g, Rectangle rect, Color color, float width, float radius, bool round)
+        void DrawRect(Canvas g, Rectangle rect, Color color, float width, float radius, bool round)
         {
-            using (var pen = new Pen(color, width))
+            if (round) g.DrawEllipse(color, width, rect);
+            else if (radius > 0)
             {
-                if (round)
+                using (var path = rect.RoundPath(radius))
                 {
-                    g.DrawEllipse(pen, rect);
+                    g.Draw(color, width, path);
                 }
-                else if (radius > 0)
-                {
-                    using (var path = rect.RoundPath(radius))
-                    {
-                        g.Draw(pen, path);
-                    }
-                }
-                else g.Draw(pen, rect);
             }
+            else g.Draw(color, width, rect);
         }
 
         #endregion

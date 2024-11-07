@@ -233,10 +233,11 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal void PaintChecked(ICanvas g, Rectangle rect, bool enabled, RectangleF icon_rect, bool right)
+        internal void PaintChecked(Canvas g, Rectangle rect, bool enabled, RectangleF icon_rect, bool right)
         {
             float dot_size = icon_rect.Height;
             if (right) icon_rect.X = rect.Width - icon_rect.X - icon_rect.Width;
+            var bor2 = 2F * Config.Dpi;
             if (enabled)
             {
                 var color = fill ?? Style.Db.Primary;
@@ -253,75 +254,36 @@ namespace AntdUI
                     if (_checked)
                     {
                         float max = icon_rect.Height + ((rect.Height - icon_rect.Height) * AnimationCheckValue), alpha2 = 100 * (1F - AnimationCheckValue);
-                        using (var brush = new SolidBrush(Helper.ToColor(alpha2, color)))
-                        {
-                            g.FillEllipse(brush, new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
-                        }
+                        g.FillEllipse(Helper.ToColor(alpha2, color), new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
                     }
-                    using (var brush = new Pen(color, 2F))
-                    {
-                        g.DrawEllipse(brush, icon_rect);
-                    }
+                    g.DrawEllipse(color, bor2, icon_rect);
                 }
                 else if (_checked)
                 {
                     float dot = dot_size * 0.3F, dot2 = dot / 2F;
-                    using (var brush = new Pen(Color.FromArgb(250, color), dot))
-                    {
-                        g.DrawEllipse(brush, new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
-                    }
-                    using (var brush = new Pen(color, 2F))
-                    {
-                        g.DrawEllipse(brush, icon_rect);
-                    }
+                    g.DrawEllipse(Color.FromArgb(250, color), dot, new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
+                    g.DrawEllipse(color, bor2, icon_rect);
                 }
                 else
                 {
                     if (AnimationHover)
                     {
-                        using (var brush = new Pen(Style.Db.BorderColor, 2F))
-                        {
-                            g.DrawEllipse(brush, icon_rect);
-                        }
-                        using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, color), 2F))
-                        {
-                            g.DrawEllipse(brush, icon_rect);
-                        }
+                        g.DrawEllipse(Style.Db.BorderColor, bor2, icon_rect);
+                        g.DrawEllipse(Helper.ToColor(AnimationHoverValue, color), bor2, icon_rect);
                     }
-                    else if (ExtraMouseHover)
-                    {
-                        using (var brush = new Pen(color, 2F))
-                        {
-                            g.DrawEllipse(brush, icon_rect);
-                        }
-                    }
-                    else
-                    {
-                        using (var brush = new Pen(Style.Db.BorderColor, 2F))
-                        {
-                            g.DrawEllipse(brush, icon_rect);
-                        }
-                    }
+                    else if (ExtraMouseHover) g.DrawEllipse(color, bor2, icon_rect);
+                    else g.DrawEllipse(Style.Db.BorderColor, bor2, icon_rect);
                 }
             }
             else
             {
-                using (var brush = new SolidBrush(Style.Db.FillQuaternary))
-                {
-                    g.FillEllipse(brush, icon_rect);
-                }
+                g.FillEllipse(Style.Db.FillQuaternary, icon_rect);
                 if (_checked)
                 {
                     float dot = dot_size / 2F, dot2 = dot / 2F;
-                    using (var brush2 = new SolidBrush(Style.Db.TextQuaternary))
-                    {
-                        g.FillEllipse(brush2, new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
-                    }
+                    g.FillEllipse(Style.Db.TextQuaternary, new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
                 }
-                using (var brush = new Pen(Style.Db.BorderColorDisable, 2F))
-                {
-                    g.DrawEllipse(brush, icon_rect);
-                }
+                g.DrawEllipse(Style.Db.BorderColorDisable, bor2, icon_rect);
             }
         }
 

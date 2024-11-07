@@ -155,7 +155,7 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0) return;
             Helper.GDI(g =>
             {
-                int gap = (int)(8F * Config.Dpi), split = (int)(1F * Config.Dpi);
+                int gap = (int)(8F * Config.Dpi), split = (int)Config.Dpi;
                 var _splits = new List<RectangleF>(items.Count);
                 using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                 {
@@ -254,7 +254,7 @@ namespace AntdUI
             return;
         }
 
-        int MaxHeight(ICanvas g, Font font_description, int gap, out int height)
+        int MaxHeight(Canvas g, Font font_description, int gap, out int height)
         {
             int w = 0, temp_t = 0, temp = 0;
             foreach (StepsItem it in Items)
@@ -414,7 +414,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        bool PaintIcon(ICanvas g, StepsItem it, Color fore)
+        bool PaintIcon(Canvas g, StepsItem it, Color fore)
         {
             if (it.Icon != null) { g.Image(it.Icon, it.ico_rect); return false; }
             else if (it.IconSvg != null)

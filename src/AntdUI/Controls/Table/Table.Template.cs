@@ -247,7 +247,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(ICanvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
             public void SetSize(Rectangle _rect, int check_size)
@@ -256,7 +256,7 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
-            public override Size GetSize(ICanvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
                 var size = g.MeasureString(Config.NullText, font);
                 MinWidth = size.Width;
@@ -355,7 +355,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(ICanvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
             public void SetSize(Rectangle _rect, int check_size)
@@ -364,7 +364,7 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
-            public override Size GetSize(ICanvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
                 var size = g.MeasureString(Config.NullText, font);
                 MinWidth = size.Width;
@@ -560,7 +560,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(ICanvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
 
@@ -571,7 +571,7 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size2) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size2, check_size);
             }
 
-            public override Size GetSize(ICanvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
                 var size = g.MeasureString(Config.NullText, font);
                 MinWidth = size.Width;
@@ -605,13 +605,13 @@ namespace AntdUI
             /// </summary>
             public string? value { get; set; }
 
-            public override void SetSize(ICanvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
                 RECT_REAL = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
             }
 
-            public override Size GetSize(ICanvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
                 if (COLUMN.LineBreak)
                 {
@@ -656,7 +656,7 @@ namespace AntdUI
 
             public Rectangle rect_up { get; set; }
             public Rectangle rect_down { get; set; }
-            public override void SetSize(ICanvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
                 if (COLUMN.SortOrder)
@@ -667,7 +667,7 @@ namespace AntdUI
                 }
             }
 
-            public override Size GetSize(ICanvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
                 var size = g.MeasureString(value, font);
                 SortWidth = COLUMN.SortOrder ? (int)(size.Height * 0.8F) : 0;
@@ -755,8 +755,8 @@ namespace AntdUI
             public bool CONTAIN(int x, int y) => RECT.Contains(x, y);
             public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x, y);
 
-            public abstract void SetSize(ICanvas g, Font font, Rectangle _rect, int ox, int gap, int gap2);
-            public abstract Size GetSize(ICanvas g, Font font, int width, int gap, int gap2);
+            public abstract void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2);
+            public abstract Size GetSize(Canvas g, Font font, int width, int gap, int gap2);
 
             #endregion
         }
@@ -787,7 +787,7 @@ namespace AntdUI
             /// </summary>
             internal IList<ITemplate> value { get; set; }
 
-            public override void SetSize(ICanvas g, Font font, Rectangle _rect, int ox, int _gap, int _gap2)
+            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int _gap, int _gap2)
             {
                 RECT = RECT_REAL = _rect;
                 int rx = _rect.X + ox;
@@ -820,7 +820,7 @@ namespace AntdUI
             }
 
             Size[] SIZES = new Size[0];
-            public override Size GetSize(ICanvas g, Font font, int width, int _gap, int _gap2)
+            public override Size GetSize(Canvas g, Font font, int width, int _gap, int _gap2)
             {
                 int gap = _gap / 2, gap2 = _gap;
                 int w = 0, h = 0;
@@ -866,7 +866,7 @@ namespace AntdUI
 
             public bool CONTAINS(int x, int y) => RECT.Contains(x, y);
 
-            public void SetRect(ICanvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+            public void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
             {
                 RECT = rect;
                 Value.SetRect(g, font, rect, size, gap, gap2);

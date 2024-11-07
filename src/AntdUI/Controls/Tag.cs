@@ -382,7 +382,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal void PaintText(ICanvas g, string? text, Color color, Rectangle rect_read)
+        internal void PaintText(Canvas g, string? text, Color color, Rectangle rect_read)
         {
             var font_size = g.MeasureString(text ?? Config.NullText, Font);
             if (text == null)
@@ -426,7 +426,7 @@ namespace AntdUI
         /// <param name="color">颜色</param>
         /// <param name="font_size">字体大小</param>
         /// <param name="rect_read">客户区域</param>
-        bool PaintImageNoText(ICanvas g, Color? color, Size font_size, Rectangle rect_read)
+        bool PaintImageNoText(Canvas g, Color? color, Size font_size, Rectangle rect_read)
         {
             if (imageSvg != null)
             {
@@ -466,7 +466,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="color">颜色</param>
         /// <param name="rectl">图标区域</param>
-        void PaintImage(ICanvas g, Color? color, Rectangle rectl)
+        void PaintImage(Canvas g, Color? color, Rectangle rectl)
         {
             if (imageSvg != null) g.GetImgExtend(imageSvg, GetImageRect(rectl), color);
             else if (image != null) g.Image(image, GetImageRect(rectl));

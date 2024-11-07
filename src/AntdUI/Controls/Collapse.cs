@@ -485,7 +485,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintItem(ICanvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
+        void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
             if (item.ExpandThread) PaintArrow(g, item, pen_arr, -90 + (90F * item.ExpandProg));
             else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
@@ -494,7 +494,7 @@ namespace AntdUI
             g.String(item.Text, Font, fore, item.RectText, s_l);
         }
 
-        void PaintItem(ICanvas g, CollapseItem item, SolidBrush fore)
+        void PaintItem(Canvas g, CollapseItem item, SolidBrush fore)
         {
             if (item.ExpandThread) PaintArrow(g, item, fore, -90 + (90F * item.ExpandProg));
             else if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLines(-1, .56F));
@@ -503,7 +503,7 @@ namespace AntdUI
             g.String(item.Text, Font, fore, item.RectText, s_l);
         }
 
-        void PaintArrow(ICanvas g, CollapseItem item, Pen pen, float rotate)
+        void PaintArrow(Canvas g, CollapseItem item, Pen pen, float rotate)
         {
             var rect_arr = item.RectArrow;
             int size_arrow = rect_arr.Width / 2;
@@ -512,7 +512,7 @@ namespace AntdUI
             g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
             g.ResetTransform();
         }
-        void PaintArrow(ICanvas g, CollapseItem item, SolidBrush brush, float rotate)
+        void PaintArrow(Canvas g, CollapseItem item, SolidBrush brush, float rotate)
         {
             var rect_arr = item.RectArrow;
             int size_arrow = rect_arr.Width / 2;

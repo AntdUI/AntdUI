@@ -120,7 +120,7 @@ namespace AntdUI.Chat
 
         StringFormat SFL = Helper.SF(tb: StringAlignment.Near);
 
-        void PaintItem(ICanvas g, IChatItem it, Rectangle rect, float sy, float radius)
+        void PaintItem(Canvas g, IChatItem it, Rectangle rect, float sy, float radius)
         {
             it.show = it.Show && it.rect.Y > sy - rect.Height - it.rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
             if (it.show)
@@ -158,7 +158,7 @@ namespace AntdUI.Chat
             }
         }
 
-        void PaintItemText(ICanvas g, TextChatItem text, SolidBrush fore)
+        void PaintItemText(Canvas g, TextChatItem text, SolidBrush fore)
         {
             if (text.selectionLength > 0)
             {
@@ -582,7 +582,7 @@ namespace AntdUI.Chat
 
         #region 字体
 
-        internal Size FixFontWidth(ICanvas g, Font Font, TextChatItem item, int max_width, int spilt)
+        internal Size FixFontWidth(Canvas g, Font Font, TextChatItem item, int max_width, int spilt)
         {
             item.HasEmoji = false;
             int font_height = 0;
@@ -832,7 +832,7 @@ namespace AntdUI.Chat
         }
 
 
-        internal int SetRect(Rectangle _rect, int y, ICanvas g, Font font, Size msglen, int gap, int spilt, int spilt2, int image_size)
+        internal int SetRect(Rectangle _rect, int y, Canvas g, Font font, Size msglen, int gap, int spilt, int spilt2, int image_size)
         {
             if (string.IsNullOrEmpty(_name))
             {

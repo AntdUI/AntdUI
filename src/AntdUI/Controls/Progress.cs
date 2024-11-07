@@ -587,7 +587,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintShapeMini(ICanvas g, Rectangle rect, Color color)
+        void PaintShapeMini(Canvas g, Rectangle rect, Color color)
         {
             var _back = back ?? Color.FromArgb(40, color);
             var font_size = g.MeasureString("100" + textUnit, Font);
@@ -600,10 +600,7 @@ namespace AntdUI
             }
 
             int w = radius == 0 ? (int)Math.Round(icon_rect.Width * .2F) : (int)(radius * Config.Dpi);
-            using (var brush = new Pen(_back, w))
-            {
-                g.DrawEllipse(brush, icon_rect);
-            }
+            g.DrawEllipse(_back, w, icon_rect);
 
             #region 进度条
 
@@ -642,7 +639,7 @@ namespace AntdUI
 
             #endregion
         }
-        void PaintShapeSteps(ICanvas g, Rectangle rect_t, Rectangle rect, Color color)
+        void PaintShapeSteps(Canvas g, Rectangle rect_t, Rectangle rect, Color color)
         {
             var _back = back ?? Style.Db.FillSecondary;
             var font_size = g.MeasureString("100" + textUnit, Font);
@@ -746,7 +743,7 @@ namespace AntdUI
                 g.PaintIcons(state, new Rectangle((rect.X + has_x2 + size_font_w) - ico_size, rect_t.Y + (rect_t.Height - ico_size) / 2, ico_size, ico_size));
             }
         }
-        void PaintShapeRound(ICanvas g, Rectangle rect_t, Rectangle rect, Color color, bool round)
+        void PaintShapeRound(Canvas g, Rectangle rect_t, Rectangle rect, Color color, bool round)
         {
             var _back = back ?? Style.Db.FillSecondary;
             float _radius = radius * Config.Dpi;
@@ -813,7 +810,7 @@ namespace AntdUI
                 g.PaintIcons(state, new Rectangle(rect_rext.Right - ico_size, rect_rext.Y + (rect_rext.Height - ico_size) / 2, ico_size, ico_size));
             }
         }
-        void PaintShapeCircle(ICanvas g, Rectangle rect, Color color)
+        void PaintShapeCircle(Canvas g, Rectangle rect, Color color)
         {
             var _back = back ?? Style.Db.FillSecondary;
 
@@ -825,10 +822,7 @@ namespace AntdUI
             prog_size -= w;
             var rect_prog = new Rectangle(rect.X + (rect.Width - prog_size) / 2, rect.Y + (rect.Height - prog_size) / 2, prog_size, prog_size);
 
-            using (var brush = new Pen(_back, w))
-            {
-                g.DrawEllipse(brush, rect_prog);
-            }
+            g.DrawEllipse(_back, w, rect_prog);
 
             #region 进度条
 
@@ -893,7 +887,7 @@ namespace AntdUI
             }
         }
 
-        void PaintProgress(ICanvas g, float radius, Rectangle rect, Color back, Color color)
+        void PaintProgress(Canvas g, float radius, Rectangle rect, Color back, Color color)
         {
             using (var path = rect.RoundPath(radius))
             {

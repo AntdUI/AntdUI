@@ -65,7 +65,7 @@ namespace AntdUI
 
         #region 渲染
 
-        internal override void IPaint(ICanvas g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)
+        internal override void IPaint(Canvas g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)
         {
             float prog = ProgValue(Value), prog2 = ProgValue(_value2);
 
@@ -104,7 +104,7 @@ namespace AntdUI
         }
 
         RectangleF rectEllipse2;
-        internal void PaintEllipse2(ICanvas g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
+        internal void PaintEllipse2(Canvas g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
         {
             int DotSize = (int)(dotSize * Config.Dpi), DotSizeActive = (int)(dotSizeActive * Config.Dpi);
             rectEllipse2 = RectDot(rect, rect_read, prog, DotSizeActive + LineSize);

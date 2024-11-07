@@ -1389,7 +1389,7 @@ namespace AntdUI
             Input control;
             public ICaret(Input input) { control = input; }
 
-            public Rectangle Rect = new Rectangle(-1, -1000, (int)(1 * Config.Dpi), 0);
+            public Rectangle Rect = new Rectangle(-1, -1000, (int)Config.Dpi, 0);
 
             public bool Place = false;
 

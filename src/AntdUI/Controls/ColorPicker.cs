@@ -322,23 +322,21 @@ namespace AntdUI
                     g.Fill(_back, path);
                     if (borderWidth > 0)
                     {
+                        var borWidth = borderWidth * Config.Dpi;
                         if (AnimationHover)
                         {
-                            g.Draw(_border, borderWidth, path);
-                            using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, _borderHover), borderWidth))
-                            {
-                                g.Draw(brush, path);
-                            }
+                            g.Draw(_border, borWidth, path);
+                            g.Draw(Helper.ToColor(AnimationHoverValue, _borderHover), borWidth, path);
                         }
-                        else if (ExtraMouseDown) g.Draw(_borderActive, borderWidth, path);
-                        else if (ExtraMouseHover) g.Draw(_borderHover, borderWidth, path);
-                        else g.Draw(_border, borderWidth, path);
+                        else if (ExtraMouseDown) g.Draw(_borderActive, borWidth, path);
+                        else if (ExtraMouseHover) g.Draw(_borderHover, borWidth, path);
+                        else g.Draw(_border, borWidth, path);
                     }
                 }
                 else
                 {
                     g.Fill(Style.Db.FillTertiary, path);
-                    if (borderWidth > 0) g.Draw(_border, borderWidth, path);
+                    if (borderWidth > 0) g.Draw(_border, borderWidth * Config.Dpi, path);
                 }
                 var r = _radius * 0.75F;
                 if (showText)
@@ -385,7 +383,7 @@ namespace AntdUI
         }
 
         Bitmap? bmp_alpha = null;
-        void PaintAlpha(ICanvas g, float radius, Rectangle rect)
+        void PaintAlpha(Canvas g, float radius, Rectangle rect)
         {
             if (bmp_alpha == null || bmp_alpha.Width != rect.Width || bmp_alpha.Height != rect.Height)
             {
@@ -406,7 +404,7 @@ namespace AntdUI
             g.Image(bmp_alpha, rect);
         }
 
-        void PaintAlpha(ICanvas g, Rectangle rect)
+        void PaintAlpha(Canvas g, Rectangle rect)
         {
             int u_y = 0, size = rect.Height / 4;
             bool ad = false;
@@ -440,7 +438,7 @@ namespace AntdUI
 
         #region 点击动画
 
-        internal void PaintClick(ICanvas g, GraphicsPath path, Rectangle rect, Color color, float radius)
+        internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, Color color, float radius)
         {
             if (AnimationFocus)
             {

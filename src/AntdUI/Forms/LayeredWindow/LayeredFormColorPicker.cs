@@ -673,7 +673,7 @@ namespace AntdUI
         Rectangle rect_colors;
         Bitmap? bmp_colors = null;
         Dictionary<string, Color>? bmp_colors_mouse = null;
-        void PaintColors(ICanvas g, Rectangle rect)
+        void PaintColors(Canvas g, Rectangle rect)
         {
             using (var brush = new SolidBrush(ValueHue))
             {
@@ -722,7 +722,7 @@ namespace AntdUI
         Rectangle rect_hue_big;
         Rectangle rect_hue;
         Bitmap? bmp_hue = null;
-        void PaintHue(ICanvas g, Rectangle rect)
+        void PaintHue(Canvas g, Rectangle rect)
         {
             int width = (rect.Width - 4) / 6;
             Rectangle rect1 = new Rectangle(2, 0, width, rect.Height), rect2 = new Rectangle(rect1.X + width, 0, width, rect.Height),
@@ -805,7 +805,7 @@ namespace AntdUI
         Rectangle rect_alpha;
         Bitmap? bmp_alpha = null, bmp_alpha_read = null;
         Color color_alpha = Color.White;
-        void PaintAlpha(ICanvas g, Rectangle rect, bool add)
+        void PaintAlpha(Canvas g, Rectangle rect, bool add)
         {
             if (add)
             {
@@ -859,7 +859,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="rect">客户区域</param>
-        void DrawShadow(ICanvas g, Rectangle rect)
+        void DrawShadow(Canvas g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {

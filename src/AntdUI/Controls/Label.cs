@@ -369,7 +369,7 @@ namespace AntdUI
         #region 渲染帮助
 
         bool ellipsis = false;
-        void PaintText(ICanvas g, string? text, Color color, Rectangle rect_read)
+        void PaintText(Canvas g, string? text, Color color, Rectangle rect_read)
         {
             if (!string.IsNullOrEmpty(text))
             {
@@ -405,7 +405,7 @@ namespace AntdUI
             }
         }
 
-        Rectangle PaintTextLeft(ICanvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
+        Rectangle PaintTextLeft(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
             int hx = 0;
             if (has_prefixText)
@@ -457,7 +457,7 @@ namespace AntdUI
             if (hx > 0) return new Rectangle(rect_read.X + hx, rect_read.Y, rect_read.Width - hx, rect_read.Height);
             return rect_read;
         }
-        Rectangle PaintTextRight(ICanvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
+        Rectangle PaintTextRight(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
             int hr = 0;
             if (has_suffixText)
@@ -507,7 +507,7 @@ namespace AntdUI
             if (hr > 0) return new Rectangle(rect_read.X, rect_read.Y, rect_read.Width - hr, rect_read.Height);
             return rect_read;
         }
-        Rectangle PaintTextCenter(ICanvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
+        Rectangle PaintTextCenter(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
             int cex = rect_read.X + (rect_read.Width - font_size.Width) / 2;
             if (has_prefixText)

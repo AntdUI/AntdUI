@@ -169,10 +169,7 @@ namespace AntdUI
                     if (state == TState.Processing)
                     {
                         float max = (size.Height - 6F) * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
-                        using (var pen = new Pen(Helper.ToColor(alpha, brush.Color), 4F))
-                        {
-                            g.DrawEllipse(pen, new RectangleF((rect.Width - max) / 2F, (rect.Height - max) / 2F, max, max));
-                        }
+                        g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF((rect.Width - max) / 2F, (rect.Height - max) / 2F, max, max));
                     }
                 }
             }
@@ -187,10 +184,7 @@ namespace AntdUI
                     if (state == TState.Processing)
                     {
                         float max = (size.Height - 6F) * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
-                        using (var pen = new Pen(Helper.ToColor(alpha, brush.Color), 4F))
-                        {
-                            g.DrawEllipse(pen, new RectangleF(rect_dot.X + (rect_dot.Width - max) / 2F, rect_dot.Y + (rect_dot.Height - max) / 2F, max, max));
-                        }
+                        g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF(rect_dot.X + (rect_dot.Width - max) / 2F, rect_dot.Y + (rect_dot.Height - max) / 2F, max, max));
                     }
                 }
                 using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))

@@ -951,7 +951,7 @@ namespace AntdUI
         }
 
         StringFormat stringCenter = Helper.SF_NoWrap();
-        void PaintEmpty(ICanvas g, Rectangle rect)
+        void PaintEmpty(Canvas g, Rectangle rect)
         {
             using (var fore = new SolidBrush(Style.Db.Text))
             {
@@ -1062,7 +1062,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制阴影
         /// </summary>
-        void DrawShadow(VirtualShadowItem it, ICanvas g, float radius)
+        void DrawShadow(VirtualShadowItem it, Canvas g, float radius)
         {
             if (shadow > 0)
             {
@@ -1293,8 +1293,8 @@ namespace AntdUI
         public bool CanClick { get; set; } = true;
         public bool Hover { get; set; }
         public object? Tag { get; set; }
-        public abstract Size Size(ICanvas g, VirtualPanelArgs e);
-        public abstract void Paint(ICanvas g, VirtualPanelArgs e);
+        public abstract Size Size(Canvas g, VirtualPanelArgs e);
+        public abstract void Paint(Canvas g, VirtualPanelArgs e);
         public virtual bool MouseMove(VirtualPanel sender, VirtualPanelMouseArgs e) => true;
         public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
         public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }

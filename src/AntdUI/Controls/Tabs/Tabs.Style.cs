@@ -271,7 +271,7 @@ namespace AntdUI
                 });
             }
 
-            public void Paint(Tabs owner, ICanvas g, TabCollection items)
+            public void Paint(Tabs owner, Canvas g, TabCollection items)
             {
                 if (rects.Length > 0)
                 {
@@ -331,7 +331,7 @@ namespace AntdUI
 
             #region 辅助
 
-            Dictionary<TabPage, Size> GetDir(Tabs owner, ICanvas g, TabCollection items, int gap, int gapI, out int ico_size, out int sizewh)
+            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, int gapI, out int ico_size, out int sizewh)
             {
                 sizewh = 0;
                 var size_t = g.MeasureString(Config.NullText, owner.Font);
@@ -374,7 +374,7 @@ namespace AntdUI
                 return owner.HandItemSize(rect_dir, ref sizewh);
             }
 
-            void PaintText(ICanvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
+            void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
             {
                 if (page.HasIcon)
                 {
@@ -384,7 +384,7 @@ namespace AntdUI
                 g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
-            void PaintBar(ICanvas g, RectangleF rect, SolidBrush brush)
+            void PaintBar(Canvas g, RectangleF rect, SolidBrush brush)
             {
                 if (radius > 0)
                 {
@@ -395,7 +395,7 @@ namespace AntdUI
                 }
                 else g.Fill(brush, rect);
             }
-            void PaintBar(ICanvas g, Rectangle rect, SolidBrush brush)
+            void PaintBar(Canvas g, Rectangle rect, SolidBrush brush)
             {
                 if (radius > 0)
                 {
@@ -935,7 +935,7 @@ namespace AntdUI
                 });
             }
 
-            public void Paint(Tabs owner, ICanvas g, TabCollection items)
+            public void Paint(Tabs owner, Canvas g, TabCollection items)
             {
                 if (rects.Length == items.Count)
                 {
@@ -973,13 +973,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, false, false, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0)
-                                                {
-                                                    using (var pen_bg = new Pen(border ?? AntdUI.Style.Db.BorderSecondary, bor))
-                                                    {
-                                                        g.Draw(pen_bg, path);
-                                                    }
-                                                }
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
                                                 else PaintText(g, rects[i], owner, page, brush_fore);
                                             }
@@ -1037,13 +1031,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, false, false, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0)
-                                                {
-                                                    using (var pen_bg = new Pen(border ?? AntdUI.Style.Db.BorderSecondary, bor))
-                                                    {
-                                                        g.Draw(pen_bg, path);
-                                                    }
-                                                }
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
                                                 else PaintText(g, rects[i], owner, page, brush_fore);
                                             }
@@ -1102,13 +1090,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, false, true, true, false))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0)
-                                                {
-                                                    using (var pen_bg = new Pen(border ?? AntdUI.Style.Db.BorderSecondary, bor))
-                                                    {
-                                                        g.Draw(pen_bg, path);
-                                                    }
-                                                }
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
                                                 else PaintText(g, rects[i], owner, page, brush_fore);
                                             }
@@ -1167,13 +1149,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, false, false))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0)
-                                                {
-                                                    using (var pen_bg = new Pen(border ?? AntdUI.Style.Db.BorderSecondary, bor))
-                                                    {
-                                                        g.Draw(pen_bg, path);
-                                                    }
-                                                }
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
                                                 else PaintText(g, rects[i], owner, page, brush_fore);
                                             }
@@ -1222,7 +1198,7 @@ namespace AntdUI
 
             #region 辅助
 
-            Dictionary<TabPage, Size> GetDir(Tabs owner, ICanvas g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
+            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
             {
                 sizewh = 0;
                 var size_t = g.MeasureString(Config.NullText, owner.Font);
@@ -1283,7 +1259,7 @@ namespace AntdUI
                 return owner.HandItemSize(rect_dir, ref sizewh);
             }
 
-            void PaintText(ICanvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
+            void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
             {
                 if (page.HasIcon)
                 {
@@ -1802,7 +1778,7 @@ namespace AntdUI
                 });
             }
 
-            public void Paint(Tabs owner, ICanvas g, TabCollection items)
+            public void Paint(Tabs owner, Canvas g, TabCollection items)
             {
                 if (rects.Length == items.Count)
                 {
@@ -1840,13 +1816,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0)
-                                                {
-                                                    using (var pen_bg = new Pen(border ?? AntdUI.Style.Db.BorderSecondary, bor))
-                                                    {
-                                                        g.Draw(pen_bg, path);
-                                                    }
-                                                }
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
@@ -1862,16 +1832,13 @@ namespace AntdUI
                                     {
                                         if (bor > 0)
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
+                                            float ly = rect_page.Y + borb2;
+                                            if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                            using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2), radius, true, true, true, true))
                                             {
-                                                float ly = rect_page.Y + borb2;
-                                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2), radius, true, true, true, true))
-                                                {
-                                                    g.Fill(brush_bg_active, path2);
-                                                }
-                                                g.Draw(pen_bg, path);
+                                                g.Fill(brush_bg_active, path2);
                                             }
+                                            g.Draw(BorderActive ?? AntdUI.Style.Db.BorderColor, bor, path);
                                         }
                                         else
                                         {
@@ -1900,13 +1867,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0)
-                                                {
-                                                    using (var pen_bg = new Pen(border ?? AntdUI.Style.Db.BorderSecondary, bor))
-                                                    {
-                                                        g.Draw(pen_bg, path);
-                                                    }
-                                                }
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
@@ -1922,16 +1883,13 @@ namespace AntdUI
                                     {
                                         if (bor > 0)
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
+                                            float lx = rect_page.Right - borb2;
+                                            if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                            using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor), radius, true, true, true, true))
                                             {
-                                                float lx = rect_page.Right - borb2;
-                                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor), radius, true, true, true, true))
-                                                {
-                                                    g.Fill(brush_bg_active, path2);
-                                                }
-                                                g.Draw(pen_bg, path);
+                                                g.Fill(brush_bg_active, path2);
                                             }
+                                            g.Draw(BorderActive ?? AntdUI.Style.Db.BorderColor, bor, path);
                                         }
                                         else
                                         {
@@ -1961,13 +1919,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0)
-                                                {
-                                                    using (var pen_bg = new Pen(border ?? AntdUI.Style.Db.BorderSecondary, bor))
-                                                    {
-                                                        g.Draw(pen_bg, path);
-                                                    }
-                                                }
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
@@ -1983,16 +1935,13 @@ namespace AntdUI
                                     {
                                         if (bor > 0)
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
+                                            float lx = rect_page.X + borb2;
+                                            if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                            using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor), radius, true, true, true, true))
                                             {
-                                                float lx = rect_page.X + borb2;
-                                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor), radius, true, true, true, true))
-                                                {
-                                                    g.Fill(brush_bg_active, path2);
-                                                }
-                                                g.Draw(pen_bg, path);
+                                                g.Fill(brush_bg_active, path2);
                                             }
+                                            g.Draw(BorderActive ?? AntdUI.Style.Db.BorderColor, bor, path);
                                         }
                                         else
                                         {
@@ -2022,13 +1971,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0)
-                                                {
-                                                    using (var pen_bg = new Pen(border ?? AntdUI.Style.Db.BorderSecondary, bor))
-                                                    {
-                                                        g.Draw(pen_bg, path);
-                                                    }
-                                                }
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
@@ -2044,16 +1987,13 @@ namespace AntdUI
                                     {
                                         if (bor > 0)
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
+                                            float ly = rect_page.Bottom - borb2;
+                                            if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                            using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2), radius, true, true, true, true))
                                             {
-                                                float ly = rect_page.Bottom - borb2;
-                                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2), radius, true, true, true, true))
-                                                {
-                                                    g.Fill(brush_bg_active, path2);
-                                                }
-                                                g.Draw(pen_bg, path);
+                                                g.Fill(brush_bg_active, path2);
                                             }
+                                            g.Draw(BorderActive ?? AntdUI.Style.Db.BorderColor, bor, path);
                                         }
                                         else
                                         {
@@ -2073,7 +2013,7 @@ namespace AntdUI
 
             #region 辅助
 
-            Dictionary<TabPage, Size> GetDir(Tabs owner, ICanvas g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
+            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
             {
                 sizewh = 0;
                 var size_t = g.MeasureString(Config.NullText, owner.Font);
@@ -2134,7 +2074,7 @@ namespace AntdUI
                 return owner.HandItemSize(rect_dir, ref sizewh);
             }
 
-            void PaintText(ICanvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush, bool closshow = false)
+            void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush, bool closshow = false)
             {
                 if (page.HasIcon)
                 {
@@ -2281,7 +2221,7 @@ namespace AntdUI
         public interface IStyle
         {
             void LoadLayout(Tabs owner, Rectangle rect, TabCollection items);
-            void Paint(Tabs owner, ICanvas g, TabCollection items);
+            void Paint(Tabs owner, Canvas g, TabCollection items);
             void SelectedIndexChanged(int i, int old);
             bool MouseClick(TabPage page, int i, int x, int y);
             void MouseMove(int x, int y);

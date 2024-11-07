@@ -427,11 +427,11 @@ namespace AntdUI
 
         #region 渲染
 
-        public virtual void Paint(ICanvas g)
+        public virtual void Paint(Canvas g)
         {
             Paint(g, Style.Db.TextBase);
         }
-        public virtual void Paint(ICanvas g, Color baseColor)
+        public virtual void Paint(Canvas g, Color baseColor)
         {
             if (Config.ScrollBarHide)
             {
@@ -598,7 +598,7 @@ namespace AntdUI
             if (AnimationHoverX) return new SolidBrush(Color.FromArgb((int)(10 * AnimationHoverXValue), color));
             else return new SolidBrush(Color.FromArgb(10, color));
         }
-        void PaintY(ICanvas g, Color color)
+        void PaintY(Canvas g, Color color)
         {
             if (AnimationHoverY)
             {
@@ -623,7 +623,7 @@ namespace AntdUI
                 }
             }
         }
-        void PaintX(ICanvas g, Color color)
+        void PaintX(Canvas g, Color color)
         {
             if (AnimationHoverX)
             {

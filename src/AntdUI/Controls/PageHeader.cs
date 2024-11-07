@@ -597,7 +597,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        public Rectangle GetTitleRect(ICanvas g)
+        public Rectangle GetTitleRect(Canvas g)
         {
             var rect = ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
             var size = g.MeasureString(text ?? Config.NullText, Font);
@@ -617,7 +617,7 @@ namespace AntdUI
             }
         }
 
-        int IPaintS(ICanvas g, Rectangle rect, int sHeight, float icon_ratio)
+        int IPaintS(Canvas g, Rectangle rect, int sHeight, float icon_ratio)
         {
             int u_x = 0;
             int _gap = (int)(gap.HasValue ? gap.Value * Config.Dpi : sHeight * .6F);
@@ -641,7 +641,7 @@ namespace AntdUI
             return u_x + _gap;
         }
 
-        int IPaint(ICanvas g, Rectangle rect, Color fore, int sHeight, float icon_ratio)
+        int IPaint(Canvas g, Rectangle rect, Color fore, int sHeight, float icon_ratio)
         {
             int u_x = 0;
             int _gap = (int)(gap.HasValue ? gap.Value * Config.Dpi : sHeight * .6F);
@@ -703,7 +703,7 @@ namespace AntdUI
             }
             return u_x + _gap;
         }
-        void IPaintButton(ICanvas g, Rectangle rect, Color fore, Color fillsecondary, Size size)
+        void IPaintButton(Canvas g, Rectangle rect, Color fore, Color fillsecondary, Size size)
         {
             int btn_size = (int)(size.Height * 1.2F), btn_x = (rect_close.Width - btn_size) / 2, btn_y = (rect_close.Height - btn_size) / 2;
             var rect_close_icon = new Rectangle(rect_close.X + btn_x, rect_close.Y + btn_y, btn_size, btn_size);
@@ -792,7 +792,7 @@ namespace AntdUI
         #region 渲染帮助
 
         Bitmap? temp_logo = null, temp_back = null, temp_back_hover = null, temp_back_down = null, temp_min = null, temp_max = null, temp_restore = null, temp_close = null, temp_close_hover = null;
-        void PrintBack(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintBack(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_back == null || temp_back.Width != rect_icon.Width)
             {
@@ -801,12 +801,12 @@ namespace AntdUI
             }
             if (temp_back != null) g.Image(temp_back, rect_icon);
         }
-        void PrintBackHover(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintBackHover(Canvas g, Color color, Rectangle rect_icon)
         {
             PrintBack(g, color, rect_icon);
             g.GetImgExtend("ArrowLeftOutlined", rect_icon, Helper.ToColor(hove_back.Value, Style.Db.Primary));
         }
-        void PrintBackHover(ICanvas g, Rectangle rect_icon)
+        void PrintBackHover(Canvas g, Rectangle rect_icon)
         {
             if (temp_back_hover == null || temp_back_hover.Width != rect_icon.Width)
             {
@@ -815,7 +815,7 @@ namespace AntdUI
             }
             if (temp_back_hover != null) g.Image(temp_back_hover, rect_icon);
         }
-        void PrintBackDown(ICanvas g, Rectangle rect_icon)
+        void PrintBackDown(Canvas g, Rectangle rect_icon)
         {
             if (temp_back_down == null || temp_back_down.Width != rect_icon.Width)
             {
@@ -824,7 +824,7 @@ namespace AntdUI
             }
             if (temp_back_down != null) g.Image(temp_back_down, rect_icon);
         }
-        void PrintClose(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintClose(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_close == null || temp_close.Width != rect_icon.Width)
             {
@@ -833,7 +833,7 @@ namespace AntdUI
             }
             if (temp_close != null) g.Image(temp_close, rect_icon);
         }
-        void PrintCloseHover(ICanvas g, Rectangle rect_icon)
+        void PrintCloseHover(Canvas g, Rectangle rect_icon)
         {
             if (temp_close_hover == null || temp_close_hover.Width != rect_icon.Width)
             {
@@ -842,7 +842,7 @@ namespace AntdUI
             }
             if (temp_close_hover != null) g.Image(temp_close_hover, rect_icon);
         }
-        void PrintMax(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintMax(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_max == null || temp_max.Width != rect_icon.Width)
             {
@@ -851,7 +851,7 @@ namespace AntdUI
             }
             if (temp_max != null) g.Image(temp_max, rect_icon);
         }
-        void PrintRestore(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintRestore(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_restore == null || temp_restore.Width != rect_icon.Width)
             {
@@ -860,7 +860,7 @@ namespace AntdUI
             }
             if (temp_restore != null) g.Image(temp_restore, rect_icon);
         }
-        void PrintMin(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintMin(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_min == null || temp_min.Width != rect_icon.Width)
             {
@@ -869,7 +869,7 @@ namespace AntdUI
             }
             if (temp_min != null) g.Image(temp_min, rect_icon);
         }
-        bool PrintLogo(ICanvas g, string svg, Color color, Rectangle rect_icon)
+        bool PrintLogo(Canvas g, string svg, Color color, Rectangle rect_icon)
         {
             if (temp_logo == null || temp_logo.Width != rect_icon.Width)
             {

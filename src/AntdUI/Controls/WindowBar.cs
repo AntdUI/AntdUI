@@ -540,7 +540,7 @@ namespace AntdUI
 
         Bitmap? temp_logo = null, temp_min = null, temp_max = null, temp_restore = null, temp_close = null, temp_close_hover = null;
 
-        void PrintClose(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintClose(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_close == null || temp_close.Width != rect_icon.Width)
             {
@@ -549,7 +549,7 @@ namespace AntdUI
             }
             if (temp_close != null) g.Image(temp_close, rect_icon);
         }
-        void PrintCloseHover(ICanvas g, Rectangle rect_icon)
+        void PrintCloseHover(Canvas g, Rectangle rect_icon)
         {
             if (temp_close_hover == null || temp_close_hover.Width != rect_icon.Width)
             {
@@ -558,7 +558,7 @@ namespace AntdUI
             }
             if (temp_close_hover != null) g.Image(temp_close_hover, rect_icon);
         }
-        void PrintMax(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintMax(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_max == null || temp_max.Width != rect_icon.Width)
             {
@@ -567,7 +567,7 @@ namespace AntdUI
             }
             if (temp_max != null) g.Image(temp_max, rect_icon);
         }
-        void PrintRestore(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintRestore(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_restore == null || temp_restore.Width != rect_icon.Width)
             {
@@ -576,7 +576,7 @@ namespace AntdUI
             }
             if (temp_restore != null) g.Image(temp_restore, rect_icon);
         }
-        void PrintMin(ICanvas g, Color color, Rectangle rect_icon)
+        void PrintMin(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_min == null || temp_min.Width != rect_icon.Width)
             {
@@ -585,7 +585,7 @@ namespace AntdUI
             }
             if (temp_min != null) g.Image(temp_min, rect_icon);
         }
-        bool PrintLogo(ICanvas g, string svg, Color color, Rectangle rect_icon)
+        bool PrintLogo(Canvas g, string svg, Color color, Rectangle rect_icon)
         {
             if (temp_logo == null || temp_logo.Width != rect_icon.Width)
             {

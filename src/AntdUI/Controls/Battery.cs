@@ -141,6 +141,9 @@ namespace AntdUI
         #endregion
 
         Color fillfully = Color.FromArgb(0, 210, 121);
+        /// <summary>
+        /// 满电颜色
+        /// </summary>
         [Description("满电颜色"), Category("外观"), DefaultValue(typeof(Color), "0, 210, 121")]
         public Color FillFully
         {
@@ -153,11 +156,29 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 警告电量颜色
+        /// </summary>
         [Description("警告电量颜色"), Category("外观"), DefaultValue(typeof(Color), "250, 173, 20")]
         public Color FillWarn { get; set; } = Color.FromArgb(250, 173, 20);
 
+        /// <summary>
+        /// 危险电量颜色
+        /// </summary>
         [Description("危险电量颜色"), Category("外观"), DefaultValue(typeof(Color), "255, 77, 79")]
         public Color FillDanger { get; set; } = Color.FromArgb(255, 77, 79);
+
+        /// <summary>
+        /// 警告电量阈值
+        /// </summary>
+        [Description("警告电量阈值"), Category("外观"), DefaultValue(30)]
+        public int ValueWarn { get; set; } = 30;
+
+        /// <summary>
+        /// 危险电量阈值
+        /// </summary>
+        [Description("危险电量阈值"), Category("外观"), DefaultValue(20)]
+        public int ValueDanger { get; set; } = 20;
 
         #endregion
 
@@ -215,8 +236,8 @@ namespace AntdUI
                             using (var g2 = Graphics.FromImage(bmp).High())
                             {
                                 Color _color;
-                                if (_value > 30) _color = fillfully;
-                                else if (_value > 20) _color = FillWarn;
+                                if (_value > ValueWarn) _color = fillfully;
+                                else if (_value > ValueDanger) _color = FillWarn;
                                 else _color = FillDanger;
                                 g2.Fill(_color, path_pain);
                                 var _w = rect.Width * (_value / 100F);

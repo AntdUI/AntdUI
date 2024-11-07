@@ -252,7 +252,7 @@ namespace AntdUI
             this.PaintBadge(g);
             base.OnPaint(e);
         }
-        internal void PaintClick(ICanvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color)
+        internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color)
         {
             if (AnimationClick)
             {

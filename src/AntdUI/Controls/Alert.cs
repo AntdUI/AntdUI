@@ -355,7 +355,7 @@ namespace AntdUI
         /// <param name="rect">区域</param>
         /// <param name="size">文字大小</param>
         /// <param name="fore">文字颜色</param>
-        void PaintText(ICanvas g, RectangleF rect, SizeF size, Color fore)
+        void PaintText(Canvas g, RectangleF rect, SizeF size, Color fore)
         {
             using (var brush = new SolidBrush(fore))
             {
@@ -409,7 +409,7 @@ namespace AntdUI
         /// <param name="size">文字大小</param>
         /// <param name="fore">文字颜色</param>
         /// <param name="back">背景颜色</param>
-        void PaintText(ICanvas g, RectangleF rect, RectangleF rect_icon, SizeF size, Color fore, Color back, float radius)
+        void PaintText(Canvas g, RectangleF rect, RectangleF rect_icon, SizeF size, Color fore, Color back, float radius)
         {
             using (var brush_fore = new SolidBrush(fore))
             {

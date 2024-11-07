@@ -319,7 +319,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        void FillRect(ICanvas g, RectangleF rect, Color color, float radius, bool round)
+        void FillRect(Canvas g, RectangleF rect, Color color, float radius, bool round)
         {
             using (var brush = new SolidBrush(color))
             {

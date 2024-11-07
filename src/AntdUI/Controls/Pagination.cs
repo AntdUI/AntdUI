@@ -352,10 +352,7 @@ namespace AntdUI
                                 {
                                     using (var path = btn.rect.RoundPath(_radius))
                                     {
-                                        using (var pen = new Pen(color, border))
-                                        {
-                                            g.Draw(pen, path);
-                                        }
+                                        g.Draw(color, border, path);
                                     }
                                 }
                                 g.String(btn.key, Font, brush, btn.rect, s_f);

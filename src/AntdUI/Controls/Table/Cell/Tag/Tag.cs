@@ -72,17 +72,17 @@ namespace AntdUI
             }
         }
 
-        float borderwidth = 1F;
+        float borderWidth = 1F;
         /// <summary>
         /// 边框宽度
         /// </summary>
         public float BorderWidth
         {
-            get => borderwidth;
+            get => borderWidth;
             set
             {
-                if (borderwidth == value) return;
-                borderwidth = value;
+                if (borderWidth == value) return;
+                borderWidth = value;
                 OnPropertyChanged();
             }
         }

@@ -82,7 +82,7 @@ namespace AntdUI.Chat
         StringFormat SFBage = Helper.SF();
         StringFormat SFL = Helper.SF_ALL(lr: StringAlignment.Near);
         StringFormat SFR = Helper.SF_ALL(lr: StringAlignment.Far);
-        void PaintItem(ICanvas g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time)
+        void PaintItem(Canvas g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time)
         {
             it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
             if (it.show)

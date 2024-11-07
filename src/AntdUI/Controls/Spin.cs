@@ -267,7 +267,7 @@ namespace AntdUI
         }
 
         readonly StringFormat s_f = Helper.SF_ALL();
-        public void Paint(ICanvas g, Rectangle rect, string? text, Color color, Font? font, Control control)
+        public void Paint(Canvas g, Rectangle rect, string? text, Color color, Font? font, Control control)
         {
             if (prog_size == 0) prog_size = g.MeasureString(text ?? Config.NullText, font ?? control.Font).Height;
 

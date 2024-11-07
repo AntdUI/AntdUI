@@ -434,7 +434,7 @@ namespace AntdUI
     {
         #region 渲染
 
-        public static Size RenderMeasure(this ITooltip core, ICanvas g, out bool multiline)
+        public static Size RenderMeasure(this ITooltip core, Canvas g, out bool multiline)
         {
             multiline = core.Text.Contains("\n");
             int padding = (int)Math.Ceiling(20 * Config.Dpi);
@@ -454,7 +454,7 @@ namespace AntdUI
             else return new Size(font_size.Width + padding + core.ArrowSize, font_size.Height + padding);
         }
 
-        public static void Render(this ITooltip core, ICanvas g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)
+        public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)
         {
             int gap = (int)Math.Ceiling(5 * Config.Dpi), padding = gap * 2, padding2 = padding * 2;
             using (var brush = new SolidBrush(Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38)))
@@ -501,13 +501,13 @@ namespace AntdUI
             }
         }
 
-        static void RenderText(ITooltip core, ICanvas g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
+        static void RenderText(ITooltip core, Canvas g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
         {
             if (multiline) g.String(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
             else g.String(core.Text, core.Font, Brushes.White, rect, s_c);
         }
 
-        static void DrawShadow(this ITooltip core, ICanvas _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)
+        static void DrawShadow(this ITooltip core, Canvas _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)
         {
             using (var bmp = new Bitmap(brect.Width, brect.Height))
             {

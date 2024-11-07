@@ -371,14 +371,12 @@ namespace AntdUI
                 }
                 if (loading)
                 {
-                    using (var brush = new Pen(Style.Db.Fill, 3F))
+                    var bor3 = 3F * Config.Dpi;
+                    g.DrawEllipse(Style.Db.Fill, bor3, rect_loading);
+                    using (var pen = new Pen(Style.Db.Primary, bor3))
                     {
-                        g.DrawEllipse(brush, rect_loading);
-                    }
-                    using (var brush = new Pen(Style.Db.Primary, 3F))
-                    {
-                        brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, rect_loading, AnimationLoadingValue, 100);
+                        pen.StartCap = pen.EndCap = LineCap.Round;
+                        g.DrawArc(pen, rect_loading, AnimationLoadingValue, 100);
                     }
                 }
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
@@ -397,7 +395,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(ICanvas g, Rectangle rect_client, Rectangle rect_read)
+        GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
             if (Config.ShadowEnabled)
@@ -413,7 +411,7 @@ namespace AntdUI
         }
 
         Rectangle rect_icon, rect_loading, rect_txt;
-        Size RenderMeasure(ICanvas g, int shadow)
+        Size RenderMeasure(Canvas g, int shadow)
         {
             int shadow2 = shadow * 2;
             float dpi = Config.Dpi;

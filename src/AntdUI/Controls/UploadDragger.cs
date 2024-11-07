@@ -363,31 +363,11 @@ namespace AntdUI
                     var borw = borderWidth * Config.Dpi;
                     if (AnimationHover)
                     {
-                        using (var brush = new Pen(borderColor ?? Style.Db.BorderColor, borw))
-                        {
-                            g.Draw(brush, path);
-                        }
-                        using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, Style.Db.PrimaryHover), borw))
-                        {
-                            g.Draw(brush, path);
-                        }
+                        g.Draw(borderColor ?? Style.Db.BorderColor, borw, path);
+                        g.Draw(Helper.ToColor(AnimationHoverValue, Style.Db.PrimaryHover), borw, path);
                     }
-                    else if (ExtraMouseHover)
-                    {
-                        using (var brush_bor = new Pen(Style.Db.PrimaryHover, borw))
-                        {
-                            brush_bor.DashStyle = borderStyle;
-                            g.Draw(brush_bor, path);
-                        }
-                    }
-                    else
-                    {
-                        using (var brush_bor = new Pen(borderColor ?? Style.Db.BorderColor, borw))
-                        {
-                            brush_bor.DashStyle = borderStyle;
-                            g.Draw(brush_bor, path);
-                        }
-                    }
+                    else if (ExtraMouseHover) g.Draw(Style.Db.PrimaryHover, borw, borderStyle, path);
+                    else g.Draw(borderColor ?? Style.Db.BorderColor, borw, borderStyle, path);
                 }
             }
             this.PaintBadge(g);

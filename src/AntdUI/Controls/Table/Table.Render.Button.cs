@@ -23,7 +23,7 @@ namespace AntdUI
 {
     partial class Table
     {
-        internal static void PaintButton(ICanvas g, Font font, int gap, Rectangle rect_read, CellButton btn)
+        internal static void PaintButton(Canvas g, Font font, int gap, Rectangle rect_read, CellButton btn)
         {
             float _radius = (btn.Shape == TShape.Round || btn.Shape == TShape.Circle) ? rect_read.Height : btn.Radius * Config.Dpi;
 
@@ -85,39 +85,24 @@ namespace AntdUI
                             float border = btn.BorderWidth * Config.Dpi;
                             if (btn.ExtraMouseDown)
                             {
-                                using (var brush = new Pen(_back_active, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
+                                g.Draw(_back_active, border, path);
                                 PaintButton(g, font, btn, _back_active, rect_read);
                             }
                             else if (btn.AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(btn.AnimationHoverValue, _back_hover);
-                                using (var brush = new Pen(Style.Db.DefaultBorder, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
-                                using (var brush = new Pen(colorHover, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
+                                g.Draw(Style.Db.DefaultBorder, border, path);
+                                g.Draw(colorHover, border, path);
                                 PaintButton(g, font, btn, _fore, colorHover, rect_read);
                             }
                             else if (btn.ExtraMouseHover)
                             {
-                                using (var brush = new Pen(_back_hover, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
+                                g.Draw(_back_hover, border, path);
                                 PaintButton(g, font, btn, _back_hover, rect_read);
                             }
                             else
                             {
-                                using (var brush = new Pen(btn.DefaultBorderColor ?? Style.Db.DefaultBorder, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
+                                g.Draw(btn.DefaultBorderColor ?? Style.Db.DefaultBorder, border, path);
                                 PaintButton(g, font, btn, _fore, rect_read);
                             }
                         }
@@ -205,31 +190,19 @@ namespace AntdUI
                             float border = btn.BorderWidth * Config.Dpi;
                             if (btn.ExtraMouseDown)
                             {
-                                using (var brush = new Pen(_back_active, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
+                                g.Draw(_back_active, border, path);
                                 PaintButton(g, font, btn, _back_active, rect_read);
                             }
                             else if (btn.AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(btn.AnimationHoverValue, _back_hover);
-                                using (var brush = new Pen(btn.Enabled ? _back : Style.Db.FillTertiary, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
-                                using (var brush = new Pen(colorHover, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
+                                g.Draw(btn.Enabled ? _back : Style.Db.FillTertiary, border, path);
+                                g.Draw(colorHover, border, path);
                                 PaintButton(g, font, btn, _back, colorHover, rect_read);
                             }
                             else if (btn.ExtraMouseHover)
                             {
-                                using (var brush = new Pen(_back_hover, border))
-                                {
-                                    g.Draw(brush, path);
-                                }
+                                g.Draw(_back_hover, border, path);
                                 PaintButton(g, font, btn, _back_hover, rect_read);
                             }
                             else
@@ -238,19 +211,10 @@ namespace AntdUI
                                 {
                                     using (var brushback = btn.BackExtend.BrushEx(rect_read, _back))
                                     {
-                                        using (var brush = new Pen(brushback, border))
-                                        {
-                                            g.Draw(brush, path);
-                                        }
+                                        g.Draw(brushback, border, path);
                                     }
                                 }
-                                else
-                                {
-                                    using (var brush = new Pen(Style.Db.FillTertiary, border))
-                                    {
-                                        g.Draw(brush, path);
-                                    }
-                                }
+                                else g.Draw(Style.Db.FillTertiary, border, path);
                                 PaintButton(g, font, btn, btn.Enabled ? _back : Style.Db.TextQuaternary, rect_read);
                             }
                         }
@@ -309,7 +273,7 @@ namespace AntdUI
             return rect_read.RoundPath(_radius);
         }
 
-        static void PaintButton(ICanvas g, Font font, CellButton btn, Color color, Rectangle rect_read)
+        static void PaintButton(Canvas g, Font font, CellButton btn, Color color, Rectangle rect_read)
         {
             if (string.IsNullOrEmpty(btn.Text))
             {
@@ -420,7 +384,7 @@ namespace AntdUI
             }
         }
 
-        static void PaintButton(ICanvas g, Font font, CellButton btn, Color color, Color colorHover, Rectangle rect_read)
+        static void PaintButton(Canvas g, Font font, CellButton btn, Color color, Color colorHover, Rectangle rect_read)
         {
             if (string.IsNullOrEmpty(btn.Text))
             {
@@ -580,7 +544,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="color">颜色</param>
         /// <param name="rect">区域</param>
-        static bool PaintButtonImageNoText(ICanvas g, CellButton btn, Color? color, Rectangle rect)
+        static bool PaintButtonImageNoText(Canvas g, CellButton btn, Color? color, Rectangle rect)
         {
             if (btn.AnimationImageHover)
             {
@@ -599,7 +563,7 @@ namespace AntdUI
             return true;
         }
 
-        static bool PaintButtonCoreImage(ICanvas g, CellButton btn, Rectangle rect, Color? color, float opacity = 1F)
+        static bool PaintButtonCoreImage(Canvas g, CellButton btn, Rectangle rect, Color? color, float opacity = 1F)
         {
             if (btn.IconSvg != null)
             {
@@ -620,7 +584,7 @@ namespace AntdUI
             return false;
         }
 
-        static bool PaintButtonCoreImageHover(ICanvas g, CellButton btn, Rectangle rect, Color? color, float opacity = 1F)
+        static bool PaintButtonCoreImageHover(Canvas g, CellButton btn, Rectangle rect, Color? color, float opacity = 1F)
         {
             if (btn.IconHoverSvg != null)
             {
@@ -653,7 +617,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="color">颜色</param>
         /// <param name="rectl">图标区域</param>
-        static void PaintButtonPaintImage(ICanvas g, CellButton btn, Color? color, Rectangle rectl)
+        static void PaintButtonPaintImage(Canvas g, CellButton btn, Color? color, Rectangle rectl)
         {
             if (btn.AnimationImageHover)
             {
@@ -673,7 +637,7 @@ namespace AntdUI
 
         #endregion
 
-        internal static void PaintLink(ICanvas g, Font font, Rectangle rect_read, CellLink link)
+        internal static void PaintLink(Canvas g, Font font, Rectangle rect_read, CellLink link)
         {
             if (link.ExtraMouseDown)
             {

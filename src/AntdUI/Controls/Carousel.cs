@@ -629,7 +629,7 @@ namespace AntdUI
             }
             return bmp;
         }
-        void PaintBmp(CarouselItemCollection items, CarouselRectPanel select_range, ICanvas g2, float radius)
+        void PaintBmp(CarouselItemCollection items, CarouselRectPanel select_range, Canvas g2, float radius)
         {
             foreach (var it in select_range.list)
             {

@@ -211,7 +211,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal void PaintChecked(ICanvas g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
+        internal void PaintChecked(Canvas g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
         {
             float dot_size = icon_rect.Height;
             float radius = dot_size * .2F;
@@ -220,6 +220,7 @@ namespace AntdUI
             {
                 if (enabled)
                 {
+                    var bor2 = 2F * Config.Dpi;
                     var color = fill ?? Style.Db.Primary;
                     if (AnimationCheck)
                     {
@@ -237,62 +238,29 @@ namespace AntdUI
                                 g.FillEllipse(brush, new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
                             }
                         }
-                        using (var brush = new Pen(color, 2F * Config.Dpi))
-                        {
-                            g.Draw(brush, path);
-                        }
+                        g.Draw(color, bor2, path);
                     }
                     else if (_checked)
                     {
                         g.Fill(color, path);
-                        using (var brush = new Pen(Style.Db.BgBase, 3F * Config.Dpi))
-                        {
-                            g.DrawLines(brush, icon_rect.CheckArrow());
-                        }
+                        g.DrawLines(Style.Db.BgBase, 3F * Config.Dpi, icon_rect.CheckArrow());
                     }
                     else
                     {
                         if (AnimationHover)
                         {
-                            using (var brush = new Pen(Style.Db.BorderColor, 2F * Config.Dpi))
-                            {
-                                g.Draw(brush, path);
-                            }
-                            using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, color), 2F * Config.Dpi))
-                            {
-                                g.Draw(brush, path);
-                            }
+                            g.Draw(Style.Db.BorderColor, bor2, path);
+                            g.Draw(Helper.ToColor(AnimationHoverValue, color), bor2, path);
                         }
-                        else if (ExtraMouseHover)
-                        {
-                            using (var brush = new Pen(color, 2F * Config.Dpi))
-                            {
-                                g.Draw(brush, path);
-                            }
-                        }
-                        else
-                        {
-                            using (var brush = new Pen(Style.Db.BorderColor, 2F * Config.Dpi))
-                            {
-                                g.Draw(brush, path);
-                            }
-                        }
+                        else if (ExtraMouseHover) g.Draw(color, bor2, path);
+                        else g.Draw(Style.Db.BorderColor, bor2, path);
                     }
                 }
                 else
                 {
                     g.Fill(Style.Db.FillQuaternary, path);
-                    if (_checked)
-                    {
-                        using (var brush = new Pen(Style.Db.TextQuaternary, 3F * Config.Dpi))
-                        {
-                            g.DrawLines(brush, icon_rect.CheckArrow());
-                        }
-                    }
-                    using (var brush = new Pen(Style.Db.BorderColorDisable, 2F * Config.Dpi))
-                    {
-                        g.Draw(brush, path);
-                    }
+                    if (_checked) g.DrawLines(Style.Db.TextQuaternary, 3F * Config.Dpi, icon_rect.CheckArrow());
+                    g.Draw(Style.Db.BorderColorDisable, 2F * Config.Dpi, path);
                 }
             }
         }

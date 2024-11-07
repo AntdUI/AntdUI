@@ -128,7 +128,7 @@ namespace Demo.Controls
             public VItem(Color d, int size = 100) { data = d; width = height = size; }
             public VItem(Color d, int w, int h) { data = d; width = w; height = h; }
 
-            public override void Paint(AntdUI.ICanvas g, AntdUI.VirtualPanelArgs e)
+            public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 using (var brush = new SolidBrush(data))
@@ -137,7 +137,7 @@ namespace Demo.Controls
                 }
             }
 
-            public override Size Size(AntdUI.ICanvas g, AntdUI.VirtualPanelArgs e)
+            public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 return new Size((int)(width * dpi), (int)(height * dpi));
@@ -239,7 +239,7 @@ namespace Demo.Controls
 
             StringFormat s_f = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
             Bitmap bmp = null;
-            public override void Paint(AntdUI.ICanvas g, AntdUI.VirtualPanelArgs e)
+            public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 if (bmp == null || bmp.Width != e.Rect.Width || bmp.Height != e.Rect.Height)
@@ -254,10 +254,7 @@ namespace Demo.Controls
                 g.Image(bmp, e.Rect);
                 using (var path = AntdUI.Helper.RoundPath(e.Rect, e.Radius))
                 {
-                    using (var brush_bor = new Pen(AntdUI.Style.Db.BorderColor, 1.5F * dpi))
-                    {
-                        g.Draw(brush_bor, path);
-                    }
+                    g.Draw(AntdUI.Style.Db.BorderColor, 1.5F * dpi, path);
                 }
 
                 #region ½¥±äÉ«
@@ -286,7 +283,7 @@ namespace Demo.Controls
                 }
             }
 
-            public override Size Size(AntdUI.ICanvas g, AntdUI.VirtualPanelArgs e)
+            public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 int count = 5, w = (e.Rect.Width - ((int)(20 * dpi) * count)) / count;

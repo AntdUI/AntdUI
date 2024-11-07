@@ -27,7 +27,7 @@ namespace AntdUI
             if (rect.Width > 0 && rect.Height > 0) return SvgToBmp(svg, rect.Width, rect.Height, color);
             return null;
         }
-        public static bool GetImgExtend(this ICanvas g, string svg, Rectangle rect, Color? color = null)
+        public static bool GetImgExtend(this Canvas g, string svg, Rectangle rect, Color? color = null)
         {
             if (rect.Width > 0 && rect.Height > 0)
             {

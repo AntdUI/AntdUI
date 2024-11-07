@@ -352,7 +352,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        void DrawItem(ICanvas g, SolidBrush brush, OMenuItem it)
+        void DrawItem(Canvas g, SolidBrush brush, OMenuItem it)
         {
             if (it.Val.Enabled)
             {
@@ -516,12 +516,12 @@ namespace AntdUI
             }
             if (it.has_sub) PaintArrow(g, it, brush.Color);
         }
-        void PaintIcon(ICanvas g, OMenuItem it, Color fore)
+        void PaintIcon(Canvas g, OMenuItem it, Color fore)
         {
             if (it.Val.Icon != null) g.Image(it.Val.Icon, it.RectIcon);
             else if (it.Val.IconSvg != null) g.GetImgExtend(it.Val.IconSvg, it.RectIcon, fore);
         }
-        void PaintArrow(ICanvas g, OMenuItem item, Color color)
+        void PaintArrow(Canvas g, OMenuItem item, Color color)
         {
             int size = item.arr_rect.Width, size_arrow = size / 2;
             g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
@@ -540,7 +540,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="rect">客户区域</param>
-        void DrawShadow(ICanvas g, Rectangle rect)
+        void DrawShadow(Canvas g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {

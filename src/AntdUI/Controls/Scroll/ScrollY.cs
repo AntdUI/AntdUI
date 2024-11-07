@@ -158,11 +158,11 @@ namespace AntdUI
         /// 渲染滚动条竖
         /// </summary>
         /// <param name="g"></param>
-        public virtual void Paint(ICanvas g)
+        public virtual void Paint(Canvas g)
         {
             Paint(g, Style.Db.TextBase);
         }
-        public virtual void Paint(ICanvas g, Color baseColor)
+        public virtual void Paint(Canvas g, Color baseColor)
         {
             if (Show)
             {

@@ -388,7 +388,7 @@ namespace AntdUI
                 if (config.Link != null)
                 {
                     using (var brush = new SolidBrush(Style.Db.Primary))
-                    using (var pen = new Pen(Style.Db.Primary, 1F * Config.Dpi))
+                    using (var pen = new Pen(Style.Db.Primary, Config.Dpi))
                     {
                         g.String(config.Link.Text, Font, brush, rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
@@ -405,7 +405,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(ICanvas g, Rectangle rect_client, Rectangle rect_read)
+        GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
             if (Config.ShadowEnabled)
@@ -422,7 +422,7 @@ namespace AntdUI
 
         Rectangle rect_icon, rect_title, rect_txt, rect_close;
         Rectangle rect_link_text, rect_links;
-        Size RenderMeasure(ICanvas g, int shadow)
+        Size RenderMeasure(Canvas g, int shadow)
         {
             int shadow2 = shadow * 2;
             float dpi = Config.Dpi;

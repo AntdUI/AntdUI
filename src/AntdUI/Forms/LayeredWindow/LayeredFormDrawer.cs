@@ -646,7 +646,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="rect">客户区域</param>
-        Rectangle DrawShadow(ICanvas g, Rectangle rect)
+        Rectangle DrawShadow(Canvas g, Rectangle rect)
         {
             var matrix = new ColorMatrix { Matrix33 = 0.3F };
             switch (config.Align)

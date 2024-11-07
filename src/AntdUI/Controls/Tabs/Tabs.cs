@@ -500,14 +500,13 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintBadge(ICanvas g, TabPage page, Rectangle rect)
+        void PaintBadge(Canvas g, TabPage page, Rectangle rect)
         {
             if (page.Badge != null)
             {
                 var color = page.BadgeBack ?? AntdUI.Style.Db.Error;
                 using (var brush_fore = new SolidBrush(AntdUI.Style.Db.ErrorColor))
                 {
-                    float borsize = 1F * Config.Dpi;
                     using (var font = new Font(Font.FontFamily, Font.Size * page.BadgeSize))
                     {
                         if (string.IsNullOrEmpty(page.Badge) || page.Badge == "" || page.Badge == " ")
@@ -517,10 +516,7 @@ namespace AntdUI
                             using (var brush = new SolidBrush(color))
                             {
                                 g.FillEllipse(brush, rect_badge);
-                                using (var pen = new Pen(brush_fore.Color, borsize))
-                                {
-                                    g.DrawEllipse(pen, rect_badge);
-                                }
+                                g.DrawEllipse(brush_fore.Color, Config.Dpi, rect_badge);
                             }
                         }
                         else
@@ -533,10 +529,7 @@ namespace AntdUI
                                 using (var brush = new SolidBrush(color))
                                 {
                                     g.FillEllipse(brush, rect_badge);
-                                    using (var pen = new Pen(brush_fore.Color, borsize))
-                                    {
-                                        g.DrawEllipse(pen, rect_badge);
-                                    }
+                                    g.DrawEllipse(brush_fore.Color, Config.Dpi, rect_badge);
                                 }
                                 g.String(page.Badge, font, brush_fore, rect_badge, s_f);
                             }
@@ -549,10 +542,7 @@ namespace AntdUI
                                     using (var path = rect_badge.RoundPath(rect_badge.Height))
                                     {
                                         g.Fill(brush, path);
-                                        using (var pen = new Pen(brush_fore.Color, borsize))
-                                        {
-                                            g.Draw(pen, path);
-                                        }
+                                        g.Draw(brush_fore.Color, Config.Dpi, path);
                                     }
                                 }
                                 g.String(page.Badge, font, brush_fore, rect_badge, s_f);
@@ -894,7 +884,7 @@ namespace AntdUI
         }
 
         Bitmap? bitblock_l = null, bitblock_r = null;
-        public virtual void PaintExceed(ICanvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceed(Canvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             switch (typExceed)
             {
@@ -913,7 +903,7 @@ namespace AntdUI
             }
         }
 
-        public virtual void PaintExceedButton(ICanvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceedButton(Canvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             g.ResetClip();
             g.ResetTransform();
@@ -1030,7 +1020,7 @@ namespace AntdUI
                     break;
             }
         }
-        public virtual void PaintExceedLR(ICanvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceedLR(Canvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             g.ResetClip();
             g.ResetTransform();
@@ -1133,7 +1123,7 @@ namespace AntdUI
                     break;
             }
         }
-        public virtual void PaintExceedLR_Shadow(ICanvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
+        public virtual void PaintExceedLR_Shadow(Canvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             g.ResetClip();
             g.ResetTransform();

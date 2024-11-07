@@ -297,7 +297,7 @@ namespace AntdUI
             this.PaintBadge(g);
         }
 
-        internal virtual void IPaint(ICanvas g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)
+        internal virtual void IPaint(Canvas g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)
         {
             float prog = ProgValue(_value);
 
@@ -336,7 +336,7 @@ namespace AntdUI
 
         readonly StringFormat s_f = Helper.SF_NoWrap();
         internal RectangleF rectEllipse;
-        internal void PaintEllipse(ICanvas g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
+        internal void PaintEllipse(Canvas g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
         {
             int DotSize = (int)(dotSize * Config.Dpi), DotSizeActive = (int)(dotSizeActive * Config.Dpi);
             rectEllipse = RectDot(rect, rect_read, prog, DotSizeActive + LineSize);
@@ -391,7 +391,7 @@ namespace AntdUI
                 g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize));
             }
         }
-        internal void PaintMarksEllipse(ICanvas g, Rectangle rect, RectangleF rect_read, SolidBrush brush, Color color, int LineSize)
+        internal void PaintMarksEllipse(Canvas g, Rectangle rect, RectangleF rect_read, SolidBrush brush, Color color, int LineSize)
         {
             if (marks != null && marks.Count > 0)
             {

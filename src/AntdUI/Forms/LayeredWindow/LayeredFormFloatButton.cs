@@ -234,7 +234,7 @@ namespace AntdUI
 
         readonly StringFormat stringBadge = Helper.SF_NoWrap();
 
-        void PrintBadge(ICanvas g, FloatButton.ConfigBtn it)
+        void PrintBadge(Canvas g, FloatButton.ConfigBtn it)
         {
             if (it.Badge != null)
             {
@@ -245,14 +245,8 @@ namespace AntdUI
                     if (it.Badge == " ")
                     {
                         var rect_badge = new Rectangle(it.rect_read.Right - BadgeSize, it.rect_read.Y, BadgeSize, BadgeSize);
-                        using (var brush = new SolidBrush(color))
-                        {
-                            g.FillEllipse(brush, rect_badge);
-                            using (var pen = new Pen(brush_fore.Color, 1F))
-                            {
-                                g.DrawEllipse(pen, rect_badge);
-                            }
-                        }
+                        g.FillEllipse(color, rect_badge);
+                        g.DrawEllipse(color, Config.Dpi, rect_badge);
                     }
                     else
                     {
@@ -263,30 +257,18 @@ namespace AntdUI
                             if (size.Height > size.Width)
                             {
                                 var rect_badge = new RectangleF(it.rect_read.Right + size_badge2 - size_badge, it.rect_read.Y - size_badge2, size_badge, size_badge);
-                                using (var brush = new SolidBrush(color))
-                                {
-                                    g.FillEllipse(brush, rect_badge);
-                                    using (var pen = new Pen(brush_fore.Color, 1F))
-                                    {
-                                        g.DrawEllipse(pen, rect_badge);
-                                    }
-                                }
+                                g.FillEllipse(color, rect_badge);
+                                g.DrawEllipse(color, Config.Dpi, rect_badge);
                                 g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
                             else
                             {
                                 var w_badge = size.Width * 1.2F;
                                 var rect_badge = new RectangleF(it.rect_read.Right + size_badge2 - w_badge, it.rect_read.Y - size_badge2, w_badge, size_badge);
-                                using (var brush = new SolidBrush(color))
+                                using (var path = rect_badge.RoundPath(rect_badge.Height))
                                 {
-                                    using (var path = rect_badge.RoundPath(rect_badge.Height))
-                                    {
-                                        g.Fill(brush, path);
-                                        using (var pen = new Pen(brush_fore.Color, 1F))
-                                        {
-                                            g.Draw(pen, path);
-                                        }
-                                    }
+                                    g.Fill(color, path);
+                                    g.Draw(color, Config.Dpi, path);
                                 }
                                 g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
@@ -300,7 +282,7 @@ namespace AntdUI
         /// 绘制阴影
         /// </summary>
         /// <param name="g">GDI</param>
-        GraphicsPath DrawShadow(ICanvas g, FloatButton.ConfigBtn it)
+        GraphicsPath DrawShadow(Canvas g, FloatButton.ConfigBtn it)
         {
             bool round = it.Round;
             float radius = round ? it.rect_read.Height : it.Radius * Config.Dpi;

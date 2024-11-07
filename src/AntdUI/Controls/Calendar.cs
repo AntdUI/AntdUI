@@ -499,7 +499,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintYear(ICanvas g, Rectangle rect_read, float radius, List<Calendari> datas)
+        void PrintYear(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
         {
             using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
             using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
@@ -536,25 +536,13 @@ namespace AntdUI
                         else if (it.enable)
                         {
                             if (it.hover) g.Fill(Style.Db.FillTertiary, path);
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
-                            {
-                                using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
-                                {
-                                    g.Draw(brush_hove, path);
-                                }
-                            }
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Style.Db.Primary, Config.Dpi, path);
                             g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
                         }
                         else
                         {
                             g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
-                            {
-                                using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
-                                {
-                                    g.Draw(brush_hove, path);
-                                }
-                            }
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Style.Db.Primary, Config.Dpi, path);
                             g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
@@ -573,7 +561,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintMonth(ICanvas g, Rectangle rect_read, float radius, List<Calendari> datas)
+        void PrintMonth(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
         {
             using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
             using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
@@ -589,13 +577,7 @@ namespace AntdUI
                             g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_month_l, s_f);
                         }
                     }
-                    else if (hover_year.Switch)
-                    {
-                        using (var brush_hove = new SolidBrush(Style.Db.Primary))
-                        {
-                            g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_month_l, s_f);
-                        }
-                    }
+                    else if (hover_year.Switch) g.String(_Date.ToString("yyyy") + YearButton, font, Style.Db.Primary, rect_month_l, s_f);
                     else g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_month_l, s_f);
                 }
 
@@ -611,25 +593,13 @@ namespace AntdUI
                         else if (it.enable)
                         {
                             if (it.hover) g.Fill(Style.Db.FillTertiary, path);
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
-                            {
-                                using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
-                                {
-                                    g.Draw(brush_hove, path);
-                                }
-                            }
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Style.Db.Primary, Config.Dpi, path);
                             g.String(it.v, Font, brush_fore, it.rect, s_f);
                         }
                         else
                         {
                             g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str)
-                            {
-                                using (var brush_hove = new Pen(Style.Db.Primary, Config.Dpi))
-                                {
-                                    g.Draw(brush_hove, path);
-                                }
-                            }
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Style.Db.Primary, Config.Dpi, path);
                             g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
@@ -651,7 +621,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintDay(ICanvas g, Rectangle rect_read, float radius, List<Calendari> datas)
+        void PrintDay(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
         {
             if (rect_day_s == null) return;
             using (var brush_fore = new SolidBrush(Style.Db.TextBase))
@@ -661,35 +631,17 @@ namespace AntdUI
                     if (hover_year.Animation)
                     {
                         g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_day_l, s_f_L);
-                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
-                        {
-                            g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_day_l, s_f_L);
-                        }
+                        g.String(_Date.ToString("yyyy") + YearButton, font, Helper.ToColor(hover_year.Value, Style.Db.Primary), rect_day_l, s_f_L);
                     }
-                    else if (hover_year.Switch)
-                    {
-                        using (var brush_hove = new SolidBrush(Style.Db.Primary))
-                        {
-                            g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_day_l, s_f_L);
-                        }
-                    }
+                    else if (hover_year.Switch) g.String(_Date.ToString("yyyy") + YearButton, font, Style.Db.Primary, rect_day_l, s_f_L);
                     else g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_day_l, s_f_L);
 
                     if (hover_month.Animation)
                     {
                         g.String(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_day_r, s_f_R);
-                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_month.Value, Style.Db.Primary)))
-                        {
-                            g.String(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_day_r, s_f_R);
-                        }
+                        g.String(_Date.ToString("MM") + MonthButton, font, Helper.ToColor(hover_month.Value, Style.Db.Primary), rect_day_r, s_f_R);
                     }
-                    else if (hover_month.Switch)
-                    {
-                        using (var brush_hove = new SolidBrush(Style.Db.Primary))
-                        {
-                            g.String(_Date.ToString("MM") + MonthButton, font, brush_hove, rect_day_r, s_f_R);
-                        }
-                    }
+                    else if (hover_month.Switch) g.String(_Date.ToString("MM") + MonthButton, font, Style.Db.Primary, rect_day_r, s_f_R);
                     else g.String(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_day_r, s_f_R);
                 }
 
@@ -810,7 +762,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制今天边框
         /// </summary>
-        internal static void PaintToDayFrame(ICanvas g, IList<Calendari> datas, string dateNow, float radius)
+        internal static void PaintToDayFrame(Canvas g, IList<Calendari> datas, string dateNow, float radius)
         {
             foreach (var it in datas)
             {
@@ -818,10 +770,7 @@ namespace AntdUI
                 {
                     using (var path = it.rect_read.RoundPath(radius))
                     {
-                        using (var pen_active = new Pen(Style.Db.Primary, Config.Dpi))
-                        {
-                            g.Draw(pen_active, path);
-                        }
+                        g.Draw(Style.Db.Primary, Config.Dpi, path);
                     }
                     return;
                 }
@@ -1194,8 +1143,8 @@ namespace AntdUI
 
                     rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
                     rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
-                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, 1F);
-                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, 1);
+                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
 
                     rect_day_s = new Rectangle[]{
                         new Rectangle(rect.X + gap_day, y, size_w, size_h),
@@ -1224,8 +1173,8 @@ namespace AntdUI
 
                     rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
                     rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
-                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, 1F);
-                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, 1);
+                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
 
                     rect_day_s = new Rectangle[]{
                         new Rectangle(rect.X + gap_day, y, size_w, size_h),
@@ -1255,8 +1204,8 @@ namespace AntdUI
 
                     rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
                     rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
-                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, 1F);
-                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, 1);
+                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
 
                     rect_day_s = new Rectangle[]{
                         new Rectangle(rect.X + gap_day, y, size, size),

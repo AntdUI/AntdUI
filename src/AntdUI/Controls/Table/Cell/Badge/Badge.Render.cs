@@ -22,9 +22,9 @@ namespace AntdUI
 {
     partial class CellBadge
     {
-        internal override void PaintBack(ICanvas g) { }
+        internal override void PaintBack(Canvas g) { }
 
-        internal override void Paint(ICanvas g, Font font, SolidBrush fore)
+        internal override void Paint(Canvas g, Font font, SolidBrush fore)
         {
             if (PARENT == null) return;
             Color color;
@@ -51,10 +51,7 @@ namespace AntdUI
                 if (State == TState.Processing && PARENT.PARENT != null)
                 {
                     float max = (TxtHeight - 6F) * PARENT.PARENT.AnimationStateValue, alpha = 255 * (1F - PARENT.PARENT.AnimationStateValue);
-                    using (var pen = new Pen(Helper.ToColor(alpha, brush.Color), 4F))
-                    {
-                        g.DrawEllipse(pen, new RectangleF(RectDot.X + (RectDot.Width - max) / 2F, RectDot.Y + (RectDot.Height - max) / 2F, max, max));
-                    }
+                    g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF(RectDot.X + (RectDot.Width - max) / 2F, RectDot.Y + (RectDot.Height - max) / 2F, max, max));
                 }
                 g.FillEllipse(brush, RectDot);
             }
@@ -68,7 +65,7 @@ namespace AntdUI
             else g.String(Text, font, fore, Rect, Table.StringF(PARENT.COLUMN));
         }
 
-        internal override Size GetSize(ICanvas g, Font font, int gap, int gap2)
+        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             if (string.IsNullOrEmpty(Text))
             {
@@ -87,7 +84,7 @@ namespace AntdUI
         int TxtHeight = 0;
         RectangleF Rect;
         RectangleF RectDot;
-        internal override void SetRect(ICanvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             TxtHeight = size.Height;
             float dot_size = size.Height / 2.5F;

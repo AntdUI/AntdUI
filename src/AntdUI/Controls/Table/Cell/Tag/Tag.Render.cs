@@ -22,9 +22,9 @@ namespace AntdUI
 {
     partial class CellTag
     {
-        internal override void PaintBack(ICanvas g) { }
+        internal override void PaintBack(Canvas g) { }
 
-        internal override void Paint(ICanvas g, Font font, SolidBrush fore)
+        internal override void Paint(Canvas g, Font font, SolidBrush fore)
         {
             using (var path = Rect.RoundPath(6))
             {
@@ -71,7 +71,7 @@ namespace AntdUI
 
                 g.Fill(_back, path);
 
-                if (BorderWidth > 0) g.Draw(_bor, BorderWidth * Config.Dpi, path);
+                if (borderWidth > 0) g.Draw(_bor, borderWidth * Config.Dpi, path);
 
                 #endregion
 
@@ -79,14 +79,14 @@ namespace AntdUI
             }
         }
 
-        internal override Size GetSize(ICanvas g, Font font, int gap, int gap2)
+        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             var size = g.MeasureString(Text, font);
             return new Size(size.Width + gap2 * 2, size.Height + gap);
         }
 
         Rectangle Rect;
-        internal override void SetRect(ICanvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             Rect = new Rectangle(rect.X + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - gap2, size.Height);
         }

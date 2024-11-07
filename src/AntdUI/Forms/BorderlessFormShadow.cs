@@ -202,13 +202,7 @@ namespace AntdUI
                     g.Image(bitbmp, new Rectangle(shadow2, 0, bitmap.Width - shadow4, shadow), new Rectangle(shadow2, 0, bitbmp.Width - shadow4, shadow), GraphicsUnit.Pixel);
 
                     g.ResetClip();
-                    if (form.BorderWidth > 0)
-                    {
-                        using (var pen = new Pen(form.BorderColor, form.BorderWidth * Config.Dpi))
-                        {
-                            g.Draw(pen, path);
-                        }
-                    }
+                    if (form.BorderWidth > 0) g.Draw(form.BorderColor, form.BorderWidth * Config.Dpi, path);
                 }
             }
             return bitmap;

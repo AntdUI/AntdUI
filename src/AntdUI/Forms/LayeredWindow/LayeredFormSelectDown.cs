@@ -149,7 +149,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
+                int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
                 gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                 text_height = size.Height, item_height = text_height + gap_y2;
                 y += gap;
@@ -353,7 +353,7 @@ namespace AntdUI
             }
         }
 
-        void InitReadList(ICanvas g, object obj, ref int btext, ref bool ui_online, ref bool ui_icon, ref bool ui_arrow)
+        void InitReadList(Canvas g, object obj, ref int btext, ref bool ui_online, ref bool ui_icon, ref bool ui_arrow)
         {
             if (obj is SelectItem it)
             {
@@ -460,7 +460,7 @@ namespace AntdUI
                     Helper.GDI(g =>
                     {
                         var size = g.MeasureString(Config.NullText, Font);
-                        int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
+                        int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
                         gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                         text_height = size.Height, item_height = text_height + gap_y2;
                         y += gap;
@@ -571,7 +571,7 @@ namespace AntdUI
                     Helper.GDI(g =>
                     {
                         var size = g.MeasureString(Config.NullText, Font);
-                        int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
+                        int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
                         gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                         text_height = size.Height, item_height = text_height + gap_y2;
                         y += gap;
@@ -651,7 +651,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
-                    int sp = (int)(1 * Config.Dpi), gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
+                    int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
                     gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                     text_height = size.Height, item_height = text_height + gap_y2;
                     y += gap;
@@ -863,7 +863,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        void DrawItem(ICanvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
+        void DrawItem(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
         {
             if (it.ID == -1) g.Fill(brush_split, it.Rect);
             else if (it.Group) g.String(it.Text, Font, brush_fore, it.RectText, stringFormatLeft);
@@ -909,7 +909,7 @@ namespace AntdUI
             if (it.has_sub) DrawArrow(g, it, Style.Db.TextBase);
         }
 
-        void DrawTextIconSelect(ICanvas g, ObjectItem it)
+        void DrawTextIconSelect(Canvas g, ObjectItem it)
         {
             using (var font = new Font(Font, FontStyle.Bold))
             {
@@ -930,7 +930,7 @@ namespace AntdUI
             }
             DrawIcon(g, it, Style.Db.TextBase);
         }
-        void DrawTextIcon(ICanvas g, ObjectItem it, SolidBrush brush)
+        void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush)
         {
             if (it.Enable) g.String(it.Text, Font, brush, it.RectText, stringFormatLeft);
             else
@@ -942,7 +942,7 @@ namespace AntdUI
             }
             DrawIcon(g, it, brush.Color);
         }
-        void DrawIcon(ICanvas g, ObjectItem it, Color color)
+        void DrawIcon(Canvas g, ObjectItem it, Color color)
         {
             if (it.IconSvg != null)
             {
@@ -962,7 +962,7 @@ namespace AntdUI
                 else g.Image(it.Icon, it.RectIcon, 0.25F);
             }
         }
-        void DrawArrow(ICanvas g, ObjectItem item, Color color)
+        void DrawArrow(Canvas g, ObjectItem item, Color color)
         {
             int size = item.RectArrow.Width, size_arrow = size / 2;
             g.TranslateTransform(item.RectArrow.X + size_arrow, item.RectArrow.Y + size_arrow);
@@ -982,7 +982,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="rect">客户区域</param>
-        void DrawShadow(ICanvas g, Rectangle rect)
+        void DrawShadow(Canvas g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {
