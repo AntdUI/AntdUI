@@ -234,24 +234,23 @@ namespace AntdUI
                     else if (config.Content is IList<Modal.TextLine> list)
                     {
                         rtext = true;
-                        var texts = new List<RectangleF>(list.Count);
+                        var texts = new List<Rectangle>(list.Count);
                         if (_config.Icon == TType.None)
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
                             rectTitle = new Rectangle(paddingx, paddingy, wp, sizeTitle.Height + gap);
 
-                            float has_y = paddingy + sizeTitle.Height + gap;
-                            float h_temp = 0;
+                            int has_y = paddingy + sizeTitle.Height + gap, h_temp = 0;
                             foreach (var txt in list)
                             {
                                 var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font, wp);
-                                float txt_h = sizeContent.Height + txt.Gap * dpi;
-                                texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
+                                int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
+                                texts.Add(new Rectangle(rectTitle.X, has_y, wp, txt_h));
                                 has_y += txt_h;
                                 h_temp += txt_h;
                             }
 
-                            int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
+                            int h = sizeTitle.Height + gap + h_temp + butt_h;
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
                             MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
@@ -264,18 +263,17 @@ namespace AntdUI
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
                             rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);
 
-                            float has_y = paddingy + sizeTitle.Height + gap;
-                            float h_temp = 0;
+                            int has_y = paddingy + sizeTitle.Height + gap, h_temp = 0;
                             foreach (var txt in list)
                             {
                                 var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font, wp);
-                                float txt_h = sizeContent.Height + txt.Gap * dpi;
-                                texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
+                                int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
+                                texts.Add(new Rectangle(rectTitle.X, has_y, wp, txt_h));
                                 has_y += txt_h;
                                 h_temp += txt_h;
                             }
 
-                            int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
+                            int h = sizeTitle.Height + gap + h_temp + butt_h;
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
                             MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
@@ -323,7 +321,7 @@ namespace AntdUI
                             rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
                     }
-                    return new RectangleF[0];
+                    return new Rectangle[0];
                 }
             });
             ResumeLayout();
@@ -368,7 +366,7 @@ namespace AntdUI
         }
 
         Rectangle rectIcon, rectTitle, rectContent;
-        RectangleF[] rectsContent;
+        Rectangle[] rectsContent;
         bool rtext = false;
 
         readonly StringFormat stringLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);

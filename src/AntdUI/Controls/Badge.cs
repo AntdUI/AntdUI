@@ -162,7 +162,7 @@ namespace AntdUI
             if (has_text)
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                float dot_size = size.Height / 2.5F;
+                int dot_size = (int)(size.Height / 2.5F);
                 using (var brush = new SolidBrush(GetColor(fill, state)))
                 {
                     g.FillEllipse(brush, new RectangleF((rect.Width - dot_size) / 2F, (rect.Height - dot_size) / 2F, dot_size, dot_size));
@@ -176,7 +176,7 @@ namespace AntdUI
             else
             {
                 var size = g.MeasureString(text, Font);
-                float dot_size = size.Height / 2.5F;
+                int dot_size = (int)(size.Height / 2.5F);
                 using (var brush = new SolidBrush(GetColor(fill, state)))
                 {
                     var rect_dot = new RectangleF(rect.X + (size.Height - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
@@ -189,7 +189,7 @@ namespace AntdUI
                 }
                 using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
                 {
-                    g.String(text, Font, brush, new RectangleF(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
+                    g.String(text, Font, brush, new Rectangle(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
                 }
             }
             this.PaintBadge(g);

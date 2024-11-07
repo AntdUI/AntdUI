@@ -522,10 +522,10 @@ namespace AntdUI
                         else
                         {
                             var size = g.MeasureString(page.Badge, font);
-                            var size_badge = size.Height * 1.2F;
+                            int size_badge = (int)(size.Height * 1.2F);
                             if (size.Height > size.Width)
                             {
-                                var rect_badge = new RectangleF(rect.Right - size_badge - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, size_badge, size_badge);
+                                var rect_badge = new Rectangle(rect.Right - size_badge - (int)(page.BadgeOffsetX * Config.Dpi), rect.Y + (int)(page.BadgeOffsetY * Config.Dpi), size_badge, size_badge);
                                 using (var brush = new SolidBrush(color))
                                 {
                                     g.FillEllipse(brush, rect_badge);
@@ -535,8 +535,8 @@ namespace AntdUI
                             }
                             else
                             {
-                                var w_badge = size.Width * 1.2F;
-                                var rect_badge = new RectangleF(rect.Right - w_badge - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, w_badge, size_badge);
+                                int w_badge = size.Width + (size_badge - size.Height);
+                                var rect_badge = new Rectangle(rect.Right - w_badge - (int)(page.BadgeOffsetX * Config.Dpi), rect.Y + (int)(page.BadgeOffsetY * Config.Dpi), w_badge, size_badge);
                                 using (var brush = new SolidBrush(color))
                                 {
                                     using (var path = rect_badge.RoundPath(rect_badge.Height))

@@ -330,13 +330,6 @@ namespace AntdUI
                 g.String(text, Font, brush, path, stringFormat);
             }
         }
-        internal void PaintText(Canvas g, string? text, RectangleF path, StringFormat stringFormat, bool enabled)
-        {
-            using (var brush = new SolidBrush(enabled ? ForeColor : Style.Db.TextQuaternary))
-            {
-                g.String(text, Font, brush, path, stringFormat);
-            }
-        }
 
         #endregion
 

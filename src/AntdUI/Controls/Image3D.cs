@@ -321,21 +321,18 @@ namespace AntdUI
 
         void FillRect(Canvas g, RectangleF rect, Color color, float radius, bool round)
         {
-            using (var brush = new SolidBrush(color))
+            if (round)
             {
-                if (round)
-                {
-                    g.FillEllipse(brush, rect);
-                }
-                else if (radius > 0)
-                {
-                    using (var path = rect.RoundPath(radius))
-                    {
-                        g.Fill(brush, path);
-                    }
-                }
-                else g.Fill(brush, rect);
+                g.FillEllipse(color, rect);
             }
+            else if (radius > 0)
+            {
+                using (var path = rect.RoundPath(radius))
+                {
+                    g.Fill(color, path);
+                }
+            }
+            else g.Fill(color, rect);
         }
 
         #endregion

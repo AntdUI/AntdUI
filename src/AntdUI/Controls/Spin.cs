@@ -215,11 +215,8 @@ namespace AntdUI
         ITask? thread = null;
 
         float LineWidth = 6, LineAngle = 0;
-        float prog_size = 0;
-        public void Clear()
-        {
-            prog_size = 0;
-        }
+        int prog_size = 0;
+        public void Clear() => prog_size = 0;
 
         public void Start(IControl control)
         {
@@ -271,16 +268,16 @@ namespace AntdUI
         {
             if (prog_size == 0) prog_size = g.MeasureString(text ?? Config.NullText, font ?? control.Font).Height;
 
-            float rprog_size = prog_size * 1.4F, size = prog_size * .1F, size2 = prog_size / 2F;
+            int rprog_size = (int)(prog_size * 1.4F), size = (int)(prog_size * .1F), size2 = prog_size / 2;
 
-            var rect_prog = new RectangleF(rect.X + (rect.Width - rprog_size) / 2, rect.Y + (rect.Height - rprog_size) / 2, rprog_size, rprog_size);
+            var rect_prog = new Rectangle(rect.X + (rect.Width - rprog_size) / 2, rect.Y + (rect.Height - rprog_size) / 2, rprog_size, rprog_size);
             if (text != null)
             {
                 var y = rect_prog.Bottom;
                 rect_prog.Offset(0, -size2);
                 using (var brush = new SolidBrush(control.ForeColor))
                 {
-                    g.String(text, font ?? control.Font, brush, new RectangleF(rect.X, y, rect.Width, prog_size), s_f);
+                    g.String(text, font ?? control.Font, brush, new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
                 }
             }
             using (var brush = new Pen(color, size))

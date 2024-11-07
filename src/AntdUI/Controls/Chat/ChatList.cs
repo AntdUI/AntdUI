@@ -422,10 +422,10 @@ namespace AntdUI.Chat
             {
                 case Keys.Control | Keys.A:
                     SelectAll();
-                    return true;
+                    break;
                 case Keys.Control | Keys.C:
                     Copy();
-                    return true;
+                    break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }

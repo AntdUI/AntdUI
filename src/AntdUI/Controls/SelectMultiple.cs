@@ -573,7 +573,7 @@ namespace AntdUI
             {
                 case Keys.Down:
                     ExpandDrop = true;
-                    return true;
+                    break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }

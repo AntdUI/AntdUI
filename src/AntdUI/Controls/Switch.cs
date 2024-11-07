@@ -202,7 +202,7 @@ namespace AntdUI
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
                     else if (ExtraMouseHover) g.Fill(brush, path);
                 }
-                float gap = (int)(Gap * Config.Dpi), gap2 = gap * 2F;
+                int gap = (int)(Gap * Config.Dpi), gap2 = gap * 2;
                 if (AnimationCheck)
                 {
                     var alpha = 255 * AnimationCheckValue;
@@ -243,8 +243,8 @@ namespace AntdUI
                     {
                         var textSize = g.MeasureString(textToRender, Font);
                         var textRect = Checked
-                            ? new RectangleF(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
-                            : new RectangleF(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
+                            ? new Rectangle(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
+                            : new Rectangle(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
                         g.String(textToRender, Font, brush, textRect);
                     }
                 }

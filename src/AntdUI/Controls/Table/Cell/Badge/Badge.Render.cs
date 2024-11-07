@@ -82,30 +82,30 @@ namespace AntdUI
         }
 
         int TxtHeight = 0;
-        RectangleF Rect;
-        RectangleF RectDot;
+        Rectangle Rect;
+        Rectangle RectDot;
         internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             TxtHeight = size.Height;
-            float dot_size = size.Height / 2.5F;
-            if (string.IsNullOrEmpty(Text)) RectDot = new RectangleF(rect.X + (rect.Width - dot_size) / 2F, rect.Y + (rect.Height - dot_size) / 2F, dot_size, dot_size);
+            int dot_size = (int)(size.Height / 2.5F);
+            if (string.IsNullOrEmpty(Text)) RectDot = new Rectangle(rect.X + (rect.Width - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
             else
             {
-                Rect = new RectangleF(rect.X + gap + size.Height, rect.Y, rect.Width - size.Height - gap2, rect.Height);
+                Rect = new Rectangle(rect.X + gap + size.Height, rect.Y, rect.Width - size.Height - gap2, rect.Height);
                 if (PARENT == null) return;
                 switch (PARENT.COLUMN.Align)
                 {
                     case ColumnAlign.Center:
                         var sizec = g.MeasureString(Text, font);
-                        RectDot = new RectangleF(rect.X + (rect.Width - sizec.Width - sizec.Height + gap2) / 2F, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
+                        RectDot = new Rectangle(rect.X + (rect.Width - sizec.Width - sizec.Height + gap2) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                         break;
                     case ColumnAlign.Right:
                         var sizer = g.MeasureString(Text, font);
-                        RectDot = new RectangleF(Rect.Right - sizer.Width - gap2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
+                        RectDot = new Rectangle(Rect.Right - sizer.Width - gap2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                         break;
                     case ColumnAlign.Left:
                     default:
-                        RectDot = new RectangleF(rect.X + gap + (size.Height - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
+                        RectDot = new Rectangle(rect.X + gap + (size.Height - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                         break;
                 }
             }

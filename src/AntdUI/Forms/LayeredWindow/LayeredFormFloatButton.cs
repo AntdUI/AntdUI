@@ -253,18 +253,18 @@ namespace AntdUI
                         using (var font = new Font(Font.FontFamily, it.BadgeSize))
                         {
                             var size = g.MeasureString(it.Badge, font);
-                            float size_badge = size.Height * 1.2F, size_badge2 = size_badge * 0.4F;
+                            int size_badge = (int)(size.Height * 1.2F), size_badge2 = (int)(size_badge * .4F);
                             if (size.Height > size.Width)
                             {
-                                var rect_badge = new RectangleF(it.rect_read.Right + size_badge2 - size_badge, it.rect_read.Y - size_badge2, size_badge, size_badge);
+                                var rect_badge = new Rectangle(it.rect_read.Right + size_badge2 - size_badge, it.rect_read.Y - size_badge2, size_badge, size_badge);
                                 g.FillEllipse(color, rect_badge);
                                 g.DrawEllipse(color, Config.Dpi, rect_badge);
                                 g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
                             else
                             {
-                                var w_badge = size.Width * 1.2F;
-                                var rect_badge = new RectangleF(it.rect_read.Right + size_badge2 - w_badge, it.rect_read.Y - size_badge2, w_badge, size_badge);
+                                int w_badge = size.Width + (size_badge - size.Height);
+                                var rect_badge = new Rectangle(it.rect_read.Right + size_badge2 - w_badge, it.rect_read.Y - size_badge2, w_badge, size_badge);
                                 using (var path = rect_badge.RoundPath(rect_badge.Height))
                                 {
                                     g.Fill(color, path);

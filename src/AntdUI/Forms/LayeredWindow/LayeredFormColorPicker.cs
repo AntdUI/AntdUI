@@ -877,13 +877,12 @@ namespace AntdUI
 
         #endregion
 
-        public bool IProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        public void IProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
             foreach (var input in inputs)
             {
-                if (input.input.Focused) return input.input.IProcessCmdKey(ref msg, keyData);
+                if (input.input.Focused) input.input.IProcessCmdKey(ref msg, keyData);
             }
-            return false;
         }
 
         public void IKeyPress(KeyPressEventArgs e)

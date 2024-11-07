@@ -20,7 +20,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -36,13 +35,8 @@ namespace AntdUI
 
         #region String
 
-        void String(string? text, Font font, Color color, Rectangle rect);
-        void String(string? text, Font font, Color color, Rectangle rect, TextFormatFlags flags);
-
-        void String(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null);
-        void String(string? text, Font font, Color color, RectangleF rect, StringFormat? format = null);
         void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null);
-        void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat? format = null);
+        void String(string? text, Font font, Color brush, Rectangle rect, StringFormat? format = null);
 
         #endregion
 
@@ -92,6 +86,7 @@ namespace AntdUI
 
         void FillPolygon(Brush brush, Point[] points);
         void FillPolygon(Brush brush, PointF[] points);
+        void FillPolygon(Color color, PointF[] points);
 
         void FillPie(Brush brush, Rectangle rect, float startAngle, float sweepAngle);
         void FillPie(Brush brush, float x, float y, float w, float h, float startAngle, float sweepAngle);

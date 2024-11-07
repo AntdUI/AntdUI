@@ -391,7 +391,7 @@ namespace AntdUI
                 g.FillEllipse(brush, RectDot(rect, rect_read, prog, DotSize));
             }
         }
-        internal void PaintMarksEllipse(Canvas g, Rectangle rect, RectangleF rect_read, SolidBrush brush, Color color, int LineSize)
+        internal void PaintMarksEllipse(Canvas g, Rectangle rect, Rectangle rect_read, SolidBrush brush, Color color, int LineSize)
         {
             if (marks != null && marks.Count > 0)
             {
@@ -408,10 +408,10 @@ namespace AntdUI
                             {
                                 using (var fore2 = new SolidBrush(it.Fore.Value))
                                 {
-                                    g.String(it.Text, Font, fore2, RectDotText(rect, rect_read, uks, markTextGap, g.MeasureString(it.Text, Font)), s_f);
+                                    g.String(it.Text, Font, fore2, RectDotText(rect, rect_read, (int)uks, markTextGap, g.MeasureString(it.Text, Font)), s_f);
                                 }
                             }
-                            else g.String(it.Text, Font, fore, RectDotText(rect, rect_read, uks, markTextGap, g.MeasureString(it.Text, Font)), s_f);
+                            else g.String(it.Text, Font, fore, RectDotText(rect, rect_read, (int)uks, markTextGap, g.MeasureString(it.Text, Font)), s_f);
                         }
                         using (var brush_dot = new SolidBrush(color))
                         {
@@ -468,18 +468,18 @@ namespace AntdUI
                     return new RectangleF(rect_read.X + prog - size / 2F, rect.Y + (rect.Height - size) / 2F, size, size);
             }
         }
-        internal RectangleF RectDotText(Rectangle rect, RectangleF rect_read, float prog, int gap, Size size)
+        internal Rectangle RectDotText(Rectangle rect, Rectangle rect_read, int prog, int gap, Size size)
         {
             switch (align)
             {
                 case TAlignMini.Right:
-                    return new RectangleF(rect_read.X + (rect_read.Width - prog - size.Width / 2F), rect_read.Bottom + rect_read.Height + gap, size.Width, size.Height);
+                    return new Rectangle(rect_read.X + (rect_read.Width - prog - size.Width / 2), rect_read.Bottom + rect_read.Height + gap, size.Width, size.Height);
                 case TAlignMini.Top:
-                    return new RectangleF(rect_read.Right + rect_read.Width + gap, rect_read.Y + prog - size.Height / 2F, size.Width, size.Height);
+                    return new Rectangle(rect_read.Right + rect_read.Width + gap, rect_read.Y + prog - size.Height / 2, size.Width, size.Height);
                 case TAlignMini.Bottom:
-                    return new RectangleF(rect_read.Right + rect_read.Width + gap, rect_read.Y + (rect_read.Height - prog - size.Height / 2F), size.Width, size.Height);
+                    return new Rectangle(rect_read.Right + rect_read.Width + gap, rect_read.Y + (rect_read.Height - prog - size.Height / 2), size.Width, size.Height);
                 default:
-                    return new RectangleF(rect_read.X + prog - size.Width / 2F, rect_read.Bottom + rect_read.Height + gap, size.Width, size.Height);
+                    return new Rectangle(rect_read.X + prog - size.Width / 2, rect_read.Bottom + rect_read.Height + gap, size.Width, size.Height);
             }
         }
         internal RectangleF RectDotH(Rectangle rect, Rectangle rect_read, float prog, int DotSize)

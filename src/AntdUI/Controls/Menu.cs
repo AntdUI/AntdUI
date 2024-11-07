@@ -164,6 +164,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 触发下拉的行为
+        /// </summary>
+        [Description("触发下拉的行为"), Category("行为"), DefaultValue(Trigger.Hover)]
+        public Trigger Trigger { get; set; } = Trigger.Hover;
+
+        /// <summary>
         /// 常规缩进
         /// </summary>
         [Description("常规缩进"), Category("外观"), DefaultValue(false)]
@@ -835,7 +841,23 @@ namespace AntdUI
                 {
                     if (item.Enabled && item.Contains(point, 0, ScrollBar.Value, out _))
                     {
-                        if (can) item.Expand = !item.Expand;
+                        if (can)
+                        {
+                            if ((mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) && Trigger == Trigger.Click && item.items != null && item.items.Count > 0)
+                            {
+                                if (subForm == null)
+                                {
+                                    var _rect = RectangleToScreen(ClientRectangle);
+                                    var Rect = item.Rect;
+                                    var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
+                                    select_x = 0;
+                                    subForm = new LayeredFormMenuDown(this, radius, rect, item.items);
+                                    subForm.Show(this);
+                                }
+                                else { subForm.IClose(); subForm = null; }
+                            }
+                            else item.Expand = !item.Expand;
+                        }
                         else
                         {
                             IUSelect(items);
@@ -911,21 +933,18 @@ namespace AntdUI
                                     subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
                                     subForm.Show(this);
                                 }
-                                else
+                                else if (it.Text != null)
                                 {
-                                    if (it.Text != null)
+                                    if (tooltipForm == null)
                                     {
-                                        if (tooltipForm == null)
+                                        tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
                                         {
-                                            tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
-                                            {
-                                                Font = it.Font ?? Font,
-                                                ArrowAlign = TAlign.Right,
-                                            });
-                                            tooltipForm.Show(this);
-                                        }
-                                        else tooltipForm.SetText(rect, it.Text);
+                                            Font = it.Font ?? Font,
+                                            ArrowAlign = TAlign.Right,
+                                        });
+                                        tooltipForm.Show(this);
                                     }
+                                    else tooltipForm.SetText(rect, it.Text);
                                 }
                             }
                         }
@@ -965,7 +984,7 @@ namespace AntdUI
                                 if (it == null) return;
                                 var Rect = it.Rect;
                                 var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
-                                if (it.items != null && it.items.Count > 0)
+                                if (Trigger == Trigger.Hover && it.items != null && it.items.Count > 0)
                                 {
                                     select_x = 0;
                                     subForm = new LayeredFormMenuDown(this, radius, rect, it.items);

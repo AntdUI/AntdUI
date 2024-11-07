@@ -876,7 +876,7 @@ namespace AntdUI
                 if (it.SubText != null)
                 {
                     var size = g.MeasureString(it.Text, Font);
-                    var rectSubText = new RectangleF(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                    var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
                     g.String(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
                 DrawTextIconSelect(g, it);
@@ -893,7 +893,7 @@ namespace AntdUI
                 if (it.SubText != null)
                 {
                     var size = g.MeasureString(it.Text, Font);
-                    var rectSubText = new RectangleF(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                    var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
                     g.String(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
                 DrawTextIcon(g, it, brush);

@@ -786,7 +786,7 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (subForm != null) return subForm.IProcessCmdKey(ref msg, keyData);
+            subForm?.IProcessCmdKey(ref msg, keyData);
             return base.ProcessCmdKey(ref msg, keyData);
         }
         protected override void OnKeyPress(KeyPressEventArgs e)

@@ -20,6 +20,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -76,6 +77,126 @@ namespace AntdUI
             var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
             sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
             return sf;
+        }
+
+        /// <summary>
+        /// 文本布局
+        /// </summary>
+        /// <param name="tb">垂直（上下）</param>
+        /// <param name="lr">水平（前后）</param>
+        public static TextFormatFlags TF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
+        {
+            TextFormatFlags flags = TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl;
+            switch (tb)
+            {
+                case StringAlignment.Center:
+                    flags |= TextFormatFlags.VerticalCenter;
+                    break;
+                case StringAlignment.Near:
+                    flags |= TextFormatFlags.Top;
+                    break;
+                case StringAlignment.Far:
+                default:
+                    flags |= TextFormatFlags.Bottom;
+                    break;
+            }
+            switch (lr)
+            {
+                case StringAlignment.Center:
+                    flags |= TextFormatFlags.HorizontalCenter;
+                    break;
+                case StringAlignment.Near:
+                    flags |= TextFormatFlags.Left;
+                    break;
+                case StringAlignment.Far:
+                default:
+                    flags |= TextFormatFlags.Right;
+                    break;
+            }
+            return flags;
+        }
+
+        /// <summary>
+        /// 文本布局
+        /// </summary>
+        public static TextFormatFlags TF(StringFormat sf)
+        {
+            TextFormatFlags flags = TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl;
+            switch (sf.LineAlignment)
+            {
+                case StringAlignment.Center:
+                    flags |= TextFormatFlags.VerticalCenter;
+                    break;
+                case StringAlignment.Near:
+                    flags |= TextFormatFlags.Top;
+                    break;
+                case StringAlignment.Far:
+                default:
+                    flags |= TextFormatFlags.Bottom;
+                    break;
+            }
+            switch (sf.Alignment)
+            {
+                case StringAlignment.Center:
+                    flags |= TextFormatFlags.HorizontalCenter;
+                    break;
+                case StringAlignment.Near:
+                    flags |= TextFormatFlags.Left;
+                    break;
+                case StringAlignment.Far:
+                default:
+                    flags |= TextFormatFlags.Right;
+                    break;
+            }
+            if (sf.Trimming.HasFlag(StringTrimming.EllipsisCharacter)) flags |= TextFormatFlags.EndEllipsis;
+            if (sf.FormatFlags.HasFlag(StringFormatFlags.NoWrap)) flags |= TextFormatFlags.SingleLine;
+            return flags;
+        }
+
+        /// <summary>
+        /// 文本布局（不换行）
+        /// </summary>
+        /// <param name="tb">垂直（上下）</param>
+        /// <param name="lr">水平（前后）</param>
+        public static TextFormatFlags TF_NoWrap(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => TF(tb, lr) | TextFormatFlags.SingleLine;
+
+        /// <summary>
+        /// 文本布局（超出省略号）
+        /// </summary>
+        /// <param name="tb">垂直（上下）</param>
+        /// <param name="lr">水平（前后）</param>
+        public static TextFormatFlags TF_Ellipsis(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => TF(tb, lr) | TextFormatFlags.EndEllipsis;
+
+        /// <summary>
+        /// 文本布局（超出省略号+不换行）
+        /// </summary>
+        /// <param name="tb">垂直（上下）</param>
+        /// <param name="lr">水平（前后）</param>
+        public static TextFormatFlags TF_ALL(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => TF(tb, lr) | TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis;
+
+        public static TextFormatFlags CreateTextFormatFlags(this ContentAlignment alignment, bool showEllipsis, bool multiLine)
+        {
+            TextFormatFlags flags = ConvertAlignmentToTextFormat(alignment);
+            if (multiLine) flags |= TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl;
+            else flags |= TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl | TextFormatFlags.SingleLine;
+            if (showEllipsis) flags |= TextFormatFlags.EndEllipsis;
+            //if (control.RightToLeft == RightToLeft.Yes) flags |= TextFormatFlags.RightToLeft;
+            return flags;
+        }
+
+        const ContentAlignment AnyRight = ContentAlignment.TopRight | ContentAlignment.MiddleRight | ContentAlignment.BottomRight;
+        const ContentAlignment AnyBottom = ContentAlignment.BottomLeft | ContentAlignment.BottomCenter | ContentAlignment.BottomRight;
+        const ContentAlignment AnyCenter = ContentAlignment.TopCenter | ContentAlignment.MiddleCenter | ContentAlignment.BottomCenter;
+        const ContentAlignment AnyMiddle = ContentAlignment.MiddleLeft | ContentAlignment.MiddleCenter | ContentAlignment.MiddleRight;
+        public static TextFormatFlags ConvertAlignmentToTextFormat(this ContentAlignment alignment)
+        {
+            TextFormatFlags flags = TextFormatFlags.Top | TextFormatFlags.Left;
+            if ((alignment & AnyBottom) != 0) flags |= TextFormatFlags.Bottom;
+            else if ((alignment & AnyMiddle) != 0) flags |= TextFormatFlags.VerticalCenter;
+
+            if ((alignment & AnyRight) != 0) flags |= TextFormatFlags.Right;
+            else if ((alignment & AnyCenter) != 0) flags |= TextFormatFlags.HorizontalCenter;
+            return flags;
         }
 
         #endregion
@@ -603,7 +724,7 @@ namespace AntdUI
                     return new Rectangle(rect.Right - x - w, rect.Y + y, w, h);
             }
         }
-        public static void PaintBadge(this IControl control, DateBadge badge, Font font, RectangleF rect, Canvas g)
+        public static void PaintBadge(this IControl control, DateBadge badge, Font font, Rectangle rect, Canvas g)
         {
             var color = badge.Fill ?? control.BadgeBack ?? Style.Db.Error;
             float borsize = Config.Dpi;
@@ -627,7 +748,7 @@ namespace AntdUI
                     int size_badge = (int)(size.Height * 1.2F);
                     if (size.Height > size.Width)
                     {
-                        var rect_badge = new RectangleF(rect.Right - size_badge + 6F, rect.Top - 8F, size_badge, size_badge);
+                        var rect_badge = new Rectangle(rect.Right - size_badge + 6, rect.Top - 8, size_badge, size_badge);
                         g.FillEllipse(color, rect_badge);
                         g.DrawEllipse(color, borsize, rect_badge);
                         g.String(countStr, font, Style.Db.ErrorColor, rect_badge, s_f);
@@ -635,7 +756,7 @@ namespace AntdUI
                     else
                     {
                         int w_badge = size.Width + (size_badge - size.Height);
-                        var rect_badge = new RectangleF(rect.Right - w_badge + 6F, rect.Top - 8F, w_badge, size_badge);
+                        var rect_badge = new Rectangle(rect.Right - w_badge + 6, rect.Top - 8, w_badge, size_badge);
                         using (var path = rect_badge.RoundPath(rect_badge.Height))
                         {
                             g.Fill(color, path);

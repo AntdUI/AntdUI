@@ -347,10 +347,7 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    using (var brush = new SolidBrush(Style.Db.BgElevated))
-                    {
-                        g.Fill(brush, path);
-                    }
+                    g.Fill(Style.Db.BgElevated, path);
                 }
                 if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
 

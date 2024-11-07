@@ -56,7 +56,7 @@ namespace AntdUI
             select_x = sx;
             PARENT = parent;
             Font = control.Font;
-            foreColor = control.ForeColor;
+            foreColor = control.foreColor;
             ForeActive = control.ForeActive;
             BackHover = control.BackHover;
             BackActive = control.BackActive;

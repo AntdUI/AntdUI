@@ -19,7 +19,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 
 namespace AntdUI.Core
 {
@@ -41,29 +40,16 @@ namespace AntdUI.Core
 
         #region String
 
-        public void String(string? text, Font font, Color color, Rectangle rect) => TextRenderer.DrawText(g, text, font, rect, color);
-        public void String(string? text, Font font, Color color, Rectangle rect, TextFormatFlags flags) => TextRenderer.DrawText(g, text, font, rect, color, flags);
-
         public void String(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null)
         {
-            using (var brush = new SolidBrush(color))
-            {
-                String(text, font, brush, rect, format);
-            }
-        }
-        public void String(string? text, Font font, Color color, RectangleF rect, StringFormat? format = null)
-        {
-            using (var brush = new SolidBrush(color))
-            {
-                String(text, font, brush, rect, format);
-            }
-        }
-        public void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null)
-        {
             CorrectionTextRendering.CORE(font, text, ref rect);
-            g.DrawString(text, font, brush, rect, format);
+            using (var brush = new SolidBrush(color))
+            {
+                String(text, font, brush, rect, format);
+            }
         }
-        public void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat? format = null)
+
+        public void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null)
         {
             CorrectionTextRendering.CORE(font, text, ref rect);
             g.DrawString(text, font, brush, rect, format);
@@ -378,6 +364,13 @@ namespace AntdUI.Core
 
         public void FillPolygon(Brush brush, Point[] points) => g.FillPolygon(brush, points);
         public void FillPolygon(Brush brush, PointF[] points) => g.FillPolygon(brush, points);
+        public void FillPolygon(Color color, PointF[] points)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                FillPolygon(brush, points);
+            }
+        }
 
         public void FillPie(Brush brush, Rectangle rect, float startAngle, float sweepAngle) => g.FillPie(brush, rect, startAngle, sweepAngle);
         public void FillPie(Brush brush, float x, float y, float w, float h, float startAngle, float sweepAngle) => g.FillPie(brush, x, y, w, h, startAngle, sweepAngle);

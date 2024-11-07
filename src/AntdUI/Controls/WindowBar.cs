@@ -430,7 +430,7 @@ namespace AntdUI
                 {
                     using (var brushsub = new SolidBrush(foreSecondary))
                     {
-                        g.String(desc, Font, brushsub, new RectangleF(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
+                        g.String(desc, Font, brushsub, new Rectangle(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
                     }
                 }
             }

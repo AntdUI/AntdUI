@@ -487,7 +487,7 @@ namespace AntdUI
             {
                 case Keys.Down:
                     ExpandDrop = true;
-                    return true;
+                    break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -819,7 +819,7 @@ namespace AntdUI
             }
         }
 
-        public RectangleF RectText { get; set; }
+        public Rectangle RectText { get; set; }
     }
 
     internal class ObjectItemCheck
@@ -997,7 +997,7 @@ namespace AntdUI
             }
         }
 
-        public RectangleF RectText { get; set; }
+        public Rectangle RectText { get; set; }
         public Rectangle RectArrow { get; set; }
     }
 }
