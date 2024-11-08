@@ -27,7 +27,7 @@ Name | Description | Parameters | Auto Color Matching |
 #### Custom Theme
 
 ``` csharp
-var color = new AntDesign.Theme.Dark();
+var color = new AntdUI.Theme.Dark();
 color.SetPrimary(Color.FromArgb(0, 173, 154));
 AndtUI.Style.LoadCustom(color);
 ```
