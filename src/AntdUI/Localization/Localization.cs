@@ -35,6 +35,6 @@ namespace AntdUI
         /// 获取本地化字符串
         /// </summary>
         /// <returns>本地化字符串</returns>
-        string GetLocalizedString(string key);
+        string? GetLocalizedString(string key);
     }
 }

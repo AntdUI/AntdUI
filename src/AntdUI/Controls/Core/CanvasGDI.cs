@@ -422,6 +422,9 @@ namespace AntdUI.Core
             }
         }
 
+        public void DrawPolygon(Pen pen, Point[] points) => g.DrawPolygon(pen, points);
+        public void DrawPolygon(Pen pen, PointF[] points) => g.DrawPolygon(pen, points);
+
         public void DrawArc(Pen pen, Rectangle rect, float startAngle, float sweepAngle)
         {
             try
@@ -441,9 +444,12 @@ namespace AntdUI.Core
 
         public void DrawPie(Pen pen, Rectangle rect, float startAngle, float sweepAngle) => g.DrawPie(pen, rect, startAngle, sweepAngle);
 
+        public void DrawLine(Pen pen, Point pt1, Point pt2) => g.DrawLine(pen, pt1, pt2);
+        public void DrawLine(Pen pen, PointF pt1, PointF pt2) => g.DrawLine(pen, pt1, pt2);
+        public void DrawLine(Pen pen, float x, float y, float x2, float y2) => g.DrawLine(pen, x, y, x2, y2);
+
         public void DrawLines(Pen pen, Point[] points) => g.DrawLines(pen, points);
         public void DrawLines(Pen pen, PointF[] points) => g.DrawLines(pen, points);
-        public void DrawLine(Pen pen, float x, float y, float x2, float y2) => g.DrawLine(pen, x, y, x2, y2);
         public void DrawLines(Color color, float width, PointF[] points)
         {
             using (var pen = new Pen(color, width))

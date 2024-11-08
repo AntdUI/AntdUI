@@ -106,15 +106,21 @@ namespace AntdUI
         void DrawEllipse(Pen pen, RectangleF rect);
         void DrawEllipse(Color color, float width, RectangleF rect);
 
+        void DrawPolygon(Pen pen, Point[] points);
+        void DrawPolygon(Pen pen, PointF[] points);
+
         void DrawArc(Pen pen, Rectangle rect, float startAngle, float sweepAngle);
         void DrawArc(Pen pen, RectangleF rect, float startAngle, float sweepAngle);
 
         void DrawPie(Pen pen, Rectangle rect, float startAngle, float sweepAngle);
 
-        void DrawLines(Pen pen, Point[] points);
-        void DrawLines(Pen pen, PointF[] points);
+        void DrawLine(Pen pen, Point points, Point points2);
+        void DrawLine(Pen pen, PointF points, PointF points2);
         void DrawLine(Pen pen, float x, float y, float x2, float y2);
         void DrawLines(Color color, float width, PointF[] points);
+
+        void DrawLines(Pen pen, Point[] points);
+        void DrawLines(Pen pen, PointF[] points);
 
         #endregion
 

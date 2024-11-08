@@ -38,6 +38,11 @@ namespace AntdUI
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
+            actionLoadMessage = LoadMessage;
+            actionCursor = val => SetCursor(val);
+            actionRender = bmp => Render(bmp);
+            actionRenderB = (alpha, bmp) => Render(alpha, bmp);
+            actionRenderRect = (alpha, bmp, rect) => Render(alpha, bmp, rect);
             renderQueue = new RenderQueue(this);
         }
         RenderQueue renderQueue;
@@ -46,11 +51,12 @@ namespace AntdUI
         public Func<Keys, bool>? KeyCall = null;
 
         public virtual bool CanLoadMessage { get; set; } = true;
+        Action actionLoadMessage;
         public virtual void LoadMessage()
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(LoadMessage));
+                Invoke(actionLoadMessage);
                 return;
             }
             if (MessageEnable) Application.AddMessageFilter(this);
@@ -165,45 +171,44 @@ namespace AntdUI
             catch { }
         }
 
+        Action<Bitmap> actionRender;
         void Render(Bitmap bmp)
         {
             try
             {
-                if (InvokeRequired) Invoke(new Action(() => { Render(bmp); }));
+                if (InvokeRequired) Invoke(actionRender, bmp);
                 else Win32.SetBits(bmp, target_rect, Handle, alpha);
             }
             catch { }
         }
+
+        Action<byte, Bitmap> actionRenderB;
         void Render(byte alpha, Bitmap bmp)
         {
             try
             {
-                if (InvokeRequired) Invoke(new Action(() => { Render(alpha, bmp); }));
+                if (InvokeRequired) Invoke(actionRenderB, alpha, bmp);
                 else Win32.SetBits(bmp, target_rect, Handle, alpha);
             }
             catch { }
         }
+
+        Action<byte, Bitmap, Rectangle> actionRenderRect;
         void Render(byte alpha, Bitmap bmp, Rectangle rect)
         {
             try
             {
-                if (InvokeRequired) Invoke(new Action(() => { Render(alpha, bmp, rect); }));
+                if (InvokeRequired) Invoke(actionRenderRect, alpha, bmp, rect);
                 else Win32.SetBits(bmp, rect, Handle, alpha);
             }
             catch { }
         }
 
+        Action<bool> actionCursor;
         public void SetCursor(bool val)
         {
-            if (InvokeRequired)
-            {
-                Invoke(new Action(() =>
-                {
-                    SetCursor(val);
-                }));
-                return;
-            }
-            Cursor = val ? Cursors.Hand : DefaultCursor;
+            if (InvokeRequired) Invoke(actionCursor, val);
+            else Cursor = val ? Cursors.Hand : DefaultCursor;
         }
 
         #region 无焦点窗体

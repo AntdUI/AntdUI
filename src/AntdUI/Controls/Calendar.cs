@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -45,6 +46,35 @@ namespace AntdUI
             hover_month = new ITaskOpacity(this);
             hover_button = new ITaskOpacity(this);
             Date = DateNow;
+
+            Culture = new CultureInfo(CultureID);
+            YDR = CultureID.StartsWith("en");
+            if (YDR)
+            {
+                YearFormat = "yyyy";
+                MonthFormat = "MMM";
+                MondayButton = "Mon";
+                TuesdayButton = "Tue";
+                WednesdayButton = "Wed";
+                ThursdayButton = "Thu";
+                FridayButton = "Fri";
+                SaturdayButton = "Sat";
+                SundayButton = "Sun";
+                s_f_L = Helper.SF(lr: StringAlignment.Near); s_f_R = Helper.SF(lr: StringAlignment.Far);
+            }
+            else
+            {
+                YearFormat = "yyyy年";
+                MonthFormat = "MM月";
+                MondayButton = "一";
+                TuesdayButton = "二";
+                WednesdayButton = "三";
+                ThursdayButton = "四";
+                FridayButton = "五";
+                SaturdayButton = "六";
+                SundayButton = "日";
+                s_f_L = Helper.SF(lr: StringAlignment.Far); s_f_R = Helper.SF(lr: StringAlignment.Near);
+            }
         }
 
         #region 属性
@@ -196,7 +226,7 @@ namespace AntdUI
                 for (int i = 0; i < 12; i++)
                 {
                     var d_m = new DateTime(value.Year, i + 1, 1);
-                    _calendar_month.Add(new Calendari(0, x_m, y_m, d_m.ToString("MM") + MonthButton, d_m, d_m.ToString("yyyy-MM"), minDate, maxDate));
+                    _calendar_month.Add(new Calendari(0, x_m, y_m, d_m.ToString(MonthFormat, Culture), d_m, d_m.ToString("yyyy-MM"), minDate, maxDate));
                     x_m++;
                     if (x_m > 2)
                     {
@@ -354,17 +384,13 @@ namespace AntdUI
 
         #region 参数
 
-        string button_text = Localization.Provider?.GetLocalizedString("ToDay") ?? "今天",
+        CultureInfo Culture;
+        string CultureID = Localization.Provider?.GetLocalizedString("ID") ?? "zh-CN",
+            button_text = Localization.Provider?.GetLocalizedString("ToDay") ?? "今天",
             OKButton = Localization.Provider?.GetLocalizedString("OK") ?? "确定",
-            YearButton = Localization.Provider?.GetLocalizedString("Year") ?? "年",
-            MonthButton = Localization.Provider?.GetLocalizedString("Month") ?? "月",
-            MondayButton = Localization.Provider?.GetLocalizedString("Mon") ?? "一",
-            TuesdayButton = Localization.Provider?.GetLocalizedString("Tue") ?? "二",
-            WednesdayButton = Localization.Provider?.GetLocalizedString("Wed") ?? "三",
-            ThursdayButton = Localization.Provider?.GetLocalizedString("Thu") ?? "四",
-            FridayButton = Localization.Provider?.GetLocalizedString("Fri") ?? "五",
-            SaturdayButton = Localization.Provider?.GetLocalizedString("Sat") ?? "六",
-            SundayButton = Localization.Provider?.GetLocalizedString("Sun") ?? "日";
+            YearFormat, MonthFormat,
+            MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
+        bool YDR = false;
 
         #endregion
 
@@ -372,10 +398,8 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat s_f = Helper.SF();
-        StringFormat s_f_L = Helper.SF(lr: StringAlignment.Far);
-        StringFormat s_f_LE = Helper.SF_Ellipsis(lr: StringAlignment.Near);
-        StringFormat s_f_R = Helper.SF(lr: StringAlignment.Near);
+        StringFormat s_f = Helper.SF(), s_f_LE = Helper.SF_Ellipsis(lr: StringAlignment.Near);
+        StringFormat s_f_L, s_f_R;
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
@@ -569,16 +593,14 @@ namespace AntdUI
             {
                 using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                 {
+                    string yearStr = _Date.ToString(YearFormat, Culture);
                     if (hover_year.Animation)
                     {
-                        g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_month_l, s_f);
-                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
-                        {
-                            g.String(_Date.ToString("yyyy") + YearButton, font, brush_hove, rect_month_l, s_f);
-                        }
+                        g.String(yearStr, font, brush_fore, rect_month_l, s_f);
+                        g.String(yearStr, font, Helper.ToColor(hover_year.Value, Style.Db.Primary), rect_month_l, s_f);
                     }
-                    else if (hover_year.Switch) g.String(_Date.ToString("yyyy") + YearButton, font, Style.Db.Primary, rect_month_l, s_f);
-                    else g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_month_l, s_f);
+                    else if (hover_year.Switch) g.String(yearStr, font, Style.Db.Primary, rect_month_l, s_f);
+                    else g.String(yearStr, font, brush_fore, rect_month_l, s_f);
                 }
 
                 foreach (var it in datas)
@@ -611,7 +633,6 @@ namespace AntdUI
 
         #region 天模式
 
-        Rectangle rect_day_l, rect_day_r;
         RectangleF rect_day_split1, rect_day_split2;
         Rectangle[]? rect_day_s;
 
@@ -628,21 +649,22 @@ namespace AntdUI
             {
                 using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                 {
+                    string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
                     if (hover_year.Animation)
                     {
-                        g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_day_l, s_f_L);
-                        g.String(_Date.ToString("yyyy") + YearButton, font, Helper.ToColor(hover_year.Value, Style.Db.Primary), rect_day_l, s_f_L);
+                        g.String(yearStr, font, brush_fore, rect_year, s_f_L);
+                        g.String(yearStr, font, Helper.ToColor(hover_year.Value, Style.Db.Primary), rect_year, s_f_L);
                     }
-                    else if (hover_year.Switch) g.String(_Date.ToString("yyyy") + YearButton, font, Style.Db.Primary, rect_day_l, s_f_L);
-                    else g.String(_Date.ToString("yyyy") + YearButton, font, brush_fore, rect_day_l, s_f_L);
+                    else if (hover_year.Switch) g.String(yearStr, font, Style.Db.Primary, rect_year, s_f_L);
+                    else g.String(yearStr, font, brush_fore, rect_year, s_f_L);
 
                     if (hover_month.Animation)
                     {
-                        g.String(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_day_r, s_f_R);
-                        g.String(_Date.ToString("MM") + MonthButton, font, Helper.ToColor(hover_month.Value, Style.Db.Primary), rect_day_r, s_f_R);
+                        g.String(monthStr, font, brush_fore, rect_month, s_f_R);
+                        g.String(monthStr, font, Helper.ToColor(hover_month.Value, Style.Db.Primary), rect_month, s_f_R);
                     }
-                    else if (hover_month.Switch) g.String(_Date.ToString("MM") + MonthButton, font, Style.Db.Primary, rect_day_r, s_f_R);
-                    else g.String(_Date.ToString("MM") + MonthButton, font, brush_fore, rect_day_r, s_f_R);
+                    else if (hover_month.Switch) g.String(monthStr, font, Style.Db.Primary, rect_month, s_f_R);
+                    else g.String(monthStr, font, brush_fore, rect_month, s_f_R);
                 }
 
                 using (var brush_split = new SolidBrush(Style.Db.Split))
@@ -1104,10 +1126,19 @@ namespace AntdUI
             rect_rights = new Rectangle(rect.X + rect.Width - t_top, rect.Y, t_top, t_top);
             rect_right = new Rectangle(rect.X + rect.Width - t_top * 2, rect.Y, t_top, t_top);
 
-            rect_year = new Rectangle(rect.X + rect.Width / 2 - year_width, rect.Y, year_width, t_top);
+            int gap = (int)(4 * Config.Dpi), xm = rect.Width / 2;
             rect_year2 = new Rectangle(rect.X + (rect.Width - year2_width) / 2, rect.Y, year2_width, t_top);
-            rect_month = new Rectangle(rect.X + rect.Width / 2, rect.Y, month_width, t_top);
             rect_button = new Rectangle(rect.X, rect.Bottom - t_button, rect.Width, t_button);
+            if (YDR)
+            {
+                rect_month = new Rectangle(rect.X + xm - year_width - gap, rect.Y, year_width, t_top);
+                rect_year = new Rectangle(rect.X + xm + gap, rect.Y, month_width, t_top);
+            }
+            else
+            {
+                rect_year = new Rectangle(rect.X + xm - year_width - gap, rect.Y, year_width, t_top);
+                rect_month = new Rectangle(rect.X + xm + gap, rect.Y, month_width, t_top);
+            }
 
             #region 计算坐标
 
@@ -1138,11 +1169,9 @@ namespace AntdUI
             {
                 if (chinese)
                 {
-                    int y = rect.Y + t_top + 12, xm = rect.Width / 2;
+                    int y = rect.Y + t_top + 12;
                     int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7;
 
-                    rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
-                    rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
                     if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
 
@@ -1168,11 +1197,9 @@ namespace AntdUI
                 }
                 else if (full)
                 {
-                    int y = rect.Y + t_top + 12, xm = rect.Width / 2;
+                    int y = rect.Y + t_top + 12;
                     int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7;
 
-                    rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
-                    rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
                     if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
 
@@ -1193,7 +1220,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    int y = rect.Y + t_top + 12, xm = rect.Width / 2;
+                    int y = rect.Y + t_top + 12;
                     int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7, size = size_w;
                     if (size_w > size_h)
                     {
@@ -1202,8 +1229,6 @@ namespace AntdUI
                         gap_day = gap_day2 / 2;
                     }
 
-                    rect_day_l = new Rectangle(rect.X, rect.Y, xm, t_top);
-                    rect_day_r = new Rectangle(rect.X + xm, rect.Y, xm, t_top);
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
                     if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
 
