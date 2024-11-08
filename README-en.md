@@ -73,7 +73,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**TimePicker**](doc/wiki/en/Control/TimePicker.md) | ✅ | ✅ |
 ➡️| [**UploadDragger**](doc/wiki/en/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| Data Display `16` | Animation | Disable |
+⬇️| Data Display `17` | Animation | Disable |
 ➡️| [**Avatar**](doc/wiki/en/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge**](doc/wiki/en/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar**](doc/wiki/en/Control/Calendar.md) | ✅ | ❎ |
@@ -90,6 +90,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Tooltip**](doc/wiki/en/Control/Tooltip.md) | ✅ | ❎ |
 ➡️| [**Tree**](doc/wiki/en/Control/Tree.md) | ✅ | ✅ |
 ➡️| [**Label**](doc/wiki/en/Control/Label.md) | ✅ | ❎ |
+➡️| [**LabelTime**](doc/wiki/zh/Control/LabelTime.md) | ✅ | ❎ |
 ||||
 ⬇️| Feedback `7` | Animation | Disable |
 ➡️| [**Alert**](doc/wiki/en/Control/Alert.md) | ✅ | ❎ |
