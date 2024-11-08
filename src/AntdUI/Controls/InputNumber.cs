@@ -445,9 +445,10 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            base.OnMouseWheel(e);
+            if (ReadOnly) return;
             if (e.Delta > 0) Value = currentValue + Increment;
             else Value = currentValue - Increment;
-            base.OnMouseWheel(e);
         }
 
         #endregion

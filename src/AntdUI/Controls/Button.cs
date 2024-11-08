@@ -35,13 +35,10 @@ namespace AntdUI
     [DefaultProperty("Text")]
     public class Button : IControl, IButtonControl
     {
-        IButton button;
-
         public Button()
         {
             SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
             base.BackColor = Color.Transparent;
-            button = new IButton(this, () => BeforeAutoSize());
         }
 
         #region 属性
@@ -56,949 +53,13 @@ namespace AntdUI
             set => base.BackColor = value;
         }
 
+        Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
         [Description("文字颜色"), Category("外观"), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
-        {
-            get => button.Fore;
-            set => button.Fore = value;
-        }
-
-        #region 背景
-
-        /// <summary>
-        /// 背景颜色
-        /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public new Color? BackColor
-        {
-            get => button.Back;
-            set => button.Back = value;
-        }
-
-        /// <summary>
-        /// 背景渐变色
-        /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
-        public string? BackExtend
-        {
-            get => button.BackExtend;
-            set => button.BackExtend = value;
-        }
-
-        /// <summary>
-        /// 悬停背景颜色
-        /// </summary>
-        [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? BackHover
-        {
-            get => button.BackHover;
-            set => button.BackHover = value;
-        }
-
-        /// <summary>
-        /// 激活背景颜色
-        /// </summary>
-        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? BackActive
-        {
-            get => button.BackActive;
-            set => button.BackActive = value;
-        }
-
-        /// <summary>
-        /// 背景图片
-        /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
-        public new Image? BackgroundImage
-        {
-            get => button.BackgroundImage;
-            set => button.BackgroundImage = value;
-        }
-
-        /// <summary>
-        /// 背景图片布局
-        /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
-        public new TFit BackgroundImageLayout
-        {
-            get => button.BackgroundImageLayout;
-            set => button.BackgroundImageLayout = value;
-        }
-
-        #endregion
-
-        #region 默认样式
-
-        /// <summary>
-        /// Default模式背景颜色
-        /// </summary>
-        [Description("Default模式背景颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? DefaultBack
-        {
-            get => button.DefaultBack;
-            set => button.DefaultBack = value;
-        }
-
-        /// <summary>
-        /// Default模式边框颜色
-        /// </summary>
-        [Description("Default模式边框颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? DefaultBorderColor
-        {
-            get => button.DefaultBorderColor;
-            set => button.DefaultBorderColor = value;
-        }
-
-        #endregion
-
-        #region 边框
-
-        /// <summary>
-        /// 边框宽度
-        /// </summary>
-        [Description("边框宽度"), Category("边框"), DefaultValue(0F)]
-        public float BorderWidth
-        {
-            get => button.BorderWidth;
-            set => button.BorderWidth = value;
-        }
-
-        #endregion
-
-        /// <summary>
-        /// 波浪大小
-        /// </summary>
-        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
-        public int WaveSize
-        {
-            get => button.WaveSize;
-            set => button.WaveSize = value;
-        }
-
-        /// <summary>
-        /// 圆角
-        /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
-        public int Radius
-        {
-            get => button.Radius;
-            set => button.Radius = value;
-        }
-
-        /// <summary>
-        /// 形状
-        /// </summary>
-        [Description("形状"), Category("外观"), DefaultValue(TShape.Default)]
-        public TShape Shape
-        {
-            get => button.Shape;
-            set => button.Shape = value;
-        }
-
-        /// <summary>
-        /// 类型
-        /// </summary>
-        [Description("类型"), Category("外观"), DefaultValue(TTypeMini.Default)]
-        public TTypeMini Type
-        {
-            get => button.Type;
-            set => button.Type = value;
-        }
-
-        /// <summary>
-        /// 幽灵属性，使按钮背景透明
-        /// </summary>
-        [Description("幽灵属性，使按钮背景透明"), Category("外观"), DefaultValue(false)]
-        public bool Ghost
-        {
-            get => button.Ghost;
-            set => button.Ghost = value;
-        }
-
-        /// <summary>
-        /// 响应真实区域
-        /// </summary>
-        [Description("响应真实区域"), Category("行为"), DefaultValue(false)]
-        public bool RespondRealAreas { get; set; }
-
-        /// <summary>
-        /// 显示箭头
-        /// </summary>
-        [Description("显示箭头"), Category("行为"), DefaultValue(false)]
-        public bool ShowArrow
-        {
-            get => button.ShowArrow;
-            set => button.ShowArrow = value;
-        }
-
-        /// <summary>
-        /// 箭头链接样式
-        /// </summary>
-        [Description("箭头链接样式"), Category("行为"), DefaultValue(false)]
-        public bool IsLink
-        {
-            get => button.IsLink;
-            set => button.IsLink = value;
-        }
-
-        /// <summary>
-        /// 箭头角度
-        /// </summary>
-        [Browsable(false), Description("箭头角度"), Category("外观"), DefaultValue(-1F)]
-        public float ArrowProg
-        {
-            get => button.ArrowProg;
-            set => button.ArrowProg = value;
-        }
-
-        #region 文本
-
-        /// <summary>
-        /// 文本
-        /// </summary>
-        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
-        [Description("文本"), Category("外观"), DefaultValue(null)]
-        public override string? Text
-        {
-            get => button.Text;
-            set
-            {
-                var old = button.Text;
-                button.Text = value;
-                if (old != value) OnTextChanged(EventArgs.Empty);
-            }
-        }
-
-        /// <summary>
-        /// 文本位置
-        /// </summary>
-        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleCenter)]
-        public ContentAlignment TextAlign
-        {
-            get => button.TextAlign;
-            set => button.TextAlign = value;
-        }
-
-        /// <summary>
-        /// 文本超出自动处理
-        /// </summary>
-        [Description("文本超出自动处理"), Category("行为"), DefaultValue(false)]
-        public bool AutoEllipsis
-        {
-            get => button.AutoEllipsis;
-            set => button.AutoEllipsis = value;
-        }
-
-        /// <summary>
-        /// 是否多行
-        /// </summary>
-        [Description("是否多行"), Category("行为"), DefaultValue(false)]
-        public bool TextMultiLine
-        {
-            get => button.TextMultiLine;
-            set => button.TextMultiLine = value;
-        }
-
-        #endregion
-
-        #region 图标
-
-        /// <summary>
-        /// 图标比例
-        /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
-        public float IconRatio
-        {
-            get => button.IconRatio;
-            set => button.IconRatio = value;
-        }
-
-        /// <summary>
-        /// 图标与文字间距比例
-        /// </summary>
-        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.25F)]
-        public float IconGap
-        {
-            get => button.IconGap;
-            set => button.IconGap = value;
-        }
-
-        /// <summary>
-        /// 图标
-        /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
-        public Image? Icon
-        {
-            get => button.Icon;
-            set => button.Icon = value;
-        }
-
-        /// <summary>
-        /// 图标SVG
-        /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
-        public string? IconSvg
-        {
-            get => button.IconSvg;
-            set => button.IconSvg = value;
-        }
-
-        /// <summary>
-        /// 是否包含图标
-        /// </summary>
-        public bool HasIcon => button.HasIcon;
-
-        /// <summary>
-        /// 图标大小
-        /// </summary>
-        [Description("图标大小"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
-        public Size IconSize
-        {
-            get => button.IconSize;
-            set => button.IconSize = value;
-        }
-
-        /// <summary>
-        /// 悬停图标
-        /// </summary>
-        [Description("悬停图标"), Category("外观"), DefaultValue(null)]
-        public Image? IconHover
-        {
-            get => button.IconHover;
-            set => button.IconHover = value;
-        }
-
-        /// <summary>
-        /// 悬停图标SVG
-        /// </summary>
-        [Description("悬停图标SVG"), Category("外观"), DefaultValue(null)]
-        public string? IconHoverSvg
-        {
-            get => button.IconHoverSvg;
-            set => button.IconHoverSvg = value;
-        }
-
-        /// <summary>
-        /// 悬停图标动画时长
-        /// </summary>
-        [Description("悬停图标动画时长"), Category("外观"), DefaultValue(200)]
-        public int IconHoverAnimation
-        {
-            get => button.IconHoverAnimation;
-            set => button.IconHoverAnimation = value;
-        }
-
-        /// <summary>
-        /// 按钮图标组件的位置
-        /// </summary>
-        [Description("按钮图标组件的位置"), Category("外观"), DefaultValue(TAlignMini.Left)]
-        public TAlignMini IconPosition
-        {
-            get => button.IconPosition;
-            set => button.IconPosition = value;
-        }
-
-        #endregion
-
-        #region 切换
-
-        /// <summary>
-        /// 选中状态
-        /// </summary>
-        [Description("选中状态"), Category("切换"), DefaultValue(false)]
-        public bool Toggle
-        {
-            get => button.Toggle;
-            set => button.Toggle = value;
-        }
-
-        /// <summary>
-        /// 切换图标
-        /// </summary>
-        [Description("切换图标"), Category("切换"), DefaultValue(null)]
-        public Image? ToggleIcon
-        {
-            get => button.ToggleIcon;
-            set => button.ToggleIcon = value;
-        }
-
-        /// <summary>
-        /// 切换图标SVG
-        /// </summary>
-        [Description("切换图标SVG"), Category("切换"), DefaultValue(null)]
-        public string? ToggleIconSvg
-        {
-            get => button.ToggleIconSvg;
-            set => button.ToggleIconSvg = value;
-        }
-
-        /// <summary>
-        /// 是否包含切换图标
-        /// </summary>
-        public bool HasToggleIcon => button.HasToggleIcon;
-
-        /// <summary>
-        /// 切换悬停图标
-        /// </summary>
-        [Description("切换悬停图标"), Category("切换"), DefaultValue(null)]
-        public Image? ToggleIconHover
-        {
-            get => button.ToggleIconHover;
-            set => button.ToggleIconHover = value;
-        }
-
-        /// <summary>
-        /// 切换悬停图标SVG
-        /// </summary>
-        [Description("切换悬停图标SVG"), Category("切换"), DefaultValue(null)]
-        public string? ToggleIconHoverSvg
-        {
-            get => button.ToggleIconHoverSvg;
-            set => button.ToggleIconHoverSvg = value;
-        }
-
-        /// <summary>
-        /// 图标切换动画时长
-        /// </summary>
-        [Description("图标切换动画时长"), Category("切换"), DefaultValue(200)]
-        public int IconToggleAnimation
-        {
-            get => button.IconToggleAnimation;
-            set => button.IconToggleAnimation = value;
-        }
-
-        /// <summary>
-        /// 文字颜色
-        /// </summary>
-        [Description("切换文字颜色"), Category("切换"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? ToggleFore
-        {
-            get => button.ToggleFore;
-            set => button.ToggleFore = value;
-        }
-
-        /// <summary>
-        /// 切换类型
-        /// </summary>
-        [Description("切换类型"), Category("切换"), DefaultValue(null)]
-        public TTypeMini? ToggleType
-        {
-            get => button.ToggleType;
-            set => button.ToggleType = value;
-        }
-
-        #region 背景
-
-        /// <summary>
-        /// 切换背景颜色
-        /// </summary>
-        [Description("切换背景颜色"), Category("切换"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? ToggleBack
-        {
-            get => button.ToggleBack;
-            set => button.ToggleBack = value;
-        }
-
-        /// <summary>
-        /// 切换背景渐变色
-        /// </summary>
-        [Description("切换背景渐变色"), Category("切换"), DefaultValue(null)]
-        public string? ToggleBackExtend
-        {
-            get => button.ToggleBackExtend;
-            set => button.ToggleBackExtend = value;
-        }
-
-        /// <summary>
-        /// 切换悬停背景颜色
-        /// </summary>
-        [Description("切换悬停背景颜色"), Category("切换"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? ToggleBackHover
-        {
-            get => button.ToggleBackHover;
-            set => button.ToggleBackHover = value;
-        }
-
-        /// <summary>
-        /// 切换激活背景颜色
-        /// </summary>
-        [Description("切换激活背景颜色"), Category("切换"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? ToggleBackActive
-        {
-            get => button.ToggleBackActive;
-            set => button.ToggleBackActive = value;
-        }
-
-        #endregion
-
-        #endregion
-
-        #region 加载动画
-
-        /// <summary>
-        /// 加载状态
-        /// </summary>
-        [Description("加载状态"), Category("外观"), DefaultValue(false)]
-        public bool Loading
-        {
-            get => button.Loading;
-            set => button.Loading = value;
-        }
-
-        /// <summary>
-        /// 加载进度
-        /// </summary>
-        [Description("加载进度"), Category("加载"), DefaultValue(0.3F)]
-        public float LoadingValue
-        {
-            get => button.LoadingValue;
-            set => button.LoadingValue = value;
-        }
-
-        #region 水波进度
-
-        /// <summary>
-        /// 水波进度
-        /// </summary>
-        [Description("水波进度"), Category("加载"), DefaultValue(0F)]
-        public float LoadingWaveValue
-        {
-            get => button.LoadingWaveValue;
-            set => button.LoadingWaveValue = value;
-        }
-
-        /// <summary>
-        /// 水波颜色
-        /// </summary>
-        [Description("水波颜色"), Category("加载"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? LoadingWaveColor
-        {
-            get => button.LoadingWaveColor;
-            set => button.LoadingWaveColor = value;
-        }
-
-        /// <summary>
-        /// 水波是否垂直
-        /// </summary>
-        [Description("水波是否垂直"), Category("加载"), DefaultValue(false)]
-        public bool LoadingWaveVertical
-        {
-            get => button.LoadingWaveVertical;
-            set => button.LoadingWaveVertical = value;
-        }
-
-        /// <summary>
-        /// 水波大小
-        /// </summary>
-        [Description("水波大小"), Category("加载"), DefaultValue(2)]
-        public int LoadingWaveSize
-        {
-            get => button.LoadingWaveSize;
-            set => button.LoadingWaveSize = value;
-        }
-
-        /// <summary>
-        /// 水波数量
-        /// </summary>
-        [Description("水波数量"), Category("加载"), DefaultValue(1)]
-        public int LoadingWaveCount
-        {
-            get => button.LoadingWaveCount;
-            set => button.LoadingWaveCount = value;
-        }
-
-        #endregion
-
-        #endregion
-
-        /// <summary>
-        /// 连接左边
-        /// </summary>
-        [Description("连接左边"), Category("外观"), DefaultValue(false)]
-        public bool JoinLeft
-        {
-            get => button.JoinLeft;
-            set => button.JoinLeft = value;
-        }
-
-        /// <summary>
-        /// 连接右边
-        /// </summary>
-        [Description("连接右边"), Category("外观"), DefaultValue(false)]
-        public bool JoinRight
-        {
-            get => button.JoinRight;
-            set => button.JoinRight = value;
-        }
-
-        #region 闪烁动画
-
-        /// <summary>
-        /// 闪烁动画状态
-        /// </summary>
-        [Description("闪烁动画状态"), Category("动画"), DefaultValue(false)]
-        public bool AnimationBlinkState => button.AnimationBlinkState;
-
-        /// <summary>
-        /// 开始闪烁动画
-        /// </summary>
-        /// <param name="interval">动画间隔时长（毫秒）</param>
-        /// <param name="colors">色彩值</param>
-        public void AnimationBlink(int interval, params Color[] colors) => button.AnimationBlink(interval, colors);
-
-        public void StopAnimationBlink() => button.StopAnimationBlink();
-
-        #endregion
-
-        #endregion
-
-        #region 渲染
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            var g = e.Graphics.High();
-            button.Paint(g, ClientRectangle.PaddingRect(Padding), ReadRectangle);
-            this.PaintBadge(g);
-            base.OnPaint(e);
-        }
-
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + button.BorderWidth / 2F) * Config.Dpi, button.Shape, button.JoinLeft, button.JoinRight);
-        }
-
-        public override GraphicsPath RenderRegion
-        {
-            get
-            {
-                var rect_read = ReadRectangle;
-                float _radius = (button.Shape == TShape.Round || button.Shape == TShape.Circle) ? rect_read.Height : button.Radius * Config.Dpi;
-                return button.Path(rect_read, _radius);
-            }
-        }
-
-        #endregion
-
-        #region 鼠标
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (RespondRealAreas)
-            {
-                var rect_read = ReadRectangle;
-                using (var path = button.Path(rect_read, button.Radius * Config.Dpi))
-                {
-                    button.MouseHover = path.IsVisible(e.Location);
-                }
-            }
-            base.OnMouseMove(e);
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            if (RespondRealAreas) return;
-            button.MouseHover = true;
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            button.MouseHover = false;
-        }
-
-        protected override void OnLeave(EventArgs e)
-        {
-            base.OnLeave(e);
-            button.MouseHover = false;
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (CanClick(e.Location))
-            {
-                Focus();
-                base.OnMouseDown(e);
-                button.MouseDown = true;
-            }
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (button.MouseDown)
-            {
-                if (CanClick(e.Location))
-                {
-                    base.OnMouseUp(e);
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        button.OnClick();
-                        OnClick(e);
-                    }
-                    OnMouseClick(e);
-                }
-                button.MouseDown = false;
-            }
-            else base.OnMouseUp(e);
-        }
-
-        #endregion
-
-        #region 自动大小
-
-        /// <summary>
-        /// 自动大小
-        /// </summary>
-        [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
-        public override bool AutoSize
-        {
-            get => base.AutoSize;
-            set
-            {
-                if (base.AutoSize == value) return;
-                base.AutoSize = value;
-                if (value)
-                {
-                    if (autoSize == TAutoSize.None) autoSize = TAutoSize.Auto;
-                }
-                else autoSize = TAutoSize.None;
-                BeforeAutoSize();
-            }
-        }
-
-        TAutoSize autoSize = TAutoSize.None;
-        /// <summary>
-        /// 自动大小模式
-        /// </summary>
-        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
-        public TAutoSize AutoSizeMode
-        {
-            get => autoSize;
-            set
-            {
-                if (autoSize == value) return;
-                autoSize = value;
-                base.AutoSize = autoSize != TAutoSize.None;
-                BeforeAutoSize();
-            }
-        }
-
-        protected override void OnFontChanged(EventArgs e)
-        {
-            BeforeAutoSize();
-            base.OnFontChanged(e);
-        }
-
-        public override Size GetPreferredSize(Size proposedSize)
-        {
-            if (autoSize == TAutoSize.None) return base.GetPreferredSize(proposedSize);
-            else if (autoSize == TAutoSize.Width) return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
-            else if (autoSize == TAutoSize.Height) return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
-            return PSize;
-        }
-
-        internal Size PSize
-        {
-            get
-            {
-                return Helper.GDI(g =>
-                {
-                    var font_size = g.MeasureString(button.Text ?? Config.NullText, Font);
-                    int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
-                    if (button.Shape == TShape.Circle || string.IsNullOrEmpty(button.Text))
-                    {
-                        int s = font_size.Height + wave + gap;
-                        return new Size(s, s);
-                    }
-                    else
-                    {
-                        int m = wave * 2;
-                        if (button.JoinLeft || button.JoinRight) m = 0;
-                        bool has_icon = button.Loading || HasIcon;
-                        if (has_icon || button.ShowArrow)
-                        {
-                            if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
-                            {
-                                int size = (int)Math.Ceiling(font_size.Height * 1.2F);
-                                return new Size(font_size.Width + m + gap + size, font_size.Height + wave + gap + size);
-                            }
-                            int height = font_size.Height + wave + gap;
-                            if (has_icon && button.ShowArrow) return new Size(font_size.Width + m + gap + font_size.Height * 2, height);
-                            else if (has_icon) return new Size(font_size.Width + m + gap + (int)Math.Ceiling(font_size.Height * 1.2F), height);
-                            else return new Size(font_size.Width + m + gap + (int)Math.Ceiling(font_size.Height * .8F), height);
-                        }
-                        else return new Size(font_size.Width + m + gap, font_size.Height + wave + gap);
-                    }
-                });
-            }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            BeforeAutoSize();
-            base.OnResize(e);
-        }
-
-        internal bool BeforeAutoSize()
-        {
-            if (autoSize == TAutoSize.None) return true;
-            if (InvokeRequired)
-            {
-                bool flag = false;
-                Invoke(new Action(() =>
-                {
-                    flag = BeforeAutoSize();
-                }));
-                return flag;
-            }
-            var PS = PSize;
-            switch (autoSize)
-            {
-                case TAutoSize.Width:
-                    if (Width == PS.Width) return true;
-                    Width = PS.Width;
-                    break;
-                case TAutoSize.Height:
-                    if (Height == PS.Height) return true;
-                    Height = PS.Height;
-                    break;
-                case TAutoSize.Auto:
-                default:
-                    if (Width == PS.Width && Height == PS.Height) return true;
-                    Size = PS;
-                    break;
-            }
-            return false;
-        }
-
-        #endregion
-
-        #region 按钮点击
-
-        protected override void OnKeyUp(KeyEventArgs e)
-        {
-            if (e.KeyCode is Keys.Enter or Keys.Space)
-            {
-                button.OnClick();
-                OnClick(EventArgs.Empty);
-                e.Handled = true;
-            }
-            base.OnKeyUp(e);
-        }
-
-        [DefaultValue(DialogResult.None)]
-        public DialogResult DialogResult { get; set; } = DialogResult.None;
-
-        /// <summary>
-        /// 是否默认按钮
-        /// </summary>
-        public void NotifyDefault(bool value)
-        {
-
-        }
-
-        public void PerformClick()
-        {
-            button.OnClick();
-            OnClick(EventArgs.Empty);
-        }
-
-        bool CanClick()
-        {
-            if (button.Loading) return false;
-            else
-            {
-                if (RespondRealAreas)
-                {
-                    var e = PointToClient(MousePosition);
-                    var rect_read = ReadRectangle;
-                    using (var path = button.Path(rect_read, button.Radius * Config.Dpi))
-                    {
-                        return path.IsVisible(e);
-                    }
-                }
-                else return true;
-            }
-        }
-        bool CanClick(Point e)
-        {
-            if (button.Loading) return false;
-            else
-            {
-                if (RespondRealAreas)
-                {
-                    var rect_read = ReadRectangle;
-                    using (var path = button.Path(rect_read, button.Radius * Config.Dpi))
-                    {
-                        return path.IsVisible(e);
-                    }
-                }
-                else return true;
-            }
-        }
-
-        [Browsable(false)]
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public new event EventHandler? DoubleClick
-        {
-            add => base.DoubleClick += value;
-            remove => base.DoubleClick -= value;
-        }
-
-        [Browsable(false)]
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public new event MouseEventHandler? MouseDoubleClick
-        {
-            add => base.MouseDoubleClick += value;
-            remove => base.MouseDoubleClick -= value;
-        }
-
-        #endregion
-
-        protected override void Dispose(bool disposing)
-        {
-            button.Dispose();
-            base.Dispose(disposing);
-        }
-    }
-
-    class IButton : IDisposable
-    {
-        Func<Font> Font;
-        Func<bool> BAutoSize;
-        Action Invalidate;
-        IControl control;
-
-        public IButton(IControl _control, Func<bool> autoSize)
-        {
-            control = _control;
-            Invalidate = () => control.Invalidate();
-            Font = () => control.Font;
-            BAutoSize = autoSize;
-        }
-
-        #region 属性
-
-        Color? fore;
-        /// <summary>
-        /// 文字颜色
-        /// </summary>
-        public Color? Fore
         {
             get => fore;
             set
@@ -1015,7 +76,9 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        public Color? Back
+        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? BackColor
         {
             get => back;
             set
@@ -1030,6 +93,7 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
+        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;
@@ -1044,18 +108,23 @@ namespace AntdUI
         /// <summary>
         /// 悬停背景颜色
         /// </summary>
+        [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
+        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
         Image? backImage = null;
         /// <summary>
         /// 背景图片
         /// </summary>
-        public Image? BackgroundImage
+        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        public override Image? BackgroundImage
         {
             get => backImage;
             set
@@ -1070,7 +139,8 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        public TFit BackgroundImageLayout
+        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        public new TFit BackgroundImageLayout
         {
             get => backFit;
             set
@@ -1089,6 +159,8 @@ namespace AntdUI
         /// <summary>
         /// Default模式背景颜色
         /// </summary>
+        [Description("Default模式背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DefaultBack
         {
             get => defaultback;
@@ -1104,6 +176,8 @@ namespace AntdUI
         /// <summary>
         /// Default模式边框颜色
         /// </summary>
+        [Description("Default模式边框颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DefaultBorderColor
         {
             get => defaultbordercolor;
@@ -1123,6 +197,7 @@ namespace AntdUI
         /// <summary>
         /// 边框宽度
         /// </summary>
+        [Description("边框宽度"), Category("边框"), DefaultValue(0F)]
         public float BorderWidth
         {
             get => borderWidth;
@@ -1139,12 +214,15 @@ namespace AntdUI
         /// <summary>
         /// 波浪大小
         /// </summary>
+        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
+
 
         int radius = 6;
         /// <summary>
         /// 圆角
         /// </summary>
+        [Description("圆角"), Category("外观"), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -1152,7 +230,7 @@ namespace AntdUI
             {
                 if (radius == value) return;
                 radius = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -1160,6 +238,7 @@ namespace AntdUI
         /// <summary>
         /// 形状
         /// </summary>
+        [Description("形状"), Category("外观"), DefaultValue(TShape.Default)]
         public TShape Shape
         {
             get => shape;
@@ -1167,7 +246,7 @@ namespace AntdUI
             {
                 if (shape == value) return;
                 shape = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -1175,6 +254,7 @@ namespace AntdUI
         /// <summary>
         /// 类型
         /// </summary>
+        [Description("类型"), Category("外观"), DefaultValue(TTypeMini.Default)]
         public TTypeMini Type
         {
             get => type;
@@ -1190,6 +270,7 @@ namespace AntdUI
         /// <summary>
         /// 幽灵属性，使按钮背景透明
         /// </summary>
+        [Description("幽灵属性，使按钮背景透明"), Category("外观"), DefaultValue(false)]
         public bool Ghost
         {
             get => ghost;
@@ -1201,12 +282,17 @@ namespace AntdUI
             }
         }
 
-        public float ArrowProg = -1F;
+        /// <summary>
+        /// 响应真实区域
+        /// </summary>
+        [Description("响应真实区域"), Category("行为"), DefaultValue(false)]
+        public bool RespondRealAreas { get; set; }
 
         bool showArrow = false;
         /// <summary>
         /// 显示箭头
         /// </summary>
+        [Description("显示箭头"), Category("行为"), DefaultValue(false)]
         public bool ShowArrow
         {
             get => showArrow;
@@ -1214,7 +300,7 @@ namespace AntdUI
             {
                 if (showArrow == value) return;
                 showArrow = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -1222,6 +308,7 @@ namespace AntdUI
         /// <summary>
         /// 箭头链接样式
         /// </summary>
+        [Description("箭头链接样式"), Category("行为"), DefaultValue(false)]
         public bool IsLink
         {
             get => isLink;
@@ -1233,6 +320,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 箭头角度
+        /// </summary>
+        [Browsable(false), Description("箭头角度"), Category("外观"), DefaultValue(-1F)]
+        public float ArrowProg { get; set; } = -1F;
+
         #region 文本
 
         bool textLine = false;
@@ -1240,7 +333,9 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        public string? Text
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
+        [Description("文本"), Category("外观"), DefaultValue(null)]
+        public override string? Text
         {
             get => text;
             set
@@ -1250,7 +345,8 @@ namespace AntdUI
                 text = value;
                 if (text == null) textLine = false;
                 else textLine = text.Contains(Environment.NewLine);
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
+                OnTextChanged(EventArgs.Empty);
             }
         }
 
@@ -1281,6 +377,7 @@ namespace AntdUI
         /// <summary>
         /// 文本超出自动处理
         /// </summary>
+        [Description("文本超出自动处理"), Category("行为"), DefaultValue(false)]
         public bool AutoEllipsis
         {
             get => autoEllipsis;
@@ -1296,6 +393,7 @@ namespace AntdUI
         /// <summary>
         /// 是否多行
         /// </summary>
+        [Description("是否多行"), Category("行为"), DefaultValue(false)]
         public bool TextMultiLine
         {
             get => textMultiLine;
@@ -1324,7 +422,7 @@ namespace AntdUI
             {
                 if (iconratio == value) return;
                 iconratio = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -1356,7 +454,7 @@ namespace AntdUI
             {
                 if (icon == value) return;
                 icon = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -1372,17 +470,14 @@ namespace AntdUI
             {
                 if (iconSvg == value) return;
                 iconSvg = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => iconSvg != null || icon != null;
-        }
+        public bool HasIcon => iconSvg != null || icon != null;
 
         /// <summary>
         /// 图标大小
@@ -1420,7 +515,7 @@ namespace AntdUI
             {
                 if (iconPosition == value) return;
                 iconPosition = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -1528,10 +623,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含切换图标
         /// </summary>
-        public bool HasToggleIcon
-        {
-            get => iconSvgToggle != null || iconToggle != null;
-        }
+        public bool HasToggleIcon => iconSvgToggle != null || iconToggle != null;
 
         /// <summary>
         /// 切换悬停图标
@@ -1555,6 +647,8 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
+        [Description("切换文字颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ToggleFore
         {
             get => foreToggle;
@@ -1570,6 +664,7 @@ namespace AntdUI
         /// <summary>
         /// 切换类型
         /// </summary>
+        [Description("切换类型"), Category("切换"), DefaultValue(null)]
         public TTypeMini? ToggleType
         {
             get => typeToggle;
@@ -1587,6 +682,8 @@ namespace AntdUI
         /// <summary>
         /// 切换背景颜色
         /// </summary>
+        [Description("切换背景颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ToggleBack
         {
             get => backToggle;
@@ -1602,6 +699,7 @@ namespace AntdUI
         /// <summary>
         /// 切换背景渐变色
         /// </summary>
+        [Description("切换背景渐变色"), Category("切换"), DefaultValue(null)]
         public string? ToggleBackExtend
         {
             get => backExtendToggle;
@@ -1616,11 +714,15 @@ namespace AntdUI
         /// <summary>
         /// 切换悬停背景颜色
         /// </summary>
+        [Description("切换悬停背景颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ToggleBackHover { get; set; }
 
         /// <summary>
         /// 切换激活背景颜色
         /// </summary>
+        [Description("切换激活背景颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ToggleBackActive { get; set; }
 
         #endregion
@@ -1643,13 +745,13 @@ namespace AntdUI
             {
                 if (loading == value) return;
                 loading = value;
-                control.SetCursor(_mouseHover && control.Enabled && !value);
-                BAutoSize();
+                SetCursor(_mouseHover && Enabled && !value);
+                BeforeAutoSize();
                 ThreadLoading?.Dispose();
                 if (loading)
                 {
                     AnimationClickValue = 0;
-                    ThreadLoading = new ITask(control, i =>
+                    ThreadLoading = new ITask(this, i =>
                     {
                         AnimationLoadingWaveValue += 1;
                         if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
@@ -1668,6 +770,7 @@ namespace AntdUI
         /// <summary>
         /// 加载进度
         /// </summary>
+        [Description("加载进度"), Category("加载"), DefaultValue(0.3F)]
         public float LoadingValue { get; set; } = 0.3F;
 
         #region 水波进度
@@ -1675,26 +778,32 @@ namespace AntdUI
         /// <summary>
         /// 水波进度
         /// </summary>
+        [Description("水波进度"), Category("加载"), DefaultValue(0F)]
         public float LoadingWaveValue { get; set; }
 
         /// <summary>
         /// 水波颜色
         /// </summary>
+        [Description("水波颜色"), Category("加载"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? LoadingWaveColor { get; set; }
 
         /// <summary>
         /// 水波是否垂直
         /// </summary>
+        [Description("水波是否垂直"), Category("加载"), DefaultValue(false)]
         public bool LoadingWaveVertical { get; set; }
 
         /// <summary>
         /// 水波大小
         /// </summary>
+        [Description("水波大小"), Category("加载"), DefaultValue(2)]
         public int LoadingWaveSize { get; set; } = 2;
 
         /// <summary>
         /// 水波数量
         /// </summary>
+        [Description("水波数量"), Category("加载"), DefaultValue(1)]
         public int LoadingWaveCount { get; set; } = 1;
 
         #endregion
@@ -1713,7 +822,7 @@ namespace AntdUI
             {
                 if (joinLeft == value) return;
                 joinLeft = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
@@ -1729,19 +838,10 @@ namespace AntdUI
             {
                 if (joinRight == value) return;
                 joinRight = value;
-                if (BAutoSize()) Invalidate();
+                if (BeforeAutoSize()) Invalidate();
             }
         }
 
-        public void Dispose()
-        {
-            ThreadClick?.Dispose();
-            ThreadHover?.Dispose();
-            ThreadIconHover?.Dispose();
-            ThreadIconToggle?.Dispose();
-            ThreadLoading?.Dispose();
-            ThreadAnimateBlink?.Dispose();
-        }
 
         ITask? ThreadHover = null;
         ITask? ThreadIconHover = null;
@@ -1754,14 +854,14 @@ namespace AntdUI
         bool AnimationClick = false;
         float AnimationClickValue = 0;
 
-        public void OnClick()
+        public void ClickAnimation()
         {
             if (WaveSize > 0 && Config.Animation)
             {
                 ThreadClick?.Dispose();
                 AnimationClickValue = 0;
                 AnimationClick = true;
-                ThreadClick = new ITask(control, () =>
+                ThreadClick = new ITask(this, () =>
                 {
                     if (AnimationClickValue > 0.6) AnimationClickValue = AnimationClickValue.Calculate(0.04F);
                     else AnimationClickValue += AnimationClickValue = AnimationClickValue.Calculate(0.1F);
@@ -1781,7 +881,7 @@ namespace AntdUI
         #region 悬停动画
 
         bool _mouseDown = false;
-        public bool MouseDown
+        bool ExtraMouseDown
         {
             get => _mouseDown;
             set
@@ -1797,15 +897,15 @@ namespace AntdUI
         bool AnimationIconHover = false;
         float AnimationIconHoverValue = 0F;
         bool _mouseHover = false;
-        public bool MouseHover
+        bool ExtraMouseHover
         {
             get => _mouseHover;
             set
             {
                 if (_mouseHover == value) return;
                 _mouseHover = value;
-                control.SetCursor(value && control.Enabled && !loading);
-                if (control.Enabled)
+                SetCursor(value && Enabled && !loading);
+                if (Enabled)
                 {
                     var backHover = GetColorO();
                     int alpha = backHover.A;
@@ -1852,7 +952,7 @@ namespace AntdUI
                             AnimationHover = true;
                             if (value)
                             {
-                                ThreadHover = new ITask(control, () =>
+                                ThreadHover = new ITask(this, () =>
                                 {
                                     AnimationHoverValue += addvalue;
                                     if (AnimationHoverValue > alpha) { AnimationHoverValue = alpha; return false; }
@@ -1866,7 +966,7 @@ namespace AntdUI
                             }
                             else
                             {
-                                ThreadHover = new ITask(control, () =>
+                                ThreadHover = new ITask(this, () =>
                                 {
                                     if (AnimationHoverValue > alpha) AnimationHoverValue = alpha;
                                     else AnimationHoverValue -= addvalue;
@@ -1917,7 +1017,7 @@ namespace AntdUI
                 if (AnimationBlinkState)
                 {
                     int index = 0, len = colors.Length;
-                    ThreadAnimateBlink = new ITask(control, () =>
+                    ThreadAnimateBlink = new ITask(this, () =>
                     {
                         colorBlink = colors[index];
                         index++;
@@ -1944,12 +1044,12 @@ namespace AntdUI
 
         #region 渲染
 
-        public void Paint(Canvas g, Rectangle rect, Rectangle rect_read)
+        protected override void OnPaint(PaintEventArgs e)
         {
+            var g = e.Graphics.High();
+            Rectangle rect = ClientRectangle.PaddingRect(Padding), rect_read = ReadRectangle;
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
-
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
-
             bool is_default = type == TTypeMini.Default;
             if (toggle && typeToggle.HasValue) is_default = typeToggle.Value == TTypeMini.Default;
             if (is_default)
@@ -1977,7 +1077,7 @@ namespace AntdUI
 
                     #endregion
 
-                    if (control.Enabled)
+                    if (Enabled)
                     {
                         if (!ghost)
                         {
@@ -2000,10 +1100,10 @@ namespace AntdUI
                         {
                             PaintLoadingWave(g, path, rect_read);
                             float border = borderWidth * Config.Dpi;
-                            if (MouseDown)
+                            if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, text, _back_active, rect_read, control.Enabled);
+                                PaintTextLoading(g, text, _back_active, rect_read, Enabled);
                             }
                             else if (AnimationHover)
                             {
@@ -2012,32 +1112,32 @@ namespace AntdUI
                                 g.Draw(colorHover, border, path);
                                 PaintTextLoading(g, text, _fore, colorHover, rect_read);
                             }
-                            else if (MouseHover)
+                            else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, text, _back_hover, rect_read, control.Enabled);
+                                PaintTextLoading(g, text, _back_hover, rect_read, Enabled);
                             }
                             else
                             {
                                 if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, border, path);
                                 else g.Draw(defaultbordercolor ?? Style.Db.DefaultBorder, border, path);
-                                PaintTextLoading(g, text, _fore, rect_read, control.Enabled);
+                                PaintTextLoading(g, text, _fore, rect_read, Enabled);
                             }
                         }
                         else
                         {
-                            if (MouseDown) g.Fill(_back_active, path);
+                            if (ExtraMouseDown) g.Fill(_back_active, path);
                             else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
-                            else if (MouseHover) g.Fill(_back_hover, path);
+                            else if (ExtraMouseHover) g.Fill(_back_hover, path);
                             PaintLoadingWave(g, path, rect_read);
-                            PaintTextLoading(g, text, _fore, rect_read, control.Enabled);
+                            PaintTextLoading(g, text, _fore, rect_read, Enabled);
                         }
                     }
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
                         g.Fill(Style.Db.FillTertiary, path);
-                        PaintTextLoading(g, text, Style.Db.TextQuaternary, rect_read, control.Enabled);
+                        PaintTextLoading(g, text, Style.Db.TextQuaternary, rect_read, Enabled);
                     }
                 }
             }
@@ -2075,26 +1175,26 @@ namespace AntdUI
                         if (borderWidth > 0)
                         {
                             float border = borderWidth * Config.Dpi;
-                            if (MouseDown)
+                            if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, text, _back_active, rect_read, control.Enabled);
+                                PaintTextLoading(g, text, _back_active, rect_read, Enabled);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                g.Draw(control.Enabled ? _back : Style.Db.FillTertiary, border, path);
+                                g.Draw(Enabled ? _back : Style.Db.FillTertiary, border, path);
                                 g.Draw(colorHover, border, path);
                                 PaintTextLoading(g, text, _back, colorHover, rect_read);
                             }
-                            else if (MouseHover)
+                            else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, text, _back_hover, rect_read, control.Enabled);
+                                PaintTextLoading(g, text, _back_hover, rect_read, Enabled);
                             }
                             else
                             {
-                                if (control.Enabled)
+                                if (Enabled)
                                 {
                                     if (toggle)
                                     {
@@ -2112,10 +1212,10 @@ namespace AntdUI
                                     }
                                 }
                                 else g.Draw(Style.Db.FillTertiary, border, path);
-                                PaintTextLoading(g, text, control.Enabled ? _back : Style.Db.TextQuaternary, rect_read, control.Enabled);
+                                PaintTextLoading(g, text, Enabled ? _back : Style.Db.TextQuaternary, rect_read, Enabled);
                             }
                         }
-                        else PaintTextLoading(g, text, control.Enabled ? _back : Style.Db.TextQuaternary, rect_read, control.Enabled);
+                        else PaintTextLoading(g, text, Enabled ? _back : Style.Db.TextQuaternary, rect_read, Enabled);
 
                         #endregion
                     }
@@ -2123,7 +1223,7 @@ namespace AntdUI
                     {
                         #region 绘制阴影
 
-                        if (control.Enabled && WaveSize > 0)
+                        if (Enabled && WaveSize > 0)
                         {
                             using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                             {
@@ -2136,7 +1236,7 @@ namespace AntdUI
 
                         #region 绘制背景
 
-                        if (control.Enabled)
+                        if (Enabled)
                         {
                             if (toggle)
                             {
@@ -2155,17 +1255,19 @@ namespace AntdUI
                         }
                         else g.Fill(Style.Db.FillTertiary, path);
 
-                        if (MouseDown) g.Fill(_back_active, path);
+                        if (ExtraMouseDown) g.Fill(_back_active, path);
                         else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
-                        else if (MouseHover) g.Fill(_back_hover, path);
+                        else if (ExtraMouseHover) g.Fill(_back_hover, path);
 
                         #endregion
 
                         PaintLoadingWave(g, path, rect_read);
-                        PaintTextLoading(g, text, control.Enabled ? _fore : Style.Db.TextQuaternary, rect_read, control.Enabled);
+                        PaintTextLoading(g, text, Enabled ? _fore : Style.Db.TextQuaternary, rect_read, Enabled);
                     }
                 }
             }
+            this.PaintBadge(g);
+            base.OnPaint(e);
         }
 
         #region 渲染帮助
@@ -2267,7 +1369,7 @@ namespace AntdUI
         }
         void PaintTextLoading(Canvas g, string? text, Color color, Rectangle rect_read, bool enabled)
         {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font());
+            var font_size = g.MeasureString(text ?? Config.NullText, Font);
             if (text == null)
             {
                 //没有文字
@@ -2283,7 +1385,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (PaintIcon(g, color, rect, false, control.Enabled) && showArrow)
+                    if (PaintIcon(g, color, rect, false, Enabled) && showArrow)
                     {
                         int size = (int)(font_size.Height * IconRatio);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
@@ -2311,7 +1413,7 @@ namespace AntdUI
                 {
                     if (has_left && has_right)
                     {
-                        rect_text = RectAlignLR(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
+                        rect_text = RectAlignLR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
 
                         if (loading)
                         {
@@ -2322,7 +1424,7 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
-                        else PaintIcon(g, color, rect_l, true, control.Enabled);
+                        else PaintIcon(g, color, rect_l, true, Enabled);
 
                         #region ARROW
 
@@ -2344,7 +1446,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
+                        rect_text = RectAlignL(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
                             float loading_size = rect_l.Height * .14F;
@@ -2354,11 +1456,11 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
-                        else PaintIcon(g, color, rect_l, true, control.Enabled);
+                        else PaintIcon(g, color, rect_l, true, Enabled);
                     }
                     else
                     {
-                        rect_text = RectAlignR(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
+                        rect_text = RectAlignR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
 
                         #region ARROW
 
@@ -2387,13 +1489,13 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(color))
                 {
-                    g.String(text, Font(), brush, rect_text, stringFormat);
+                    g.String(text, Font, brush, rect_text, stringFormat);
                 }
             }
         }
         void PaintTextLoading(Canvas g, string? text, Color color, Color colorHover, Rectangle rect_read)
         {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font());
+            var font_size = g.MeasureString(text ?? Config.NullText, Font);
             if (text == null)
             {
                 var rect = GetIconRectCenter(font_size, rect_read);
@@ -2448,7 +1550,7 @@ namespace AntdUI
                 {
                     if (has_left && has_right)
                     {
-                        rect_text = RectAlignLR(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
+                        rect_text = RectAlignLR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
 
                         if (loading)
                         {
@@ -2493,7 +1595,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        rect_text = RectAlignL(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
+                        rect_text = RectAlignL(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
                             float loading_size = rect_l.Height * .14F;
@@ -2511,7 +1613,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        rect_text = RectAlignR(g, textLine, Font(), iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
+                        rect_text = RectAlignR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
 
                         #region ARROW
 
@@ -2549,8 +1651,8 @@ namespace AntdUI
                 using (var brush = new SolidBrush(color))
                 using (var brushHover = new SolidBrush(colorHover))
                 {
-                    g.String(text, Font(), brush, rect_text, stringFormat);
-                    g.String(text, Font(), brushHover, rect_text, stringFormat);
+                    g.String(text, Font, brush, rect_text, stringFormat);
+                    g.String(text, Font, brushHover, rect_text, stringFormat);
                 }
             }
         }
@@ -2706,7 +1808,7 @@ namespace AntdUI
             else if (AnimationIconToggle)
             {
                 float d = 1F - AnimationIconToggleValue;
-                if (MouseHover)
+                if (ExtraMouseHover)
                 {
                     if (!PaintCoreIcon(g, IconHover, IconHoverSvg, rect, color, d)) PaintCoreIcon(g, icon, iconSvg, rect, color, d);
                     if (!PaintCoreIcon(g, ToggleIconHover, ToggleIconHoverSvg, rect, color, AnimationIconToggleValue)) PaintCoreIcon(g, ToggleIcon, ToggleIconSvg, rect, color, AnimationIconToggleValue);
@@ -2720,9 +1822,9 @@ namespace AntdUI
             }
             else
             {
-                if (control.Enabled)
+                if (Enabled)
                 {
-                    if (MouseHover)
+                    if (ExtraMouseHover)
                     {
                         if (PaintCoreIconHover(g, rect, color)) return false;
                     }
@@ -2730,7 +1832,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (MouseHover)
+                    if (ExtraMouseHover)
                     {
                         if (PaintCoreIconHover(g, rect, color, .3F)) return false;
                     }
@@ -2932,8 +2034,311 @@ namespace AntdUI
             }
         }
 
+        public override Rectangle ReadRectangle
+        {
+            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, shape, joinLeft, joinRight);
+        }
+
+        public override GraphicsPath RenderRegion
+        {
+            get
+            {
+                var rect_read = ReadRectangle;
+                float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
+                return Path(rect_read, _radius);
+            }
+        }
+
         #endregion
 
         #endregion
+
+        #region 鼠标
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (RespondRealAreas)
+            {
+                var rect_read = ReadRectangle;
+                using (var path = Path(rect_read, radius * Config.Dpi))
+                {
+                    ExtraMouseHover = path.IsVisible(e.Location);
+                }
+            }
+            base.OnMouseMove(e);
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            if (RespondRealAreas) return;
+            ExtraMouseHover = true;
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            ExtraMouseHover = false;
+        }
+
+        protected override void OnLeave(EventArgs e)
+        {
+            base.OnLeave(e);
+            ExtraMouseHover = false;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (CanClick(e.Location))
+            {
+                Focus();
+                base.OnMouseDown(e);
+                ExtraMouseDown = true;
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (ExtraMouseDown)
+            {
+                if (CanClick(e.Location))
+                {
+                    base.OnMouseUp(e);
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        ClickAnimation();
+                        OnClick(e);
+                    }
+                    OnMouseClick(e);
+                }
+                ExtraMouseDown = false;
+            }
+            else base.OnMouseUp(e);
+        }
+
+        #endregion
+
+        #region 自动大小
+
+        /// <summary>
+        /// 自动大小
+        /// </summary>
+        [Browsable(true)]
+        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        public override bool AutoSize
+        {
+            get => base.AutoSize;
+            set
+            {
+                if (base.AutoSize == value) return;
+                base.AutoSize = value;
+                if (value)
+                {
+                    if (autoSize == TAutoSize.None) autoSize = TAutoSize.Auto;
+                }
+                else autoSize = TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        TAutoSize autoSize = TAutoSize.None;
+        /// <summary>
+        /// 自动大小模式
+        /// </summary>
+        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        public TAutoSize AutoSizeMode
+        {
+            get => autoSize;
+            set
+            {
+                if (autoSize == value) return;
+                autoSize = value;
+                base.AutoSize = autoSize != TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            BeforeAutoSize();
+            base.OnFontChanged(e);
+        }
+
+        public override Size GetPreferredSize(Size proposedSize)
+        {
+            if (autoSize == TAutoSize.None) return base.GetPreferredSize(proposedSize);
+            else if (autoSize == TAutoSize.Width) return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
+            else if (autoSize == TAutoSize.Height) return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
+            return PSize;
+        }
+
+        internal Size PSize
+        {
+            get
+            {
+                return Helper.GDI(g =>
+                {
+                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
+                    int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
+                    if (Shape == TShape.Circle || string.IsNullOrEmpty(text))
+                    {
+                        int s = font_size.Height + wave + gap;
+                        return new Size(s, s);
+                    }
+                    else
+                    {
+                        int m = wave * 2;
+                        if (joinLeft || joinRight) m = 0;
+                        bool has_icon = loading || HasIcon;
+                        if (has_icon || showArrow)
+                        {
+                            if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
+                            {
+                                int size = (int)Math.Ceiling(font_size.Height * 1.2F);
+                                return new Size(font_size.Width + m + gap + size, font_size.Height + wave + gap + size);
+                            }
+                            int height = font_size.Height + wave + gap;
+                            if (has_icon && showArrow) return new Size(font_size.Width + m + gap + font_size.Height * 2, height);
+                            else if (has_icon) return new Size(font_size.Width + m + gap + (int)Math.Ceiling(font_size.Height * 1.2F), height);
+                            else return new Size(font_size.Width + m + gap + (int)Math.Ceiling(font_size.Height * .8F), height);
+                        }
+                        else return new Size(font_size.Width + m + gap, font_size.Height + wave + gap);
+                    }
+                });
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            BeforeAutoSize();
+            base.OnResize(e);
+        }
+
+        internal bool BeforeAutoSize()
+        {
+            if (autoSize == TAutoSize.None) return true;
+            if (InvokeRequired)
+            {
+                bool flag = false;
+                Invoke(new Action(() =>
+                {
+                    flag = BeforeAutoSize();
+                }));
+                return flag;
+            }
+            var PS = PSize;
+            switch (autoSize)
+            {
+                case TAutoSize.Width:
+                    if (Width == PS.Width) return true;
+                    Width = PS.Width;
+                    break;
+                case TAutoSize.Height:
+                    if (Height == PS.Height) return true;
+                    Height = PS.Height;
+                    break;
+                case TAutoSize.Auto:
+                default:
+                    if (Width == PS.Width && Height == PS.Height) return true;
+                    Size = PS;
+                    break;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region 按钮点击
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            if (e.KeyCode is Keys.Enter or Keys.Space)
+            {
+                ClickAnimation();
+                OnClick(EventArgs.Empty);
+                e.Handled = true;
+            }
+            base.OnKeyUp(e);
+        }
+
+        [DefaultValue(DialogResult.None)]
+        public DialogResult DialogResult { get; set; } = DialogResult.None;
+
+        /// <summary>
+        /// 是否默认按钮
+        /// </summary>
+        public void NotifyDefault(bool value)
+        {
+
+        }
+
+        public void PerformClick()
+        {
+            ClickAnimation();
+            OnClick(EventArgs.Empty);
+        }
+
+        bool CanClick()
+        {
+            if (loading) return false;
+            else
+            {
+                if (RespondRealAreas)
+                {
+                    var e = PointToClient(MousePosition);
+                    var rect_read = ReadRectangle;
+                    using (var path = Path(rect_read, radius * Config.Dpi))
+                    {
+                        return path.IsVisible(e);
+                    }
+                }
+                else return true;
+            }
+        }
+        bool CanClick(Point e)
+        {
+            if (loading) return false;
+            else
+            {
+                if (RespondRealAreas)
+                {
+                    var rect_read = ReadRectangle;
+                    using (var path = Path(rect_read, radius * Config.Dpi))
+                    {
+                        return path.IsVisible(e);
+                    }
+                }
+                else return true;
+            }
+        }
+
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public new event EventHandler? DoubleClick
+        {
+            add => base.DoubleClick += value;
+            remove => base.DoubleClick -= value;
+        }
+
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public new event MouseEventHandler? MouseDoubleClick
+        {
+            add => base.MouseDoubleClick += value;
+            remove => base.MouseDoubleClick -= value;
+        }
+
+        #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            ThreadClick?.Dispose();
+            ThreadHover?.Dispose();
+            ThreadIconHover?.Dispose();
+            ThreadIconToggle?.Dispose();
+            ThreadLoading?.Dispose();
+            ThreadAnimateBlink?.Dispose();
+            base.Dispose(disposing);
+        }
     }
 }

@@ -634,7 +634,7 @@ namespace AntdUI
                         else if (item.Checked)
                         {
                             g.Fill(Style.Db.Primary, path_check);
-                            g.DrawLines(Style.Db.BgBase, 3F * Config.Dpi, PaintArrow(item.check_rect));
+                            g.DrawLines(Style.Db.BgBase, bor2, PaintArrow(item.check_rect));
                         }
                         else g.Draw(Style.Db.BorderColor, bor2, path_check);
                     }
@@ -642,7 +642,7 @@ namespace AntdUI
                     {
                         g.Fill(Style.Db.FillQuaternary, path_check);
                         if (item.CheckState == CheckState.Indeterminate) g.Fill(Style.Db.TextQuaternary, PaintBlock(item.check_rect));
-                        else if (item.Checked) g.DrawLines(Style.Db.TextQuaternary, 3F * Config.Dpi, PaintArrow(item.check_rect));
+                        else if (item.Checked) g.DrawLines(Style.Db.TextQuaternary, bor2, PaintArrow(item.check_rect));
                         g.Draw(Style.Db.BorderColorDisable, bor2, path_check);
                     }
                 }

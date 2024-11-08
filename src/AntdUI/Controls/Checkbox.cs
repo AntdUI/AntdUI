@@ -218,17 +218,17 @@ namespace AntdUI
             if (right) icon_rect.X = rect.Width - icon_rect.X - icon_rect.Width;
             using (var path = icon_rect.RoundPath(radius))
             {
+                var bor2 = 2F * Config.Dpi;
                 if (enabled)
                 {
-                    var bor2 = 2F * Config.Dpi;
                     var color = fill ?? Style.Db.Primary;
                     if (AnimationCheck)
                     {
                         float dot = dot_size * 0.3F, alpha = 255 * AnimationCheckValue;
                         g.Fill(Helper.ToColor(alpha, color), path);
-                        using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), 3F * Config.Dpi))
+                        using (var pen = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), 2.6F * Config.Dpi))
                         {
-                            g.DrawLines(brush, icon_rect.CheckArrow());
+                            g.DrawLines(pen, icon_rect.CheckArrow());
                         }
                         if (_checked)
                         {
@@ -243,7 +243,7 @@ namespace AntdUI
                     else if (_checked)
                     {
                         g.Fill(color, path);
-                        g.DrawLines(Style.Db.BgBase, 3F * Config.Dpi, icon_rect.CheckArrow());
+                        g.DrawLines(Style.Db.BgBase, 2.6F * Config.Dpi, icon_rect.CheckArrow());
                     }
                     else
                     {
@@ -259,8 +259,8 @@ namespace AntdUI
                 else
                 {
                     g.Fill(Style.Db.FillQuaternary, path);
-                    if (_checked) g.DrawLines(Style.Db.TextQuaternary, 3F * Config.Dpi, icon_rect.CheckArrow());
-                    g.Draw(Style.Db.BorderColorDisable, 2F * Config.Dpi, path);
+                    if (_checked) g.DrawLines(Style.Db.TextQuaternary, 2.6F * Config.Dpi, icon_rect.CheckArrow());
+                    g.Draw(Style.Db.BorderColorDisable, bor2, path);
                 }
             }
         }

@@ -189,8 +189,8 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle;
             var g = e.Graphics.High();
+            var rect = ClientRectangle.PaddingRect(Padding);
             var rect_read = ReadRectangle;
             using (var path = rect_read.RoundPath(rect_read.Height))
             {
@@ -254,11 +254,11 @@ namespace AntdUI
         }
         internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color)
         {
-            if (AnimationClick)
+            if (AnimationClick || true)
             {
-                float maxw = rect_read.Width + ((rect.Width - rect_read.Width) * AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * AnimationClickValue),
-                    alpha = 100 * (1F - AnimationClickValue);
-                using (var path_click = new RectangleF((rect.Width - maxw) / 2F, (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(maxh))
+                float alpha = 100 * (1F - AnimationClickValue),
+                    maxw = rect_read.Width + ((rect.Width - rect_read.Width) * AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * AnimationClickValue);
+                using (var path_click = new RectangleF(rect.X + (rect.Width - maxw) / 2F, rect.Y + (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(maxh))
                 {
                     path_click.AddPath(path, false);
                     g.Fill(Helper.ToColor(alpha, color), path_click);
@@ -266,10 +266,7 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding, WaveSize * Config.Dpi);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, WaveSize * Config.Dpi);
 
         public override GraphicsPath RenderRegion
         {

@@ -892,7 +892,7 @@ namespace AntdUI
             using (var path = it.RectCheck.RoundPath(Radius / 2))
             {
                 g.Fill(Style.Db.Primary, path);
-                using (var brush = new Pen(Style.Db.BgBase, 3F * Config.Dpi))
+                using (var brush = new Pen(Style.Db.BgBase, 2.6F * Config.Dpi))
                 {
                     g.DrawLines(brush, it.RectCheck.CheckArrow());
                 }
