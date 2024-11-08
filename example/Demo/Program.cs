@@ -44,45 +44,30 @@ namespace Demo
     }
     public class Localizer : AntdUI.ILocalization
     {
-        public string GetLocalizedString(string key)
+        public string? GetLocalizedString(string key)
         {
             switch (key)
             {
-                case "Cancel":
-                    return "キャンセル";
-                case "OK":
-                    return "確認";
-                case "Now":
-                    return "今は";
-                case "ToDay":
-                    return "今日";
-                case "NoData":
-                    return "データが一時的にありません";
-                case "Year":
-                    return "Année";
-                case "Month":
-                    return "Mois";
+                case "ID":
+                    return "en-US";
 
-                case "Mon":
-                    return "Mon";
-                case "Tue":
-                    return "Tue";
-                case "Wed":
-                    return "Wed";
-                case "Thu":
-                    return "Thu";
-                case "Fri":
-                    return "Fri";
-                case "Sat":
-                    return "Sat";
-                case "Sun":
-                    return "Sun";
+                case "Cancel":
+                    return "Cancel";
+                case "OK":
+                    return "OK";
+                case "Now":
+                    return "Now";
+                case "ToDay":
+                    return "Today";
+                case "NoData":
+                    return "No data";
+
                 case "ItemsPerPage":
                     return "Per/Page";
 
                 default:
                     System.Diagnostics.Debug.WriteLine(key);
-                    return key;
+                    return null;
             }
         }
     }
