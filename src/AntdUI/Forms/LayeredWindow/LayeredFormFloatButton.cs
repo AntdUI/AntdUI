@@ -179,40 +179,48 @@ namespace AntdUI
                     using (var path = DrawShadow(g, it))
                     {
                         Color back, back_hover, fore;
-                        switch (it.Type)
+                        if (it.Enabled)
                         {
-                            case TTypeMini.Primary:
-                                back = Style.Db.Primary;
-                                back_hover = Style.Db.PrimaryHover;
-                                fore = Style.Db.PrimaryColor;
-                                break;
-                            case TTypeMini.Success:
-                                back = Style.Db.Success;
-                                back_hover = Style.Db.SuccessHover;
-                                fore = Style.Db.SuccessColor;
-                                break;
-                            case TTypeMini.Error:
-                                back = Style.Db.Error;
-                                back_hover = Style.Db.ErrorHover;
-                                fore = Style.Db.ErrorColor;
-                                break;
-                            case TTypeMini.Warn:
-                                back = Style.Db.Warning;
-                                back_hover = Style.Db.WarningHover;
-                                fore = Style.Db.WarningColor;
-                                break;
-                            case TTypeMini.Info:
-                                back = Style.Db.Info;
-                                back_hover = Style.Db.InfoHover;
-                                fore = Style.Db.InfoColor;
-                                break;
-                            default:
-                                back = Style.Db.BgElevated;
-                                back_hover = Style.Db.FillSecondary;
-                                fore = Style.Db.Text;
-                                break;
+                            switch (it.Type)
+                            {
+                                case TTypeMini.Primary:
+                                    back = Style.Db.Primary;
+                                    back_hover = Style.Db.PrimaryHover;
+                                    fore = Style.Db.PrimaryColor;
+                                    break;
+                                case TTypeMini.Success:
+                                    back = Style.Db.Success;
+                                    back_hover = Style.Db.SuccessHover;
+                                    fore = Style.Db.SuccessColor;
+                                    break;
+                                case TTypeMini.Error:
+                                    back = Style.Db.Error;
+                                    back_hover = Style.Db.ErrorHover;
+                                    fore = Style.Db.ErrorColor;
+                                    break;
+                                case TTypeMini.Warn:
+                                    back = Style.Db.Warning;
+                                    back_hover = Style.Db.WarningHover;
+                                    fore = Style.Db.WarningColor;
+                                    break;
+                                case TTypeMini.Info:
+                                    back = Style.Db.Info;
+                                    back_hover = Style.Db.InfoHover;
+                                    fore = Style.Db.InfoColor;
+                                    break;
+                                default:
+                                    back = Style.Db.BgElevated;
+                                    back_hover = Style.Db.FillSecondary;
+                                    fore = Style.Db.Text;
+                                    break;
+                            }
+                            if (it.Fore.HasValue) fore = it.Fore.Value;
                         }
-                        if (it.Fore.HasValue) fore = it.Fore.Value;
+                        else
+                        {
+                            back = back_hover = Style.Db.FillTertiary;
+                            fore = Style.Db.TextQuaternary;
+                        }
 
                         g.Fill(back, path);
                         if (it.hover) g.Fill(back_hover, path);
@@ -287,7 +295,7 @@ namespace AntdUI
             bool round = it.Round;
             float radius = round ? it.rect_read.Height : it.Radius * Config.Dpi;
             var path = Helper.RoundPath(it.rect_read, radius, round);
-            if (Config.ShadowEnabled)
+            if (Config.ShadowEnabled && it.Enabled)
             {
                 if (it.shadow_temp == null || (it.shadow_temp.Width != it.rect.Width || it.shadow_temp.Height != it.rect.Height))
                 {
@@ -317,7 +325,7 @@ namespace AntdUI
             int count = 0, hand = 0;
             foreach (var it in config.Btns)
             {
-                if (it.rect.Contains(e.Location))
+                if (it.Enabled && it.rect.Contains(e.Location))
                 {
                     hand++;
                     if (!it.hover)
@@ -371,7 +379,7 @@ namespace AntdUI
             {
                 foreach (var it in config.Btns)
                 {
-                    if (it.rect.Contains(e.Location))
+                    if (it.Enabled && it.rect.Contains(e.Location))
                     {
                         config.Call.Invoke(it);
                         return;

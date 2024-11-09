@@ -150,6 +150,7 @@ namespace AntdUI
         string? _checkedText = null, _unCheckedText = null;
 
         [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? CheckedText
         {
             get => _checkedText;
@@ -162,6 +163,7 @@ namespace AntdUI
         }
 
         [Description("未选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? UnCheckedText
         {
             get => _unCheckedText;

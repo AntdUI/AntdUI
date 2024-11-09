@@ -96,6 +96,7 @@ namespace AntdUI
         /// 标题
         /// </summary>
         [Description("标题"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? TextTitle
         {
             get => textTitle;

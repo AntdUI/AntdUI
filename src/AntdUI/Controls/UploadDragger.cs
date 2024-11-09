@@ -77,6 +77,7 @@ namespace AntdUI
         /// 文本描述
         /// </summary>
         [Description("文本描述"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? TextDesc
         {
             get => textDesc;

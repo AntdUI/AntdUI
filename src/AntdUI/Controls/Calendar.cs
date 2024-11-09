@@ -385,9 +385,9 @@ namespace AntdUI
         #region 参数
 
         CultureInfo Culture;
-        string CultureID = Localization.Provider?.GetLocalizedString("ID") ?? "zh-CN",
-            button_text = Localization.Provider?.GetLocalizedString("ToDay") ?? "今天",
-            OKButton = Localization.Provider?.GetLocalizedString("OK") ?? "确定",
+        string CultureID = Localization.Get("ID", "zh-CN"),
+            button_text = Localization.Get("ToDay", "今天"),
+            OKButton = Localization.Get("OK", "确定"),
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
         bool YDR = false;

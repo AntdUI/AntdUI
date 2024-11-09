@@ -147,8 +147,8 @@ namespace AntdUI
 
         #region 渲染
 
-        string button_text = Localization.Provider?.GetLocalizedString("Now") ?? "此刻";
-        string OKButton = Localization.Provider?.GetLocalizedString("OK") ?? "确定";
+        string button_text = Localization.Get("Now", "此刻");
+        string OKButton = Localization.Get("OK", "确定");
         StringFormat s_f = Helper.SF();
         public override Bitmap PrintBit()
         {

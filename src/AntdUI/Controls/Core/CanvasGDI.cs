@@ -55,6 +55,8 @@ namespace AntdUI.Core
             g.DrawString(text, font, brush, rect, format);
         }
 
+        public void String(string? text, Font font, Brush brush, float x, float y) => g.DrawString(text, font, brush, x, y);
+
         #endregion
 
         #region Image

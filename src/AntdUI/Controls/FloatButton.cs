@@ -226,6 +226,21 @@ namespace AntdUI
             /// </summary>
             public string Name { get; set; }
 
+            bool enabled = true;
+            /// <summary>
+            /// 使能
+            /// </summary>
+            public bool Enabled
+            {
+                get => enabled;
+                set
+                {
+                    if (enabled == value) return;
+                    enabled = value;
+                    OnPropertyChanged("Enabled");
+                }
+            }
+
             Color? fore;
             /// <summary>
             /// 文字颜色

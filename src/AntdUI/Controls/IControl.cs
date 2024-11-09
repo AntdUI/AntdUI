@@ -25,6 +25,7 @@ using System.Windows.Forms;
 namespace AntdUI
 {
     [ToolboxItem(false)]
+    [Localizable(true)]
     public class IControl : Control, BadgeConfig
     {
         public IControl()

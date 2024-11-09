@@ -353,6 +353,7 @@ namespace AntdUI
 
         string? prefixText = null;
         [Description("前缀文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? PrefixText
         {
             get => prefixText;
@@ -423,6 +424,7 @@ namespace AntdUI
 
         string? suffixText = null;
         [Description("后缀文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? SuffixText
         {
             get => suffixText;
@@ -705,6 +707,7 @@ namespace AntdUI
         /// 水印文本
         /// </summary>
         [Description("水印文本"), Category("行为"), DefaultValue(null)]
+        [Localizable(true)]
         public virtual string? PlaceholderText
         {
             get => placeholderText;
@@ -1117,7 +1120,11 @@ namespace AntdUI
                 case Win32.WM_IME_COMPOSITION:
                     if (((int)m.LParam & Win32.GCS_RESULTSTR) == Win32.GCS_RESULTSTR)
                     {
+#if NET40 || NET46 || NET48 || NET6_0
                         m.Result = (IntPtr)1;
+#else
+                        m.Result = 1;
+#endif
                         OnImeResultStrPrivate(m_hIMC, Win32.ImmGetCompositionString(m_hIMC, Win32.GCS_RESULTSTR));
                         return;
                     }

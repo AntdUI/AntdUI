@@ -902,7 +902,7 @@ namespace AntdUI
         {
             using (var fore = new SolidBrush(Style.Db.Text))
             {
-                string emptytext = EmptyText ?? Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
+                string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
                 if (EmptyImage == null) g.String(emptytext, Font, fore, rect, stringCenter);
                 else
                 {

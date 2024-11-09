@@ -90,7 +90,7 @@ namespace AntdUI
                 ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
                 if (input_SizeChanger != null)
                 {
-                    string tips = Localization.Provider?.GetLocalizedString("ItemsPerPage") ?? "条/页";
+                    string tips = Localization.Get("ItemsPerPage", "条/页");
                     input_SizeChanger.Clear();
                     input_SizeChanger.PlaceholderText = value.ToString() + " " + tips;
                 }
@@ -268,6 +268,7 @@ namespace AntdUI
 
         string? textdesc;
         [Description("主动显示内容"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? TextDesc
         {
             get => textdesc;
@@ -650,7 +651,7 @@ namespace AntdUI
         {
             if (input_SizeChanger == null)
             {
-                string tips = Localization.Provider?.GetLocalizedString("ItemsPerPage") ?? "条/页";
+                string tips = Localization.Get("ItemsPerPage", "条/页");
                 var placeholder = pageSize.ToString() + " " + tips;
                 bool r = rightToLeft == RightToLeft.Yes;
                 int width = GetSizeChangerWidth(placeholder);
@@ -703,7 +704,7 @@ namespace AntdUI
             {
                 if (sizeChangerWidth <= 0)
                 {
-                    string tips = Localization.Provider?.GetLocalizedString("ItemsPerPage") ?? "条/页";
+                    string tips = Localization.Get("ItemsPerPage", "条/页");
                     var placeholder = pageSize.ToString() + " " + tips;
                     int width = GetSizeChangerWidth(placeholder);
                     if (InvokeRequired)

@@ -163,6 +163,7 @@ namespace AntdUI
         /// 前缀
         /// </summary>
         [Description("前缀"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? Prefix
         {
             get => prefix;
@@ -212,6 +213,7 @@ namespace AntdUI
         /// 后缀
         /// </summary>
         [Description("后缀"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? Suffix
         {
             get => suffix;

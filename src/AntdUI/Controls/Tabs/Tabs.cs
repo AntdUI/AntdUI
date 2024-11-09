@@ -1467,7 +1467,7 @@ namespace AntdUI
             {
                 if (badge == value) return;
                 badge = value;
-                Invalidate();
+                PARENT?.Invalidate();
             }
         }
 

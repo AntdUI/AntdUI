@@ -72,6 +72,7 @@ namespace AntdUI
 
         string? desc = null;
         [Description("副标题"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? SubText
         {
             get => desc;
@@ -88,6 +89,7 @@ namespace AntdUI
         /// 描述文本
         /// </summary>
         [Description("描述文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? Description
         {
             get => description;

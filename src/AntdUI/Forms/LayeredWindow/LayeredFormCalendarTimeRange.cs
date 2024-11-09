@@ -80,7 +80,7 @@ namespace AntdUI
                 }
                 t_x = left_button;
             }
-            t_width = t_x + t_one_width + t_time * 3; button_text = Localization.Provider?.GetLocalizedString("Now") ?? "此刻";
+            t_width = t_x + t_one_width + t_time * 3; button_text = Localization.Get("Now", "此刻");
 
             rect_lefts = new Rectangle(t_x + 10, 10, t_top, t_top);
             rect_left = new Rectangle(t_x + 10 + t_top, 10, t_top, t_top);
@@ -154,9 +154,9 @@ namespace AntdUI
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
         CultureInfo Culture;
-        string CultureID = Localization.Provider?.GetLocalizedString("ID") ?? "zh-CN",
-            button_text = Localization.Provider?.GetLocalizedString("ToDay") ?? "今天",
-            OKButton = Localization.Provider?.GetLocalizedString("OK") ?? "确定",
+        string CultureID = Localization.Get("ID", "zh-CN"),
+            button_text = Localization.Get("ToDay", "今天"),
+            OKButton = Localization.Get("OK", "确定"),
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
         bool YDR = false;

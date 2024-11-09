@@ -43,7 +43,7 @@ namespace AntdUI
             MaxCount = control.MaxCount;
             Font = control.Font;
             selectedValue = control.SelectedValue;
-            Radius = (int)(control.radius * Config.Dpi);
+            Radius = (int)(control.DropDownRadius ?? control.radius * Config.Dpi);
             DPadding = control.DropDownPadding;
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items, filtertext);
@@ -58,7 +58,8 @@ namespace AntdUI
             scrollY = new ScrollY(this);
             MaxCount = control.MaxCount;
             Font = control.Font;
-            Radius = (int)(radius * Config.Dpi);
+            selectedValue = control.SelectedValue;
+            Radius = (int)(control.DropDownRadius ?? radius * Config.Dpi);
             DPadding = control.DropDownPadding;
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items);
@@ -835,7 +836,7 @@ namespace AntdUI
                     }
                     if (nodata)
                     {
-                        string emptytext = Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
+                        string emptytext = Localization.Get("NoData", "暂无数据");
                         using (var brush = new SolidBrush(Color.FromArgb(180, Style.Db.Text)))
                         { g.String(emptytext, Font, brush, rect_read, s_f); }
                     }

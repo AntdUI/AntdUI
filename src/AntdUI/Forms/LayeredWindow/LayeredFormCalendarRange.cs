@@ -147,7 +147,7 @@ namespace AntdUI
         List<CalendarButton>? left_buttons = null;
         ScrollY scrollY_left;
         CultureInfo Culture;
-        string CultureID = Localization.Provider?.GetLocalizedString("ID") ?? "zh-CN",
+        string CultureID = Localization.Get("ID", "zh-CN"),
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
         bool YDR = false;

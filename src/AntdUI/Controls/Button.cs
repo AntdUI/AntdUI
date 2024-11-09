@@ -217,7 +217,6 @@ namespace AntdUI
         [Description("波浪大小"), Category("外观"), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
 
-
         int radius = 6;
         /// <summary>
         /// 圆角

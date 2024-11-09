@@ -150,6 +150,7 @@ namespace AntdUI
         /// 单位文本
         /// </summary>
         [Description("单位文本"), Category("外观"), DefaultValue("%")]
+        [Localizable(true)]
         public string? TextUnit
         {
             get => textUnit;

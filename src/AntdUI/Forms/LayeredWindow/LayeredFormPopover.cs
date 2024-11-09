@@ -101,7 +101,7 @@ namespace AntdUI
                         }
                         rectsContent = texts.ToArray();
                         rectContent = new Rectangle(padding, padding, has_x, max_h);
-                        SetSize((int)has_x + padding2, (int)max_h + padding2);
+                        SetSize(has_x + padding2, max_h + padding2);
                     }
                     else
                     {
@@ -196,8 +196,8 @@ namespace AntdUI
         Bitmap? tempContent;
         void LoadContent(Control control)
         {
-            var flocation = new Point(TargetRect.Location.X + (int)rectContent.X, TargetRect.Location.Y + (int)rectContent.Y);
-            var fsize = new Size((int)rectContent.Width, (int)rectContent.Height);
+            var flocation = new Point(TargetRect.Location.X + rectContent.X, TargetRect.Location.Y + rectContent.Y);
+            var fsize = new Size(rectContent.Width, rectContent.Height);
             form = new DoubleBufferForm(this, control)
             {
                 FormBorderStyle = FormBorderStyle.None,

@@ -124,6 +124,7 @@ namespace AntdUI
         /// 自定义字符
         /// </summary>
         [Description("自定义字符"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? Character
         {
             get => character;

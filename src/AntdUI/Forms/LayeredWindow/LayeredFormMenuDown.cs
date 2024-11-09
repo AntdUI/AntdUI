@@ -301,7 +301,7 @@ namespace AntdUI
 
                 if (nodata)
                 {
-                    string emptytext = Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
+                    string emptytext = Localization.Get("NoData", "暂无数据");
                     using (var brush = new SolidBrush(Color.FromArgb(180, Style.Db.Text)))
                     { g.String(emptytext, Font, brush, rect_read, s_f); }
                 }

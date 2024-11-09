@@ -37,6 +37,7 @@ namespace AntdUI
 
         void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null);
         void String(string? text, Font font, Color brush, Rectangle rect, StringFormat? format = null);
+        void String(string? text, Font font, Brush brush, float x, float y);
 
         #endregion
 
