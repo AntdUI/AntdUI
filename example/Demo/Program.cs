@@ -32,7 +32,6 @@ namespace Demo
         {
             ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
             var command = string.Join(" ", arge);
-            //AntdUI.Localization.Provider = new Localizer();
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
@@ -40,35 +39,6 @@ namespace Demo
             if (command == "m") Application.Run(new Main());
             else if (command == "color") Application.Run(new Colors());
             else Application.Run(new Overview(command == "t"));
-        }
-    }
-    public class Localizer : AntdUI.ILocalization
-    {
-        public string? GetLocalizedString(string key)
-        {
-            switch (key)
-            {
-                case "ID":
-                    return "en-US";
-
-                case "Cancel":
-                    return "Cancel";
-                case "OK":
-                    return "OK";
-                case "Now":
-                    return "Now";
-                case "ToDay":
-                    return "Today";
-                case "NoData":
-                    return "No data";
-
-                case "ItemsPerPage":
-                    return "Per/Page";
-
-                default:
-                    System.Diagnostics.Debug.WriteLine(key);
-                    return null;
-            }
         }
     }
 }

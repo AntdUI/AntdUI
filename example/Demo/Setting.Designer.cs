@@ -46,6 +46,7 @@ namespace Demo
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Setting));
             tablePanel = new System.Windows.Forms.TableLayoutPanel();
             label1 = new AntdUI.Label();
             label2 = new AntdUI.Switch();
@@ -60,9 +61,7 @@ namespace Demo
             // 
             // tablePanel
             // 
-            tablePanel.ColumnCount = 2;
-            tablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            resources.ApplyResources(tablePanel, "tablePanel");
             tablePanel.Controls.Add(label1, 0, 0);
             tablePanel.Controls.Add(label2, 1, 0);
             tablePanel.Controls.Add(label3, 0, 1);
@@ -71,99 +70,57 @@ namespace Demo
             tablePanel.Controls.Add(switch1, 1, 1);
             tablePanel.Controls.Add(switch2, 1, 2);
             tablePanel.Controls.Add(switch3, 1, 3);
-            tablePanel.Dock = System.Windows.Forms.DockStyle.Top;
-            tablePanel.Location = new System.Drawing.Point(0, 0);
             tablePanel.Name = "tablePanel";
-            tablePanel.RowCount = 5;
-            tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            tablePanel.Size = new System.Drawing.Size(210, 212);
-            tablePanel.TabIndex = 0;
             // 
             // label1
             // 
-            label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            label1.Location = new System.Drawing.Point(3, 3);
+            resources.ApplyResources(label1, "label1");
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(134, 40);
-            label1.TabIndex = 0;
-            label1.Text = "动画使能";
             // 
             // label2
             // 
-            label2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            resources.ApplyResources(label2, "label2");
             label2.AutoCheck = true;
-            label2.Location = new System.Drawing.Point(150, 8);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(50, 30);
-            label2.TabIndex = 0;
-            label2.Text = "label1";
             // 
             // label3
             // 
-            label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            label3.Location = new System.Drawing.Point(3, 49);
+            resources.ApplyResources(label3, "label3");
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(134, 40);
-            label3.TabIndex = 0;
-            label3.Text = "阴影使能";
             // 
             // label4
             // 
-            label4.Dock = System.Windows.Forms.DockStyle.Fill;
-            label4.Location = new System.Drawing.Point(3, 95);
+            resources.ApplyResources(label4, "label4");
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(134, 40);
-            label4.TabIndex = 0;
-            label4.Text = "弹出在窗口";
             // 
             // label5
             // 
-            label5.Dock = System.Windows.Forms.DockStyle.Fill;
-            label5.Location = new System.Drawing.Point(3, 141);
+            resources.ApplyResources(label5, "label5");
             label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(134, 40);
-            label5.TabIndex = 0;
-            label5.Text = "滚动条隐藏样式";
             // 
             // switch1
             // 
-            switch1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            resources.ApplyResources(switch1, "switch1");
             switch1.AutoCheck = true;
-            switch1.Location = new System.Drawing.Point(150, 54);
             switch1.Name = "switch1";
-            switch1.Size = new System.Drawing.Size(50, 30);
-            switch1.TabIndex = 0;
-            switch1.Text = "label1";
             // 
             // switch2
             // 
-            switch2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            resources.ApplyResources(switch2, "switch2");
             switch2.AutoCheck = true;
-            switch2.Location = new System.Drawing.Point(150, 100);
             switch2.Name = "switch2";
-            switch2.Size = new System.Drawing.Size(50, 30);
-            switch2.TabIndex = 0;
-            switch2.Text = "label1";
             // 
             // switch3
             // 
-            switch3.Anchor = System.Windows.Forms.AnchorStyles.None;
+            resources.ApplyResources(switch3, "switch3");
             switch3.AutoCheck = true;
-            switch3.Location = new System.Drawing.Point(150, 146);
             switch3.Name = "switch3";
-            switch3.Size = new System.Drawing.Size(50, 30);
-            switch3.TabIndex = 0;
-            switch3.Text = "label1";
             // 
             // Setting
             // 
+            resources.ApplyResources(this, "$this");
             Controls.Add(tablePanel);
             Name = "Setting";
-            Size = new System.Drawing.Size(210, 205);
             tablePanel.ResumeLayout(false);
             ResumeLayout(false);
         }

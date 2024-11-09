@@ -26,7 +26,7 @@ namespace ChatUI
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
+            AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.Run(new Main());
