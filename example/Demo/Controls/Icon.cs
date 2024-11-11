@@ -155,7 +155,7 @@ namespace Demo.Controls
 
             StringFormat s_f = AntdUI.Helper.SF_NoWrap(lr: StringAlignment.Near);
             StringFormat s_c = AntdUI.Helper.SF_NoWrap();
-            public override void Paint(Graphics g, AntdUI.VirtualPanelArgs e)
+            public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
 
@@ -165,26 +165,20 @@ namespace Demo.Controls
                     using (var font_count = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * .74F, e.Panel.Font.Style))
                     {
                         var size = AntdUI.Helper.Size(g.MeasureString(title, font_title));
-                        AntdUI.CorrectionTextRendering.DrawStr(g, title, font_title, fore, e.Rect, s_f);
+                        g.String(title, font_title, fore, e.Rect, s_f);
 
                         var rect_count = new Rectangle(e.Rect.X + size.Width, e.Rect.Y + (e.Rect.Height - size.Height) / 2, size.Height, size.Height);
                         using (var path = AntdUI.Helper.RoundPath(rect_count, e.Radius))
                         {
-                            using (var brush = new SolidBrush(AntdUI.Style.Db.TagDefaultBg))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                            using (var pen = new Pen(AntdUI.Style.Db.DefaultBorder, 1 * dpi))
-                            {
-                                g.DrawPath(pen, path);
-                            }
+                            g.Fill(AntdUI.Style.Db.TagDefaultBg, path);
+                            g.Draw(AntdUI.Style.Db.DefaultBorder, 1 * dpi, path);
                         }
-                        AntdUI.CorrectionTextRendering.DrawStr(g, count, font_count, fore, rect_count, s_c);
+                        g.String(count, font_count, fore, rect_count, s_c);
                     }
                 }
             }
 
-            public override Size Size(Graphics g, AntdUI.VirtualPanelArgs e)
+            public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 return new Size(e.Rect.Width, (int)(44 * dpi));
@@ -197,7 +191,7 @@ namespace Demo.Controls
 
             StringFormat s_f = AntdUI.Helper.SF_NoWrap();
             Bitmap bmp = null, bmp_ac = null;
-            public override void Paint(Graphics g, AntdUI.VirtualPanelArgs e)
+            public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 int icon_size = (int)(36 * dpi), text_size = (int)(24 * dpi), y = e.Rect.Y + (e.Rect.Height - (icon_size + text_size)) / 2;
@@ -207,31 +201,23 @@ namespace Demo.Controls
                 {
                     using (var path = AntdUI.Helper.RoundPath(e.Rect, e.Radius))
                     {
-                        using (var brush = new SolidBrush(AntdUI.Style.Db.Primary))
-                        {
-                            g.FillPath(brush, path);
-                        }
+                        g.Fill(AntdUI.Style.Db.Primary, path);
                     }
                     if (bmp_ac == null) bmp_ac = AntdUI.SvgExtend.SvgToBmp(Value, icon_size, icon_size, AntdUI.Style.Db.PrimaryColor);
-                    g.DrawImage(bmp_ac, rect_icon);
+                    g.Image(bmp_ac, rect_icon);
 
-                    using (var fore = new SolidBrush(AntdUI.Style.Db.PrimaryColor))
-                    {
-                        AntdUI.CorrectionTextRendering.DrawStr(g, Key, e.Panel.Font, fore, rect_text, s_f);
-                    }
+                    g.String(Key, e.Panel.Font, AntdUI.Style.Db.PrimaryColor, rect_text, s_f);
                 }
                 else
                 {
                     if (bmp == null) bmp = AntdUI.SvgExtend.SvgToBmp(Value, icon_size, icon_size, AntdUI.Style.Db.Text);
-                    g.DrawImage(bmp, rect_icon);
-                    using (var fore = new SolidBrush(AntdUI.Style.Db.Text))
-                    {
-                        AntdUI.CorrectionTextRendering.DrawStr(g, Key, e.Panel.Font, fore, rect_text, s_f);
-                    }
+                    g.Image(bmp, rect_icon);
+                    g.String(Key, e.Panel.Font, AntdUI.Style.Db.Text, rect_text, s_f);
+
                 }
 
             }
-            public override Size Size(Graphics g, AntdUI.VirtualPanelArgs e)
+            public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 return new Size((int)(200 * dpi), (int)(100 * dpi));

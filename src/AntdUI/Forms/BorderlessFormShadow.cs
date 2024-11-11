@@ -171,10 +171,7 @@ namespace AntdUI
                 {
                     using (var path = new Rectangle(shadow, shadow, shadow6 - shadow2, shadow6 - shadow2).RoundPath(radius))
                     {
-                        using (var brush = new SolidBrush(form.ShadowColor))
-                        {
-                            g.FillPath(brush, path);
-                        }
+                        g.Fill(form.ShadowColor, path);
                         Helper.Blur(bitbmp, shadow);
                     }
                 }
@@ -192,26 +189,20 @@ namespace AntdUI
                     }
                     int r = shadow2 + radius;
 
-                    g.DrawImage(bitbmp, new Rectangle(0, 0, shadow2, shadow2), new Rectangle(0, 0, shadow2, shadow2), GraphicsUnit.Pixel);
-                    g.DrawImage(bitbmp, new Rectangle(0, shadow2, shadow, bitmap.Height - shadow4), new Rectangle(0, shadow2, shadow, bitbmp.Height - shadow4), GraphicsUnit.Pixel);
-                    g.DrawImage(bitbmp, new Rectangle(0, bitmap.Height - shadow2, shadow2, shadow2), new Rectangle(0, bitbmp.Height - shadow2, shadow2, shadow2), GraphicsUnit.Pixel);
+                    g.Image(bitbmp, new Rectangle(0, 0, shadow2, shadow2), new Rectangle(0, 0, shadow2, shadow2), GraphicsUnit.Pixel);
+                    g.Image(bitbmp, new Rectangle(0, shadow2, shadow, bitmap.Height - shadow4), new Rectangle(0, shadow2, shadow, bitbmp.Height - shadow4), GraphicsUnit.Pixel);
+                    g.Image(bitbmp, new Rectangle(0, bitmap.Height - shadow2, shadow2, shadow2), new Rectangle(0, bitbmp.Height - shadow2, shadow2, shadow2), GraphicsUnit.Pixel);
 
-                    g.DrawImage(bitbmp, new Rectangle(shadow2, bitmap.Height - shadow, bitmap.Width - shadow4, shadow), new Rectangle(shadow2, bitbmp.Height - shadow, bitbmp.Width - shadow4, shadow), GraphicsUnit.Pixel);
-                    g.DrawImage(bitbmp, new Rectangle(bitmap.Width - shadow2, bitmap.Height - shadow2, shadow2, shadow2), new Rectangle(bitbmp.Width - shadow2, bitbmp.Height - shadow2, shadow2, shadow2), GraphicsUnit.Pixel);
+                    g.Image(bitbmp, new Rectangle(shadow2, bitmap.Height - shadow, bitmap.Width - shadow4, shadow), new Rectangle(shadow2, bitbmp.Height - shadow, bitbmp.Width - shadow4, shadow), GraphicsUnit.Pixel);
+                    g.Image(bitbmp, new Rectangle(bitmap.Width - shadow2, bitmap.Height - shadow2, shadow2, shadow2), new Rectangle(bitbmp.Width - shadow2, bitbmp.Height - shadow2, shadow2, shadow2), GraphicsUnit.Pixel);
 
-                    g.DrawImage(bitbmp, new Rectangle(bitmap.Width - shadow, shadow2, shadow, bitmap.Height - shadow4), new Rectangle(bitbmp.Width - shadow, shadow2, shadow, bitbmp.Height - shadow4), GraphicsUnit.Pixel);
-                    g.DrawImage(bitbmp, new Rectangle(bitmap.Width - shadow2, 0, shadow2, shadow2), new Rectangle(bitbmp.Width - shadow2, 0, shadow2, shadow2), GraphicsUnit.Pixel);
+                    g.Image(bitbmp, new Rectangle(bitmap.Width - shadow, shadow2, shadow, bitmap.Height - shadow4), new Rectangle(bitbmp.Width - shadow, shadow2, shadow, bitbmp.Height - shadow4), GraphicsUnit.Pixel);
+                    g.Image(bitbmp, new Rectangle(bitmap.Width - shadow2, 0, shadow2, shadow2), new Rectangle(bitbmp.Width - shadow2, 0, shadow2, shadow2), GraphicsUnit.Pixel);
 
-                    g.DrawImage(bitbmp, new Rectangle(shadow2, 0, bitmap.Width - shadow4, shadow), new Rectangle(shadow2, 0, bitbmp.Width - shadow4, shadow), GraphicsUnit.Pixel);
+                    g.Image(bitbmp, new Rectangle(shadow2, 0, bitmap.Width - shadow4, shadow), new Rectangle(shadow2, 0, bitbmp.Width - shadow4, shadow), GraphicsUnit.Pixel);
 
                     g.ResetClip();
-                    if (form.BorderWidth > 0)
-                    {
-                        using (var pen = new Pen(form.BorderColor, form.BorderWidth * Config.Dpi))
-                        {
-                            g.DrawPath(pen, path);
-                        }
-                    }
+                    if (form.BorderWidth > 0) g.Draw(form.BorderColor, form.BorderWidth * Config.Dpi, path);
                 }
             }
             return bitmap;

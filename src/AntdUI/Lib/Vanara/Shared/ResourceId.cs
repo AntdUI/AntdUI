@@ -26,7 +26,12 @@ namespace Vanara.PInvoke
             set
             {
                 if (value > ushort.MaxValue || value <= 0) throw new ArgumentOutOfRangeException(nameof(id));
+
+#if NET40 || NET46 || NET48 || NET6_0
                 ptr = (IntPtr)(ushort)value;
+#else
+                ptr = (ushort)value;
+#endif
             }
         }
 

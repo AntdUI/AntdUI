@@ -75,6 +75,12 @@ namespace AntdUI
         public int MaxCount { get; set; } = 4;
 
         /// <summary>
+        /// 下拉圆角
+        /// </summary>
+        [Description("下拉圆角"), Category("外观"), DefaultValue(null)]
+        public int? DropDownRadius { get; set; }
+
+        /// <summary>
         /// 下拉箭头是否显示
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
@@ -354,7 +360,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -487,7 +493,7 @@ namespace AntdUI
             {
                 case Keys.Down:
                     ExpandDrop = true;
-                    return true;
+                    break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -819,7 +825,7 @@ namespace AntdUI
             }
         }
 
-        public RectangleF RectText { get; set; }
+        public Rectangle RectText { get; set; }
     }
 
     internal class ObjectItemCheck
@@ -997,7 +1003,7 @@ namespace AntdUI
             }
         }
 
-        public RectangleF RectText { get; set; }
+        public Rectangle RectText { get; set; }
         public Rectangle RectArrow { get; set; }
     }
 }

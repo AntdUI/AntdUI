@@ -97,20 +97,20 @@ namespace FontTest
                 {
                     using (var g_o = AntdUI.Helper.High(Graphics.FromImage(bmp_o)))
                     {
-                        g_o.DrawString(text, font, Brushes.Black, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
+                        g_o.String(text, font, Brushes.Black, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
                     }
 
                     AntdUI.CorrectionTextRendering.TextRealY(bmp_o, out var ry, out var rheight);
 
                     #region 绘制线
 
-                    g.FillRectangle(Brushes.Black, new Rectangle(0, 0, size, 1));
-                    g.FillRectangle(Brushes.Black, new Rectangle(0, size - 1, size, 1));
-                    g.FillRectangle(Brushes.Black, new Rectangle(0, 0, 1, size));
-                    g.FillRectangle(Brushes.Black, new Rectangle(size - 1, 0, 1, size));
+                    g.Fill(Brushes.Black, new Rectangle(0, 0, size, 1));
+                    g.Fill(Brushes.Black, new Rectangle(0, size - 1, size, 1));
+                    g.Fill(Brushes.Black, new Rectangle(0, 0, 1, size));
+                    g.Fill(Brushes.Black, new Rectangle(size - 1, 0, 1, size));
                     using (var brush = new SolidBrush(Color.FromArgb(180, Color.Green)))
                     {
-                        g.FillRectangle(brush, new RectangleF(0, cs - 1, size, 2));
+                        g.Fill(brush, new RectangleF(0, cs - 1, size, 2));
                     }
 
                     #endregion
@@ -124,29 +124,29 @@ namespace FontTest
                     {
                         using (var brush = new SolidBrush(Color.FromArgb(100, Color.Green)))
                         {
-                            g.FillRectangle(brush, new Rectangle(0, ry, size, 1));
-                            g.FillRectangle(brush, new Rectangle(0, ry + rheight, size, 1));
+                            g.Fill(brush, new Rectangle(0, ry, size, 1));
+                            g.Fill(brush, new Rectangle(0, ry + rheight, size, 1));
                         }
                         using (var brush = new SolidBrush(Color.Green))
                         {
-                            g.DrawString(text, font, brush, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
+                            g.String(text, font, brush, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
                         }
                     }
                     else
                     {
                         using (var brush = new SolidBrush(Color.FromArgb(100, 255, 0, 0)))
                         {
-                            g.FillRectangle(brush, new Rectangle(0, ry, size, 1));
-                            g.FillRectangle(brush, new Rectangle(0, ry + rheight, size, 1));
+                            g.Fill(brush, new Rectangle(0, ry, size, 1));
+                            g.Fill(brush, new Rectangle(0, ry + rheight, size, 1));
                         }
                         oy = xc;
                         using (var brush = new SolidBrush(Color.FromArgb(40, 255, 0, 0)))
                         {
-                            g.DrawString(text, font, brush, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
+                            g.String(text, font, brush, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
                         }
                         using (var brush = new SolidBrush(Color.Green))
                         {
-                            g.DrawString(text, font, brush, new Rectangle(0, xc, bmp.Width, bmp.Height), s_f);
+                            g.String(text, font, brush, new Rectangle(0, xc, bmp.Width, bmp.Height), s_f);
                         }
                     }
                 }

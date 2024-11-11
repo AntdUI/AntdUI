@@ -22,19 +22,19 @@ namespace AntdUI
 {
     partial class CellText
     {
-        internal override void PaintBack(Graphics g)
+        internal override void PaintBack(Canvas g)
         {
             if (PARENT == null) return;
             if (Back.HasValue)
             {
                 using (var brush = new SolidBrush(Back.Value))
                 {
-                    g.FillRectangle(brush, PARENT.RECT);
+                    g.Fill(brush, PARENT.RECT);
                 }
             }
         }
 
-        internal override void Paint(Graphics g, Font font, SolidBrush fore)
+        internal override void Paint(Canvas g, Font font, SolidBrush fore)
         {
             if (PARENT == null) return;
             var state = g.Save();
@@ -43,21 +43,21 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Fore.Value))
                 {
-                    g.DrawStr(Text, Font ?? font, brush, Rect, Table.StringF(PARENT.COLUMN));
+                    g.String(Text, Font ?? font, brush, Rect, Table.StringF(PARENT.COLUMN));
                 }
             }
-            else g.DrawStr(Text, Font ?? font, fore, Rect, Table.StringF(PARENT.COLUMN));
+            else g.String(Text, Font ?? font, fore, Rect, Table.StringF(PARENT.COLUMN));
             g.Restore(state);
             if (PrefixSvg != null) g.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color);
-            else if (Prefix != null) g.DrawImage(Prefix, RectL);
+            else if (Prefix != null) g.Image(Prefix, RectL);
 
             if (SuffixSvg != null) g.GetImgExtend(SuffixSvg, RectR, Fore ?? fore.Color);
-            else if (Suffix != null) g.DrawImage(Suffix, RectR);
+            else if (Suffix != null) g.Image(Suffix, RectR);
         }
 
-        internal override Size GetSize(Graphics g, Font font, int gap, int gap2)
+        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
-            var size = g.MeasureString(Text, Font ?? font).Size();
+            var size = g.MeasureString(Text, Font ?? font);
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;
             if (has_prefix && has_suffix)
             {
@@ -73,7 +73,7 @@ namespace AntdUI
         }
 
         Rectangle Rect, RectL, RectR;
-        internal override void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;
             if (has_prefix && has_suffix)

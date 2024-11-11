@@ -215,11 +215,8 @@ namespace AntdUI
         ITask? thread = null;
 
         float LineWidth = 6, LineAngle = 0;
-        float prog_size = 0;
-        public void Clear()
-        {
-            prog_size = 0;
-        }
+        int prog_size = 0;
+        public void Clear() => prog_size = 0;
 
         public void Start(IControl control)
         {
@@ -267,20 +264,20 @@ namespace AntdUI
         }
 
         readonly StringFormat s_f = Helper.SF_ALL();
-        public void Paint(Graphics g, Rectangle rect, string? text, Color color, Font? font, Control control)
+        public void Paint(Canvas g, Rectangle rect, string? text, Color color, Font? font, Control control)
         {
             if (prog_size == 0) prog_size = g.MeasureString(text ?? Config.NullText, font ?? control.Font).Height;
 
-            float rprog_size = prog_size * 1.4F, size = prog_size * .1F, size2 = prog_size / 2F;
+            int rprog_size = (int)(prog_size * 1.4F), size = (int)(prog_size * .1F), size2 = prog_size / 2;
 
-            var rect_prog = new RectangleF(rect.X + (rect.Width - rprog_size) / 2, rect.Y + (rect.Height - rprog_size) / 2, rprog_size, rprog_size);
+            var rect_prog = new Rectangle(rect.X + (rect.Width - rprog_size) / 2, rect.Y + (rect.Height - rprog_size) / 2, rprog_size, rprog_size);
             if (text != null)
             {
                 var y = rect_prog.Bottom;
                 rect_prog.Offset(0, -size2);
                 using (var brush = new SolidBrush(control.ForeColor))
                 {
-                    g.DrawStr(text, font ?? control.Font, brush, new RectangleF(rect.X, y, rect.Width, prog_size), s_f);
+                    g.String(text, font ?? control.Font, brush, new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
                 }
             }
             using (var brush = new Pen(color, size))
@@ -361,12 +358,12 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(config.Back ?? Color.FromArgb(100, Style.Db.TextBase)))
                     {
-                        if (gpath != null) g.FillPath(brush, gpath);
+                        if (gpath != null) g.Fill(brush, gpath);
                         else if (Radius > 0)
                         {
-                            using (var path = rect.RoundPath(Radius)) { g.FillPath(brush, path); }
+                            using (var path = rect.RoundPath(Radius)) { g.Fill(brush, path); }
                         }
-                        else g.FillRectangle(brush, rect);
+                        else g.Fill(brush, rect);
                     }
                 }
                 catch { }

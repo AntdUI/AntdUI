@@ -141,6 +141,9 @@ namespace AntdUI
         #endregion
 
         Color fillfully = Color.FromArgb(0, 210, 121);
+        /// <summary>
+        /// 满电颜色
+        /// </summary>
         [Description("满电颜色"), Category("外观"), DefaultValue(typeof(Color), "0, 210, 121")]
         public Color FillFully
         {
@@ -153,11 +156,29 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 警告电量颜色
+        /// </summary>
         [Description("警告电量颜色"), Category("外观"), DefaultValue(typeof(Color), "250, 173, 20")]
         public Color FillWarn { get; set; } = Color.FromArgb(250, 173, 20);
 
+        /// <summary>
+        /// 危险电量颜色
+        /// </summary>
         [Description("危险电量颜色"), Category("外观"), DefaultValue(typeof(Color), "255, 77, 79")]
         public Color FillDanger { get; set; } = Color.FromArgb(255, 77, 79);
+
+        /// <summary>
+        /// 警告电量阈值
+        /// </summary>
+        [Description("警告电量阈值"), Category("外观"), DefaultValue(30)]
+        public int ValueWarn { get; set; } = 30;
+
+        /// <summary>
+        /// 危险电量阈值
+        /// </summary>
+        [Description("危险电量阈值"), Category("外观"), DefaultValue(20)]
+        public int ValueDanger { get; set; } = 20;
 
         #endregion
 
@@ -167,7 +188,7 @@ namespace AntdUI
         {
             var _rect = ClientRectangle;
             var g = e.Graphics.High();
-            var size = g.MeasureString("100%", Font).Size();
+            var size = g.MeasureString("100%", Font);
             var rect = new Rectangle((_rect.Width - size.Width) / 2, (_rect.Height - size.Height) / 2, size.Width, size.Height);
             float _radius = radius * Config.Dpi;
             using (var path_pain = rect.RoundPath(_radius))
@@ -176,13 +197,13 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(fillfully))
                     {
-                        g.FillPath(brush, path_pain);
+                        g.Fill(brush, path_pain);
                         if (dotsize > 0)
                         {
                             float _dotsize = dotsize * Config.Dpi;
                             using (var path = new RectangleF(rect.Right, rect.Top + (rect.Height - _dotsize) / 2F, _dotsize / 2F, _dotsize).RoundPath(_radius / 2, false, true, true, false))
                             {
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                             }
                         }
                     }
@@ -190,7 +211,7 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawStr("100%", Font, brush, rect, c);
+                            g.String("100%", Font, brush, rect, c);
                         }
                     }
                 }
@@ -198,13 +219,13 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(back ?? Style.Db.FillSecondary))
                     {
-                        g.FillPath(brush, path_pain);
+                        g.Fill(brush, path_pain);
                         if (dotsize > 0)
                         {
                             float _dotsize = dotsize * Config.Dpi;
                             using (var path = new RectangleF(rect.Right, rect.Top + (rect.Height - _dotsize) / 2F, _dotsize / 2F, _dotsize).RoundPath(_radius / 2, false, true, true, false))
                             {
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                             }
                         }
                     }
@@ -215,25 +236,22 @@ namespace AntdUI
                             using (var g2 = Graphics.FromImage(bmp).High())
                             {
                                 Color _color;
-                                if (_value > 30) _color = fillfully;
-                                else if (_value > 20) _color = FillWarn;
+                                if (_value > ValueWarn) _color = fillfully;
+                                else if (_value > ValueDanger) _color = FillWarn;
                                 else _color = FillDanger;
-                                using (var brush = new SolidBrush(_color))
-                                {
-                                    g2.FillPath(brush, path_pain);
-                                }
+                                g2.Fill(_color, path_pain);
                                 var _w = rect.Width * (_value / 100F);
                                 g2.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                                g2.FillRectangle(Brushes.Transparent, new RectangleF(rect.X + _w, 0, rect.Width, bmp.Height));
+                                g2.Fill(Brushes.Transparent, new RectangleF(rect.X + _w, 0, rect.Width, bmp.Height));
                             }
-                            g.DrawImage(bmp, _rect);
+                            g.Image(bmp, _rect);
                         }
                     }
                     if (ShowText)
                     {
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawStr(_value + "%", Font, brush, rect, c);
+                            g.String(_value + "%", Font, brush, rect, c);
                         }
                     }
                 }

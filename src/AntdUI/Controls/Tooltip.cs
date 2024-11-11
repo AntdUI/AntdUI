@@ -434,17 +434,17 @@ namespace AntdUI
     {
         #region 渲染
 
-        public static Size RenderMeasure(this ITooltip core, Graphics g, out bool multiline)
+        public static Size RenderMeasure(this ITooltip core, Canvas g, out bool multiline)
         {
             multiline = core.Text.Contains("\n");
             int padding = (int)Math.Ceiling(20 * Config.Dpi);
-            var font_size = g.MeasureString(core.Text, core.Font).Size();
+            var font_size = g.MeasureString(core.Text, core.Font);
             if (core.CustomWidth.HasValue)
             {
                 int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);
                 if (font_size.Width > width)
                 {
-                    font_size = g.MeasureString(core.Text, core.Font, width).Size();
+                    font_size = g.MeasureString(core.Text, core.Font, width);
                     multiline = true;
                 }
             }
@@ -454,7 +454,7 @@ namespace AntdUI
             else return new Size(font_size.Width + padding + core.ArrowSize, font_size.Height + padding);
         }
 
-        public static void Render(this ITooltip core, Graphics g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)
+        public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)
         {
             int gap = (int)Math.Ceiling(5 * Config.Dpi), padding = gap * 2, padding2 = padding * 2;
             using (var brush = new SolidBrush(Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38)))
@@ -465,7 +465,7 @@ namespace AntdUI
                     using (var path = rect_read.RoundPath(core.Radius))
                     {
                         DrawShadow(core, g, rect, rect_read, 3, path);
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                     }
                     RenderText(core, g, rect_read, multiline, padding, padding2, s_c, s_l);
                 }
@@ -493,7 +493,7 @@ namespace AntdUI
                     using (var path = rect_read.RoundPath(core.Radius))
                     {
                         DrawShadow(core, g, rect, rect_read, 3, path);
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                     }
                     g.FillPolygon(brush, core.ArrowAlign.AlignLines(core.ArrowSize, rect, rect_read));
                     RenderText(core, g, rect_text, multiline, padding, padding2, s_c, s_l);
@@ -501,17 +501,17 @@ namespace AntdUI
             }
         }
 
-        static void RenderText(ITooltip core, Graphics g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
+        static void RenderText(ITooltip core, Canvas g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
         {
-            if (multiline) g.DrawStr(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
-            else g.DrawStr(core.Text, core.Font, Brushes.White, rect, s_c);
+            if (multiline) g.String(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
+            else g.String(core.Text, core.Font, Brushes.White, rect, s_c);
         }
 
-        static void DrawShadow(this ITooltip core, Graphics _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)
+        static void DrawShadow(this ITooltip core, Canvas _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)
         {
             using (var bmp = new Bitmap(brect.Width, brect.Height))
             {
-                using (var g = Graphics.FromImage(bmp))
+                using (var g = Graphics.FromImage(bmp).HighLay())
                 {
                     int size2 = size * 2;
                     using (var path = new Rectangle(rect.X - size, rect.Y - size + 2, rect.Width + size2, rect.Height + size2).RoundPath(core.Radius))
@@ -521,11 +521,11 @@ namespace AntdUI
                         {
                             brush.CenterColor = Color.Black;
                             brush.SurroundColors = new Color[] { Color.Transparent };
-                            g.FillPath(brush, path);
+                            g.Fill(brush, path);
                         }
                     }
                 }
-                _g.DrawImage(bmp, brect);
+                _g.Image(bmp, brect);
             }
         }
 

@@ -531,7 +531,7 @@ namespace AntdUI
                             bmpcode = select_range.i;
                             bmp = PaintBmpVertical(items, select_range, rect, _radius);
                         }
-                        g.DrawImage(bmp, rect.X, (int)(rect.Y - AnimationChangeValue), bmp.Width, bmp.Height);
+                        g.Image(bmp, rect.X, (int)(rect.Y - AnimationChangeValue), bmp.Width, bmp.Height);
                     }
                     else
                     {
@@ -541,10 +541,10 @@ namespace AntdUI
                             bmpcode = select_range.i;
                             bmp = PaintBmpHorizontal(items, select_range, rect, _radius);
                         }
-                        g.DrawImage(bmp, (int)(rect.X - AnimationChangeValue), rect.Y, bmp.Width, bmp.Height);
+                        g.Image(bmp, (int)(rect.X - AnimationChangeValue), rect.Y, bmp.Width, bmp.Height);
                     }
                 }
-                else g.PaintImg(rect, image, imageFit, _radius, round);
+                else g.Image(rect, image, imageFit, _radius, round);
             }
             if (dot_list.Length > 0)
             {
@@ -558,12 +558,12 @@ namespace AntdUI
                             if (it.i == selectIndex)
                             {
                                 using (var path = it.rect_action.RoundPath(DotSize.Height))
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                             }
                             else
                             {
                                 using (var path = it.rect.RoundPath(DotSize.Height))
-                                    g.FillPath(brush2, path);
+                                    g.Fill(brush2, path);
                             }
                         }
                     }
@@ -571,8 +571,8 @@ namespace AntdUI
                     {
                         foreach (var it in dot_list)
                         {
-                            if (it.i == selectIndex) g.FillRectangle(brush, it.rect_action);
-                            else g.FillRectangle(brush2, it.rect);
+                            if (it.i == selectIndex) g.Fill(brush, it.rect_action);
+                            else g.Fill(brush2, it.rect);
                         }
                     }
                 }
@@ -591,7 +591,7 @@ namespace AntdUI
                 {
                     PaintBmp(items, select_range, g2, radius);
                     var bmo = items[0].Img;
-                    if (bmo != null) g2.PaintImg(new Rectangle(0, AnimationChangeMax, rect.Width, rect.Height), bmo, imageFit, radius, round);
+                    if (bmo != null) g2.Image(new Rectangle(0, AnimationChangeMax, rect.Width, rect.Height), bmo, imageFit, radius, round);
                 }
             }
             else
@@ -616,7 +616,7 @@ namespace AntdUI
                 {
                     PaintBmp(items, select_range, g2, radius);
                     var bmo = items[0].Img;
-                    if (bmo != null) g2.PaintImg(new Rectangle(AnimationChangeMax, 0, rect.Width, rect.Height), bmo, imageFit, radius, round);
+                    if (bmo != null) g2.Image(new Rectangle(AnimationChangeMax, 0, rect.Width, rect.Height), bmo, imageFit, radius, round);
                 }
             }
             else
@@ -629,12 +629,12 @@ namespace AntdUI
             }
             return bmp;
         }
-        void PaintBmp(CarouselItemCollection items, CarouselRectPanel select_range, Graphics g2, float radius)
+        void PaintBmp(CarouselItemCollection items, CarouselRectPanel select_range, Canvas g2, float radius)
         {
             foreach (var it in select_range.list)
             {
                 var bmo = items[it.i].Img;
-                if (bmo != null) g2.PaintImg(it.rect, bmo, imageFit, radius, round);
+                if (bmo != null) g2.Image(it.rect, bmo, imageFit, radius, round);
             }
         }
 

@@ -51,12 +51,21 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 满格颜色
+        /// </summary>
         [Description("满格颜色"), Category("外观"), DefaultValue(null)]
         public Color? FillFully { get; set; }
 
+        /// <summary>
+        /// 警告颜色
+        /// </summary>
         [Description("警告颜色"), Category("外观"), DefaultValue(null)]
         public Color? FillWarn { get; set; }
 
+        /// <summary>
+        /// 危险颜色
+        /// </summary>
         [Description("危险颜色"), Category("外观"), DefaultValue(null)]
         public Color? FillDanger { get; set; }
 
@@ -185,7 +194,6 @@ namespace AntdUI
                         path.AddRectangle(rect_4);
                         path.AddRectangle(rect_5);
 
-                        using (var pen = new Pen(color2, 1 * Config.Dpi))
                         using (var brush = new LinearGradientBrush(rect_dot, color2, color1, 0F))
                         {
                             brush.InterpolationColors = new ColorBlend(3)
@@ -193,8 +201,8 @@ namespace AntdUI
                                 Colors = new Color[] { color2, color2, color1 },
                                 Positions = new float[] { 0, loading_vol / 100F, 1F }
                             };
-                            g.FillPath(brush, path);
-                            g.DrawPath(pen, path);
+                            g.Fill(brush, path);
+                            g.Draw(color2, Config.Dpi, path);
                         }
                     }
                 }
@@ -204,11 +212,11 @@ namespace AntdUI
                     {
                         using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
                         {
-                            g.FillRectangle(brush_bg, rect_1);
-                            g.FillRectangle(brush_bg, rect_2);
-                            g.FillRectangle(brush_bg, rect_3);
-                            g.FillRectangle(brush_bg, rect_4);
-                            g.FillRectangle(brush_bg, rect_5);
+                            g.Fill(brush_bg, rect_1);
+                            g.Fill(brush_bg, rect_2);
+                            g.Fill(brush_bg, rect_3);
+                            g.Fill(brush_bg, rect_4);
+                            g.Fill(brush_bg, rect_5);
                         }
                     }
                     else if (vol == 1)
@@ -216,11 +224,11 @@ namespace AntdUI
                         using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
                         using (var brush = new SolidBrush(FillDanger ?? Style.Db.Error))
                         {
-                            g.FillRectangle(brush, rect_1);
-                            g.FillRectangle(brush_bg, rect_2);
-                            g.FillRectangle(brush_bg, rect_3);
-                            g.FillRectangle(brush_bg, rect_4);
-                            g.FillRectangle(brush_bg, rect_5);
+                            g.Fill(brush, rect_1);
+                            g.Fill(brush_bg, rect_2);
+                            g.Fill(brush_bg, rect_3);
+                            g.Fill(brush_bg, rect_4);
+                            g.Fill(brush_bg, rect_5);
                         }
                     }
                     else if (vol == 2)
@@ -228,11 +236,11 @@ namespace AntdUI
                         using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
                         using (var brush = new SolidBrush(FillDanger ?? Style.Db.Error))
                         {
-                            g.FillRectangle(brush, rect_1);
-                            g.FillRectangle(brush, rect_2);
-                            g.FillRectangle(brush_bg, rect_3);
-                            g.FillRectangle(brush_bg, rect_4);
-                            g.FillRectangle(brush_bg, rect_5);
+                            g.Fill(brush, rect_1);
+                            g.Fill(brush, rect_2);
+                            g.Fill(brush_bg, rect_3);
+                            g.Fill(brush_bg, rect_4);
+                            g.Fill(brush_bg, rect_5);
                         }
                     }
                     else if (vol == 3)
@@ -240,11 +248,11 @@ namespace AntdUI
                         using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
                         using (var brush = new SolidBrush(FillWarn ?? Style.Db.Warning))
                         {
-                            g.FillRectangle(brush, rect_1);
-                            g.FillRectangle(brush, rect_2);
-                            g.FillRectangle(brush, rect_3);
-                            g.FillRectangle(brush_bg, rect_4);
-                            g.FillRectangle(brush_bg, rect_5);
+                            g.Fill(brush, rect_1);
+                            g.Fill(brush, rect_2);
+                            g.Fill(brush, rect_3);
+                            g.Fill(brush_bg, rect_4);
+                            g.Fill(brush_bg, rect_5);
                         }
                     }
                     else if (vol == 4)
@@ -252,22 +260,22 @@ namespace AntdUI
                         using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
                         using (var brush = new SolidBrush(FillFully ?? Style.Db.Success))
                         {
-                            g.FillRectangle(brush, rect_1);
-                            g.FillRectangle(brush, rect_2);
-                            g.FillRectangle(brush, rect_3);
-                            g.FillRectangle(brush, rect_4);
-                            g.FillRectangle(brush_bg, rect_5);
+                            g.Fill(brush, rect_1);
+                            g.Fill(brush, rect_2);
+                            g.Fill(brush, rect_3);
+                            g.Fill(brush, rect_4);
+                            g.Fill(brush_bg, rect_5);
                         }
                     }
                     else
                     {
                         using (var brush = new SolidBrush(FillFully ?? Style.Db.Success))
                         {
-                            g.FillRectangle(brush, rect_1);
-                            g.FillRectangle(brush, rect_2);
-                            g.FillRectangle(brush, rect_3);
-                            g.FillRectangle(brush, rect_4);
-                            g.FillRectangle(brush, rect_5);
+                            g.Fill(brush, rect_1);
+                            g.Fill(brush, rect_2);
+                            g.Fill(brush, rect_3);
+                            g.Fill(brush, rect_4);
+                            g.Fill(brush, rect_5);
                         }
                     }
                 }
@@ -279,7 +287,7 @@ namespace AntdUI
                 if (loading)
                 {
                     Color color1 = fill ?? Style.Db.FillQuaternary, color2 = FillFully ?? Style.Db.Success;
-                    using (var pen = new Pen(color2, 1 * Config.Dpi))
+                    using (var pen = new Pen(color2, Config.Dpi))
                     using (var brush = new LinearGradientBrush(rect_pie, color1, color2, 90F))
                     {
                         brush.InterpolationColors = new ColorBlend(2)

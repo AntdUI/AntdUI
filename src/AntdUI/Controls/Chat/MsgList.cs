@@ -82,7 +82,7 @@ namespace AntdUI.Chat
         StringFormat SFBage = Helper.SF();
         StringFormat SFL = Helper.SF_ALL(lr: StringAlignment.Near);
         StringFormat SFR = Helper.SF_ALL(lr: StringAlignment.Far);
-        void PaintItem(Graphics g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time)
+        void PaintItem(Canvas g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time)
         {
             it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
             if (it.show)
@@ -91,17 +91,17 @@ namespace AntdUI.Chat
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(0, 153, 255)))
                     {
-                        g.FillRectangle(brush, it.rect);
+                        g.Fill(brush, it.rect);
                     }
                     using (var brush = new SolidBrush(Color.White))
                     {
 
                         try
                         {
-                            g.DrawStr(it.Name, Font, brush, it.rect_name, SFL);
-                            g.DrawStr(it.Text, font_text, brush, it.rect_text, SFL);
+                            g.String(it.Name, Font, brush, it.rect_name, SFL);
+                            g.String(it.Text, font_text, brush, it.rect_text, SFL);
 
-                            g.DrawStr(it.Time, font_time, brush, it.rect_time, SFR);
+                            g.String(it.Time, font_time, brush, it.rect_time, SFR);
                         }
                         catch { }
                     }
@@ -113,43 +113,43 @@ namespace AntdUI.Chat
                     {
                         using (var brush = new SolidBrush(Style.Db.FillTertiary))
                         {
-                            g.FillRectangle(brush, it.rect);
+                            g.Fill(brush, it.rect);
                         }
                     }
                     using (var brush = new SolidBrush(ForeColor))
                     {
                         try
                         {
-                            g.DrawStr(it.Name, Font, brush, it.rect_name, SFL);
-                            g.DrawStr(it.Text, font_text, brush, it.rect_text, SFL);
+                            g.String(it.Name, Font, brush, it.rect_name, SFL);
+                            g.String(it.Text, font_text, brush, it.rect_text, SFL);
 
-                            g.DrawStr(it.Time, font_time, brush, it.rect_time, SFR);
+                            g.String(it.Time, font_time, brush, it.rect_time, SFR);
                         }
                         catch { }
                     }
                 }
                 if (it.Icon != null)
                 {
-                    g.PaintImg(it.rect_icon, it.Icon, TFit.Cover, 0, true);
+                    g.Image(it.rect_icon, it.Icon, TFit.Cover, 0, true);
                     if (it.Count > 0)
                     {
                         if (it.Count > 99)
                         {
-                            var badgesize = g.MeasureString("99+", font_time).Size();
+                            var badgesize = g.MeasureString("99+", font_time);
                             var rect_badge = new Rectangle(it.rect_icon.Right - badgesize.Width + badgesize.Width / 3, it.rect_icon.Y - badgesize.Height / 3, badgesize.Width, badgesize.Height);
                             using (var path = rect_badge.RoundPath(6 * Config.Dpi))
                             {
-                                g.FillPath(Brushes.Red, path);
+                                g.Fill(Brushes.Red, path);
                             }
-                            g.DrawStr("99+", font_time, Brushes.White, rect_badge, SFBage);
+                            g.String("99+", font_time, Brushes.White, rect_badge, SFBage);
                         }
                         else if (it.Count > 1)
                         {
-                            var badgesize = g.MeasureString(it.Count.ToString(), font_time).Size();
+                            var badgesize = g.MeasureString(it.Count.ToString(), font_time);
                             int badge_size = badgesize.Width > badgesize.Height ? badgesize.Width : badgesize.Height, xy = badge_size / 3;
                             var rect_badge = new Rectangle(it.rect_icon.Right - badge_size + xy, it.rect_icon.Y - xy, badge_size, badge_size);
                             g.FillEllipse(Brushes.Red, rect_badge);
-                            g.DrawStr(it.Count.ToString(), font_time, Brushes.White, rect_badge, SFBage);
+                            g.String(it.Count.ToString(), font_time, Brushes.White, rect_badge, SFBage);
                         }
                         else
                         {
@@ -291,7 +291,7 @@ namespace AntdUI.Chat
             int y = 0;
             Helper.GDI(g =>
             {
-                var size = (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height);
+                var size = g.MeasureString(Config.NullText, Font).Height;
                 int item_height = (int)Math.Ceiling(size * 3.856),
                     gap = (int)Math.Round(item_height * 0.212),
                     spilt = (int)Math.Round(gap * 0.478),
@@ -307,7 +307,7 @@ namespace AntdUI.Chat
                     {
                         it.PARENT = this;
                         int time_width = 0;
-                        if (!string.IsNullOrEmpty(it.Time)) time_width = (int)Math.Ceiling(g.MeasureString(it.Time, font_time).Width);
+                        if (!string.IsNullOrEmpty(it.Time)) time_width = g.MeasureString(it.Time, font_time).Width;
 
                         it.SetRect(new Rectangle(rect.X, rect.Y + y, rect.Width, item_height), time_width, gap, spilt, gap_name, gap_desc, image_size, name_height, desc_height);
                         if (it.Visible) y += item_height;

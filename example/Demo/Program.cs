@@ -32,7 +32,6 @@ namespace Demo
         {
             ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
             var command = string.Join(" ", arge);
-            //AntdUI.Localization.Provider = new Localizer();
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
@@ -40,50 +39,6 @@ namespace Demo
             if (command == "m") Application.Run(new Main());
             else if (command == "color") Application.Run(new Colors());
             else Application.Run(new Overview(command == "t"));
-        }
-    }
-    public class Localizer : AntdUI.ILocalization
-    {
-        public string GetLocalizedString(string key)
-        {
-            switch (key)
-            {
-                case "Cancel":
-                    return "キャンセル";
-                case "OK":
-                    return "確認";
-                case "Now":
-                    return "今は";
-                case "ToDay":
-                    return "今日";
-                case "NoData":
-                    return "データが一時的にありません";
-                case "Year":
-                    return "Année";
-                case "Month":
-                    return "Mois";
-
-                case "Mon":
-                    return "Mon";
-                case "Tue":
-                    return "Tue";
-                case "Wed":
-                    return "Wed";
-                case "Thu":
-                    return "Thu";
-                case "Fri":
-                    return "Fri";
-                case "Sat":
-                    return "Sat";
-                case "Sun":
-                    return "Sun";
-                case "ItemsPerPage":
-                    return "Per/Page";
-
-                default:
-                    System.Diagnostics.Debug.WriteLine(key);
-                    return key;
-            }
         }
     }
 }

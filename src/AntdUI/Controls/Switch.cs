@@ -150,6 +150,7 @@ namespace AntdUI
         string? _checkedText = null, _unCheckedText = null;
 
         [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? CheckedText
         {
             get => _checkedText;
@@ -162,6 +163,7 @@ namespace AntdUI
         }
 
         [Description("未选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? UnCheckedText
         {
             get => _unCheckedText;
@@ -189,8 +191,8 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle;
             var g = e.Graphics.High();
+            var rect = ClientRectangle.PaddingRect(Padding);
             var rect_read = ReadRectangle;
             using (var path = rect_read.RoundPath(rect_read.Height))
             {
@@ -198,24 +200,15 @@ namespace AntdUI
                 PaintClick(g, path, rect, rect_read, _color);
                 using (var brush = new SolidBrush(Style.Db.TextQuaternary))
                 {
-                    g.FillPath(brush, path);
-                    if (AnimationHover)
-                    {
-                        using (var brush2 = new SolidBrush(Helper.ToColorN(AnimationHoverValue, brush.Color)))
-                        {
-                            g.FillPath(brush2, path);
-                        }
-                    }
-                    else if (ExtraMouseHover) g.FillPath(brush, path);
+                    g.Fill(brush, path);
+                    if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
+                    else if (ExtraMouseHover) g.Fill(brush, path);
                 }
-                float gap = (int)(Gap * Config.Dpi), gap2 = gap * 2F;
+                int gap = (int)(Gap * Config.Dpi), gap2 = gap * 2;
                 if (AnimationCheck)
                 {
                     var alpha = 255 * AnimationCheckValue;
-                    using (var brush = new SolidBrush(Helper.ToColor(alpha, _color)))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(Helper.ToColor(alpha, _color), path);
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                     using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
                     {
@@ -225,24 +218,9 @@ namespace AntdUI
                 else if (_checked)
                 {
                     var colorhover = FillHover ?? Style.Db.PrimaryHover;
-                    using (var brush = new SolidBrush(Enabled ? _color : Color.FromArgb(200, _color)))
-                    {
-                        g.FillPath(brush, path);
-                    }
-                    if (AnimationHover)
-                    {
-                        using (var brush2 = new SolidBrush(Helper.ToColorN(AnimationHoverValue, colorhover)))
-                        {
-                            g.FillPath(brush2, path);
-                        }
-                    }
-                    else if (ExtraMouseHover)
-                    {
-                        using (var brush = new SolidBrush(colorhover))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                    }
+                    g.Fill(Enabled ? _color : Color.FromArgb(200, _color), path);
+                    if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
+                    else if (ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                     using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
                     {
@@ -267,36 +245,30 @@ namespace AntdUI
                     {
                         var textSize = g.MeasureString(textToRender, Font);
                         var textRect = Checked
-                            ? new RectangleF(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
-                            : new RectangleF(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
-                        g.DrawStr(textToRender, Font, brush, textRect);
+                            ? new Rectangle(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
+                            : new Rectangle(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
+                        g.String(textToRender, Font, brush, textRect);
                     }
                 }
             }
             this.PaintBadge(g);
             base.OnPaint(e);
         }
-        internal void PaintClick(Graphics g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color)
+        internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color)
         {
-            if (AnimationClick)
+            if (AnimationClick || true)
             {
-                float maxw = rect_read.Width + ((rect.Width - rect_read.Width) * AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * AnimationClickValue),
-                    alpha = 100 * (1F - AnimationClickValue);
-                using (var brush = new SolidBrush(Helper.ToColor(alpha, color)))
+                float alpha = 100 * (1F - AnimationClickValue),
+                    maxw = rect_read.Width + ((rect.Width - rect_read.Width) * AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * AnimationClickValue);
+                using (var path_click = new RectangleF(rect.X + (rect.Width - maxw) / 2F, rect.Y + (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(maxh))
                 {
-                    using (var path_click = new RectangleF((rect.Width - maxw) / 2F, (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(maxh))
-                    {
-                        path_click.AddPath(path, false);
-                        g.FillPath(brush, path_click);
-                    }
+                    path_click.AddPath(path, false);
+                    g.Fill(Helper.ToColor(alpha, color), path_click);
                 }
             }
         }
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding, WaveSize * Config.Dpi);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, WaveSize * Config.Dpi);
 
         public override GraphicsPath RenderRegion
         {

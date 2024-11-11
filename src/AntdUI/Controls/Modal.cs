@@ -369,7 +369,7 @@ namespace AntdUI
             /// </summary>
             public Size Padding { get; set; } = new Size(24, 20);
 
-            string? canceltext = Localization.Provider?.GetLocalizedString("Cancel") ?? "取消";
+            string? canceltext = Localization.Get("Cancel", "取消");
             /// <summary>
             /// 取消按钮文字
             /// </summary>
@@ -384,7 +384,7 @@ namespace AntdUI
                 }
             }
 
-            string oktext = Localization.Provider?.GetLocalizedString("OK") ?? "确定";
+            string oktext = Localization.Get("OK", "确定");
             /// <summary>
             /// 确认按钮文字
             /// </summary>

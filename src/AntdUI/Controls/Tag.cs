@@ -323,7 +323,7 @@ namespace AntdUI
         {
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
-            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, radius, false);
+            if (backImage != null) g.Image(rect_read, backImage, backFit, radius, false);
             float _radius = radius * Config.Dpi;
             Color _fore, _back, _bor;
             switch (type)
@@ -362,24 +362,14 @@ namespace AntdUI
             }
             if (fore.HasValue) _fore = fore.Value;
             if (back.HasValue) _back = back.Value;
-            if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
+            if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
             using (var path = rect_read.RoundPath(_radius))
             {
                 #region 绘制背景
 
-                using (var brush = new SolidBrush(_back))
-                {
-                    g.FillPath(brush, path);
-                }
+                g.Fill(_back, path);
 
-                if (borderWidth > 0)
-                {
-                    float border = borderWidth * Config.Dpi;
-                    using (var brush = new Pen(_bor, border))
-                    {
-                        g.DrawPath(brush, path);
-                    }
-                }
+                if (borderWidth > 0) g.Draw(_bor, borderWidth * Config.Dpi, path);
 
                 #endregion
 
@@ -392,9 +382,9 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal void PaintText(Graphics g, string? text, Color color, Rectangle rect_read)
+        internal void PaintText(Canvas g, string? text, Color color, Rectangle rect_read)
         {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+            var font_size = g.MeasureString(text ?? Config.NullText, Font);
             if (text == null)
             {
                 if (PaintImageNoText(g, color, font_size, rect_read))
@@ -424,7 +414,7 @@ namespace AntdUI
                 PaintImage(g, color, rect.l);
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawStr(text, Font, brush, rect.text, stringFormat);
+                    g.String(text, Font, brush, rect.text, stringFormat);
                 }
             }
         }
@@ -436,7 +426,7 @@ namespace AntdUI
         /// <param name="color">颜色</param>
         /// <param name="font_size">字体大小</param>
         /// <param name="rect_read">客户区域</param>
-        bool PaintImageNoText(Graphics g, Color? color, Size font_size, Rectangle rect_read)
+        bool PaintImageNoText(Canvas g, Color? color, Size font_size, Rectangle rect_read)
         {
             if (imageSvg != null)
             {
@@ -445,7 +435,7 @@ namespace AntdUI
             }
             else if (image != null)
             {
-                g.DrawImage(image, GetImageRectCenter(font_size, rect_read));
+                g.Image(image, GetImageRectCenter(font_size, rect_read));
                 return false;
             }
             return true;
@@ -476,10 +466,10 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="color">颜色</param>
         /// <param name="rectl">图标区域</param>
-        void PaintImage(Graphics g, Color? color, Rectangle rectl)
+        void PaintImage(Canvas g, Color? color, Rectangle rectl)
         {
             if (imageSvg != null) g.GetImgExtend(imageSvg, GetImageRect(rectl), color);
-            else if (image != null) g.DrawImage(image, GetImageRect(rectl));
+            else if (image != null) g.Image(image, GetImageRect(rectl));
         }
 
         /// <summary>
@@ -610,7 +600,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font).Size();
+                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
                     int count = 0;
                     if (HasImage) count++;
                     if (closeIcon) count++;

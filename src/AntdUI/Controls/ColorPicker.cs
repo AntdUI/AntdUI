@@ -319,59 +319,24 @@ namespace AntdUI
                 int size_color = (int)(rect_read.Height * 0.75F);
                 if (Enabled)
                 {
-                    using (var brush = new SolidBrush(_back))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(_back, path);
                     if (borderWidth > 0)
                     {
+                        var borWidth = borderWidth * Config.Dpi;
                         if (AnimationHover)
                         {
-                            using (var brush = new Pen(_border, borderWidth))
-                            {
-                                g.DrawPath(brush, path);
-                            }
-                            using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, _borderHover), borderWidth))
-                            {
-                                g.DrawPath(brush, path);
-                            }
+                            g.Draw(_border, borWidth, path);
+                            g.Draw(Helper.ToColor(AnimationHoverValue, _borderHover), borWidth, path);
                         }
-                        else if (ExtraMouseDown)
-                        {
-                            using (var brush = new Pen(_borderActive, borderWidth))
-                            {
-                                g.DrawPath(brush, path);
-                            }
-                        }
-                        else if (ExtraMouseHover)
-                        {
-                            using (var brush = new Pen(_borderHover, borderWidth))
-                            {
-                                g.DrawPath(brush, path);
-                            }
-                        }
-                        else
-                        {
-                            using (var brush = new Pen(_border, borderWidth))
-                            {
-                                g.DrawPath(brush, path);
-                            }
-                        }
+                        else if (ExtraMouseDown) g.Draw(_borderActive, borWidth, path);
+                        else if (ExtraMouseHover) g.Draw(_borderHover, borWidth, path);
+                        else g.Draw(_border, borWidth, path);
                     }
                 }
                 else
                 {
-                    using (var brush = new SolidBrush(Style.Db.FillTertiary))
-                    {
-                        g.FillPath(brush, path);
-                    }
-                    if (borderWidth > 0)
-                    {
-                        using (var brush = new Pen(_border, borderWidth))
-                        {
-                            g.DrawPath(brush, path);
-                        }
-                    }
+                    g.Fill(Style.Db.FillTertiary, path);
+                    if (borderWidth > 0) g.Draw(_border, borderWidth * Config.Dpi, path);
                 }
                 var r = _radius * 0.75F;
                 if (showText)
@@ -381,10 +346,7 @@ namespace AntdUI
                     using (var path_color = rect_color.RoundPath(r))
                     {
                         PaintAlpha(g, r, rect_color);
-                        using (var brush = new SolidBrush(_value))
-                        {
-                            g.FillPath(brush, path_color);
-                        }
+                        g.Fill(_value, path_color);
                     }
                     using (var brush = new SolidBrush(_fore))
                     {
@@ -394,15 +356,15 @@ namespace AntdUI
                             switch (mode)
                             {
                                 case TColorMode.Hex:
-                                    g.DrawStr("#" + _value.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                    g.String("#" + _value.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
                                     break;
                                 case TColorMode.Rgb:
-                                    if (_value.A == 255) g.DrawStr(string.Format("rgb({0},{1},{2})", _value.R, _value.G, _value.B), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
-                                    else g.DrawStr(string.Format("rgba({0},{1},{2},{3})", _value.R, _value.G, _value.B, Math.Round(_value.A / 255D, 2)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                    if (_value.A == 255) g.String(string.Format("rgb({0},{1},{2})", _value.R, _value.G, _value.B), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                    else g.String(string.Format("rgba({0},{1},{2},{3})", _value.R, _value.G, _value.B, Math.Round(_value.A / 255D, 2)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
                                     break;
                             }
                         }
-                        else g.DrawStr(ValueFormatChanged(this, new ColorEventArgs(_value)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                        else g.String(ValueFormatChanged(this, new ColorEventArgs(_value)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
                     }
                 }
                 else
@@ -412,10 +374,7 @@ namespace AntdUI
                     using (var path_color = rect_color.RoundPath(r))
                     {
                         PaintAlpha(g, r, rect_color);
-                        using (var brush = new SolidBrush(_value))
-                        {
-                            g.FillPath(brush, path_color);
-                        }
+                        g.Fill(_value, path_color);
                     }
                 }
             }
@@ -424,7 +383,7 @@ namespace AntdUI
         }
 
         Bitmap? bmp_alpha = null;
-        void PaintAlpha(Graphics g, float radius, Rectangle rect)
+        void PaintAlpha(Canvas g, float radius, Rectangle rect)
         {
             if (bmp_alpha == null || bmp_alpha.Width != rect.Width || bmp_alpha.Height != rect.Height)
             {
@@ -438,14 +397,14 @@ namespace AntdUI
                     }
                     using (var g2 = Graphics.FromImage(bmp_alpha).High())
                     {
-                        Helper.PaintImg(g2, new Rectangle(0, 0, rect.Width, rect.Height), tmp, TFit.Fill, radius, false);
+                        g2.Image(new Rectangle(0, 0, rect.Width, rect.Height), tmp, TFit.Fill, radius, false);
                     }
                 }
             }
-            g.DrawImage(bmp_alpha, rect);
+            g.Image(bmp_alpha, rect);
         }
 
-        void PaintAlpha(Graphics g, Rectangle rect)
+        void PaintAlpha(Canvas g, Rectangle rect)
         {
             int u_y = 0, size = rect.Height / 4;
             bool ad = false;
@@ -457,7 +416,7 @@ namespace AntdUI
                     bool adsub = ad;
                     while (u_x < rect.Width)
                     {
-                        if (adsub) g.FillRectangle(brush, new Rectangle(u_x, u_y, size, size));
+                        if (adsub) g.Fill(brush, new Rectangle(u_x, u_y, size, size));
                         u_x += size;
                         adsub = !adsub;
                     }
@@ -479,31 +438,25 @@ namespace AntdUI
 
         #region 点击动画
 
-        internal void PaintClick(Graphics g, GraphicsPath path, Rectangle rect, Color color, float radius)
+        internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, Color color, float radius)
         {
             if (AnimationFocus)
             {
                 if (AnimationFocusValue > 0)
                 {
-                    using (var brush = new SolidBrush(Helper.ToColor(AnimationFocusValue, color)))
+                    using (var path_click = rect.RoundPath(radius, round))
                     {
-                        using (var path_click = rect.RoundPath(radius, round))
-                        {
-                            path_click.AddPath(path, false);
-                            g.FillPath(brush, path_click);
-                        }
+                        path_click.AddPath(path, false);
+                        g.Fill(Helper.ToColor(AnimationFocusValue, color), path_click);
                     }
                 }
             }
             else if (ExtraMouseDown && WaveSize > 0)
             {
-                using (var brush = new SolidBrush(Color.FromArgb(30, color)))
+                using (var path_click = rect.RoundPath(radius, round))
                 {
-                    using (var path_click = rect.RoundPath(radius, round))
-                    {
-                        path_click.AddPath(path, false);
-                        g.FillPath(brush, path_click);
-                    }
+                    path_click.AddPath(path, false);
+                    g.Fill(Color.FromArgb(30, color), path_click);
                 }
             }
         }
@@ -767,15 +720,15 @@ namespace AntdUI
                         switch (mode)
                         {
                             case TColorMode.Rgb:
-                                font_size = g.MeasureString(_value.A == 255 ? "rgb(255,255,255)" : "rgba(255,255,255,0.99)", Font).Size();
+                                font_size = g.MeasureString(_value.A == 255 ? "rgb(255,255,255)" : "rgba(255,255,255,0.99)", Font);
                                 break;
                             case TColorMode.Hex:
                             default:
-                                font_size = g.MeasureString(_value.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font).Size();
+                                font_size = g.MeasureString(_value.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font);
                                 break;
                         }
                     }
-                    else font_size = g.MeasureString(ValueFormatChanged(this, new ColorEventArgs(_value)), Font).Size();
+                    else font_size = g.MeasureString(ValueFormatChanged(this, new ColorEventArgs(_value)), Font);
                     int gap = (int)((20 + WaveSize) * Config.Dpi);
                     if (showText)
                     {
@@ -833,7 +786,7 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (subForm != null) return subForm.IProcessCmdKey(ref msg, keyData);
+            subForm?.IProcessCmdKey(ref msg, keyData);
             return base.ProcessCmdKey(ref msg, keyData);
         }
         protected override void OnKeyPress(KeyPressEventArgs e)

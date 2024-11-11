@@ -253,7 +253,7 @@ namespace AntdUI
 
         internal void LoadLayout(Rectangle rect, CollapseItemCollection items)
         {
-            var size = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Size());
+            var size = Helper.GDI(g => g.MeasureString(Config.NullText, Font));
             int gap = (int)(_gap * Config.Dpi), gap_x = (int)(HeaderPadding.Width * Config.Dpi), gap_y = (int)(HeaderPadding.Height * Config.Dpi),
                 content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_x = 0;
             int title_height = size.Height + gap_y * 2;
@@ -316,20 +316,20 @@ namespace AntdUI
                                 {
                                     using (var path = item.Rect.RoundPath(r))
                                     {
-                                        g.DrawPath(pen, path);
+                                        g.Draw(pen, path);
                                     }
                                     using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
                                     {
-                                        g.FillPath(brush, path);
-                                        g.DrawPath(pen, path);
+                                        g.Fill(brush, path);
+                                        g.Draw(pen, path);
                                     }
                                 }
                                 else
                                 {
                                     using (var path = item.RectTitle.RoundPath(r))
                                     {
-                                        g.FillPath(brush, path);
-                                        g.DrawPath(pen, path);
+                                        g.Fill(brush, path);
+                                        g.Draw(pen, path);
                                     }
                                 }
                                 PaintItem(g, item, forebrush, pen_arr);
@@ -346,20 +346,20 @@ namespace AntdUI
                                     {
                                         using (var path = item.Rect.RoundPath(r, true, true, false, false))
                                         {
-                                            g.DrawPath(pen, path);
+                                            g.Draw(pen, path);
                                         }
                                         using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
                                         {
-                                            g.FillPath(brush, path);
-                                            g.DrawPath(pen, path);
+                                            g.Fill(brush, path);
+                                            g.Draw(pen, path);
                                         }
                                     }
                                     else
                                     {
                                         using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
                                         {
-                                            g.FillPath(brush, path);
-                                            g.DrawPath(pen, path);
+                                            g.Fill(brush, path);
+                                            g.Draw(pen, path);
                                         }
                                     }
                                     PaintItem(g, item, forebrush, pen_arr);
@@ -370,17 +370,17 @@ namespace AntdUI
                                     {
                                         using (var path = item.Rect.RoundPath(r, false, false, true, true))
                                         {
-                                            g.DrawPath(pen, path);
+                                            g.Draw(pen, path);
                                         }
-                                        g.FillRectangle(brush, item.RectTitle);
-                                        g.DrawRectangle(pen, item.RectTitle);
+                                        g.Fill(brush, item.RectTitle);
+                                        g.Draw(pen, item.RectTitle);
                                     }
                                     else
                                     {
                                         using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
                                         {
-                                            g.FillPath(brush, path);
-                                            g.DrawPath(pen, path);
+                                            g.Fill(brush, path);
+                                            g.Draw(pen, path);
                                         }
                                     }
                                     PaintItem(g, item, forebrush, pen_arr);
@@ -389,16 +389,16 @@ namespace AntdUI
                                 {
                                     if (item.Expand)
                                     {
-                                        g.DrawRectangle(pen, item.Rect);
-                                        g.FillRectangle(brush, item.RectTitle);
-                                        g.DrawRectangle(pen, item.RectTitle);
+                                        g.Draw(pen, item.Rect);
+                                        g.Fill(brush, item.RectTitle);
+                                        g.Draw(pen, item.RectTitle);
                                     }
                                     else
                                     {
                                         using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
                                         {
-                                            g.FillRectangle(brush, item.RectTitle);
-                                            g.DrawRectangle(pen, item.RectTitle);
+                                            g.Fill(brush, item.RectTitle);
+                                            g.Draw(pen, item.RectTitle);
                                         }
                                     }
                                     PaintItem(g, item, forebrush, pen_arr);
@@ -417,14 +417,14 @@ namespace AntdUI
                             {
                                 using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
                             else
                             {
                                 using (var path = item.RectTitle.RoundPath(r))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
                             PaintItem(g, item, forebrush);
@@ -441,38 +441,38 @@ namespace AntdUI
                                 {
                                     using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                     }
                                 }
                                 else
                                 {
                                     using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                     }
                                 }
                                 PaintItem(g, item, forebrush);
                             }
                             else if (i == items.Count - 1)
                             {
-                                if (item.Expand) g.FillRectangle(brush, item.RectTitle);
+                                if (item.Expand) g.Fill(brush, item.RectTitle);
                                 else
                                 {
                                     using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                     }
                                 }
                                 PaintItem(g, item, forebrush);
                             }
                             else
                             {
-                                if (item.Expand) g.FillRectangle(brush, item.RectTitle);
+                                if (item.Expand) g.Fill(brush, item.RectTitle);
                                 else
                                 {
                                     using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
                                     {
-                                        g.FillRectangle(brush, item.RectTitle);
+                                        g.Fill(brush, item.RectTitle);
                                     }
                                 }
                                 PaintItem(g, item, forebrush);
@@ -485,25 +485,25 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintItem(Graphics g, CollapseItem item, SolidBrush fore, Pen pen_arr)
+        void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
             if (item.ExpandThread) PaintArrow(g, item, pen_arr, -90 + (90F * item.ExpandProg));
             else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
             else PaintArrow(g, item, pen_arr, -90F);
 
-            g.DrawStr(item.Text, Font, fore, item.RectText, s_l);
+            g.String(item.Text, Font, fore, item.RectText, s_l);
         }
 
-        void PaintItem(Graphics g, CollapseItem item, SolidBrush fore)
+        void PaintItem(Canvas g, CollapseItem item, SolidBrush fore)
         {
             if (item.ExpandThread) PaintArrow(g, item, fore, -90 + (90F * item.ExpandProg));
             else if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLines(-1, .56F));
             else PaintArrow(g, item, fore, -90F);
 
-            g.DrawStr(item.Text, Font, fore, item.RectText, s_l);
+            g.String(item.Text, Font, fore, item.RectText, s_l);
         }
 
-        void PaintArrow(Graphics g, CollapseItem item, Pen pen, float rotate)
+        void PaintArrow(Canvas g, CollapseItem item, Pen pen, float rotate)
         {
             var rect_arr = item.RectArrow;
             int size_arrow = rect_arr.Width / 2;
@@ -512,7 +512,7 @@ namespace AntdUI
             g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
             g.ResetTransform();
         }
-        void PaintArrow(Graphics g, CollapseItem item, SolidBrush brush, float rotate)
+        void PaintArrow(Canvas g, CollapseItem item, SolidBrush brush, float rotate)
         {
             var rect_arr = item.RectArrow;
             int size_arrow = rect_arr.Width / 2;

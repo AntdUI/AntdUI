@@ -250,6 +250,7 @@ namespace AntdUI
 
         string? emptyText;
         [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? EmptyText
         {
             get => emptyText;
@@ -951,20 +952,20 @@ namespace AntdUI
         }
 
         StringFormat stringCenter = Helper.SF_NoWrap();
-        void PaintEmpty(Graphics g, Rectangle rect)
+        void PaintEmpty(Canvas g, Rectangle rect)
         {
             using (var fore = new SolidBrush(Style.Db.Text))
             {
-                string emptytext = EmptyText ?? Localization.Provider?.GetLocalizedString("NoData") ?? "暂无数据";
-                if (EmptyImage == null) g.DrawStr(emptytext, Font, fore, rect, stringCenter);
+                string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
+                if (EmptyImage == null) g.String(emptytext, Font, fore, rect, stringCenter);
                 else
                 {
                     int _gap = (int)(gap * Config.Dpi);
-                    var size = g.MeasureString(emptytext, Font).Size();
+                    var size = g.MeasureString(emptytext, Font);
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
                         rect_font = new Rectangle(rect.X, rect_img.Bottom + _gap, rect.Width, size.Height);
-                    g.DrawImage(EmptyImage, rect_img);
-                    g.DrawStr(emptytext, Font, fore, rect_font, stringCenter);
+                    g.Image(EmptyImage, rect_img);
+                    g.String(emptytext, Font, fore, rect_font, stringCenter);
                 }
             }
         }
@@ -1006,7 +1007,7 @@ namespace AntdUI
 
                                 using (var brush = new SolidBrush(Color.FromArgb(45, BlurBar.BackColor)))
                                 {
-                                    g.FillRectangle(brush, 0, 0, bmp.Width, bmp.Height);
+                                    g.Fill(brush, 0, 0, bmp.Width, bmp.Height);
                                 }
                             }
                             Helper.Blur(bmp, BlurBarHeight * 6);
@@ -1062,7 +1063,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制阴影
         /// </summary>
-        void DrawShadow(VirtualShadowItem it, Graphics g, float radius)
+        void DrawShadow(VirtualShadowItem it, Canvas g, float radius)
         {
             if (shadow > 0)
             {
@@ -1086,7 +1087,7 @@ namespace AntdUI
                             else if (it.Hover) matrix.Matrix33 = shadowOpacityHover;
                             else matrix.Matrix33 = shadowOpacity;
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.DrawImage(shadow_temp, new Rectangle(it.RECT_S.X + shadowOffsetX, it.RECT_S.Y + shadowOffsetY, it.RECT_S.Width, it.RECT_S.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp, new Rectangle(it.RECT_S.X + shadowOffsetX, it.RECT_S.Y + shadowOffsetY, it.RECT_S.Width, it.RECT_S.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                 }
@@ -1293,8 +1294,8 @@ namespace AntdUI
         public bool CanClick { get; set; } = true;
         public bool Hover { get; set; }
         public object? Tag { get; set; }
-        public abstract Size Size(Graphics g, VirtualPanelArgs e);
-        public abstract void Paint(Graphics g, VirtualPanelArgs e);
+        public abstract Size Size(Canvas g, VirtualPanelArgs e);
+        public abstract void Paint(Canvas g, VirtualPanelArgs e);
         public virtual bool MouseMove(VirtualPanel sender, VirtualPanelMouseArgs e) => true;
         public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
         public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }

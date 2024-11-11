@@ -367,16 +367,9 @@ namespace AntdUI
                 {
                     using (var path = DrawShadow(g, _radius, rect, rect_read))
                     {
-                        g.FillPath(brush, path);
-                        if (backImage != null) g.PaintImg(rect_read, backImage, backFit, _radius, false);
-                        if (borderWidth > 0)
-                        {
-                            using (var brush_bor = new Pen(borderColor ?? Style.Db.BorderColor, borderWidth * Config.Dpi))
-                            {
-                                brush_bor.DashStyle = borderStyle;
-                                g.DrawPath(brush_bor, path);
-                            }
-                        }
+                        g.Fill(brush, path);
+                        if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
+                        if (borderWidth > 0) g.Draw(borderColor ?? Style.Db.BorderColor, borderWidth * Config.Dpi, borderStyle, path);
                     }
                     if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                 }
@@ -392,7 +385,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, float radius, Rectangle rect_client, Rectangle rect_read)
+        GraphicsPath DrawShadow(Canvas g, float radius, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath(radius, shadowAlign);
             if (shadow > 0)
@@ -410,7 +403,7 @@ namespace AntdUI
                     else if (ExtraMouseHover) matrix.Matrix33 = shadowOpacityHover;
                     else matrix.Matrix33 = shadowOpacity;
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(shadow_temp, new Rectangle(rect_client.X + shadowOffsetX, rect_client.Y + shadowOffsetY, rect_client.Width, rect_client.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                    g.Image(shadow_temp, new Rectangle(rect_client.X + shadowOffsetX, rect_client.Y + shadowOffsetY, rect_client.Width, rect_client.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                 }
             }
             return path;

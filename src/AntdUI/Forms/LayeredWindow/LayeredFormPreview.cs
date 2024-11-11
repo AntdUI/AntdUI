@@ -325,82 +325,66 @@ namespace AntdUI
                     {
                         using (var path = rect_read.RoundPath(Radius))
                         {
-                            g.FillPath(brush, path);
+                            g.Fill(brush, path);
                         }
                     }
-                    else g.FillRectangle(brush, rect_read);
+                    else g.Fill(brush, rect_read);
                 }
 
                 if (Img != null)
                 {
                     try
                     {
-                        g.DrawImage(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
+                        g.Image(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
                     }
                     catch { }
                 }
                 if (loading)
                 {
-                    using (var pen = new Pen(Color.FromArgb(220, Style.Db.PrimaryColor), 6 * Config.Dpi))
-                    using (var penpro = new Pen(Style.Db.Primary, pen.Width))
+                    var bor6 = 6F * Config.Dpi;
+                    int loading_size = (int)(40 * Config.Dpi);
+                    var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
+                    g.DrawEllipse(Color.FromArgb(220, Style.Db.PrimaryColor), bor6, rect_loading);
+                    if (_value > -1)
                     {
-                        int loading_size = (int)(40 * Config.Dpi);
-                        var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
-                        g.DrawEllipse(pen, rect_loading);
-                        if (_value > -1)
+                        using (var penpro = new Pen(Style.Db.Primary, bor6))
                         {
-                            try
-                            {
-                                g.DrawArc(penpro, rect_loading, -90, 360F * _value);
-                            }
-                            catch { }
-
-                            if (LoadingProgressStr != null)
-                            {
-                                rect_loading.Offset(0, loading_size);
-                                using (var brush = new SolidBrush(Style.Db.PrimaryColor))
-                                {
-                                    g.DrawString(LoadingProgressStr, Font, brush, rect_loading, s_f);
-                                }
-                            }
+                            g.DrawArc(penpro, rect_loading, -90, 360F * _value);
+                        }
+                        if (LoadingProgressStr != null)
+                        {
+                            rect_loading.Offset(0, loading_size);
+                            g.String(LoadingProgressStr, Font, Style.Db.PrimaryColor, rect_loading, s_f);
                         }
                     }
-                }
-                else if (LoadingProgressStr != null)
-                {
-                    using (var pen = new Pen(Style.Db.Error, 6 * Config.Dpi))
+                    else if (LoadingProgressStr != null)
                     {
-                        int loading_size = (int)(40 * Config.Dpi);
-                        var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
-                        g.DrawEllipse(pen, rect_loading);
+                        g.DrawEllipse(Style.Db.Error, bor6, rect_loading);
                         rect_loading.Offset(0, loading_size);
-                        using (var brush = new SolidBrush(Style.Db.ErrorColor))
+                        g.String(LoadingProgressStr, Font, Style.Db.ErrorColor, rect_loading, s_f);
+                    }
+                    using (var path = rect_panel.RoundPath(rect_panel.Height))
+                    {
+                        using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
                         {
-                            g.DrawString(LoadingProgressStr, Font, brush, rect_loading, s_f);
+                            g.Fill(brush, path);
+                            PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
+                            if (PageSize > 1)
+                            {
+                                PaintBtn(g, brush, rect_left, rect_left_icon, SvgDb.IcoLeft, hoverLeft, enabledLeft);
+                                PaintBtn(g, brush, rect_right, rect_right_icon, SvgDb.IcoRight, hoverRight, enabledRight);
+                            }
                         }
                     }
-                }
-                using (var path = rect_panel.RoundPath(rect_panel.Height))
-                {
-                    using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
+                    foreach (var it in btns)
                     {
-                        g.FillPath(brush, path);
-                        PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
-                        if (PageSize > 1)
+                        using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
                         {
-                            PaintBtn(g, brush, rect_left, rect_left_icon, SvgDb.IcoLeft, hoverLeft, enabledLeft);
-                            PaintBtn(g, brush, rect_right, rect_right_icon, SvgDb.IcoRight, hoverRight, enabledRight);
-                        }
-                    }
-                }
-                foreach (var it in btns)
-                {
-                    using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
-                    {
-                        if (bmp != null)
-                        {
-                            if (it.enabled) g.DrawImage(bmp, it.rect);
-                            else g.DrawImage(bmp, it.rect, 0.3F);
+                            if (bmp != null)
+                            {
+                                if (it.enabled) g.Image(bmp, it.rect);
+                                else g.Image(bmp, it.rect, 0.3F);
+                            }
                         }
                     }
                 }
@@ -408,7 +392,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        void PaintBtn(Graphics g, SolidBrush brush, Rectangle rect, Rectangle rect_ico, string svg, bool hover, bool enabled)
+        void PaintBtn(Canvas g, SolidBrush brush, Rectangle rect, Rectangle rect_ico, string svg, bool hover, bool enabled)
         {
             using (var bmp = SvgExtend.GetImgExtend(svg, rect_ico, Color.White))
             {
@@ -420,8 +404,8 @@ namespace AntdUI
                         { g.FillEllipse(brush_hover, rect); }
                     }
                     else g.FillEllipse(brush, rect);
-                    if (enabled) g.DrawImage(bmp, rect_ico);
-                    else g.DrawImage(bmp, rect_ico, 0.3F);
+                    if (enabled) g.Image(bmp, rect_ico);
+                    else g.Image(bmp, rect_ico, 0.3F);
                 }
             }
         }

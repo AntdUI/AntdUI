@@ -408,7 +408,7 @@ namespace AntdUI
             bool has = HasSub(items);
             Helper.GDI(g =>
             {
-                var size = g.MeasureString(Config.NullText, Font).Size();
+                var size = g.MeasureString(Config.NullText, Font);
                 int icon_size = (int)(size.Height * iconratio), gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
 
                 check_radius = icon_size * .2F;
@@ -452,7 +452,7 @@ namespace AntdUI
             }
         }
 
-        void ChangeList(Graphics g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
+        void ChangeList(Canvas g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
         {
             foreach (var it in items)
             {
@@ -513,7 +513,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintItem(Graphics g, Rectangle rect, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
+        void PaintItem(Canvas g, Rectangle rect, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
         {
             foreach (var it in items)
             {
@@ -533,7 +533,7 @@ namespace AntdUI
         }
 
         readonly StringFormat s_c = Helper.SF_Ellipsis(), s_l = Helper.SF_ALL(lr: StringAlignment.Near);
-        void PaintItem(Graphics g, TreeItem item, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy)
+        void PaintItem(Canvas g, TreeItem item, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy)
         {
             if (item.Select)
             {
@@ -596,6 +596,7 @@ namespace AntdUI
             {
                 using (var path_check = Helper.RoundPath(item.check_rect, check_radius, false))
                 {
+                    var bor2 = 2F * Config.Dpi;
                     if (item.Enabled)
                     {
                         if (item.AnimationCheck)
@@ -604,27 +605,15 @@ namespace AntdUI
 
                             if (item.CheckState == CheckState.Indeterminate || (item.checkStateOld == CheckState.Indeterminate && !item.Checked))
                             {
-                                using (var brush = new Pen(Style.Db.BorderColor, 2F))
-                                {
-                                    g.DrawPath(brush, path_check);
-                                }
-                                using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.Primary)))
-                                {
-                                    g.FillRectangle(brush, PaintBlock(item.check_rect));
-                                }
+                                g.Draw(Style.Db.BorderColor, bor2, path_check);
+                                g.Fill(Helper.ToColor(alpha, Style.Db.Primary), PaintBlock(item.check_rect));
                             }
                             else
                             {
                                 float dot = item.check_rect.Width * 0.3F;
 
-                                using (var brush = new SolidBrush(Helper.ToColor(alpha, Style.Db.Primary)))
-                                {
-                                    g.FillPath(brush, path_check);
-                                }
-                                using (var brush = new Pen(Helper.ToColor(alpha, Style.Db.BgBase), 3F))
-                                {
-                                    g.DrawLines(brush, PaintArrow(item.check_rect));
-                                }
+                                g.Fill(Helper.ToColor(alpha, Style.Db.Primary), path_check);
+                                g.DrawLines(Helper.ToColor(alpha, Style.Db.BgBase), 3F * Config.Dpi, PaintArrow(item.check_rect));
 
                                 if (item.Checked)
                                 {
@@ -634,71 +623,32 @@ namespace AntdUI
                                         g.FillEllipse(brush, new RectangleF(item.check_rect.X + (item.check_rect.Width - max) / 2F, item.check_rect.Y + (item.check_rect.Height - max) / 2F, max, max));
                                     }
                                 }
-                                using (var brush = new Pen(Style.Db.Primary, 2F))
-                                {
-                                    g.DrawPath(brush, path_check);
-                                }
+                                g.Draw(Style.Db.Primary, 2F * Config.Dpi, path_check);
                             }
                         }
                         else if (item.CheckState == CheckState.Indeterminate)
                         {
-                            using (var brush = new Pen(Style.Db.BorderColor, 2F))
-                            {
-                                g.DrawPath(brush, path_check);
-                            }
-                            using (var brush = new SolidBrush(Style.Db.Primary))
-                            {
-                                g.FillRectangle(brush, PaintBlock(item.check_rect));
-                            }
+                            g.Draw(Style.Db.BorderColor, bor2, path_check);
+                            g.Fill(Style.Db.Primary, PaintBlock(item.check_rect));
                         }
                         else if (item.Checked)
                         {
-                            using (var brush = new SolidBrush(Style.Db.Primary))
-                            {
-                                g.FillPath(brush, path_check);
-                            }
-                            using (var brush = new Pen(Style.Db.BgBase, 3F))
-                            {
-                                g.DrawLines(brush, PaintArrow(item.check_rect));
-                            }
+                            g.Fill(Style.Db.Primary, path_check);
+                            g.DrawLines(Style.Db.BgBase, bor2, PaintArrow(item.check_rect));
                         }
-                        else
-                        {
-                            using (var brush = new Pen(Style.Db.BorderColor, 2F))
-                            {
-                                g.DrawPath(brush, path_check);
-                            }
-                        }
+                        else g.Draw(Style.Db.BorderColor, bor2, path_check);
                     }
                     else
                     {
-                        using (var brush = new SolidBrush(Style.Db.FillQuaternary))
-                        {
-                            g.FillPath(brush, path_check);
-                        }
-                        if (item.CheckState == CheckState.Indeterminate)
-                        {
-                            using (var brush = new SolidBrush(Style.Db.TextQuaternary))
-                            {
-                                g.FillRectangle(brush, PaintBlock(item.check_rect));
-                            }
-                        }
-                        else if (item.Checked)
-                        {
-                            using (var brush = new Pen(Style.Db.TextQuaternary, 3F))
-                            {
-                                g.DrawLines(brush, PaintArrow(item.check_rect));
-                            }
-                        }
-                        using (var brush = new Pen(Style.Db.BorderColorDisable, 2F))
-                        {
-                            g.DrawPath(brush, path_check);
-                        }
+                        g.Fill(Style.Db.FillQuaternary, path_check);
+                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Style.Db.TextQuaternary, PaintBlock(item.check_rect));
+                        else if (item.Checked) g.DrawLines(Style.Db.TextQuaternary, bor2, PaintArrow(item.check_rect));
+                        g.Draw(Style.Db.BorderColorDisable, bor2, path_check);
                     }
                 }
             }
         }
-        void PaintItemText(Graphics g, TreeItem item, SolidBrush fore, SolidBrush brushTextTertiary)
+        void PaintItemText(Canvas g, TreeItem item, SolidBrush fore, SolidBrush brushTextTertiary)
         {
             Color color = fore.Color;
             if (item.Fore.HasValue)
@@ -706,12 +656,12 @@ namespace AntdUI
                 color = item.Fore.Value;
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawStr(item.Text, Font, brush, item.txt_rect, blockNode ? s_l : s_c);
+                    g.String(item.Text, Font, brush, item.txt_rect, blockNode ? s_l : s_c);
                 }
             }
-            else g.DrawStr(item.Text, Font, fore, item.txt_rect, blockNode ? s_l : s_c);
-            if (item.SubTitle != null) g.DrawStr(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
-            if (item.Icon != null) g.DrawImage(item.Icon, item.ico_rect);
+            else g.String(item.Text, Font, fore, item.txt_rect, blockNode ? s_l : s_c);
+            if (item.SubTitle != null) g.String(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
+            if (item.Icon != null) g.Image(item.Icon, item.ico_rect);
             if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
         }
 
@@ -730,7 +680,7 @@ namespace AntdUI
             };
         }
 
-        void PaintArrow(Graphics g, TreeItem item, SolidBrush color, int sx, int sy)
+        void PaintArrow(Canvas g, TreeItem item, SolidBrush color, int sx, int sy)
         {
             using (var pen = new Pen(color, 2F))
             {
@@ -742,7 +692,7 @@ namespace AntdUI
             }
         }
 
-        void PaintArrow(Graphics g, TreeItem item, Pen pen, int sx, int sy, float rotate)
+        void PaintArrow(Canvas g, TreeItem item, Pen pen, int sx, int sy, float rotate)
         {
             int size_arrow = item.arr_rect.Width / 2;
             g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
@@ -752,16 +702,16 @@ namespace AntdUI
             g.TranslateTransform(-sx, -sy);
         }
 
-        void PaintBack(Graphics g, SolidBrush brush, Rectangle rect, float radius)
+        void PaintBack(Canvas g, SolidBrush brush, Rectangle rect, float radius)
         {
             if (round || radius > 0)
             {
                 using (var path = rect.RoundPath(radius, round))
                 {
-                    g.FillPath(brush, path);
+                    g.Fill(brush, path);
                 }
             }
-            else g.FillRectangle(brush, rect);
+            else g.Fill(brush, rect);
         }
 
         #endregion
@@ -1454,7 +1404,7 @@ namespace AntdUI
         internal Tree? PARENT { get; set; }
         public TreeItem? PARENTITEM { get; set; }
 
-        internal void SetRect(Graphics g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int icon_size, int gap)
+        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;
             rect = _rect;
@@ -1477,11 +1427,11 @@ namespace AntdUI
                 x += icon_size + gap;
             }
 
-            var size = g.MeasureString(Text, font).Size();
+            var size = g.MeasureString(Text, font);
             txt_rect = new Rectangle(x, _rect.Y + (_rect.Height - size.Height) / 2, size.Width, size.Height);
             if (SubTitle != null)
             {
-                var sizesub = g.MeasureString(SubTitle, font).Size();
+                var sizesub = g.MeasureString(SubTitle, font);
                 subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
                 if (!blockNode) rect = new Rectangle(txt_rect.X, txt_rect.Y, txt_rect.Width + subtxt_rect.Width, subtxt_rect.Height);
             }

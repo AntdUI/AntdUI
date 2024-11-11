@@ -141,7 +141,7 @@ CORE 可以轻而易举的解决[Application.SetHighDpiMode(HighDpiMode.SystemAw
 [![UploadDragger](Icon/UploadDragger.jpg)](Control/UploadDragger.md)
 
 
-### 数据展示 `16`
+### 数据展示 `17`
 
 #### [Avatar 头像](Control/Avatar.md)
 #### [Badge 徽标数](Control/Badge.md)
@@ -159,6 +159,7 @@ CORE 可以轻而易举的解决[Application.SetHighDpiMode(HighDpiMode.SystemAw
 #### [Tooltip 文字提示](Control/Tooltip.md)
 #### [Tree 树形控件](Control/Tree.md)
 #### [Label 文本](Control/Label.md)
+#### [LabelTime 时间文本](Control/LabelTime.md)
 
 
 ### 反馈 `7`

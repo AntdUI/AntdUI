@@ -27,7 +27,7 @@
 #### 自定义主题
 
 ``` csharp
-var color = new AntDesign.Theme.Dark();
+var color = new AntdUI.Theme.Dark();
 color.SetPrimary(Color.FromArgb(0, 173, 154));
 AndtUI.Style.LoadCustom(color);
 ```

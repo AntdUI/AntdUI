@@ -12,8 +12,8 @@ namespace AntdUI.Svg.FilterEffects
         [SvgAttribute("in")]
         public string Input
         {
-            get { return this.Attributes.GetAttribute<string>("in"); }
-            set { this.Attributes["in"] = value; }
+            get { return Attributes.GetAttribute<string>("in"); }
+            set { Attributes["in"] = value; }
         }
     }
 }

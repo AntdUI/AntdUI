@@ -22,21 +22,21 @@ namespace AntdUI
 {
     partial class CellLink
     {
-        internal override void PaintBack(Graphics g) { }
+        internal override void PaintBack(Canvas g) { }
 
-        internal override void Paint(Graphics g, Font font, SolidBrush fore)
+        internal override void Paint(Canvas g, Font font, SolidBrush fore)
         {
             Table.PaintLink(g, font, Rect, this);
         }
 
-        internal override Size GetSize(Graphics g, Font font, int gap, int gap2)
+        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
-            var size = g.MeasureString(Text ?? Config.NullText, font).Size();
+            var size = g.MeasureString(Text ?? Config.NullText, font);
             return new Size(size.Width + gap2 * 2, size.Height + gap);
         }
 
         internal Rectangle Rect;
-        internal override void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             Rect = new Rectangle(rect.X + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - gap2, size.Height);
         }

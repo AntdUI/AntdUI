@@ -257,7 +257,7 @@ namespace AntdUI
             get => showicon;
         }
 
-        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
             if (showicon)
             {
@@ -297,7 +297,7 @@ namespace AntdUI
                 }
                 return Helper.GDI(g =>
                 {
-                    int height = g.MeasureString(Config.NullText, Font).Size().Height, del_icon = (int)(height * 0.4);
+                    int height = g.MeasureString(Config.NullText, Font).Height, del_icon = (int)(height * 0.4);
                     var _style_left = new List<SelectItem?>(selectedValue.Length);
                     List<Rectangle> _rect_left = new List<Rectangle>(selectedValue.Length), _rect_left_txt = new List<Rectangle>(selectedValue.Length), _rect_left_del = new List<Rectangle>(selectedValue.Length);
                     int y = (rect_read.Height - height) / 2, use = delgap ? 0 : y, gap = (int)(2 * Config.Dpi);
@@ -309,8 +309,8 @@ namespace AntdUI
                         if (style_dir.TryGetValue(it, out var find)) { style = find; showtext = find.Text; }
                         else showtext = it.ToString();
 
-                        var size = g.MeasureString(showtext, Font).Size();
-                        var size2 = g.MeasureString("+" + (selectedValue.Length - i), Font).Size();
+                        var size = g.MeasureString(showtext, Font);
+                        var size2 = g.MeasureString("+" + (selectedValue.Length - i), Font);
                         int use_base = use + size.Width + height + gap;
                         if (use_base + (size2.Width + gap) > rect_read.Width)
                         {
@@ -353,7 +353,7 @@ namespace AntdUI
             return 0;
         }
 
-        protected override void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
+        protected override void PaintOtherBor(Canvas g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
             if (selectedValue.Length > 0 && style_left.Length == rect_lefts.Length)
             {
@@ -369,19 +369,16 @@ namespace AntdUI
                             {
                                 if (style == null)
                                 {
-                                    using (var brushbg = new SolidBrush(Style.Db.TagDefaultBg))
-                                    {
-                                        g.FillPath(brushbg, path);
-                                    }
+                                    g.Fill(Style.Db.TagDefaultBg, path);
                                     var rect_del = rect_left_dels[i];
                                     if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
-                                    g.DrawStr(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
+                                    g.String(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                                 }
                                 else
                                 {
                                     using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Style.Db.TagDefaultBg))
                                     {
-                                        g.FillPath(brushbg, path);
+                                        g.Fill(brushbg, path);
                                     }
                                     if (style.TagFore.HasValue)
                                     {
@@ -389,14 +386,14 @@ namespace AntdUI
                                         if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, style.TagFore.Value);
                                         using (var brushf = new SolidBrush(style.TagFore.Value))
                                         {
-                                            g.DrawStr(style.Text, Font, brushf, rect_left_txts[i], sf_center);
+                                            g.String(style.Text, Font, brushf, rect_left_txts[i], sf_center);
                                         }
                                     }
                                     else
                                     {
                                         var rect_del = rect_left_dels[i];
                                         if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
-                                        g.DrawStr(style.Text, Font, brush, rect_left_txts[i], sf_center);
+                                        g.String(style.Text, Font, brush, rect_left_txts[i], sf_center);
                                     }
                                 }
                             }
@@ -404,7 +401,7 @@ namespace AntdUI
                     }
                     if (rect_lefts.Length != selectedValue.Length)
                     {
-                        g.DrawStr("+" + (selectedValue.Length - rect_lefts.Length), Font, brush, rect_left_txts[rect_left_txts.Length - 1], sf_center);
+                        g.String("+" + (selectedValue.Length - rect_lefts.Length), Font, brush, rect_left_txts[rect_left_txts.Length - 1], sf_center);
                     }
                 }
             }
@@ -576,7 +573,7 @@ namespace AntdUI
             {
                 case Keys.Down:
                     ExpandDrop = true;
-                    return true;
+                    break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }

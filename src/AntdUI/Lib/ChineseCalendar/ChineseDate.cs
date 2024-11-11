@@ -199,14 +199,14 @@ namespace ChineseCalendar
         /// <returns>公历日期</returns>
         public DateTime ToDate()
         {
-            return chineseCalendar.ToDateTime(this.Year, this.MonthIndex, this.Day, 0, 0, 0, 0);
+            return chineseCalendar.ToDateTime(Year, MonthIndex, Day, 0, 0, 0, 0);
         }
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             if (obj is ChineseDate cd)
             {
-                return cd.Year == this.Year && cd.Month == this.Month && cd.Day == this.Day;
+                return cd.Year == Year && cd.Month == Month && cd.Day == Day;
             }
             return false;
         }
@@ -266,22 +266,22 @@ namespace ChineseCalendar
         /// <summary> 一年中的第几天，闰年1-384，平年1-354 </summary>
         public int DayOfYear
         {
-            get { return chineseCalendar.GetDayOfYear(this.ToDate()); }
+            get { return chineseCalendar.GetDayOfYear(ToDate()); }
         }
         /// <summary> 当月总天数 </summary>
         public int DayInMonth
         {
-            get { return chineseCalendar.GetDaysInMonth(this.Year, this.MonthIndex); }
+            get { return chineseCalendar.GetDaysInMonth(Year, MonthIndex); }
         }
         /// <summary> 当年总天数 </summary>
         public int DayInYear
         {
-            get { return chineseCalendar.GetDaysInYear(this.Year); }
+            get { return chineseCalendar.GetDaysInYear(Year); }
         }
         /// <summary> 当年总月份数 </summary>
         public int MonthsInYear
         {
-            get { return chineseCalendar.GetMonthsInYear(this.Year); }
+            get { return chineseCalendar.GetMonthsInYear(Year); }
         }
         /// <summary> 日历名称 </summary>
         public string CalendarName { get { return "农历"; } }
@@ -337,21 +337,21 @@ namespace ChineseCalendar
             {
                 return this;
             }
-            var nyear = this.Year + value;
+            var nyear = Year + value;
             if (nyear < 1901 || nyear > 2100)
             {
                 throw new ArgumentOutOfRangeException($"年份超出范围 1901 -- 2100");
             }
 
             int leapMonth = chineseCalendar.GetLeapMonth(nyear);
-            var nmonthIndex = this.Month;
+            var nmonthIndex = Month;
             if (nmonthIndex >= leapMonth && leapMonth > 0)
             {
                 nmonthIndex++;
             }
             var days = chineseCalendar.GetDaysInMonth(nyear, nmonthIndex);
 
-            var nday = Math.Min(this.Day, days);
+            var nday = Math.Min(Day, days);
             return FromIndex(nyear, nmonthIndex, nday);
         }
         /// <summary>
@@ -366,8 +366,8 @@ namespace ChineseCalendar
             {
                 return this;
             }
-            var nyear = this.Year;
-            var nmonthIndex = this.MonthIndex + value;
+            var nyear = Year;
+            var nmonthIndex = MonthIndex + value;
             var months = chineseCalendar.GetMonthsInYear(nyear);
             if (nmonthIndex > months)
             {
@@ -405,7 +405,7 @@ namespace ChineseCalendar
             }
             var days = chineseCalendar.GetDaysInMonth(nyear, nmonthIndex);
 
-            var nday = Math.Min(this.Day, days);
+            var nday = Math.Min(Day, days);
             return FromIndex(nyear, nmonthIndex, nday);
         }
         /// <summary>

@@ -23,22 +23,22 @@ namespace AntdUI
 {
     partial class CellButton
     {
-        internal override void Paint(Graphics g, Font font, SolidBrush fore)
+        internal override void Paint(Canvas g, Font font, SolidBrush fore)
         {
             Table.PaintButton(g, font, (PARENT == null || PARENT.PARENT == null) ? 12 : PARENT.PARENT.Gap, Rect, this);
         }
 
-        internal override Size GetSize(Graphics g, Font font, int gap, int gap2)
+        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             if (string.IsNullOrEmpty(Text))
             {
-                var size = g.MeasureString(Config.NullText, font).Size();
+                var size = g.MeasureString(Config.NullText, font);
                 int sizei = size.Height + gap;
                 return new Size(sizei + gap2, sizei);
             }
             else
             {
-                var size = g.MeasureString(Text ?? Config.NullText, font).Size();
+                var size = g.MeasureString(Text ?? Config.NullText, font);
                 bool has_icon = HasIcon;
                 if (has_icon || ShowArrow)
                 {

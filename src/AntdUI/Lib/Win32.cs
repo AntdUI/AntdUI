@@ -46,7 +46,7 @@ namespace AntdUI
 
         public static void SetBits(Bitmap? bmp, Rectangle rect, IntPtr intPtr, byte a = 255)
         {
-            if (bmp == null) return;
+            if (bmp == null || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare) return;
             IntPtr hBitmap = bmp.GetHbitmap(Color.FromArgb(0)), oldBits = SelectObject(memDc, hBitmap);
             try
             {

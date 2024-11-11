@@ -34,7 +34,7 @@ namespace AntdUI
         /// <param name="form">所属窗口</param>
         /// <param name="btns">按钮</param>
         /// <param name="call">回调</param>
-        public static Form? open(Form form, ConfigBtn[] btns, Action<ConfigBtn> call)
+        public static FormFloatButton? open(Form form, ConfigBtn[] btns, Action<ConfigBtn> call)
         {
             return open(new Config(form, btns, call));
         }
@@ -46,7 +46,7 @@ namespace AntdUI
         /// <param name="content">所属控件</param>
         /// <param name="btns">按钮</param>
         /// <param name="call">回调</param>
-        public static Form? open(Form form, Control content, ConfigBtn[] btns, Action<ConfigBtn> call)
+        public static FormFloatButton? open(Form form, Control content, ConfigBtn[] btns, Action<ConfigBtn> call)
         {
             return open(new Config(form, btns, call)
             {
@@ -84,13 +84,13 @@ namespace AntdUI
         /// FloatButton 悬浮按钮
         /// </summary>
         /// <param name="config">配置</param>
-        public static Form? open(this Config config)
+        public static FormFloatButton? open(this Config config)
         {
             if (config.Form.IsHandleCreated)
             {
                 if (config.Form.InvokeRequired)
                 {
-                    Form? form = null;
+                    FormFloatButton? form = null;
                     config.Form.Invoke(new Action(() =>
                     {
                         form = open(config);
@@ -225,6 +225,42 @@ namespace AntdUI
             /// 名称
             /// </summary>
             public string Name { get; set; }
+
+            bool enabled = true;
+            /// <summary>
+            /// 使能
+            /// </summary>
+            public bool Enabled
+            {
+                get => enabled;
+                set
+                {
+                    if (enabled == value) return;
+                    enabled = value;
+                    OnPropertyChanged("Enabled");
+                }
+            }
+
+            bool loading = false;
+            internal int AnimationLoadingValue = 0;
+            /// <summary>
+            /// 加载
+            /// </summary>
+            public bool Loading
+            {
+                get => loading;
+                set
+                {
+                    if (loading == value) return;
+                    loading = value;
+                    OnPropertyChanged("Loading");
+                }
+            }
+
+            /// <summary>
+            /// 加载进度
+            /// </summary>
+            public float LoadingValue { get; set; } = 0.3F;
 
             Color? fore;
             /// <summary>

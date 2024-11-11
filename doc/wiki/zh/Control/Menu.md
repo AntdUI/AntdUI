@@ -23,6 +23,7 @@ Menu 导航菜单 👚
 **Indent** | 常规缩进 `和Tree那样缩进` | bool | false |
 **ShowSubBack** | 显示子菜单背景 | bool | false |
 **Unique** 🔴 | 只保持一个子菜单的展开 | bool | false |
+**Trigger** 🔴 | 触发下拉的行为 | [Trigger](Enum#trigger) | Click |
 ||||
 **Theme** | 色彩模式 | [TAMode](Enum#tamode) | Auto |
 **Mode** 🔴 | 菜单类型 | [TMenuMode](Enum#tmenumode) | Inline |

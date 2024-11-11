@@ -43,6 +43,7 @@ namespace AntdUI
         /// 显示的水印文本
         /// </summary>
         [Description("显示的水印文本S"), Category("行为"), DefaultValue(null)]
+        [Localizable(true)]
         public string? PlaceholderStart
         {
             get => placeholderS;
@@ -58,6 +59,7 @@ namespace AntdUI
         /// 显示的水印文本
         /// </summary>
         [Description("显示的水印文本E"), Category("行为"), DefaultValue(null)]
+        [Localizable(true)]
         public string? PlaceholderEnd
         {
             get => placeholderE;
@@ -240,14 +242,14 @@ namespace AntdUI
             get => showicon;
         }
 
-        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
             if (showicon)
             {
                 using (var bmp = SvgDb.IcoDate.SvgToBmp(rect_r.Width, rect_r.Height, Style.Db.TextQuaternary))
                 {
                     if (bmp == null) return;
-                    g.DrawImage(bmp, rect_r);
+                    g.Image(bmp, rect_r);
                 }
             }
         }
@@ -378,16 +380,8 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape && subForm != null)
-            {
-                subForm.IClose();
-                return true;
-            }
-            else if (keyData == Keys.Down && subForm == null)
-            {
-                ExpandDrop = true;
-                return true;
-            }
+            if (keyData == Keys.Escape && subForm != null) subForm.IClose();
+            else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
             else if (keyData == Keys.Enter)
             {
                 if (StartFocused || EndFocused)
@@ -451,7 +445,6 @@ namespace AntdUI
                             }
                         }
                     }
-                    return true;
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -511,24 +504,21 @@ namespace AntdUI
                 }
             }
         }
-        protected override void PaintOtherBor(Graphics g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
+        protected override void PaintOtherBor(Canvas g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
             if ((showS && placeholderS != null) || (showE && placeholderE != null))
             {
                 using (var fore = new SolidBrush(Style.Db.TextQuaternary))
                 {
-                    if (showS && placeholderS != null) g.DrawStr(placeholderS, Font, fore, rect_d_l, sf_placeholder);
-                    if (showE && placeholderE != null) g.DrawStr(placeholderE, Font, fore, rect_d_r, sf_placeholder);
+                    if (showS && placeholderS != null) g.String(placeholderS, Font, fore, rect_d_l, sf_placeholder);
+                    if (showE && placeholderE != null) g.String(placeholderE, Font, fore, rect_d_r, sf_placeholder);
                 }
             }
             if (AnimationBar)
             {
                 float h = rect_text.Height * 0.14F;
                 var BarColor = BorderActive ?? Style.Db.Primary;
-                using (var brush = new SolidBrush(BarColor))
-                {
-                    g.FillRectangle(brush, new RectangleF(AnimationBarValue.X, rect_read.Bottom - h, AnimationBarValue.Width, h));
-                }
+                g.Fill(BarColor, new RectangleF(AnimationBarValue.X, rect_read.Bottom - h, AnimationBarValue.Width, h));
             }
             else if (StartFocused || EndFocused)
             {
@@ -536,8 +526,8 @@ namespace AntdUI
                 var BarColor = BorderActive ?? Style.Db.Primary;
                 using (var brush = new SolidBrush(BarColor))
                 {
-                    if (StartFocused) g.FillRectangle(brush, new RectangleF(rect_d_l.X, rect_read.Bottom - h, rect_d_l.Width, h));
-                    else g.FillRectangle(brush, new RectangleF(rect_d_r.X, rect_read.Bottom - h, rect_d_r.Width, h));
+                    if (StartFocused) g.Fill(brush, new RectangleF(rect_d_l.X, rect_read.Bottom - h, rect_d_l.Width, h));
+                    else g.Fill(brush, new RectangleF(rect_d_r.X, rect_read.Bottom - h, rect_d_r.Width, h));
                 }
             }
             g.GetImgExtend(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Style.Db.TextQuaternary);

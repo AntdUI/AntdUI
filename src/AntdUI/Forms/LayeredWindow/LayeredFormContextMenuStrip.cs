@@ -35,12 +35,9 @@ namespace AntdUI
         float radius = 0;
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config)
         {
-            if (_config.TopMost)
-            {
-                PARENT = this;
-                Helper.SetTopMost(Handle);
-                MessageCloseMouseLeave = true;
-            }
+            PARENT = _config.Control;
+            MessageCloseMouseLeave = true;
+            if (_config.TopMost) Helper.SetTopMost(Handle);
             else _config.Control.SetTopMost(Handle);
             var point = _config.Location ?? MousePosition;
             maxalpha = 250;
@@ -174,7 +171,6 @@ namespace AntdUI
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, IContextMenuStripItem[] subs)
         {
             PARENT = parent;
-            MessageCloseMouseLeave = true;
             maxalpha = 250;
             config = _config;
             Font = config.Font ?? config.Control.Font;
@@ -224,7 +220,7 @@ namespace AntdUI
                     {
                         if (!has_subtext && item.SubText != null) has_subtext = true;
                         var size = g.MeasureString(item.Text + item.SubText, Font);
-                        int w = (int)Math.Ceiling(size.Width), hc = (int)Math.Ceiling(size.Height), h = hc + sp;
+                        int w = size.Width, hc = size.Height, h = hc + sp;
                         if (has_sub == 0 && (item.Sub != null && item.Sub.Length > 0)) has_sub = hc;
                         if (has_icon == 0 && (item.Icon != null || item.IconSvg != null)) has_icon = (int)(hc * 0.68F);
                         if (has_checked == 0 && item.Checked) has_checked = (int)(hc * 0.8F);
@@ -313,10 +309,7 @@ namespace AntdUI
             {
                 using (var path_sh = DrawShadow(g, rect, rect_read))
                 {
-                    using (var brush = new SolidBrush(Style.Db.BgElevated))
-                    {
-                        g.FillPath(brush, path_sh);
-                    }
+                    g.Fill(Style.Db.BgElevated, path_sh);
                     using (var brush = new SolidBrush(Style.Db.Text))
                     using (var brushSplit = new SolidBrush(Style.Db.Split))
                     using (var brushSecondary = new SolidBrush(Style.Db.TextSecondary))
@@ -329,30 +322,27 @@ namespace AntdUI
                         }
                         foreach (var it in rectsContent)
                         {
-                            if (it.Tag == null) g.FillRectangle(brushSplit, it.Rect);
+                            if (it.Tag == null) g.Fill(brushSplit, it.Rect);
                             else
                             {
                                 if (it.Hover)
                                 {
                                     using (var path = Helper.RoundPath(it.Rect, radius))
                                     {
-                                        using (var brush_hover = new SolidBrush(Style.Db.PrimaryBg))
-                                        {
-                                            g.FillPath(brush_hover, path);
-                                        }
+                                        g.Fill(Style.Db.PrimaryBg, path);
                                     }
                                 }
                                 if (it.Tag.Enabled)
                                 {
-                                    g.DrawStr(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
+                                    g.String(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
                                     if (it.Tag.Fore.HasValue)
                                     {
                                         using (var brush_fore = new SolidBrush(it.Tag.Fore.Value))
                                         {
-                                            g.DrawStr(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
+                                            g.String(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
                                         }
                                     }
-                                    else g.DrawStr(it.Tag.Text, Font, brush, it.RectT, stringLeft);
+                                    else g.String(it.Tag.Text, Font, brush, it.RectT, stringLeft);
 
                                     if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {
@@ -373,15 +363,15 @@ namespace AntdUI
                                     {
                                         using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, it.Tag.Fore ?? brush.Color))
                                         {
-                                            if (bmp != null) g.DrawImage(bmp, it.RectIcon);
+                                            if (bmp != null) g.Image(bmp, it.RectIcon);
                                         }
                                     }
-                                    else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
+                                    else if (it.Tag.Icon != null) g.Image(it.Tag.Icon, it.RectIcon);
                                 }
                                 else
                                 {
-                                    g.DrawStr(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
-                                    g.DrawStr(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
+                                    g.String(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
+                                    g.String(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
 
                                     if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {
@@ -402,10 +392,10 @@ namespace AntdUI
                                     {
                                         using (var bmp = it.Tag.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, brushEnabled.Color))
                                         {
-                                            if (bmp != null) g.DrawImage(bmp, it.RectIcon);
+                                            if (bmp != null) g.Image(bmp, it.RectIcon);
                                         }
                                     }
-                                    else if (it.Tag.Icon != null) g.DrawImage(it.Tag.Icon, it.RectIcon);
+                                    else if (it.Tag.Icon != null) g.Image(it.Tag.Icon, it.RectIcon);
                                 }
                             }
                         }
@@ -435,7 +425,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Graphics g, Rectangle rect_client, Rectangle rect_read)
+        GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read)
         {
             var path = rect_read.RoundPath(radius);
             if (Config.ShadowEnabled)
@@ -445,7 +435,7 @@ namespace AntdUI
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
                 }
-                g.DrawImage(shadow_temp, rect_client, 0.2F);
+                g.Image(shadow_temp, rect_client, 0.2F);
             }
             return path;
         }

@@ -427,11 +427,11 @@ namespace AntdUI
 
         #region 渲染
 
-        public virtual void Paint(Graphics g)
+        public virtual void Paint(Canvas g)
         {
             Paint(g, Style.Db.TextBase);
         }
-        public virtual void Paint(Graphics g, Color baseColor)
+        public virtual void Paint(Canvas g, Color baseColor)
         {
             if (Config.ScrollBarHide)
             {
@@ -448,10 +448,10 @@ namespace AntdUI
                                     float radius = Radius * Config.Dpi;
                                     using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                     }
                                 }
-                                else g.FillRectangle(brush, RectY);
+                                else g.Fill(brush, RectY);
                             }
                         }
                         else
@@ -463,10 +463,10 @@ namespace AntdUI
                                     float radius = Radius * Config.Dpi;
                                     using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
                                     {
-                                        g.FillPath(brush, path);
+                                        g.Fill(brush, path);
                                     }
                                 }
-                                else g.FillRectangle(brush, new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height));
+                                else g.Fill(brush, new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height));
                             }
                         }
                     }
@@ -484,10 +484,10 @@ namespace AntdUI
                                 float radius = Radius * Config.Dpi;
                                 using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
-                            else g.FillRectangle(brush, RectY);
+                            else g.Fill(brush, RectY);
                         }
                     }
                     PaintY(g, baseColor);
@@ -503,10 +503,10 @@ namespace AntdUI
                                 float radius = Radius * Config.Dpi;
                                 using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
-                            else g.FillRectangle(brush, RectX);
+                            else g.Fill(brush, RectX);
                         }
                     }
                     PaintX(g, baseColor);
@@ -526,22 +526,21 @@ namespace AntdUI
                                 float radius = Radius * Config.Dpi;
                                 using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                                 if (RB)
                                 {
                                     using (var path = Helper.RoundPath(rectX, radius, false, false, false, true))
                                     {
-                                        g.FillPath(brush, path);
-
+                                        g.Fill(brush, path);
                                     }
                                 }
-                                else g.FillRectangle(brush, rectX);
+                                else g.Fill(brush, rectX);
                             }
                             else
                             {
-                                g.FillRectangle(brush, RectY);
-                                g.FillRectangle(brush, rectX);
+                                g.Fill(brush, RectY);
+                                g.Fill(brush, rectX);
                             }
                         }
                     }
@@ -559,10 +558,10 @@ namespace AntdUI
                                 float radius = Radius * Config.Dpi;
                                 using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
-                            else g.FillRectangle(brush, RectY);
+                            else g.Fill(brush, RectY);
                         }
                     }
                     PaintY(g, baseColor);
@@ -578,10 +577,10 @@ namespace AntdUI
                                 float radius = Radius * Config.Dpi;
                                 using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
                                 {
-                                    g.FillPath(brush, path);
+                                    g.Fill(brush, path);
                                 }
                             }
-                            else g.FillRectangle(brush, RectX);
+                            else g.Fill(brush, RectX);
                         }
                     }
                     PaintX(g, baseColor);
@@ -599,7 +598,7 @@ namespace AntdUI
             if (AnimationHoverX) return new SolidBrush(Color.FromArgb((int)(10 * AnimationHoverXValue), color));
             else return new SolidBrush(Color.FromArgb(10, color));
         }
-        void PaintY(Graphics g, Color color)
+        void PaintY(Canvas g, Color color)
         {
             if (AnimationHoverY)
             {
@@ -608,7 +607,7 @@ namespace AntdUI
                     var slider = RectSliderY();
                     using (var path = slider.RoundPath(slider.Width))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                     }
                 }
             }
@@ -617,17 +616,14 @@ namespace AntdUI
                 int alpha;
                 if (SliderDownY) alpha = 172;
                 else alpha = hoverY ? 141 : 110;
-                using (var brush = new SolidBrush(Color.FromArgb(alpha, color)))
+                var slider = RectSliderY();
+                using (var path = slider.RoundPath(slider.Width))
                 {
-                    var slider = RectSliderY();
-                    using (var path = slider.RoundPath(slider.Width))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(Color.FromArgb(alpha, color), path);
                 }
             }
         }
-        void PaintX(Graphics g, Color color)
+        void PaintX(Canvas g, Color color)
         {
             if (AnimationHoverX)
             {
@@ -636,7 +632,7 @@ namespace AntdUI
                     var slider = RectSliderX();
                     using (var path = slider.RoundPath(slider.Height))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                     }
                 }
             }
@@ -645,13 +641,10 @@ namespace AntdUI
                 int alpha;
                 if (SliderDownX) alpha = 172;
                 else alpha = hoverX ? 141 : 110;
-                using (var brush = new SolidBrush(Color.FromArgb(alpha, color)))
+                var slider = RectSliderX();
+                using (var path = slider.RoundPath(slider.Height))
                 {
-                    var slider = RectSliderX();
-                    using (var path = slider.RoundPath(slider.Height))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(Color.FromArgb(alpha, color), path);
                 }
             }
         }

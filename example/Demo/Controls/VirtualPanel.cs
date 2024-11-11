@@ -128,16 +128,16 @@ namespace Demo.Controls
             public VItem(Color d, int size = 100) { data = d; width = height = size; }
             public VItem(Color d, int w, int h) { data = d; width = w; height = h; }
 
-            public override void Paint(Graphics g, AntdUI.VirtualPanelArgs e)
+            public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 using (var brush = new SolidBrush(data))
                 {
-                    g.FillRectangle(brush, e.Rect);
+                    g.Fill(brush, e.Rect);
                 }
             }
 
-            public override Size Size(Graphics g, AntdUI.VirtualPanelArgs e)
+            public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 return new Size((int)(width * dpi), (int)(height * dpi));
@@ -239,7 +239,7 @@ namespace Demo.Controls
 
             StringFormat s_f = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
             Bitmap bmp = null;
-            public override void Paint(Graphics g, AntdUI.VirtualPanelArgs e)
+            public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 if (bmp == null || bmp.Width != e.Rect.Width || bmp.Height != e.Rect.Height)
@@ -248,16 +248,13 @@ namespace Demo.Controls
                     bmp = new Bitmap(e.Rect.Width, e.Rect.Height);
                     using (var g2 = AntdUI.Helper.High(Graphics.FromImage(bmp)))
                     {
-                        AntdUI.Helper.PaintImg(g2, new Rectangle(0, 0, bmp.Width, bmp.Height), image, AntdUI.TFit.Fill, e.Radius, AntdUI.TShape.Default);
+                        g2.Image(new Rectangle(0, 0, bmp.Width, bmp.Height), image, AntdUI.TFit.Fill, e.Radius, AntdUI.TShape.Default);
                     }
                 }
-                g.DrawImage(bmp, e.Rect);
+                g.Image(bmp, e.Rect);
                 using (var path = AntdUI.Helper.RoundPath(e.Rect, e.Radius))
                 {
-                    using (var brush_bor = new Pen(AntdUI.Style.Db.BorderColor, 1.5F * dpi))
-                    {
-                        g.DrawPath(brush_bor, path);
-                    }
+                    g.Draw(AntdUI.Style.Db.BorderColor, 1.5F * dpi, path);
                 }
 
                 #region ½¥±äÉ«
@@ -269,7 +266,7 @@ namespace Demo.Controls
                 {
                     using (var path = AntdUI.Helper.RoundPath(rect_b, e.Radius, false, false, true, true))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                     }
                 }
 
@@ -278,15 +275,15 @@ namespace Demo.Controls
                 int y = e.Rect.Bottom - h2 - h3;
                 using (var font_desc = new Font(e.Panel.Font.FontFamily, 9F))
                 {
-                    g.DrawString(desc, font_desc, Brushes.WhiteSmoke, new Rectangle(e.Rect.X, y, e.Rect.Width, h2), s_f);
+                    g.String(desc, font_desc, Brushes.WhiteSmoke, new Rectangle(e.Rect.X, y, e.Rect.Width, h2), s_f);
                 }
                 using (var font_title = new Font(e.Panel.Font.FontFamily, 11F, FontStyle.Bold))
                 {
-                    g.DrawString(name, font_title, Brushes.White, new Rectangle(e.Rect.X, y - h1, e.Rect.Width, h1), s_f);
+                    g.String(name, font_title, Brushes.White, new Rectangle(e.Rect.X, y - h1, e.Rect.Width, h1), s_f);
                 }
             }
 
-            public override Size Size(Graphics g, AntdUI.VirtualPanelArgs e)
+            public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
                 int count = 5, w = (e.Rect.Width - ((int)(20 * dpi) * count)) / count;

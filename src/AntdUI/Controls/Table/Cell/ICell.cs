@@ -35,7 +35,7 @@ namespace AntdUI
         /// <param name="font">字体</param>
         /// <param name="gap">边距</param>
         /// <param name="gap2">边距2</param>
-        internal abstract Size GetSize(Graphics g, Font font, int gap, int gap2);
+        internal abstract Size GetSize(Canvas g, Font font, int gap, int gap2);
 
         /// <summary>
         /// 设置渲染位置坐标
@@ -46,10 +46,10 @@ namespace AntdUI
         /// <param name="size">真实区域</param>
         /// <param name="gap">边距</param>
         /// <param name="gap2">边距2</param>
-        internal abstract void SetRect(Graphics g, Font font, Rectangle rect, Size size, int gap, int gap2);
+        internal abstract void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2);
 
-        internal abstract void PaintBack(Graphics g);
-        internal abstract void Paint(Graphics g, Font font, SolidBrush fore);
+        internal abstract void PaintBack(Canvas g);
+        internal abstract void Paint(Canvas g, Font font, SolidBrush fore);
 
         /// <summary>
         /// 模板父级

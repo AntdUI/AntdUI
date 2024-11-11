@@ -171,7 +171,7 @@ namespace AntdUI
             hs = Helper.GDI(g =>
             {
                 var hs = new List<Rectangle>(items.Count);
-                var size_t = g.MeasureString(Config.NullText, Font).Size();
+                var size_t = g.MeasureString(Config.NullText, Font);
                 int sp = (int)(4 * Config.Dpi), sp2 = sp * 2, imgsize = (int)(size_t.Height * .8F), h = size_t.Height + sp, y = rect.Y + (rect.Height - h) / 2, y_img = rect.Y + (rect.Height - imgsize) / 2, _gap = (int)(gap * Config.Dpi);
                 int x = 0, tmpx = 0;
                 foreach (BreadcrumbItem it in items)
@@ -190,7 +190,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var size = g.MeasureString(it.Text, Font).Size();
+                        var size = g.MeasureString(it.Text, Font);
                         if (it.HasIcon)
                         {
                             int imgw = imgsize + sp2;
@@ -227,7 +227,7 @@ namespace AntdUI
             using (var brush = new SolidBrush(fore ?? Style.Db.TextSecondary))
             using (var brush_active = new SolidBrush(ForeActive ?? Style.Db.Text))
             {
-                foreach (var it in hs) g.DrawStr("/", Font, brush, it, s_f);
+                foreach (var it in hs) g.String("/", Font, brush, it, s_f);
                 for (int i = 0; i < items.Count; i++)
                 {
                     var it = items[i];
@@ -236,7 +236,7 @@ namespace AntdUI
                     {
                         //最后一个
                         PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                        g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
+                        g.String(it.Text, Font, brush_active, it.RectText, s_f);
                     }
                     else
                     {
@@ -244,18 +244,15 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(_radius))
                             {
-                                using (var brush_hover = new SolidBrush(Style.Db.FillSecondary))
-                                {
-                                    g.FillPath(brush_hover, path);
-                                }
+                                g.Fill(Style.Db.FillSecondary, path);
                             }
                             PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
+                            g.String(it.Text, Font, brush_active, it.RectText, s_f);
                         }
                         else
                         {
                             PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush, it.RectText, s_f);
+                            g.String(it.Text, Font, brush, it.RectText, s_f);
                         }
                     }
                 }
@@ -264,13 +261,13 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        bool PaintImg(Graphics g, BreadcrumbItem it, Color color, string? svg, Image? bmp)
+        bool PaintImg(Canvas g, BreadcrumbItem it, Color color, string? svg, Image? bmp)
         {
             if (svg != null)
             {
                 if (g.GetImgExtend(svg, it.RectImg, color)) return false;
             }
-            else if (bmp != null) { g.DrawImage(bmp, it.RectImg); return false; }
+            else if (bmp != null) { g.Image(bmp, it.RectImg); return false; }
             return true;
         }
 

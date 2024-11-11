@@ -319,6 +319,21 @@ namespace AntdUI
             }
         }
 
+        RightToLeft rightToLeft = RightToLeft.No;
+        [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
+        public override RightToLeft RightToLeft
+        {
+            get => rightToLeft;
+            set
+            {
+                if (rightToLeft == value) return;
+                rightToLeft = value;
+                if (full) return;
+                ChangeItems();
+                Invalidate();
+            }
+        }
+
         SegmentedItemCollection? items;
         /// <summary>
         /// 获取列表中所有列表项的集合
@@ -503,40 +518,16 @@ namespace AntdUI
         public event IntEventHandler? SelectIndexChanged = null;
 
         /// <summary>
+        /// SelectIndex 属性值更改前发生
+        /// </summary>
+        [Description("SelectIndex 属性值更改前发生"), Category("行为")]
+        public event IntBoolEventHandler? SelectIndexChanging = null;
+
+        /// <summary>
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
         public event SegmentedItemEventHandler? ItemClick = null;
-
-        #region Change
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            ChangeItems();
-            base.OnSizeChanged(e);
-        }
-
-        protected override void OnMarginChanged(EventArgs e)
-        {
-            ChangeItems();
-            base.OnMarginChanged(e);
-        }
-
-        protected override void OnPaddingChanged(EventArgs e)
-        {
-            ChangeItems();
-            base.OnPaddingChanged(e);
-        }
-
-        protected override void OnFontChanged(EventArgs e)
-        {
-            ChangeItems();
-            base.OnFontChanged(e);
-        }
-
-        #endregion
-
-        #region 布局
 
         bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
@@ -555,6 +546,164 @@ namespace AntdUI
             }
         }
 
+        #endregion
+
+        #region 渲染
+
+        readonly StringFormat s_f = Helper.SF_ALL();
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (items == null || items.Count == 0) return;
+
+            var g = e.Graphics.High();
+            float _radius = radius * Config.Dpi;
+            using (var path = Rect.RoundPath(_radius, Round))
+            {
+                g.Fill(back ?? Style.Db.BgLayout, path);
+            }
+            var item_text = new System.Collections.Generic.List<SegmentedItem>(items.Count);
+            int _hover = -1;
+            for (int i = 0; i < items.Count; i++)
+            {
+                var it = items[i];
+                if (it == null) continue;
+                if (i == _select && !AnimationBar)
+                {
+                    var color_active = backactive ?? Style.Db.BgElevated;
+                    if (barPosition == TAlignMini.None)
+                    {
+                        using (var path = TabSelectRect.RoundPath(_radius, Round))
+                        {
+                            g.Fill(color_active, path);
+                        }
+                    }
+                    else
+                    {
+                        float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
+                        var rect = GetBarRect(TabSelectRect, barSize, barPadding, barPadding2);
+                        if (BarRadius > 0)
+                        {
+                            using (var path = rect.RoundPath(BarRadius * Config.Dpi))
+                            {
+                                g.Fill(color_active, path);
+                            }
+                        }
+                        else g.Fill(color_active, rect);
+                    }
+                }
+                else if (it.Hover)
+                {
+                    _hover = i;
+                    using (var path = it.Rect.RoundPath(_radius, Round))
+                    {
+                        g.Fill(BackHover ?? Style.Db.HoverBg, path);
+                    }
+                }
+                item_text.Add(it);
+            }
+            if (AnimationBar)
+            {
+                var color_active = backactive ?? Style.Db.BgElevated;
+                if (barPosition == TAlignMini.None)
+                {
+                    using (var path = AnimationBarValue.RoundPath(_radius, Round))
+                    {
+                        g.Fill(color_active, path);
+                    }
+                }
+                else
+                {
+                    float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
+                    var rect = GetBarRect(AnimationBarValue, barSize, barPadding, barPadding2);
+                    if (BarRadius > 0)
+                    {
+                        using (var path = rect.RoundPath(BarRadius * Config.Dpi))
+                        {
+                            g.Fill(color_active, path);
+                        }
+                    }
+                    else g.Fill(color_active, rect);
+                }
+            }
+            using (var brush = new SolidBrush((fore ?? Style.Db.TextSecondary)))
+            using (var brushDisable = new SolidBrush(Style.Db.TextQuaternary))
+            {
+                for (int i = 0; i < item_text.Count; i++)
+                {
+                    var it = item_text[i];
+                    if (i == _select)
+                    {
+                        if (Enabled && it.Enabled)
+                        {
+                            var color_active = foreactive ?? Style.Db.Text;
+                            if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
+                            g.String(it.Text, Font, color_active, it.RectText, s_f);
+                        }
+                        else
+                        {
+                            var color_active = Style.Db.TextQuaternary;
+                            if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
+                            g.String(it.Text, Font, color_active, it.RectText, s_f);
+                        }
+                    }
+                    else
+                    {
+                        if (Enabled && it.Enabled)
+                        {
+                            if (i == _hover)
+                            {
+                                var color_hover = ForeHover ?? Style.Db.HoverColor;
+                                PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
+                                g.String(it.Text, Font, color_hover, it.RectText, s_f);
+                            }
+                            else
+                            {
+                                PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
+                                g.String(it.Text, Font, brush, it.RectText, s_f);
+                            }
+                        }
+                        else
+                        {
+                            PaintImg(g, it, brushDisable.Color, it.IconSvg, it.Icon);
+                            g.String(it.Text, Font, brushDisable, it.RectText, s_f);
+                        }
+                    }
+                }
+            }
+            this.PaintBadge(g);
+            base.OnPaint(e);
+        }
+
+        bool PaintImg(Canvas g, SegmentedItem it, Color color, string? svg, Image? bmp)
+        {
+            if (svg != null)
+            {
+                if (g.GetImgExtend(svg, it.RectImg, color)) return false;
+            }
+            else if (bmp != null) { g.Image(bmp, it.RectImg); return false; }
+            return true;
+        }
+
+        RectangleF GetBarRect(RectangleF rect, float barSize, float barPadding, float barPadding2)
+        {
+            switch (barPosition)
+            {
+                case TAlignMini.Top:
+                    return new RectangleF(rect.X + barPadding, rect.Y, rect.Width - barPadding2, barSize);
+                case TAlignMini.Left:
+                    return new RectangleF(rect.X, rect.Y + barPadding, barSize, rect.Height - barPadding2);
+                case TAlignMini.Right:
+                    return new RectangleF(rect.Right - barSize, rect.Y + barPadding, barSize, rect.Height - barPadding2);
+                case TAlignMini.Bottom:
+                default:
+                    return new RectangleF(rect.X + barPadding, rect.Bottom - barSize, rect.Width - barPadding2, barSize);
+            }
+        }
+
+        #endregion
+
+        #region 布局
+
         internal void ChangeItems()
         {
             if (items == null || items.Count == 0)
@@ -571,7 +720,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size_t = g.MeasureString(Config.NullText, Font);
-                int text_heigth = (int)Math.Ceiling(size_t.Height), sp = (int)(text_heigth * icongap), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
+                int text_heigth = size_t.Height, sp = (int)(text_heigth * icongap), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
                 if (Full)
                 {
                     int len = items.Count;
@@ -715,7 +864,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Left:
-                                int imgsize_l = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_l = (int)Math.Ceiling(size_t.Height + gap2);
+                                int imgsize_l = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_l = size_t.Height + gap2;
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -725,7 +874,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TAlignMini.Right:
-                                int imgsize_r = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_r = (int)Math.Ceiling(size_t.Height + gap2);
+                                int imgsize_r = (int)(size_t.Height * (iconratio ?? 1.2F)), heigth_r = size_t.Height + gap2;
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -735,7 +884,7 @@ namespace AntdUI
                                 }
                                 break;
                             default:
-                                int heigth = (int)Math.Ceiling(size_t.Height + gap);
+                                int heigth = size_t.Height + gap;
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
@@ -744,7 +893,13 @@ namespace AntdUI
                                 }
                                 break;
                         }
-                        Rect = new RectangleF(_rect.X, _rect.Y, _rect.Width, y - _igap + Margin.Vertical);
+                        Rect = new Rectangle(_rect.X, _rect.Y, _rect.Width, y - _igap + Margin.Vertical);
+                        if (Rect.Height < _rect.Height && rightToLeft == RightToLeft.Yes)
+                        {
+                            int hc = _rect.Bottom - Rect.Height;
+                            Rect.Y = hc;
+                            foreach (var it in items) it.SetOffset(0, hc);
+                        }
                     }
                     else
                     {
@@ -759,7 +914,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_t + gap2, rect.Height), imgsize_t);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        var size = g.MeasureString(it.Text, Font);
                                         it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, text_heigth, sp);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -773,7 +928,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_b + gap2, rect.Height), imgsize_b);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        var size = g.MeasureString(it.Text, Font);
                                         it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, text_heigth, sp);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -787,7 +942,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_l + gap2, rect.Height), imgsize_l);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        var size = g.MeasureString(it.Text, Font);
                                         it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_l + sp + gap2, rect.Height), imgsize_l, sp, gap);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -801,7 +956,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_r + gap2, rect.Height), imgsize_r);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font).Size();
+                                        var size = g.MeasureString(it.Text, Font);
                                         it.SetRectRight(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_r + sp + gap2, rect.Height), imgsize_r, sp, gap);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -811,13 +966,19 @@ namespace AntdUI
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    var size = g.MeasureString(it.Text, Font).Size();
+                                    var size = g.MeasureString(it.Text, Font);
                                     it.SetRectNone(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height));
                                     x += it.Rect.Width + _igap;
                                 }
                                 break;
                         }
-                        Rect = new RectangleF(_rect.X, _rect.Y, x - _igap + Margin.Horizontal, _rect.Height);
+                        Rect = new Rectangle(_rect.X, _rect.Y, x - _igap + Margin.Horizontal, _rect.Height);
+                        if (Rect.Width < _rect.Width && rightToLeft == RightToLeft.Yes)
+                        {
+                            int hc = _rect.Right - Rect.Width;
+                            Rect.X = hc;
+                            foreach (var it in items) it.SetOffset(hc, 0);
+                        }
                     }
                 }
             });
@@ -828,179 +989,35 @@ namespace AntdUI
             }
         }
 
+        Rectangle Rect;
+
+        #region Change
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            ChangeItems();
+            base.OnSizeChanged(e);
+        }
+
+        protected override void OnMarginChanged(EventArgs e)
+        {
+            ChangeItems();
+            base.OnMarginChanged(e);
+        }
+
+        protected override void OnPaddingChanged(EventArgs e)
+        {
+            ChangeItems();
+            base.OnPaddingChanged(e);
+        }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            ChangeItems();
+            base.OnFontChanged(e);
+        }
+
         #endregion
-
-        RectangleF Rect;
-
-        #endregion
-
-        #region 渲染
-
-        readonly StringFormat s_f = Helper.SF_ALL();
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            if (items == null || items.Count == 0) return;
-
-            var g = e.Graphics.High();
-            float _radius = radius * Config.Dpi;
-            using (var path = Rect.RoundPath(_radius, Round))
-            {
-                using (var brush = new SolidBrush(back ?? Style.Db.BgLayout))
-                {
-                    g.FillPath(brush, path);
-                }
-            }
-            var item_text = new System.Collections.Generic.List<SegmentedItem>(items.Count);
-            int _hover = -1;
-            for (int i = 0; i < items.Count; i++)
-            {
-                var it = items[i];
-                if (it == null) continue;
-                if (i == _select && !AnimationBar)
-                {
-                    var color_active = backactive ?? Style.Db.BgElevated;
-                    if (barPosition == TAlignMini.None)
-                    {
-                        using (var path = TabSelectRect.RoundPath(_radius, Round))
-                        {
-                            using (var brush = new SolidBrush(color_active))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
-                        var rect = GetBarRect(TabSelectRect, barSize, barPadding, barPadding2);
-                        if (BarRadius > 0)
-                        {
-                            using (var path = rect.RoundPath(BarRadius * Config.Dpi))
-                            {
-                                using (var brush = new SolidBrush(color_active))
-                                {
-                                    g.FillPath(brush, path);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            using (var brush = new SolidBrush(color_active))
-                            {
-                                g.FillRectangle(brush, rect);
-                            }
-                        }
-                    }
-                }
-                else if (it.Hover)
-                {
-                    _hover = i;
-                    using (var path = it.Rect.RoundPath(_radius, Round))
-                    {
-                        using (var brush = new SolidBrush(BackHover ?? Style.Db.HoverBg))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                    }
-                }
-                item_text.Add(it);
-            }
-            if (AnimationBar)
-            {
-                var color_active = backactive ?? Style.Db.BgElevated;
-                if (barPosition == TAlignMini.None)
-                {
-                    using (var path = AnimationBarValue.RoundPath(_radius, Round))
-                    {
-                        using (var brush = new SolidBrush(color_active))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                    }
-                }
-                else
-                {
-                    float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
-                    var rect = GetBarRect(AnimationBarValue, barSize, barPadding, barPadding2);
-                    if (BarRadius > 0)
-                    {
-                        using (var path = rect.RoundPath(BarRadius * Config.Dpi))
-                        {
-                            using (var brush = new SolidBrush(color_active))
-                            {
-                                g.FillPath(brush, path);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (var brush = new SolidBrush(color_active))
-                        {
-                            g.FillRectangle(brush, rect);
-                        }
-                    }
-                }
-            }
-            using (var brush = new SolidBrush(Enabled ? (fore ?? Style.Db.TextSecondary) : Style.Db.TextQuaternary))
-            {
-                for (int i = 0; i < item_text.Count; i++)
-                {
-                    var it = item_text[i];
-                    if (i == _select)
-                    {
-                        using (var brush_active = new SolidBrush(Enabled ? (foreactive ?? Style.Db.Text) : Style.Db.TextQuaternary))
-                        {
-                            if (PaintImg(g, it, brush_active.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
-                        }
-                    }
-                    else
-                    {
-                        if (i == _hover)
-                        {
-                            using (var brush_active = new SolidBrush(ForeHover ?? Style.Db.HoverColor))
-                            {
-                                PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                                g.DrawStr(it.Text, Font, brush_active, it.RectText, s_f);
-                            }
-                        }
-                        else
-                        {
-                            PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                            g.DrawStr(it.Text, Font, brush, it.RectText, s_f);
-                        }
-                    }
-                }
-            }
-            this.PaintBadge(g);
-            base.OnPaint(e);
-        }
-
-        bool PaintImg(Graphics g, SegmentedItem it, Color color, string? svg, Image? bmp)
-        {
-            if (svg != null)
-            {
-                if (g.GetImgExtend(svg, it.RectImg, color)) return false;
-            }
-            else if (bmp != null) { g.DrawImage(bmp, it.RectImg); return false; }
-            return true;
-        }
-
-        RectangleF GetBarRect(RectangleF rect, float barSize, float barPadding, float barPadding2)
-        {
-            switch (barPosition)
-            {
-                case TAlignMini.Top:
-                    return new RectangleF(rect.X + barPadding, rect.Y, rect.Width - barPadding2, barSize);
-                case TAlignMini.Left:
-                    return new RectangleF(rect.X, rect.Y + barPadding, barSize, rect.Height - barPadding2);
-                case TAlignMini.Right:
-                    return new RectangleF(rect.Right - barSize, rect.Y + barPadding, barSize, rect.Height - barPadding2);
-                case TAlignMini.Bottom:
-                default:
-                    return new RectangleF(rect.X + barPadding, rect.Bottom - barSize, rect.Width - barPadding2, barSize);
-            }
-        }
 
         #endregion
 
@@ -1013,7 +1030,7 @@ namespace AntdUI
             int hand = 0, change = 0;
             foreach (var it in items)
             {
-                bool hover = it.Rect.Contains(e.Location);
+                bool hover = it.Enabled && it.Rect.Contains(e.Location);
                 if (it.Hover != hover)
                 {
                     it.Hover = hover;
@@ -1066,9 +1083,12 @@ namespace AntdUI
             for (int i = 0; i < items.Count; i++)
             {
                 var it = items[i];
-                if (it != null && it.Rect.Contains(e.Location))
+                if (it != null && it.Enabled && it.Rect.Contains(e.Location))
                 {
-                    SelectIndex = i;
+                    bool pass = false;
+                    if (SelectIndexChanging == null) pass = true;
+                    else if (SelectIndexChanging(this, new IntEventArgs(i))) pass = true;
+                    if (pass) SelectIndex = i;
                     ItemClick?.Invoke(this, new SegmentedItemEventArgs(it, e));
                     return;
                 }
@@ -1099,8 +1119,8 @@ namespace AntdUI
         {
             if (AutoSize)
             {
-                if (Vertical) return new Size(base.GetPreferredSize(proposedSize).Width, (int)Math.Ceiling(Rect.Height));
-                else return new Size((int)Math.Ceiling(Rect.Width), base.GetPreferredSize(proposedSize).Height);
+                if (Vertical) return new Size(base.GetPreferredSize(proposedSize).Width, Rect.Height);
+                else return new Size(Rect.Width, base.GetPreferredSize(proposedSize).Height);
             }
             return base.GetPreferredSize(proposedSize);
         }
@@ -1126,13 +1146,13 @@ namespace AntdUI
                 }
                 if (Vertical)
                 {
-                    int height = (int)Math.Ceiling(Rect.Height);
+                    int height = Rect.Height;
                     if (Height == height) return true;
                     Height = height;
                 }
                 else
                 {
-                    int width = (int)Math.Ceiling(Rect.Width);
+                    int width = Rect.Width;
                     if (Width == width) return true;
                     Width = width;
                 }
@@ -1164,6 +1184,22 @@ namespace AntdUI
 
     public class SegmentedItem
     {
+        bool enabled = true;
+        /// <summary>
+        /// 使能
+        /// </summary>
+        [Description("使能"), Category("外观"), DefaultValue(true)]
+        public bool Enabled
+        {
+            get => enabled;
+            set
+            {
+                if (enabled == value) return;
+                enabled = value;
+                PARENT?.Invalidate();
+            }
+        }
+
         Image? icon = null;
         /// <summary>
         /// 图标
@@ -1242,6 +1278,12 @@ namespace AntdUI
 
         internal bool HasEmptyText => text == null || string.IsNullOrEmpty(text);
 
+        internal void SetOffset(int x, int y)
+        {
+            Rect = new Rectangle(Rect.X + x, Rect.Y + y, Rect.Width, Rect.Height);
+            RectImg = new Rectangle(RectImg.X + x, RectImg.Y + y, RectImg.Width, RectImg.Height);
+            RectText = new Rectangle(RectText.X + x, RectText.Y + y, RectText.Width, RectText.Height);
+        }
         internal void SetIconNoText(Rectangle rect, int imgsize)
         {
             Rect = rect;

@@ -90,7 +90,7 @@ namespace AntdUI
                 ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
                 if (input_SizeChanger != null)
                 {
-                    string tips = Localization.Provider?.GetLocalizedString("ItemsPerPage") ?? "条/页";
+                    string tips = Localization.Get("ItemsPerPage", "条/页");
                     input_SizeChanger.Clear();
                     input_SizeChanger.PlaceholderText = value.ToString() + " " + tips;
                 }
@@ -268,6 +268,7 @@ namespace AntdUI
 
         string? textdesc;
         [Description("主动显示内容"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? TextDesc
         {
             get => textdesc;
@@ -302,7 +303,7 @@ namespace AntdUI
                     {
                         using (var path_previous = btn_previous.rect.RoundPath(_radius))
                         {
-                            g.FillPath(brush_hover, path_previous);
+                            g.Fill(brush_hover, path_previous);
                         }
                     }
                     using (var pen_arrow = new Pen(btn_previous.enabled ? fore : Style.Db.TextQuaternary, border))
@@ -316,7 +317,7 @@ namespace AntdUI
                     {
                         using (var path_next = btn_next.rect.RoundPath(_radius))
                         {
-                            g.FillPath(brush_hover, path_next);
+                            g.Fill(brush_hover, path_next);
                         }
                     }
                     using (var pen_arrow = new Pen(btn_next.enabled ? fore : Style.Db.TextQuaternary, border))
@@ -328,7 +329,7 @@ namespace AntdUI
 
                     using (var brush = new SolidBrush(fore))
                     {
-                        if (showTotal != null) g.DrawStr(showTotal, Font, brush, rect_text, s_f);
+                        if (showTotal != null) g.String(showTotal, Font, brush, rect_text, s_f);
                         for (int i = 2; i < buttons.Length; i++)
                         {
                             var btn = buttons[i];
@@ -336,14 +337,14 @@ namespace AntdUI
                             {
                                 using (var path = btn.rect.RoundPath(_radius))
                                 {
-                                    g.FillPath(brush_hover, path);
+                                    g.Fill(brush_hover, path);
                                 }
                             }
                             if (btn.prog > 0)
                             {
                                 using (var brush_prog = new SolidBrush(Style.Db.TextQuaternary))
                                 {
-                                    g.DrawStr("•••", Font, brush_prog, btn.rect, s_f);
+                                    g.String("•••", Font, brush_prog, btn.rect, s_f);
                                 }
                             }
                             else
@@ -352,13 +353,10 @@ namespace AntdUI
                                 {
                                     using (var path = btn.rect.RoundPath(_radius))
                                     {
-                                        using (var pen = new Pen(color, border))
-                                        {
-                                            g.DrawPath(pen, path);
-                                        }
+                                        g.Draw(color, border, path);
                                     }
                                 }
-                                g.DrawStr(btn.key, Font, brush, btn.rect, s_f);
+                                g.String(btn.key, Font, brush, btn.rect, s_f);
                             }
                         }
                     }
@@ -384,13 +382,13 @@ namespace AntdUI
 
                 using (var brush = new SolidBrush(Style.Db.TextQuaternary))
                 {
-                    if (showTotal != null) g.DrawStr(showTotal, Font, brush, rect_text, s_f);
+                    if (showTotal != null) g.String(showTotal, Font, brush, rect_text, s_f);
                     for (int i = 2; i < buttons.Length; i++)
                     {
                         var btn = buttons[i];
                         if (btn.prog > 0)
                         {
-                            g.DrawStr("•••", Font, brush, btn.rect, s_f);
+                            g.String("•••", Font, brush, btn.rect, s_f);
                         }
                         else
                         {
@@ -398,13 +396,10 @@ namespace AntdUI
                             {
                                 using (var path = btn.rect.RoundPath(_radius))
                                 {
-                                    using (var brush_2 = new SolidBrush(Style.Db.Fill))
-                                    {
-                                        g.FillPath(brush_2, path);
-                                    }
+                                    g.Fill(Style.Db.Fill, path);
                                 }
                             }
-                            g.DrawStr(btn.key, Font, brush, btn.rect, s_f);
+                            g.String(btn.key, Font, brush, btn.rect, s_f);
                         }
                     }
                 }
@@ -553,7 +548,7 @@ namespace AntdUI
                         if (i == min)
                         {
                             min = min * 10;
-                            var size_font = g.MeasureString((i + 1).ToString(), Font).Size();
+                            var size_font = g.MeasureString((i + 1).ToString(), Font);
                             if (size_font.Width > rect.Height)
                             {
                                 max_size = size_font.Width;
@@ -565,7 +560,7 @@ namespace AntdUI
                     if (showTotal != null)
                     {
                         var size_font = g.MeasureString(showTotal, Font);
-                        x = (int)Math.Ceiling(size_font.Width);
+                        x = size_font.Width;
                         rect_text = new Rectangle(rect.X, rect.Y, x, rect.Height);
                     }
 
@@ -656,7 +651,7 @@ namespace AntdUI
         {
             if (input_SizeChanger == null)
             {
-                string tips = Localization.Provider?.GetLocalizedString("ItemsPerPage") ?? "条/页";
+                string tips = Localization.Get("ItemsPerPage", "条/页");
                 var placeholder = pageSize.ToString() + " " + tips;
                 bool r = rightToLeft == RightToLeft.Yes;
                 int width = GetSizeChangerWidth(placeholder);
@@ -709,7 +704,7 @@ namespace AntdUI
             {
                 if (sizeChangerWidth <= 0)
                 {
-                    string tips = Localization.Provider?.GetLocalizedString("ItemsPerPage") ?? "条/页";
+                    string tips = Localization.Get("ItemsPerPage", "条/页");
                     var placeholder = pageSize.ToString() + " " + tips;
                     int width = GetSizeChangerWidth(placeholder);
                     if (InvokeRequired)
@@ -734,7 +729,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var size = g.MeasureString(placeholder, Font).Size();
+                    var size = g.MeasureString(placeholder, Font);
                     return size.Width + wsize + (int)Math.Ceiling(size.Height * 0.6F);
                 });
             }
@@ -742,7 +737,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var size = g.MeasureString(placeholder, Font).Size();
+                    var size = g.MeasureString(placeholder, Font);
                     return size.Width + wsize + (int)Math.Ceiling(size.Height * 1.32F);
                 });
             }

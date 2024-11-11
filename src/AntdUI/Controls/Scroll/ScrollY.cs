@@ -158,11 +158,11 @@ namespace AntdUI
         /// 渲染滚动条竖
         /// </summary>
         /// <param name="g"></param>
-        public virtual void Paint(Graphics g)
+        public virtual void Paint(Canvas g)
         {
             Paint(g, Style.Db.TextBase);
         }
-        public virtual void Paint(Graphics g, Color baseColor)
+        public virtual void Paint(Canvas g, Color baseColor)
         {
             if (Show)
             {
@@ -170,9 +170,8 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
                     {
-                        if (ShowX) g.FillRectangle(brush, new Rectangle(Rect.X, Rect.Y, Rect.Width, Rect.Height - SIZE));
-                        else g.FillRectangle(brush, Rect);
-                        //g.FillRectangle(brush, Rect);
+                        if (ShowX) g.Fill(brush, new Rectangle(Rect.X, Rect.Y, Rect.Width, Rect.Height - SIZE));
+                        else g.Fill(brush, Rect);
                     }
                 }
                 float height = (Rect.Height / VrValue) * Rect.Height;
@@ -186,12 +185,9 @@ namespace AntdUI
                     if (Slider.Y < 6) Slider.Y = 6;
                     else if (Slider.Y > (ShowX ? (Rect.Height - SIZE) : Rect.Height) - height - 6) Slider.Y = (ShowX ? (Rect.Height - SIZE) : Rect.Height) - height - 6;
                 }
-                using (var brush = new SolidBrush(Color.FromArgb(141, baseColor)))
+                using (var path = Slider.RoundPath(Slider.Width))
                 {
-                    using (var path = Slider.RoundPath(Slider.Width))
-                    {
-                        g.FillPath(brush, path);
-                    }
+                    g.Fill(Color.FromArgb(141, baseColor), path);
                 }
             }
         }

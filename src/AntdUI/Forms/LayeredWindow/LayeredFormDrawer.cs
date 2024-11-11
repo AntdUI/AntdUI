@@ -633,11 +633,8 @@ namespace AntdUI
                 var rect_read = DrawShadow(g, rect);
                 using (var path = rect_read.RoundPath(FrmRadius))
                 {
-                    using (var brush = new SolidBrush(Style.Db.BgElevated))
-                    {
-                        g.FillPath(brush, path);
-                    }
-                    if (tempContent != null) g.DrawImage(tempContent, new Rectangle(rect_read.X + padding, rect_read.Y + padding, tempContent.Width, tempContent.Height));
+                    g.Fill(Style.Db.BgElevated, path);
+                    if (tempContent != null) g.Image(tempContent, new Rectangle(rect_read.X + padding, rect_read.Y + padding, tempContent.Width, tempContent.Height));
                 }
             }
             return original_bmp;
@@ -649,7 +646,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="rect">客户区域</param>
-        Rectangle DrawShadow(Graphics g, Rectangle rect)
+        Rectangle DrawShadow(Canvas g, Rectangle rect)
         {
             var matrix = new ColorMatrix { Matrix33 = 0.3F };
             switch (config.Align)
@@ -668,7 +665,7 @@ namespace AntdUI
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.DrawImage(shadow_temp, new Rectangle(rect.Y, rect.Bottom - 80, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp, new Rectangle(rect.Y, rect.Bottom - 80, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                     return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - 20);
@@ -686,7 +683,7 @@ namespace AntdUI
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.DrawImage(shadow_temp, new Rectangle(rect.Y, rect.Y, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp, new Rectangle(rect.Y, rect.Y, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                     return new Rectangle(rect.X, rect.Y + 20, rect.Width, rect.Height - 20);
@@ -704,7 +701,7 @@ namespace AntdUI
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.DrawImage(shadow_temp, new Rectangle(rect.Right - 80, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp, new Rectangle(rect.Right - 80, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                     return new Rectangle(rect.X, rect.Y, rect.Width - 20, rect.Height);
@@ -723,7 +720,7 @@ namespace AntdUI
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.DrawImage(shadow_temp, new Rectangle(rect.X, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp, new Rectangle(rect.X, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                     return new Rectangle(rect.X + 20, rect.Y, rect.Width - 20, rect.Height);

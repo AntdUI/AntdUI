@@ -137,7 +137,7 @@ namespace AntdUI.Design
                     }
                     GetColorsPoint(bmp_colors);
                 }
-                g.DrawImage(bmp_colors, rect_colors);
+                g.Image(bmp_colors, rect_colors);
 
                 #endregion
 
@@ -152,11 +152,11 @@ namespace AntdUI.Design
                     }
                     GetHuePoint(bmp_hue);
                 }
-                g.DrawImage(bmp_hue, rect_hue);
+                g.Image(bmp_hue, rect_hue);
                 using (var path = rect_hue.RoundPath(rect_hue.Height))
                 {
                     path.AddRectangle(new Rectangle(rect_hue.X - 1, rect_hue.Y - 1, rect_hue.Width + 2, rect_hue.Height + 2));
-                    g.FillPath(brush_bg, path);
+                    g.Fill(brush_bg, path);
                 }
 
                 #endregion
@@ -180,11 +180,11 @@ namespace AntdUI.Design
                         PaintAlpha(g2, new Rectangle(0, 0, bmp_alpha.Width, bmp_alpha.Height), true);
                     }
                 }
-                g.DrawImage(bmp_alpha, rect_alpha);
+                g.Image(bmp_alpha, rect_alpha);
                 using (var path = rect_alpha.RoundPath(rect_alpha.Height))
                 {
                     path.AddRectangle(new Rectangle(rect_alpha.X - 1, rect_alpha.Y - 1, rect_alpha.Width + 2, rect_alpha.Height + 2));
-                    g.FillPath(brush_bg, path);
+                    g.Fill(brush_bg, path);
                 }
 
                 #endregion
@@ -207,7 +207,7 @@ namespace AntdUI.Design
 
                     var _rect_hue = new Rectangle(rect_hue.X + point_hue - gap / 2, rect_hue.Y + rect_hue.Height / 2 - gap / 2, gap, gap);
 
-                    g.DrawImage(bmp_dot_12, new Rectangle(rect_hue.X + point_hue - bmp_dot_12.Height / 2, rect_hue.Y + (rect_hue.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
+                    g.Image(bmp_dot_12, new Rectangle(rect_hue.X + point_hue - bmp_dot_12.Height / 2, rect_hue.Y + (rect_hue.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
                     g.FillEllipse(brush_hue, _rect_hue);
                     g.DrawEllipse(pen, _rect_hue);
 
@@ -218,7 +218,7 @@ namespace AntdUI.Design
                     brush_val.Color = color_alpha;
                     var _rect_alpha = new Rectangle(rect_alpha.X + point_alpha - gap / 2, rect_alpha.Y + rect_alpha.Height / 2 - gap / 2, gap, gap);
 
-                    g.DrawImage(bmp_dot_12, new Rectangle(rect_alpha.X + point_alpha - bmp_dot_12.Height / 2, rect_alpha.Y + (rect_alpha.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
+                    g.Image(bmp_dot_12, new Rectangle(rect_alpha.X + point_alpha - bmp_dot_12.Height / 2, rect_alpha.Y + (rect_alpha.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
                     g.FillEllipse(brush_val, _rect_alpha);
                     g.DrawEllipse(pen, _rect_alpha);
 
@@ -243,7 +243,7 @@ namespace AntdUI.Design
                     colors_rect.Add(rect_colors);
                     using (var brush = new SolidBrush(item))
                     {
-                        g.FillRectangle(brush, rect_colors);
+                        g.Fill(brush, rect_colors);
                     }
                     windex++;
                     if (windex > wr)
@@ -296,24 +296,24 @@ namespace AntdUI.Design
         Rectangle rect_colors_big;
         Rectangle rect_colors;
         Bitmap? bmp_colors = null;
-        void PaintColors(Graphics g, Rectangle rect)
+        void PaintColors(Canvas g, Rectangle rect)
         {
             using (var brush = new SolidBrush(ValueHue))
             {
-                g.FillRectangle(brush, rect);
+                g.Fill(brush, rect);
             }
             RectangleF w = new RectangleF(rect.X, rect.Y, rect.Width - 2F, rect.Height), b = new RectangleF(rect.X, rect.Y + 2F, rect.Width, rect.Height - 4F);
             using (var brush = new LinearGradientBrush(w, Color.White, Color.Transparent, 0F))
             {
-                g.FillRectangle(brush, w);
+                g.Fill(brush, w);
             }
             using (var brush = new LinearGradientBrush(b, Color.Transparent, Color.Black, 90F))
             {
-                g.FillRectangle(brush, b);
+                g.Fill(brush, b);
             }
             using (var brush = new SolidBrush(Color.Black))
             {
-                g.FillRectangle(brush, new RectangleF(rect.X, rect.Height - 2F, rect.Width, 2F));
+                g.Fill(brush, new RectangleF(rect.X, rect.Height - 2F, rect.Width, 2F));
             }
         }
         void GetColorsPoint(Bitmap bmp_colors)
@@ -340,7 +340,7 @@ namespace AntdUI.Design
         Rectangle rect_hue_big;
         Rectangle rect_hue;
         Bitmap? bmp_hue = null;
-        void PaintHue(Graphics g, Rectangle rect)
+        void PaintHue(Canvas g, Rectangle rect)
         {
             int width = (rect.Width - 4) / 6;
             Rectangle rect1 = new Rectangle(2, 0, width, rect.Height), rect2 = new Rectangle(rect1.X + width, 0, width, rect.Height),
@@ -349,31 +349,31 @@ namespace AntdUI.Design
 
             using (var brush = new SolidBrush(Color.FromArgb(255, 0, 0)))
             {
-                g.FillRectangle(brush, rect);
+                g.Fill(brush, rect);
             }
             using (var brush = new LinearGradientBrush(rect1, Color.FromArgb(255, 0, 0), Color.FromArgb(255, 255, 0), 0F))
             {
-                g.FillRectangle(brush, rect1);
+                g.Fill(brush, rect1);
             }
             using (var brush = new LinearGradientBrush(rect2, Color.FromArgb(255, 255, 0), Color.FromArgb(0, 255, 0), 0F))
             {
-                g.FillRectangle(brush, rect2);
+                g.Fill(brush, rect2);
             }
             using (var brush = new LinearGradientBrush(rect3, Color.FromArgb(0, 255, 0), Color.FromArgb(0, 255, 255), 0F))
             {
-                g.FillRectangle(brush, rect3);
+                g.Fill(brush, rect3);
             }
             using (var brush = new LinearGradientBrush(rect4, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 0, 255), 0F))
             {
-                g.FillRectangle(brush, rect4);
+                g.Fill(brush, rect4);
             }
             using (var brush = new LinearGradientBrush(rect5, Color.FromArgb(0, 0, 255), Color.FromArgb(255, 0, 255), 0F))
             {
-                g.FillRectangle(brush, rect5);
+                g.Fill(brush, rect5);
             }
             using (var brush = new LinearGradientBrush(rect6, Color.FromArgb(255, 0, 255), Color.FromArgb(255, 0, 0), 0F))
             {
-                g.FillRectangle(brush, rect6);
+                g.Fill(brush, rect6);
             }
         }
         void GetHuePoint(Bitmap bmp_hue)
@@ -423,7 +423,7 @@ namespace AntdUI.Design
         Rectangle rect_alpha;
         Bitmap? bmp_alpha = null, bmp_alpha_read = null;
         Color color_alpha = Color.White;
-        void PaintAlpha(Graphics g, Rectangle rect, bool add)
+        void PaintAlpha(Canvas g, Rectangle rect, bool add)
         {
             if (add)
             {
@@ -435,7 +435,7 @@ namespace AntdUI.Design
                     ad = !ad;
                     using (var brush = new SolidBrush(Style.Db.FillSecondary))
                     {
-                        g.FillRectangle(brush, new Rectangle(u_x, ad ? 0 : he, he, he));
+                        g.Fill(brush, new Rectangle(u_x, ad ? 0 : he, he, he));
                     }
                     u_x += he;
                 }
@@ -443,11 +443,11 @@ namespace AntdUI.Design
             rect.Offset(1, 0);
             using (var brush = new LinearGradientBrush(rect, Color.Transparent, ValueNAlpha, 0F))
             {
-                g.FillRectangle(brush, rect);
+                g.Fill(brush, rect);
             }
             using (var brush = new SolidBrush(ValueNAlpha))
             {
-                g.FillRectangle(brush, new Rectangle(rect.Width - 1, 0, 4, rect.Height));
+                g.Fill(brush, new Rectangle(rect.Width - 1, 0, 4, rect.Height));
             }
         }
         void GetAlphaPoint(Bitmap bmp_alpha)

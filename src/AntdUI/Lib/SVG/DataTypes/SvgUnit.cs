@@ -121,7 +121,7 @@ namespace AntdUI.Svg
                         break;
                     }
                 case SvgUnitType.Centimeter:
-                    _deviceValue = (float)((value / cmInInch) * ppi);
+                    _deviceValue = (value / cmInInch) * ppi;
                     break;
                 case SvgUnitType.Inch:
                     _deviceValue = value * ppi;

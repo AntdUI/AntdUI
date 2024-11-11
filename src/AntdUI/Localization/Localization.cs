@@ -16,6 +16,9 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.ComponentModel;
+using System.Windows.Forms;
+
 namespace AntdUI
 {
     /// <summary>
@@ -27,6 +30,61 @@ namespace AntdUI
         /// 本地化提供程序
         /// </summary>
         public static ILocalization? Provider { get; set; }
+
+        public static string Get(string id, string def) => Provider?.GetLocalizedString(id) ?? def;
+
+        /// <summary>
+        /// 加载语言
+        /// </summary>
+        /// <param name="form">加载语言的窗口</param>
+        public static void LoadLanguage<T>(Form form)
+        {
+            var resources = new ComponentResourceManager(typeof(T));
+            resources.ApplyResources(form, "$this");
+            Loading(form, resources);
+            if (form is BaseForm baseForm && baseForm.AutoHandDpi) baseForm.AutoDpi(baseForm);
+        }
+
+        /// <summary>
+        /// 加载语言
+        /// </summary>
+        /// <param name="control">控件</param>
+        /// <param name="resources">语言资源</param>
+        static void Loading(Control control, ComponentResourceManager resources)
+        {
+            if (control is MenuStrip ms)
+            {
+                //将资源与控件对应
+                resources.ApplyResources(control, control.Name);
+                if (ms.Items.Count > 0)
+                {
+                    foreach (ToolStripMenuItem c in ms.Items) Loading(c, resources);
+                }
+            }
+
+            foreach (Control c in control.Controls)
+            {
+                resources.ApplyResources(c, c.Name);
+                Loading(c, resources);
+            }
+        }
+
+        /// <summary>
+        /// 遍历菜单
+        /// </summary>
+        /// <param name="item">菜单项</param>
+        /// <param name="resources">语言资源</param>
+        static void Loading(ToolStripMenuItem item, ComponentResourceManager resources)
+        {
+            if (item is ToolStripMenuItem tsmi)
+            {
+                resources.ApplyResources(item, item.Name);
+                if (tsmi.DropDownItems.Count > 0)
+                {
+                    foreach (ToolStripMenuItem c in tsmi.DropDownItems) Loading(c, resources);
+                }
+            }
+        }
     }
 
     public interface ILocalization
@@ -35,6 +93,6 @@ namespace AntdUI
         /// 获取本地化字符串
         /// </summary>
         /// <returns>本地化字符串</returns>
-        string GetLocalizedString(string key);
+        string? GetLocalizedString(string key);
     }
 }

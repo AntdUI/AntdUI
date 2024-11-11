@@ -241,7 +241,7 @@ namespace AntdUI
             return false;
         }
 
-        protected override void PaintOtherBor(Graphics g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)
+        protected override void PaintOtherBor(Canvas g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)
         {
             if (hover_button.Animation || hover_button.Switch)
             {
@@ -253,42 +253,41 @@ namespace AntdUI
 
                 using (var path = rect_button.RoundPath(radius, false, true, true, false))
                 {
-                    using (var brush = new SolidBrush(back))
-                    { g.FillPath(brush, path); }
+                    g.Fill(back, path);
                 }
 
                 if (hover_button.Animation)
                 {
-                    using (var pen = new Pen(Helper.ToColor(hover_button.Value, borColor), 1 * Config.Dpi))
+                    using (var pen = new Pen(Helper.ToColor(hover_button.Value, borColor), Config.Dpi))
                     {
                         using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
                         {
-                            g.DrawPath(pen, path);
+                            g.Draw(pen, path);
                         }
                         using (var path = rect_button_bottom.RoundPath(radius, false, false, true, false))
                         {
-                            g.DrawPath(pen, path);
+                            g.Draw(pen, path);
                         }
                     }
                 }
                 else if (hover_button.Switch)
                 {
-                    using (var pen = new Pen(borColor, 1 * Config.Dpi))
+                    using (var pen = new Pen(borColor, Config.Dpi))
                     {
                         using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
                         {
-                            g.DrawPath(pen, path);
+                            g.Draw(pen, path);
                         }
                         using (var path = rect_button_bottom.RoundPath(radius, false, false, true, false))
                         {
-                            g.DrawPath(pen, path);
+                            g.Draw(pen, path);
                         }
                     }
                 }
 
                 if (hover_button_up.Animation)
                 {
-                    using (var pen_def = new Pen(borColor, 1 * Config.Dpi))
+                    using (var pen_def = new Pen(borColor, Config.Dpi))
                     {
                         g.DrawLines(pen_def, TAlignMini.Top.TriangleLines(rect_button_up));
                         using (var brush_hove = new Pen(Helper.ToColor(hover_button_up.Value, borderActive), pen_def.Width))
@@ -299,14 +298,14 @@ namespace AntdUI
                 }
                 else if (hover_button_up.Switch)
                 {
-                    using (var pen = new Pen(borderActive, 1 * Config.Dpi))
+                    using (var pen = new Pen(borderActive, Config.Dpi))
                     {
                         g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_button_up));
                     }
                 }
                 else
                 {
-                    using (var pen_def = new Pen(borColor, 1 * Config.Dpi))
+                    using (var pen_def = new Pen(borColor, Config.Dpi))
                     {
                         g.DrawLines(pen_def, TAlignMini.Top.TriangleLines(rect_button_up));
                     }
@@ -314,7 +313,7 @@ namespace AntdUI
 
                 if (hover_button_bottom.Animation)
                 {
-                    using (var pen_def = new Pen(borColor, 1 * Config.Dpi))
+                    using (var pen_def = new Pen(borColor, Config.Dpi))
                     {
                         g.DrawLines(pen_def, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                         using (var brush_hove = new Pen(Helper.ToColor(hover_button_bottom.Value, borderActive), pen_def.Width))
@@ -325,14 +324,14 @@ namespace AntdUI
                 }
                 else if (hover_button_bottom.Switch)
                 {
-                    using (var pen = new Pen(borderActive, 1 * Config.Dpi))
+                    using (var pen = new Pen(borderActive, Config.Dpi))
                     {
                         g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                     }
                 }
                 else
                 {
-                    using (var pen_def = new Pen(borColor, 1 * Config.Dpi))
+                    using (var pen_def = new Pen(borColor, Config.Dpi))
                     {
                         g.DrawLines(pen_def, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                     }
@@ -446,9 +445,10 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            base.OnMouseWheel(e);
+            if (ReadOnly) return;
             if (e.Delta > 0) Value = currentValue + Increment;
             else Value = currentValue - Increment;
-            base.OnMouseWheel(e);
         }
 
         #endregion

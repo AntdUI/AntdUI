@@ -113,7 +113,7 @@ namespace AntdUI
             int y = rect.Y;
             Helper.GDI(g =>
             {
-                var size_def = g.MeasureString(Config.NullText, Font).Size();
+                var size_def = g.MeasureString(Config.NullText, Font);
                 int text_size = size_def.Height;
                 float pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
                 int gap = (int)Math.Round(8F * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D),
@@ -132,13 +132,13 @@ namespace AntdUI
 
                     if (it.Visible)
                     {
-                        var size = g.MeasureString(it.Text, Font, max_w).Size();
+                        var size = g.MeasureString(it.Text, Font, max_w);
 
                         it.ico_rect = new Rectangle(rect.X + gap_x, y + (text_size - ico_size) / 2, ico_size, ico_size);
                         it.txt_rect = new Rectangle(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
                         if (!string.IsNullOrEmpty(it.Description))
                         {
-                            var DescriptionSize = g.MeasureString(it.Description, font_Description, max_w).Size();
+                            var DescriptionSize = g.MeasureString(it.Description, font_Description, max_w);
                             it.description_rect = new Rectangle(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
                             y += gap * 2 + DescriptionSize.Height;
                         }
@@ -185,10 +185,7 @@ namespace AntdUI
             Color color_fore = fore ?? Style.Db.Text;
             using (var brush_split = new SolidBrush(Style.Db.Split))
             {
-                foreach (var it in splits)
-                {
-                    g.FillRectangle(brush_split, it);
-                }
+                foreach (var it in splits) g.Fill(brush_split, it);
             }
             var font_Description = FontDescription ?? Font;
             using (var brush_fore = new SolidBrush(color_fore))
@@ -199,8 +196,8 @@ namespace AntdUI
                 {
                     if (it.Visible)
                     {
-                        g.DrawStr(it.Text, Font, brush_fore, it.txt_rect, stringFormatLeft);
-                        g.DrawStr(it.Description, font_Description, brush_fore2, it.description_rect, stringFormatLeft);
+                        g.String(it.Text, Font, brush_fore, it.txt_rect, stringFormatLeft);
+                        g.String(it.Description, font_Description, brush_fore2, it.description_rect, stringFormatLeft);
                         if (PaintIcon(g, it, color_fore))
                         {
                             Color fill;
@@ -232,10 +229,7 @@ namespace AntdUI
                             }
 
                             g.FillEllipse(brush_dotback, it.ico_rect);
-                            using (var pen = new Pen(fill, it.pen_w))
-                            {
-                                g.DrawEllipse(pen, it.ico_rect);
-                            }
+                            g.DrawEllipse(fill, it.pen_w, it.ico_rect);
                         }
                     }
                 }
@@ -246,9 +240,9 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        bool PaintIcon(Graphics g, TimelineItem it, Color fore)
+        bool PaintIcon(Canvas g, TimelineItem it, Color fore)
         {
-            if (it.Icon != null) { g.DrawImage(it.Icon, it.ico_rect); return false; }
+            if (it.Icon != null) { g.Image(it.Icon, it.ico_rect); return false; }
             else if (it.IconSvg != null)
             {
                 if (g.GetImgExtend(it.IconSvg, it.ico_rect, fore)) return false;

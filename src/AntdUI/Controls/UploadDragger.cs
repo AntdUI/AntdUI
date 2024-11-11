@@ -77,6 +77,7 @@ namespace AntdUI
         /// 文本描述
         /// </summary>
         [Description("文本描述"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? TextDesc
         {
             get => textDesc;
@@ -281,15 +282,12 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             using (var path = rect.RoundPath(_radius))
             {
-                using (var brush = new SolidBrush(back ?? Style.Db.FillQuaternary))
-                {
-                    g.FillPath(brush, path);
-                }
-                if (backImage != null) g.PaintImg(rect, backImage, backFit, _radius, false);
+                g.Fill(back ?? Style.Db.FillQuaternary, path);
+                if (backImage != null) g.Image(rect, backImage, backFit, _radius, false);
 
                 #region 渲染主体
 
-                var size = g.MeasureString(Config.NullText, Font).Size();
+                var size = g.MeasureString(Config.NullText, Font);
                 int sp = (int)(4 * Config.Dpi), gap = (int)(16 * Config.Dpi), gap2 = gap * 2, icon_size = (int)(size.Height * iconratio);
 
                 if (string.IsNullOrWhiteSpace(iconSvg) && icon == null)
@@ -300,24 +298,24 @@ namespace AntdUI
                         Rectangle rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height);
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawStr(text, Font, brush, rect_text, s_f);
+                            g.String(text, Font, brush, rect_text, s_f);
                         }
                     }
                     else
                     {
                         using (var font_desc = new Font(Font.FontFamily, Font.Size * .875F))
                         {
-                            var size_desc = g.MeasureString(textDesc, font_desc, rect.Width - gap2).Size();
+                            var size_desc = g.MeasureString(textDesc, font_desc, rect.Width - gap2);
                             int th = sp + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
                             Rectangle rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
                             using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                             {
-                                g.DrawStr(text, Font, brush, rect_text, s_f);
+                                g.String(text, Font, brush, rect_text, s_f);
                             }
                             using (var brush = new SolidBrush(Style.Db.TextTertiary))
                             {
-                                g.DrawStr(textDesc, font_desc, brush, rect_desc, s_f);
+                                g.String(textDesc, font_desc, brush, rect_desc, s_f);
                             }
                         }
                     }
@@ -330,30 +328,30 @@ namespace AntdUI
                         Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                             rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height);
                         if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Style.Db.Primary);
-                        if (icon != null) g.DrawImage(icon, rect_icon);
+                        if (icon != null) g.Image(icon, rect_icon);
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.DrawStr(text, Font, brush, rect_text, s_f);
+                            g.String(text, Font, brush, rect_text, s_f);
                         }
                     }
                     else
                     {
                         using (var font_desc = new Font(Font.FontFamily, Font.Size * .875F))
                         {
-                            var size_desc = g.MeasureString(textDesc, font_desc, rect.Width - gap2).Size();
+                            var size_desc = g.MeasureString(textDesc, font_desc, rect.Width - gap2);
                             int th = sp + gap + icon_size + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
                             Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                                 rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
                             if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Style.Db.Primary);
-                            if (icon != null) g.DrawImage(icon, rect_icon);
+                            if (icon != null) g.Image(icon, rect_icon);
                             using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                             {
-                                g.DrawStr(text, Font, brush, rect_text, s_f);
+                                g.String(text, Font, brush, rect_text, s_f);
                             }
                             using (var brush = new SolidBrush(Style.Db.TextTertiary))
                             {
-                                g.DrawStr(textDesc, font_desc, brush, rect_desc, s_f);
+                                g.String(textDesc, font_desc, brush, rect_desc, s_f);
                             }
                         }
                     }
@@ -366,31 +364,11 @@ namespace AntdUI
                     var borw = borderWidth * Config.Dpi;
                     if (AnimationHover)
                     {
-                        using (var brush = new Pen(borderColor ?? Style.Db.BorderColor, borw))
-                        {
-                            g.DrawPath(brush, path);
-                        }
-                        using (var brush = new Pen(Helper.ToColor(AnimationHoverValue, Style.Db.PrimaryHover), borw))
-                        {
-                            g.DrawPath(brush, path);
-                        }
+                        g.Draw(borderColor ?? Style.Db.BorderColor, borw, path);
+                        g.Draw(Helper.ToColor(AnimationHoverValue, Style.Db.PrimaryHover), borw, path);
                     }
-                    else if (ExtraMouseHover)
-                    {
-                        using (var brush_bor = new Pen(Style.Db.PrimaryHover, borw))
-                        {
-                            brush_bor.DashStyle = borderStyle;
-                            g.DrawPath(brush_bor, path);
-                        }
-                    }
-                    else
-                    {
-                        using (var brush_bor = new Pen(borderColor ?? Style.Db.BorderColor, borw))
-                        {
-                            brush_bor.DashStyle = borderStyle;
-                            g.DrawPath(brush_bor, path);
-                        }
-                    }
+                    else if (ExtraMouseHover) g.Draw(Style.Db.PrimaryHover, borw, borderStyle, path);
+                    else g.Draw(borderColor ?? Style.Db.BorderColor, borw, borderStyle, path);
                 }
             }
             this.PaintBadge(g);

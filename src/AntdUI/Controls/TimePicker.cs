@@ -100,14 +100,14 @@ namespace AntdUI
             get => showicon;
         }
 
-        protected override void PaintRIcon(Graphics g, Rectangle rect_r)
+        protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
             if (showicon)
             {
                 using (var bmp = SvgDb.IcoTime.SvgToBmp(rect_r.Width, rect_r.Height, Style.Db.TextQuaternary))
                 {
                     if (bmp == null) return;
-                    g.DrawImage(bmp, rect_r);
+                    g.Image(bmp, rect_r);
                 }
             }
         }
@@ -194,16 +194,8 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape && subForm != null)
-            {
-                subForm.IClose();
-                return true;
-            }
-            else if (keyData == Keys.Down && subForm == null)
-            {
-                ExpandDrop = true;
-                return true;
-            }
+            if (keyData == Keys.Escape && subForm != null) subForm.IClose();
+            else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
             else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d))
             {
                 Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);

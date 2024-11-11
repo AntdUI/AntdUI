@@ -334,7 +334,7 @@ namespace AntdUI
     public static class MsgQueue
     {
         static ManualResetEvent _event = new ManualResetEvent(false);
-        static ConcurrentQueue<object> queue = new ConcurrentQueue<object>(), queue_cache = new ConcurrentQueue<object>();
+        internal static ConcurrentQueue<object> queue = new ConcurrentQueue<object>(), queue_cache = new ConcurrentQueue<object>();
         internal static List<string> volley = new List<string>();
 
         #region 添加队列
@@ -401,7 +401,15 @@ namespace AntdUI
         {
             if (config.Form.IsHandleCreated)
             {
-                if (config.ID != null && volley.Contains("N" + config.ID)) return false;
+                if (config.ID != null)
+                {
+                    string key = "N" + config.ID;
+                    if (volley.Contains(key))
+                    {
+                        volley.Remove(key);
+                        return false;
+                    }
+                }
                 bool ishand = false;
                 config.Form.Invoke(new Action(() =>
                 {
@@ -430,7 +438,15 @@ namespace AntdUI
         {
             if (config.Form.IsHandleCreated)
             {
-                if (config.ID != null && volley.Contains("M" + config.ID)) return false;
+                if (config.ID != null)
+                {
+                    string key = "M" + config.ID;
+                    if (volley.Contains(key))
+                    {
+                        volley.Remove(key);
+                        return false;
+                    }
+                }
                 bool ishand = false;
                 config.Form.Invoke(new Action(() =>
                 {

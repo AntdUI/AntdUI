@@ -24,9 +24,10 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormFloatButton : ILayeredFormOpacity, IEventListener
+    internal class LayeredFormFloatButton : ILayeredFormOpacity, FormFloatButton, IEventListener
     {
-        FloatButton.Config config;
+        public FloatButton.Config config { get; private set; }
+
         int BadgeSize = 6, ShadowXY;
         public LayeredFormFloatButton(FloatButton.Config _config)
         {
@@ -76,12 +77,56 @@ namespace AntdUI
             config.Form.LocationChanged += Form_LSChanged;
             config.Form.SizeChanged += Form_LSChanged;
         }
-
         private void Notify_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (sender == null || e.PropertyName == null) return;
-            Print();
+            if (e.PropertyName == "Loading")
+            {
+                var loading = HasLoading;
+                if (Loading == loading) return;
+                Loading = loading;
+                if (loading)
+                {
+                    ThreadLoading = new ITask(this, i =>
+                    {
+                        foreach (var it in config.Btns)
+                        {
+                            if (it.Loading) it.AnimationLoadingValue = i;
+                        }
+                        Print();
+                        return Loading;
+                    }, 10, 360, 6, () =>
+                    {
+                        Print();
+                    });
+                }
+                else
+                {
+                    ThreadLoading?.Dispose();
+                    ThreadLoading = null;
+                    Print();
+                }
+            }
+            else Print();
         }
+
+        #region Loading
+
+        bool Loading = false;
+        bool HasLoading
+        {
+            get
+            {
+                foreach (var it in config.Btns)
+                {
+                    if (it.Loading) return true;
+                }
+                return false;
+            }
+        }
+        ITask? ThreadLoading = null;
+
+        #endregion
 
         bool SetPoint()
         {
@@ -178,61 +223,98 @@ namespace AntdUI
                 {
                     using (var path = DrawShadow(g, it))
                     {
-                        Color back, back_hover, fore;
-                        switch (it.Type)
+                        if (it.Loading)
                         {
-                            case TTypeMini.Primary:
-                                back = Style.Db.Primary;
-                                back_hover = Style.Db.PrimaryHover;
-                                fore = Style.Db.PrimaryColor;
-                                break;
-                            case TTypeMini.Success:
-                                back = Style.Db.Success;
-                                back_hover = Style.Db.SuccessHover;
-                                fore = Style.Db.SuccessColor;
-                                break;
-                            case TTypeMini.Error:
-                                back = Style.Db.Error;
-                                back_hover = Style.Db.ErrorHover;
-                                fore = Style.Db.ErrorColor;
-                                break;
-                            case TTypeMini.Warn:
-                                back = Style.Db.Warning;
-                                back_hover = Style.Db.WarningHover;
-                                fore = Style.Db.WarningColor;
-                                break;
-                            case TTypeMini.Info:
-                                back = Style.Db.Info;
-                                back_hover = Style.Db.InfoHover;
-                                fore = Style.Db.InfoColor;
-                                break;
-                            default:
-                                back = Style.Db.BgElevated;
-                                back_hover = Style.Db.FillSecondary;
-                                fore = Style.Db.Text;
-                                break;
-                        }
-                        if (it.Fore.HasValue) fore = it.Fore.Value;
-
-                        using (var brush = new SolidBrush(back))
-                        {
-                            g.FillPath(brush, path);
-                        }
-                        if (it.hover)
-                        {
-                            using (var brush = new SolidBrush(back_hover))
+                            Color back, fore;
+                            switch (it.Type)
                             {
-                                g.FillPath(brush, path);
+                                case TTypeMini.Primary:
+                                    back = Style.Db.Primary;
+                                    fore = Style.Db.PrimaryColor;
+                                    break;
+                                case TTypeMini.Success:
+                                    back = Style.Db.Success;
+                                    fore = Style.Db.SuccessColor;
+                                    break;
+                                case TTypeMini.Error:
+                                    back = Style.Db.Error;
+                                    fore = Style.Db.ErrorColor;
+                                    break;
+                                case TTypeMini.Warn:
+                                    back = Style.Db.Warning;
+                                    fore = Style.Db.WarningColor;
+                                    break;
+                                case TTypeMini.Info:
+                                    back = Style.Db.Info;
+                                    fore = Style.Db.InfoColor;
+                                    break;
+                                default:
+                                    back = Style.Db.BgElevated;
+                                    fore = Style.Db.Text;
+                                    break;
+                            }
+                            if (it.Fore.HasValue) fore = it.Fore.Value;
+
+                            g.Fill(back, path);
+
+                            float loading_size = it.rect_read.Height * 0.06F;
+                            using (var brush = new Pen(fore, loading_size))
+                            {
+                                brush.StartCap = brush.EndCap = LineCap.Round;
+                                g.DrawArc(brush, it.rect_icon, it.AnimationLoadingValue, it.LoadingValue * 360F);
                             }
                         }
-                        if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.rect_icon, fore);
-                        else if (it.Icon != null) g.DrawImage(it.Icon, it.rect_icon);
                         else
                         {
-                            using (var brush = new SolidBrush(fore))
+                            Color back, back_hover, fore;
+                            if (it.Enabled)
                             {
-                                g.DrawStr(it.Text, Font, brush, it.rect_read, stringCenter);
+                                switch (it.Type)
+                                {
+                                    case TTypeMini.Primary:
+                                        back = Style.Db.Primary;
+                                        back_hover = Style.Db.PrimaryHover;
+                                        fore = Style.Db.PrimaryColor;
+                                        break;
+                                    case TTypeMini.Success:
+                                        back = Style.Db.Success;
+                                        back_hover = Style.Db.SuccessHover;
+                                        fore = Style.Db.SuccessColor;
+                                        break;
+                                    case TTypeMini.Error:
+                                        back = Style.Db.Error;
+                                        back_hover = Style.Db.ErrorHover;
+                                        fore = Style.Db.ErrorColor;
+                                        break;
+                                    case TTypeMini.Warn:
+                                        back = Style.Db.Warning;
+                                        back_hover = Style.Db.WarningHover;
+                                        fore = Style.Db.WarningColor;
+                                        break;
+                                    case TTypeMini.Info:
+                                        back = Style.Db.Info;
+                                        back_hover = Style.Db.InfoHover;
+                                        fore = Style.Db.InfoColor;
+                                        break;
+                                    default:
+                                        back = Style.Db.BgElevated;
+                                        back_hover = Style.Db.FillSecondary;
+                                        fore = Style.Db.Text;
+                                        break;
+                                }
+                                if (it.Fore.HasValue) fore = it.Fore.Value;
                             }
+                            else
+                            {
+                                back = back_hover = Style.Db.FillTertiary;
+                                fore = Style.Db.TextQuaternary;
+                            }
+
+                            g.Fill(back, path);
+                            if (it.hover) g.Fill(back_hover, path);
+                            if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.rect_icon, fore);
+                            else if (it.Icon != null) g.Image(it.Icon, it.rect_icon);
+                            else g.String(it.Text, Font, fore, it.rect_read, stringCenter);
                         }
                         PrintBadge(g, it);
                     }
@@ -243,7 +325,7 @@ namespace AntdUI
 
         readonly StringFormat stringBadge = Helper.SF_NoWrap();
 
-        void PrintBadge(Graphics g, FloatButton.ConfigBtn it)
+        void PrintBadge(Canvas g, FloatButton.ConfigBtn it)
         {
             if (it.Badge != null)
             {
@@ -254,50 +336,32 @@ namespace AntdUI
                     if (it.Badge == " ")
                     {
                         var rect_badge = new Rectangle(it.rect_read.Right - BadgeSize, it.rect_read.Y, BadgeSize, BadgeSize);
-                        using (var brush = new SolidBrush(color))
-                        {
-                            g.FillEllipse(brush, rect_badge);
-                            using (var pen = new Pen(brush_fore.Color, 1F))
-                            {
-                                g.DrawEllipse(pen, rect_badge);
-                            }
-                        }
+                        g.FillEllipse(color, rect_badge);
+                        g.DrawEllipse(color, Config.Dpi, rect_badge);
                     }
                     else
                     {
                         using (var font = new Font(Font.FontFamily, it.BadgeSize))
                         {
                             var size = g.MeasureString(it.Badge, font);
-                            float size_badge = size.Height * 1.2F, size_badge2 = size_badge * 0.4F;
+                            int size_badge = (int)(size.Height * 1.2F), size_badge2 = (int)(size_badge * .4F);
                             if (size.Height > size.Width)
                             {
-                                var rect_badge = new RectangleF(it.rect_read.Right + size_badge2 - size_badge, it.rect_read.Y - size_badge2, size_badge, size_badge);
-                                using (var brush = new SolidBrush(color))
-                                {
-                                    g.FillEllipse(brush, rect_badge);
-                                    using (var pen = new Pen(brush_fore.Color, 1F))
-                                    {
-                                        g.DrawEllipse(pen, rect_badge);
-                                    }
-                                }
-                                g.DrawStr(it.Badge, font, brush_fore, rect_badge, stringBadge);
+                                var rect_badge = new Rectangle(it.rect_read.Right + size_badge2 - size_badge, it.rect_read.Y - size_badge2, size_badge, size_badge);
+                                g.FillEllipse(color, rect_badge);
+                                g.DrawEllipse(color, Config.Dpi, rect_badge);
+                                g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
                             else
                             {
-                                var w_badge = size.Width * 1.2F;
-                                var rect_badge = new RectangleF(it.rect_read.Right + size_badge2 - w_badge, it.rect_read.Y - size_badge2, w_badge, size_badge);
-                                using (var brush = new SolidBrush(color))
+                                int w_badge = size.Width + (size_badge - size.Height);
+                                var rect_badge = new Rectangle(it.rect_read.Right + size_badge2 - w_badge, it.rect_read.Y - size_badge2, w_badge, size_badge);
+                                using (var path = rect_badge.RoundPath(rect_badge.Height))
                                 {
-                                    using (var path = rect_badge.RoundPath(rect_badge.Height))
-                                    {
-                                        g.FillPath(brush, path);
-                                        using (var pen = new Pen(brush_fore.Color, 1F))
-                                        {
-                                            g.DrawPath(pen, path);
-                                        }
-                                    }
+                                    g.Fill(color, path);
+                                    g.Draw(color, Config.Dpi, path);
                                 }
-                                g.DrawStr(it.Badge, font, brush_fore, rect_badge, stringBadge);
+                                g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
                             }
                         }
                     }
@@ -309,12 +373,12 @@ namespace AntdUI
         /// 绘制阴影
         /// </summary>
         /// <param name="g">GDI</param>
-        GraphicsPath DrawShadow(Graphics g, FloatButton.ConfigBtn it)
+        GraphicsPath DrawShadow(Canvas g, FloatButton.ConfigBtn it)
         {
             bool round = it.Round;
             float radius = round ? it.rect_read.Height : it.Radius * Config.Dpi;
             var path = Helper.RoundPath(it.rect_read, radius, round);
-            if (Config.ShadowEnabled)
+            if (Config.ShadowEnabled && it.Enabled)
             {
                 if (it.shadow_temp == null || (it.shadow_temp.Width != it.rect.Width || it.shadow_temp.Height != it.rect.Height))
                 {
@@ -328,7 +392,7 @@ namespace AntdUI
                 {
                     var matrix = new ColorMatrix { Matrix33 = 0.2F };
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + 6, it.rect.Width, it.rect.Height), 0, 0, it.rect.Width, it.rect.Height, GraphicsUnit.Pixel, attributes);
+                    g.Image(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + 6, it.rect.Width, it.rect.Height), 0, 0, it.rect.Width, it.rect.Height, GraphicsUnit.Pixel, attributes);
                 }
             }
             return path;
@@ -339,12 +403,13 @@ namespace AntdUI
         #region 鼠标
 
         TooltipForm? tooltipForm = null;
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             int count = 0, hand = 0;
             foreach (var it in config.Btns)
             {
-                if (it.rect.Contains(e.Location))
+                if (it.Enabled && !it.Loading && it.rect.Contains(e.Location))
                 {
                     hand++;
                     if (!it.hover)
@@ -398,7 +463,7 @@ namespace AntdUI
             {
                 foreach (var it in config.Btns)
                 {
-                    if (it.rect.Contains(e.Location))
+                    if (it.Enabled && !it.Loading && it.rect.Contains(e.Location))
                     {
                         config.Call.Invoke(it);
                         return;
@@ -420,6 +485,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            ThreadLoading?.Dispose();
             config.Form.LocationChanged -= Form_LSChanged;
             config.Form.SizeChanged -= Form_LSChanged;
             foreach (var it in config.Btns) it.PropertyChanged -= Notify_PropertyChanged;
@@ -437,5 +503,15 @@ namespace AntdUI
         }
 
         #endregion
+    }
+
+    public interface FormFloatButton
+    {
+        FloatButton.Config config { get; }
+        void Close();
+        void Dispose();
+        void Show();
+        void Show(IWin32Window owner);
+        void Hide();
     }
 }

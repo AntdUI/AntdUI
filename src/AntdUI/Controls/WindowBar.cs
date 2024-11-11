@@ -66,6 +66,7 @@ namespace AntdUI
 
         string? desc = null;
         [Description("副标题"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? SubText
         {
             get => desc;
@@ -379,7 +380,7 @@ namespace AntdUI
                 fillsecondary = Style.rgba(forebase, 0.12F);
             }
 
-            int icon_size = (int)size.Height, iocn_xy = (rect.Height - icon_size) / 2;
+            int icon_size = size.Height, iocn_xy = (rect.Height - icon_size) / 2;
             if (loading || iconSvg != null || icon != null || showicon)
             {
                 var rect_icon = new Rectangle(rect.X + iocn_xy, rect.Y + iocn_xy, icon_size, icon_size);
@@ -400,7 +401,7 @@ namespace AntdUI
                 {
                     if (icon != null)
                     {
-                        g.DrawImage(icon, rect_icon);
+                        g.Image(icon, rect_icon);
                         showLeft = true;
                     }
                     else if (showicon)
@@ -408,7 +409,7 @@ namespace AntdUI
                         var form = Parent.FindPARENT();
                         if (form != null && form.Icon != null)
                         {
-                            g.DrawIcon(form.Icon, rect_icon);
+                            g.Icon(form.Icon, rect_icon);
                             showLeft = true;
                         }
                     }
@@ -425,12 +426,12 @@ namespace AntdUI
 
             using (var brush = new SolidBrush(forebase))
             {
-                g.DrawStr(text, Font, brush, rect, stringLeft);
+                g.String(text, Font, brush, rect, stringLeft);
                 if (desc != null)
                 {
                     using (var brushsub = new SolidBrush(foreSecondary))
                     {
-                        g.DrawStr(desc, Font, brushsub, new RectangleF(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
+                        g.String(desc, Font, brushsub, new Rectangle(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
                     }
                 }
             }
@@ -443,7 +444,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Style.Db.ErrorActive))
                 {
-                    g.FillRectangle(brush, rect_close);
+                    g.Fill(brush, rect_close);
                 }
                 PrintCloseHover(g, rect_close_icon);
             }
@@ -451,7 +452,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Helper.ToColor(hove_close.Value, Style.Db.Error)))
                 {
-                    g.FillRectangle(brush, rect_close);
+                    g.Fill(brush, rect_close);
                 }
                 PrintClose(g, fore, rect_close_icon);
                 g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Style.Db.ErrorColor));
@@ -460,7 +461,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(Style.Db.Error))
                 {
-                    g.FillRectangle(brush, rect_close);
+                    g.Fill(brush, rect_close);
                 }
                 PrintCloseHover(g, rect_close_icon);
             }
@@ -473,21 +474,21 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Helper.ToColor(hove_max.Value, fillsecondary)))
                     {
-                        g.FillRectangle(brush, rect_max);
+                        g.Fill(brush, rect_max);
                     }
                 }
                 else if (hove_max.Switch)
                 {
                     using (var brush = new SolidBrush(fillsecondary))
                     {
-                        g.FillRectangle(brush, rect_max);
+                        g.Fill(brush, rect_max);
                     }
                 }
                 if (hove_max.Down)
                 {
                     using (var brush = new SolidBrush(fillsecondary))
                     {
-                        g.FillRectangle(brush, rect_max);
+                        g.Fill(brush, rect_max);
                     }
                 }
                 if (IsMax) PrintRestore(g, fore, rect_max_icon);
@@ -500,21 +501,21 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Helper.ToColor(hove_min.Value, fillsecondary)))
                     {
-                        g.FillRectangle(brush, rect_min);
+                        g.Fill(brush, rect_min);
                     }
                 }
                 else if (hove_min.Switch)
                 {
                     using (var brush = new SolidBrush(fillsecondary))
                     {
-                        g.FillRectangle(brush, rect_min);
+                        g.Fill(brush, rect_min);
                     }
                 }
                 if (hove_min.Down)
                 {
                     using (var brush = new SolidBrush(fillsecondary))
                     {
-                        g.FillRectangle(brush, rect_min);
+                        g.Fill(brush, rect_min);
                     }
                 }
                 PrintMin(g, fore, rect_min_icon);
@@ -530,7 +531,7 @@ namespace AntdUI
                 int margin = (int)(dividerMargin * Config.Dpi);
                 using (var brush = dividerColor.Brush(Style.Db.Split))
                 {
-                    g.FillRectangle(brush, new RectangleF(rect_.X + margin, rect_.Bottom - thickness, rect_.Width - margin * 2, thickness));
+                    g.Fill(brush, new RectangleF(rect_.X + margin, rect_.Bottom - thickness, rect_.Width - margin * 2, thickness));
                 }
             }
             base.OnPaint(e);
@@ -540,59 +541,59 @@ namespace AntdUI
 
         Bitmap? temp_logo = null, temp_min = null, temp_max = null, temp_restore = null, temp_close = null, temp_close_hover = null;
 
-        void PrintClose(Graphics g, Color color, Rectangle rect_icon)
+        void PrintClose(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_close == null || temp_close.Width != rect_icon.Width)
             {
                 temp_close?.Dispose();
                 temp_close = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_icon, color);
             }
-            if (temp_close != null) g.DrawImage(temp_close, rect_icon);
+            if (temp_close != null) g.Image(temp_close, rect_icon);
         }
-        void PrintCloseHover(Graphics g, Rectangle rect_icon)
+        void PrintCloseHover(Canvas g, Rectangle rect_icon)
         {
             if (temp_close_hover == null || temp_close_hover.Width != rect_icon.Width)
             {
                 temp_close_hover?.Dispose();
                 temp_close_hover = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_icon, Style.Db.ErrorColor);
             }
-            if (temp_close_hover != null) g.DrawImage(temp_close_hover, rect_icon);
+            if (temp_close_hover != null) g.Image(temp_close_hover, rect_icon);
         }
-        void PrintMax(Graphics g, Color color, Rectangle rect_icon)
+        void PrintMax(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_max == null || temp_max.Width != rect_icon.Width)
             {
                 temp_max?.Dispose();
                 temp_max = SvgExtend.GetImgExtend(SvgDb.IcoAppMax, rect_icon, color);
             }
-            if (temp_max != null) g.DrawImage(temp_max, rect_icon);
+            if (temp_max != null) g.Image(temp_max, rect_icon);
         }
-        void PrintRestore(Graphics g, Color color, Rectangle rect_icon)
+        void PrintRestore(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_restore == null || temp_restore.Width != rect_icon.Width)
             {
                 temp_restore?.Dispose();
                 temp_restore = SvgExtend.GetImgExtend(SvgDb.IcoAppRestore, rect_icon, color);
             }
-            if (temp_restore != null) g.DrawImage(temp_restore, rect_icon);
+            if (temp_restore != null) g.Image(temp_restore, rect_icon);
         }
-        void PrintMin(Graphics g, Color color, Rectangle rect_icon)
+        void PrintMin(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_min == null || temp_min.Width != rect_icon.Width)
             {
                 temp_min?.Dispose();
                 temp_min = SvgExtend.GetImgExtend(SvgDb.IcoAppMin, rect_icon, color);
             }
-            if (temp_min != null) g.DrawImage(temp_min, rect_icon);
+            if (temp_min != null) g.Image(temp_min, rect_icon);
         }
-        bool PrintLogo(Graphics g, string svg, Color color, Rectangle rect_icon)
+        bool PrintLogo(Canvas g, string svg, Color color, Rectangle rect_icon)
         {
             if (temp_logo == null || temp_logo.Width != rect_icon.Width)
             {
                 temp_logo?.Dispose();
                 temp_logo = SvgExtend.GetImgExtend(svg, rect_icon, color);
             }
-            if (temp_logo != null) { g.DrawImage(temp_logo, rect_icon); return true; }
+            if (temp_logo != null) { g.Image(temp_logo, rect_icon); return true; }
             return false;
         }
 

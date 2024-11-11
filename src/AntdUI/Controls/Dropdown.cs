@@ -61,6 +61,12 @@ namespace AntdUI
         public int MaxCount { get; set; } = 4;
 
         /// <summary>
+        /// 下拉圆角
+        /// </summary>
+        [Description("下拉圆角"), Category("外观"), DefaultValue(null)]
+        public int? DropDownRadius { get; set; }
+
+        /// <summary>
         /// 下拉箭头是否显示
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
@@ -96,6 +102,13 @@ namespace AntdUI
             }
             set => items = value;
         }
+
+        /// <summary>
+        /// 选中值
+        /// </summary>
+        [Browsable(false)]
+        [Description("选中值"), Category("数据"), DefaultValue(null)]
+        public object? SelectedValue { get; set; }
 
         /// <summary>
         /// SelectedValue 属性值更改时发生

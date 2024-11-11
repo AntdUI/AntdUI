@@ -129,10 +129,10 @@ namespace AntdUI
                         {
                             using (var path = rect.RoundPath(Radius))
                             {
-                                g.FillPath(brush, path);
+                                g.Fill(brush, path);
                             }
                         }
-                        else g.FillRectangle(brush, rect);
+                        else g.Fill(brush, rect);
                     }
                 }
             }

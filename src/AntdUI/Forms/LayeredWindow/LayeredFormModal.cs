@@ -199,7 +199,7 @@ namespace AntdUI
                         };
                         if (_config.Icon == TType.None)
                         {
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size();
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
 
                             int h = sizeTitle.Height + gap + control.Height + butt_h;
 
@@ -209,10 +209,10 @@ namespace AntdUI
                         }
                         else
                         {
-                            var sizeT = g.MeasureString(Config.NullText, fontTitle).Size();
+                            var sizeT = g.MeasureString(Config.NullText, fontTitle);
                             int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size();
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
                             int h = sizeTitle.Height + gap + control.Height + butt_h;
 
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
@@ -224,7 +224,7 @@ namespace AntdUI
                         }
                         if (config.CloseIcon)
                         {
-                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Size().Height;
+                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Height;
                             int close_size = tmpicon;
                             rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
@@ -234,54 +234,52 @@ namespace AntdUI
                     else if (config.Content is IList<Modal.TextLine> list)
                     {
                         rtext = true;
-                        var texts = new List<RectangleF>(list.Count);
+                        var texts = new List<Rectangle>(list.Count);
                         if (_config.Icon == TType.None)
                         {
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size();
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
                             rectTitle = new Rectangle(paddingx, paddingy, wp, sizeTitle.Height + gap);
 
-                            float has_y = paddingy + sizeTitle.Height + gap;
-                            float h_temp = 0;
+                            int has_y = paddingy + sizeTitle.Height + gap, h_temp = 0;
                             foreach (var txt in list)
                             {
                                 var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font, wp);
-                                float txt_h = sizeContent.Height + txt.Gap * dpi;
-                                texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
+                                int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
+                                texts.Add(new Rectangle(rectTitle.X, has_y, wp, txt_h));
                                 has_y += txt_h;
                                 h_temp += txt_h;
                             }
 
-                            int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
+                            int h = sizeTitle.Height + gap + h_temp + butt_h;
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
                             MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
                         else
                         {
-                            var sizeT = g.MeasureString(Config.NullText, fontTitle).Size();
+                            var sizeT = g.MeasureString(Config.NullText, fontTitle);
                             int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size();
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
                             rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);
 
-                            float has_y = paddingy + sizeTitle.Height + gap;
-                            float h_temp = 0;
+                            int has_y = paddingy + sizeTitle.Height + gap, h_temp = 0;
                             foreach (var txt in list)
                             {
                                 var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font, wp);
-                                float txt_h = sizeContent.Height + txt.Gap * dpi;
-                                texts.Add(new RectangleF(rectTitle.X, has_y, wp, txt_h));
+                                int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
+                                texts.Add(new Rectangle(rectTitle.X, has_y, wp, txt_h));
                                 has_y += txt_h;
                                 h_temp += txt_h;
                             }
 
-                            int h = (int)Math.Round(sizeTitle.Height + gap + h_temp + butt_h);
+                            int h = sizeTitle.Height + gap + h_temp + butt_h;
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
                             MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
                         }
                         if (config.CloseIcon)
                         {
-                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Size().Height;
+                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Height;
                             int close_size = tmpicon;
                             rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
@@ -293,7 +291,7 @@ namespace AntdUI
                         var content = config.Content.ToString();
                         if (_config.Icon == TType.None)
                         {
-                            Size sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size(), sizeContent = g.MeasureString(content, Font, wp).Size();
+                            Size sizeTitle = g.MeasureString(config.Title, fontTitle, wp), sizeContent = g.MeasureString(content, Font, wp);
                             int h = sizeTitle.Height + gap + sizeContent.Height + butt_h;
 
                             rectTitle = new Rectangle(paddingx, paddingy, wp, sizeTitle.Height + gap);
@@ -303,10 +301,10 @@ namespace AntdUI
                         }
                         else
                         {
-                            var sizeT = g.MeasureString(Config.NullText, fontTitle).Size();
+                            var sizeT = g.MeasureString(Config.NullText, fontTitle);
                             int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
-                            Size sizeTitle = g.MeasureString(config.Title, fontTitle, wp).Size(), sizeContent = g.MeasureString(content, Font, wp).Size();
+                            Size sizeTitle = g.MeasureString(config.Title, fontTitle, wp), sizeContent = g.MeasureString(content, Font, wp);
                             int h = sizeTitle.Height + gap + sizeContent.Height + butt_h;
 
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
@@ -318,12 +316,12 @@ namespace AntdUI
                         }
                         if (config.CloseIcon)
                         {
-                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Size().Height;
+                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Height;
                             int close_size = tmpicon;
                             rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
                         }
                     }
-                    return new RectangleF[0];
+                    return new Rectangle[0];
                 }
             });
             ResumeLayout();
@@ -368,7 +366,7 @@ namespace AntdUI
         }
 
         Rectangle rectIcon, rectTitle, rectContent;
-        RectangleF[] rectsContent;
+        Rectangle[] rectsContent;
         bool rtext = false;
 
         readonly StringFormat stringLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);
@@ -385,19 +383,16 @@ namespace AntdUI
                     {
                         using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
-                            g.FillPath(brush, path);
+                            g.Fill(brush, path);
                         }
                     }
                     g.PaintIconClose(rect_close, Style.Db.Text, .6F);
                 }
                 else if (close_button.Switch)
                 {
-                    using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                    using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
-                        {
-                            g.FillPath(brush, path);
-                        }
+                        g.Fill(Style.Db.FillSecondary, path);
                     }
                     g.PaintIconClose(rect_close, Style.Db.Text, .6F);
                 }
@@ -407,7 +402,7 @@ namespace AntdUI
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
-                    g.DrawStr(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                    g.String(config.Title, fontTitle, brush, rectTitle, stringLeft);
                 }
                 if (rtext)
                 {
@@ -420,13 +415,13 @@ namespace AntdUI
                             {
                                 using (var fore = new SolidBrush(txt.Fore.Value))
                                 {
-                                    g.DrawStr(txt.Text, txt.Font ?? Font, fore, rectsContent[i], stringLeft);
+                                    g.String(txt.Text, txt.Font ?? Font, fore, rectsContent[i], stringLeft);
                                 }
                             }
-                            else g.DrawStr(txt.Text, txt.Font ?? Font, brush, rectsContent[i], stringLeft);
+                            else g.String(txt.Text, txt.Font ?? Font, brush, rectsContent[i], stringLeft);
                         }
                     }
-                    else g.DrawStr(config.Content.ToString(), Font, brush, rectContent, stringTL);
+                    else g.String(config.Content.ToString(), Font, brush, rectContent, stringTL);
                 }
             }
             base.OnPaint(e);

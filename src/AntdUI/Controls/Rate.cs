@@ -124,6 +124,7 @@ namespace AntdUI
         /// 自定义字符
         /// </summary>
         [Description("自定义字符"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? Character
         {
             get => character;
@@ -169,7 +170,7 @@ namespace AntdUI
                 icon_active = new Bitmap(size, size);
                 using (var font = new Font(Font.FontFamily, size, Font.Style))
                 {
-                    var font_size = g.MeasureString(character, font).Size();
+                    var font_size = g.MeasureString(character, font);
                     int bmp_size = (font_size.Width > font_size.Height ? font_size.Width : font_size.Height);
                     using (var bmp_diy = new Bitmap(bmp_size, bmp_size))
                     using (var bmp_diy_active = new Bitmap(bmp_size, bmp_size))
@@ -181,24 +182,24 @@ namespace AntdUI
                             {
                                 using (var brush = new SolidBrush(Style.Db.FillSecondary))
                                 {
-                                    g2.DrawStr(character, font, brush, rect_diy, s_f);
+                                    g2.String(character, font, brush, rect_diy, s_f);
                                 }
                             }
                             using (var g2 = Graphics.FromImage(bmp_diy_active).HighLay())
                             {
                                 using (var brush = new SolidBrush(fill))
                                 {
-                                    g2.DrawStr(character, font, brush, rect_diy, s_f);
+                                    g2.String(character, font, brush, rect_diy, s_f);
                                 }
                             }
                         }
                         using (var g2 = Graphics.FromImage(icon).High())
                         {
-                            g2.DrawImage(bmp_diy, rect_icon);
+                            g2.Image(bmp_diy, rect_icon);
                         }
                         using (var g2 = Graphics.FromImage(icon_active).High())
                         {
-                            g2.DrawImage(bmp_diy_active, rect_icon);
+                            g2.Image(bmp_diy_active, rect_icon);
                         }
                     }
                 }
@@ -212,34 +213,34 @@ namespace AntdUI
                 {
                     int readvalue = (int)((it.rect.Width - it.rect_i.Width) * it.AnimationActiveValueS), readsize = it.rect_i.Width + readvalue, readsize2 = readvalue / 2;
                     var rect_ = new Rectangle(it.rect_i.X - readsize2, it.rect_i.Y - readsize2, readsize, readsize);
-                    g.DrawImage(icon, rect_);
+                    g.Image(icon, rect_);
                     using (var attributes = new ImageAttributes())
                     {
                         var matrix = new ColorMatrix { Matrix33 = it.AnimationActiveValueO };
                         attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                        if (it.half) g.DrawImage(icon_active, new Rectangle(rect_.X, rect_.Y, rect_.Width / 2, rect_.Height), 0, 0, icon_active.Width / 2, icon_active.Height, GraphicsUnit.Pixel, attributes);
-                        else g.DrawImage(icon_active, rect_, 0, 0, icon_active.Width, icon_active.Height, GraphicsUnit.Pixel, attributes);
+                        if (it.half) g.Image(icon_active, new Rectangle(rect_.X, rect_.Y, rect_.Width / 2, rect_.Height), 0, 0, icon_active.Width / 2, icon_active.Height, GraphicsUnit.Pixel, attributes);
+                        else g.Image(icon_active, rect_, 0, 0, icon_active.Width, icon_active.Height, GraphicsUnit.Pixel, attributes);
                     }
                 }
                 else if (it.hover)
                 {
                     if (it.half)
                     {
-                        g.DrawImage(icon, it.rect);
-                        g.DrawImage(icon_active, new Rectangle(it.rect.X, it.rect.Y, it.rect.Width / 2, it.rect.Height), new Rectangle(0, 0, icon_active.Width / 2, icon_active.Height), GraphicsUnit.Pixel);
+                        g.Image(icon, it.rect);
+                        g.Image(icon_active, new Rectangle(it.rect.X, it.rect.Y, it.rect.Width / 2, it.rect.Height), new Rectangle(0, 0, icon_active.Width / 2, icon_active.Height), GraphicsUnit.Pixel);
                     }
-                    else g.DrawImage(icon_active, it.rect);
+                    else g.Image(icon_active, it.rect);
                 }
                 else if (it.active)
                 {
                     if (it.half)
                     {
-                        g.DrawImage(icon, it.rect_i);
-                        g.DrawImage(icon_active, new Rectangle(it.rect_i.X, it.rect_i.Y, it.rect_i.Width / 2, it.rect_i.Height), new Rectangle(0, 0, icon_active.Width / 2, icon_active.Height), GraphicsUnit.Pixel);
+                        g.Image(icon, it.rect_i);
+                        g.Image(icon_active, new Rectangle(it.rect_i.X, it.rect_i.Y, it.rect_i.Width / 2, it.rect_i.Height), new Rectangle(0, 0, icon_active.Width / 2, icon_active.Height), GraphicsUnit.Pixel);
                     }
-                    else g.DrawImage(icon_active, it.rect_i);
+                    else g.Image(icon_active, it.rect_i);
                 }
-                else g.DrawImage(icon, it.rect_i);
+                else g.Image(icon, it.rect_i);
             }
             this.PaintBadge(g);
         }

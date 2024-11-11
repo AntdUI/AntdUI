@@ -165,10 +165,7 @@ namespace AntdUI
             if (!_dpi_custom.HasValue) EventHub.Dispatch(EventType.DPI, dpi);
         }
 
-        internal static void SetDpi(Graphics g)
-        {
-            SetDpi(g.DpiX / 96F);
-        }
+        internal static void SetDpi(Graphics g) => SetDpi(g.DpiX / 96F);
 
         /// <summary>
         /// 设置修正文本渲染

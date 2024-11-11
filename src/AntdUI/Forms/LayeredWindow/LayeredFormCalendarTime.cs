@@ -88,7 +88,7 @@ namespace AntdUI
             rect_s_h.Width += t_time;
             scrollY_s.SizeChange(rect_s_h);
 
-            int endh2 = t_height - (t_time_height - (int)size_time_height_one);
+            int endh2 = t_height - (t_time_height - size_time_height_one);
             scrollY_h.SetVrSize(t_time_height * 24, endh2);
             scrollY_m.SetVrSize(t_time_height * 60, endh2);
             scrollY_s.SetVrSize(t_time_height * 60, endh2);
@@ -147,8 +147,8 @@ namespace AntdUI
 
         #region 渲染
 
-        string button_text = Localization.Provider?.GetLocalizedString("Now") ?? "此刻";
-        string OKButton = Localization.Provider?.GetLocalizedString("OK") ?? "确定";
+        string button_text = Localization.Get("Now", "此刻");
+        string OKButton = Localization.Get("OK", "确定");
         StringFormat s_f = Helper.SF();
         public override Bitmap PrintBit()
         {
@@ -162,7 +162,7 @@ namespace AntdUI
                     DrawShadow(g, rect);
                     using (var brush = new SolidBrush(Style.Db.BgElevated))
                     {
-                        g.FillPath(brush, path);
+                        g.Fill(brush, path);
                         if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                     }
                 }
@@ -192,23 +192,17 @@ namespace AntdUI
                                 switch (it.x)
                                 {
                                     case 0:
-                                        if (it.t == SelDate.Hours) g.FillPath(brush_bg, path);
+                                        if (it.t == SelDate.Hours) g.Fill(brush_bg, path);
                                         break;
                                     case 1:
-                                        if (it.t == SelDate.Minutes) g.FillPath(brush_bg, path);
+                                        if (it.t == SelDate.Minutes) g.Fill(brush_bg, path);
                                         break;
                                     case 2:
-                                        if (it.t == SelDate.Seconds) g.FillPath(brush_bg, path);
+                                        if (it.t == SelDate.Seconds) g.Fill(brush_bg, path);
                                         break;
                                 }
-                                if (it.hover)
-                                {
-                                    using (var brush_hove = new SolidBrush(Style.Db.FillTertiary))
-                                    {
-                                        g.FillPath(brush_hove, path);
-                                    }
-                                }
-                                g.DrawStr(it.v, Font, brush_fore, it.rect_read, s_f);
+                                if (it.hover) g.Fill(Style.Db.FillTertiary, path);
+                                g.String(it.v, Font, brush_fore, it.rect_read, s_f);
                             }
                         }
                     }
@@ -222,37 +216,37 @@ namespace AntdUI
                     {
                         if (hover_button.Animation)
                         {
-                            g.DrawStr(button_text, Font, brush_active, rect_button, s_f);
+                            g.String(button_text, Font, brush_active, rect_button, s_f);
                             using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
                             {
-                                g.DrawStr(button_text, Font, brush_hove, rect_button, s_f);
+                                g.String(button_text, Font, brush_hove, rect_button, s_f);
                             }
                         }
                         else if (hover_button.Switch)
                         {
                             using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                             {
-                                g.DrawStr(button_text, Font, brush_hove, rect_button, s_f);
+                                g.String(button_text, Font, brush_hove, rect_button, s_f);
                             }
                         }
-                        else g.DrawStr(button_text, Font, brush_active, rect_button, s_f);
+                        else g.String(button_text, Font, brush_active, rect_button, s_f);
 
                         if (hover_buttonok.Animation)
                         {
-                            g.DrawStr(OKButton, Font, brush_active, rect_buttonok, s_f);
+                            g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
                             using (var brush_hove = new SolidBrush(Helper.ToColor(hover_buttonok.Value, Style.Db.PrimaryActive)))
                             {
-                                g.DrawStr(OKButton, Font, brush_hove, rect_buttonok, s_f);
+                                g.String(OKButton, Font, brush_hove, rect_buttonok, s_f);
                             }
                         }
                         else if (hover_buttonok.Switch)
                         {
                             using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
                             {
-                                g.DrawStr(OKButton, Font, brush_hove, rect_buttonok, s_f);
+                                g.String(OKButton, Font, brush_hove, rect_buttonok, s_f);
                             }
                         }
-                        else g.DrawStr(OKButton, Font, brush_active, rect_buttonok, s_f);
+                        else g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
                     }
                 }
             }
@@ -267,7 +261,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="g">GDI</param>
         /// <param name="rect">客户区域</param>
-        void DrawShadow(Graphics g, Rectangle rect)
+        void DrawShadow(Canvas g, Rectangle rect)
         {
             if (Config.ShadowEnabled)
             {
@@ -279,7 +273,7 @@ namespace AntdUI
                         shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.DrawImage(shadow_temp, rect, 0.2F);
+                g.Image(shadow_temp, rect, .2F);
             }
         }
 

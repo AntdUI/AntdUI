@@ -34,6 +34,11 @@ namespace AntdUI
     /// </summary>
     public delegate void IntEventHandler(object sender, IntEventArgs e);
 
+    /// <summary>
+    /// Int 类型事件
+    /// </summary>
+    public delegate bool IntBoolEventHandler(object sender, IntEventArgs e);
+
     #endregion
 
     #region Float
