@@ -123,17 +123,25 @@ namespace AntdUI
         /// </summary>
         public static void close_id(string id)
         {
-            MsgQueue.volley.Add("M" + id);
-            var close_list = new System.Collections.Generic.List<MessageFrm>();
-            foreach (var it in ILayeredFormAnimate.list)
+            if (ILayeredFormAnimate.list.Count > 0 || MsgQueue.queue.Count > 0)
             {
-                foreach (var item in it.Value)
+                bool isadd = true;
+                var close_list = new System.Collections.Generic.List<MessageFrm>();
+                foreach (var it in ILayeredFormAnimate.list)
                 {
-                    if (item is MessageFrm message && message.config.ID == id) close_list.Add(message);
+                    foreach (var item in it.Value)
+                    {
+                        if (item is MessageFrm message && message.config.ID == id)
+                        {
+                            close_list.Add(message);
+                            isadd = false;
+                        }
+                    }
                 }
+                if (isadd) MsgQueue.volley.Add("M" + id);
+                if (close_list.Count == 0) return;
+                foreach (var it in close_list) it.CloseMe();
             }
-            if (close_list.Count == 0) return;
-            foreach (var it in close_list) it.CloseMe();
         }
 
         /// <summary>

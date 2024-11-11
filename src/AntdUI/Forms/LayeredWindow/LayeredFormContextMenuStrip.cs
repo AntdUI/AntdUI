@@ -35,12 +35,9 @@ namespace AntdUI
         float radius = 0;
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config)
         {
-            if (_config.TopMost)
-            {
-                PARENT = this;
-                Helper.SetTopMost(Handle);
-                MessageCloseMouseLeave = true;
-            }
+            PARENT = _config.Control;
+            MessageCloseMouseLeave = true;
+            if (_config.TopMost) Helper.SetTopMost(Handle);
             else _config.Control.SetTopMost(Handle);
             var point = _config.Location ?? MousePosition;
             maxalpha = 250;
@@ -174,7 +171,6 @@ namespace AntdUI
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, IContextMenuStripItem[] subs)
         {
             PARENT = parent;
-            MessageCloseMouseLeave = true;
             maxalpha = 250;
             config = _config;
             Font = config.Font ?? config.Control.Font;

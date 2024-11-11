@@ -128,17 +128,25 @@ namespace AntdUI
         /// </summary>
         public static void close_id(string id)
         {
-            MsgQueue.volley.Add("N" + id);
-            var close_list = new System.Collections.Generic.List<NotificationFrm>();
-            foreach (var it in ILayeredFormAnimate.list)
+            if (ILayeredFormAnimate.list.Count > 0 || MsgQueue.queue.Count > 0)
             {
-                foreach (var item in it.Value)
+                bool isadd = true;
+                var close_list = new System.Collections.Generic.List<NotificationFrm>();
+                foreach (var it in ILayeredFormAnimate.list)
                 {
-                    if (item is NotificationFrm notification && notification.config.ID == id) close_list.Add(notification);
+                    foreach (var item in it.Value)
+                    {
+                        if (item is NotificationFrm notification && notification.config.ID == id)
+                        {
+                            close_list.Add(notification);
+                            isadd = false;
+                        }
+                    }
                 }
+                if (isadd) MsgQueue.volley.Add("N" + id);
+                if (close_list.Count == 0) return;
+                foreach (var it in close_list) it.CloseMe();
             }
-            if (close_list.Count == 0) return;
-            foreach (var it in close_list) it.CloseMe();
         }
 
         /// <summary>

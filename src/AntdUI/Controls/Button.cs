@@ -372,6 +372,22 @@ namespace AntdUI
             }
         }
 
+        bool textCenterHasIcon = false;
+        /// <summary>
+        /// 文本居中显示(包含图标后)
+        /// </summary>
+        [Description("文本居中显示(包含图标后)"), Category("外观"), DefaultValue(false)]
+        public bool TextCenterHasIcon
+        {
+            get => textCenterHasIcon;
+            set
+            {
+                if (textCenterHasIcon == value) return;
+                textCenterHasIcon = value;
+                if (HasIcon) Invalidate();
+            }
+        }
+
         bool autoEllipsis = false;
         /// <summary>
         /// 文本超出自动处理
@@ -1135,7 +1151,7 @@ namespace AntdUI
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
-                        g.Fill(Style.Db.FillTertiary, path);
+                        if (!ghost) g.Fill(Style.Db.FillTertiary, path);
                         PaintTextLoading(g, text, Style.Db.TextQuaternary, rect_read, Enabled);
                     }
                 }
@@ -1445,7 +1461,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        rect_text = RectAlignL(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
+                        rect_text = RectAlignL(g, textLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
                             float loading_size = rect_l.Height * .14F;
@@ -1594,7 +1610,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        rect_text = RectAlignL(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
+                        rect_text = RectAlignL(g, textLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
                         if (loading)
                         {
                             float loading_size = rect_l.Height * .14F;
@@ -1656,35 +1672,65 @@ namespace AntdUI
             }
         }
 
-        internal static Rectangle RectAlignL(Canvas g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l)
+        internal static Rectangle RectAlignL(Canvas g, bool textLine, bool textCenter, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l)
         {
             int font_Height = font_size.Height;
             if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Height;
             int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap);
             Rectangle rect_text;
-            switch (iconPosition)
+            if (textCenter)
             {
-                case TAlignMini.Top:
-                    int t_x = rect_read.Y + ((rect_read.Height - (font_size.Height + icon_size + sp)) / 2);
-                    rect_text = new Rectangle(rect_read.X, t_x + icon_size + sp, rect_read.Width, font_size.Height);
-                    rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, t_x, icon_size, icon_size);
-                    break;
-                case TAlignMini.Bottom:
-                    int b_x = rect_read.Y + ((rect_read.Height - (font_size.Height + icon_size + sp)) / 2);
-                    rect_text = new Rectangle(rect_read.X, b_x, rect_read.Width, font_size.Height);
-                    rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, b_x + font_size.Height + sp, icon_size, icon_size);
-                    break;
-                case TAlignMini.Right:
-                    int r_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2);
-                    rect_text = new Rectangle(r_x, rect_read.Y, font_size.Width, rect_read.Height);
-                    rect_l = new Rectangle(r_x + font_size.Width + sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                    break;
-                case TAlignMini.Left:
-                default:
-                    int l_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2);
-                    rect_text = new Rectangle(l_x + icon_size + sp, rect_read.Y, font_size.Width, rect_read.Height);
-                    rect_l = new Rectangle(l_x, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
-                    break;
+                switch (iconPosition)
+                {
+                    case TAlignMini.Top:
+                        int t_x = rect_read.Y + ((rect_read.Height - font_size.Height) / 2);
+                        rect_text = new Rectangle(rect_read.X, t_x, rect_read.Width, font_size.Height);
+                        rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, t_x - icon_size - sp, icon_size, icon_size);
+                        break;
+                    case TAlignMini.Bottom:
+                        int b_x = rect_read.Y + ((rect_read.Height - font_size.Height) / 2);
+                        rect_text = new Rectangle(rect_read.X, b_x, rect_read.Width, font_size.Height);
+                        rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, b_x + font_size.Height + sp, icon_size, icon_size);
+                        break;
+                    case TAlignMini.Right:
+                        int r_x = rect_read.X + ((rect_read.Width - font_size.Width) / 2);
+                        rect_text = new Rectangle(r_x, rect_read.Y, font_size.Width, rect_read.Height);
+                        rect_l = new Rectangle(r_x + font_size.Width + sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                        break;
+                    case TAlignMini.Left:
+                    default:
+                        int l_x = rect_read.X + ((rect_read.Width - font_size.Width) / 2);
+                        rect_text = new Rectangle(l_x, rect_read.Y, font_size.Width, rect_read.Height);
+                        rect_l = new Rectangle(l_x - icon_size - sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                        break;
+                }
+            }
+            else
+            {
+                switch (iconPosition)
+                {
+                    case TAlignMini.Top:
+                        int t_x = rect_read.Y + ((rect_read.Height - (font_size.Height + icon_size + sp)) / 2);
+                        rect_text = new Rectangle(rect_read.X, t_x + icon_size + sp, rect_read.Width, font_size.Height);
+                        rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, t_x, icon_size, icon_size);
+                        break;
+                    case TAlignMini.Bottom:
+                        int b_x = rect_read.Y + ((rect_read.Height - (font_size.Height + icon_size + sp)) / 2);
+                        rect_text = new Rectangle(rect_read.X, b_x, rect_read.Width, font_size.Height);
+                        rect_l = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, b_x + font_size.Height + sp, icon_size, icon_size);
+                        break;
+                    case TAlignMini.Right:
+                        int r_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2);
+                        rect_text = new Rectangle(r_x, rect_read.Y, font_size.Width, rect_read.Height);
+                        rect_l = new Rectangle(r_x + font_size.Width + sp, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                        break;
+                    case TAlignMini.Left:
+                    default:
+                        int l_x = rect_read.X + ((rect_read.Width - (font_size.Width + icon_size + sp)) / 2);
+                        rect_text = new Rectangle(l_x + icon_size + sp, rect_read.Y, font_size.Width, rect_read.Height);
+                        rect_l = new Rectangle(l_x, rect_read.Y + (rect_read.Height - icon_size) / 2, icon_size, icon_size);
+                        break;
+                }
             }
             return rect_text;
         }
