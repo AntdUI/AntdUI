@@ -67,7 +67,7 @@ namespace Demo.Controls
             divider2 = new AntdUI.Divider();
             panel2 = new System.Windows.Forms.Panel();
             tooltip1 = new AntdUI.Tooltip();
-            label4 = new Label();
+            label4 = new AntdUI.Label();
             divider1 = new AntdUI.Divider();
             tooltipComponent1 = new AntdUI.TooltipComponent();
             tooltipTL = new AntdUI.TooltipComponent();
@@ -92,6 +92,8 @@ namespace Demo.Controls
             header1.Description = "简单的文字提示气泡框。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Tooltip.Description";
+            header1.LocalizationText = "Tooltip.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -257,6 +259,7 @@ namespace Demo.Controls
             // 
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Tooltip.{id}";
             divider2.Location = new Point(0, 84);
             divider2.Margin = new Padding(10);
             divider2.Name = "divider2";
@@ -287,10 +290,11 @@ namespace Demo.Controls
             // 
             // label4
             // 
-            label4.AutoSize = true;
+            label4.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            label4.LocalizationText = "Tooltip.{id}";
             label4.Location = new Point(12, 10);
             label4.Name = "label4";
-            label4.Size = new Size(106, 21);
+            label4.Size = new Size(105, 23);
             label4.TabIndex = 0;
             label4.Text = "最简单的用法";
             tooltipComponent1.SetTip(label4, "prompt text");
@@ -299,6 +303,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Tooltip.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Margin = new Padding(10);
             divider1.Name = "divider1";
@@ -389,7 +394,7 @@ namespace Demo.Controls
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Divider divider1;
         private System.Windows.Forms.Panel panel2;
-        private Label label4;
+        private AntdUI.Label label4;
         private AntdUI.TooltipComponent tooltipComponent1;
         private System.Windows.Forms.Panel panel3;
         private AntdUI.Divider divider2;

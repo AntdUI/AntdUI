@@ -65,6 +65,8 @@ namespace Demo.Controls
             header1.Description = "输入或选择时间的控件。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "TimePicker.Description";
+            header1.LocalizationText = "TimePicker.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -129,6 +131,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "TimePicker.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;

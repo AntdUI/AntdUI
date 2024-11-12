@@ -51,7 +51,6 @@ namespace Demo.Controls
         {
             AntdUI.MenuItem menuItem1 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem2 = new AntdUI.MenuItem();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Menu));
             AntdUI.MenuItem menuItem3 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem4 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem5 = new AntdUI.MenuItem();
@@ -69,6 +68,8 @@ namespace Demo.Controls
             header1.Description = "为页面和功能提供导航的菜单列表。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Menu.Description";
+            header1.LocalizationText = "Menu.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -82,12 +83,9 @@ namespace Demo.Controls
             menu1.Dock = DockStyle.Left;
             menu1.Font = new Font("Microsoft YaHei UI", 12F);
             menuItem1.PARENTITEM = null;
-            menuItem2.IconSvg = resources.GetString("menuItem2.IconSvg");
             menuItem2.PARENTITEM = menuItem1;
             menuItem2.Text = "Option 1";
-            menuItem3.IconSvg = resources.GetString("menuItem3.IconSvg");
             menuItem3.PARENTITEM = menuItem1;
-            menuItem4.IconSvg = resources.GetString("menuItem4.IconSvg");
             menuItem4.PARENTITEM = menuItem3;
             menuItem4.Text = "Sub2 1";
             menuItem5.PARENTITEM = menuItem3;

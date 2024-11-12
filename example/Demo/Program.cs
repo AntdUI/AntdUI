@@ -32,6 +32,9 @@ namespace Demo
         {
             ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
             var command = string.Join(" ", arge);
+            AntdUI.Localization.DefaultLanguage = "zh-CN";
+            var lang = AntdUI.Localization.CurrentLanguage;
+            if (lang.StartsWith("en")) AntdUI.Localization.Provider = new Localizer();
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);

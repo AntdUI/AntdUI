@@ -30,6 +30,8 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
+            segmented1.Items[0].Text = AntdUI.Localization.Get("Outlined", "线框风格");
+            segmented1.Items[1].Text = AntdUI.Localization.Get("Filled", "实底风格");
             LoadData();
         }
 
@@ -64,38 +66,38 @@ namespace Demo.Controls
                 {
                     if (it.Key == "QuestionOutlined")
                     {
-                        dir.Add("方向性图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Directional", "方向性图标"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "EditOutlined")
                     {
-                        dir.Add("提示建议性图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Suggested", "提示建议性图标"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AreaChartOutlined")
                     {
-                        dir.Add("编辑类图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Editor", "编辑类图标"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AndroidOutlined")
                     {
-                        dir.Add("数据类图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Data", "数据类图标"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AccountBookOutlined")
                     {
-                        dir.Add("品牌和标识", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Logos", "品牌和标识"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "StepBackwardFilled")
                     {
-                        dir.Add("网站通用图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Application", "网站通用图标"), new List<VItem>(tmp));
                         tmp.Clear();
                         return dir;
                     }
                     tmp.Add(new VItem(it.Key, it.Value));
                 }
-                dir.Add("网站通用图标", new List<VItem>(tmp));
+                dir.Add(AntdUI.Localization.Get("Icon.Application", "网站通用图标"), new List<VItem>(tmp));
                 tmp.Clear();
             }
             else
@@ -106,32 +108,32 @@ namespace Demo.Controls
                     if (it.Key == "StepBackwardFilled") isadd = true;
                     else if (it.Key == "QuestionCircleFilled")
                     {
-                        dir.Add("方向性图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Directional", "方向性图标"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "EditFilled")
                     {
-                        dir.Add("提示建议性图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Suggested", "提示建议性图标"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "PieChartFilled")
                     {
-                        dir.Add("编辑类图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Editor", "编辑类图标"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AndroidFilled")
                     {
-                        dir.Add("数据类图标", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Data", "数据类图标"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AccountBookFilled")
                     {
-                        dir.Add("品牌和标识", new List<VItem>(tmp));
+                        dir.Add(AntdUI.Localization.Get("Icon.Logos", "品牌和标识"), new List<VItem>(tmp));
                         tmp.Clear();
                     }
                     if (isadd) tmp.Add(new VItem(it.Key, it.Value));
                 }
-                dir.Add("网站通用图标", new List<VItem>(tmp));
+                dir.Add(AntdUI.Localization.Get("Icon.Application", "网站通用图标"), new List<VItem>(tmp));
                 tmp.Clear();
             }
             return dir;
@@ -230,8 +232,8 @@ namespace Demo.Controls
         {
             if (e.Item is VItem item)
             {
-                if (AntdUI.Helper.ClipboardSetText(this, item.Key)) AntdUI.Message.success(form, item.Key + " 复制成功");
-                else AntdUI.Message.error(form, item.Key + " 复制失败");
+                if (AntdUI.Helper.ClipboardSetText(this, item.Key)) AntdUI.Message.success(form, item.Key + " " + AntdUI.Localization.Get("CopyOK", "复制成功"));
+                else AntdUI.Message.error(form, item.Key + " " + AntdUI.Localization.Get("CopyFailed", "复制失败"));
             }
         }
 

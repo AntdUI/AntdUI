@@ -65,6 +65,8 @@ namespace Demo.Controls
             header1.Description = "页头位于页容器中，页容器顶部，起到了内容概览和引导页级操作的作用。包括由面包屑、标题、页面内容简介、页面级操作等、页面级导航组成。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "PageHeader.Description";
+            header1.LocalizationText = "PageHeader.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -88,6 +90,7 @@ namespace Demo.Controls
             // button1
             // 
             button1.Dock = DockStyle.Right;
+            button1.LocalizationText = "PageHeader.Type";
             button1.Location = new Point(657, 0);
             button1.Name = "button1";
             button1.Size = new Size(75, 36);
@@ -100,6 +103,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "PageHeader.{id}";
             divider1.Location = new Point(0, 74);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -136,6 +140,7 @@ namespace Demo.Controls
             // 
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "PageHeader.{id}";
             divider2.Location = new Point(0, 192);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;

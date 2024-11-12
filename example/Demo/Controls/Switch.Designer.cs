@@ -63,6 +63,8 @@ namespace Demo.Controls
             // header1
             // 
             header1.Description = "开关选择器。";
+            header1.LocalizationDescription = "Switch.Description";
+            header1.LocalizationText = "Switch.Text";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);

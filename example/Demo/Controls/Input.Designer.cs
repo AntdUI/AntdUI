@@ -96,6 +96,7 @@ namespace Demo.Controls
             // 
             // input3
             // 
+            input3.LocalizationPlaceholderText = "Input.{id}";
             input3.Location = new Point(244, 6);
             input3.Name = "input3";
             input3.PlaceholderText = "请输入账号";
@@ -137,6 +138,8 @@ namespace Demo.Controls
             header1.Description = "通过鼠标或键盘输入内容，是最基础的表单域的包装。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Input.Description";
+            header1.LocalizationText = "Input.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -183,6 +186,7 @@ namespace Demo.Controls
             // 
             input8.Dock = DockStyle.Fill;
             input8.JoinLeft = true;
+            input8.LocalizationPlaceholderText = "Input.{id}";
             input8.Location = new Point(59, 0);
             input8.Name = "input8";
             input8.PlaceholderText = "输入点什么搜索";
@@ -194,6 +198,7 @@ namespace Demo.Controls
             button1.AutoSizeMode = AntdUI.TAutoSize.Width;
             button1.Dock = DockStyle.Left;
             button1.JoinRight = true;
+            button1.LocalizationText = "Input.Search";
             button1.Location = new Point(0, 0);
             button1.Name = "button1";
             button1.Size = new Size(59, 50);
@@ -216,6 +221,7 @@ namespace Demo.Controls
             // 
             input9.Dock = DockStyle.Fill;
             input9.JoinRight = true;
+            input9.LocalizationPlaceholderText = "Input.{id}";
             input9.Location = new Point(0, 0);
             input9.Name = "input9";
             input9.PlaceholderText = "输入点什么搜索";
@@ -248,6 +254,7 @@ namespace Demo.Controls
             // 
             input7.Dock = DockStyle.Fill;
             input7.JoinRight = true;
+            input7.LocalizationPlaceholderText = "Input.{id}";
             input7.Location = new Point(0, 0);
             input7.Name = "input7";
             input7.PlaceholderText = "输入点什么搜索";
@@ -259,6 +266,7 @@ namespace Demo.Controls
             button3.AutoSizeMode = AntdUI.TAutoSize.Width;
             button3.Dock = DockStyle.Right;
             button3.JoinLeft = true;
+            button3.LocalizationText = "Input.Search";
             button3.Location = new Point(161, 0);
             button3.Name = "button3";
             button3.Size = new Size(59, 50);
@@ -271,6 +279,7 @@ namespace Demo.Controls
             // 
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Input.{id}";
             divider2.Location = new Point(0, 184);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
@@ -297,6 +306,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Input.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;

@@ -62,6 +62,8 @@ namespace Demo.Controls
             header1.Description = "图片预览框。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Preview.Description";
+            header1.LocalizationText = "Preview.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -83,6 +85,7 @@ namespace Demo.Controls
             // button2
             // 
             button2.BorderWidth = 1F;
+            button2.LocalizationText = "Preview.{id}";
             button2.Location = new Point(169, 3);
             button2.Name = "button2";
             button2.Size = new Size(160, 41);
@@ -93,6 +96,7 @@ namespace Demo.Controls
             // button1
             // 
             button1.BorderWidth = 1F;
+            button1.LocalizationText = "Preview.{id}";
             button1.Location = new Point(3, 3);
             button1.Name = "button1";
             button1.Size = new Size(160, 41);
@@ -104,6 +108,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Preview.{id}";
             divider1.Location = new Point(0, 74);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;

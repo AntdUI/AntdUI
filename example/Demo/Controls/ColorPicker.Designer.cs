@@ -61,6 +61,8 @@ namespace Demo.Controls
             header1.Description = "提供颜色选取的组件。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "ColorPicker.Description";
+            header1.LocalizationText = "ColorPicker.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -95,7 +97,7 @@ namespace Demo.Controls
             colorPicker1.Location = new Point(56, 3);
             colorPicker1.Name = "colorPicker1";
             colorPicker1.ShowText = true;
-            colorPicker1.Size = new Size(133, 47);
+            colorPicker1.Size = new Size(134, 47);
             colorPicker1.TabIndex = 26;
             colorPicker1.Value = Color.FromArgb(22, 119, 255);
             // 

@@ -59,7 +59,7 @@ namespace Demo.Controls
             button5 = new AntdUI.Dropdown();
             button3 = new AntdUI.Dropdown();
             button8 = new AntdUI.Dropdown();
-            divider3 = new AntdUI.Divider();
+            divider2 = new AntdUI.Divider();
             panel4 = new FlowLayoutPanel();
             button17 = new AntdUI.Dropdown();
             button19 = new AntdUI.Dropdown();
@@ -75,6 +75,8 @@ namespace Demo.Controls
             header1.Description = "向下弹出的列表。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Dropdown.Description";
+            header1.LocalizationText = "Dropdown.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -100,7 +102,7 @@ namespace Demo.Controls
             // 
             panel3.AutoScroll = true;
             panel3.Controls.Add(panel1);
-            panel3.Controls.Add(divider3);
+            panel3.Controls.Add(divider2);
             panel3.Controls.Add(panel4);
             panel3.Controls.Add(divider1);
             panel3.Dock = DockStyle.Fill;
@@ -206,16 +208,17 @@ namespace Demo.Controls
             button8.Text = "topLeft";
             button8.Type = AntdUI.TTypeMini.Primary;
             // 
-            // divider3
+            // divider2
             // 
-            divider3.Dock = DockStyle.Top;
-            divider3.Font = new Font("Microsoft YaHei UI", 10F);
-            divider3.Location = new Point(0, 95);
-            divider3.Name = "divider3";
-            divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(1300, 22);
-            divider3.TabIndex = 7;
-            divider3.Text = "六种方向";
+            divider2.Dock = DockStyle.Top;
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Dropdown.{id}";
+            divider2.Location = new Point(0, 95);
+            divider2.Name = "divider2";
+            divider2.Orientation = AntdUI.TOrientation.Left;
+            divider2.Size = new Size(1300, 22);
+            divider2.TabIndex = 7;
+            divider2.Text = "六种方向";
             // 
             // panel4
             // 
@@ -258,6 +261,7 @@ namespace Demo.Controls
             // dropdown1
             // 
             dropdown1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            dropdown1.LocalizationText = "Dropdown.{id}";
             dropdown1.Location = new Point(265, 3);
             dropdown1.Name = "dropdown1";
             dropdown1.Size = new Size(100, 47);
@@ -270,6 +274,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Dropdown.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -302,7 +307,7 @@ namespace Demo.Controls
         private AntdUI.Dropdown button19;
         private AntdUI.Dropdown button17;
         private System.Windows.Forms.Panel panel1;
-        private AntdUI.Divider divider3;
+        private AntdUI.Divider divider2;
         private AntdUI.Dropdown button4;
         private AntdUI.Dropdown button6;
         private AntdUI.Dropdown button2;

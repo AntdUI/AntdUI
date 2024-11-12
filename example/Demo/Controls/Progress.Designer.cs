@@ -89,6 +89,8 @@ namespace Demo.Controls
             header1.Description = "展示操作的当前进度。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Progress.Description";
+            header1.LocalizationText = "Progress.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -183,6 +185,7 @@ namespace Demo.Controls
             // 
             divider4.Dock = DockStyle.Top;
             divider4.Font = new Font("Microsoft YaHei UI", 10F);
+            divider4.LocalizationText = "Progress.{id}";
             divider4.Location = new Point(0, 142);
             divider4.Margin = new Padding(10);
             divider4.Name = "divider4";
@@ -231,6 +234,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Progress.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Margin = new Padding(10);
             divider1.Name = "divider1";
@@ -243,6 +247,7 @@ namespace Demo.Controls
             // 
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
+            divider3.LocalizationText = "Progress.{id}";
             divider3.Location = new Point(0, 154);
             divider3.Margin = new Padding(10);
             divider3.Name = "divider3";
@@ -255,6 +260,7 @@ namespace Demo.Controls
             // 
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Progress.{id}";
             divider2.Location = new Point(0, 0);
             divider2.Margin = new Padding(10);
             divider2.Name = "divider2";
@@ -339,6 +345,7 @@ namespace Demo.Controls
             // 
             divider5.Dock = DockStyle.Top;
             divider5.Font = new Font("Microsoft YaHei UI", 10F);
+            divider5.LocalizationText = "Progress.{id}";
             divider5.Location = new Point(0, 234);
             divider5.Margin = new Padding(10);
             divider5.Name = "divider5";

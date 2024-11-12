@@ -49,7 +49,7 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.Tabs.StyleLine styleLine2 = new AntdUI.Tabs.StyleLine();
+            AntdUI.Tabs.StyleLine styleLine1 = new AntdUI.Tabs.StyleLine();
             header1 = new AntdUI.PageHeader();
             pagination1 = new AntdUI.Pagination();
             table2 = new AntdUI.Table();
@@ -76,6 +76,8 @@ namespace Demo.Controls
             header1.Description = "展示行列数据。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Table.Description";
+            header1.LocalizationText = "Table.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -119,7 +121,6 @@ namespace Demo.Controls
             table1.Radius = 6;
             table1.Size = new Size(1288, 508);
             table1.TabIndex = 0;
-            table1.Text = "table1";
             table1.CellClick += table1_CellClick;
             table1.CellButtonClick += table1_CellButtonClick;
             // 
@@ -134,8 +135,8 @@ namespace Demo.Controls
             tabs1.Pages.Add(tabPage1);
             tabs1.Pages.Add(tabPage2);
             tabs1.Size = new Size(1300, 602);
-            styleLine2.Radius = 2;
-            tabs1.Style = styleLine2;
+            styleLine1.Radius = 2;
+            tabs1.Style = styleLine1;
             tabs1.TabIndex = 0;
             // 
             // tabPage1
@@ -171,11 +172,13 @@ namespace Demo.Controls
             // checkVisibleHeader
             // 
             checkVisibleHeader.AutoCheck = true;
+            checkVisibleHeader.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkVisibleHeader.Checked = true;
             checkVisibleHeader.Dock = DockStyle.Left;
-            checkVisibleHeader.Location = new Point(777, 0);
+            checkVisibleHeader.LocalizationText = "Table.{id}";
+            checkVisibleHeader.Location = new Point(781, 0);
             checkVisibleHeader.Name = "checkVisibleHeader";
-            checkVisibleHeader.Size = new Size(116, 43);
+            checkVisibleHeader.Size = new Size(115, 43);
             checkVisibleHeader.TabIndex = 6;
             checkVisibleHeader.Text = "显示表头";
             checkVisibleHeader.CheckedChanged += checkVisibleHeader_CheckedChanged;
@@ -183,10 +186,12 @@ namespace Demo.Controls
             // checkEnableHeaderResizing
             // 
             checkEnableHeaderResizing.AutoCheck = true;
+            checkEnableHeaderResizing.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkEnableHeaderResizing.Dock = DockStyle.Left;
-            checkEnableHeaderResizing.Location = new Point(599, 0);
+            checkEnableHeaderResizing.LocalizationText = "Table.{id}";
+            checkEnableHeaderResizing.Location = new Point(600, 0);
             checkEnableHeaderResizing.Name = "checkEnableHeaderResizing";
-            checkEnableHeaderResizing.Size = new Size(178, 43);
+            checkEnableHeaderResizing.Size = new Size(181, 43);
             checkEnableHeaderResizing.TabIndex = 5;
             checkEnableHeaderResizing.Text = "手动调整列头宽度";
             checkEnableHeaderResizing.CheckedChanged += checkEnableHeaderResizing_CheckedChanged;
@@ -194,10 +199,12 @@ namespace Demo.Controls
             // checkSortOrder
             // 
             checkSortOrder.AutoCheck = true;
+            checkSortOrder.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkSortOrder.Dock = DockStyle.Left;
-            checkSortOrder.Location = new Point(483, 0);
+            checkSortOrder.LocalizationText = "Table.{id}";
+            checkSortOrder.Location = new Point(485, 0);
             checkSortOrder.Name = "checkSortOrder";
-            checkSortOrder.Size = new Size(116, 43);
+            checkSortOrder.Size = new Size(115, 43);
             checkSortOrder.TabIndex = 4;
             checkSortOrder.Text = "年龄排序";
             checkSortOrder.CheckedChanged += checkSortOrder_CheckedChanged;
@@ -205,10 +212,12 @@ namespace Demo.Controls
             // checkSetRowStyle
             // 
             checkSetRowStyle.AutoCheck = true;
+            checkSetRowStyle.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkSetRowStyle.Dock = DockStyle.Left;
-            checkSetRowStyle.Location = new Point(386, 0);
+            checkSetRowStyle.LocalizationText = "Table.{id}";
+            checkSetRowStyle.Location = new Point(387, 0);
             checkSetRowStyle.Name = "checkSetRowStyle";
-            checkSetRowStyle.Size = new Size(97, 43);
+            checkSetRowStyle.Size = new Size(98, 43);
             checkSetRowStyle.TabIndex = 3;
             checkSetRowStyle.Text = "奇偶列";
             checkSetRowStyle.CheckedChanged += checkSetRowStyle_CheckedChanged;
@@ -216,10 +225,12 @@ namespace Demo.Controls
             // checkBordered
             // 
             checkBordered.AutoCheck = true;
+            checkBordered.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkBordered.Dock = DockStyle.Left;
-            checkBordered.Location = new Point(259, 0);
+            checkBordered.LocalizationText = "Table.{id}";
+            checkBordered.Location = new Point(256, 0);
             checkBordered.Name = "checkBordered";
-            checkBordered.Size = new Size(127, 43);
+            checkBordered.Size = new Size(131, 43);
             checkBordered.TabIndex = 2;
             checkBordered.Text = "显示列边框";
             checkBordered.CheckedChanged += checkBordered_CheckedChanged;
@@ -227,10 +238,12 @@ namespace Demo.Controls
             // checkColumnDragSort
             // 
             checkColumnDragSort.AutoCheck = true;
+            checkColumnDragSort.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkColumnDragSort.Dock = DockStyle.Left;
-            checkColumnDragSort.Location = new Point(126, 0);
+            checkColumnDragSort.LocalizationText = "Table.{id}";
+            checkColumnDragSort.Location = new Point(125, 0);
             checkColumnDragSort.Name = "checkColumnDragSort";
-            checkColumnDragSort.Size = new Size(133, 43);
+            checkColumnDragSort.Size = new Size(131, 43);
             checkColumnDragSort.TabIndex = 1;
             checkColumnDragSort.Text = "列拖拽排序";
             checkColumnDragSort.CheckedChanged += checkColumnDragSort_CheckedChanged;
@@ -238,11 +251,13 @@ namespace Demo.Controls
             // checkFixedHeader
             // 
             checkFixedHeader.AutoCheck = true;
+            checkFixedHeader.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkFixedHeader.Checked = true;
             checkFixedHeader.Dock = DockStyle.Left;
+            checkFixedHeader.LocalizationText = "Table.{id}";
             checkFixedHeader.Location = new Point(10, 0);
             checkFixedHeader.Name = "checkFixedHeader";
-            checkFixedHeader.Size = new Size(116, 43);
+            checkFixedHeader.Size = new Size(115, 43);
             checkFixedHeader.TabIndex = 0;
             checkFixedHeader.Text = "固定表头";
             checkFixedHeader.CheckedChanged += checkFixedHeader_CheckedChanged;
@@ -269,6 +284,7 @@ namespace Demo.Controls
             tabs1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             tabPage2.ResumeLayout(false);
             ResumeLayout(false);
         }

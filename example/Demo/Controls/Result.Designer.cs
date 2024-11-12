@@ -62,6 +62,8 @@ namespace Demo.Controls
             header1.Description = "用于反馈一系列操作任务的处理结果。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Result.Description";
+            header1.LocalizationText = "Result.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);

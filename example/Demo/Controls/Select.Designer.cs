@@ -49,6 +49,7 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            AntdUI.DividerSelectItem dividerSelectItem1 = new AntdUI.DividerSelectItem();
             header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel4 = new System.Windows.Forms.Panel();
@@ -83,6 +84,8 @@ namespace Demo.Controls
             header1.Description = "下拉选择器。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Select.Description";
+            header1.LocalizationText = "Select.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -119,9 +122,10 @@ namespace Demo.Controls
             // select8
             // 
             select8.DropDownArrow = true;
-            select8.Items.AddRange(new AntdUI.ISelectItem[] { new AntdUI.SelectItem(0, "Lucy"), new AntdUI.SelectItem(1, "Tom"), new AntdUI.SelectItem(1, "AduSkin"), new AntdUI.DividerSelectItem(), new AntdUI.SelectItem(0, "WangLi"), new AntdUI.SelectItem(0, "HUAWEI"), new AntdUI.SelectItem(0, "XIAOMI") });
+            select8.Items.AddRange(new object[] { dividerSelectItem1 });
             select8.List = true;
             select8.ListAutoWidth = true;
+            select8.LocalizationPlaceholderText = "Select.{id}";
             select8.Location = new Point(18, 20);
             select8.Margin = new Padding(2, 3, 2, 3);
             select8.Name = "select8";
@@ -142,6 +146,7 @@ namespace Demo.Controls
             // 
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
+            divider3.LocalizationText = "Select.{id}";
             divider3.Location = new Point(0, 257);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
@@ -177,6 +182,7 @@ namespace Demo.Controls
             select7.Dock = DockStyle.Fill;
             select7.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
             select7.JoinRight = true;
+            select7.LocalizationPlaceholderText = "Select.{id}";
             select7.Location = new Point(0, 0);
             select7.Name = "select7";
             select7.PlaceholderText = "输入点什么搜索";
@@ -210,6 +216,7 @@ namespace Demo.Controls
             select6.Dock = DockStyle.Fill;
             select6.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
             select6.JoinRight = true;
+            select6.LocalizationPlaceholderText = "Select.{id}";
             select6.Location = new Point(0, 0);
             select6.Name = "select6";
             select6.PlaceholderText = "输入点什么搜索";
@@ -231,6 +238,7 @@ namespace Demo.Controls
             // 
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Select.{id}";
             divider2.Location = new Point(0, 135);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
@@ -270,6 +278,7 @@ namespace Demo.Controls
             select4.AllowClear = true;
             select4.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
             select4.List = true;
+            select4.LocalizationPlaceholderText = "Select.{id}";
             select4.Location = new Point(390, 12);
             select4.Name = "select4";
             select4.PlaceholderText = "无文本";
@@ -293,6 +302,7 @@ namespace Demo.Controls
             select5.AllowClear = true;
             select5.DropDownArrow = true;
             select5.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
+            select5.LocalizationPlaceholderText = "Select.{id}";
             select5.Location = new Point(18, 59);
             select5.Name = "select5";
             select5.PlaceholderText = "带箭头的";
@@ -314,6 +324,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Select.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;

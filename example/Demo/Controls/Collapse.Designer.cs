@@ -52,14 +52,12 @@ namespace Demo.Controls
             header1 = new AntdUI.PageHeader();
             collapse1 = new AntdUI.Collapse();
             collapseItem1 = new AntdUI.CollapseItem();
-            collapseItem2 = new AntdUI.CollapseItem();
-            collapseItem3 = new AntdUI.CollapseItem();
             label1 = new Label();
+            collapseItem2 = new AntdUI.CollapseItem();
             label2 = new Label();
+            collapseItem3 = new AntdUI.CollapseItem();
             label3 = new Label();
             panel1 = new System.Windows.Forms.Panel();
-            divider1 = new AntdUI.Divider();
-            divider2 = new AntdUI.Divider();
             collapse2 = new AntdUI.Collapse();
             collapseItem4 = new AntdUI.CollapseItem();
             label4 = new Label();
@@ -67,6 +65,8 @@ namespace Demo.Controls
             label5 = new Label();
             collapseItem6 = new AntdUI.CollapseItem();
             label6 = new Label();
+            divider2 = new AntdUI.Divider();
+            divider1 = new AntdUI.Divider();
             collapse1.SuspendLayout();
             collapseItem1.SuspendLayout();
             collapseItem2.SuspendLayout();
@@ -83,6 +83,8 @@ namespace Demo.Controls
             header1.Description = "可以折叠/展开的内容区域。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Collapse.Description";
+            header1.LocalizationText = "Collapse.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -93,9 +95,6 @@ namespace Demo.Controls
             // 
             // collapse1
             // 
-            collapse1.Controls.Add(collapseItem1);
-            collapse1.Controls.Add(collapseItem2);
-            collapse1.Controls.Add(collapseItem3);
             collapse1.Dock = DockStyle.Top;
             collapse1.Items.Add(collapseItem1);
             collapse1.Items.Add(collapseItem2);
@@ -115,24 +114,6 @@ namespace Demo.Controls
             collapseItem1.Text = "This is panel header 1";
             collapseItem1.Click += collapseItem1_Click;
             // 
-            // collapseItem2
-            // 
-            collapseItem2.Controls.Add(label2);
-            collapseItem2.Location = new Point(-702, -48);
-            collapseItem2.Name = "collapseItem2";
-            collapseItem2.Size = new Size(702, 48);
-            collapseItem2.TabIndex = 1;
-            collapseItem2.Text = "This is panel header 2";
-            // 
-            // collapseItem3
-            // 
-            collapseItem3.Controls.Add(label3);
-            collapseItem3.Location = new Point(-702, -48);
-            collapseItem3.Name = "collapseItem3";
-            collapseItem3.Size = new Size(702, 48);
-            collapseItem3.TabIndex = 2;
-            collapseItem3.Text = "This is panel header 3";
-            // 
             // label1
             // 
             label1.AutoEllipsis = true;
@@ -143,6 +124,15 @@ namespace Demo.Controls
             label1.TabIndex = 0;
             label1.Text = "A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.";
             // 
+            // collapseItem2
+            // 
+            collapseItem2.Controls.Add(label2);
+            collapseItem2.Location = new Point(-702, -48);
+            collapseItem2.Name = "collapseItem2";
+            collapseItem2.Size = new Size(702, 48);
+            collapseItem2.TabIndex = 1;
+            collapseItem2.Text = "This is panel header 2";
+            // 
             // label2
             // 
             label2.AutoEllipsis = true;
@@ -152,6 +142,15 @@ namespace Demo.Controls
             label2.Size = new Size(702, 48);
             label2.TabIndex = 1;
             label2.Text = "A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.";
+            // 
+            // collapseItem3
+            // 
+            collapseItem3.Controls.Add(label3);
+            collapseItem3.Location = new Point(-702, -48);
+            collapseItem3.Name = "collapseItem3";
+            collapseItem3.Size = new Size(702, 48);
+            collapseItem3.TabIndex = 2;
+            collapseItem3.Text = "This is panel header 3";
             // 
             // label3
             // 
@@ -176,34 +175,9 @@ namespace Demo.Controls
             panel1.Size = new Size(740, 386);
             panel1.TabIndex = 0;
             // 
-            // divider1
-            // 
-            divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F);
-            divider1.Location = new Point(0, 0);
-            divider1.Name = "divider1";
-            divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(723, 22);
-            divider1.TabIndex = 0;
-            divider1.Text = "常规";
-            // 
-            // divider2
-            // 
-            divider2.Dock = DockStyle.Top;
-            divider2.Font = new Font("Microsoft YaHei UI", 10F);
-            divider2.Location = new Point(0, 470);
-            divider2.Name = "divider2";
-            divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(723, 22);
-            divider2.TabIndex = 1;
-            divider2.Text = "无边框";
-            // 
             // collapse2
             // 
             collapse2.BorderWidth = 0F;
-            collapse2.Controls.Add(collapseItem4);
-            collapse2.Controls.Add(collapseItem5);
-            collapse2.Controls.Add(collapseItem6);
             collapse2.Dock = DockStyle.Top;
             collapse2.Gap = 8;
             collapse2.Items.Add(collapseItem4);
@@ -272,6 +246,30 @@ namespace Demo.Controls
             label6.Size = new Size(702, 48);
             label6.TabIndex = 1;
             label6.Text = "A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.";
+            // 
+            // divider2
+            // 
+            divider2.Dock = DockStyle.Top;
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Collapse.{id}";
+            divider2.Location = new Point(0, 470);
+            divider2.Name = "divider2";
+            divider2.Orientation = AntdUI.TOrientation.Left;
+            divider2.Size = new Size(723, 22);
+            divider2.TabIndex = 1;
+            divider2.Text = "无边框";
+            // 
+            // divider1
+            // 
+            divider1.Dock = DockStyle.Top;
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Collapse.{id}";
+            divider1.Location = new Point(0, 0);
+            divider1.Name = "divider1";
+            divider1.Orientation = AntdUI.TOrientation.Left;
+            divider1.Size = new Size(723, 22);
+            divider1.TabIndex = 0;
+            divider1.Text = "常规";
             // 
             // Collapse
             // 

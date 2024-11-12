@@ -49,6 +49,7 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            header1 = new AntdUI.PageHeader();
             tBadge1 = new AntdUI.Badge();
             tBadge2 = new AntdUI.Badge();
             tBadge3 = new AntdUI.Badge();
@@ -73,7 +74,6 @@ namespace Demo.Controls
             tBadge28 = new AntdUI.Badge();
             tBadge29 = new AntdUI.Badge();
             tBadge30 = new AntdUI.Badge();
-            header1 = new AntdUI.PageHeader();
             flowLayoutPanel1 = new FlowLayoutPanel();
             divider1 = new AntdUI.Divider();
             label2 = new Label();
@@ -83,6 +83,21 @@ namespace Demo.Controls
             panel6.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
+            // 
+            // header1
+            // 
+            header1.Description = "图标右上角的圆形徽标数字。";
+            header1.Dock = DockStyle.Top;
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Badge.Description";
+            header1.LocalizationText = "Badge.Text";
+            header1.Location = new Point(0, 0);
+            header1.Name = "header1";
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(543, 74);
+            header1.TabIndex = 0;
+            header1.Text = "Badge 徽标数";
+            header1.UseTitleFont = true;
             // 
             // tBadge1
             // 
@@ -328,19 +343,6 @@ namespace Demo.Controls
             tBadge30.TabIndex = 0;
             tBadge30.Text = "Success";
             // 
-            // header1
-            // 
-            header1.Description = "图标右上角的圆形徽标数字。";
-            header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F);
-            header1.Location = new Point(0, 0);
-            header1.Name = "header1";
-            header1.Padding = new Padding(0, 0, 0, 10);
-            header1.Size = new Size(543, 74);
-            header1.TabIndex = 0;
-            header1.Text = "Badge 徽标数";
-            header1.UseTitleFont = true;
-            // 
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.AutoScroll = true;
@@ -356,6 +358,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Badge.{id}";
             divider1.Location = new Point(0, 74);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -391,6 +394,7 @@ namespace Demo.Controls
 
         #endregion
 
+        private AntdUI.PageHeader header1;
         private AntdUI.Badge tBadge1;
         private AntdUI.Badge tBadge2;
         private AntdUI.Badge tBadge3;
@@ -415,7 +419,6 @@ namespace Demo.Controls
         private AntdUI.Badge tBadge28;
         private AntdUI.Badge tBadge29;
         private AntdUI.Badge tBadge30;
-        private AntdUI.PageHeader header1;
         private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.Divider divider1;
         private Label label2;
