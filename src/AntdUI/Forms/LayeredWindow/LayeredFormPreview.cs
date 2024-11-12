@@ -363,28 +363,28 @@ namespace AntdUI
                         rect_loading.Offset(0, loading_size);
                         g.String(LoadingProgressStr, Font, Style.Db.ErrorColor, rect_loading, s_f);
                     }
-                    using (var path = rect_panel.RoundPath(rect_panel.Height))
+                }
+                using (var path = rect_panel.RoundPath(rect_panel.Height))
+                {
+                    using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
                     {
-                        using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
+                        g.Fill(brush, path);
+                        PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
+                        if (PageSize > 1)
                         {
-                            g.Fill(brush, path);
-                            PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
-                            if (PageSize > 1)
-                            {
-                                PaintBtn(g, brush, rect_left, rect_left_icon, SvgDb.IcoLeft, hoverLeft, enabledLeft);
-                                PaintBtn(g, brush, rect_right, rect_right_icon, SvgDb.IcoRight, hoverRight, enabledRight);
-                            }
+                            PaintBtn(g, brush, rect_left, rect_left_icon, SvgDb.IcoLeft, hoverLeft, enabledLeft);
+                            PaintBtn(g, brush, rect_right, rect_right_icon, SvgDb.IcoRight, hoverRight, enabledRight);
                         }
                     }
-                    foreach (var it in btns)
+                }
+                foreach (var it in btns)
+                {
+                    using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
                     {
-                        using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
+                        if (bmp != null)
                         {
-                            if (bmp != null)
-                            {
-                                if (it.enabled) g.Image(bmp, it.rect);
-                                else g.Image(bmp, it.rect, 0.3F);
-                            }
+                            if (it.enabled) g.Image(bmp, it.rect);
+                            else g.Image(bmp, it.rect, 0.3F);
                         }
                     }
                 }
