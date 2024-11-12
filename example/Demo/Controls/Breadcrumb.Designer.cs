@@ -67,6 +67,8 @@ namespace Demo.Controls
             header1.Description = "显示当前页面在系统层级结构中的位置，并能向上返回。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Breadcrumb.Description";
+            header1.LocalizationText = "Breadcrumb.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -78,9 +80,13 @@ namespace Demo.Controls
             // breadcrumb1
             // 
             breadcrumb1.Dock = DockStyle.Top;
+            breadcrumbItem1.ID = null;
             breadcrumbItem1.Text = "Home";
+            breadcrumbItem2.ID = null;
             breadcrumbItem2.Text = "Application Center";
+            breadcrumbItem3.ID = null;
             breadcrumbItem3.Text = "Application List";
+            breadcrumbItem4.ID = null;
             breadcrumbItem4.Text = "An Application";
             breadcrumb1.Items.Add(breadcrumbItem1);
             breadcrumb1.Items.Add(breadcrumbItem2);
@@ -97,8 +103,11 @@ namespace Demo.Controls
             // 
             breadcrumb2.Dock = DockStyle.Top;
             breadcrumbItem5.IconSvg = "HomeOutlined";
+            breadcrumbItem5.ID = null;
             breadcrumbItem6.IconSvg = "UserOutlined";
+            breadcrumbItem6.ID = null;
             breadcrumbItem6.Text = "Application List";
+            breadcrumbItem7.ID = null;
             breadcrumbItem7.Text = "Application";
             breadcrumb2.Items.Add(breadcrumbItem5);
             breadcrumb2.Items.Add(breadcrumbItem6);

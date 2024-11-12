@@ -49,9 +49,8 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.SegmentedItem segmentedItem1 = new AntdUI.SegmentedItem();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Icon));
-            AntdUI.SegmentedItem segmentedItem2 = new AntdUI.SegmentedItem();
+            AntdUI.SegmentedItem segmentedItem3 = new AntdUI.SegmentedItem();
+            AntdUI.SegmentedItem segmentedItem4 = new AntdUI.SegmentedItem();
             header1 = new AntdUI.PageHeader();
             segmented1 = new AntdUI.Segmented();
             panel1 = new System.Windows.Forms.Panel();
@@ -65,6 +64,8 @@ namespace Demo.Controls
             header1.Description = "语义化的矢量图形。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Icon.Description";
+            header1.LocalizationText = "Icon.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -77,12 +78,11 @@ namespace Demo.Controls
             // 
             segmented1.Dock = DockStyle.Left;
             segmented1.IconAlign = AntdUI.TAlignMini.Left;
-            segmentedItem1.IconSvg = resources.GetString("segmentedItem1.IconSvg");
-            segmentedItem1.Text = "线框风格";
-            segmentedItem2.IconSvg = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M864 64H160C107 64 64 107 64 160v704c0 53 43 96 96 96h704c53 0 96-43 96-96V160c0-53-43-96-96-96z\"></path></svg>";
-            segmentedItem2.Text = "实底风格";
-            segmented1.Items.Add(segmentedItem1);
-            segmented1.Items.Add(segmentedItem2);
+            segmentedItem3.Text = "线框风格";
+            segmentedItem4.IconSvg = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M864 64H160C107 64 64 107 64 160v704c0 53 43 96 96 96h704c53 0 96-43 96-96V160c0-53-43-96-96-96z\"></path></svg>";
+            segmentedItem4.Text = "实底风格";
+            segmented1.Items.Add(segmentedItem3);
+            segmented1.Items.Add(segmentedItem4);
             segmented1.Location = new Point(10, 0);
             segmented1.Name = "segmented1";
             segmented1.SelectIndex = 0;
@@ -104,6 +104,7 @@ namespace Demo.Controls
             // txt_search
             // 
             txt_search.Dock = DockStyle.Right;
+            txt_search.LocalizationPlaceholderText = "Icon.PlaceholderText";
             txt_search.Location = new Point(505, 0);
             txt_search.Name = "txt_search";
             txt_search.PlaceholderText = "在此搜索图标，点击图标可复制代码";

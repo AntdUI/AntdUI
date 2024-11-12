@@ -61,6 +61,8 @@ namespace Demo.Controls
             header1.Description = "采用分页的形式分隔长列表，每次只加载一个页面。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Pagination.Description";
+            header1.LocalizationText = "Pagination.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);

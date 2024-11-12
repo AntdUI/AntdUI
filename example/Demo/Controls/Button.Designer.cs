@@ -118,6 +118,8 @@ namespace Demo.Controls
             header1.Description = "按钮用于开始一个即时操作。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Button.Description";
+            header1.LocalizationText = "Button.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -263,6 +265,7 @@ namespace Demo.Controls
             // 
             divider5.Dock = DockStyle.Top;
             divider5.Font = new Font("Microsoft YaHei UI", 10F);
+            divider5.LocalizationText = "Button.{id}";
             divider5.Location = new Point(0, 495);
             divider5.Name = "divider5";
             divider5.Orientation = AntdUI.TOrientation.Left;
@@ -396,6 +399,7 @@ namespace Demo.Controls
             // 
             divider4.Dock = DockStyle.Top;
             divider4.Font = new Font("Microsoft YaHei UI", 10F);
+            divider4.LocalizationText = "Button.{id}";
             divider4.Location = new Point(0, 362);
             divider4.Name = "divider4";
             divider4.Orientation = AntdUI.TOrientation.Left;
@@ -517,6 +521,7 @@ namespace Demo.Controls
             // 
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
+            divider3.LocalizationText = "Button.{id}";
             divider3.Location = new Point(0, 231);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
@@ -601,6 +606,7 @@ namespace Demo.Controls
             // 
             divider6.Dock = DockStyle.Top;
             divider6.Font = new Font("Microsoft YaHei UI", 10F);
+            divider6.LocalizationText = "Button.{id}";
             divider6.Location = new Point(0, 154);
             divider6.Name = "divider6";
             divider6.Orientation = AntdUI.TOrientation.Left;
@@ -639,6 +645,7 @@ namespace Demo.Controls
             // 
             button11.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button11.IconSvg = "SearchOutlined";
+            button11.LocalizationText = "Button.Search";
             button11.Location = new Point(56, 3);
             button11.Name = "button11";
             button11.Size = new Size(95, 47);
@@ -664,6 +671,7 @@ namespace Demo.Controls
             button13.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button13.BorderWidth = 1F;
             button13.IconSvg = "SearchOutlined";
+            button13.LocalizationText = "Button.Search";
             button13.Location = new Point(210, 3);
             button13.Name = "button13";
             button13.Size = new Size(95, 47);
@@ -688,6 +696,7 @@ namespace Demo.Controls
             // 
             button15.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button15.IconSvg = "SearchOutlined";
+            button15.LocalizationText = "Button.Search";
             button15.Location = new Point(364, 3);
             button15.Name = "button15";
             button15.Size = new Size(95, 47);
@@ -713,6 +722,7 @@ namespace Demo.Controls
             // 
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Button.{id}";
             divider2.Location = new Point(0, 77);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
@@ -794,6 +804,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Button.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;

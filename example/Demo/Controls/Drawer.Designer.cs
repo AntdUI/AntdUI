@@ -69,6 +69,8 @@ namespace Demo.Controls
             header1.Description = "屏幕边缘滑出的浮层面板。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Divider.Description";
+            header1.LocalizationText = "Divider.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -116,7 +118,7 @@ namespace Demo.Controls
             radio2.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio2.Checked = true;
             radio2.Dock = DockStyle.Left;
-            radio2.Location = new Point(256, 0);
+            radio2.Location = new Point(258, 0);
             radio2.Name = "radio2";
             radio2.Size = new Size(86, 46);
             radio2.TabIndex = 1;
@@ -127,7 +129,7 @@ namespace Demo.Controls
             radio4.AutoCheck = true;
             radio4.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio4.Dock = DockStyle.Left;
-            radio4.Location = new Point(182, 0);
+            radio4.Location = new Point(184, 0);
             radio4.Name = "radio4";
             radio4.Size = new Size(74, 46);
             radio4.TabIndex = 3;
@@ -138,9 +140,9 @@ namespace Demo.Controls
             radio3.AutoCheck = true;
             radio3.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio3.Dock = DockStyle.Left;
-            radio3.Location = new Point(75, 0);
+            radio3.Location = new Point(76, 0);
             radio3.Name = "radio3";
-            radio3.Size = new Size(107, 46);
+            radio3.Size = new Size(108, 46);
             radio3.TabIndex = 2;
             radio3.Text = "bottom";
             // 
@@ -151,7 +153,7 @@ namespace Demo.Controls
             radio1.Dock = DockStyle.Left;
             radio1.Location = new Point(0, 0);
             radio1.Name = "radio1";
-            radio1.Size = new Size(75, 46);
+            radio1.Size = new Size(76, 46);
             radio1.TabIndex = 0;
             radio1.Text = "top";
             // 
@@ -170,6 +172,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Drawer.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Margin = new Padding(10);
             divider1.Name = "divider1";

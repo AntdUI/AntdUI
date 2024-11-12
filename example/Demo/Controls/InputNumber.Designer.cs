@@ -49,19 +49,34 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            header1 = new AntdUI.PageHeader();
             input1 = new AntdUI.InputNumber();
             input2 = new AntdUI.InputNumber();
             input3 = new AntdUI.InputNumber();
             input4 = new AntdUI.InputNumber();
             input5 = new AntdUI.InputNumber();
             input6 = new AntdUI.InputNumber();
-            header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel2 = new System.Windows.Forms.Panel();
             divider1 = new AntdUI.Divider();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
+            // 
+            // header1
+            // 
+            header1.Description = "通过鼠标或键盘，输入范围内的数值。";
+            header1.Dock = DockStyle.Top;
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "InputNumber.Description";
+            header1.LocalizationText = "InputNumber.Text";
+            header1.Location = new Point(0, 0);
+            header1.Name = "header1";
+            header1.Padding = new Padding(0, 0, 0, 10);
+            header1.Size = new Size(555, 74);
+            header1.TabIndex = 0;
+            header1.Text = "InputNumber 数字输入框";
+            header1.UseTitleFont = true;
             // 
             // input1
             // 
@@ -85,6 +100,7 @@ namespace Demo.Controls
             // 
             // input3
             // 
+            input3.LocalizationPlaceholderText = "InputNumber.{id}";
             input3.Location = new Point(244, 6);
             input3.Name = "input3";
             input3.PlaceholderText = "请输入数字";
@@ -126,19 +142,6 @@ namespace Demo.Controls
             input6.Text = "1";
             input6.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
-            // header1
-            // 
-            header1.Description = "通过鼠标或键盘，输入范围内的数值。";
-            header1.Dock = DockStyle.Top;
-            header1.Font = new Font("Microsoft YaHei UI", 12F);
-            header1.Location = new Point(0, 0);
-            header1.Name = "header1";
-            header1.Padding = new Padding(0, 0, 0, 10);
-            header1.Size = new Size(555, 74);
-            header1.TabIndex = 0;
-            header1.Text = "InputNumber 数字输入框";
-            header1.UseTitleFont = true;
-            // 
             // panel1
             // 
             panel1.AutoScroll = true;
@@ -168,6 +171,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "InputNumber.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
@@ -190,13 +194,13 @@ namespace Demo.Controls
 
         #endregion
 
+        private AntdUI.PageHeader header1;
         private AntdUI.InputNumber input1;
         private AntdUI.InputNumber input2;
         private AntdUI.InputNumber input3;
         private AntdUI.InputNumber input4;
         private AntdUI.InputNumber input5;
         private AntdUI.InputNumber input6;
-        private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private AntdUI.Divider divider1;

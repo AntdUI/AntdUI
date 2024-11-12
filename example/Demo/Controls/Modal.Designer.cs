@@ -66,6 +66,8 @@ namespace Demo.Controls
             header1.Description = "模态对话框。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Modal.Description";
+            header1.LocalizationText = "Modal.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -141,6 +143,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Modal.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Margin = new Padding(10);
             divider1.Name = "divider1";

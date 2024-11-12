@@ -86,6 +86,8 @@ namespace Demo.Controls
             header1.Description = "进行标记和分类的小标签";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Tag.Description";
+            header1.LocalizationText = "Tag.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -124,6 +126,7 @@ namespace Demo.Controls
             tag16.BackColor = Color.FromArgb(59, 89, 153);
             tag16.ForeColor = Color.White;
             tag16.Image = Properties.Resources.img1;
+            tag16.LocalizationText = "Tag.{id}";
             tag16.Location = new Point(13, 13);
             tag16.Name = "tag16";
             tag16.Size = new Size(107, 27);
@@ -133,6 +136,7 @@ namespace Demo.Controls
             // divider3
             // 
             divider3.Dock = DockStyle.Top;
+            divider3.LocalizationText = "Tag.{id}";
             divider3.Location = new Point(0, 191);
             divider3.Margin = new Padding(10);
             divider3.Name = "divider3";
@@ -265,6 +269,7 @@ namespace Demo.Controls
             // divider2
             // 
             divider2.Dock = DockStyle.Top;
+            divider2.LocalizationText = "Tag.{id}";
             divider2.Location = new Point(0, 81);
             divider2.Margin = new Padding(10);
             divider2.Name = "divider2";
@@ -352,6 +357,7 @@ namespace Demo.Controls
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
+            divider1.LocalizationText = "Tag.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Margin = new Padding(10);
             divider1.Name = "divider1";

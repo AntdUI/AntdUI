@@ -77,6 +77,8 @@ namespace Demo.Controls
             header1.Description = "输入或选择日期的控件。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "DatePicker.Description";
+            header1.LocalizationText = "DatePicker.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -123,10 +125,12 @@ namespace Demo.Controls
             // datePickerRange4
             // 
             datePickerRange4.AllowClear = true;
+            datePickerRange4.LocalizationPlaceholderEnd = "DatePicker.PlaceholderE";
+            datePickerRange4.LocalizationPlaceholderStart = "DatePicker.PlaceholderS";
             datePickerRange4.Location = new Point(271, 16);
             datePickerRange4.Name = "datePickerRange4";
-            datePickerRange4.PlaceholderEnd = "结束日期";
-            datePickerRange4.PlaceholderStart = "开始日期";
+            datePickerRange4.PlaceholderEnd = "结束时间";
+            datePickerRange4.PlaceholderStart = "开始时间";
             datePickerRange4.Presets.AddRange(new object[] { "今天", "昨天", "过去7天", "过去39天", "本周", "上周", "本月", "上月", "本季", "上季", "本年", "去年" });
             datePickerRange4.Size = new Size(286, 44);
             datePickerRange4.TabIndex = 26;
@@ -155,6 +159,7 @@ namespace Demo.Controls
             // 
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
+            divider3.LocalizationText = "DatePicker.{id}";
             divider3.Location = new Point(0, 280);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
@@ -181,10 +186,12 @@ namespace Demo.Controls
             // 
             // inputRange1
             // 
+            inputRange1.LocalizationPlaceholderEnd = "DatePicker.PlaceholderE";
+            inputRange1.LocalizationPlaceholderStart = "DatePicker.PlaceholderS";
             inputRange1.Location = new Point(19, 15);
             inputRange1.Name = "inputRange1";
-            inputRange1.PlaceholderEnd = "结束日期";
-            inputRange1.PlaceholderStart = "开始日期";
+            inputRange1.PlaceholderEnd = "结束时间";
+            inputRange1.PlaceholderStart = "开始时间";
             inputRange1.Size = new Size(300, 40);
             inputRange1.TabIndex = 24;
             // 
@@ -192,6 +199,7 @@ namespace Demo.Controls
             // 
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "DatePicker.{id}";
             divider2.Location = new Point(0, 140);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
@@ -214,6 +222,7 @@ namespace Demo.Controls
             // 
             datePicker3.AllowClear = true;
             datePicker3.DropDownArrow = true;
+            datePicker3.LocalizationPlaceholderText = "DatePicker.PlaceholderText";
             datePicker3.Location = new Point(19, 56);
             datePicker3.Name = "datePicker3";
             datePicker3.PlaceholderText = "请选择日期";
@@ -233,6 +242,7 @@ namespace Demo.Controls
             // 
             // datePicker1
             // 
+            datePicker1.LocalizationPlaceholderText = "DatePicker.PlaceholderText";
             datePicker1.Location = new Point(19, 6);
             datePicker1.Name = "datePicker1";
             datePicker1.PlaceholderText = "请选择日期";
@@ -243,6 +253,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "DatePicker.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;

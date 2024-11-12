@@ -30,6 +30,8 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
+            tabPage1.Text = AntdUI.Localization.Get("Table.Tab1", "≥£πÊ");
+            tabPage2.Text = AntdUI.Localization.Get("Table.Tab2", "∑÷“≥");
             table1.EditMode = table2.EditMode = AntdUI.TEditMode.DoubleClick;
 
             #region Table 1

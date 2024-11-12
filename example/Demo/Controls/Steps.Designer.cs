@@ -89,6 +89,8 @@ namespace Demo.Controls
             // 
             header1.Description = "引导用户按照流程完成任务的导航条。";
             header1.Dock = DockStyle.Top;
+            header1.LocalizationDescription = "Steps.Description";
+            header1.LocalizationText = "Steps.Text";
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.Location = new Point(0, 0);
             header1.Name = "header1";

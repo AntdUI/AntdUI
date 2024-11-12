@@ -80,6 +80,8 @@ namespace Demo.Controls
             header1.Description = "警告提示，展现需要关注的信息。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Alert.Description";
+            header1.LocalizationText = "Alert.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -110,6 +112,7 @@ namespace Demo.Controls
             alert12.Dock = DockStyle.Top;
             alert12.Font = new Font("楷体", 12F, FontStyle.Bold);
             alert12.ForeColor = Color.White;
+            alert12.LocalizationText = "Alert.{id}";
             alert12.Location = new Point(0, 436);
             alert12.Loop = true;
             alert12.Name = "alert12";
@@ -134,6 +137,7 @@ namespace Demo.Controls
             // 
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
+            divider3.LocalizationText = "Alert.{id}";
             divider3.Location = new Point(0, 384);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
@@ -206,6 +210,7 @@ namespace Demo.Controls
             // 
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Alert.{id}";
             divider2.Location = new Point(0, 111);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
@@ -317,6 +322,7 @@ namespace Demo.Controls
             // 
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Alert.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;

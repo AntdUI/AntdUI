@@ -70,6 +70,8 @@ namespace Demo.Controls
             header1.Description = "用来代表用户或事物，支持图片、图标或字符展示。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Avatar.Description";
+            header1.LocalizationText = "Avatar.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -126,6 +128,7 @@ namespace Demo.Controls
             avatar10.Badge = "0";
             avatar10.Font = new Font("Microsoft YaHei UI", 14F);
             avatar10.ForeColor = Color.White;
+            avatar10.LocalizationText = "Avatar.{id}";
             avatar10.Location = new Point(248, 6);
             avatar10.Name = "avatar10";
             avatar10.Radius = 10;

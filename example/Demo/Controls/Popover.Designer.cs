@@ -64,11 +64,11 @@ namespace Demo.Controls
             buttonTop = new AntdUI.Button();
             buttonBL = new AntdUI.Button();
             buttonTL = new AntdUI.Button();
-            divider1 = new AntdUI.Divider();
+            divider2 = new AntdUI.Divider();
             panel2 = new System.Windows.Forms.Panel();
             button2 = new AntdUI.Button();
             button1 = new AntdUI.Button();
-            divider3 = new AntdUI.Divider();
+            divider1 = new AntdUI.Divider();
             panel1.SuspendLayout();
             panel3.SuspendLayout();
             panel2.SuspendLayout();
@@ -79,6 +79,8 @@ namespace Demo.Controls
             header1.Description = "弹出气泡式的卡片浮层。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Popover.Description";
+            header1.LocalizationText = "Popover.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -91,9 +93,9 @@ namespace Demo.Controls
             // 
             panel1.AutoScroll = true;
             panel1.Controls.Add(panel3);
-            panel1.Controls.Add(divider1);
+            panel1.Controls.Add(divider2);
             panel1.Controls.Add(panel2);
-            panel1.Controls.Add(divider3);
+            panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
@@ -240,16 +242,17 @@ namespace Demo.Controls
             buttonTL.Text = "TL";
             buttonTL.Click += buttonTL_Click;
             // 
-            // divider1
+            // divider2
             // 
-            divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F);
-            divider1.Location = new Point(0, 218);
-            divider1.Name = "divider1";
-            divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(840, 22);
-            divider1.TabIndex = 11;
-            divider1.Text = "位置";
+            divider2.Dock = DockStyle.Top;
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Popover.{id}";
+            divider2.Location = new Point(0, 218);
+            divider2.Name = "divider2";
+            divider2.Orientation = AntdUI.TOrientation.Left;
+            divider2.Size = new Size(840, 22);
+            divider2.TabIndex = 11;
+            divider2.Text = "位置";
             // 
             // panel2
             // 
@@ -264,6 +267,7 @@ namespace Demo.Controls
             // button2
             // 
             button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button2.LocalizationText = "Popover.{id}";
             button2.Location = new Point(145, 17);
             button2.Name = "button2";
             button2.Size = new Size(182, 47);
@@ -275,6 +279,7 @@ namespace Demo.Controls
             // button1
             // 
             button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button1.LocalizationText = "Popover.{id}";
             button1.Location = new Point(14, 17);
             button1.Name = "button1";
             button1.Size = new Size(100, 47);
@@ -283,16 +288,17 @@ namespace Demo.Controls
             button1.Type = AntdUI.TTypeMini.Primary;
             button1.Click += button1_Click;
             // 
-            // divider3
+            // divider1
             // 
-            divider3.Dock = DockStyle.Top;
-            divider3.Font = new Font("Microsoft YaHei UI", 10F);
-            divider3.Location = new Point(0, 0);
-            divider3.Name = "divider3";
-            divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(840, 22);
-            divider3.TabIndex = 9;
-            divider3.Text = "常规";
+            divider1.Dock = DockStyle.Top;
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "Popover.{id}";
+            divider1.Location = new Point(0, 0);
+            divider1.Name = "divider1";
+            divider1.Orientation = AntdUI.TOrientation.Left;
+            divider1.Size = new Size(840, 22);
+            divider1.TabIndex = 9;
+            divider1.Text = "常规";
             // 
             // Popover
             // 
@@ -312,9 +318,9 @@ namespace Demo.Controls
         private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel3;
-        private AntdUI.Divider divider1;
+        private AntdUI.Divider divider2;
         private System.Windows.Forms.Panel panel2;
-        private AntdUI.Divider divider3;
+        private AntdUI.Divider divider1;
         private AntdUI.Button button1;
         private AntdUI.Button button2;
         private AntdUI.Button buttonRB;
