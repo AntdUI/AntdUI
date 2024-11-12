@@ -1184,6 +1184,12 @@ namespace AntdUI
 
     public class SegmentedItem
     {
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
+
         bool enabled = true;
         /// <summary>
         /// 使能

@@ -30,6 +30,7 @@ namespace AntdUI
         ContextMenuStrip.Config config;
         public override bool MessageEnable => true;
         public override bool MessageCloseSub => true;
+        public override bool MessageClickMe => false;
 
         Font FontSub;
         float radius = 0;

@@ -33,7 +33,7 @@ namespace AntdUI
     [Description("Button 按钮")]
     [ToolboxItem(true)]
     [DefaultProperty("Text")]
-    public class Button : IControl, IButtonControl
+    public class Button : IControl, IButtonControl, IEventListener
     {
         public Button()
         {
@@ -336,7 +336,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (string.IsNullOrEmpty(value)) value = null;
@@ -348,6 +348,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         StringFormat stringFormat = Helper.SF_NoWrap();
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
@@ -1118,25 +1121,25 @@ namespace AntdUI
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, text, _back_active, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _back_active, rect_read, Enabled);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
                                 g.Draw(Style.Db.DefaultBorder, border, path);
                                 g.Draw(colorHover, border, path);
-                                PaintTextLoading(g, text, _fore, colorHover, rect_read);
+                                PaintTextLoading(g, Text, _fore, colorHover, rect_read);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, text, _back_hover, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _back_hover, rect_read, Enabled);
                             }
                             else
                             {
                                 if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, border, path);
                                 else g.Draw(defaultbordercolor ?? Style.Db.DefaultBorder, border, path);
-                                PaintTextLoading(g, text, _fore, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _fore, rect_read, Enabled);
                             }
                         }
                         else
@@ -1145,14 +1148,14 @@ namespace AntdUI
                             else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
                             else if (ExtraMouseHover) g.Fill(_back_hover, path);
                             PaintLoadingWave(g, path, rect_read);
-                            PaintTextLoading(g, text, _fore, rect_read, Enabled);
+                            PaintTextLoading(g, Text, _fore, rect_read, Enabled);
                         }
                     }
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
                         if (!ghost) g.Fill(Style.Db.FillTertiary, path);
-                        PaintTextLoading(g, text, Style.Db.TextQuaternary, rect_read, Enabled);
+                        PaintTextLoading(g, Text, Style.Db.TextQuaternary, rect_read, Enabled);
                     }
                 }
             }
@@ -1193,19 +1196,19 @@ namespace AntdUI
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, text, _back_active, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _back_active, rect_read, Enabled);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
                                 g.Draw(Enabled ? _back : Style.Db.FillTertiary, border, path);
                                 g.Draw(colorHover, border, path);
-                                PaintTextLoading(g, text, _back, colorHover, rect_read);
+                                PaintTextLoading(g, Text, _back, colorHover, rect_read);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, text, _back_hover, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _back_hover, rect_read, Enabled);
                             }
                             else
                             {
@@ -1227,10 +1230,10 @@ namespace AntdUI
                                     }
                                 }
                                 else g.Draw(Style.Db.FillTertiary, border, path);
-                                PaintTextLoading(g, text, Enabled ? _back : Style.Db.TextQuaternary, rect_read, Enabled);
+                                PaintTextLoading(g, Text, Enabled ? _back : Style.Db.TextQuaternary, rect_read, Enabled);
                             }
                         }
-                        else PaintTextLoading(g, text, Enabled ? _back : Style.Db.TextQuaternary, rect_read, Enabled);
+                        else PaintTextLoading(g, Text, Enabled ? _back : Style.Db.TextQuaternary, rect_read, Enabled);
 
                         #endregion
                     }
@@ -1277,7 +1280,7 @@ namespace AntdUI
                         #endregion
 
                         PaintLoadingWave(g, path, rect_read);
-                        PaintTextLoading(g, text, Enabled ? _fore : Style.Db.TextQuaternary, rect_read, Enabled);
+                        PaintTextLoading(g, Text, Enabled ? _fore : Style.Db.TextQuaternary, rect_read, Enabled);
                     }
                 }
             }
@@ -2223,9 +2226,9 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
+                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
-                    if (Shape == TShape.Circle || string.IsNullOrEmpty(text))
+                    if (Shape == TShape.Circle || string.IsNullOrEmpty(Text))
                     {
                         int s = font_size.Height + wave + gap;
                         return new Size(s, s);
@@ -2371,6 +2374,26 @@ namespace AntdUI
         {
             add => base.MouseDoubleClick += value;
             remove => base.MouseDoubleClick -= value;
+        }
+
+        #endregion
+
+        #region 语言变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    BeforeAutoSize();
+                    break;
+            }
         }
 
         #endregion

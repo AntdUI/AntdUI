@@ -127,7 +127,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? Character
         {
-            get => character;
+            get => this.GetLangI(LocalizationCharacter, character);
             set
             {
                 if (character == value) return;
@@ -138,6 +138,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("自定义字符"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationCharacter { get; set; }
 
         #endregion
 
@@ -150,6 +153,8 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0 || count < 1) return;
             int size = rect.Height;
             var g = e.Graphics.High();
+
+            var character = Character;
             #region 初始化位图
 
             if (icon == null || icon.Width != size)

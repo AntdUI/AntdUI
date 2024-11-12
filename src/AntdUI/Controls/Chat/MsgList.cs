@@ -352,6 +352,12 @@ namespace AntdUI.Chat
             _icon = icon;
         }
 
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
+
         Image? _icon = null;
         /// <summary>
         /// 图标

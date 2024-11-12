@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace AntdUI
 {
@@ -333,8 +334,13 @@ namespace AntdUI
         protected override void DestroyHandle()
         {
             base.DestroyHandle();
+            btn_ok?.Dispose();
+            btn_no?.Dispose();
+            panel_main?.Dispose();
             close_button.Dispose();
             if (config.Content is Control control) control.Dispose();
+            stringLeft.Dispose();
+            stringTL.Dispose();
             Dispose();
         }
 

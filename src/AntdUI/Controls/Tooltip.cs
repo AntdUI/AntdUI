@@ -37,14 +37,14 @@ namespace AntdUI
     {
         #region 参数
 
-        string text = null;
+        string? text = null;
         /// <summary>
         /// 文本
         /// </summary>
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -52,6 +52,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         int radius = 6;
         /// <summary>

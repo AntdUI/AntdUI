@@ -752,6 +752,12 @@ namespace AntdUI.Chat
         }
 
         /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
+
+        /// <summary>
         /// 本人
         /// </summary>
         [Description("本人"), Category("行为"), DefaultValue(false)]

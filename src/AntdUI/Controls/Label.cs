@@ -31,7 +31,7 @@ namespace AntdUI
     [Description("Label 文本")]
     [ToolboxItem(true)]
     [DefaultProperty("Text")]
-    public class Label : IControl, ShadowConfig
+    public class Label : IControl, ShadowConfig, IEventListener
     {
         #region 属性
 
@@ -70,7 +70,7 @@ namespace AntdUI
 
         #region 文本
 
-        internal string? text = null;
+        string? text = null;
         /// <summary>
         /// 文本
         /// </summary>
@@ -78,7 +78,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -87,6 +87,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         StringFormat stringCNoWrap = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap },
             stringFormat = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
@@ -166,7 +169,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? Prefix
         {
-            get => prefix;
+            get => this.GetLangI(LocalizationPrefix, prefix);
             set
             {
                 if (prefix == value) return;
@@ -175,6 +178,9 @@ namespace AntdUI
                 if (BeforeAutoSize()) Invalidate();
             }
         }
+
+        [Description("前缀"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationPrefix { get; set; }
 
         string? prefixSvg = null;
         /// <summary>
@@ -203,10 +209,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含前缀
         /// </summary>
-        public bool HasPrefix
-        {
-            get => prefixSvg != null || prefix != null;
-        }
+        public bool HasPrefix => prefixSvg != null || Prefix != null;
 
         string? suffix = null;
         /// <summary>
@@ -216,7 +219,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? Suffix
         {
-            get => suffix;
+            get => this.GetLangI(LocalizationSuffix, suffix);
             set
             {
                 if (suffix == value) return;
@@ -225,6 +228,9 @@ namespace AntdUI
                 if (BeforeAutoSize()) Invalidate();
             }
         }
+
+        [Description("后缀"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSuffix { get; set; }
 
         string? suffixSvg = null;
         /// <summary>
@@ -259,10 +265,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含后缀
         /// </summary>
-        public bool HasSuffix
-        {
-            get => suffixSvg != null || suffix != null;
-        }
+        public bool HasSuffix => suffixSvg != null || Suffix != null;
 
         /// <summary>
         /// 超出文字显示 Tooltip
@@ -351,14 +354,14 @@ namespace AntdUI
             var rect_read = ReadRectangle;
             Color _fore = Style.Db.DefaultColor;
             if (fore.HasValue) _fore = fore.Value;
-            PaintText(g, text, _fore, rect_read);
+            PaintText(g, Text, _fore, rect_read);
             if (shadow > 0)
             {
                 using (var bmp = new Bitmap(Width, Height))
                 {
                     using (var g2 = Graphics.FromImage(bmp).HighLay())
                     {
-                        PaintText(g2, text, ShadowColor ?? _fore, rect_read);
+                        PaintText(g2, Text, ShadowColor ?? _fore, rect_read);
                     }
                     Helper.Blur(bmp, shadow);
                     g.Image(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
@@ -377,7 +380,7 @@ namespace AntdUI
             {
                 Rectangle rec;
                 var font_size = g.MeasureString(text, Font);
-                bool has_prefixText = prefix != null, has_suffixText = suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
+                bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
                     switch (textAlign)
@@ -412,6 +415,7 @@ namespace AntdUI
             int hx = 0;
             if (has_prefixText)
             {
+                var prefix = Prefix;
                 var font_size_prefix = g.MeasureString(prefix, Font);
                 int x = rect_read.X - font_size_prefix.Width, w = font_size_prefix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
@@ -439,6 +443,7 @@ namespace AntdUI
             }
             if (has_suffixText)
             {
+                var suffix = Suffix;
                 var font_size_suffix = g.MeasureString(suffix, Font);
                 int x = rect_read.X + hx + font_size.Width, w = font_size_suffix.Width;
                 using (var brush = new SolidBrush(SuffixColor ?? color))
@@ -464,6 +469,7 @@ namespace AntdUI
             int hr = 0;
             if (has_suffixText)
             {
+                var suffix = Suffix;
                 var font_size_suffix = g.MeasureString(suffix, Font);
                 int x = rect_read.Right, w = font_size_suffix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
@@ -491,6 +497,7 @@ namespace AntdUI
             }
             if (has_prefixText)
             {
+                var prefix = Prefix;
                 var font_size_prefix = g.MeasureString(prefix, Font);
                 int x = rect_read.Right - hr - font_size.Width - font_size_prefix.Width, w = font_size_prefix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
@@ -514,6 +521,7 @@ namespace AntdUI
             int cex = rect_read.X + (rect_read.Width - font_size.Width) / 2;
             if (has_prefixText)
             {
+                var prefix = Prefix;
                 var font_size_prefix = g.MeasureString(prefix, Font);
                 var rect_l = RecFixAuto(cex - font_size_prefix.Width, font_size_prefix.Width, rect_read, font_size);
                 using (var brush = new SolidBrush(PrefixColor ?? color))
@@ -529,6 +537,7 @@ namespace AntdUI
             }
             if (has_suffixText)
             {
+                var suffix = Suffix;
                 var font_size_suffix = g.MeasureString(suffix, Font);
                 using (var brush = new SolidBrush(SuffixColor ?? color))
                 {
@@ -579,11 +588,11 @@ namespace AntdUI
         {
             tooltipForm?.Close();
             tooltipForm = null;
-            if (ellipsis && ShowTooltip && text != null)
+            if (ellipsis && ShowTooltip && Text != null)
             {
                 if (tooltipForm == null)
                 {
-                    tooltipForm = new TooltipForm(this, text, TooltipConfig ?? new TooltipConfig
+                    tooltipForm = new TooltipForm(this, Text, TooltipConfig ?? new TooltipConfig
                     {
                         Font = Font,
                         ArrowAlign = TAlign.Top,
@@ -659,23 +668,23 @@ namespace AntdUI
         {
             get
             {
-                bool has_prefixText = prefix != null, has_suffixText = suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
+                bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
+                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
                         float add = 0;
                         if (has_prefix) add += font_size.Height;
                         else if (has_prefixText)
                         {
-                            var font_size_prefix = g.MeasureString(prefix, Font).Width;
+                            var font_size_prefix = g.MeasureString(Prefix, Font).Width;
                             add += font_size_prefix;
                         }
                         if (has_suffix) add += font_size.Height;
                         else if (has_suffixText)
                         {
-                            var font_size_suffix = g.MeasureString(suffix, Font).Width;
+                            var font_size_suffix = g.MeasureString(Suffix, Font).Width;
                             add += font_size_suffix;
                         }
                         return new Size((int)Math.Ceiling(font_size.Width + add), font_size.Height);
@@ -721,6 +730,26 @@ namespace AntdUI
                     break;
             }
             return false;
+        }
+
+        #endregion
+
+        #region 语言变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    BeforeAutoSize();
+                    break;
+            }
         }
 
         #endregion

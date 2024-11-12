@@ -665,12 +665,12 @@ namespace AntdUI
                                 using (var path = rect_badge.RoundPath(1, true))
                                 {
                                     path.AddEllipse(new RectangleF(rect_badge.X + rr, rect_badge.Y + rr, rect_badge.Width - rr2, rect_badge.Height - rr2));
-                                    g.Fill(brush, path);
+                                    g.Fill(color, path);
                                 }
                             }
                             else
                             {
-                                g.FillEllipse(Style.Db.ErrorColor, rect_badge);
+                                g.FillEllipse(color, rect_badge);
                                 g.DrawEllipse(Style.Db.ErrorColor, borsize, rect_badge);
                             }
                         }
@@ -695,7 +695,7 @@ namespace AntdUI
                                 using (var path = rect_badge.RoundPath(rect_badge.Height))
                                 {
                                     g.Fill(color, path);
-                                    g.Draw(color, borsize, path);
+                                    g.Draw(Style.Db.ErrorColor, borsize, path);
                                 }
                                 g.String(control.Badge, font, Style.Db.ErrorColor, rect_badge, s_f);
                             }
@@ -750,7 +750,7 @@ namespace AntdUI
                     {
                         var rect_badge = new Rectangle(rect.Right - size_badge + 6, rect.Top - 8, size_badge, size_badge);
                         g.FillEllipse(color, rect_badge);
-                        g.DrawEllipse(color, borsize, rect_badge);
+                        g.DrawEllipse(Style.Db.ErrorColor, borsize, rect_badge);
                         g.String(countStr, font, Style.Db.ErrorColor, rect_badge, s_f);
                     }
                     else
@@ -760,7 +760,7 @@ namespace AntdUI
                         using (var path = rect_badge.RoundPath(rect_badge.Height))
                         {
                             g.Fill(color, path);
-                            g.Draw(color, borsize, path);
+                            g.Draw(Style.Db.ErrorColor, borsize, path);
                         }
                         g.String(countStr, font, Style.Db.ErrorColor, rect_badge, s_f);
                     }

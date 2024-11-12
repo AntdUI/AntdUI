@@ -54,7 +54,7 @@ namespace AntdUI
         [Description("文字"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -64,12 +64,15 @@ namespace AntdUI
             }
         }
 
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
+
         string? desc = null;
         [Description("副标题"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? SubText
         {
-            get => desc;
+            get => this.GetLangI(LocalizationSubText, desc);
             set
             {
                 if (desc == value) return;
@@ -77,6 +80,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("副标题"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSubText { get; set; }
 
         int useLeft = 0;
 
@@ -345,7 +351,7 @@ namespace AntdUI
             var rect = rect_.PaddingRect(Padding, UseLeft, 0, 0, 0);
             var g = e.Graphics.High();
 
-            var size = g.MeasureString(text ?? Config.NullText, Font);
+            var size = g.MeasureString(Text ?? Config.NullText, Font);
             bool showLeft = false;
             Color fore = Style.Db.Text, forebase = Style.Db.TextBase, foreSecondary = Style.Db.TextSecondary,
                 fillsecondary = Style.Db.FillSecondary;
@@ -426,12 +432,12 @@ namespace AntdUI
 
             using (var brush = new SolidBrush(forebase))
             {
-                g.String(text, Font, brush, rect, stringLeft);
-                if (desc != null)
+                g.String(Text, Font, brush, rect, stringLeft);
+                if (SubText != null)
                 {
                     using (var brushsub = new SolidBrush(foreSecondary))
                     {
-                        g.String(desc, Font, brushsub, new Rectangle(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
+                        g.String(SubText, Font, brushsub, new Rectangle(rect.X + size.Width, rect.Y, rect.Width - size.Width, rect.Height), stringLeft);
                     }
                 }
             }

@@ -267,6 +267,7 @@ namespace AntdUI
         /// </summary>
         public virtual bool MessageEnable => false;
         public virtual bool MessageCloseSub => false;
+        public virtual bool MessageClickMe => true;
 
         /// <summary>
         /// 鼠标离开关闭
@@ -287,8 +288,11 @@ namespace AntdUI
                     {
                         if (PARENT != null && PARENT.IsHandleCreated)
                         {
-                            if (ContainsPosition(PARENT, mousePosition)) return false;
-                            if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return false;
+                            if (MessageClickMe)
+                            {
+                                if (ContainsPosition(PARENT, mousePosition)) return false;
+                                if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return false;
+                            }
 
                             #region 判断内容
 

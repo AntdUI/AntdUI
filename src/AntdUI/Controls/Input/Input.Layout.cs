@@ -39,6 +39,7 @@ namespace AntdUI
         void FixFontWidth(bool force = false)
         {
             HasEmoji = false;
+            var text = Text;
             if (force)
             {
                 Helper.GDI(g =>
@@ -52,17 +53,17 @@ namespace AntdUI
                     }
                     else
                     {
-                        var font_widths = new List<CacheFont>(_text.Length);
+                        var font_widths = new List<CacheFont>(text.Length);
                         if (IsPassWord)
                         {
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
                             int w = sizefont.Width;
                             if (font_height < sizefont.Height) font_height = sizefont.Height;
-                            foreach (char it in _text) font_widths.Add(new CacheFont(it.ToString(), false, w));
+                            foreach (char it in text) font_widths.Add(new CacheFont(it.ToString(), false, w));
                         }
                         else
                         {
-                            GraphemeSplitter.Each(_text, 0, (str, nStart, nLen) =>
+                            GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
                             {
                                 string txt = str.Substring(nStart, nLen);
                                 var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(txt[0]);
@@ -130,18 +131,18 @@ namespace AntdUI
                     Helper.GDI(g =>
                     {
                         int font_height = g.MeasureString(Config.NullText, Font, 10000, sf_font).Height;
-                        if (_text == null)
+                        if (text == null)
                         {
                             CaretInfo.Height = font_height;
                             return;
                         }
-                        var font_widths = new List<CacheFont>(_text.Length);
+                        var font_widths = new List<CacheFont>(text.Length);
                         if (IsPassWord)
                         {
                             var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
                             int w = sizefont.Width;
                             if (font_height < sizefont.Height) font_height = sizefont.Height;
-                            foreach (char it in _text) font_widths.Add(new CacheFont(it.ToString(), false, w));
+                            foreach (char it in text) font_widths.Add(new CacheFont(it.ToString(), false, w));
                         }
                         else
                         {
@@ -150,7 +151,7 @@ namespace AntdUI
                             {
                                 foreach (var it in cache_font) if (!it.emoji && !font_dir.ContainsKey(it.text)) font_dir.Add(it.text, it);
                             }
-                            GraphemeSplitter.Each(_text, 0, (str, nStart, nLen) =>
+                            GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
                             {
                                 string txt = str.Substring(nStart, nLen);
                                 var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(txt[0]);
@@ -545,6 +546,7 @@ namespace AntdUI
         void RectAuto(Rectangle rect, int sps, int sps2)
         {
             int read_height = CaretInfo.Height;
+            string? prefixText = PrefixText, suffixText = SuffixText;
             bool has_prefixText = prefixText != null, has_suffixText = suffixText != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
 
             if (is_clear)

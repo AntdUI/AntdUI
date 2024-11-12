@@ -250,7 +250,6 @@ namespace AntdUI
 
         string? emptyText;
         [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
-        [Localizable(true)]
         public string? EmptyText
         {
             get => emptyText;

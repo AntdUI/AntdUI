@@ -32,7 +32,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Text")]
     [Designer(typeof(IControlDesigner))]
-    public class Alert : IControl
+    public class Alert : IControl, IEventListener
     {
         #region 属性
 
@@ -75,7 +75,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -91,6 +91,9 @@ namespace AntdUI
             }
         }
 
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
+
         string? textTitle = null;
         /// <summary>
         /// 标题
@@ -99,7 +102,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? TextTitle
         {
-            get => textTitle;
+            get => this.GetLangI(LocalizationTextTitle, textTitle);
             set
             {
                 if (textTitle == value) return;
@@ -107,6 +110,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("标题"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationTextTitle { get; set; }
 
         TType icon = TType.None;
         /// <summary>
@@ -143,6 +149,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+            this.AddListener();
             if (loop) StartTask();
         }
 
@@ -213,7 +220,7 @@ namespace AntdUI
             {
                 if (loop)
                 {
-                    if (font_size == null && !string.IsNullOrEmpty(text)) font_size = g.MeasureString(text, Font);
+                    if (font_size == null && !string.IsNullOrEmpty(Text)) font_size = g.MeasureString(Text, Font);
                     if (font_size.HasValue)
                     {
                         g.SetClip(rect);
@@ -223,33 +230,33 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(textTitle))
+                    if (string.IsNullOrEmpty(TextTitle))
                     {
-                        var size = g.MeasureString(text, Font);
+                        var size = g.MeasureString(Text, Font);
                         font_size = size;
                         int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
 
                         using (var brush = new SolidBrush(ForeColor))
                         {
                             var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
-                            g.String(text, Font, brush, rect_txt, stringLeft);
+                            g.String(Text, Font, brush, rect_txt, stringLeft);
                         }
                     }
                     else
                     {
                         using (var font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style))
                         {
-                            var size_title = g.MeasureString(textTitle, font_title);
+                            var size_title = g.MeasureString(TextTitle, font_title);
                             int icon_size = (int)(size_title.Height * 1.2F), gap = (int)(icon_size * .5F);
 
                             using (var brush = new SolidBrush(ForeColor))
                             {
                                 var rect_txt = new Rectangle(rect.X + gap, rect.Y + gap, rect.Width - (gap * 2), size_title.Height);
-                                g.String(textTitle, font_title, brush, rect_txt, stringLeft);
+                                g.String(TextTitle, font_title, brush, rect_txt, stringLeft);
 
                                 int desc_y = rect_txt.Bottom + (int)(icon_size * .33F);
                                 var rect_txt_desc = new Rectangle(rect_txt.X, desc_y, rect_txt.Width, rect.Height - (desc_y + gap));
-                                g.String(text, Font, brush, rect_txt_desc, stringLTEllipsis);
+                                g.String(Text, Font, brush, rect_txt_desc, stringLTEllipsis);
                             }
                         }
                     }
@@ -288,7 +295,7 @@ namespace AntdUI
                     g.Fill(back, path);
                     if (loop)
                     {
-                        if (font_size == null && !string.IsNullOrEmpty(text)) font_size = g.MeasureString(text, Font);
+                        if (font_size == null && !string.IsNullOrEmpty(Text)) font_size = g.MeasureString(Text, Font);
                         if (font_size.HasValue)
                         {
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
@@ -300,9 +307,9 @@ namespace AntdUI
                     }
                     else
                     {
-                        var size = g.MeasureString(text, Font);
+                        var size = g.MeasureString(Text, Font);
                         font_size = size;
-                        if (string.IsNullOrEmpty(textTitle))
+                        if (string.IsNullOrEmpty(TextTitle))
                         {
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
@@ -310,14 +317,14 @@ namespace AntdUI
                             using (var brush = new SolidBrush(color))
                             {
                                 var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 2), rect.Height);
-                                g.String(text, Font, brush, rect_txt, stringLeft);
+                                g.String(Text, Font, brush, rect_txt, stringLeft);
                             }
                         }
                         else
                         {
                             using (var font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style))
                             {
-                                var size_title = g.MeasureString(textTitle, font_title);
+                                var size_title = g.MeasureString(TextTitle, font_title);
                                 int icon_size = (int)(sizeT.Height * 1.2F), gap = (int)(icon_size * .5F);
 
                                 var rect_icon = new Rectangle(rect.X + gap, rect.Y + gap, icon_size, icon_size);
@@ -326,11 +333,11 @@ namespace AntdUI
                                 using (var brush = new SolidBrush(color))
                                 {
                                     var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + icon_size / 2, rect_icon.Y, rect.Width - (rect_icon.Width + gap * 2), rect_icon.Height);
-                                    g.String(textTitle, font_title, brush, rect_txt, stringLeft);
+                                    g.String(TextTitle, font_title, brush, rect_txt, stringLeft);
 
                                     var desc_y = rect_txt.Bottom + (int)(icon_size * .2F);
                                     var rect_txt_desc = new Rectangle(rect_txt.X, desc_y, rect_txt.Width, rect.Height - (desc_y + gap));
-                                    g.String(text, Font, brush, rect_txt_desc, stringLTEllipsis);
+                                    g.String(Text, Font, brush, rect_txt_desc, stringLTEllipsis);
                                 }
                             }
                         }
@@ -360,33 +367,33 @@ namespace AntdUI
         {
             using (var brush = new SolidBrush(fore))
             {
-                if (string.IsNullOrEmpty(textTitle))
+                if (string.IsNullOrEmpty(TextTitle))
                 {
                     var rect_txt = new Rectangle(rect.X - val, rect.Y, size.Width, rect.Height);
-                    g.String(text, Font, brush, rect_txt, stringCenter);
+                    g.String(Text, Font, brush, rect_txt, stringCenter);
                     if (rect.Width > size.Width)
                     {
                         var maxw = rect.Width + rect_txt.Width / 2;
                         var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
                         while (rect_txt2.X < maxw)
                         {
-                            g.String(text, Font, brush, rect_txt2, stringCenter);
+                            g.String(Text, Font, brush, rect_txt2, stringCenter);
                             rect_txt2.X = rect_txt2.Right;
                         }
                     }
                 }
                 else
                 {
-                    var size_title = g.MeasureString(textTitle, Font);
+                    var size_title = g.MeasureString(TextTitle, Font);
                     var rect_txt = new Rectangle(rect.X + size_title.Width - val, rect.Y, size.Width, rect.Height);
-                    g.String(text, Font, brush, rect_txt, stringCenter);
+                    g.String(Text, Font, brush, rect_txt, stringCenter);
                     if (rect.Width > size.Width)
                     {
                         var maxw = rect.Width + rect_txt.Width / 2;
                         var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
                         while (rect_txt2.X < maxw)
                         {
-                            g.String(text, Font, brush, rect_txt2, stringCenter);
+                            g.String(Text, Font, brush, rect_txt2, stringCenter);
                             rect_txt2.X = rect_txt2.Right;
                         }
                     }
@@ -418,20 +425,20 @@ namespace AntdUI
 
                 g.SetClip(new Rectangle(rect.X, rect_txt.Y + ((rect.Height - size.Height) / 2), rect.Width, size.Height));
 
-                g.String(text, Font, brush_fore, rect_txt, stringCenter);
+                g.String(Text, Font, brush_fore, rect_txt, stringCenter);
                 if (rect.Width > size.Width)
                 {
                     var maxw = rect.Width + rect_txt.Width / 2;
                     var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
                     while (rect_txt2.X < maxw)
                     {
-                        g.String(text, Font, brush_fore, rect_txt2, stringCenter);
+                        g.String(Text, Font, brush_fore, rect_txt2, stringCenter);
                         rect_txt2.X = rect_txt2.Right;
                     }
                 }
 
                 Rectangle rect_icon_l;
-                if (string.IsNullOrEmpty(textTitle))
+                if (string.IsNullOrEmpty(TextTitle))
                 {
                     rect_icon_l = new Rectangle(rect.X, rect.Y, size.Height * 2, rect.Height);
                     using (var brush = new LinearGradientBrush(rect_icon_l, back, Color.Transparent, 0F))
@@ -489,6 +496,20 @@ namespace AntdUI
         {
             if (loop) StartTask();
             base.OnMouseLeave(e);
+        }
+
+        #endregion
+
+        #region 语言变化
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    font_size = null;
+                    break;
+            }
         }
 
         #endregion

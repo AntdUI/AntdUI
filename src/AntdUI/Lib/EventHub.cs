@@ -61,6 +61,10 @@ namespace AntdUI
         /// </summary>
         THEME = 2,
         /// <summary>
+        /// 语言 改变
+        /// </summary>
+        LANG = 3,
+        /// <summary>
         /// Window 状态改变
         /// </summary>
         WINDOW_STATE = 70

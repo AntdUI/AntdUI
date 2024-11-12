@@ -510,6 +510,12 @@ namespace AntdUI
             SubTitle = subTitle;
             Description = description;
         }
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
+
         Image? icon = null;
         /// <summary>
         /// 图标，可选
