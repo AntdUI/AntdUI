@@ -153,7 +153,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? CheckedText
         {
-            get => _checkedText;
+            get => this.GetLangI(LocalizationCheckedText, _checkedText);
             set
             {
                 if (_checkedText == value) return;
@@ -162,11 +162,14 @@ namespace AntdUI
             }
         }
 
+        [Description("选中时显示的文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationCheckedText { get; set; }
+
         [Description("未选中时显示的文本"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? UnCheckedText
         {
-            get => _unCheckedText;
+            get => this.GetLangI(LocalizationTextUnCheckedText, _unCheckedText);
             set
             {
                 if (_unCheckedText == value) return;
@@ -174,6 +177,9 @@ namespace AntdUI
                 if (!_checked) Invalidate();
             }
         }
+
+        [Description("未选中时显示的文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationTextUnCheckedText { get; set; }
 
         #endregion
 

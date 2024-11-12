@@ -300,7 +300,6 @@ namespace AntdUI
 
         string? emptyText;
         [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
-        [Localizable(true)]
         public string? EmptyText
         {
             get => emptyText;
@@ -517,19 +516,45 @@ namespace AntdUI
         /// <summary>
         /// 滚动到指定行
         /// </summary>
-        /// <param name="i"></param>
-        public void ScrollLine(int i)
+        /// <param name="i">行</param>
+        /// <param name="force">是否强制滚动</param>
+        /// <returns>返回滚动量</returns>
+        public int ScrollLine(int i, bool force = false)
         {
-            if (rows == null || !ScrollBar.ShowY) return;
-            if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
-            else ScrollBar.ValueY = rows[i].RECT.Y;
+            if (rows == null || !ScrollBar.ShowY) return 0;
+            return ScrollLine(i, rows, force);
         }
 
-        void ScrollLine(int i, RowTemplate[] rows)
+        int ScrollLine(int i, RowTemplate[] rows, bool force = false)
         {
-            if (!ScrollBar.ShowY) return;
-            if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
-            else ScrollBar.ValueY = rows[i].RECT.Y;
+            if (!ScrollBar.ShowY) return 0;
+            var selectRow = rows[i];
+            int sy = ScrollBar.ValueY;
+            if (force)
+            {
+                if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
+                else ScrollBar.ValueY = rows[i].RECT.Y;
+                return sy - ScrollBar.ValueY;
+            }
+            else
+            {
+                if (visibleHeader && fixedHeader)
+                {
+                    if (selectRow.RECT.Y - rows[0].RECT.Height < sy || selectRow.RECT.Bottom > sy + rect_read.Height)
+                    {
+                        if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
+                        else ScrollBar.ValueY = rows[i].RECT.Y;
+                        return sy - ScrollBar.ValueY;
+                    }
+                }
+                else if (selectRow.RECT.Y < sy || selectRow.RECT.Bottom > sy + rect_read.Height)
+                {
+                    if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
+                    else ScrollBar.ValueY = rows[i].RECT.Y;
+                    return sy - ScrollBar.ValueY;
+                }
+            }
+            return 0;
         }
 
         /// <summary>
@@ -589,6 +614,7 @@ namespace AntdUI
                     var _row = rows[row];
                     var item = _row.cells[column];
                     EditModeClose();
+                    ScrollLine(row, rows);
                     if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, row, column, 0, ScrollBar.ValueY);
                     else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, row, column, sFixedR, ScrollBar.ValueY);
                     else OnEditMode(_row, item, row, column, ScrollBar.ValueX, ScrollBar.ValueY);
@@ -630,6 +656,41 @@ namespace AntdUI
             {
                 var list = new List<object>(dataTmp.rows.Length);
                 foreach (var i in SortData) list.Add(dataTmp.rows[i].record);
+                return list.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 获取表头排序序号
+        /// </summary>
+        public int[] SortColumnsIndex()
+        {
+            if (SortHeader == null)
+            {
+                if (columns == null || columns.Count == 0) return new int[0];
+                var list = new int[columns.Count];
+                for (int i = 0; i < columns.Count; i++) list[i] = i;
+                return list;
+            }
+            else return SortHeader;
+        }
+
+        /// <summary>
+        /// 获取表头排序数据
+        /// </summary>
+        public Column[] SortColumnsList()
+        {
+            if (columns == null || columns.Count == 0) return new Column[0];
+            if (SortHeader == null)
+            {
+                var list = new Column[columns.Count];
+                for (int i = 0; i < columns.Count; i++) list[i] = columns[i];
+                return list;
+            }
+            else
+            {
+                var list = new List<Column>(columns.Count);
+                foreach (var i in SortHeader) list.Add(columns[i]);
                 return list.ToArray();
             }
         }

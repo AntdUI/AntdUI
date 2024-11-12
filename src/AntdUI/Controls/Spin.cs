@@ -46,7 +46,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -56,6 +56,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         #endregion
 
@@ -80,7 +83,7 @@ namespace AntdUI
         {
             var rect = ClientRectangle.PaddingRect(Padding);
             if (rect.Width == 0 || rect.Height == 0) return;
-            spin_core.Paint(e.Graphics.High(), rect, text, Fill ?? Style.Db.Primary, null, this);
+            spin_core.Paint(e.Graphics.High(), rect, Text, Fill ?? Style.Db.Primary, null, this);
         }
 
         protected override void Dispose(bool disposing)

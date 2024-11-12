@@ -135,7 +135,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -145,6 +145,9 @@ namespace AntdUI
             }
         }
 
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
+
         string? textUnit = "%";
         /// <summary>
         /// 单位文本
@@ -153,7 +156,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? TextUnit
         {
-            get => textUnit;
+            get => this.GetLangI(LocalizationTextUnit, textUnit);
             set
             {
                 if (textUnit == value) return;
@@ -161,6 +164,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("单位文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationTextUnit { get; set; }
 
         bool useSystemText = false;
         /// <summary>
@@ -591,12 +597,12 @@ namespace AntdUI
         void PaintShapeMini(Canvas g, Rectangle rect, Color color)
         {
             var _back = back ?? Color.FromArgb(40, color);
-            var font_size = g.MeasureString("100" + textUnit, Font);
+            var font_size = g.MeasureString("100" + TextUnit, Font);
             rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect, iconratio);
             if (icon_rect.Width == 0 || icon_rect.Height == 0) return;
             using (var brush = new SolidBrush(fore ?? Style.Db.Text))
             {
-                string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                 g.String(textShow, Font, brush, new Rectangle(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), s_l);
             }
 
@@ -643,7 +649,7 @@ namespace AntdUI
         void PaintShapeSteps(Canvas g, Rectangle rect_t, Rectangle rect, Color color)
         {
             var _back = back ?? Style.Db.FillSecondary;
-            var font_size = g.MeasureString("100" + textUnit, Font);
+            var font_size = g.MeasureString("100" + TextUnit, Font);
             int pro_gap = (int)(stepGap * Config.Dpi), pro_h = (int)(font_size.Height * valueratio);
             float pro_w = (int)(stepSize * Config.Dpi), has_x = 0;
             int pro_y = rect.Y + (rect.Height - pro_h) / 2;
@@ -657,7 +663,7 @@ namespace AntdUI
                     float w = rect.Width;
                     if (state == TType.None)
                     {
-                        string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                        string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                         w -= g.MeasureString(textShow, Font).Width + pro_h / 2;
                     }
                     else
@@ -733,7 +739,7 @@ namespace AntdUI
                 int has_x2 = (int)Math.Ceiling(has_x + pro_h / 2);
                 using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                 {
-                    string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                    string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                     g.String(textShow, Font, brush, new Rectangle(rect.X + has_x2, rect.Y, rect.Width - has_x2, rect.Height), s_l);
                 }
             }
@@ -756,7 +762,7 @@ namespace AntdUI
 
                 if (ValueFormatChanged == null)
                 {
-                    if (useSystemText) showtmp = textShow = text;
+                    if (useSystemText) showtmp = textShow = Text;
                     else
                     {
                         string basetext = (_value_show * 100F).ToString("F" + ShowTextDot);
@@ -767,8 +773,8 @@ namespace AntdUI
                             if (basetext[i] == '.') chars[i] = '.';
                             else chars[i] = '0';
                         }
-                        showtmp = string.Join("", chars) + textUnit;
-                        textShow = basetext + textUnit;
+                        showtmp = string.Join("", chars) + TextUnit;
+                        textShow = basetext + TextUnit;
                     }
                 }
                 else showtmp = textShow = ValueFormatChanged(this, new FloatEventArgs(_value_show));
@@ -799,7 +805,7 @@ namespace AntdUI
             }
             else
             {
-                string showtext = (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit;
+                string showtext = (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit;
                 var sizef = g.MeasureString(showtext, Font);
                 int pro_h = (int)(sizef.Height * valueratio), ico_size = (int)(sizef.Height * (iconratio + 0.1F));
                 int size_font_w = pro_h + ico_size;
@@ -868,7 +874,7 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                     {
-                        string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                        string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                         g.String(textShow, Font, brush, rect, s_c);
                     }
                 }
@@ -882,7 +888,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                 {
-                    string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + textUnit);
+                    string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                     g.String(textShow, Font, brush, rect, s_c);
                 }
             }

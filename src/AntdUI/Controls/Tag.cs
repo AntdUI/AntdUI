@@ -32,7 +32,7 @@ namespace AntdUI
     [Description("Tag 标签")]
     [ToolboxItem(true)]
     [DefaultProperty("Text")]
-    public class Tag : IControl
+    public class Tag : IControl, IEventListener
     {
         #region 属性
 
@@ -186,7 +186,7 @@ namespace AntdUI
 
         #region 文本
 
-        internal string? text = null;
+        string? text = null;
         /// <summary>
         /// 文本
         /// </summary>
@@ -194,7 +194,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -203,6 +203,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         StringFormat stringFormat = Helper.SF_NoWrap();
 
@@ -373,7 +376,7 @@ namespace AntdUI
 
                 #endregion
 
-                PaintText(g, text, _fore, rect_read);
+                PaintText(g, Text, _fore, rect_read);
             }
 
             this.PaintBadge(g);
@@ -600,7 +603,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
+                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
                     int count = 0;
                     if (HasImage) count++;
                     if (closeIcon) count++;
@@ -645,6 +648,26 @@ namespace AntdUI
                     break;
             }
             return false;
+        }
+
+        #endregion
+
+        #region 语言变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    BeforeAutoSize();
+                    break;
+            }
         }
 
         #endregion

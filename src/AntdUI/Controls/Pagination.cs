@@ -271,7 +271,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? TextDesc
         {
-            get => textdesc;
+            get => this.GetLangI(LocalizationTextDesc, textdesc);
             set
             {
                 if (textdesc == value) return;
@@ -280,6 +280,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("主动显示内容"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationTextDesc { get; set; }
 
         #endregion
 
@@ -536,8 +539,8 @@ namespace AntdUI
                 int total_page = (int)Math.Ceiling((total * 1.0) / pageSize);//总页数
                 if (total_page == 0) total_page = 1;
 
-                if (textdesc == null) showTotal = ShowTotalChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, total_page));
-                else showTotal = textdesc;
+                if (TextDesc == null) showTotal = ShowTotalChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, total_page));
+                else showTotal = TextDesc;
 
                 int pyrn = Helper.GDI(g =>
                 {

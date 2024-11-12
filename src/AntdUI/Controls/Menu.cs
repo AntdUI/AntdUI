@@ -1177,6 +1177,12 @@ namespace AntdUI
             IconSvg = icon_svg;
         }
 
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
+
         #region 图标
 
         Image? icon = null;

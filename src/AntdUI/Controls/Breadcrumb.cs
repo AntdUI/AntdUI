@@ -369,6 +369,7 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
         public string? ID { get; set; }
 
         Image? icon = null;

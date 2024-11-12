@@ -356,7 +356,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? PrefixText
         {
-            get => prefixText;
+            get => this.GetLangI(LocalizationPrefixText, prefixText);
             set
             {
                 if (prefixText == value) return;
@@ -365,6 +365,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("前缀文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationPrefixText { get; set; }
 
         Color? prefixFore;
         /// <summary>
@@ -427,7 +430,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? SuffixText
         {
-            get => suffixText;
+            get => this.GetLangI(LocalizationSuffixText, suffixText);
             set
             {
                 if (suffixText == value) return;
@@ -436,6 +439,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("后缀文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSuffixText { get; set; }
 
         Color? suffixFore;
         /// <summary>
@@ -523,7 +529,7 @@ namespace AntdUI
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public override string Text
         {
-            get => _text;
+            get => this.GetLangIN(LocalizationText, _text);
             set
             {
                 if (value is null) value = "";
@@ -544,6 +550,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         #endregion
 
@@ -710,7 +719,7 @@ namespace AntdUI
         [Localizable(true)]
         public virtual string? PlaceholderText
         {
-            get => placeholderText;
+            get => this.GetLangI(LocalizationPlaceholderText, placeholderText);
             set
             {
                 if (placeholderText == value) return;
@@ -718,6 +727,9 @@ namespace AntdUI
                 if (isempty && ShowPlaceholder) Invalidate();
             }
         }
+
+        [Description("水印文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationPlaceholderText { get; set; }
 
         Color? placeholderColor = null;
         /// <summary>

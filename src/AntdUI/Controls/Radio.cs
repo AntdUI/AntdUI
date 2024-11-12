@@ -33,7 +33,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Checked")]
     [DefaultEvent("CheckedChanged")]
-    public class Radio : IControl
+    public class Radio : IControl, IEventListener
     {
         #region 属性
 
@@ -78,7 +78,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -87,6 +87,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         StringFormat stringFormat = Helper.SF_ALL(lr: StringAlignment.Near);
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
@@ -218,14 +221,14 @@ namespace AntdUI
         {
             var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
-            var font_size = g.MeasureString(text ?? Config.NullText, Font);
+            var font_size = g.MeasureString(Text ?? Config.NullText, Font);
             rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
             bool right = rightToLeft == RightToLeft.Yes;
             PaintChecked(g, rect, Enabled, icon_rect, right);
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
             using (var brush = new SolidBrush(Enabled ? (fore ?? Style.Db.Text) : Style.Db.TextQuaternary))
             {
-                g.String(text, Font, brush, text_rect, stringFormat);
+                g.String(Text, Font, brush, text_rect, stringFormat);
             }
             this.PaintBadge(g);
             base.OnPaint(e);
@@ -449,7 +452,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(text ?? Config.NullText, Font);
+                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi);
                     return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
                 });
@@ -492,6 +495,26 @@ namespace AntdUI
                     break;
             }
             return false;
+        }
+
+        #endregion
+
+        #region 语言变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    BeforeAutoSize();
+                    break;
+            }
         }
 
         #endregion

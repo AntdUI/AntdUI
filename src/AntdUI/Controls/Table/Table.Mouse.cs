@@ -250,18 +250,15 @@ namespace AntdUI
                                 else if (radioCell.AutoCheck) isok = true;
                                 if (isok)
                                 {
-                                    if (rows != null)
+                                    for (int i = 0; i < rows.Length; i++)
                                     {
-                                        for (int i = 0; i < rows.Length; i++)
+                                        if (i != i_r)
                                         {
-                                            if (i != i_r)
+                                            var cell_selno = rows[i].cells[i_c];
+                                            if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
                                             {
-                                                var cell_selno = rows[i].cells[i_c];
-                                                if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
-                                                {
-                                                    radioCell2.Checked = false;
-                                                    SetValue(cell_selno, false);
-                                                }
+                                                radioCell2.Checked = false;
+                                                SetValue(cell_selno, false);
                                             }
                                         }
                                     }
@@ -356,24 +353,21 @@ namespace AntdUI
                     cell.MouseDown = 0;
                     CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
 
+                    bool enterEdit = false;
                     if (doubleClick)
                     {
                         CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
-                        if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick)
-                        {
-                            //进入编辑模式
-                            EditModeClose();
-                            OnEditMode(it, cel_sel, i_row, i_cel, offset_xi, offset_y);
-                        }
+                        if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
                     }
                     else
                     {
-                        if (e.Button == MouseButtons.Left && editmode == TEditMode.Click)
-                        {
-                            //进入编辑模式
-                            EditModeClose();
-                            OnEditMode(it, cell, i_r, i_c, offset_xi, offset_y);
-                        }
+                        if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
+                    }
+                    if (enterEdit)
+                    {
+                        EditModeClose();
+                        int val = ScrollLine(i_row, rows);
+                        OnEditMode(it, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
                     }
                 }
                 return true;

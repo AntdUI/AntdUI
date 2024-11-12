@@ -33,7 +33,17 @@ namespace AntdUI
             if (inEditMode)
             {
                 ScrollBar.OnInvalidate = null;
-                Focus();
+                if (!Focused)
+                {
+                    if (InvokeRequired)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            Focus();
+                        }));
+                    }
+                    else Focus();
+                }
                 inEditMode = false;
             }
         }
@@ -63,11 +73,11 @@ namespace AntdUI
                 BeginInvoke(new Action(() =>
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                    int height = Helper.GDI(g =>
+                    int gap = (int)(Math.Max(_gap, 8) * Config.Dpi), height_real = Helper.GDI(g =>
                     {
-                        if (multiline) return (int)Math.Ceiling(g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height * 1.4F);
-                        return (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
-                    });
+                        return g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height + gap;
+                    }), height2 = cell.RECT_REAL.Height + gap;
+                    int height = multiline ? cell.RECT.Height : (height_real > height2 ? height_real : height2);
                     var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
                     {
                         bool isok_end = true;
@@ -107,15 +117,13 @@ namespace AntdUI
                         ScrollBar.OnInvalidate = () => EditModeClose();
                         BeginInvoke(new Action(() =>
                         {
-                            for (int i = 0; i < rows.Length; i++)
+                            for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+
+                            int gap = (int)(Math.Max(_gap,8) * Config.Dpi), height_real = Helper.GDI(g =>
                             {
-                                rows[i].hover = i == i_row;
-                            }
-                            int height = Helper.GDI(g =>
-                            {
-                                if (multiline) return (int)Math.Ceiling(g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height * 1.4F);
-                                return (int)Math.Ceiling(g.MeasureString(Config.NullText, Font).Height * 1.66F);
-                            });
+                                return g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height + gap;
+                            }), height2 = cell.RECT_REAL.Height + gap;
+                            int height = multiline ? cell.RECT.Height : (height_real > height2 ? height_real : height2);
                             var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
                             {
                                 bool isok_end = true;

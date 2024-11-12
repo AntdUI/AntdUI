@@ -62,7 +62,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -71,6 +71,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         string? textDesc = null;
         /// <summary>
@@ -292,37 +295,37 @@ namespace AntdUI
 
                 if (string.IsNullOrWhiteSpace(iconSvg) && icon == null)
                 {
-                    if (string.IsNullOrWhiteSpace(textDesc))
+                    if (string.IsNullOrWhiteSpace(TextDesc))
                     {
                         int y = rect.Y + (rect.Height - size.Height) / 2;
-                        Rectangle rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height);
+                        var rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height);
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.String(text, Font, brush, rect_text, s_f);
+                            g.String(Text, Font, brush, rect_text, s_f);
                         }
                     }
                     else
                     {
                         using (var font_desc = new Font(Font.FontFamily, Font.Size * .875F))
                         {
-                            var size_desc = g.MeasureString(textDesc, font_desc, rect.Width - gap2);
+                            var size_desc = g.MeasureString(TextDesc, font_desc, rect.Width - gap2);
                             int th = sp + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
                             Rectangle rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
                             using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                             {
-                                g.String(text, Font, brush, rect_text, s_f);
+                                g.String(Text, Font, brush, rect_text, s_f);
                             }
                             using (var brush = new SolidBrush(Style.Db.TextTertiary))
                             {
-                                g.String(textDesc, font_desc, brush, rect_desc, s_f);
+                                g.String(TextDesc, font_desc, brush, rect_desc, s_f);
                             }
                         }
                     }
                 }
                 else
                 {
-                    if (string.IsNullOrWhiteSpace(textDesc))
+                    if (string.IsNullOrWhiteSpace(TextDesc))
                     {
                         int th = gap + icon_size + size.Height, y = rect.Y + (rect.Height - th) / 2;
                         Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
@@ -331,14 +334,14 @@ namespace AntdUI
                         if (icon != null) g.Image(icon, rect_icon);
                         using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                         {
-                            g.String(text, Font, brush, rect_text, s_f);
+                            g.String(Text, Font, brush, rect_text, s_f);
                         }
                     }
                     else
                     {
                         using (var font_desc = new Font(Font.FontFamily, Font.Size * .875F))
                         {
-                            var size_desc = g.MeasureString(textDesc, font_desc, rect.Width - gap2);
+                            var size_desc = g.MeasureString(TextDesc, font_desc, rect.Width - gap2);
                             int th = sp + gap + icon_size + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
                             Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                                 rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height),
@@ -347,11 +350,11 @@ namespace AntdUI
                             if (icon != null) g.Image(icon, rect_icon);
                             using (var brush = new SolidBrush(fore ?? Style.Db.Text))
                             {
-                                g.String(text, Font, brush, rect_text, s_f);
+                                g.String(Text, Font, brush, rect_text, s_f);
                             }
                             using (var brush = new SolidBrush(Style.Db.TextTertiary))
                             {
-                                g.String(textDesc, font_desc, brush, rect_desc, s_f);
+                                g.String(TextDesc, font_desc, brush, rect_desc, s_f);
                             }
                         }
                     }

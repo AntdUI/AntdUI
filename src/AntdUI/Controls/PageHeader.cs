@@ -54,7 +54,7 @@ namespace AntdUI
         [Description("文字"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -63,6 +63,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文字"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         [Description("使用标题大小"), Category("外观"), DefaultValue(false)]
         public bool UseTitleFont { get; set; }
@@ -75,7 +78,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? SubText
         {
-            get => desc;
+            get => this.GetLangI(LocalizationSubText, desc);
             set
             {
                 if (desc == value) return;
@@ -83,6 +86,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("副标题"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSubText { get; set; }
 
         string? description = null;
         /// <summary>
@@ -92,7 +98,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? Description
         {
-            get => description;
+            get => this.GetLangI(LocalizationDescription, description);
             set
             {
                 if (string.IsNullOrEmpty(value)) value = null;
@@ -101,6 +107,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("描述文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationDescription { get; set; }
 
         int? gap = null;
         /// <summary>
@@ -522,7 +531,7 @@ namespace AntdUI
                 {
                     bool showDescription = false;
                     int heightDescription = rect.Height;
-                    if (description != null)
+                    if (Description != null)
                     {
                         showDescription = true;
                         heightDescription = rect.Height / 3;
@@ -533,21 +542,21 @@ namespace AntdUI
                     rect.Width -= u_x;
                     using (var brush = new SolidBrush(forebase))
                     {
-                        var sizeTitle = g.MeasureString(text, fontTitle);
-                        g.String(text, fontTitle, brush, rect, stringLeft);
-                        if (desc != null)
+                        var sizeTitle = g.MeasureString(Text, fontTitle);
+                        g.String(Text, fontTitle, brush, rect, stringLeft);
+                        if (SubText != null)
                         {
                             int desc_t_w = sizeTitle.Width + (int)(subGap * Config.Dpi);
                             using (var brushsub = new SolidBrush(foreSecondary))
                             {
-                                g.String(desc, Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
-                                if (showDescription) g.String(description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft);
+                                g.String(SubText, Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
+                                if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft);
                             }
                         }
                         else if (showDescription)
                         {
                             using (var brushsub = new SolidBrush(foreSecondary))
-                            { g.String(description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft); }
+                            { g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft); }
                         }
                     }
                     if (showButton) IPaintButton(g, rect, fore, fillsecondary, size);
@@ -555,10 +564,10 @@ namespace AntdUI
             }
             else
             {
-                var size = g.MeasureString(text ?? Config.NullText, Font);
+                var size = g.MeasureString(Text ?? Config.NullText, Font);
                 bool showDescription = false;
                 int heightDescription = rect.Height;
-                if (description != null)
+                if (Description != null)
                 {
                     showDescription = true;
                     heightDescription = rect.Height / 3;
@@ -569,20 +578,20 @@ namespace AntdUI
                 rect.Width -= u_x;
                 using (var brush = new SolidBrush(forebase))
                 {
-                    g.String(text, Font, brush, rect, stringLeft);
-                    if (desc != null)
+                    g.String(Text, Font, brush, rect, stringLeft);
+                    if (SubText != null)
                     {
                         int desc_t_w = size.Width + (int)(subGap * Config.Dpi);
                         using (var brushsub = new SolidBrush(foreSecondary))
                         {
-                            g.String(desc, Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
-                            if (showDescription) g.String(description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft);
+                            g.String(SubText, Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
+                            if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft);
                         }
                     }
                     else if (showDescription)
                     {
                         using (var brushsub = new SolidBrush(foreSecondary))
-                        { g.String(description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft); }
+                        { g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft); }
                     }
                 }
                 if (showButton) IPaintButton(g, rect, fore, fillsecondary, size);
@@ -602,12 +611,12 @@ namespace AntdUI
         public Rectangle GetTitleRect(Canvas g)
         {
             var rect = ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
-            var size = g.MeasureString(text ?? Config.NullText, Font);
+            var size = g.MeasureString(Text ?? Config.NullText, Font);
             if (UseTitleFont)
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
-                    var sizeTitle = g.MeasureString(text, fontTitle);
+                    var sizeTitle = g.MeasureString(Text, fontTitle);
                     rect.X += IPaintS(g, rect, size.Height, 1.36F) / 2;
                     return new Rectangle(rect.X, rect.Y + (rect.Height - sizeTitle.Height) / 2, sizeTitle.Width, sizeTitle.Height);
                 }

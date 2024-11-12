@@ -956,6 +956,12 @@ namespace AntdUI
     }
     public class CarouselItem : NotifyProperty
     {
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
+
         Image? img;
         /// <summary>
         /// 图片

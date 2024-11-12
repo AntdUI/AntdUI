@@ -155,6 +155,7 @@ namespace AntdUI
 
         void PaintIcon(Canvas g, Color _fore)
         {
+            string? prefixText = PrefixText, suffixText = SuffixText;
             if (prefixText != null)
             {
                 using (var fore = new SolidBrush(prefixFore ?? _fore))
@@ -220,11 +221,11 @@ namespace AntdUI
                 }
                 g.ResetTransform();
             }
-            else if (placeholderText != null && ShowPlaceholder)
+            else if (PlaceholderText != null && ShowPlaceholder)
             {
                 using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Style.Db.TextQuaternary))
                 {
-                    g.String(placeholderText, Font, fore, rect_text, sf_placeholder);
+                    g.String(PlaceholderText, Font, fore, rect_text, sf_placeholder);
                 }
             }
             g.ResetClip();

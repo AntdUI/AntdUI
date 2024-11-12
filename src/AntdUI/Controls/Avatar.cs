@@ -77,7 +77,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -87,6 +87,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         int radius = 0;
         /// <summary>
@@ -387,11 +390,11 @@ namespace AntdUI
             {
                 using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))
                 {
-                    if (bmp == null) PaintText(g, text, rect, stringCenter, Enabled);
+                    if (bmp == null) PaintText(g, Text, rect, stringCenter, Enabled);
                     else g.Image(rect, bmp, imageFit, _radius, round);
                 }
             }
-            else PaintText(g, text, rect, stringCenter, Enabled);
+            else PaintText(g, Text, rect, stringCenter, Enabled);
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
             if (loading)
             {

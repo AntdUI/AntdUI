@@ -46,7 +46,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? PlaceholderStart
         {
-            get => placeholderS;
+            get => this.GetLangI(LocalizationPlaceholderStart, placeholderS);
             set
             {
                 if (placeholderS == value) return;
@@ -55,6 +55,9 @@ namespace AntdUI
             }
         }
 
+        [Description("显示的水印文本S"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationPlaceholderStart { get; set; }
+
         /// <summary>
         /// 显示的水印文本
         /// </summary>
@@ -62,7 +65,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? PlaceholderEnd
         {
-            get => placeholderE;
+            get => this.GetLangI(LocalizationPlaceholderEnd, placeholderE);
             set
             {
                 if (placeholderE == value) return;
@@ -70,6 +73,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("显示的水印文本E"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationPlaceholderEnd { get; set; }
 
         /// <summary>
         /// 水印文本
@@ -506,6 +512,7 @@ namespace AntdUI
         }
         protected override void PaintOtherBor(Canvas g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
+            string? placeholderS = PlaceholderStart, placeholderE = PlaceholderEnd;
             if ((showS && placeholderS != null) || (showE && placeholderE != null))
             {
                 using (var fore = new SolidBrush(Style.Db.TextQuaternary))

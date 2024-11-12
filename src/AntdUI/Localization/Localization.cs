@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System.ComponentModel;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -24,20 +25,63 @@ namespace AntdUI
     /// <summary>
     /// 本地化
     /// </summary>
-    public sealed class Localization
+    public static class Localization
     {
         /// <summary>
         /// 本地化提供程序
         /// </summary>
         public static ILocalization? Provider { get; set; }
 
+        #region 默认语言
+
+        /// <summary>
+        /// 默认语言
+        /// </summary>
+        public static string? DefaultLanguage { get; set; }
+
+        static string? currentLanguage;
+        public static string CurrentLanguage
+        {
+            get
+            {
+                if (currentLanguage == null) currentLanguage = Thread.CurrentThread.CurrentUICulture.Name;
+                return currentLanguage;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 设置语言
+        /// </summary>
+        /// <param name="lang">语言name</param>
+        public static void SetLanguage(this string lang)
+        {
+            var culture = new System.Globalization.CultureInfo(lang);
+            currentLanguage = culture.Name;
+            Thread.CurrentThread.CurrentUICulture = culture;
+            EventHub.Dispatch(EventType.LANG, culture);
+        }
+
         public static string Get(string id, string def) => Provider?.GetLocalizedString(id) ?? def;
+        internal static string? GetLangI(this IControl control, string? id, string? def)
+        {
+            if (id == null) return def;
+            if (DefaultLanguage == CurrentLanguage) return def;
+            return Provider?.GetLocalizedString(id.Replace("{id}", control.Name)) ?? def;
+        }
+        internal static string GetLangIN(this IControl control, string? id, string def)
+        {
+            if (id == null) return def;
+            if (DefaultLanguage == CurrentLanguage) return def;
+            return Provider?.GetLocalizedString(id.Replace("{id}", control.Name)) ?? def;
+        }
 
         /// <summary>
         /// 加载语言
         /// </summary>
         /// <param name="form">加载语言的窗口</param>
-        public static void LoadLanguage<T>(Form form)
+        public static void LoadLanguage<T>(this Form form)
         {
             var resources = new ComponentResourceManager(typeof(T));
             resources.ApplyResources(form, "$this");

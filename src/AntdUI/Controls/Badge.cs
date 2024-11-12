@@ -31,7 +31,7 @@ namespace AntdUI
     [Description("Badge 徽标数")]
     [ToolboxItem(true)]
     [DefaultProperty("Text")]
-    public class Badge : IControl
+    public class Badge : IControl, IEventListener
     {
         #region 属性
 
@@ -77,7 +77,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
-            get => text;
+            get => this.GetLangI(LocalizationText, text);
             set
             {
                 if (text == value) return;
@@ -87,6 +87,9 @@ namespace AntdUI
                 OnTextChanged(EventArgs.Empty);
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         StringFormat stringFormat = Helper.SF_ALL(lr: StringAlignment.Near);
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
@@ -175,7 +178,7 @@ namespace AntdUI
             }
             else
             {
-                var size = g.MeasureString(text, Font);
+                var size = g.MeasureString(Text, Font);
                 int dot_size = (int)(size.Height / 2.5F);
                 using (var brush = new SolidBrush(GetColor(fill, state)))
                 {
@@ -189,7 +192,7 @@ namespace AntdUI
                 }
                 using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
                 {
-                    g.String(text, Font, brush, new Rectangle(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
+                    g.String(Text, Font, brush, new Rectangle(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
                 }
             }
             this.PaintBadge(g);
@@ -288,7 +291,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var font_size = g.MeasureString(text ?? Config.NullText, Font);
+                        var font_size = g.MeasureString(Text ?? Config.NullText, Font);
                         font_size.Width += font_size.Height;
                         return font_size;
                     }
@@ -332,6 +335,26 @@ namespace AntdUI
                     break;
             }
             return false;
+        }
+
+        #endregion
+
+        #region 语言变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    BeforeAutoSize();
+                    break;
+            }
         }
 
         #endregion

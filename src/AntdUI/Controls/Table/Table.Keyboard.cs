@@ -37,9 +37,7 @@ namespace AntdUI
                         else if (selectedIndex < rows.Length - 1)
                         {
                             SelectedIndex++;
-                            var selectRow = rows[selectedIndex];
-                            int sy = ScrollBar.ValueY;
-                            if (selectRow.RECT.Y < sy || selectRow.RECT.Bottom > sy + rect_read.Height) ScrollLine(selectedIndex, rows);
+                            ScrollLine(selectedIndex, rows);
                         }
                     }
                     break;
@@ -50,9 +48,7 @@ namespace AntdUI
                         else if (selectedIndex > 1)
                         {
                             SelectedIndex--;
-                            var selectRow = rows[selectedIndex];
-                            int sy = ScrollBar.ValueY;
-                            if (selectRow.RECT.Y < sy || selectRow.RECT.Bottom > sy + rect_read.Height) ScrollLine(selectedIndex, rows);
+                            ScrollLine(selectedIndex, rows);
                         }
                     }
                     break;
