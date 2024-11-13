@@ -203,6 +203,8 @@ namespace AntdUI
 
         #endregion
 
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual bool AutoHandDpi { get; set; } = true;
 
         #region DPI
@@ -215,15 +217,9 @@ namespace AntdUI
             base.OnLoad(e);
         }
 
-        public void AutoDpi(Control control)
-        {
-            AutoDpi(Dpi(), control);
-        }
+        public void AutoDpi(Control control) => AutoDpi(Dpi(), control);
 
-        public void AutoDpi(float dpi, Control control)
-        {
-            Helper.DpiAuto(dpi, control);
-        }
+        public void AutoDpi(float dpi, Control control) => Helper.DpiAuto(dpi, control);
 
         #endregion
 

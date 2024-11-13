@@ -109,6 +109,7 @@ namespace AntdUI
         /// 总页数
         /// </summary>
         [Description("总页数"), Category("数据")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int PageTotal { get; private set; } = 1;
 
         int _gap = 8;

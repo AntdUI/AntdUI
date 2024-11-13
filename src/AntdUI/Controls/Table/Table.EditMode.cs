@@ -27,8 +27,39 @@ namespace AntdUI
     {
         #region 编辑模式
 
+        /// <summary>
+        /// 进入编辑模式
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <param name="column">列</param>
+        public bool EnterEditMode(int row, int column)
+        {
+            if (rows != null)
+            {
+                try
+                {
+                    var _row = rows[row];
+                    var item = _row.cells[column];
+                    EditModeClose();
+                    if (CanEditMode(_row, item))
+                    {
+                        ScrollLine(row, rows);
+                        if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, row, column, 0, ScrollBar.ValueY);
+                        else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, row, column, sFixedR, ScrollBar.ValueY);
+                        else OnEditMode(_row, item, row, column, ScrollBar.ValueX, ScrollBar.ValueY);
+                        return true;
+                    }
+                }
+                catch { }
+            }
+            return false;
+        }
+
         bool inEditMode = false;
-        void EditModeClose()
+        /// <summary>
+        /// 关闭编辑模式
+        /// </summary>
+        public void EditModeClose()
         {
             if (inEditMode)
             {
@@ -48,6 +79,19 @@ namespace AntdUI
             }
         }
 
+        bool CanEditMode(RowTemplate it, TCell cell)
+        {
+            if (rows == null) return false;
+            if (cell is TCellText cellText) return true;
+            else if (cell is Template templates)
+            {
+                foreach (ITemplate template in templates.value)
+                {
+                    if (template.Value is CellText text) return true;
+                }
+            }
+            return false;
+        }
         void OnEditMode(RowTemplate it, TCell cell, int i_row, int i_col, int sx, int sy)
         {
             if (rows == null) return;
@@ -119,7 +163,7 @@ namespace AntdUI
                         {
                             for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
 
-                            int gap = (int)(Math.Max(_gap,8) * Config.Dpi), height_real = Helper.GDI(g =>
+                            int gap = (int)(Math.Max(_gap, 8) * Config.Dpi), height_real = Helper.GDI(g =>
                             {
                                 return g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height + gap;
                             }), height2 = cell.RECT_REAL.Height + gap;

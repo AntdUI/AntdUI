@@ -35,7 +35,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rows == null)
             {
-                if (Empty) PaintEmpty(g, rect);
+                if (Empty) PaintEmpty(g, rect, 0);
                 base.OnPaint(e);
                 return;
             }
@@ -47,7 +47,7 @@ namespace AntdUI
                 }
             }
             else PaintTable(g, rows, rect, columnfont);
-            if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect);
+            if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect, rows[0].RECT.Height);
             ScrollBar.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);
@@ -75,7 +75,8 @@ namespace AntdUI
                     {
                         foreach (var it in rows)
                         {
-                            it.SHOW = it.ShowExpand && !it.IsColumn && (rect_read.Contains(rect_read.X, it.RECT.Y - sy) || rect_read.Contains(rect_read.X, it.RECT.Bottom - sy));
+                            int y = it.RECT.Y - sy, b = it.RECT.Bottom - sy;
+                            it.SHOW = it.ShowExpand && !it.IsColumn && (rect_read.Contains(rect_read.X, y) || rect_read.Contains(rect_read.X, b) || (it.RECT.Height > rect_read.Height && rect_read.Y > y && rect_read.Bottom < b));
                             if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
                         }
 
@@ -898,11 +899,16 @@ namespace AntdUI
 
         #endregion
 
-        void PaintEmpty(Canvas g, Rectangle rect)
+        void PaintEmpty(Canvas g, Rectangle rect, int offset)
         {
+            string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
             using (var fore = new SolidBrush(Style.Db.Text))
             {
-                string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
+                if (offset > 0)
+                {
+                    rect.Offset(0, offset);
+                    rect.Height -= offset;
+                }
                 if (EmptyImage == null) g.String(emptytext, Font, fore, rect, stringCenter);
                 else
                 {

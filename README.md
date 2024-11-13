@@ -33,9 +33,10 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 
 ### 🖥 Requirements
 
-- .NET 6.0 and higher.
-- .NET Framework4.8 and above.
-- .NET Framework4.0 and above.
+- .NET 9.0
+- .NET 6.0
+- .NET Framework4.8
+- .NET Framework4.0 and above
 
 ### 🌴 Control
 

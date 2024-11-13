@@ -163,6 +163,7 @@ namespace AntdUI
         /// 控件当前日期
         /// </summary>
         [Description("控件当前日期"), Category("数据")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public DateTime Value
         {
             get => _value;

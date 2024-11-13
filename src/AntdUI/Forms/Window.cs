@@ -79,8 +79,7 @@ namespace AntdUI
 
         #endregion
 
-        internal HWND handle { get; private set; }
-
+        HWND handle;
         protected override void OnHandleCreated(EventArgs e)
         {
             handle = new HWND(Handle);
@@ -189,6 +188,7 @@ namespace AntdUI
         /// <summary>
         /// 获取或设置窗体的位置
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public new Point Location
         {
             get
@@ -206,6 +206,7 @@ namespace AntdUI
         /// <summary>
         /// 控件的顶部坐标
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new int Top
         {
             get => Location.Y;
@@ -219,6 +220,7 @@ namespace AntdUI
         /// <summary>
         /// 控件的左侧坐标
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new int Left
         {
             get => Location.X;
@@ -248,6 +250,7 @@ namespace AntdUI
         /// <summary>
         /// 获取或设置窗体的大小
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public new Size Size
         {
             get
@@ -266,6 +269,7 @@ namespace AntdUI
         /// <summary>
         /// 控件的宽度
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new int Width
         {
             get => Size.Width;
@@ -280,6 +284,7 @@ namespace AntdUI
         /// <summary>
         /// 控件的高度
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new int Height
         {
             get => Size.Height;

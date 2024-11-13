@@ -366,8 +366,11 @@ namespace AntdUI
                     if (enterEdit)
                     {
                         EditModeClose();
-                        int val = ScrollLine(i_row, rows);
-                        OnEditMode(it, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
+                        if (CanEditMode(it, cel_sel))
+                        {
+                            int val = ScrollLine(i_row, rows);
+                            OnEditMode(it, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
+                        }
                     }
                 }
                 return true;
@@ -610,7 +613,7 @@ namespace AntdUI
                 {
                     CloseTip();
                     oldmove = moveid;
-                    if (cel.MinWidth > cel.RECT_REAL.Width)
+                    if (!cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width)
                     {
                         var text = cel.ToString();
                         if (!string.IsNullOrEmpty(text))
@@ -934,6 +937,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            CloseTip();
             ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }

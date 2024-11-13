@@ -141,6 +141,7 @@ namespace AntdUI
         /// 选中值
         /// </summary>
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object[] SelectedValue
         {
             get => selectedValue;

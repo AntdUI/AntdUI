@@ -492,6 +492,8 @@ namespace AntdUI
         #region 鼠标
 
         internal bool _mouseDown = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal bool ExtraMouseDown
         {
             get => _mouseDown;
@@ -539,6 +541,8 @@ namespace AntdUI
         internal int AnimationHoverValue = 0;
         internal bool AnimationHover = false;
         internal bool _mouseHover = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal bool ExtraMouseHover
         {
             get => _mouseHover;
