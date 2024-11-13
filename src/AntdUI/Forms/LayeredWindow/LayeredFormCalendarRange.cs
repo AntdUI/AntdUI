@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -140,7 +141,7 @@ namespace AntdUI
         IControl control;
         int Radius = 6;
         int t_one_width = 288, t_width = 288, t_h = 0, t_x = 0, left_button = 120, t_top = 34, t_time = 56, t_time_height = 30;
-        int year_width = 60, year2_width = 88, month_width = 40;
+        int year_width = 60, year2_width = 90, month_width = 60;
         TAlignFrom Placement = TAlignFrom.BL;
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
@@ -171,6 +172,8 @@ namespace AntdUI
         List<Calendari>? calendar_month = null;
         List<Calendari>? calendar_day = null;
         List<Calendari>? calendar_day2 = null;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime Date
         {
             get => _Date;

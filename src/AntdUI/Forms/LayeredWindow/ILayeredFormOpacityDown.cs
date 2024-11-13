@@ -152,6 +152,8 @@ namespace AntdUI
 
         #endregion
 
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public override bool CanLoadMessage { get; set; }
         public virtual void LoadOK() { CanLoadMessage = true; LoadMessage(); }
 

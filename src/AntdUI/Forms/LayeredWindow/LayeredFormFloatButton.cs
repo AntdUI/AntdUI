@@ -24,9 +24,9 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormFloatButton : ILayeredFormOpacity, FormFloatButton, IEventListener
+    internal class LayeredFormFloatButton : FormFloatButton, IEventListener
     {
-        public FloatButton.Config config { get; private set; }
+        public override FloatButton.Config config { get; }
 
         int BadgeSize = 6, ShadowXY;
         public LayeredFormFloatButton(FloatButton.Config _config)
@@ -505,13 +505,8 @@ namespace AntdUI
         #endregion
     }
 
-    public interface FormFloatButton
+    public abstract class FormFloatButton : ILayeredFormOpacity
     {
-        FloatButton.Config config { get; }
-        void Close();
-        void Dispose();
-        void Show();
-        void Show(IWin32Window owner);
-        void Hide();
+        public abstract FloatButton.Config config { get; }
     }
 }

@@ -1095,6 +1095,8 @@ namespace AntdUI
 
         bool AnimationFocus = false;
         int AnimationFocusValue = 0;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool HasFocus { get; internal set; }
         protected override void OnGotFocus(EventArgs e)
         {

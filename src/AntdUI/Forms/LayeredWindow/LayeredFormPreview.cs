@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -144,6 +145,7 @@ namespace AntdUI
         /// <summary>
         /// 加载状态
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Loading
         {
             get => loading;
@@ -160,6 +162,7 @@ namespace AntdUI
         /// <summary>
         /// 加载进度
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public float LoadingProgress
         {
             get => _value;

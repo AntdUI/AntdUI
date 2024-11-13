@@ -252,6 +252,8 @@ namespace AntdUI
         internal float AnimationDot2HoverValue = 0F;
         internal bool AnimationDot2Hover = false;
         bool _mouseDotHover = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal bool ExtraMouseDot2Hover
         {
             get => _mouseDotHover;

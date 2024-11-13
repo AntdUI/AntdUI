@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -50,6 +51,8 @@ namespace AntdUI
         public Control? PARENT = null;
         public Func<Keys, bool>? KeyCall = null;
 
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual bool CanLoadMessage { get; set; } = true;
         Action actionLoadMessage;
         public virtual void LoadMessage()
@@ -272,6 +275,7 @@ namespace AntdUI
         /// <summary>
         /// 鼠标离开关闭
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool MessageCloseMouseLeave { get; set; }
 
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)

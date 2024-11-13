@@ -644,7 +644,10 @@ namespace AntdUI
         #region 展开
 
         ITask? ThreadExpand = null;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal float ExpandProg { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal bool ExpandThread { get; set; }
 
         bool expand = false;

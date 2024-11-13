@@ -210,7 +210,7 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
-        internal HWND handle { get; private set; }
+        HWND handle;
         readonly IntPtr TRUE = new IntPtr(1);
 
         protected override void WndProc(ref System.Windows.Forms.Message m)

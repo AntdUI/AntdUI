@@ -243,6 +243,7 @@ namespace AntdUI
         }
 
         bool isMax = false;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsMax
         {
             get => isMax;

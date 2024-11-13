@@ -601,31 +601,6 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 进入编辑模式
-        /// </summary>
-        /// <param name="row">行</param>
-        /// <param name="column">列</param>
-        public bool EnterEditMode(int row, int column)
-        {
-            if (rows != null)
-            {
-                try
-                {
-                    var _row = rows[row];
-                    var item = _row.cells[column];
-                    EditModeClose();
-                    ScrollLine(row, rows);
-                    if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, row, column, 0, ScrollBar.ValueY);
-                    else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, row, column, sFixedR, ScrollBar.ValueY);
-                    else OnEditMode(_row, item, row, column, ScrollBar.ValueX, ScrollBar.ValueY);
-                    return true;
-                }
-                catch { }
-            }
-            return false;
-        }
-
-        /// <summary>
         /// 获取排序序号
         /// </summary>
         public int[] SortIndex()

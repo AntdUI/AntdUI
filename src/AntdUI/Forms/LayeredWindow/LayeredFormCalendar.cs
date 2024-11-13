@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -154,7 +155,7 @@ namespace AntdUI
         bool ShowTime = false;
         float Radius = 6;
         int t_width = 288, t_h = 0, t_one_width = 288, t_x = 0, left_button = 120, t_top = 34, t_button = 38, t_time = 56, t_time_height = 30;
-        int year_width = 60, year2_width = 88, month_width = 40;
+        int year_width = 60, year2_width = 90, month_width = 60;
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
 
@@ -189,6 +190,8 @@ namespace AntdUI
         List<Calendari>? calendar_month = null;
         List<Calendari>? calendar_day = null;
         List<CalendarT>? calendar_time = null;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime Date
         {
             get => _Date;

@@ -197,6 +197,7 @@ namespace AntdUI
         /// 样式
         /// </summary>
         [Description("样式"), Category("外观")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public IStyle Style
         {
             get => style;
