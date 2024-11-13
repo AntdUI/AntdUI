@@ -65,6 +65,14 @@ namespace Demo
 
                 case "Setting":
                     return "Setting";
+                case "AnimationEnabled":
+                    return "Animation Enabled";
+                case "ShadowEnabled":
+                    return "Shadow Enabled";
+                case "PopupWindow":
+                    return "Popup in the window";
+                case "ScrollBarHidden":
+                    return "ScrollBar Hidden Style";
 
                 //Alert ----------------------------
                 case "Alert.Text":

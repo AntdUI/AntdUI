@@ -2,13 +2,15 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <WindowsSupportedOSPlatformVersion>5.1</WindowsSupportedOSPlatformVersion>
+    <TargetPlatformMinVersion>5.1</TargetPlatformMinVersion>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
     <PublishTrimmed>true</PublishTrimmed>
@@ -22,7 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="VC-LTL" Version="5.1.1" />
     <PackageReference Include="WinFormsComInterop" Version="0.5.0" />
+    <PackageReference Include="YY-Thunks" Version="1.1.4" />
     <RdXmlFile Include="rd.xml" />
   </ItemGroup>
 
