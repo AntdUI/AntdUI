@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -74,42 +73,42 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                int gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi), gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
-                int font_size = size.Height + gap_y2;
-                y += gap_y;
+                int gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
+                gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
+                text_height = size.Height, item_height = text_height + gap_y2;
+                y += gap;
 
                 #region AutoWidth
 
                 int b_w = size.Width + gap_x2;
                 bool ui_icon = false, ui_arrow = false;
-                foreach (var obj in items)
+                foreach (var it in items)
                 {
-                    if (obj.Text != null)
+                    if (it.Text != null)
                     {
-                        var size3 = g.MeasureString(obj.Text, Font);
-                        if (size3.Width > b_w) b_w = size3.Width;
+                        var size2 = g.MeasureString(it.Text, Font);
+                        if (size2.Width > b_w) b_w = size2.Width;
                     }
-                    if (obj.HasIcon) ui_icon = true;
-                    if (obj.CanExpand) ui_arrow = true;
+                    if (it.HasIcon) ui_icon = true;
+                    if (it.CanExpand) ui_arrow = true;
                 }
-                if (ui_icon) b_w += font_size;
-                if (ui_arrow) b_w += (int)Math.Ceiling(font_size * 0.6F);
-
-                w = b_w + gap_x2;
-                if (rect_read.Width > w) w = rect_read.Width;
+                if (ui_icon)
+                {
+                    if (ui_icon) b_w += text_height;
+                    else b_w += gap_y;
+                }
+                if (ui_arrow) b_w += gap_y2;
+                w = b_w + gap_x2 + gap2;
 
                 #endregion
 
-                int item_count = 0, divider_count = 0;
-                int text_height = font_size - gap_y2;
                 foreach (var it in items)
                 {
-                    item_count++;
-                    Rectangle rect_bg = new Rectangle(10 + gap_y, y, w - gap_y2, font_size), rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                    Items.Add(new OMenuItem(it, rect_bg, gap_y, rect_text));
-                    y += font_size;
+                    Rectangle rect = new Rectangle(10 + gap, y, w - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
+                    Items.Add(new OMenuItem(it, rect, gap_y, rect_text));
+                    y += item_height;
                 }
-                var vr = (font_size * item_count) + (gap_y * divider_count);
+                var vr = item_height * items.Count;
                 y = 10 + gap_y2 + vr;
             });
             int h = y + 10;
