@@ -123,28 +123,4 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 
 ![ChatUI](doc/screenshot/ChatUI.gif)
 
-#### Control
-
-| **Button** | **Badge** |
-| :--: | :--: |
-| ![Button](doc/screenshot/Button.gif) | ![Badge](doc/screenshot/Badge.gif) |
-| **Carousel** | **Input** |
-| ![Carousel](doc/screenshot/Carousel.gif) | ![Input](doc/screenshot/Input.gif) |
-| **Progress** | **Avatar** |
-| ![Progress](doc/screenshot/Progress.gif) | ![Avatar](doc/screenshot/Avatar.gif) |
-| **Checkbox** | **Radio** |
-| ![Checkbox](doc/screenshot/Checkbox.gif) | ![Radio](doc/screenshot/Radio.gif) |
-| **Tooltip** | **Panel** |
-| ![Tooltip](doc/screenshot/Tooltip.gif) | ![Panel](doc/screenshot/Panel.gif) |
-| **Tabs** | **Alert** |
-| ![Tabs](doc/screenshot/Tabs.gif) | ![Alert](doc/screenshot/Alert.gif) |
-| **Segmented** | **Menu** |
-| ![Segmented](doc/screenshot/Segmented.gif) | ![Menu](doc/screenshot/Menu.gif) |
-| **Divider** | **Slider** |
-| ![Divider](doc/screenshot/Divider.gif) | ![Slider](doc/screenshot/Slider.gif) |
-| **Message** | **Notification** |
-| ![Message](doc/screenshot/Message.gif) | ![Notification](doc/screenshot/Notification.gif) |
-| **Switch** | **Table** |
-| ![Switch](doc/screenshot/Switch.gif) | ![Table](doc/screenshot/Table.gif) |
-
 🦦
