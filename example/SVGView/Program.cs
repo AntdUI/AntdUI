@@ -16,6 +16,8 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Runtime.InteropServices;
+
 namespace SVGView
 {
     internal static class Program
@@ -26,9 +28,13 @@ namespace SVGView
         [STAThread]
         static void Main()
         {
+            ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
+            AntdUI.Localization.DefaultLanguage = "zh-CN";
+            var lang = AntdUI.Localization.CurrentLanguage;
+            if (lang.StartsWith("en")) AntdUI.Localization.Provider = new Localizer();
             Application.Run(new Main());
         }
     }

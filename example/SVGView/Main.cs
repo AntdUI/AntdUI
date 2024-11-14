@@ -79,10 +79,10 @@ namespace SVGView
         {
             try
             {
-                var svg = Clipboard.GetText();
+                var svg = AntdUI.Helper.ClipboardGetText();
                 if (string.IsNullOrEmpty(svg)) return;
                 input1.Text = Hand(svg.Trim(), e.Button == MouseButtons.Right);
-                Clipboard.SetText(input1.Text);
+                AntdUI.Helper.ClipboardSetText(input1.Text);
             }
             catch { }
         }

@@ -84,29 +84,19 @@ namespace AntdUI
         {
             handle = new HWND(Handle);
             base.OnHandleCreated(e);
-            if (FormBorderStyle == FormBorderStyle.None)
+            SetTheme();
+            DisableProcessWindowsGhosting();
+            if (FormBorderStyle != FormBorderStyle.None && WindowState != FormWindowState.Maximized)
             {
-                SetTheme();
-                DisableProcessWindowsGhosting();
-                HandMessage();
-                DwmArea();
+                Size max = MaximumSize, min = MinimumSize;
+                sizeInit = ClientSize;
+                MaximumSize = MinimumSize = ClientSize = sizeInit.Value;
+                ClientSize = sizeInit.Value;
+                MinimumSize = min;
+                MaximumSize = max;
             }
-            else
-            {
-                SetTheme();
-                DisableProcessWindowsGhosting();
-                if (WindowState != FormWindowState.Maximized)
-                {
-                    Size max = MaximumSize, min = MinimumSize;
-                    sizeInit = ClientSize;
-                    MaximumSize = MinimumSize = ClientSize = sizeInit.Value;
-                    ClientSize = sizeInit.Value;
-                    MinimumSize = min;
-                    MaximumSize = max;
-                }
-                HandMessage();
-                DwmArea();
-            }
+            HandMessage();
+            DwmArea();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -125,8 +115,7 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            var msg = (WindowMessage)m.Msg;
-            switch (msg)
+            switch ((WindowMessage)m.Msg)
             {
                 case WindowMessage.WM_ACTIVATE:
                     DwmArea();
@@ -140,12 +129,20 @@ namespace AntdUI
                 case WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
+                case WindowMessage.WM_NCHITTEST:
+                    m.Result = TRUE;
+                    break;
+                case WindowMessage.WM_ACTIVATEAPP:
+                    InvalidateNonclient();
+                    break;
+                default:
+                    if (WmGhostingHandler(m)) return;
+                    break;
             }
-            if (WmGhostingHandler(m)) return;
             base.WndProc(ref m);
         }
 
-        static IntPtr FALSE = new IntPtr(0);
+        static IntPtr TRUE = new IntPtr(1), FALSE = new IntPtr(0);
         bool WmGhostingHandler(System.Windows.Forms.Message m)
         {
             switch (m.Msg)
@@ -250,7 +247,7 @@ namespace AntdUI
         /// <summary>
         /// 获取或设置窗体的大小
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Size Size
         {
             get
@@ -464,7 +461,7 @@ namespace AntdUI
             }
             else
             {
-                m.Result = new IntPtr(1);
+                m.Result = TRUE;
                 return true;
             }
         }
