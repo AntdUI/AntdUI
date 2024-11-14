@@ -281,6 +281,7 @@ namespace AntdUI
         {
             if (oldcursor == cursor) return;
             oldcursor = cursor;
+            bool flag = true;
             switch (cursor)
             {
                 case CursorType.Hand:
@@ -293,9 +294,11 @@ namespace AntdUI
                     SetCursor(Cursors.No);
                     break;
                 case CursorType.SizeAll:
+                    flag = false;
                     SetCursor(Cursors.SizeAll);
                     break;
                 case CursorType.VSplit:
+                    flag = false;
                     SetCursor(Cursors.VSplit);
                     break;
                 case CursorType.Default:
@@ -303,6 +306,7 @@ namespace AntdUI
                     SetCursor(DefaultCursor);
                     break;
             }
+            SetWindow(flag);
         }
         void SetCursor(Cursor cursor)
         {
@@ -315,6 +319,15 @@ namespace AntdUI
                 return;
             }
             Cursor = cursor;
+        }
+
+        bool setwindow = false;
+        void SetWindow(bool flag)
+        {
+            if (setwindow == flag) return;
+            setwindow = flag;
+            var form = Parent.FindPARENT();
+            if (form is BaseForm baseForm) baseForm.EnableHitTest = setwindow;
         }
 
         [Description("悬停光标"), Category("光标"), DefaultValue(typeof(Cursor), "Hand")]

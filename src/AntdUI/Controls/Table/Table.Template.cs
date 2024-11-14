@@ -31,11 +31,12 @@ namespace AntdUI
         internal class RowTemplate
         {
             Table PARENT;
-            public RowTemplate(Table table, TCell[] cell, object? value)
+            public RowTemplate(Table table, TCell[] cell, int i, object? value)
             {
                 PARENT = table;
                 cells = cell;
                 RECORD = value;
+                INDEX_REAL = i;
             }
 
             /// <summary>
@@ -54,6 +55,8 @@ namespace AntdUI
             public object? RECORD { get; set; }
 
             public int INDEX { get; set; }
+
+            public int INDEX_REAL { get; set; }
 
             /// <summary>
             /// 列数据
@@ -121,23 +124,24 @@ namespace AntdUI
                 }
             }
 
-            internal bool Contains(int x, int y)
+            internal bool Contains(int x, int y, bool sethover)
             {
-                if (CONTAINS(x, y))
+                if (sethover)
                 {
-                    Hover = true;
-                    return true;
+                    if (CONTAINS(x, y))
+                    {
+                        Hover = true;
+                        return true;
+                    }
+                    else
+                    {
+                        Hover = false;
+                        return false;
+                    }
                 }
-                else
-                {
-                    Hover = false;
-                    return false;
-                }
+                return CONTAINS(x, y);
             }
-            internal bool CONTAINS(int x, int y)
-            {
-                return RECT.Contains(x, y);
-            }
+            internal bool CONTAINS(int x, int y) => RECT.Contains(x, y);
 
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;
@@ -580,6 +584,111 @@ namespace AntdUI
 
             public bool AutoCheck { get; set; }
             public override string ToString() => Checked.ToString();
+        }
+
+        /// <summary>
+        /// 拖拽手柄
+        /// </summary>
+        class TCellSort : TCell
+        {
+            /// <summary>
+            /// 拖拽手柄
+            /// </summary>
+            /// <param name="table">表格</param>
+            /// <param name="column">表头</param>
+            public TCellSort(Table table, ColumnSort column) : base(table, column, null, null)
+            { }
+
+            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            {
+            }
+            public void SetSize(Rectangle _rect, int sort_size, int sort_ico_size)
+            {
+                RECT = _rect;
+                RECT_REAL = new Rectangle(_rect.X + (_rect.Width - sort_size) / 2, _rect.Y + (_rect.Height - sort_size) / 2, sort_size, sort_size);
+                RECT_ICO = new Rectangle(_rect.X + (_rect.Width - sort_ico_size) / 2, _rect.Y + (_rect.Height - sort_ico_size) / 2, sort_ico_size, sort_ico_size);
+            }
+            public Rectangle RECT_ICO { get; set; }
+
+            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
+            {
+                var size = g.MeasureString(Config.NullText, font);
+                MinWidth = size.Width;
+                return size;
+            }
+
+
+            #region 悬浮状态
+
+            bool hover = false;
+            /// <summary>
+            /// 是否移动
+            /// </summary>
+            public bool Hover
+            {
+                get => hover;
+                set
+                {
+                    if (hover == value) return;
+                    hover = value;
+
+                    if (Config.Animation)
+                    {
+                        ThreadHover?.Dispose();
+                        AnimationHover = true;
+                        var t = Animation.TotalFrames(20, 200);
+                        if (value)
+                        {
+                            ThreadHover = new ITask((i) =>
+                            {
+                                AnimationHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                PARENT.Invalidate();
+                                return true;
+                            }, 20, t, () =>
+                            {
+                                AnimationHover = false;
+                                AnimationHoverValue = 1;
+                                PARENT.Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            ThreadHover = new ITask((i) =>
+                            {
+                                AnimationHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
+                                PARENT.Invalidate();
+                                return true;
+                            }, 20, t, () =>
+                            {
+                                AnimationHover = false;
+                                AnimationHoverValue = 0;
+                                PARENT.Invalidate();
+                            });
+                        }
+                    }
+                    else PARENT.Invalidate();
+                }
+            }
+
+            public bool Contains(int x, int y)
+            {
+                if (RECT_REAL.Contains(x, y))
+                {
+                    Hover = true;
+                    return true;
+                }
+                else
+                {
+                    Hover = false;
+                    return false;
+                }
+            }
+
+            internal float AnimationHoverValue = 0;
+            internal bool AnimationHover = false;
+            internal ITask? ThreadHover = null;
+
+            #endregion
         }
 
         /// <summary>

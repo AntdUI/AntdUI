@@ -70,12 +70,12 @@ namespace AntdUI
             PageSize = config.ContentCount;
 
             var btnwiths = new PreBtns[] {
-                new PreBtns("@t_flipY",SvgDb.IcoFlip.Insert(28," transform=\"rotate(90),translate(0 -100%)\"")),
-                new PreBtns("@t_flipX",SvgDb.IcoFlip),
-                new PreBtns("@t_rotateL",SvgDb.IcoRotateLeft),
-                new PreBtns("@t_rotateR",SvgDb.IcoRotateRight),
-                new PreBtns("@t_zoomOut",SvgDb.IcoZoomOut),
-                new PreBtns("@t_zoomIn",SvgDb.IcoZoomIn),
+                new PreBtns("@t_flipY",SvgDb.Custom["SwapOutlined"].Insert(28," transform=\"rotate(90),translate(0 -100%)\"")),
+                new PreBtns("@t_flipX","SwapOutlined"),
+                new PreBtns("@t_rotateL","RotateLeftOutlined"),
+                new PreBtns("@t_rotateR","RotateRightOutlined"),
+                new PreBtns("@t_zoomOut","ZoomOutOutlined"),
+                new PreBtns("@t_zoomIn","ZoomInOutlined"),
             };
             if (config.Btns == null || config.Btns.Length == 0) btns = btnwiths;
             else
@@ -375,8 +375,8 @@ namespace AntdUI
                         PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
                         if (PageSize > 1)
                         {
-                            PaintBtn(g, brush, rect_left, rect_left_icon, SvgDb.IcoLeft, hoverLeft, enabledLeft);
-                            PaintBtn(g, brush, rect_right, rect_right_icon, SvgDb.IcoRight, hoverRight, enabledRight);
+                            PaintBtn(g, brush, rect_left, rect_left_icon, "LeftOutlined", hoverLeft, enabledLeft);
+                            PaintBtn(g, brush, rect_right, rect_right_icon, "RightOutlined", hoverRight, enabledRight);
                         }
                     }
                 }

@@ -245,6 +245,18 @@ namespace AntdUI
         [Description("树开关按钮大小"), Category("外观"), DefaultValue(16)]
         public int TreeButtonSize { get; set; } = 16;
 
+        /// <summary>
+        /// 拖拽手柄大小
+        /// </summary>
+        [Description("拖拽手柄大小"), Category("外观"), DefaultValue(24)]
+        public int DragHandleSize { get; set; } = 24;
+
+        /// <summary>
+        /// 拖拽手柄图标大小
+        /// </summary>
+        [Description("拖拽手柄图标大小"), Category("外观"), DefaultValue(14)]
+        public int DragHandleIconSize { get; set; } = 14;
+
         #endregion
 
         /// <summary>
@@ -859,6 +871,16 @@ namespace AntdUI
         /// 插槽
         /// </summary>
         public new Func<object?, object, int, object?>? Render { get; }
+    }
+
+    /// <summary>
+    /// 拖拽手柄列
+    /// </summary>
+    public class ColumnSort : Column
+    {
+        public ColumnSort() : base("tsort", "")
+        {
+        }
     }
 
     public class Column<T> : Column

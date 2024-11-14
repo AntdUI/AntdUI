@@ -266,8 +266,8 @@ namespace AntdUI
             {
                 if (column.COLUMN.SortOrder)
                 {
-                    g.GetImgExtend(SvgDb.IcoArrowUp, column.rect_up, column.COLUMN.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary);
-                    g.GetImgExtend(SvgDb.IcoArrowDown, column.rect_down, column.COLUMN.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary);
+                    g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == 1 ? Style.Db.Primary : Style.Db.TextQuaternary);
+                    g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == 2 ? Style.Db.Primary : Style.Db.TextQuaternary);
                 }
                 if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
                 else
@@ -370,18 +370,40 @@ namespace AntdUI
         /// </summary>
         void PaintBg(Canvas g, RowTemplate row)
         {
-            if (row.AnimationHover)
+            if (dragBody != null)
             {
-                using (var brush = new SolidBrush(Helper.ToColorN(row.AnimationHoverValue, Style.Db.FillSecondary)))
+                if (dragBody.i == row.INDEX)
                 {
-                    g.Fill(brush, row.RECT);
+                    using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                    {
+                        g.Fill(brush, row.RECT);
+                    }
+                }
+                else if (dragBody.im == row.INDEX)
+                {
+                    using (var brush_split = new SolidBrush(Style.Db.BorderColor))
+                    {
+                        int sp = (int)(2 * Config.Dpi);
+                        if (dragBody.last) g.Fill(brush_split, new Rectangle(row.RECT.X, row.RECT.Bottom - sp, row.RECT.Width, sp * 2));
+                        else g.Fill(brush_split, new Rectangle(row.RECT.X, row.RECT.Y - sp, row.RECT.Width, sp * 2));
+                    }
                 }
             }
-            else if (row.Hover)
+            else
             {
-                using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                if (row.AnimationHover)
                 {
-                    g.Fill(brush, row.RECT);
+                    using (var brush = new SolidBrush(Helper.ToColorN(row.AnimationHoverValue, Style.Db.FillSecondary)))
+                    {
+                        g.Fill(brush, row.RECT);
+                    }
+                }
+                else if (row.Hover)
+                {
+                    using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                    {
+                        g.Fill(brush, row.RECT);
+                    }
                 }
             }
         }
@@ -478,6 +500,27 @@ namespace AntdUI
             if (it is TCellCheck check) PaintCheck(g, check);
             else if (it is TCellRadio radio) PaintRadio(g, radio);
             else if (it is TCellSwitch _switch) PaintSwitch(g, _switch);
+            else if (it is TCellSort sort)
+            {
+                if (sort.AnimationHover)
+                {
+                    using (var brush = new SolidBrush(Helper.ToColorN(sort.AnimationHoverValue, Style.Db.FillTertiary)))
+                    {
+                        using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
+                        {
+                            g.Fill(brush, path_sort);
+                        }
+                    }
+                }
+                else if (sort.Hover)
+                {
+                    using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
+                    {
+                        g.Fill(Style.Db.FillTertiary, path_sort);
+                    }
+                }
+                SvgExtend.GetImgExtend(g, "HolderOutlined", sort.RECT_ICO, fore.Color);
+            }
             else if (it is Template obj)
             {
                 foreach (var o in obj.value) o.Value.Paint(g, Font, fore);
