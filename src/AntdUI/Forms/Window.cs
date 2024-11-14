@@ -250,7 +250,7 @@ namespace AntdUI
         /// <summary>
         /// 获取或设置窗体的大小
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Size Size
         {
             get

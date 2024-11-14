@@ -660,10 +660,14 @@ namespace AntdUI
             Show = true;
             Val = _val;
             Text = _val.ToString() ?? string.Empty;
-            PY = Pinyin.GetPinyin(Text).ToLower();
-            PYS = Pinyin.GetInitials(Text).ToLower();
             ID = _i;
             SetRect(rect, rect_text);
+            string pinyin = Text;
+            PY = new string[] {
+                pinyin.ToLower(),
+                Pinyin.GetPinyin(pinyin).ToLower(),
+                Pinyin.GetInitials(pinyin).ToLower()
+            };
         }
 
         public ObjectItem(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text)
@@ -671,10 +675,14 @@ namespace AntdUI
             Show = Group = true;
             Val = _val;
             Text = _val.Title;
-            PY = Pinyin.GetPinyin(Text).ToLower();
-            PYS = Pinyin.GetInitials(Text).ToLower();
             ID = _i;
             SetRect(rect, rect_text);
+            string pinyin = Text;
+            PY = new string[] {
+                pinyin.ToLower(),
+                Pinyin.GetPinyin(pinyin).ToLower(),
+                Pinyin.GetInitials(pinyin).ToLower()
+            };
         }
 
         public ObjectItem(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
@@ -690,10 +698,14 @@ namespace AntdUI
             Text = _val.Text;
             SubText = _val.SubText;
             Enable = _val.Enable;
-            PY = Pinyin.GetPinyin(_val.Text + _val.SubText).ToLower();
-            PYS = Pinyin.GetInitials(_val.Text + _val.SubText).ToLower();
             ID = _i;
             SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+            string pinyin = _val.Text + _val.SubText;
+            PY = new string[] {
+                pinyin.ToLower(),
+                Pinyin.GetPinyin(pinyin).ToLower(),
+                Pinyin.GetInitials(pinyin).ToLower()
+            };
         }
 
         public ObjectItem(Rectangle rect)
@@ -701,6 +713,7 @@ namespace AntdUI
             ID = -1;
             Rect = rect;
             Show = true;
+            PY = new string[0];
         }
         public object Val { get; set; }
 
@@ -738,13 +751,16 @@ namespace AntdUI
         public Rectangle RectIcon { get; set; }
         public Rectangle RectOnline { get; set; }
 
-        string PY { get; set; }
-        string PYS { get; set; }
         public string? SubText { get; set; }
         public string Text { get; set; }
+        string[] PY { get; set; }
         public bool Contains(string val)
         {
-            return Text.Contains(val) || PY.Contains(val) || PYS.Contains(val);
+            foreach (var pinyin in PY)
+            {
+                if (pinyin.Contains(val)) return true;
+            }
+            return false;
         }
 
         public int ID { get; set; }
@@ -835,10 +851,14 @@ namespace AntdUI
             Show = true;
             Val = _val;
             Text = _val.ToString() ?? string.Empty;
-            PY = Pinyin.GetPinyin(Text).ToLower();
-            PYS = Pinyin.GetInitials(Text).ToLower();
             ID = _i;
             SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+            string pinyin = Text;
+            PY = new string[] {
+                pinyin.ToLower(),
+                Pinyin.GetPinyin(pinyin).ToLower(),
+                Pinyin.GetInitials(pinyin).ToLower()
+            };
         }
 
         public ObjectItemCheck(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
@@ -846,10 +866,14 @@ namespace AntdUI
             Show = Group = true;
             Val = _val;
             Text = _val.Title;
-            PY = Pinyin.GetPinyin(Text).ToLower();
-            PYS = Pinyin.GetInitials(Text).ToLower();
             ID = _i;
             SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+            string pinyin = Text;
+            PY = new string[] {
+                pinyin.ToLower(),
+                Pinyin.GetPinyin(pinyin).ToLower(),
+                Pinyin.GetInitials(pinyin).ToLower()
+            };
         }
 
         public ObjectItemCheck(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
@@ -865,10 +889,14 @@ namespace AntdUI
             Text = _val.Text;
             SubText = _val.SubText;
             Enable = _val.Enable;
-            PY = Pinyin.GetPinyin(_val.Text + _val.SubText).ToLower();
-            PYS = Pinyin.GetInitials(_val.Text + _val.SubText).ToLower();
             ID = _i;
             SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+            string pinyin = _val.Text + _val.SubText;
+            PY = new string[] {
+                pinyin.ToLower(),
+                Pinyin.GetPinyin(pinyin).ToLower(),
+                Pinyin.GetInitials(pinyin).ToLower()
+            };
         }
 
         public ObjectItemCheck(Rectangle rect)
@@ -876,6 +904,7 @@ namespace AntdUI
             ID = -1;
             Rect = rect;
             Show = true;
+            PY = new string[0];
         }
         public object Val { get; set; }
 
@@ -914,13 +943,16 @@ namespace AntdUI
         public Rectangle RectOnline { get; set; }
         public Rectangle RectCheck { get; set; }
 
-        string PY { get; set; }
-        string PYS { get; set; }
         public string? SubText { get; set; }
         public string Text { get; set; }
+        string[] PY { get; set; }
         public bool Contains(string val)
         {
-            return Text.Contains(val) || PY.Contains(val) || PYS.Contains(val);
+            foreach (var pinyin in PY)
+            {
+                if (pinyin.Contains(val)) return true;
+            }
+            return false;
         }
 
         public int ID { get; set; }
