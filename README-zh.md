@@ -125,30 +125,6 @@
 
 ![ChatUI](doc/screenshot/ChatUI.gif)
 
-#### 控件
-
-| **Button** 按钮 | **Badge** 徽标数 |
-| :--: | :--: |
-| ![Button](doc/screenshot/Button.gif) | ![Badge](doc/screenshot/Badge.gif) |
-| **Carousel** 走马灯 | **Input** 输入框 |
-| ![Carousel](doc/screenshot/Carousel.gif) | ![Input](doc/screenshot/Input.gif) |
-| **Progress** 进度条 | **Avatar** 头像 |
-| ![Progress](doc/screenshot/Progress.gif) | ![Avatar](doc/screenshot/Avatar.gif) |
-| **Checkbox** 多选框 | **Radio** 单选框 |
-| ![Checkbox](doc/screenshot/Checkbox.gif) | ![Radio](doc/screenshot/Radio.gif) |
-| **Tooltip** 提示 | **Panel** 面板 |
-| ![Tooltip](doc/screenshot/Tooltip.gif) | ![Panel](doc/screenshot/Panel.gif) |
-| **Tabs** 标签页 | **Alert** 警告提示 |
-| ![Tabs](doc/screenshot/Tabs.gif) | ![Alert](doc/screenshot/Alert.gif) |
-| **Segmented** 分段控制器 | **Menu** 导航菜单 |
-| ![Segmented](doc/screenshot/Segmented.gif) | ![Menu](doc/screenshot/Menu.gif) |
-| **Divider** 分割线 | **Slider** 滑动条 |
-| ![Divider](doc/screenshot/Divider.gif) | ![Slider](doc/screenshot/Slider.gif) |
-| **Message** 全局提示 | **Notification** 通知提醒框 |
-| ![Message](doc/screenshot/Message.gif) | ![Notification](doc/screenshot/Notification.gif) |
-| **Switch** 开关 | **Table** 表格 |
-| ![Switch](doc/screenshot/Switch.gif) | ![Table](doc/screenshot/Table.gif) |
-
 
 ## 📢 特别声明
 
