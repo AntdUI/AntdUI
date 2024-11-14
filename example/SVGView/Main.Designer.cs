@@ -65,6 +65,7 @@ namespace SVGView
             windowBar1.Name = "windowBar1";
             windowBar1.Size = new Size(800, 36);
             windowBar1.TabIndex = 0;
+            windowBar1.LocalizationText = "Title";
             windowBar1.Text = "SVG视图";
             // 
             // button2
@@ -76,6 +77,7 @@ namespace SVGView
             button2.Name = "button2";
             button2.Size = new Size(77, 36);
             button2.TabIndex = 1;
+            button2.LocalizationText = "Auto";
             button2.Text = "一键";
             button2.Type = AntdUI.TTypeMini.Success;
             button2.MouseClick += button2_Click;
@@ -88,6 +90,7 @@ namespace SVGView
             button1.Name = "button1";
             button1.Size = new Size(57, 36);
             button1.TabIndex = 0;
+            button1.LocalizationText = "Zip";
             button1.Text = "剔除";
             button1.Type = AntdUI.TTypeMini.Primary;
             button1.MouseClick += button1_Click;
