@@ -94,7 +94,7 @@ namespace Demo.Controls
             panel2.Controls.Add(button2);
             panel2.Controls.Add(button1);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 22);
+            panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(543, 63);
             panel2.TabIndex = 2;
@@ -145,10 +145,9 @@ namespace Demo.Controls
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.LocalizationText = "Modal.{id}";
             divider1.Location = new Point(0, 0);
-            divider1.Margin = new Padding(10);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(543, 22);
+            divider1.Size = new Size(543, 28);
             divider1.TabIndex = 0;
             divider1.Text = "基本";
             // 

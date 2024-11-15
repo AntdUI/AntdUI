@@ -150,7 +150,7 @@ namespace Demo.Controls
             panel3.Controls.Add(slider4);
             panel3.Controls.Add(slider7);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 98);
+            panel3.Location = new Point(0, 110);
             panel3.Name = "panel3";
             panel3.Size = new Size(1179, 407);
             panel3.TabIndex = 3;
@@ -375,10 +375,10 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Slider.{id}";
-            divider2.Location = new Point(0, 76);
+            divider2.Location = new Point(0, 82);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(1179, 22);
+            divider2.Size = new Size(1179, 28);
             divider2.TabIndex = 0;
             divider2.TabStop = false;
             divider2.Text = "固定点";
@@ -389,7 +389,7 @@ namespace Demo.Controls
             panel2.Controls.Add(slider3);
             panel2.Controls.Add(slider1);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 22);
+            panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(1179, 54);
             panel2.TabIndex = 1;
@@ -430,7 +430,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(1179, 22);
+            divider1.Size = new Size(1179, 28);
             divider1.TabIndex = 0;
             divider1.TabStop = false;
             divider1.Text = "基本";

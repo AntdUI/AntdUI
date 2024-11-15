@@ -203,9 +203,8 @@ namespace Demo.Controls
             avatar7.Badge = "1";
             avatar7.ForeColor = Color.FromArgb(245, 106, 0);
             avatar7.Location = new Point(415, 6);
-            avatar7.Margin = new Padding(2, 3, 2, 3);
             avatar7.Name = "avatar7";
-            avatar7.Padding = new Padding(8);
+            avatar7.Padding = new Padding(8, 6, 8, 10);
             avatar7.Round = true;
             avatar7.Shadow = 8;
             avatar7.ShadowOffsetY = 4;

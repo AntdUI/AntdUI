@@ -92,7 +92,7 @@ namespace Demo.Controls
             panel2.Controls.Add(datePicker2);
             panel2.Controls.Add(datePicker1);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 22);
+            panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(770, 118);
             panel2.TabIndex = 3;
@@ -135,7 +135,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(770, 22);
+            divider1.Size = new Size(770, 28);
             divider1.TabIndex = 2;
             divider1.Text = "选择日期";
             // 

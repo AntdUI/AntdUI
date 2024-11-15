@@ -79,7 +79,7 @@ namespace Demo.Controls
             // 
             pageHeader1.Controls.Add(button1);
             pageHeader1.Dock = DockStyle.Top;
-            pageHeader1.Location = new Point(0, 96);
+            pageHeader1.Location = new Point(0, 102);
             pageHeader1.Name = "pageHeader1";
             pageHeader1.Padding = new Padding(0, 0, 8, 0);
             pageHeader1.Size = new Size(740, 36);
@@ -107,7 +107,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 74);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(740, 22);
+            divider1.Size = new Size(740, 28);
             divider1.TabIndex = 0;
             divider1.Text = "标准样式";
             // 
@@ -115,7 +115,7 @@ namespace Demo.Controls
             // 
             pageHeader2.Description = "This is a description";
             pageHeader2.Dock = DockStyle.Top;
-            pageHeader2.Location = new Point(0, 132);
+            pageHeader2.Location = new Point(0, 138);
             pageHeader2.Name = "pageHeader2";
             pageHeader2.Padding = new Padding(0, 0, 0, 6);
             pageHeader2.Size = new Size(740, 60);
@@ -126,7 +126,7 @@ namespace Demo.Controls
             // pageHeader3
             // 
             pageHeader3.Dock = DockStyle.Top;
-            pageHeader3.Location = new Point(0, 214);
+            pageHeader3.Location = new Point(0, 226);
             pageHeader3.Name = "pageHeader3";
             pageHeader3.Padding = new Padding(0, 0, 8, 0);
             pageHeader3.ShowButton = true;
@@ -141,17 +141,17 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "PageHeader.{id}";
-            divider2.Location = new Point(0, 192);
+            divider2.Location = new Point(0, 198);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(740, 22);
+            divider2.Size = new Size(740, 28);
             divider2.TabIndex = 4;
             divider2.Text = "关闭按钮";
             // 
             // pageHeader4
             // 
             pageHeader4.Dock = DockStyle.Top;
-            pageHeader4.Location = new Point(0, 250);
+            pageHeader4.Location = new Point(0, 262);
             pageHeader4.MaximizeBox = false;
             pageHeader4.Name = "pageHeader4";
             pageHeader4.Padding = new Padding(0, 0, 8, 0);

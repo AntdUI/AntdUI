@@ -109,7 +109,7 @@ namespace Demo.Controls
             panel4.Controls.Add(datePicker4);
             panel4.Controls.Add(datePickerRange2);
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 302);
+            panel4.Location = new Point(0, 320);
             panel4.Name = "panel4";
             panel4.Size = new Size(770, 127);
             panel4.TabIndex = 7;
@@ -160,10 +160,10 @@ namespace Demo.Controls
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "DatePicker.{id}";
-            divider3.Location = new Point(0, 280);
+            divider3.Location = new Point(0, 292);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(770, 22);
+            divider3.Size = new Size(770, 28);
             divider3.TabIndex = 6;
             divider3.Text = "时间/预置";
             // 
@@ -172,7 +172,7 @@ namespace Demo.Controls
             panel3.Controls.Add(datePickerRange1);
             panel3.Controls.Add(inputRange1);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 162);
+            panel3.Location = new Point(0, 174);
             panel3.Name = "panel3";
             panel3.Size = new Size(770, 118);
             panel3.TabIndex = 5;
@@ -200,10 +200,10 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "DatePicker.{id}";
-            divider2.Location = new Point(0, 140);
+            divider2.Location = new Point(0, 146);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(770, 22);
+            divider2.Size = new Size(770, 28);
             divider2.TabIndex = 4;
             divider2.Text = "日期范围";
             // 
@@ -213,7 +213,7 @@ namespace Demo.Controls
             panel2.Controls.Add(datePicker2);
             panel2.Controls.Add(datePicker1);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 22);
+            panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(770, 118);
             panel2.TabIndex = 3;
@@ -257,7 +257,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(770, 22);
+            divider1.Size = new Size(770, 28);
             divider1.TabIndex = 2;
             divider1.Text = "选择日期";
             // 

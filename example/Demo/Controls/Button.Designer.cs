@@ -51,8 +51,8 @@ namespace Demo.Controls
         {
             header1 = new AntdUI.PageHeader();
             panel_main = new System.Windows.Forms.Panel();
-            panel5 = new System.Windows.Forms.Panel();
-            panel6 = new AntdUI.Panel();
+            panel6 = new System.Windows.Forms.Panel();
+            panel_btns = new AntdUI.Panel();
             btng3 = new AntdUI.Button();
             btng2 = new AntdUI.Button();
             btng1 = new AntdUI.Button();
@@ -60,7 +60,8 @@ namespace Demo.Controls
             button41 = new AntdUI.Button();
             button40 = new AntdUI.Button();
             divider5 = new AntdUI.Divider();
-            panel4 = new System.Windows.Forms.Panel();
+            switch6 = new AntdUI.Switch();
+            panel5 = new System.Windows.Forms.Panel();
             button30 = new AntdUI.Button();
             button31 = new AntdUI.Button();
             button36 = new AntdUI.Button();
@@ -70,7 +71,8 @@ namespace Demo.Controls
             button34 = new AntdUI.Button();
             button35 = new AntdUI.Button();
             divider4 = new AntdUI.Divider();
-            panel3 = new FlowLayoutPanel();
+            switch5 = new AntdUI.Switch();
+            panel4 = new FlowLayoutPanel();
             button20 = new AntdUI.Button();
             button21 = new AntdUI.Button();
             button22 = new AntdUI.Button();
@@ -79,13 +81,15 @@ namespace Demo.Controls
             button25 = new AntdUI.Button();
             button26 = new AntdUI.Button();
             divider3 = new AntdUI.Divider();
-            flowLayoutPanel1 = new FlowLayoutPanel();
+            switch4 = new AntdUI.Switch();
+            panel3 = new FlowLayoutPanel();
             button50 = new AntdUI.Button();
             button51 = new AntdUI.Button();
             button52 = new AntdUI.Button();
             button53 = new AntdUI.Button();
             button54 = new AntdUI.Button();
             divider6 = new AntdUI.Divider();
+            switch3 = new AntdUI.Switch();
             panel2 = new FlowLayoutPanel();
             button10 = new AntdUI.Button();
             button11 = new AntdUI.Button();
@@ -95,6 +99,7 @@ namespace Demo.Controls
             button15 = new AntdUI.Button();
             button16 = new AntdUI.Button();
             divider2 = new AntdUI.Divider();
+            switch2 = new AntdUI.Switch();
             panel1 = new FlowLayoutPanel();
             button1 = new AntdUI.Button();
             button2 = new AntdUI.Button();
@@ -102,15 +107,22 @@ namespace Demo.Controls
             button4 = new AntdUI.Button();
             button5 = new AntdUI.Button();
             divider1 = new AntdUI.Divider();
+            switch1 = new AntdUI.Switch();
             panel_main.SuspendLayout();
-            panel5.SuspendLayout();
             panel6.SuspendLayout();
+            panel_btns.SuspendLayout();
             panel7.SuspendLayout();
+            divider5.SuspendLayout();
+            panel5.SuspendLayout();
+            divider4.SuspendLayout();
             panel4.SuspendLayout();
+            divider3.SuspendLayout();
             panel3.SuspendLayout();
-            flowLayoutPanel1.SuspendLayout();
+            divider6.SuspendLayout();
             panel2.SuspendLayout();
+            divider2.SuspendLayout();
             panel1.SuspendLayout();
+            divider1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
@@ -131,13 +143,13 @@ namespace Demo.Controls
             // panel_main
             // 
             panel_main.AutoScroll = true;
-            panel_main.Controls.Add(panel5);
+            panel_main.Controls.Add(panel6);
             panel_main.Controls.Add(divider5);
-            panel_main.Controls.Add(panel4);
+            panel_main.Controls.Add(panel5);
             panel_main.Controls.Add(divider4);
-            panel_main.Controls.Add(panel3);
+            panel_main.Controls.Add(panel4);
             panel_main.Controls.Add(divider3);
-            panel_main.Controls.Add(flowLayoutPanel1);
+            panel_main.Controls.Add(panel3);
             panel_main.Controls.Add(divider6);
             panel_main.Controls.Add(panel2);
             panel_main.Controls.Add(divider2);
@@ -149,29 +161,29 @@ namespace Demo.Controls
             panel_main.Size = new Size(845, 687);
             panel_main.TabIndex = 6;
             // 
-            // panel5
-            // 
-            panel5.Controls.Add(panel6);
-            panel5.Controls.Add(panel7);
-            panel5.Dock = DockStyle.Top;
-            panel5.Location = new Point(0, 517);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(845, 100);
-            panel5.TabIndex = 5;
-            // 
             // panel6
             // 
-            panel6.Controls.Add(btng3);
-            panel6.Controls.Add(btng2);
-            panel6.Controls.Add(btng1);
-            panel6.Font = new Font("Microsoft YaHei UI", 10F);
-            panel6.Location = new Point(14, 10);
+            panel6.Controls.Add(panel_btns);
+            panel6.Controls.Add(panel7);
+            panel6.Dock = DockStyle.Top;
+            panel6.Location = new Point(0, 553);
             panel6.Name = "panel6";
-            panel6.Padding = new Padding(4);
-            panel6.Shadow = 18;
-            panel6.Size = new Size(417, 83);
-            panel6.TabIndex = 0;
-            panel6.Text = "panel6";
+            panel6.Size = new Size(845, 100);
+            panel6.TabIndex = 5;
+            // 
+            // panel_btns
+            // 
+            panel_btns.Controls.Add(btng3);
+            panel_btns.Controls.Add(btng2);
+            panel_btns.Controls.Add(btng1);
+            panel_btns.Font = new Font("Microsoft YaHei UI", 10F);
+            panel_btns.Location = new Point(14, 10);
+            panel_btns.Name = "panel_btns";
+            panel_btns.Padding = new Padding(4);
+            panel_btns.Shadow = 18;
+            panel_btns.Size = new Size(417, 83);
+            panel_btns.TabIndex = 0;
+            panel_btns.Text = "panel6";
             // 
             // btng3
             // 
@@ -186,7 +198,7 @@ namespace Demo.Controls
             btng3.Size = new Size(121, 39);
             btng3.TabIndex = 2;
             btng3.Text = "Default Button";
-            btng3.Click += Btn;
+            btng3.Click += Btns;
             // 
             // btng2
             // 
@@ -202,7 +214,7 @@ namespace Demo.Controls
             btng2.Size = new Size(121, 39);
             btng2.TabIndex = 1;
             btng2.Text = "Default Button";
-            btng2.Click += Btn;
+            btng2.Click += Btns;
             // 
             // btng1
             // 
@@ -217,7 +229,7 @@ namespace Demo.Controls
             btng1.Size = new Size(121, 39);
             btng1.TabIndex = 0;
             btng1.Text = "Default Button";
-            btng1.Click += Btn;
+            btng1.Click += Btns;
             // 
             // panel7
             // 
@@ -263,31 +275,43 @@ namespace Demo.Controls
             // 
             // divider5
             // 
+            divider5.Controls.Add(switch6);
             divider5.Dock = DockStyle.Top;
             divider5.Font = new Font("Microsoft YaHei UI", 10F);
             divider5.LocalizationText = "Button.{id}";
-            divider5.Location = new Point(0, 495);
+            divider5.Location = new Point(0, 525);
             divider5.Name = "divider5";
             divider5.Orientation = AntdUI.TOrientation.Left;
-            divider5.Size = new Size(845, 22);
+            divider5.Size = new Size(845, 28);
             divider5.TabIndex = 4;
             divider5.Text = "组合按钮";
             // 
-            // panel4
+            // switch6
             // 
-            panel4.Controls.Add(button30);
-            panel4.Controls.Add(button31);
-            panel4.Controls.Add(button36);
-            panel4.Controls.Add(button37);
-            panel4.Controls.Add(button32);
-            panel4.Controls.Add(button33);
-            panel4.Controls.Add(button34);
-            panel4.Controls.Add(button35);
-            panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 384);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(845, 111);
-            panel4.TabIndex = 4;
+            switch6.AutoCheck = true;
+            switch6.Checked = true;
+            switch6.Dock = DockStyle.Right;
+            switch6.Location = new Point(803, 0);
+            switch6.Name = "switch6";
+            switch6.Size = new Size(42, 28);
+            switch6.TabIndex = 1;
+            switch6.CheckedChanged += switch6_CheckedChanged;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(button30);
+            panel5.Controls.Add(button31);
+            panel5.Controls.Add(button36);
+            panel5.Controls.Add(button37);
+            panel5.Controls.Add(button32);
+            panel5.Controls.Add(button33);
+            panel5.Controls.Add(button34);
+            panel5.Controls.Add(button35);
+            panel5.Dock = DockStyle.Top;
+            panel5.Location = new Point(0, 414);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(845, 111);
+            panel5.TabIndex = 4;
             // 
             // button30
             // 
@@ -300,7 +324,7 @@ namespace Demo.Controls
             button30.TabIndex = 0;
             button30.Text = "Button";
             button30.Type = AntdUI.TTypeMini.Primary;
-            button30.Click += Btn2;
+            button30.Click += Btn;
             // 
             // button31
             // 
@@ -314,7 +338,7 @@ namespace Demo.Controls
             button31.TabIndex = 1;
             button31.Text = "Button";
             button31.Type = AntdUI.TTypeMini.Primary;
-            button31.Click += Btn2;
+            button31.Click += Btn;
             // 
             // button36
             // 
@@ -326,7 +350,7 @@ namespace Demo.Controls
             button36.Size = new Size(115, 47);
             button36.TabIndex = 6;
             button36.Text = "Button";
-            button36.Click += Btn2;
+            button36.Click += Btn;
             // 
             // button37
             // 
@@ -339,7 +363,7 @@ namespace Demo.Controls
             button37.Size = new Size(115, 47);
             button37.TabIndex = 7;
             button37.Text = "Button";
-            button37.Click += Btn2;
+            button37.Click += Btn;
             // 
             // button32
             // 
@@ -347,13 +371,16 @@ namespace Demo.Controls
             button32.BorderWidth = 1F;
             button32.IconPosition = AntdUI.TAlignMini.Top;
             button32.IconSvg = "SearchOutlined";
+            button32.LoadingWaveCount = 4;
+            button32.LoadingWaveSize = 6;
+            button32.LoadingWaveVertical = true;
             button32.Location = new Point(245, 3);
             button32.Name = "button32";
             button32.Size = new Size(115, 75);
             button32.TabIndex = 2;
             button32.Text = "Button";
             button32.Type = AntdUI.TTypeMini.Primary;
-            button32.Click += Btn2;
+            button32.Click += Btn;
             // 
             // button33
             // 
@@ -361,13 +388,16 @@ namespace Demo.Controls
             button33.BorderWidth = 1F;
             button33.IconPosition = AntdUI.TAlignMini.Bottom;
             button33.IconSvg = "SearchOutlined";
+            button33.LoadingWaveCount = 4;
+            button33.LoadingWaveSize = 6;
+            button33.LoadingWaveVertical = true;
             button33.Location = new Point(366, 3);
             button33.Name = "button33";
             button33.Size = new Size(115, 75);
             button33.TabIndex = 3;
             button33.Text = "Button";
             button33.Type = AntdUI.TTypeMini.Primary;
-            button33.Click += Btn2;
+            button33.Click += Btn;
             // 
             // button34
             // 
@@ -375,12 +405,15 @@ namespace Demo.Controls
             button34.BorderWidth = 1F;
             button34.IconPosition = AntdUI.TAlignMini.Top;
             button34.IconSvg = "SearchOutlined";
+            button34.LoadingWaveCount = 4;
+            button34.LoadingWaveSize = 6;
+            button34.LoadingWaveVertical = true;
             button34.Location = new Point(487, 3);
             button34.Name = "button34";
             button34.Size = new Size(115, 75);
             button34.TabIndex = 4;
             button34.Text = "Button";
-            button34.Click += Btn2;
+            button34.Click += Btn;
             // 
             // button35
             // 
@@ -388,39 +421,54 @@ namespace Demo.Controls
             button35.BorderWidth = 1F;
             button35.IconPosition = AntdUI.TAlignMini.Bottom;
             button35.IconSvg = "SearchOutlined";
+            button35.LoadingWaveCount = 4;
+            button35.LoadingWaveSize = 6;
+            button35.LoadingWaveVertical = true;
             button35.Location = new Point(608, 3);
             button35.Name = "button35";
             button35.Size = new Size(115, 75);
             button35.TabIndex = 5;
             button35.Text = "Button";
-            button35.Click += Btn2;
+            button35.Click += Btn;
             // 
             // divider4
             // 
+            divider4.Controls.Add(switch5);
             divider4.Dock = DockStyle.Top;
             divider4.Font = new Font("Microsoft YaHei UI", 10F);
             divider4.LocalizationText = "Button.{id}";
-            divider4.Location = new Point(0, 362);
+            divider4.Location = new Point(0, 386);
             divider4.Name = "divider4";
             divider4.Orientation = AntdUI.TOrientation.Left;
-            divider4.Size = new Size(845, 22);
+            divider4.Size = new Size(845, 28);
             divider4.TabIndex = 4;
             divider4.Text = "图标位置";
             // 
-            // panel3
+            // switch5
             // 
-            panel3.Controls.Add(button20);
-            panel3.Controls.Add(button21);
-            panel3.Controls.Add(button22);
-            panel3.Controls.Add(button23);
-            panel3.Controls.Add(button24);
-            panel3.Controls.Add(button25);
-            panel3.Controls.Add(button26);
-            panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 253);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(845, 109);
-            panel3.TabIndex = 3;
+            switch5.AutoCheck = true;
+            switch5.Checked = true;
+            switch5.Dock = DockStyle.Right;
+            switch5.Location = new Point(803, 0);
+            switch5.Name = "switch5";
+            switch5.Size = new Size(42, 28);
+            switch5.TabIndex = 1;
+            switch5.CheckedChanged += switch5_CheckedChanged;
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(button20);
+            panel4.Controls.Add(button21);
+            panel4.Controls.Add(button22);
+            panel4.Controls.Add(button23);
+            panel4.Controls.Add(button24);
+            panel4.Controls.Add(button25);
+            panel4.Controls.Add(button26);
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(0, 277);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(845, 109);
+            panel4.TabIndex = 3;
             // 
             // button20
             // 
@@ -433,7 +481,7 @@ namespace Demo.Controls
             button20.TabIndex = 0;
             button20.Text = "Button";
             button20.Type = AntdUI.TTypeMini.Primary;
-            button20.Click += Btn2;
+            button20.Click += Btn;
             // 
             // button21
             // 
@@ -447,7 +495,7 @@ namespace Demo.Controls
             button21.TabIndex = 1;
             button21.Text = "Button";
             button21.Type = AntdUI.TTypeMini.Primary;
-            button21.Click += Btn2;
+            button21.Click += Btn;
             // 
             // button22
             // 
@@ -461,7 +509,7 @@ namespace Demo.Controls
             button22.Size = new Size(133, 47);
             button22.TabIndex = 2;
             button22.Text = "Button";
-            button22.Click += Btn2;
+            button22.Click += Btn;
             // 
             // button23
             // 
@@ -475,7 +523,7 @@ namespace Demo.Controls
             button23.TabIndex = 3;
             button23.Text = "Button";
             button23.Type = AntdUI.TTypeMini.Primary;
-            button23.Click += Btn2;
+            button23.Click += Btn;
             // 
             // button24
             // 
@@ -488,7 +536,7 @@ namespace Demo.Controls
             button24.TabIndex = 4;
             button24.Text = "Button";
             button24.Type = AntdUI.TTypeMini.Error;
-            button24.Click += Btn2;
+            button24.Click += Btn;
             // 
             // button25
             // 
@@ -502,7 +550,7 @@ namespace Demo.Controls
             button25.Size = new Size(106, 47);
             button25.TabIndex = 5;
             button25.Text = "Button";
-            button25.Click += Btn2;
+            button25.Click += Btn;
             // 
             // button26
             // 
@@ -515,67 +563,82 @@ namespace Demo.Controls
             button26.Size = new Size(106, 47);
             button26.TabIndex = 6;
             button26.Text = "Button";
-            button26.Click += Btn2;
+            button26.Click += Btn;
             // 
             // divider3
             // 
+            divider3.Controls.Add(switch4);
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "Button.{id}";
-            divider3.Location = new Point(0, 231);
+            divider3.Location = new Point(0, 249);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(845, 22);
+            divider3.Size = new Size(845, 28);
             divider3.TabIndex = 3;
             divider3.Text = "连接按钮";
             // 
-            // flowLayoutPanel1
+            // switch4
             // 
-            flowLayoutPanel1.Controls.Add(button50);
-            flowLayoutPanel1.Controls.Add(button51);
-            flowLayoutPanel1.Controls.Add(button52);
-            flowLayoutPanel1.Controls.Add(button53);
-            flowLayoutPanel1.Controls.Add(button54);
-            flowLayoutPanel1.Dock = DockStyle.Top;
-            flowLayoutPanel1.Location = new Point(0, 176);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(845, 55);
-            flowLayoutPanel1.TabIndex = 2;
+            switch4.AutoCheck = true;
+            switch4.Checked = true;
+            switch4.Dock = DockStyle.Right;
+            switch4.Location = new Point(803, 0);
+            switch4.Name = "switch4";
+            switch4.Size = new Size(42, 28);
+            switch4.TabIndex = 1;
+            switch4.CheckedChanged += switch4_CheckedChanged;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(button50);
+            panel3.Controls.Add(button51);
+            panel3.Controls.Add(button52);
+            panel3.Controls.Add(button53);
+            panel3.Controls.Add(button54);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(0, 194);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(845, 55);
+            panel3.TabIndex = 2;
             // 
             // button50
             // 
             button50.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button50.IconSvg = "DownloadOutlined";
+            button50.LoadingWaveVertical = true;
             button50.Location = new Point(3, 3);
             button50.Name = "button50";
             button50.Size = new Size(47, 47);
             button50.TabIndex = 0;
             button50.Type = AntdUI.TTypeMini.Primary;
-            button50.Click += Btn2;
+            button50.Click += Btn;
             // 
             // button51
             // 
             button51.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button51.IconSvg = "DownloadOutlined";
+            button51.LoadingWaveVertical = true;
             button51.Location = new Point(56, 3);
             button51.Name = "button51";
             button51.Shape = AntdUI.TShape.Circle;
             button51.Size = new Size(47, 47);
             button51.TabIndex = 1;
             button51.Type = AntdUI.TTypeMini.Primary;
-            button51.Click += Btn2;
+            button51.Click += Btn;
             // 
             // button52
             // 
             button52.AutoSizeMode = AntdUI.TAutoSize.Height;
             button52.IconSvg = "DownloadOutlined";
+            button52.LoadingWaveVertical = true;
             button52.Location = new Point(109, 3);
             button52.Name = "button52";
             button52.Shape = AntdUI.TShape.Round;
             button52.Size = new Size(67, 47);
             button52.TabIndex = 2;
             button52.Type = AntdUI.TTypeMini.Primary;
-            button52.Click += Btn2;
+            button52.Click += Btn;
             // 
             // button53
             // 
@@ -588,7 +651,7 @@ namespace Demo.Controls
             button53.TabIndex = 3;
             button53.Text = "Download";
             button53.Type = AntdUI.TTypeMini.Primary;
-            button53.Click += Btn2;
+            button53.Click += Btn;
             // 
             // button54
             // 
@@ -600,19 +663,31 @@ namespace Demo.Controls
             button54.TabIndex = 4;
             button54.Text = "Download";
             button54.Type = AntdUI.TTypeMini.Primary;
-            button54.Click += Btn2;
+            button54.Click += Btn;
             // 
             // divider6
             // 
+            divider6.Controls.Add(switch3);
             divider6.Dock = DockStyle.Top;
             divider6.Font = new Font("Microsoft YaHei UI", 10F);
             divider6.LocalizationText = "Button.{id}";
-            divider6.Location = new Point(0, 154);
+            divider6.Location = new Point(0, 166);
             divider6.Name = "divider6";
             divider6.Orientation = AntdUI.TOrientation.Left;
-            divider6.Size = new Size(845, 22);
+            divider6.Size = new Size(845, 28);
             divider6.TabIndex = 2;
             divider6.Text = "按钮形状";
+            // 
+            // switch3
+            // 
+            switch3.AutoCheck = true;
+            switch3.Checked = true;
+            switch3.Dock = DockStyle.Right;
+            switch3.Location = new Point(803, 0);
+            switch3.Name = "switch3";
+            switch3.Size = new Size(42, 28);
+            switch3.TabIndex = 1;
+            switch3.CheckedChanged += switch3_CheckedChanged;
             // 
             // panel2
             // 
@@ -624,7 +699,7 @@ namespace Demo.Controls
             panel2.Controls.Add(button15);
             panel2.Controls.Add(button16);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 99);
+            panel2.Location = new Point(0, 111);
             panel2.Name = "panel2";
             panel2.Size = new Size(845, 55);
             panel2.TabIndex = 1;
@@ -633,13 +708,14 @@ namespace Demo.Controls
             // 
             button10.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button10.IconSvg = "PoweroffOutlined";
+            button10.LoadingWaveVertical = true;
             button10.Location = new Point(3, 3);
             button10.Name = "button10";
             button10.Shape = AntdUI.TShape.Circle;
             button10.Size = new Size(47, 47);
             button10.TabIndex = 0;
             button10.Type = AntdUI.TTypeMini.Primary;
-            button10.Click += Btn2;
+            button10.Click += Btn;
             // 
             // button11
             // 
@@ -652,19 +728,20 @@ namespace Demo.Controls
             button11.TabIndex = 1;
             button11.Text = "搜索";
             button11.Type = AntdUI.TTypeMini.Primary;
-            button11.Click += Btn2;
+            button11.Click += Btn;
             // 
             // button12
             // 
             button12.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button12.BorderWidth = 1F;
             button12.IconSvg = "PoweroffOutlined";
+            button12.LoadingWaveVertical = true;
             button12.Location = new Point(157, 3);
             button12.Name = "button12";
             button12.Shape = AntdUI.TShape.Circle;
             button12.Size = new Size(47, 47);
             button12.TabIndex = 2;
-            button12.Click += Btn2;
+            button12.Click += Btn;
             // 
             // button13
             // 
@@ -677,20 +754,21 @@ namespace Demo.Controls
             button13.Size = new Size(95, 47);
             button13.TabIndex = 3;
             button13.Text = "搜索";
-            button13.Click += Btn2;
+            button13.Click += Btn;
             // 
             // button14
             // 
             button14.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button14.BorderWidth = 2F;
             button14.IconSvg = "SearchOutlined";
+            button14.LoadingWaveVertical = true;
             button14.Location = new Point(311, 3);
             button14.Name = "button14";
             button14.Shape = AntdUI.TShape.Circle;
             button14.Size = new Size(47, 47);
             button14.TabIndex = 4;
             button14.Type = AntdUI.TTypeMini.Error;
-            button14.Click += Btn2;
+            button14.Click += Btn;
             // 
             // button15
             // 
@@ -703,7 +781,7 @@ namespace Demo.Controls
             button15.TabIndex = 5;
             button15.Text = "搜索";
             button15.Type = AntdUI.TTypeMini.Error;
-            button15.Click += Btn2;
+            button15.Click += Btn;
             // 
             // button16
             // 
@@ -716,19 +794,31 @@ namespace Demo.Controls
             button16.TabIndex = 6;
             button16.Text = "Gradient Button";
             button16.Type = AntdUI.TTypeMini.Primary;
-            button16.Click += Btn2;
+            button16.Click += Btn;
             // 
             // divider2
             // 
+            divider2.Controls.Add(switch2);
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Button.{id}";
-            divider2.Location = new Point(0, 77);
+            divider2.Location = new Point(0, 83);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(845, 22);
+            divider2.Size = new Size(845, 28);
             divider2.TabIndex = 1;
             divider2.Text = "按钮图标";
+            // 
+            // switch2
+            // 
+            switch2.AutoCheck = true;
+            switch2.Checked = true;
+            switch2.Dock = DockStyle.Right;
+            switch2.Location = new Point(803, 0);
+            switch2.Name = "switch2";
+            switch2.Size = new Size(42, 28);
+            switch2.TabIndex = 1;
+            switch2.CheckedChanged += switch2_CheckedChanged;
             // 
             // panel1
             // 
@@ -738,7 +828,7 @@ namespace Demo.Controls
             panel1.Controls.Add(button4);
             panel1.Controls.Add(button5);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 22);
+            panel1.Location = new Point(0, 28);
             panel1.Name = "panel1";
             panel1.Size = new Size(845, 55);
             panel1.TabIndex = 0;
@@ -752,7 +842,7 @@ namespace Demo.Controls
             button1.TabIndex = 0;
             button1.Text = "Primary Button";
             button1.Type = AntdUI.TTypeMini.Primary;
-            button1.Click += Btn2;
+            button1.Click += Btn;
             // 
             // button2
             // 
@@ -763,7 +853,7 @@ namespace Demo.Controls
             button2.Size = new Size(150, 47);
             button2.TabIndex = 1;
             button2.Text = "Default Button";
-            button2.Click += Btn2;
+            button2.Click += Btn;
             // 
             // button3
             // 
@@ -774,7 +864,7 @@ namespace Demo.Controls
             button3.Size = new Size(125, 47);
             button3.TabIndex = 2;
             button3.Text = "Text Button";
-            button3.Click += Btn2;
+            button3.Click += Btn;
             // 
             // button4
             // 
@@ -785,7 +875,7 @@ namespace Demo.Controls
             button4.TabIndex = 3;
             button4.Text = "Danger";
             button4.Type = AntdUI.TTypeMini.Error;
-            button4.Click += Btn2;
+            button4.Click += Btn;
             // 
             // button5
             // 
@@ -798,19 +888,31 @@ namespace Demo.Controls
             button5.TabIndex = 4;
             button5.Text = "Danger Default";
             button5.Type = AntdUI.TTypeMini.Error;
-            button5.Click += Btn2;
+            button5.Click += Btn;
             // 
             // divider1
             // 
+            divider1.Controls.Add(switch1);
             divider1.Dock = DockStyle.Top;
             divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.LocalizationText = "Button.{id}";
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(845, 22);
+            divider1.Size = new Size(845, 28);
             divider1.TabIndex = 0;
             divider1.Text = "按钮类型";
+            // 
+            // switch1
+            // 
+            switch1.AutoCheck = true;
+            switch1.Checked = true;
+            switch1.Dock = DockStyle.Right;
+            switch1.Location = new Point(803, 0);
+            switch1.Name = "switch1";
+            switch1.Size = new Size(42, 28);
+            switch1.TabIndex = 0;
+            switch1.CheckedChanged += switch1_CheckedChanged;
             // 
             // Button
             // 
@@ -820,20 +922,26 @@ namespace Demo.Controls
             Name = "Button";
             Size = new Size(845, 761);
             panel_main.ResumeLayout(false);
-            panel5.ResumeLayout(false);
             panel6.ResumeLayout(false);
-            panel6.PerformLayout();
+            panel_btns.ResumeLayout(false);
+            panel_btns.PerformLayout();
             panel7.ResumeLayout(false);
+            divider5.ResumeLayout(false);
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
+            divider4.ResumeLayout(false);
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
+            divider3.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
-            flowLayoutPanel1.ResumeLayout(false);
-            flowLayoutPanel1.PerformLayout();
+            divider6.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            divider2.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            divider1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -858,7 +966,7 @@ namespace Demo.Controls
         private AntdUI.Button button15;
         private AntdUI.Button button16;
         private AntdUI.Divider divider3;
-        private FlowLayoutPanel panel3;
+        private FlowLayoutPanel panel4;
         private AntdUI.Button button20;
         private AntdUI.Button button21;
         private AntdUI.Button button22;
@@ -867,7 +975,7 @@ namespace Demo.Controls
         private AntdUI.Button button25;
         private AntdUI.Button button26;
         private AntdUI.Divider divider4;
-        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel5;
         private AntdUI.Button button30;
         private AntdUI.Button button31;
         private AntdUI.Button button32;
@@ -877,8 +985,8 @@ namespace Demo.Controls
         private AntdUI.Button button34;
         private AntdUI.Button button35;
         private AntdUI.Divider divider5;
-        private System.Windows.Forms.Panel panel5;
-        private AntdUI.Panel panel6;
+        private System.Windows.Forms.Panel panel6;
+        private AntdUI.Panel panel_btns;
         private AntdUI.Button btng3;
         private AntdUI.Button btng2;
         private AntdUI.Button btng1;
@@ -886,11 +994,17 @@ namespace Demo.Controls
         private AntdUI.Button button41;
         private AntdUI.Button button40;
         private AntdUI.Divider divider6;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel panel3;
         private AntdUI.Button button50;
         private AntdUI.Button button51;
         private AntdUI.Button button52;
         private AntdUI.Button button53;
         private AntdUI.Button button54;
+        private AntdUI.Switch switch1;
+        private AntdUI.Switch switch5;
+        private AntdUI.Switch switch4;
+        private AntdUI.Switch switch3;
+        private AntdUI.Switch switch2;
+        private AntdUI.Switch switch6;
     }
 }
