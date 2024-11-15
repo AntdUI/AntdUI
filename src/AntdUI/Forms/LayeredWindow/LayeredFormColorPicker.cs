@@ -26,17 +26,20 @@ namespace AntdUI
 {
     public class LayeredFormColorPicker : ILayeredFormOpacityDown
     {
-        internal float Radius = 10;
+        float Radius = 10, Radius2 = 8;
         TAlign ArrowAlign = TAlign.None;
         readonly int ArrowSize = 8;
-        int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28;//260
+        int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28, btn_size = 24;//260
+        int offy = 0;
         Color Value, ValueNAlpha, ValueHue;
         Action<Color> action;
         TColorMode mode;
         PointF[]? rect_arrow;
+        bool AllowClear = false;
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             control.Parent.SetTopMost(Handle);
+            AllowClear = control.AllowClear;
             Font = control.Font;
             mode = control.Mode;
             MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
@@ -46,6 +49,7 @@ namespace AntdUI
             hsv.s = hsv.v = 1;
             ValueHue = hsv.HSVToColor();
             Radius = control.radius;
+            Radius2 = Radius * 0.75F;
             PARENT = control;
             action = _action;
             int colors_h = 160;
@@ -56,6 +60,7 @@ namespace AntdUI
                 gap = (int)(gap * Config.Dpi);
                 dot_size = (int)(dot_size * Config.Dpi);
                 dot_bor_size = (int)(dot_bor_size * Config.Dpi);
+                btn_size = (int)(btn_size * Config.Dpi);
                 line_h = (int)(line_h * Config.Dpi);
                 panel_color = (int)(panel_color * Config.Dpi);
                 w = (int)(w * Config.Dpi);
@@ -85,8 +90,17 @@ namespace AntdUI
                 colors_h = chtmp;
                 h += chxc;
             }
+            int y = 10;
 
-            rect_colors = new Rectangle(10 + gap, 10 + gap, w - gap * 2, colors_h);
+            if (AllowClear)
+            {
+                rect_btn = new Rectangle(10 + w - gap - btn_size, y + gap, btn_size, btn_size);
+                offy = btn_size + line_h + line_h / 2;
+                y += offy;
+                h += offy;
+            }
+
+            rect_colors = new Rectangle(10 + gap, y + gap, w - gap * 2, colors_h);
             rect_color = new Rectangle(10 + gap + (w - gap * 2) - panel_color, rect_colors.Bottom + gap, panel_color, panel_color);
             rect_hue = new Rectangle(10 + gap, rect_colors.Bottom + gap, w - gap * 3 - panel_color, line_h);
             int yb = rect_hue.Bottom + gap;
@@ -423,6 +437,14 @@ namespace AntdUI
                         down_alpha = true;
                     }
                 }
+                else if (AllowClear && rect_btn.Contains(e.Location))
+                {
+                    if (PARENT is ColorPicker color && color.HasValue)
+                    {
+                        color.ClearValue();
+                        Print();
+                    }
+                }
             }
             base.OnMouseDown(e);
         }
@@ -430,6 +452,15 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (RunAnimation) return;
+            if (AllowClear)
+            {
+                var hover = rect_btn.Contains(e.X, e.Y);
+                if (hover != hover_btn)
+                {
+                    hover_btn = hover;
+                    Print();
+                }
+            }
             if (down_colors && bmp_colors_mouse != null)
             {
                 var value = GetColors(e.X, e.Y, bmp_colors_mouse);
@@ -474,7 +505,7 @@ namespace AntdUI
 
         Color GetColors(int x, int y, Dictionary<string, Color> dir)
         {
-            point_colors = new Point(x - 10 - gap, y - 10 - gap);
+            point_colors = new Point(x - 10 - gap, y - 10 - offy - gap);
 
             int w = rect_colors.Width - 1, h = rect_colors.Height - 1;
             if (point_colors.X < 0) point_colors.X = 0;
@@ -498,6 +529,9 @@ namespace AntdUI
 
         #region 渲染
 
+        bool hover_btn = false;
+        Rectangle rect_btn;
+
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
@@ -518,6 +552,20 @@ namespace AntdUI
                         }
                     }
                     #region 渲染
+
+                    if (AllowClear)
+                    {
+                        using (var path = rect_btn.RoundPath(Radius2))
+                        {
+                            g.SetClip(path);
+                            using (var pen = new Pen(Color.FromArgb(245, 34, 45), rect_btn.Height * .12F))
+                            {
+                                g.DrawLine(pen, new Point(rect_btn.X, rect_btn.Bottom), new Point(rect_btn.Right, rect_btn.Y));
+                            }
+                            g.ResetClip();
+                            g.Draw(hover_btn ? Style.Db.BorderColor : Style.Db.Split, Config.Dpi, path);
+                        }
+                    }
 
                     #region 调色板
 

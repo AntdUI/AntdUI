@@ -203,10 +203,7 @@ namespace AntdUI
         /// <summary>
         /// 显示区域（容器）
         /// </summary>
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.DeflateRect(Padding);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, borWidth / 2F * Config.Dpi);
 
         #endregion
 
@@ -236,11 +233,8 @@ namespace AntdUI
                         font_size = size;
                         int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
 
-                        using (var brush = new SolidBrush(ForeColor))
-                        {
-                            var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
-                            g.String(Text, Font, brush, rect_txt, stringLeft);
-                        }
+                        var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
+                        g.String(Text, Font, ForeColor, rect_txt, stringLeft);
                     }
                     else
                     {
@@ -314,11 +308,8 @@ namespace AntdUI
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
-                            using (var brush = new SolidBrush(color))
-                            {
-                                var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 2), rect.Height);
-                                g.String(Text, Font, brush, rect_txt, stringLeft);
-                            }
+                            var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 2), rect.Height);
+                            g.String(Text, Font, color, rect_txt, stringLeft);
                         }
                         else
                         {

@@ -366,15 +366,9 @@ namespace AntdUI
             }
         }
 
-        public void SelectTab(TabPage tabPage)
-        {
-            SelectedTab = tabPage;
-        }
+        public void SelectTab(TabPage tabPage) => SelectedTab = tabPage;
 
-        public void SelectTab(int index)
-        {
-            SelectedIndex = index;
-        }
+        public void SelectTab(int index) => SelectedIndex = index;
 
         #region 动画
 
@@ -391,23 +385,27 @@ namespace AntdUI
                 style.SelectedIndexChanged(value, old);
                 SelectedIndexChanged?.Invoke(this, new IntEventArgs(value));
                 Invalidate();
-                ShowPage();
+                ShowPage(_select);
             }
         }
 
-        internal void ShowPage()
+        internal void ShowPage(int index)
         {
             if (showok)
             {
-                BeginInvoke(new Action(() =>
+                if (items == null) return;
+                if (items.Count > 1)
                 {
-                    Controls.Clear();
-                    if (items == null) return;
-                    if (items.Count <= _select || _select < 0) return;
-                    var item = items[_select];
-                    item.DpiAuto();
-                    Controls.Add(item);
-                }));
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        if (i == index) continue;
+                        var it = items[i];
+                        it.SetDock(false);
+                        it.Location = new Point(-it.Width, -it.Height);
+                    }
+                }
+                if (items.Count <= _select || _select < 0) return;
+                items[_select].SetDock(true);
             }
         }
 
@@ -418,6 +416,9 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             style.Dispose();
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items) it.Dispose();
+            items.Clear();
             base.Dispose(disposing);
         }
 
@@ -435,7 +436,7 @@ namespace AntdUI
             base.OnHandleCreated(e);
             LoadLayout(false);
             showok = true;
-            ShowPage();
+            ShowPage(_select);
         }
 
         protected override void OnMarginChanged(EventArgs e)
@@ -1359,8 +1360,8 @@ namespace AntdUI
             action_add = item =>
             {
                 item.PARENT = it;
-                item.Dock = DockStyle.Fill;
-                it.ShowPage();
+                item.Location = new Point(-item.Width, -item.Height);
+                it.Controls.Add(item);
             };
             action_del = (item, index) =>
             {
@@ -1373,7 +1374,7 @@ namespace AntdUI
                     {
                         int _new = index - 1;
                         if (_new > -1) it.SelectedIndex = _new;
-                        else it.ShowPage();
+                        else it.ShowPage(_new);
                     }
                     else if (old > index) it.SelectedIndex = old - 1;
                 }
@@ -1400,6 +1401,17 @@ namespace AntdUI
         }
 
         #region 属性
+
+        DockStyle dock = DockStyle.Fill;
+        /// <summary>
+        /// 定义要绑定到容器的控件边框
+        /// </summary>
+        [Category("布局"), Description("定义要绑定到容器的控件边框"), DefaultValue(DockStyle.Fill)]
+        public new DockStyle Dock
+        {
+            get => dock;
+            set => dock = value;
+        }
 
         Image? icon = null;
         /// <summary>
@@ -1554,21 +1566,13 @@ namespace AntdUI
             base.OnVisibleChanged(e);
         }
 
-        bool isdpi = false;
-        public void DpiAuto()
-        {
-            if (isdpi) return;
-            isdpi = true;
-            if (DesignMode) return;
-            if (Config.Dpi != 1F)
-            {
-                SuspendLayout();
-                Helper.DpiAuto(Config.Dpi, this);
-                ResumeLayout();
-            }
-        }
-
         #endregion
+
+        public void SetDock(bool isdock)
+        {
+            if (isdock) base.Dock = dock;
+            else base.Dock = DockStyle.None;
+        }
 
         public override string ToString() => Text;
     }

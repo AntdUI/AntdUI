@@ -288,7 +288,7 @@ namespace AntdUI
             var rect = TargetRectXY;
             var rect_read = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20);
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).HighLay())
+            using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
                 using (var path = rect_read.RoundPath(Radius))
                 {

@@ -65,6 +65,12 @@ namespace AntdUI
         public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
 
         /// <summary>
+        /// 时间值水平对齐
+        /// </summary>
+        [Description("时间值水平对齐"), Category("外观"), DefaultValue(false)]
+        public bool ValueTimeHorizontal { get; set; }
+
+        /// <summary>
         /// 下拉箭头是否显示
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]

@@ -409,15 +409,9 @@ namespace AntdUI
             return path;
         }
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.DeflateRect(_padding).PaddingRect(this, shadowAlign, borderWidth);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.DeflateRect(_padding).PaddingRect(this, shadowAlign, borderWidth / 2F);
 
-        public override GraphicsPath RenderRegion
-        {
-            get => ReadRectangle.RoundPath(radius * Config.Dpi);
-        }
+        public override GraphicsPath RenderRegion => ReadRectangle.RoundPath(radius * Config.Dpi);
 
         #endregion
 

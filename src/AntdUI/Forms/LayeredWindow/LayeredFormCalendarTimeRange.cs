@@ -28,10 +28,12 @@ namespace AntdUI
     public class LayeredFormCalendarTimeRange : ILayeredFormOpacityDown
     {
         DateTime? minDate, maxDate;
+        bool ValueTimeHorizontal = false;
         public LayeredFormCalendarTimeRange(DatePickerRange _control, Rectangle rect_read, DateTime[]? date, Action<DateTime[]> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
         {
             _control.Parent.SetTopMost(Handle);
             control = _control;
+            ValueTimeHorizontal = _control.ValueTimeHorizontal;
             minDate = _control.MinDate;
             maxDate = _control.MaxDate;
             badge_action = _badge_action;
@@ -700,9 +702,19 @@ namespace AntdUI
                     scrollY_s.SizeChange(rect_s_h);
 
                     int endh2 = endh - rect_read.Y * 2 - (t_time_height - size_time_height_one);
-                    scrollY_h.SetVrSize(t_time_height * 24, endh2);
-                    scrollY_m.SetVrSize(t_time_height * 60, endh2);
-                    scrollY_s.SetVrSize(t_time_height * 60, endh2);
+                    if (ValueTimeHorizontal)
+                    {
+                        int exceed = 10;
+                        scrollY_h.SetVrSize(t_time_height * (24 + exceed), endh2);
+                        scrollY_m.SetVrSize(t_time_height * (60 + exceed), endh2);
+                        scrollY_s.SetVrSize(t_time_height * (60 + exceed), endh2);
+                    }
+                    else
+                    {
+                        scrollY_h.SetVrSize(t_time_height * 24, endh2);
+                        scrollY_m.SetVrSize(t_time_height * 60, endh2);
+                        scrollY_s.SetVrSize(t_time_height * 60, endh2);
+                    }
 
                     int _x = (t_time - size_time_one) / 2, _y = rect_read.Y + (t_time_height - size_time_height_one) / 2;
                     foreach (var it in calendar_time)
@@ -712,16 +724,7 @@ namespace AntdUI
                         it.rect_read = new Rectangle(rect_n.X + _x, rect_n.Y + _y, size_time_one, size_time_height_one);
                     }
 
-                    if (SelTime != null)
-                    {
-                        var d = SelTime[0];
-                        var find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour);
-                        if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-                        var find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute);
-                        if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-                        var find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
-                        if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
-                    }
+                    if (SelTime != null) ScrollYTime(calendar_time, SelTime[0]);
                 }
                 if (left_buttons != null)
                 {
@@ -1380,30 +1383,12 @@ namespace AntdUI
                     {
                         isEnd = 2;
                         ETime = HoverTime = DateTime.Now;
-                        if (calendar_time != null)
-                        {
-                            var d = ETime.Value;
-                            var find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour);
-                            if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-                            var find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute);
-                            if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-                            var find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
-                            if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
-                        }
+                        if (calendar_time != null) ScrollYTime(calendar_time, ETime.Value);
                     }
                     else if (isEnd == 0)
                     {
                         STime = DateTime.Now;
-                        if (calendar_time != null)
-                        {
-                            var d = STime.Value;
-                            var find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour);
-                            if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-                            var find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute);
-                            if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-                            var find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
-                            if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
-                        }
+                        if (calendar_time != null) ScrollYTime(calendar_time, STime.Value);
                     }
                     Print();
                     return;
@@ -1425,16 +1410,7 @@ namespace AntdUI
                             ETime = SData;
                             HoverTime = STime.Value;
                             isEnd = 1;
-                            if (calendar_time != null && ETime.HasValue)
-                            {
-                                var d = ETime.Value;
-                                var find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour);
-                                if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-                                var find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute);
-                                if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-                                var find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
-                                if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
-                            }
+                            if (calendar_time != null && ETime.HasValue) ScrollYTime(calendar_time, ETime.Value);
                             Print();
                         }
                     }
@@ -1496,31 +1472,13 @@ namespace AntdUI
                                         STime = ETime = HoverTime = null;
                                         STime = it.date;
                                         isEnd = 0;
-                                        if (calendar_time != null)
-                                        {
-                                            var d = STime.Value;
-                                            var find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour);
-                                            if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-                                            var find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute);
-                                            if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-                                            var find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
-                                            if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
-                                        }
+                                        if (calendar_time != null) ScrollYTime(calendar_time, STime.Value);
                                     }
                                     else if (isEnd == 1)
                                     {
                                         ETime = it.date;
                                         isEnd = 2;
-                                        if (calendar_time != null)
-                                        {
-                                            var d = ETime.Value;
-                                            var find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour);
-                                            if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-                                            var find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute);
-                                            if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-                                            var find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
-                                            if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
-                                        }
+                                        if (calendar_time != null) ScrollYTime(calendar_time, ETime.Value);
                                     }
                                     else if (isEnd == 0)
                                     {
@@ -1528,16 +1486,7 @@ namespace AntdUI
                                         else
                                         {
                                             STime = it.date;
-                                            if (calendar_time != null)
-                                            {
-                                                var d = STime.Value;
-                                                var find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour);
-                                                if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-                                                var find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute);
-                                                if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-                                                var find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
-                                                if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
-                                            }
+                                            if (calendar_time != null) ScrollYTime(calendar_time, STime.Value);
                                         }
                                     }
                                     Print();
@@ -1575,6 +1524,7 @@ namespace AntdUI
                                                     var datenow = DateTime.Now;
                                                     ETime = new DateTime(datenow.Year, datenow.Month, datenow.Day, 0, it.t, 0);
                                                 }
+                                                if (ValueTimeHorizontal) ScrollYTime(calendar_time, ETime.Value);
                                             }
                                             else if (isEnd == 0)
                                             {
@@ -1584,6 +1534,7 @@ namespace AntdUI
                                                     var datenow = DateTime.Now;
                                                     STime = new DateTime(datenow.Year, datenow.Month, datenow.Day, 0, it.t, 0);
                                                 }
+                                                if (ValueTimeHorizontal) ScrollYTime(calendar_time, STime.Value);
                                             }
                                             Print();
                                             return;
@@ -1600,6 +1551,7 @@ namespace AntdUI
                                                     var datenow = DateTime.Now;
                                                     ETime = new DateTime(datenow.Year, datenow.Month, datenow.Day, 0, 0, it.t);
                                                 }
+                                                if (ValueTimeHorizontal) ScrollYTime(calendar_time, ETime.Value);
                                             }
                                             else if (isEnd == 0)
                                             {
@@ -1609,6 +1561,7 @@ namespace AntdUI
                                                     var datenow = DateTime.Now;
                                                     STime = new DateTime(datenow.Year, datenow.Month, datenow.Day, 0, 0, it.t);
                                                 }
+                                                if (ValueTimeHorizontal) ScrollYTime(calendar_time, STime.Value);
                                             }
                                             Print();
                                             return;
@@ -1626,6 +1579,7 @@ namespace AntdUI
                                                     var datenow = DateTime.Now;
                                                     ETime = new DateTime(datenow.Year, datenow.Month, datenow.Day, it.t, 0, 0);
                                                 }
+                                                if (ValueTimeHorizontal) ScrollYTime(calendar_time, ETime.Value);
                                             }
                                             else if (isEnd == 0)
                                             {
@@ -1635,6 +1589,7 @@ namespace AntdUI
                                                     var datenow = DateTime.Now;
                                                     STime = new DateTime(datenow.Year, datenow.Month, datenow.Day, it.t, 0, 0);
                                                 }
+                                                if (ValueTimeHorizontal) ScrollYTime(calendar_time, STime.Value);
                                             }
                                             Print();
                                             return;
@@ -1760,6 +1715,18 @@ namespace AntdUI
 
 
         #endregion
+
+        void ScrollYTime(List<CalendarT> calendar_time, DateTime d)
+        {
+            CalendarT? find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour),
+                find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute),
+                find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
+
+            int start = 4;
+            if (find_h != null) scrollY_h.Value = find_h.rect.Y - start;
+            if (find_m != null) scrollY_m.Value = find_m.rect.Y - start;
+            if (find_s != null) scrollY_s.Value = find_s.rect.Y - start;
+        }
 
         protected override void Dispose(bool disposing)
         {

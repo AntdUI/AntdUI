@@ -201,7 +201,7 @@ namespace AntdUI
         int pyr = 0;
         public override Rectangle DisplayRectangle
         {
-            get => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth * Config.Dpi);
+            get => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth / 2F * Config.Dpi);
         }
 
         Color? fill;
@@ -514,7 +514,7 @@ namespace AntdUI
         }
         void ButtonLayout()
         {
-            var rect = ClientRectangle.PaddingRect(Padding, borderWidth * Config.Dpi);
+            var rect = ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Config.Dpi);
             if (showSizeChanger)
             {
                 int wsize = (int)(4 * Config.Dpi);

@@ -205,7 +205,6 @@ namespace AntdUI
                     foreach (var it in rows)
                     {
                         it.hover = false;
-                        it.Select = false;
                         if (dragBody.im == it.INDEX) { it.hover = true; dim = it.INDEX_REAL; }
                         if (dragBody.i == it.INDEX) di = it.INDEX_REAL;
                     }

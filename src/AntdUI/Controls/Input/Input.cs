@@ -1322,10 +1322,7 @@ namespace AntdUI
         #endregion
 
         int CurrentPosIndex = 0;
-        internal void SetCaretPostion()
-        {
-            SetCaretPostion(CurrentPosIndex);
-        }
+        internal void SetCaretPostion() => SetCaretPostion(CurrentPosIndex);
         internal void SetCaretPostion(int PosIndex)
         {
             CurrentPosIndex = PosIndex;
@@ -1376,10 +1373,7 @@ namespace AntdUI
             };
             Win32.ImmSetCompositionFont(hIMC, ref logFont);
         }
-        void OnImeEndPrivate(IntPtr hIMC)
-        {
-            Win32.ImmReleaseContext(Handle, hIMC);
-        }
+        void OnImeEndPrivate(IntPtr hIMC) => Win32.ImmReleaseContext(Handle, hIMC);
         void OnImeResultStrPrivate(IntPtr hIMC, string? strResult)
         {
             var CompositionForm = new Win32.COMPOSITIONFORM()

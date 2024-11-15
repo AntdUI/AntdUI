@@ -355,7 +355,7 @@ namespace AntdUI
         {
             var rect = TargetRectXY;
             var original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).HighLay())
+            using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
                 try
                 {
