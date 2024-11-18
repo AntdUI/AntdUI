@@ -585,6 +585,11 @@ namespace AntdUI
 
     #region 基础
 
+    public class StringsEventArgs : VEventArgs<string[]>
+    {
+        public StringsEventArgs(string[] value) : base(value) { }
+    }
+
     public class VEventArgs<T> : EventArgs
     {
         public VEventArgs(T value)

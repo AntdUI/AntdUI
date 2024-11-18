@@ -25,38 +25,23 @@ namespace AntdUI
 {
     public static partial class Helper
     {
-        public static float Calculate(this float val, float add)
-        {
-            return (float)Math.Round(val + add, 3);
-        }
+        public static float Calculate(this float val, float add) => (float)Math.Round(val + add, 3);
 
         /// <summary>
         /// SizeF转Size（向上取整）
         /// </summary>
         /// <param name="size">SizeF</param>
-        public static Size Size(this SizeF size)
-        {
-            return new Size((int)Math.Ceiling(size.Width), (int)Math.Ceiling(size.Height));
-        }
+        public static Size Size(this SizeF size) => new Size((int)Math.Ceiling(size.Width), (int)Math.Ceiling(size.Height));
 
         /// <summary>
         /// SizeF转Size（向上取整）
         /// </summary>
         /// <param name="size">SizeF</param>
-        public static Size Size(this SizeF size, float p)
-        {
-            return new Size((int)Math.Ceiling(size.Width + p), (int)Math.Ceiling(size.Height + p));
-        }
+        public static Size Size(this SizeF size, float p) => new Size((int)Math.Ceiling(size.Width + p), (int)Math.Ceiling(size.Height + p));
 
-        public static Color ToColor(float alpha, Color color)
-        {
-            return ToColor((int)alpha, color);
-        }
+        public static Color ToColor(float alpha, Color color) => ToColor((int)alpha, color);
 
-        public static Color ToColorN(float val, Color color)
-        {
-            return ToColor((int)(val * color.A), color);
-        }
+        public static Color ToColorN(float val, Color color) => ToColor((int)(val * color.A), color);
 
         public static Color ToColor(int alpha, Color color)
         {
@@ -89,10 +74,7 @@ namespace AntdUI
             return false;
         }
 
-        public static void SetTopMost(IntPtr hand)
-        {
-            Vanara.PInvoke.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Vanara.PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
-        }
+        public static void SetTopMost(IntPtr hand) => Vanara.PInvoke.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Vanara.PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
 
         public static bool Wait(this System.Threading.WaitHandle? handle, bool close = true)
         {
@@ -252,6 +234,14 @@ namespace AntdUI
         }
 
         #endregion
+
+        public static bool IsAdmin()
+        {
+            using (var id = System.Security.Principal.WindowsIdentity.GetCurrent())
+            {
+                return new System.Security.Principal.WindowsPrincipal(id).IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+            }
+        }
     }
 
     internal class AnchorDock

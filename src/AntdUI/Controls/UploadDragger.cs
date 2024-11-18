@@ -267,10 +267,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding, (borderWidth / 2F * Config.Dpi));
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, (borderWidth / 2F * Config.Dpi));
 
         #endregion
 
@@ -378,15 +375,9 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        public override Rectangle ReadRectangle
-        {
-            get => DisplayRectangle;
-        }
+        public override Rectangle ReadRectangle => DisplayRectangle;
 
-        public override GraphicsPath RenderRegion
-        {
-            get => DisplayRectangle.RoundPath(radius * Config.Dpi);
-        }
+        public override GraphicsPath RenderRegion => DisplayRectangle.RoundPath(radius * Config.Dpi);
 
         #endregion
 
@@ -394,42 +385,8 @@ namespace AntdUI
 
         #region 拖拽上传
 
-        FileDropHandler? fileDrop = null;
-        /// <summary>
-        /// 使用管理员权限拖拽上传
-        /// </summary>
-        public void UseAdmin()
-        {
-            new FileDropHandler(this);
-        }
-
-        protected override void OnDragEnter(DragEventArgs e)
-        {
-            base.OnDragEnter(e);
-            ExtraMouseHover = true;
-            e.Effect = DragDropEffects.All;
-        }
-
-        protected override void OnDragLeave(EventArgs e)
-        {
-            ExtraMouseHover = false;
-            base.OnDragLeave(e);
-        }
-
-        protected override void OnDragDrop(DragEventArgs e)
-        {
-            base.OnDragDrop(e);
-            if (e.Data == null) return;
-            foreach (string format in e.Data.GetFormats())
-            {
-                if (e.Data.GetData(format) is string[] files)
-                {
-                    DragChanged?.Invoke(this, new StringsEventArgs(files));
-                    ExtraMouseHover = false;
-                    return;
-                }
-            }
-        }
+        protected override void OnDragEnter()=> ExtraMouseHover = true;
+        protected override void OnDragLeave() => ExtraMouseHover = false;
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -503,36 +460,15 @@ namespace AntdUI
 
         #endregion
 
-        #region 事件
-
-        public class StringsEventArgs : VEventArgs<string[]>
-        {
-            public StringsEventArgs(string[] value) : base(value) { }
-        }
-
-        /// <summary>
-        /// Bool 类型事件
-        /// </summary>
-        public delegate void DragEventHandler(object sender, StringsEventArgs e);
-
-        /// <summary>
-        /// 文件拖拽后时发生
-        /// </summary>
-        [Description("文件拖拽后时发生"), Category("行为")]
-        public event DragEventHandler? DragChanged = null;
-
-        #endregion
-
         protected override void Dispose(bool disposing)
         {
             ThreadHover?.Dispose();
-            fileDrop?.Dispose();
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;
     }
 
-    sealed class FileDropHandler : IMessageFilter, IDisposable
+    public sealed class FileDropHandler : IMessageFilter, IDisposable
     {
         #region native members
 
@@ -622,9 +558,6 @@ namespace AntdUI
             return false;
         }
 
-        public void Dispose()
-        {
-            Application.RemoveMessageFilter(this);
-        }
+        public void Dispose() => Application.RemoveMessageFilter(this);
     }
 }

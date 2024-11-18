@@ -921,6 +921,15 @@ namespace AntdUI
                     }
                     return;
                 }
+                else if (key == column.COLUMN.KeyTree)
+                {
+                    int count = rows.Length;
+                    LoadLayout();
+                    int countnew = rows.Length;
+                    if (selectedIndex > -1 && countnew < count) selectedIndex -= count - countnew;
+                    Invalidate();
+                    return;
+                }
             }
         }
 

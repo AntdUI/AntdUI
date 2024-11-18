@@ -399,9 +399,7 @@ namespace AntdUI
                     for (int i = 0; i < items.Count; i++)
                     {
                         if (i == index) continue;
-                        var it = items[i];
-                        it.SetDock(false);
-                        it.Location = new Point(-it.Width, -it.Height);
+                        items[i].SetDock(false);
                     }
                 }
                 if (items.Count <= _select || _select < 0) return;
@@ -416,6 +414,8 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             style.Dispose();
+            bitblock_l?.Dispose();
+            bitblock_r?.Dispose();
             if (items == null || items.Count == 0) return;
             foreach (var it in items) it.Dispose();
             items.Clear();
@@ -1360,7 +1360,7 @@ namespace AntdUI
             action_add = item =>
             {
                 item.PARENT = it;
-                item.Location = new Point(-item.Width, -item.Height);
+                item.SetDock(it.Controls.Count == 0);
                 it.Controls.Add(item);
             };
             action_del = (item, index) =>
@@ -1570,8 +1570,17 @@ namespace AntdUI
 
         public void SetDock(bool isdock)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => SetDock(isdock)));
+                return;
+            }
             if (isdock) base.Dock = dock;
-            else base.Dock = DockStyle.None;
+            else
+            {
+                base.Dock = DockStyle.None;
+                Location = new Point(-Width, -Height);
+            }
         }
 
         public override string ToString() => Text;
