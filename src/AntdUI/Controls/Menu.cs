@@ -274,7 +274,24 @@ namespace AntdUI
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it3.rect.Y;
             Invalidate();
         }
+        /// <summary>
+        /// 获取选中项索引
+        /// </summary>
+        /// <param name="i1"></param>
+        /// <param name="i2"></param>
+        /// <param name="focus"></param>
+        public int GetSelectIndex(MenuItem item)
+        {
+            if (items != null)
+            {
+                return items.IndexOf(item);
+            }
+            else
+            {
+                return -1;
+            }
 
+        }
         /// <summary>
         /// 选中菜单
         /// </summary>
