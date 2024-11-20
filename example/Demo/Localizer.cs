@@ -444,6 +444,8 @@ namespace Demo
                     return "FixedHeader";
                 case "Table.checkColumnDragSort":
                     return "ColumnDragSort";
+                case "Table.checkRowsDragSort":
+                    return "RowsDragSort";
                 case "Table.checkBordered":
                     return "Bordered";
                 case "Table.checkSetRowStyle":

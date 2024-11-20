@@ -81,7 +81,8 @@ namespace AntdUI
             has_check = false;
             if (dataTmp == null)
             {
-                ThreadState?.Dispose(); ThreadState = null;
+                ThreadState?.Dispose();
+                ThreadState = null;
                 if (visibleHeader && emptyHeader && columns != null && columns.Count > 0)
                 {
                     var _rows = LayoutDesign(new TempTable(new TempiColumn[0], new IRow[0]), out var _columns, out int processing, out var col_width, out int KeyTreeINDEX);
@@ -215,6 +216,7 @@ namespace AntdUI
             dataOne = false;
             return _rows;
         }
+
         RowTemplate[] LayoutDesign(Rectangle rect, List<RowTemplate> _rows, List<Column> _columns, Dictionary<int, object> col_width, int KeyTreeINDEX, out int _x, out int _y, out bool _is_exceed)
         {
             if (rows != null)
@@ -279,24 +281,19 @@ namespace AntdUI
                             {
                                 var it = row.cells[cel_i];
                                 it.INDEX = cel_i;
-                                if (it is TCellCheck check && check.NoTitle)
+                                var text_size = it.GetSize(g, columnfont ?? Font, rect.Width, gap, gap2);
+                                if (it.COLUMN is ColumnCheck check)
                                 {
-                                    if (max_height < gap2) max_height = gap2;
-                                    read_width_cell[cel_i].value = -1;
+                                    if (check.NoTitle) read_width_cell[cel_i].value = -1;
                                 }
-                                else if (it.COLUMN is ColumnSort)
-                                {
-                                    if (max_height < gap2) max_height = gap2;
-                                    read_width_cell[cel_i].value = -2;
-                                }
+                                else if (it.COLUMN is ColumnSort) read_width_cell[cel_i].value = -2;
                                 else
                                 {
-                                    var text_size = it.GetSize(g, columnfont ?? Font, rect.Width, gap, gap2);
                                     int width = text_size.Width;
-                                    if (max_height < text_size.Height) max_height = text_size.Height;
                                     if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
                                     if (read_width_cell[cel_i].minvalue < it.MinWidth) read_width_cell[cel_i].minvalue = it.MinWidth;
                                 }
+                                if (max_height < text_size.Height) max_height = text_size.Height;
                             }
                             if (rowHeightHeader.HasValue) row.Height = (int)(rowHeightHeader.Value * dpi);
                             else if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
@@ -313,13 +310,11 @@ namespace AntdUI
                                     if (check.NoTitle)
                                     {
                                         if (max_height < gap2) max_height = gap2;
-                                        read_width_cell[cel_i].value = -1;
                                     }
                                 }
                                 else if (it.COLUMN is ColumnSort)
                                 {
                                     if (max_height < gap2) max_height = gap2;
-                                    read_width_cell[cel_i].value = -2;
                                 }
                                 else
                                 {

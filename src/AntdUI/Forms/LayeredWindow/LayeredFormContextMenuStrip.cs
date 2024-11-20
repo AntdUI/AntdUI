@@ -37,8 +37,11 @@ namespace AntdUI
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config)
         {
             PARENT = _config.Control;
-            MessageCloseMouseLeave = true;
-            if (_config.TopMost) Helper.SetTopMost(Handle);
+            if (_config.TopMost)
+            {
+                Helper.SetTopMost(Handle);
+                MessageCloseMouseLeave = true;
+            }
             else _config.Control.SetTopMost(Handle);
             var point = _config.Location ?? MousePosition;
             maxalpha = 250;
