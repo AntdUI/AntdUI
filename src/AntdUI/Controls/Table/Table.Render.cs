@@ -57,8 +57,8 @@ namespace AntdUI
         {
             float _radius = radius * Config.Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            using (var fore = new SolidBrush(Style.Db.Text))
-            using (var forecolumn = new SolidBrush(columnfore ?? Style.Db.Text))
+            using (var brush_fore = new SolidBrush(fore ?? Style.Db.Text))
+            using (var brush_forecolumn = new SolidBrush(columnfore ?? fore ?? Style.Db.Text))
             using (var brush_split = new SolidBrush(borderColor ?? Style.Db.BorderColor))
             {
                 var shows = new List<StyleRow>(rows.Length);
@@ -95,7 +95,7 @@ namespace AntdUI
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
-                        foreach (var it in shows) PaintForeItem(g, it, fore);
+                        foreach (var it in shows) PaintForeItem(g, it, brush_fore);
                         g.ResetTransform();
 
                         g.ResetClip();
@@ -104,7 +104,7 @@ namespace AntdUI
 
                         g.TranslateTransform(-sx, 0);
 
-                        PaintTableHeader(g, rows[0], forecolumn, column_font, _radius);
+                        PaintTableHeader(g, rows[0], brush_forecolumn, column_font, _radius);
 
                         if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.Fill(brush_split, divider);
                     }
@@ -140,8 +140,8 @@ namespace AntdUI
                         g.TranslateTransform(-sx, -sy);
                         foreach (var it in shows)
                         {
-                            if (it.row.IsColumn) PaintTableHeader(g, it.row, forecolumn, column_font, _radius);
-                            else PaintForeItem(g, it, fore);
+                            if (it.row.IsColumn) PaintTableHeader(g, it.row, brush_forecolumn, column_font, _radius);
+                            else PaintForeItem(g, it, brush_fore);
                         }
                         if (bordered)
                         {
@@ -183,7 +183,7 @@ namespace AntdUI
 
                     g.ResetTransform();
                     g.TranslateTransform(-sx, -sy);
-                    foreach (var it in shows) PaintForeItem(g, it, fore);
+                    foreach (var it in shows) PaintForeItem(g, it, brush_fore);
                     if (bordered)
                     {
                         g.ResetTransform();
@@ -199,8 +199,8 @@ namespace AntdUI
 
                 if (shows.Count > 0 && (fixedColumnL != null || fixedColumnR != null))
                 {
-                    PaintFixedColumnL(g, rect, rows, shows, fore, forecolumn, column_font, brush_split, sx, sy, _radius);
-                    PaintFixedColumnR(g, rect, rows, shows, fore, forecolumn, column_font, brush_split, sx, sy, _radius);
+                    PaintFixedColumnL(g, rect, rows, shows, brush_fore, brush_forecolumn, column_font, brush_split, sx, sy, _radius);
+                    PaintFixedColumnR(g, rect, rows, shows, brush_fore, brush_forecolumn, column_font, brush_split, sx, sy, _radius);
                 }
                 else showFixedColumnL = showFixedColumnR = false;
 
@@ -890,11 +890,7 @@ namespace AntdUI
                         using (var brush = new Pen(color, size))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
-                            try
-                            {
-                                g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
-                            }
-                            catch { }
+                            g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
                         }
                     }
                 }
@@ -912,11 +908,7 @@ namespace AntdUI
                         using (var brush = new Pen(color, size))
                         {
                             brush.StartCap = brush.EndCap = LineCap.Round;
-                            try
-                            {
-                                g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
-                            }
-                            catch { }
+                            g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
                         }
                     }
                 }
@@ -945,14 +937,14 @@ namespace AntdUI
         void PaintEmpty(Canvas g, Rectangle rect, int offset)
         {
             string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
-            using (var fore = new SolidBrush(Style.Db.Text))
+            using (var brush = new SolidBrush(fore ?? Style.Db.Text))
             {
                 if (offset > 0)
                 {
                     rect.Offset(0, offset);
                     rect.Height -= offset;
                 }
-                if (EmptyImage == null) g.String(emptytext, Font, fore, rect, stringCenter);
+                if (EmptyImage == null) g.String(emptytext, Font, brush, rect, stringCenter);
                 else
                 {
                     int gap = (int)(_gap * Config.Dpi);
@@ -960,7 +952,7 @@ namespace AntdUI
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
                         rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                     g.Image(EmptyImage, rect_img);
-                    g.String(emptytext, Font, fore, rect_font, stringCenter);
+                    g.String(emptytext, Font, brush, rect_font, stringCenter);
                 }
             }
         }

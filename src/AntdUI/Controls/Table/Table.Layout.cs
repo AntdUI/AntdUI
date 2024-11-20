@@ -147,14 +147,14 @@ namespace AntdUI
             {
                 if (SortHeader == null)
                 {
-                    foreach (var it in dataTmp.columns) _columns.Add(new Column(it.key, it.key) { INDEX = _columns.Count });
+                    foreach (var it in dataTmp.columns) _columns.Add(new Column(it.key, it.text ?? it.key) { INDEX = _columns.Count });
                 }
                 else
                 {
                     foreach (var i in SortHeader)
                     {
                         var it = dataTmp.columns[i];
-                        _columns.Add(new Column(it.key, it.key) { INDEX = i });
+                        _columns.Add(new Column(it.key, it.text ?? it.key) { INDEX = i });
                     }
                 }
             }

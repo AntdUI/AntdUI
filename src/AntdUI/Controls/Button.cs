@@ -64,7 +64,7 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
             }
@@ -1121,25 +1121,24 @@ namespace AntdUI
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, Text, _back_active, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _back_active, rect_read);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                g.Draw(Style.Db.DefaultBorder, border, path);
-                                g.Draw(colorHover, border, path);
-                                PaintTextLoading(g, Text, _fore, colorHover, rect_read);
+                                g.Draw(Style.Db.DefaultBorder.BlendColors(colorHover), border, path);
+                                PaintTextLoading(g, Text, _fore.BlendColors(colorHover), rect_read);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, Text, _back_hover, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _back_hover, rect_read);
                             }
                             else
                             {
                                 if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, border, path);
                                 else g.Draw(defaultbordercolor ?? Style.Db.DefaultBorder, border, path);
-                                PaintTextLoading(g, Text, _fore, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _fore, rect_read);
                             }
                         }
                         else
@@ -1148,14 +1147,14 @@ namespace AntdUI
                             else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
                             else if (ExtraMouseHover) g.Fill(_back_hover, path);
                             PaintLoadingWave(g, path, rect_read);
-                            PaintTextLoading(g, Text, _fore, rect_read, Enabled);
+                            PaintTextLoading(g, Text, _fore, rect_read);
                         }
                     }
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
                         if (!ghost) g.Fill(Style.Db.FillTertiary, path);
-                        PaintTextLoading(g, Text, Style.Db.TextQuaternary, rect_read, Enabled);
+                        PaintTextLoading(g, Text, Style.Db.TextQuaternary, rect_read);
                     }
                 }
             }
@@ -1196,19 +1195,18 @@ namespace AntdUI
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, Text, _back_active, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _back_active, rect_read);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                g.Draw(Enabled ? _back : Style.Db.FillTertiary, border, path);
-                                g.Draw(colorHover, border, path);
-                                PaintTextLoading(g, Text, _back, colorHover, rect_read);
+                                g.Draw((Enabled ? _back : Style.Db.FillTertiary).BlendColors(colorHover), border, path);
+                                PaintTextLoading(g, Text, _back.BlendColors(colorHover), rect_read);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, Text, _back_hover, rect_read, Enabled);
+                                PaintTextLoading(g, Text, _back_hover, rect_read);
                             }
                             else
                             {
@@ -1230,10 +1228,10 @@ namespace AntdUI
                                     }
                                 }
                                 else g.Draw(Style.Db.FillTertiary, border, path);
-                                PaintTextLoading(g, Text, Enabled ? _back : Style.Db.TextQuaternary, rect_read, Enabled);
+                                PaintTextLoading(g, Text, Enabled ? _back : Style.Db.TextQuaternary, rect_read);
                             }
                         }
-                        else PaintTextLoading(g, Text, Enabled ? _back : Style.Db.TextQuaternary, rect_read, Enabled);
+                        else PaintTextLoading(g, Text, Enabled ? _back : Style.Db.TextQuaternary, rect_read);
 
                         #endregion
                     }
@@ -1280,7 +1278,7 @@ namespace AntdUI
                         #endregion
 
                         PaintLoadingWave(g, path, rect_read);
-                        PaintTextLoading(g, Text, Enabled ? _fore : Style.Db.TextQuaternary, rect_read, Enabled);
+                        PaintTextLoading(g, Text, Enabled ? _fore : Style.Db.TextQuaternary, rect_read);
                     }
                 }
             }
@@ -1385,7 +1383,7 @@ namespace AntdUI
                 }
             }
         }
-        void PaintTextLoading(Canvas g, string? text, Color color, Rectangle rect_read, bool enabled)
+        void PaintTextLoading(Canvas g, string? text, Color color, Rectangle rect_read)
         {
             var font_size = g.MeasureString(text ?? Config.NullText, Font);
             if (text == null)
@@ -1508,169 +1506,6 @@ namespace AntdUI
                 using (var brush = new SolidBrush(color))
                 {
                     g.String(text, Font, brush, rect_text, stringFormat);
-                }
-            }
-        }
-        void PaintTextLoading(Canvas g, string? text, Color color, Color colorHover, Rectangle rect_read)
-        {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font);
-            if (text == null)
-            {
-                var rect = GetIconRectCenter(font_size, rect_read);
-                if (loading)
-                {
-                    float loading_size = rect_read.Height * 0.06F;
-                    using (var brush = new Pen(color, loading_size))
-                    {
-                        brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, rect, AnimationLoadingValue, LoadingValue * 360F);
-                    }
-                }
-                else
-                {
-                    if (PaintIcon(g, color, rect, false, true))
-                    {
-                        if (showArrow)
-                        {
-                            int size = (int)(font_size.Height * IconRatio);
-                            var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
-                            using (var pen = new Pen(color, 2F * Config.Dpi))
-                            using (var penHover = new Pen(colorHover, pen.Width))
-                            {
-                                pen.StartCap = pen.EndCap = LineCap.Round;
-                                if (isLink)
-                                {
-                                    int size_arrow = rect_arrow.Width / 2;
-                                    g.TranslateTransform(rect_arrow.X + size_arrow, rect_arrow.Y + size_arrow);
-                                    g.RotateTransform(-90F);
-                                    var rect_arrow_lines = new Rectangle(-size_arrow, -size_arrow, rect_arrow.Width, rect_arrow.Height).TriangleLines(ArrowProg);
-                                    g.DrawLines(pen, rect_arrow_lines);
-                                    g.DrawLines(penHover, rect_arrow_lines);
-                                    g.ResetTransform();
-                                }
-                                else
-                                {
-                                    var rect_arrow_lines = rect_arrow.TriangleLines(ArrowProg);
-                                    g.DrawLines(pen, rect_arrow_lines);
-                                    g.DrawLines(penHover, rect_arrow_lines);
-                                }
-                            }
-                        }
-                    }
-                    else PaintIcon(g, colorHover, rect, false, true);
-                }
-            }
-            else
-            {
-                bool has_left = loading || HasIcon, has_right = showArrow;
-                Rectangle rect_text;
-                if (has_left || has_right)
-                {
-                    if (has_left && has_right)
-                    {
-                        rect_text = RectAlignLR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
-
-                        if (loading)
-                        {
-                            float loading_size = rect_l.Height * .14F;
-                            using (var brush = new Pen(color, loading_size))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
-                            }
-                        }
-                        else
-                        {
-                            PaintIcon(g, color, rect_l, true, true);
-                            PaintIcon(g, colorHover, rect_l, true, true);
-                        }
-
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        using (var penHover = new Pen(colorHover, pen.Width))
-                        {
-                            penHover.StartCap = penHover.EndCap = pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (isLink)
-                            {
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                var rect_arrow = new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(ArrowProg);
-                                g.DrawLines(pen, rect_arrow);
-                                g.DrawLines(penHover, rect_arrow);
-                                g.ResetTransform();
-                            }
-                            else
-                            {
-                                var rect_arrow = rect_r.TriangleLines(ArrowProg);
-                                g.DrawLines(pen, rect_arrow);
-                                g.DrawLines(penHover, rect_arrow);
-                            }
-                        }
-
-                        #endregion
-                    }
-                    else if (has_left)
-                    {
-                        rect_text = RectAlignL(g, textLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
-                        if (loading)
-                        {
-                            float loading_size = rect_l.Height * .14F;
-                            using (var brush = new Pen(color, loading_size))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
-                            }
-                        }
-                        else
-                        {
-                            PaintIcon(g, color, rect_l, true, true);
-                            PaintIcon(g, colorHover, rect_l, true, true);
-                        }
-                    }
-                    else
-                    {
-                        rect_text = RectAlignR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
-
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        using (var penHover = new Pen(colorHover, pen.Width))
-                        {
-                            penHover.StartCap = penHover.EndCap = pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (isLink)
-                            {
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                var rect_arrow = new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(ArrowProg);
-                                g.DrawLines(pen, rect_arrow);
-                                g.DrawLines(penHover, rect_arrow);
-                                g.ResetTransform();
-                            }
-                            else
-                            {
-                                var rect_arrow = rect_r.TriangleLines(ArrowProg);
-                                g.DrawLines(pen, rect_arrow);
-                                g.DrawLines(penHover, rect_arrow);
-                            }
-                        }
-
-                        #endregion
-                    }
-                }
-                else
-                {
-                    int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
-                    rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
-                    PaintTextAlign(rect_read, ref rect_text);
-                }
-                using (var brush = new SolidBrush(color))
-                using (var brushHover = new SolidBrush(colorHover))
-                {
-                    g.String(text, Font, brush, rect_text, stringFormat);
-                    g.String(text, Font, brushHover, rect_text, stringFormat);
                 }
             }
         }

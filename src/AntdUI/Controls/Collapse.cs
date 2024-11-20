@@ -49,7 +49,7 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
             }
@@ -257,6 +257,24 @@ namespace AntdUI
             int gap = (int)(_gap * Config.Dpi), gap_x = (int)(HeaderPadding.Width * Config.Dpi), gap_y = (int)(HeaderPadding.Height * Config.Dpi),
                 content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_x = 0;
             int title_height = size.Height + gap_y * 2;
+            int full_count = 0, useh = 0, full_h = 0;
+            foreach (var it in items)
+            {
+                if (it.Full) full_count++;
+            }
+            if (full_count > 0)
+            {
+                foreach (var it in items)
+                {
+                    if (!it.Full)
+                    {
+                        useh += title_height + gap;
+                        if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
+                        else if (it.Expand) useh += content_y * 2 + it.Height;
+                    }
+                }
+                full_h = (rect.Height - useh) / full_count;
+            }
             foreach (var it in items)
             {
                 int y = rect.Y + use_x;
@@ -265,14 +283,28 @@ namespace AntdUI
                 it.RectText = new Rectangle(rect.X + gap_x + size.Height + gap_y / 2, y + gap_y, rect.Width - (gap_x * 2 - size.Height - gap_y / 2), size.Height);
 
                 Rectangle Rect;
-                if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
-                else if (it.Expand)
+                if (it.Full)
                 {
-                    it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
-                    it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
-                    it.SetSize();
+                    if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((full_h - title_height) * it.ExpandProg));
+                    else if (it.Expand)
+                    {
+                        it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, full_h);
+                        it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
+                        it.SetSize();
+                    }
+                    else it.Rect = Rect = it.RectTitle;
                 }
-                else it.Rect = Rect = it.RectTitle;
+                else
+                {
+                    if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
+                    else if (it.Expand)
+                    {
+                        it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
+                        it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
+                        it.SetSize();
+                    }
+                    else it.Rect = Rect = it.RectTitle;
+                }
                 use_x += Rect.Height + gap;
             }
         }
@@ -704,6 +736,22 @@ namespace AntdUI
                     PARENT?.LoadLayout();
                     if (!value) Location = new Point(-Width, -Height);
                 }
+            }
+        }
+
+        bool full = false;
+        /// <summary>
+        /// 是否铺满剩下空间
+        /// </summary>
+        [Category("外观"), Description("是否铺满剩下空间"), DefaultValue(false)]
+        public bool Full
+        {
+            get => full;
+            set
+            {
+                if (full == value) return;
+                full = value;
+                PARENT?.LoadLayout();
             }
         }
 

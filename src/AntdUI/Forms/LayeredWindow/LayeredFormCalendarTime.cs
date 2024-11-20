@@ -230,42 +230,14 @@ namespace AntdUI
                     scrollY_m.Paint(g);
                     scrollY_s.Paint(g);
 
-                    using (var brush_active = new SolidBrush(Style.Db.Primary))
-                    {
-                        if (hover_button.Animation)
-                        {
-                            g.String(button_text, Font, brush_active, rect_button, s_f);
-                            using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
-                            {
-                                g.String(button_text, Font, brush_hove, rect_button, s_f);
-                            }
-                        }
-                        else if (hover_button.Switch)
-                        {
-                            using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
-                            {
-                                g.String(button_text, Font, brush_hove, rect_button, s_f);
-                            }
-                        }
-                        else g.String(button_text, Font, brush_active, rect_button, s_f);
+                    var color_active = Style.Db.Primary;
+                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Style.Db.PrimaryActive), rect_button, s_f);
+                    else if (hover_button.Switch) g.String(button_text, Font, Style.Db.PrimaryActive, rect_button, s_f);
+                    else g.String(button_text, Font, color_active, rect_button, s_f);
 
-                        if (hover_buttonok.Animation)
-                        {
-                            g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
-                            using (var brush_hove = new SolidBrush(Helper.ToColor(hover_buttonok.Value, Style.Db.PrimaryActive)))
-                            {
-                                g.String(OKButton, Font, brush_hove, rect_buttonok, s_f);
-                            }
-                        }
-                        else if (hover_buttonok.Switch)
-                        {
-                            using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
-                            {
-                                g.String(OKButton, Font, brush_hove, rect_buttonok, s_f);
-                            }
-                        }
-                        else g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
-                    }
+                    if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Style.Db.PrimaryActive), rect_buttonok, s_f);
+                    else if (hover_buttonok.Switch) g.String(OKButton, Font, Style.Db.PrimaryActive, rect_buttonok, s_f);
+                    else g.String(OKButton, Font, color_active, rect_buttonok, s_f);
                 }
             }
             return original_bmp;

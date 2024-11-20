@@ -578,14 +578,7 @@ namespace AntdUI
                     }
                     if (count > 0) call.Render();
                     if (isDispose) return;
-                    try
-                    {
-                        Event.ResetWait();
-                    }
-                    catch
-                    {
-                        return;
-                    }
+                    if (Event.ResetWait()) return;
                 }
             }
 

@@ -47,7 +47,7 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
             }
@@ -259,11 +259,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (AnimationHover)
-                        {
-                            g.Draw(Style.Db.BorderColor, bor2, path);
-                            g.Draw(Helper.ToColor(AnimationHoverValue, color), bor2, path);
-                        }
+                        if (AnimationHover) g.Draw(Style.Db.BorderColor.BlendColors(AnimationHoverValue, color), bor2, path);
                         else if (ExtraMouseHover) g.Draw(color, bor2, path);
                         else g.Draw(Style.Db.BorderColor, bor2, path);
                     }

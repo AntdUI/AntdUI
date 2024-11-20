@@ -334,14 +334,7 @@ namespace AntdUI
                     else g.Fill(brush, rect_read);
                 }
 
-                if (Img != null)
-                {
-                    try
-                    {
-                        g.Image(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
-                    }
-                    catch { }
-                }
+                if (Img != null) g.Image(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
                 if (loading)
                 {
                     var bor6 = 6F * Config.Dpi;

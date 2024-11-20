@@ -122,6 +122,7 @@ namespace AntdUI
                         return g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height + gap;
                     }), height2 = cell.RECT_REAL.Height + gap;
                     int height = multiline ? cell.RECT.Height : (height_real > height2 ? height_real : height2);
+                    if (cell.RECT_REAL.Height == cell.RECT.Height && height > cell.RECT.Height) height = cell.RECT.Height;
                     var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
                     {
                         bool isok_end = true;
@@ -168,6 +169,7 @@ namespace AntdUI
                                 return g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height + gap;
                             }), height2 = cell.RECT_REAL.Height + gap;
                             int height = multiline ? cell.RECT.Height : (height_real > height2 ? height_real : height2);
+                            if (cell.RECT_REAL.Height == cell.RECT.Height && height > cell.RECT.Height) height = cell.RECT.Height;
                             var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
                             {
                                 bool isok_end = true;

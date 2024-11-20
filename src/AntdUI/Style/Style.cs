@@ -422,6 +422,27 @@ namespace AntdUI
         }
 
         #endregion
+
+        public static Color BlendColors(this Color baseColor, int alpha, Color overlay) => BlendColors(baseColor, Helper.ToColor(alpha, overlay));
+
+        /// <summary>
+        /// 颜色混合
+        /// </summary>
+        /// <param name="baseColor">基础色</param>
+        /// <param name="overlay">叠加色</param>
+        /// <returns>混合后颜色</returns>
+        public static Color BlendColors(this Color baseColor, Color overlay)
+        {
+            byte baseAlpha = baseColor.A, overlayAlpha = overlay.A, alpha = (byte)(overlayAlpha + (baseAlpha * (255 - overlayAlpha) / 255));
+            if (alpha == 0) return Color.Transparent;
+            else
+            {
+                byte r = (byte)((overlay.R * overlayAlpha + baseColor.R * baseAlpha * (255 - overlayAlpha) / 255) / alpha),
+                    g = (byte)((overlay.G * overlayAlpha + baseColor.G * baseAlpha * (255 - overlayAlpha) / 255) / alpha),
+                    b = (byte)((overlay.B * overlayAlpha + baseColor.B * baseAlpha * (255 - overlayAlpha) / 255) / alpha);
+                return Color.FromArgb(alpha, r, g, b);
+            }
+        }
     }
 
     public class HSL

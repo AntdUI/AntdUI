@@ -201,7 +201,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(Action action, Action? end = null) => Spin(new Spin.Config(), action, end);
+        public void Spin(Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config(), action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -209,7 +209,7 @@ namespace AntdUI
         /// <param name="text">加载文本</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(string text, Action action, Action? end = null) => Spin(new Spin.Config { Text = text }, action, end);
+        public void Spin(string text, Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config { Text = text }, action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -217,7 +217,7 @@ namespace AntdUI
         /// <param name="config">自定义配置</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(Spin.Config config, Action action, Action? end = null) => AntdUI.Spin.open(this, config, action, end);
+        public void Spin(Spin.Config config, Action<Spin.Config> action, Action? end = null) => AntdUI.Spin.open(this, config, action, end);
 
         #region 帮助类
 

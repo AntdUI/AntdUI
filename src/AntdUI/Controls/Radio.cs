@@ -48,7 +48,7 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
             }
@@ -278,11 +278,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (AnimationHover)
-                    {
-                        g.DrawEllipse(Style.Db.BorderColor, bor2, icon_rect);
-                        g.DrawEllipse(Helper.ToColor(AnimationHoverValue, color), bor2, icon_rect);
-                    }
+                    if (AnimationHover) g.DrawEllipse(Style.Db.BorderColor.BlendColors(AnimationHoverValue, color), bor2, icon_rect);
                     else if (ExtraMouseHover) g.DrawEllipse(color, bor2, icon_rect);
                     else g.DrawEllipse(Style.Db.BorderColor, bor2, icon_rect);
                 }

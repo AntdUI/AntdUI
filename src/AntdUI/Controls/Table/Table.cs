@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
@@ -41,9 +42,14 @@ namespace AntdUI
         /// 表格列的配置
         /// </summary>
         [Browsable(false), Description("表格列的配置"), Category("数据"), DefaultValue(null)]
-        public ColumnCollection? Columns
+        public ColumnCollection Columns
         {
-            get => columns;
+            get
+            {
+                if (columns == null) columns = new ColumnCollection();
+                columns.table = this;
+                return columns;
+            }
             set
             {
                 if (columns == value) return;
@@ -51,6 +57,8 @@ namespace AntdUI
                 columns = value;
                 LoadLayout();
                 Invalidate();
+                if (value == null) return;
+                value.table = this;
             }
         }
 
@@ -87,6 +95,23 @@ namespace AntdUI
                 if (index < 0 || dataTmp.rows.Length - 1 < index) return null;
                 var row = dataTmp.rows[index];
                 return row;
+            }
+        }
+
+        Color? fore;
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? ForeColor
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) return;
+                fore = value;
+                Invalidate();
             }
         }
 
@@ -680,6 +705,60 @@ namespace AntdUI
                 foreach (var i in SortHeader) list.Add(columns[i]);
                 return list.ToArray();
             }
+        }
+
+        public DataTable? ToDataTable(bool tostring = true)
+        {
+            if (dataTmp == null) return null;
+            var dt = new DataTable();
+            if (rows == null)
+            {
+                foreach (var column in dataTmp.columns) dt.Columns.Add(new DataColumn(column.key) { Caption = column.text });
+            }
+            else
+            {
+                var columns = new Dictionary<string, DataColumn>(dataTmp.columns.Length);
+                foreach (var column in dataTmp.columns) columns.Add(column.key, new DataColumn(column.key) { Caption = column.text });
+                foreach (TCellColumn item in rows[0].cells)
+                {
+                    if (!string.IsNullOrWhiteSpace(item.value) && columns.TryGetValue(item.COLUMN.Key, out var find)) find.Caption = item.value;
+                }
+                foreach (var item in columns) dt.Columns.Add(item.Value);
+            }
+            if (tostring)
+            {
+                foreach (var row in dataTmp.rows)
+                {
+                    var data = new List<object?>(row.cells.Count);
+                    foreach (var cell in row.cells)
+                    {
+                        var obj = row[cell.Key];
+                        if (obj is IList<ICell> cells)
+                        {
+                            var cs = new List<string?>(cells.Count);
+                            foreach (var it in cells)
+                            {
+                                var str = it.ToString();
+                                if (str != null) cs.Add(str);
+                            }
+                            if (cs.Count > 0) data.Add(string.Join(" ", cs));
+                            else data.Add(null);
+                        }
+                        else data.Add(obj);
+                    }
+                    dt.Rows.Add(data.ToArray());
+                }
+            }
+            else
+            {
+                foreach (var row in dataTmp.rows)
+                {
+                    var data = new List<object?>(row.cells.Count);
+                    foreach (var cell in row.cells) data.Add(row[cell.Key]);
+                    dt.Rows.Add(data.ToArray());
+                }
+            }
+            return dt;
         }
 
         #endregion

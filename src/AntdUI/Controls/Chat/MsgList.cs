@@ -95,7 +95,6 @@ namespace AntdUI.Chat
                     }
                     using (var brush = new SolidBrush(Color.White))
                     {
-
                         try
                         {
                             g.String(it.Name, Font, brush, it.rect_name, SFL);

@@ -91,9 +91,8 @@ namespace AntdUI
                             else if (btn.AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(btn.AnimationHoverValue, _back_hover);
-                                g.Draw(Style.Db.DefaultBorder, border, path);
-                                g.Draw(colorHover, border, path);
-                                PaintButton(g, font, btn, _fore, colorHover, rect_read);
+                                g.Draw(Style.Db.DefaultBorder.BlendColors(colorHover), border, path);
+                                PaintButton(g, font, btn, _fore.BlendColors(colorHover), rect_read);
                             }
                             else if (btn.ExtraMouseHover)
                             {
@@ -196,9 +195,8 @@ namespace AntdUI
                             else if (btn.AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(btn.AnimationHoverValue, _back_hover);
-                                g.Draw(btn.Enabled ? _back : Style.Db.FillTertiary, border, path);
-                                g.Draw(colorHover, border, path);
-                                PaintButton(g, font, btn, _back, colorHover, rect_read);
+                                g.Draw((btn.Enabled ? _back : Style.Db.FillTertiary).BlendColors(colorHover), border, path);
+                                PaintButton(g, font, btn, _back.BlendColors(colorHover), rect_read);
                             }
                             else if (btn.ExtraMouseHover)
                             {
@@ -384,142 +382,6 @@ namespace AntdUI
             }
         }
 
-        static void PaintButton(Canvas g, Font font, CellButton btn, Color color, Color colorHover, Rectangle rect_read)
-        {
-            if (string.IsNullOrEmpty(btn.Text))
-            {
-                var font_size = g.MeasureString(Config.NullText, font);
-                var rect = PaintButtonImageRectCenter(btn, font_size, rect_read);
-                if (PaintButtonImageNoText(g, btn, color, rect))
-                {
-                    if (btn.ShowArrow)
-                    {
-                        int size = (int)(font_size.Height * btn.IconRatio);
-                        var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        using (var penHover = new Pen(colorHover, pen.Width))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (btn.IsLink)
-                            {
-                                var state = g.Save();
-                                int size_arrow = rect_arrow.Width / 2;
-                                g.TranslateTransform(rect_arrow.X + size_arrow, rect_arrow.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                var rect_arrow_lines = new Rectangle(-size_arrow, -size_arrow, rect_arrow.Width, rect_arrow.Height).TriangleLines(btn.ArrowProg);
-                                g.DrawLines(pen, rect_arrow_lines);
-                                g.DrawLines(penHover, rect_arrow_lines);
-                                g.ResetTransform();
-                                g.Restore(state);
-                            }
-                            else
-                            {
-                                var rect_arrow_lines = rect_arrow.TriangleLines(btn.ArrowProg);
-                                g.DrawLines(pen, rect_arrow_lines);
-                                g.DrawLines(penHover, rect_arrow_lines);
-                            }
-                        }
-                    }
-                }
-                else PaintButtonImageNoText(g, btn, colorHover, rect);
-            }
-            else
-            {
-                var font_size = g.MeasureString(btn.Text ?? Config.NullText, font);
-                bool has_left = btn.HasIcon, has_right = btn.ShowArrow;
-                Rectangle rect_text;
-                if (has_left || has_right)
-                {
-                    if (has_left && has_right)
-                    {
-                        rect_text = Button.RectAlignLR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l, out var rect_r);
-
-                        PaintButtonPaintImage(g, btn, color, rect_l);
-                        PaintButtonPaintImage(g, btn, colorHover, rect_l);
-
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        using (var penHover = new Pen(colorHover, pen.Width))
-                        {
-                            penHover.StartCap = penHover.EndCap = pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (btn.IsLink)
-                            {
-                                var state = g.Save();
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                var rect_arrow = new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg);
-                                g.DrawLines(pen, rect_arrow);
-                                g.DrawLines(penHover, rect_arrow);
-                                g.ResetTransform();
-                                g.Restore(state);
-                            }
-                            else
-                            {
-                                var rect_arrow = rect_r.TriangleLines(btn.ArrowProg);
-                                g.DrawLines(pen, rect_arrow);
-                                g.DrawLines(penHover, rect_arrow);
-                            }
-                        }
-
-                        #endregion
-                    }
-                    else if (has_left)
-                    {
-                        rect_text = Button.RectAlignL(g, btn.textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l);
-
-                        PaintButtonPaintImage(g, btn, color, rect_l);
-                        PaintButtonPaintImage(g, btn, colorHover, rect_l);
-                    }
-                    else
-                    {
-                        rect_text = Button.RectAlignR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_r);
-
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        using (var penHover = new Pen(colorHover, pen.Width))
-                        {
-                            penHover.StartCap = penHover.EndCap = pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (btn.IsLink)
-                            {
-                                var state = g.Save();
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                var rect_arrow = new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg);
-                                g.DrawLines(pen, rect_arrow);
-                                g.DrawLines(penHover, rect_arrow);
-                                g.ResetTransform();
-                                g.Restore(state);
-                            }
-                            else
-                            {
-                                var rect_arrow = rect_r.TriangleLines(btn.ArrowProg);
-                                g.DrawLines(pen, rect_arrow);
-                                g.DrawLines(penHover, rect_arrow);
-                            }
-                        }
-
-                        #endregion
-                    }
-                }
-                else
-                {
-                    int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
-                    rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
-                    PaintButtonTextAlign(btn, rect_read, ref rect_text);
-                }
-                using (var brush = new SolidBrush(color))
-                using (var brushHover = new SolidBrush(colorHover))
-                {
-                    g.String(btn.Text, font, brush, rect_text, btn.stringFormat);
-                    g.String(btn.Text, font, brushHover, rect_text, btn.stringFormat);
-                }
-            }
-        }
-
         static void PaintButtonTextAlign(CellButton btn, Rectangle rect_read, ref Rectangle rect_text)
         {
             switch (btn.TextAlign)
@@ -639,39 +501,10 @@ namespace AntdUI
 
         internal static void PaintLink(Canvas g, Font font, Rectangle rect_read, CellLink link)
         {
-            if (link.ExtraMouseDown)
-            {
-                using (var brush = new SolidBrush(Style.Db.PrimaryActive))
-                {
-                    g.String(link.Text, font, brush, rect_read, link.stringFormat);
-                }
-            }
-            else if (link.AnimationHover)
-            {
-                var colorHover = Helper.ToColor(link.AnimationHoverValue, Style.Db.PrimaryHover);
-                using (var brush = new SolidBrush(Style.Db.Primary))
-                {
-                    g.String(link.Text, font, brush, rect_read, link.stringFormat);
-                }
-                using (var brush = new SolidBrush(colorHover))
-                {
-                    g.String(link.Text, font, brush, rect_read, link.stringFormat);
-                }
-            }
-            else if (link.ExtraMouseHover)
-            {
-                using (var brush = new SolidBrush(Style.Db.PrimaryHover))
-                {
-                    g.String(link.Text, font, brush, rect_read, link.stringFormat);
-                }
-            }
-            else
-            {
-                using (var brush = new SolidBrush(link.Enabled ? Style.Db.Primary : Style.Db.TextQuaternary))
-                {
-                    g.String(link.Text, font, brush, rect_read, link.stringFormat);
-                }
-            }
+            if (link.ExtraMouseDown) g.String(link.Text, font, Style.Db.PrimaryActive, rect_read, link.stringFormat);
+            else if (link.AnimationHover) g.String(link.Text, font, Style.Db.Primary.BlendColors(link.AnimationHoverValue, Style.Db.PrimaryHover), rect_read, link.stringFormat);
+            else if (link.ExtraMouseHover) g.String(link.Text, font, Style.Db.PrimaryHover, rect_read, link.stringFormat);
+            else g.String(link.Text, font, (link.Enabled ? Style.Db.Primary : Style.Db.TextQuaternary), rect_read, link.stringFormat);
         }
     }
 }

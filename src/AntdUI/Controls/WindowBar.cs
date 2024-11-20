@@ -449,27 +449,18 @@ namespace AntdUI
             var rect_close_icon = new Rectangle(rect_close.X + btn_x, rect_close.Y + btn_y, btn_size, btn_size);
             if (hove_close.Down)
             {
-                using (var brush = new SolidBrush(Style.Db.ErrorActive))
-                {
-                    g.Fill(brush, rect_close);
-                }
+                g.Fill(Style.Db.ErrorActive, rect_close);
                 PrintCloseHover(g, rect_close_icon);
             }
             else if (hove_close.Animation)
             {
-                using (var brush = new SolidBrush(Helper.ToColor(hove_close.Value, Style.Db.Error)))
-                {
-                    g.Fill(brush, rect_close);
-                }
+                g.Fill(Helper.ToColor(hove_close.Value, Style.Db.Error), rect_close);
                 PrintClose(g, fore, rect_close_icon);
                 g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Style.Db.ErrorColor));
             }
             else if (hove_close.Switch)
             {
-                using (var brush = new SolidBrush(Style.Db.Error))
-                {
-                    g.Fill(brush, rect_close);
-                }
+                g.Fill(Style.Db.Error, rect_close);
                 PrintCloseHover(g, rect_close_icon);
             }
             else PrintClose(g, fore, rect_close_icon);
@@ -477,54 +468,18 @@ namespace AntdUI
             if (maximizeBox)
             {
                 var rect_max_icon = new Rectangle(rect_max.X + btn_x, rect_max.Y + btn_y, btn_size, btn_size);
-                if (hove_max.Animation)
-                {
-                    using (var brush = new SolidBrush(Helper.ToColor(hove_max.Value, fillsecondary)))
-                    {
-                        g.Fill(brush, rect_max);
-                    }
-                }
-                else if (hove_max.Switch)
-                {
-                    using (var brush = new SolidBrush(fillsecondary))
-                    {
-                        g.Fill(brush, rect_max);
-                    }
-                }
-                if (hove_max.Down)
-                {
-                    using (var brush = new SolidBrush(fillsecondary))
-                    {
-                        g.Fill(brush, rect_max);
-                    }
-                }
+                if (hove_max.Animation) g.Fill(Helper.ToColor(hove_max.Value, fillsecondary), rect_max);
+                else if (hove_max.Switch) g.Fill(fillsecondary, rect_max);
+                if (hove_max.Down) g.Fill(fillsecondary, rect_max);
                 if (IsMax) PrintRestore(g, fore, rect_max_icon);
                 else PrintMax(g, fore, rect_max_icon);
             }
             if (minimizeBox)
             {
                 var rect_min_icon = new Rectangle(rect_min.X + btn_x, rect_min.Y + btn_y, btn_size, btn_size);
-                if (hove_min.Animation)
-                {
-                    using (var brush = new SolidBrush(Helper.ToColor(hove_min.Value, fillsecondary)))
-                    {
-                        g.Fill(brush, rect_min);
-                    }
-                }
-                else if (hove_min.Switch)
-                {
-                    using (var brush = new SolidBrush(fillsecondary))
-                    {
-                        g.Fill(brush, rect_min);
-                    }
-                }
-                if (hove_min.Down)
-                {
-                    using (var brush = new SolidBrush(fillsecondary))
-                    {
-                        g.Fill(brush, rect_min);
-                    }
-                }
+                if (hove_min.Animation) g.Fill(Helper.ToColor(hove_min.Value, fillsecondary), rect_min);
+                else if (hove_min.Switch) g.Fill(fillsecondary, rect_min);
+                if (hove_min.Down) g.Fill(fillsecondary, rect_min);
                 PrintMin(g, fore, rect_min_icon);
             }
 
