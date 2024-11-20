@@ -348,10 +348,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.DeflateRect(Padding, this, shadowAlign, borderWidth);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding, this, shadowAlign, borderWidth);
 
         #region 渲染
 
@@ -475,6 +472,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             ThreadHover?.Dispose();
+            ThreadHover = null;
             Application.RemoveMessageFilter(this);
             shadow_temp?.Dispose();
             shadow_temp = null;

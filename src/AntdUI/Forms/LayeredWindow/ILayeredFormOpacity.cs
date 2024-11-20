@@ -119,6 +119,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             task_start?.Dispose();
+            task_start = null;
             base.Dispose(disposing);
         }
     }

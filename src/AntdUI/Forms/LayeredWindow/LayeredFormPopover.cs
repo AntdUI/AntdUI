@@ -206,15 +206,14 @@ namespace AntdUI
                 MinimumSize = fsize,
                 Size = fsize
             };
-            control.Disposed += (a, b) =>
-            {
-                Close();
-            };
+            control.Disposed += Control_Disposed;
             form.Show(this);
             form.Location = flocation;
             PARENT = form;
             config.OnControlLoad?.Invoke();
         }
+
+        private void Control_Disposed(object? sender, EventArgs e) => IClose();
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -235,11 +234,17 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            shadow_temp?.Dispose();
+            shadow_temp = null;
+            tempContent?.Dispose();
+            tempContent = null;
             if (config.Content is Control control)
             {
+                control.Disposed -= Control_Disposed;
                 control.Dispose();
-                form?.Dispose();
             }
+            config.Content = null;
+            form?.Dispose();
             base.Dispose(disposing);
         }
 

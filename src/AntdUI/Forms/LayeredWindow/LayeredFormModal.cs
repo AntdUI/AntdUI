@@ -335,6 +335,7 @@ namespace AntdUI
         protected override void DestroyHandle()
         {
             base.DestroyHandle();
+            panel_main!.MouseMove -= Window_MouseDown;
             btn_ok?.Dispose();
             btn_no?.Dispose();
             panel_main?.Dispose();
@@ -367,10 +368,7 @@ namespace AntdUI
             base.WndProc(ref m);
         }
 
-        void Window_MouseDown(object? sender, MouseEventArgs e)
-        {
-            DraggableMouseDown();
-        }
+        void Window_MouseDown(object? sender, MouseEventArgs e) => DraggableMouseDown();
 
         Rectangle rectIcon, rectTitle, rectContent;
         Rectangle[] rectsContent;
@@ -470,10 +468,7 @@ namespace AntdUI
             base.OnMouseUp(e);
         }
 
-        void btn_no_Click(object? sender, EventArgs e)
-        {
-            DialogResult = DialogResult.No;
-        }
+        void btn_no_Click(object? sender, EventArgs e) => DialogResult = DialogResult.No;
 
         bool isclose = true;
         void btn_ok_Click(object? sender, EventArgs e)

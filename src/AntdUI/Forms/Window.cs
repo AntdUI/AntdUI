@@ -129,9 +129,6 @@ namespace AntdUI
                 case WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
-                case WindowMessage.WM_NCHITTEST:
-                    m.Result = TRUE;
-                    break;
                 case WindowMessage.WM_ACTIVATEAPP:
                     InvalidateNonclient();
                     break;

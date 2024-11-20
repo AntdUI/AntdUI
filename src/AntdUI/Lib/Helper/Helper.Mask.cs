@@ -26,45 +26,11 @@ namespace AntdUI
         /// 叠加蒙版
         /// </summary>
         /// <param name="owner">父窗口</param>
-        public static ILayeredFormOpacity FormMask(this Form owner)
-        {
-            var mask = new LayeredFormMask(owner);
-            mask.Show(owner);
-            return mask;
-        }
-
-        /// <summary>
-        /// 叠加蒙版（可关闭）
-        /// </summary>
-        /// <param name="owner">父窗口</param>
-        /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
         /// <param name="form">操作对象</param>
-        public static ILayeredFormOpacity FormMask(this Form owner, bool MaskClosable, ILayeredForm form)
-        {
-            var mask = new LayeredFormMask(owner);
-            if (MaskClosable)
-            {
-                try
-                {
-                    mask.Click += (s1, e1) =>
-                    {
-                        form.IClose();
-                    };
-                }
-                catch { }
-            }
-            mask.Show(owner);
-            return mask;
-        }
-
-        /// <summary>
-        /// 叠加蒙版（可关闭）
-        /// </summary>
-        /// <param name="owner">父窗口</param>
         /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
-        /// <param name="form">操作对象</param>
-        public static ILayeredFormOpacity FormMask(this Form owner, bool MaskClosable, Form form)
+        public static ILayeredFormOpacity FormMask(this Form owner, Form form, bool MaskClosable = false)
         {
+            bool isclose = false;
             var mask = new LayeredFormMask(owner);
             if (MaskClosable)
             {
@@ -78,6 +44,43 @@ namespace AntdUI
                 catch { }
             }
             mask.Show(owner);
+            form.FormClosed += (s1, e1) =>
+            {
+                if (isclose) return;
+                isclose = true;
+                mask.IClose();
+            };
+            return mask;
+        }
+
+        /// <summary>
+        /// 叠加蒙版
+        /// </summary>
+        /// <param name="owner">父窗口</param>
+        /// <param name="form">操作对象</param>
+        /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
+        public static ILayeredFormOpacity FormMask(this Form owner, ILayeredForm form, bool MaskClosable = false)
+        {
+            bool isclose = false;
+            var mask = new LayeredFormMask(owner);
+            if (MaskClosable)
+            {
+                try
+                {
+                    mask.Click += (s1, e1) =>
+                    {
+                        form.IClose();
+                    };
+                }
+                catch { }
+            }
+            mask.Show(owner);
+            form.Disposed += (s1, e1) =>
+            {
+                if (isclose) return;
+                isclose = true;
+                mask.IClose();
+            };
             return mask;
         }
     }
