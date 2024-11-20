@@ -36,7 +36,6 @@ namespace Demo.Controls
             #region Table 1
 
             table1.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.ColumnSort(){ Fixed=true },
                 new AntdUI.ColumnCheck("check"){ Fixed=true },
                 new AntdUI.Column("name","姓名"){ Fixed=true},
                 new AntdUI.ColumnCheck("checkTitle","不全选标题"){ColAlign=AntdUI.ColumnAlign.Center},
@@ -91,6 +90,12 @@ namespace Demo.Controls
         void checkColumnDragSort_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             table1.ColumnDragSort = e.Value;
+        }
+
+        void checkRowsDragSort_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            if (e.Value) table1.Columns.Insert(0, new AntdUI.ColumnSort() { Fixed = true });
+            else table1.Columns.RemoveAt(0);
         }
 
         void checkBordered_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
@@ -169,7 +174,7 @@ namespace Demo.Controls
         {
             if (e.Record is TestClass data)
             {
-                AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
+                if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
                     new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
                     new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
                 }, AntdUI.TType.Error)
@@ -177,14 +182,26 @@ namespace Demo.Controls
                     CancelText = null,
                     OkType = AntdUI.TTypeMini.Error,
                     OkText = "删除"
-                });
-                table1.Spin("正在加载中...", () =>
+                }) == DialogResult.OK)
                 {
-                    System.Threading.Thread.Sleep(2000);
-                }, () =>
-                {
-                    System.Diagnostics.Debug.WriteLine("加载结束");
-                });
+                    table1.Spin("正在加载中...", config =>
+                    {
+                        System.Threading.Thread.Sleep(1000);
+                        for (int i = 0; i < 101; i++)
+                        {
+                            config.Value = i / 100F;
+                            config.Text = "处理中 " + i + "%";
+                            System.Threading.Thread.Sleep(20);
+                        }
+                        System.Threading.Thread.Sleep(1000);
+                        config.Value = null;
+                        config.Text = "请耐心等候...";
+                        System.Threading.Thread.Sleep(2000);
+                    }, () =>
+                    {
+                        System.Diagnostics.Debug.WriteLine("加载结束");
+                    });
+                }
             }
         }
 

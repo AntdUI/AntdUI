@@ -42,6 +42,7 @@ namespace AntdUI
         /// 表格列的配置
         /// </summary>
         [Browsable(false), Description("表格列的配置"), Category("数据"), DefaultValue(null)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ColumnCollection Columns
         {
             get

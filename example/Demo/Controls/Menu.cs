@@ -37,13 +37,13 @@ namespace Demo.Controls
             if (e.Value)
             {
                 menu2.Theme = AntdUI.TAMode.Dark;
-                if(AntdUI.Config.IsDark) menu2.BackColor = BackColor;
+                if (AntdUI.Config.IsDark) menu2.BackColor = BackColor;
                 else menu2.BackColor = Color.FromArgb(0, 21, 41);
             }
             else
             {
                 menu2.Theme = AntdUI.TAMode.Light;
-                if (AntdUI.Config.IsDark) menu2.BackColor = Color.White; 
+                if (AntdUI.Config.IsDark) menu2.BackColor = Color.White;
                 else menu2.BackColor = BackColor;
             }
         }
