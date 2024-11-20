@@ -35,10 +35,7 @@ namespace AntdUI
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
         /// <param name="ArrowAlign">箭头方向</param>
-        public static Form? open(Control control, string title, string content, TAlign ArrowAlign = TAlign.Bottom)
-        {
-            return open(new Config(control, title, content) { ArrowAlign = ArrowAlign });
-        }
+        public static Form? open(Control control, string title, string content, TAlign ArrowAlign = TAlign.Bottom) => open(new Config(control, title, content) { ArrowAlign = ArrowAlign });
 
         /// <summary>
         /// Popover 气泡卡片
@@ -46,10 +43,7 @@ namespace AntdUI
         /// <param name="control">所属控件</param>
         /// <param name="content">内容</param>
         /// <param name="ArrowAlign">箭头方向</param>
-        public static Form? open(Control control, string content, TAlign ArrowAlign = TAlign.Bottom)
-        {
-            return open(new Config(control, content) { ArrowAlign = ArrowAlign });
-        }
+        public static Form? open(Control control, string content, TAlign ArrowAlign = TAlign.Bottom) => open(new Config(control, content) { ArrowAlign = ArrowAlign });
 
         /// <summary>
         /// Popover 气泡卡片
@@ -58,10 +52,7 @@ namespace AntdUI
         /// <param name="title">标题</param>
         /// <param name="content">控件/内容</param>
         /// <param name="ArrowAlign">箭头方向</param>
-        public static Form? open(Control control, string title, object content, TAlign ArrowAlign = TAlign.Bottom)
-        {
-            return open(new Config(control, title, content) { ArrowAlign = ArrowAlign });
-        }
+        public static Form? open(Control control, string title, object content, TAlign ArrowAlign = TAlign.Bottom) => open(new Config(control, title, content) { ArrowAlign = ArrowAlign });
 
         /// <summary>
         /// Popover 气泡卡片
@@ -69,10 +60,7 @@ namespace AntdUI
         /// <param name="control">所属控件</param>
         /// <param name="content">控件/内容</param>
         /// <param name="ArrowAlign">箭头方向</param>
-        public static Form? open(Control control, object content, TAlign ArrowAlign = TAlign.Bottom)
-        {
-            return open(new Config(control, content) { ArrowAlign = ArrowAlign });
-        }
+        public static Form? open(Control control, object content, TAlign ArrowAlign = TAlign.Bottom) => open(new Config(control, content) { ArrowAlign = ArrowAlign });
 
         /// <summary>
         /// Popover 气泡卡片
@@ -91,7 +79,8 @@ namespace AntdUI
                     }));
                     return form;
                 }
-                var popover = new LayeredFormPopover(config); popover.Show(config.Control);
+                var popover = new LayeredFormPopover(config);
+                popover.Show(config.Control);
                 return popover;
             }
             return null;
@@ -203,6 +192,11 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+
+            /// <summary>
+            /// 自定义位置
+            /// </summary>
+            public Rectangle? CustomPoint { get; set; }
         }
 
         /// <summary>

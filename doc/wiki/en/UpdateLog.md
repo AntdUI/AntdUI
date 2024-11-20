@@ -1,5 +1,57 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
+### `1.7.4` 2024-11-15
+- ➕ Table ColumnSort  Drag and drop handle column
+- ➕ ColorPicker AllowClear
+- ➕ TimePicker/DatePicker ValueTimeHorizontal
+- ✍️ Optimize drag and drop experience
+- ✍️ Tabs  Small Refactoring
+- ✍️ Alert  Fix border
+- ✍️ Default text blur
+
+### `1.7.3` 2024-11-14
+
+>  🎉 NET 9.0
+
+- ✍️ Menu  The pop-up length is not enough
+- ✍️ Window  The designer has a size
+- ✍️ Optimize the Select filtering experience
+- ✍️ DatePicker  Incomplete English display
+- ✍️ Table EmptyHeader  Display header not centered
+
+### `1.7.1` 2024-11-12
+- ➕ Table SortColumns
+- ✍️ Table EnterEditMode  The position of the scrollbar is incorrect
+- ✍️ Preview  Do not display button
+- ✍️ ContextMenuStrip  Multiple
+- ✍️ Logo color
+
+### `1.7.0` 2024-11-11  🌍
+
+>Globalization support
+
+- ➕ LabelTime
+- ➕ FloatButton Enabled/Loading
+- ➕ Select DropDownRadius
+- ➕ Dropdown SelectedValue/DropDownRadius
+- ➕ Button TextCenterHasIcon
+- ➕ Segmented RightToLeft  Reverse/Single item disabled
+- ➕ Segmented SelectIndexChanging
+- ➕ Menu Trigger
+- ✍️ Menu  Level 3 color abnormality
+- ✍️ Logo text width
+- ✍️ Table  Header width and height
+- ✍️ Tabs  Collection modification SelectedIndex exception
+- ✍️ InputNumber ReadOnly
+- ✍️ Tabs  Modify logo without refreshing
+- ✍️ Switch  Click on animation
+- ✍️ Window NET6.0 Abnormal size below
+- ✍️ ContextMenuStrip Sub  Cannot click
+- ✍️ Message/Notification close_id  logic
+- ✍️ Button Ghost  Disable background
+- ✍️ Open Keyboard Event
+- ✍️ Localization of dates
+
 ### `1.6.16` 2024-10-31
 - ➕ Button IconGap
 - ➕ Input IconGap

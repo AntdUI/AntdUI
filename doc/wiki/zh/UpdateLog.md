@@ -1,5 +1,57 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)・[SVG](SVG.md)
 
+### `1.7.4` 2024-11-15
+- ➕ Table ColumnSort 拖拽手柄列
+- ➕ ColorPicker AllowClear
+- ➕ TimePicker/DatePicker ValueTimeHorizontal
+- ✍️ 优化拖拽体验
+- ✍️ Tabs 小重构
+- ✍️ Alert 修复边框
+- ✍️ 默认文字模糊
+
+### `1.7.3` 2024-11-14
+
+> 🎉 NET 9.0
+
+- ✍️ Menu 弹出长度不够
+- ✍️ Window 设计器存在Size
+- ✍️ 优化 Select 筛选体验
+- ✍️ DatePicker 英文显示不全
+- ✍️ Table EmptyHeader 显示表头不居中
+
+### `1.7.1` 2024-11-12
+- ➕ Table SortColumns
+- ✍️ Table EnterEditMode 滚动条位置不正确
+- ✍️ Preview 不显示按钮
+- ✍️ ContextMenuStrip 多个
+- ✍️ 徽标颜色
+
+### `1.7.0` 2024-11-11 🌍
+
+> 全球化支持
+
+- ➕ LabelTime
+- ➕ FloatButton Enabled/Loading
+- ➕ Select DropDownRadius
+- ➕ Dropdown SelectedValue/DropDownRadius
+- ➕ Button TextCenterHasIcon
+- ➕ Segmented RightToLeft 反向/单项禁用
+- ➕ Segmented SelectIndexChanging
+- ➕ Menu Trigger
+- ✍️ Menu 三级颜色异常
+- ✍️ 徽标文字宽度
+- ✍️ Table 表头阔高
+- ✍️ Tabs 集合修改 SelectedIndex 异常
+- ✍️ InputNumber ReadOnly
+- ✍️ Tabs 修改徽标不刷新
+- ✍️ Switch 点击动画
+- ✍️ Window NET6.0下大小异常
+- ✍️ ContextMenuStrip Sub 无法点击
+- ✍️ Message/Notification close_id 逻辑
+- ✍️ Button Ghost 禁用背景
+- ✍️ 开放键盘事件
+- ✍️ 日期本地化
+
 ### `1.6.16` 2024-10-31
 - ➕ Button IconGap
 - ➕ Input IconGap

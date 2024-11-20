@@ -61,13 +61,13 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillHover { get; set; }
 
-        Color trackColor = Color.FromArgb(255, 245, 245, 245);
+        Color? trackColor;
         /// <summary>
         /// 滑轨颜色
         /// </summary>
         [Description("滑轨颜色"), Category("外观"), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color TrackColor
+        public Color? TrackColor
         {
             get => trackColor;
             set
@@ -323,7 +323,7 @@ namespace AntdUI
 
             using (var path = rect_read.RoundPath(rect_read.Height / 2))
             {
-                using (var brush = new SolidBrush(trackColor))
+                using (var brush = new SolidBrush(trackColor ?? Style.Db.FillQuaternary))
                 {
                     g.Fill(brush, path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
