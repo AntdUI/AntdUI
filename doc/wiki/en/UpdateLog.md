@@ -1,32 +1,56 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
+### `1.7.6` 2024-11-21
+- ✍️ Table Check box not displayed
+- ✍️ Tree Parent level multiple-choice status exception
+- ✍️ Modal Flash retreat
+
+### `1.7.5` 2024-11-20
+- ➕ Color Mixing Algorithm
+- ➕ Collapse Full Fully covered
+- ➕ Table Add global text color and ToVNet method
+- ➕ Slider Track Color Background Color Attribute
+- ➕ Menu GetSelectIndex
+- ➕ Enhance Spin's new progress and allow for parameter modification midway
+- ✍️ Table Header refresh
+- ✍️ Check/Radio Empty text not displayed
+- ✍️ Drawer Carden rollback
+- ✍️ Preliminary check for memory overflow
+- ✍️ Remove menu fold and modify width
+- ✍️ Control Disable issue
+- ✍️ Tabs Dynamic does not display for the first time
+- ✍️ Table Delete tree nodes and sub items without refreshing
+- ✍️ Input Multi line scrollbar covering text
+- ✍️ Drag and drop file capability to download all files
+- ✍️ Remove right-click menu, leave mouse and disappear
+
 ### `1.7.4` 2024-11-15
-- ➕ Table ColumnSort  Drag and drop handle column
+- ➕ Table ColumnSort Drag and drop handle column
 - ➕ ColorPicker AllowClear
 - ➕ TimePicker/DatePicker ValueTimeHorizontal
 - ✍️ Optimize drag and drop experience
-- ✍️ Tabs  Small Refactoring
-- ✍️ Alert  Fix border
+- ✍️ Tabs Small Refactoring
+- ✍️ Alert Fix border
 - ✍️ Default text blur
 
 ### `1.7.3` 2024-11-14
 
->  🎉 NET 9.0
+> 🎉 NET 9.0
 
-- ✍️ Menu  The pop-up length is not enough
-- ✍️ Window  The designer has a size
+- ✍️ Menu The pop-up length is not enough
+- ✍️ Window The designer has a size
 - ✍️ Optimize the Select filtering experience
-- ✍️ DatePicker  Incomplete English display
-- ✍️ Table EmptyHeader  Display header not centered
+- ✍️ DatePicker Incomplete English display
+- ✍️ Table EmptyHeader Display header not centered
 
 ### `1.7.1` 2024-11-12
 - ➕ Table SortColumns
-- ✍️ Table EnterEditMode  The position of the scrollbar is incorrect
-- ✍️ Preview  Do not display button
-- ✍️ ContextMenuStrip  Multiple
+- ✍️ Table EnterEditMode The position of the scrollbar is incorrect
+- ✍️ Preview Do not display button
+- ✍️ ContextMenuStrip Multiple
 - ✍️ Logo color
 
-### `1.7.0` 2024-11-11  🌍
+### `1.7.0` 2024-11-11 🌍
 
 >Globalization support
 
@@ -35,20 +59,20 @@
 - ➕ Select DropDownRadius
 - ➕ Dropdown SelectedValue/DropDownRadius
 - ➕ Button TextCenterHasIcon
-- ➕ Segmented RightToLeft  Reverse/Single item disabled
+- ➕ Segmented RightToLeft Reverse/Single item disabled
 - ➕ Segmented SelectIndexChanging
 - ➕ Menu Trigger
-- ✍️ Menu  Level 3 color abnormality
+- ✍️ Menu Level 3 color abnormality
 - ✍️ Logo text width
-- ✍️ Table  Header width and height
-- ✍️ Tabs  Collection modification SelectedIndex exception
+- ✍️ Table Header width and height
+- ✍️ Tabs Collection modification SelectedIndex exception
 - ✍️ InputNumber ReadOnly
-- ✍️ Tabs  Modify logo without refreshing
-- ✍️ Switch  Click on animation
+- ✍️ Tabs Modify logo without refreshing
+- ✍️ Switch Click on animation
 - ✍️ Window NET6.0 Abnormal size below
-- ✍️ ContextMenuStrip Sub  Cannot click
-- ✍️ Message/Notification close_id  logic
-- ✍️ Button Ghost  Disable background
+- ✍️ ContextMenuStrip Sub Cannot click
+- ✍️ Message/Notification close_id logic
+- ✍️ Button Ghost Disable background
 - ✍️ Open Keyboard Event
 - ✍️ Localization of dates
 

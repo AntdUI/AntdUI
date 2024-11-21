@@ -1,5 +1,29 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)・[SVG](SVG.md)
 
+### `1.7.6` 2024-11-21
+- ✍️ Table 复选框不显示
+- ✍️ Tree 父级多选状态异常
+- ✍️ Modal 闪退
+
+### `1.7.5` 2024-11-20
+- ➕ 颜色混色算法
+- ➕ Collapse Full 铺满
+- ➕ Table 新增 全局文本色、ToDataTable 方法
+- ➕ Slider 滑轨背景色属性 TrackColor
+- ➕ Menu GetSelectIndex
+- ➕ 增强 Spin 新增进度，可中途修改参数
+- ✍️ Table 表头刷新
+- ✍️ Check/Radio 空文本不显示
+- ✍️ Drawer 卡顿回滚
+- ✍️ 初步检查内存溢出
+- ✍️ 移除 Menu 折叠修改宽度
+- ✍️ Control 禁用问题
+- ✍️ Tabs 动态第一次不显示
+- ✍️ Table 删除树节点子项不刷新
+- ✍️ Input 多行滚动条遮文字
+- ✍️ 拖拽文件能力下放全部
+- ✍️ 移除右键菜单鼠标离开消失
+
 ### `1.7.4` 2024-11-15
 - ➕ Table ColumnSort 拖拽手柄列
 - ➕ ColorPicker AllowClear
