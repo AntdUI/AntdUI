@@ -826,15 +826,19 @@ namespace AntdUI
         void SetCheckStrictly(TreeItem? item)
         {
             if (item == null) return;
-            int check_count = 0;
+            int check_all_count = 0, check_count = 0;
             foreach (var sub in item.Sub)
             {
-                if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++;
+                if (sub.CheckState == CheckState.Checked)
+                {
+                    check_count++;
+                    check_all_count++;
+                }
+                else if (sub.CheckState == CheckState.Indeterminate) check_all_count++;
             }
-            if (check_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
+            if (check_all_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
             else item.CheckState = CheckState.Unchecked;
             SetCheckStrictly(item.PARENTITEM);
-
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1249,6 +1253,7 @@ namespace AntdUI
         void OnCheck()
         {
             ThreadCheck?.Dispose();
+            ThreadCheck = null;
             if (PARENT != null && PARENT.IsHandleCreated && (PARENTITEM == null || PARENTITEM.expand) && show && Config.Animation)
             {
                 AnimationCheck = true;
@@ -1266,6 +1271,12 @@ namespace AntdUI
                         Invalidate();
                     });
                 }
+               else if (checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
+                {
+                    AnimationCheck = false;
+                    AnimationCheckValue = 1F;
+                    Invalidate();
+                }
                 else
                 {
                     ThreadCheck = new ITask(PARENT, () =>
@@ -1281,8 +1292,11 @@ namespace AntdUI
                     });
                 }
             }
-            else AnimationCheckValue = _checked ? 1F : 0F;
-            Invalidate();
+            else
+            {
+                AnimationCheckValue = _checked ? 1F : 0F;
+                Invalidate();
+            }
         }
 
         #endregion

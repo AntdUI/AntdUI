@@ -335,11 +335,15 @@ namespace AntdUI
         protected override void DestroyHandle()
         {
             base.DestroyHandle();
-            panel_main!.MouseMove -= Window_MouseDown;
             btn_ok?.Dispose();
             btn_no?.Dispose();
-            panel_main?.Dispose();
             close_button.Dispose();
+            if (panel_main != null)
+            {
+                panel_main.MouseMove -= Window_MouseDown;
+                panel_main?.Dispose();
+                panel_main = null;
+            }
             if (config.Content is Control control) control.Dispose();
             stringLeft.Dispose();
             stringTL.Dispose();

@@ -282,11 +282,8 @@ namespace AntdUI
                                 var it = row.cells[cel_i];
                                 it.INDEX = cel_i;
                                 var text_size = it.GetSize(g, columnfont ?? Font, rect.Width, gap, gap2);
-                                if (it.COLUMN is ColumnCheck check)
-                                {
-                                    if (check.NoTitle) read_width_cell[cel_i].value = -1;
-                                }
-                                else if (it.COLUMN is ColumnSort) read_width_cell[cel_i].value = -2;
+                                if (it.COLUMN is ColumnSort) read_width_cell[cel_i].value = -2;
+                                else if (it.COLUMN is ColumnCheck check && check.NoTitle) read_width_cell[cel_i].value = -1;
                                 else
                                 {
                                     int width = text_size.Width;
@@ -305,14 +302,7 @@ namespace AntdUI
                             {
                                 var it = row.cells[cel_i];
                                 it.INDEX = cel_i;
-                                if (it is TCellCheck check)
-                                {
-                                    if (check.NoTitle)
-                                    {
-                                        if (max_height < gap2) max_height = gap2;
-                                    }
-                                }
-                                else if (it.COLUMN is ColumnSort)
+                                if (it.COLUMN is ColumnSort || (it is TCellCheck check && check.NoTitle))
                                 {
                                     if (max_height < gap2) max_height = gap2;
                                 }

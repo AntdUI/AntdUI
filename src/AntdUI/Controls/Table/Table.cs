@@ -852,6 +852,12 @@ namespace AntdUI
                             PARENT.Invalidate();
                         });
                     }
+                    else if (checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
+                    {
+                        AnimationCheck = false;
+                        AnimationCheckValue = 1F;
+                        PARENT.Invalidate();
+                    }
                     else
                     {
                         ThreadCheck = new ITask(PARENT, () =>

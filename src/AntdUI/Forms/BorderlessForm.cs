@@ -210,7 +210,6 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
-        HWND handle;
         readonly IntPtr TRUE = new IntPtr(1);
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -255,7 +254,7 @@ namespace AntdUI
                 oldmargin = margin;
                 var v = 2;
                 DarkUI.DwmSetWindowAttribute(Handle, 2, ref v, 4);
-                DwmExtendFrameIntoClientArea(handle, new MARGINS(margin));
+                DwmExtendFrameIntoClientArea(Handle, new MARGINS(margin));
             }
         }
 
@@ -356,7 +355,6 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            handle = new HWND(Handle);
             base.OnHandleCreated(e);
             if (UseDwm && OS.Version.Major >= 6)
             {
