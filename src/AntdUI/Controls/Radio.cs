@@ -51,6 +51,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -68,6 +69,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
+                OnPropertyChanged("Fill");
             }
         }
 
@@ -85,6 +87,7 @@ namespace AntdUI
                 text = value;
                 if (BeforeAutoSize()) Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -106,6 +109,7 @@ namespace AntdUI
                 textAlign = value;
                 textAlign.SetAlignment(ref stringFormat);
                 Invalidate();
+                OnPropertyChanged("TextAlign");
             }
         }
 
@@ -123,7 +127,6 @@ namespace AntdUI
             {
                 if (_checked == value) return;
                 _checked = value;
-                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
                 ThreadCheck?.Dispose();
                 if (IsHandleCreated && Config.Animation)
                 {
@@ -180,6 +183,8 @@ namespace AntdUI
                     }
                 }
                 Invalidate();
+                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
+                OnPropertyChanged("Checked");
             }
         }
 
@@ -200,6 +205,7 @@ namespace AntdUI
                 rightToLeft = value;
                 stringFormat.Alignment = RightToLeft == RightToLeft.Yes ? StringAlignment.Far : StringAlignment.Near;
                 Invalidate();
+                OnPropertyChanged("RightToLeft");
             }
         }
 

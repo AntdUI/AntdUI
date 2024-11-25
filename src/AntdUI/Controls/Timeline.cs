@@ -95,6 +95,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
         }
 

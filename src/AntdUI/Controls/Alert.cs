@@ -49,6 +49,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -65,6 +66,7 @@ namespace AntdUI
                 if (borWidth == value) return;
                 borWidth = value;
                 Invalidate();
+                OnPropertyChanged("BorderWidth");
             }
         }
 
@@ -88,6 +90,7 @@ namespace AntdUI
                 text = value;
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -108,6 +111,7 @@ namespace AntdUI
                 if (textTitle == value) return;
                 textTitle = value;
                 Invalidate();
+                OnPropertyChanged("TextTitle");
             }
         }
 
@@ -127,6 +131,7 @@ namespace AntdUI
                 if (icon == value) return;
                 icon = value;
                 Invalidate();
+                OnPropertyChanged("Icon");
             }
         }
 
@@ -143,6 +148,7 @@ namespace AntdUI
                 if (loop == value) return;
                 loop = value;
                 if (IsHandleCreated) StartTask();
+                OnPropertyChanged("Loop");
             }
         }
 

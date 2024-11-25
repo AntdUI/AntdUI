@@ -54,6 +54,7 @@ namespace AntdUI
                 ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
                 ButtonLayout();
                 Invalidate();
+                OnPropertyChanged("Current");
             }
         }
 
@@ -71,6 +72,7 @@ namespace AntdUI
                 total = value;
                 ButtonLayout();
                 Invalidate();
+                OnPropertyChanged("Total");
             }
         }
 
@@ -96,6 +98,7 @@ namespace AntdUI
                 }
                 ButtonLayout();
                 Invalidate();
+                OnPropertyChanged("PageSize");
             }
         }
 
@@ -126,6 +129,7 @@ namespace AntdUI
                 _gap = value;
                 ButtonLayout();
                 Invalidate();
+                OnPropertyChanged("Gap");
             }
         }
 
@@ -156,6 +160,7 @@ namespace AntdUI
                 if (!value) InputSizeChangerDispose();
                 ButtonLayout();
                 Invalidate();
+                OnPropertyChanged("ShowSizeChanger");
             }
         }
 
@@ -177,6 +182,7 @@ namespace AntdUI
                     ButtonLayout();
                     Invalidate();
                 }
+                OnPropertyChanged("PageSizeOptions");
             }
         }
 
@@ -195,6 +201,7 @@ namespace AntdUI
                     ButtonLayout();
                     Invalidate();
                 }
+                OnPropertyChanged("SizeChangerWidth");
             }
         }
 
@@ -218,6 +225,7 @@ namespace AntdUI
                 fill = value;
                 if (input_SizeChanger != null) input_SizeChanger.BorderColor = value;
                 Invalidate();
+                OnPropertyChanged("Fill");
             }
         }
 
@@ -234,6 +242,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -250,6 +259,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 Invalidate();
+                OnPropertyChanged("BorderWidth");
             }
         }
 
@@ -264,6 +274,7 @@ namespace AntdUI
                 rightToLeft = value;
                 ButtonLayout();
                 Invalidate();
+                OnPropertyChanged("RightToLeft");
             }
         }
 
@@ -279,6 +290,7 @@ namespace AntdUI
                 textdesc = value;
                 ButtonLayout();
                 Invalidate();
+                OnPropertyChanged("TextDesc");
             }
         }
 

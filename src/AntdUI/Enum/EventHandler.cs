@@ -541,7 +541,7 @@ namespace AntdUI
         public TreeCheckedEventArgs(TreeItem item, bool value)
         {
             Item = item;
-            Value = Value;
+            Value = value;
         }
         public TreeItem Item { get; private set; }
         public bool Value { get; private set; }

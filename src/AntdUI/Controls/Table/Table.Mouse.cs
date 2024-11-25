@@ -27,7 +27,8 @@ namespace AntdUI
     {
         #region 鼠标按下
 
-        TCell? cellMouseDown = null;
+        TCell? cellMouseDown;
+        int shift_index = -1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             cellMouseDown = null;
@@ -41,7 +42,18 @@ namespace AntdUI
                 if (cell == null) return;
                 else
                 {
-                    SelectedIndex = i_row;
+                    if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
+                    {
+                        if (shift_index == -1) SelectedIndexs = SetIndexs(i_row);
+                        else
+                        {
+                            if (shift_index > i_row) SelectedIndexs = SetIndexs(i_row, shift_index);
+                            else SelectedIndexs = SetIndexs(shift_index, i_row);
+                        }
+                    }
+                    else if (MultipleRows && ModifierKeys.HasFlag(Keys.Control)) SelectedIndexs = SetIndexs(i_row);
+                    else SelectedIndex = i_row;
+                    shift_index = i_row;
                     var it = rows[i_row];
                     if (mode > 0)
                     {
@@ -101,6 +113,7 @@ namespace AntdUI
                     }
                 }
             }
+            else shift_index = -1;
         }
 
         void MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
@@ -208,7 +221,7 @@ namespace AntdUI
                         if (dragBody.im == it.INDEX) { it.hover = true; dim = it.INDEX_REAL; }
                         if (dragBody.i == it.INDEX) di = it.INDEX_REAL;
                     }
-                    selectedIndex = dragBody.im;
+                    SetIndex(dragBody.im);
                     foreach (var it in rows)
                     {
                         int index = it.INDEX_REAL;
@@ -262,7 +275,7 @@ namespace AntdUI
                 if (cel_sel == null || (i_r != i_row || i_c != i_cel)) cell.MouseDown = 0;
                 else
                 {
-                    SelectedIndex = i_r;
+                    if (selectedIndex.Length == 1) SelectedIndex = i_r;
                     if (e.Button == MouseButtons.Left)
                     {
                         if (cell is TCellCheck checkCell)

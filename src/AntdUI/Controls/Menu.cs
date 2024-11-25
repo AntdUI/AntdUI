@@ -65,6 +65,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -88,6 +89,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -104,6 +106,7 @@ namespace AntdUI
                 if (round == value) return;
                 round = value;
                 Invalidate();
+                OnPropertyChanged("Round");
             }
         }
 
@@ -120,6 +123,7 @@ namespace AntdUI
                 if (theme == value) return;
                 theme = value;
                 Invalidate();
+                OnPropertyChanged("Theme");
             }
         }
 
@@ -140,6 +144,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("IconRatio");
             }
         }
 
@@ -160,6 +165,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("Mode");
             }
         }
 
@@ -210,6 +216,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("Collapsed");
             }
         }
 
@@ -379,6 +386,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
         }
 
@@ -1533,6 +1541,8 @@ namespace AntdUI
         internal int Depth { get; set; }
         internal float ArrowProg { get; set; } = 1F;
         internal Menu? PARENT { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MenuItem? PARENTITEM { get; set; }
 
         internal void SetRect(int depth, bool indent, Rectangle _rect, int icon_size, int gap)

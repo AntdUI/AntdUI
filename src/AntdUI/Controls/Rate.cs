@@ -104,6 +104,7 @@ namespace AntdUI
                 }
                 Invalidate();
                 ValueChanged?.Invoke(this, new FloatEventArgs(_value));
+                OnPropertyChanged("Value");
             }
         }
 

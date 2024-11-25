@@ -92,6 +92,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -109,6 +110,7 @@ namespace AntdUI
                 full = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("Full");
             }
         }
 
@@ -126,6 +128,7 @@ namespace AntdUI
                 chinese = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("ShowChinese");
             }
         }
 
@@ -143,6 +146,7 @@ namespace AntdUI
                 showButtonToDay = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("ShowButtonToDay");
             }
         }
 
@@ -173,6 +177,7 @@ namespace AntdUI
                 DateChanged?.Invoke(this, new DateTimeEventArgs(_value));
                 Invalidate();
                 LoadBadge();
+                OnPropertyChanged("Value");
             }
         }
 
@@ -190,6 +195,7 @@ namespace AntdUI
                 minDate = value;
                 Date = _Date;
                 Invalidate();
+                OnPropertyChanged("MinDate");
             }
         }
 
@@ -207,6 +213,7 @@ namespace AntdUI
                 maxDate = value;
                 Date = _Date;
                 Invalidate();
+                OnPropertyChanged("MaxDate");
             }
         }
 

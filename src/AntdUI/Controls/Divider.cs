@@ -102,6 +102,7 @@ namespace AntdUI
                 if (thickness == value) return;
                 thickness = value;
                 Invalidate();
+                OnPropertyChanged("Thickness");
             }
         }
 
@@ -119,6 +120,7 @@ namespace AntdUI
                 if (color == value) return;
                 color = value;
                 Invalidate();
+                OnPropertyChanged("ColorSplit");
             }
         }
 
@@ -136,6 +138,7 @@ namespace AntdUI
                 text = value;
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 

@@ -911,7 +911,7 @@ namespace AntdUI
                     int count = rows.Length;
                     LoadLayout();
                     int countnew = rows.Length;
-                    if (selectedIndex > -1 && countnew < count) selectedIndex -= count - countnew;
+                    if (selectedIndex.Length > 0 && countnew < count) SetIndex(selectedIndex[0] - count - countnew);
                     Invalidate();
                     return;
                 }

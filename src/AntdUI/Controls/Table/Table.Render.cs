@@ -16,9 +16,11 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -338,13 +340,13 @@ namespace AntdUI
                     g.Fill(brush, row.row.RECT);
                 }
             }
-            if (selectedIndex == row.row.INDEX || row.row.Select)
+            if (selectedIndex.Contains(row.row.INDEX) || row.row.Select)
             {
                 using (var brush = rowSelectedBg.Brush(Style.Db.PrimaryBg))
                 {
                     g.Fill(brush, row.row.RECT);
                 }
-                if (selectedIndex == row.row.INDEX && row.row.Select)
+                if (selectedIndex.Contains(row.row.INDEX) && row.row.Select)
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(40, Style.Db.PrimaryActive)))
                     {
@@ -434,7 +436,7 @@ namespace AntdUI
         /// </summary>
         void PaintForeItem(Canvas g, StyleRow row, SolidBrush fore)
         {
-            if (selectedIndex == row.row.INDEX && rowSelectedFore.HasValue)
+            if (selectedIndex.Contains(row.row.INDEX) && rowSelectedFore.HasValue)
             {
                 using (var brush = new SolidBrush(rowSelectedFore.Value))
                 {
@@ -470,7 +472,7 @@ namespace AntdUI
         /// </summary>
         void PaintItemFixed(Canvas g, TCell it, SolidBrush fore, CellStyleInfo? style)
         {
-            if (selectedIndex == it.ROW.INDEX && rowSelectedFore.HasValue)
+            if (selectedIndex.Contains(it.ROW.INDEX) && rowSelectedFore.HasValue)
             {
                 using (var brush = new SolidBrush(rowSelectedFore.Value))
                 {

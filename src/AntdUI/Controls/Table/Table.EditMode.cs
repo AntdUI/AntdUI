@@ -130,6 +130,7 @@ namespace AntdUI
                         if (isok_end)
                         {
                             cellText.value = _value;
+                            if (it.RECORD is DataRow) cellText.VALUE = cellText.value = _value;
                             if (GetValue(value, _value, out var o))
                             {
                                 if (it.RECORD is DataRow datarow) datarow[i_col] = o;

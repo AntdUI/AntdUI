@@ -254,6 +254,22 @@ namespace AntdUI
             OnSizeChanged(EventArgs.Empty);
         }
 
+#if NET40
+        public void OnPropertyChanged(string propertyName)
+#else
+        public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
+#endif
+        {
+            foreach (Binding it in DataBindings)
+            {
+                if (it.PropertyName == propertyName)
+                {
+                    it.WriteValue();
+                    return;
+                }
+            }
+        }
+
         #region 鼠标
 
         CursorType oldcursor = CursorType.Default;

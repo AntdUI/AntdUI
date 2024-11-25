@@ -60,6 +60,7 @@ namespace AntdUI
                 Invalidate();
                 if (value == null) return;
                 value.table = this;
+                OnPropertyChanged("Columns");
             }
         }
 
@@ -80,6 +81,7 @@ namespace AntdUI
                 ExtractData();
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("DataSource");
             }
         }
 
@@ -113,6 +115,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -130,6 +133,7 @@ namespace AntdUI
                 _gap = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("Gap");
             }
         }
 
@@ -146,6 +150,7 @@ namespace AntdUI
                 if (fixedHeader == value) return;
                 fixedHeader = value;
                 Invalidate();
+                OnPropertyChanged("FixedHeader");
             }
         }
 
@@ -164,6 +169,7 @@ namespace AntdUI
                 ScrollBar.RB = !value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("VisibleHeader");
             }
         }
 
@@ -181,6 +187,7 @@ namespace AntdUI
                 enableHeaderResizing = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("EnableHeaderResizing");
             }
         }
 
@@ -210,6 +217,7 @@ namespace AntdUI
                 bordered = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("Bordered");
             }
         }
 
@@ -226,6 +234,7 @@ namespace AntdUI
                 if (radius == value) return;
                 ScrollBar.Radius = radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -245,6 +254,7 @@ namespace AntdUI
                 _checksize = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("CheckSize");
             }
         }
 
@@ -262,6 +272,7 @@ namespace AntdUI
                 _switchsize = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("SwitchSize");
             }
         }
 
@@ -311,6 +322,7 @@ namespace AntdUI
                 rowHeight = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("RowHeight");
             }
         }
 
@@ -328,13 +340,25 @@ namespace AntdUI
                 rowHeightHeader = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("RowHeightHeader");
             }
         }
 
         #region 为空
 
+        bool empty = true;
         [Description("是否显示空样式"), Category("外观"), DefaultValue(true)]
-        public bool Empty { get; set; } = true;
+        public bool Empty
+        {
+            get => empty;
+            set
+            {
+                if (empty == value) return;
+                empty = value;
+                Invalidate();
+                OnPropertyChanged("Empty");
+            }
+        }
 
         string? emptyText;
         [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
@@ -346,6 +370,7 @@ namespace AntdUI
                 if (emptyText == value) return;
                 emptyText = value;
                 Invalidate();
+                OnPropertyChanged("EmptyText");
             }
         }
 
@@ -366,6 +391,7 @@ namespace AntdUI
                 emptyHeader = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("EmptyHeader");
             }
         }
 
@@ -392,7 +418,8 @@ namespace AntdUI
             {
                 if (rowSelectedBg == value) return;
                 rowSelectedBg = value;
-                if (selectedIndex > 0) Invalidate();
+                if (selectedIndex.Length > 0) Invalidate();
+                OnPropertyChanged("RowSelectedBg");
             }
         }
 
@@ -409,7 +436,8 @@ namespace AntdUI
             {
                 if (rowSelectedFore == value) return;
                 rowSelectedFore = value;
-                if (selectedIndex > 0) Invalidate();
+                if (selectedIndex.Length > 0) Invalidate();
+                OnPropertyChanged("RowSelectedFore");
             }
         }
 
@@ -427,6 +455,7 @@ namespace AntdUI
                 if (borderColor == value) return;
                 borderColor = value;
                 Invalidate();
+                OnPropertyChanged("BorderColor");
             }
         }
 
@@ -445,6 +474,7 @@ namespace AntdUI
                 if (columnfont == value) return;
                 columnfont = value;
                 Invalidate();
+                OnPropertyChanged("ColumnFont");
             }
         }
 
@@ -462,6 +492,7 @@ namespace AntdUI
                 if (columnback == value) return;
                 columnback = value;
                 Invalidate();
+                OnPropertyChanged("ColumnBack");
             }
         }
 
@@ -479,6 +510,7 @@ namespace AntdUI
                 if (columnfore == value) return;
                 columnfore = value;
                 Invalidate();
+                OnPropertyChanged("ColumnFore");
             }
         }
 
@@ -486,12 +518,37 @@ namespace AntdUI
 
         #endregion
 
-        int selectedIndex = -1;
+        #region 数据
+
+        int[] selectedIndex = new int[0];
         /// <summary>
         /// 选中行
         /// </summary>
-        [Description("选中行"), Category("外观"), DefaultValue(-1)]
+        [Description("选中行"), Category("数据"), DefaultValue(-1)]
         public int SelectedIndex
+        {
+            get
+            {
+                if (selectedIndex.Length > 0) return selectedIndex[0];
+                return -1;
+            }
+            set
+            {
+                if (SetIndex(value))
+                {
+                    Invalidate();
+                    OnPropertyChanged("SelectedIndex");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 选中多行
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor", typeof(UITypeEditor))]
+        [Description("选中多行"), Category("数据")]
+        public int[] SelectedIndexs
         {
             get => selectedIndex;
             set
@@ -499,8 +556,51 @@ namespace AntdUI
                 if (selectedIndex == value) return;
                 selectedIndex = value;
                 Invalidate();
+                OnPropertyChanged("SelectedIndexs");
             }
         }
+
+        bool SetIndex(int value)
+        {
+            if (selectedIndex.Length > 0)
+            {
+                if (selectedIndex[0] == value) return false;
+            }
+            else
+            {
+                if (value == -1) return false;
+            }
+            selectedIndex = new int[1] { value };
+            return true;
+        }
+        int[] SetIndexs(int value)
+        {
+            var list = new List<int>(selectedIndex.Length + 1);
+            list.AddRange(selectedIndex);
+            if (list.Contains(value)) list.Remove(value);
+            else list.Add(value);
+            return list.ToArray();
+        }
+        int[] SetIndexs(int start, int end)
+        {
+            var list = new List<int>(end - start + 1);
+            for (int i = start; i <= end; i++) list.Add(i);
+            return list.ToArray();
+        }
+
+        /// <summary>
+        /// 多选行
+        /// </summary>
+        [Description("多选行"), Category("行为"), DefaultValue(false)]
+        public bool MultipleRows { get; set; }
+
+        #endregion
+
+        /// <summary>
+        /// 处理快捷键
+        /// </summary>
+        [Description("处理快捷键"), Category("行为"), DefaultValue(true)]
+        public bool HandShortcutKeys { get; set; } = true;
 
         /// <summary>
         /// 省略文字提示
@@ -529,6 +629,7 @@ namespace AntdUI
                 if (editmode == value) return;
                 editmode = value;
                 Invalidate();
+                OnPropertyChanged("EditMode");
             }
         }
 
@@ -609,6 +710,32 @@ namespace AntdUI
                     var vals = new List<string?>(_row.cells.Length);
                     foreach (var cell in _row.cells) vals.Add(cell.ToString());
                     this.ClipboardSetText(string.Join("\t", vals));
+                    return true;
+                }
+                catch { }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 复制表格数据
+        /// </summary>
+        /// <param name="row">行</param>
+        public bool CopyData(int[] row)
+        {
+            if (rows != null)
+            {
+                try
+                {
+                    var rowtmp = new List<string?>(row.Length);
+                    foreach (var it in row)
+                    {
+                        var _row = rows[it];
+                        var vals = new List<string?>(_row.cells.Length);
+                        foreach (var cell in _row.cells) vals.Add(cell.ToString());
+                        rowtmp.Add(string.Join("\t", vals));
+                    }
+                    this.ClipboardSetText(string.Join("\n", rowtmp));
                     return true;
                 }
                 catch { }
@@ -708,25 +835,41 @@ namespace AntdUI
             }
         }
 
-        public DataTable? ToDataTable(bool tostring = true)
+        /// <summary>
+        /// 导出表格数据
+        /// </summary>
+        /// <param name="enableRender">启用插槽</param>
+        /// <param name="toString">使用toString</param>
+        public DataTable? ToDataTable(bool enableRender = true, bool toString = true)
         {
             if (dataTmp == null) return null;
             var dt = new DataTable();
+
+            Dictionary<string, Column> dir_columns;
+
+            #region 处理表头
+
             if (rows == null)
             {
+                dir_columns = new Dictionary<string, Column>(0);
                 foreach (var column in dataTmp.columns) dt.Columns.Add(new DataColumn(column.key) { Caption = column.text });
             }
             else
             {
+                dir_columns = new Dictionary<string, Column>(dataTmp.columns.Length);
                 var columns = new Dictionary<string, DataColumn>(dataTmp.columns.Length);
                 foreach (var column in dataTmp.columns) columns.Add(column.key, new DataColumn(column.key) { Caption = column.text });
                 foreach (TCellColumn item in rows[0].cells)
                 {
+                    dir_columns.Add(item.COLUMN.Key, item.COLUMN);
                     if (!string.IsNullOrWhiteSpace(item.value) && columns.TryGetValue(item.COLUMN.Key, out var find)) find.Caption = item.value;
                 }
                 foreach (var item in columns) dt.Columns.Add(item.Value);
             }
-            if (tostring)
+
+            #endregion
+
+            if (toString)
             {
                 foreach (var row in dataTmp.rows)
                 {
@@ -734,6 +877,8 @@ namespace AntdUI
                     foreach (var cell in row.cells)
                     {
                         var obj = row[cell.Key];
+                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column)) obj = column.Render?.Invoke(obj, row.record, row.i);
+
                         if (obj is IList<ICell> cells)
                         {
                             var cs = new List<string?>(cells.Count);
@@ -755,7 +900,12 @@ namespace AntdUI
                 foreach (var row in dataTmp.rows)
                 {
                     var data = new List<object?>(row.cells.Count);
-                    foreach (var cell in row.cells) data.Add(row[cell.Key]);
+                    foreach (var cell in row.cells)
+                    {
+                        var obj = row[cell.Key];
+                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column)) obj = column.Render?.Invoke(obj, row.record, row.i);
+                        data.Add(obj);
+                    }
                     dt.Rows.Add(data.ToArray());
                 }
             }

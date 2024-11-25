@@ -47,6 +47,7 @@ namespace AntdUI
                 mode = value;
                 DisposeBmp();
                 Invalidate();
+                OnPropertyChanged("Mode");
             }
         }
 
@@ -61,6 +62,7 @@ namespace AntdUI
                 text = value;
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -78,6 +80,7 @@ namespace AntdUI
                 if (desc == value) return;
                 desc = value;
                 Invalidate();
+                OnPropertyChanged("SubText");
             }
         }
 
@@ -95,6 +98,7 @@ namespace AntdUI
                 if (useLeft == value) return;
                 useLeft = value;
                 Invalidate();
+                OnPropertyChanged("UseLeft");
             }
         }
 
@@ -109,6 +113,7 @@ namespace AntdUI
                 useSystemStyleColor = value;
                 DisposeBmp();
                 Invalidate();
+                OnPropertyChanged("UseSystemStyleColor");
             }
         }
 
@@ -127,6 +132,7 @@ namespace AntdUI
                 if (showicon == value) return;
                 showicon = value;
                 Invalidate();
+                OnPropertyChanged("ShowIcon");
             }
         }
 
@@ -140,6 +146,7 @@ namespace AntdUI
                 if (icon == value) return;
                 icon = value;
                 Invalidate();
+                OnPropertyChanged("Icon");
             }
         }
 
@@ -153,6 +160,7 @@ namespace AntdUI
                 if (iconSvg == value) return;
                 iconSvg = value;
                 Invalidate();
+                OnPropertyChanged("IconSvg");
             }
         }
 
@@ -185,6 +193,7 @@ namespace AntdUI
                     });
                 }
                 else Invalidate();
+                OnPropertyChanged("Loading");
             }
         }
 
@@ -222,6 +231,7 @@ namespace AntdUI
                 maximizeBox = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("MaximizeBox");
             }
         }
 
@@ -239,6 +249,7 @@ namespace AntdUI
                 minimizeBox = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("MinimizeBox");
             }
         }
 
@@ -281,6 +292,7 @@ namespace AntdUI
                 if (showDivider == value) return;
                 showDivider = value;
                 Invalidate();
+                OnPropertyChanged("DividerShow");
             }
         }
 
@@ -298,6 +310,7 @@ namespace AntdUI
                 if (dividerColor == value) return;
                 dividerColor = value;
                 if (showDivider) Invalidate();
+                OnPropertyChanged("DividerColor");
             }
         }
 
@@ -314,6 +327,7 @@ namespace AntdUI
                 if (dividerthickness == value) return;
                 dividerthickness = value;
                 if (showDivider) Invalidate();
+                OnPropertyChanged("DividerThickness");
             }
         }
 
@@ -330,6 +344,7 @@ namespace AntdUI
                 if (dividerMargin == value) return;
                 dividerMargin = value;
                 if (showDivider) Invalidate();
+                OnPropertyChanged("DividerMargin");
             }
         }
 

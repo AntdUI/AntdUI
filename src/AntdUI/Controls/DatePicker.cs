@@ -53,6 +53,7 @@ namespace AntdUI
                 dateFormat = value;
                 ShowTime = dateFormat.Contains("H");
                 Text = _value.HasValue ? _value.Value.ToString(dateFormat) : "";
+                OnPropertyChanged("Format");
             }
         }
 
@@ -69,6 +70,7 @@ namespace AntdUI
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimeNEventArgs(value));
                 Text = value.HasValue ? value.Value.ToString(Format) : "";
+                OnPropertyChanged("Value");
             }
         }
 

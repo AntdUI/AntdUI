@@ -53,6 +53,7 @@ namespace AntdUI
                 if (layoutengine.Span == value) return;
                 layoutengine.Span = value;
                 OSizeChanged();
+                OnPropertyChanged("Span");
             }
         }
 
@@ -68,6 +69,7 @@ namespace AntdUI
                 if (layoutengine.Gap == value) return;
                 layoutengine.Gap = value;
                 OSizeChanged();
+                OnPropertyChanged("Gap");
             }
         }
 

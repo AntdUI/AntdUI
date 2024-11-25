@@ -54,6 +54,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -71,6 +72,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
+                OnPropertyChanged("Fill");
             }
         }
 
@@ -101,6 +103,7 @@ namespace AntdUI
                 if (alignment == value) return;
                 alignment = value;
                 LoadLayout();
+                OnPropertyChanged("Alignment");
             }
         }
 
@@ -117,6 +120,7 @@ namespace AntdUI
                 if (centered == value) return;
                 centered = value;
                 LoadLayout();
+                OnPropertyChanged("Centered");
             }
         }
 
@@ -136,6 +140,7 @@ namespace AntdUI
                 bitblock_r?.Dispose();
                 bitblock_l = bitblock_r = null;
                 LoadLayout();
+                OnPropertyChanged("TypExceed");
             }
         }
 
@@ -156,6 +161,7 @@ namespace AntdUI
                 bitblock_r?.Dispose();
                 bitblock_l = bitblock_r = null;
                 Invalidate();
+                OnPropertyChanged("ScrollBack");
             }
         }
 
@@ -173,6 +179,7 @@ namespace AntdUI
                 if (scrollfore == value) return;
                 scrollfore = value;
                 Invalidate();
+                OnPropertyChanged("ScrollFore");
             }
         }
 
@@ -218,6 +225,7 @@ namespace AntdUI
                 type = value;
                 style = SetType(value);
                 LoadLayout();
+                OnPropertyChanged("Type");
             }
         }
 
@@ -253,6 +261,7 @@ namespace AntdUI
                 if (_gap == value) return;
                 _gap = value;
                 LoadLayout();
+                OnPropertyChanged("Gap");
             }
         }
 
@@ -269,6 +278,7 @@ namespace AntdUI
                 if (iconratio == value) return;
                 iconratio = value;
                 LoadLayout();
+                OnPropertyChanged("IconRatio");
             }
         }
 
@@ -281,6 +291,7 @@ namespace AntdUI
             {
                 _tabMenuVisible = value;
                 LoadLayout();
+                OnPropertyChanged("TabMenuVisible");
             }
         }
 
@@ -297,6 +308,7 @@ namespace AntdUI
                 if (_itemSize == value) return;
                 _itemSize = value;
                 LoadLayout();
+                OnPropertyChanged("ItemSize");
             }
         }
 
@@ -350,6 +362,7 @@ namespace AntdUI
                 if (items == null || value == null) return;
                 var index = items.IndexOf(value);
                 SelectedIndex = index;
+                OnPropertyChanged("SelectedTab");
             }
         }
 
@@ -386,6 +399,7 @@ namespace AntdUI
                 SelectedIndexChanged?.Invoke(this, new IntEventArgs(value));
                 Invalidate();
                 ShowPage(_select);
+                OnPropertyChanged("SelectedIndex");
             }
         }
 

@@ -48,6 +48,7 @@ namespace AntdUI
                 gap = value;
                 ChangeItems();
                 Invalidate();
+                OnPropertyChanged("Gap");
             }
         }
 
@@ -65,6 +66,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -88,6 +90,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -157,6 +160,7 @@ namespace AntdUI
                     ChangeItems();
                     Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
         }
 

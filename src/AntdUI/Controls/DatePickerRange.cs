@@ -114,6 +114,7 @@ namespace AntdUI
                 ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
                 if (value == null) Text = "";
                 else Text = value[0].ToString(Format) + "\t" + value[1].ToString(Format);
+                OnPropertyChanged("Value");
             }
         }
 

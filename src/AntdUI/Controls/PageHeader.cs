@@ -47,6 +47,7 @@ namespace AntdUI
                 mode = value;
                 DisposeBmp();
                 Invalidate();
+                OnPropertyChanged("Mode");
             }
         }
 
@@ -61,6 +62,7 @@ namespace AntdUI
                 text = value;
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -84,6 +86,7 @@ namespace AntdUI
                 if (desc == value) return;
                 desc = value;
                 Invalidate();
+                OnPropertyChanged("SubText");
             }
         }
 
@@ -105,6 +108,7 @@ namespace AntdUI
                 if (description == value) return;
                 description = value;
                 Invalidate();
+                OnPropertyChanged("Description");
             }
         }
 
@@ -124,6 +128,7 @@ namespace AntdUI
                 if (gap == value) return;
                 gap = value;
                 Invalidate();
+                OnPropertyChanged("Gap");
             }
         }
 
@@ -140,6 +145,7 @@ namespace AntdUI
                 if (subGap == value) return;
                 subGap = value;
                 Invalidate();
+                OnPropertyChanged("SubGap");
             }
         }
 
@@ -154,6 +160,7 @@ namespace AntdUI
                 useSystemStyleColor = value;
                 DisposeBmp();
                 Invalidate();
+                OnPropertyChanged("UseSystemStyleColor");
             }
         }
 
@@ -172,6 +179,7 @@ namespace AntdUI
                 if (showicon == value) return;
                 showicon = value;
                 Invalidate();
+                OnPropertyChanged("ShowIcon");
             }
         }
 
@@ -185,6 +193,7 @@ namespace AntdUI
                 if (icon == value) return;
                 icon = value;
                 Invalidate();
+                OnPropertyChanged("Icon");
             }
         }
 
@@ -198,6 +207,7 @@ namespace AntdUI
                 if (iconSvg == value) return;
                 iconSvg = value;
                 Invalidate();
+                OnPropertyChanged("IconSvg");
             }
         }
 
@@ -230,6 +240,7 @@ namespace AntdUI
                     });
                 }
                 else Invalidate();
+                OnPropertyChanged("Loading");
             }
         }
 
@@ -313,6 +324,7 @@ namespace AntdUI
                     AnimationBackValue = value ? 1F : 0F;
                     Invalidate();
                 }
+                OnPropertyChanged("ShowBack");
             }
         }
 
@@ -330,6 +342,7 @@ namespace AntdUI
                 showButton = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("ShowButton");
             }
         }
 
@@ -350,6 +363,7 @@ namespace AntdUI
                     OnSizeChanged(EventArgs.Empty);
                     Invalidate();
                 }
+                OnPropertyChanged("MaximizeBox");
             }
         }
 
@@ -370,6 +384,7 @@ namespace AntdUI
                     OnSizeChanged(EventArgs.Empty);
                     Invalidate();
                 }
+                OnPropertyChanged("MinimizeBox");
             }
         }
 
@@ -416,6 +431,7 @@ namespace AntdUI
                 if (showDivider == value) return;
                 showDivider = value;
                 Invalidate();
+                OnPropertyChanged("DividerShow");
             }
         }
 
@@ -433,6 +449,7 @@ namespace AntdUI
                 if (dividerColor == value) return;
                 dividerColor = value;
                 if (showDivider) Invalidate();
+                OnPropertyChanged("DividerColor");
             }
         }
 
@@ -449,6 +466,7 @@ namespace AntdUI
                 if (dividerthickness == value) return;
                 dividerthickness = value;
                 if (showDivider) Invalidate();
+                OnPropertyChanged("DividerThickness");
             }
         }
 
@@ -465,6 +483,7 @@ namespace AntdUI
                 if (dividerMargin == value) return;
                 dividerMargin = value;
                 if (showDivider) Invalidate();
+                OnPropertyChanged("DividerMargin");
             }
         }
 

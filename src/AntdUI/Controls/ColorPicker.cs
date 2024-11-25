@@ -192,6 +192,7 @@ namespace AntdUI
                 _value = value;
                 if (BeforeAutoSize()) Invalidate();
                 ValueChanged?.Invoke(this, new ColorEventArgs(value));
+                OnPropertyChanged("Value");
             }
         }
 

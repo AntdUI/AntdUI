@@ -55,6 +55,7 @@ namespace AntdUI
                 _value = value;
                 Text = new DateTime(1997, 1, 1, value.Hours, value.Minutes, value.Seconds).ToString(Format);
                 ValueChanged?.Invoke(this, new TimeSpanNEventArgs(value));
+                OnPropertyChanged("Value");
             }
         }
 

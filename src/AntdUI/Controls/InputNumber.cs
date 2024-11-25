@@ -89,6 +89,7 @@ namespace AntdUI
                 currentValue = Constrain(value);
                 Text = GetNumberText(currentValue);
                 ValueChanged?.Invoke(this, new DecimalEventArgs(currentValue));
+                OnPropertyChanged("Value");
             }
         }
 

@@ -379,6 +379,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
         }
 
@@ -1271,7 +1272,7 @@ namespace AntdUI
                         Invalidate();
                     });
                 }
-               else if (checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
+                else if (checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
                 {
                     AnimationCheck = false;
                     AnimationCheckValue = 1F;
@@ -1422,6 +1423,8 @@ namespace AntdUI
 
         public int Depth { get; private set; }
         internal Tree? PARENT { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TreeItem? PARENTITEM { get; set; }
 
         internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int icon_size, int gap)
