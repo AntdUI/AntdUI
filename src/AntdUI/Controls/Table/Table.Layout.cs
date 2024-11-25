@@ -81,7 +81,8 @@ namespace AntdUI
             has_check = false;
             if (dataTmp == null)
             {
-                ThreadState?.Dispose(); ThreadState = null;
+                ThreadState?.Dispose();
+                ThreadState = null;
                 if (visibleHeader && emptyHeader && columns != null && columns.Count > 0)
                 {
                     var _rows = LayoutDesign(new TempTable(new TempiColumn[0], new IRow[0]), out var _columns, out int processing, out var col_width, out int KeyTreeINDEX);
@@ -147,14 +148,14 @@ namespace AntdUI
             {
                 if (SortHeader == null)
                 {
-                    foreach (var it in dataTmp.columns) _columns.Add(new Column(it.key, it.key) { INDEX = _columns.Count });
+                    foreach (var it in dataTmp.columns) _columns.Add(new Column(it.key, it.text ?? it.key) { INDEX = _columns.Count });
                 }
                 else
                 {
                     foreach (var i in SortHeader)
                     {
                         var it = dataTmp.columns[i];
-                        _columns.Add(new Column(it.key, it.key) { INDEX = i });
+                        _columns.Add(new Column(it.key, it.text ?? it.key) { INDEX = i });
                     }
                 }
             }
@@ -195,7 +196,7 @@ namespace AntdUI
                 {
                     var cells = new List<TCell>(_columns.Count);
                     foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
-                    if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.record);
+                    if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.i, row.record);
                 });
             }
             else
@@ -204,7 +205,7 @@ namespace AntdUI
                 {
                     var cells = new List<TCell>(_columns.Count);
                     foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
-                    if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.record), row, _columns, KeyTree, KeyTreeINDEX, 0, true);
+                    if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.i, row.record), row, _columns, KeyTree, KeyTreeINDEX, 0, true);
                 });
             }
 
@@ -215,6 +216,7 @@ namespace AntdUI
             dataOne = false;
             return _rows;
         }
+
         RowTemplate[] LayoutDesign(Rectangle rect, List<RowTemplate> _rows, List<Column> _columns, Dictionary<int, object> col_width, int KeyTreeINDEX, out int _x, out int _y, out bool _is_exceed)
         {
             if (rows != null)
@@ -225,10 +227,13 @@ namespace AntdUI
                     if (item.Select) dir_Select.Add(item.RECORD);
                     if (item.Hover) dir_Hover.Add(item.RECORD);
                 }
-                foreach (var item in _rows)
+                if (dir_Select.Count > 0 || dir_Hover.Count > 0)
                 {
-                    if (dir_Select.Contains(item.RECORD)) item.Select = true;
-                    if (dir_Hover.Contains(item.RECORD)) item.Hover = true;
+                    foreach (var item in _rows)
+                    {
+                        if (dir_Select.Contains(item.RECORD)) item.Select = true;
+                        if (dir_Hover.Contains(item.RECORD)) item.Hover = true;
+                    }
                 }
             }
 
@@ -251,7 +256,8 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var dpi = Config.Dpi;
-                int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi), gap = (int)(_gap * dpi), gap2 = gap * 2,
+                int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi),
+                gap = (int)(_gap * dpi), gap2 = gap * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi),
                 split = (int)(1F * dpi), split2 = split / 2,
                 split_move = (int)(6F * dpi), split_move2 = split_move / 2;
 
@@ -275,19 +281,16 @@ namespace AntdUI
                             {
                                 var it = row.cells[cel_i];
                                 it.INDEX = cel_i;
-                                if (it is TCellCheck check && check.NoTitle)
-                                {
-                                    if (max_height < gap2) max_height = gap2;
-                                    read_width_cell[cel_i].value = -1;
-                                }
+                                var text_size = it.GetSize(g, columnfont ?? Font, rect.Width, gap, gap2);
+                                if (it.COLUMN is ColumnSort) read_width_cell[cel_i].value = -2;
+                                else if (it.COLUMN is ColumnCheck check && check.NoTitle) read_width_cell[cel_i].value = -1;
                                 else
                                 {
-                                    var text_size = it.GetSize(g, columnfont ?? Font, rect.Width, gap, gap2);
                                     int width = text_size.Width;
-                                    if (max_height < text_size.Height) max_height = text_size.Height;
                                     if (read_width_cell[cel_i].value < width) read_width_cell[cel_i].value = width;
                                     if (read_width_cell[cel_i].minvalue < it.MinWidth) read_width_cell[cel_i].minvalue = it.MinWidth;
                                 }
+                                if (max_height < text_size.Height) max_height = text_size.Height;
                             }
                             if (rowHeightHeader.HasValue) row.Height = (int)(rowHeightHeader.Value * dpi);
                             else if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
@@ -299,13 +302,9 @@ namespace AntdUI
                             {
                                 var it = row.cells[cel_i];
                                 it.INDEX = cel_i;
-                                if (it is TCellCheck check)
+                                if (it.COLUMN is ColumnSort || (it is TCellCheck check && check.NoTitle))
                                 {
-                                    if (check.NoTitle)
-                                    {
-                                        if (max_height < gap2) max_height = gap2;
-                                        read_width_cell[cel_i].value = -1;
-                                    }
+                                    if (max_height < gap2) max_height = gap2;
                                 }
                                 else
                                 {
@@ -343,7 +342,7 @@ namespace AntdUI
                 rect_read.Width = rect.Width;
                 rect_read.Height = rect.Height;
 
-                var width_cell = CalculateWidth(rect, col_width, read_width_cell, check_size, ref is_exceed);
+                var width_cell = CalculateWidth(rect, col_width, read_width_cell, gap2, check_size, sort_size, ref is_exceed);
 
                 #endregion
 
@@ -373,6 +372,7 @@ namespace AntdUI
                             if (it is TCellCheck check) check.SetSize(_rect, check_size);
                             else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
                             else if (it is TCellSwitch _switch) _switch.SetSize(_rect, switchsize);
+                            else if (it is TCellSort sort) sort.SetSize(_rect, sort_size, sort_ico_size);
                             else if (it is TCellColumn column)
                             {
                                 it.SetSize(g, Font, _rect, ox, gap, gap2);
@@ -546,7 +546,7 @@ namespace AntdUI
                         var row_tree = new IRow(i, list_tree[i], item_tree);
                         var cells_tree = new List<TCell>(_columns.Count);
                         foreach (var column in _columns) AddRows(ref cells_tree, ref processing, column, row_tree, column.Key);
-                        if (ForTree(ref _rows, ref processing, AddRows(ref _rows, cells_tree.ToArray(), row_tree.record), row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, show)) count++;
+                        if (ForTree(ref _rows, ref processing, AddRows(ref _rows, cells_tree.ToArray(), row.i, row_tree.record), row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, show)) count++;
                     }
                 }
             }
@@ -581,7 +581,7 @@ namespace AntdUI
         #endregion
 
         Dictionary<int, int> tmpcol_width = new Dictionary<int, int>(0);
-        Dictionary<int, int> CalculateWidth(Rectangle rect, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int check_size, ref bool is_exceed)
+        Dictionary<int, int> CalculateWidth(Rectangle rect, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int gap2, int check_size, int sort_size, ref bool is_exceed)
         {
             int use_width = rect.Width;
             float max_width = 0;
@@ -600,7 +600,13 @@ namespace AntdUI
                 }
                 else if (it.Value.value == -1F)
                 {
-                    int size = check_size * 2;//复选框大小
+                    int size = check_size * 2;
+                    max_width += size;
+                    use_width -= size;
+                }
+                else if (it.Value.value == -2F)
+                {
+                    int size = sort_size + gap2;
                     max_width += size;
                     use_width -= size;
                 }
@@ -624,11 +630,8 @@ namespace AntdUI
                         }
                         else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
                     }
-                    else if (it.Value.value == -1F)
-                    {
-                        int _check_size = check_size * 2;
-                        width_cell.Add(it.Key, _check_size);
-                    }
+                    else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
+                    else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
                     else width_cell.Add(it.Key, it.Value.value);
                 }
             }
@@ -648,11 +651,8 @@ namespace AntdUI
                         }
                         else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
                     }
-                    else if (it.Value.value == -1F)
-                    {
-                        int _check_size = check_size * 2;
-                        width_cell.Add(it.Key, _check_size);
-                    }
+                    else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
+                    else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
                     else width_cell.Add(it.Key, (int)Math.Ceiling(use_width * (it.Value.value / max_width)));
                 }
                 int sum_wi = 0;
@@ -702,7 +702,8 @@ namespace AntdUI
         float check_radius = 0F, check_border = 1F;
         void AddRows(ref List<TCell> cells, ref int processing, Column column, IRow row, string key)
         {
-            if (row.cells.TryGetValue(key, out var ov))
+            if (column is ColumnSort columnSort) AddRows(ref cells, new TCellSort(this, columnSort));
+            else if (row.cells.TryGetValue(key, out var ov))
             {
                 var value = OGetValue(ov, row.record, out var property, out var rv);
                 if (column.Render == null) AddRows(ref cells, ref processing, column, rv, value, property);
@@ -776,16 +777,16 @@ namespace AntdUI
             }
         }
 
-        RowTemplate AddRows(ref List<RowTemplate> rows, TCell[] cells, object? record)
+        RowTemplate AddRows(ref List<RowTemplate> rows, TCell[] cells, int row_i, object? record)
         {
-            var row = new RowTemplate(this, cells, record);
+            var row = new RowTemplate(this, cells, row_i, record);
             foreach (var it in row.cells) it.SetROW(row);
             rows.Add(row);
             return row;
         }
         RowTemplate AddRows(ref List<RowTemplate> rows, TCellColumn[] cells, object? record)
         {
-            var row = new RowTemplate(this, cells, record)
+            var row = new RowTemplate(this, cells, -1, record)
             {
                 IsColumn = true
             };
@@ -903,6 +904,15 @@ namespace AntdUI
                             }
                         }
                     }
+                    return;
+                }
+                else if (key == column.COLUMN.KeyTree)
+                {
+                    int count = rows.Length;
+                    LoadLayout();
+                    int countnew = rows.Length;
+                    if (selectedIndex.Length > 0 && countnew < count) SetIndex(selectedIndex[0] - count - countnew);
+                    Invalidate();
                     return;
                 }
             }

@@ -51,9 +51,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -71,6 +72,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
+                OnPropertyChanged("Fill");
             }
         }
 
@@ -101,6 +103,7 @@ namespace AntdUI
                 if (alignment == value) return;
                 alignment = value;
                 LoadLayout();
+                OnPropertyChanged("Alignment");
             }
         }
 
@@ -117,6 +120,7 @@ namespace AntdUI
                 if (centered == value) return;
                 centered = value;
                 LoadLayout();
+                OnPropertyChanged("Centered");
             }
         }
 
@@ -136,6 +140,7 @@ namespace AntdUI
                 bitblock_r?.Dispose();
                 bitblock_l = bitblock_r = null;
                 LoadLayout();
+                OnPropertyChanged("TypExceed");
             }
         }
 
@@ -156,6 +161,7 @@ namespace AntdUI
                 bitblock_r?.Dispose();
                 bitblock_l = bitblock_r = null;
                 Invalidate();
+                OnPropertyChanged("ScrollBack");
             }
         }
 
@@ -173,6 +179,7 @@ namespace AntdUI
                 if (scrollfore == value) return;
                 scrollfore = value;
                 Invalidate();
+                OnPropertyChanged("ScrollFore");
             }
         }
 
@@ -218,6 +225,7 @@ namespace AntdUI
                 type = value;
                 style = SetType(value);
                 LoadLayout();
+                OnPropertyChanged("Type");
             }
         }
 
@@ -253,6 +261,7 @@ namespace AntdUI
                 if (_gap == value) return;
                 _gap = value;
                 LoadLayout();
+                OnPropertyChanged("Gap");
             }
         }
 
@@ -269,6 +278,7 @@ namespace AntdUI
                 if (iconratio == value) return;
                 iconratio = value;
                 LoadLayout();
+                OnPropertyChanged("IconRatio");
             }
         }
 
@@ -281,6 +291,7 @@ namespace AntdUI
             {
                 _tabMenuVisible = value;
                 LoadLayout();
+                OnPropertyChanged("TabMenuVisible");
             }
         }
 
@@ -297,6 +308,7 @@ namespace AntdUI
                 if (_itemSize == value) return;
                 _itemSize = value;
                 LoadLayout();
+                OnPropertyChanged("ItemSize");
             }
         }
 
@@ -350,6 +362,7 @@ namespace AntdUI
                 if (items == null || value == null) return;
                 var index = items.IndexOf(value);
                 SelectedIndex = index;
+                OnPropertyChanged("SelectedTab");
             }
         }
 
@@ -366,15 +379,9 @@ namespace AntdUI
             }
         }
 
-        public void SelectTab(TabPage tabPage)
-        {
-            SelectedTab = tabPage;
-        }
+        public void SelectTab(TabPage tabPage) => SelectedTab = tabPage;
 
-        public void SelectTab(int index)
-        {
-            SelectedIndex = index;
-        }
+        public void SelectTab(int index) => SelectedIndex = index;
 
         #region 动画
 
@@ -391,23 +398,26 @@ namespace AntdUI
                 style.SelectedIndexChanged(value, old);
                 SelectedIndexChanged?.Invoke(this, new IntEventArgs(value));
                 Invalidate();
-                ShowPage();
+                ShowPage(_select);
+                OnPropertyChanged("SelectedIndex");
             }
         }
 
-        internal void ShowPage()
+        internal void ShowPage(int index)
         {
             if (showok)
             {
-                BeginInvoke(new Action(() =>
+                if (items == null) return;
+                if (items.Count > 1)
                 {
-                    Controls.Clear();
-                    if (items == null) return;
-                    if (items.Count <= _select || _select < 0) return;
-                    var item = items[_select];
-                    item.DpiAuto();
-                    Controls.Add(item);
-                }));
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        if (i == index) continue;
+                        items[i].SetDock(false);
+                    }
+                }
+                if (items.Count <= _select || _select < 0) return;
+                items[_select].SetDock(true);
             }
         }
 
@@ -418,6 +428,11 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             style.Dispose();
+            bitblock_l?.Dispose();
+            bitblock_r?.Dispose();
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items) it.Dispose();
+            items.Clear();
             base.Dispose(disposing);
         }
 
@@ -435,7 +450,7 @@ namespace AntdUI
             base.OnHandleCreated(e);
             LoadLayout(false);
             showok = true;
-            ShowPage();
+            ShowPage(_select);
         }
 
         protected override void OnMarginChanged(EventArgs e)
@@ -1359,8 +1374,8 @@ namespace AntdUI
             action_add = item =>
             {
                 item.PARENT = it;
-                item.Dock = DockStyle.Fill;
-                it.ShowPage();
+                item.SetDock(it.Controls.Count == 0);
+                it.Controls.Add(item);
             };
             action_del = (item, index) =>
             {
@@ -1373,7 +1388,7 @@ namespace AntdUI
                     {
                         int _new = index - 1;
                         if (_new > -1) it.SelectedIndex = _new;
-                        else it.ShowPage();
+                        else it.ShowPage(_new);
                     }
                     else if (old > index) it.SelectedIndex = old - 1;
                 }
@@ -1400,6 +1415,17 @@ namespace AntdUI
         }
 
         #region 属性
+
+        DockStyle dock = DockStyle.Fill;
+        /// <summary>
+        /// 定义要绑定到容器的控件边框
+        /// </summary>
+        [Category("布局"), Description("定义要绑定到容器的控件边框"), DefaultValue(DockStyle.Fill)]
+        public new DockStyle Dock
+        {
+            get => dock;
+            set => dock = value;
+        }
 
         Image? icon = null;
         /// <summary>
@@ -1554,21 +1580,22 @@ namespace AntdUI
             base.OnVisibleChanged(e);
         }
 
-        bool isdpi = false;
-        public void DpiAuto()
+        #endregion
+
+        public void SetDock(bool isdock)
         {
-            if (isdpi) return;
-            isdpi = true;
-            if (DesignMode) return;
-            if (Config.Dpi != 1F)
+            if (InvokeRequired)
             {
-                SuspendLayout();
-                Helper.DpiAuto(Config.Dpi, this);
-                ResumeLayout();
+                Invoke(new Action(() => SetDock(isdock)));
+                return;
+            }
+            if (isdock) base.Dock = dock;
+            else
+            {
+                base.Dock = DockStyle.None;
+                Location = new Point(-Width, -Height);
             }
         }
-
-        #endregion
 
         public override string ToString() => Text;
     }

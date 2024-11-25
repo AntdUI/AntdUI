@@ -56,11 +56,11 @@ namespace AntdUI
                         else return;
                     }
                 }
-            }).ContinueWith((action =>
+            }).ContinueWith(action =>
             {
-                Dispose();
                 if (ok && end != null) end();
-            }));
+                Dispose();
+            });
         }
         public ITask(Control control, Action<float> action, int interval, float max, float add, Action? end = null)
         {
@@ -84,11 +84,11 @@ namespace AntdUI
                         Thread.Sleep(interval);
                     }
                 }
-            }).ContinueWith((action =>
+            }).ContinueWith(action =>
             {
-                Dispose();
                 if (ok && end != null) end();
-            }));
+                Dispose();
+            });
         }
 
         public ITask(Control control, Func<bool> action, int interval, Action? end = null, int sleep = 0)
@@ -111,11 +111,11 @@ namespace AntdUI
                         else return;
                     }
                 }
-            }).ContinueWith((action =>
+            }).ContinueWith(action =>
             {
-                Dispose();
                 if (ok && end != null) end();
-            }));
+                Dispose();
+            });
         }
         public ITask(Func<int, bool> action, int interval, int totalFrames, Action end, int sleep = 0)
         {
@@ -137,11 +137,11 @@ namespace AntdUI
                         else return;
                     }
                 }
-            }).ContinueWith((action =>
+            }).ContinueWith(action =>
             {
-                Dispose();
                 if (ok) end();
-            }));
+                Dispose();
+            });
         }
         public ITask(bool _is, int interval, int totalFrames, float cold, AnimationType type, Action<int, float> action, Action end)
         {
@@ -196,12 +196,12 @@ namespace AntdUI
                 }
             }).ContinueWith((action =>
             {
-                Dispose();
                 if (ok)
                 {
                     Tag = null;
                     end();
                 }
+                Dispose();
             }));
         }
 
@@ -224,6 +224,7 @@ namespace AntdUI
                 token = null;
             }
             IsRun = false;
+            GC.SuppressFinalize(this);
         }
 
         CancellationTokenSource? token = new CancellationTokenSource();

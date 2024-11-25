@@ -53,7 +53,7 @@ namespace AntdUI
                 {
                     var columns = new List<TempiColumn>(table.Columns.Count);
                     var rows = new List<IRow>(table.Rows.Count + 1);
-                    for (int i = 0; i < table.Columns.Count; i++) columns.Add(new TempiColumn(i, table.Columns[i].ColumnName));
+                    for (int i = 0; i < table.Columns.Count; i++) columns.Add(new TempiColumn(i, table.Columns[i]));
                     for (int i = 0; i < table.Rows.Count; i++)
                     {
                         var row = table.Rows[i];
@@ -394,6 +394,12 @@ namespace AntdUI
 
         class TempiColumn
         {
+            public TempiColumn(int index, DataColumn dataColumn)
+            {
+                i = index;
+                key = dataColumn.ColumnName;
+                if (!string.IsNullOrEmpty(dataColumn.Caption)) text = dataColumn.Caption;
+            }
             public TempiColumn(int index, string name)
             {
                 i = index;
@@ -403,6 +409,8 @@ namespace AntdUI
             /// 表头名称
             /// </summary>
             public string key { get; set; }
+
+            public string? text { get; set; }
 
             /// <summary>
             /// 列序号

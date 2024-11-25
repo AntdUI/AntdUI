@@ -120,7 +120,7 @@ namespace Demo.Controls
             panel1.Controls.Add(button3);
             panel1.Controls.Add(button8);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 117);
+            panel1.Location = new Point(0, 129);
             panel1.Name = "panel1";
             panel1.Size = new Size(1300, 196);
             panel1.TabIndex = 8;
@@ -213,10 +213,10 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Dropdown.{id}";
-            divider2.Location = new Point(0, 95);
+            divider2.Location = new Point(0, 101);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(1300, 22);
+            divider2.Size = new Size(1300, 28);
             divider2.TabIndex = 7;
             divider2.Text = "六种方向";
             // 
@@ -227,7 +227,7 @@ namespace Demo.Controls
             panel4.Controls.Add(dropdown1);
             panel4.Controls.Add(button7);
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 22);
+            panel4.Location = new Point(0, 28);
             panel4.Name = "panel4";
             panel4.Size = new Size(1300, 73);
             panel4.TabIndex = 2;
@@ -278,7 +278,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(1300, 22);
+            divider1.Size = new Size(1300, 28);
             divider1.TabIndex = 1;
             divider1.Text = "按钮类型";
             // 

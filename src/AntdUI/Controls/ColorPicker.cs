@@ -63,7 +63,7 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
             }
@@ -186,11 +186,13 @@ namespace AntdUI
             get => _value;
             set
             {
+                hasvalue = true;
                 if (value == _value) return;
                 if (DisabledAlpha && value.A != 255) value = Color.FromArgb(255, value);
                 _value = value;
-                ValueChanged?.Invoke(this, new ColorEventArgs(value));
                 if (BeforeAutoSize()) Invalidate();
+                ValueChanged?.Invoke(this, new ColorEventArgs(value));
+                OnPropertyChanged("Value");
             }
         }
 
@@ -215,6 +217,71 @@ namespace AntdUI
         /// </summary>
         [Description("禁用透明度"), Category("行为"), DefaultValue(false)]
         public bool DisabledAlpha { get; set; }
+
+        bool allowclear = false;
+        /// <summary>
+        /// 支持清除
+        /// </summary>
+        [Description("支持清除"), Category("行为"), DefaultValue(false)]
+        public bool AllowClear
+        {
+            get => allowclear;
+            set
+            {
+                if (allowclear == value) return;
+                allowclear = value;
+                Invalidate();
+            }
+        }
+
+        bool hasvalue = false;
+        /// <summary>
+        /// 是否包含值
+        /// </summary>
+        public bool HasValue
+        {
+            get
+            {
+                if (allowclear) return hasvalue;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 获取颜色值
+        /// </summary>
+        public Color? ValueClear
+        {
+            get
+            {
+                if (allowclear && hasvalue) return null;
+                return _value;
+            }
+        }
+
+        /// <summary>
+        /// 清空值
+        /// </summary>
+        public void ClearValue() => ClearValue(Style.Db.Primary);
+
+        /// <summary>
+        /// 清空值
+        /// </summary>
+        /// <param name="def">默认色</param>
+        public void ClearValue(Color def)
+        {
+            if (allowclear)
+            {
+                if (hasvalue)
+                {
+                    hasvalue = false;
+                    _value = def;
+                    Invalidate();
+                    ValueChanged?.Invoke(this, new ColorEventArgs(_value));
+                }
+                else _value = def;
+            }
+        }
 
         TColorMode mode = TColorMode.Hex;
         /// <summary>
@@ -323,11 +390,7 @@ namespace AntdUI
                     if (borderWidth > 0)
                     {
                         var borWidth = borderWidth * Config.Dpi;
-                        if (AnimationHover)
-                        {
-                            g.Draw(_border, borWidth, path);
-                            g.Draw(Helper.ToColor(AnimationHoverValue, _borderHover), borWidth, path);
-                        }
+                        if (AnimationHover) g.Draw(_border.BlendColors(AnimationHoverValue, _borderHover), borWidth, path);
                         else if (ExtraMouseDown) g.Draw(_borderActive, borWidth, path);
                         else if (ExtraMouseHover) g.Draw(_borderHover, borWidth, path);
                         else g.Draw(_border, borWidth, path);
@@ -335,6 +398,7 @@ namespace AntdUI
                 }
                 else
                 {
+                    _fore = Style.Db.TextQuaternary;
                     g.Fill(Style.Db.FillTertiary, path);
                     if (borderWidth > 0) g.Draw(_border, borderWidth * Config.Dpi, path);
                 }
@@ -343,11 +407,7 @@ namespace AntdUI
                 {
                     int gap = (rect_read.Height - size_color) / 2;
                     var rect_color = new Rectangle(rect_read.X + gap, rect_read.Y + gap, size_color, size_color);
-                    using (var path_color = rect_color.RoundPath(r))
-                    {
-                        PaintAlpha(g, r, rect_color);
-                        g.Fill(_value, path_color);
-                    }
+                    PaintValue(g, r, rect_color);
                     using (var brush = new SolidBrush(_fore))
                     {
                         var wi = gap * 2 + size_color;
@@ -371,15 +431,34 @@ namespace AntdUI
                 {
                     int size_colorw = (int)(rect_read.Width * 0.75F);
                     var rect_color = new Rectangle(rect_read.X + (rect_read.Width - size_colorw) / 2, rect_read.Y + (rect_read.Height - size_color) / 2, size_colorw, size_color);
-                    using (var path_color = rect_color.RoundPath(r))
-                    {
-                        PaintAlpha(g, r, rect_color);
-                        g.Fill(_value, path_color);
-                    }
+                    PaintValue(g, r, rect_color);
                 }
             }
             this.PaintBadge(g);
             base.OnPaint(e);
+        }
+
+        void PaintValue(Canvas g, float r, Rectangle rect_color)
+        {
+            using (var path = rect_color.RoundPath(r))
+            {
+                var has = HasValue;
+                if (allowclear && !hasvalue)
+                {
+                    g.SetClip(path);
+                    using (var pen = new Pen(Color.FromArgb(245, 34, 45), rect_color.Height * .12F))
+                    {
+                        g.DrawLine(pen, new Point(rect_color.X, rect_color.Bottom), new Point(rect_color.Right, rect_color.Y));
+                    }
+                    g.ResetClip();
+                    g.Draw(Style.Db.Split, Config.Dpi, path);
+                }
+                else
+                {
+                    PaintAlpha(g, r, rect_color);
+                    g.Fill(_value, path);
+                }
+            }
         }
 
         Bitmap? bmp_alpha = null;

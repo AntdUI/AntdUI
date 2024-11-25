@@ -707,15 +707,9 @@ namespace AntdUI
             }
         }
 
-        public static Point AlignPoint(this TAlign align, Rectangle rect, Rectangle size)
-        {
-            return AlignPoint(align, rect.Location, rect.Size, size.Width, size.Height);
-        }
+        public static Point AlignPoint(this TAlign align, Rectangle rect, Rectangle size) => AlignPoint(align, rect.Location, rect.Size, size.Width, size.Height);
 
-        public static Point AlignPoint(this TAlign align, Rectangle rect, int width, int height)
-        {
-            return AlignPoint(align, rect.Location, rect.Size, width, height);
-        }
+        public static Point AlignPoint(this TAlign align, Rectangle rect, int width, int height) => AlignPoint(align, rect.Location, rect.Size, width, height);
 
         #endregion
     }

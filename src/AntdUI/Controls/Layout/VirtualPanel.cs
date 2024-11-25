@@ -81,6 +81,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -100,6 +101,7 @@ namespace AntdUI
                 shadow = value;
                 DisposeShadow();
                 LoadLayout();
+                OnPropertyChanged("Shadow");
             }
         }
 
@@ -118,6 +120,7 @@ namespace AntdUI
                 shadowColor = value;
                 DisposeShadow();
                 LoadLayout();
+                OnPropertyChanged("ShadowColor");
             }
         }
 
@@ -135,6 +138,7 @@ namespace AntdUI
                 shadowOffsetX = value;
                 DisposeShadow();
                 LoadLayout();
+                OnPropertyChanged("ShadowOffsetX");
             }
         }
 
@@ -152,6 +156,7 @@ namespace AntdUI
                 shadowOffsetY = value;
                 DisposeShadow();
                 LoadLayout();
+                OnPropertyChanged("ShadowOffsetY");
             }
         }
 
@@ -170,6 +175,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacity = value;
                 Invalidate();
+                OnPropertyChanged("ShadowOpacity");
             }
         }
 
@@ -194,6 +200,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacityHover = value;
                 Invalidate();
+                OnPropertyChanged("ShadowOpacityHover");
             }
         }
 
@@ -208,6 +215,7 @@ namespace AntdUI
                 shadowAlign = value;
                 DisposeShadow();
                 LoadLayout();
+                OnPropertyChanged("ShadowAlign");
             }
         }
 
@@ -238,6 +246,7 @@ namespace AntdUI
                 gap = value;
                 LoadLayout();
                 Invalidate();
+                OnPropertyChanged("Gap");
             }
         }
 
@@ -258,6 +267,7 @@ namespace AntdUI
                 if (emptyText == value) return;
                 emptyText = value;
                 Invalidate();
+                OnPropertyChanged("EmptyText");
             }
         }
 
@@ -369,6 +379,7 @@ namespace AntdUI
                     LoadLayout();
                     Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
         }
 

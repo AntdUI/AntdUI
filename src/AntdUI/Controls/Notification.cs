@@ -363,23 +363,17 @@ namespace AntdUI
                 {
                     if (close_button.Animation)
                     {
-                        using (var brush = new SolidBrush(Helper.ToColor(close_button.Value, Style.Db.FillSecondary)))
+                        using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
-                            using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
-                            {
-                                g.Fill(brush, path);
-                            }
+                            g.Fill(Helper.ToColor(close_button.Value, Style.Db.FillSecondary), path);
                         }
                         g.PaintIconClose(rect_close, Style.Db.Text, .6F);
                     }
                     else if (close_button.Switch)
                     {
-                        using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                        using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
-                            using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
-                            {
-                                g.Fill(brush, path);
-                            }
+                            g.Fill(Style.Db.FillSecondary, path);
                         }
                         g.PaintIconClose(rect_close, Style.Db.Text, .6F);
                     }
@@ -392,10 +386,9 @@ namespace AntdUI
                 }
                 if (config.Link != null)
                 {
-                    using (var brush = new SolidBrush(Style.Db.Primary))
                     using (var pen = new Pen(Style.Db.Primary, Config.Dpi))
                     {
-                        g.String(config.Link.Text, Font, brush, rect_link_text, s_f);
+                        g.String(config.Link.Text, Font, Style.Db.Primary, rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
                     }
                 }

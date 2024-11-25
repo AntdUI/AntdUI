@@ -31,6 +31,7 @@ namespace AntdUI
         Drawer.Config config;
         int padding = 24;
         ILayeredForm? formMask = null;
+        public bool isclose = false;
         public LayeredFormDrawer(Drawer.Config _config, ILayeredForm mask) : this(_config)
         {
             formMask = mask;
@@ -38,6 +39,7 @@ namespace AntdUI
             {
                 mask.Click += (s1, e1) =>
                 {
+                    isclose = true;
                     IClose();
                 };
             }
@@ -362,7 +364,7 @@ namespace AntdUI
                 form_.BackColor = Style.Db.BgElevated;
                 form_.FormBorderStyle = FormBorderStyle.None;
                 form_.Location = hidelocation;
-                form_.Size = rect.Size;
+                form_.ClientSize = rect.Size;
                 form = form_;
             }
             else
@@ -372,7 +374,7 @@ namespace AntdUI
                     BackColor = Style.Db.BgElevated,
                     FormBorderStyle = FormBorderStyle.None,
                     Location = hidelocation,
-                    Size = rect.Size
+                    ClientSize = rect.Size
                 };
             }
             if (!config.Dispose && config.Content.Tag is Size size)
@@ -392,21 +394,21 @@ namespace AntdUI
             };
             form.Show(this);
             form.Location = hidelocation;
-            form.Size = rect.Size;
+            form.ClientSize = rect.Size;
         }
 
         void ShowContent()
         {
             if (form == null) return;
             var rect = Ang();
+            if (form.ClientSize != rect.Size) form.ClientSize = rect.Size;
             form.Location = rect.Location;
-            form.Size = rect.Size;
-            tempContent?.Dispose();
-            tempContent = null;
             config.OnLoad?.Invoke();
             LoadOK?.Invoke();
             if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
             config.Content.SizeChanged += Content_SizeChanged;
+            tempContent?.Dispose();
+            tempContent = null;
         }
 
         bool isok = true;
@@ -551,6 +553,7 @@ namespace AntdUI
         protected override void DestroyHandle()
         {
             base.DestroyHandle();
+            isclose = true;
             formMask?.IClose();
         }
 

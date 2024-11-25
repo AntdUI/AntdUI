@@ -34,10 +34,7 @@ namespace AntdUI
         /// <param name="form">所属窗口</param>
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
-        public static DialogResult open(Form form, string title, string content)
-        {
-            return open(new Config(form, title, content));
-        }
+        public static DialogResult open(Form form, string title, string content) => open(new Config(form, title, content));
 
         /// <summary>
         /// Model 对话框
@@ -45,10 +42,7 @@ namespace AntdUI
         /// <param name="form">所属窗口</param>
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
-        public static DialogResult open(Form form, string title, object content)
-        {
-            return open(new Config(form, title, content));
-        }
+        public static DialogResult open(Form form, string title, object content) => open(new Config(form, title, content));
 
         /// <summary>
         /// Model 对话框
@@ -57,10 +51,7 @@ namespace AntdUI
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
         /// <param name="icon">图标</param>
-        public static DialogResult open(Form form, string title, string content, TType icon)
-        {
-            return open(new Config(form, title, content, icon));
-        }
+        public static DialogResult open(Form form, string title, string content, TType icon) => open(new Config(form, title, content, icon));
 
         /// <summary>
         /// Model 对话框
@@ -84,18 +75,7 @@ namespace AntdUI
                 return dialog;
             }
             var frm = new LayeredFormModal(config);
-            if (config.Mask)
-            {
-                bool isclose = false;
-                var formMask = config.Form.FormMask();
-                frm.FormClosed += (s1, e1) =>
-                {
-                    if (isclose) return;
-                    isclose = true;
-                    formMask.IClose();
-                };
-                return frm.ShowDialog(formMask);
-            }
+            if (config.Mask) return frm.ShowDialog(config.Form.FormMask(frm));
             else return frm.ShowDialog(config.Form);
         }
 
@@ -107,20 +87,14 @@ namespace AntdUI
         /// <param name="form">所属窗口</param>
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
-        public static Config config(Form form, string title, string content)
-        {
-            return new Config(form, title, content);
-        }
+        public static Config config(Form form, string title, string content) => new Config(form, title, content);
 
         /// <summary>
         /// Model 配置
         /// </summary>
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
-        public static Config config(string title, string content)
-        {
-            return new Config(title, content);
-        }
+        public static Config config(string title, string content) => new Config(title, content);
 
         /// <summary>
         /// Model 配置
@@ -128,20 +102,14 @@ namespace AntdUI
         /// <param name="form">所属窗口</param>
         /// <param name="title">标题</param>
         /// <param name="content">控件/Obj</param>
-        public static Config config(Form form, string title, object content)
-        {
-            return new Config(form, title, content);
-        }
+        public static Config config(Form form, string title, object content) => new Config(form, title, content);
 
         /// <summary>
         /// Model 配置
         /// </summary>
         /// <param name="title">标题</param>
         /// <param name="content">控件/Obj</param>
-        public static Config config(string title, object content)
-        {
-            return new Config(title, content);
-        }
+        public static Config config(string title, object content) => new Config(title, content);
 
         /// <summary>
         /// Model 配置
@@ -150,10 +118,7 @@ namespace AntdUI
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
         /// <param name="icon">图标</param>
-        public static Config config(Form form, string title, string content, TType icon)
-        {
-            return new Config(form, title, content, icon);
-        }
+        public static Config config(Form form, string title, string content, TType icon) => new Config(form, title, content, icon);
 
         /// <summary>
         /// Model 配置
@@ -161,10 +126,7 @@ namespace AntdUI
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
         /// <param name="icon">图标</param>
-        public static Config config(string title, string content, TType icon)
-        {
-            return new Config(title, content, icon);
-        }
+        public static Config config(string title, string content, TType icon) => new Config(title, content, icon);
 
         /// <summary>
         /// Model 配置
@@ -173,10 +135,7 @@ namespace AntdUI
         /// <param name="title">标题</param>
         /// <param name="content">控件/Obj</param>
         /// <param name="icon">图标</param>
-        public static Config config(Form form, string title, object content, TType icon)
-        {
-            return new Config(form, title, content, icon);
-        }
+        public static Config config(Form form, string title, object content, TType icon) => new Config(form, title, content, icon);
 
         /// <summary>
         /// Model 配置
@@ -184,10 +143,7 @@ namespace AntdUI
         /// <param name="title">标题</param>
         /// <param name="content">控件/Obj</param>
         /// <param name="icon">图标</param>
-        public static Config config(string title, object content, TType icon)
-        {
-            return new Config(title, content, icon);
-        }
+        public static Config config(string title, object content, TType icon) => new Config(title, content, icon);
 
         #endregion
 

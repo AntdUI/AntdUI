@@ -89,6 +89,7 @@ namespace AntdUI
                 currentValue = Constrain(value);
                 Text = GetNumberText(currentValue);
                 ValueChanged?.Invoke(this, new DecimalEventArgs(currentValue));
+                OnPropertyChanged("Value");
             }
         }
 
@@ -287,13 +288,9 @@ namespace AntdUI
 
                 if (hover_button_up.Animation)
                 {
-                    using (var pen_def = new Pen(borColor, Config.Dpi))
+                    using (var pen = new Pen(borColor.BlendColors(hover_button_up.Value, borderActive), Config.Dpi))
                     {
-                        g.DrawLines(pen_def, TAlignMini.Top.TriangleLines(rect_button_up));
-                        using (var brush_hove = new Pen(Helper.ToColor(hover_button_up.Value, borderActive), pen_def.Width))
-                        {
-                            g.DrawLines(brush_hove, TAlignMini.Top.TriangleLines(rect_button_up));
-                        }
+                        g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_button_up));
                     }
                 }
                 else if (hover_button_up.Switch)
@@ -305,21 +302,17 @@ namespace AntdUI
                 }
                 else
                 {
-                    using (var pen_def = new Pen(borColor, Config.Dpi))
+                    using (var pen = new Pen(borColor, Config.Dpi))
                     {
-                        g.DrawLines(pen_def, TAlignMini.Top.TriangleLines(rect_button_up));
+                        g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_button_up));
                     }
                 }
 
                 if (hover_button_bottom.Animation)
                 {
-                    using (var pen_def = new Pen(borColor, Config.Dpi))
+                    using (var pen = new Pen(borColor.BlendColors(hover_button_bottom.Value, borderActive), Config.Dpi))
                     {
-                        g.DrawLines(pen_def, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
-                        using (var brush_hove = new Pen(Helper.ToColor(hover_button_bottom.Value, borderActive), pen_def.Width))
-                        {
-                            g.DrawLines(brush_hove, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
-                        }
+                        g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                     }
                 }
                 else if (hover_button_bottom.Switch)
@@ -331,9 +324,9 @@ namespace AntdUI
                 }
                 else
                 {
-                    using (var pen_def = new Pen(borColor, Config.Dpi))
+                    using (var pen = new Pen(borColor, Config.Dpi))
                     {
-                        g.DrawLines(pen_def, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
+                        g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                     }
                 }
             }

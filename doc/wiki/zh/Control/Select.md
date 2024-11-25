@@ -22,7 +22,7 @@ Select 选择器 👚
 **ClickEnd** | 点击到最里层 `无节点才能点击` | bool | false |
 **ClickSwitchDropdown** 🔴 | 点击切换下拉 | bool | true |
 ||||
-**Items** | 数据 [更多样式](../下拉更多样式) | object[] | [] |
+**Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |
 **SelectedIndex** | 选中序号 | int | -1 |
 **SelectedValue** | 选中值 | object`?` | `null` |
 
@@ -61,7 +61,7 @@ Select 多选器 👚
 **CheckMode** 🔴 | 复选框模式 | bool | false |
 **CanDelete** 🔴 | 是否可以删除 | bool | true |
 ||||
-**Items** | 数据 [更多样式](../下拉更多样式) | object[] | [] |
+**Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |
 **SelectedValue** | 选中值 | object[] | |
 
 ### 方法

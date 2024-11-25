@@ -99,7 +99,7 @@ namespace Demo.Controls
             collapse1.Items.Add(collapseItem1);
             collapse1.Items.Add(collapseItem2);
             collapse1.Items.Add(collapseItem3);
-            collapse1.Location = new Point(0, 22);
+            collapse1.Location = new Point(0, 28);
             collapse1.Name = "collapse1";
             collapse1.Size = new Size(723, 448);
             collapse1.TabIndex = 0;
@@ -183,7 +183,7 @@ namespace Demo.Controls
             collapse2.Items.Add(collapseItem4);
             collapse2.Items.Add(collapseItem5);
             collapse2.Items.Add(collapseItem6);
-            collapse2.Location = new Point(0, 492);
+            collapse2.Location = new Point(0, 504);
             collapse2.Name = "collapse2";
             collapse2.Size = new Size(723, 247);
             collapse2.TabIndex = 2;
@@ -252,10 +252,10 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Collapse.{id}";
-            divider2.Location = new Point(0, 470);
+            divider2.Location = new Point(0, 476);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(723, 22);
+            divider2.Size = new Size(723, 28);
             divider2.TabIndex = 1;
             divider2.Text = "无边框";
             // 
@@ -267,7 +267,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(723, 22);
+            divider1.Size = new Size(723, 28);
             divider1.TabIndex = 0;
             divider1.Text = "常规";
             // 

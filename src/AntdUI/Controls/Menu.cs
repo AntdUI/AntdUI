@@ -62,9 +62,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -88,6 +89,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -104,6 +106,7 @@ namespace AntdUI
                 if (round == value) return;
                 round = value;
                 Invalidate();
+                OnPropertyChanged("Round");
             }
         }
 
@@ -120,6 +123,7 @@ namespace AntdUI
                 if (theme == value) return;
                 theme = value;
                 Invalidate();
+                OnPropertyChanged("Theme");
             }
         }
 
@@ -140,6 +144,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("IconRatio");
             }
         }
 
@@ -160,6 +165,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("Mode");
             }
         }
 
@@ -205,8 +211,12 @@ namespace AntdUI
             {
                 if (collapsed == value) return;
                 collapsed = value;
-                Width = value ? CollapseWidth : CollapsedWidth;
-                OnSizeChanged(EventArgs.Empty);
+                if (IsHandleCreated)
+                {
+                    ChangeList();
+                    Invalidate();
+                }
+                OnPropertyChanged("Collapsed");
             }
         }
 
@@ -270,6 +280,15 @@ namespace AntdUI
             OnSelectIndexChanged(it3);
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it3.rect.Y;
             Invalidate();
+        }
+
+        /// <summary>
+        /// 获取选中项索引
+        /// </summary>
+        public int GetSelectIndex(MenuItem item)
+        {
+            if (items != null) return items.IndexOf(item);
+            else return -1;
         }
 
         /// <summary>
@@ -367,6 +386,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
         }
 
@@ -404,7 +424,17 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
-        internal int CollapseWidth = 0, CollapsedWidth = 0;
+        int collapseWidth = 0, collapsedWidth = 0;
+        /// <summary>
+        /// 展开之前宽度
+        /// </summary>
+        public int CollapseWidth => collapseWidth;
+
+        /// <summary>
+        /// 展开后宽度
+        /// </summary>
+        public int CollapsedWidth => collapsedWidth;
+
         internal Rectangle ChangeList()
         {
             var _rect = ClientRectangle;
@@ -420,11 +450,11 @@ namespace AntdUI
                 if (mode == TMenuMode.Horizontal) ChangeListHorizontal(rect, g, lists, 0, icon_size, gap, gapI);
                 else
                 {
-                    CollapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
-                    CollapsedWidth = ChangeList(rect, g, null, lists, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
+                    collapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
+                    collapsedWidth = ChangeList(rect, g, null, lists, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
                     if (AutoCollapse)
                     {
-                        if (icon_count > 0) collapsed = CollapsedWidth > _rect.Width;
+                        if (icon_count > 0) collapsed = collapsedWidth >= _rect.Width;
                         else collapsed = false;
                     }
                     if (collapsed) ChangeUTitle(lists);
@@ -1511,6 +1541,8 @@ namespace AntdUI
         internal int Depth { get; set; }
         internal float ArrowProg { get; set; } = 1F;
         internal Menu? PARENT { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MenuItem? PARENTITEM { get; set; }
 
         internal void SetRect(int depth, bool indent, Rectangle _rect, int icon_size, int gap)

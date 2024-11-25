@@ -103,6 +103,10 @@ namespace Demo
                     return "Small numerical value or status descriptor for UI elements.";
                 case "Badge.divider1":
                     return "Basic";
+                case "Badge.divider2":
+                    return "More";
+                case "Badge.tag1":
+                    return "GAMES";
 
                 //Breadcrumb ----------------------------
                 case "Breadcrumb.Text":
@@ -251,6 +255,16 @@ namespace Demo
                     return "Menu";
                 case "Menu.Description":
                     return "A versatile menu for navigation.";
+                case "Menu.divider1":
+                    return "Top Navigation";
+                case "Menu.divider2":
+                    return "Inline menu";
+                case "Menu.divider3":
+                    return "Vertical menu";
+                case "Menu.expand":
+                    return "Expand";
+                case "Menu.collapse":
+                    return "Collapse";
 
                 //Message ----------------------------
                 case "Message.Text":
@@ -430,6 +444,8 @@ namespace Demo
                     return "FixedHeader";
                 case "Table.checkColumnDragSort":
                     return "ColumnDragSort";
+                case "Table.checkRowsDragSort":
+                    return "RowsDragSort";
                 case "Table.checkBordered":
                     return "Bordered";
                 case "Table.checkSetRowStyle":

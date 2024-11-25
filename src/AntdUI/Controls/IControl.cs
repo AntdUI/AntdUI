@@ -61,19 +61,15 @@ namespace AntdUI
             }
         }
 
-        bool enabled = true;
         /// <summary>
         /// 指示是否已启用该控件
         /// </summary>
         [Description("指示是否已启用该控件"), Category("行为"), DefaultValue(true)]
         public new bool Enabled
         {
-            get => enabled;
+            get => base.Enabled;
             set
             {
-                if (enabled == value) return;
-                enabled = value;
-
                 if (InvokeRequired) Invoke(new Action(() => base.Enabled = value));
                 else base.Enabled = value;
             }
@@ -83,12 +79,6 @@ namespace AntdUI
         {
             visible = base.Visible;
             base.OnVisibleChanged(e);
-        }
-
-        protected override void OnEnabledChanged(EventArgs e)
-        {
-            enabled = base.Enabled;
-            base.OnEnabledChanged(e);
         }
 
         #region 徽标
@@ -211,10 +201,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(Action action, Action? end = null)
-        {
-            Spin(new Spin.Config(), action, end);
-        }
+        public void Spin(Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config(), action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -222,10 +209,7 @@ namespace AntdUI
         /// <param name="text">加载文本</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(string text, Action action, Action? end = null)
-        {
-            Spin(new Spin.Config { Text = text }, action, end);
-        }
+        public void Spin(string text, Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config { Text = text }, action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -233,10 +217,7 @@ namespace AntdUI
         /// <param name="config">自定义配置</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(Spin.Config config, Action action, Action? end = null)
-        {
-            AntdUI.Spin.open(this, config, action, end);
-        }
+        public void Spin(Spin.Config config, Action<Spin.Config> action, Action? end = null) => AntdUI.Spin.open(this, config, action, end);
 
         #region 帮助类
 
@@ -273,6 +254,22 @@ namespace AntdUI
             OnSizeChanged(EventArgs.Empty);
         }
 
+#if NET40
+        public void OnPropertyChanged(string propertyName)
+#else
+        public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
+#endif
+        {
+            foreach (Binding it in DataBindings)
+            {
+                if (it.PropertyName == propertyName)
+                {
+                    it.WriteValue();
+                    return;
+                }
+            }
+        }
+
         #region 鼠标
 
         CursorType oldcursor = CursorType.Default;
@@ -281,6 +278,7 @@ namespace AntdUI
         {
             if (oldcursor == cursor) return;
             oldcursor = cursor;
+            bool flag = true;
             switch (cursor)
             {
                 case CursorType.Hand:
@@ -293,9 +291,11 @@ namespace AntdUI
                     SetCursor(Cursors.No);
                     break;
                 case CursorType.SizeAll:
+                    flag = false;
                     SetCursor(Cursors.SizeAll);
                     break;
                 case CursorType.VSplit:
+                    flag = false;
                     SetCursor(Cursors.VSplit);
                     break;
                 case CursorType.Default:
@@ -303,6 +303,7 @@ namespace AntdUI
                     SetCursor(DefaultCursor);
                     break;
             }
+            SetWindow(flag);
         }
         void SetCursor(Cursor cursor)
         {
@@ -315,6 +316,15 @@ namespace AntdUI
                 return;
             }
             Cursor = cursor;
+        }
+
+        bool setwindow = false;
+        void SetWindow(bool flag)
+        {
+            if (setwindow == flag) return;
+            setwindow = flag;
+            var form = Parent.FindPARENT();
+            if (form is BaseForm baseForm) baseForm.EnableHitTest = setwindow;
         }
 
         [Description("悬停光标"), Category("光标"), DefaultValue(typeof(Cursor), "Hand")]
@@ -448,6 +458,76 @@ namespace AntdUI
             taskTouch?.Dispose();
             taskTouch = null;
             base.OnMouseWheel(e);
+        }
+
+        #endregion
+
+        #region 拖拽
+
+        protected virtual void OnDragEnter()
+        { }
+        protected virtual void OnDragLeave()
+        { }
+
+        FileDropHandler? fileDrop = null;
+        /// <summary>
+        /// 使用管理员权限拖拽上传
+        /// </summary>
+        public void UseAdmin()
+        {
+            if (fileDrop == null) fileDrop = new FileDropHandler(this);
+        }
+
+        protected override void OnDragEnter(DragEventArgs e)
+        {
+            base.OnDragEnter(e);
+            if (AllowDrop)
+            {
+                OnDragEnter();
+                e.Effect = DragDropEffects.All;
+            }
+        }
+
+        protected override void OnDragLeave(EventArgs e)
+        {
+            base.OnDragLeave(e);
+            OnDragLeave();
+        }
+
+        protected override void OnDragDrop(DragEventArgs e)
+        {
+            base.OnDragDrop(e);
+            if (e.Data == null) return;
+            foreach (string format in e.Data.GetFormats())
+            {
+                if (e.Data.GetData(format) is string[] files)
+                {
+                    DragChanged?.Invoke(this, new StringsEventArgs(files));
+                    OnDragLeave();
+                    return;
+                }
+            }
+        }
+
+        #region 事件
+
+        /// <summary>
+        /// Bool 类型事件
+        /// </summary>
+        public delegate void DragEventHandler(object sender, StringsEventArgs e);
+
+        /// <summary>
+        /// 文件拖拽后时发生
+        /// </summary>
+        [Description("文件拖拽后时发生"), Category("行为")]
+        public event DragEventHandler? DragChanged = null;
+
+        #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            fileDrop?.Dispose();
+            base.Dispose(disposing);
         }
 
         #endregion

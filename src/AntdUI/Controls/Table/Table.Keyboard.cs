@@ -28,48 +28,77 @@ namespace AntdUI
             switch (keyData)
             {
                 case Keys.Control | Keys.C:
-                    if (ClipboardCopy && rows != null && selectedIndex > -1) CopyData(selectedIndex);
+                    if (ClipboardCopy && rows != null && selectedIndex.Length > 0)
+                    {
+                        CopyData(selectedIndex);
+                        if (HandShortcutKeys) return true;
+                    }
                     break;
                 case Keys.Down:
                     if (rows != null)
                     {
-                        if (selectedIndex == -1) ScrollBar.ValueY += 50;
-                        else if (selectedIndex < rows.Length - 1)
+                        if (selectedIndex.Length == 0) ScrollBar.ValueY += 50;
+                        else if (selectedIndex[selectedIndex.Length - 1] < rows.Length - 1)
                         {
-                            SelectedIndex++;
-                            ScrollLine(selectedIndex, rows);
+                            int value = selectedIndex[selectedIndex.Length - 1] + 1;
+                            SelectedIndex = value;
+                            ScrollLine(value, rows);
                         }
+                        else if (selectedIndex.Length > 1)
+                        {
+                            int value = selectedIndex[selectedIndex.Length - 1];
+                            SelectedIndex = value;
+                            ScrollLine(value, rows);
+                        }
+                        if (HandShortcutKeys) return true;
                     }
                     break;
                 case Keys.Up:
                     if (rows != null)
                     {
-                        if (selectedIndex == -1) ScrollBar.ValueY -= 50;
-                        else if (selectedIndex > 1)
+                        if (selectedIndex.Length == 0) ScrollBar.ValueY -= 50;
+                        else if (selectedIndex[0] > 1)
                         {
                             SelectedIndex--;
-                            ScrollLine(selectedIndex, rows);
+                            ScrollLine(selectedIndex[0], rows);
                         }
+                        if (HandShortcutKeys) return true;
                     }
                     break;
                 case Keys.PageUp:
-                    if (ScrollBar.ShowY) ScrollBar.ValueY -= rect_read.Height;
+                    if (ScrollBar.ShowY)
+                    {
+                        ScrollBar.ValueY -= rect_read.Height;
+                        if (HandShortcutKeys) return true;
+                    }
                     break;
                 case Keys.PageDown:
-                    if (ScrollBar.ShowY) ScrollBar.ValueY += rect_read.Height;
+                    if (ScrollBar.ShowY)
+                    {
+                        ScrollBar.ValueY += rect_read.Height;
+                        if (HandShortcutKeys) return true;
+                    }
                     break;
                 case Keys.Left:
-                    if (ScrollBar.ShowX) ScrollBar.ValueX -= 50;
+                    if (ScrollBar.ShowX)
+                    {
+                        ScrollBar.ValueX -= 50;
+                        if (HandShortcutKeys) return true;
+                    }
                     break;
                 case Keys.Right:
-                    if (ScrollBar.ShowX) ScrollBar.ValueX += 50;
+                    if (ScrollBar.ShowX)
+                    {
+                        ScrollBar.ValueX += 50;
+                        if (HandShortcutKeys) return true;
+                    }
                     break;
                 case Keys.Enter:
                 case Keys.Space:
-                    if (rows != null && selectedIndex > -1)
+                    if (rows != null && selectedIndex.Length > 0)
                     {
-                        var it = rows[selectedIndex];
-                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex, 0, new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height), new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0)));
+                        var it = rows[selectedIndex[0]];
+                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height), new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0)));
                     }
                     break;
             }

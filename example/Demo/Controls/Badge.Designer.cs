@@ -50,38 +50,35 @@ namespace Demo.Controls
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
-            tBadge1 = new AntdUI.Badge();
-            tBadge2 = new AntdUI.Badge();
-            tBadge3 = new AntdUI.Badge();
-            tBadge4 = new AntdUI.Badge();
-            tBadge5 = new AntdUI.Badge();
-            panel1 = new System.Windows.Forms.Panel();
-            panel3 = new System.Windows.Forms.Panel();
             tBadge6 = new AntdUI.Badge();
             tBadge7 = new AntdUI.Badge();
             tBadge8 = new AntdUI.Badge();
             tBadge9 = new AntdUI.Badge();
             tBadge10 = new AntdUI.Badge();
-            panel5 = new System.Windows.Forms.Panel();
-            panel6 = new System.Windows.Forms.Panel();
-            tBadge21 = new AntdUI.Badge();
-            tBadge22 = new AntdUI.Badge();
-            tBadge23 = new AntdUI.Badge();
-            tBadge24 = new AntdUI.Badge();
-            tBadge25 = new AntdUI.Badge();
-            tBadge26 = new AntdUI.Badge();
-            tBadge27 = new AntdUI.Badge();
-            tBadge28 = new AntdUI.Badge();
-            tBadge29 = new AntdUI.Badge();
-            tBadge30 = new AntdUI.Badge();
-            flowLayoutPanel1 = new FlowLayoutPanel();
             divider1 = new AntdUI.Divider();
             label2 = new Label();
-            panel1.SuspendLayout();
-            panel3.SuspendLayout();
-            panel5.SuspendLayout();
-            panel6.SuspendLayout();
+            badge1 = new AntdUI.Badge();
+            badge2 = new AntdUI.Badge();
+            badge3 = new AntdUI.Badge();
+            badge4 = new AntdUI.Badge();
+            badge5 = new AntdUI.Badge();
+            badge6 = new AntdUI.Badge();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            flowLayoutPanel2 = new FlowLayoutPanel();
+            divider2 = new AntdUI.Divider();
+            flowLayoutPanel3 = new FlowLayoutPanel();
+            button1 = new AntdUI.Button();
+            button2 = new AntdUI.Button();
+            button3 = new AntdUI.Button();
+            button4 = new AntdUI.Button();
+            button5 = new AntdUI.Button();
+            button6 = new AntdUI.Button();
+            tag1 = new AntdUI.Tag();
             flowLayoutPanel1.SuspendLayout();
+            flowLayoutPanel2.SuspendLayout();
+            flowLayoutPanel3.SuspendLayout();
+            button4.SuspendLayout();
+            button6.SuspendLayout();
             SuspendLayout();
             // 
             // header1
@@ -94,265 +91,49 @@ namespace Demo.Controls
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
-            header1.Size = new Size(543, 74);
+            header1.Size = new Size(616, 74);
             header1.TabIndex = 0;
             header1.Text = "Badge 徽标数";
             header1.UseTitleFont = true;
             // 
-            // tBadge1
-            // 
-            tBadge1.Dock = DockStyle.Top;
-            tBadge1.Location = new Point(6, 6);
-            tBadge1.Name = "tBadge1";
-            tBadge1.Size = new Size(202, 32);
-            tBadge1.State = AntdUI.TState.Success;
-            tBadge1.TabIndex = 0;
-            tBadge1.Text = "Success";
-            // 
-            // tBadge2
-            // 
-            tBadge2.Dock = DockStyle.Top;
-            tBadge2.Location = new Point(6, 38);
-            tBadge2.Name = "tBadge2";
-            tBadge2.Size = new Size(202, 32);
-            tBadge2.State = AntdUI.TState.Error;
-            tBadge2.TabIndex = 0;
-            tBadge2.Text = "Error";
-            // 
-            // tBadge3
-            // 
-            tBadge3.Dock = DockStyle.Top;
-            tBadge3.Location = new Point(6, 70);
-            tBadge3.Name = "tBadge3";
-            tBadge3.Size = new Size(202, 32);
-            tBadge3.TabIndex = 0;
-            tBadge3.Text = "Default";
-            // 
-            // tBadge4
-            // 
-            tBadge4.Dock = DockStyle.Top;
-            tBadge4.Location = new Point(6, 102);
-            tBadge4.Name = "tBadge4";
-            tBadge4.Size = new Size(202, 32);
-            tBadge4.State = AntdUI.TState.Processing;
-            tBadge4.TabIndex = 0;
-            tBadge4.Text = "Processing";
-            // 
-            // tBadge5
-            // 
-            tBadge5.Dock = DockStyle.Top;
-            tBadge5.Location = new Point(6, 134);
-            tBadge5.Name = "tBadge5";
-            tBadge5.Size = new Size(202, 32);
-            tBadge5.State = AntdUI.TState.Warn;
-            tBadge5.TabIndex = 0;
-            tBadge5.Text = "Warning";
-            // 
-            // panel1
-            // 
-            panel1.Controls.Add(panel3);
-            panel1.Controls.Add(tBadge5);
-            panel1.Controls.Add(tBadge4);
-            panel1.Controls.Add(tBadge3);
-            panel1.Controls.Add(tBadge2);
-            panel1.Controls.Add(tBadge1);
-            panel1.Font = new Font("Microsoft YaHei UI", 16F);
-            panel1.Location = new Point(3, 3);
-            panel1.Name = "panel1";
-            panel1.Padding = new Padding(6);
-            panel1.Size = new Size(214, 223);
-            panel1.TabIndex = 2;
-            // 
-            // panel3
-            // 
-            panel3.Controls.Add(tBadge6);
-            panel3.Controls.Add(tBadge7);
-            panel3.Controls.Add(tBadge8);
-            panel3.Controls.Add(tBadge9);
-            panel3.Controls.Add(tBadge10);
-            panel3.Dock = DockStyle.Top;
-            panel3.Font = new Font("Microsoft YaHei UI", 16F);
-            panel3.Location = new Point(6, 166);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(202, 48);
-            panel3.TabIndex = 2;
-            // 
             // tBadge6
             // 
-            tBadge6.Dock = DockStyle.Left;
-            tBadge6.Location = new Point(160, 0);
+            tBadge6.Location = new Point(141, 3);
             tBadge6.Name = "tBadge6";
-            tBadge6.Size = new Size(40, 48);
+            tBadge6.Size = new Size(40, 40);
             tBadge6.State = AntdUI.TState.Warn;
             tBadge6.TabIndex = 1;
             // 
             // tBadge7
             // 
-            tBadge7.Dock = DockStyle.Left;
-            tBadge7.Location = new Point(120, 0);
+            tBadge7.Location = new Point(95, 3);
             tBadge7.Name = "tBadge7";
-            tBadge7.Size = new Size(40, 48);
+            tBadge7.Size = new Size(40, 40);
             tBadge7.State = AntdUI.TState.Processing;
             tBadge7.TabIndex = 2;
             // 
             // tBadge8
             // 
-            tBadge8.Dock = DockStyle.Left;
-            tBadge8.Location = new Point(80, 0);
+            tBadge8.Location = new Point(3, 3);
             tBadge8.Name = "tBadge8";
-            tBadge8.Size = new Size(40, 48);
+            tBadge8.Size = new Size(40, 40);
             tBadge8.TabIndex = 3;
             // 
             // tBadge9
             // 
-            tBadge9.Dock = DockStyle.Left;
-            tBadge9.Location = new Point(40, 0);
+            tBadge9.Location = new Point(187, 3);
             tBadge9.Name = "tBadge9";
-            tBadge9.Size = new Size(40, 48);
+            tBadge9.Size = new Size(40, 40);
             tBadge9.State = AntdUI.TState.Error;
             tBadge9.TabIndex = 4;
             // 
             // tBadge10
             // 
-            tBadge10.Dock = DockStyle.Left;
-            tBadge10.Location = new Point(0, 0);
+            tBadge10.Location = new Point(49, 3);
             tBadge10.Name = "tBadge10";
-            tBadge10.Size = new Size(40, 48);
+            tBadge10.Size = new Size(40, 40);
             tBadge10.State = AntdUI.TState.Success;
             tBadge10.TabIndex = 5;
-            // 
-            // panel5
-            // 
-            panel5.Controls.Add(panel6);
-            panel5.Controls.Add(tBadge26);
-            panel5.Controls.Add(tBadge27);
-            panel5.Controls.Add(tBadge28);
-            panel5.Controls.Add(tBadge29);
-            panel5.Controls.Add(tBadge30);
-            panel5.Font = new Font("Microsoft YaHei UI", 10F);
-            panel5.Location = new Point(223, 3);
-            panel5.Name = "panel5";
-            panel5.Padding = new Padding(6);
-            panel5.Size = new Size(214, 204);
-            panel5.TabIndex = 2;
-            // 
-            // panel6
-            // 
-            panel6.Controls.Add(tBadge21);
-            panel6.Controls.Add(tBadge22);
-            panel6.Controls.Add(tBadge23);
-            panel6.Controls.Add(tBadge24);
-            panel6.Controls.Add(tBadge25);
-            panel6.Dock = DockStyle.Top;
-            panel6.Font = new Font("Microsoft YaHei UI", 16F);
-            panel6.Location = new Point(6, 166);
-            panel6.Name = "panel6";
-            panel6.Size = new Size(202, 38);
-            panel6.TabIndex = 2;
-            // 
-            // tBadge21
-            // 
-            tBadge21.Dock = DockStyle.Left;
-            tBadge21.Location = new Point(160, 0);
-            tBadge21.Name = "tBadge21";
-            tBadge21.Size = new Size(40, 38);
-            tBadge21.State = AntdUI.TState.Warn;
-            tBadge21.TabIndex = 1;
-            // 
-            // tBadge22
-            // 
-            tBadge22.Dock = DockStyle.Left;
-            tBadge22.Location = new Point(120, 0);
-            tBadge22.Name = "tBadge22";
-            tBadge22.Size = new Size(40, 38);
-            tBadge22.State = AntdUI.TState.Processing;
-            tBadge22.TabIndex = 2;
-            // 
-            // tBadge23
-            // 
-            tBadge23.Dock = DockStyle.Left;
-            tBadge23.Location = new Point(80, 0);
-            tBadge23.Name = "tBadge23";
-            tBadge23.Size = new Size(40, 38);
-            tBadge23.TabIndex = 3;
-            // 
-            // tBadge24
-            // 
-            tBadge24.Dock = DockStyle.Left;
-            tBadge24.Location = new Point(40, 0);
-            tBadge24.Name = "tBadge24";
-            tBadge24.Size = new Size(40, 38);
-            tBadge24.State = AntdUI.TState.Error;
-            tBadge24.TabIndex = 4;
-            // 
-            // tBadge25
-            // 
-            tBadge25.Dock = DockStyle.Left;
-            tBadge25.Location = new Point(0, 0);
-            tBadge25.Name = "tBadge25";
-            tBadge25.Size = new Size(40, 38);
-            tBadge25.State = AntdUI.TState.Success;
-            tBadge25.TabIndex = 5;
-            // 
-            // tBadge26
-            // 
-            tBadge26.Dock = DockStyle.Top;
-            tBadge26.Location = new Point(6, 134);
-            tBadge26.Name = "tBadge26";
-            tBadge26.Size = new Size(202, 32);
-            tBadge26.State = AntdUI.TState.Warn;
-            tBadge26.TabIndex = 0;
-            tBadge26.Text = "Warning";
-            // 
-            // tBadge27
-            // 
-            tBadge27.Dock = DockStyle.Top;
-            tBadge27.Location = new Point(6, 102);
-            tBadge27.Name = "tBadge27";
-            tBadge27.Size = new Size(202, 32);
-            tBadge27.State = AntdUI.TState.Processing;
-            tBadge27.TabIndex = 0;
-            tBadge27.Text = "Processing";
-            // 
-            // tBadge28
-            // 
-            tBadge28.Dock = DockStyle.Top;
-            tBadge28.Location = new Point(6, 70);
-            tBadge28.Name = "tBadge28";
-            tBadge28.Size = new Size(202, 32);
-            tBadge28.TabIndex = 0;
-            tBadge28.Text = "Default";
-            // 
-            // tBadge29
-            // 
-            tBadge29.Dock = DockStyle.Top;
-            tBadge29.Location = new Point(6, 38);
-            tBadge29.Name = "tBadge29";
-            tBadge29.Size = new Size(202, 32);
-            tBadge29.State = AntdUI.TState.Error;
-            tBadge29.TabIndex = 0;
-            tBadge29.Text = "Error";
-            // 
-            // tBadge30
-            // 
-            tBadge30.Dock = DockStyle.Top;
-            tBadge30.Location = new Point(6, 6);
-            tBadge30.Name = "tBadge30";
-            tBadge30.Size = new Size(202, 32);
-            tBadge30.State = AntdUI.TState.Success;
-            tBadge30.TabIndex = 0;
-            tBadge30.Text = "Success";
-            // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.AutoScroll = true;
-            flowLayoutPanel1.Controls.Add(panel1);
-            flowLayoutPanel1.Controls.Add(panel5);
-            flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.Location = new Point(0, 96);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(543, 489);
-            flowLayoutPanel1.TabIndex = 4;
             // 
             // divider1
             // 
@@ -362,8 +143,8 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 74);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(543, 22);
-            divider1.TabIndex = 5;
+            divider1.Size = new Size(616, 28);
+            divider1.TabIndex = 0;
             divider1.Text = "基本";
             // 
             // label2
@@ -376,51 +157,247 @@ namespace Demo.Controls
             label2.Text = "Light";
             label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // badge1
+            // 
+            badge1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            badge1.Location = new Point(3, 3);
+            badge1.Name = "badge1";
+            badge1.Size = new Size(86, 23);
+            badge1.TabIndex = 0;
+            badge1.Text = "Default";
+            // 
+            // badge2
+            // 
+            badge2.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            badge2.Location = new Point(95, 3);
+            badge2.Name = "badge2";
+            badge2.Size = new Size(90, 23);
+            badge2.State = AntdUI.TState.Success;
+            badge2.TabIndex = 0;
+            badge2.Text = "Success";
+            // 
+            // badge3
+            // 
+            badge3.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            badge3.Location = new Point(191, 3);
+            badge3.Name = "badge3";
+            badge3.Size = new Size(89, 23);
+            badge3.State = AntdUI.TState.Primary;
+            badge3.TabIndex = 0;
+            badge3.Text = "Primary";
+            // 
+            // badge4
+            // 
+            badge4.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            badge4.Location = new Point(286, 3);
+            badge4.Name = "badge4";
+            badge4.Size = new Size(114, 23);
+            badge4.State = AntdUI.TState.Processing;
+            badge4.TabIndex = 0;
+            badge4.Text = "Processing";
+            // 
+            // badge5
+            // 
+            badge5.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            badge5.Location = new Point(406, 3);
+            badge5.Name = "badge5";
+            badge5.Size = new Size(96, 23);
+            badge5.State = AntdUI.TState.Warn;
+            badge5.TabIndex = 0;
+            badge5.Text = "Warning";
+            // 
+            // badge6
+            // 
+            badge6.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            badge6.Location = new Point(508, 3);
+            badge6.Name = "badge6";
+            badge6.Size = new Size(67, 23);
+            badge6.State = AntdUI.TState.Error;
+            badge6.TabIndex = 0;
+            badge6.Text = "Error";
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Controls.Add(badge1);
+            flowLayoutPanel1.Controls.Add(badge2);
+            flowLayoutPanel1.Controls.Add(badge3);
+            flowLayoutPanel1.Controls.Add(badge4);
+            flowLayoutPanel1.Controls.Add(badge5);
+            flowLayoutPanel1.Controls.Add(badge6);
+            flowLayoutPanel1.Dock = DockStyle.Top;
+            flowLayoutPanel1.Location = new Point(0, 102);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(616, 44);
+            flowLayoutPanel1.TabIndex = 1;
+            // 
+            // flowLayoutPanel2
+            // 
+            flowLayoutPanel2.Controls.Add(tBadge8);
+            flowLayoutPanel2.Controls.Add(tBadge10);
+            flowLayoutPanel2.Controls.Add(tBadge7);
+            flowLayoutPanel2.Controls.Add(tBadge6);
+            flowLayoutPanel2.Controls.Add(tBadge9);
+            flowLayoutPanel2.Dock = DockStyle.Top;
+            flowLayoutPanel2.Location = new Point(0, 146);
+            flowLayoutPanel2.Name = "flowLayoutPanel2";
+            flowLayoutPanel2.Size = new Size(616, 52);
+            flowLayoutPanel2.TabIndex = 2;
+            // 
+            // divider2
+            // 
+            divider2.Dock = DockStyle.Top;
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
+            divider2.LocalizationText = "Badge.{id}";
+            divider2.Location = new Point(0, 198);
+            divider2.Name = "divider2";
+            divider2.Orientation = AntdUI.TOrientation.Left;
+            divider2.Size = new Size(616, 28);
+            divider2.TabIndex = 3;
+            divider2.Text = "更多";
+            // 
+            // flowLayoutPanel3
+            // 
+            flowLayoutPanel3.Controls.Add(button1);
+            flowLayoutPanel3.Controls.Add(button2);
+            flowLayoutPanel3.Controls.Add(button3);
+            flowLayoutPanel3.Controls.Add(button4);
+            flowLayoutPanel3.Controls.Add(button6);
+            flowLayoutPanel3.Dock = DockStyle.Top;
+            flowLayoutPanel3.Location = new Point(0, 226);
+            flowLayoutPanel3.Name = "flowLayoutPanel3";
+            flowLayoutPanel3.Size = new Size(616, 121);
+            flowLayoutPanel3.TabIndex = 4;
+            // 
+            // button1
+            // 
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button1.Badge = "9";
+            button1.BorderWidth = 1F;
+            button1.Location = new Point(3, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(87, 47);
+            button1.TabIndex = 0;
+            button1.Text = "Button";
+            // 
+            // button2
+            // 
+            button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button2.Badge = " ";
+            button2.BorderWidth = 1F;
+            button2.Location = new Point(96, 3);
+            button2.Name = "button2";
+            button2.Size = new Size(63, 47);
+            button2.TabIndex = 1;
+            button2.Text = "Dot";
+            // 
+            // button3
+            // 
+            button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button3.Badge = " ";
+            button3.BadgeAlign = AntdUI.TAlignFrom.TL;
+            button3.BadgeBack = Color.Green;
+            button3.BadgeSize = 0.8F;
+            button3.BadgeSvg = "CheckSquareFilled";
+            button3.BorderWidth = 1F;
+            button3.Location = new Point(165, 3);
+            button3.Name = "button3";
+            button3.Size = new Size(67, 47);
+            button3.TabIndex = 2;
+            button3.Text = "SVG";
+            // 
+            // button4
+            // 
+            button4.BorderWidth = 1F;
+            button4.Controls.Add(button5);
+            button4.Location = new Point(238, 3);
+            button4.Name = "button4";
+            button4.Padding = new Padding(10);
+            button4.Size = new Size(107, 69);
+            button4.TabIndex = 3;
+            button4.Text = "Button";
+            // 
+            // button5
+            // 
+            button5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button5.IconSvg = "DeleteFilled";
+            button5.Location = new Point(70, 0);
+            button5.Name = "button5";
+            button5.Shape = AntdUI.TShape.Circle;
+            button5.Size = new Size(37, 37);
+            button5.TabIndex = 0;
+            button5.Type = AntdUI.TTypeMini.Error;
+            button5.Click += button5_Click;
+            // 
+            // button6
+            // 
+            button6.BorderWidth = 1F;
+            button6.Controls.Add(tag1);
+            button6.Location = new Point(351, 3);
+            button6.Name = "button6";
+            button6.Padding = new Padding(10);
+            button6.Size = new Size(130, 69);
+            button6.TabIndex = 4;
+            button6.Text = "Button";
+            // 
+            // tag1
+            // 
+            tag1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tag1.Font = new Font("Microsoft YaHei UI", 8F);
+            tag1.LocalizationText = "Badge.{id}";
+            tag1.Location = new Point(71, 3);
+            tag1.Name = "tag1";
+            tag1.Size = new Size(56, 25);
+            tag1.TabIndex = 5;
+            tag1.Text = "猥琐发育";
+            tag1.Type = AntdUI.TTypeMini.Primary;
+            // 
             // Badge
             // 
+            Controls.Add(flowLayoutPanel3);
+            Controls.Add(divider2);
+            Controls.Add(flowLayoutPanel2);
             Controls.Add(flowLayoutPanel1);
             Controls.Add(divider1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Badge";
-            Size = new Size(543, 585);
-            panel1.ResumeLayout(false);
-            panel3.ResumeLayout(false);
-            panel5.ResumeLayout(false);
-            panel6.ResumeLayout(false);
+            Size = new Size(616, 585);
             flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
+            flowLayoutPanel2.ResumeLayout(false);
+            flowLayoutPanel3.ResumeLayout(false);
+            flowLayoutPanel3.PerformLayout();
+            button4.ResumeLayout(false);
+            button6.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
         private AntdUI.PageHeader header1;
-        private AntdUI.Badge tBadge1;
-        private AntdUI.Badge tBadge2;
-        private AntdUI.Badge tBadge3;
-        private AntdUI.Badge tBadge4;
-        private AntdUI.Badge tBadge5;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel3;
         private AntdUI.Badge tBadge6;
         private AntdUI.Badge tBadge7;
         private AntdUI.Badge tBadge8;
         private AntdUI.Badge tBadge9;
         private AntdUI.Badge tBadge10;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Panel panel6;
-        private AntdUI.Badge tBadge21;
-        private AntdUI.Badge tBadge22;
-        private AntdUI.Badge tBadge23;
-        private AntdUI.Badge tBadge24;
-        private AntdUI.Badge tBadge25;
-        private AntdUI.Badge tBadge26;
-        private AntdUI.Badge tBadge27;
-        private AntdUI.Badge tBadge28;
-        private AntdUI.Badge tBadge29;
-        private AntdUI.Badge tBadge30;
-        private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.Divider divider1;
         private Label label2;
+        private AntdUI.Badge badge1;
+        private AntdUI.Badge badge2;
+        private AntdUI.Badge badge3;
+        private AntdUI.Badge badge4;
+        private AntdUI.Badge badge5;
+        private AntdUI.Badge badge6;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private AntdUI.Divider divider2;
+        private FlowLayoutPanel flowLayoutPanel3;
+        private AntdUI.Button button1;
+        private AntdUI.Button button2;
+        private AntdUI.Button button3;
+        private AntdUI.Button button4;
+        private AntdUI.Button button5;
+        private AntdUI.Button button6;
+        private AntdUI.Tag tag1;
     }
 }

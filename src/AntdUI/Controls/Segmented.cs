@@ -66,6 +66,7 @@ namespace AntdUI
                 if (barPosition == value) return;
                 barPosition = value;
                 Invalidate();
+                OnPropertyChanged("BarPosition");
             }
         }
 
@@ -82,6 +83,7 @@ namespace AntdUI
                 if (barsize == value) return;
                 barsize = value;
                 if (barPosition != TAlignMini.None) Invalidate();
+                OnPropertyChanged("BarSize");
             }
         }
 
@@ -98,6 +100,7 @@ namespace AntdUI
                 if (barpadding == value) return;
                 barpadding = value;
                 if (barPosition != TAlignMini.None) Invalidate();
+                OnPropertyChanged("BarPadding");
             }
         }
 
@@ -123,6 +126,7 @@ namespace AntdUI
                 vertical = value;
                 ChangeItems();
                 Invalidate();
+                OnPropertyChanged("Vertical");
             }
         }
 
@@ -140,6 +144,7 @@ namespace AntdUI
                 full = value;
                 ChangeItems();
                 Invalidate();
+                OnPropertyChanged("Full");
             }
         }
 
@@ -156,6 +161,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -173,6 +179,7 @@ namespace AntdUI
                 iconratio = value;
                 ChangeItems();
                 Invalidate();
+                OnPropertyChanged("IconRatio");
             }
         }
 
@@ -190,6 +197,7 @@ namespace AntdUI
                 icongap = value;
                 ChangeItems();
                 Invalidate();
+                OnPropertyChanged("IconGap");
             }
         }
 
@@ -206,6 +214,7 @@ namespace AntdUI
                 if (round == value) return;
                 round = value;
                 Invalidate();
+                OnPropertyChanged("Round");
             }
         }
 
@@ -220,6 +229,7 @@ namespace AntdUI
                 iconalign = value;
                 ChangeItems();
                 Invalidate();
+                OnPropertyChanged("IconAlign");
             }
         }
 
@@ -234,6 +244,7 @@ namespace AntdUI
                 igap = value;
                 ChangeItems();
                 Invalidate();
+                OnPropertyChanged("Gap");
             }
         }
 
@@ -251,6 +262,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
+                OnPropertyChanged("BackColor");
             }
         }
 
@@ -275,6 +287,7 @@ namespace AntdUI
                 if (backactive == value) return;
                 backactive = value;
                 Invalidate();
+                OnPropertyChanged("BackActive");
             }
         }
 
@@ -289,9 +302,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -316,6 +330,7 @@ namespace AntdUI
                 if (foreactive == value) return;
                 foreactive = value;
                 Invalidate();
+                OnPropertyChanged("ForeActive");
             }
         }
 
@@ -331,6 +346,7 @@ namespace AntdUI
                 if (full) return;
                 ChangeItems();
                 Invalidate();
+                OnPropertyChanged("RightToLeft");
             }
         }
 
@@ -365,6 +381,7 @@ namespace AntdUI
                 _select = value;
                 SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
                 SetRect(old, _select);
+                OnPropertyChanged("SelectIndex");
             }
         }
 
@@ -543,6 +560,7 @@ namespace AntdUI
                     ChangeItems();
                     Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
         }
 

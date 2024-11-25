@@ -52,6 +52,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -69,6 +70,7 @@ namespace AntdUI
                 text = value;
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -89,6 +91,7 @@ namespace AntdUI
                 if (textDesc == value) return;
                 textDesc = value;
                 Invalidate();
+                OnPropertyChanged("TextDesc");
             }
         }
 
@@ -106,6 +109,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -124,6 +128,7 @@ namespace AntdUI
                 if (iconratio == value) return;
                 iconratio = value;
                 Invalidate();
+                OnPropertyChanged("IconRatio");
             }
         }
 
@@ -140,6 +145,7 @@ namespace AntdUI
                 if (icon == value) return;
                 icon = value;
                 Invalidate();
+                OnPropertyChanged("Icon");
             }
         }
 
@@ -156,6 +162,7 @@ namespace AntdUI
                 if (iconSvg == value) return;
                 iconSvg = value;
                 Invalidate();
+                OnPropertyChanged("IconSvg");
             }
         }
 
@@ -177,6 +184,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
+                OnPropertyChanged("Back");
             }
         }
 
@@ -193,6 +201,7 @@ namespace AntdUI
                 if (backImage == value) return;
                 backImage = value;
                 Invalidate();
+                OnPropertyChanged("BackgroundImage");
             }
         }
 
@@ -209,6 +218,7 @@ namespace AntdUI
                 if (backFit == value) return;
                 backFit = value;
                 Invalidate();
+                OnPropertyChanged("BackgroundImageLayout");
             }
         }
 
@@ -229,6 +239,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 Invalidate();
+                OnPropertyChanged("BorderWidth");
             }
         }
 
@@ -246,6 +257,7 @@ namespace AntdUI
                 if (borderColor == value) return;
                 borderColor = value;
                 if (borderWidth > 0) Invalidate();
+                OnPropertyChanged("BorderColor");
             }
         }
 
@@ -262,15 +274,13 @@ namespace AntdUI
                 if (borderStyle == value) return;
                 borderStyle = value;
                 if (borderWidth > 0) Invalidate();
+                OnPropertyChanged("BorderStyle");
             }
         }
 
         #endregion
 
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding, (borderWidth / 2F * Config.Dpi));
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, (borderWidth / 2F * Config.Dpi));
 
         #endregion
 
@@ -365,11 +375,7 @@ namespace AntdUI
                 if (borderWidth > 0)
                 {
                     var borw = borderWidth * Config.Dpi;
-                    if (AnimationHover)
-                    {
-                        g.Draw(borderColor ?? Style.Db.BorderColor, borw, path);
-                        g.Draw(Helper.ToColor(AnimationHoverValue, Style.Db.PrimaryHover), borw, path);
-                    }
+                    if (AnimationHover) g.Draw((borderColor ?? Style.Db.BorderColor).BlendColors(AnimationHoverValue, Style.Db.PrimaryHover), borw, path);
                     else if (ExtraMouseHover) g.Draw(Style.Db.PrimaryHover, borw, borderStyle, path);
                     else g.Draw(borderColor ?? Style.Db.BorderColor, borw, borderStyle, path);
                 }
@@ -378,15 +384,9 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        public override Rectangle ReadRectangle
-        {
-            get => DisplayRectangle;
-        }
+        public override Rectangle ReadRectangle => DisplayRectangle;
 
-        public override GraphicsPath RenderRegion
-        {
-            get => DisplayRectangle.RoundPath(radius * Config.Dpi);
-        }
+        public override GraphicsPath RenderRegion => DisplayRectangle.RoundPath(radius * Config.Dpi);
 
         #endregion
 
@@ -394,42 +394,8 @@ namespace AntdUI
 
         #region 拖拽上传
 
-        FileDropHandler? fileDrop = null;
-        /// <summary>
-        /// 使用管理员权限拖拽上传
-        /// </summary>
-        public void UseAdmin()
-        {
-            new FileDropHandler(this);
-        }
-
-        protected override void OnDragEnter(DragEventArgs e)
-        {
-            base.OnDragEnter(e);
-            ExtraMouseHover = true;
-            e.Effect = DragDropEffects.All;
-        }
-
-        protected override void OnDragLeave(EventArgs e)
-        {
-            ExtraMouseHover = false;
-            base.OnDragLeave(e);
-        }
-
-        protected override void OnDragDrop(DragEventArgs e)
-        {
-            base.OnDragDrop(e);
-            if (e.Data == null) return;
-            foreach (string format in e.Data.GetFormats())
-            {
-                if (e.Data.GetData(format) is string[] files)
-                {
-                    DragChanged?.Invoke(this, new StringsEventArgs(files));
-                    ExtraMouseHover = false;
-                    return;
-                }
-            }
-        }
+        protected override void OnDragEnter() => ExtraMouseHover = true;
+        protected override void OnDragLeave() => ExtraMouseHover = false;
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -503,36 +469,15 @@ namespace AntdUI
 
         #endregion
 
-        #region 事件
-
-        public class StringsEventArgs : VEventArgs<string[]>
-        {
-            public StringsEventArgs(string[] value) : base(value) { }
-        }
-
-        /// <summary>
-        /// Bool 类型事件
-        /// </summary>
-        public delegate void DragEventHandler(object sender, StringsEventArgs e);
-
-        /// <summary>
-        /// 文件拖拽后时发生
-        /// </summary>
-        [Description("文件拖拽后时发生"), Category("行为")]
-        public event DragEventHandler? DragChanged = null;
-
-        #endregion
-
         protected override void Dispose(bool disposing)
         {
             ThreadHover?.Dispose();
-            fileDrop?.Dispose();
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;
     }
 
-    sealed class FileDropHandler : IMessageFilter, IDisposable
+    public sealed class FileDropHandler : IMessageFilter, IDisposable
     {
         #region native members
 
@@ -622,9 +567,6 @@ namespace AntdUI
             return false;
         }
 
-        public void Dispose()
-        {
-            Application.RemoveMessageFilter(this);
-        }
+        public void Dispose() => Application.RemoveMessageFilter(this);
     }
 }

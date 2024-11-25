@@ -337,8 +337,13 @@ namespace AntdUI
             base.DestroyHandle();
             btn_ok?.Dispose();
             btn_no?.Dispose();
-            panel_main?.Dispose();
             close_button.Dispose();
+            if (panel_main != null)
+            {
+                panel_main.MouseMove -= Window_MouseDown;
+                panel_main?.Dispose();
+                panel_main = null;
+            }
             if (config.Content is Control control) control.Dispose();
             stringLeft.Dispose();
             stringTL.Dispose();
@@ -367,10 +372,7 @@ namespace AntdUI
             base.WndProc(ref m);
         }
 
-        void Window_MouseDown(object? sender, MouseEventArgs e)
-        {
-            DraggableMouseDown();
-        }
+        void Window_MouseDown(object? sender, MouseEventArgs e) => DraggableMouseDown();
 
         Rectangle rectIcon, rectTitle, rectContent;
         Rectangle[] rectsContent;
@@ -386,12 +388,9 @@ namespace AntdUI
             {
                 if (close_button.Animation)
                 {
-                    using (var brush = new SolidBrush(Helper.ToColor(close_button.Value, Style.Db.FillSecondary)))
+                    using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
-                        {
-                            g.Fill(brush, path);
-                        }
+                        g.Fill(Helper.ToColor(close_button.Value, Style.Db.FillSecondary), path);
                     }
                     g.PaintIconClose(rect_close, Style.Db.Text, .6F);
                 }
@@ -470,10 +469,7 @@ namespace AntdUI
             base.OnMouseUp(e);
         }
 
-        void btn_no_Click(object? sender, EventArgs e)
-        {
-            DialogResult = DialogResult.No;
-        }
+        void btn_no_Click(object? sender, EventArgs e) => DialogResult = DialogResult.No;
 
         bool isclose = true;
         void btn_ok_Click(object? sender, EventArgs e)

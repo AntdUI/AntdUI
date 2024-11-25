@@ -57,9 +57,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -79,6 +80,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
+                OnPropertyChanged("BackColor");
             }
         }
 
@@ -95,6 +97,7 @@ namespace AntdUI
                 if (backImage == value) return;
                 backImage = value;
                 Invalidate();
+                OnPropertyChanged("BackgroundImage");
             }
         }
 
@@ -111,6 +114,7 @@ namespace AntdUI
                 if (backFit == value) return;
                 backFit = value;
                 Invalidate();
+                OnPropertyChanged("BackgroundImageLayout");
             }
         }
 
@@ -131,6 +135,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 Invalidate();
+                OnPropertyChanged("BorderWidth");
             }
         }
 
@@ -149,6 +154,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -165,6 +171,7 @@ namespace AntdUI
                 if (type == value) return;
                 type = value;
                 Invalidate();
+                OnPropertyChanged("Type");
             }
         }
 
@@ -181,6 +188,7 @@ namespace AntdUI
                 if (closeIcon == value) return;
                 closeIcon = value;
                 if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged("CloseIcon");
             }
         }
 
@@ -201,6 +209,7 @@ namespace AntdUI
                 text = value;
                 if (BeforeAutoSize()) Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -223,6 +232,7 @@ namespace AntdUI
                 textAlign = value;
                 textAlign.SetAlignment(ref stringFormat);
                 Invalidate();
+                OnPropertyChanged("TextAlign");
             }
         }
 
@@ -239,6 +249,7 @@ namespace AntdUI
                 if (autoEllipsis == value) return;
                 autoEllipsis = value;
                 stringFormat.Trimming = value ? StringTrimming.EllipsisCharacter : StringTrimming.None;
+                OnPropertyChanged("AutoEllipsis");
             }
         }
 
@@ -256,6 +267,7 @@ namespace AntdUI
                 textMultiLine = value;
                 stringFormat.FormatFlags = value ? 0 : StringFormatFlags.NoWrap;
                 Invalidate();
+                OnPropertyChanged("TextMultiLine");
             }
         }
 
@@ -276,6 +288,7 @@ namespace AntdUI
                 if (image == value) return;
                 image = value;
                 if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged("Image");
             }
         }
 
@@ -289,6 +302,7 @@ namespace AntdUI
                 if (imageSvg == value) return;
                 imageSvg = value;
                 if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged("ImageSvg");
             }
         }
 
@@ -493,7 +507,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle
         {
-            get => ClientRectangle.PaddingRect(Padding, borderWidth * Config.Dpi);
+            get => ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Config.Dpi);
         }
 
         public override GraphicsPath RenderRegion

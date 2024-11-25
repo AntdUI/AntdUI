@@ -223,20 +223,20 @@ namespace AntdUI
 
         public static Canvas High(this Graphics g)
         {
-            Config.SetDpi(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             if (Config.TextRenderingHint.HasValue) g.TextRenderingHint = Config.TextRenderingHint.Value;
             return new Core.CanvasGDI(g);
         }
-        public static Canvas HighLay(this Graphics g)
+
+        public static Canvas HighLay(this Graphics g, bool text = false)
         {
             Config.SetDpi(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            if (text) g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             return new Core.CanvasGDI(g);
         }
 
@@ -246,7 +246,6 @@ namespace AntdUI
             {
                 using (var g = Graphics.FromImage(bmp))
                 {
-                    Config.SetDpi(g);
                     action(g.HighLay());
                 }
             }
@@ -258,7 +257,6 @@ namespace AntdUI
             {
                 using (var g = Graphics.FromImage(bmp))
                 {
-                    Config.SetDpi(g);
                     return action(g.HighLay());
                 }
             }

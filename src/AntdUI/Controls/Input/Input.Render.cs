@@ -97,11 +97,7 @@ namespace AntdUI
                     if (borderWidth > 0)
                     {
                         var borWidth = borderWidth * Config.Dpi;
-                        if (AnimationHover)
-                        {
-                            g.Draw(_border, borWidth, path);
-                            g.Draw(Helper.ToColor(AnimationHoverValue, _borderHover), borWidth, path);
-                        }
+                        if (AnimationHover) g.Draw(_border.BlendColors(AnimationHoverValue, _borderHover), borWidth, path);
                         else if (ExtraMouseDown) g.Draw(_borderActive, borWidth, path);
                         else if (ExtraMouseHover) g.Draw(_borderHover, borWidth, path);
                         else g.Draw(_border, borWidth, path);

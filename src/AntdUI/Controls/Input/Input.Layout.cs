@@ -274,6 +274,8 @@ namespace AntdUI
             {
                 if (multiline)
                 {
+                    var rectText = rect_text;
+                    if (ScrollYShow) rectText.Width -= 16;
                     int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
                     int usex = 0, usey = 0, line = 0;
                     foreach (var it in cache_font)
@@ -281,7 +283,7 @@ namespace AntdUI
                         it.show = false;
                         if (it.text == "\r")
                         {
-                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CaretInfo.Height);
+                            it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                             continue;
                         }
                         else if (it.text == "\n" || it.text == "\r\n")
@@ -291,18 +293,18 @@ namespace AntdUI
                             usey += lineHeight;
                             usex = 0;
                             it.line = line;
-                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, 0, CaretInfo.Height);
+                            it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
                             line++;
                             continue;
                         }
-                        else if (usex + it.width > rect_text.Width)
+                        else if (usex + it.width > rectText.Width)
                         {
                             line++;
                             usey += lineHeight;
                             usex = 0;
                         }
                         it.line = line;
-                        it.rect = new Rectangle(rect_text.X + usex, rect_text.Y + usey, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                         usex += it.width;
                     }
                 }

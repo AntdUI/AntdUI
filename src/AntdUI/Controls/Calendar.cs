@@ -92,6 +92,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -109,6 +110,7 @@ namespace AntdUI
                 full = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("Full");
             }
         }
 
@@ -126,6 +128,7 @@ namespace AntdUI
                 chinese = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("ShowChinese");
             }
         }
 
@@ -143,6 +146,7 @@ namespace AntdUI
                 showButtonToDay = value;
                 OnSizeChanged(EventArgs.Empty);
                 Invalidate();
+                OnPropertyChanged("ShowButtonToDay");
             }
         }
 
@@ -173,6 +177,7 @@ namespace AntdUI
                 DateChanged?.Invoke(this, new DateTimeEventArgs(_value));
                 Invalidate();
                 LoadBadge();
+                OnPropertyChanged("Value");
             }
         }
 
@@ -190,6 +195,7 @@ namespace AntdUI
                 minDate = value;
                 Date = _Date;
                 Invalidate();
+                OnPropertyChanged("MinDate");
             }
         }
 
@@ -207,6 +213,7 @@ namespace AntdUI
                 maxDate = value;
                 Date = _Date;
                 Invalidate();
+                OnPropertyChanged("MaxDate");
             }
         }
 
@@ -399,7 +406,7 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat s_f = Helper.SF(), s_f_LE = Helper.SF_Ellipsis(lr: StringAlignment.Near);
+        StringFormat s_f = Helper.SF();
         StringFormat s_f_L, s_f_R;
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -420,14 +427,10 @@ namespace AntdUI
             {
                 if (hover_lefts.Animation)
                 {
-                    PointF[] tl1 = TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F),
-                        tl2 = TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F);
-                    g.DrawLines(pen_arrow, tl1);
-                    g.DrawLines(pen_arrow, tl2);
-                    using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_lefts.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                    using (var pen_arrow_hovers = new Pen(pen_arrow.Color.BlendColors(hover_lefts.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                     {
-                        g.DrawLines(pen_arrow_hovers, tl1);
-                        g.DrawLines(pen_arrow_hovers, tl2);
+                        g.DrawLines(pen_arrow_hovers, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
+                        g.DrawLines(pen_arrow_hovers, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
                     }
                 }
                 else if (hover_lefts.Switch)
@@ -448,14 +451,10 @@ namespace AntdUI
 
                 if (hover_rights.Animation)
                 {
-                    PointF[] tl1 = TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F),
-                        tl2 = TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F);
-                    g.DrawLines(pen_arrow, tl1);
-                    g.DrawLines(pen_arrow, tl2);
-                    using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_rights.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                    using (var pen_arrow_hovers = new Pen(pen_arrow.Color.BlendColors(hover_rights.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                     {
-                        g.DrawLines(pen_arrow_hovers, tl1);
-                        g.DrawLines(pen_arrow_hovers, tl2);
+                        g.DrawLines(pen_arrow_hovers, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
+                        g.DrawLines(pen_arrow_hovers, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
                     }
                 }
                 else if (hover_rights.Switch)
@@ -478,11 +477,9 @@ namespace AntdUI
                 {
                     if (hover_left.Animation)
                     {
-                        var tl = TAlignMini.Left.TriangleLines(rect_left, .26F);
-                        g.DrawLines(pen_arrow, tl);
-                        using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_left.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                        using (var pen_arrow_hovers = new Pen(pen_arrow.Color.BlendColors(hover_left.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                         {
-                            g.DrawLines(pen_arrow_hovers, tl);
+                            g.DrawLines(pen_arrow_hovers, TAlignMini.Left.TriangleLines(rect_left, .26F));
                         }
                     }
                     else if (hover_left.Switch) g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(rect_left, .26F));
@@ -491,11 +488,9 @@ namespace AntdUI
 
                     if (hover_right.Animation)
                     {
-                        var tl = TAlignMini.Right.TriangleLines(rect_right, .26F);
-                        g.DrawLines(pen_arrow, tl);
-                        using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_right.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                        using (var pen_arrow_hovers = new Pen(pen_arrow.Color.BlendColors(hover_right.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                         {
-                            g.DrawLines(pen_arrow_hovers, tl);
+                            g.DrawLines(pen_arrow_hovers, TAlignMini.Right.TriangleLines(rect_right, .26F));
                         }
                     }
                     else if (hover_right.Switch) g.DrawLines(pen_arrow_hover, TAlignMini.Right.TriangleLines(rect_right, .26F));
@@ -526,29 +521,17 @@ namespace AntdUI
         /// <param name="datas">数据</param>
         void PrintYear(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
         {
+            var color_fore = Style.Db.TextBase;
+            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            {
+                if (hover_year.Animation) g.String(year_str, font, color_fore.BlendColors(hover_year.Value, Style.Db.Primary), rect_year_l, s_f);
+                else if (hover_year.Switch) g.String(year_str, font, Style.Db.Primary, rect_year_l, s_f);
+                else g.String(year_str, font, color_fore, rect_year_l, s_f);
+            }
             using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
             using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
-            using (var brush_fore = new SolidBrush(Style.Db.TextBase))
+            using (var brush_fore = new SolidBrush(color_fore))
             {
-                using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
-                {
-                    if (hover_year.Animation)
-                    {
-                        g.String(year_str, font, brush_fore, rect_year_l, s_f);
-                        using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
-                        {
-                            g.String(year_str, font, brush_hove, rect_year_l, s_f);
-                        }
-                    }
-                    else if (hover_year.Switch)
-                    {
-                        using (var brush_hove = new SolidBrush(Style.Db.Primary))
-                        {
-                            g.String(year_str, font, brush_hove, rect_year_l, s_f);
-                        }
-                    }
-                    else g.String(year_str, font, brush_fore, rect_year_l, s_f);
-                }
                 foreach (var it in datas)
                 {
                     using (var path = it.rect_read.RoundPath(radius))
@@ -588,22 +571,19 @@ namespace AntdUI
         /// <param name="datas">数据</param>
         void PrintMonth(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
         {
+            var color_fore = Style.Db.TextBase;
+            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            {
+                string yearStr = _Date.ToString(YearFormat, Culture);
+                if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Style.Db.Primary), rect_month_l, s_f);
+                else if (hover_year.Switch) g.String(yearStr, font, Style.Db.Primary, rect_month_l, s_f);
+                else g.String(yearStr, font, color_fore, rect_month_l, s_f);
+            }
+
             using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
             using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
-            using (var brush_fore = new SolidBrush(Style.Db.TextBase))
+            using (var brush_fore = new SolidBrush(color_fore))
             {
-                using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
-                {
-                    string yearStr = _Date.ToString(YearFormat, Culture);
-                    if (hover_year.Animation)
-                    {
-                        g.String(yearStr, font, brush_fore, rect_month_l, s_f);
-                        g.String(yearStr, font, Helper.ToColor(hover_year.Value, Style.Db.Primary), rect_month_l, s_f);
-                    }
-                    else if (hover_year.Switch) g.String(yearStr, font, Style.Db.Primary, rect_month_l, s_f);
-                    else g.String(yearStr, font, brush_fore, rect_month_l, s_f);
-                }
-
                 foreach (var it in datas)
                 {
                     using (var path = it.rect_read.RoundPath(radius))
@@ -646,136 +626,116 @@ namespace AntdUI
         void PrintDay(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
         {
             if (rect_day_s == null) return;
-            using (var brush_fore = new SolidBrush(Style.Db.TextBase))
+            var color_fore = Style.Db.TextBase;
+            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
-                using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
-                {
-                    string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
-                    if (hover_year.Animation)
-                    {
-                        g.String(yearStr, font, brush_fore, rect_year, s_f_L);
-                        g.String(yearStr, font, Helper.ToColor(hover_year.Value, Style.Db.Primary), rect_year, s_f_L);
-                    }
-                    else if (hover_year.Switch) g.String(yearStr, font, Style.Db.Primary, rect_year, s_f_L);
-                    else g.String(yearStr, font, brush_fore, rect_year, s_f_L);
+                string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
 
-                    if (hover_month.Animation)
-                    {
-                        g.String(monthStr, font, brush_fore, rect_month, s_f_R);
-                        g.String(monthStr, font, Helper.ToColor(hover_month.Value, Style.Db.Primary), rect_month, s_f_R);
-                    }
-                    else if (hover_month.Switch) g.String(monthStr, font, Style.Db.Primary, rect_month, s_f_R);
-                    else g.String(monthStr, font, brush_fore, rect_month, s_f_R);
-                }
+                if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Style.Db.Primary), rect_year, s_f_L);
+                else if (hover_year.Switch) g.String(yearStr, font, Style.Db.Primary, rect_year, s_f_L);
+                else g.String(yearStr, font, color_fore, rect_year, s_f_L);
 
-                using (var brush_split = new SolidBrush(Style.Db.Split))
-                {
-                    g.Fill(brush_split, rect_day_split1);
-                    if (showButtonToDay) g.Fill(brush_split, rect_day_split2);
-                }
-                using (var brush = new SolidBrush(Style.Db.Text))
-                {
-                    g.String(MondayButton, Font, brush, rect_day_s[0], s_f);
-                    g.String(TuesdayButton, Font, brush, rect_day_s[1], s_f);
-                    g.String(WednesdayButton, Font, brush, rect_day_s[2], s_f);
-                    g.String(ThursdayButton, Font, brush, rect_day_s[3], s_f);
-                    g.String(FridayButton, Font, brush, rect_day_s[4], s_f);
-                    g.String(SaturdayButton, Font, brush, rect_day_s[5], s_f);
-                    g.String(SundayButton, Font, brush, rect_day_s[6], s_f);
-                }
-                using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
-                using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
-                using (var brush_active = new SolidBrush(Style.Db.Primary))
-                using (var brush_active_fore = new SolidBrush(Style.Db.PrimaryColor))
-                using (var brush_error = new SolidBrush(Style.Db.Error))
-                {
-                    PaintToDayFrame(g, datas, DateNow.ToString("yyyy-MM-dd"), radius);
+                if (hover_month.Animation) g.String(monthStr, font, color_fore.BlendColors(hover_month.Value, Style.Db.Primary), rect_month, s_f_R);
+                else if (hover_month.Switch) g.String(monthStr, font, Style.Db.Primary, rect_month, s_f_R);
+                else g.String(monthStr, font, color_fore, rect_month, s_f_R);
+            }
 
-                    if (chinese)
+            using (var brush_split = new SolidBrush(Style.Db.Split))
+            {
+                g.Fill(brush_split, rect_day_split1);
+                if (showButtonToDay) g.Fill(brush_split, rect_day_split2);
+            }
+
+            using (var brush = new SolidBrush(Style.Db.Text))
+            {
+                g.String(MondayButton, Font, brush, rect_day_s[0], s_f);
+                g.String(TuesdayButton, Font, brush, rect_day_s[1], s_f);
+                g.String(WednesdayButton, Font, brush, rect_day_s[2], s_f);
+                g.String(ThursdayButton, Font, brush, rect_day_s[3], s_f);
+                g.String(FridayButton, Font, brush, rect_day_s[4], s_f);
+                g.String(SaturdayButton, Font, brush, rect_day_s[5], s_f);
+                g.String(SundayButton, Font, brush, rect_day_s[6], s_f);
+            }
+            using (var brush_fore = new SolidBrush(color_fore))
+            using (var brush_fore_disable = new SolidBrush(Style.Db.TextQuaternary))
+            using (var brush_bg_disable = new SolidBrush(Style.Db.FillTertiary))
+            using (var brush_active = new SolidBrush(Style.Db.Primary))
+            using (var brush_active_fore = new SolidBrush(Style.Db.PrimaryColor))
+            using (var brush_error = new SolidBrush(Style.Db.Error))
+            {
+                PaintToDayFrame(g, datas, DateNow.ToString("yyyy-MM-dd"), radius);
+
+                if (chinese)
+                {
+                    using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
                     {
-                        using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
+                        using (var brush_fore_c = new SolidBrush(Style.Db.TextSecondary))
                         {
-                            using (var brush_fore_c = new SolidBrush(Style.Db.TextSecondary))
+                            foreach (var it in datas)
                             {
-                                foreach (var it in datas)
+                                using (var path = it.rect_read.RoundPath(radius))
                                 {
-                                    using (var path = it.rect_read.RoundPath(radius))
+                                    var cdate = ChineseCalendar.ChineseDate.From(it.date);
+                                    if (_value.ToString("yyyy-MM-dd") == it.date_str)
                                     {
-                                        var cdate = ChineseCalendar.ChineseDate.From(it.date);
-                                        if (_value.ToString("yyyy-MM-dd") == it.date_str)
-                                        {
-                                            g.Fill(brush_active, path);
-                                            g.String(cdate.DayString, font4, brush_active_fore, it.rect_l, s_f);
-                                            g.String(it.v, Font, brush_active_fore, it.rect_f, s_f);
-                                        }
-                                        else if (it.enable)
-                                        {
-                                            if (it.hover) g.Fill(Style.Db.FillTertiary, path);
-                                            g.String(cdate.DayString, font4, brush_fore_c, it.rect_l, s_f);
-                                            g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect_f, s_f);
-                                        }
-                                        else
-                                        {
-                                            g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                                            g.String(cdate.DayString, font4, brush_fore_disable, it.rect_l, s_f);
-                                            g.String(it.v, Font, brush_fore_disable, it.rect_f, s_f);
-                                        }
+                                        g.Fill(brush_active, path);
+                                        g.String(cdate.DayString, font4, brush_active_fore, it.rect_l, s_f);
+                                        g.String(it.v, Font, brush_active_fore, it.rect_f, s_f);
+                                    }
+                                    else if (it.enable)
+                                    {
+                                        if (it.hover) g.Fill(Style.Db.FillTertiary, path);
+                                        g.String(cdate.DayString, font4, brush_fore_c, it.rect_l, s_f);
+                                        g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect_f, s_f);
+                                    }
+                                    else
+                                    {
+                                        g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                                        g.String(cdate.DayString, font4, brush_fore_disable, it.rect_l, s_f);
+                                        g.String(it.v, Font, brush_fore_disable, it.rect_f, s_f);
                                     }
                                 }
                             }
                         }
                     }
-                    else
+                }
+                else
+                {
+                    foreach (var it in datas)
+                    {
+                        using (var path = it.rect_read.RoundPath(radius))
+                        {
+                            if (_value.ToString("yyyy-MM-dd") == it.date_str)
+                            {
+                                g.Fill(brush_active, path);
+                                g.String(it.v, Font, brush_active_fore, it.rect, s_f);
+                            }
+                            else if (it.enable)
+                            {
+                                if (it.hover) g.Fill(Style.Db.FillTertiary, path);
+                                g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
+                            }
+                            else
+                            {
+                                g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                                g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
+                            }
+                        }
+                    }
+                }
+                if (showButtonToDay)
+                {
+                    if (hover_button.Animation) g.String(button_text, Font, brush_active.Color.BlendColors(hover_button.Value, Style.Db.PrimaryActive), rect_button, s_f);
+                    else if (hover_button.Switch) g.String(button_text, Font, Style.Db.PrimaryActive, rect_button, s_f);
+                    else g.String(button_text, Font, brush_active, rect_button, s_f);
+                }
+                if (badge_list.Count > 0)
+                {
+                    using (var font = new Font(Font.FontFamily, Font.Size * BadgeSize))
                     {
                         foreach (var it in datas)
                         {
-                            using (var path = it.rect_read.RoundPath(radius))
-                            {
-                                if (_value.ToString("yyyy-MM-dd") == it.date_str)
-                                {
-                                    g.Fill(brush_active, path);
-                                    g.String(it.v, Font, brush_active_fore, it.rect, s_f);
-                                }
-                                else if (it.enable)
-                                {
-                                    if (it.hover) g.Fill(Style.Db.FillTertiary, path);
-                                    g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
-                                }
-                                else
-                                {
-                                    g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                                    g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
-                                }
-                            }
-                        }
-                    }
-                    if (showButtonToDay)
-                    {
-                        if (hover_button.Animation)
-                        {
-                            g.String(button_text, Font, brush_active, rect_button, s_f);
-                            using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
-                            {
-                                g.String(button_text, Font, brush_hove, rect_button, s_f);
-                            }
-                        }
-                        else if (hover_button.Switch)
-                        {
-                            using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
-                            {
-                                g.String(button_text, Font, brush_hove, rect_button, s_f);
-                            }
-                        }
-                        else g.String(button_text, Font, brush_active, rect_button, s_f);
-                    }
-                    if (badge_list.Count > 0)
-                    {
-                        using (var font = new Font(Font.FontFamily, Font.Size * BadgeSize))
-                        {
-                            foreach (var it in datas)
-                            {
-                                if (badge_list.TryGetValue(it.date_str, out var find)) this.PaintBadge(find, font, it.rect, g);
-                            }
+                            if (badge_list.TryGetValue(it.date_str, out var find)) this.PaintBadge(find, font, it.rect, g);
                         }
                     }
                 }

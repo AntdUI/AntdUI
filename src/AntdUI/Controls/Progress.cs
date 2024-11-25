@@ -50,9 +50,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -72,6 +73,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
+                OnPropertyChanged("Back");
             }
         }
 
@@ -89,6 +91,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
+                OnPropertyChanged("Fill");
             }
         }
 
@@ -107,6 +110,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -123,6 +127,7 @@ namespace AntdUI
                 if (shape == value) return;
                 shape = value;
                 Invalidate();
+                OnPropertyChanged("Shape");
             }
         }
 
@@ -142,6 +147,7 @@ namespace AntdUI
                 text = value;
                 if (useSystemText) Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -162,6 +168,7 @@ namespace AntdUI
                 if (textUnit == value) return;
                 textUnit = value;
                 Invalidate();
+                OnPropertyChanged("TextUnit");
             }
         }
 
@@ -181,6 +188,7 @@ namespace AntdUI
                 if (useSystemText == value) return;
                 useSystemText = value;
                 Invalidate();
+                OnPropertyChanged("UseSystemText");
             }
         }
 
@@ -206,6 +214,7 @@ namespace AntdUI
                 state = value;
                 Invalidate();
                 if (showInTaskbar) ShowTaskbar();
+                OnPropertyChanged("State");
             }
         }
 
@@ -222,6 +231,7 @@ namespace AntdUI
                 if (iconratio == value) return;
                 iconratio = value;
                 Invalidate();
+                OnPropertyChanged("IconRatio");
             }
         }
 
@@ -238,6 +248,7 @@ namespace AntdUI
                 if (valueratio == value) return;
                 valueratio = value;
                 Invalidate();
+                OnPropertyChanged("ValueRatio");
             }
         }
 
@@ -298,6 +309,7 @@ namespace AntdUI
                     Invalidate();
                 }
                 if (showInTaskbar) ShowTaskbar();
+                OnPropertyChanged("Value");
             }
         }
 
@@ -343,6 +355,7 @@ namespace AntdUI
                     });
                 }
                 else Invalidate();
+                OnPropertyChanged("Loading");
             }
         }
 
@@ -373,6 +386,7 @@ namespace AntdUI
                 if (steps == value) return;
                 steps = value;
                 if (shape == TShapeProgress.Steps) Invalidate();
+                OnPropertyChanged("Steps");
             }
         }
 
@@ -389,6 +403,7 @@ namespace AntdUI
                 if (stepSize == value) return;
                 stepSize = value;
                 if (shape == TShapeProgress.Steps) Invalidate();
+                OnPropertyChanged("StepSize");
             }
         }
 
@@ -405,6 +420,7 @@ namespace AntdUI
                 if (stepGap == value) return;
                 stepGap = value;
                 if (shape == TShapeProgress.Steps) Invalidate();
+                OnPropertyChanged("StepGap");
             }
         }
 
@@ -465,6 +481,7 @@ namespace AntdUI
                     if (showInTaskbar) ShowTaskbar();
                     else if (ownerForm != null) TaskbarProgressState(ownerForm, ThumbnailProgressState.NoProgress);
                 }
+                OnPropertyChanged("ShowInTaskbar");
             }
         }
 

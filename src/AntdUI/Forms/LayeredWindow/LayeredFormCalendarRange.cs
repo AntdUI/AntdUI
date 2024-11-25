@@ -853,20 +853,16 @@ namespace AntdUI
                 {
                     if (hover_lefts.Animation)
                     {
-                        PointF[] tl1 = TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F),
-                            tl2 = TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F);
-                        g.DrawLines(pen_arrow, tl1);
-                        g.DrawLines(pen_arrow, tl2);
-                        using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_lefts.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                        using (var pen_arrow_hovers = new Pen(pen_arrow.Color.BlendColors(hover_lefts.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                         {
-                            g.DrawLines(pen_arrow_hovers, tl1);
-                            g.DrawLines(pen_arrow_hovers, tl2);
+                            g.DrawLines(pen_arrow_hovers, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
+                            g.DrawLines(pen_arrow_hovers, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
                         }
                     }
                     else if (hover_lefts.Switch)
                     {
-                        g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F));
-                        g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(new RectangleF(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), 0.26F));
+                        g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X - 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
+                        g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(new Rectangle(rect_lefts.X + 4, rect_lefts.Y, rect_lefts.Width, rect_lefts.Height), .26F));
                     }
                     else if (hover_lefts.Enable)
                     {
@@ -881,14 +877,10 @@ namespace AntdUI
 
                     if (hover_rights.Animation)
                     {
-                        PointF[] tl1 = TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F),
-                            tl2 = TAlignMini.Right.TriangleLines(new RectangleF(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), 0.26F);
-                        g.DrawLines(pen_arrow, tl1);
-                        g.DrawLines(pen_arrow, tl2);
-                        using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_rights.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                        using (var pen_arrow_hovers = new Pen(pen_arrow.Color.BlendColors(hover_rights.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                         {
-                            g.DrawLines(pen_arrow_hovers, tl1);
-                            g.DrawLines(pen_arrow_hovers, tl2);
+                            g.DrawLines(pen_arrow_hovers, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X - 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
+                            g.DrawLines(pen_arrow_hovers, TAlignMini.Right.TriangleLines(new Rectangle(rect_rights.X + 4, rect_rights.Y, rect_rights.Width, rect_rights.Height), .26F));
                         }
                     }
                     else if (hover_rights.Switch)
@@ -911,11 +903,9 @@ namespace AntdUI
                     {
                         if (hover_left.Animation)
                         {
-                            var tl = TAlignMini.Left.TriangleLines(rect_left, 0.26F);
-                            g.DrawLines(pen_arrow, tl);
-                            using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_left.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                            using (var pen_arrow_hovers = new Pen(pen_arrow.Color.BlendColors(hover_left.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                             {
-                                g.DrawLines(pen_arrow_hovers, tl);
+                                g.DrawLines(pen_arrow_hovers, TAlignMini.Left.TriangleLines(rect_left, .26F));
                             }
                         }
                         else if (hover_left.Switch) g.DrawLines(pen_arrow_hover, TAlignMini.Left.TriangleLines(rect_left, .26F));
@@ -924,11 +914,9 @@ namespace AntdUI
 
                         if (hover_right.Animation)
                         {
-                            var tl = TAlignMini.Right.TriangleLines(rect_right, 0.26F);
-                            g.DrawLines(pen_arrow, tl);
-                            using (var pen_arrow_hovers = new Pen(Helper.ToColor(hover_right.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
+                            using (var pen_arrow_hovers = new Pen(pen_arrow.Color.BlendColors(hover_right.Value, pen_arrow_hover.Color), pen_arrow_hover.Width))
                             {
-                                g.DrawLines(pen_arrow_hovers, tl);
+                                g.DrawLines(pen_arrow_hovers, TAlignMini.Right.TriangleLines(rect_right, .26F));
                             }
                         }
                         else if (hover_right.Switch) g.DrawLines(pen_arrow_hover, TAlignMini.Right.TriangleLines(rect_right, .26F));
@@ -964,21 +952,8 @@ namespace AntdUI
             {
                 var rect_l = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, t_top);
 
-                if (hover_year.Animation)
-                {
-                    g.String(year_str, font, color_fore, rect_l, s_f);
-                    using (var brush_hove = new SolidBrush(Helper.ToColor(hover_year.Value, Style.Db.Primary)))
-                    {
-                        g.String(year_str, font, brush_hove, rect_l, s_f);
-                    }
-                }
-                else if (hover_year.Switch)
-                {
-                    using (var brush_hove = new SolidBrush(Style.Db.Primary))
-                    {
-                        g.String(year_str, font, brush_hove, rect_l, s_f);
-                    }
-                }
+                if (hover_year.Animation) g.String(year_str, font, color_fore.BlendColors(hover_year.Value, Style.Db.Primary), rect_l, s_f);
+                else if (hover_year.Switch) g.String(year_str, font, Style.Db.Primary, rect_l, s_f);
                 else g.String(year_str, font, color_fore, rect_l, s_f);
             }
 
@@ -1032,11 +1007,7 @@ namespace AntdUI
             {
                 var rect_l = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, t_top);
                 string yearStr = _Date.ToString(YearFormat, Culture);
-                if (hover_year.Animation)
-                {
-                    g.String(yearStr, font, color_fore, rect_l, s_f);
-                    g.String(yearStr, font, Helper.ToColor(hover_year.Value, Style.Db.Primary), rect_l, s_f);
-                }
+                if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Style.Db.Primary), rect_l, s_f);
                 else if (hover_year.Switch) g.String(yearStr, font, Style.Db.Primary, rect_l, s_f);
                 else g.String(yearStr, font, color_fore, rect_l, s_f);
             }
@@ -1091,38 +1062,22 @@ namespace AntdUI
             {
                 string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
 
-                if (hover_year.Animation)
-                {
-                    g.String(yearStr, font, color_fore, rect_year, s_f_L);
-                    g.String(yearStr, font, Helper.ToColor(hover_year.Value, Style.Db.Primary), rect_year, s_f_L);
-                }
+                if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Style.Db.Primary), rect_year, s_f_L);
                 else if (hover_year.Switch) g.String(yearStr, font, Style.Db.Primary, rect_year, s_f_L);
                 else g.String(yearStr, font, color_fore, rect_year, s_f_L);
 
-                if (hover_month.Animation)
-                {
-                    g.String(monthStr, font, color_fore, rect_month, s_f_R);
-                    g.String(monthStr, font, Helper.ToColor(hover_month.Value, Style.Db.Primary), rect_month, s_f_R);
-                }
+                if (hover_month.Animation) g.String(monthStr, font, color_fore.BlendColors(hover_month.Value, Style.Db.Primary), rect_month, s_f_R);
                 else if (hover_month.Switch) g.String(monthStr, font, Style.Db.Primary, rect_month, s_f_R);
                 else g.String(monthStr, font, color_fore, rect_month, s_f_R);
 
                 #region 右
 
                 string year2Str = _Date_R.ToString(YearFormat, Culture), month2Str = _Date_R.ToString(MonthFormat, Culture);
-                if (hover_year_r.Animation)
-                {
-                    g.String(year2Str, font, color_fore, rect_year_r, s_f_L);
-                    g.String(year2Str, font, Helper.ToColor(hover_year_r.Value, Style.Db.Primary), rect_year_r, s_f_L);
-                }
+                if (hover_year_r.Animation) g.String(year2Str, font, color_fore.BlendColors(hover_year_r.Value, Style.Db.Primary), rect_year_r, s_f_L);
                 else if (hover_year_r.Switch) g.String(year2Str, font, Style.Db.Primary, rect_year_r, s_f_L);
                 else g.String(year2Str, font, color_fore, rect_year_r, s_f_L);
 
-                if (hover_month_r.Animation)
-                {
-                    g.String(month2Str, font, color_fore, rect_month_r, s_f_R);
-                    g.String(month2Str, font, Helper.ToColor(hover_month_r.Value, Style.Db.Primary), rect_month_r, s_f_R);
-                }
+                if (hover_month_r.Animation) g.String(month2Str, font, color_fore.BlendColors(hover_month_r.Value, Style.Db.Primary), rect_month_r, s_f_R);
                 else if (hover_month_r.Switch) g.String(month2Str, font, Style.Db.Primary, rect_month_r, s_f_R);
                 else g.String(month2Str, font, color_fore, rect_month_r, s_f_R);
 

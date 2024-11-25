@@ -53,6 +53,7 @@ namespace AntdUI
                 dateFormat = value;
                 ShowTime = dateFormat.Contains("H");
                 Text = _value.HasValue ? _value.Value.ToString(dateFormat) : "";
+                OnPropertyChanged("Format");
             }
         }
 
@@ -69,6 +70,7 @@ namespace AntdUI
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimeNEventArgs(value));
                 Text = value.HasValue ? value.Value.ToString(Format) : "";
+                OnPropertyChanged("Value");
             }
         }
 
@@ -111,6 +113,12 @@ namespace AntdUI
         /// </summary>
         [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
         public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
+
+        /// <summary>
+        /// 时间值水平对齐
+        /// </summary>
+        [Description("时间值水平对齐"), Category("外观"), DefaultValue(false)]
+        public bool ValueTimeHorizontal { get; set; }
 
         /// <summary>
         /// 下拉箭头是否显示

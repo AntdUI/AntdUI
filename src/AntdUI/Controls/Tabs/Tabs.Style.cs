@@ -2083,14 +2083,10 @@ namespace AntdUI
                 }
                 if (closable != CloseType.none && closshow)
                 {
-                    if (rects.hover_close == null)
-                        g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
-                    else if (rects.hover_close.Animation)
-                        g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + AntdUI.Style.Db.TextQuaternary.A, AntdUI.Style.Db.Text));
-                    else if (rects.hover_close.Switch)
-                        g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.Text);
-                    else
-                        g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
+                    if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
+                    else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + AntdUI.Style.Db.TextQuaternary.A, AntdUI.Style.Db.Text));
+                    else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.Text);
+                    else g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
                 }
                 g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);

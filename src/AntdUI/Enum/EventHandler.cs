@@ -541,7 +541,7 @@ namespace AntdUI
         public TreeCheckedEventArgs(TreeItem item, bool value)
         {
             Item = item;
-            Value = Value;
+            Value = value;
         }
         public TreeItem Item { get; private set; }
         public bool Value { get; private set; }
@@ -584,6 +584,11 @@ namespace AntdUI
     #endregion
 
     #region 基础
+
+    public class StringsEventArgs : VEventArgs<string[]>
+    {
+        public StringsEventArgs(string[] value) : base(value) { }
+    }
 
     public class VEventArgs<T> : EventArgs
     {

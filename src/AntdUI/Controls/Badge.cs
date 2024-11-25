@@ -46,9 +46,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -66,6 +67,7 @@ namespace AntdUI
                 state = value;
                 StartAnimation();
                 Invalidate();
+                OnPropertyChanged("State");
             }
         }
 
@@ -85,6 +87,7 @@ namespace AntdUI
                 has_text = string.IsNullOrEmpty(text);
                 if (BeforeAutoSize()) Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -106,6 +109,7 @@ namespace AntdUI
                 textAlign = value;
                 textAlign.SetAlignment(ref stringFormat);
                 Invalidate();
+                OnPropertyChanged("TextAlign");
             }
         }
 
@@ -123,6 +127,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
+                OnPropertyChanged("Fill");
             }
         }
 

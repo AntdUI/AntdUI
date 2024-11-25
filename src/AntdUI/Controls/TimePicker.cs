@@ -55,6 +55,7 @@ namespace AntdUI
                 _value = value;
                 Text = new DateTime(1997, 1, 1, value.Hours, value.Minutes, value.Seconds).ToString(Format);
                 ValueChanged?.Invoke(this, new TimeSpanNEventArgs(value));
+                OnPropertyChanged("Value");
             }
         }
 
@@ -63,6 +64,12 @@ namespace AntdUI
         /// </summary>
         [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
         public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
+
+        /// <summary>
+        /// 时间值水平对齐
+        /// </summary>
+        [Description("时间值水平对齐"), Category("外观"), DefaultValue(false)]
+        public bool ValueTimeHorizontal { get; set; }
 
         /// <summary>
         /// 下拉箭头是否显示

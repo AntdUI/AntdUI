@@ -49,7 +49,6 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.DividerSelectItem dividerSelectItem1 = new AntdUI.DividerSelectItem();
             header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             panel4 = new System.Windows.Forms.Panel();
@@ -114,7 +113,7 @@ namespace Demo.Controls
             panel4.Controls.Add(select8);
             panel4.Controls.Add(selectMultiple1);
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 279);
+            panel4.Location = new Point(0, 297);
             panel4.Name = "panel4";
             panel4.Size = new Size(555, 100);
             panel4.TabIndex = 5;
@@ -122,7 +121,7 @@ namespace Demo.Controls
             // select8
             // 
             select8.DropDownArrow = true;
-            select8.Items.AddRange(new object[] { dividerSelectItem1 });
+            select8.Items.AddRange(new AntdUI.ISelectItem[] { new AntdUI.SelectItem(0, "Lucy"), new AntdUI.SelectItem(1, "Tom"), new AntdUI.SelectItem(1, "AduSkin"), new AntdUI.DividerSelectItem(), new AntdUI.SelectItem(0, "WangLi"), new AntdUI.SelectItem(0, "HUAWEI"), new AntdUI.SelectItem(0, "XIAOMI") });
             select8.List = true;
             select8.ListAutoWidth = true;
             select8.LocalizationPlaceholderText = "Select.{id}";
@@ -147,10 +146,10 @@ namespace Demo.Controls
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "Select.{id}";
-            divider3.Location = new Point(0, 257);
+            divider3.Location = new Point(0, 269);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(555, 22);
+            divider3.Size = new Size(555, 28);
             divider3.TabIndex = 4;
             divider3.TabStop = false;
             divider3.Text = "更多";
@@ -160,7 +159,7 @@ namespace Demo.Controls
             panel3.Controls.Add(panel5);
             panel3.Controls.Add(panel8);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 157);
+            panel3.Location = new Point(0, 169);
             panel3.Name = "panel3";
             panel3.Size = new Size(555, 100);
             panel3.TabIndex = 3;
@@ -239,10 +238,10 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Select.{id}";
-            divider2.Location = new Point(0, 135);
+            divider2.Location = new Point(0, 141);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(555, 22);
+            divider2.Size = new Size(555, 28);
             divider2.TabIndex = 2;
             divider2.TabStop = false;
             divider2.Text = "组合";
@@ -255,7 +254,7 @@ namespace Demo.Controls
             panel2.Controls.Add(select5);
             panel2.Controls.Add(select1);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 22);
+            panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(555, 113);
             panel2.TabIndex = 0;
@@ -328,7 +327,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(555, 22);
+            divider1.Size = new Size(555, 28);
             divider1.TabIndex = 1;
             divider1.TabStop = false;
             divider1.Text = "常规";

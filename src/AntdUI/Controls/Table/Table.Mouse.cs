@@ -27,7 +27,8 @@ namespace AntdUI
     {
         #region 鼠标按下
 
-        TCell? cellMouseDown = null;
+        TCell? cellMouseDown;
+        int shift_index = -1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             cellMouseDown = null;
@@ -37,11 +38,22 @@ namespace AntdUI
                 base.OnMouseDown(e);
                 if (rows == null) return;
                 OnTouchDown(e.X, e.Y);
-                var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out _, out _, out _, out int i_row, out int i_cel, out int mode);
-                if (cel_sel == null) return;
+                var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out _, out _, out _, out int i_row, out int i_cel, out int mode);
+                if (cell == null) return;
                 else
                 {
-                    SelectedIndex = i_row;
+                    if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
+                    {
+                        if (shift_index == -1) SelectedIndexs = SetIndexs(i_row);
+                        else
+                        {
+                            if (shift_index > i_row) SelectedIndexs = SetIndexs(i_row, shift_index);
+                            else SelectedIndexs = SetIndexs(shift_index, i_row);
+                        }
+                    }
+                    else if (MultipleRows && ModifierKeys.HasFlag(Keys.Control)) SelectedIndexs = SetIndexs(i_row);
+                    else SelectedIndex = i_row;
+                    shift_index = i_row;
                     var it = rows[i_row];
                     if (mode > 0)
                     {
@@ -58,7 +70,6 @@ namespace AntdUI
                                 }
                             }
                         }
-                        var cell = it.cells[i_cel];
                         cell.MouseDown = e.Clicks > 1 ? 2 : 1;
                         cellMouseDown = cell;
                         if (cell.MouseDown == 1 && cell.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
@@ -81,10 +92,19 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (cel_sel.ROW.CanExpand && cel_sel.ROW.RECORD != null && cel_sel.ROW.RectExpand.Contains(r_x, r_y))
+                        if (cell.COLUMN is ColumnSort sort && cell.CONTAIN_REAL(r_x, r_y))
                         {
-                            if (cel_sel.ROW.Expand) rows_Expand.Remove(cel_sel.ROW.RECORD);
-                            else rows_Expand.Add(cel_sel.ROW.RECORD);
+                            dragBody = new DragHeader
+                            {
+                                i = cell.ROW.INDEX,
+                                x = e.Y
+                            };
+                            return;
+                        }
+                        if (cell.ROW.CanExpand && cell.ROW.RECORD != null && cell.ROW.RectExpand.Contains(r_x, r_y))
+                        {
+                            if (cell.ROW.Expand) rows_Expand.Remove(cell.ROW.RECORD);
+                            else rows_Expand.Add(cell.ROW.RECORD);
                             LoadLayout();
                             Invalidate();
                             return;
@@ -93,6 +113,7 @@ namespace AntdUI
                     }
                 }
             }
+            else shift_index = -1;
         }
 
         void MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
@@ -185,6 +206,48 @@ namespace AntdUI
                     return;
                 }
             }
+            if (dragBody != null)
+            {
+                bool hand = dragBody.hand;
+                if (hand && dragBody.im != -1)
+                {
+                    //执行排序
+                    if (rows == null) return;
+                    var sortData = new List<int>(rows.Length);
+                    int dim = dragBody.im, di = dragBody.i;
+                    foreach (var it in rows)
+                    {
+                        it.hover = false;
+                        if (dragBody.im == it.INDEX) { it.hover = true; dim = it.INDEX_REAL; }
+                        if (dragBody.i == it.INDEX) di = it.INDEX_REAL;
+                    }
+                    SetIndex(dragBody.im);
+                    foreach (var it in rows)
+                    {
+                        int index = it.INDEX_REAL;
+                        if (index > -1)
+                        {
+                            if (index == dim)
+                            {
+                                if (dragBody.last) sortData.Add(index);
+                                if (sortData.Contains(di)) sortData.Remove(di);
+                                sortData.Add(di);
+                            }
+                            if (!sortData.Contains(index)) sortData.Add(index);
+                        }
+                    }
+                    SortData = sortData.ToArray();
+                    LoadLayout();
+                    SortRows?.Invoke(this, new IntEventArgs(-1));
+                }
+                dragBody = null;
+                if (hand)
+                {
+                    Invalidate();
+                    OnTouchCancel();
+                    return;
+                }
+            }
             if (ScrollBar.MouseUpY() && ScrollBar.MouseUpX())
             {
                 if (rows == null) return;
@@ -208,11 +271,11 @@ namespace AntdUI
         {
             if (cellMouseDown == cell && cell.MouseDown > 0)
             {
-                var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
                 if (cel_sel == null || (i_r != i_row || i_c != i_cel)) cell.MouseDown = 0;
                 else
                 {
-                    SelectedIndex = i_r;
+                    if (selectedIndex.Length == 1) SelectedIndex = i_r;
                     if (e.Button == MouseButtons.Left)
                     {
                         if (cell is TCellCheck checkCell)
@@ -412,7 +475,7 @@ namespace AntdUI
                 var cells = rows[0].cells;
                 dragHeader.last = e.X > dragHeader.x;
 
-                var cel_sel = CellContains(rows, xr, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                var cel_sel = CellContains(rows, false, xr, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
                 if (cel_sel != null)
                 {
                     var it = cells[i_cel];
@@ -426,10 +489,32 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
+            if (dragBody != null)
+            {
+                SetCursor(CursorType.SizeAll);
+                dragBody.hand = true;
+                dragBody.xr = e.Y - dragBody.x;
+                if (rows == null) return;
+                int yr = dragBody.x + dragBody.xr;
+                dragBody.last = e.Y > dragBody.x;
+
+                var cel_sel = CellContains(rows, false, e.X, yr, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                if (cel_sel != null)
+                {
+                    if (i_row == dragBody.i) dragBody.im = -1;
+                    else dragBody.im = i_row;
+                    Invalidate();
+                    return;
+                }
+                if (rows[rows.Length - 1].INDEX == dragBody.i) dragBody.im = -1;
+                else dragBody.im = rows[rows.Length - 1].INDEX;
+                Invalidate();
+                return;
+            }
             if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location) && OnTouchMove(e.X, e.Y))
             {
                 if (rows == null || inEditMode) return;
-                var cel_sel = CellContains(rows, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
                 if (cel_sel == null)
                 {
                     foreach (RowTemplate it in rows)
@@ -438,7 +523,8 @@ namespace AntdUI
                         it.Hover = false;
                         foreach (var cel_tmp in it.cells)
                         {
-                            if (cel_tmp is Template template)
+                            if (cel_tmp is TCellSort sort) sort.Hover = false;
+                            else if (cel_tmp is Template template)
                             {
                                 foreach (var item in template.value)
                                 {
@@ -490,15 +576,25 @@ namespace AntdUI
                     }
                     else
                     {
+                        int countmove = 0;
                         for (int i = 1; i < rows.Length; i++)
                         {
-                            if (i == i_row) rows[i].Hover = true;
+                            if (i == i_row)
+                            {
+                                if (cel_sel is TCellSort sort)
+                                {
+                                    sort.Hover = sort.Contains(r_x, r_y);
+                                    if (sort.Hover) countmove++;
+                                }
+                                rows[i].Hover = true;
+                            }
                             else
                             {
                                 rows[i].Hover = false;
                                 foreach (var cel_tmp in rows[i].cells)
                                 {
-                                    if (cel_tmp is Template template)
+                                    if (cel_tmp is TCellSort sort) sort.Hover = false;
+                                    else if (cel_tmp is Template template)
                                     {
                                         foreach (var item in template.value)
                                         {
@@ -508,8 +604,12 @@ namespace AntdUI
                                 }
                             }
                         }
-                        if (cel_sel.ROW.CanExpand && cel_sel.ROW.RectExpand.Contains(r_x, r_y)) { SetCursor(true); return; }
-                        SetCursor(MouseMoveRow(cel_sel, r_x, r_y, offset_x, offset_xi, offset_y));
+                        if (countmove > 0) SetCursor(CursorType.SizeAll);
+                        else
+                        {
+                            if (cel_sel.ROW.CanExpand && cel_sel.ROW.RectExpand.Contains(r_x, r_y)) { SetCursor(true); return; }
+                            SetCursor(MouseMoveRow(cel_sel, r_x, r_y, offset_x, offset_xi, offset_y));
+                        }
                     }
                 }
             }
@@ -649,7 +749,7 @@ namespace AntdUI
 
         #region 判断是否在内部
 
-        TCell? CellContains(RowTemplate[] rows, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
+        TCell? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
         {
             mode = 0;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
@@ -788,7 +888,7 @@ namespace AntdUI
                         }
                     }
                 }
-                else if (it.Contains(ex, py))
+                else if (it.Contains(ex, py, sethover))
                 {
                     var hasi = new List<int>();
                     if (showFixedColumnL && fixedColumnL != null)
@@ -858,6 +958,7 @@ namespace AntdUI
         #endregion
 
         DragHeader? dragHeader = null;
+        DragHeader? dragBody = null;
 
         #region 排序
 
@@ -924,7 +1025,8 @@ namespace AntdUI
                 it.Hover = false;
                 foreach (var cel in it.cells)
                 {
-                    if (cel is Template template)
+                    if (cel is TCellSort sort) sort.Hover = false;
+                    else if (cel is Template template)
                     {
                         foreach (var item in template.value)
                         {

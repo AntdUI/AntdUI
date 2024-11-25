@@ -58,9 +58,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -89,6 +90,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -106,6 +108,7 @@ namespace AntdUI
                 columnCount = value;
                 ChangeList();
                 Invalidate();
+                OnPropertyChanged("ColumnCount");
             }
         }
 
@@ -139,6 +142,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
         }
 
@@ -987,6 +991,8 @@ namespace AntdUI
         }
 
         internal CollapseGroup? PARENT { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CollapseGroupItem? PARENTITEM { get; set; }
 
         internal void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)

@@ -189,6 +189,12 @@ namespace Demo.Controls
             table1.ColumnDragSort = e.Value;
         }
 
+        void checkRowsDragSort_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            if (e.Value) table1.Columns.Insert(0, new AntdUI.ColumnSort() { Fixed = true });
+            else table1.Columns.RemoveAt(0);
+        }
+
         void checkBordered_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             table1.Bordered = e.Value;
@@ -276,8 +282,18 @@ namespace Demo.Controls
                     OkText = "删除"
                 }) == DialogResult.OK)
                 {
-                    table1.Spin("正在加载中...", () =>
+                    table1.Spin("正在加载中...", config =>
                     {
+                        System.Threading.Thread.Sleep(1000);
+                        for (int i = 0; i < 101; i++)
+                        {
+                            config.Value = i / 100F;
+                            config.Text = "处理中 " + i + "%";
+                            System.Threading.Thread.Sleep(20);
+                        }
+                        System.Threading.Thread.Sleep(1000);
+                        config.Value = null;
+                        config.Text = "请耐心等候...";
                         System.Threading.Thread.Sleep(2000);
                     }, () =>
                     {

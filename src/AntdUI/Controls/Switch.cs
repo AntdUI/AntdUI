@@ -48,9 +48,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -68,6 +69,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
+                OnPropertyChanged("Fill");
             }
         }
 
@@ -93,7 +95,6 @@ namespace AntdUI
             {
                 if (_checked == value) return;
                 _checked = value;
-                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
                 ThreadCheck?.Dispose();
                 if (IsHandleCreated && Config.Animation)
                 {
@@ -129,6 +130,8 @@ namespace AntdUI
                 }
                 else AnimationCheckValue = value ? 1F : 0F;
                 Invalidate();
+                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
+                OnPropertyChanged("Checked");
             }
         }
 
@@ -159,6 +162,7 @@ namespace AntdUI
                 if (_checkedText == value) return;
                 _checkedText = value;
                 if (_checked) Invalidate();
+                OnPropertyChanged("CheckedText");
             }
         }
 
@@ -175,6 +179,7 @@ namespace AntdUI
                 if (_unCheckedText == value) return;
                 _unCheckedText = value;
                 if (!_checked) Invalidate();
+                OnPropertyChanged("UnCheckedText");
             }
         }
 

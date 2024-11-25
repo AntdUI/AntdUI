@@ -104,6 +104,7 @@ namespace AntdUI
                 }
                 Invalidate();
                 ValueChanged?.Invoke(this, new FloatEventArgs(_value));
+                OnPropertyChanged("Value");
             }
         }
 
@@ -183,14 +184,14 @@ namespace AntdUI
                         Rectangle rect_diy = new Rectangle(0, 0, bmp_size, bmp_size), rect_icon = new Rectangle(0, 0, size, size);
                         using (var s_f = Helper.SF())
                         {
-                            using (var g2 = Graphics.FromImage(bmp_diy).HighLay())
+                            using (var g2 = Graphics.FromImage(bmp_diy).HighLay(true))
                             {
                                 using (var brush = new SolidBrush(Style.Db.FillSecondary))
                                 {
                                     g2.String(character, font, brush, rect_diy, s_f);
                                 }
                             }
-                            using (var g2 = Graphics.FromImage(bmp_diy_active).HighLay())
+                            using (var g2 = Graphics.FromImage(bmp_diy_active).HighLay(true))
                             {
                                 using (var brush = new SolidBrush(fill))
                                 {

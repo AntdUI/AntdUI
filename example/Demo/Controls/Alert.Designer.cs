@@ -113,7 +113,7 @@ namespace Demo.Controls
             alert12.Font = new Font("楷体", 12F, FontStyle.Bold);
             alert12.ForeColor = Color.White;
             alert12.LocalizationText = "Alert.{id}";
-            alert12.Location = new Point(0, 436);
+            alert12.Location = new Point(0, 454);
             alert12.Loop = true;
             alert12.Name = "alert12";
             alert12.Radius = 0;
@@ -125,7 +125,7 @@ namespace Demo.Controls
             // 
             alert10.Dock = DockStyle.Top;
             alert10.Icon = AntdUI.TType.Warn;
-            alert10.Location = new Point(0, 406);
+            alert10.Location = new Point(0, 424);
             alert10.Loop = true;
             alert10.Name = "alert10";
             alert10.Radius = 0;
@@ -138,10 +138,10 @@ namespace Demo.Controls
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "Alert.{id}";
-            divider3.Location = new Point(0, 384);
+            divider3.Location = new Point(0, 396);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new Size(614, 22);
+            divider3.Size = new Size(614, 28);
             divider3.TabIndex = 5;
             divider3.Text = "轮播的公告\r\n";
             // 
@@ -153,7 +153,7 @@ namespace Demo.Controls
             panel3.Controls.Add(alert13);
             panel3.Dock = DockStyle.Top;
             panel3.Font = new Font("Microsoft YaHei UI", 10F);
-            panel3.Location = new Point(0, 133);
+            panel3.Location = new Point(0, 145);
             panel3.Name = "panel3";
             panel3.Size = new Size(614, 251);
             panel3.TabIndex = 4;
@@ -164,7 +164,6 @@ namespace Demo.Controls
             alert9.Icon = AntdUI.TType.Success;
             alert9.Location = new Point(16, 6);
             alert9.Name = "alert9";
-            alert9.Padding = new Padding(1);
             alert9.Size = new Size(264, 111);
             alert9.TabIndex = 1;
             alert9.Text = "Success Description Success Description Success Description";
@@ -176,7 +175,6 @@ namespace Demo.Controls
             alert15.Icon = AntdUI.TType.Error;
             alert15.Location = new Point(293, 123);
             alert15.Name = "alert15";
-            alert15.Padding = new Padding(1);
             alert15.Size = new Size(264, 111);
             alert15.TabIndex = 1;
             alert15.Text = "Error Description Error Description Error Description Error Description";
@@ -188,7 +186,6 @@ namespace Demo.Controls
             alert11.Icon = AntdUI.TType.Info;
             alert11.Location = new Point(16, 123);
             alert11.Name = "alert11";
-            alert11.Padding = new Padding(1);
             alert11.Size = new Size(264, 111);
             alert11.TabIndex = 1;
             alert11.Text = "Info Description Info Description Info Description Info Description";
@@ -200,7 +197,6 @@ namespace Demo.Controls
             alert13.Icon = AntdUI.TType.Warn;
             alert13.Location = new Point(293, 6);
             alert13.Name = "alert13";
-            alert13.Padding = new Padding(1);
             alert13.Size = new Size(264, 111);
             alert13.TabIndex = 1;
             alert13.Text = "Warning Description Warning Description Warning Description ";
@@ -211,10 +207,10 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Alert.{id}";
-            divider2.Location = new Point(0, 111);
+            divider2.Location = new Point(0, 117);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(614, 22);
+            divider2.Size = new Size(614, 28);
             divider2.TabIndex = 3;
             divider2.Text = "含有辅助性文字介绍";
             // 
@@ -229,7 +225,7 @@ namespace Demo.Controls
             panel2.Controls.Add(alert5);
             panel2.Controls.Add(alert1);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 22);
+            panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(614, 89);
             panel2.TabIndex = 2;
@@ -239,7 +235,6 @@ namespace Demo.Controls
             alert8.Icon = AntdUI.TType.Error;
             alert8.Location = new Point(454, 43);
             alert8.Name = "alert8";
-            alert8.Padding = new Padding(1);
             alert8.Size = new Size(122, 31);
             alert8.TabIndex = 1;
             alert8.Text = "Error Text";
@@ -250,7 +245,6 @@ namespace Demo.Controls
             alert4.Icon = AntdUI.TType.Error;
             alert4.Location = new Point(169, 43);
             alert4.Name = "alert4";
-            alert4.Padding = new Padding(1);
             alert4.Size = new Size(122, 31);
             alert4.TabIndex = 1;
             alert4.Text = "Error Text";
@@ -260,7 +254,6 @@ namespace Demo.Controls
             alert7.Icon = AntdUI.TType.Warn;
             alert7.Location = new Point(301, 43);
             alert7.Name = "alert7";
-            alert7.Padding = new Padding(1);
             alert7.Size = new Size(148, 31);
             alert7.TabIndex = 1;
             alert7.Text = "Warning Text";
@@ -271,7 +264,6 @@ namespace Demo.Controls
             alert3.Icon = AntdUI.TType.Warn;
             alert3.Location = new Point(16, 43);
             alert3.Name = "alert3";
-            alert3.Padding = new Padding(1);
             alert3.Size = new Size(148, 31);
             alert3.TabIndex = 1;
             alert3.Text = "Warning Text";
@@ -281,7 +273,6 @@ namespace Demo.Controls
             alert6.Icon = AntdUI.TType.Info;
             alert6.Location = new Point(454, 6);
             alert6.Name = "alert6";
-            alert6.Padding = new Padding(1);
             alert6.Size = new Size(122, 31);
             alert6.TabIndex = 1;
             alert6.Text = "Info Text";
@@ -292,7 +283,6 @@ namespace Demo.Controls
             alert2.Icon = AntdUI.TType.Info;
             alert2.Location = new Point(169, 6);
             alert2.Name = "alert2";
-            alert2.Padding = new Padding(1);
             alert2.Size = new Size(122, 31);
             alert2.TabIndex = 1;
             alert2.Text = "Info Text";
@@ -302,7 +292,6 @@ namespace Demo.Controls
             alert5.Icon = AntdUI.TType.Success;
             alert5.Location = new Point(301, 6);
             alert5.Name = "alert5";
-            alert5.Padding = new Padding(1);
             alert5.Size = new Size(148, 31);
             alert5.TabIndex = 1;
             alert5.Text = "Success Text";
@@ -313,7 +302,6 @@ namespace Demo.Controls
             alert1.Icon = AntdUI.TType.Success;
             alert1.Location = new Point(16, 6);
             alert1.Name = "alert1";
-            alert1.Padding = new Padding(1);
             alert1.Size = new Size(148, 31);
             alert1.TabIndex = 1;
             alert1.Text = "Success Text";
@@ -326,7 +314,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(614, 22);
+            divider1.Size = new Size(614, 28);
             divider1.TabIndex = 0;
             divider1.Text = "四种样式\r\n";
             // 

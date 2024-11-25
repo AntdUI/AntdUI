@@ -321,7 +321,14 @@ namespace AntdUI.Core
 
         #region Fill
 
-        public void Fill(Brush brush, GraphicsPath path) => g.FillPath(brush, path);
+        public void Fill(Brush brush, GraphicsPath path)
+        {
+            try
+            {
+                g.FillPath(brush, path);
+            }
+            catch { }
+        }
         public void Fill(Brush brush, Rectangle rect) => g.FillRectangle(brush, rect);
         public void Fill(Brush brush, int x, int y, int w, int h) => g.FillRectangle(brush, x, y, w, h);
         public void Fill(Brush brush, RectangleF rect) => g.FillRectangle(brush, rect);

@@ -25,11 +25,12 @@ namespace AntdUI
 {
     public class LayeredFormCalendarTime : ILayeredFormOpacityDown
     {
-        bool ShowSecond = true;
+        bool ShowSecond = true, ValueTimeHorizontal = false;
         public LayeredFormCalendarTime(TimePicker _control, Rectangle rect_read, TimeSpan date, Action<TimeSpan> _action)
         {
             _control.Parent.SetTopMost(Handle);
             control = _control;
+            ValueTimeHorizontal = _control.ValueTimeHorizontal;
             ShowSecond = _control.Format.Contains("s");
             PARENT = _control;
             action = _action;
@@ -89,9 +90,19 @@ namespace AntdUI
             scrollY_s.SizeChange(rect_s_h);
 
             int endh2 = t_height - (t_time_height - size_time_height_one);
-            scrollY_h.SetVrSize(t_time_height * 24, endh2);
-            scrollY_m.SetVrSize(t_time_height * 60, endh2);
-            scrollY_s.SetVrSize(t_time_height * 60, endh2);
+            if (ValueTimeHorizontal)
+            {
+                int exceed = 6;
+                scrollY_h.SetVrSize(t_time_height * (24 + exceed), endh2);
+                scrollY_m.SetVrSize(t_time_height * (60 + exceed), endh2);
+                scrollY_s.SetVrSize(t_time_height * (60 + exceed), endh2);
+            }
+            else
+            {
+                scrollY_h.SetVrSize(t_time_height * 24, endh2);
+                scrollY_m.SetVrSize(t_time_height * 60, endh2);
+                scrollY_s.SetVrSize(t_time_height * 60, endh2);
+            }
 
             int _x = (t_time - size_time_one) / 2, _y = (t_time_height - size_time_height_one) / 2;
             foreach (var it in calendar_time)
@@ -100,18 +111,25 @@ namespace AntdUI
                 it.rect_read = new Rectangle(it.rect.X + _x, it.rect.Y + _y, size_time_one, size_time_height_one);
             }
 
-            var find_h = calendar_time.Find(a => a.x == 0 && a.t == SelDate.Hours);
-            if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-            var find_m = calendar_time.Find(a => a.x == 1 && a.t == SelDate.Minutes);
-            if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-            var find_s = calendar_time.Find(a => a.x == 2 && a.t == SelDate.Seconds);
-            if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
+            ScrollYTime();
 
             #endregion
 
             rect_button = new Rectangle(10, 10 + t_height, t_width / 2, t_button);
             rect_buttonok = new Rectangle(rect_button.Right, rect_button.Top, rect_button.Width, rect_button.Height);
             CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
+        }
+
+        void ScrollYTime()
+        {
+            CalendarT? find_h = calendar_time.Find(a => a.x == 0 && a.t == SelDate.Hours),
+                find_m = calendar_time.Find(a => a.x == 1 && a.t == SelDate.Minutes),
+                find_s = calendar_time.Find(a => a.x == 2 && a.t == SelDate.Seconds);
+
+            int start = 10 + 4;
+            if (find_h != null) scrollY_h.Value = find_h.rect.Y - start;
+            if (find_m != null) scrollY_m.Value = find_m.rect.Y - start;
+            if (find_s != null) scrollY_s.Value = find_s.rect.Y - start;
         }
 
         #region 属性
@@ -212,42 +230,14 @@ namespace AntdUI
                     scrollY_m.Paint(g);
                     scrollY_s.Paint(g);
 
-                    using (var brush_active = new SolidBrush(Style.Db.Primary))
-                    {
-                        if (hover_button.Animation)
-                        {
-                            g.String(button_text, Font, brush_active, rect_button, s_f);
-                            using (var brush_hove = new SolidBrush(Helper.ToColor(hover_button.Value, Style.Db.PrimaryActive)))
-                            {
-                                g.String(button_text, Font, brush_hove, rect_button, s_f);
-                            }
-                        }
-                        else if (hover_button.Switch)
-                        {
-                            using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
-                            {
-                                g.String(button_text, Font, brush_hove, rect_button, s_f);
-                            }
-                        }
-                        else g.String(button_text, Font, brush_active, rect_button, s_f);
+                    var color_active = Style.Db.Primary;
+                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Style.Db.PrimaryActive), rect_button, s_f);
+                    else if (hover_button.Switch) g.String(button_text, Font, Style.Db.PrimaryActive, rect_button, s_f);
+                    else g.String(button_text, Font, color_active, rect_button, s_f);
 
-                        if (hover_buttonok.Animation)
-                        {
-                            g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
-                            using (var brush_hove = new SolidBrush(Helper.ToColor(hover_buttonok.Value, Style.Db.PrimaryActive)))
-                            {
-                                g.String(OKButton, Font, brush_hove, rect_buttonok, s_f);
-                            }
-                        }
-                        else if (hover_buttonok.Switch)
-                        {
-                            using (var brush_hove = new SolidBrush(Style.Db.PrimaryActive))
-                            {
-                                g.String(OKButton, Font, brush_hove, rect_buttonok, s_f);
-                            }
-                        }
-                        else g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
-                    }
+                    if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Style.Db.PrimaryActive), rect_buttonok, s_f);
+                    else if (hover_buttonok.Switch) g.String(OKButton, Font, Style.Db.PrimaryActive, rect_buttonok, s_f);
+                    else g.String(OKButton, Font, color_active, rect_buttonok, s_f);
                 }
             }
             return original_bmp;
@@ -310,26 +300,23 @@ namespace AntdUI
                 if (hover_button.Switch || hover_buttonok.Switch) hand++;
                 else
                 {
-                    if (calendar_time != null)
+                    foreach (var it in calendar_time)
                     {
-                        foreach (var it in calendar_time)
+                        switch (it.x)
                         {
-                            switch (it.x)
-                            {
-                                case 1:
-                                    if (it.Contains(e.Location, 0, scrollY_m.Value, out var change1)) hand++;
-                                    if (change1) count++;
-                                    break;
-                                case 2:
-                                    if (it.Contains(e.Location, 0, scrollY_s.Value, out var change2)) hand++;
-                                    if (change2) count++;
-                                    break;
-                                case 0:
-                                default:
-                                    if (it.Contains(e.Location, 0, scrollY_h.Value, out var change0)) hand++;
-                                    if (change0) count++;
-                                    break;
-                            }
+                            case 1:
+                                if (it.Contains(e.Location, 0, scrollY_m.Value, out var change1)) hand++;
+                                if (change1) count++;
+                                break;
+                            case 2:
+                                if (it.Contains(e.Location, 0, scrollY_s.Value, out var change2)) hand++;
+                                if (change2) count++;
+                                break;
+                            case 0:
+                            default:
+                                if (it.Contains(e.Location, 0, scrollY_h.Value, out var change0)) hand++;
+                                if (change0) count++;
+                                break;
                         }
                     }
                 }
@@ -346,13 +333,7 @@ namespace AntdUI
             scrollY_h.Leave();
             scrollY_m.Leave();
             scrollY_s.Leave();
-            if (calendar_time != null)
-            {
-                foreach (var it in calendar_time)
-                {
-                    it.hover = false;
-                }
-            }
+            foreach (var it in calendar_time) it.hover = false;
             SetCursor(false);
             Print();
             base.OnMouseLeave(e);
@@ -371,12 +352,7 @@ namespace AntdUI
                     DateNow = DateTime.Now;
                     SelDate = new TimeSpan(DateNow.Hour, DateNow.Minute, DateNow.Second);
                     action(SelDate);
-                    var find_h = calendar_time.Find(a => a.x == 0 && a.t == SelDate.Hours);
-                    if (find_h != null) scrollY_h.Value = find_h.rect.Y - find_h.rect.Height;
-                    var find_m = calendar_time.Find(a => a.x == 1 && a.t == SelDate.Minutes);
-                    if (find_m != null) scrollY_m.Value = find_m.rect.Y - find_m.rect.Height;
-                    var find_s = calendar_time.Find(a => a.x == 2 && a.t == SelDate.Seconds);
-                    if (find_s != null) scrollY_s.Value = find_s.rect.Y - find_s.rect.Height;
+                    ScrollYTime();
                     Print();
                     return;
                 }
@@ -395,6 +371,7 @@ namespace AntdUI
                             if (it.Contains(e.Location, 0, scrollY_m.Value, out _))
                             {
                                 SelDate = new TimeSpan(SelDate.Hours, it.t, SelDate.Seconds);
+                                if (ValueTimeHorizontal) ScrollYTime();
                                 Print();
                                 return;
                             }
@@ -403,6 +380,7 @@ namespace AntdUI
                             if (it.Contains(e.Location, 0, scrollY_s.Value, out _))
                             {
                                 SelDate = new TimeSpan(SelDate.Hours, SelDate.Minutes, it.t);
+                                if (ValueTimeHorizontal) ScrollYTime();
                                 Print();
                                 return;
                             }
@@ -412,6 +390,7 @@ namespace AntdUI
                             if (it.Contains(e.Location, 0, scrollY_h.Value, out _))
                             {
                                 SelDate = new TimeSpan(it.t, SelDate.Minutes, SelDate.Seconds);
+                                if (ValueTimeHorizontal) ScrollYTime();
                                 Print();
                                 return;
                             }

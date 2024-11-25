@@ -51,6 +51,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
+                OnPropertyChanged("Radius");
             }
         }
 
@@ -68,6 +69,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 OnSizeChanged(EventArgs.Empty);
+                OnPropertyChanged("padding");
             }
         }
 
@@ -86,6 +88,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 OnSizeChanged(EventArgs.Empty);
+                OnPropertyChanged("Shadow");
             }
         }
 
@@ -105,6 +108,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 Invalidate();
+                OnPropertyChanged("ShadowColor");
             }
         }
 
@@ -123,6 +127,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 OnSizeChanged(EventArgs.Empty);
+                OnPropertyChanged("ShadowOffsetX");
             }
         }
 
@@ -141,6 +146,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 OnSizeChanged(EventArgs.Empty);
+                OnPropertyChanged("ShadowOffsetY");
             }
         }
 
@@ -160,6 +166,7 @@ namespace AntdUI
                 shadowOpacity = value;
                 AnimationHoverValue = shadowOpacity;
                 Invalidate();
+                OnPropertyChanged("ShadowOpacity");
             }
         }
 
@@ -184,6 +191,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacityHover = value;
                 Invalidate();
+                OnPropertyChanged("ShadowOpacityHover");
             }
         }
 
@@ -199,6 +207,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 OnSizeChanged(EventArgs.Empty);
+                OnPropertyChanged("ShadowAlign");
             }
         }
 
@@ -220,6 +229,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
+                OnPropertyChanged("Back");
             }
         }
 
@@ -236,6 +246,7 @@ namespace AntdUI
                 if (backImage == value) return;
                 backImage = value;
                 Invalidate();
+                OnPropertyChanged("BackgroundImage");
             }
         }
 
@@ -252,6 +263,7 @@ namespace AntdUI
                 if (backFit == value) return;
                 backFit = value;
                 Invalidate();
+                OnPropertyChanged("BackgroundImageLayout");
             }
         }
 
@@ -272,6 +284,7 @@ namespace AntdUI
                 if (arrwoSize == value) return;
                 arrwoSize = value;
                 Invalidate();
+                OnPropertyChanged("ArrowSize");
             }
         }
 
@@ -288,6 +301,7 @@ namespace AntdUI
                 if (arrowAlign == value) return;
                 arrowAlign = value;
                 Invalidate();
+                OnPropertyChanged("ArrowAlign");
             }
         }
 
@@ -308,6 +322,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 OnSizeChanged(EventArgs.Empty);
+                OnPropertyChanged("BorderWidth");
             }
         }
 
@@ -325,6 +340,7 @@ namespace AntdUI
                 if (borderColor == value) return;
                 borderColor = value;
                 if (borderWidth > 0) Invalidate();
+                OnPropertyChanged("BorderColor");
             }
         }
 
@@ -341,6 +357,7 @@ namespace AntdUI
                 if (borderStyle == value) return;
                 borderStyle = value;
                 if (borderWidth > 0) Invalidate();
+                OnPropertyChanged("BorderStyle");
             }
         }
 
@@ -348,10 +365,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.DeflateRect(Padding, this, shadowAlign, borderWidth);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding, this, shadowAlign, borderWidth);
 
         #region 渲染
 
@@ -409,15 +423,9 @@ namespace AntdUI
             return path;
         }
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.DeflateRect(_padding).PaddingRect(this, shadowAlign, borderWidth);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.DeflateRect(_padding).PaddingRect(this, shadowAlign, borderWidth / 2F);
 
-        public override GraphicsPath RenderRegion
-        {
-            get => ReadRectangle.RoundPath(radius * Config.Dpi);
-        }
+        public override GraphicsPath RenderRegion => ReadRectangle.RoundPath(radius * Config.Dpi);
 
         #endregion
 
@@ -481,6 +489,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             ThreadHover?.Dispose();
+            ThreadHover = null;
             Application.RemoveMessageFilter(this);
             shadow_temp?.Dispose();
             shadow_temp = null;

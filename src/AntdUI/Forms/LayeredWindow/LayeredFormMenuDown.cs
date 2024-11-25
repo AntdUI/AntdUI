@@ -29,6 +29,8 @@ namespace AntdUI
         bool isauto = true, isdark = false;
         List<OMenuItem> Items;
         Color? BackHover, BackActive, foreColor, ForeActive;
+
+        ScrollY? scrollY;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, MenuItemCollection items)
         {
             MessageCloseMouseLeave = true;
@@ -70,6 +72,7 @@ namespace AntdUI
         void Init(Control control, Rectangle rect_read, MenuItemCollection items)
         {
             int y = 10, w = rect_read.Width;
+            OMenuItem? oMenuItem = null;
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
@@ -105,23 +108,24 @@ namespace AntdUI
                 foreach (var it in items)
                 {
                     Rectangle rect = new Rectangle(10 + gap, y, w - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
-                    Items.Add(new OMenuItem(it, rect, gap_y, rect_text));
+                    var item = new OMenuItem(it, rect, gap_y, rect_text);
+                    Items.Add(item);
+                    if (it.Select) oMenuItem = item;
                     y += item_height;
                 }
                 var vr = item_height * items.Count;
                 y = 10 + gap_y2 + vr;
             });
             int h = y + 10;
-            SetSize(w + 20, h);
             if (control is LayeredFormMenuDown)
             {
                 var point = control.PointToScreen(Point.Empty);
-                SetLocation(point.X + rect_read.Width, point.Y + rect_read.Y - 10);
+                InitPoint(point.X + rect_read.Width, point.Y + rect_read.Y - 10, w + 20, h);
             }
             else
             {
-                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) SetLocation(rect_read.X - 10, rect_read.Bottom);
-                else SetLocation(rect_read.Right, rect_read.Y);
+                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) InitPoint(rect_read.X - 10, rect_read.Bottom, w + 20, h);
+                else InitPoint(rect_read.Right, rect_read.Y, w + 20, h);
             }
             KeyCall = keys =>
             {
@@ -190,12 +194,40 @@ namespace AntdUI
                 }
                 return false;
             };
+            if (oMenuItem != null) FocusItem(oMenuItem, false);
+        }
+
+        void InitPoint(int x, int y, int w, int h)
+        {
+            var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
+            if (x < screen.X) x = screen.X;
+            else if (x > (screen.X + screen.Width) - w) x = screen.X + screen.Width - w;
+
+            if (h > screen.Height)
+            {
+                int gap_y = (int)(4 * Config.Dpi), vr = h, height = screen.Height;
+                scrollY = new ScrollY(this);
+                scrollY.Rect = new Rectangle(w - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
+                scrollY.Show = true;
+                scrollY.SetVrSize(vr, height);
+                h = height;
+            }
+
+            if (y < screen.Y) y = screen.Y;
+            else if (y > (screen.Y + screen.Height) - h) y = screen.Y + screen.Height - h;
+
+            SetLocation(x, y);
+            SetSize(w, h);
         }
 
         StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
-        public void FocusItem(OMenuItem item)
+        public void FocusItem(OMenuItem it, bool print = true)
         {
-            if (item.SetHover(true)) Print();
+            if (it.SetHover(true))
+            {
+                if (scrollY != null && scrollY.Show) scrollY.Value = it.Rect.Y - it.Rect.Height;
+                if (print) Print();
+            }
         }
 
         /// <summary>
@@ -210,10 +242,11 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (RunAnimation) return;
+            int y = (scrollY != null && scrollY.Show) ? (int)scrollY.Value : 0;
             foreach (var it in Items)
             {
-                if (RunAnimation) return;
-                if (it.Show && it.Val.Enabled && it.Contains(e.Location, out _))
+                if (it.Show && it.Val.Enabled && it.Contains(e.X, e.Y + y, out _))
                 {
                     if (OnClick(it)) return;
                 }
@@ -254,20 +287,20 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (RunAnimation) return;
+            base.OnMouseMove(e);
             hoveindex = -1;
-
+            int y = (scrollY != null && scrollY.Show) ? (int)scrollY.Value : 0;
             int count = 0;
             for (int i = 0; i < Items.Count; i++)
             {
                 var it = Items[i];
                 if (it.Show && it.Val.Enabled)
                 {
-                    if (it.Contains(e.Location, out var change)) hoveindex = i;
+                    if (it.Contains(e.X, e.Y + y, out var change)) hoveindex = i;
                     if (change) count++;
                 }
             }
             if (count > 0) Print();
-            base.OnMouseMove(e);
             if (hoveindexold == hoveindex) return;
             hoveindexold = hoveindex;
             subForm?.IClose();
@@ -280,6 +313,12 @@ namespace AntdUI
             }
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            scrollY?.MouseWheel(e.Delta);
+            base.OnMouseWheel(e);
+        }
+
         #endregion
 
         readonly StringFormat s_f = Helper.SF_NoWrap();
@@ -288,7 +327,7 @@ namespace AntdUI
             var rect = TargetRectXY;
             var rect_read = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20);
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).HighLay())
+            using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
                 using (var path = rect_read.RoundPath(Radius))
                 {
@@ -296,55 +335,60 @@ namespace AntdUI
                     if (isauto) g.Fill(Style.Db.BgElevated, path);
                     else if (isdark) g.Fill("#1F1F1F".ToColor(), path);
                     else g.Fill(Color.White, path);
-                }
 
-                if (nodata)
-                {
-                    string emptytext = Localization.Get("NoData", "暂无数据");
-                    using (var brush = new SolidBrush(Color.FromArgb(180, Style.Db.Text)))
-                    { g.String(emptytext, Font, brush, rect_read, s_f); }
-                }
-                else
-                {
-                    if (foreColor.HasValue)
+                    if (nodata)
                     {
-                        using (var brush = new SolidBrush(foreColor.Value))
-                        {
-                            foreach (var it in Items)
-                            {
-                                if (it.Show) DrawItem(g, brush, it);
-                            }
-                        }
-                    }
-                    else if (isauto)
-                    {
-                        using (var brush = new SolidBrush(Style.Db.Text))
-                        {
-                            foreach (var it in Items)
-                            {
-                                if (it.Show) DrawItem(g, brush, it);
-                            }
-                        }
-                    }
-                    else if (isdark)
-                    {
-                        using (var brush = new SolidBrush(Color.White))
-                        {
-                            foreach (var it in Items)
-                            {
-                                if (it.Show) DrawItem(g, brush, it);
-                            }
-                        }
+                        string emptytext = Localization.Get("NoData", "暂无数据");
+                        using (var brush = new SolidBrush(Color.FromArgb(180, Style.Db.Text)))
+                        { g.String(emptytext, Font, brush, rect_read, s_f); }
                     }
                     else
                     {
-                        using (var brush = new SolidBrush(Color.Black))
+                        g.SetClip(rect_read);
+                        if (scrollY != null && scrollY.Show) g.TranslateTransform(0, -scrollY.Value);
+                        if (foreColor.HasValue)
                         {
-                            foreach (var it in Items)
+                            using (var brush = new SolidBrush(foreColor.Value))
                             {
-                                if (it.Show) DrawItem(g, brush, it);
+                                foreach (var it in Items)
+                                {
+                                    if (it.Show) DrawItem(g, brush, it);
+                                }
                             }
                         }
+                        else if (isauto)
+                        {
+                            using (var brush = new SolidBrush(Style.Db.Text))
+                            {
+                                foreach (var it in Items)
+                                {
+                                    if (it.Show) DrawItem(g, brush, it);
+                                }
+                            }
+                        }
+                        else if (isdark)
+                        {
+                            using (var brush = new SolidBrush(Color.White))
+                            {
+                                foreach (var it in Items)
+                                {
+                                    if (it.Show) DrawItem(g, brush, it);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (var brush = new SolidBrush(Color.Black))
+                            {
+                                foreach (var it in Items)
+                                {
+                                    if (it.Show) DrawItem(g, brush, it);
+                                }
+                            }
+                        }
+                        g.ResetClip();
+                        g.ResetTransform();
+                        scrollY?.Paint(g);
                     }
                 }
             }
@@ -607,9 +651,9 @@ namespace AntdUI
                 return change;
             }
 
-            internal bool Contains(Point point, out bool change)
+            internal bool Contains(int x, int y, out bool change)
             {
-                if (Rect.Contains(point))
+                if (Rect.Contains(x, y))
                 {
                     change = SetHover(true);
                     return true;

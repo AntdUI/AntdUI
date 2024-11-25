@@ -16,7 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -28,35 +28,42 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
+            var lang = AntdUI.Localization.CurrentLanguage;
+            if (lang.StartsWith("en")) switch2.Width = switch4.Width = 108;
         }
 
-        protected override void OnLoad(EventArgs e)
+        private void switch1_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            base.OnLoad(e);
-            AntdUI.ITask.Run(() =>
+            if (e.Value)
             {
-                var random = new Random();
-                for (int i = 0; i < random.Next(7, 20); i++)
-                {
-                    var it = new AntdUI.MenuItem("Menu " + (i + 1));
-                    if (random.Next(0, 9) > 2)
-                    {
-                        for (int j = 0; j < random.Next(3, 9); j++)
-                        {
-                            var it2 = new AntdUI.MenuItem("Option " + (j + 1));
-                            if (random.Next(0, 9) > 7)
-                            {
-                                for (int k = 0; k < random.Next(3, 9); k++)
-                                {
-                                    it2.Sub.Add(new AntdUI.MenuItem("Sub " + (k + 1)));
-                                }
-                            }
-                            it.Sub.Add(it2);
-                        }
-                    }
-                    menu2.Items.Add(it);
-                }
-            });
+                menu2.Theme = AntdUI.TAMode.Dark;
+                if (AntdUI.Config.IsDark) menu2.BackColor = BackColor;
+                else menu2.BackColor = Color.FromArgb(0, 21, 41);
+            }
+            else
+            {
+                menu2.Theme = AntdUI.TAMode.Light;
+                if (AntdUI.Config.IsDark) menu2.BackColor = Color.White;
+                else menu2.BackColor = BackColor;
+            }
         }
+        private void switch2_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => menu2.Collapsed = e.Value;
+
+        private void switch3_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            if (e.Value)
+            {
+                menu3.Theme = AntdUI.TAMode.Dark;
+                if (AntdUI.Config.IsDark) menu3.BackColor = BackColor;
+                else menu3.BackColor = Color.FromArgb(0, 21, 41);
+            }
+            else
+            {
+                menu3.Theme = AntdUI.TAMode.Light;
+                if (AntdUI.Config.IsDark) menu3.BackColor = Color.White;
+                else menu3.BackColor = BackColor;
+            }
+        }
+        private void switch4_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => menu3.Collapsed = e.Value;
     }
 }

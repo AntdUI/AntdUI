@@ -164,11 +164,18 @@ namespace AntdUI
                     }
                 }
             });
-
-            var point = config.Control.PointToScreen(Point.Empty);
-            if (config.Offset is RectangleF rectf) SetLocation(config.ArrowAlign.AlignPoint(new Rectangle(point.X + (int)rectf.X, point.Y + (int)rectf.Y, (int)rectf.Width, (int)rectf.Height), TargetRect.Width, TargetRect.Height));
-            else if (config.Offset is Rectangle rect) SetLocation(config.ArrowAlign.AlignPoint(new Rectangle(point.X + rect.X, point.Y + rect.Y, rect.Width, rect.Height), TargetRect.Width, TargetRect.Height));
-            else SetLocation(config.ArrowAlign.AlignPoint(point, config.Control.Size, TargetRect.Width, TargetRect.Height));
+            if (config.CustomPoint.HasValue)
+            {
+                var point = config.CustomPoint.Value.Location;
+                SetLocation(config.ArrowAlign.AlignPoint(config.CustomPoint.Value.Location, config.CustomPoint.Value.Size, TargetRect.Width, TargetRect.Height));
+            }
+            else
+            {
+                var point = config.Control.PointToScreen(Point.Empty);
+                if (config.Offset is RectangleF rectf) SetLocation(config.ArrowAlign.AlignPoint(new Rectangle(point.X + (int)rectf.X, point.Y + (int)rectf.Y, (int)rectf.Width, (int)rectf.Height), TargetRect.Width, TargetRect.Height));
+                else if (config.Offset is Rectangle rect) SetLocation(config.ArrowAlign.AlignPoint(new Rectangle(point.X + rect.X, point.Y + rect.Y, rect.Width, rect.Height), TargetRect.Width, TargetRect.Height));
+                else SetLocation(config.ArrowAlign.AlignPoint(point, config.Control.Size, TargetRect.Width, TargetRect.Height));
+            }
         }
 
         public override void LoadOK()
@@ -206,15 +213,14 @@ namespace AntdUI
                 MinimumSize = fsize,
                 Size = fsize
             };
-            control.Disposed += (a, b) =>
-            {
-                Close();
-            };
+            control.Disposed += Control_Disposed;
             form.Show(this);
             form.Location = flocation;
             PARENT = form;
             config.OnControlLoad?.Invoke();
         }
+
+        private void Control_Disposed(object? sender, EventArgs e) => IClose();
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -235,11 +241,17 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            shadow_temp?.Dispose();
+            shadow_temp = null;
+            tempContent?.Dispose();
+            tempContent = null;
             if (config.Content is Control control)
             {
+                control.Disposed -= Control_Disposed;
                 control.Dispose();
-                form?.Dispose();
             }
+            config.Content = null;
+            form?.Dispose();
             base.Dispose(disposing);
         }
 

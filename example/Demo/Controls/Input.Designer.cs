@@ -167,7 +167,7 @@ namespace Demo.Controls
             panel3.Controls.Add(panel6);
             panel3.Controls.Add(panel4);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 206);
+            panel3.Location = new Point(0, 218);
             panel3.Name = "panel3";
             panel3.Size = new Size(555, 139);
             panel3.TabIndex = 1;
@@ -280,10 +280,10 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Input.{id}";
-            divider2.Location = new Point(0, 184);
+            divider2.Location = new Point(0, 190);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new Size(555, 22);
+            divider2.Size = new Size(555, 28);
             divider2.TabIndex = 1;
             divider2.TabStop = false;
             divider2.Text = "组合";
@@ -297,7 +297,7 @@ namespace Demo.Controls
             panel2.Controls.Add(input3);
             panel2.Controls.Add(input1);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 22);
+            panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(555, 162);
             panel2.TabIndex = 0;
@@ -310,7 +310,7 @@ namespace Demo.Controls
             divider1.Location = new Point(0, 0);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(555, 22);
+            divider1.Size = new Size(555, 28);
             divider1.TabIndex = 1;
             divider1.TabStop = false;
             divider1.Text = "常规";

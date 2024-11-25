@@ -114,6 +114,7 @@ namespace AntdUI
                 ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
                 if (value == null) Text = "";
                 else Text = value[0].ToString(Format) + "\t" + value[1].ToString(Format);
+                OnPropertyChanged("Value");
             }
         }
 
@@ -128,6 +129,12 @@ namespace AntdUI
         /// </summary>
         [Description("最大日期"), Category("数据"), DefaultValue(null)]
         public DateTime? MaxDate { get; set; }
+
+        /// <summary>
+        /// 时间值水平对齐
+        /// </summary>
+        [Description("时间值水平对齐"), Category("外观"), DefaultValue(false)]
+        public bool ValueTimeHorizontal { get; set; }
 
         protected override void OnTextChanged(EventArgs e)
         {

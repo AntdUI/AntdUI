@@ -29,19 +29,20 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
+            button54.LoadingWaveColor = AntdUI.Style.Db.Success;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            panel6.Width = btng1.Width + btng2.Width + btng3.Width + panel6.Padding.Horizontal + (int)(panel6.Shadow * AntdUI.Config.Dpi) * 2;
+            panel_btns.Width = btng1.Width + btng2.Width + btng3.Width + panel_btns.Padding.Horizontal + (int)(panel_btns.Shadow * AntdUI.Config.Dpi) * 2;
         }
-        private void Btn(object sender, EventArgs e)
+        private void Btns(object sender, EventArgs e)
         {
             AntdUI.Button btn = (AntdUI.Button)sender;
             btn.Loading = true;
             bool change = false;
-            if (btn.Parent == panel6)
+            if (btn.Parent == panel_btns)
             {
                 change = true;
                 UpdatePanelWidth();
@@ -50,70 +51,66 @@ namespace Demo.Controls
             {
                 Thread.Sleep(2000);
                 if (btn.IsDisposed) return;
+                btn.Loading = false;
                 btn.Invoke(new Action(() =>
                 {
                     if (btn.IsDisposed) return;
-                    btn.Loading = false;
                     if (change) UpdatePanelWidth();
                 }));
             });
         }
 
         Random random = new Random();
-        private void Btn2(object sender, EventArgs e)
+        private void Btn(object sender, EventArgs e)
         {
             AntdUI.Button btn = (AntdUI.Button)sender;
-            int nnn = random.Next(0, 20);
-            if (nnn > 10)
-            {
-                btn.Loading = true;
-                btn.Enabled = false;
-                AntdUI.ITask.Run(() =>
-                {
-                    Thread.Sleep(2000);
-                    if (btn.IsDisposed) return;
-                    btn.Invoke(new Action(() =>
-                    {
-                        if (btn.IsDisposed) return;
-                        btn.Loading = false;
-                        btn.Enabled = true;
-                    }));
-                });
-            }
-            else if (nnn > 5)
+            btn.LoadingWaveValue = 0;
+            if (random.Next(0, 10) > 3)
             {
                 btn.Loading = true;
                 AntdUI.ITask.Run(() =>
                 {
-                    Thread.Sleep(2000);
-                    if (btn.IsDisposed) return;
-                    btn.Invoke(new Action(() =>
+                    Thread.Sleep(1000);
+                    for (int i = 0; i < 101; i++)
                     {
-                        if (btn.IsDisposed) return;
-                        btn.Loading = false;
-                    }));
+                        btn.LoadingWaveValue = i / 100F;
+                        Thread.Sleep(20);
+                    }
+                    Thread.Sleep(2000);
+                }, () =>
+                {
+                    if (btn.IsDisposed) return;
+                    btn.Loading = false;
                 });
             }
             else
             {
-                btn.Enabled = false;
+                btn.Loading = true;
                 AntdUI.ITask.Run(() =>
                 {
                     Thread.Sleep(2000);
                     if (btn.IsDisposed) return;
-                    btn.Invoke(new Action(() =>
-                    {
-                        if (btn.IsDisposed) return;
-                        btn.Enabled = true;
-                    }));
+                    btn.Loading = false;
                 });
             }
         }
 
         private void UpdatePanelWidth()
         {
-            if (panel6.IsDisposed) return;
-            panel6.Width = btng1.Width + btng2.Width + btng3.Width + panel6.Padding.Horizontal + (int)(panel6.Shadow * AntdUI.Config.Dpi) * 2;
+            if (panel_btns.IsDisposed) return;
+            panel_btns.Width = btng1.Width + btng2.Width + btng3.Width + panel_btns.Padding.Horizontal + (int)(panel_btns.Shadow * AntdUI.Config.Dpi) * 2;
         }
+
+        private void switch1_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => panel1.Enabled = e.Value;
+
+        private void switch2_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => panel2.Enabled = e.Value;
+
+        private void switch3_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => panel3.Enabled = e.Value;
+
+        private void switch4_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => panel4.Enabled = e.Value;
+
+        private void switch5_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => panel5.Enabled = e.Value;
+
+        private void switch6_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => panel6.Enabled = e.Value;
     }
 }

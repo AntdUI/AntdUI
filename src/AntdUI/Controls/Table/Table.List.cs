@@ -24,6 +24,12 @@ namespace AntdUI
 {
     public class ColumnCollection : IEnumerable<Column>
     {
+        internal Table? table;
+        void R()
+        {
+            if (table == null) return;
+            table.LoadLayout();
+        }
         List<Column> list;
         public ColumnCollection() { list = new List<Column>(); }
         public ColumnCollection(int count) { list = new List<Column>(count); }
@@ -74,11 +80,27 @@ namespace AntdUI
 
         #region 添加
 
-        public void Add(Column item) => list.Add(item);
-        public void AddRange(IEnumerable<Column> collection) => list.AddRange(collection);
+        public void Add(Column item)
+        {
+            list.Add(item);
+            R();
+        }
+        public void AddRange(IEnumerable<Column> collection)
+        {
+            list.AddRange(collection);
+            R();
+        }
 
-        public void Insert(int index, Column item) => list.Insert(index, item);
-        public void InsertRange(int index, IEnumerable<Column> collection) => list.InsertRange(index, collection);
+        public void Insert(int index, Column item)
+        {
+            list.Insert(index, item);
+            R();
+        }
+        public void InsertRange(int index, IEnumerable<Column> collection)
+        {
+            list.InsertRange(index, collection);
+            R();
+        }
 
         #endregion
 
@@ -113,12 +135,30 @@ namespace AntdUI
 
         #region 删除
 
-        public void Clear() => list.Clear();
+        public void Clear() { list.Clear(); }
 
-        public bool Remove(Column item) => list.Remove(item);
-        public void RemoveAt(int index) => list.RemoveAt(index);
-        public int RemoveAll(Predicate<Column> match) => list.RemoveAll(match);
-        public void RemoveRange(int index, int count) => list.RemoveRange(index, count);
+        public bool Remove(Column item)
+        {
+            var r = list.Remove(item);
+            R();
+            return r;
+        }
+        public void RemoveAt(int index)
+        {
+            list.RemoveAt(index);
+            R();
+        }
+        public int RemoveAll(Predicate<Column> match)
+        {
+            var r = list.RemoveAll(match);
+            R();
+            return r;
+        }
+        public void RemoveRange(int index, int count)
+        {
+            list.RemoveRange(index, count);
+            R();
+        }
 
         #endregion
 

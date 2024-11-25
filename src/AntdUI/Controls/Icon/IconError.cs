@@ -43,6 +43,7 @@ namespace AntdUI.Icon
                 if (back == value) return;
                 back = value;
                 Invalidate();
+                OnPropertyChanged("Back");
             }
         }
 
@@ -57,6 +58,7 @@ namespace AntdUI.Icon
                 if (color == value) return;
                 color = value;
                 Invalidate();
+                OnPropertyChanged("Color");
             }
         }
 

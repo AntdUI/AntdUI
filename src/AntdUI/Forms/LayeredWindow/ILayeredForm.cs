@@ -244,6 +244,7 @@ namespace AntdUI
 
         #endregion
 
+        bool switchClose = true, switchDispose = true;
         public void IClose(bool isdispose = false)
         {
             if (IsHandleCreated)
@@ -258,8 +259,13 @@ namespace AntdUI
                         }));
                         return;
                     }
-                    Close();
-                    if (isdispose) Dispose();
+                    if (switchClose) Close();
+                    switchClose = false;
+                    if (isdispose)
+                    {
+                        if (switchDispose) Dispose();
+                        switchDispose = false;
+                    }
                 }
                 catch { }
             }
@@ -572,14 +578,7 @@ namespace AntdUI
                     }
                     if (count > 0) call.Render();
                     if (isDispose) return;
-                    try
-                    {
-                        Event.ResetWait();
-                    }
-                    catch
-                    {
-                        return;
-                    }
+                    if (Event.ResetWait()) return;
                 }
             }
 
@@ -594,6 +593,7 @@ namespace AntdUI
                 Queue.Clear();
 #endif
                 Event.WaitDispose();
+                GC.SuppressFinalize(this);
             }
 
             public class M

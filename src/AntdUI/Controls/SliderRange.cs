@@ -52,6 +52,7 @@ namespace AntdUI
                 _value2 = value;
                 Value2Changed?.Invoke(this, new IntEventArgs(_value2));
                 Invalidate();
+                OnPropertyChanged("Value2");
             }
         }
 

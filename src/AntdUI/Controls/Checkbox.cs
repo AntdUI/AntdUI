@@ -47,9 +47,10 @@ namespace AntdUI
             get => fore;
             set
             {
-                if (fore == value) fore = value;
+                if (fore == value) return;
                 fore = value;
                 Invalidate();
+                OnPropertyChanged("ForeColor");
             }
         }
 
@@ -67,6 +68,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
+                OnPropertyChanged("Fill");
             }
         }
 
@@ -84,6 +86,7 @@ namespace AntdUI
                 text = value;
                 if (BeforeAutoSize()) Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -105,6 +108,7 @@ namespace AntdUI
                 textAlign = value;
                 textAlign.SetAlignment(ref stringFormat);
                 Invalidate();
+                OnPropertyChanged("TextAlign");
             }
         }
 
@@ -122,7 +126,6 @@ namespace AntdUI
             {
                 if (_checked == value) return;
                 _checked = value;
-                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
                 ThreadCheck?.Dispose();
                 if (IsHandleCreated && Config.Animation)
                 {
@@ -158,6 +161,8 @@ namespace AntdUI
                 }
                 else AnimationCheckValue = value ? 1F : 0F;
                 Invalidate();
+                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
+                OnPropertyChanged("Checked");
             }
         }
 
@@ -178,6 +183,7 @@ namespace AntdUI
                 rightToLeft = value;
                 stringFormat.Alignment = RightToLeft == RightToLeft.Yes ? StringAlignment.Far : StringAlignment.Near;
                 Invalidate();
+                OnPropertyChanged("RightToLeft");
             }
         }
 
@@ -199,14 +205,23 @@ namespace AntdUI
         {
             var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
-            var font_size = g.MeasureString(Text ?? Config.NullText, Font);
-            rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
-            bool right = rightToLeft == RightToLeft.Yes;
-            PaintChecked(g, rect, Enabled, icon_rect, right);
-            if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
-            using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
+            if (string.IsNullOrWhiteSpace(Text))
             {
-                g.String(Text, Font, brush, text_rect, stringFormat);
+                var font_size = g.MeasureString(Config.NullText, Font);
+                var icon_rect = new Rectangle(rect.X + (rect.Width - font_size.Height) / 2, rect.Y + (rect.Height - font_size.Height) / 2, font_size.Height, font_size.Height);
+                PaintChecked(g, rect, Enabled, icon_rect, false);
+            }
+            else
+            {
+                var font_size = g.MeasureString(Text, Font);
+                rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
+                bool right = rightToLeft == RightToLeft.Yes;
+                PaintChecked(g, rect, Enabled, icon_rect, right);
+                if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
+                using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
+                {
+                    g.String(Text, Font, brush, text_rect, stringFormat);
+                }
             }
             this.PaintBadge(g);
             base.OnPaint(e);
@@ -250,11 +265,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (AnimationHover)
-                        {
-                            g.Draw(Style.Db.BorderColor, bor2, path);
-                            g.Draw(Helper.ToColor(AnimationHoverValue, color), bor2, path);
-                        }
+                        if (AnimationHover) g.Draw(Style.Db.BorderColor.BlendColors(AnimationHoverValue, color), bor2, path);
                         else if (ExtraMouseHover) g.Draw(color, bor2, path);
                         else g.Draw(Style.Db.BorderColor, bor2, path);
                     }
@@ -430,9 +441,17 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi);
-                    return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
+                    if (string.IsNullOrWhiteSpace(Text))
+                    {
+                        var font_size = g.MeasureString(Config.NullText, Font);
+                        return new Size(font_size.Height + gap, font_size.Height + gap);
+                    }
+                    else
+                    {
+                        var font_size = g.MeasureString(Text, Font);
+                        return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
+                    }
                 });
             }
         }

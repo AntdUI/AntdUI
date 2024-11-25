@@ -79,10 +79,8 @@ namespace AntdUI
 
         #endregion
 
-        HWND handle;
         protected override void OnHandleCreated(EventArgs e)
         {
-            handle = new HWND(Handle);
             base.OnHandleCreated(e);
             SetTheme();
             DisableProcessWindowsGhosting();
@@ -101,16 +99,16 @@ namespace AntdUI
 
         protected override void OnLoad(EventArgs e)
         {
-            SetWindowPos(handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_FRAMECHANGED);
+            SetWindowPos(Handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_FRAMECHANGED);
             base.OnLoad(e);
         }
 
         private void InvalidateNonclient()
         {
             if (!IsHandleCreated || IsDisposed) return;
-            RedrawWindow(handle, null, HWND.NULL, RedrawWindowFlags.RDW_FRAME | RedrawWindowFlags.RDW_UPDATENOW | RedrawWindowFlags.RDW_VALIDATE);
-            UpdateWindow(handle);
-            SetWindowPos(handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_FRAMECHANGED | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOCOPYBITS | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOREPOSITION | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOZORDER);
+            RedrawWindow(Handle, null, HWND.NULL, RedrawWindowFlags.RDW_FRAME | RedrawWindowFlags.RDW_UPDATENOW | RedrawWindowFlags.RDW_VALIDATE);
+            UpdateWindow(Handle);
+            SetWindowPos(Handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_FRAMECHANGED | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOCOPYBITS | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOREPOSITION | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOZORDER);
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -128,9 +126,6 @@ namespace AntdUI
                     break;
                 case WindowMessage.WM_SIZE:
                     WmSize(ref m);
-                    break;
-                case WindowMessage.WM_NCHITTEST:
-                    m.Result = TRUE;
                     break;
                 case WindowMessage.WM_ACTIVATEAPP:
                     InvalidateNonclient();
@@ -160,7 +155,7 @@ namespace AntdUI
         bool iszoomed = false;
         bool ISZoomed()
         {
-            bool value = IsZoomed(handle);
+            bool value = IsZoomed(Handle);
             if (iszoomed == value) return value;
             iszoomed = value;
             DwmArea();
@@ -175,7 +170,7 @@ namespace AntdUI
             else margin = 1;
             if (oldmargin == margin) return;
             oldmargin = margin;
-            DwmExtendFrameIntoClientArea(handle, new MARGINS(margin));
+            DwmExtendFrameIntoClientArea(Handle, new MARGINS(margin));
         }
 
         public override void RefreshDWM() => DwmArea();

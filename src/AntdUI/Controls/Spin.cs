@@ -33,11 +33,34 @@ namespace AntdUI
     [ToolboxItem(true)]
     public class Spin : IControl
     {
+        Config config = new Config();
+
         #region 属性
 
         [Description("颜色"), Category("外观"), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? Fill { get; set; }
+        public Color? Fill
+        {
+            get => config.Color;
+            set => config.Color = value;
+        }
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? ForeColor
+        {
+            get => config.Fore;
+            set
+            {
+                if (config.Fore == value) return;
+                config.Fore = value;
+                Invalidate();
+                OnPropertyChanged("ForeColor");
+            }
+        }
 
         string? text = null;
         /// <summary>
@@ -54,6 +77,7 @@ namespace AntdUI
                 spin_core.Clear();
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged("Text");
             }
         }
 
@@ -83,7 +107,8 @@ namespace AntdUI
         {
             var rect = ClientRectangle.PaddingRect(Padding);
             if (rect.Width == 0 || rect.Height == 0) return;
-            spin_core.Paint(e.Graphics.High(), rect, Text, Fill ?? Style.Db.Primary, null, this);
+            config.Text = this.GetLangI(LocalizationText, text);
+            spin_core.Paint(e.Graphics.High(), rect, config, this);
         }
 
         protected override void Dispose(bool disposing)
@@ -108,6 +133,11 @@ namespace AntdUI
             public Color? Back { get; set; }
 
             /// <summary>
+            /// 文本颜色
+            /// </summary>
+            public Color? Fore { get; set; }
+
+            /// <summary>
             /// 颜色
             /// </summary>
             public Color? Color { get; set; }
@@ -122,6 +152,11 @@ namespace AntdUI
             /// 圆角
             /// </summary>
             public int? Radius { get; set; }
+
+            /// <summary>
+            /// 进度
+            /// </summary>
+            public float? Value { get; set; }
         }
 
         #region 静态方法
@@ -132,10 +167,7 @@ namespace AntdUI
         /// <param name="control">控件主体</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, Action action, Action? end = null)
-        {
-            open(control, new Config(), action, end);
-        }
+        public static void open(Control control, Action<Config> action, Action? end = null) => open(control, new Config(), action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -144,10 +176,7 @@ namespace AntdUI
         /// <param name="text">加载文本</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, string text, Action action, Action? end = null)
-        {
-            open(control, new Config { Text = text }, action, end);
-        }
+        public static void open(Control control, string text, Action<Config> action, Action? end = null) => open(control, new Config { Text = text }, action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -156,7 +185,7 @@ namespace AntdUI
         /// <param name="config">自定义配置</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, Config config, Action action, Action? end = null)
+        public static void open(Control control, Config config, Action<Config> action, Action? end = null)
         {
             var parent = control.FindPARENT();
             if (parent is LayeredFormModal model)
@@ -192,7 +221,7 @@ namespace AntdUI
             open_core(control, parent, config, action, end);
         }
 
-        static void open_core(Control control, Form? parent, Config config, Action action, Action? end = null)
+        static void open_core(Control control, Form? parent, Config config, Action<Config> action, Action? end = null)
         {
             var frm = new SpinForm(control, parent, config);
             frm.Show(control);
@@ -200,7 +229,7 @@ namespace AntdUI
             {
                 try
                 {
-                    action();
+                    action(config);
                 }
                 catch { }
                 frm.Invoke(new Action(() =>
@@ -226,17 +255,21 @@ namespace AntdUI
             bool ProgState = false;
             thread = new ITask(control, () =>
             {
-                if (ProgState)
-                {
-                    LineAngle = LineAngle.Calculate(9F);
-                    LineWidth = LineWidth.Calculate(0.6F);
-                    if (LineWidth > 75) ProgState = false;
-                }
+                if (lnull) LineAngle = LineAngle.Calculate(2F);
                 else
                 {
-                    LineAngle = LineAngle.Calculate(9.6F);
-                    LineWidth = LineWidth.Calculate(-0.6F);
-                    if (LineWidth < 6) ProgState = true;
+                    if (ProgState)
+                    {
+                        LineAngle = LineAngle.Calculate(9F);
+                        LineWidth = LineWidth.Calculate(0.6F);
+                        if (LineWidth > 75) ProgState = false;
+                    }
+                    else
+                    {
+                        LineAngle = LineAngle.Calculate(9.6F);
+                        LineWidth = LineWidth.Calculate(-0.6F);
+                        if (LineWidth < 6) ProgState = true;
+                    }
                 }
                 if (LineAngle >= 360) LineAngle = 0;
                 control.Invalidate();
@@ -248,17 +281,21 @@ namespace AntdUI
             bool ProgState = false;
             thread = new ITask(control, () =>
             {
-                if (ProgState)
-                {
-                    LineAngle = LineAngle.Calculate(9F);
-                    LineWidth = LineWidth.Calculate(0.6F);
-                    if (LineWidth > 75) ProgState = false;
-                }
+                if (lnull) LineAngle = LineAngle.Calculate(2F);
                 else
                 {
-                    LineAngle = LineAngle.Calculate(9.6F);
-                    LineWidth = LineWidth.Calculate(-0.6F);
-                    if (LineWidth < 6) ProgState = true;
+                    if (ProgState)
+                    {
+                        LineAngle = LineAngle.Calculate(9F);
+                        LineWidth = LineWidth.Calculate(0.6F);
+                        if (LineWidth > 75) ProgState = false;
+                    }
+                    else
+                    {
+                        LineAngle = LineAngle.Calculate(9.6F);
+                        LineWidth = LineWidth.Calculate(-0.6F);
+                        if (LineWidth < 6) ProgState = true;
+                    }
                 }
                 if (LineAngle >= 360) LineAngle = 0;
                 control.Print();
@@ -267,39 +304,40 @@ namespace AntdUI
         }
 
         readonly StringFormat s_f = Helper.SF_ALL();
-        public void Paint(Canvas g, Rectangle rect, string? text, Color color, Font? font, Control control)
+
+        bool lnull = false;
+        public void Paint(Canvas g, Rectangle rect, Spin.Config config, Control control)
         {
-            if (prog_size == 0) prog_size = g.MeasureString(text ?? Config.NullText, font ?? control.Font).Height;
-
-            int rprog_size = (int)(prog_size * 1.4F), size = (int)(prog_size * .1F), size2 = prog_size / 2;
-
+            var font = config.Font ?? control.Font;
+            if (prog_size == 0) prog_size = g.MeasureString(config.Text ?? Config.NullText, font).Height;
+            int rprog_size = (int)(prog_size * 1.6F), size = (int)(prog_size * .2F), size2 = rprog_size / 2;
             var rect_prog = new Rectangle(rect.X + (rect.Width - rprog_size) / 2, rect.Y + (rect.Height - rprog_size) / 2, rprog_size, rprog_size);
-            if (text != null)
+            if (config.Text != null)
             {
                 var y = rect_prog.Bottom;
                 rect_prog.Offset(0, -size2);
-                using (var brush = new SolidBrush(control.ForeColor))
-                {
-                    g.String(text, font ?? control.Font, brush, new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
-                }
+                g.String(config.Text, font, config.Fore ?? Style.Db.Primary, new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
             }
-            using (var brush = new Pen(color, size))
+            g.DrawEllipse(Style.Db.Fill, size, rect_prog);
+            using (var brush = new Pen(config.Color ?? Style.Db.Primary, size))
             {
                 brush.StartCap = brush.EndCap = LineCap.Round;
-                try
+                if (config.Value.HasValue)
                 {
+                    lnull = true;
+                    g.DrawArc(brush, rect_prog, LineAngle, config.Value.Value * 360F);
+                }
+                else
+                {
+                    lnull = false;
                     g.DrawArc(brush, rect_prog, LineAngle, LineWidth * 3.6F);
                 }
-                catch { }
-
             }
         }
 
-        public void Dispose()
-        {
-            thread?.Dispose();
-        }
+        public void Dispose() => thread?.Dispose();
     }
+
     internal class SpinForm : ILayeredFormOpacity
     {
         Control control;
@@ -308,6 +346,7 @@ namespace AntdUI
         Spin.Config config;
         public SpinForm(Control _control, Form? _parent, Spin.Config _config)
         {
+            maxalpha = 255;
             control = _control;
             parent = _parent;
             Font = _control.Font;
@@ -355,22 +394,21 @@ namespace AntdUI
         {
             var rect = TargetRectXY;
             var original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).HighLay())
+            using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
-                try
+                using (var brush = new SolidBrush(config.Back ?? Style.rgba(Style.Db.BgBase, .8F)))
                 {
-                    using (var brush = new SolidBrush(config.Back ?? Color.FromArgb(100, Style.Db.TextBase)))
+                    if (gpath != null) g.Fill(brush, gpath);
+                    else if (Radius > 0)
                     {
-                        if (gpath != null) g.Fill(brush, gpath);
-                        else if (Radius > 0)
+                        using (var path = rect.RoundPath(Radius))
                         {
-                            using (var path = rect.RoundPath(Radius)) { g.Fill(brush, path); }
+                            g.Fill(brush, path);
                         }
-                        else g.Fill(brush, rect);
                     }
+                    else g.Fill(brush, rect);
                 }
-                catch { }
-                spin_core.Paint(g, rect, config.Text, config.Color ?? Style.Db.Primary, config.Font, this);
+                spin_core.Paint(g, rect, config, this);
             }
             return original_bmp;
         }
