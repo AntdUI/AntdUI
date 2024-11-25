@@ -125,12 +125,4 @@
 
 ![ChatUI](doc/screenshot/ChatUI.gif)
 
-
-## 📢 特别声明
-
-AntdUI 项目已加入 [dotNET China](https://gitee.com/dotnetchina)  组织。<br/>
-
-![dotnetchina](https://gitee.com/dotnetchina/home/raw/master/assets/dotnetchina-raw.png "dotNET China LOGO")
-
-
 🦦 招募小伙伴一起维护项目
