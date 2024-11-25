@@ -14,33 +14,17 @@ body:
       placeholder: 例如：1.0.5，请不要填写“最新”等干扰描述，源码可填写提交id
     validations:
       required: true
-  - type: dropdown
+  - type: textarea
     id: net_sdk
     attributes:
-      label: .NET SDK
-      description: 请选择项目使用的 .NET SDK 版本？
-      options:
-        - .NET Framework 40
-        - .NET Framework 45 以上
-        - .NET Core 3.1
-        - .NET6
-        - .NET7
-        - .NET8
-        - .NET9
+      label: .NET version
+      description: .NET SDK的版本。NET，cmd 执行 `dotnet --info`。
     validations:
       required: true
-  - type: dropdown
-    id: os_type
+  - type: textarea
     attributes:
       label: 操作系统
-      description: 请选择操作系统类型？
-      options:
-        - Windows 11
-        - Windows 10
-        - Windows 8
-        - Windows 7
-        - Windows XP
-        - 其他
+      description: 例如：Windows 11，操作系统类型和版本
     validations:
       required: true
   - type: textarea
