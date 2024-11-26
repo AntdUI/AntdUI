@@ -49,14 +49,11 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.Tabs.StyleLine styleLine1 = new AntdUI.Tabs.StyleLine();
             header1 = new AntdUI.PageHeader();
             pagination1 = new AntdUI.Pagination();
-            table2 = new AntdUI.Table();
             table1 = new AntdUI.Table();
-            tabs1 = new AntdUI.Tabs();
-            tabPage1 = new AntdUI.TabPage();
             panel1 = new AntdUI.Panel();
+            checkAddressLineBreak = new AntdUI.Checkbox();
             checkVisibleHeader = new AntdUI.Checkbox();
             checkEnableHeaderResizing = new AntdUI.Checkbox();
             checkSortOrder = new AntdUI.Checkbox();
@@ -65,11 +62,9 @@ namespace Demo.Controls
             checkRowsDragSort = new AntdUI.Checkbox();
             checkColumnDragSort = new AntdUI.Checkbox();
             checkFixedHeader = new AntdUI.Checkbox();
-            tabPage2 = new AntdUI.TabPage();
-            tabs1.SuspendLayout();
-            tabPage1.SuspendLayout();
+            panel_main = new AntdUI.Panel();
             panel1.SuspendLayout();
-            tabPage2.SuspendLayout();
+            panel_main.SuspendLayout();
             SuspendLayout();
             // 
             // header1
@@ -91,68 +86,32 @@ namespace Demo.Controls
             // 
             pagination1.Dock = DockStyle.Bottom;
             pagination1.Font = new Font("Microsoft YaHei UI", 11F);
-            pagination1.Location = new Point(3, 509);
+            pagination1.Location = new Point(4, 562);
             pagination1.Name = "pagination1";
             pagination1.RightToLeft = RightToLeft.Yes;
             pagination1.ShowSizeChanger = true;
-            pagination1.Size = new Size(1288, 40);
-            pagination1.TabIndex = 5;
+            pagination1.Size = new Size(1292, 40);
+            pagination1.TabIndex = 3;
             pagination1.Total = 100;
             pagination1.ValueChanged += pagination1_ValueChanged;
             pagination1.ShowTotalChanged += pagination1_ShowTotalChanged;
-            // 
-            // table2
-            // 
-            table2.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
-            table2.Dock = DockStyle.Fill;
-            table2.Font = new Font("Microsoft YaHei UI", 11F);
-            table2.Location = new Point(3, 3);
-            table2.Name = "table2";
-            table2.Size = new Size(1288, 506);
-            table2.TabIndex = 3;
-            table2.Text = "table2";
             // 
             // table1
             // 
             table1.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
             table1.Dock = DockStyle.Fill;
             table1.Font = new Font("Microsoft YaHei UI", 11F);
-            table1.Location = new Point(3, 46);
+            table1.Location = new Point(4, 43);
             table1.Name = "table1";
             table1.Radius = 6;
-            table1.Size = new Size(1288, 508);
-            table1.TabIndex = 0;
+            table1.Size = new Size(1292, 519);
+            table1.TabIndex = 2;
             table1.CellClick += table1_CellClick;
             table1.CellButtonClick += table1_CellButtonClick;
             // 
-            // tabs1
-            // 
-            tabs1.Dock = DockStyle.Fill;
-            tabs1.Font = new Font("Microsoft YaHei UI", 12F);
-            tabs1.Gap = 12;
-            tabs1.Location = new Point(0, 74);
-            tabs1.Name = "tabs1";
-            tabs1.Padding = new Padding(0, 4, 0, 0);
-            tabs1.Pages.Add(tabPage1);
-            tabs1.Pages.Add(tabPage2);
-            tabs1.Size = new Size(1300, 602);
-            styleLine1.Radius = 2;
-            tabs1.Style = styleLine1;
-            tabs1.TabIndex = 0;
-            // 
-            // tabPage1
-            // 
-            tabPage1.Controls.Add(table1);
-            tabPage1.Controls.Add(panel1);
-            tabPage1.Location = new Point(3, 42);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1294, 557);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "常规";
-            // 
             // panel1
             // 
+            panel1.Controls.Add(checkAddressLineBreak);
             panel1.Controls.Add(checkVisibleHeader);
             panel1.Controls.Add(checkEnableHeaderResizing);
             panel1.Controls.Add(checkSortOrder);
@@ -163,21 +122,31 @@ namespace Demo.Controls
             panel1.Controls.Add(checkFixedHeader);
             panel1.Dock = DockStyle.Top;
             panel1.Font = new Font("Microsoft YaHei UI", 12F);
-            panel1.Location = new Point(3, 3);
+            panel1.Location = new Point(4, 0);
             panel1.Name = "panel1";
-            panel1.Padding = new Padding(10, 0, 0, 0);
-            panel1.Size = new Size(1288, 43);
+            panel1.Radius = 0;
+            panel1.Size = new Size(1292, 43);
             panel1.TabIndex = 1;
-            panel1.Text = "panel1";
+            // 
+            // checkAddressLineBreak
+            // 
+            checkAddressLineBreak.AutoSizeMode = AntdUI.TAutoSize.Width;
+            checkAddressLineBreak.Dock = DockStyle.Left;
+            checkAddressLineBreak.LocalizationText = "Table.{id}";
+            checkAddressLineBreak.Location = new Point(1017, 0);
+            checkAddressLineBreak.Name = "checkAddressLineBreak";
+            checkAddressLineBreak.Size = new Size(115, 43);
+            checkAddressLineBreak.TabIndex = 8;
+            checkAddressLineBreak.Text = "地址换行";
+            checkAddressLineBreak.CheckedChanged += checkAddressLineBreak_CheckedChanged;
             // 
             // checkVisibleHeader
             // 
-            checkVisibleHeader.AutoCheck = true;
             checkVisibleHeader.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkVisibleHeader.Checked = true;
             checkVisibleHeader.Dock = DockStyle.Left;
             checkVisibleHeader.LocalizationText = "Table.{id}";
-            checkVisibleHeader.Location = new Point(912, 0);
+            checkVisibleHeader.Location = new Point(902, 0);
             checkVisibleHeader.Name = "checkVisibleHeader";
             checkVisibleHeader.Size = new Size(115, 43);
             checkVisibleHeader.TabIndex = 7;
@@ -186,11 +155,10 @@ namespace Demo.Controls
             // 
             // checkEnableHeaderResizing
             // 
-            checkEnableHeaderResizing.AutoCheck = true;
             checkEnableHeaderResizing.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkEnableHeaderResizing.Dock = DockStyle.Left;
             checkEnableHeaderResizing.LocalizationText = "Table.{id}";
-            checkEnableHeaderResizing.Location = new Point(731, 0);
+            checkEnableHeaderResizing.Location = new Point(721, 0);
             checkEnableHeaderResizing.Name = "checkEnableHeaderResizing";
             checkEnableHeaderResizing.Size = new Size(181, 43);
             checkEnableHeaderResizing.TabIndex = 6;
@@ -199,11 +167,10 @@ namespace Demo.Controls
             // 
             // checkSortOrder
             // 
-            checkSortOrder.AutoCheck = true;
             checkSortOrder.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkSortOrder.Dock = DockStyle.Left;
             checkSortOrder.LocalizationText = "Table.{id}";
-            checkSortOrder.Location = new Point(616, 0);
+            checkSortOrder.Location = new Point(606, 0);
             checkSortOrder.Name = "checkSortOrder";
             checkSortOrder.Size = new Size(115, 43);
             checkSortOrder.TabIndex = 5;
@@ -212,11 +179,10 @@ namespace Demo.Controls
             // 
             // checkSetRowStyle
             // 
-            checkSetRowStyle.AutoCheck = true;
             checkSetRowStyle.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkSetRowStyle.Dock = DockStyle.Left;
             checkSetRowStyle.LocalizationText = "Table.{id}";
-            checkSetRowStyle.Location = new Point(518, 0);
+            checkSetRowStyle.Location = new Point(508, 0);
             checkSetRowStyle.Name = "checkSetRowStyle";
             checkSetRowStyle.Size = new Size(98, 43);
             checkSetRowStyle.TabIndex = 4;
@@ -225,11 +191,10 @@ namespace Demo.Controls
             // 
             // checkBordered
             // 
-            checkBordered.AutoCheck = true;
             checkBordered.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkBordered.Dock = DockStyle.Left;
             checkBordered.LocalizationText = "Table.{id}";
-            checkBordered.Location = new Point(387, 0);
+            checkBordered.Location = new Point(377, 0);
             checkBordered.Name = "checkBordered";
             checkBordered.Size = new Size(131, 43);
             checkBordered.TabIndex = 3;
@@ -238,11 +203,10 @@ namespace Demo.Controls
             // 
             // checkRowsDragSort
             // 
-            checkRowsDragSort.AutoCheck = true;
             checkRowsDragSort.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkRowsDragSort.Dock = DockStyle.Left;
             checkRowsDragSort.LocalizationText = "Table.{id}";
-            checkRowsDragSort.Location = new Point(256, 0);
+            checkRowsDragSort.Location = new Point(246, 0);
             checkRowsDragSort.Name = "checkRowsDragSort";
             checkRowsDragSort.Size = new Size(131, 43);
             checkRowsDragSort.TabIndex = 2;
@@ -251,11 +215,10 @@ namespace Demo.Controls
             // 
             // checkColumnDragSort
             // 
-            checkColumnDragSort.AutoCheck = true;
             checkColumnDragSort.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkColumnDragSort.Dock = DockStyle.Left;
             checkColumnDragSort.LocalizationText = "Table.{id}";
-            checkColumnDragSort.Location = new Point(125, 0);
+            checkColumnDragSort.Location = new Point(115, 0);
             checkColumnDragSort.Name = "checkColumnDragSort";
             checkColumnDragSort.Size = new Size(131, 43);
             checkColumnDragSort.TabIndex = 1;
@@ -264,52 +227,48 @@ namespace Demo.Controls
             // 
             // checkFixedHeader
             // 
-            checkFixedHeader.AutoCheck = true;
             checkFixedHeader.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkFixedHeader.Checked = true;
             checkFixedHeader.Dock = DockStyle.Left;
             checkFixedHeader.LocalizationText = "Table.{id}";
-            checkFixedHeader.Location = new Point(10, 0);
+            checkFixedHeader.Location = new Point(0, 0);
             checkFixedHeader.Name = "checkFixedHeader";
             checkFixedHeader.Size = new Size(115, 43);
             checkFixedHeader.TabIndex = 0;
             checkFixedHeader.Text = "固定表头";
             checkFixedHeader.CheckedChanged += checkFixedHeader_CheckedChanged;
             // 
-            // tabPage2
+            // panel_main
             // 
-            tabPage2.Controls.Add(table2);
-            tabPage2.Controls.Add(pagination1);
-            tabPage2.Location = new Point(-1294, -552);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1294, 552);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "分页";
+            panel_main.Controls.Add(table1);
+            panel_main.Controls.Add(pagination1);
+            panel_main.Controls.Add(panel1);
+            panel_main.Dock = DockStyle.Fill;
+            panel_main.Location = new Point(0, 74);
+            panel_main.Name = "panel_main";
+            panel_main.Padding = new Padding(4, 0, 4, 0);
+            panel_main.Radius = 0;
+            panel_main.Size = new Size(1300, 602);
+            panel_main.TabIndex = 4;
+            panel_main.Text = "panel2";
             // 
             // Table
             // 
-            Controls.Add(tabs1);
+            Controls.Add(panel_main);
             Controls.Add(header1);
             Font = new Font("Microsoft YaHei UI", 16F);
             Name = "Table";
             Size = new Size(1300, 676);
-            tabs1.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            tabPage2.ResumeLayout(false);
+            panel_main.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
         private AntdUI.PageHeader header1;
         private AntdUI.Table table1;
-        private AntdUI.Table table2;
         private AntdUI.Pagination pagination1;
-        private AntdUI.Tabs tabs1;
-        private AntdUI.TabPage tabPage1;
-        private AntdUI.TabPage tabPage2;
         private AntdUI.Panel panel1;
         private AntdUI.Checkbox checkFixedHeader;
         private AntdUI.Checkbox checkEnableHeaderResizing;
@@ -319,5 +278,7 @@ namespace Demo.Controls
         private AntdUI.Checkbox checkBordered;
         private AntdUI.Checkbox checkSortOrder;
         private AntdUI.Checkbox checkVisibleHeader;
+        private AntdUI.Panel panel_main;
+        private AntdUI.Checkbox checkAddressLineBreak;
     }
 }

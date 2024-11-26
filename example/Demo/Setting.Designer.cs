@@ -96,7 +96,6 @@ namespace Demo
             // label2
             // 
             label2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            label2.AutoCheck = true;
             label2.Location = new System.Drawing.Point(191, 8);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(50, 30);
@@ -136,7 +135,6 @@ namespace Demo
             // switch1
             // 
             switch1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            switch1.AutoCheck = true;
             switch1.Location = new System.Drawing.Point(191, 54);
             switch1.Name = "switch1";
             switch1.Size = new System.Drawing.Size(50, 30);
@@ -146,7 +144,6 @@ namespace Demo
             // switch2
             // 
             switch2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            switch2.AutoCheck = true;
             switch2.Location = new System.Drawing.Point(191, 100);
             switch2.Name = "switch2";
             switch2.Size = new System.Drawing.Size(50, 30);
@@ -156,7 +153,6 @@ namespace Demo
             // switch3
             // 
             switch3.Anchor = System.Windows.Forms.AnchorStyles.None;
-            switch3.AutoCheck = true;
             switch3.Location = new System.Drawing.Point(191, 146);
             switch3.Name = "switch3";
             switch3.Size = new System.Drawing.Size(50, 30);

@@ -144,23 +144,16 @@ namespace Demo.Controls
             menu1.Font = new Font("Microsoft YaHei UI", 10F);
             menuItem1.IconSvg = "MailOutlined";
             menuItem1.ID = "mail";
-            menuItem1.PARENTITEM = null;
             menuItem1.Select = true;
             menuItem1.Text = "Navigation One";
             menuItem2.IconSvg = "AppstoreOutlined";
             menuItem2.ID = "app";
-            menuItem2.PARENTITEM = null;
             menuItem2.Text = "Navigation Two";
             menuItem3.IconSvg = "SettingOutlined";
             menuItem3.ID = "SubMenu";
-            menuItem3.PARENTITEM = null;
-            menuItem4.PARENTITEM = null;
             menuItem4.Text = "Option 1";
-            menuItem5.PARENTITEM = null;
             menuItem5.Text = "Option 2";
-            menuItem6.PARENTITEM = null;
             menuItem6.Text = "Option 3";
-            menuItem7.PARENTITEM = null;
             menuItem7.Text = "Option 4";
             menuItem3.Sub.Add(menuItem4);
             menuItem3.Sub.Add(menuItem5);
@@ -194,20 +187,13 @@ namespace Demo.Controls
             // 
             menu2.Dock = DockStyle.Left;
             menuItem8.IconSvg = "MailOutlined";
-            menuItem8.PARENTITEM = null;
-            menuItem9.PARENTITEM = menuItem8;
-            menuItem10.PARENTITEM = menuItem9;
             menuItem10.Select = true;
             menuItem10.Text = "Option 1";
-            menuItem11.PARENTITEM = menuItem9;
             menuItem11.Text = "Option 2";
             menuItem9.Sub.Add(menuItem10);
             menuItem9.Sub.Add(menuItem11);
             menuItem9.Text = "Item 1";
-            menuItem12.PARENTITEM = menuItem8;
-            menuItem13.PARENTITEM = menuItem12;
             menuItem13.Text = "Option 3";
-            menuItem14.PARENTITEM = menuItem12;
             menuItem14.Text = "Option 4";
             menuItem12.Sub.Add(menuItem13);
             menuItem12.Sub.Add(menuItem14);
@@ -217,15 +203,9 @@ namespace Demo.Controls
             menuItem8.Text = "Navigation One";
             menuItem15.Expand = false;
             menuItem15.IconSvg = "AppstoreOutlined";
-            menuItem15.PARENTITEM = null;
-            menuItem16.PARENTITEM = menuItem15;
             menuItem16.Text = "Option 5";
-            menuItem17.PARENTITEM = menuItem15;
             menuItem17.Text = "Option 6";
-            menuItem18.PARENTITEM = menuItem15;
-            menuItem19.PARENTITEM = menuItem18;
             menuItem19.Text = "Option 7";
-            menuItem20.PARENTITEM = menuItem18;
             menuItem20.Text = "Option 8";
             menuItem18.Sub.Add(menuItem19);
             menuItem18.Sub.Add(menuItem20);
@@ -236,14 +216,9 @@ namespace Demo.Controls
             menuItem15.Text = "Navigation Two";
             menuItem21.Expand = false;
             menuItem21.IconSvg = "SettingOutlined";
-            menuItem21.PARENTITEM = null;
-            menuItem22.PARENTITEM = menuItem21;
             menuItem22.Text = "Option 9";
-            menuItem23.PARENTITEM = menuItem21;
             menuItem23.Text = "Option 10";
-            menuItem24.PARENTITEM = menuItem21;
             menuItem24.Text = "Option 11";
-            menuItem25.PARENTITEM = menuItem21;
             menuItem25.Text = "Option 12";
             menuItem21.Sub.Add(menuItem22);
             menuItem21.Sub.Add(menuItem23);
@@ -291,7 +266,6 @@ namespace Demo.Controls
             // 
             // switch4
             // 
-            switch4.AutoCheck = true;
             switch4.CheckedText = "折叠";
             switch4.LocalizationCheckedText = "Menu.collapse";
             switch4.LocalizationTextUnCheckedText = "Menu.expand";
@@ -306,19 +280,12 @@ namespace Demo.Controls
             // 
             menu3.Dock = DockStyle.Left;
             menuItem26.IconSvg = "MailOutlined";
-            menuItem26.PARENTITEM = null;
-            menuItem27.PARENTITEM = menuItem26;
-            menuItem28.PARENTITEM = menuItem27;
             menuItem28.Text = "Option 1";
-            menuItem29.PARENTITEM = menuItem27;
             menuItem29.Text = "Option 2";
             menuItem27.Sub.Add(menuItem28);
             menuItem27.Sub.Add(menuItem29);
             menuItem27.Text = "Item 1";
-            menuItem30.PARENTITEM = menuItem26;
-            menuItem31.PARENTITEM = menuItem30;
             menuItem31.Text = "Option 3";
-            menuItem32.PARENTITEM = menuItem30;
             menuItem32.Text = "Option 4";
             menuItem30.Sub.Add(menuItem31);
             menuItem30.Sub.Add(menuItem32);
@@ -328,15 +295,9 @@ namespace Demo.Controls
             menuItem26.Text = "Navigation One";
             menuItem33.Expand = false;
             menuItem33.IconSvg = "AppstoreOutlined";
-            menuItem33.PARENTITEM = null;
-            menuItem34.PARENTITEM = menuItem33;
             menuItem34.Text = "Option 5";
-            menuItem35.PARENTITEM = menuItem33;
             menuItem35.Text = "Option 6";
-            menuItem36.PARENTITEM = menuItem33;
-            menuItem37.PARENTITEM = menuItem36;
             menuItem37.Text = "Option 7";
-            menuItem38.PARENTITEM = menuItem36;
             menuItem38.Text = "Option 8";
             menuItem36.Sub.Add(menuItem37);
             menuItem36.Sub.Add(menuItem38);
@@ -347,14 +308,9 @@ namespace Demo.Controls
             menuItem33.Text = "Navigation Two";
             menuItem39.Expand = false;
             menuItem39.IconSvg = "SettingOutlined";
-            menuItem39.PARENTITEM = null;
-            menuItem40.PARENTITEM = menuItem39;
             menuItem40.Text = "Option 9";
-            menuItem41.PARENTITEM = menuItem39;
             menuItem41.Text = "Option 10";
-            menuItem42.PARENTITEM = menuItem39;
             menuItem42.Text = "Option 11";
-            menuItem43.PARENTITEM = menuItem39;
             menuItem43.Text = "Option 12";
             menuItem39.Sub.Add(menuItem40);
             menuItem39.Sub.Add(menuItem41);
@@ -372,7 +328,6 @@ namespace Demo.Controls
             // 
             // switch3
             // 
-            switch3.AutoCheck = true;
             switch3.CheckedText = "Dark";
             switch3.Location = new Point(267, 13);
             switch3.Name = "switch3";
@@ -395,7 +350,6 @@ namespace Demo.Controls
             // 
             // switch2
             // 
-            switch2.AutoCheck = true;
             switch2.CheckedText = "折叠";
             switch2.LocalizationCheckedText = "Menu.collapse";
             switch2.LocalizationTextUnCheckedText = "Menu.expand";
@@ -408,7 +362,6 @@ namespace Demo.Controls
             // 
             // switch1
             // 
-            switch1.AutoCheck = true;
             switch1.CheckedText = "Dark";
             switch1.Location = new Point(267, 13);
             switch1.Name = "switch1";

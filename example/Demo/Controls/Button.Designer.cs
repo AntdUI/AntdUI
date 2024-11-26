@@ -288,7 +288,6 @@ namespace Demo.Controls
             // 
             // switch6
             // 
-            switch6.AutoCheck = true;
             switch6.Checked = true;
             switch6.Dock = DockStyle.Right;
             switch6.Location = new Point(803, 0);
@@ -446,7 +445,6 @@ namespace Demo.Controls
             // 
             // switch5
             // 
-            switch5.AutoCheck = true;
             switch5.Checked = true;
             switch5.Dock = DockStyle.Right;
             switch5.Location = new Point(803, 0);
@@ -580,7 +578,6 @@ namespace Demo.Controls
             // 
             // switch4
             // 
-            switch4.AutoCheck = true;
             switch4.Checked = true;
             switch4.Dock = DockStyle.Right;
             switch4.Location = new Point(803, 0);
@@ -680,7 +677,6 @@ namespace Demo.Controls
             // 
             // switch3
             // 
-            switch3.AutoCheck = true;
             switch3.Checked = true;
             switch3.Dock = DockStyle.Right;
             switch3.Location = new Point(803, 0);
@@ -811,7 +807,6 @@ namespace Demo.Controls
             // 
             // switch2
             // 
-            switch2.AutoCheck = true;
             switch2.Checked = true;
             switch2.Dock = DockStyle.Right;
             switch2.Location = new Point(803, 0);
@@ -905,7 +900,6 @@ namespace Demo.Controls
             // 
             // switch1
             // 
-            switch1.AutoCheck = true;
             switch1.Checked = true;
             switch1.Dock = DockStyle.Right;
             switch1.Location = new Point(803, 0);

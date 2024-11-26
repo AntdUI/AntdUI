@@ -30,51 +30,30 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
-            tabPage1.Text = AntdUI.Localization.Get("Table.Tab1", "常规");
-            tabPage2.Text = AntdUI.Localization.Get("Table.Tab2", "分页");
 
-            #region Table 1
+            #region Table
 
             table1.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.ColumnCheck("check"){ Fixed=true },
-                new AntdUI.Column("name","姓名"){ Fixed=true},
-                new AntdUI.ColumnCheck("checkTitle","不全选标题"){ColAlign=AntdUI.ColumnAlign.Center},
-                new AntdUI.ColumnRadio("radio","单选"),
-                new AntdUI.Column("online","状态",AntdUI.ColumnAlign.Center),
-                new AntdUI.ColumnSwitch("enable","启用",AntdUI.ColumnAlign.Center){ Call=(value,record, i_row, i_col)=>{
-                    System.Threading.Thread.Sleep(2000);
-                    return value;
-                } },
-                new AntdUI.Column("age","年龄",AntdUI.ColumnAlign.Center),
-                new AntdUI.Column("address","住址"){ Width="120", LineBreak=true},
-                new AntdUI.Column("tag","Tag"),
-                new AntdUI.Column("imgs","图片"),
-                new AntdUI.Column("btns","操作"){ Fixed=true,Width="auto"},
-            };
-
-            // 添加表头，绑定模型名称
-            var list = new List<TestClass>(10) {
-                new TestClass(1,"1","胡彦斌",32,"西湖区湖底公园1号"),
-                new TestClass(2,"2","胡彦祖",22,"西湖区湖底公园1号") {
-                    tag=new AntdUI.CellTag[]{ new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) }
+                new AntdUI.ColumnCheck("check") { Fixed = true },
+                new AntdUI.Column("name", "姓名") { Fixed = true },
+                new AntdUI.ColumnCheck("checkTitle", "不全选标题") { ColAlign = AntdUI.ColumnAlign.Center },
+                new AntdUI.ColumnRadio("radio", "单选"),
+                new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center),
+                new AntdUI.ColumnSwitch("enable", "启用", AntdUI.ColumnAlign.Center)
+                {
+                    Call = (value, record, i_row, i_col) => {
+                        System.Threading.Thread.Sleep(2000);
+                        return value;
+                    }
                 },
+                new AntdUI.Column("age", "年龄", AntdUI.ColumnAlign.Center),
+                new AntdUI.Column("address", "住址"),
+                new AntdUI.Column("tag", "Tag"),
+                new AntdUI.Column("imgs", "图片"),
+                new AntdUI.Column("btns", "操作") { Fixed = true, Width = "auto" },
             };
-            // 添加数据
-            for (int i = 2; i < 10; i++) list.Add(new TestClass(i, i.ToString(), "胡彦斌", 31 + i, "西湖区湖底公园" + (i + 10) + "号"));
 
-            table1.DataSource = list;
-
-            #endregion
-
-            #region Table 2
-
-            table2.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.Column("name","姓名"),
-                new AntdUI.Column("age","年龄",AntdUI.ColumnAlign.Center),
-                new AntdUI.Column("address","住址"),
-                new AntdUI.Column("tag","Tag"){ Width="auto"}
-            };
-            table2.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
+            table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
             pagination1.PageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
 
             #endregion
@@ -139,6 +118,13 @@ namespace Demo.Controls
         void checkVisibleHeader_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             table1.VisibleHeader = e.Value;
+        }
+
+        private void checkAddressLineBreak_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            if (e.Value) table1.Columns[7].Width = "120";
+            else table1.Columns[7].Width = null;
+            table1.Columns[7].LineBreak = e.Value;
         }
 
         #endregion
@@ -211,19 +197,28 @@ namespace Demo.Controls
 
         object GetPageData(int current, int pageSize)
         {
-            var list = new List<TestClass2>();
+            var list = new List<TestClass>(pageSize);
             int start = Math.Abs(current - 1) * pageSize;
-            for (int i = 0; i < pageSize; i++)
+            DateTime now = DateTime.Now;
+            DateTime birthday_TigerHu = new DateTime(1983, 7, 4);//数据来源：https://baike.baidu.com/link?url=7UWQOAPtuaXDjkFQZ92-cNlijS9voNgkQEJSmPLDV73RX1RLogXTLRQdBIQ6KMO7s1nIEZDKjvCJXa_e9fOrrhA9HxRDvRbkgGvPdWYMmP7
+            DateTime birthday_DanielWu = new DateTime(1974, 9, 30);//数据来源：https://baike.baidu.com/link?url=zk3KO7qvnfny-fZ2QfgQ2-lZleCeNUaCfketfcE6Ur5p_LowHOhlttu0c4tEXDKN673QcgpSRRRUmymic58Rf5NiUpsMJrctl1SXaR2RXuu
+
+            list.Add(new TestClass(start, 0, "胡彦斌", (int)Math.Round((now - birthday_TigerHu).TotalDays / 365)));
+            list.Add(new TestClass(start + 1, 1, "吴彦祖", (int)Math.Round((now - birthday_DanielWu).TotalDays / 365))
+            {
+                tag = new AntdUI.CellTag[] { new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) }
+            });
+            for (int i = 2; i < pageSize; i++)
             {
                 int index = start + i;
-                list.Add(new TestClass2(index, "王健林" + index, (index + 20), "西湖区湖底公园" + (index + 1) + "号"));
+                list.Add(new TestClass(index, i, "胡彦祖", 20 + index));
             }
             return list;
         }
 
         void pagination1_ValueChanged(object sender, AntdUI.PagePageEventArgs e)
         {
-            table2.DataSource = GetPageData(e.Current, e.PageSize);
+            table1.DataSource = GetPageData(e.Current, e.PageSize);
         }
         string pagination1_ShowTotalChanged(object sender, AntdUI.PagePageEventArgs e)
         {
@@ -234,62 +229,64 @@ namespace Demo.Controls
 
         public class TestClass : AntdUI.NotifyProperty
         {
-            public TestClass(int i, string key, string name, int age, string address)
+            public TestClass(int index, int start, string name, int age)
             {
-                _key = key;
-                if (i == 1) _online = new AntdUI.CellBadge(AntdUI.TState.Success, "在线");
-                else if (i == 2) _online = new AntdUI.CellBadge(AntdUI.TState.Processing, "处置");
-                else if (i == 3) _online = new AntdUI.CellBadge(AntdUI.TState.Error, "离线");
-                else if (i == 4) _online = new AntdUI.CellBadge(AntdUI.TState.Warn, "离线");
+                id = (index + 1);
+                if (start == 1) _online = new AntdUI.CellBadge(AntdUI.TState.Success, "在线");
+                else if (start == 2) _online = new AntdUI.CellBadge(AntdUI.TState.Processing, "处置");
+                else if (start == 3) _online = new AntdUI.CellBadge(AntdUI.TState.Error, "离线");
+                else if (start == 4) _online = new AntdUI.CellBadge(AntdUI.TState.Warn, "离线");
                 else _online = new AntdUI.CellBadge(AntdUI.TState.Default, "常规");
                 _name = name;
                 _age = age;
-                _address = address;
-                _enable = i % 2 == 0;
-                if (i == 1)
+                _address = "西湖区湖底公园" + id + "号";
+                _enable = start % 2 == 0;
+                if (start == 1)
                 {
                     _imgs = new AntdUI.CellImage[] {
-                        new AntdUI.CellImage(Properties.Resources.img1){ BorderWidth=4,BorderColor=Color.BlueViolet},
+                        new AntdUI.CellImage(Properties.Resources.img1) { BorderWidth = 4, BorderColor = Color.BlueViolet },
                         new AntdUI.CellImage(Properties.Resources.bg1)
                     };
                 }
 
-                if (i == 2)
+                if (start == 2)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("b1") { BorderWidth=1, IconSvg="SearchOutlined",IconHoverSvg=Properties.Resources.icon_like,ShowArrow=true},
-                        new AntdUI.CellButton("b2") {  ShowArrow=true},
-                        new AntdUI.CellButton("b3") { Type= AntdUI.TTypeMini.Primary, IconSvg="SearchOutlined" }
+                        new AntdUI.CellButton("b1") {
+                            BorderWidth = 1,
+                            IconSvg = "SearchOutlined",
+                            IconHoverSvg = Properties.Resources.icon_like,
+                            ShowArrow = true
+                        },
+                        new AntdUI.CellButton("b2") { ShowArrow = true },
+                        new AntdUI.CellButton("b3") { Type = AntdUI.TTypeMini.Primary, IconSvg = "SearchOutlined" }
                     };
                 }
-                else if (i == 3)
+                else if (start == 3)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("b1","Border") {  BorderWidth=1},
-                        new AntdUI.CellButton("b2","GhostBorder") {  Ghost = true,BorderWidth=1,ShowArrow=true,IsLink=true }
+                        new AntdUI.CellButton("b1", "Border") { BorderWidth = 1 },
+                        new AntdUI.CellButton("b2", "GhostBorder") { Ghost = true, BorderWidth = 1, ShowArrow = true, IsLink = true }
                     };
                 }
-                else if (i == 4)
+                else if (start == 4)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("edit","Edit",AntdUI.TTypeMini.Primary) {  Ghost = true,BorderWidth=1 },
-                        new AntdUI.CellButton("delete","Delete",AntdUI.TTypeMini.Error) {  Ghost = true ,BorderWidth=1}
+                        new AntdUI.CellButton("edit", "Edit", AntdUI.TTypeMini.Primary) { Ghost = true, BorderWidth = 1 },
+                        new AntdUI.CellButton("delete", "Delete", AntdUI.TTypeMini.Error) { Ghost = true, BorderWidth = 1 }
                     };
                 }
-                else if (i == 5)
+                else if (start == 5)
                 {
                     _btns = new AntdUI.CellLink[] {
                         new AntdUI.CellButton("edit","Edit",AntdUI.TTypeMini.Primary),
                         new AntdUI.CellButton("delete","Delete",AntdUI.TTypeMini.Error)
                     };
                 }
-                else
-                {
-                    _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellLink("delete","Delete")
-                    };
-                }
+                else _btns = new AntdUI.CellLink[] { new AntdUI.CellLink("delete", "Delete") };
             }
+
+            public int id { get; set; }
 
             bool _check = false;
             public bool check
@@ -299,7 +296,7 @@ namespace Demo.Controls
                 {
                     if (_check == value) return;
                     _check = value;
-                    OnPropertyChanged("check");
+                    OnPropertyChanged();
                 }
             }
 
@@ -311,7 +308,7 @@ namespace Demo.Controls
                 {
                     if (_radio == value) return;
                     _radio = value;
-                    OnPropertyChanged("radio");
+                    OnPropertyChanged();
                 }
             }
 
@@ -323,19 +320,7 @@ namespace Demo.Controls
                 {
                     if (_checkTitle == value) return;
                     _checkTitle = value;
-                    OnPropertyChanged("checkTitle");
-                }
-            }
-
-            string _key;
-            public string key
-            {
-                get => _key;
-                set
-                {
-                    if (_key == value) return;
-                    _key = value;
-                    OnPropertyChanged("key");
+                    OnPropertyChanged();
                 }
             }
 
@@ -347,7 +332,7 @@ namespace Demo.Controls
                 {
                     if (_name == value) return;
                     _name = value;
-                    OnPropertyChanged("name");
+                    OnPropertyChanged();
                 }
             }
 
@@ -358,7 +343,7 @@ namespace Demo.Controls
                 set
                 {
                     _online = value;
-                    OnPropertyChanged("online");
+                    OnPropertyChanged();
                 }
             }
 
@@ -371,7 +356,7 @@ namespace Demo.Controls
                 {
                     if (_enable == value) return;
                     _enable = value;
-                    OnPropertyChanged("enable");
+                    OnPropertyChanged();
                 }
             }
 
@@ -383,7 +368,7 @@ namespace Demo.Controls
                 {
                     if (_age == value) return;
                     _age = value;
-                    OnPropertyChanged("age");
+                    OnPropertyChanged();
                 }
             }
 
@@ -395,7 +380,7 @@ namespace Demo.Controls
                 {
                     if (_address == value) return;
                     _address = value;
-                    OnPropertyChanged("address");
+                    OnPropertyChanged();
                 }
             }
 
@@ -406,7 +391,7 @@ namespace Demo.Controls
                 set
                 {
                     _tag = value;
-                    OnPropertyChanged("tag");
+                    OnPropertyChanged();
                 }
             }
 
@@ -417,7 +402,7 @@ namespace Demo.Controls
                 set
                 {
                     _imgs = value;
-                    OnPropertyChanged("imgs");
+                    OnPropertyChanged();
                 }
             }
 
@@ -428,66 +413,7 @@ namespace Demo.Controls
                 set
                 {
                     _btns = value;
-                    OnPropertyChanged("btns");
-                }
-            }
-        }
-
-        public class TestClass2 : AntdUI.NotifyProperty
-        {
-            public TestClass2(int i, string name, int age, string address)
-            {
-                _name = name;
-                _age = age;
-                _address = address;
-                if (i % 2 == 0) _tag = new AntdUI.CellTag("YES" + i, AntdUI.TTypeMini.Success);
-                else _tag = new AntdUI.CellTag("NO" + i, AntdUI.TTypeMini.Error);
-            }
-
-            string _name;
-            public string name
-            {
-                get => _name;
-                set
-                {
-                    if (_name == value) return;
-                    _name = value;
-                    OnPropertyChanged("name");
-                }
-            }
-
-            int _age;
-            public int age
-            {
-                get => _age;
-                set
-                {
-                    if (_age == value) return;
-                    _age = value;
-                    OnPropertyChanged("age");
-                }
-            }
-
-            string _address;
-            public string address
-            {
-                get => _address;
-                set
-                {
-                    if (_address == value) return;
-                    _address = value;
-                    OnPropertyChanged("address");
-                }
-            }
-
-            AntdUI.CellTag _tag;
-            public AntdUI.CellTag tag
-            {
-                get => _tag;
-                set
-                {
-                    _tag = value;
-                    OnPropertyChanged("tag");
+                    OnPropertyChanged();
                 }
             }
         }
