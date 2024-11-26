@@ -254,20 +254,26 @@ namespace AntdUI
             OnSizeChanged(EventArgs.Empty);
         }
 
+        static bool disableDataBinding = false;
 #if NET40
         public void OnPropertyChanged(string propertyName)
 #else
         public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
 #endif
         {
-            foreach (Binding it in DataBindings)
+            if (disableDataBinding) return;
+            try
             {
-                if (it.PropertyName == propertyName)
+                foreach (Binding it in DataBindings)
                 {
-                    it.WriteValue();
-                    return;
+                    if (it.PropertyName == propertyName)
+                    {
+                        it.WriteValue();
+                        return;
+                    }
                 }
             }
+            catch (NotSupportedException) { disableDataBinding = true; }
         }
 
         #region 鼠标

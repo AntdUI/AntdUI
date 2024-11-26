@@ -695,8 +695,10 @@ namespace AntdUI
             {
                 icon_size = sHeight;
                 var rect_icon = new Rectangle(rect.X + u_x + _gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                using (var brush = new Pen(Color.FromArgb(170, fore), sHeight * .14F))
+                using (var pen = new Pen(Style.Db.Fill, sHeight * .14F))
+                using (var brush = new Pen(Color.FromArgb(170, fore), pen.Width))
                 {
+                    g.DrawEllipse(pen, rect_icon);
                     brush.StartCap = brush.EndCap = LineCap.Round;
                     g.DrawArc(brush, rect_icon, AnimationLoadingValue, 100);
                 }

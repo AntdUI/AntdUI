@@ -793,8 +793,23 @@ namespace AntdUI
         }
         void PaintIcon(Canvas g, MenuItem it, Color fore)
         {
+            if (it.Select)
+            {
+                int count = 0;
+                if (it.IconActive != null)
+                {
+                    g.Image(it.IconActive, it.ico_rect); count++;
+                }
+                if (it.IconActiveSvg != null)
+                {
+                    if (g.GetImgExtend(it.IconActiveSvg, it.ico_rect, fore)) count++;
+                }
+                if (count > 0) return;
+            }
+
+
             if (it.Icon != null) g.Image(it.Icon, it.ico_rect);
-            else if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
+            if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
         }
 
         void PaintBack(Canvas g, Color color, Rectangle rect, float radius)
@@ -1250,10 +1265,19 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图片
         /// </summary>
-        internal bool HasIcon
-        {
-            get => !string.IsNullOrWhiteSpace(iconSvg) || icon != null;
-        }
+        internal bool HasIcon => !string.IsNullOrWhiteSpace(iconSvg) || icon != null;
+
+        /// <summary>
+        /// 图标激活
+        /// </summary>
+        [Description("图标激活"), Category("外观"), DefaultValue(null)]
+        public Image? IconActive { get; set; }
+
+        /// <summary>
+        /// 图标激活SVG
+        /// </summary>
+        [Description("图标激活SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconActiveSvg { get; set; }
 
         #endregion
 

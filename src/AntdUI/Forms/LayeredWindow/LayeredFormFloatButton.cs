@@ -258,8 +258,10 @@ namespace AntdUI
                             g.Fill(back, path);
 
                             float loading_size = it.rect_read.Height * 0.06F;
-                            using (var brush = new Pen(fore, loading_size))
+                            using (var pen = new Pen(Style.Db.Fill, loading_size))
+                            using (var brush = new Pen(fore, pen.Width))
                             {
+                                g.DrawEllipse(pen, it.rect_icon);
                                 brush.StartCap = brush.EndCap = LineCap.Round;
                                 g.DrawArc(brush, it.rect_icon, it.AnimationLoadingValue, it.LoadingValue * 360F);
                             }

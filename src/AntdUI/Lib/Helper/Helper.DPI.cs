@@ -60,6 +60,7 @@ namespace AntdUI
             var dir = new Dictionary<Control, AnchorDock>(controls.Count);
             foreach (Control control in controls)
             {
+                if (control is Splitter) continue;
                 if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
                 if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
             }
@@ -69,6 +70,7 @@ namespace AntdUI
         {
             foreach (Control control in controls)
             {
+                if (control is Splitter) continue;
                 if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
                 if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
             }

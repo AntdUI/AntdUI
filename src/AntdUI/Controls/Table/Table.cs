@@ -877,7 +877,7 @@ namespace AntdUI
                     foreach (var cell in row.cells)
                     {
                         var obj = row[cell.Key];
-                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column)) obj = column.Render?.Invoke(obj, row.record, row.i);
+                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column) && column.Render != null) obj = column.Render(obj, row.record, row.i);
 
                         if (obj is IList<ICell> cells)
                         {
@@ -903,7 +903,7 @@ namespace AntdUI
                     foreach (var cell in row.cells)
                     {
                         var obj = row[cell.Key];
-                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column)) obj = column.Render?.Invoke(obj, row.record, row.i);
+                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column) && column.Render != null) obj = column.Render(obj, row.record, row.i);
                         data.Add(obj);
                     }
                     dt.Rows.Add(data.ToArray());
@@ -1241,10 +1241,20 @@ namespace AntdUI
         /// </summary>
         public bool Ellipsis { get; set; }
 
+        bool lineBreak = false;
         /// <summary>
         /// 自动换行
         /// </summary>
-        public bool LineBreak { get; set; }
+        public bool LineBreak
+        {
+            get => lineBreak;
+            set
+            {
+                if (lineBreak == value) return;
+                lineBreak = value;
+                Invalidates();
+            }
+        }
 
         bool _fixed = false;
         /// <summary>

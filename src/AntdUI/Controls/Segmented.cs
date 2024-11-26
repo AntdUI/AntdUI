@@ -933,7 +933,7 @@ namespace AntdUI
                                     else
                                     {
                                         var size = g.MeasureString(it.Text, Font);
-                                        it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, text_heigth, sp);
+                                        it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, size.Height, sp);
                                     }
                                     x += it.Rect.Width + _igap;
                                 }
@@ -947,7 +947,7 @@ namespace AntdUI
                                     else
                                     {
                                         var size = g.MeasureString(it.Text, Font);
-                                        it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, text_heigth, sp);
+                                        it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, size.Height, sp);
                                     }
                                     x += it.Rect.Width + _igap;
                                 }
@@ -1259,10 +1259,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => IconSvg != null || Icon != null;
-        }
+        public bool HasIcon => IconSvg != null || Icon != null;
 
         /// <summary>
         /// 图标激活
