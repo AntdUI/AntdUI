@@ -121,7 +121,7 @@ namespace AntdUI
             bmp_dot_12 = new Bitmap(gap + 12, gap + 12);
             using (var g2 = Graphics.FromImage(bmp_dot_12).High())
             {
-                using (var brush = new SolidBrush(Style.Db.BgBase))
+                using (var brush = new SolidBrush(Colour.BgBase.Get("ColorPicker")))
                 {
                     float yy = (bmp_dot_12.Height - gap) / 2F;
                     var rect = new RectangleF(6, 6, bmp_dot_12.Height - 12, bmp_dot_12.Height - 12);
@@ -539,7 +539,7 @@ namespace AntdUI
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
-                using (var brush_bg = new SolidBrush(Style.Db.BgElevated))
+                using (var brush_bg = new SolidBrush(Colour.BgElevated.Get("ColorPicker")))
                 {
                     using (var path = rect_read.RoundPath(Radius))
                     {
@@ -563,7 +563,7 @@ namespace AntdUI
                                 g.DrawLine(pen, new Point(rect_btn.X, rect_btn.Bottom), new Point(rect_btn.Right, rect_btn.Y));
                             }
                             g.ResetClip();
-                            g.Draw(hover_btn ? Style.Db.BorderColor : Style.Db.Split, Config.Dpi, path);
+                            g.Draw(hover_btn ? Colour.BorderColor.Get("ColorPicker") : Colour.Split.Get("ColorPicker"), Config.Dpi, path);
                         }
                     }
 
@@ -591,7 +591,6 @@ namespace AntdUI
 
                     if (bmp_hue == null)
                     {
-                        System.Diagnostics.Debug.WriteLine("G HUE");
                         bmp_hue = new Bitmap(rect_hue.Width, rect_hue.Height);
                         using (var g2 = Graphics.FromImage(bmp_hue).High())
                         {
@@ -645,7 +644,7 @@ namespace AntdUI
 
                     using (var brush_val = new SolidBrush(Value))
                     using (var brush_hue = new SolidBrush(ValueHue))
-                    using (var pen = new Pen(Style.Db.BgBase, dot_bor_size))
+                    using (var pen = new Pen(Colour.BgBase.Get("ColorPicker"), dot_bor_size))
                     {
                         #region 调色板
 
@@ -857,7 +856,7 @@ namespace AntdUI
         {
             if (add)
             {
-                using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                using (var brush = new SolidBrush(Colour.FillSecondary.Get("ColorPicker")))
                 {
                     int he = rect.Height / 2;
                     int u_x = 0;

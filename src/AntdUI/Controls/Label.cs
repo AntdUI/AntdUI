@@ -367,7 +367,7 @@ namespace AntdUI
         {
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
-            Color _fore = Style.Db.DefaultColor;
+            Color _fore = Colour.DefaultColor.Get("Label");
             if (fore.HasValue) _fore = fore.Value;
             PaintText(g, Text, _fore, rect_read);
             if (shadow > 0)

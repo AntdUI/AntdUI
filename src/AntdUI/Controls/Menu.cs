@@ -564,25 +564,25 @@ namespace AntdUI
                     back_active = BackActive ?? "#1668DC".ToColor();
                     break;
                 default:
-                    scroll_color = Style.Db.TextBase;
-                    fore_enabled = Style.Db.TextQuaternary;
+                    scroll_color = Colour.TextBase.Get("Menu");
+                    fore_enabled = Colour.TextQuaternary.Get("Menu");
                     if (Config.IsDark)
                     {
-                        color_fore = fore ?? Style.Db.Text;
-                        back_hover = color_fore_active = ForeActive ?? Style.Db.TextBase;
-                        back_active = BackActive ?? Style.Db.Primary;
+                        color_fore = fore ?? Colour.Text.Get("Menu");
+                        back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get("Menu");
+                        back_active = BackActive ?? Colour.Primary.Get("Menu");
                     }
                     else
                     {
-                        color_fore = fore ?? Style.Db.TextBase;
-                        color_fore_active = ForeActive ?? Style.Db.Primary;
-                        back_hover = BackHover ?? Style.Db.FillSecondary;
-                        back_active = BackActive ?? Style.Db.PrimaryBg;
+                        color_fore = fore ?? Colour.TextBase.Get("Menu");
+                        color_fore_active = ForeActive ?? Colour.Primary.Get("Menu");
+                        back_hover = BackHover ?? Colour.FillSecondary.Get("Menu");
+                        back_active = BackActive ?? Colour.PrimaryBg.Get("Menu");
                     }
                     break;
             }
             float _radius = radius * Config.Dpi;
-            using (var sub_bg = new SolidBrush(Style.Db.FillQuaternary))
+            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu")))
             {
                 PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }

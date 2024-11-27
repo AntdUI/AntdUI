@@ -259,7 +259,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var bmp = SvgDb.IcoDate.SvgToBmp(rect_r.Width, rect_r.Height, Style.Db.TextQuaternary))
+                using (var bmp = SvgDb.IcoDate.SvgToBmp(rect_r.Width, rect_r.Height, Colour.TextQuaternary.Get("DatePicker")))
                 {
                     if (bmp == null) return;
                     g.Image(bmp, rect_r);
@@ -522,7 +522,7 @@ namespace AntdUI
             string? placeholderS = PlaceholderStart, placeholderE = PlaceholderEnd;
             if ((showS && placeholderS != null) || (showE && placeholderE != null))
             {
-                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("DatePicker")))
                 {
                     if (showS && placeholderS != null) g.String(placeholderS, Font, fore, rect_d_l, sf_placeholder);
                     if (showE && placeholderE != null) g.String(placeholderE, Font, fore, rect_d_r, sf_placeholder);
@@ -531,20 +531,20 @@ namespace AntdUI
             if (AnimationBar)
             {
                 float h = rect_text.Height * 0.14F;
-                var BarColor = BorderActive ?? Style.Db.Primary;
+                var BarColor = BorderActive ?? Colour.Primary.Get("DatePicker");
                 g.Fill(BarColor, new RectangleF(AnimationBarValue.X, rect_read.Bottom - h, AnimationBarValue.Width, h));
             }
             else if (StartFocused || EndFocused)
             {
                 float h = rect_text.Height * 0.14F;
-                var BarColor = BorderActive ?? Style.Db.Primary;
+                var BarColor = BorderActive ?? Colour.Primary.Get("DatePicker");
                 using (var brush = new SolidBrush(BarColor))
                 {
                     if (StartFocused) g.Fill(brush, new RectangleF(rect_d_l.X, rect_read.Bottom - h, rect_d_l.Width, h));
                     else g.Fill(brush, new RectangleF(rect_d_r.X, rect_read.Bottom - h, rect_d_r.Width, h));
                 }
             }
-            g.GetImgExtend(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Style.Db.TextQuaternary);
+            g.GetImgExtend(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Colour.TextQuaternary.Get("DatePicker"));
         }
 
         #endregion

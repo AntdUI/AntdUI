@@ -80,7 +80,7 @@ namespace AntdUI.Icon
                     g.FillEllipse(brush, new RectangleF(rect_dot.X + 1, rect_dot.Y + 1, rect_dot.Width - 2, rect_dot.Height - 2));
                 }
             }
-            g.GetImgExtend(SvgDb.IcoSuccess, rect, back ?? Style.Db.Success);
+            g.GetImgExtend(SvgDb.IcoSuccess, rect, back ?? Colour.Success.Get("IconComplete"));
             this.PaintBadge(g);
             base.OnPaint(e);
         }

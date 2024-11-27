@@ -110,7 +110,7 @@ namespace AntdUI.Chat
                 {
                     if (it.Hover)
                     {
-                        using (var brush = new SolidBrush(Style.Db.FillTertiary))
+                        using (var brush = new SolidBrush(Colour.FillTertiary.Get("MsgList")))
                         {
                             g.Fill(brush, it.rect);
                         }

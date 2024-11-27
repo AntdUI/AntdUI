@@ -195,7 +195,7 @@ namespace AntdUI
                         g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF(rect_dot.X + (rect_dot.Width - max) / 2F, rect_dot.Y + (rect_dot.Height - max) / 2F, max, max));
                     }
                 }
-                using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
+                using (var brush = fore.Brush(Colour.Text.Get("Badge"), Colour.TextQuaternary.Get("Badge"), Enabled))
                 {
                     g.String(Text, Font, brush, new Rectangle(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
                 }
@@ -215,12 +215,12 @@ namespace AntdUI
         {
             switch (state)
             {
-                case TState.Success: return Style.Db.Success;
-                case TState.Error: return Style.Db.Error;
+                case TState.Success: return Colour.Success.Get("Badge");
+                case TState.Error: return Colour.Error.Get("Badge");
                 case TState.Primary:
-                case TState.Processing: return Style.Db.Primary;
-                case TState.Warn: return Style.Db.Warning;
-                default: return Style.Db.TextQuaternary;
+                case TState.Processing: return Colour.Primary.Get("Badge");
+                case TState.Warn: return Colour.Warning.Get("Badge");
+                default: return Colour.TextQuaternary.Get("Badge");
             }
         }
 

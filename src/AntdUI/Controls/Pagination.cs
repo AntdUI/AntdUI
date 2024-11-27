@@ -309,8 +309,8 @@ namespace AntdUI
             float border = borderWidth * Config.Dpi, _radius = radius * Config.Dpi;
             if (Enabled)
             {
-                Color fore = Style.Db.Text, color = fill ?? Style.Db.Primary;
-                using (var brush_hover = new SolidBrush(Style.Db.FillSecondary))
+                Color fore = Colour.Text.Get("Pagination"), color = fill ?? Colour.Primary.Get("Pagination");
+                using (var brush_hover = new SolidBrush(Colour.FillSecondary.Get("Pagination")))
                 {
                     #region 渲染上下
 
@@ -322,7 +322,7 @@ namespace AntdUI
                             g.Fill(brush_hover, path_previous);
                         }
                     }
-                    using (var pen_arrow = new Pen(btn_previous.enabled ? fore : Style.Db.TextQuaternary, border))
+                    using (var pen_arrow = new Pen(btn_previous.enabled ? fore : Colour.TextQuaternary.Get("Pagination"), border))
                     {
                         g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(btn_previous.rect));
                     }
@@ -336,7 +336,7 @@ namespace AntdUI
                             g.Fill(brush_hover, path_next);
                         }
                     }
-                    using (var pen_arrow = new Pen(btn_next.enabled ? fore : Style.Db.TextQuaternary, border))
+                    using (var pen_arrow = new Pen(btn_next.enabled ? fore : Colour.TextQuaternary.Get("Pagination"), border))
                     {
                         g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(btn_next.rect));
                     }
@@ -358,7 +358,7 @@ namespace AntdUI
                             }
                             if (btn.prog > 0)
                             {
-                                using (var brush_prog = new SolidBrush(Style.Db.TextQuaternary))
+                                using (var brush_prog = new SolidBrush(Colour.TextQuaternary.Get("Pagination")))
                                 {
                                     g.String("•••", Font, brush_prog, btn.rect, s_f);
                                 }
@@ -383,20 +383,20 @@ namespace AntdUI
                 #region 渲染上下
 
                 var btn_previous = buttons[0];
-                using (var pen_arrow = new Pen(Style.Db.TextQuaternary, border))
+                using (var pen_arrow = new Pen(Colour.TextQuaternary.Get("Pagination"), border))
                 {
                     g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(btn_previous.rect));
                 }
 
                 var btn_next = buttons[1];
-                using (var pen_arrow = new Pen(Style.Db.TextQuaternary, border))
+                using (var pen_arrow = new Pen(Colour.TextQuaternary.Get("Pagination"), border))
                 {
                     g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(btn_next.rect));
                 }
 
                 #endregion
 
-                using (var brush = new SolidBrush(Style.Db.TextQuaternary))
+                using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Pagination")))
                 {
                     if (showTotal != null) g.String(showTotal, Font, brush, rect_text, s_f);
                     for (int i = 2; i < buttons.Length; i++)
@@ -412,7 +412,7 @@ namespace AntdUI
                             {
                                 using (var path = btn.rect.RoundPath(_radius))
                                 {
-                                    g.Fill(Style.Db.Fill, path);
+                                    g.Fill(Colour.Fill.Get("Pagination"), path);
                                 }
                             }
                             g.String(btn.key, Font, brush, btn.rect, s_f);

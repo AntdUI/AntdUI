@@ -375,20 +375,20 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    g.Fill(Style.Db.BgElevated, path);
+                    g.Fill(Colour.BgElevated.Get("Message"), path);
                 }
                 if (loading)
                 {
                     var bor3 = 3F * Config.Dpi;
-                    g.DrawEllipse(Style.Db.Fill, bor3, rect_loading);
-                    using (var pen = new Pen(Style.Db.Primary, bor3))
+                    g.DrawEllipse(Colour.Fill.Get("Message"), bor3, rect_loading);
+                    using (var pen = new Pen(Colour.Primary.Get("Message"), bor3))
                     {
                         pen.StartCap = pen.EndCap = LineCap.Round;
                         g.DrawArc(pen, rect_loading, AnimationLoadingValue, 100);
                     }
                 }
-                else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
-                using (var brush = new SolidBrush(Style.Db.TextBase))
+                else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Message");
+                using (var brush = new SolidBrush(Colour.TextBase.Get("Message")))
                 {
                     g.String(config.Text, Font, brush, rect_txt, s_f_left);
                 }

@@ -129,7 +129,7 @@ namespace AntdUI.Chat
                 {
                     using (var path = text.rect_read.RoundPath(radius))
                     {
-                        using (var brush = new SolidBrush(Style.Db.TextTertiary))
+                        using (var brush = new SolidBrush(Colour.TextTertiary.Get("ChatList")))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
                         }
@@ -145,7 +145,7 @@ namespace AntdUI.Chat
                         else
                         {
                             g.Fill(Brushes.White, path);
-                            if (text.selectionLength > 0) g.Fill(Style.Db.FillQuaternary, path);
+                            if (text.selectionLength > 0) g.Fill(Colour.FillQuaternary.Get("ChatList"), path);
                             using (var brush = new SolidBrush(Color.Black))
                             {
                                 PaintItemText(g, text, brush);

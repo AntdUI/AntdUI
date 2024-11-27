@@ -161,7 +161,7 @@ namespace AntdUI
             if (icon == null || icon.Width != size)
             {
                 icon?.Dispose();
-                icon = SvgExtend.SvgToBmp(character ?? SvgDb.IcoStar, size, size, Style.Db.FillSecondary);
+                icon = SvgExtend.SvgToBmp(character ?? SvgDb.IcoStar, size, size, Colour.FillSecondary.Get("Rate"));
 
             }
             if (icon_active == null || icon_active.Width != size)
@@ -186,7 +186,7 @@ namespace AntdUI
                         {
                             using (var g2 = Graphics.FromImage(bmp_diy).HighLay(true))
                             {
-                                using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                                using (var brush = new SolidBrush(Colour.FillSecondary.Get("Rate")))
                                 {
                                     g2.String(character, font, brush, rect_diy, s_f);
                                 }

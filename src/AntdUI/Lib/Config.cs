@@ -37,7 +37,6 @@ namespace AntdUI
             set
             {
                 mode = value;
-                Style.Db = value == TMode.Light ? new Theme.Light() : new Theme.Dark();
                 EventHub.Dispatch(EventType.THEME, value);
             }
         }

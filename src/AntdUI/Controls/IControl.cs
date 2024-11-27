@@ -338,18 +338,6 @@ namespace AntdUI
 
         #endregion
 
-        #region 渲染文本
-
-        internal void PaintText(Canvas g, string? text, Rectangle path, StringFormat stringFormat, bool enabled)
-        {
-            using (var brush = new SolidBrush(enabled ? ForeColor : Style.Db.TextQuaternary))
-            {
-                g.String(text, Font, brush, path, stringFormat);
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region 触屏

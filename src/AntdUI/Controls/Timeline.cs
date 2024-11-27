@@ -183,15 +183,15 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
             g.TranslateTransform(0, -ScrollBar.Value);
-            Color color_fore = fore ?? Style.Db.Text;
-            using (var brush_split = new SolidBrush(Style.Db.Split))
+            Color color_fore = fore ?? Colour.Text.Get("Timeline");
+            using (var brush_split = new SolidBrush(Colour.Split.Get("Timeline")))
             {
                 foreach (var it in splits) g.Fill(brush_split, it);
             }
             var font_Description = FontDescription ?? Font;
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_fore2 = new SolidBrush(Style.Db.TextTertiary))
-            using (var brush_dotback = new SolidBrush(Style.Db.BgBase))
+            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get("Timeline")))
+            using (var brush_dotback = new SolidBrush(Colour.BgBase.Get("Timeline")))
             {
                 foreach (TimelineItem it in items)
                 {
@@ -208,23 +208,23 @@ namespace AntdUI
                                 switch (it.Type)
                                 {
                                     case TTypeMini.Error:
-                                        fill = Style.Db.Error;
+                                        fill = Colour.Error.Get("Timeline");
                                         break;
                                     case TTypeMini.Success:
-                                        fill = Style.Db.Success;
+                                        fill = Colour.Success.Get("Timeline");
                                         break;
                                     case TTypeMini.Info:
-                                        fill = Style.Db.Info;
+                                        fill = Colour.Info.Get("Timeline");
                                         break;
                                     case TTypeMini.Warn:
-                                        fill = Style.Db.Warning;
+                                        fill = Colour.Warning.Get("Timeline");
                                         break;
                                     case TTypeMini.Default:
-                                        fill = Style.Db.TextQuaternary;
+                                        fill = Colour.TextQuaternary.Get("Timeline");
                                         break;
                                     case TTypeMini.Primary:
                                     default:
-                                        fill = Style.Db.Primary;
+                                        fill = Colour.Primary.Get("Timeline");
                                         break;
                                 }
                             }

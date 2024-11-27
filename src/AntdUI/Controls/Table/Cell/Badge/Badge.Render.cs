@@ -34,16 +34,16 @@ namespace AntdUI
                 switch (State)
                 {
                     case TState.Success:
-                        color = Style.Db.Success; break;
+                        color = Colour.Success.Get("Badge"); break;
                     case TState.Error:
-                        color = Style.Db.Error; break;
+                        color = Colour.Error.Get("Badge"); break;
                     case TState.Primary:
                     case TState.Processing:
-                        color = Style.Db.Primary; break;
+                        color = Colour.Primary.Get("Badge"); break;
                     case TState.Warn:
-                        color = Style.Db.Warning; break;
+                        color = Colour.Warning.Get("Badge"); break;
                     default:
-                        color = Style.Db.TextQuaternary; break;
+                        color = Colour.TextQuaternary.Get("Badge"); break;
                 }
             }
             using (var brush = new SolidBrush(color))

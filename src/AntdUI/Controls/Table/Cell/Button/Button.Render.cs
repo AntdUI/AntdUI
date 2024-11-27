@@ -72,24 +72,24 @@ namespace AntdUI
                     switch (Type)
                     {
                         case TTypeMini.Default:
-                            if (BorderWidth > 0) _back_hover = Style.Db.PrimaryHover;
-                            else _back_hover = Style.Db.FillSecondary;
+                            if (BorderWidth > 0) _back_hover = Colour.PrimaryHover.Get("Button");
+                            else _back_hover = Colour.FillSecondary.Get("Button");
                             break;
                         case TTypeMini.Success:
-                            _back_hover = Style.Db.SuccessHover;
+                            _back_hover = Colour.SuccessHover.Get("Button");
                             break;
                         case TTypeMini.Error:
-                            _back_hover = Style.Db.ErrorHover;
+                            _back_hover = Colour.ErrorHover.Get("Button");
                             break;
                         case TTypeMini.Info:
-                            _back_hover = Style.Db.InfoHover;
+                            _back_hover = Colour.InfoHover.Get("Button");
                             break;
                         case TTypeMini.Warn:
-                            _back_hover = Style.Db.WarningHover;
+                            _back_hover = Colour.WarningHover.Get("Button");
                             break;
                         case TTypeMini.Primary:
                         default:
-                            _back_hover = Style.Db.PrimaryHover;
+                            _back_hover = Colour.PrimaryHover.Get("Button");
                             break;
                     }
 

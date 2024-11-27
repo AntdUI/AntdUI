@@ -549,7 +549,7 @@ namespace AntdUI
                 using (var path = rect_read.RoundPath(Radius))
                 {
                     DrawShadow(g, rect);
-                    using (var brush = new SolidBrush(Style.Db.BgElevated))
+                    using (var brush = new SolidBrush(Colour.BgElevated.Get("Select")))
                     {
                         g.Fill(brush, path);
                         if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
@@ -557,18 +557,18 @@ namespace AntdUI
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        using (var brush = new SolidBrush(Color.FromArgb(180, Style.Db.Text)))
+                        using (var brush = new SolidBrush(Color.FromArgb(180, Colour.Text.Get("Select"))))
                         { g.String(emptytext, Font, brush, rect_read, s_f); }
                     }
                     else
                     {
                         g.SetClip(path);
                         g.TranslateTransform(0, -scrollY.Value);
-                        using (var brush = new SolidBrush(Style.Db.Text))
-                        using (var brush_back_hover = new SolidBrush(Style.Db.FillTertiary))
-                        using (var brush_sub = new SolidBrush(Style.Db.TextQuaternary))
-                        using (var brush_fore = new SolidBrush(Style.Db.TextTertiary))
-                        using (var brush_split = new SolidBrush(Style.Db.Split))
+                        using (var brush = new SolidBrush(Colour.Text.Get("Select")))
+                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get("Select")))
+                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get("Select")))
+                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get("Select")))
+                        using (var brush_split = new SolidBrush(Colour.Split.Get("Select")))
                         {
                             if (Radius > 0)
                             {
@@ -650,7 +650,7 @@ namespace AntdUI
             {
                 using (var path = it.Rect.RoundPath(Radius, TL, TR, BR, BL))
                 {
-                    g.Fill(Style.Db.PrimaryBg, path);
+                    g.Fill(Colour.PrimaryBg.Get("Select"), path);
                 }
                 if (it.SubText != null)
                 {
@@ -659,10 +659,10 @@ namespace AntdUI
                     g.String(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
                 DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, .46F);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select"), .46F);
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error)))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select") : Colour.Error.Get("Select"))))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
@@ -696,7 +696,7 @@ namespace AntdUI
                 }
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error)))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select") : Colour.Error.Get("Select"))))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
@@ -708,12 +708,12 @@ namespace AntdUI
             if (it.ID == -1) g.Fill(brush_split, it.Rect);
             else if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag))
             {
-                using (var brush_back = new SolidBrush(Style.Db.PrimaryBg))
+                using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get("Select")))
                 {
                     g.Fill(brush_back, it.Rect);
                 }
                 DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Style.Db.Primary, .46F);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select"), .46F);
             }
             else
             {
@@ -722,7 +722,7 @@ namespace AntdUI
             }
             if (it.Online.HasValue)
             {
-                using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error)))
+                using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select") : Colour.Error.Get("Select"))))
                 {
                     g.FillEllipse(brush_online, it.RectOnline);
                 }
@@ -733,26 +733,26 @@ namespace AntdUI
         {
             if (it.Enable)
             {
-                using (var fore = new SolidBrush(Style.Db.TextBase))
+                using (var fore = new SolidBrush(Colour.TextBase.Get("Select")))
                 {
                     g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }
             }
             else
             {
-                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select")))
                 {
                     g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }
             }
-            DrawIcon(g, it, Style.Db.TextBase);
+            DrawIcon(g, it, Colour.TextBase.Get("Select"));
         }
         void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush)
         {
             if (it.Enable) g.String(it.Text, Font, brush, it.RectText, stringFormatLeft);
             else
             {
-                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select")))
                 {
                     g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }

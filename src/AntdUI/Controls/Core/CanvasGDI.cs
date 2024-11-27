@@ -65,7 +65,10 @@ namespace AntdUI.Core
         {
             try
             {
-                g.DrawImage(image, destRect, srcX, srcY, srcWidth, srcHeight, srcUnit, imageAttr, null);
+                lock (image)
+                {
+                    g.DrawImage(image, destRect, srcX, srcY, srcWidth, srcHeight, srcUnit, imageAttr, null);
+                }
             }
             catch { }
         }
@@ -74,7 +77,10 @@ namespace AntdUI.Core
         {
             try
             {
-                g.DrawImage(image, x, y, w, h);
+                lock (image)
+                {
+                    g.DrawImage(image, x, y, w, h);
+                }
             }
             catch { }
         }
@@ -83,7 +89,10 @@ namespace AntdUI.Core
         {
             try
             {
-                g.DrawImage(image, srcX, srcY, srcWidth, srcHeight);
+                lock (image)
+                {
+                    g.DrawImage(image, srcX, srcY, srcWidth, srcHeight);
+                }
             }
             catch { }
         }
@@ -91,7 +100,10 @@ namespace AntdUI.Core
         {
             try
             {
-                g.DrawImage(image, rect);
+                lock (image)
+                {
+                    g.DrawImage(image, rect);
+                }
             }
             catch { }
         }
@@ -99,7 +111,10 @@ namespace AntdUI.Core
         {
             try
             {
-                g.DrawIcon(icon, rect);
+                lock (icon)
+                {
+                    g.DrawIcon(icon, rect);
+                }
             }
             catch { }
         }
@@ -108,7 +123,10 @@ namespace AntdUI.Core
         {
             try
             {
-                g.DrawImage(image, rect);
+                lock (image)
+                {
+                    g.DrawImage(image, rect);
+                }
             }
             catch { }
         }
@@ -116,7 +134,10 @@ namespace AntdUI.Core
         {
             try
             {
-                g.DrawImage(image, rect);
+                lock (image)
+                {
+                    g.DrawImage(image, rect);
+                }
             }
             catch { }
         }
@@ -124,7 +145,11 @@ namespace AntdUI.Core
         {
             try
             {
-                g.DrawImage(image, destRect, srcRect, srcUnit);
+                lock (image)
+                {
+
+                    g.DrawImage(image, destRect, srcRect, srcUnit);
+                }
             }
             catch { }
         }
@@ -135,16 +160,19 @@ namespace AntdUI.Core
         {
             try
             {
-                if (opacity >= 1F)
+                lock (bmp)
                 {
-                    g.DrawImage(bmp, rect);
-                    return;
-                }
-                using (var attributes = new ImageAttributes())
-                {
-                    var matrix = new ColorMatrix { Matrix33 = opacity };
-                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                    if (opacity >= 1F)
+                    {
+                        g.DrawImage(bmp, rect);
+                        return;
+                    }
+                    using (var attributes = new ImageAttributes())
+                    {
+                        var matrix = new ColorMatrix { Matrix33 = opacity };
+                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                        g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                    }
                 }
             }
             catch { }
@@ -154,16 +182,20 @@ namespace AntdUI.Core
         {
             try
             {
-                if (opacity >= 1F)
+                lock (bmp)
                 {
-                    g.DrawImage(bmp, rect);
-                    return;
-                }
-                using (var attributes = new ImageAttributes())
-                {
-                    var matrix = new ColorMatrix { Matrix33 = opacity };
-                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+
+                    if (opacity >= 1F)
+                    {
+                        g.DrawImage(bmp, rect);
+                        return;
+                    }
+                    using (var attributes = new ImageAttributes())
+                    {
+                        var matrix = new ColorMatrix { Matrix33 = opacity };
+                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                        g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                    }
                 }
             }
             catch { }

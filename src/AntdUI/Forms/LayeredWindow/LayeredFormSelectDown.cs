@@ -33,8 +33,10 @@ namespace AntdUI
         object? selectedValue;
         int r_w = 0;
         List<ObjectItem> Items;
+        string keyid;
         public LayeredFormSelectDown(Select control, IList<object> items, string filtertext)
         {
+            keyid = "Select";
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             ClickEnd = control.ClickEnd;
@@ -50,6 +52,7 @@ namespace AntdUI
         }
         public LayeredFormSelectDown(Dropdown control, int radius, IList<object> items)
         {
+            keyid = "Dropdown";
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             ClickEnd = control.ClickEnd;
@@ -66,6 +69,7 @@ namespace AntdUI
         }
         public LayeredFormSelectDown(Tabs control, int radius, IList<object> items, object? sValue, Rectangle rect_ctls)
         {
+            keyid = "Tabs";
             MessageCloseMouseLeave = true;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -99,6 +103,7 @@ namespace AntdUI
 
         public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
         {
+            keyid = "Select";
             ClickEnd = control.ClickEnd;
             selectedValue = control.SelectedValue;
             scrollY = new ScrollY(this);
@@ -108,6 +113,7 @@ namespace AntdUI
         }
         public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
         {
+            keyid = "Dropdown";
             ClickEnd = control.ClickEnd;
             scrollY = new ScrollY(this);
             DPadding = control.DropDownPadding;
@@ -829,7 +835,7 @@ namespace AntdUI
                 using (var path = rect_read.RoundPath(Radius))
                 {
                     DrawShadow(g, rect);
-                    using (var brush = new SolidBrush(Style.Db.BgElevated))
+                    using (var brush = new SolidBrush(Colour.BgElevated.Get(keyid)))
                     {
                         g.Fill(brush, path);
                         if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
@@ -837,18 +843,18 @@ namespace AntdUI
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        using (var brush = new SolidBrush(Color.FromArgb(180, Style.Db.Text)))
+                        using (var brush = new SolidBrush(Color.FromArgb(180, Colour.Text.Get(keyid))))
                         { g.String(emptytext, Font, brush, rect_read, s_f); }
                     }
                     else
                     {
                         g.SetClip(path);
                         g.TranslateTransform(0, -scrollY.Value);
-                        using (var brush = new SolidBrush(Style.Db.Text))
-                        using (var brush_back_hover = new SolidBrush(Style.Db.FillTertiary))
-                        using (var brush_sub = new SolidBrush(Style.Db.TextQuaternary))
-                        using (var brush_fore = new SolidBrush(Style.Db.TextTertiary))
-                        using (var brush_split = new SolidBrush(Style.Db.Split))
+                        using (var brush = new SolidBrush(Colour.Text.Get(keyid)))
+                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(keyid)))
+                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(keyid)))
+                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(keyid)))
+                        using (var brush_split = new SolidBrush(Colour.Split.Get(keyid)))
                         {
                             foreach (var it in Items)
                             {
@@ -872,7 +878,7 @@ namespace AntdUI
             {
                 using (var path = it.Rect.RoundPath(Radius))
                 {
-                    g.Fill(Style.Db.PrimaryBg, path);
+                    g.Fill(Colour.PrimaryBg.Get(keyid), path);
                 }
                 if (it.SubText != null)
                 {
@@ -901,13 +907,13 @@ namespace AntdUI
             }
             if (it.Online.HasValue)
             {
-                Color color = it.OnlineCustom ?? (it.Online == 1 ? Style.Db.Success : Style.Db.Error);
-                using (var brush_online = new SolidBrush(it.Enable ? color : Color.FromArgb(Style.Db.TextQuaternary.A, color)))
+                Color color = it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(keyid) : Colour.Error.Get(keyid));
+                using (var brush_online = new SolidBrush(it.Enable ? color : Color.FromArgb(Colour.TextQuaternary.Get(keyid).A, color)))
                 {
                     g.FillEllipse(brush_online, it.RectOnline);
                 }
             }
-            if (it.has_sub) DrawArrow(g, it, Style.Db.TextBase);
+            if (it.has_sub) DrawArrow(g, it, Colour.TextBase.Get(keyid));
         }
 
         void DrawTextIconSelect(Canvas g, ObjectItem it)
@@ -916,27 +922,27 @@ namespace AntdUI
             {
                 if (it.Enable)
                 {
-                    using (var fore = new SolidBrush(Style.Db.TextBase))
+                    using (var fore = new SolidBrush(Colour.TextBase.Get(keyid)))
                     {
                         g.String(it.Text, font, fore, it.RectText, stringFormatLeft);
                     }
                 }
                 else
                 {
-                    using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                    using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid)))
                     {
                         g.String(it.Text, font, fore, it.RectText, stringFormatLeft);
                     }
                 }
             }
-            DrawIcon(g, it, Style.Db.TextBase);
+            DrawIcon(g, it, Colour.TextBase.Get(keyid));
         }
         void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush)
         {
             if (it.Enable) g.String(it.Text, Font, brush, it.RectText, stringFormatLeft);
             else
             {
-                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid)))
                 {
                     g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }

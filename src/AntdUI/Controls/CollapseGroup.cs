@@ -238,11 +238,11 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
-            using (var brush_fore = new SolidBrush(fore ?? Style.Db.TextBase))
-            using (var brush_fore_active = new SolidBrush(ForeActive ?? Style.Db.Primary))
-            using (var brush_hover = new SolidBrush(BackHover ?? Style.Db.FillSecondary))
-            using (var brush_active = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
-            using (var brush_TextQuaternary = new SolidBrush(Style.Db.TextQuaternary))
+            using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get("CollapseGroup")))
+            using (var brush_fore_active = new SolidBrush(ForeActive ?? Colour.Primary.Get("CollapseGroup")))
+            using (var brush_hover = new SolidBrush(BackHover ?? Colour.FillSecondary.Get("CollapseGroup")))
+            using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get("CollapseGroup")))
+            using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.Get("CollapseGroup")))
             {
                 PaintItem(g, rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextQuaternary, _radius);
             }

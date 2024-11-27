@@ -500,11 +500,11 @@ namespace AntdUI
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
             float _radius = radius * Config.Dpi;
-            using (var brush_fore = new SolidBrush(fore ?? Style.Db.TextBase))
-            using (var brush_fore_active = new SolidBrush(ForeActive ?? Style.Db.Primary))
-            using (var brush_hover = new SolidBrush(BackHover ?? Style.Db.FillSecondary))
-            using (var brush_active = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
-            using (var brush_TextTertiary = new SolidBrush(Style.Db.TextTertiary))
+            using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get("Tree")))
+            using (var brush_fore_active = new SolidBrush(ForeActive ?? Colour.Primary.Get("Tree")))
+            using (var brush_hover = new SolidBrush(BackHover ?? Colour.FillSecondary.Get("Tree")))
+            using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get("Tree")))
+            using (var brush_TextTertiary = new SolidBrush(Colour.TextTertiary.Get("Tree")))
             {
                 PaintItem(g, rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
             }
@@ -587,7 +587,7 @@ namespace AntdUI
                 if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
                 {
-                    using (var brush = new SolidBrush(Style.Db.TextQuaternary))
+                    using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Tree")))
                     {
                         PaintItemText(g, item, brush, brushTextTertiary);
                     }
@@ -606,45 +606,45 @@ namespace AntdUI
 
                             if (item.CheckState == CheckState.Indeterminate || (item.checkStateOld == CheckState.Indeterminate && !item.Checked))
                             {
-                                g.Draw(Style.Db.BorderColor, bor2, path_check);
-                                g.Fill(Helper.ToColor(alpha, Style.Db.Primary), PaintBlock(item.check_rect));
+                                g.Draw(Colour.BorderColor.Get("Tree"), bor2, path_check);
+                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Tree")), PaintBlock(item.check_rect));
                             }
                             else
                             {
                                 float dot = item.check_rect.Width * 0.3F;
 
-                                g.Fill(Helper.ToColor(alpha, Style.Db.Primary), path_check);
-                                g.DrawLines(Helper.ToColor(alpha, Style.Db.BgBase), 3F * Config.Dpi, PaintArrow(item.check_rect));
+                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Tree")), path_check);
+                                g.DrawLines(Helper.ToColor(alpha, Colour.BgBase.Get("Tree")), 3F * Config.Dpi, PaintArrow(item.check_rect));
 
                                 if (item.Checked)
                                 {
                                     float max = item.check_rect.Height + item.check_rect.Height * item.AnimationCheckValue, alpha2 = 100 * (1F - item.AnimationCheckValue);
-                                    using (var brush = new SolidBrush(Helper.ToColor(alpha2, Style.Db.Primary)))
+                                    using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Tree"))))
                                     {
                                         g.FillEllipse(brush, new RectangleF(item.check_rect.X + (item.check_rect.Width - max) / 2F, item.check_rect.Y + (item.check_rect.Height - max) / 2F, max, max));
                                     }
                                 }
-                                g.Draw(Style.Db.Primary, 2F * Config.Dpi, path_check);
+                                g.Draw(Colour.Primary.Get("Tree"), 2F * Config.Dpi, path_check);
                             }
                         }
                         else if (item.CheckState == CheckState.Indeterminate)
                         {
-                            g.Draw(Style.Db.BorderColor, bor2, path_check);
-                            g.Fill(Style.Db.Primary, PaintBlock(item.check_rect));
+                            g.Draw(Colour.BorderColor.Get("Tree"), bor2, path_check);
+                            g.Fill(Colour.Primary.Get("Tree"), PaintBlock(item.check_rect));
                         }
                         else if (item.Checked)
                         {
-                            g.Fill(Style.Db.Primary, path_check);
-                            g.DrawLines(Style.Db.BgBase, bor2, PaintArrow(item.check_rect));
+                            g.Fill(Colour.Primary.Get("Tree"), path_check);
+                            g.DrawLines(Colour.BgBase.Get("Tree"), bor2, PaintArrow(item.check_rect));
                         }
-                        else g.Draw(Style.Db.BorderColor, bor2, path_check);
+                        else g.Draw(Colour.BorderColor.Get("Tree"), bor2, path_check);
                     }
                     else
                     {
-                        g.Fill(Style.Db.FillQuaternary, path_check);
-                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Style.Db.TextQuaternary, PaintBlock(item.check_rect));
-                        else if (item.Checked) g.DrawLines(Style.Db.TextQuaternary, bor2, PaintArrow(item.check_rect));
-                        g.Draw(Style.Db.BorderColorDisable, bor2, path_check);
+                        g.Fill(Colour.FillQuaternary.Get("Tree"), path_check);
+                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Colour.TextQuaternary.Get("Tree"), PaintBlock(item.check_rect));
+                        else if (item.Checked) g.DrawLines(Colour.TextQuaternary.Get("Tree"), bor2, PaintArrow(item.check_rect));
+                        g.Draw(Colour.BorderColorDisable.Get("Tree"), bor2, path_check);
                     }
                 }
             }

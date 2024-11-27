@@ -109,9 +109,9 @@ namespace AntdUI
 
     #region Color
 
-    public class ColorEventArgs : VEventArgs<System.Drawing.Color>
+    public class ColorEventArgs : VEventArgs<Color>
     {
-        public ColorEventArgs(System.Drawing.Color value) : base(value) { }
+        public ColorEventArgs(Color value) : base(value) { }
     }
 
     /// <summary>

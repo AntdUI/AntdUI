@@ -39,7 +39,7 @@ namespace AntdUI.Design
             InitializeComponent();
 
             if (val is Color _val) color_alpha = Value = _val;
-            else color_alpha = Value = Style.Db.Primary;
+            else color_alpha = Value = Colour.Primary.Get();
             ValueNAlpha = Color.FromArgb(255, Value);
             var hsv = ValueNAlpha.ToHSV();
             hsv.s = hsv.v = 1;
@@ -83,7 +83,7 @@ namespace AntdUI.Design
                     bmp_dot_12 = new Bitmap(gap + 12, gap + 12);
                     using (var g2 = Graphics.FromImage(bmp_dot_12).High())
                     {
-                        using (var brush = new SolidBrush(Style.Db.BgBase))
+                        using (var brush = new SolidBrush(Colour.BgBase.Get()))
                         {
                             float yy = (bmp_dot_12.Height - gap) / 2F;
                             var rect2 = new RectangleF(6, 6, bmp_dot_12.Height - 12, bmp_dot_12.Height - 12);
@@ -193,7 +193,7 @@ namespace AntdUI.Design
 
                 using (var brush_val = new SolidBrush(Value))
                 using (var brush_hue = new SolidBrush(ValueHue))
-                using (var pen = new Pen(Style.Db.BgBase, dot_bor_size))
+                using (var pen = new Pen(Colour.BgBase.Get(), dot_bor_size))
                 {
                     #region µ÷É«°å
 
@@ -433,7 +433,7 @@ namespace AntdUI.Design
                 while (u_x < rect.Width)
                 {
                     ad = !ad;
-                    using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                    using (var brush = new SolidBrush(Colour.FillSecondary.Get()))
                     {
                         g.Fill(brush, new Rectangle(u_x, ad ? 0 : he, he, he));
                     }

@@ -309,7 +309,7 @@ namespace AntdUI
                 else rect_read = new Rectangle(_rect.X + DotS, _rect.Y + (_rect.Height - LineSize) / 2, _rect.Width - DotS2, LineSize);
             }
 
-            Color color = Enabled ? fill ?? Style.Db.InfoBorder : Style.Db.FillTertiary, color_dot = Enabled ? fill ?? Style.Db.InfoBorder : Style.Db.SliderHandleColorDisabled, color_hover = FillHover ?? Style.Db.InfoHover, color_active = FillActive ?? Style.Db.Primary;
+            Color color = Enabled ? fill ?? Colour.InfoBorder.Get("Slider") : Colour.FillTertiary.Get("Slider"), color_dot = Enabled ? fill ?? Colour.InfoBorder.Get("Slider") : Colour.SliderHandleColorDisabled.Get("Slider"), color_hover = FillHover ?? Colour.InfoHover.Get("Slider"), color_active = FillActive ?? Colour.Primary.Get("Slider");
 
             var g = e.Graphics.High();
             IPaint(g, _rect, Enabled, color, color_dot, color_hover, color_active);
@@ -324,7 +324,7 @@ namespace AntdUI
 
             using (var path = rect_read.RoundPath(rect_read.Height / 2))
             {
-                using (var brush = new SolidBrush(trackColor ?? Style.Db.FillQuaternary))
+                using (var brush = new SolidBrush(trackColor ?? Colour.FillQuaternary.Get("Slider")))
                 {
                     g.Fill(brush, path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
@@ -346,7 +346,7 @@ namespace AntdUI
 
             #endregion
 
-            using (var brush = new SolidBrush(Style.Db.BgBase))
+            using (var brush = new SolidBrush(Colour.BgBase.Get("Slider")))
             {
                 PaintMarksEllipse(g, rect, rect_read, brush, color, LineSize);
                 PaintEllipse(g, rect, rect_read, prog, brush, color_dot, color_hover, color_active, LineSize);
@@ -414,7 +414,7 @@ namespace AntdUI
         {
             if (marks != null && marks.Count > 0)
             {
-                using (var fore = new SolidBrush(Style.Db.Text))
+                using (var fore = new SolidBrush(Colour.Text.Get("Slider")))
                 {
                     int markTextGap = (int)(MarkTextGap * Config.Dpi);
                     int size2 = LineSize, size = size2 * 2;

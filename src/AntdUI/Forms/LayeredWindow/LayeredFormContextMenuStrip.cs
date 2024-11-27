@@ -313,11 +313,11 @@ namespace AntdUI
             {
                 using (var path_sh = DrawShadow(g, rect, rect_read))
                 {
-                    g.Fill(Style.Db.BgElevated, path_sh);
-                    using (var brush = new SolidBrush(Style.Db.Text))
-                    using (var brushSplit = new SolidBrush(Style.Db.Split))
-                    using (var brushSecondary = new SolidBrush(Style.Db.TextSecondary))
-                    using (var brushEnabled = new SolidBrush(Style.Db.TextQuaternary))
+                    g.Fill(Colour.BgElevated.Get("ContextMenuStrip"), path_sh);
+                    using (var brush = new SolidBrush(Colour.Text.Get("ContextMenuStrip")))
+                    using (var brushSplit = new SolidBrush(Colour.Split.Get("ContextMenuStrip")))
+                    using (var brushSecondary = new SolidBrush(Colour.TextSecondary.Get("ContextMenuStrip")))
+                    using (var brushEnabled = new SolidBrush(Colour.TextQuaternary.Get("ContextMenuStrip")))
                     {
                         if (scrollY.Show)
                         {
@@ -333,7 +333,7 @@ namespace AntdUI
                                 {
                                     using (var path = Helper.RoundPath(it.Rect, radius))
                                     {
-                                        g.Fill(Style.Db.PrimaryBg, path);
+                                        g.Fill(Colour.PrimaryBg.Get("ContextMenuStrip"), path);
                                     }
                                 }
                                 if (it.Tag.Enabled)
@@ -350,7 +350,7 @@ namespace AntdUI
 
                                     if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {
-                                        using (var pen = new Pen(Style.Db.TextSecondary, 2F * Config.Dpi))
+                                        using (var pen = new Pen(Colour.TextSecondary.Get("ContextMenuStrip"), 2F * Config.Dpi))
                                         {
                                             pen.StartCap = pen.EndCap = LineCap.Round;
                                             g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
@@ -358,7 +358,7 @@ namespace AntdUI
                                     }
                                     if (it.Tag.Checked)
                                     {
-                                        using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
+                                        using (var pen = new Pen(Colour.Primary.Get("ContextMenuStrip"), 3F * Config.Dpi))
                                         {
                                             g.DrawLines(pen, PaintArrow(it.RectCheck));
                                         }
@@ -379,7 +379,7 @@ namespace AntdUI
 
                                     if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {
-                                        using (var pen = new Pen(Style.Db.TextQuaternary, 2F * Config.Dpi))
+                                        using (var pen = new Pen(Colour.TextQuaternary.Get("ContextMenuStrip"), 2F * Config.Dpi))
                                         {
                                             pen.StartCap = pen.EndCap = LineCap.Round;
                                             g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
@@ -387,7 +387,7 @@ namespace AntdUI
                                     }
                                     if (it.Tag.Checked)
                                     {
-                                        using (var pen = new Pen(Style.Db.Primary, 3F * Config.Dpi))
+                                        using (var pen = new Pen(Colour.Primary.Get("ContextMenuStrip"), 3F * Config.Dpi))
                                         {
                                             g.DrawLines(pen, PaintArrow(it.RectCheck));
                                         }

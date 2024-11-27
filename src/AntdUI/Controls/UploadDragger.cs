@@ -295,7 +295,7 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             using (var path = rect.RoundPath(_radius))
             {
-                g.Fill(back ?? Style.Db.FillQuaternary, path);
+                g.Fill(back ?? Colour.FillQuaternary.Get("UploadDragger"), path);
                 if (backImage != null) g.Image(rect, backImage, backFit, _radius, false);
 
                 #region 渲染主体
@@ -309,7 +309,7 @@ namespace AntdUI
                     {
                         int y = rect.Y + (rect.Height - size.Height) / 2;
                         var rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height);
-                        using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger")))
                         {
                             g.String(Text, Font, brush, rect_text, s_f);
                         }
@@ -322,11 +322,11 @@ namespace AntdUI
                             int th = sp + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
                             Rectangle rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
-                            using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                            using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger")))
                             {
                                 g.String(Text, Font, brush, rect_text, s_f);
                             }
-                            using (var brush = new SolidBrush(Style.Db.TextTertiary))
+                            using (var brush = new SolidBrush(Colour.TextTertiary.Get("UploadDragger")))
                             {
                                 g.String(TextDesc, font_desc, brush, rect_desc, s_f);
                             }
@@ -340,9 +340,9 @@ namespace AntdUI
                         int th = gap + icon_size + size.Height, y = rect.Y + (rect.Height - th) / 2;
                         Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                             rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height);
-                        if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Style.Db.Primary);
+                        if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Colour.Primary.Get("UploadDragger"));
                         if (icon != null) g.Image(icon, rect_icon);
-                        using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger")))
                         {
                             g.String(Text, Font, brush, rect_text, s_f);
                         }
@@ -356,13 +356,13 @@ namespace AntdUI
                             Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                                 rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
-                            if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Style.Db.Primary);
+                            if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Colour.Primary.Get("UploadDragger"));
                             if (icon != null) g.Image(icon, rect_icon);
-                            using (var brush = new SolidBrush(fore ?? Style.Db.Text))
+                            using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger")))
                             {
                                 g.String(Text, Font, brush, rect_text, s_f);
                             }
-                            using (var brush = new SolidBrush(Style.Db.TextTertiary))
+                            using (var brush = new SolidBrush(Colour.TextTertiary.Get("UploadDragger")))
                             {
                                 g.String(TextDesc, font_desc, brush, rect_desc, s_f);
                             }
@@ -375,9 +375,9 @@ namespace AntdUI
                 if (borderWidth > 0)
                 {
                     var borw = borderWidth * Config.Dpi;
-                    if (AnimationHover) g.Draw((borderColor ?? Style.Db.BorderColor).BlendColors(AnimationHoverValue, Style.Db.PrimaryHover), borw, path);
-                    else if (ExtraMouseHover) g.Draw(Style.Db.PrimaryHover, borw, borderStyle, path);
-                    else g.Draw(borderColor ?? Style.Db.BorderColor, borw, borderStyle, path);
+                    if (AnimationHover) g.Draw((borderColor ?? Colour.BorderColor.Get("UploadDragger")).BlendColors(AnimationHoverValue, Colour.PrimaryHover.Get("UploadDragger")), borw, path);
+                    else if (ExtraMouseHover) g.Draw(Colour.PrimaryHover.Get("UploadDragger"), borw, borderStyle, path);
+                    else g.Draw(borderColor ?? Colour.BorderColor.Get("UploadDragger"), borw, borderStyle, path);
                 }
             }
             this.PaintBadge(g);

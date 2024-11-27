@@ -377,13 +377,13 @@ namespace AntdUI
                 var g = e.Graphics.High();
                 var rect_read = ReadRectangle;
                 float _radius = radius * Config.Dpi;
-                using (var brush = new SolidBrush(back ?? Style.Db.BgContainer))
+                using (var brush = new SolidBrush(back ?? Colour.BgContainer.Get("Panel")))
                 {
                     using (var path = DrawShadow(g, _radius, rect, rect_read))
                     {
                         g.Fill(brush, path);
                         if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-                        if (borderWidth > 0) g.Draw(borderColor ?? Style.Db.BorderColor, borderWidth * Config.Dpi, borderStyle, path);
+                        if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get("Panel"), borderWidth * Config.Dpi, borderStyle, path);
                     }
                     if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                 }
@@ -408,7 +408,7 @@ namespace AntdUI
                 if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
-                    shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height, shadowColor ?? Style.Db.TextBase, shadow);
+                    shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height, shadowColor ?? Colour.TextBase.Get("Panel"), shadow);
                 }
                 using (var attributes = new ImageAttributes())
                 {

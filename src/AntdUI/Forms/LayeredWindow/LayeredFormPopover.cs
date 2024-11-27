@@ -49,8 +49,8 @@ namespace AntdUI
 
                 if (config.Content is Control control)
                 {
-                    control.BackColor = Style.Db.BgElevated;
-                    control.ForeColor = Style.Db.Text;
+                    control.BackColor = Colour.BgElevated.Get("Popover");
+                    control.ForeColor = Colour.Text.Get("Popover");
                     int w = (int)Math.Round(control.Width * dpi) + 2;
                     control.Width = w;
 
@@ -274,7 +274,7 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    using (var brush = new SolidBrush(Style.Db.BgElevated))
+                    using (var brush = new SolidBrush(Colour.BgElevated.Get("Popover")))
                     {
                         g.Fill(brush, path);
                         if (config.ArrowAlign != TAlign.None) g.FillPolygon(brush, config.ArrowAlign.AlignLines(config.ArrowSize, rect, rect_read));
@@ -284,7 +284,7 @@ namespace AntdUI
 
                 if (config.Title != null || rtext)
                 {
-                    using (var brush = new SolidBrush(Style.Db.Text))
+                    using (var brush = new SolidBrush(Colour.Text.Get("Popover")))
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {

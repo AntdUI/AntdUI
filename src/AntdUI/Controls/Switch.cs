@@ -207,9 +207,9 @@ namespace AntdUI
             var rect_read = ReadRectangle;
             using (var path = rect_read.RoundPath(rect_read.Height))
             {
-                Color _color = fill ?? Style.Db.Primary;
+                Color _color = fill ?? Colour.Primary.Get("Switch");
                 PaintClick(g, path, rect, rect_read, _color);
-                using (var brush = new SolidBrush(Style.Db.TextQuaternary))
+                using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch")))
                 {
                     g.Fill(brush, path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
@@ -221,19 +221,19 @@ namespace AntdUI
                     var alpha = 255 * AnimationCheckValue;
                     g.Fill(Helper.ToColor(alpha, _color), path);
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    using (var brush = new SolidBrush(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch"))))
                     {
                         g.FillEllipse(brush, dot_rect);
                     }
                 }
                 else if (_checked)
                 {
-                    var colorhover = FillHover ?? Style.Db.PrimaryHover;
+                    var colorhover = FillHover ?? Colour.PrimaryHover.Get("Switch");
                     g.Fill(Enabled ? _color : Color.FromArgb(200, _color), path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
                     else if (ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    using (var brush = new SolidBrush(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch"))))
                     {
                         g.FillEllipse(brush, dot_rect);
                     }
@@ -241,7 +241,7 @@ namespace AntdUI
                 else
                 {
                     var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    using (var brush = new SolidBrush(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch"))))
                     {
                         g.FillEllipse(brush, dot_rect);
                     }
@@ -251,7 +251,7 @@ namespace AntdUI
                 string? textToRender = Checked ? CheckedText : UnCheckedText;
                 if (textToRender != null)
                 {
-                    Color _fore = fore ?? Style.Db.PrimaryColor;
+                    Color _fore = fore ?? Colour.PrimaryColor.Get("Switch");
                     using (var brush = new SolidBrush(_fore))
                     {
                         var textSize = g.MeasureString(textToRender, Font);

@@ -964,7 +964,7 @@ namespace AntdUI
         StringFormat stringCenter = Helper.SF_NoWrap();
         void PaintEmpty(Canvas g, Rectangle rect)
         {
-            using (var fore = new SolidBrush(Style.Db.Text))
+            using (var fore = new SolidBrush(Colour.Text.Get("VirtualPanel")))
             {
                 string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
                 if (EmptyImage == null) g.String(emptytext, Font, fore, rect, stringCenter);
@@ -1085,7 +1085,7 @@ namespace AntdUI
                         int shadow = (int)(Shadow * Config.Dpi);
                         using (var path = new Rectangle(shadow, shadow, it.RECT.Width, it.RECT.Height).RoundPath(radius, shadowAlign))
                         {
-                            shadow_dir_tmp.Add(id, path.PaintShadow(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Style.Db.TextBase, shadow));
+                            shadow_dir_tmp.Add(id, path.PaintShadow(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Colour.TextBase.Get("VirtualPanel"), shadow));
                         }
                     }
                     if (shadow_dir_tmp.TryGetValue(id, out var shadow_temp))

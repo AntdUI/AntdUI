@@ -26,7 +26,7 @@ namespace AntdUI
 
         internal override void Paint(Canvas g, Font font, SolidBrush fore)
         {
-            using (var brush = new SolidBrush(Style.Db.Split))
+            using (var brush = new SolidBrush(Colour.Split.Get("Divider")))
             {
                 g.Fill(brush, Rect);
             }
