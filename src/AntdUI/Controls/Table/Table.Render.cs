@@ -60,6 +60,7 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             using (var brush_fore = new SolidBrush(fore ?? Colour.Text.Get("Table")))
+            using (var brush_foreEnable = new SolidBrush(fore ?? Colour.TextQuaternary.Get("Table")))
             using (var brush_forecolumn = new SolidBrush(columnfore ?? fore ?? Colour.Text.Get("Table")))
             using (var brush_split = new SolidBrush(borderColor ?? Colour.BorderColor.Get("Table")))
             {
@@ -97,7 +98,7 @@ namespace AntdUI
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
-                        foreach (var it in shows) PaintForeItem(g, it, brush_fore);
+                        foreach (var it in shows) PaintForeItem(g, it, brush_fore, brush_foreEnable);
                         g.ResetTransform();
 
                         g.ResetClip();
@@ -143,7 +144,7 @@ namespace AntdUI
                         foreach (var it in shows)
                         {
                             if (it.row.IsColumn) PaintTableHeader(g, it.row, brush_forecolumn, column_font, _radius);
-                            else PaintForeItem(g, it, brush_fore);
+                            else PaintForeItem(g, it, brush_fore, brush_foreEnable);
                         }
                         if (bordered)
                         {
@@ -185,7 +186,7 @@ namespace AntdUI
 
                     g.ResetTransform();
                     g.TranslateTransform(-sx, -sy);
-                    foreach (var it in shows) PaintForeItem(g, it, brush_fore);
+                    foreach (var it in shows) PaintForeItem(g, it, brush_fore, brush_foreEnable);
                     if (bordered)
                     {
                         g.ResetTransform();
@@ -201,8 +202,8 @@ namespace AntdUI
 
                 if (shows.Count > 0 && (fixedColumnL != null || fixedColumnR != null))
                 {
-                    PaintFixedColumnL(g, rect, rows, shows, brush_fore, brush_forecolumn, column_font, brush_split, sx, sy, _radius);
-                    PaintFixedColumnR(g, rect, rows, shows, brush_fore, brush_forecolumn, column_font, brush_split, sx, sy, _radius);
+                    PaintFixedColumnL(g, rect, rows, shows, brush_fore, brush_foreEnable, brush_forecolumn, column_font, brush_split, sx, sy, _radius);
+                    PaintFixedColumnR(g, rect, rows, shows, brush_fore, brush_foreEnable, brush_forecolumn, column_font, brush_split, sx, sy, _radius);
                 }
                 else showFixedColumnL = showFixedColumnR = false;
 
@@ -434,35 +435,35 @@ namespace AntdUI
         /// <summary>
         /// 渲染前景行
         /// </summary>
-        void PaintForeItem(Canvas g, StyleRow row, SolidBrush fore)
+        void PaintForeItem(Canvas g, StyleRow row, SolidBrush fore, SolidBrush foreEnable)
         {
             if (selectedIndex.Contains(row.row.INDEX) && rowSelectedFore.HasValue)
             {
                 using (var brush = new SolidBrush(rowSelectedFore.Value))
                 {
-                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], brush);
+                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], row.row.ENABLE, brush);
                 }
             }
             else if (row.style != null && row.style.ForeColor.HasValue)
             {
                 using (var brush = new SolidBrush(row.style.ForeColor.Value))
                 {
-                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], brush);
+                    for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], row.row.ENABLE, brush);
                 }
             }
-            else for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], fore);
+            else for (int i = 0; i < row.row.cells.Length; i++) PaintItem(g, row.row.cells[i], row.row.ENABLE, row.row.ENABLE ? fore : foreEnable);
         }
 
         #region 渲染单元格
 
-        void PaintItem(Canvas g, TCell it, SolidBrush fore)
+        void PaintItem(Canvas g, TCell it, bool enable, SolidBrush fore)
         {
-            if (it.COLUMN.Style == null || it.COLUMN.Style.ForeColor == null) PaintItem(g, it.INDEX, it, fore);
+            if (it.COLUMN.Style == null || it.COLUMN.Style.ForeColor == null) PaintItem(g, it.INDEX, it, enable, fore);
             else
             {
                 using (var brush = new SolidBrush(it.COLUMN.Style.ForeColor.Value))
                 {
-                    PaintItem(g, it.INDEX, it, brush);
+                    PaintItem(g, it.INDEX, it, enable, brush);
                 }
             }
         }
@@ -470,38 +471,38 @@ namespace AntdUI
         /// <summary>
         /// 渲染单元格（浮动）
         /// </summary>
-        void PaintItemFixed(Canvas g, TCell it, SolidBrush fore, CellStyleInfo? style)
+        void PaintItemFixed(Canvas g, TCell it, bool enable, SolidBrush fore, CellStyleInfo? style)
         {
             if (selectedIndex.Contains(it.ROW.INDEX) && rowSelectedFore.HasValue)
             {
                 using (var brush = new SolidBrush(rowSelectedFore.Value))
                 {
-                    PaintItem(g, it.INDEX, it, brush);
+                    PaintItem(g, it.INDEX, it, enable, brush);
                 }
             }
             else if (style != null && style.ForeColor.HasValue)
             {
                 using (var brush = new SolidBrush(style.ForeColor.Value))
                 {
-                    PaintItem(g, it.INDEX, it, brush);
+                    PaintItem(g, it.INDEX, it, enable, brush);
                 }
             }
-            else if (it.COLUMN.Style == null || it.COLUMN.Style.ForeColor == null) PaintItem(g, it.INDEX, it, fore);
+            else if (it.COLUMN.Style == null || it.COLUMN.Style.ForeColor == null) PaintItem(g, it.INDEX, it, enable, fore);
             else
             {
                 using (var brush = new SolidBrush(it.COLUMN.Style.ForeColor.Value))
                 {
-                    PaintItem(g, it.INDEX, it, brush);
+                    PaintItem(g, it.INDEX, it, enable, brush);
                 }
             }
         }
 
-        void PaintItem(Canvas g, int columnIndex, TCell it, SolidBrush fore)
+        void PaintItem(Canvas g, int columnIndex, TCell it, bool enable, SolidBrush fore)
         {
             var state = g.Save();
-            if (it is TCellCheck check) PaintCheck(g, check);
-            else if (it is TCellRadio radio) PaintRadio(g, radio);
-            else if (it is TCellSwitch _switch) PaintSwitch(g, _switch);
+            if (it is TCellCheck check) PaintCheck(g, check, enable);
+            else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
+            else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
             else if (it is TCellSort sort)
             {
                 if (sort.AnimationHover)
@@ -525,7 +526,7 @@ namespace AntdUI
             }
             else if (it is Template obj)
             {
-                foreach (var o in obj.value) o.Value.Paint(g, Font, fore);
+                foreach (var o in obj.value) o.Value.Paint(g, Font, enable, fore);
             }
             else if (it is TCellText text)
             {
@@ -571,7 +572,7 @@ namespace AntdUI
 
         #region 浮动列
 
-        void PaintFixedColumnL(Canvas g, Rectangle rect, RowTemplate[] rows, List<StyleRow> shows, SolidBrush fore, SolidBrush forecolumn, Font column_font, SolidBrush brush_split, int sx, int sy, float radius)
+        void PaintFixedColumnL(Canvas g, Rectangle rect, RowTemplate[] rows, List<StyleRow> shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, SolidBrush brush_split, int sx, int sy, float radius)
         {
             if (fixedColumnL != null && sx > 0)
             {
@@ -610,7 +611,7 @@ namespace AntdUI
                 {
                     foreach (int fixedIndex in fixedColumnL)
                     {
-                        if (!row.row.IsColumn) PaintItemFixed(g, row.row.cells[fixedIndex], fore, row.style);
+                        if (!row.row.IsColumn) PaintItemFixed(g, row.row.cells[fixedIndex], row.row.ENABLE, row.row.ENABLE ? fore : foreEnable, row.style);
                     }
                 }
                 if (dividers.Length > 0) foreach (var divider in dividers) g.Fill(brush_split, divider);
@@ -625,7 +626,7 @@ namespace AntdUI
             }
             else showFixedColumnL = false;
         }
-        void PaintFixedColumnR(Canvas g, Rectangle rect, RowTemplate[] rows, List<StyleRow> shows, SolidBrush fore, SolidBrush forecolumn, Font column_font, SolidBrush brush_split, int sx, int sy, float radius)
+        void PaintFixedColumnR(Canvas g, Rectangle rect, RowTemplate[] rows, List<StyleRow> shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, SolidBrush brush_split, int sx, int sy, float radius)
         {
             if (fixedColumnR != null && ScrollBar.ShowX)
             {
@@ -682,7 +683,7 @@ namespace AntdUI
                             if (!row.row.IsColumn)
                             {
                                 PaintItemBg(g, row.row.cells[fixedIndex]);
-                                PaintItemFixed(g, row.row.cells[fixedIndex], fore, row.style);
+                                PaintItemFixed(g, row.row.cells[fixedIndex], row.row.ENABLE, row.row.ENABLE ? fore : foreEnable, row.style);
                             }
                         }
                     }
@@ -768,44 +769,53 @@ namespace AntdUI
                 }
             }
         }
-        void PaintCheck(Canvas g, TCellCheck check)
+        void PaintCheck(Canvas g, TCellCheck check, bool enable)
         {
-            using (var path_check = Helper.RoundPath(check.RECT_REAL, check_radius, false))
+            using (var path = Helper.RoundPath(check.RECT_REAL, check_radius, false))
             {
-                if (check.AnimationCheck)
+                if (enable)
                 {
-                    g.Fill(Colour.BgBase.Get("Checkbox"), path_check);
-
-                    var alpha = 255 * check.AnimationCheckValue;
-
-                    g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox")), path_check);
-                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox")), check_border * 2))
+                    if (check.AnimationCheck)
                     {
-                        g.DrawLines(brush, PaintArrow(check.RECT_REAL));
-                    }
+                        g.Fill(Colour.BgBase.Get("Checkbox"), path);
 
-                    if (check.Checked)
-                    {
-                        float max = check.RECT_REAL.Height + check.RECT_REAL.Height * check.AnimationCheckValue, alpha2 = 100 * (1F - check.AnimationCheckValue);
-                        using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox"))))
+                        var alpha = 255 * check.AnimationCheckValue;
+
+                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox")), path);
+                        using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox")), check_border * 2))
                         {
-                            g.FillEllipse(brush, new RectangleF(check.RECT_REAL.X + (check.RECT_REAL.Width - max) / 2F, check.RECT_REAL.Y + (check.RECT_REAL.Height - max) / 2F, max, max));
+                            g.DrawLines(brush, PaintArrow(check.RECT_REAL));
+                        }
+
+                        if (check.Checked)
+                        {
+                            float max = check.RECT_REAL.Height + check.RECT_REAL.Height * check.AnimationCheckValue, alpha2 = 100 * (1F - check.AnimationCheckValue);
+                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox"))))
+                            {
+                                g.FillEllipse(brush, new RectangleF(check.RECT_REAL.X + (check.RECT_REAL.Width - max) / 2F, check.RECT_REAL.Y + (check.RECT_REAL.Height - max) / 2F, max, max));
+                            }
+                        }
+                        g.Draw(Colour.Primary.Get("Checkbox"), check_border, path);
+                    }
+                    else if (check.Checked)
+                    {
+                        g.Fill(Colour.Primary.Get("Checkbox"), path);
+                        using (var brush = new Pen(Colour.BgBase.Get("Checkbox"), check_border * 2))
+                        {
+                            g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                         }
                     }
-                    g.Draw(Colour.Primary.Get("Checkbox"), check_border, path_check);
-                }
-                else if (check.Checked)
-                {
-                    g.Fill(Colour.Primary.Get("Checkbox"), path_check);
-                    using (var brush = new Pen(Colour.BgBase.Get("Checkbox"), check_border * 2))
+                    else
                     {
-                        g.DrawLines(brush, PaintArrow(check.RECT_REAL));
+                        g.Fill(Colour.BgBase.Get("Checkbox"), path);
+                        g.Draw(Colour.BorderColor.Get("Checkbox"), check_border, path);
                     }
                 }
                 else
                 {
-                    g.Fill(Colour.BgBase.Get("Checkbox"), path_check);
-                    g.Draw(Colour.BorderColor.Get("Checkbox"), check_border, path_check);
+                    g.Fill(Colour.FillQuaternary.Get("Checkbox"), path);
+                    if (check.Checked) g.DrawLines(Colour.TextQuaternary.Get("Checkbox"), check_border * 2, PaintArrow(check.RECT_REAL));
+                    g.Draw(Colour.BorderColorDisable.Get("Checkbox"), check_border, path);
                 }
             }
         }
@@ -814,45 +824,54 @@ namespace AntdUI
 
         #region 单选框
 
-        void PaintRadio(Canvas g, TCellRadio radio)
+        void PaintRadio(Canvas g, TCellRadio radio, bool enable)
         {
             var dot_size = radio.RECT_REAL.Height;
-            using (var brush_bg = new SolidBrush(Colour.BgBase.Get("Radio")))
+            if (enable)
             {
-                g.FillEllipse(brush_bg, radio.RECT_REAL);
-            }
-            if (radio.AnimationCheck)
-            {
-                float dot = dot_size * 0.3F;
-                using (var path = new GraphicsPath())
+                g.FillEllipse(Colour.BgBase.Get("Radio"), radio.RECT_REAL);
+                if (radio.AnimationCheck)
                 {
-                    float dot_ant = dot_size - dot * radio.AnimationCheckValue, dot_ant2 = dot_ant / 2F, alpha = 255 * radio.AnimationCheckValue;
-                    path.AddEllipse(radio.RECT_REAL);
-                    path.AddEllipse(new RectangleF(radio.RECT_REAL.X + dot_ant2, radio.RECT_REAL.Y + dot_ant2, radio.RECT_REAL.Width - dot_ant, radio.RECT_REAL.Height - dot_ant));
-                    g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Radio")), path);
+                    float dot = dot_size * 0.3F;
+                    using (var path = new GraphicsPath())
+                    {
+                        float dot_ant = dot_size - dot * radio.AnimationCheckValue, dot_ant2 = dot_ant / 2F, alpha = 255 * radio.AnimationCheckValue;
+                        path.AddEllipse(radio.RECT_REAL);
+                        path.AddEllipse(new RectangleF(radio.RECT_REAL.X + dot_ant2, radio.RECT_REAL.Y + dot_ant2, radio.RECT_REAL.Width - dot_ant, radio.RECT_REAL.Height - dot_ant));
+                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Radio")), path);
+                    }
+                    if (radio.Checked)
+                    {
+                        float max = radio.RECT_REAL.Height + radio.RECT_REAL.Height * radio.AnimationCheckValue, alpha2 = 100 * (1F - radio.AnimationCheckValue);
+                        g.FillEllipse(Helper.ToColor(alpha2, Colour.Primary.Get("Radio")), new RectangleF(radio.RECT_REAL.X + (radio.RECT_REAL.Width - max) / 2F, radio.RECT_REAL.Y + (radio.RECT_REAL.Height - max) / 2F, max, max));
+                    }
+                    g.DrawEllipse(Colour.Primary.Get("Radio"), check_border, radio.RECT_REAL);
                 }
+                else if (radio.Checked)
+                {
+                    float dot = dot_size * 0.3F, dot2 = dot / 2F;
+                    g.DrawEllipse(Color.FromArgb(250, Colour.Primary.Get("Radio")), dot, new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
+                    g.DrawEllipse(Colour.Primary.Get("Radio"), check_border, radio.RECT_REAL);
+                }
+                else g.DrawEllipse(Colour.BorderColor.Get("Radio"), check_border, radio.RECT_REAL);
+            }
+            else
+            {
+                g.FillEllipse(Colour.FillQuaternary.Get("Radio"), radio.RECT_REAL);
                 if (radio.Checked)
                 {
-                    float max = radio.RECT_REAL.Height + radio.RECT_REAL.Height * radio.AnimationCheckValue, alpha2 = 100 * (1F - radio.AnimationCheckValue);
-                    g.FillEllipse(Helper.ToColor(alpha2, Colour.Primary.Get("Radio")), new RectangleF(radio.RECT_REAL.X + (radio.RECT_REAL.Width - max) / 2F, radio.RECT_REAL.Y + (radio.RECT_REAL.Height - max) / 2F, max, max));
+                    float dot = dot_size / 2F, dot2 = dot / 2F;
+                    g.FillEllipse(Colour.TextQuaternary.Get("Radio"), new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
                 }
-                g.DrawEllipse(Colour.Primary.Get("Radio"), check_border, radio.RECT_REAL);
+                g.DrawEllipse(Colour.BorderColorDisable.Get("Radio"), check_border, radio.RECT_REAL);
             }
-            else if (radio.Checked)
-            {
-                float dot = dot_size * 0.3F, dot2 = dot / 2F;
-                g.DrawEllipse(Color.FromArgb(250, Colour.Primary.Get("Radio")), dot, new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
-
-                g.DrawEllipse(Colour.Primary.Get("Radio"), check_border, radio.RECT_REAL);
-            }
-            else g.DrawEllipse(Colour.BorderColor.Get("Radio"), check_border, radio.RECT_REAL);
         }
 
         #endregion
 
         #region 开关
 
-        void PaintSwitch(Canvas g, TCellSwitch _switch)
+        void PaintSwitch(Canvas g, TCellSwitch _switch, bool enable)
         {
             var color = Colour.Primary.Get("Switch");
             using (var path = _switch.RECT_REAL.RoundPath(_switch.RECT_REAL.Height))
@@ -869,10 +888,7 @@ namespace AntdUI
                     var alpha = 255 * _switch.AnimationCheckValue;
                     g.Fill(Helper.ToColor(alpha, color), path);
                     var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap + (_switch.RECT_REAL.Width - _switch.RECT_REAL.Height) * _switch.AnimationCheckValue, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    using (var brush = new SolidBrush(Colour.BgBase.Get("Switch")))
-                    {
-                        g.FillEllipse(brush, dot_rect);
-                    }
+                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                 }
                 else if (_switch.Checked)
                 {
@@ -881,10 +897,7 @@ namespace AntdUI
                     if (_switch.AnimationHover) g.Fill(Helper.ToColorN(_switch.AnimationHoverValue, colorhover), path);
                     else if (_switch.ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap + _switch.RECT_REAL.Width - _switch.RECT_REAL.Height, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    using (var brush = new SolidBrush(Colour.BgBase.Get("Switch")))
-                    {
-                        g.FillEllipse(brush, dot_rect);
-                    }
+                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                     if (_switch.Loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -899,10 +912,7 @@ namespace AntdUI
                 else
                 {
                     var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    using (var brush = new SolidBrush(Colour.BgBase.Get("Switch")))
-                    {
-                        g.FillEllipse(brush, dot_rect);
-                    }
+                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                     if (_switch.Loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);

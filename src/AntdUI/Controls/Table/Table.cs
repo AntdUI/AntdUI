@@ -74,6 +74,7 @@ namespace AntdUI
             get => dataSource;
             set
             {
+                enableDir.Clear();
                 dataSource = value;
                 SortData = null;
                 ScrollBar.Clear();
@@ -651,6 +652,47 @@ namespace AntdUI
         #endregion
 
         #region 方法
+
+        List<int> enableDir = new List<int>();
+        /// <summary>
+        /// 获取行使能
+        /// </summary>
+        /// <param name="i">行</param>
+        /// <returns>是否禁用</returns>
+        public bool GetRowEnable(int i)
+        {
+            if (enableDir.Contains(i)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 设置行使能
+        /// </summary>
+        /// <param name="i">行</param>
+        /// <param name="value">值</param>
+        /// <param name="ui">是否刷新ui</param>
+        /// <returns>成功失败</returns>
+        public void SetRowEnable(int i, bool value = true, bool ui = true)
+        {
+            if (value)
+            {
+                if (enableDir.Contains(i)) enableDir.Remove(i);
+                else return;
+            }
+            else
+            {
+                if (enableDir.Contains(i)) return;
+                else enableDir.Add(i);
+            }
+            if (rows == null) return;
+            try
+            {
+                var selectRow = rows[i + 1];
+                selectRow.ENABLE = value;
+                if (ui) Invalidate();
+            }
+            catch { }
+        }
 
         /// <summary>
         /// 滚动到指定行

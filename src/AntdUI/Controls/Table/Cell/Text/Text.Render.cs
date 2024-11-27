@@ -27,25 +27,16 @@ namespace AntdUI
             if (PARENT == null) return;
             if (Back.HasValue)
             {
-                using (var brush = new SolidBrush(Back.Value))
-                {
-                    g.Fill(brush, PARENT.RECT);
-                }
+                g.Fill(Back.Value, PARENT.RECT);
             }
         }
 
-        internal override void Paint(Canvas g, Font font, SolidBrush fore)
+        internal override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
             if (PARENT == null) return;
             var state = g.Save();
             g.SetClip(Rect);
-            if (Fore.HasValue)
-            {
-                using (var brush = new SolidBrush(Fore.Value))
-                {
-                    g.String(Text, Font ?? font, brush, Rect, Table.StringF(PARENT.COLUMN));
-                }
-            }
+            if (Fore.HasValue) g.String(Text, Font ?? font, Fore.Value, Rect, Table.StringF(PARENT.COLUMN));
             else g.String(Text, Font ?? font, fore, Rect, Table.StringF(PARENT.COLUMN));
             g.Restore(state);
             if (PrefixSvg != null) g.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color);

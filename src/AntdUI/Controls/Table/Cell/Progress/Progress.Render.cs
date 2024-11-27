@@ -25,7 +25,7 @@ namespace AntdUI
     {
         internal override void PaintBack(Canvas g) { }
 
-        internal override void Paint(Canvas g, Font font, SolidBrush fore)
+        internal override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
             Color _color = Fill ?? Colour.Primary.Get("Progress"), _back = Back ?? Colour.FillSecondary.Get("Progress");
             if (Shape == TShape.Circle)

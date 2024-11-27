@@ -257,10 +257,10 @@ namespace AntdUI
                     });
                 }
 
-                hover_left.Enable = Helper.DateExceed(value.AddMonths(-1), minDate, maxDate);
-                hover_right.Enable = Helper.DateExceed(value.AddMonths(1), minDate, maxDate);
-                hover_lefts.Enable = Helper.DateExceed(value.AddYears(-1), minDate, maxDate);
-                hover_rights.Enable = Helper.DateExceed(value.AddYears(1), minDate, maxDate);
+                hover_left.Enable = Helper.DateExceedMonth(value.AddMonths(-1), minDate, maxDate);
+                hover_right.Enable = Helper.DateExceedMonth(value.AddMonths(1), minDate, maxDate);
+                hover_lefts.Enable = Helper.DateExceedYear(value.AddYears(-1), minDate, maxDate);
+                hover_rights.Enable = Helper.DateExceedYear(value.AddYears(1), minDate, maxDate);
             }
         }
 

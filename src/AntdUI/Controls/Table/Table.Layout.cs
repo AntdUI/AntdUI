@@ -780,6 +780,7 @@ namespace AntdUI
         RowTemplate AddRows(ref List<RowTemplate> rows, TCell[] cells, int row_i, object? record)
         {
             var row = new RowTemplate(this, cells, row_i, record);
+            if (enableDir.Contains(row_i)) row.ENABLE = false;
             foreach (var it in row.cells) it.SetROW(row);
             rows.Add(row);
             return row;

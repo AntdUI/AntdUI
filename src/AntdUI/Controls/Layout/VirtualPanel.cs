@@ -1055,6 +1055,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+            LoadLayout();
             this.AddListener();
         }
         public void HandleEvent(EventType id, object? tag)

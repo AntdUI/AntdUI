@@ -54,6 +54,11 @@ namespace AntdUI
             /// </summary>
             public object? RECORD { get; set; }
 
+            /// <summary>
+            /// 使能
+            /// </summary>
+            public bool ENABLE { get; set; } = true;
+
             public int INDEX { get; set; }
 
             public int INDEX_REAL { get; set; }
@@ -126,22 +131,26 @@ namespace AntdUI
 
             internal bool Contains(int x, int y, bool sethover)
             {
-                if (sethover)
+                if (ENABLE)
                 {
-                    if (CONTAINS(x, y))
+                    if (sethover)
                     {
-                        Hover = true;
-                        return true;
+                        if (CONTAINS(x, y))
+                        {
+                            Hover = true;
+                            return true;
+                        }
+                        else
+                        {
+                            Hover = false;
+                            return false;
+                        }
                     }
-                    else
-                    {
-                        Hover = false;
-                        return false;
-                    }
+                    return CONTAINS(x, y);
                 }
-                return CONTAINS(x, y);
+                return false;
             }
-            internal bool CONTAINS(int x, int y) => RECT.Contains(x, y);
+            internal bool CONTAINS(int x, int y) => ENABLE && RECT.Contains(x, y);
 
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;

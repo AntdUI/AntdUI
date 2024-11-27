@@ -221,10 +221,7 @@ namespace AntdUI
                     var alpha = 255 * AnimationCheckValue;
                     g.Fill(Helper.ToColor(alpha, _color), path);
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch"))))
-                    {
-                        g.FillEllipse(brush, dot_rect);
-                    }
+                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                 }
                 else if (_checked)
                 {
@@ -233,18 +230,12 @@ namespace AntdUI
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
                     else if (ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch"))))
-                    {
-                        g.FillEllipse(brush, dot_rect);
-                    }
+                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                 }
                 else
                 {
                     var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch"))))
-                    {
-                        g.FillEllipse(brush, dot_rect);
-                    }
+                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                 }
 
                 // 绘制文本

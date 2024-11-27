@@ -49,7 +49,7 @@ namespace AntdUI
         internal abstract void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2);
 
         internal abstract void PaintBack(Canvas g);
-        internal abstract void Paint(Canvas g, Font font, SolidBrush fore);
+        internal abstract void Paint(Canvas g, Font font, bool enable, SolidBrush fore);
 
         /// <summary>
         /// 模板父级

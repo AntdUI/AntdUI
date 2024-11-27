@@ -172,6 +172,28 @@ namespace AntdUI
             return true;
         }
 
+        public static bool DateExceedMonth(DateTime date, DateTime? min, DateTime? max)
+        {
+            if (min.HasValue && min.Value >= date) return false;
+            if (max.HasValue)
+            {
+                if (max.Value.Year == date.Year && max.Value.Month == date.Month) return true;
+                if (max.Value <= date) return false;
+            }
+            return true;
+        }
+
+        public static bool DateExceedYear(DateTime date, DateTime? min, DateTime? max)
+        {
+            if (min.HasValue && min.Value >= date) return false;
+            if (max.HasValue)
+            {
+                if (max.Value.Year == date.Year) return true;
+                if (max.Value <= date) return false;
+            }
+            return true;
+        }
+
         public static bool DateExceedRelax(DateTime date, DateTime? min, DateTime? max)
         {
             if (min.HasValue && min.Value > date) return false;
