@@ -201,47 +201,84 @@ namespace AntdUI
 
         public static void SetPrimary(Color primary)
         {
-            Set(Colour.Primary, primary);
+            Colour.Primary.Set(primary);
             var colors = primary.GenerateColors();
-            Set(Colour.PrimaryBg, colors[0]);
-            Set(Colour.PrimaryHover, colors[4]);
-            Set(Colour.PrimaryActive, colors[6]);
+            if (Config.Mode == TMode.Light) Colour.PrimaryBg.Set(colors[0]);
+            else Colour.PrimaryBg.Set(colors[9]);
+            Colour.PrimaryHover.Set(colors[4]);
+            Colour.PrimaryActive.Set(colors[6]);
         }
         public static void SetSuccess(Color success)
         {
-            Set(Colour.Success, success);
+            Colour.Success.Set(success);
             var colors = success.GenerateColors();
-            Set(Colour.SuccessBg, colors[0]);
-            Set(Colour.PrimaryHover, colors[2]);
-            Set(Colour.SuccessBorder, colors[2]);
-            Set(Colour.SuccessActive, colors[6]);
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.SuccessBg.Set(colors[0]);
+                Colour.SuccessHover.Set(colors[2]);
+                Colour.SuccessBorder.Set(colors[2]);
+            }
+            else
+            {
+                Colour.SuccessBg.Set(colors[9]);
+                Colour.SuccessHover.Set(colors[5]);
+                Colour.SuccessBorder.Set(colors[5]);
+            }
+            Colour.SuccessActive.Set(colors[6]);
         }
         public static void SetWarning(Color warning)
         {
-            Set(Colour.Warning, warning);
+            Colour.Warning.Set(warning);
             var colors = warning.GenerateColors();
-            Set(Colour.SuccessBg, colors[0]);
-            Set(Colour.WarningHover, colors[2]);
-            Set(Colour.WarningBorder, colors[2]);
-            Set(Colour.WarningActive, colors[6]);
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.WarningBg.Set(colors[0]);
+                Colour.WarningHover.Set(colors[2]);
+                Colour.WarningBorder.Set(colors[2]);
+            }
+            else
+            {
+                Colour.WarningBg.Set(colors[9]);
+                Colour.WarningHover.Set(colors[5]);
+                Colour.WarningBorder.Set(colors[5]);
+            }
+            Colour.WarningActive.Set(colors[6]);
         }
         public static void SetError(Color error)
         {
-            Set(Colour.Error, error);
+            Colour.Error.Set(error);
             var colors = error.GenerateColors();
-            Set(Colour.ErrorBg, colors[0]);
-            Set(Colour.ErrorHover, colors[2]);
-            Set(Colour.ErrorBorder, colors[2]);
-            Set(Colour.ErrorActive, colors[6]);
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.ErrorBg.Set(colors[0]);
+                Colour.ErrorHover.Set(colors[2]);
+                Colour.ErrorBorder.Set(colors[2]);
+            }
+            else
+            {
+                Colour.ErrorBg.Set(colors[9]);
+                Colour.ErrorHover.Set(colors[5]);
+                Colour.ErrorBorder.Set(colors[5]);
+            }
+            Colour.ErrorActive.Set(colors[6]);
         }
         public static void SetInfo(Color info)
         {
-            Set(Colour.Info, info);
+            Colour.Info.Set(info);
             var colors = info.GenerateColors();
-            Set(Colour.InfoBg, colors[0]);
-            Set(Colour.InfoHover, colors[2]);
-            Set(Colour.InfoBorder, colors[2]);
-            Set(Colour.InfoActive, colors[6]);
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.InfoBg.Set(colors[0]);
+                Colour.InfoHover.Set(colors[2]);
+                Colour.InfoBorder.Set(colors[2]);
+            }
+            else
+            {
+                Colour.InfoBg.Set(colors[9]);
+                Colour.InfoHover.Set(colors[5]);
+                Colour.InfoBorder.Set(colors[5]);
+            }
+            Colour.InfoActive.Set(colors[6]);
         }
 
         /// <summary>

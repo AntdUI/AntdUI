@@ -29,14 +29,7 @@ namespace AntdUI.Theme
         public Color PrimaryBg => Style.Get(Colour.PrimaryBg);
 
         [System.Obsolete("use Style.SetPrimary")]
-        public void SetPrimary(Color primary)
-        {
-            Style.Set(Colour.Primary, primary);
-            var colors = primary.GenerateColors();
-            Style.Set(Colour.PrimaryBg, colors[0]);
-            Style.Set(Colour.PrimaryHover, colors[4]);
-            Style.Set(Colour.PrimaryActive, colors[6]);
-        }
+        public void SetPrimary(Color primary) => Style.SetPrimary(primary);
 
         public Color Success => Style.Get(Colour.Success);
         public Color SuccessColor => Style.Get(Colour.SuccessColor);
@@ -46,15 +39,8 @@ namespace AntdUI.Theme
         public Color SuccessActive => Style.Get(Colour.SuccessActive);
 
         [System.Obsolete("use Style.SetSuccess")]
-        public void SetSuccess(Color success)
-        {
-            Style.Set(Colour.Success, success);
-            var colors = success.GenerateColors();
-            Style.Set(Colour.SuccessBg, colors[0]);
-            Style.Set(Colour.PrimaryHover, colors[2]);
-            Style.Set(Colour.SuccessBorder, colors[2]);
-            Style.Set(Colour.SuccessActive, colors[6]);
-        }
+        public void SetSuccess(Color success) => Style.SetSuccess(success);
+
         public Color Warning => Style.Get(Colour.Warning);
         public Color WarningColor => Style.Get(Colour.WarningColor);
         public Color WarningBg => Style.Get(Colour.WarningBg);
@@ -63,15 +49,8 @@ namespace AntdUI.Theme
         public Color WarningActive => Style.Get(Colour.WarningActive);
 
         [System.Obsolete("use Style.SetWarning")]
-        public void SetWarning(Color warning)
-        {
-            Style.Set(Colour.Warning, warning);
-            var colors = warning.GenerateColors();
-            Style.Set(Colour.SuccessBg, colors[0]);
-            Style.Set(Colour.WarningHover, colors[2]);
-            Style.Set(Colour.WarningBorder, colors[2]);
-            Style.Set(Colour.WarningActive, colors[6]);
-        }
+        public void SetWarning(Color warning) => Style.SetWarning(warning);
+
         public Color Error => Style.Get(Colour.Error);
         public Color ErrorColor => Style.Get(Colour.ErrorColor);
         public Color ErrorBg => Style.Get(Colour.ErrorBg);
@@ -80,15 +59,8 @@ namespace AntdUI.Theme
         public Color ErrorActive => Style.Get(Colour.ErrorActive);
 
         [System.Obsolete("use Style.SetError")]
-        public void SetError(Color error)
-        {
-            Style.Set(Colour.Error, error);
-            var colors = error.GenerateColors();
-            Style.Set(Colour.ErrorBg, colors[0]);
-            Style.Set(Colour.ErrorHover, colors[2]);
-            Style.Set(Colour.ErrorBorder, colors[2]);
-            Style.Set(Colour.ErrorActive, colors[6]);
-        }
+        public void SetError(Color error) => Style.SetError(error);
+
         public Color Info => Style.Get(Colour.Info);
         public Color InfoColor => Style.Get(Colour.InfoColor);
         public Color InfoBg => Style.Get(Colour.InfoBg);
@@ -97,15 +69,7 @@ namespace AntdUI.Theme
         public Color InfoActive => Style.Get(Colour.InfoActive);
 
         [System.Obsolete("use Style.SetInfo")]
-        public void SetInfo(Color info)
-        {
-            Style.Set(Colour.Info, info);
-            var colors = info.GenerateColors();
-            Style.Set(Colour.InfoBg, colors[0]);
-            Style.Set(Colour.InfoHover, colors[2]);
-            Style.Set(Colour.InfoBorder, colors[2]);
-            Style.Set(Colour.InfoActive, colors[6]);
-        }
+        public void SetInfo(Color info) => Style.SetInfo(info);
 
         public Color DefaultBg => Style.Get(Colour.DefaultBg);
         public Color DefaultColor => Style.Get(Colour.DefaultColor);
