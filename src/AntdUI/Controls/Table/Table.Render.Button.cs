@@ -23,7 +23,7 @@ namespace AntdUI
 {
     partial class Table
     {
-        internal static void PaintButton(Canvas g, Font font, int gap, Rectangle rect_read, CellButton btn)
+        internal static void PaintButton(Canvas g, Font font, int gap, Rectangle rect_read, CellButton btn, bool enable)
         {
             float _radius = (btn.Shape == TShape.Round || btn.Shape == TShape.Circle) ? rect_read.Height : btn.Radius * Config.Dpi;
 
@@ -61,19 +61,16 @@ namespace AntdUI
 
                     #endregion
 
-                    if (btn.Enabled)
+                    if (enable && btn.Enabled)
                     {
                         if (!btn.Ghost)
                         {
                             #region 绘制阴影
 
-                            if (btn.Enabled)
+                            using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                             {
-                                using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
-                                {
-                                    path_shadow.AddPath(path, false);
-                                    g.Fill(Colour.FillQuaternary.Get("Button"), path_shadow);
-                                }
+                                path_shadow.AddPath(path, false);
+                                g.Fill(Colour.FillQuaternary.Get("Button"), path_shadow);
                             }
 
                             #endregion
@@ -195,7 +192,7 @@ namespace AntdUI
                             else if (btn.AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(btn.AnimationHoverValue, _back_hover);
-                                g.Draw((btn.Enabled ? _back : Colour.FillTertiary.Get("Button")).BlendColors(colorHover), border, path);
+                                g.Draw(((enable && btn.Enabled) ? _back : Colour.FillTertiary.Get("Button")).BlendColors(colorHover), border, path);
                                 PaintButton(g, font, btn, _back.BlendColors(colorHover), rect_read);
                             }
                             else if (btn.ExtraMouseHover)
@@ -205,7 +202,7 @@ namespace AntdUI
                             }
                             else
                             {
-                                if (btn.Enabled)
+                                if (enable && btn.Enabled)
                                 {
                                     using (var brushback = btn.BackExtend.BrushEx(rect_read, _back))
                                     {
@@ -213,10 +210,10 @@ namespace AntdUI
                                     }
                                 }
                                 else g.Draw(Colour.FillTertiary.Get("Button"), border, path);
-                                PaintButton(g, font, btn, btn.Enabled ? _back : Colour.TextQuaternary.Get("Button"), rect_read);
+                                PaintButton(g, font, btn, (enable && btn.Enabled) ? _back : Colour.TextQuaternary.Get("Button"), rect_read);
                             }
                         }
-                        else PaintButton(g, font, btn, btn.Enabled ? _back : Colour.TextQuaternary.Get("Button"), rect_read);
+                        else PaintButton(g, font, btn, (enable && btn.Enabled) ? _back : Colour.TextQuaternary.Get("Button"), rect_read);
 
                         #endregion
                     }
@@ -224,7 +221,7 @@ namespace AntdUI
                     {
                         #region 绘制阴影
 
-                        if (btn.Enabled)
+                        if (enable && btn.Enabled)
                         {
                             using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                             {
@@ -237,7 +234,7 @@ namespace AntdUI
 
                         #region 绘制背景
 
-                        if (btn.Enabled)
+                        if (enable && btn.Enabled)
                         {
                             using (var brush = btn.BackExtend.BrushEx(rect_read, _back))
                             {
@@ -252,7 +249,7 @@ namespace AntdUI
 
                         #endregion
 
-                        PaintButton(g, font, btn, btn.Enabled ? _fore : Colour.TextQuaternary.Get("Button"), rect_read);
+                        PaintButton(g, font, btn, (enable && btn.Enabled) ? _fore : Colour.TextQuaternary.Get("Button"), rect_read);
                     }
                 }
             }
@@ -499,12 +496,12 @@ namespace AntdUI
 
         #endregion
 
-        internal static void PaintLink(Canvas g, Font font, Rectangle rect_read, CellLink link)
+        internal static void PaintLink(Canvas g, Font font, Rectangle rect_read, CellLink link, bool enable)
         {
             if (link.ExtraMouseDown) g.String(link.Text, font, Colour.PrimaryActive.Get("Button"), rect_read, link.stringFormat);
             else if (link.AnimationHover) g.String(link.Text, font, Colour.Primary.Get("Button").BlendColors(link.AnimationHoverValue, Colour.PrimaryHover.Get("Button")), rect_read, link.stringFormat);
             else if (link.ExtraMouseHover) g.String(link.Text, font, Colour.PrimaryHover.Get("Button"), rect_read, link.stringFormat);
-            else g.String(link.Text, font, (link.Enabled ? Colour.Primary.Get("Button") : Colour.TextQuaternary.Get("Button")), rect_read, link.stringFormat);
+            else g.String(link.Text, font, ((enable && link.Enabled) ? Colour.Primary.Get("Button") : Colour.TextQuaternary.Get("Button")), rect_read, link.stringFormat);
         }
     }
 }

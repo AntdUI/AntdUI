@@ -55,20 +55,11 @@ namespace AntdUI
         {
         }
 
-        public static bool operator ==(ColorBgra c1, ColorBgra c2)
-        {
-            return c1.Bgra == c2.Bgra;
-        }
+        public static bool operator ==(ColorBgra c1, ColorBgra c2) => c1.Bgra == c2.Bgra;
 
-        public static bool operator !=(ColorBgra c1, ColorBgra c2)
-        {
-            return c1.Bgra != c2.Bgra;
-        }
+        public static bool operator !=(ColorBgra c1, ColorBgra c2) => c1.Bgra != c2.Bgra;
 
-        public override bool Equals(object? obj)
-        {
-            return obj is ColorBgra color && color.Bgra == Bgra;
-        }
+        public override bool Equals(object? obj) => obj is ColorBgra color && color.Bgra == Bgra;
 
         public override int GetHashCode()
         {
@@ -78,34 +69,16 @@ namespace AntdUI
             }
         }
 
-        public static implicit operator ColorBgra(uint color)
-        {
-            return new ColorBgra(color);
-        }
+        public static implicit operator ColorBgra(uint color) => new ColorBgra(color);
 
-        public static implicit operator uint(ColorBgra color)
-        {
-            return color.Bgra;
-        }
+        public static implicit operator uint(ColorBgra color) => color.Bgra;
 
-        public Color ToColor()
-        {
-            return Color.FromArgb(Alpha, Red, Green, Blue);
-        }
+        public Color ToColor() => Color.FromArgb(Alpha, Red, Green, Blue);
 
-        public override string ToString()
-        {
-            return string.Format("B: {0}, G: {1}, R: {2}, A: {3}", Blue, Green, Red, Alpha);
-        }
+        public override string ToString() => string.Format("B: {0}, G: {1}, R: {2}, A: {3}", Blue, Green, Red, Alpha);
 
-        public static uint BgraToUInt32(uint b, uint g, uint r, uint a)
-        {
-            return b + (g << 8) + (r << 16) + (a << 24);
-        }
+        public static uint BgraToUInt32(uint b, uint g, uint r, uint a) => b + (g << 8) + (r << 16) + (a << 24);
 
-        public static uint BgraToUInt32(byte b, byte g, byte r, byte a)
-        {
-            return b + ((uint)g << 8) + ((uint)r << 16) + ((uint)a << 24);
-        }
+        public static uint BgraToUInt32(byte b, byte g, byte r, byte a) => b + ((uint)g << 8) + ((uint)r << 16) + ((uint)a << 24);
     }
 }

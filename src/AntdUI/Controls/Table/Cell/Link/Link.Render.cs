@@ -24,10 +24,7 @@ namespace AntdUI
     {
         internal override void PaintBack(Canvas g) { }
 
-        internal override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
-        {
-            Table.PaintLink(g, font, Rect, this);
-        }
+        internal override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintLink(g, font, Rect, this, enable);
 
         internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {

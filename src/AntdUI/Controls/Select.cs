@@ -648,10 +648,7 @@ namespace AntdUI
 
         public object? Tag { get; set; }
 
-        public override string ToString()
-        {
-            return Title;
-        }
+        public override string ToString() => Title;
     }
     public class ISelectItem { }
 

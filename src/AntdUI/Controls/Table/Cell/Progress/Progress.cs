@@ -111,9 +111,6 @@ namespace AntdUI
             }
         }
 
-        public override string ToString()
-        {
-            return (_value * 100F) + "%";
-        }
+        public override string ToString() => (_value * 100F) + "%";
     }
 }

@@ -117,9 +117,6 @@ namespace AntdUI
             }
         }
 
-        public override string ToString()
-        {
-            return _text;
-        }
+        public override string ToString() => _text;
     }
 }
