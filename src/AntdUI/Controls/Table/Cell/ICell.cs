@@ -18,6 +18,7 @@
 
 using System;
 using System.Drawing;
+using static AntdUI.Table;
 
 namespace AntdUI
 {
@@ -51,17 +52,24 @@ namespace AntdUI
         public abstract void PaintBack(Canvas g);
         public abstract void Paint(Canvas g, Font font, bool enable, SolidBrush fore);
 
+        CELL? _PARENT = null;
         /// <summary>
         /// 模板父级
         /// </summary>
-        internal Table.Template? PARENT { get; set; }
+        public CELL PARENT
+        {
+            get
+            {
+                if (_PARENT == null) throw new ArgumentNullException();
+                return _PARENT;
+            }
+        }
+
+        internal void SetCELL(CELL row) => _PARENT = row;
 
         #endregion
 
         public Action<bool>? Changed { get; set; }
-        public void OnPropertyChanged(bool layout = false)
-        {
-            Changed?.Invoke(layout);
-        }
+        public void OnPropertyChanged(bool layout = false) => Changed?.Invoke(layout);
     }
 }

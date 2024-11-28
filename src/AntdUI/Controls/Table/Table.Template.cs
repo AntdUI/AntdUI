@@ -31,7 +31,7 @@ namespace AntdUI
         internal class RowTemplate
         {
             Table PARENT;
-            public RowTemplate(Table table, TCell[] cell, int i, object? value)
+            public RowTemplate(Table table, CELL[] cell, int i, object? value)
             {
                 PARENT = table;
                 cells = cell;
@@ -66,7 +66,7 @@ namespace AntdUI
             /// <summary>
             /// 列数据
             /// </summary>
-            public TCell[] cells { get; set; }
+            public CELL[] cells { get; set; }
 
             /// <summary>
             /// 行高度
@@ -175,7 +175,7 @@ namespace AntdUI
         /// <summary>
         /// 复选框
         /// </summary>
-        class TCellCheck : TCell
+        class TCellCheck : CELL
         {
             /// <summary>
             /// 复选框
@@ -284,7 +284,7 @@ namespace AntdUI
         /// <summary>
         /// 单选框
         /// </summary>
-        class TCellRadio : TCell
+        class TCellRadio : CELL
         {
             /// <summary>
             /// 单选框
@@ -391,7 +391,7 @@ namespace AntdUI
         /// <summary>
         /// 开关
         /// </summary>
-        class TCellSwitch : TCell
+        class TCellSwitch : CELL
         {
             /// <summary>
             /// 开关
@@ -598,7 +598,7 @@ namespace AntdUI
         /// <summary>
         /// 拖拽手柄
         /// </summary>
-        class TCellSort : TCell
+        class TCellSort : CELL
         {
             /// <summary>
             /// 拖拽手柄
@@ -703,7 +703,7 @@ namespace AntdUI
         /// <summary>
         /// 普通文本
         /// </summary>
-        class TCellText : TCell
+        class TCellText : CELL
         {
             /// <summary>
             /// 普通文本
@@ -760,7 +760,7 @@ namespace AntdUI
         /// <summary>
         /// 表头
         /// </summary>
-        internal class TCellColumn : TCell
+        internal class TCellColumn : CELL
         {
             public TCellColumn(Table table, Column column) : base(table, column)
             {
@@ -800,15 +800,15 @@ namespace AntdUI
         /// <summary>
         /// 单元格
         /// </summary>
-        internal abstract class TCell
+        public abstract class CELL
         {
-            public TCell(Table table, Column column)
+            public CELL(Table table, Column column)
             {
                 COLUMN = column;
                 PARENT = table;
             }
 
-            public TCell(Table table, Column column, PropertyDescriptor? prop, object? ov)
+            public CELL(Table table, Column column, PropertyDescriptor? prop, object? ov)
             {
                 COLUMN = column;
                 PARENT = table;
@@ -822,6 +822,7 @@ namespace AntdUI
             public Table PARENT { get; set; }
 
             public Column COLUMN { get; set; }
+
             /// <summary>
             /// 列对象
             /// </summary>
@@ -834,7 +835,7 @@ namespace AntdUI
             /// <summary>
             /// 行对象
             /// </summary>
-            public RowTemplate ROW
+            internal RowTemplate ROW
             {
                 get
                 {
@@ -843,10 +844,7 @@ namespace AntdUI
                 }
             }
 
-            public void SetROW(RowTemplate row)
-            {
-                _ROW = row;
-            }
+            internal void SetROW(RowTemplate row) => _ROW = row;
 
             #region 区域
 
@@ -884,37 +882,32 @@ namespace AntdUI
         /// <summary>
         /// 包裹容器
         /// </summary>
-        internal class Template : TCell
+        internal class Template : CELL
         {
             public Template(Table table, Column column, PropertyDescriptor? prop, object? ov, ref int processing, IList<ICell> cels) : base(table, column, prop, ov)
             {
-                var list = new List<ITemplate>(cels.Count);
+                Value = cels;
                 foreach (var it in cels)
                 {
-                    if (it is CellBadge badge)
-                    {
-                        if (badge.State == TState.Processing) processing++;
-                    }
-                    list.Add(new ITemplate(it, this));
+                    it.SetCELL(this);
+                    if (it is CellBadge badge && badge.State == TState.Processing) processing++;
                 }
-                value = list;
             }
 
             /// <summary>
             /// 值
             /// </summary>
-            internal IList<ITemplate> value { get; set; }
+            public IList<ICell> Value { get; set; }
 
             public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int _gap, int _gap2)
             {
                 RECT = RECT_REAL = _rect;
                 int rx = _rect.X + ox;
                 int gap = _gap / 2, gap2 = _gap;
-                if (value.Count == 1 && (value[0].Value is CellText || value[0].Value is CellProgress))
+                if (Value.Count == 1 && (Value[0] is CellText || Value[0] is CellProgress))
                 {
-                    var it = value[0];
+                    var it = Value[0];
                     var size = SIZES[0];
-                    it.RECT = new Rectangle(rx, _rect.Y, _rect.Width, _rect.Height);
                     it.SetRect(g, font, new Rectangle(rx, _rect.Y, _rect.Width, _rect.Height), size, gap, gap2);
                 }
                 else
@@ -927,9 +920,9 @@ namespace AntdUI
                         case ColumnAlign.Left:
                         default: use_x = rx + gap2; break;
                     }
-                    for (int i = 0; i < value.Count; i++)
+                    for (int i = 0; i < Value.Count; i++)
                     {
-                        var it = value[i];
+                        var it = Value[i];
                         var size = SIZES[i];
                         it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, gap, gap2);
                         use_x += size.Width;
@@ -942,10 +935,10 @@ namespace AntdUI
             {
                 int gap = _gap / 2, gap2 = _gap;
                 int w = 0, h = 0;
-                var sizes = new List<Size>(value.Count);
-                foreach (var it in value)
+                var sizes = new List<Size>(Value.Count);
+                foreach (var it in Value)
                 {
-                    var size = it.Value.GetSize(g, font, gap, gap2);
+                    var size = it.GetSize(g, font, gap, gap2);
                     sizes.Add(size);
                     w += size.Width;
                     if (h < size.Height) h = size.Height;
@@ -957,50 +950,14 @@ namespace AntdUI
 
             public override string? ToString()
             {
-                var vals = new List<string>(value.Count);
-                foreach (var cell in value)
+                var vals = new List<string>(Value.Count);
+                foreach (var cell in Value)
                 {
                     var str = cell.ToString();
                     if (str != null && !string.IsNullOrEmpty(str)) vals.Add(str);
                 }
                 return string.Join(" ", vals);
             }
-        }
-
-        internal class ITemplate
-        {
-            public ITemplate(ICell value, Template template)
-            {
-                value.PARENT = template;
-                Value = value;
-            }
-
-            public ICell Value { get; set; }
-
-            /// <summary>
-            /// 真实区域
-            /// </summary>
-            public Rectangle RECT { get; set; }
-
-            public bool CONTAINS(int x, int y) => RECT.Contains(x, y);
-
-            public void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
-            {
-                RECT = rect;
-                Value.SetRect(g, font, rect, size, gap, gap2);
-            }
-
-            public bool SValue(object obj)
-            {
-                if (obj is ICell value)
-                {
-                    Value = value;
-                    return true;
-                }
-                return false;
-            }
-
-            public override string? ToString() => Value.ToString();
         }
 
         #endregion

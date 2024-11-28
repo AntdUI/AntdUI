@@ -24,16 +24,11 @@ namespace AntdUI
     {
         public override void PaintBack(Canvas g)
         {
-            if (PARENT == null) return;
-            if (Back.HasValue)
-            {
-                g.Fill(Back.Value, PARENT.RECT);
-            }
+            if (Back.HasValue) g.Fill(Back.Value, PARENT.RECT);
         }
 
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
-            if (PARENT == null) return;
             var state = g.Save();
             g.SetClip(Rect);
             if (Fore.HasValue) g.String(Text, Font ?? font, Fore.Value, Rect, Table.StringF(PARENT.COLUMN));

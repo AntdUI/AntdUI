@@ -26,7 +26,6 @@ namespace AntdUI
 
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
-            if (PARENT == null) return;
             Color color;
             if (Fill.HasValue) color = Fill.Value;
             else
@@ -55,13 +54,7 @@ namespace AntdUI
                 }
                 g.FillEllipse(brush, RectDot);
             }
-            if (Fore.HasValue)
-            {
-                using (var brush = new SolidBrush(Fore.Value))
-                {
-                    g.String(Text, font, brush, Rect, Table.StringF(PARENT.COLUMN));
-                }
-            }
+            if (Fore.HasValue) g.String(Text, font, Fore.Value, Rect, Table.StringF(PARENT.COLUMN));
             else g.String(Text, font, fore, Rect, Table.StringF(PARENT.COLUMN));
         }
 
@@ -92,7 +85,6 @@ namespace AntdUI
             else
             {
                 Rect = new Rectangle(rect.X + gap + size.Height, rect.Y, rect.Width - size.Height - gap2, rect.Height);
-                if (PARENT == null) return;
                 switch (PARENT.COLUMN.Align)
                 {
                     case ColumnAlign.Center:

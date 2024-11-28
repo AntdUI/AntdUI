@@ -23,7 +23,7 @@ namespace AntdUI
 {
     partial class CellButton
     {
-        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintButton(g, font, (PARENT == null || PARENT.PARENT == null) ? 12 : PARENT.PARENT.Gap, Rect, this, enable);
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintButton(g, font, PARENT.PARENT.Gap, Rect, this, enable);
 
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
@@ -62,7 +62,6 @@ namespace AntdUI
             {
                 if (_mouseHover == value) return;
                 _mouseHover = value;
-                if (PARENT == null) return;
                 if (Enabled)
                 {
                     Color _back_hover;
@@ -175,7 +174,6 @@ namespace AntdUI
 
         internal override void Click()
         {
-            if (PARENT == null) return;
             if (_mouseDown && Config.Animation)
             {
                 ThreadClick?.Dispose();

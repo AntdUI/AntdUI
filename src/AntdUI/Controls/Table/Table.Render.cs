@@ -424,11 +424,11 @@ namespace AntdUI
         /// <summary>
         /// 渲染单元格背景
         /// </summary>
-        void PaintItemBg(Canvas g, TCell it)
+        void PaintItemBg(Canvas g, CELL it)
         {
             if (it is Template obj)
             {
-                foreach (var o in obj.value) o.Value.PaintBack(g);
+                foreach (var o in obj.Value) o.PaintBack(g);
             }
         }
 
@@ -456,7 +456,7 @@ namespace AntdUI
 
         #region 渲染单元格
 
-        void PaintItem(Canvas g, TCell it, bool enable, SolidBrush fore)
+        void PaintItem(Canvas g, CELL it, bool enable, SolidBrush fore)
         {
             if (it.COLUMN.Style == null || it.COLUMN.Style.ForeColor == null) PaintItem(g, it.INDEX, it, enable, fore);
             else
@@ -471,7 +471,7 @@ namespace AntdUI
         /// <summary>
         /// 渲染单元格（浮动）
         /// </summary>
-        void PaintItemFixed(Canvas g, TCell it, bool enable, SolidBrush fore, CellStyleInfo? style)
+        void PaintItemFixed(Canvas g, CELL it, bool enable, SolidBrush fore, CellStyleInfo? style)
         {
             if (selectedIndex.Contains(it.ROW.INDEX) && rowSelectedFore.HasValue)
             {
@@ -497,7 +497,7 @@ namespace AntdUI
             }
         }
 
-        void PaintItem(Canvas g, int columnIndex, TCell it, bool enable, SolidBrush fore)
+        void PaintItem(Canvas g, int columnIndex, CELL it, bool enable, SolidBrush fore)
         {
             var state = g.Save();
             if (it is TCellCheck check) PaintCheck(g, check, enable);
@@ -524,22 +524,16 @@ namespace AntdUI
                 }
                 SvgExtend.GetImgExtend(g, "HolderOutlined", sort.RECT_ICO, fore.Color);
             }
-            else if (it is Template obj)
+            else if (it is Template template)
             {
-                foreach (var o in obj.value) o.Value.Paint(g, Font, enable, fore);
+                foreach (var item in template.Value) item.Paint(g, Font, enable, fore);
             }
             else if (it is TCellText text)
             {
                 g.SetClip(it.RECT);
                 g.String(text.value, Font, fore, text.RECT_REAL, StringF(text.COLUMN));
             }
-            if (dragHeader != null && dragHeader.i == it.INDEX)
-            {
-                using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table")))
-                {
-                    g.Fill(brush, it.RECT);
-                }
-            }
+            if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table"), it.RECT);
             if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
             {
                 using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
@@ -631,7 +625,7 @@ namespace AntdUI
             if (fixedColumnR != null && ScrollBar.ShowX)
             {
                 var lastrow = shows[shows.Count - 1];
-                TCell first = lastrow.row.cells[fixedColumnR[fixedColumnR.Count - 1]], last = lastrow.row.cells[fixedColumnR[0]];
+                CELL first = lastrow.row.cells[fixedColumnR[fixedColumnR.Count - 1]], last = lastrow.row.cells[fixedColumnR[0]];
                 if (sx + rect.Width < last.RECT.Right)
                 {
                     sFixedR = last.RECT.Right - rect.Width;

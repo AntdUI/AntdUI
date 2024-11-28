@@ -27,7 +27,7 @@ namespace AntdUI
     {
         #region 鼠标按下
 
-        TCell? cellMouseDown;
+        CELL? cellMouseDown;
         int shift_index = -1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -116,15 +116,15 @@ namespace AntdUI
             else shift_index = -1;
         }
 
-        void MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
+        void MouseDownRow(MouseEventArgs e, CELL cell, int x, int y)
         {
             cellMouseDown = cell;
             cell.MouseDown = e.Clicks > 1 ? 2 : 1;
             if (cell is Template template && e.Button == MouseButtons.Left)
             {
-                foreach (var item in template.value)
+                foreach (var item in template.Value)
                 {
-                    if (item.Value is CellLink btn_template)
+                    if (item is CellLink btn_template)
                     {
                         if (btn_template.Enabled)
                         {
@@ -267,7 +267,7 @@ namespace AntdUI
             cellMouseDown = null;
         }
 
-        bool MouseUpRow(RowTemplate[] rows, RowTemplate it, TCell cell, MouseEventArgs e, int i_r, int i_c)
+        bool MouseUpRow(RowTemplate[] rows, RowTemplate it, CELL cell, MouseEventArgs e, int i_r, int i_c)
         {
             if (cellMouseDown == cell && cell.MouseDown > 0)
             {
@@ -395,9 +395,9 @@ namespace AntdUI
                         }
                         else if (cell is Template template)
                         {
-                            foreach (var item in template.value)
+                            foreach (var item in template.Value)
                             {
-                                if (item.Value is CellLink btn)
+                                if (item is CellLink btn)
                                 {
                                     if (btn.ExtraMouseDown)
                                     {
@@ -526,9 +526,9 @@ namespace AntdUI
                             if (cel_tmp is TCellSort sort) sort.Hover = false;
                             else if (cel_tmp is Template template)
                             {
-                                foreach (var item in template.value)
+                                foreach (var item in template.Value)
                                 {
-                                    if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
+                                    if (item is CellLink btn) btn.ExtraMouseHover = false;
                                 }
                             }
                         }
@@ -546,9 +546,9 @@ namespace AntdUI
                             {
                                 if (cel_tmp is Template template)
                                 {
-                                    foreach (var item in template.value)
+                                    foreach (var item in template.Value)
                                     {
-                                        if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
+                                        if (item is CellLink btn) btn.ExtraMouseHover = false;
                                     }
                                 }
                             }
@@ -596,9 +596,9 @@ namespace AntdUI
                                     if (cel_tmp is TCellSort sort) sort.Hover = false;
                                     else if (cel_tmp is Template template)
                                     {
-                                        foreach (var item in template.value)
+                                        foreach (var item in template.Value)
                                         {
-                                            if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
+                                            if (item is CellLink btn) btn.ExtraMouseHover = false;
                                         }
                                     }
                                 }
@@ -616,7 +616,7 @@ namespace AntdUI
             else ILeave();
         }
 
-        bool MouseMoveRow(TCell cel, int x, int y, int offset_x, int offset_xi, int offset_y)
+        bool MouseMoveRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y)
         {
             if (cel is TCellCheck checkCell)
             {
@@ -642,9 +642,9 @@ namespace AntdUI
             {
                 ICell? tipcel = null;
                 int hand = 0;
-                foreach (var item in template.value)
+                foreach (var item in template.Value)
                 {
-                    if (item.Value is CellLink btn_template)
+                    if (item is CellLink btn_template)
                     {
                         if (btn_template.Enabled)
                         {
@@ -657,7 +657,7 @@ namespace AntdUI
                         }
                         else btn_template.ExtraMouseHover = false;
                     }
-                    else if (item.Value is CellImage img_template)
+                    else if (item is CellImage img_template)
                     {
                         if (img_template.Tooltip != null && img_template.Rect.Contains(x, y)) tipcel = img_template;
                     }
@@ -749,7 +749,7 @@ namespace AntdUI
 
         #region 判断是否在内部
 
-        TCell? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
+        CELL? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
         {
             mode = 0;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
@@ -1028,9 +1028,9 @@ namespace AntdUI
                     if (cel is TCellSort sort) sort.Hover = false;
                     else if (cel is Template template)
                     {
-                        foreach (var item in template.value)
+                        foreach (var item in template.Value)
                         {
-                            if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
+                            if (item is CellLink btn) btn.ExtraMouseHover = false;
                         }
                     }
                 }
