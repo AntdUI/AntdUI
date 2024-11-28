@@ -27,7 +27,8 @@ namespace AntdUI.Icon
     /// 信息图标
     /// </summary>
     [Description("Icon 信息图标")]
-    [ToolboxItem(true)]
+    [ToolboxItem(false)]
+    [System.Obsolete("use IconState")]
     public class IconInfo : IControl
     {
         #region 属性
@@ -84,20 +85,6 @@ namespace AntdUI.Icon
             this.PaintBadge(g);
             base.OnPaint(e);
         }
-
-        #region 渲染帮助
-
-        internal PointF[] PaintArrow(RectangleF rect)
-        {
-            float size = rect.Height * 0.15F, size2 = rect.Height * 0.2F, size3 = rect.Height * 0.26F;
-            return new PointF[] {
-                new PointF(rect.X+size,rect.Y+rect.Height/2),
-                new PointF(rect.X+rect.Width*0.4F,rect.Y+(rect.Height-size3)),
-                new PointF(rect.X+rect.Width-size2,rect.Y+size2),
-            };
-        }
-
-        #endregion
 
         #endregion
     }

@@ -22,9 +22,9 @@ namespace AntdUI
 {
     partial class CellDivider
     {
-        internal override void PaintBack(Canvas g) { }
+        public override void PaintBack(Canvas g) { }
 
-        internal override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
             using (var brush = new SolidBrush(Colour.Split.Get("Divider")))
             {
@@ -32,14 +32,14 @@ namespace AntdUI
             }
         }
 
-        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             var size = g.MeasureString(Config.NullText, font);
             return new Size(gap, size.Height + gap);
         }
 
         Rectangle Rect;
-        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             int h = size.Height - gap2;
             Rect = new Rectangle(rect.X + (rect.Width - 1) / 2, rect.Y + (rect.Height - h) / 2, 1, h);

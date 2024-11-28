@@ -389,12 +389,12 @@ namespace AntdUI
         #region 动画
 
         DateTime now = DateTime.Now;
-        internal float Speed(float speed, float modera)
+        float Speed(float speed, float modera)
         {
             if (modera < AnimationChangeValue) return 0.8F;
             return speed;
         }
-        internal float Speed2(float speed, float modera)
+        float Speed2(float speed, float modera)
         {
             if (modera > AnimationChangeValue) return 0.8F;
             return speed;

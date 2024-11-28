@@ -23,9 +23,9 @@ namespace AntdUI
 {
     partial class CellProgress
     {
-        internal override void PaintBack(Canvas g) { }
+        public override void PaintBack(Canvas g) { }
 
-        internal override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
             Color _color = Fill ?? Colour.Primary.Get("Progress"), _back = Back ?? Colour.FillSecondary.Get("Progress");
             if (Shape == TShape.Circle)
@@ -83,7 +83,7 @@ namespace AntdUI
             }
         }
 
-        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             int height = g.MeasureString(Config.NullText, font).Height;
             if (Shape == TShape.Circle)
@@ -99,7 +99,7 @@ namespace AntdUI
         }
 
         Rectangle Rect;
-        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             int w = rect.Width - gap2, h = size.Height;
             if (Shape == TShape.Circle)

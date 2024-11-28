@@ -229,7 +229,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal void PaintChecked(Canvas g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
+        void PaintChecked(Canvas g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
         {
             float dot_size = icon_rect.Height;
             float radius = dot_size * .2F;
@@ -435,7 +435,7 @@ namespace AntdUI
             return PSize;
         }
 
-        internal Size PSize
+        Size PSize
         {
             get
             {
@@ -462,7 +462,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal bool BeforeAutoSize()
+        bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)

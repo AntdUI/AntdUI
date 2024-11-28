@@ -21,15 +21,14 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 
-namespace AntdUI.Icon
+namespace AntdUI
 {
     /// <summary>
-    /// 警告图标
+    /// Icon 状态图标
     /// </summary>
-    [Description("Icon 警告图标")]
-    [ToolboxItem(false)]
-    [System.Obsolete("use IconState")]
-    public class IconWarn : IControl
+    [Description("Icon 状态图标")]
+    [ToolboxItem(true)]
+    public class IconState : IControl
     {
         #region 属性
 
@@ -63,26 +62,62 @@ namespace AntdUI.Icon
             }
         }
 
+        TType state = TType.Success;
+        /// <summary>
+        /// 状态
+        /// </summary>
+        [Description("状态"), Category("外观"), DefaultValue(TType.Success)]
+        public TType State
+        {
+            get => state;
+            set
+            {
+                if (state == value) return;
+                state = value;
+                Invalidate();
+                OnPropertyChanged("State");
+            }
+        }
+
         #endregion
 
         #region 渲染
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle;
             var g = e.Graphics.High();
-            float dot_size = rect.Width > rect.Height ? rect.Height : rect.Width;
-            var rect_dot = new RectangleF((rect.Width - dot_size) / 2, (rect.Height - dot_size) / 2, dot_size, dot_size);
-
-            if (color.HasValue)
+            if (state == TType.None) this.PaintBadge(g);
+            else
             {
-                using (var brush = new SolidBrush(color.Value))
+                var rect = ClientRectangle.DeflateRect(Padding);
+                int dot_size = rect.Width > rect.Height ? rect.Height : rect.Width;
+                var rect_dot = new Rectangle((rect.Width - dot_size) / 2, (rect.Height - dot_size) / 2, dot_size, dot_size);
+                if (color.HasValue)
                 {
-                    g.FillEllipse(brush, new RectangleF(rect_dot.X + 1, rect_dot.Y + 1, rect_dot.Width - 2, rect_dot.Height - 2));
+                    using (var brush = new SolidBrush(color.Value))
+                    {
+                        g.FillEllipse(brush, new RectangleF(rect_dot.X + 1, rect_dot.Y + 1, rect_dot.Width - 2, rect_dot.Height - 2));
+                    }
                 }
+                switch (state)
+                {
+                    case TType.Success:
+                        g.GetImgExtend(SvgDb.IcoSuccess, rect, back ?? Colour.Success.Get("IconComplete"));
+                        break;
+                    case TType.Error:
+                        g.GetImgExtend(SvgDb.IcoError, rect, back ?? Colour.Error.Get("IconError"));
+                        break;
+                    case TType.Info:
+                        g.GetImgExtend(SvgDb.IcoInfo, rect, back ?? Colour.Info.Get("IconInfo"));
+                        break;
+                    case TType.Warn:
+                        g.GetImgExtend(SvgDb.IcoWarn, rect, back ?? Colour.Warning.Get("IconWarn"));
+                        break;
+                    default:
+                        break;
+                }
+                this.PaintBadge(g);
             }
-            g.GetImgExtend(SvgDb.IcoWarn, rect, back ?? Colour.Warning.Get("IconWarn"));
-            this.PaintBadge(g);
             base.OnPaint(e);
         }
 

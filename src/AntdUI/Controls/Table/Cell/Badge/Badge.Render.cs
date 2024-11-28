@@ -22,9 +22,9 @@ namespace AntdUI
 {
     partial class CellBadge
     {
-        internal override void PaintBack(Canvas g) { }
+        public override void PaintBack(Canvas g) { }
 
-        internal override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
             if (PARENT == null) return;
             Color color;
@@ -50,7 +50,7 @@ namespace AntdUI
             {
                 if (State == TState.Processing && PARENT.PARENT != null)
                 {
-                    float max = (TxtHeight - 6F) * PARENT.PARENT.AnimationStateValue, alpha = 255 * (1F - PARENT.PARENT.AnimationStateValue);
+                    float max = TxtHeight * PARENT.PARENT.AnimationStateValue, alpha = 255 * (1F - PARENT.PARENT.AnimationStateValue);
                     g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF(RectDot.X + (RectDot.Width - max) / 2F, RectDot.Y + (RectDot.Height - max) / 2F, max, max));
                 }
                 g.FillEllipse(brush, RectDot);
@@ -65,7 +65,7 @@ namespace AntdUI
             else g.String(Text, font, fore, Rect, Table.StringF(PARENT.COLUMN));
         }
 
-        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             if (string.IsNullOrEmpty(Text))
             {
@@ -84,10 +84,10 @@ namespace AntdUI
         int TxtHeight = 0;
         Rectangle Rect;
         Rectangle RectDot;
-        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             TxtHeight = size.Height;
-            int dot_size = (int)(size.Height / 2.5F);
+            int dot_size = (int)(size.Height * dotratio);
             if (string.IsNullOrEmpty(Text)) RectDot = new Rectangle(rect.X + (rect.Width - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
             else
             {

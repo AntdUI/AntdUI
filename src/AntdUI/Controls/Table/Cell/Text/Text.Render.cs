@@ -22,7 +22,7 @@ namespace AntdUI
 {
     partial class CellText
     {
-        internal override void PaintBack(Canvas g)
+        public override void PaintBack(Canvas g)
         {
             if (PARENT == null) return;
             if (Back.HasValue)
@@ -31,7 +31,7 @@ namespace AntdUI
             }
         }
 
-        internal override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
             if (PARENT == null) return;
             var state = g.Save();
@@ -46,7 +46,7 @@ namespace AntdUI
             else if (Suffix != null) g.Image(Suffix, RectR);
         }
 
-        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             var size = g.MeasureString(Text, Font ?? font);
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;
@@ -64,7 +64,7 @@ namespace AntdUI
         }
 
         Rectangle Rect, RectL, RectR;
-        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;
             if (has_prefix && has_suffix)
