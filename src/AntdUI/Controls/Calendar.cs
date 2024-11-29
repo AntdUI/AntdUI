@@ -173,6 +173,7 @@ namespace AntdUI
             get => _value;
             set
             {
+                if (_value == value) return;
                 _value = value;
                 DateChanged?.Invoke(this, new DateTimeEventArgs(_value));
                 Invalidate();

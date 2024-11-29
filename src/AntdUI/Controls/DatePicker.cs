@@ -67,6 +67,7 @@ namespace AntdUI
             get => _value;
             set
             {
+                if (_value == value) return;
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimeNEventArgs(value));
                 Text = value.HasValue ? value.Value.ToString(Format) : "";

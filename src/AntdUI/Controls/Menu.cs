@@ -347,10 +347,7 @@ namespace AntdUI
         [Description("Select 属性值更改时发生"), Category("行为")]
         public event SelectEventHandler? SelectChanged = null;
 
-        internal void OnSelectIndexChanged(MenuItem item)
-        {
-            SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
-        }
+        internal void OnSelectIndexChanged(MenuItem item) => SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
 
         #endregion
 

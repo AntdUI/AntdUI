@@ -110,6 +110,7 @@ namespace AntdUI
             get => _value;
             set
             {
+                if (_value == value) return;
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
                 if (value == null) Text = "";

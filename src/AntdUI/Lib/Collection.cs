@@ -629,7 +629,11 @@ namespace AntdUI
             }
         }
 
-        public bool Try<T>(out T val)
+#if NET40 || NET46 || NET48
+        public bool Try<T>(out T? val)
+#else
+        public bool Try<T>([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? val)
+#endif
         {
             if (_value is T v) { val = v; return true; }
             val = default;

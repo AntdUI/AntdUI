@@ -199,6 +199,13 @@ namespace AntdUI
             else colors.Add(key, value);
         }
 
+        public static void Set(this Colour id, Color value, string control)
+        {
+            string key = id.ToString() + control;
+            if (colors.ContainsKey(key)) colors[key] = value;
+            else colors.Add(key, value);
+        }
+
         public static void SetPrimary(Color primary)
         {
             Colour.Primary.Set(primary);

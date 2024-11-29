@@ -28,109 +28,118 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
+            bool result = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Back:
                     ProcessBackSpaceKey();
-                    break;
+                    return true;
                 case Keys.Delete:
                     ProcessDelete();
-                    break;
+                    return true;
                 //========================================================
                 case Keys.Left:
                     ProcessLeftKey(false);
-                    break;
+                    return true;
                 case Keys.Left | Keys.Shift:
                     ProcessLeftKey(true);
-                    break;
+                    return true;
                 case Keys.Up:
                     if (multiline) ProcessUpKey(false);
                     else ProcessLeftKey(false);
-                    break;
+                    return multiline;
                 case Keys.Up | Keys.Shift:
                     if (multiline) ProcessUpKey(true);
                     else ProcessLeftKey(false);
-                    break;
+                    return multiline;
                 case Keys.Right:
                     ProcessRightKey(false);
-                    break;
+                    return true;
                 case Keys.Right | Keys.Shift:
                     ProcessRightKey(true);
-                    break;
+                    return true;
                 case Keys.Down:
                     if (multiline) ProcessDownKey(false);
                     else ProcessRightKey(false);
-                    break;
+                    return multiline;
                 case Keys.Down | Keys.Shift:
                     if (multiline) ProcessDownKey(true);
                     else ProcessRightKey(false);
-                    break;
+                    return multiline;
                 case Keys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(false, false);
                     SpeedScrollTo = false;
-                    break;
+                    return true;
                 case Keys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(false, false);
                     SpeedScrollTo = false;
-                    break;
+                    return true;
                 case Keys.Control | Keys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(true, false);
                     SpeedScrollTo = false;
-                    break;
+                    return true;
                 case Keys.Control | Keys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(true, false);
                     SpeedScrollTo = false;
-                    break;
+                    return true;
                 case Keys.Shift | Keys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(false, true);
                     SpeedScrollTo = false;
-                    break;
+                    return true;
                 case Keys.Shift | Keys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(false, true);
                     SpeedScrollTo = false;
-                    break;
+                    return true;
                 case Keys.Control | Keys.Shift | Keys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(true, true);
                     SpeedScrollTo = false;
-                    break;
+                    return true;
                 case Keys.Control | Keys.Shift | Keys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(true, true);
                     SpeedScrollTo = false;
-                    break;
+                    return true;
                 //========================================================
                 case Keys.Tab:
-                    if (multiline && AcceptsTab) EnterText("\t");
+                    if (multiline && AcceptsTab)
+                    {
+                        EnterText("\t");
+                        return true;
+                    }
                     break;
                 case Keys.Enter:
-                    if (multiline) EnterText(Environment.NewLine);
+                    if (multiline)
+                    {
+                        EnterText(Environment.NewLine);
+                        return true;
+                    }
                     break;
                 //========================================================
                 case Keys.Control | Keys.A:
                     SelectAll();
-                    break;
+                    return true;
                 case Keys.Control | Keys.C:
                     Copy();
-                    break;
+                    return true;
                 case Keys.Control | Keys.X:
                     Cut();
-                    break;
+                    return true;
                 case Keys.Control | Keys.V:
                     Paste();
-                    break;
+                    return true;
                 case Keys.Control | Keys.Z:
                     Undo();
-                    break;
+                    return true;
                 case Keys.Control | Keys.Y:
                     Redo();
-                    break;
+                    return true;
                 case Keys.PageUp:
                     if (ScrollYShow && cache_font != null)
                     {
@@ -139,6 +148,7 @@ namespace AntdUI
                         var index = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - (rect_text.Height - cache_font[0].rect.Height));
                         SelectionStart = index;
                         SpeedScrollTo = false;
+                        return true;
                     }
                     break;
                 case Keys.PageDown:
@@ -149,16 +159,14 @@ namespace AntdUI
                         var index = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + (rect_text.Height - cache_font[0].rect.Height));
                         SelectionStart = index;
                         SpeedScrollTo = false;
+                        return true;
                     }
                     break;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return result;
         }
 
-        internal void IKeyPress(KeyPressEventArgs e)
-        {
-            OnKeyPress(e);
-        }
+        internal void IKeyPress(KeyPressEventArgs e) => OnKeyPress(e);
 
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
