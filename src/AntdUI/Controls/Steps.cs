@@ -299,9 +299,13 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             Color color_fore = fore ?? Colour.Text.Get("Steps");
             using (var brush_fore = new SolidBrush(color_fore))

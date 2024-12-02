@@ -931,6 +931,7 @@ namespace AntdUI
             if (items == null || items.Count == 0 || isEmpty)
             {
                 if (Empty) PaintEmpty(e.Graphics.High(), ClientRectangle);
+                base.OnPaint(e);
                 return;
             }
             var g = e.Graphics.High();

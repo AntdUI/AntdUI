@@ -304,7 +304,11 @@ namespace AntdUI
         readonly StringFormat s_f = Helper.SF_NoWrap();
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (buttons.Length < 2) return;
+            if (buttons.Length < 2)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             float border = borderWidth * Config.Dpi, _radius = radius * Config.Dpi;
             if (Enabled)
@@ -421,6 +425,7 @@ namespace AntdUI
                 }
             }
             this.PaintBadge(g);
+            base.OnPaint(e);
         }
 
         #endregion

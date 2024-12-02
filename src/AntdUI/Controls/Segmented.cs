@@ -571,8 +571,11 @@ namespace AntdUI
         readonly StringFormat s_f = Helper.SF_ALL();
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
-
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
             using (var path = Rect.RoundPath(_radius, Round))

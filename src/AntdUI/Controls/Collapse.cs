@@ -328,7 +328,11 @@ namespace AntdUI
         StringFormat s_l = Helper.SF_ALL(lr: StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             float r = radius * Config.Dpi;
             using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get("Collapse")))

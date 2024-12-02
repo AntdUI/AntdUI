@@ -503,6 +503,7 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect_ = ClientRectangle;
+            if (rect_.Width == 0 || rect_.Height == 0) return;
             var rect = rect_.PaddingRect(Padding, 0, 0, hasr, 0);
             var g = e.Graphics.High();
 

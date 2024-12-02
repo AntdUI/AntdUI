@@ -17,8 +17,8 @@
 // QQ: 17379620
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
-using static AntdUI.Table;
 
 namespace AntdUI
 {
@@ -52,11 +52,11 @@ namespace AntdUI
         public abstract void PaintBack(Canvas g);
         public abstract void Paint(Canvas g, Font font, bool enable, SolidBrush fore);
 
-        CELL? _PARENT = null;
+        Table.CELL? _PARENT = null;
         /// <summary>
         /// 模板父级
         /// </summary>
-        public CELL PARENT
+        public Table.CELL PARENT
         {
             get
             {
@@ -65,7 +65,75 @@ namespace AntdUI
             }
         }
 
-        internal void SetCELL(CELL row) => _PARENT = row;
+        internal void SetCELL(Table.CELL row) => _PARENT = row;
+
+        #endregion
+
+        #region 下拉
+
+        /// <summary>
+        /// 菜单弹出位置
+        /// </summary>
+        public TAlignFrom DropDownPlacement { get; set; } = TAlignFrom.BL;
+
+        /// <summary>
+        /// 列表最多显示条数
+        /// </summary>
+        public int DropDownMaxCount { get; set; } = 4;
+
+        /// <summary>
+        /// 下拉圆角
+        /// </summary>
+        public int? DropDownRadius { get; set; }
+
+        /// <summary>
+        /// 下拉箭头是否显示
+        /// </summary>
+        public bool DropDownArrow { get; set; }
+
+        /// <summary>
+        /// 下拉边距
+        /// </summary>
+        public Size DropDownPadding { get; set; } = new Size(12, 5);
+
+        /// <summary>
+        /// 点击到最里层（无节点才能点击）
+        /// </summary>
+        public bool DropDownClickEnd { get; set; }
+
+        /// <summary>
+        /// 点击切换下拉
+        /// </summary>
+        public bool DropDownClickSwitchDropdown { get; set; } = true;
+
+        #region 数据
+
+        BaseCollection? items;
+        /// <summary>
+        /// 数据
+        /// </summary>
+        public BaseCollection DropDownItems
+        {
+            get
+            {
+                items ??= new BaseCollection();
+                return items;
+            }
+            set => items = value;
+        }
+
+        /// <summary>
+        /// 选中值
+        /// </summary>
+        public object? DropDownValue { get; set; }
+
+        /// <summary>
+        /// DropDownValue 属性值更改时发生
+        /// </summary>
+        [Description("DropDownValue 属性值更改时发生"), Category("行为")]
+        public event ObjectNEventHandler? DropDownValueChanged = null;
+
+        #endregion
 
         #endregion
 

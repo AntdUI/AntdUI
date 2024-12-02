@@ -430,7 +430,6 @@ namespace AntdUI
                     else g.String(config.Content.ToString(), Font, brush, rectContent, stringTL);
                 }
             }
-            base.OnPaint(e);
         }
 
         #region 鼠标

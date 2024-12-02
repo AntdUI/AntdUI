@@ -287,6 +287,7 @@ namespace AntdUI
         {
             var padding = Padding;
             var _rect = ClientRectangle.PaddingRect(padding);
+            if (_rect.Width == 0 || _rect.Height == 0) return;
             int LineSize = (int)(lineSize * Config.Dpi), DotS = (int)((dotSizeActive > dotSize ? dotSizeActive : dotSize) * Config.Dpi), DotS2 = DotS * 2;
             if (align == TAlignMini.Top || align == TAlignMini.Bottom)
             {
@@ -314,6 +315,7 @@ namespace AntdUI
             var g = e.Graphics.High();
             IPaint(g, _rect, Enabled, color, color_dot, color_hover, color_active);
             this.PaintBadge(g);
+            base.OnPaint(e);
         }
 
         internal virtual void IPaint(Canvas g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)

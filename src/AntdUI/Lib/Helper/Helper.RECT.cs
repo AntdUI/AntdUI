@@ -490,12 +490,42 @@ namespace AntdUI
         public static PointF[] TriangleLines(this Rectangle rect, float prog, float d = 0.7F)
         {
             float size = rect.Width * d, size2 = size / 2;
-            float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height / 2F;
+            float x = rect.X + rect.Width / 2F, y = rect.Y + (rect.Height / 2F);
             if (prog == 0)
             {
                 return new PointF[] {
                     new PointF(x - size2, y),
-                    new PointF(x + size2,y)
+                    new PointF(x + size2, y)
+                };
+            }
+            else if (prog > 0)
+            {
+                float h = size2 * prog, h2 = h / 2;
+                return new PointF[] {
+                    new PointF(x - size2,y + h2),
+                    new PointF(x, y - h2),
+                    new PointF(x + size2,y + h2)
+                };
+            }
+            else
+            {
+                float h = size2 * -prog, h2 = h / 2;
+                return new PointF[] {
+                    new PointF(x - size2,y - h2),
+                    new PointF(x, y + h2),
+                    new PointF(x + size2,y - h2)
+                };
+            }
+        }
+        public static PointF[] TriangleLines(this RectangleF rect, float prog, float d = 0.7F)
+        {
+            float size = rect.Width * d, size2 = size / 2;
+            float x = rect.X + rect.Width / 2F, y = rect.Y + (rect.Height / 2F);
+            if (prog == 0)
+            {
+                return new PointF[] {
+                    new PointF(x - size2, y),
+                    new PointF(x + size2, y)
                 };
             }
             else if (prog > 0)

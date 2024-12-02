@@ -47,8 +47,8 @@ namespace AntdUI
                 Rectangle rect = _rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
                 IPaint(g, rect, rect_read);
                 this.PaintBadge(g);
+                base.OnPaint(e);
             }
-            base.OnPaint(e);
         }
 
         internal void IPaint(Canvas g, Rectangle rect, Rectangle rect_read)

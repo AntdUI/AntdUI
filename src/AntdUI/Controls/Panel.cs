@@ -388,8 +388,8 @@ namespace AntdUI
                     if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                 }
                 this.PaintBadge(g);
+                base.OnPaint(e);
             }
-            base.OnPaint(e);
         }
 
         Bitmap? shadow_temp = null;

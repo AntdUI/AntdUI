@@ -151,7 +151,12 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect = ClientRectangle.PaddingRect(Padding);
-            if (rect.Width == 0 || rect.Height == 0 || count < 1) return;
+            if (rect.Width == 0 || rect.Height == 0) return;
+            if (count < 1)
+            {
+                base.OnPaint(e);
+                return;
+            }
             int size = rect.Height;
             var g = e.Graphics.High();
 
@@ -249,6 +254,7 @@ namespace AntdUI
                 else g.Image(icon, it.rect_i);
             }
             this.PaintBadge(g);
+            base.OnPaint(e);
         }
 
         #endregion

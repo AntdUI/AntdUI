@@ -392,7 +392,6 @@ namespace AntdUI
 
                 PaintText(g, Text, _fore, rect_read);
             }
-
             this.PaintBadge(g);
             base.OnPaint(e);
         }

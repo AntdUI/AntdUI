@@ -302,7 +302,12 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var _rect = ClientRectangle;
-            if (image == null || _rect.Width == 0 || _rect.Height == 0) return;
+            if (_rect.Width == 0 || _rect.Height == 0) return;
+            if (image == null)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             var rect = _rect.PaddingRect(Padding);
             float _radius = radius * Config.Dpi;

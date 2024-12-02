@@ -536,9 +536,13 @@ namespace AntdUI
         public Menu() { ScrollBar = new ScrollBar(this); }
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
@@ -1095,6 +1099,11 @@ namespace AntdUI
             if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) ILeave(sub, ref count);
         }
 
+        public void IUSelect()
+        {
+            if (items == null) return;
+            IUSelect(items);
+        }
         void IUSelect(MenuItemCollection items)
         {
             foreach (var it in items) IUSelect(it);
@@ -1201,7 +1210,7 @@ namespace AntdUI
         }
     }
 
-    public class MenuItem : NotifyProperty
+    public class MenuItem
     {
         public MenuItem() { }
         public MenuItem(string text)
@@ -1290,7 +1299,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 text = value;
-                OnPropertyChanged("Text");
+                Invalidates();
             }
         }
 
@@ -1486,10 +1495,7 @@ namespace AntdUI
 
         #endregion
 
-        void Invalidate()
-        {
-            PARENT?.Invalidate();
-        }
+        void Invalidate() => PARENT?.Invalidate();
         void Invalidates()
         {
             if (PARENT == null) return;

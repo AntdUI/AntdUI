@@ -1439,19 +1439,7 @@ namespace AntdUI
                     {
                         int size = (int)(font_size.Height * IconRatio);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (isLink)
-                            {
-                                int size_arrow = rect_arrow.Width / 2;
-                                g.TranslateTransform(rect_arrow.X + size_arrow, rect_arrow.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arrow.Width, rect_arrow.Height).TriangleLines(ArrowProg));
-                                g.ResetTransform();
-                            }
-                            else g.DrawLines(pen, rect_arrow.TriangleLines(ArrowProg));
-                        }
+                        PaintTextArrow(g, rect_arrow, color);
                     }
                 }
             }
@@ -1476,23 +1464,7 @@ namespace AntdUI
                         }
                         else PaintIcon(g, color, rect_l, true, Enabled);
 
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (isLink)
-                            {
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(ArrowProg));
-                                g.ResetTransform();
-                            }
-                            else g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
-                        }
-
-                        #endregion
+                        PaintTextArrow(g, rect_r, color);
                     }
                     else if (has_left)
                     {
@@ -1512,23 +1484,7 @@ namespace AntdUI
                     {
                         rect_text = RectAlignR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
 
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (isLink)
-                            {
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(ArrowProg));
-                                g.ResetTransform();
-                            }
-                            else g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
-                        }
-
-                        #endregion
+                        PaintTextArrow(g, rect_r, color);
                     }
                 }
                 else
@@ -1537,10 +1493,24 @@ namespace AntdUI
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
                     PaintTextAlign(rect_read, ref rect_text);
                 }
-                using (var brush = new SolidBrush(color))
+                g.String(text, Font, color, rect_text, stringFormat);
+            }
+        }
+
+        void PaintTextArrow(Canvas g, Rectangle rect, Color color)
+        {
+            using (var pen = new Pen(color, 2F * Config.Dpi))
+            {
+                pen.StartCap = pen.EndCap = LineCap.Round;
+                if (isLink)
                 {
-                    g.String(text, Font, brush, rect_text, stringFormat);
+                    float size_arrow = rect.Width / 2F;
+                    g.TranslateTransform(rect.X + size_arrow, rect.Y + size_arrow);
+                    g.RotateTransform(-90F);
+                    g.DrawLines(pen, new RectangleF(-size_arrow, -size_arrow, rect.Width, rect.Height).TriangleLines(ArrowProg));
+                    g.ResetTransform();
                 }
+                else g.DrawLines(pen, rect.TriangleLines(ArrowProg));
             }
         }
 

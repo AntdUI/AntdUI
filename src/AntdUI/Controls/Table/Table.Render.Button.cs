@@ -279,21 +279,7 @@ namespace AntdUI
                 {
                     int size = (int)(font_size.Height * btn.IconRatio);
                     var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
-                    using (var pen = new Pen(color, 2F * Config.Dpi))
-                    {
-                        pen.StartCap = pen.EndCap = LineCap.Round;
-                        if (btn.IsLink)
-                        {
-                            var state = g.Save();
-                            int size_arrow = rect_arrow.Width / 2;
-                            g.TranslateTransform(rect_arrow.X + size_arrow, rect_arrow.Y + size_arrow);
-                            g.RotateTransform(-90F);
-                            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arrow.Width, rect_arrow.Height).TriangleLines(btn.ArrowProg));
-                            g.ResetTransform();
-                            g.Restore(state);
-                        }
-                        else g.DrawLines(pen, rect_arrow.TriangleLines(btn.ArrowProg));
-                    }
+                    PaintButtonTextArrow(g, btn, rect_arrow, color);
                 }
             }
             else
@@ -306,64 +292,18 @@ namespace AntdUI
                     if (has_left && has_right)
                     {
                         rect_text = Button.RectAlignLR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l, out var rect_r);
-
                         PaintButtonPaintImage(g, btn, color, rect_l);
-
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (btn.IsLink)
-                            {
-                                var state = g.Save();
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg));
-                                g.ResetTransform();
-                                g.Restore(state);
-                            }
-                            else
-                            {
-                                g.DrawLines(pen, rect_r.TriangleLines(btn.ArrowProg));
-                            }
-                        }
-
-                        #endregion
+                        PaintButtonTextArrow(g, btn, rect_r, color);
                     }
                     else if (has_left)
                     {
                         rect_text = Button.RectAlignL(g, btn.textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l);
-
                         PaintButtonPaintImage(g, btn, color, rect_l);
                     }
                     else
                     {
                         rect_text = Button.RectAlignR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_r);
-
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (btn.IsLink)
-                            {
-                                var state = g.Save();
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(btn.ArrowProg));
-                                g.ResetTransform();
-                                g.Restore(state);
-                            }
-                            else
-                            {
-                                g.DrawLines(pen, rect_r.TriangleLines(btn.ArrowProg));
-                            }
-                        }
-
-                        #endregion
+                        PaintButtonTextArrow(g, btn, rect_r, color);
                     }
                 }
                 else
@@ -376,6 +316,24 @@ namespace AntdUI
                 {
                     g.String(btn.Text, font, brush, rect_text, btn.stringFormat);
                 }
+            }
+        }
+        static void PaintButtonTextArrow(Canvas g, CellButton btn, Rectangle rect, Color color)
+        {
+            using (var pen = new Pen(color, 2F * Config.Dpi))
+            {
+                pen.StartCap = pen.EndCap = LineCap.Round;
+                if (btn.IsLink)
+                {
+                    var state = g.Save();
+                    float size_arrow = rect.Width / 2F;
+                    g.TranslateTransform(rect.X + size_arrow, rect.Y + size_arrow);
+                    g.RotateTransform(-90F);
+                    g.DrawLines(pen, new RectangleF(-size_arrow, -size_arrow, rect.Width, rect.Height).TriangleLines(btn.ArrowProg));
+                    g.ResetTransform();
+                    g.Restore(state);
+                }
+                else g.DrawLines(pen, rect.TriangleLines(btn.ArrowProg));
             }
         }
 

@@ -493,9 +493,13 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
@@ -907,7 +911,7 @@ namespace AntdUI
                 foreach (var sub in item.items) ILeave(sub, ref count);
         }
 
-        internal void IUSelect()
+        public void IUSelect()
         {
             if (items == null || items.Count == 0) return;
             foreach (var it in items) IUSelect(it);
@@ -960,7 +964,7 @@ namespace AntdUI
         }
     }
 
-    public class TreeItem : NotifyProperty
+    public class TreeItem
     {
         public TreeItem() { }
         public TreeItem(string text)
@@ -991,7 +995,7 @@ namespace AntdUI
             {
                 if (icon == value) return;
                 icon = value;
-                OnPropertyChanged("Icon");
+                Invalidates();
             }
         }
 
@@ -1007,17 +1011,14 @@ namespace AntdUI
             {
                 if (iconSvg == value) return;
                 iconSvg = value;
-                OnPropertyChanged("IconSvg");
+                Invalidates();
             }
         }
 
         /// <summary>
         /// 是否包含图片
         /// </summary>
-        internal bool HasIcon
-        {
-            get => iconSvg != null || Icon != null;
-        }
+        internal bool HasIcon => iconSvg != null || Icon != null;
 
         /// <summary>
         /// 名称
@@ -1338,10 +1339,7 @@ namespace AntdUI
 
         #endregion
 
-        void Invalidate()
-        {
-            PARENT?.Invalidate();
-        }
+        void Invalidate() => PARENT?.Invalidate();
         void Invalidates()
         {
             if (PARENT == null) return;

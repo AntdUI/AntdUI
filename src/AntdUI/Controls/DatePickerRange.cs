@@ -394,8 +394,17 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape && subForm != null) subForm.IClose();
-            else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
+            bool result = base.ProcessCmdKey(ref msg, keyData);
+            if (keyData == Keys.Escape && subForm != null)
+            {
+                subForm.IClose();
+                return true;
+            }
+            else if (keyData == Keys.Down && subForm == null)
+            {
+                ExpandDrop = true;
+                return true;
+            }
             else if (keyData == Keys.Enter)
             {
                 if (StartFocused || EndFocused)
@@ -459,9 +468,10 @@ namespace AntdUI
                             }
                         }
                     }
+                    return true;
                 }
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return result;
         }
 
         protected override bool IMouseDown(Point e)
