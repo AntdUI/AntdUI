@@ -406,6 +406,23 @@ namespace AntdUI
 
         #region 主题
 
+        Color? rowHoverBg;
+        /// <summary>
+        /// 表格行悬浮背景色
+        /// </summary>
+        [Description("表格行悬浮背景色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? RowHoverBg
+        {
+            get => rowHoverBg;
+            set
+            {
+                if (rowHoverBg == value) return;
+                rowHoverBg = value;
+                OnPropertyChanged("RowHoverBg");
+            }
+        }
+
         Color? rowSelectedBg;
         /// <summary>
         /// 表格行选中背景色
@@ -546,7 +563,7 @@ namespace AntdUI
         /// <summary>
         /// 选中多行
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor", typeof(UITypeEditor))]
         [Description("选中多行"), Category("数据")]
         public int[] SelectedIndexs

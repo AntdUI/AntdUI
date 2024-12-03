@@ -206,10 +206,7 @@ namespace AntdUI
         }
 
         int pyr = 0;
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth / 2F * Config.Dpi);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth / 2F * Config.Dpi);
 
         Color? fill;
         /// <summary>
@@ -848,6 +845,12 @@ namespace AntdUI
                 return true;
             }
             return false;
+        }
+
+        public void InitData(int Current = 1, int PageSize = 10)
+        {
+            current = Current;
+            pageSize = PageSize;
         }
     }
 }

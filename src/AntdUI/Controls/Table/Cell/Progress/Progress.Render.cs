@@ -93,7 +93,7 @@ namespace AntdUI
             }
             else
             {
-                int size = gap2 + height;
+                int size = gap2 + height * 2;
                 return new Size(size, height / 2);
             }
         }

@@ -912,13 +912,25 @@ namespace AntdUI
                 }
                 else
                 {
+                    int nogap = 0;
+                    foreach (var it in Value)
+                    {
+                        if (it is CellText) nogap++;
+                    }
                     int use_x;
                     switch (COLUMN.Align)
                     {
-                        case ColumnAlign.Center: use_x = rx + (_rect.Width - MinWidth) / 2; break;
-                        case ColumnAlign.Right: use_x = _rect.Right - MinWidth; break;
+                        case ColumnAlign.Center:
+                            use_x = rx + (_rect.Width - MinWidth) / 2;
+                            break;
+                        case ColumnAlign.Right:
+                            use_x = _rect.Right - MinWidth;
+                            break;
                         case ColumnAlign.Left:
-                        default: use_x = rx + gap2; break;
+                        default:
+                            if (nogap == Value.Count) use_x = rx;
+                            else use_x = rx + gap2;
+                            break;
                     }
                     for (int i = 0; i < Value.Count; i++)
                     {
@@ -936,8 +948,10 @@ namespace AntdUI
                 int gap = _gap / 2, gap2 = _gap;
                 int w = 0, h = 0;
                 var sizes = new List<Size>(Value.Count);
+                int nogap = 0;
                 foreach (var it in Value)
                 {
+                    if (it is CellText) nogap++;
                     var size = it.GetSize(g, font, gap, gap2);
                     sizes.Add(size);
                     w += size.Width;
@@ -945,7 +959,7 @@ namespace AntdUI
                 }
                 MinWidth = w;
                 SIZES = sizes.ToArray();
-                return new Size(MinWidth + _gap2, h);
+                return new Size(MinWidth + (nogap == sizes.Count ? 0 : _gap2), h);
             }
 
             public override string? ToString()

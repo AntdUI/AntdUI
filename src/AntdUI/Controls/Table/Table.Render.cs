@@ -334,37 +334,15 @@ namespace AntdUI
         /// </summary>
         void PaintBgRowFront(Canvas g, StyleRow row)
         {
-            if (row.style != null && row.style.BackColor.HasValue)
-            {
-                using (var brush = new SolidBrush(row.style.BackColor.Value))
-                {
-                    g.Fill(brush, row.row.RECT);
-                }
-            }
+            if (row.style != null && row.style.BackColor.HasValue) g.Fill(row.style.BackColor.Value, row.row.RECT);
             if (selectedIndex.Contains(row.row.INDEX) || row.row.Select)
             {
-                using (var brush = rowSelectedBg.Brush(Colour.PrimaryBg.Get("Table")))
-                {
-                    g.Fill(brush, row.row.RECT);
-                }
-                if (selectedIndex.Contains(row.row.INDEX) && row.row.Select)
-                {
-                    using (var brush = new SolidBrush(Color.FromArgb(40, Colour.PrimaryActive.Get("Table"))))
-                    {
-                        g.Fill(brush, row.row.RECT);
-                    }
-                }
+                g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get("Table"), row.row.RECT);
+                if (selectedIndex.Contains(row.row.INDEX) && row.row.Select) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table")), row.row.RECT);
             }
-
             foreach (var cel in row.row.cells)
             {
-                if (cel.COLUMN.Style != null && cel.COLUMN.Style.BackColor.HasValue)
-                {
-                    using (var brush = new SolidBrush(cel.COLUMN.Style.BackColor.Value))
-                    {
-                        g.Fill(brush, cel.RECT);
-                    }
-                }
+                if (cel.COLUMN.Style != null && cel.COLUMN.Style.BackColor.HasValue) g.Fill(cel.COLUMN.Style.BackColor.Value, cel.RECT);
             }
         }
 
@@ -375,13 +353,7 @@ namespace AntdUI
         {
             if (dragBody != null)
             {
-                if (dragBody.i == row.INDEX)
-                {
-                    using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table")))
-                    {
-                        g.Fill(brush, row.RECT);
-                    }
-                }
+                if (dragBody.i == row.INDEX) g.Fill(Colour.FillSecondary.Get("Table"), row.RECT);
                 else if (dragBody.im == row.INDEX)
                 {
                     using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table")))
@@ -394,20 +366,8 @@ namespace AntdUI
             }
             else
             {
-                if (row.AnimationHover)
-                {
-                    using (var brush = new SolidBrush(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get("Table"))))
-                    {
-                        g.Fill(brush, row.RECT);
-                    }
-                }
-                else if (row.Hover)
-                {
-                    using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table")))
-                    {
-                        g.Fill(brush, row.RECT);
-                    }
-                }
+                if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get("Table")), row.RECT);
+                else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table"), row.RECT);
             }
         }
 

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -226,7 +227,7 @@ namespace AntdUI
             ExpandDrop = false;
             if (IsHandleCreated)
             {
-                if (DateTime.TryParse(Text, out var _d))
+                if (DateTime.TryParseExact(Text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d))
                 {
                     Value = _d;
                     if (subForm != null)
