@@ -1028,7 +1028,7 @@ namespace AntdUI
             {
                 if (cel.VALUE is AntItem arow) arow.value = value;
             }
-            else cel.PROPERTY.SetValue(cel.VALUE, value);
+            else cel.PROPERTY.SetValue(cel.VALUE, Convert.ChangeType(value, cel.PROPERTY.PropertyType));
         }
 
         bool RowISelect(RowTemplate row)
