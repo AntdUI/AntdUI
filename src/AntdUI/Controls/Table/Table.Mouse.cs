@@ -33,6 +33,8 @@ namespace AntdUI
         {
             cellMouseDown = null;
             if (ClipboardCopy) Focus();
+            subForm?.IClose();
+            subForm = null;
             if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
             {
                 base.OnMouseDown(e);
@@ -435,11 +437,31 @@ namespace AntdUI
                             OnEditMode(it, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
                         }
                     }
+                    else
+                    {
+                        if (cell is Template template)
+                        {
+                            foreach (var item in template.Value)
+                            {
+                                if (item.DropDownItems != null && item.DropDownItems.Count > 0 && item.Rect.Contains(r_x, r_y))
+                                {
+                                    subForm?.IClose();
+                                    subForm = null;
+                                    var rect = item.Rect;
+                                    rect.Offset(-offset_xi, -offset_y);
+                                    subForm = new LayeredFormSelectDown(this, item, rect, item.DropDownItems);
+                                    subForm.Show(this);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
                 }
                 return true;
             }
             return false;
         }
+        LayeredFormSelectDown? subForm = null;
 
         #endregion
 
@@ -1046,6 +1068,8 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            subForm?.IClose();
+            subForm = null;
             CloseTip();
             ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);

@@ -98,7 +98,6 @@ namespace AntdUI
             }
         }
 
-        Rectangle Rect;
         public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             int w = rect.Width - gap2, h = size.Height;

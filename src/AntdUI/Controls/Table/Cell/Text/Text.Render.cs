@@ -58,7 +58,7 @@ namespace AntdUI
             return new Size(size.Width + gap2, size.Height);
         }
 
-        Rectangle Rect, RectL, RectR;
+        Rectangle RectL, RectR;
         public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;

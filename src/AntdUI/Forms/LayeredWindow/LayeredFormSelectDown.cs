@@ -100,6 +100,24 @@ namespace AntdUI
             }
             Init(control, align, false, true, rect_ctls, items);
         }
+        public LayeredFormSelectDown(Table control, ICell cell, Rectangle rect, IList<object> items)
+        {
+            keyid = "Table";
+            Tag = cell;
+            MessageCloseMouseLeave = true;
+            control.Parent.SetTopMost(Handle);
+            PARENT = control;
+            ClickEnd = cell.DropDownClickEnd;
+            select_x = 0;
+            scrollY = new ScrollY(this);
+            MaxCount = cell.DropDownMaxCount;
+            Font = control.Font;
+            selectedValue = cell.DropDownValue;
+            Radius = (int)(cell.DropDownRadius ?? control.Radius * Config.Dpi);
+            DPadding = cell.DropDownPadding;
+            Items = new List<ObjectItem>(items.Count);
+            Init(control, cell.DropDownPlacement, cell.DropDownArrow, true, rect, items, "");
+        }
 
         public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
         {
@@ -219,7 +237,7 @@ namespace AntdUI
             else r_h = TextChangeCore(filtertext);
             SetSize(w + 20, r_h);
             if (control is LayeredFormSelectDown) SetLocation(point.X + rect_read.Width, point.Y + rect_read.Y - 10);
-            else MyPoint(point, control, Placement, ShowArrow, rect_read);
+            else MyPoint(point, Placement, ShowArrow, rect_read);
 
             KeyCall = keys =>
             {
@@ -303,7 +321,7 @@ namespace AntdUI
             };
         }
 
-        void MyPoint(Point point, Control control, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(point, Placement, ShowArrow, 10, r_w + 20, TargetRect.Height, rect_read, ref Inverted, ref ArrowAlign);
+        void MyPoint(Point point, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(point, Placement, ShowArrow, 10, r_w + 20, TargetRect.Height, rect_read, ref Inverted, ref ArrowAlign);
 
         StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
 
@@ -694,8 +712,8 @@ namespace AntdUI
 
         void MyPoint()
         {
-            if (PARENT is Select select) MyPoint(select.PointToScreen(Point.Empty), select, select.Placement, select.DropDownArrow, select.ReadRectangle);
-            else if (PARENT is Dropdown dropdown) MyPoint(dropdown.PointToScreen(Point.Empty), dropdown, dropdown.Placement, dropdown.DropDownArrow, dropdown.ReadRectangle);
+            if (PARENT is Select select) MyPoint(select.PointToScreen(Point.Empty), select.Placement, select.DropDownArrow, select.ReadRectangle);
+            else if (PARENT is Dropdown dropdown) MyPoint(dropdown.PointToScreen(Point.Empty), dropdown.Placement, dropdown.DropDownArrow, dropdown.ReadRectangle);
         }
 
         #endregion
@@ -773,6 +791,7 @@ namespace AntdUI
             }
             else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Val);
             else if (PARENT is Tabs tabs) tabs.SelectedIndex = it.ID;
+            else if (Tag is ICell table) table.DropDownValueChanged?.Invoke(it.Val);
         }
 
         void OpenDown(ObjectItem it, IList<object> sub, int tag = -1)

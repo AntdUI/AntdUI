@@ -17,7 +17,7 @@
 // QQ: 17379620
 
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace AntdUI
@@ -69,6 +69,8 @@ namespace AntdUI
 
         #endregion
 
+        public Rectangle Rect { get; set; }
+
         #region 下拉
 
         /// <summary>
@@ -108,19 +110,10 @@ namespace AntdUI
 
         #region 数据
 
-        BaseCollection? items;
         /// <summary>
         /// 数据
         /// </summary>
-        public BaseCollection DropDownItems
-        {
-            get
-            {
-                items ??= new BaseCollection();
-                return items;
-            }
-            set => items = value;
-        }
+        public IList<object>? DropDownItems { get; set; }
 
         /// <summary>
         /// 选中值
@@ -130,8 +123,7 @@ namespace AntdUI
         /// <summary>
         /// DropDownValue 属性值更改时发生
         /// </summary>
-        [Description("DropDownValue 属性值更改时发生"), Category("行为")]
-        public event ObjectNEventHandler? DropDownValueChanged = null;
+        public Action<object>? DropDownValueChanged = null;
 
         #endregion
 

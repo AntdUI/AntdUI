@@ -107,6 +107,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(8)]
+        public int Gap { get; set; } = 8;
+
         StepsItemCollection? items;
         /// <summary>
         /// 集合
@@ -160,7 +166,7 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0) return;
             Helper.GDI(g =>
             {
-                int gap = (int)(8F * Config.Dpi), split = (int)Config.Dpi;
+                int gap = (int)(Gap * Config.Dpi), split = (int)Config.Dpi;
                 var _splits = new List<RectangleF>(items.Count);
                 using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                 {

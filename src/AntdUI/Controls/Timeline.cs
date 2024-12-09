@@ -57,6 +57,12 @@ namespace AntdUI
         [Description("描述字体"), Category("外观"), DefaultValue(null)]
         public Font? FontDescription { get; set; }
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(8)]
+        public int Gap { get; set; } = 8;
+
         TimelineItemCollection? items;
         /// <summary>
         /// 集合
@@ -117,8 +123,7 @@ namespace AntdUI
                 var size_def = g.MeasureString(Config.NullText, Font);
                 int text_size = size_def.Height;
                 float pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
-                int gap = (int)Math.Round(8F * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D),
-                    ico_size = (int)Math.Round(text_size * 0.636D);
+                int gap = (int)Math.Round(Gap * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D), ico_size = (int)Math.Round(text_size * 0.636D);
 
                 int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
                 y += gap_x;
@@ -197,7 +202,7 @@ namespace AntdUI
             using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get("Timeline")))
             using (var brush_dotback = new SolidBrush(Colour.BgBase.Get("Timeline")))
             {
-                foreach (TimelineItem it in items)
+                foreach (var it in items)
                 {
                     if (it.Visible)
                     {

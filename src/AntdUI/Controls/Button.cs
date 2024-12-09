@@ -2139,13 +2139,18 @@ namespace AntdUI
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
+            base.OnKeyUp(e);
+            if (setNotify)
+            {
+                setNotify = false;
+                return;
+            }
             if (e.KeyCode is Keys.Enter or Keys.Space)
             {
                 ClickAnimation();
                 OnClick(EventArgs.Empty);
                 e.Handled = true;
             }
-            base.OnKeyUp(e);
         }
 
         [DefaultValue(DialogResult.None)]
@@ -2159,29 +2164,14 @@ namespace AntdUI
 
         }
 
+        bool setNotify = false;
         public void PerformClick()
         {
+            setNotify = true;
             ClickAnimation();
             OnClick(EventArgs.Empty);
         }
 
-        bool CanClick()
-        {
-            if (loading) return false;
-            else
-            {
-                if (RespondRealAreas)
-                {
-                    var e = PointToClient(MousePosition);
-                    var rect_read = ReadRectangle;
-                    using (var path = Path(rect_read, radius * Config.Dpi))
-                    {
-                        return path.IsVisible(e);
-                    }
-                }
-                else return true;
-            }
-        }
         bool CanClick(Point e)
         {
             if (loading) return false;

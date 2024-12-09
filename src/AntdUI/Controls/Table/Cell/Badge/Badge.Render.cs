@@ -75,7 +75,6 @@ namespace AntdUI
         }
 
         int TxtHeight = 0;
-        Rectangle Rect;
         Rectangle RectDot;
         public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
