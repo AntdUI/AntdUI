@@ -40,6 +40,10 @@ namespace AntdUI
         public VirtualPanel()
         {
             ScrollBar = new ScrollBar(this);
+            invalidate = it =>
+            {
+                Invalidate(new Rectangle(it.RECT.X + ScrollBar.ValueX, it.RECT.Y + ScrollBar.ValueY, it.RECT.Width, it.RECT.Height));
+            };
             new Thread(LongTask)
             {
                 IsBackground = true
@@ -423,6 +427,7 @@ namespace AntdUI
         }
 
         internal int CellCount = -1;
+        Action<VirtualItem> invalidate;
         int HandLayout(List<VirtualItem> items)
         {
             var _rect = ClientRectangle;
@@ -440,6 +445,7 @@ namespace AntdUI
                     var size = it.Size(g, new VirtualPanelArgs(this, rect, r));
                     it.WIDTH = size.Width;
                     it.HEIGHT = size.Height;
+                    it.invalidate = invalidate;
                 }
                 if (waterfall)
                 {
@@ -1260,7 +1266,6 @@ namespace AntdUI
                     SetHover(it, false);
                 }
             }
-
             if (count > 0) Invalidate();
         }
 
@@ -1312,9 +1317,12 @@ namespace AntdUI
         public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
         public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }
 
+        public void Invalidate() { invalidate?.Invoke(this); }
+
         internal bool SHOW = false;
         internal bool SHOW_RECT = false;
         internal Rectangle RECT;
+        internal Action<VirtualItem>? invalidate;
         internal int WIDTH;
         internal int HEIGHT;
     }

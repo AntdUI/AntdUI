@@ -257,10 +257,7 @@ namespace AntdUI
             }
 
             internal Action? refresh;
-            public void Refresh()
-            {
-                refresh?.Invoke();
-            }
+            public void Refresh() => refresh?.Invoke();
         }
     }
 

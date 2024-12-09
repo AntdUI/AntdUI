@@ -238,6 +238,7 @@ namespace AntdUI
             {
                 if (radius == value) return;
                 radius = value;
+                if (input_SizeChanger != null) input_SizeChanger.Radius = value;
                 Invalidate();
                 OnPropertyChanged("Radius");
             }
@@ -677,6 +678,7 @@ namespace AntdUI
                 {
                     var input = new Input
                     {
+                        Radius = radius,
                         PlaceholderText = placeholder,
                         Size = new Size(width, rect.Height),
                         Dock = DockStyle.Right,
@@ -689,6 +691,7 @@ namespace AntdUI
                 {
                     var input = new Select
                     {
+                        Radius = radius,
                         PlaceholderText = placeholder,
                         ListAutoWidth = true,
                         DropDownArrow = true,

@@ -64,7 +64,7 @@ namespace AntdUI
             if (inEditMode)
             {
                 ScrollBar.OnInvalidate = null;
-                if (!Focused)
+                if (!focused)
                 {
                     if (InvokeRequired)
                     {
@@ -129,12 +129,16 @@ namespace AntdUI
                         if (CellEndEdit != null) isok_end = CellEndEdit(this, new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col));
                         if (isok_end)
                         {
-                            cellText.value = _value;
-                            if (it.RECORD is DataRow) cellText.VALUE = cellText.value = _value;
                             if (GetValue(value, _value, out var o))
                             {
-                                if (it.RECORD is DataRow datarow) datarow[i_col] = o;
+                                cellText.value = _value;
+                                if (it.RECORD is DataRow datarow)
+                                {
+                                    cellText.VALUE = cellText.value = _value;
+                                    datarow[i_col] = o;
+                                }
                                 else SetValue(cell, o);
+                                if (multiline) LoadLayout();
                             }
                         }
                     });

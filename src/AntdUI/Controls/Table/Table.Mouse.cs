@@ -994,11 +994,18 @@ namespace AntdUI
 
         #endregion
 
+        bool focused = false;
+        protected override void OnGotFocus(EventArgs e)
+        {
+            focused = true;
+            base.OnGotFocus(e);
+        }
         protected override void OnLostFocus(EventArgs e)
         {
+            base.OnLostFocus(e);
+            focused = false;
             if (LostFocusClearSelection) SelectedIndex = -1;
             CloseTip(true);
-            base.OnLostFocus(e);
         }
 
         protected override void OnMouseLeave(EventArgs e)

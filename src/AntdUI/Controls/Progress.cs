@@ -566,7 +566,9 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect_t = ClientRectangle;
+            if (rect_t.Width == 0 || rect_t.Height == 0) return;
             var rect = rect_t.PaddingRect(Padding);
+            if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Graphics.High();
             Color color;
             switch (state)
