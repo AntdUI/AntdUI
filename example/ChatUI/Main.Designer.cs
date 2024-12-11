@@ -32,7 +32,7 @@
             AntdUI.Chat.MsgItem msgItem2 = new AntdUI.Chat.MsgItem();
             AntdUI.Chat.MsgItem msgItem3 = new AntdUI.Chat.MsgItem();
             AntdUI.Chat.MsgItem msgItem4 = new AntdUI.Chat.MsgItem();
-            win = new AntdUI.WindowBar();
+            win = new AntdUI.PageHeader();
             msgList = new AntdUI.Chat.MsgList();
             chatList = new AntdUI.Chat.ChatList();
             SuspendLayout();
@@ -102,7 +102,7 @@
 
         #endregion
 
-        private AntdUI.WindowBar win;
+        private AntdUI.PageHeader win;
         private AntdUI.Chat.MsgList msgList;
         private AntdUI.Chat.ChatList chatList;
     }

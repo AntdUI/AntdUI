@@ -47,7 +47,7 @@ namespace SVGView
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            windowBar1 = new AntdUI.WindowBar();
+            windowBar1 = new AntdUI.PageHeader();
             button2 = new AntdUI.Button();
             button1 = new AntdUI.Button();
             input1 = new AntdUI.Input();
@@ -132,7 +132,7 @@ namespace SVGView
 
         #endregion
 
-        private AntdUI.WindowBar windowBar1;
+        private AntdUI.PageHeader windowBar1;
         private AntdUI.Input input1;
         private AntdUI.Button button1;
         private PictureBox pictureBox1;
