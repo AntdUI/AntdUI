@@ -584,81 +584,85 @@ namespace AntdUI
         {
             if (fixedColumnR != null && ScrollBar.ShowX)
             {
-                var lastrow = shows[shows.Count - 1];
-                CELL first = lastrow.row.cells[fixedColumnR[fixedColumnR.Count - 1]], last = lastrow.row.cells[fixedColumnR[0]];
-                if (sx + rect.Width < last.RECT.Right)
+                try
                 {
-                    sFixedR = last.RECT.Right - rect.Width;
-                    showFixedColumnR = true;
-                    int w = last.RECT.Right - first.RECT.Left;
-
-                    var rect_Fixed = new Rectangle(rect.Right - w, rect.Y, last.RECT.Right, last.RECT.Bottom);
-
-                    #region 绘制阴影
-
-                    var rect_show = new Rectangle(rect.Right - w - _gap, rect.Y, _gap * 2, last.RECT.Bottom);
-                    using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table"), 0F))
+                    var lastrow = shows[shows.Count - 1];
+                    CELL first = lastrow.row.cells[fixedColumnR[fixedColumnR.Count - 1]], last = lastrow.row.cells[fixedColumnR[0]];
+                    if (sx + rect.Width < last.RECT.Right)
                     {
-                        g.Fill(brush, rect_show);
-                    }
+                        sFixedR = last.RECT.Right - rect.Width;
+                        showFixedColumnR = true;
+                        int w = last.RECT.Right - first.RECT.Left;
 
-                    using (var brush = new SolidBrush(Colour.BgBase.Get("Table")))
-                    {
-                        g.Fill(brush, rect_Fixed);
-                    }
+                        var rect_Fixed = new Rectangle(rect.Right - w, rect.Y, last.RECT.Right, last.RECT.Bottom);
 
-                    #endregion
+                        #region 绘制阴影
 
-                    g.SetClip(rect_Fixed);
-                    g.TranslateTransform(0, -sy);
-                    foreach (var row in shows)
-                    {
-                        if (row.row.IsColumn)
+                        var rect_show = new Rectangle(rect.Right - w - _gap, rect.Y, _gap * 2, last.RECT.Bottom);
+                        using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table"), 0F))
                         {
-                            PaintTableBgHeader(g, row.row, radius);
-                            g.ResetTransform();
-                            g.TranslateTransform(-sFixedR, -sy);
-                            PaintTableHeader(g, row.row, forecolumn, column_font, radius);
-                            g.ResetTransform();
-                            g.TranslateTransform(0, -sy);
+                            g.Fill(brush, rect_show);
                         }
-                        else
+
+                        using (var brush = new SolidBrush(Colour.BgBase.Get("Table")))
                         {
-                            PaintBgRowFront(g, row);
-                            PaintBg(g, row.row);
+                            g.Fill(brush, rect_Fixed);
                         }
-                    }
-                    g.ResetTransform();
-                    g.TranslateTransform(-sFixedR, -sy);
-                    foreach (var row in shows)
-                    {
-                        foreach (int fixedIndex in fixedColumnR)
+
+                        #endregion
+
+                        g.SetClip(rect_Fixed);
+                        g.TranslateTransform(0, -sy);
+                        foreach (var row in shows)
                         {
-                            if (!row.row.IsColumn)
+                            if (row.row.IsColumn)
                             {
-                                PaintItemBg(g, row.row.cells[fixedIndex]);
-                                PaintItemFixed(g, row.row.cells[fixedIndex], row.row.ENABLE, row.row.ENABLE ? fore : foreEnable, row.style);
+                                PaintTableBgHeader(g, row.row, radius);
+                                g.ResetTransform();
+                                g.TranslateTransform(-sFixedR, -sy);
+                                PaintTableHeader(g, row.row, forecolumn, column_font, radius);
+                                g.ResetTransform();
+                                g.TranslateTransform(0, -sy);
+                            }
+                            else
+                            {
+                                PaintBgRowFront(g, row);
+                                PaintBg(g, row.row);
                             }
                         }
-                    }
-                    g.ResetTransform();
-                    g.TranslateTransform(0, -sy);
-                    if (dividers.Length > 0) foreach (var divider in dividers) g.Fill(brush_split, divider);
-                    g.ResetTransform();
-                    if (fixedHeader)
-                    {
-                        PaintTableBgHeader(g, rows[0], radius);
+                        g.ResetTransform();
+                        g.TranslateTransform(-sFixedR, -sy);
+                        foreach (var row in shows)
+                        {
+                            foreach (int fixedIndex in fixedColumnR)
+                            {
+                                if (!row.row.IsColumn)
+                                {
+                                    PaintItemBg(g, row.row.cells[fixedIndex]);
+                                    PaintItemFixed(g, row.row.cells[fixedIndex], row.row.ENABLE, row.row.ENABLE ? fore : foreEnable, row.style);
+                                }
+                            }
+                        }
+                        g.ResetTransform();
+                        g.TranslateTransform(0, -sy);
+                        if (dividers.Length > 0) foreach (var divider in dividers) g.Fill(brush_split, divider);
+                        g.ResetTransform();
+                        if (fixedHeader)
+                        {
+                            PaintTableBgHeader(g, rows[0], radius);
+                            g.TranslateTransform(-sFixedR, 0);
+                            PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
+                        }
+                        g.ResetTransform();
                         g.TranslateTransform(-sFixedR, 0);
-                        PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
-                    }
-                    g.ResetTransform();
-                    g.TranslateTransform(-sFixedR, 0);
-                    if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.Fill(brush_split, divider);
+                        if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.Fill(brush_split, divider);
 
-                    g.ResetTransform();
-                    g.ResetClip();
+                        g.ResetTransform();
+                        g.ResetClip();
+                    }
+                    else showFixedColumnR = false;
                 }
-                else showFixedColumnR = false;
+                catch { }
             }
             else showFixedColumnR = false;
         }

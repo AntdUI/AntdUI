@@ -272,8 +272,11 @@ namespace AntdUI
         {
             Dock = control.Dock;
             Anchor = control.Anchor;
-            control.Dock = DockStyle.None;
-            control.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            if (control.Visible)
+            {
+                control.Dock = DockStyle.None;
+                control.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            }
         }
         public DockStyle Dock { get; set; }
         public AnchorStyles Anchor { get; set; }

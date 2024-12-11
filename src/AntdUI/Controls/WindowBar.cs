@@ -32,6 +32,7 @@ namespace AntdUI
     [Description("WindowBar 窗口栏")]
     [ToolboxItem(true)]
     [Designer(typeof(IControlDesigner))]
+    [Obsolete("use PageHeader")]
     public class WindowBar : IControl, IEventListener
     {
         #region 属性

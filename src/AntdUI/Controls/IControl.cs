@@ -55,7 +55,6 @@ namespace AntdUI
             {
                 if (visible == value) return;
                 visible = value;
-
                 if (InvokeRequired) Invoke(new Action(() => base.Visible = value));
                 else base.Visible = value;
             }
