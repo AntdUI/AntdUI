@@ -27,8 +27,7 @@ namespace AntdUI
     {
         protected override void OnFontChanged(EventArgs e)
         {
-            LoadLayout();
-            Invalidate();
+            if (LoadLayout()) Invalidate();
             base.OnFontChanged(e);
         }
 
@@ -58,14 +57,16 @@ namespace AntdUI
         Rectangle[] dividers = new Rectangle[0], dividerHs = new Rectangle[0];
         MoveHeader[] moveheaders = new MoveHeader[0];
 
-        public void LoadLayout()
+        public bool LoadLayout()
         {
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
                 if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
                 else show_oldrect = null;
+                return true;
             }
+            return false;
         }
 
         void LoadLayout(Rectangle rect_t)

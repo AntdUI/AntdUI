@@ -56,8 +56,7 @@ namespace AntdUI
                 if (columns == value) return;
                 SortHeader = null;
                 columns = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 if (value == null) return;
                 value.table = this;
                 OnPropertyChanged("Columns");
@@ -80,8 +79,7 @@ namespace AntdUI
                 ScrollBar.Clear();
                 ExtractHeaderFixed();
                 ExtractData();
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("DataSource");
             }
         }
@@ -132,8 +130,7 @@ namespace AntdUI
             {
                 if (_gap == value) return;
                 _gap = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("Gap");
             }
         }
@@ -168,8 +165,7 @@ namespace AntdUI
                 if (visibleHeader == value) return;
                 visibleHeader = value;
                 ScrollBar.RB = !value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("VisibleHeader");
             }
         }
@@ -186,8 +182,7 @@ namespace AntdUI
             {
                 if (enableHeaderResizing == value) return;
                 enableHeaderResizing = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("EnableHeaderResizing");
             }
         }
@@ -216,8 +211,7 @@ namespace AntdUI
             {
                 if (bordered == value) return;
                 bordered = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("Bordered");
             }
         }
@@ -253,8 +247,7 @@ namespace AntdUI
             {
                 if (_checksize == value) return;
                 _checksize = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("CheckSize");
             }
         }
@@ -271,8 +264,7 @@ namespace AntdUI
             {
                 if (_switchsize == value) return;
                 _switchsize = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("SwitchSize");
             }
         }
@@ -321,8 +313,7 @@ namespace AntdUI
             {
                 if (rowHeight == value) return;
                 rowHeight = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("RowHeight");
             }
         }
@@ -339,8 +330,7 @@ namespace AntdUI
             {
                 if (rowHeightHeader == value) return;
                 rowHeightHeader = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("RowHeightHeader");
             }
         }
@@ -390,8 +380,7 @@ namespace AntdUI
             {
                 if (emptyHeader == value) return;
                 emptyHeader = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("EmptyHeader");
             }
         }
@@ -1368,15 +1357,13 @@ namespace AntdUI
         void Invalidate()
         {
             if (PARENT == null) return;
-            PARENT.LoadLayout();
-            PARENT.Invalidate();
+            if (PARENT.LoadLayout()) PARENT.Invalidate();
         }
         void Invalidates()
         {
             if (PARENT == null) return;
             PARENT.ExtractHeaderFixed();
-            PARENT.LoadLayout();
-            PARENT.Invalidate();
+            if (PARENT.LoadLayout()) PARENT.Invalidate();
         }
 
         #endregion

@@ -76,6 +76,7 @@ namespace AntdUI
                 config.Content.Tag = config.Content.Size;
                 Helper.DpiAuto(Config.Dpi, config.Content);
             }
+            config.Content.Location = new Point(-tempContent.Width, -tempContent.Height);
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
             LoadContent();
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));

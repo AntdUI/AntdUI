@@ -480,8 +480,7 @@ namespace AntdUI
                         if (width < item.min_width) return;
                         if (tmpcol_width.ContainsKey(item.i)) tmpcol_width[item.i] = width;
                         else tmpcol_width.Add(item.i, width);
-                        LoadLayout();
-                        Invalidate();
+                        if (LoadLayout()) Invalidate();
                         SetCursor(CursorType.VSplit);
                         return;
                     }

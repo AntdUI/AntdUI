@@ -165,11 +165,20 @@ namespace AntdUI
             base.OnFontChanged(e);
         }
 
+        int loopSpeed = 10;
         /// <summary>
         /// 文本轮播速率
         /// </summary>
         [Description("文本轮播速率"), Category("外观"), DefaultValue(10)]
-        public int LoopSpeed { get; set; } = 10;
+        public int LoopSpeed
+        {
+            get => loopSpeed;
+            set
+            {
+                if (value < 1) value = 1;
+                loopSpeed = value;
+            }
+        }
 
         #region 动画
 
@@ -181,7 +190,7 @@ namespace AntdUI
             {
                 task = new ITask(this, () =>
                 {
-                    if (font_size.HasValue)
+                    if (font_size.HasValue && font_size.Value.Width > 0)
                     {
                         val += 1;
                         if (val > font_size.Value.Width)
@@ -191,6 +200,7 @@ namespace AntdUI
                         }
                         Invalidate();
                     }
+                    else System.Threading.Thread.Sleep(1000);
                     return loop;
                 }, LoopSpeed);
             }
@@ -219,11 +229,12 @@ namespace AntdUI
         {
             var rect = DisplayRectangle;
             var g = e.Graphics.High();
+            bool hasText = string.IsNullOrEmpty(Text);
             if (icon == TType.None)
             {
                 if (loop)
                 {
-                    if (font_size == null && !string.IsNullOrEmpty(Text)) font_size = g.MeasureString(Text, Font);
+                    if (font_size == null && !hasText) font_size = g.MeasureString(Text, Font);
                     if (font_size.HasValue)
                     {
                         g.SetClip(rect);
@@ -235,12 +246,15 @@ namespace AntdUI
                 {
                     if (string.IsNullOrEmpty(TextTitle))
                     {
-                        var size = g.MeasureString(Text, Font);
-                        font_size = size;
-                        int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
+                        if (!hasText)
+                        {
+                            var size = g.MeasureString(Text, Font);
+                            font_size = size;
+                            int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
 
-                        var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
-                        g.String(Text, Font, ForeColor, rect_txt, stringLeft);
+                            var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
+                            g.String(Text, Font, ForeColor, rect_txt, stringLeft);
+                        }
                     }
                     else
                     {
@@ -295,7 +309,7 @@ namespace AntdUI
                     g.Fill(back, path);
                     if (loop)
                     {
-                        if (font_size == null && !string.IsNullOrEmpty(Text)) font_size = g.MeasureString(Text, Font);
+                        if (font_size == null && !hasText) font_size = g.MeasureString(Text, Font);
                         if (font_size.HasValue)
                         {
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
@@ -307,8 +321,11 @@ namespace AntdUI
                     }
                     else
                     {
-                        var size = g.MeasureString(Text, Font);
-                        font_size = size;
+                        if (!hasText)
+                        {
+                            var size = g.MeasureString(Text, Font);
+                            font_size = size;
+                        }
                         if (string.IsNullOrEmpty(TextTitle))
                         {
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);

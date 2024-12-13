@@ -139,6 +139,7 @@ namespace AntdUI
                                 }
                                 else SetValue(cell, o);
                                 if (multiline) LoadLayout();
+                                CellEditComplete?.Invoke(this, EventArgs.Empty);
                             }
                         }
                     });
@@ -195,6 +196,7 @@ namespace AntdUI
                                             else SetValue(cell, o);
                                         }
                                     }
+                                    CellEditComplete?.Invoke(this, EventArgs.Empty);  
                                 }
                             });
                             CellBeginEditInputStyle?.Invoke(this, new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, ref edit_input));

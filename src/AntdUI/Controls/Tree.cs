@@ -755,7 +755,7 @@ namespace AntdUI
         }
         bool IMouseDown(MouseEventArgs e, TreeItem item)
         {
-            int down = item.Contains(e.Location, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable);
+            int down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
             if (down > 0)
             {
                 MDown = item;
@@ -775,7 +775,7 @@ namespace AntdUI
             bool can = item.CanExpand;
             if (MDown == item)
             {
-                int down = item.Contains(e.Location, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable);
+                int down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
                 if (down > 0)
                 {
                     if (blockNode)
@@ -855,19 +855,19 @@ namespace AntdUI
                 {
                     if (items == null || items.Count == 0) return;
                     int hand = 0;
-                    foreach (var it in items) IMouseMove(it, e.Location, ref hand);
+                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref hand);
                     SetCursor(hand > 0);
                 }
             }
             else ILeave();
         }
 
-        void IMouseMove(TreeItem item, Point point, ref int hand)
+        void IMouseMove(TreeItem item, int x, int y, ref int hand)
         {
             if (item.show)
             {
-                if (item.Contains(point, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable) > 0) hand++;
-                if (item.items != null) foreach (var sub in item.items) IMouseMove(sub, point, ref hand);
+                if (item.Contains(x, y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode) > 0) hand++;
+                if (item.items != null) foreach (var sub in item.items) IMouseMove(sub, x, y, ref hand);
             }
         }
 
@@ -1463,25 +1463,46 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle arr_rect { get; set; }
 
-        internal int Contains(Point point, int x, int y, bool checkable)
+        internal int Contains(int x, int y, int sx, int sy, bool checkable, bool blockNode)
         {
             if (visible && enabled)
             {
-                var p = new Point(point.X + x, point.Y + y);
-                if (rect.Contains(p))
+                if (blockNode)
                 {
-                    Hover = true;
-                    return 1;
+                    sx = 0;
+                    if (rect.Contains(x + sx, y + sy))
+                    {
+                        Hover = true;
+                        return 1;
+                    }
+                    else if (arr_rect.Contains(x + sx, y + sy) && CanExpand)
+                    {
+                        Hover = rect.Contains(arr_rect);
+                        return 2;
+                    }
+                    else if (checkable && check_rect.Contains(x + sx, y + sy))
+                    {
+                        Hover = rect.Contains(arr_rect);
+                        return 3;
+                    }
                 }
-                else if (arr_rect.Contains(p) && CanExpand)
+                else
                 {
-                    Hover = rect.Contains(arr_rect);
-                    return 2;
-                }
-                else if (checkable && check_rect.Contains(p))
-                {
-                    Hover = rect.Contains(arr_rect);
-                    return 3;
+                    if (rect.Contains(x + sx, y + sy) || ico_rect.Contains(x + sx, y + sy))
+                    {
+                        Hover = true;
+                        return 1;
+                    }
+                    else if (arr_rect.Contains(x + sx, y + sy) && CanExpand)
+                    {
+                        Hover = rect.Contains(arr_rect);
+                        return 2;
+                    }
+                    else if (checkable && check_rect.Contains(x + sx, y + sy))
+                    {
+                        Hover = rect.Contains(arr_rect);
+                        return 3;
+                    }
                 }
             }
             Hover = false;

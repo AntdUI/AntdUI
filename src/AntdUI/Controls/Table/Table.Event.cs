@@ -136,6 +136,12 @@ namespace AntdUI
         [Description("编辑后发生"), Category("行为")]
         public event EndEditEventHandler? CellEndEdit;
 
+        /// <summary>
+        /// 编辑完成后发生
+        /// </summary>
+        [Description("编辑完成后发生"), Category("行为")]
+        public event EventHandler? CellEditComplete;
+
         #endregion
 
         public delegate CellStyleInfo? SetRowStyleEventHandler(object sender, TableSetRowStyleEventArgs e);
