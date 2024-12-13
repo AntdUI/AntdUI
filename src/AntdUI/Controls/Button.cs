@@ -2140,12 +2140,7 @@ namespace AntdUI
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
-            if (setNotify)
-            {
-                setNotify = false;
-                return;
-            }
-            if (e.KeyCode is Keys.Enter or Keys.Space)
+            if (e.KeyCode is Keys.Space)
             {
                 ClickAnimation();
                 OnClick(EventArgs.Empty);
@@ -2164,12 +2159,13 @@ namespace AntdUI
 
         }
 
-        bool setNotify = false;
         public void PerformClick()
         {
-            setNotify = true;
-            ClickAnimation();
-            OnClick(EventArgs.Empty);
+            if (CanSelect)
+            {
+                ClickAnimation();
+                OnClick(EventArgs.Empty);
+            }
         }
 
         bool CanClick(Point e)

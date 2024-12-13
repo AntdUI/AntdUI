@@ -39,10 +39,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void success(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.Success, align, font, autoClose));
-        }
+        public static void success(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Success, align, font, autoClose));
 
         /// <summary>
         /// 信息通知
@@ -53,10 +50,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void info(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.Info, align, font, autoClose));
-        }
+        public static void info(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Info, align, font, autoClose));
 
         /// <summary>
         /// 警告通知
@@ -67,10 +61,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void warn(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.Warn, align, font, autoClose));
-        }
+        public static void warn(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Warn, align, font, autoClose));
 
         /// <summary>
         /// 失败通知
@@ -81,10 +72,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void error(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.Error, align, font, autoClose));
-        }
+        public static void error(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Error, align, font, autoClose));
 
         /// <summary>
         /// 普通通知
@@ -95,10 +83,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void open(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.None, align, font, autoClose));
-        }
+        public static void open(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.None, align, font, autoClose));
 
         /// <summary>
         /// Notification 通知提醒框

@@ -687,6 +687,7 @@ namespace AntdUI
                 return Helper.GDI(g =>
                 {
                     var font_size = g.MeasureString(Text ?? Config.NullText, Font);
+                    if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
                         float add = 0;

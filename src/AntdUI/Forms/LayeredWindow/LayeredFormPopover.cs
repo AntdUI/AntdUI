@@ -32,12 +32,13 @@ namespace AntdUI
         public override bool MessageEnable => true;
         public override bool MessageCloseSub => true;
 
+        internal bool topMost = false;
         Form? form = null;
         public LayeredFormPopover(Popover.Config _config)
         {
             maxalpha = 255;
             config = _config;
-            config.Control.SetTopMost(Handle);
+            topMost = config.Control.SetTopMost(Handle);
             Font = config.Font ?? config.Control.Font;
 
             Helper.GDI(g =>

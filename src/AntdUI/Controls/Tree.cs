@@ -1465,27 +1465,27 @@ namespace AntdUI
 
         internal int Contains(Point point, int x, int y, bool checkable)
         {
-            var p = new Point(point.X + x, point.Y + y);
-            if (rect.Contains(p))
+            if (visible && enabled)
             {
-                Hover = true;
-                return 1;
+                var p = new Point(point.X + x, point.Y + y);
+                if (rect.Contains(p))
+                {
+                    Hover = true;
+                    return 1;
+                }
+                else if (arr_rect.Contains(p) && CanExpand)
+                {
+                    Hover = rect.Contains(arr_rect);
+                    return 2;
+                }
+                else if (checkable && check_rect.Contains(p))
+                {
+                    Hover = rect.Contains(arr_rect);
+                    return 3;
+                }
             }
-            else if (arr_rect.Contains(p) && CanExpand)
-            {
-                Hover = rect.Contains(arr_rect);
-                return 2;
-            }
-            else if (checkable && check_rect.Contains(p))
-            {
-                Hover = rect.Contains(arr_rect);
-                return 3;
-            }
-            else
-            {
-                Hover = false;
-                return 0;
-            }
+            Hover = false;
+            return 0;
         }
 
         internal float AnimationHoverValue = 0;
