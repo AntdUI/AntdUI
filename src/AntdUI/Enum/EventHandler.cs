@@ -439,6 +439,25 @@ namespace AntdUI
         public int RowIndex { get; private set; }
     }
 
+    public class TableSortModeEventArgs : EventArgs
+    {
+        public TableSortModeEventArgs(SortMode sortMode, Column column)
+        {
+            SortMode = sortMode;
+            Column = column;
+        }
+
+        /// <summary>
+        /// 排序方式
+        /// </summary>
+        public SortMode SortMode { get; private set; }
+
+        /// <summary>
+        /// 表头
+        /// </summary>
+        public Column Column { get; private set; }
+    }
+
     public class ITableEventArgs : EventArgs
     {
         public ITableEventArgs(object? record, int rowIndex, int columnIndex)

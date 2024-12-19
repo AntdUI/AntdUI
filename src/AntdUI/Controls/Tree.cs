@@ -364,7 +364,6 @@ namespace AntdUI
             set => items = value.BindData(this);
         }
 
-
         bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
         public bool PauseLayout

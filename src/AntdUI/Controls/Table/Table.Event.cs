@@ -78,10 +78,7 @@ namespace AntdUI
         [Description("全局 CheckState 属性值更改时发生"), Category("行为")]
         public event CheckStateEventHandler? CheckedOverallChanged = null;
 
-        internal void OnCheckedOverallChanged(ColumnCheck column, CheckState checkState)
-        {
-            CheckedOverallChanged?.Invoke(this, new CheckStateEventArgs(column, checkState));
-        }
+        internal void OnCheckedOverallChanged(ColumnCheck column, CheckState checkState) => CheckedOverallChanged?.Invoke(this, new CheckStateEventArgs(column, checkState));
 
         /// <summary>
         /// 单击时发生
@@ -164,14 +161,16 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 点击事件
-        /// </summary>
-        public delegate void SortEventHandler(object sender, TableClickEventArgs e);
-
-        /// <summary>
         /// 行排序时发生
         /// </summary>
         [Description("行排序时发生"), Category("行为")]
         public event IntEventHandler? SortRows;
+
+        public delegate bool SortModeEventHandler(object sender, TableSortModeEventArgs e);
+        /// <summary>
+        /// 点击排序后发生
+        /// </summary>
+        [Description("点击排序后发生"), Category("行为")]
+        public event SortModeEventHandler? SortModeChanged;
     }
 }

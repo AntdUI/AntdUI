@@ -1334,6 +1334,31 @@ namespace AntdUI
             }
         }
 
+        SortMode sortMode = SortMode.NONE;
+        /// <summary>
+        /// 排序模式
+        /// </summary>
+        public SortMode SortMode
+        {
+            get => sortMode;
+            set
+            {
+                if (sortMode == value) return;
+                if (PARENT == null || PARENT.rows == null)
+                {
+                    sortMode = value;
+                    Invalidate();
+                    return;
+                }
+                foreach (var item in PARENT.rows[0].cells)
+                {
+                    if (item.COLUMN.SortOrder) item.COLUMN.sortMode = SortMode.NONE;
+                }
+                sortMode = value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// 树形列
         /// </summary>
@@ -1353,7 +1378,6 @@ namespace AntdUI
 
         internal Table? PARENT { get; set; }
         internal int INDEX { get; set; }
-        internal int SortMode { get; set; }
         void Invalidate()
         {
             if (PARENT == null) return;
@@ -1364,6 +1388,13 @@ namespace AntdUI
             if (PARENT == null) return;
             PARENT.ExtractHeaderFixed();
             if (PARENT.LoadLayout()) PARENT.Invalidate();
+        }
+
+        internal bool SetSortMode(SortMode value)
+        {
+            if (sortMode == value) return false;
+            sortMode = value;
+            return true;
         }
 
         #endregion
@@ -1384,5 +1415,18 @@ namespace AntdUI
         Left,
         Right,
         Center
+    }
+
+    public enum SortMode : int
+    {
+        NONE = 0,
+        /// <summary>
+        /// 升序
+        /// </summary>
+        ASC = 1,
+        /// <summary>
+        /// 降序
+        /// </summary>
+        DESC = 2
     }
 }

@@ -269,8 +269,8 @@ namespace AntdUI
             {
                 if (column.COLUMN.SortOrder)
                 {
-                    g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == 1 ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
-                    g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == 2 ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
+                    g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
+                    g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
                 }
                 if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
                 else

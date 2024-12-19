@@ -362,37 +362,41 @@ namespace AntdUI
                         else if (it.IsColumn && cell.COLUMN.SortOrder && cell is TCellColumn col)
                         {
                             //点击排序
-                            int SortMode;
-                            if (col.rect_up.Contains(r_x, r_y)) SortMode = 1;
-                            else if (col.rect_down.Contains(r_x, r_y)) SortMode = 2;
+                            SortMode sortMode = SortMode.NONE;
+                            if (col.rect_up.Contains(r_x, r_y)) sortMode = SortMode.ASC;
+                            else if (col.rect_down.Contains(r_x, r_y)) sortMode = SortMode.DESC;
                             else
                             {
-                                SortMode = col.COLUMN.SortMode + 1;
-                                if (SortMode > 2) SortMode = 0;
+                                sortMode = col.COLUMN.SortMode + 1;
+                                if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
                             }
-                            if (col.COLUMN.SortMode != SortMode)
+                            if (col.COLUMN.SetSortMode(sortMode))
                             {
-                                col.COLUMN.SortMode = SortMode;
                                 foreach (var item in it.cells)
                                 {
-                                    if (item.COLUMN.SortOrder && item.INDEX != i_c) item.COLUMN.SortMode = 0;
+                                    if (item.COLUMN.SortOrder && item.INDEX != i_c) item.COLUMN.SetSortMode(SortMode.NONE);
                                 }
-                                Invalidate();
-                                switch (SortMode)
+                                var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
+                                if (result) Invalidate();
+                                else
                                 {
-                                    case 1:
-                                        SortDataASC(col.COLUMN.Key);
-                                        break;
-                                    case 2:
-                                        SortDataDESC(col.COLUMN.Key);
-                                        break;
-                                    case 0:
-                                    default:
-                                        SortData = null;
-                                        break;
+                                    Invalidate();
+                                    switch (sortMode)
+                                    {
+                                        case SortMode.ASC:
+                                            SortDataASC(col.COLUMN.Key);
+                                            break;
+                                        case SortMode.DESC:
+                                            SortDataDESC(col.COLUMN.Key);
+                                            break;
+                                        case SortMode.NONE:
+                                        default:
+                                            SortData = null;
+                                            break;
+                                    }
+                                    LoadLayout();
+                                    SortRows?.Invoke(this, new IntEventArgs(i_c));
                                 }
-                                LoadLayout();
-                                SortRows?.Invoke(this, new IntEventArgs(i_c));
                             }
                         }
                         else if (cell is Template template)

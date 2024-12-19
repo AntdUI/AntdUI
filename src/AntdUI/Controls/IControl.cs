@@ -453,6 +453,29 @@ namespace AntdUI
             base.OnMouseWheel(e);
         }
 
+        const int WM_POINTERDOWN = 0x0246, WM_POINTERUP = 0x0247;
+        const int WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202;
+
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            if (Config.TouchClickEnabled)
+            {
+                switch (m.Msg)
+                {
+                    case WM_POINTERDOWN:
+                        Vanara.PInvoke.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
+                        break;
+                    case WM_POINTERUP:
+                        Vanara.PInvoke.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
+                        break;
+                    default:
+                        base.WndProc(ref m);
+                        return;
+                }
+            }
+            else base.WndProc(ref m);
+        }
+
         #endregion
 
         #region 拖拽
