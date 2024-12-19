@@ -172,5 +172,11 @@ namespace AntdUI
         /// </summary>
         [Description("点击排序后发生"), Category("行为")]
         public event SortModeEventHandler? SortModeChanged;
+
+        /// <summary>
+        /// 选中变化后发生
+        /// </summary>
+        [Description("选中变化后发生"), Category("行为")]
+        public event EventHandler? SelectIndexChanged;
     }
 }

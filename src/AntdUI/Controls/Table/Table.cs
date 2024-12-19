@@ -545,6 +545,7 @@ namespace AntdUI
                 {
                     Invalidate();
                     OnPropertyChanged("SelectedIndex");
+                    SelectIndexChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -564,6 +565,7 @@ namespace AntdUI
                 selectedIndex = value;
                 Invalidate();
                 OnPropertyChanged("SelectedIndexs");
+                SelectIndexChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

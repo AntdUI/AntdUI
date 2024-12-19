@@ -460,49 +460,53 @@ namespace AntdUI
         void PaintItem(Canvas g, int columnIndex, CELL it, bool enable, SolidBrush fore)
         {
             var state = g.Save();
-            if (it is TCellCheck check) PaintCheck(g, check, enable);
-            else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
-            else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
-            else if (it is TCellSort sort)
+            try
             {
-                if (sort.AnimationHover)
+                if (it is TCellCheck check) PaintCheck(g, check, enable);
+                else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
+                else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
+                else if (it is TCellSort sort)
                 {
-                    using (var brush = new SolidBrush(Helper.ToColorN(sort.AnimationHoverValue, Colour.FillTertiary.Get("Table"))))
+                    if (sort.AnimationHover)
+                    {
+                        using (var brush = new SolidBrush(Helper.ToColorN(sort.AnimationHoverValue, Colour.FillTertiary.Get("Table"))))
+                        {
+                            using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
+                            {
+                                g.Fill(brush, path_sort);
+                            }
+                        }
+                    }
+                    else if (sort.Hover)
                     {
                         using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
                         {
-                            g.Fill(brush, path_sort);
+                            g.Fill(Colour.FillTertiary.Get("Table"), path_sort);
                         }
                     }
+                    SvgExtend.GetImgExtend(g, "HolderOutlined", sort.RECT_ICO, fore.Color);
                 }
-                else if (sort.Hover)
+                else if (it is Template template)
                 {
-                    using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
+                    foreach (var item in template.Value) item.Paint(g, Font, enable, fore);
+                }
+                else if (it is TCellText text)
+                {
+                    g.SetClip(it.RECT);
+                    g.String(text.value, Font, fore, text.RECT_REAL, StringF(text.COLUMN));
+                }
+                if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table"), it.RECT);
+                if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
+                {
+                    using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
                     {
-                        g.Fill(Colour.FillTertiary.Get("Table"), path_sort);
+                        g.Fill(Colour.BgBase.Get("Table"), path_check);
+                        g.Draw(Colour.BorderColor.Get("Table"), check_border, path_check);
+                        PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
                     }
                 }
-                SvgExtend.GetImgExtend(g, "HolderOutlined", sort.RECT_ICO, fore.Color);
             }
-            else if (it is Template template)
-            {
-                foreach (var item in template.Value) item.Paint(g, Font, enable, fore);
-            }
-            else if (it is TCellText text)
-            {
-                g.SetClip(it.RECT);
-                g.String(text.value, Font, fore, text.RECT_REAL, StringF(text.COLUMN));
-            }
-            if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table"), it.RECT);
-            if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
-            {
-                using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
-                {
-                    g.Fill(Colour.BgBase.Get("Table"), path_check);
-                    g.Draw(Colour.BorderColor.Get("Table"), check_border, path_check);
-                    PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
-                }
-            }
+            catch { }
             g.Restore(state);
         }
 
