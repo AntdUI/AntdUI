@@ -120,6 +120,11 @@ namespace AntdUI
             }
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            IOnSizeChanged();
+            base.OnHandleCreated(e);
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {

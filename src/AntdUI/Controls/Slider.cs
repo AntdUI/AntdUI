@@ -185,7 +185,7 @@ namespace AntdUI
             {
                 if (align == value) return;
                 align = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
             }
         }

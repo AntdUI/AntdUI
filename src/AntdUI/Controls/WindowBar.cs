@@ -230,7 +230,7 @@ namespace AntdUI
             {
                 if (maximizeBox == value) return;
                 maximizeBox = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
                 OnPropertyChanged("MaximizeBox");
             }
@@ -248,7 +248,7 @@ namespace AntdUI
             {
                 if (minimizeBox == value) return;
                 minimizeBox = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
                 OnPropertyChanged("MinimizeBox");
             }

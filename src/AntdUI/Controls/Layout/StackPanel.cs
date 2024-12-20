@@ -130,6 +130,12 @@ namespace AntdUI
 
         #region 布局
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            IOnSizeChanged();
+            base.OnHandleCreated(e);
+        }
+
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle;

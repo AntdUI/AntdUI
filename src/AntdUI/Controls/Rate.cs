@@ -76,7 +76,7 @@ namespace AntdUI
             {
                 if (count == value) return;
                 count = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
             }
         }
@@ -447,7 +447,7 @@ namespace AntdUI
             {
                 if (autoSize == value) return;
                 autoSize = value;
-                if (value) OnSizeChanged(EventArgs.Empty);
+                if (value) IOnSizeChanged();
             }
         }
 

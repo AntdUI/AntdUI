@@ -662,8 +662,7 @@ namespace AntdUI
                 });
                 if (pyr == pyrn) return;
                 pyr = pyrn;
-                if (InvokeRequired) Invoke(new Action(() => { OnSizeChanged(EventArgs.Empty); }));
-                else OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
             }
         }
         int InitSizeChanger(Rectangle rect)

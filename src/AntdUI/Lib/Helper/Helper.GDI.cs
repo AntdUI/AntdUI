@@ -726,7 +726,7 @@ namespace AntdUI
         {
             var color = badge.Fill ?? control.BadgeBack ?? Colour.Error.Get("Badge");
             float borsize = Config.Dpi;
-            if (badge.Count == 0)
+            if (badge.Content == null || string.IsNullOrEmpty(badge.Content))
             {
                 var rect_badge = new RectangleF(rect.Right - 10F, rect.Top + 2F, 8, 8);
                 g.FillEllipse(color, rect_badge);
@@ -736,29 +736,46 @@ namespace AntdUI
             {
                 using (var s_f = SF_NoWrap())
                 {
-                    string countStr;
-                    if (badge.Count == 999) countStr = "999";
-                    else if (badge.Count > 1000) countStr = (badge.Count / 1000).ToString().Substring(0, 1) + "K+";
-                    else if (badge.Count > 99) countStr = "99+";
-                    else countStr = badge.Count.ToString();
-
+                    string countStr = badge.Content;
                     var size = g.MeasureString(countStr, font);
                     int size_badge = (int)(size.Height * 1.2F);
                     if (size.Height > size.Width)
                     {
                         var rect_badge = new Rectangle(rect.Right - size_badge + 6, rect.Top - 8, size_badge, size_badge);
-                        g.FillEllipse(color, rect_badge);
-                        g.DrawEllipse(Colour.ErrorColor.Get("Badge"), borsize, rect_badge);
+                        if (badge.Round)
+                        {
+                            g.FillEllipse(color, rect_badge);
+                            g.DrawEllipse(Colour.ErrorColor.Get("Badge"), borsize, rect_badge);
+                        }
+                        else
+                        {
+                            using (var path = rect_badge.RoundPath(badge.Radius * Config.Dpi))
+                            {
+                                g.Fill(color, path);
+                                g.Draw(Colour.ErrorColor.Get("Badge"), borsize, path);
+                            }
+                        }
                         g.String(countStr, font, Colour.ErrorColor.Get("Badge"), rect_badge, s_f);
                     }
                     else
                     {
                         int w_badge = size.Width + (size_badge - size.Height);
                         var rect_badge = new Rectangle(rect.Right - w_badge + 6, rect.Top - 8, w_badge, size_badge);
-                        using (var path = rect_badge.RoundPath(rect_badge.Height))
+                        if (badge.Round)
                         {
-                            g.Fill(color, path);
-                            g.Draw(Colour.ErrorColor.Get("Badge"), borsize, path);
+                            using (var path = rect_badge.RoundPath(rect_badge.Height))
+                            {
+                                g.Fill(color, path);
+                                g.Draw(Colour.ErrorColor.Get("Badge"), borsize, path);
+                            }
+                        }
+                        else
+                        {
+                            using (var path = rect_badge.RoundPath(badge.Radius * Config.Dpi))
+                            {
+                                g.Fill(color, path);
+                                g.Draw(Colour.ErrorColor.Get("Badge"), borsize, path);
+                            }
                         }
                         g.String(countStr, font, Colour.ErrorColor.Get("Badge"), rect_badge, s_f);
                     }

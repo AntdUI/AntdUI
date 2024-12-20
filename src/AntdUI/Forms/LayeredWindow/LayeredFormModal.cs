@@ -161,7 +161,7 @@ namespace AntdUI
                     }
                 }
                 Controls.Add(panel_main);
-                panel_main.MouseMove += Window_MouseDown;
+                if (config.Draggable) panel_main.MouseMove += Window_MouseDown;
             }
 
             if (config.Keyboard)
@@ -454,7 +454,7 @@ namespace AntdUI
                 base.OnMouseUp(e);
                 return;
             }
-            DraggableMouseDown();
+            if (config.Draggable) DraggableMouseDown();
             base.OnMouseDown(e);
         }
 

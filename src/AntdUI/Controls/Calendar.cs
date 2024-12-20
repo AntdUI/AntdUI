@@ -108,7 +108,7 @@ namespace AntdUI
             {
                 if (full == value) return;
                 full = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
                 OnPropertyChanged("Full");
             }
@@ -126,7 +126,7 @@ namespace AntdUI
             {
                 if (chinese == value) return;
                 chinese = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
                 OnPropertyChanged("ShowChinese");
             }
@@ -144,7 +144,7 @@ namespace AntdUI
             {
                 if (showButtonToDay == value) return;
                 showButtonToDay = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
                 OnPropertyChanged("ShowButtonToDay");
             }
@@ -274,7 +274,7 @@ namespace AntdUI
 
                 #endregion
 
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
 
                 LoadBadge();
 
@@ -901,7 +901,7 @@ namespace AntdUI
         {
             if (type == showType) return;
             showType = type;
-            OnSizeChanged(EventArgs.Empty);
+            IOnSizeChanged();
             Invalidate();
         }
 

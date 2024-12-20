@@ -68,7 +68,7 @@ namespace AntdUI
                 _padding = value;
                 shadow_temp?.Dispose();
                 shadow_temp = null;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 OnPropertyChanged("padding");
             }
         }
@@ -87,7 +87,7 @@ namespace AntdUI
                 shadow = value;
                 shadow_temp?.Dispose();
                 shadow_temp = null;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 OnPropertyChanged("Shadow");
             }
         }
@@ -126,7 +126,7 @@ namespace AntdUI
                 shadowOffsetX = value;
                 shadow_temp?.Dispose();
                 shadow_temp = null;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 OnPropertyChanged("ShadowOffsetX");
             }
         }
@@ -145,7 +145,7 @@ namespace AntdUI
                 shadowOffsetY = value;
                 shadow_temp?.Dispose();
                 shadow_temp = null;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 OnPropertyChanged("ShadowOffsetY");
             }
         }
@@ -206,7 +206,7 @@ namespace AntdUI
                 shadowAlign = value;
                 shadow_temp?.Dispose();
                 shadow_temp = null;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 OnPropertyChanged("ShadowAlign");
             }
         }
@@ -321,7 +321,7 @@ namespace AntdUI
             {
                 if (borderWidth == value) return;
                 borderWidth = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 OnPropertyChanged("BorderWidth");
             }
         }

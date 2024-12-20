@@ -340,7 +340,7 @@ namespace AntdUI
             {
                 if (showButton == value) return;
                 showButton = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
                 OnPropertyChanged("ShowButton");
             }
@@ -360,7 +360,7 @@ namespace AntdUI
                 maximizeBox = value;
                 if (showButton)
                 {
-                    OnSizeChanged(EventArgs.Empty);
+                    IOnSizeChanged();
                     Invalidate();
                 }
                 OnPropertyChanged("MaximizeBox");
@@ -381,7 +381,7 @@ namespace AntdUI
                 minimizeBox = value;
                 if (showButton)
                 {
-                    OnSizeChanged(EventArgs.Empty);
+                    IOnSizeChanged();
                     Invalidate();
                 }
                 OnPropertyChanged("MinimizeBox");
@@ -491,10 +491,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
 
         StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
 

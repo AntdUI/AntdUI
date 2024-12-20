@@ -310,15 +310,29 @@ namespace AntdUI
             Date = date;
             Fill = fill;
         }
+        public DateBadge(string date, string content)
+        {
+            Date = date;
+            Content = content;
+        }
         public DateBadge(string date, int count)
         {
+            Round = true;
             Date = date;
-            Count = count;
+            if (count > 0)
+            {
+                if (count == 999) Content = "999";
+                else if (count > 1000) Content = (count / 1000).ToString().Substring(0, 1) + "K+";
+                else if (count > 99) Content = "99+";
+                else Content = count.ToString();
+            }
         }
-        public DateBadge(string date, int count, Color fill)
+        public DateBadge(string date, int count, Color fill) : this(date, count)
         {
-            Date = date;
-            Count = count;
+            Fill = fill;
+        }
+        public DateBadge(string date, string content, Color fill) : this(date, content)
+        {
             Fill = fill;
         }
         /// <summary>
@@ -327,13 +341,17 @@ namespace AntdUI
         public string Date { get; set; }
 
         /// <summary>
-        /// 徽标计数 0是点
+        /// 徽标内容 空字符串是点
         /// </summary>
-        public int Count { get; set; }
+        public string? Content { get; set; }
 
         /// <summary>
         /// 填充颜色
         /// </summary>
         public Color? Fill { get; set; }
+
+        public bool Round { get; set; }
+
+        public int Radius { get; set; } = 6;
     }
 }
