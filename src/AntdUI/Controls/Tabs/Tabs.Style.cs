@@ -1546,16 +1546,32 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it;
-                                        if (it.Key.HasIcon)
+                                        Rectangle rect_it = new Rectangle();
+                                        if (it.Key.ReadOnly)
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2 - 2 - bordersize);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            if (it.Key.HasIcon)
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + ico_size + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
+                                            }
+                                            else
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it));
+                                            }
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap + close_size + gap, xy2 - 2 - bordersize);
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                            if (it.Key.HasIcon)
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            }
+                                            else
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + close_size + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                            }
                                         }
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Width + cardgap;
@@ -1563,7 +1579,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, 0, xy2);
+                                tabs.SetPadding(0, 0, 0, xy2 + 2);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1572,18 +1588,26 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2 - 2 - bordersize, it.Value.Height + gap);
-                                        if (it.Key.HasIcon)
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
+                                        if (it.Key.ReadOnly)
+                                        {
+                                            if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
+                                            else rect_list.Add(new TabPageRect(rect_it));
+                                        }
                                         else
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                        {
+                                            if (it.Key.HasIcon)
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            else
+                                                rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                        }
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Height + cardgap;
                                     }
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(xy2, 0, 0, 0);
+                                tabs.SetPadding(xy2 + 2, 0, 0, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1593,19 +1617,28 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(x + 2 + bordersize, rect.Y + xy, xy2 - 2 - bordersize, it.Value.Height + gap);
-                                        if (it.Key.HasIcon)
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
+                                        if (it.Key.ReadOnly)
+                                        {
+                                            if (it.Key.HasIcon)
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
+                                            else
+                                                rect_list.Add(new TabPageRect(rect_it));
+                                        }
                                         else
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
-
+                                        {
+                                            if (it.Key.HasIcon)
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            else
+                                                rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                        }
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Height + cardgap;
                                     }
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, xy2, 0);
+                                tabs.SetPadding(0, 0, xy2 + 2, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1615,16 +1648,32 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it;
-                                        if (it.Key.HasIcon)
+                                        Rectangle rect_it = new Rectangle();
+                                        if (it.Key.ReadOnly)
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2 - 2 - bordersize);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            if (it.Key.HasIcon)
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
+                                            }
+                                            else
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it));
+                                            }
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + close_size + gap, xy2 - 2 - bordersize);
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                            if (it.Key.HasIcon)
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            }
+                                            else
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + close_size + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                            }
                                         }
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Width + cardgap;
@@ -1632,7 +1681,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, xy2, 0, 0);
+                                tabs.SetPadding(0, xy2 + 2, 0, 0);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1651,12 +1700,12 @@ namespace AntdUI
                                         Rectangle rect_it;
                                         if (it.Key.HasIcon)
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap + ico_size + gap, xy2 - 2 - bordersize);
+                                            rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + ico_size + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap, xy2 - 2 - bordersize);
+                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it));
                                         }
                                         it.Key.SetRect(rect_it);
@@ -1665,7 +1714,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, 0, xy2);
+                                tabs.SetPadding(0, 0, 0, xy2 + 2);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1674,7 +1723,7 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2 - 2 - bordersize, it.Value.Height + gap);
+                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
                                         if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         else rect_list.Add(new TabPageRect(rect_it));
                                         it.Key.SetRect(rect_it);
@@ -1683,7 +1732,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(xy2, 0, 0, 0);
+                                tabs.SetPadding(xy2 + 2, 0, 0, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1693,7 +1742,7 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(x + 2 + bordersize, rect.Y + xy, xy2 - 2 - bordersize, it.Value.Height + gap);
+                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
                                         if (it.Key.HasIcon)
                                             rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         else
@@ -1704,7 +1753,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, xy2, 0);
+                                tabs.SetPadding(0, 0, xy2 + 2, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1717,12 +1766,12 @@ namespace AntdUI
                                         Rectangle rect_it;
                                         if (it.Key.HasIcon)
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + gap, xy2 - 2 - bordersize);
+                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap, xy2 - 2 - bordersize);
+                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it));
                                         }
                                         it.Key.SetRect(rect_it);
@@ -1731,7 +1780,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, xy2, 0, 0);
+                                tabs.SetPadding(0, xy2 + 2, 0, 0);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1973,7 +2022,7 @@ namespace AntdUI
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
-                                                else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
+                                                else PaintText(g, rects[i], owner, page, brush_fore, (closable == CloseType.always && !page.ReadOnly) ? true : false);
                                             }
                                         }
                                     }
@@ -2000,7 +2049,7 @@ namespace AntdUI
                                             if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                             g.Fill(brush_bg_active, path);
                                         }
-                                        PaintText(g, rects[select], owner, sel, brush_fill, true);
+                                        PaintText(g, rects[select], owner, sel, brush_fill, !sel.ReadOnly);
                                     }
                                 }
                                 break;
