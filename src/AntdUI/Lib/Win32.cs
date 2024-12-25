@@ -145,23 +145,30 @@ namespace AntdUI
 
         #region 文本框
 
-        [DllImport("imm32.dll")]
+        [DllImport("Imm32.dll")]
         public static extern IntPtr ImmGetContext(IntPtr hWnd);
+
+        [DllImport("Imm32.dll")]
+        public static extern bool ImmGetOpenStatus(IntPtr himc);
+
         [DllImport("Imm32.dll")]
         public static extern bool ImmReleaseContext(IntPtr hWnd, IntPtr hIMC);
         [DllImport("Imm32.dll", CharSet = CharSet.Unicode)]
         public static extern int ImmGetCompositionString(IntPtr hIMC, int dwIndex, byte[] lpBuf, int dwBufLen);
-        [DllImport("imm32.dll")]
+        [DllImport("Imm32.dll")]
         public static extern bool ImmSetCandidateWindow(IntPtr hImc, ref CANDIDATEFORM fuck);
-        [DllImport("imm32.dll")]
+        [DllImport("Imm32.dll")]
         public static extern bool ImmSetCompositionWindow(IntPtr hIMC, ref COMPOSITIONFORM lpCompForm);
-        [DllImport("imm32.dll")]
+        [DllImport("Imm32.dll")]
         public static extern bool ImmSetCompositionFont(IntPtr hIMC, ref LOGFONT logFont);
 
         public const int SRCCOPY = 0x00CC0020;
 
         public const int GCS_COMPSTR = 0x0008;
         public const int GCS_RESULTSTR = 0x0800;
+
+        public const int WM_GETDLGCODE = 0x0087;
+
         public const int WM_IME_REQUEST = 0x0288;
         public const int WM_IME_COMPOSITION = 0x010F;
         public const int WM_IME_ENDCOMPOSITION = 0x010E;
@@ -173,6 +180,11 @@ namespace AntdUI
         public const int CFS_FORCE_POSITION = 0x0020;
         public const int CFS_CANDIDATEPOS = 0x0040;
         public const int CFS_EXCLUDE = 0x0080;
+
+        public const int WM_KEYFIRST = 0x100;
+        public const int WM_KEYLAST = 0x108;
+
+        public const int WM_IME_CHAR = 0x0286;
 
         public struct CANDIDATEFORM
         {

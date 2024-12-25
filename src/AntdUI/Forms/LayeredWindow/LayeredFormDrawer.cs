@@ -407,6 +407,7 @@ namespace AntdUI
             config.OnLoad?.Invoke();
             LoadOK?.Invoke();
             if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
+            LoadEnd = false;
             config.Content.SizeChanged += Content_SizeChanged;
             tempContent?.Dispose();
             tempContent = null;
@@ -500,6 +501,7 @@ namespace AntdUI
             }
         }
 
+        internal bool LoadEnd = true;
         internal Action? LoadOK = null;
 
         Rectangle Ang()

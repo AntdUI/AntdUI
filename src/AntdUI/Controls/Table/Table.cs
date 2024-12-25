@@ -529,9 +529,9 @@ namespace AntdUI
 
         int[] selectedIndex = new int[0];
         /// <summary>
-        /// 选中行
+        /// 选中行（1开始）
         /// </summary>
-        [Description("选中行"), Category("数据"), DefaultValue(-1)]
+        [Browsable(false), Description("选中行（1开始）"), Category("数据"), DefaultValue(-1)]
         public int SelectedIndex
         {
             get
@@ -555,7 +555,7 @@ namespace AntdUI
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor", typeof(UITypeEditor))]
-        [Description("选中多行"), Category("数据")]
+        [Browsable(false), Description("选中多行"), Category("数据")]
         public int[] SelectedIndexs
         {
             get => selectedIndex;

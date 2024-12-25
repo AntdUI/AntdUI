@@ -199,7 +199,7 @@ namespace AntdUI
                 };
                 return;
             }
-            else if (parent is LayeredFormDrawer drawer)
+            else if (parent is LayeredFormDrawer drawer && drawer.LoadEnd)
             {
                 drawer.LoadOK = () =>
                 {

@@ -1379,10 +1379,10 @@ namespace AntdUI
             };
             action_del = (item, index) =>
             {
+                it.Controls.Remove(item);
                 if (index == -1) it.SelectedIndex = 0;
                 else
                 {
-                    it.Controls.Remove(item);
                     int old = it.SelectedIndex;
                     if (old == index)
                     {
