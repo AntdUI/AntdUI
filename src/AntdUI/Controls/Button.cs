@@ -2181,7 +2181,7 @@ namespace AntdUI
                         return path.IsVisible(e);
                     }
                 }
-                else return true;
+                else return ClientRectangle.Contains(e);
             }
         }
 

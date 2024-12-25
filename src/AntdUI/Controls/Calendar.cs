@@ -396,7 +396,6 @@ namespace AntdUI
         CultureInfo Culture;
         string CultureID = Localization.Get("ID", "zh-CN"),
             button_text = Localization.Get("ToDay", "今天"),
-            OKButton = Localization.Get("OK", "确定"),
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
         bool YDR = false;

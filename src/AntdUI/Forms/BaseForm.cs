@@ -375,5 +375,26 @@ namespace AntdUI
         #endregion
 
         #endregion
+
+        #region 按钮点击
+
+        internal Action? ONESC;
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (ONESC == null) return base.ProcessDialogKey(keyData);
+            if ((keyData & (Keys.Alt | Keys.Control)) == Keys.None)
+            {
+                Keys keyCode = keyData & Keys.KeyCode;
+                switch (keyCode)
+                {
+                    case Keys.Escape:
+                        ONESC();
+                        return true;
+                }
+            }
+            return base.ProcessDialogKey(keyData);
+        }
+
+        #endregion
     }
 }

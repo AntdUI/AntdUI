@@ -125,13 +125,11 @@ namespace AntdUI
                 case WindowMessage.WM_NCCALCSIZE when m.WParam != IntPtr.Zero:
                     if (WmNCCalcSize(ref m)) return;
                     break;
-                case WindowMessage.WM_NCACTIVATE:
-                    if (WmNCActivate(ref m)) return;
-                    break;
                 case WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
                 case WindowMessage.WM_ACTIVATEAPP:
+                case WindowMessage.WM_NCACTIVATE:
                     InvalidateNonclient();
                     break;
                 default:
@@ -473,13 +471,6 @@ namespace AntdUI
 
         internal Size? sizeInit;
         Size? sizeNormal;
-        bool WmNCActivate(ref System.Windows.Forms.Message m)
-        {
-            if (m.HWnd == IntPtr.Zero) return false;
-            if (IsIconic(m.HWnd)) return false;
-            m.Result = DefWindowProc(m.HWnd, (uint)m.Msg, m.WParam, new IntPtr(-1));
-            return true;
-        }
 
         #endregion
 

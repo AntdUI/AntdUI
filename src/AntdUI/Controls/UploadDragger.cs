@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -110,6 +111,58 @@ namespace AntdUI
                 fore = value;
                 Invalidate();
                 OnPropertyChanged("ForeColor");
+            }
+        }
+
+        /// <summary>
+        /// 点击上传
+        /// </summary>
+        [Description("点击上传"), Category("行为"), DefaultValue(true)]
+        public bool ClickHand { get; set; } = true;
+
+        /// <summary>
+        /// 多个文件
+        /// </summary>
+        [Description("多个文件"), Category("行为"), DefaultValue(true)]
+        public bool Multiselect { get; set; } = true;
+
+        string? filter = null;
+        /// <summary>
+        /// 文件名筛选器字符串
+        /// </summary>
+        [Description("文件名筛选器字符串"), Category("行为"), DefaultValue(null)]
+        public string? Filter
+        {
+            get => filter;
+            set
+            {
+                if (filter == value) return;
+                filter = value;
+                if (value == null) ONDRAG = null;
+                else
+                {
+                    ONDRAG = (files) =>
+                    {
+                        if (!Multiselect && files.Length > 1) files = new string[] { files[0] };
+                        if (filter == null) return files;
+                        // 实现文件路径过滤 Filter
+                        var filters = filter.Split('|');
+                        if (filters.Length > 1)
+                        {
+                            for (int i = 1; i < filters.Length; i += 2)
+                            {
+                                if (filters[i] == "*.*") return files;
+                                var extensions = filters[i].Split(';');
+                                foreach (var file in files)
+                                {
+                                    var fileExtension = System.IO.Path.GetExtension(file);
+                                    if (Array.Exists(extensions, ext => ext.Equals($"*{fileExtension}", StringComparison.OrdinalIgnoreCase))) return files;
+                                }
+                            }
+                        }
+                        return null;
+                    };
+                }
             }
         }
 
@@ -467,7 +520,49 @@ namespace AntdUI
             }
         }
 
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            if (ClickHand && e.Button == MouseButtons.Left) ManualSelection();
+        }
+
+        public void ManualSelection()
+        {
+            using (var dialog = new OpenFileDialog
+            {
+                Multiselect = Multiselect,
+                Filter = Filter ?? (Localization.Get("All Files", "所有文件") + "|*.*")
+            })
+            {
+                if (dialog.ShowDialog() == DialogResult.OK) OnDragChanged(dialog.FileNames);
+            }
+        }
+
         #endregion
+
+        public void SetFilter(FilterType filterType)
+        {
+            bool all = filterType.HasFlag(FilterType.ALL), video = filterType.HasFlag(FilterType.Video), imgs = filterType.HasFlag(FilterType.Imgs), img = filterType.HasFlag(FilterType.Img);
+            if (video || imgs || img)
+            {
+                var fs = new List<string>(2);
+                if (video) fs.Add(Localization.Get("Video Files", "视频文件") + "|*.mp4;*.avi;*.rm;*.rmvb;*.flv;*.xr;*.mpg;*.vcd;*.svcd;*.dvd;*.vob;*.asf;*.wmv;*.mov;*.qt;*.3gp;*.sdp;*.yuv;*.mkv;*.dat;*.torrent;*.mp3;*.3g2;*.3gp2;*.3gpp;*.aac;*.ac3;*.aif;*.aifc;*.aiff;*.amr;*.amv;*.ape;*.asp;*.bik;*.csf;*.divx;*.evo;*.f4v;*.hlv;*.ifo;*.ivm;*.m1v;*.m2p;*.m2t;*.m2ts;*.m2v;*.m4b;*.m4p;*.m4v;*.mag;*.mid;*.mod;*.movie;*.mp2v;*.mp2;*.mpa;*.mpeg;*.mpeg4;*.mpv2;*.mts;*.ogg;*.ogm;*.pmp;*.pss;*.pva;*.qt;*.ram;*.rp;*.rpm;*.rt;*.scm;*.smi;*.smil;*.svx;*.swf;*.tga;*.tod;*.tp;*.tpr;*.ts;*.voc;*.vp6;*.wav;*.webm;*.wma;*.wm;*.wmp;*.xlmv;*.xv;*.xvid");
+                if (imgs) fs.Add(Localization.Get("Picture Files", "图片文件") + "|*.png;*.gif;*.jpg;*.jpeg;*.bmp");
+                if (img) fs.Add(Localization.Get("Picture Files", "图片文件") + "|*.jpg;*.jpeg;*.png;*.bmp");
+                if (all) fs.Add(Localization.Get("All Files", "所有文件") + "|*.*");
+                Filter = string.Join("|", fs);
+            }
+            else Filter = null;
+        }
+
+        [Flags]
+        public enum FilterType
+        {
+            ALL = 1,
+            Img = 2,
+            Imgs = 3,
+            Video = 4
+        }
 
         protected override void Dispose(bool disposing)
         {

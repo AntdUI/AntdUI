@@ -500,7 +500,8 @@ namespace AntdUI
             if (AllowDrop)
             {
                 OnDragEnter();
-                e.Effect = DragDropEffects.All;
+                if (DragState(e.Data)) e.Effect = DragDropEffects.All;
+                else e.Effect = DragDropEffects.None;
             }
         }
 
@@ -510,19 +511,44 @@ namespace AntdUI
             OnDragLeave();
         }
 
+        internal Func<string[], string[]?>? ONDRAG;
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
             if (e.Data == null) return;
             foreach (string format in e.Data.GetFormats())
             {
-                if (e.Data.GetData(format) is string[] files)
+                if (e.Data.GetData(format) is string[] files && files.Length > 0)
                 {
-                    DragChanged?.Invoke(this, new StringsEventArgs(files));
+                    if (ONDRAG == null) DragChanged?.Invoke(this, new StringsEventArgs(files));
+                    else
+                    {
+                        var r = ONDRAG(files);
+                        if (r != null) DragChanged?.Invoke(this, new StringsEventArgs(r));
+                    }
                     OnDragLeave();
                     return;
                 }
             }
+        }
+
+        bool DragState(IDataObject? Data)
+        {
+            if (Data == null) return false;
+            foreach (string format in Data.GetFormats())
+            {
+                if (Data.GetData(format) is string[] files && files.Length > 0)
+                {
+                    if (ONDRAG == null) return true;
+                    else
+                    {
+                        var r = ONDRAG(files);
+                        if (r == null) return false;
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         #region 事件
@@ -537,6 +563,7 @@ namespace AntdUI
         /// </summary>
         [Description("文件拖拽后时发生"), Category("行为")]
         public event DragEventHandler? DragChanged = null;
+        internal void OnDragChanged(string[] files) => DragChanged?.Invoke(this, new StringsEventArgs(files));
 
         #endregion
 

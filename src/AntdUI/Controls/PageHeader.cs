@@ -164,8 +164,34 @@ namespace AntdUI
             }
         }
 
+        bool cancelButton = false;
         [Description("点击退出关闭"), Category("行为"), DefaultValue(false)]
-        public bool CancelButton { get; set; }
+        public bool CancelButton
+        {
+            get => cancelButton;
+            set
+            {
+                if (cancelButton == value) return;
+                cancelButton = value;
+                if (IsHandleCreated) HandCancelButton(value);
+            }
+        }
+        void HandCancelButton(bool value)
+        {
+            var form = Parent.FindPARENT();
+            if (form is BaseForm formb)
+            {
+                if (value)
+                {
+                    formb.ONESC = () =>
+                    {
+                        if (showback && BackClick != null) BackClick(this, EventArgs.Empty);
+                        else formb.Close();
+                    };
+                }
+                else formb.ONESC = null;
+            }
+        }
 
         #region 图标
 
@@ -1070,6 +1096,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+            if (cancelButton) HandCancelButton(cancelButton);
             this.AddListener();
         }
         public void HandleEvent(EventType id, object? tag)
