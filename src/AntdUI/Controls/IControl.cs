@@ -480,6 +480,12 @@ namespace AntdUI
 
         #region 拖拽
 
+        /// <summary>
+        /// 拖拽文件夹处理
+        /// </summary>
+        [Description("拖拽文件夹处理"), Category("行为"), DefaultValue(true)]
+        public bool HandDragFolder { get; set; } = true;
+
         protected virtual void OnDragEnter()
         { }
         protected virtual void OnDragLeave()
@@ -515,40 +521,71 @@ namespace AntdUI
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
-            if (e.Data == null) return;
-            foreach (string format in e.Data.GetFormats())
+            if (DragData(e.Data, out var files))
             {
-                if (e.Data.GetData(format) is string[] files && files.Length > 0)
+                if (ONDRAG == null) DragChanged?.Invoke(this, new StringsEventArgs(files));
+                else
                 {
-                    if (ONDRAG == null) DragChanged?.Invoke(this, new StringsEventArgs(files));
-                    else
-                    {
-                        var r = ONDRAG(files);
-                        if (r != null) DragChanged?.Invoke(this, new StringsEventArgs(r));
-                    }
-                    OnDragLeave();
-                    return;
+                    var r = ONDRAG(files);
+                    if (r != null) DragChanged?.Invoke(this, new StringsEventArgs(r));
                 }
             }
+            OnDragLeave();
         }
 
         bool DragState(IDataObject? Data)
         {
-            if (Data == null) return false;
-            foreach (string format in Data.GetFormats())
+            if (DragData(Data, out var files))
             {
-                if (Data.GetData(format) is string[] files && files.Length > 0)
+                if (ONDRAG == null) return true;
+                else
                 {
-                    if (ONDRAG == null) return true;
-                    else
-                    {
-                        var r = ONDRAG(files);
-                        if (r == null) return false;
-                        return true;
-                    }
+                    var r = ONDRAG(files);
+                    if (r == null) return false;
+                    return true;
                 }
             }
             return false;
+        }
+
+        bool DragData(IDataObject? Data, out string[] files)
+        {
+            if (Data == null)
+            {
+                files = new string[0];
+                return false;
+            }
+            foreach (string format in Data.GetFormats())
+            {
+                if (Data.GetData(format) is string[] tmp && tmp.Length > 0)
+                {
+                    if (HandDragFolder)
+                    {
+                        var list = new System.Collections.Generic.List<string>(tmp.Length);
+                        foreach (var it in tmp)
+                        {
+                            if (System.IO.File.Exists(it)) list.Add(it);
+                            else list.AddRange(DragDataDirTree(it));
+                        }
+                        files = list.ToArray();
+                    }
+                    else files = tmp;
+                    return true;
+                }
+            }
+            files = new string[0];
+            return false;
+        }
+
+        System.Collections.Generic.List<string> DragDataDirTree(string dir)
+        {
+            var dirinfo = new System.IO.DirectoryInfo(dir);
+            var files = dirinfo.GetFiles();
+            var dirs = dirinfo.GetDirectories();
+            var list = new System.Collections.Generic.List<string>(files.Length + dirs.Length);
+            foreach (var it in files) list.Add(it.FullName);
+            foreach (var it in dirs) list.AddRange(DragDataDirTree(it.FullName));
+            return list;
         }
 
         #region 事件

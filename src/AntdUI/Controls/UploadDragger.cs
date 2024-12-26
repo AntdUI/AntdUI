@@ -149,21 +149,29 @@ namespace AntdUI
                         var filters = filter.Split('|');
                         if (filters.Length > 1)
                         {
-                            for (int i = 1; i < filters.Length; i += 2)
+                            var tmp = new List<string>(files.Length);
+                            foreach (var file in files)
                             {
-                                if (filters[i] == "*.*") return files;
-                                var extensions = filters[i].Split(';');
-                                foreach (var file in files)
-                                {
-                                    var fileExtension = System.IO.Path.GetExtension(file);
-                                    if (Array.Exists(extensions, ext => ext.Equals($"*{fileExtension}", StringComparison.OrdinalIgnoreCase))) return files;
-                                }
+                                var fileExtension = System.IO.Path.GetExtension(file);
+                                if (HandFilter(fileExtension, filters)) tmp.Add(file);
                             }
+                            if (tmp.Count > 0) return tmp.ToArray();
                         }
                         return null;
                     };
                 }
             }
+        }
+
+        bool HandFilter(string fileExtension, string[] filters)
+        {
+            for (int i = 1; i < filters.Length; i += 2)
+            {
+                if (filters[i] == "*.*") return true;
+                var extensions = filters[i].Split(';');
+                if (Array.Exists(extensions, ext => ext.Equals($"*{fileExtension}", StringComparison.OrdinalIgnoreCase))) return true;
+            }
+            return false;
         }
 
         #region 图标

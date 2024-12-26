@@ -166,11 +166,21 @@ namespace AntdUI
 
             if (config.Keyboard)
             {
-                if (btn_no == null) AcceptButton = CancelButton = btn_ok;
+                if (butt_h > 0)
+                {
+                    if (btn_no == null) AcceptButton = CancelButton = btn_ok;
+                    else
+                    {
+                        AcceptButton = btn_ok;
+                        CancelButton = btn_no;
+                    }
+                }
                 else
                 {
-                    AcceptButton = btn_ok;
-                    CancelButton = btn_no;
+                    ONESC = () =>
+                    {
+                        DialogResult = DialogResult.No;
+                    };
                 }
             }
 
