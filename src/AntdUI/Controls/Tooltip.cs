@@ -270,10 +270,7 @@ namespace AntdUI
             Print();
         }
 
-        private void Control_LostFocus(object? sender, EventArgs e)
-        {
-            IClose();
-        }
+        private void Control_LostFocus(object? sender, EventArgs e) => IClose();
 
         #region 参数
 

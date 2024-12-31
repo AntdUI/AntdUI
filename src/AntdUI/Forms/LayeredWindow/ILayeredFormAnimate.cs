@@ -219,10 +219,7 @@ namespace AntdUI
                     SetAnimateValue(end_X, end_Y, 240);
                 });
             }
-            else
-            {
-                SetAnimateValue(end_X, end_Y, 240);
-            }
+            else SetAnimateValue(end_X, end_Y, 240);
         }
 
         #endregion

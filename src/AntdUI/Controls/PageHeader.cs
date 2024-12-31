@@ -289,6 +289,7 @@ namespace AntdUI
             ThreadBack?.Dispose();
             hove_back.Dispose();
             hove_close.Dispose();
+            hove_full.Dispose();
             hove_max.Dispose();
             hove_min.Dispose();
             ThreadLoading?.Dispose();
@@ -296,6 +297,8 @@ namespace AntdUI
             temp_back?.Dispose();
             temp_back_hover?.Dispose();
             temp_back_down?.Dispose();
+            temp_full?.Dispose();
+            temp_full_restore?.Dispose();
             temp_min?.Dispose();
             temp_max?.Dispose();
             temp_restore?.Dispose();
@@ -386,6 +389,27 @@ namespace AntdUI
             }
         }
 
+        bool fullBox = false;
+        /// <summary>
+        /// 是否显示全屏按钮
+        /// </summary>
+        [Description("是否显示全屏按钮"), Category("外观"), DefaultValue(false)]
+        public bool FullBox
+        {
+            get => fullBox;
+            set
+            {
+                if (fullBox == value) return;
+                fullBox = value;
+                if (showButton)
+                {
+                    IOnSizeChanged();
+                    Invalidate();
+                }
+                OnPropertyChanged("FullBox");
+            }
+        }
+
         bool maximizeBox = true;
         /// <summary>
         /// 是否显示最大化按钮
@@ -441,6 +465,23 @@ namespace AntdUI
             {
                 if (isMax == value) return;
                 isMax = value;
+                if (showButton) Invalidate();
+            }
+        }
+
+        bool isfull = false;
+        /// <summary>
+        /// 是否全屏
+        /// </summary>
+        [Description("是否全屏"), Category("外观"), DefaultValue(false)]
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsFull
+        {
+            get => isfull;
+            set
+            {
+                if (isfull == value) return;
+                isfull = value;
                 if (showButton) Invalidate();
             }
         }
@@ -818,6 +859,16 @@ namespace AntdUI
             }
             else PrintClose(g, fore, rect_close_icon);
 
+            if (fullBox)
+            {
+                var rect_full_icon = new Rectangle(rect_full.X + btn_x, rect_full.Y + btn_y, btn_size, btn_size);
+                if (hove_full.Animation) g.Fill(Helper.ToColor(hove_full.Value, fillsecondary), rect_full);
+                else if (hove_full.Switch) g.Fill(fillsecondary, rect_full);
+                if (hove_full.Down) g.Fill(fillsecondary, rect_full);
+                if (IsFull) PrintFullRestore(g, fore, rect_full_icon);
+                else PrintFull(g, fore, rect_full_icon);
+            }
+
             if (maximizeBox)
             {
                 var rect_max_icon = new Rectangle(rect_max.X + btn_x, rect_max.Y + btn_y, btn_size, btn_size);
@@ -839,7 +890,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        Bitmap? temp_logo = null, temp_back = null, temp_back_hover = null, temp_back_down = null, temp_min = null, temp_max = null, temp_restore = null, temp_close = null, temp_close_hover = null;
+        Bitmap? temp_logo = null, temp_back = null, temp_back_hover = null, temp_back_down = null, temp_full = null, temp_full_restore = null, temp_min = null, temp_max = null, temp_restore = null, temp_close = null, temp_close_hover = null;
         void PrintBack(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_back == null || temp_back.Width != rect_icon.Width)
@@ -890,6 +941,24 @@ namespace AntdUI
             }
             if (temp_close_hover != null) g.Image(temp_close_hover, rect_icon);
         }
+        void PrintFull(Canvas g, Color color, Rectangle rect_icon)
+        {
+            if (temp_full == null || temp_full.Width != rect_icon.Width)
+            {
+                temp_full?.Dispose();
+                temp_full = SvgExtend.GetImgExtend(SvgDb.IcoAppFull, rect_icon, color);
+            }
+            if (temp_full != null) g.Image(temp_full, rect_icon);
+        }
+        void PrintFullRestore(Canvas g, Color color, Rectangle rect_icon)
+        {
+            if (temp_full_restore == null || temp_full_restore.Width != rect_icon.Width)
+            {
+                temp_full_restore?.Dispose();
+                temp_full_restore = SvgExtend.GetImgExtend(SvgDb.IcoAppFullRestore, rect_icon, color);
+            }
+            if (temp_full_restore != null) g.Image(temp_full_restore, rect_icon);
+        }
         void PrintMax(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_max == null || temp_max.Width != rect_icon.Width)
@@ -934,12 +1003,16 @@ namespace AntdUI
             temp_back?.Dispose();
             temp_back_hover?.Dispose();
             temp_back_down?.Dispose();
+            temp_full?.Dispose();
+            temp_full_restore?.Dispose();
             temp_min?.Dispose();
             temp_max?.Dispose();
             temp_restore?.Dispose();
             temp_close?.Dispose();
             temp_logo = null;
             temp_back = temp_back_hover = temp_back_down = null;
+            temp_full = null;
+            temp_full_restore = null;
             temp_min = null;
             temp_max = null;
             temp_restore = null;
@@ -956,10 +1029,16 @@ namespace AntdUI
             var rect = ClientRectangle.PaddingRect(Padding);
             if (CloseSize > 0 && showButton)
             {
-                int btn_size = (maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Config.Dpi) : (int)Math.Round((CloseSize - 8) * Config.Dpi);
+                int btn_size = (fullBox || maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Config.Dpi) : (int)Math.Round((CloseSize - 8) * Config.Dpi);
                 rect_close = new Rectangle(rect.Right - btn_size, rect.Y, btn_size, rect.Height);
                 hasr = btn_size;
                 int left = rect_close.Left;
+                if (fullBox)
+                {
+                    rect_full = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
+                    left -= btn_size;
+                    hasr += btn_size;
+                }
                 if (maximizeBox)
                 {
                     rect_max = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
@@ -980,8 +1059,17 @@ namespace AntdUI
                 if (form != null)
                 {
                     if (form is LayeredFormDrawer) return;
-                    if (form is BaseForm form_win) IsMax = form_win.IsMax;
-                    else IsMax = form.WindowState == FormWindowState.Maximized;
+                    if (form is BaseForm form_win)
+                    {
+                        IsMax = form_win.IsMax;
+                        IsFull = form_win.IsFull;
+                    }
+                    else
+                    {
+                        IsMax = form.WindowState == FormWindowState.Maximized;
+                        if (IsMax) IsFull = form.FormBorderStyle == FormBorderStyle.None;
+                        else IsFull = false;
+                    }
                 }
             }
             base.OnSizeChanged(e);
@@ -990,27 +1078,28 @@ namespace AntdUI
         #region 动画
 
         ITask? ThreadBack = null;
-        ITaskOpacity hove_back, hove_close, hove_max, hove_min;
-        public PageHeader() { hove_back = new ITaskOpacity(this); hove_close = new ITaskOpacity(this); hove_max = new ITaskOpacity(this); hove_min = new ITaskOpacity(this); }
+        ITaskOpacity hove_back, hove_close, hove_full, hove_max, hove_min;
+        public PageHeader() { hove_back = new ITaskOpacity(this); hove_close = new ITaskOpacity(this); hove_full = new ITaskOpacity(this); hove_max = new ITaskOpacity(this); hove_min = new ITaskOpacity(this); }
 
         #endregion
 
         #region 鼠标
 
-        Rectangle rect_back, rect_close, rect_max, rect_min;
+        Rectangle rect_back, rect_close, rect_full, rect_max, rect_min;
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (showButton)
             {
-                bool _close = rect_close.Contains(e.Location), _max = rect_max.Contains(e.Location), _min = rect_min.Contains(e.Location);
-                if (_close != hove_close.Switch || _max != hove_max.Switch || _min != hove_min.Switch)
+                bool _close = rect_close.Contains(e.Location), _full = rect_full.Contains(e.Location), _max = rect_max.Contains(e.Location), _min = rect_min.Contains(e.Location);
+                if (_close != hove_close.Switch || _full != hove_full.Switch || _max != hove_max.Switch || _min != hove_min.Switch)
                 {
                     Color fillsecondary = Colour.FillSecondary.Get("PageHeader");
                     if (mode == TAMode.Light) fillsecondary = Style.rgba(0, 0, 0, 0.06F);
                     else if (mode == TAMode.Dark) fillsecondary = Style.rgba(255, 255, 255, 0.12F);
 
-                    hove_max.MaxValue = hove_min.MaxValue = fillsecondary.A;
+                    hove_max.MaxValue = hove_min.MaxValue = hove_full.MaxValue = fillsecondary.A;
                     hove_close.Switch = _close;
+                    hove_full.Switch = _full;
                     hove_max.Switch = _max;
                     hove_min.Switch = _min;
                 }
@@ -1021,7 +1110,7 @@ namespace AntdUI
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            hove_back.Switch = hove_close.Switch = hove_max.Switch = hove_min.Switch = false;
+            hove_back.Switch = hove_close.Switch = hove_full.Switch = hove_max.Switch = hove_min.Switch = false;
             base.OnMouseLeave(e);
         }
 
@@ -1032,9 +1121,10 @@ namespace AntdUI
                 if (showButton)
                 {
                     hove_close.Down = rect_close.Contains(e.Location);
+                    hove_full.Down = rect_full.Contains(e.Location);
                     hove_max.Down = rect_max.Contains(e.Location);
                     hove_min.Down = rect_min.Contains(e.Location);
-                    if (hove_close.Down || hove_max.Down || hove_min.Down) return;
+                    if (hove_close.Down || hove_full.Down || hove_max.Down || hove_min.Down) return;
                 }
                 if (showback)
                 {
@@ -1051,6 +1141,7 @@ namespace AntdUI
                         {
                             if (maximizeBox)
                             {
+                                isfull = false;
                                 if (form is BaseForm form_win) IsMax = form_win.MaxRestore();
                                 else
                                 {
@@ -1087,6 +1178,30 @@ namespace AntdUI
             if (showButton)
             {
                 if (hove_close.Down && rect_close.Contains(e.Location)) Parent.FindPARENT()?.Close();
+                else if (hove_full.Down && rect_full.Contains(e.Location))
+                {
+                    var form = Parent.FindPARENT();
+                    if (form != null)
+                    {
+                        if (form is LayeredFormDrawer) return;
+                        if (form is BaseForm form_win) IsFull = form_win.FullRestore();
+                        else
+                        {
+                            if (form.WindowState == FormWindowState.Maximized)
+                            {
+                                IsFull = false;
+                                form.FormBorderStyle = FormBorderStyle.Sizable;
+                                form.WindowState = FormWindowState.Normal;
+                            }
+                            else
+                            {
+                                IsFull = true;
+                                form.FormBorderStyle = FormBorderStyle.None;
+                                form.WindowState = FormWindowState.Maximized;
+                            }
+                        }
+                    }
+                }
                 else if (hove_max.Down && rect_max.Contains(e.Location))
                 {
                     var form = Parent.FindPARENT();
@@ -1124,7 +1239,7 @@ namespace AntdUI
             {
                 if (hove_back.Down && rect_back.Contains(e.Location)) BackClick?.Invoke(this, EventArgs.Empty);
             }
-            hove_back.Down = hove_close.Down = hove_max.Down = hove_min.Down = false;
+            hove_back.Down = hove_close.Down = hove_full.Down = hove_max.Down = hove_min.Down = false;
             base.OnMouseUp(e);
         }
 

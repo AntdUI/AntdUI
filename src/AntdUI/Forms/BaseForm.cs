@@ -193,6 +193,7 @@ namespace AntdUI
                 WindowState = FormWindowState.Normal;
                 RefreshDWM();
             }
+            else if (IsMax) MaxRestore();
         }
 
         #endregion

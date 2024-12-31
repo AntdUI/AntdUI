@@ -257,6 +257,7 @@ namespace AntdUI.Svg.FilterEffects
         public override void Process(ImageBuffer buffer)
         {
             var inputImage = buffer[Input];
+            if (inputImage == null) return;
             var result = Apply(inputImage);
             buffer[Result] = result;
         }

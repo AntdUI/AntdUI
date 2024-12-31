@@ -584,10 +584,7 @@ namespace AntdUI
                             {
                                 using (cmd.bmp) call.Render(handle, cmd.alpha, cmd.bmp, cmd.rect.Value);
                             }
-                            else
-                            {
-                                using (cmd.bmp) call.Render(handle, cmd.alpha, cmd.bmp);
-                            }
+                            else call.Render(handle, cmd.alpha, cmd.bmp);
                         }
                     }
                     if (count > 0) call.Render();

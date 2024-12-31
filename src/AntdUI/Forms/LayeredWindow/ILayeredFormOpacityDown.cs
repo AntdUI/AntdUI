@@ -95,14 +95,8 @@ namespace AntdUI
             bmp_tmp?.Dispose();
             bmp_tmp = null;
         }
-        void SetAnimateValue(int y, int height, float alpha)
-        {
-            SetAnimateValue(y, height, (byte)(255 * alpha));
-        }
-        void SetAnimateValue(int height, float alpha)
-        {
-            SetAnimateValue(height, (byte)(255 * alpha));
-        }
+        void SetAnimateValue(int y, int height, float alpha) => SetAnimateValue(y, height, (byte)(255 * alpha));
+        void SetAnimateValue(int height, float alpha) => SetAnimateValue(height, (byte)(255 * alpha));
 
         void SetAnimateValue(int y, int height, byte _alpha)
         {
@@ -111,6 +105,7 @@ namespace AntdUI
                 AnimateY = y;
                 AnimateHeight = height;
                 alpha = _alpha;
+                if (height == 0) return;
                 try
                 {
                     if (bmp_tmp == null) bmp_tmp = PrintBit();
@@ -134,6 +129,7 @@ namespace AntdUI
             {
                 AnimateHeight = height;
                 alpha = _alpha;
+                if (height == 0) return;
                 try
                 {
                     if (bmp_tmp == null) bmp_tmp = PrintBit();

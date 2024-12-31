@@ -127,7 +127,7 @@ namespace AntdUI.Svg.FilterEffects
             if (bounds.Width == 0 || bounds.Height == 0)
                 return;
 
-            var buffer = new ImageBuffer(bounds, inflate, renderer, renderMethod) { Transform = transform };
+            var buffer = new ImageBuffer(bounds, inflate, renderer, transform, renderMethod);
 
             IEnumerable<SvgFilterPrimitive> primitives = Children.OfType<SvgFilterPrimitive>();
 
