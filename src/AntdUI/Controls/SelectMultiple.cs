@@ -262,7 +262,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var pen = new Pen(Style.Db.TextQuaternary, 2F))
+                using (var pen = new Pen(Colour.TextQuaternary.Get("Select"), 2F))
                 {
                     pen.StartCap = pen.EndCap = LineCap.Round;
                     g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
@@ -358,7 +358,7 @@ namespace AntdUI
         {
             if (selectedValue.Length > 0 && style_left.Length == rect_lefts.Length)
             {
-                using (var brush = new SolidBrush(Style.Db.TagDefaultColor))
+                using (var brush = new SolidBrush(Colour.TagDefaultColor.Get("Select")))
                 {
                     if (rect_lefts.Length > 0)
                     {
@@ -370,14 +370,14 @@ namespace AntdUI
                             {
                                 if (style == null)
                                 {
-                                    g.Fill(Style.Db.TagDefaultBg, path);
+                                    g.Fill(Colour.TagDefaultBg.Get("Select"), path);
                                     var rect_del = rect_left_dels[i];
-                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
+                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get("Select"));
                                     g.String(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                                 }
                                 else
                                 {
-                                    using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Style.Db.TagDefaultBg))
+                                    using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Colour.TagDefaultBg.Get("Select")))
                                     {
                                         g.Fill(brushbg, path);
                                     }
@@ -393,7 +393,7 @@ namespace AntdUI
                                     else
                                     {
                                         var rect_del = rect_left_dels[i];
-                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Style.Db.TagDefaultColor);
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get("Select"));
                                         g.String(style.Text, Font, brush, rect_left_txts[i], sf_center);
                                     }
                                 }
@@ -570,13 +570,14 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
+            bool result = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Down:
                     ExpandDrop = true;
-                    break;
+                    return true;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return result;
         }
 
         protected override void OnLostFocus(EventArgs e)

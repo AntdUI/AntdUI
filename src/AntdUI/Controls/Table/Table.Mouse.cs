@@ -27,12 +27,14 @@ namespace AntdUI
     {
         #region 鼠标按下
 
-        TCell? cellMouseDown;
+        CELL? cellMouseDown;
         int shift_index = -1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             cellMouseDown = null;
             if (ClipboardCopy) Focus();
+            subForm?.IClose();
+            subForm = null;
             if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
             {
                 base.OnMouseDown(e);
@@ -116,15 +118,15 @@ namespace AntdUI
             else shift_index = -1;
         }
 
-        void MouseDownRow(MouseEventArgs e, TCell cell, int x, int y)
+        void MouseDownRow(MouseEventArgs e, CELL cell, int x, int y)
         {
             cellMouseDown = cell;
             cell.MouseDown = e.Clicks > 1 ? 2 : 1;
             if (cell is Template template && e.Button == MouseButtons.Left)
             {
-                foreach (var item in template.value)
+                foreach (var item in template.Value)
                 {
-                    if (item.Value is CellLink btn_template)
+                    if (item is CellLink btn_template)
                     {
                         if (btn_template.Enabled)
                         {
@@ -267,7 +269,7 @@ namespace AntdUI
             cellMouseDown = null;
         }
 
-        bool MouseUpRow(RowTemplate[] rows, RowTemplate it, TCell cell, MouseEventArgs e, int i_r, int i_c)
+        bool MouseUpRow(RowTemplate[] rows, RowTemplate it, CELL cell, MouseEventArgs e, int i_r, int i_c)
         {
             if (cellMouseDown == cell && cell.MouseDown > 0)
             {
@@ -360,44 +362,48 @@ namespace AntdUI
                         else if (it.IsColumn && cell.COLUMN.SortOrder && cell is TCellColumn col)
                         {
                             //点击排序
-                            int SortMode;
-                            if (col.rect_up.Contains(r_x, r_y)) SortMode = 1;
-                            else if (col.rect_down.Contains(r_x, r_y)) SortMode = 2;
+                            SortMode sortMode = SortMode.NONE;
+                            if (col.rect_up.Contains(r_x, r_y)) sortMode = SortMode.ASC;
+                            else if (col.rect_down.Contains(r_x, r_y)) sortMode = SortMode.DESC;
                             else
                             {
-                                SortMode = col.COLUMN.SortMode + 1;
-                                if (SortMode > 2) SortMode = 0;
+                                sortMode = col.COLUMN.SortMode + 1;
+                                if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
                             }
-                            if (col.COLUMN.SortMode != SortMode)
+                            if (col.COLUMN.SetSortMode(sortMode))
                             {
-                                col.COLUMN.SortMode = SortMode;
                                 foreach (var item in it.cells)
                                 {
-                                    if (item.COLUMN.SortOrder && item.INDEX != i_c) item.COLUMN.SortMode = 0;
+                                    if (item.COLUMN.SortOrder && item.INDEX != i_c) item.COLUMN.SetSortMode(SortMode.NONE);
                                 }
-                                Invalidate();
-                                switch (SortMode)
+                                var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
+                                if (result) Invalidate();
+                                else
                                 {
-                                    case 1:
-                                        SortDataASC(col.COLUMN.Key);
-                                        break;
-                                    case 2:
-                                        SortDataDESC(col.COLUMN.Key);
-                                        break;
-                                    case 0:
-                                    default:
-                                        SortData = null;
-                                        break;
+                                    Invalidate();
+                                    switch (sortMode)
+                                    {
+                                        case SortMode.ASC:
+                                            SortDataASC(col.COLUMN.Key);
+                                            break;
+                                        case SortMode.DESC:
+                                            SortDataDESC(col.COLUMN.Key);
+                                            break;
+                                        case SortMode.NONE:
+                                        default:
+                                            SortData = null;
+                                            break;
+                                    }
+                                    LoadLayout();
+                                    SortRows?.Invoke(this, new IntEventArgs(i_c));
                                 }
-                                LoadLayout();
-                                SortRows?.Invoke(this, new IntEventArgs(i_c));
                             }
                         }
                         else if (cell is Template template)
                         {
-                            foreach (var item in template.value)
+                            foreach (var item in template.Value)
                             {
-                                if (item.Value is CellLink btn)
+                                if (item is CellLink btn)
                                 {
                                     if (btn.ExtraMouseDown)
                                     {
@@ -435,11 +441,31 @@ namespace AntdUI
                             OnEditMode(it, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
                         }
                     }
+                    else
+                    {
+                        if (cell is Template template)
+                        {
+                            foreach (var item in template.Value)
+                            {
+                                if (item.DropDownItems != null && item.DropDownItems.Count > 0 && item.Rect.Contains(r_x, r_y))
+                                {
+                                    subForm?.IClose();
+                                    subForm = null;
+                                    var rect = item.Rect;
+                                    rect.Offset(-offset_xi, -offset_y);
+                                    subForm = new LayeredFormSelectDown(this, item, rect, item.DropDownItems);
+                                    subForm.Show(this);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
                 }
                 return true;
             }
             return false;
         }
+        LayeredFormSelectDown? subForm = null;
 
         #endregion
 
@@ -458,8 +484,7 @@ namespace AntdUI
                         if (width < item.min_width) return;
                         if (tmpcol_width.ContainsKey(item.i)) tmpcol_width[item.i] = width;
                         else tmpcol_width.Add(item.i, width);
-                        LoadLayout();
-                        Invalidate();
+                        if (LoadLayout()) Invalidate();
                         SetCursor(CursorType.VSplit);
                         return;
                     }
@@ -526,9 +551,9 @@ namespace AntdUI
                             if (cel_tmp is TCellSort sort) sort.Hover = false;
                             else if (cel_tmp is Template template)
                             {
-                                foreach (var item in template.value)
+                                foreach (var item in template.Value)
                                 {
-                                    if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
+                                    if (item is CellLink btn) btn.ExtraMouseHover = false;
                                 }
                             }
                         }
@@ -546,9 +571,9 @@ namespace AntdUI
                             {
                                 if (cel_tmp is Template template)
                                 {
-                                    foreach (var item in template.value)
+                                    foreach (var item in template.Value)
                                     {
-                                        if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
+                                        if (item is CellLink btn) btn.ExtraMouseHover = false;
                                     }
                                 }
                             }
@@ -596,9 +621,9 @@ namespace AntdUI
                                     if (cel_tmp is TCellSort sort) sort.Hover = false;
                                     else if (cel_tmp is Template template)
                                     {
-                                        foreach (var item in template.value)
+                                        foreach (var item in template.Value)
                                         {
-                                            if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
+                                            if (item is CellLink btn) btn.ExtraMouseHover = false;
                                         }
                                     }
                                 }
@@ -616,7 +641,7 @@ namespace AntdUI
             else ILeave();
         }
 
-        bool MouseMoveRow(TCell cel, int x, int y, int offset_x, int offset_xi, int offset_y)
+        bool MouseMoveRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y)
         {
             if (cel is TCellCheck checkCell)
             {
@@ -642,9 +667,9 @@ namespace AntdUI
             {
                 ICell? tipcel = null;
                 int hand = 0;
-                foreach (var item in template.value)
+                foreach (var item in template.Value)
                 {
-                    if (item.Value is CellLink btn_template)
+                    if (item is CellLink btn_template)
                     {
                         if (btn_template.Enabled)
                         {
@@ -657,7 +682,7 @@ namespace AntdUI
                         }
                         else btn_template.ExtraMouseHover = false;
                     }
-                    else if (item.Value is CellImage img_template)
+                    else if (item is CellImage img_template)
                     {
                         if (img_template.Tooltip != null && img_template.Rect.Contains(x, y)) tipcel = img_template;
                     }
@@ -749,7 +774,7 @@ namespace AntdUI
 
         #region 判断是否在内部
 
-        TCell? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
+        CELL? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
         {
             mode = 0;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
@@ -994,11 +1019,18 @@ namespace AntdUI
 
         #endregion
 
+        bool focused = false;
+        protected override void OnGotFocus(EventArgs e)
+        {
+            focused = true;
+            base.OnGotFocus(e);
+        }
         protected override void OnLostFocus(EventArgs e)
         {
+            base.OnLostFocus(e);
+            focused = false;
             if (LostFocusClearSelection) SelectedIndex = -1;
             CloseTip(true);
-            base.OnLostFocus(e);
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -1028,9 +1060,9 @@ namespace AntdUI
                     if (cel is TCellSort sort) sort.Hover = false;
                     else if (cel is Template template)
                     {
-                        foreach (var item in template.value)
+                        foreach (var item in template.Value)
                         {
-                            if (item.Value is CellLink btn) btn.ExtraMouseHover = false;
+                            if (item is CellLink btn) btn.ExtraMouseHover = false;
                         }
                     }
                 }
@@ -1039,6 +1071,8 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            subForm?.IClose();
+            subForm = null;
             CloseTip();
             ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);

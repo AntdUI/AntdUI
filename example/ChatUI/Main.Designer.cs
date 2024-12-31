@@ -32,7 +32,7 @@
             AntdUI.Chat.MsgItem msgItem2 = new AntdUI.Chat.MsgItem();
             AntdUI.Chat.MsgItem msgItem3 = new AntdUI.Chat.MsgItem();
             AntdUI.Chat.MsgItem msgItem4 = new AntdUI.Chat.MsgItem();
-            win = new AntdUI.WindowBar();
+            win = new AntdUI.PageHeader();
             msgList = new AntdUI.Chat.MsgList();
             chatList = new AntdUI.Chat.ChatList();
             SuspendLayout();
@@ -42,6 +42,8 @@
             win.Dock = DockStyle.Top;
             win.Location = new Point(0, 0);
             win.Name = "win";
+            win.ShowButton = true;
+            win.ShowIcon = true;
             win.Size = new Size(745, 36);
             win.SubText = "聊天气泡展示";
             win.TabIndex = 0;
@@ -71,7 +73,10 @@
             msgItem4.Name = "Tom";
             msgItem4.Text = "晚上一起 Crazy Day 4";
             msgItem4.Time = "疯狂星期四";
-            msgList.Items.AddRange(new AntdUI.Chat.MsgItem[] { msgItem1, msgItem2, msgItem3, msgItem4 });
+            msgList.Items.Add(msgItem1);
+            msgList.Items.Add(msgItem2);
+            msgList.Items.Add(msgItem3);
+            msgList.Items.Add(msgItem4);
             msgList.Location = new Point(0, 36);
             msgList.Margin = new Padding(2);
             msgList.Name = "msgList";
@@ -102,7 +107,7 @@
 
         #endregion
 
-        private AntdUI.WindowBar win;
+        private AntdUI.PageHeader win;
         private AntdUI.Chat.MsgList msgList;
         private AntdUI.Chat.ChatList chatList;
     }

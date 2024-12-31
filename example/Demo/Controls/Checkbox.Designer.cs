@@ -105,7 +105,6 @@ namespace Demo.Controls
             // 
             // checkbox8
             // 
-            checkbox8.AutoCheck = true;
             checkbox8.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox8.Checked = true;
             checkbox8.Dock = DockStyle.Left;
@@ -119,7 +118,6 @@ namespace Demo.Controls
             // 
             // checkbox7
             // 
-            checkbox7.AutoCheck = true;
             checkbox7.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox7.Dock = DockStyle.Left;
             checkbox7.Fill = Color.FromArgb(150, 0, 0);
@@ -131,7 +129,6 @@ namespace Demo.Controls
             // 
             // checkbox6
             // 
-            checkbox6.AutoCheck = true;
             checkbox6.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox6.Dock = DockStyle.Left;
             checkbox6.Fill = Color.FromArgb(200, 0, 0);
@@ -143,7 +140,6 @@ namespace Demo.Controls
             // 
             // checkbox5
             // 
-            checkbox5.AutoCheck = true;
             checkbox5.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox5.Dock = DockStyle.Left;
             checkbox5.Fill = Color.FromArgb(250, 0, 0);
@@ -166,7 +162,6 @@ namespace Demo.Controls
             // 
             // checkbox4
             // 
-            checkbox4.AutoCheck = true;
             checkbox4.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox4.Dock = DockStyle.Left;
             checkbox4.Enabled = false;
@@ -178,7 +173,6 @@ namespace Demo.Controls
             // 
             // checkbox3
             // 
-            checkbox3.AutoCheck = true;
             checkbox3.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox3.Dock = DockStyle.Left;
             checkbox3.Location = new Point(300, 0);
@@ -189,7 +183,6 @@ namespace Demo.Controls
             // 
             // checkbox2
             // 
-            checkbox2.AutoCheck = true;
             checkbox2.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox2.Dock = DockStyle.Left;
             checkbox2.Location = new Point(150, 0);
@@ -200,7 +193,6 @@ namespace Demo.Controls
             // 
             // checkbox1
             // 
-            checkbox1.AutoCheck = true;
             checkbox1.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox1.Dock = DockStyle.Left;
             checkbox1.Location = new Point(0, 0);

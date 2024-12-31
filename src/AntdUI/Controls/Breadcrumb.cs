@@ -167,8 +167,7 @@ namespace AntdUI
         Rectangle[] hs = new Rectangle[0];
         internal void ChangeItems()
         {
-            if (items == null || items.Count == 0) return;
-            if (pauseLayout) return;
+            if ((items == null || items.Count == 0) || pauseLayout) return;
             var _rect = ClientRectangle.PaddingRect(Padding);
             if (_rect.Width == 0 || _rect.Height == 0) return;
             var rect = _rect.PaddingRect(Margin);
@@ -225,11 +224,15 @@ namespace AntdUI
         readonly StringFormat s_f = Helper.SF_ALL();
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
-            using (var brush = new SolidBrush(fore ?? Style.Db.TextSecondary))
-            using (var brush_active = new SolidBrush(ForeActive ?? Style.Db.Text))
+            using (var brush = new SolidBrush(fore ?? Colour.TextSecondary.Get("Breadcrumb")))
+            using (var brush_active = new SolidBrush(ForeActive ?? Colour.Text.Get("Breadcrumb")))
             {
                 foreach (var it in hs) g.String("/", Font, brush, it, s_f);
                 for (int i = 0; i < items.Count; i++)
@@ -248,7 +251,7 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(_radius))
                             {
-                                g.Fill(Style.Db.FillSecondary, path);
+                                g.Fill(Colour.FillSecondary.Get("Breadcrumb"), path);
                             }
                             PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
                             g.String(it.Text, Font, brush_active, it.RectText, s_f);

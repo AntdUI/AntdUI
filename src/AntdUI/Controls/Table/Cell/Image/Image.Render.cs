@@ -24,9 +24,9 @@ namespace AntdUI
 {
     partial class CellImage
     {
-        internal override void PaintBack(Canvas g) { }
+        public override void PaintBack(Canvas g) { }
 
-        internal override void Paint(Canvas g, Font font, SolidBrush fore)
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
             float radius = Radius * Config.Dpi;
             using (var path = Rect.RoundPath(radius))
@@ -59,7 +59,7 @@ namespace AntdUI
             }
         }
 
-        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             if (Size.HasValue)
             {
@@ -72,8 +72,7 @@ namespace AntdUI
             }
         }
 
-        internal Rectangle Rect;
-        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             int w = size.Width - gap2, h = size.Height - gap2;
             Rect = new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + (rect.Height - h) / 2, w, h);

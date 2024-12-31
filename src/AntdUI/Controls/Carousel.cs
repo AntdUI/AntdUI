@@ -389,12 +389,12 @@ namespace AntdUI
         #region 动画
 
         DateTime now = DateTime.Now;
-        internal float Speed(float speed, float modera)
+        float Speed(float speed, float modera)
         {
             if (modera < AnimationChangeValue) return 0.8F;
             return speed;
         }
-        internal float Speed2(float speed, float modera)
+        float Speed2(float speed, float modera)
         {
             if (modera > AnimationChangeValue) return 0.8F;
             return speed;
@@ -462,6 +462,7 @@ namespace AntdUI
             if (_rect.Width == 0 || _rect.Height == 0) return;
             bmp?.Dispose();
             bmp = null;
+            foreach (var it in items) it.PARENT = this;
             var rect = _rect.PaddingRect(Padding);
             int len = items.Count;
             var list = new List<CarouselDotItem>(len);
@@ -511,9 +512,13 @@ namespace AntdUI
         Bitmap? bmp = null;
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var _rect = ClientRectangle;
             if (_rect.Width == 0 || _rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var rect = _rect.PaddingRect(Padding);
             var g = e.Graphics.High();
             int len = items.Count;
@@ -548,7 +553,7 @@ namespace AntdUI
             }
             if (dot_list.Length > 0)
             {
-                using (var brush = new SolidBrush(Style.Db.BgBase))
+                using (var brush = new SolidBrush(Colour.BgBase.Get("Carousel")))
                 using (var brush2 = new SolidBrush(Color.FromArgb(77, brush.Color)))
                 {
                     if (round || radius > 0)
@@ -954,7 +959,7 @@ namespace AntdUI
             return this;
         }
     }
-    public class CarouselItem : NotifyProperty
+    public class CarouselItem
     {
         /// <summary>
         /// ID
@@ -974,9 +979,11 @@ namespace AntdUI
             {
                 if (img == value) return;
                 img = value;
-                OnPropertyChanged("Img");
+                PARENT?.Invalidate();
             }
         }
+
+        internal Carousel? PARENT { get; set; }
 
         /// <summary>
         /// 用户定义数据

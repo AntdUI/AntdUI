@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -67,6 +68,7 @@ namespace AntdUI
             get => _value;
             set
             {
+                if (_value == value) return;
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimeNEventArgs(value));
                 Text = value.HasValue ? value.Value.ToString(Format) : "";
@@ -160,7 +162,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var bmp = SvgDb.IcoDate.SvgToBmp(rect_r.Width, rect_r.Height, Style.Db.TextQuaternary))
+                using (var bmp = SvgDb.IcoDate.SvgToBmp(rect_r.Width, rect_r.Height, Colour.TextQuaternary.Get("DatePicker")))
                 {
                     if (bmp == null) return;
                     g.Image(bmp, rect_r);
@@ -225,7 +227,7 @@ namespace AntdUI
             ExpandDrop = false;
             if (IsHandleCreated)
             {
-                if (DateTime.TryParse(Text, out var _d))
+                if (DateTime.TryParseExact(Text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d))
                 {
                     Value = _d;
                     if (subForm != null)
@@ -267,8 +269,17 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape && subForm != null) subForm.IClose();
-            else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
+            bool result = base.ProcessCmdKey(ref msg, keyData);
+            if (keyData == Keys.Escape && subForm != null)
+            {
+                subForm.IClose();
+                return true;
+            }
+            else if (keyData == Keys.Down && subForm == null)
+            {
+                ExpandDrop = true;
+                return true;
+            }
             else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d))
             {
                 Value = _d;
@@ -277,8 +288,9 @@ namespace AntdUI
                     subForm.SelDate = subForm.Date = _d;
                     subForm.Print();
                 }
+                return true;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return result;
         }
 
         #endregion
@@ -298,15 +310,29 @@ namespace AntdUI
             Date = date;
             Fill = fill;
         }
+        public DateBadge(string date, string content)
+        {
+            Date = date;
+            Content = content;
+        }
         public DateBadge(string date, int count)
         {
+            Round = true;
             Date = date;
-            Count = count;
+            if (count > 0)
+            {
+                if (count == 999) Content = "999";
+                else if (count > 1000) Content = (count / 1000).ToString().Substring(0, 1) + "K+";
+                else if (count > 99) Content = "99+";
+                else Content = count.ToString();
+            }
         }
-        public DateBadge(string date, int count, Color fill)
+        public DateBadge(string date, int count, Color fill) : this(date, count)
         {
-            Date = date;
-            Count = count;
+            Fill = fill;
+        }
+        public DateBadge(string date, string content, Color fill) : this(date, content)
+        {
             Fill = fill;
         }
         /// <summary>
@@ -315,13 +341,37 @@ namespace AntdUI
         public string Date { get; set; }
 
         /// <summary>
-        /// 徽标计数 0是点
+        /// 徽标内容 空字符串是点
         /// </summary>
-        public int Count { get; set; }
+        public string? Content { get; set; }
 
         /// <summary>
         /// 填充颜色
         /// </summary>
         public Color? Fill { get; set; }
+
+        public bool Round { get; set; }
+
+        public int Radius { get; set; } = 6;
+
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
+        public TAlignFrom Align { get; set; } = TAlignFrom.TR;
+
+        /// <summary>
+        /// 徽标比例
+        /// </summary>
+        public float Size { get; set; } = .6F;
+
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        public int OffsetX { get; set; } = 2;
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        public int OffsetY { get; set; } = 2;
     }
 }

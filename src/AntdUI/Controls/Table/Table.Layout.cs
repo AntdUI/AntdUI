@@ -27,8 +27,7 @@ namespace AntdUI
     {
         protected override void OnFontChanged(EventArgs e)
         {
-            LoadLayout();
-            Invalidate();
+            if (LoadLayout()) Invalidate();
             base.OnFontChanged(e);
         }
 
@@ -58,14 +57,16 @@ namespace AntdUI
         Rectangle[] dividers = new Rectangle[0], dividerHs = new Rectangle[0];
         MoveHeader[] moveheaders = new MoveHeader[0];
 
-        public void LoadLayout()
+        public bool LoadLayout()
         {
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
                 if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
                 else show_oldrect = null;
+                return true;
             }
+            return false;
         }
 
         void LoadLayout(Rectangle rect_t)
@@ -85,7 +86,7 @@ namespace AntdUI
                 ThreadState = null;
                 if (visibleHeader && emptyHeader && columns != null && columns.Count > 0)
                 {
-                    var _rows = LayoutDesign(new TempTable(new TempiColumn[0], new IRow[0]), out var _columns, out int processing, out var col_width, out int KeyTreeINDEX);
+                    var _rows = LayoutDesign(new TempTable(new TempiColumn[0], new IRow[0]), out var _columns, out _, out var col_width, out int KeyTreeINDEX);
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     return rect;
@@ -99,7 +100,7 @@ namespace AntdUI
             }
             else
             {
-                var _rows = LayoutDesign(dataTmp, out var _columns, out int processing, out var col_width, out int KeyTreeINDEX);
+                var _rows = LayoutDesign(dataTmp, out var _columns, out bool processing, out var col_width, out int KeyTreeINDEX);
                 if (visibleHeader && EmptyHeader && _rows.Count == 0)
                 {
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
@@ -111,10 +112,9 @@ namespace AntdUI
                 {
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
-                    if (processing == 0) { ThreadState?.Dispose(); ThreadState = null; }
-                    else
+                    if (processing && Config.Animation)
                     {
-                        if (Config.Animation && ThreadState == null)
+                        if (ThreadState == null)
                         {
                             ThreadState = new ITask(this, i =>
                             {
@@ -122,6 +122,11 @@ namespace AntdUI
                                 Invalidate();
                             }, 50, 1F, 0.05F);
                         }
+                    }
+                    else
+                    {
+                        ThreadState?.Dispose();
+                        ThreadState = null;
                     }
                     return rect;
                 }
@@ -136,7 +141,7 @@ namespace AntdUI
             return Rectangle.Empty;
         }
 
-        List<RowTemplate> LayoutDesign(TempTable dataTmp, out List<Column> Columns, out int Processing, out Dictionary<int, object> ColWidth, out int KeyTreeIndex)
+        List<RowTemplate> LayoutDesign(TempTable dataTmp, out List<Column> Columns, out bool Processing, out Dictionary<int, object> ColWidth, out int KeyTreeIndex)
         {
             var _rows = new List<RowTemplate>(dataTmp.rows.Length);
             var _columns = new List<Column>(dataTmp.columns.Length);
@@ -194,7 +199,7 @@ namespace AntdUI
             {
                 ForRow(dataTmp, row =>
                 {
-                    var cells = new List<TCell>(_columns.Count);
+                    var cells = new List<CELL>(_columns.Count);
                     foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
                     if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.i, row.record);
                 });
@@ -203,14 +208,14 @@ namespace AntdUI
             {
                 ForRow(dataTmp, row =>
                 {
-                    var cells = new List<TCell>(_columns.Count);
+                    var cells = new List<CELL>(_columns.Count);
                     foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
                     if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.i, row.record), row, _columns, KeyTree, KeyTreeINDEX, 0, true);
                 });
             }
 
             Columns = _columns;
-            Processing = processing;
+            Processing = processing > 0;
             ColWidth = col_width;
             KeyTreeIndex = KeyTreeINDEX;
             dataOne = false;
@@ -544,7 +549,7 @@ namespace AntdUI
                     if (item_tree.Count > 0)
                     {
                         var row_tree = new IRow(i, list_tree[i], item_tree);
-                        var cells_tree = new List<TCell>(_columns.Count);
+                        var cells_tree = new List<CELL>(_columns.Count);
                         foreach (var column in _columns) AddRows(ref cells_tree, ref processing, column, row_tree, column.Key);
                         if (ForTree(ref _rows, ref processing, AddRows(ref _rows, cells_tree.ToArray(), row.i, row_tree.record), row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, show)) count++;
                     }
@@ -700,7 +705,7 @@ namespace AntdUI
         #endregion
 
         float check_radius = 0F, check_border = 1F;
-        void AddRows(ref List<TCell> cells, ref int processing, Column column, IRow row, string key)
+        void AddRows(ref List<CELL> cells, ref int processing, Column column, IRow row, string key)
         {
             if (column is ColumnSort columnSort) AddRows(ref cells, new TCellSort(this, columnSort));
             else if (row.cells.TryGetValue(key, out var ov))
@@ -721,7 +726,7 @@ namespace AntdUI
         /// <param name="ov">原始值</param>
         /// <param name="value">真值</param>
         /// <param name="prop">反射</param>
-        void AddRows(ref List<TCell> cells, ref int processing, Column column, object? ov, object? value, PropertyDescriptor? prop)
+        void AddRows(ref List<CELL> cells, ref int processing, Column column, object? ov, object? value, PropertyDescriptor? prop)
         {
             if (value == null) cells.Add(new TCellText(this, column, prop, ov, null));
             else
@@ -760,15 +765,15 @@ namespace AntdUI
             }
         }
 
-        void AddRows(ref List<TCell> cells, TCell data)
+        void AddRows(ref List<CELL> cells, CELL data)
         {
             cells.Add(data);
             var data_temp = data;
             if (data is Template template)
             {
-                foreach (var it in template.value)
+                foreach (var it in template.Value)
                 {
-                    it.Value.Changed = layout =>
+                    it.Changed = layout =>
                     {
                         if (layout) LoadLayout();
                         Invalidate();
@@ -777,9 +782,10 @@ namespace AntdUI
             }
         }
 
-        RowTemplate AddRows(ref List<RowTemplate> rows, TCell[] cells, int row_i, object? record)
+        RowTemplate AddRows(ref List<RowTemplate> rows, CELL[] cells, int row_i, object? record)
         {
             var row = new RowTemplate(this, cells, row_i, record);
+            if (enableDir.Contains(row_i)) row.ENABLE = false;
             foreach (var it in row.cells) it.SetROW(row);
             rows.Add(row);
             return row;
@@ -918,7 +924,7 @@ namespace AntdUI
             }
         }
 
-        void RefreshItem(RowTemplate[] rows, RowTemplate row, TCell cel, int cel_i, object? value)
+        void RefreshItem(RowTemplate[] rows, RowTemplate row, CELL cel, int cel_i, object? value)
         {
             if (cel is Template template)
             {
@@ -926,20 +932,22 @@ namespace AntdUI
                 if (value == null) count++;
                 else if (value is IList<ICell> cells)
                 {
-                    if (template.value.Count == cells.Count)
+                    if (template.Value.Count == cells.Count)
                     {
-                        for (int i = 0; i < template.value.Count; i++)
+                        for (int i = 0; i < template.Value.Count; i++)
                         {
-                            if (template.value[i].SValue(cells[i])) count++;
+                            template.Value[i] = cells[i];
+                            count++;
                         }
                     }
                     else count++;
                 }
                 else if (value is ICell cell)
                 {
-                    if (template.value.Count == 1)
+                    if (template.Value.Count == 1)
                     {
-                        if (template.value[0].SValue(cell)) count++;
+                        template.Value[0] = cell;
+                        count++;
                     }
                     else count++;
                 }
@@ -1015,13 +1023,13 @@ namespace AntdUI
             if (count > 0 && nocount == count) columnCheck.Checked = value;
         }
 
-        void SetValue(TCell cel, object? value)
+        void SetValue(CELL cel, object? value)
         {
             if (cel.PROPERTY == null)
             {
                 if (cel.VALUE is AntItem arow) arow.value = value;
             }
-            else cel.PROPERTY.SetValue(cel.VALUE, value);
+            else cel.PROPERTY.SetValue(cel.VALUE, Convert.ChangeType(value, cel.PROPERTY.PropertyType));
         }
 
         bool RowISelect(RowTemplate row)

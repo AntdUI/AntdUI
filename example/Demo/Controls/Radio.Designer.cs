@@ -105,7 +105,6 @@ namespace Demo.Controls
             // 
             // radio8
             // 
-            radio8.AutoCheck = true;
             radio8.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio8.Checked = true;
             radio8.Dock = DockStyle.Left;
@@ -119,7 +118,6 @@ namespace Demo.Controls
             // 
             // radio7
             // 
-            radio7.AutoCheck = true;
             radio7.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio7.Dock = DockStyle.Left;
             radio7.Fill = Color.FromArgb(150, 0, 0);
@@ -131,7 +129,6 @@ namespace Demo.Controls
             // 
             // radio6
             // 
-            radio6.AutoCheck = true;
             radio6.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio6.Dock = DockStyle.Left;
             radio6.Fill = Color.FromArgb(200, 0, 0);
@@ -143,7 +140,6 @@ namespace Demo.Controls
             // 
             // radio5
             // 
-            radio5.AutoCheck = true;
             radio5.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio5.Dock = DockStyle.Left;
             radio5.Fill = Color.FromArgb(250, 0, 0);
@@ -166,7 +162,6 @@ namespace Demo.Controls
             // 
             // radio4
             // 
-            radio4.AutoCheck = true;
             radio4.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio4.Dock = DockStyle.Left;
             radio4.Enabled = false;
@@ -178,7 +173,6 @@ namespace Demo.Controls
             // 
             // radio3
             // 
-            radio3.AutoCheck = true;
             radio3.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio3.Dock = DockStyle.Left;
             radio3.Location = new Point(300, 0);
@@ -189,7 +183,6 @@ namespace Demo.Controls
             // 
             // radio2
             // 
-            radio2.AutoCheck = true;
             radio2.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio2.Dock = DockStyle.Left;
             radio2.Location = new Point(150, 0);
@@ -200,7 +193,6 @@ namespace Demo.Controls
             // 
             // radio1
             // 
-            radio1.AutoCheck = true;
             radio1.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio1.Dock = DockStyle.Left;
             radio1.Location = new Point(0, 0);

@@ -199,7 +199,7 @@ namespace AntdUI
                 };
                 return;
             }
-            else if (parent is LayeredFormDrawer drawer)
+            else if (parent is LayeredFormDrawer drawer && drawer.LoadEnd)
             {
                 drawer.LoadOK = () =>
                 {
@@ -316,10 +316,10 @@ namespace AntdUI
             {
                 var y = rect_prog.Bottom;
                 rect_prog.Offset(0, -size2);
-                g.String(config.Text, font, config.Fore ?? Style.Db.Primary, new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
+                g.String(config.Text, font, config.Fore ?? Colour.Primary.Get("Spin"), new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
             }
-            g.DrawEllipse(Style.Db.Fill, size, rect_prog);
-            using (var brush = new Pen(config.Color ?? Style.Db.Primary, size))
+            g.DrawEllipse(Colour.Fill.Get("Spin"), size, rect_prog);
+            using (var brush = new Pen(config.Color ?? Colour.Primary.Get("Spin"), size))
             {
                 brush.StartCap = brush.EndCap = LineCap.Round;
                 if (config.Value.HasValue)
@@ -396,7 +396,7 @@ namespace AntdUI
             var original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
-                using (var brush = new SolidBrush(config.Back ?? Style.rgba(Style.Db.BgBase, .8F)))
+                using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get("Spin"), .8F)))
                 {
                     if (gpath != null) g.Fill(brush, gpath);
                     else if (Radius > 0)

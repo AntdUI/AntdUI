@@ -367,7 +367,7 @@ namespace AntdUI
         {
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
-            Color _fore = Style.Db.DefaultColor;
+            Color _fore = Colour.DefaultColor.Get("Label");
             if (fore.HasValue) _fore = fore.Value;
             PaintText(g, Text, _fore, rect_read);
             if (shadow > 0)
@@ -679,7 +679,7 @@ namespace AntdUI
             return PSize;
         }
 
-        internal Size PSize
+        Size PSize
         {
             get
             {
@@ -687,6 +687,7 @@ namespace AntdUI
                 return Helper.GDI(g =>
                 {
                     var font_size = g.MeasureString(Text ?? Config.NullText, Font);
+                    if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
                         float add = 0;
@@ -715,7 +716,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal bool BeforeAutoSize()
+        bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)

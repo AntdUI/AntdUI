@@ -28,7 +28,7 @@ namespace AntdUI
             switch (keyData)
             {
                 case Keys.Control | Keys.C:
-                    if (ClipboardCopy && rows != null && selectedIndex.Length > 0)
+                    if (ClipboardCopy && rows != null && !inEditMode && selectedIndex.Length > 0)
                     {
                         CopyData(selectedIndex);
                         if (HandShortcutKeys) return true;

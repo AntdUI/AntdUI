@@ -49,11 +49,11 @@ namespace AntdUI
             SuspendLayout();
 
             int butt_h = (int)Math.Round(config.BtnHeight * Config.Dpi);
-            BackColor = Style.Db.BgElevated;
+            BackColor = Colour.BgElevated.Get("Modal");
             Size = new Size(416, 122 + butt_h);
             if (config.Form == null) { if (config.Font != null) Font = config.Font; }
             else Font = config.Font ?? config.Form.Font;
-            ForeColor = Style.Db.TextBase;
+            ForeColor = Colour.TextBase.Get("Modal");
             ShowInTaskbar = false;
             if (config.Form == null) StartPosition = FormStartPosition.CenterScreen;
             else StartPosition = FormStartPosition.CenterParent;
@@ -96,7 +96,7 @@ namespace AntdUI
                 panel_main = new Panel
                 {
                     Dock = DockStyle.Bottom,
-                    Back = Style.Db.BgElevated,
+                    Back = Colour.BgElevated.Get("Modal"),
                     Size = new Size(368, butt_h)
                 };
                 if (btn_no != null) panel_main.Controls.Add(btn_no);
@@ -161,16 +161,26 @@ namespace AntdUI
                     }
                 }
                 Controls.Add(panel_main);
-                panel_main.MouseMove += Window_MouseDown;
+                if (config.Draggable) panel_main.MouseMove += Window_MouseDown;
             }
 
             if (config.Keyboard)
             {
-                if (btn_no == null) AcceptButton = CancelButton = btn_ok;
+                if (butt_h > 0)
+                {
+                    if (btn_no == null) AcceptButton = CancelButton = btn_ok;
+                    else
+                    {
+                        AcceptButton = btn_ok;
+                        CancelButton = btn_no;
+                    }
+                }
                 else
                 {
-                    AcceptButton = btn_ok;
-                    CancelButton = btn_no;
+                    ONESC = () =>
+                    {
+                        DialogResult = DialogResult.No;
+                    };
                 }
             }
 
@@ -383,28 +393,28 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
-            if (config.Icon != TType.None) g.PaintIcons(config.Icon, rectIcon);
+            if (config.Icon != TType.None) g.PaintIcons(config.Icon, rectIcon, "Modal");
             if (config.CloseIcon)
             {
                 if (close_button.Animation)
                 {
                     using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        g.Fill(Helper.ToColor(close_button.Value, Style.Db.FillSecondary), path);
+                        g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get("Modal")), path);
                     }
-                    g.PaintIconClose(rect_close, Style.Db.Text, .6F);
+                    g.PaintIconClose(rect_close, Colour.Text.Get("Modal"), .6F);
                 }
                 else if (close_button.Switch)
                 {
                     using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        g.Fill(Style.Db.FillSecondary, path);
+                        g.Fill(Colour.FillSecondary.Get("Modal"), path);
                     }
-                    g.PaintIconClose(rect_close, Style.Db.Text, .6F);
+                    g.PaintIconClose(rect_close, Colour.Text.Get("Modal"), .6F);
                 }
-                else g.PaintIconClose(rect_close, Style.Db.TextTertiary, .6F);
+                else g.PaintIconClose(rect_close, Colour.TextTertiary.Get("Modal"), .6F);
             }
-            using (var brush = new SolidBrush(Style.Db.Text))
+            using (var brush = new SolidBrush(Colour.Text.Get("Modal")))
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
@@ -430,7 +440,6 @@ namespace AntdUI
                     else g.String(config.Content.ToString(), Font, brush, rectContent, stringTL);
                 }
             }
-            base.OnPaint(e);
         }
 
         #region 鼠标
@@ -441,7 +450,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Style.Db.FillSecondary.A;
+                close_button.MaxValue = Colour.FillSecondary.Get("Modal").A;
                 close_button.Switch = rect_close.Contains(e.Location);
                 SetCursor(close_button.Switch);
             }
@@ -455,7 +464,7 @@ namespace AntdUI
                 base.OnMouseUp(e);
                 return;
             }
-            DraggableMouseDown();
+            if (config.Draggable) DraggableMouseDown();
             base.OnMouseDown(e);
         }
 
@@ -575,9 +584,9 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
-                    BackColor = Style.Db.BgElevated;
-                    ForeColor = Style.Db.TextBase;
-                    if (panel_main != null) panel_main.Back = Style.Db.BgElevated;
+                    BackColor = Colour.BgElevated.Get("Modal");
+                    ForeColor = Colour.TextBase.Get("Modal");
+                    if (panel_main != null) panel_main.Back = Colour.BgElevated.Get("Modal");
                     break;
             }
         }

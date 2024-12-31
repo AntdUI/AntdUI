@@ -16,287 +16,95 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Drawing;
+
 namespace AntdUI.Theme
 {
-    public interface IColor<T>
+    public class IColor
     {
-        #region 品牌色
-
-        /// <summary>
-        /// 品牌色
-        /// </summary>
-        T Primary { get; set; }
-
-        /// <summary>
-        /// 文本颜色
-        /// </summary>
-        T PrimaryColor { get; set; }
-
-        /// <summary>
-        /// 主色悬浮态（按钮、开关、复选框）
-        /// </summary>
-        T PrimaryHover { get; set; }
-
-        /// <summary>
-        /// 主色激活态（按钮动画）
-        /// </summary>
-        T PrimaryActive { get; set; }
-
-        /// <summary>
-        /// 主色背景色（按钮底部、下拉激活、文本框激活、菜单激活）
-        /// </summary>
-        T PrimaryBg { get; set; }
-
-        void SetPrimary(T primary);
-
-        #endregion
-
-        #region 成功色
-
-        /// <summary>
-        /// 成功色
-        /// </summary>
-        T Success { get; set; }
-
-        /// <summary>
-        /// 文本颜色
-        /// </summary>
-        T SuccessColor { get; set; }
-
-        /// <summary>
-        /// 成功色的背景颜色
-        /// </summary>
-        T SuccessBg { get; set; }
-
-        /// <summary>
-        /// 成功色的描边色
-        /// </summary>
-        T SuccessBorder { get; set; }
-
-        /// <summary>
-        /// 成功色的悬浮态
-        /// </summary>
-        T SuccessHover { get; set; }
-
-        /// <summary>
-        /// 成功色的激活态
-        /// </summary>
-        T SuccessActive { get; set; }
-
-        void SetSuccess(T success);
-
-        #endregion
-
-        #region 警戒色
-
-        /// <summary>
-        /// 警戒色
-        /// </summary>
-        T Warning { get; set; }
-
-        /// <summary>
-        /// 文本颜色
-        /// </summary>
-        T WarningColor { get; set; }
-
-        /// <summary>
-        /// 警戒色的背景颜色
-        /// </summary>
-        T WarningBg { get; set; }
-
-        /// <summary>
-        /// 警戒色的描边色
-        /// </summary>
-        T WarningBorder { get; set; }
-
-        /// <summary>
-        /// 警戒色的悬浮态
-        /// </summary>
-        T WarningHover { get; set; }
-
-        /// <summary>
-        /// 警戒色的激活态
-        /// </summary>
-        T WarningActive { get; set; }
-
-        void SetWarning(T warning);
-
-        #endregion
-
-        #region 错误色
-
-        /// <summary>
-        /// 错误色
-        /// </summary>
-        T Error { get; set; }
-
-        /// <summary>
-        /// 文本颜色
-        /// </summary>
-        T ErrorColor { get; set; }
-
-        /// <summary>
-        /// 警戒色的背景颜色（按钮底部）
-        /// </summary>
-        T ErrorBg { get; set; }
-
-        /// <summary>
-        /// 警戒色的描边色
-        /// </summary>
-        T ErrorBorder { get; set; }
-
-        /// <summary>
-        /// 错误色的悬浮态
-        /// </summary>
-        T ErrorHover { get; set; }
-
-        /// <summary>
-        /// 错误色的激活态
-        /// </summary>
-        T ErrorActive { get; set; }
-
-        void SetError(T error);
-
-        #endregion
-
-        #region 信息色
-
-        /// <summary>
-        /// 信息色
-        /// </summary>
-        T Info { get; set; }
-
-        /// <summary>
-        /// 文本颜色
-        /// </summary>
-        T InfoColor { get; set; }
-
-        /// <summary>
-        /// 信息色的背景颜色（按钮底部）
-        /// </summary>
-        T InfoBg { get; set; }
-
-        /// <summary>
-        /// 信息色的描边色
-        /// </summary>
-        T InfoBorder { get; set; }
-
-        /// <summary>
-        /// 信息色的悬浮态
-        /// </summary>
-        T InfoHover { get; set; }
-
-        /// <summary>
-        /// 信息色的激活态
-        /// </summary>
-        T InfoActive { get; set; }
-
-        void SetInfo(T info);
-
-        #endregion
-
-        T DefaultBg { get; set; }
-        T DefaultColor { get; set; }
-        T DefaultBorder { get; set; }
-
-        T TagDefaultBg { get; set; }
-        T TagDefaultColor { get; set; }
-
-        #region 中性色
-
-        /// <summary>
-        /// 基础文本色
-        /// </summary>
-        T TextBase { get; set; }
-
-        /// <summary>
-        /// 一级文本色（菜单颜色、非激活下颜色、小清除按钮悬浮态）
-        /// </summary>
-        T Text { get; set; }
-
-        /// <summary>
-        /// 二级文本色
-        /// </summary>
-        T TextSecondary { get; set; }
-
-        /// <summary>
-        /// 三级文本色（小清除按钮）
-        /// </summary>
-        T TextTertiary { get; set; }
-
-        /// <summary>
-        /// 四级文本色（禁用色）
-        /// </summary>
-        T TextQuaternary { get; set; }
-
-        /// <summary>
-        /// 基础背景色
-        /// </summary>
-        T BgBase { get; set; }
-
-        /// <summary>
-        /// 组件的容器背景色 例如：默认按钮、输入框等。务必不要将其与 `colorBgElevated` 混淆。
-        /// </summary>
-        T BgContainer { get; set; }
-
-        /// <summary>
-        /// 浮层容器背景色，在暗色模式下该 token 的色值会比 `colorBgContainer` 要亮一些。例如：模态框、弹出框、菜单等。
-        /// </summary>
-        T BgElevated { get; set; }
-
-        /// <summary>
-        /// 该色用于页面整体布局的背景色，只有需要在页面中处于 B1 的视觉层级时才会使用该 token，其他用法都是错误的
-        /// </summary>
-        T BgLayout { get; set; }
-
-        /// <summary>
-        /// 一级填充色
-        /// </summary>
-        T Fill { get; set; }
-
-        /// <summary>
-        /// 二级填充色（分页悬浮态、菜单悬浮态）
-        /// </summary>
-        T FillSecondary { get; set; }
-
-        /// <summary>
-        /// 三级填充色（下拉悬浮态）
-        /// </summary>
-        T FillTertiary { get; set; }
-
-        /// <summary>
-        /// 四级填充色（幽灵按钮底部）
-        /// </summary>
-        T FillQuaternary { get; set; }
-
-        /// <summary>
-        /// 边框颜色
-        /// </summary>
-        T BorderColor { get; set; }
-        T BorderSecondary { get; set; }
-
-        /// <summary>
-        /// 禁用边框颜色
-        /// </summary>
-        T BorderColorDisable { get; set; }
-
-        #endregion
-
-        /// <summary>
-        /// 用于作为分割线的颜色，此颜色和 BorderSecondary 的颜色一致，但是用的是透明色
-        /// </summary>
-        T Split { get; set; }
-
-        /// <summary>
-        /// 选项悬浮态背景颜色
-        /// </summary>
-        T HoverBg { get; set; }
-
-        /// <summary>
-        /// 选项悬浮态文本颜色
-        /// </summary>
-        T HoverColor { get; set; }
-
-        T SliderHandleColorDisabled { get; set; }
+        public Color Primary => Style.Get(Colour.Primary);
+        public Color PrimaryColor => Style.Get(Colour.PrimaryColor);
+        public Color PrimaryHover => Style.Get(Colour.PrimaryHover);
+        public Color PrimaryActive => Style.Get(Colour.PrimaryActive);
+        public Color PrimaryBg => Style.Get(Colour.PrimaryBg);
+
+        [System.Obsolete("use Style.SetPrimary")]
+        public void SetPrimary(Color primary) => Style.SetPrimary(primary);
+
+        public Color Success => Style.Get(Colour.Success);
+        public Color SuccessColor => Style.Get(Colour.SuccessColor);
+        public Color SuccessBg => Style.Get(Colour.SuccessBg);
+        public Color SuccessBorder => Style.Get(Colour.SuccessBorder);
+        public Color SuccessHover => Style.Get(Colour.SuccessHover);
+        public Color SuccessActive => Style.Get(Colour.SuccessActive);
+
+        [System.Obsolete("use Style.SetSuccess")]
+        public void SetSuccess(Color success) => Style.SetSuccess(success);
+
+        public Color Warning => Style.Get(Colour.Warning);
+        public Color WarningColor => Style.Get(Colour.WarningColor);
+        public Color WarningBg => Style.Get(Colour.WarningBg);
+        public Color WarningBorder => Style.Get(Colour.WarningBorder);
+        public Color WarningHover => Style.Get(Colour.WarningHover);
+        public Color WarningActive => Style.Get(Colour.WarningActive);
+
+        [System.Obsolete("use Style.SetWarning")]
+        public void SetWarning(Color warning) => Style.SetWarning(warning);
+
+        public Color Error => Style.Get(Colour.Error);
+        public Color ErrorColor => Style.Get(Colour.ErrorColor);
+        public Color ErrorBg => Style.Get(Colour.ErrorBg);
+        public Color ErrorBorder => Style.Get(Colour.ErrorBorder);
+        public Color ErrorHover => Style.Get(Colour.ErrorHover);
+        public Color ErrorActive => Style.Get(Colour.ErrorActive);
+
+        [System.Obsolete("use Style.SetError")]
+        public void SetError(Color error) => Style.SetError(error);
+
+        public Color Info => Style.Get(Colour.Info);
+        public Color InfoColor => Style.Get(Colour.InfoColor);
+        public Color InfoBg => Style.Get(Colour.InfoBg);
+        public Color InfoBorder => Style.Get(Colour.InfoBorder);
+        public Color InfoHover => Style.Get(Colour.InfoHover);
+        public Color InfoActive => Style.Get(Colour.InfoActive);
+
+        [System.Obsolete("use Style.SetInfo")]
+        public void SetInfo(Color info) => Style.SetInfo(info);
+
+        public Color DefaultBg => Style.Get(Colour.DefaultBg);
+        public Color DefaultColor => Style.Get(Colour.DefaultColor);
+        public Color DefaultBorder => Style.Get(Colour.DefaultBorder);
+
+        public Color TagDefaultBg => Style.Get(Colour.TagDefaultBg);
+        public Color TagDefaultColor => Style.Get(Colour.TagDefaultColor);
+
+        public Color TextBase => Style.Get(Colour.TextBase);
+        public Color Text => Style.Get(Colour.Text);
+        public Color TextSecondary => Style.Get(Colour.TextSecondary);
+        public Color TextTertiary => Style.Get(Colour.TextTertiary);
+        public Color TextQuaternary => Style.Get(Colour.TextQuaternary);
+
+        public Color BgBase => Style.Get(Colour.BgBase);
+        public Color BgContainer => Style.Get(Colour.BgContainer);
+        public Color BgElevated => Style.Get(Colour.BgElevated);
+        public Color BgLayout => Style.Get(Colour.BgLayout);
+
+        public Color Fill => Style.Get(Colour.Fill);
+        public Color FillSecondary => Style.Get(Colour.FillSecondary);
+        public Color FillTertiary => Style.Get(Colour.FillTertiary);
+        public Color FillQuaternary => Style.Get(Colour.FillQuaternary);
+
+        public Color BorderColor => Style.Get(Colour.BorderColor);
+        public Color BorderSecondary => Style.Get(Colour.BorderSecondary);
+
+        public Color BorderColorDisable => Style.Get(Colour.BorderColorDisable);
+
+        public Color Split => Style.Get(Colour.Split);
+
+        public Color HoverBg => Style.Get(Colour.HoverBg);
+
+        public Color HoverColor => Style.Get(Colour.HoverColor);
+
+        public Color SliderHandleColorDisabled => Style.Get(Colour.SliderHandleColorDisabled);
     }
 }

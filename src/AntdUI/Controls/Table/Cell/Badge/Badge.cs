@@ -96,6 +96,21 @@ namespace AntdUI
             }
         }
 
+        float dotratio = .4F;
+        /// <summary>
+        /// 点比例
+        /// </summary>
+        public float DotRatio
+        {
+            get => dotratio;
+            set
+            {
+                if (dotratio == value) return;
+                dotratio = value;
+                OnPropertyChanged();
+            }
+        }
+
         string? _text;
         /// <summary>
         /// 文本
@@ -110,9 +125,6 @@ namespace AntdUI
                 OnPropertyChanged(true);
             }
         }
-        public override string? ToString()
-        {
-            return _text;
-        }
+        public override string? ToString() => _text;
     }
 }

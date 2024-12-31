@@ -61,10 +61,13 @@ namespace AntdUI.Chat
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
-
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
@@ -110,7 +113,7 @@ namespace AntdUI.Chat
                 {
                     if (it.Hover)
                     {
-                        using (var brush = new SolidBrush(Style.Db.FillTertiary))
+                        using (var brush = new SolidBrush(Colour.FillTertiary.Get("MsgList")))
                         {
                             g.Fill(brush, it.rect);
                         }
@@ -338,7 +341,7 @@ namespace AntdUI.Chat
         }
     }
 
-    public class MsgItem : NotifyProperty
+    public class MsgItem
     {
         public MsgItem() { }
         public MsgItem(string name)
@@ -369,7 +372,7 @@ namespace AntdUI.Chat
             {
                 if (_icon == value) return;
                 _icon = value;
-                OnPropertyChanged("Icon");
+                Invalidates();
             }
         }
 
@@ -385,7 +388,7 @@ namespace AntdUI.Chat
             {
                 if (_name == value) return;
                 _name = value;
-                OnPropertyChanged("Name");
+                Invalidate();
             }
         }
 
@@ -401,7 +404,7 @@ namespace AntdUI.Chat
             {
                 if (_text == value) return;
                 _text = value;
-                OnPropertyChanged("Text");
+                Invalidate();
             }
         }
 
@@ -417,7 +420,7 @@ namespace AntdUI.Chat
             {
                 if (count == value) return;
                 count = value;
-                OnPropertyChanged("Count");
+                Invalidates();
             }
         }
 
@@ -459,10 +462,7 @@ namespace AntdUI.Chat
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
-        void Invalidate()
-        {
-            PARENT?.Invalidate();
-        }
+        void Invalidate() => PARENT?.Invalidate();
         void Invalidates()
         {
             if (PARENT == null) return;

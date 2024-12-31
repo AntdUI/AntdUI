@@ -66,7 +66,7 @@ namespace AntdUI
         public static bool SetTopMost(this Control? control, IntPtr hand)
         {
             var form = control.FindPARENT();
-            if (form != null && form.TopMost)
+            if (form != null && form.TopMost || (form is LayeredFormPopover layered && layered.topMost))
             {
                 SetTopMost(hand);
                 return true;
@@ -172,6 +172,28 @@ namespace AntdUI
             return true;
         }
 
+        public static bool DateExceedMonth(DateTime date, DateTime? min, DateTime? max)
+        {
+            if (min.HasValue && min.Value >= date) return false;
+            if (max.HasValue)
+            {
+                if (max.Value.Year == date.Year && max.Value.Month == date.Month) return true;
+                if (max.Value <= date) return false;
+            }
+            return true;
+        }
+
+        public static bool DateExceedYear(DateTime date, DateTime? min, DateTime? max)
+        {
+            if (min.HasValue && min.Value >= date) return false;
+            if (max.HasValue)
+            {
+                if (max.Value.Year == date.Year) return true;
+                if (max.Value <= date) return false;
+            }
+            return true;
+        }
+
         public static bool DateExceedRelax(DateTime date, DateTime? min, DateTime? max)
         {
             if (min.HasValue && min.Value > date) return false;
@@ -250,8 +272,11 @@ namespace AntdUI
         {
             Dock = control.Dock;
             Anchor = control.Anchor;
-            control.Dock = DockStyle.None;
-            control.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            if (control.Visible)
+            {
+                control.Dock = DockStyle.None;
+                control.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            }
         }
         public DockStyle Dock { get; set; }
         public AnchorStyles Anchor { get; set; }

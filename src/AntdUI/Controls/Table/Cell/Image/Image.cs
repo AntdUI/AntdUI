@@ -195,9 +195,6 @@ namespace AntdUI
         /// </summary>
         public string? Tooltip { get; set; }
 
-        public override string? ToString()
-        {
-            return null;
-        }
+        public override string? ToString() => null;
     }
 }

@@ -346,35 +346,35 @@ namespace AntdUI
             switch (type)
             {
                 case TTypeMini.Default:
-                    _back = Style.Db.TagDefaultBg;
-                    _fore = Style.Db.TagDefaultColor;
-                    _bor = Style.Db.DefaultBorder;
+                    _back = Colour.TagDefaultBg.Get("Tag");
+                    _fore = Colour.TagDefaultColor.Get("Tag");
+                    _bor = Colour.DefaultBorder.Get("Tag");
                     break;
                 case TTypeMini.Error:
-                    _back = Style.Db.ErrorBg;
-                    _fore = Style.Db.Error;
-                    _bor = Style.Db.ErrorBorder;
+                    _back = Colour.ErrorBg.Get("Tag");
+                    _fore = Colour.Error.Get("Tag");
+                    _bor = Colour.ErrorBorder.Get("Tag");
                     break;
                 case TTypeMini.Success:
-                    _back = Style.Db.SuccessBg;
-                    _fore = Style.Db.Success;
-                    _bor = Style.Db.SuccessBorder;
+                    _back = Colour.SuccessBg.Get("Tag");
+                    _fore = Colour.Success.Get("Tag");
+                    _bor = Colour.SuccessBorder.Get("Tag");
                     break;
                 case TTypeMini.Info:
-                    _back = Style.Db.InfoBg;
-                    _fore = Style.Db.Info;
-                    _bor = Style.Db.InfoBorder;
+                    _back = Colour.InfoBg.Get("Tag");
+                    _fore = Colour.Info.Get("Tag");
+                    _bor = Colour.InfoBorder.Get("Tag");
                     break;
                 case TTypeMini.Warn:
-                    _back = Style.Db.WarningBg;
-                    _fore = Style.Db.Warning;
-                    _bor = Style.Db.WarningBorder;
+                    _back = Colour.WarningBg.Get("Tag");
+                    _fore = Colour.Warning.Get("Tag");
+                    _bor = Colour.WarningBorder.Get("Tag");
                     break;
                 case TTypeMini.Primary:
                 default:
-                    _back = Style.Db.PrimaryBg;
-                    _fore = Style.Db.Primary;
-                    _bor = Style.Db.Primary;
+                    _back = Colour.PrimaryBg.Get("Tag");
+                    _fore = Colour.Primary.Get("Tag");
+                    _bor = Colour.Primary.Get("Tag");
                     break;
             }
             if (fore.HasValue) _fore = fore.Value;
@@ -392,7 +392,6 @@ namespace AntdUI
 
                 PaintText(g, Text, _fore, rect_read);
             }
-
             this.PaintBadge(g);
             base.OnPaint(e);
         }
@@ -411,9 +410,9 @@ namespace AntdUI
                         int size = (int)(rect_read.Height * .4F);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
                         rect_close = rect_arrow;
-                        if (hover_close.Animation) g.PaintIconClose(rect_arrow, Helper.ToColor(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text));
-                        else if (hover_close.Switch) g.PaintIconClose(rect_arrow, Style.Db.Text);
-                        else g.PaintIconClose(rect_arrow, Style.Db.TextQuaternary);
+                        if (hover_close.Animation) g.PaintIconClose(rect_arrow, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get("Tag").A, Colour.Text.Get("Tag")));
+                        else if (hover_close.Switch) g.PaintIconClose(rect_arrow, Colour.Text.Get("Tag"));
+                        else g.PaintIconClose(rect_arrow, Colour.TextQuaternary.Get("Tag"));
                     }
                 }
             }
@@ -424,9 +423,9 @@ namespace AntdUI
                 rect_close = rect.r;
                 if (closeIcon)
                 {
-                    if (hover_close.Animation) g.PaintIconClose(rect.r, Helper.ToColor(hover_close.Value + Style.Db.TextQuaternary.A, Style.Db.Text), .8F);
-                    else if (hover_close.Switch) g.PaintIconClose(rect.r, Style.Db.Text, .8F);
-                    else g.PaintIconClose(rect.r, Style.Db.TextQuaternary, .8F);
+                    if (hover_close.Animation) g.PaintIconClose(rect.r, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get("Tag").A, Colour.Text.Get("Tag")), .8F);
+                    else if (hover_close.Switch) g.PaintIconClose(rect.r, Colour.Text.Get("Tag"), .8F);
+                    else g.PaintIconClose(rect.r, Colour.TextQuaternary.Get("Tag"), .8F);
                 }
                 PaintImage(g, color, rect.l);
                 using (var brush = new SolidBrush(color))
@@ -548,7 +547,7 @@ namespace AntdUI
         {
             if (closeIcon)
             {
-                hover_close.MaxValue = Style.Db.Text.A - Style.Db.TextQuaternary.A;
+                hover_close.MaxValue = Colour.Text.Get("Tag").A - Colour.TextQuaternary.Get("Tag").A;
                 hover_close.Switch = rect_close.Contains(e.Location);
                 SetCursor(hover_close.Switch);
             }
@@ -611,7 +610,7 @@ namespace AntdUI
             return PSize;
         }
 
-        internal Size PSize
+        Size PSize
         {
             get
             {
@@ -632,7 +631,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal bool BeforeAutoSize()
+        bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)

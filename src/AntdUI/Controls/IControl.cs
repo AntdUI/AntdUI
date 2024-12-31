@@ -55,7 +55,6 @@ namespace AntdUI
             {
                 if (visible == value) return;
                 visible = value;
-
                 if (InvokeRequired) Invoke(new Action(() => base.Visible = value));
                 else base.Visible = value;
             }
@@ -254,20 +253,26 @@ namespace AntdUI
             OnSizeChanged(EventArgs.Empty);
         }
 
+        static bool disableDataBinding = false;
 #if NET40
         public void OnPropertyChanged(string propertyName)
 #else
         public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
 #endif
         {
-            foreach (Binding it in DataBindings)
+            if (disableDataBinding) return;
+            try
             {
-                if (it.PropertyName == propertyName)
+                foreach (Binding it in DataBindings)
                 {
-                    it.WriteValue();
-                    return;
+                    if (it.PropertyName == propertyName)
+                    {
+                        it.WriteValue();
+                        return;
+                    }
                 }
             }
+            catch (NotSupportedException) { disableDataBinding = true; }
         }
 
         #region 鼠标
@@ -329,18 +334,6 @@ namespace AntdUI
 
         [Description("悬停光标"), Category("光标"), DefaultValue(typeof(Cursor), "Hand")]
         public virtual Cursor HandCursor { get; set; } = Cursors.Hand;
-
-        #endregion
-
-        #region 渲染文本
-
-        internal void PaintText(Canvas g, string? text, Rectangle path, StringFormat stringFormat, bool enabled)
-        {
-            using (var brush = new SolidBrush(enabled ? ForeColor : Style.Db.TextQuaternary))
-            {
-                g.String(text, Font, brush, path, stringFormat);
-            }
-        }
 
         #endregion
 
@@ -460,9 +453,38 @@ namespace AntdUI
             base.OnMouseWheel(e);
         }
 
+        const int WM_POINTERDOWN = 0x0246, WM_POINTERUP = 0x0247;
+        const int WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202;
+
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            if (Config.TouchClickEnabled)
+            {
+                switch (m.Msg)
+                {
+                    case WM_POINTERDOWN:
+                        Vanara.PInvoke.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
+                        break;
+                    case WM_POINTERUP:
+                        Vanara.PInvoke.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
+                        break;
+                    default:
+                        base.WndProc(ref m);
+                        return;
+                }
+            }
+            else base.WndProc(ref m);
+        }
+
         #endregion
 
         #region 拖拽
+
+        /// <summary>
+        /// 拖拽文件夹处理
+        /// </summary>
+        [Description("拖拽文件夹处理"), Category("行为"), DefaultValue(true)]
+        public bool HandDragFolder { get; set; } = true;
 
         protected virtual void OnDragEnter()
         { }
@@ -481,10 +503,12 @@ namespace AntdUI
         protected override void OnDragEnter(DragEventArgs e)
         {
             base.OnDragEnter(e);
+            if (DragChanged == null) return;
             if (AllowDrop)
             {
                 OnDragEnter();
-                e.Effect = DragDropEffects.All;
+                if (DragState(e.Data)) e.Effect = DragDropEffects.All;
+                else e.Effect = DragDropEffects.None;
             }
         }
 
@@ -494,19 +518,76 @@ namespace AntdUI
             OnDragLeave();
         }
 
+        internal Func<string[], string[]?>? ONDRAG;
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
-            if (e.Data == null) return;
-            foreach (string format in e.Data.GetFormats())
+            if (DragChanged == null) return;
+            if (DragData(e.Data, out var files))
             {
-                if (e.Data.GetData(format) is string[] files)
+                if (ONDRAG == null) DragChanged(this, new StringsEventArgs(files));
+                else
                 {
-                    DragChanged?.Invoke(this, new StringsEventArgs(files));
-                    OnDragLeave();
-                    return;
+                    var r = ONDRAG(files);
+                    if (r != null) DragChanged(this, new StringsEventArgs(r));
                 }
             }
+            OnDragLeave();
+        }
+
+        bool DragState(IDataObject? Data)
+        {
+            if (DragData(Data, out var files))
+            {
+                if (ONDRAG == null) return true;
+                else
+                {
+                    var r = ONDRAG(files);
+                    if (r == null) return false;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool DragData(IDataObject? Data, out string[] files)
+        {
+            if (Data == null)
+            {
+                files = new string[0];
+                return false;
+            }
+            foreach (string format in Data.GetFormats())
+            {
+                if (Data.GetData(format) is string[] tmp && tmp.Length > 0)
+                {
+                    if (HandDragFolder)
+                    {
+                        var list = new System.Collections.Generic.List<string>(tmp.Length);
+                        foreach (var it in tmp)
+                        {
+                            if (System.IO.File.Exists(it)) list.Add(it);
+                            else list.AddRange(DragDataDirTree(it));
+                        }
+                        files = list.ToArray();
+                    }
+                    else files = tmp;
+                    return true;
+                }
+            }
+            files = new string[0];
+            return false;
+        }
+
+        System.Collections.Generic.List<string> DragDataDirTree(string dir)
+        {
+            var dirinfo = new System.IO.DirectoryInfo(dir);
+            var files = dirinfo.GetFiles();
+            var dirs = dirinfo.GetDirectories();
+            var list = new System.Collections.Generic.List<string>(files.Length + dirs.Length);
+            foreach (var it in files) list.Add(it.FullName);
+            foreach (var it in dirs) list.AddRange(DragDataDirTree(it.FullName));
+            return list;
         }
 
         #region 事件
@@ -521,6 +602,7 @@ namespace AntdUI
         /// </summary>
         [Description("文件拖拽后时发生"), Category("行为")]
         public event DragEventHandler? DragChanged = null;
+        internal void OnDragChanged(string[] files) => DragChanged?.Invoke(this, new StringsEventArgs(files));
 
         #endregion
 

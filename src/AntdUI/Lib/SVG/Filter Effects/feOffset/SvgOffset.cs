@@ -33,6 +33,7 @@ namespace AntdUI.Svg.FilterEffects
         public override void Process(ImageBuffer buffer)
         {
             var inputImage = buffer[Input];
+            if (inputImage == null) return;
             var result = new Bitmap(inputImage.Width, inputImage.Height);
 
             var pts = new PointF[] { new PointF(Dx.ToDeviceValue(null, UnitRenderingType.Horizontal, null), Dy.ToDeviceValue(null, UnitRenderingType.Vertical, null)) };

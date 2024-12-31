@@ -61,10 +61,7 @@ namespace AntdUI
             }
         }
 
-        protected override bool ShowWithoutActivation
-        {
-            get => true;
-        }
+        protected override bool ShowWithoutActivation => true;
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {

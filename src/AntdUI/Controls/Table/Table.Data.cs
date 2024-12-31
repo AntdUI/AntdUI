@@ -104,8 +104,7 @@ namespace AntdUI
                                     rows.AddRange(dataTmp.rows);
                                     rows.Insert(i, new IRow(i, row, cells));
                                     dataTmp.rows = ChangeList(rows);
-                                    LoadLayout();
-                                    Invalidate();
+                                    if (LoadLayout()) Invalidate();
                                 }
                             }
                             else if (obj is int[] i_s)
@@ -124,14 +123,12 @@ namespace AntdUI
                                 rows.AddRange(dataTmp.rows);
                                 rows.InsertRange(i_s[0], _list);
                                 dataTmp.rows = ChangeList(rows);
-                                LoadLayout();
-                                Invalidate();
+                                if (LoadLayout()) Invalidate();
                             }
                         }
                         else if (code == "edit")
                         {
-                            LoadLayout();
-                            Invalidate();
+                            if (LoadLayout()) Invalidate();
                         }
                         else if (code == "del")
                         {
@@ -143,15 +140,13 @@ namespace AntdUI
                                     rows.AddRange(dataTmp.rows);
                                     rows.RemoveAt(i);
                                     dataTmp.rows = ChangeList(rows);
-                                    LoadLayout();
-                                    Invalidate();
+                                    if (LoadLayout()) Invalidate();
                                 }
                             }
                             else if (obj is string)
                             {
                                 dataTmp.rows = new IRow[0];
-                                LoadLayout();
-                                Invalidate();
+                                if (LoadLayout()) Invalidate();
                             }
                         }
                     }
@@ -206,8 +201,7 @@ namespace AntdUI
                 case ListChangedType.Reset:
                     if (dataTmp == null) return;
                     dataTmp.rows = new IRow[0];
-                    LoadLayout();
-                    Invalidate();
+                    if (LoadLayout()) Invalidate();
                     break;
                 case ListChangedType.ItemMoved:
                 default:
@@ -230,8 +224,7 @@ namespace AntdUI
                 rows.AddRange(dataTmp.rows);
                 rows.Insert(i, new IRow(i, row, cells));
                 dataTmp.rows = ChangeList(rows);
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
             }
         }
         void BindingItemChanged<T>(object? sender, int i)
@@ -248,8 +241,7 @@ namespace AntdUI
                 rows.AddRange(dataTmp.rows);
                 rows[i] = new IRow(i, row, cells);
                 dataTmp.rows = ChangeList(rows);
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
             }
         }
         void BindingItemDeleted<T>(object? sender, int i)
@@ -261,8 +253,7 @@ namespace AntdUI
                 rows.AddRange(dataTmp.rows);
                 rows.RemoveAt(i);
                 dataTmp.rows = ChangeList(rows);
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
             }
         }
 

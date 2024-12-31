@@ -23,12 +23,9 @@ namespace AntdUI
 {
     partial class CellButton
     {
-        internal override void Paint(Canvas g, Font font, SolidBrush fore)
-        {
-            Table.PaintButton(g, font, (PARENT == null || PARENT.PARENT == null) ? 12 : PARENT.PARENT.Gap, Rect, this);
-        }
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintButton(g, font, PARENT.PARENT.Gap, Rect, this, enable);
 
-        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             if (string.IsNullOrEmpty(Text))
             {
@@ -65,31 +62,30 @@ namespace AntdUI
             {
                 if (_mouseHover == value) return;
                 _mouseHover = value;
-                if (PARENT == null) return;
                 if (Enabled)
                 {
                     Color _back_hover;
                     switch (Type)
                     {
                         case TTypeMini.Default:
-                            if (BorderWidth > 0) _back_hover = Style.Db.PrimaryHover;
-                            else _back_hover = Style.Db.FillSecondary;
+                            if (BorderWidth > 0) _back_hover = Colour.PrimaryHover.Get("Button");
+                            else _back_hover = Colour.FillSecondary.Get("Button");
                             break;
                         case TTypeMini.Success:
-                            _back_hover = Style.Db.SuccessHover;
+                            _back_hover = Colour.SuccessHover.Get("Button");
                             break;
                         case TTypeMini.Error:
-                            _back_hover = Style.Db.ErrorHover;
+                            _back_hover = Colour.ErrorHover.Get("Button");
                             break;
                         case TTypeMini.Info:
-                            _back_hover = Style.Db.InfoHover;
+                            _back_hover = Colour.InfoHover.Get("Button");
                             break;
                         case TTypeMini.Warn:
-                            _back_hover = Style.Db.WarningHover;
+                            _back_hover = Colour.WarningHover.Get("Button");
                             break;
                         case TTypeMini.Primary:
                         default:
-                            _back_hover = Style.Db.PrimaryHover;
+                            _back_hover = Colour.PrimaryHover.Get("Button");
                             break;
                     }
 
@@ -178,7 +174,6 @@ namespace AntdUI
 
         internal override void Click()
         {
-            if (PARENT == null) return;
             if (_mouseDown && Config.Animation)
             {
                 ThreadClick?.Dispose();

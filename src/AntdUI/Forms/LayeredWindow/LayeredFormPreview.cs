@@ -340,24 +340,24 @@ namespace AntdUI
                     var bor6 = 6F * Config.Dpi;
                     int loading_size = (int)(40 * Config.Dpi);
                     var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
-                    g.DrawEllipse(Color.FromArgb(220, Style.Db.PrimaryColor), bor6, rect_loading);
+                    g.DrawEllipse(Color.FromArgb(220, Colour.PrimaryColor.Get("Preview")), bor6, rect_loading);
                     if (_value > -1)
                     {
-                        using (var penpro = new Pen(Style.Db.Primary, bor6))
+                        using (var penpro = new Pen(Colour.Primary.Get("Preview"), bor6))
                         {
                             g.DrawArc(penpro, rect_loading, -90, 360F * _value);
                         }
                         if (LoadingProgressStr != null)
                         {
                             rect_loading.Offset(0, loading_size);
-                            g.String(LoadingProgressStr, Font, Style.Db.PrimaryColor, rect_loading, s_f);
+                            g.String(LoadingProgressStr, Font, Colour.PrimaryColor.Get("Preview"), rect_loading, s_f);
                         }
                     }
                     else if (LoadingProgressStr != null)
                     {
-                        g.DrawEllipse(Style.Db.Error, bor6, rect_loading);
+                        g.DrawEllipse(Colour.Error.Get("Preview"), bor6, rect_loading);
                         rect_loading.Offset(0, loading_size);
-                        g.String(LoadingProgressStr, Font, Style.Db.ErrorColor, rect_loading, s_f);
+                        g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get("Preview"), rect_loading, s_f);
                     }
                 }
                 using (var path = rect_panel.RoundPath(rect_panel.Height))

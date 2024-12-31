@@ -86,15 +86,19 @@ namespace AntdUI
             DisableProcessWindowsGhosting();
             if (FormBorderStyle != FormBorderStyle.None && WindowState != FormWindowState.Maximized)
             {
-                Size max = MaximumSize, min = MinimumSize;
                 sizeInit = ClientSize;
-                MaximumSize = MinimumSize = ClientSize = sizeInit.Value;
-                ClientSize = sizeInit.Value;
-                MinimumSize = min;
-                MaximumSize = max;
+                SetSize(sizeInit.Value);
             }
             HandMessage();
             DwmArea();
+        }
+
+        void SetSize(Size size)
+        {
+            Size max = MaximumSize, min = MinimumSize;
+            MaximumSize = MinimumSize = ClientSize = size;
+            MinimumSize = min;
+            MaximumSize = max;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -121,13 +125,11 @@ namespace AntdUI
                 case WindowMessage.WM_NCCALCSIZE when m.WParam != IntPtr.Zero:
                     if (WmNCCalcSize(ref m)) return;
                     break;
-                case WindowMessage.WM_NCACTIVATE:
-                    if (WmNCActivate(ref m)) return;
-                    break;
                 case WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
                 case WindowMessage.WM_ACTIVATEAPP:
+                case WindowMessage.WM_NCACTIVATE:
                     InvalidateNonclient();
                     break;
                 default:
@@ -427,7 +429,12 @@ namespace AntdUI
         void WmSize(ref System.Windows.Forms.Message m)
         {
             if (m.WParam == SIZE_MINIMIZED) WinState = WState.Minimize;
-            else if (m.WParam == SIZE_MAXIMIZED) WinState = WState.Maximize;
+            else if (m.WParam == SIZE_MAXIMIZED)
+            {
+                WinState = WState.Maximize;
+                Invalidate();
+                InvalidateNonclient();
+            }
             else if (m.WParam == SIZE_RESTORED)
             {
                 sizeNormal = ClientSize;
@@ -452,6 +459,7 @@ namespace AntdUI
                 nccsp.top -= borders.Top;
                 nccsp.top += borders.Bottom;
                 Marshal.StructureToPtr(nccsp, m.LParam, false);
+                m.Result = new IntPtr(0x0400);
                 return false;
             }
             else
@@ -463,13 +471,6 @@ namespace AntdUI
 
         internal Size? sizeInit;
         Size? sizeNormal;
-        bool WmNCActivate(ref System.Windows.Forms.Message m)
-        {
-            if (m.HWnd == IntPtr.Zero) return false;
-            if (IsIconic(m.HWnd)) return false;
-            m.Result = DefWindowProc(m.HWnd, (uint)m.Msg, m.WParam, new IntPtr(-1));
-            return true;
-        }
 
         #endregion
 
@@ -499,12 +500,8 @@ namespace AntdUI
         protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
         {
             if (DesignMode) base.SetBoundsCore(x, y, width, height, specified);
-#if NET40 || NET45 || NET46 || NET48 || NET6_0
             else if (WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
             else base.SetBoundsCore(x, y, width, height, specified);
-#else
-            else base.SetBoundsCore(x, y, width, height, specified);
-#endif
         }
 
         #endregion

@@ -71,6 +71,40 @@ namespace AntdUI
             }
         }
 
+        float dotratio = .4F;
+        /// <summary>
+        /// 点比例
+        /// </summary>
+        [Description("点比例"), Category("外观"), DefaultValue(.4F)]
+        public float DotRatio
+        {
+            get => dotratio;
+            set
+            {
+                if (dotratio == value) return;
+                dotratio = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged("DotRatio");
+            }
+        }
+
+        int gap = 0;
+        /// <summary>
+        /// 间隔
+        /// </summary>
+        [Description("间隔"), Category("外观"), DefaultValue(0)]
+        public int Gap
+        {
+            get => gap;
+            set
+            {
+                if (gap == value) return;
+                gap = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged("Gap");
+            }
+        }
+
         bool has_text = true;
         string? text = null;
         /// <summary>
@@ -94,7 +128,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        StringFormat stringFormat = Helper.SF_ALL(lr: StringAlignment.Near);
+        StringFormat s_f = Helper.SF_ALL(lr: StringAlignment.Near);
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>
         /// 文本位置
@@ -107,7 +141,7 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                textAlign.SetAlignment(ref stringFormat);
+                textAlign.SetAlignment(ref s_f);
                 Invalidate();
                 OnPropertyChanged("TextAlign");
             }
@@ -170,13 +204,13 @@ namespace AntdUI
             if (has_text)
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                int dot_size = (int)(size.Height / 2.5F);
+                int dot_size = (int)(size.Height * dotratio);
                 using (var brush = new SolidBrush(GetColor(fill, state)))
                 {
                     g.FillEllipse(brush, new RectangleF((rect.Width - dot_size) / 2F, (rect.Height - dot_size) / 2F, dot_size, dot_size));
                     if (state == TState.Processing)
                     {
-                        float max = (size.Height - 6F) * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
+                        float max = size.Height * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
                         g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF((rect.Width - max) / 2F, (rect.Height - max) / 2F, max, max));
                     }
                 }
@@ -184,20 +218,20 @@ namespace AntdUI
             else
             {
                 var size = g.MeasureString(Text, Font);
-                int dot_size = (int)(size.Height / 2.5F);
+                int dot_size = (int)(size.Height * dotratio), _gap = (int)(gap * Config.Dpi);
                 using (var brush = new SolidBrush(GetColor(fill, state)))
                 {
                     var rect_dot = new RectangleF(rect.X + (size.Height - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                     g.FillEllipse(brush, rect_dot);
                     if (state == TState.Processing)
                     {
-                        float max = (size.Height - 6F) * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
+                        float max = size.Height * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
                         g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF(rect_dot.X + (rect_dot.Width - max) / 2F, rect_dot.Y + (rect_dot.Height - max) / 2F, max, max));
                     }
                 }
-                using (var brush = fore.Brush(Style.Db.Text, Style.Db.TextQuaternary, Enabled))
+                using (var brush = fore.Brush(Colour.Text.Get("Badge"), Colour.TextQuaternary.Get("Badge"), Enabled))
                 {
-                    g.String(Text, Font, brush, new Rectangle(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height), stringFormat);
+                    g.String(Text, Font, brush, new Rectangle(rect.X + _gap + size.Height, rect.Y, rect.Width - size.Height, rect.Height), s_f);
                 }
             }
             this.PaintBadge(g);
@@ -206,21 +240,21 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal Color GetColor(Color? color, TState state)
+        Color GetColor(Color? color, TState state)
         {
             if (color.HasValue) return color.Value;
             return GetColor(state);
         }
-        internal Color GetColor(TState state)
+        Color GetColor(TState state)
         {
             switch (state)
             {
-                case TState.Success: return Style.Db.Success;
-                case TState.Error: return Style.Db.Error;
+                case TState.Success: return Colour.Success.Get("Badge");
+                case TState.Error: return Colour.Error.Get("Badge");
                 case TState.Primary:
-                case TState.Processing: return Style.Db.Primary;
-                case TState.Warn: return Style.Db.Warning;
-                default: return Style.Db.TextQuaternary;
+                case TState.Processing: return Colour.Primary.Get("Badge");
+                case TState.Warn: return Colour.Warning.Get("Badge");
+                default: return Colour.TextQuaternary.Get("Badge");
             }
         }
 
@@ -282,7 +316,7 @@ namespace AntdUI
             return PSize;
         }
 
-        internal Size PSize
+        Size PSize
         {
             get
             {
@@ -310,7 +344,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal bool BeforeAutoSize()
+        bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)

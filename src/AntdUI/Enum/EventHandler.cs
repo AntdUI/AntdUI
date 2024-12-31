@@ -109,9 +109,9 @@ namespace AntdUI
 
     #region Color
 
-    public class ColorEventArgs : VEventArgs<System.Drawing.Color>
+    public class ColorEventArgs : VEventArgs<Color>
     {
-        public ColorEventArgs(System.Drawing.Color value) : base(value) { }
+        public ColorEventArgs(Color value) : base(value) { }
     }
 
     /// <summary>
@@ -437,6 +437,25 @@ namespace AntdUI
         /// 行序号
         /// </summary>
         public int RowIndex { get; private set; }
+    }
+
+    public class TableSortModeEventArgs : EventArgs
+    {
+        public TableSortModeEventArgs(SortMode sortMode, Column column)
+        {
+            SortMode = sortMode;
+            Column = column;
+        }
+
+        /// <summary>
+        /// 排序方式
+        /// </summary>
+        public SortMode SortMode { get; private set; }
+
+        /// <summary>
+        /// 表头
+        /// </summary>
+        public Column Column { get; private set; }
     }
 
     public class ITableEventArgs : EventArgs

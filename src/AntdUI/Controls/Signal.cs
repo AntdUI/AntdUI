@@ -185,7 +185,7 @@ namespace AntdUI
                     rect_5 = new RectangleF(rect_dot.X + (gap + onew) * 4, rect_dot.Y, onew, rect_dot.Height);
                 if (loading)
                 {
-                    Color color1 = fill ?? Style.Db.FillQuaternary, color2 = FillFully ?? Style.Db.Success;
+                    Color color1 = fill ?? Colour.FillQuaternary.Get("Signal"), color2 = FillFully ?? Colour.Success.Get("Signal");
                     using (var path = new GraphicsPath())
                     {
                         path.AddRectangle(rect_1);
@@ -210,7 +210,7 @@ namespace AntdUI
                 {
                     if (vol == 0)
                     {
-                        using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
+                        using (var brush_bg = new SolidBrush(fill ?? Colour.FillQuaternary.Get("Signal")))
                         {
                             g.Fill(brush_bg, rect_1);
                             g.Fill(brush_bg, rect_2);
@@ -221,8 +221,8 @@ namespace AntdUI
                     }
                     else if (vol == 1)
                     {
-                        using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
-                        using (var brush = new SolidBrush(FillDanger ?? Style.Db.Error))
+                        using (var brush_bg = new SolidBrush(fill ?? Colour.FillQuaternary.Get("Signal")))
+                        using (var brush = new SolidBrush(FillDanger ?? Colour.Error.Get("Signal")))
                         {
                             g.Fill(brush, rect_1);
                             g.Fill(brush_bg, rect_2);
@@ -233,8 +233,8 @@ namespace AntdUI
                     }
                     else if (vol == 2)
                     {
-                        using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
-                        using (var brush = new SolidBrush(FillDanger ?? Style.Db.Error))
+                        using (var brush_bg = new SolidBrush(fill ?? Colour.FillQuaternary.Get("Signal")))
+                        using (var brush = new SolidBrush(FillDanger ?? Colour.Error.Get("Signal")))
                         {
                             g.Fill(brush, rect_1);
                             g.Fill(brush, rect_2);
@@ -245,8 +245,8 @@ namespace AntdUI
                     }
                     else if (vol == 3)
                     {
-                        using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
-                        using (var brush = new SolidBrush(FillWarn ?? Style.Db.Warning))
+                        using (var brush_bg = new SolidBrush(fill ?? Colour.FillQuaternary.Get("Signal")))
+                        using (var brush = new SolidBrush(FillWarn ?? Colour.Warning.Get("Signal")))
                         {
                             g.Fill(brush, rect_1);
                             g.Fill(brush, rect_2);
@@ -257,8 +257,8 @@ namespace AntdUI
                     }
                     else if (vol == 4)
                     {
-                        using (var brush_bg = new SolidBrush(fill ?? Style.Db.FillQuaternary))
-                        using (var brush = new SolidBrush(FillFully ?? Style.Db.Success))
+                        using (var brush_bg = new SolidBrush(fill ?? Colour.FillQuaternary.Get("Signal")))
+                        using (var brush = new SolidBrush(FillFully ?? Colour.Success.Get("Signal")))
                         {
                             g.Fill(brush, rect_1);
                             g.Fill(brush, rect_2);
@@ -269,7 +269,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var brush = new SolidBrush(FillFully ?? Style.Db.Success))
+                        using (var brush = new SolidBrush(FillFully ?? Colour.Success.Get("Signal")))
                         {
                             g.Fill(brush, rect_1);
                             g.Fill(brush, rect_2);
@@ -286,7 +286,7 @@ namespace AntdUI
 
                 if (loading)
                 {
-                    Color color1 = fill ?? Style.Db.FillQuaternary, color2 = FillFully ?? Style.Db.Success;
+                    Color color1 = fill ?? Colour.FillQuaternary.Get("Signal"), color2 = FillFully ?? Colour.Success.Get("Signal");
                     using (var pen = new Pen(color2, Config.Dpi))
                     using (var brush = new LinearGradientBrush(rect_pie, color1, color2, 90F))
                     {
@@ -316,7 +316,7 @@ namespace AntdUI
                         rect_3 = new RectangleF(rect_dot.X + (rect_dot.Width - size3) / 2F, y3, size3, size3);
                     if (vol == 0)
                     {
-                        using (var pen = new Pen(fill ?? Style.Db.FillQuaternary, onew))
+                        using (var pen = new Pen(fill ?? Colour.FillQuaternary.Get("Signal"), onew))
                         using (var brush = new SolidBrush(pen.Color))
                         {
                             g.DrawArc(pen, rect_1, -135, 90);
@@ -326,8 +326,8 @@ namespace AntdUI
                     }
                     else if (vol == 1)
                     {
-                        using (var pen = new Pen(fill ?? Style.Db.FillQuaternary, onew))
-                        using (var brush = new SolidBrush(FillDanger ?? Style.Db.Error))
+                        using (var pen = new Pen(fill ?? Colour.FillQuaternary.Get("Signal"), onew))
+                        using (var brush = new SolidBrush(FillDanger ?? Colour.Error.Get("Signal")))
                         {
                             g.DrawArc(pen, rect_1, -135, 90);
                             g.DrawArc(pen, rect_2, -135, 90);
@@ -336,8 +336,8 @@ namespace AntdUI
                     }
                     else if (vol == 2)
                     {
-                        using (var pen = new Pen(fill ?? Style.Db.FillQuaternary, onew))
-                        using (var brush = new SolidBrush(FillWarn ?? Style.Db.Warning))
+                        using (var pen = new Pen(fill ?? Colour.FillQuaternary.Get("Signal"), onew))
+                        using (var brush = new SolidBrush(FillWarn ?? Colour.Warning.Get("Signal")))
                         using (var penw = new Pen(brush.Color, onew))
                         {
                             g.DrawArc(pen, rect_1, -135, 90);
@@ -347,8 +347,8 @@ namespace AntdUI
                     }
                     else if (vol == 3)
                     {
-                        using (var pen = new Pen(fill ?? Style.Db.FillQuaternary, onew))
-                        using (var brush = new SolidBrush(FillWarn ?? Style.Db.Warning))
+                        using (var pen = new Pen(fill ?? Colour.FillQuaternary.Get("Signal"), onew))
+                        using (var brush = new SolidBrush(FillWarn ?? Colour.Warning.Get("Signal")))
                         using (var penw = new Pen(brush.Color, onew))
                         {
                             g.DrawArc(pen, rect_1, -135, 90);
@@ -358,7 +358,7 @@ namespace AntdUI
                     }
                     else if (vol == 4)
                     {
-                        using (var pen = new Pen(FillFully ?? Style.Db.Success, onew))
+                        using (var pen = new Pen(FillFully ?? Colour.Success.Get("Signal"), onew))
                         using (var brush = new SolidBrush(pen.Color))
                         {
                             g.DrawArc(pen, rect_1, -135, 90);
@@ -368,7 +368,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var pen = new Pen(FillFully ?? Style.Db.SuccessActive, onew))
+                        using (var pen = new Pen(FillFully ?? Colour.SuccessActive.Get("Signal"), onew))
                         using (var brush = new SolidBrush(pen.Color))
                         {
                             g.DrawArc(pen, rect_1, -135, 90);

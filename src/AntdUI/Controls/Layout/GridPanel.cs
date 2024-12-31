@@ -52,7 +52,7 @@ namespace AntdUI
             {
                 if (layoutengine.Span == value) return;
                 layoutengine.Span = value;
-                OSizeChanged();
+                IOnSizeChanged();
                 OnPropertyChanged("Span");
             }
         }
@@ -68,16 +68,17 @@ namespace AntdUI
             {
                 if (layoutengine.Gap == value) return;
                 layoutengine.Gap = value;
-                OSizeChanged();
+                IOnSizeChanged();
                 OnPropertyChanged("Gap");
             }
         }
 
         #region 布局
 
-        internal void OSizeChanged()
+        protected override void OnHandleCreated(EventArgs e)
         {
-            OnSizeChanged(EventArgs.Empty);
+            IOnSizeChanged();
+            base.OnHandleCreated(e);
         }
 
         GridLayout layoutengine = new GridLayout();

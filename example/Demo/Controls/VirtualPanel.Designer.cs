@@ -99,7 +99,6 @@ namespace Demo.Controls
             // 
             // checkbox1
             // 
-            checkbox1.AutoCheck = true;
             checkbox1.LocalizationText = "VirtualPanel.{id}";
             checkbox1.Location = new Point(229, 54);
             checkbox1.Name = "checkbox1";

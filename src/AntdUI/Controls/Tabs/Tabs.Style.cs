@@ -277,17 +277,17 @@ namespace AntdUI
                 {
                     if (BackSize > 0)
                     {
-                        using (var brush = new SolidBrush(Back ?? AntdUI.Style.Db.BorderSecondary))
+                        using (var brush = new SolidBrush(Back ?? AntdUI.Colour.BorderSecondary.Get("Tabs")))
                         {
                             g.Fill(brush, rect_line_top);
                         }
                     }
                     if (owner.scroll_show) g.SetClip(owner.PaintExceedPre(rect_ful, rects[rects.Length - 1].Rect.Height));
                     else g.SetClip(rect_ful);
-                    using (var brush_fore = new SolidBrush(owner.ForeColor ?? AntdUI.Style.Db.Text))
-                    using (var brush_fill = new SolidBrush(owner.Fill ?? AntdUI.Style.Db.Primary))
-                    using (var brush_active = new SolidBrush(owner.FillActive ?? AntdUI.Style.Db.PrimaryActive))
-                    using (var brush_hover = new SolidBrush(owner.FillHover ?? AntdUI.Style.Db.PrimaryHover))
+                    using (var brush_fore = new SolidBrush(owner.ForeColor ?? AntdUI.Colour.Text.Get("Tabs")))
+                    using (var brush_fill = new SolidBrush(owner.Fill ?? AntdUI.Colour.Primary.Get("Tabs")))
+                    using (var brush_active = new SolidBrush(owner.FillActive ?? AntdUI.Colour.PrimaryActive.Get("Tabs")))
+                    using (var brush_hover = new SolidBrush(owner.FillHover ?? AntdUI.Colour.PrimaryHover.Get("Tabs")))
                     {
                         if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                         if (AnimationBar)
@@ -939,13 +939,13 @@ namespace AntdUI
             {
                 if (rects.Length == items.Count)
                 {
-                    using (var brush_fore = new SolidBrush(owner.ForeColor ?? AntdUI.Style.Db.Text))
-                    using (var brush_fill = new SolidBrush(owner.Fill ?? AntdUI.Style.Db.Primary))
-                    using (var brush_active = new SolidBrush(owner.FillActive ?? AntdUI.Style.Db.PrimaryActive))
-                    using (var brush_hover = new SolidBrush(owner.FillHover ?? AntdUI.Style.Db.PrimaryHover))
-                    using (var brush_bg = new SolidBrush(Fill ?? AntdUI.Style.Db.FillQuaternary))
-                    using (var brush_bg_hover = new SolidBrush(FillHover ?? AntdUI.Style.Db.FillQuaternary))
-                    using (var brush_bg_active = new SolidBrush(FillActive ?? AntdUI.Style.Db.BgContainer))
+                    using (var brush_fore = new SolidBrush(owner.ForeColor ?? AntdUI.Colour.Text.Get("Tabs")))
+                    using (var brush_fill = new SolidBrush(owner.Fill ?? AntdUI.Colour.Primary.Get("Tabs")))
+                    using (var brush_active = new SolidBrush(owner.FillActive ?? AntdUI.Colour.PrimaryActive.Get("Tabs")))
+                    using (var brush_hover = new SolidBrush(owner.FillHover ?? AntdUI.Colour.PrimaryHover.Get("Tabs")))
+                    using (var brush_bg = new SolidBrush(Fill ?? AntdUI.Colour.FillQuaternary.Get("Tabs")))
+                    using (var brush_bg_hover = new SolidBrush(FillHover ?? AntdUI.Colour.FillQuaternary.Get("Tabs")))
+                    using (var brush_bg_active = new SolidBrush(FillActive ?? AntdUI.Colour.BgContainer.Get("Tabs")))
                     {
                         var rect_t = owner.ClientRectangle;
                         int radius = (int)(Radius * Config.Dpi), bor = (int)(bordersize * Config.Dpi), bor2 = bor * 6, bor22 = bor2 * 2;
@@ -973,7 +973,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, false, false, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
                                                 else PaintText(g, rects[i], owner, page, brush_fore);
                                             }
@@ -990,7 +990,7 @@ namespace AntdUI
                                     {
                                         if (bor > 0)
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
+                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Colour.BorderColor.Get("Tabs"), bor))
                                             {
                                                 float ly = rect_page.Y + borb2;
                                                 g.DrawLine(pen_bg, rect_t.X, ly, rect_t.Right, ly);
@@ -1031,7 +1031,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, false, false, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
                                                 else PaintText(g, rects[i], owner, page, brush_fore);
                                             }
@@ -1048,7 +1048,7 @@ namespace AntdUI
                                     {
                                         if (bor > 0)
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
+                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Colour.BorderColor.Get("Tabs"), bor))
                                             {
                                                 float lx = rect_page.Right - borb2;
                                                 g.DrawLine(pen_bg, lx, rect_t.Y, lx, rect_t.Bottom);
@@ -1090,7 +1090,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, false, true, true, false))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
                                                 else PaintText(g, rects[i], owner, page, brush_fore);
                                             }
@@ -1107,7 +1107,7 @@ namespace AntdUI
                                     {
                                         if (bor > 0)
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
+                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Colour.BorderColor.Get("Tabs"), bor))
                                             {
                                                 float lx = rect_page.X + borb2;
                                                 g.DrawLine(pen_bg, lx, rect_t.Y, lx, rect_t.Bottom);
@@ -1149,7 +1149,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, false, false))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
                                                 else PaintText(g, rects[i], owner, page, brush_fore);
                                             }
@@ -1166,7 +1166,7 @@ namespace AntdUI
                                     {
                                         if (bor > 0)
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Style.Db.BorderColor, bor))
+                                            using (var pen_bg = new Pen(BorderActive ?? AntdUI.Colour.BorderColor.Get("Tabs"), bor))
                                             {
                                                 float ly = rect_page.Bottom - borb2;
                                                 g.DrawLine(pen_bg, rect_t.X, ly, rect_t.Right, ly);
@@ -1268,10 +1268,10 @@ namespace AntdUI
                 }
                 if (closable)
                 {
-                    if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
-                    else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + AntdUI.Style.Db.TextQuaternary.A, AntdUI.Style.Db.Text));
-                    else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.Text);
-                    else g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
+                    if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, AntdUI.Colour.TextQuaternary.Get("Tabs"));
+                    else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + AntdUI.Colour.TextQuaternary.Get("Tabs").A, AntdUI.Colour.Text.Get("Tabs")));
+                    else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, AntdUI.Colour.Text.Get("Tabs"));
+                    else g.PaintIconClose(rects.Rect_Close, AntdUI.Colour.TextQuaternary.Get("Tabs"));
                 }
                 g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
@@ -1353,7 +1353,7 @@ namespace AntdUI
                         if (item.hover_close == null) item.hover_close = new ITaskOpacity(owner);
                         if (i == owner.hover_i)
                         {
-                            item.hover_close.MaxValue = AntdUI.Style.Db.Text.A - AntdUI.Style.Db.TextQuaternary.A;
+                            item.hover_close.MaxValue = AntdUI.Colour.Text.Get("Tabs").A - AntdUI.Colour.TextQuaternary.Get("Tabs").A;
                             item.hover_close.Switch = item.Rect_Close.Contains(x, y);
                         }
                         else item.hover_close.Switch = false;
@@ -1546,16 +1546,32 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it;
-                                        if (it.Key.HasIcon)
+                                        Rectangle rect_it = new Rectangle();
+                                        if (it.Key.ReadOnly)
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2 - 2 - bordersize);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            if (it.Key.HasIcon)
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + ico_size + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
+                                            }
+                                            else
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it));
+                                            }
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap + close_size + gap, xy2 - 2 - bordersize);
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                            if (it.Key.HasIcon)
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            }
+                                            else
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + close_size + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                            }
                                         }
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Width + cardgap;
@@ -1563,7 +1579,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, 0, xy2);
+                                tabs.SetPadding(0, 0, 0, xy2 + 2);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1572,18 +1588,26 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2 - 2 - bordersize, it.Value.Height + gap);
-                                        if (it.Key.HasIcon)
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
+                                        if (it.Key.ReadOnly)
+                                        {
+                                            if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
+                                            else rect_list.Add(new TabPageRect(rect_it));
+                                        }
                                         else
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                        {
+                                            if (it.Key.HasIcon)
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            else
+                                                rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                        }
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Height + cardgap;
                                     }
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(xy2, 0, 0, 0);
+                                tabs.SetPadding(xy2 + 2, 0, 0, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1593,19 +1617,28 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(x + 2 + bordersize, rect.Y + xy, xy2 - 2 - bordersize, it.Value.Height + gap);
-                                        if (it.Key.HasIcon)
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
+                                        if (it.Key.ReadOnly)
+                                        {
+                                            if (it.Key.HasIcon)
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
+                                            else
+                                                rect_list.Add(new TabPageRect(rect_it));
+                                        }
                                         else
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
-
+                                        {
+                                            if (it.Key.HasIcon)
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            else
+                                                rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                        }
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Height + cardgap;
                                     }
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, xy2, 0);
+                                tabs.SetPadding(0, 0, xy2 + 2, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1615,16 +1648,32 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it;
-                                        if (it.Key.HasIcon)
+                                        Rectangle rect_it = new Rectangle();
+                                        if (it.Key.ReadOnly)
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2 - 2 - bordersize);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            if (it.Key.HasIcon)
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
+                                            }
+                                            else
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it));
+                                            }
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + close_size + gap, xy2 - 2 - bordersize);
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                            if (it.Key.HasIcon)
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + close_size + gap * 2, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, close_size, gap, gapI));
+                                            }
+                                            else
+                                            {
+                                                rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + close_size + gap, xy2);
+                                                rect_list.Add(new TabPageRect(rect_it, false, it.Value, close_size, gap, gapI));
+                                            }
                                         }
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Width + cardgap;
@@ -1632,7 +1681,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, xy2, 0, 0);
+                                tabs.SetPadding(0, xy2 + 2, 0, 0);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1651,12 +1700,12 @@ namespace AntdUI
                                         Rectangle rect_it;
                                         if (it.Key.HasIcon)
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap + ico_size + gap, xy2 - 2 - bordersize);
+                                            rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap + ico_size + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap, xy2 - 2 - bordersize);
+                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it));
                                         }
                                         it.Key.SetRect(rect_it);
@@ -1665,7 +1714,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, 0, xy2);
+                                tabs.SetPadding(0, 0, 0, xy2 + 2);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1674,7 +1723,7 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2 - 2 - bordersize, it.Value.Height + gap);
+                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
                                         if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         else rect_list.Add(new TabPageRect(rect_it));
                                         it.Key.SetRect(rect_it);
@@ -1683,7 +1732,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(xy2, 0, 0, 0);
+                                tabs.SetPadding(xy2 + 2, 0, 0, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1693,7 +1742,7 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(x + 2 + bordersize, rect.Y + xy, xy2 - 2 - bordersize, it.Value.Height + gap);
+                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
                                         if (it.Key.HasIcon)
                                             rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         else
@@ -1704,7 +1753,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, xy2, 0);
+                                tabs.SetPadding(0, 0, xy2 + 2, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1717,12 +1766,12 @@ namespace AntdUI
                                         Rectangle rect_it;
                                         if (it.Key.HasIcon)
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + gap, xy2 - 2 - bordersize);
+                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap + ico_size + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it, it.Value, ico_size, gap, gapI));
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap, xy2 - 2 - bordersize);
+                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it));
                                         }
                                         it.Key.SetRect(rect_it);
@@ -1731,7 +1780,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, xy2, 0, 0);
+                                tabs.SetPadding(0, xy2 + 2, 0, 0);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1782,13 +1831,13 @@ namespace AntdUI
             {
                 if (rects.Length == items.Count)
                 {
-                    using (var brush_fore = new SolidBrush(owner.ForeColor ?? AntdUI.Style.Db.Text))
-                    using (var brush_fill = new SolidBrush(owner.Fill ?? AntdUI.Style.Db.Primary))
-                    using (var brush_active = new SolidBrush(owner.FillActive ?? AntdUI.Style.Db.PrimaryActive))
-                    using (var brush_hover = new SolidBrush(owner.FillHover ?? AntdUI.Style.Db.PrimaryHover))
-                    using (var brush_bg = new SolidBrush(Fill ?? AntdUI.Style.Db.FillQuaternary))
-                    using (var brush_bg_hover = new SolidBrush(FillHover ?? AntdUI.Style.Db.FillQuaternary))
-                    using (var brush_bg_active = new SolidBrush(FillActive ?? AntdUI.Style.Db.BgContainer))
+                    using (var brush_fore = new SolidBrush(owner.ForeColor ?? AntdUI.Colour.Text.Get("Tabs")))
+                    using (var brush_fill = new SolidBrush(owner.Fill ?? AntdUI.Colour.Primary.Get("Tabs")))
+                    using (var brush_active = new SolidBrush(owner.FillActive ?? AntdUI.Colour.PrimaryActive.Get("Tabs")))
+                    using (var brush_hover = new SolidBrush(owner.FillHover ?? AntdUI.Colour.PrimaryHover.Get("Tabs")))
+                    using (var brush_bg = new SolidBrush(Fill ?? AntdUI.Colour.FillQuaternary.Get("Tabs")))
+                    using (var brush_bg_hover = new SolidBrush(FillHover ?? AntdUI.Colour.FillQuaternary.Get("Tabs")))
+                    using (var brush_bg_active = new SolidBrush(FillActive ?? AntdUI.Colour.BgContainer.Get("Tabs")))
                     {
                         var rect_t = owner.ClientRectangle;
                         int radius = (int)(Radius * Config.Dpi), bor = (int)(bordersize * Config.Dpi), bor2 = bor * 6, bor22 = bor2 * 2;
@@ -1816,7 +1865,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
@@ -1838,7 +1887,7 @@ namespace AntdUI
                                             {
                                                 g.Fill(brush_bg_active, path2);
                                             }
-                                            g.Draw(BorderActive ?? AntdUI.Style.Db.BorderColor, bor, path);
+                                            g.Draw(BorderActive ?? AntdUI.Colour.BorderColor.Get("Tabs"), bor, path);
                                         }
                                         else
                                         {
@@ -1867,7 +1916,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
@@ -1889,7 +1938,7 @@ namespace AntdUI
                                             {
                                                 g.Fill(brush_bg_active, path2);
                                             }
-                                            g.Draw(BorderActive ?? AntdUI.Style.Db.BorderColor, bor, path);
+                                            g.Draw(BorderActive ?? AntdUI.Colour.BorderColor.Get("Tabs"), bor, path);
                                         }
                                         else
                                         {
@@ -1919,7 +1968,7 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
@@ -1941,7 +1990,7 @@ namespace AntdUI
                                             {
                                                 g.Fill(brush_bg_active, path2);
                                             }
-                                            g.Draw(BorderActive ?? AntdUI.Style.Db.BorderColor, bor, path);
+                                            g.Draw(BorderActive ?? AntdUI.Colour.BorderColor.Get("Tabs"), bor, path);
                                         }
                                         else
                                         {
@@ -1971,9 +2020,9 @@ namespace AntdUI
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? AntdUI.Style.Db.BorderSecondary, bor, path);
+                                                if (bor > 0) g.Draw(border ?? AntdUI.Colour.BorderSecondary.Get("Tabs"), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
-                                                else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
+                                                else PaintText(g, rects[i], owner, page, brush_fore, (closable == CloseType.always && !page.ReadOnly) ? true : false);
                                             }
                                         }
                                     }
@@ -1993,14 +2042,14 @@ namespace AntdUI
                                             {
                                                 g.Fill(brush_bg_active, path2);
                                             }
-                                            g.Draw(BorderActive ?? AntdUI.Style.Db.BorderColor, bor, path);
+                                            g.Draw(BorderActive ?? AntdUI.Colour.BorderColor.Get("Tabs"), bor, path);
                                         }
                                         else
                                         {
                                             if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                             g.Fill(brush_bg_active, path);
                                         }
-                                        PaintText(g, rects[select], owner, sel, brush_fill, true);
+                                        PaintText(g, rects[select], owner, sel, brush_fill, !sel.ReadOnly);
                                     }
                                 }
                                 break;
@@ -2083,10 +2132,10 @@ namespace AntdUI
                 }
                 if (closable != CloseType.none && closshow)
                 {
-                    if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
-                    else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + AntdUI.Style.Db.TextQuaternary.A, AntdUI.Style.Db.Text));
-                    else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.Text);
-                    else g.PaintIconClose(rects.Rect_Close, AntdUI.Style.Db.TextQuaternary);
+                    if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, AntdUI.Colour.TextQuaternary.Get("Tabs"));
+                    else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + AntdUI.Colour.TextQuaternary.Get("Tabs").A, AntdUI.Colour.Text.Get("Tabs")));
+                    else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, AntdUI.Colour.Text.Get("Tabs"));
+                    else g.PaintIconClose(rects.Rect_Close, AntdUI.Colour.TextQuaternary.Get("Tabs"));
                 }
                 g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
@@ -2168,7 +2217,7 @@ namespace AntdUI
                         if (item.hover_close == null) item.hover_close = new ITaskOpacity(owner);
                         if (i == owner.hover_i)
                         {
-                            item.hover_close.MaxValue = AntdUI.Style.Db.Text.A - AntdUI.Style.Db.TextQuaternary.A;
+                            item.hover_close.MaxValue = AntdUI.Colour.Text.Get("Tabs").A - AntdUI.Colour.TextQuaternary.Get("Tabs").A;
                             item.hover_close.Switch = item.Rect_Close.Contains(x, y);
                         }
                         else item.hover_close.Switch = false;

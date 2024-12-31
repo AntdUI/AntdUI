@@ -1140,13 +1140,13 @@ namespace AntdUI
                                 using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
                                 {
                                     path_shadow.AddPath(path, false);
-                                    g.Fill(Style.Db.FillQuaternary, path_shadow);
+                                    g.Fill(Colour.FillQuaternary.Get("Button"), path_shadow);
                                 }
                             }
 
                             #endregion
 
-                            g.Fill(defaultback ?? Style.Db.DefaultBg, path);
+                            g.Fill(defaultback ?? Colour.DefaultBg.Get("Button"), path);
                         }
                         if (borderWidth > 0)
                         {
@@ -1160,7 +1160,7 @@ namespace AntdUI
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                g.Draw(Style.Db.DefaultBorder.BlendColors(colorHover), border, path);
+                                g.Draw(Colour.DefaultBorder.Get("Button").BlendColors(colorHover), border, path);
                                 PaintTextLoading(g, Text, _fore.BlendColors(colorHover), rect_read);
                             }
                             else if (ExtraMouseHover)
@@ -1171,7 +1171,7 @@ namespace AntdUI
                             else
                             {
                                 if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, border, path);
-                                else g.Draw(defaultbordercolor ?? Style.Db.DefaultBorder, border, path);
+                                else g.Draw(defaultbordercolor ?? Colour.DefaultBorder.Get("Button"), border, path);
                                 PaintTextLoading(g, Text, _fore, rect_read);
                             }
                         }
@@ -1187,8 +1187,8 @@ namespace AntdUI
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
-                        if (!ghost) g.Fill(Style.Db.FillTertiary, path);
-                        PaintTextLoading(g, Text, Style.Db.TextQuaternary, rect_read);
+                        if (!ghost) g.Fill(Colour.FillTertiary.Get("Button"), path);
+                        PaintTextLoading(g, Text, Colour.TextQuaternary.Get("Button"), rect_read);
                     }
                 }
             }
@@ -1234,7 +1234,7 @@ namespace AntdUI
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                g.Draw((Enabled ? _back : Style.Db.FillTertiary).BlendColors(colorHover), border, path);
+                                g.Draw((Enabled ? _back : Colour.FillTertiary.Get("Button")).BlendColors(colorHover), border, path);
                                 PaintTextLoading(g, Text, _back.BlendColors(colorHover), rect_read);
                             }
                             else if (ExtraMouseHover)
@@ -1261,11 +1261,11 @@ namespace AntdUI
                                         }
                                     }
                                 }
-                                else g.Draw(Style.Db.FillTertiary, border, path);
-                                PaintTextLoading(g, Text, Enabled ? _back : Style.Db.TextQuaternary, rect_read);
+                                else g.Draw(Colour.FillTertiary.Get("Button"), border, path);
+                                PaintTextLoading(g, Text, Enabled ? _back : Colour.TextQuaternary.Get("Button"), rect_read);
                             }
                         }
-                        else PaintTextLoading(g, Text, Enabled ? _back : Style.Db.TextQuaternary, rect_read);
+                        else PaintTextLoading(g, Text, Enabled ? _back : Colour.TextQuaternary.Get("Button"), rect_read);
 
                         #endregion
                     }
@@ -1303,7 +1303,7 @@ namespace AntdUI
                                 }
                             }
                         }
-                        else g.Fill(Style.Db.FillTertiary, path);
+                        else g.Fill(Colour.FillTertiary.Get("Button"), path);
 
                         if (ExtraMouseDown) g.Fill(_back_active, path);
                         else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
@@ -1312,7 +1312,7 @@ namespace AntdUI
                         #endregion
 
                         PaintLoadingWave(g, path, rect_read);
-                        PaintTextLoading(g, Text, Enabled ? _fore : Style.Db.TextQuaternary, rect_read);
+                        PaintTextLoading(g, Text, Enabled ? _fore : Colour.TextQuaternary.Get("Button"), rect_read);
                     }
                 }
             }
@@ -1326,7 +1326,7 @@ namespace AntdUI
         {
             if (loading && LoadingWaveValue > 0)
             {
-                using (var brush = new SolidBrush(LoadingWaveColor ?? Style.Db.Fill))
+                using (var brush = new SolidBrush(LoadingWaveColor ?? Colour.Fill.Get("Button")))
                 {
                     if (LoadingWaveValue >= 1) g.Fill(brush, path);
                     else if (LoadingWaveCount > 0)
@@ -1439,19 +1439,7 @@ namespace AntdUI
                     {
                         int size = (int)(font_size.Height * IconRatio);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (isLink)
-                            {
-                                int size_arrow = rect_arrow.Width / 2;
-                                g.TranslateTransform(rect_arrow.X + size_arrow, rect_arrow.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arrow.Width, rect_arrow.Height).TriangleLines(ArrowProg));
-                                g.ResetTransform();
-                            }
-                            else g.DrawLines(pen, rect_arrow.TriangleLines(ArrowProg));
-                        }
+                        PaintTextArrow(g, rect_arrow, color);
                     }
                 }
             }
@@ -1476,23 +1464,7 @@ namespace AntdUI
                         }
                         else PaintIcon(g, color, rect_l, true, Enabled);
 
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (isLink)
-                            {
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(ArrowProg));
-                                g.ResetTransform();
-                            }
-                            else g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
-                        }
-
-                        #endregion
+                        PaintTextArrow(g, rect_r, color);
                     }
                     else if (has_left)
                     {
@@ -1512,23 +1484,7 @@ namespace AntdUI
                     {
                         rect_text = RectAlignR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
 
-                        #region ARROW
-
-                        using (var pen = new Pen(color, 2F * Config.Dpi))
-                        {
-                            pen.StartCap = pen.EndCap = LineCap.Round;
-                            if (isLink)
-                            {
-                                int size_arrow = rect_r.Width / 2;
-                                g.TranslateTransform(rect_r.X + size_arrow, rect_r.Y + size_arrow);
-                                g.RotateTransform(-90F);
-                                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_r.Width, rect_r.Height).TriangleLines(ArrowProg));
-                                g.ResetTransform();
-                            }
-                            else g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
-                        }
-
-                        #endregion
+                        PaintTextArrow(g, rect_r, color);
                     }
                 }
                 else
@@ -1537,10 +1493,24 @@ namespace AntdUI
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
                     PaintTextAlign(rect_read, ref rect_text);
                 }
-                using (var brush = new SolidBrush(color))
+                g.String(text, Font, color, rect_text, stringFormat);
+            }
+        }
+
+        void PaintTextArrow(Canvas g, Rectangle rect, Color color)
+        {
+            using (var pen = new Pen(color, 2F * Config.Dpi))
+            {
+                pen.StartCap = pen.EndCap = LineCap.Round;
+                if (isLink)
                 {
-                    g.String(text, Font, brush, rect_text, stringFormat);
+                    float size_arrow = rect.Width / 2F;
+                    g.TranslateTransform(rect.X + size_arrow, rect.Y + size_arrow);
+                    g.RotateTransform(-90F);
+                    g.DrawLines(pen, new RectangleF(-size_arrow, -size_arrow, rect.Width, rect.Height).TriangleLines(ArrowProg));
+                    g.ResetTransform();
                 }
+                else g.DrawLines(pen, rect.TriangleLines(ArrowProg));
             }
         }
 
@@ -1832,24 +1802,24 @@ namespace AntdUI
             switch (type)
             {
                 case TTypeMini.Default:
-                    if (borderWidth > 0) color = Style.Db.PrimaryHover;
-                    else color = Style.Db.FillSecondary;
+                    if (borderWidth > 0) color = Colour.PrimaryHover.Get("Button");
+                    else color = Colour.FillSecondary.Get("Button");
                     break;
                 case TTypeMini.Success:
-                    color = Style.Db.SuccessHover;
+                    color = Colour.SuccessHover.Get("Button");
                     break;
                 case TTypeMini.Error:
-                    color = Style.Db.ErrorHover;
+                    color = Colour.ErrorHover.Get("Button");
                     break;
                 case TTypeMini.Info:
-                    color = Style.Db.InfoHover;
+                    color = Colour.InfoHover.Get("Button");
                     break;
                 case TTypeMini.Warn:
-                    color = Style.Db.WarningHover;
+                    color = Colour.WarningHover.Get("Button");
                     break;
                 case TTypeMini.Primary:
                 default:
-                    color = Style.Db.PrimaryHover;
+                    color = Colour.PrimaryHover.Get("Button");
                     break;
             }
             if (BackHover.HasValue) color = BackHover.Value;
@@ -1858,17 +1828,17 @@ namespace AntdUI
 
         void GetDefaultColorConfig(out Color Fore, out Color Color, out Color backHover, out Color backActive)
         {
-            Fore = Style.Db.DefaultColor;
-            Color = Style.Db.Primary;
+            Fore = Colour.DefaultColor.Get("Button");
+            Color = Colour.Primary.Get("Button");
             if (borderWidth > 0)
             {
-                backHover = Style.Db.PrimaryHover;
-                backActive = Style.Db.PrimaryActive;
+                backHover = Colour.PrimaryHover.Get("Button");
+                backActive = Colour.PrimaryActive.Get("Button");
             }
             else
             {
-                backHover = Style.Db.FillSecondary;
-                backActive = Style.Db.Fill;
+                backHover = Colour.FillSecondary.Get("Button");
+                backActive = Colour.Fill.Get("Button");
             }
             if (toggle)
             {
@@ -1918,35 +1888,35 @@ namespace AntdUI
             switch (type)
             {
                 case TTypeMini.Error:
-                    Back = Style.Db.Error;
-                    Fore = Style.Db.ErrorColor;
-                    backHover = Style.Db.ErrorHover;
-                    backActive = Style.Db.ErrorActive;
+                    Back = Colour.Error.Get("Button");
+                    Fore = Colour.ErrorColor.Get("Button");
+                    backHover = Colour.ErrorHover.Get("Button");
+                    backActive = Colour.ErrorActive.Get("Button");
                     break;
                 case TTypeMini.Success:
-                    Back = Style.Db.Success;
-                    Fore = Style.Db.SuccessColor;
-                    backHover = Style.Db.SuccessHover;
-                    backActive = Style.Db.SuccessActive;
+                    Back = Colour.Success.Get("Button");
+                    Fore = Colour.SuccessColor.Get("Button");
+                    backHover = Colour.SuccessHover.Get("Button");
+                    backActive = Colour.SuccessActive.Get("Button");
                     break;
                 case TTypeMini.Info:
-                    Back = Style.Db.Info;
-                    Fore = Style.Db.InfoColor;
-                    backHover = Style.Db.InfoHover;
-                    backActive = Style.Db.InfoActive;
+                    Back = Colour.Info.Get("Button");
+                    Fore = Colour.InfoColor.Get("Button");
+                    backHover = Colour.InfoHover.Get("Button");
+                    backActive = Colour.InfoActive.Get("Button");
                     break;
                 case TTypeMini.Warn:
-                    Back = Style.Db.Warning;
-                    Fore = Style.Db.WarningColor;
-                    backHover = Style.Db.WarningHover;
-                    backActive = Style.Db.WarningActive;
+                    Back = Colour.Warning.Get("Button");
+                    Fore = Colour.WarningColor.Get("Button");
+                    backHover = Colour.WarningHover.Get("Button");
+                    backActive = Colour.WarningActive.Get("Button");
                     break;
                 case TTypeMini.Primary:
                 default:
-                    Back = Style.Db.Primary;
-                    Fore = Style.Db.PrimaryColor;
-                    backHover = Style.Db.PrimaryHover;
-                    backActive = Style.Db.PrimaryActive;
+                    Back = Colour.Primary.Get("Button");
+                    Fore = Colour.PrimaryColor.Get("Button");
+                    backHover = Colour.PrimaryHover.Get("Button");
+                    backActive = Colour.PrimaryActive.Get("Button");
                     break;
             }
         }
@@ -2089,7 +2059,7 @@ namespace AntdUI
             return PSize;
         }
 
-        internal Size PSize
+        Size PSize
         {
             get
             {
@@ -2131,7 +2101,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal bool BeforeAutoSize()
+        bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)
@@ -2169,13 +2139,13 @@ namespace AntdUI
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            if (e.KeyCode is Keys.Enter or Keys.Space)
+            base.OnKeyUp(e);
+            if (e.KeyCode is Keys.Space)
             {
                 ClickAnimation();
                 OnClick(EventArgs.Empty);
                 e.Handled = true;
             }
-            base.OnKeyUp(e);
         }
 
         [DefaultValue(DialogResult.None)]
@@ -2191,27 +2161,13 @@ namespace AntdUI
 
         public void PerformClick()
         {
-            ClickAnimation();
-            OnClick(EventArgs.Empty);
-        }
-
-        bool CanClick()
-        {
-            if (loading) return false;
-            else
+            if (CanSelect)
             {
-                if (RespondRealAreas)
-                {
-                    var e = PointToClient(MousePosition);
-                    var rect_read = ReadRectangle;
-                    using (var path = Path(rect_read, radius * Config.Dpi))
-                    {
-                        return path.IsVisible(e);
-                    }
-                }
-                else return true;
+                ClickAnimation();
+                OnClick(EventArgs.Empty);
             }
         }
+
         bool CanClick(Point e)
         {
             if (loading) return false;
@@ -2225,7 +2181,7 @@ namespace AntdUI
                         return path.IsVisible(e);
                     }
                 }
-                else return true;
+                else return ClientRectangle.Contains(e);
             }
         }
 

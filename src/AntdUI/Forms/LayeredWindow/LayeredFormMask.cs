@@ -115,12 +115,13 @@ namespace AntdUI
         public override Bitmap PrintBit()
         {
             Rectangle rect;
-            if (HasBor) rect = new Rectangle(Bor, 0, TargetRect.Width - Bor * 2, TargetRect.Height - Bor);
-            else rect = TargetRectXY;
-            if (temp == null || (temp.Width != TargetRect.Width || temp.Height != TargetRect.Height))
+            var rect_read = TargetRectXY;
+            if (HasBor) rect = new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor);
+            else rect = rect_read;
+            if (temp == null || (temp.Width != rect_read.Width || temp.Height != rect_read.Height))
             {
                 temp?.Dispose();
-                temp = new Bitmap(TargetRect.Width, TargetRect.Height);
+                temp = new Bitmap(rect_read.Width, rect_read.Height);
                 using (var g = Graphics.FromImage(temp).High())
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))

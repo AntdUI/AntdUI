@@ -39,10 +39,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void success(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.Success, align, font, autoClose));
-        }
+        public static void success(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Success, align, font, autoClose));
 
         /// <summary>
         /// 信息通知
@@ -53,10 +50,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void info(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.Info, align, font, autoClose));
-        }
+        public static void info(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Info, align, font, autoClose));
 
         /// <summary>
         /// 警告通知
@@ -67,10 +61,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void warn(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.Warn, align, font, autoClose));
-        }
+        public static void warn(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Warn, align, font, autoClose));
 
         /// <summary>
         /// 失败通知
@@ -81,10 +72,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void error(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.Error, align, font, autoClose));
-        }
+        public static void error(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Error, align, font, autoClose));
 
         /// <summary>
         /// 普通通知
@@ -95,10 +83,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void open(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null)
-        {
-            open(new Config(form, title, text, TType.None, align, font, autoClose));
-        }
+        public static void open(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.None, align, font, autoClose));
 
         /// <summary>
         /// Notification 通知提醒框
@@ -355,9 +340,9 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    g.Fill(Style.Db.BgElevated, path);
+                    g.Fill(Colour.BgElevated.Get("Notification"), path);
                 }
-                if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon);
+                if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Notification");
 
                 if (config.CloseIcon)
                 {
@@ -365,30 +350,30 @@ namespace AntdUI
                     {
                         using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
-                            g.Fill(Helper.ToColor(close_button.Value, Style.Db.FillSecondary), path);
+                            g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get("Notification")), path);
                         }
-                        g.PaintIconClose(rect_close, Style.Db.Text, .6F);
+                        g.PaintIconClose(rect_close, Colour.Text.Get("Notification"), .6F);
                     }
                     else if (close_button.Switch)
                     {
                         using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
-                            g.Fill(Style.Db.FillSecondary, path);
+                            g.Fill(Colour.FillSecondary.Get("Notification"), path);
                         }
-                        g.PaintIconClose(rect_close, Style.Db.Text, .6F);
+                        g.PaintIconClose(rect_close, Colour.Text.Get("Notification"), .6F);
                     }
-                    else g.PaintIconClose(rect_close, Style.Db.TextTertiary, .6F);
+                    else g.PaintIconClose(rect_close, Colour.TextTertiary.Get("Notification"), .6F);
                 }
-                using (var brush = new SolidBrush(Style.Db.TextBase))
+                using (var brush = new SolidBrush(Colour.TextBase.Get("Notification")))
                 {
                     g.String(config.Title, font_title, brush, rect_title, s_f_left);
                     g.String(config.Text, Font, brush, rect_txt, s_f_left_left);
                 }
                 if (config.Link != null)
                 {
-                    using (var pen = new Pen(Style.Db.Primary, Config.Dpi))
+                    using (var pen = new Pen(Colour.Primary.Get("Notification"), Config.Dpi))
                     {
-                        g.String(config.Link.Text, Font, Style.Db.Primary, rect_link_text, s_f);
+                        g.String(config.Link.Text, Font, Colour.Primary.Get("Notification"), rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
                     }
                 }
@@ -491,7 +476,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Style.Db.FillSecondary.A;
+                close_button.MaxValue = Colour.FillSecondary.Get("Notification").A;
                 close_button.Switch = rect_close.Contains(e.Location);
                 SetCursor(close_button.Switch);
                 if (close_button.Switch)

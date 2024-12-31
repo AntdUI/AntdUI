@@ -76,7 +76,7 @@ namespace AntdUI
             {
                 if (count == value) return;
                 count = value;
-                OnSizeChanged(EventArgs.Empty);
+                IOnSizeChanged();
                 Invalidate();
             }
         }
@@ -151,7 +151,12 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect = ClientRectangle.PaddingRect(Padding);
-            if (rect.Width == 0 || rect.Height == 0 || count < 1) return;
+            if (rect.Width == 0 || rect.Height == 0) return;
+            if (count < 1)
+            {
+                base.OnPaint(e);
+                return;
+            }
             int size = rect.Height;
             var g = e.Graphics.High();
 
@@ -161,7 +166,7 @@ namespace AntdUI
             if (icon == null || icon.Width != size)
             {
                 icon?.Dispose();
-                icon = SvgExtend.SvgToBmp(character ?? SvgDb.IcoStar, size, size, Style.Db.FillSecondary);
+                icon = SvgExtend.SvgToBmp(character ?? SvgDb.IcoStar, size, size, Colour.FillSecondary.Get("Rate"));
 
             }
             if (icon_active == null || icon_active.Width != size)
@@ -186,7 +191,7 @@ namespace AntdUI
                         {
                             using (var g2 = Graphics.FromImage(bmp_diy).HighLay(true))
                             {
-                                using (var brush = new SolidBrush(Style.Db.FillSecondary))
+                                using (var brush = new SolidBrush(Colour.FillSecondary.Get("Rate")))
                                 {
                                     g2.String(character, font, brush, rect_diy, s_f);
                                 }
@@ -249,6 +254,7 @@ namespace AntdUI
                 else g.Image(icon, it.rect_i);
             }
             this.PaintBadge(g);
+            base.OnPaint(e);
         }
 
         #endregion
@@ -441,7 +447,7 @@ namespace AntdUI
             {
                 if (autoSize == value) return;
                 autoSize = value;
-                if (value) OnSizeChanged(EventArgs.Empty);
+                if (value) IOnSizeChanged();
             }
         }
 

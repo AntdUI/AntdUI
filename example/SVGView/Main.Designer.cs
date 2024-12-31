@@ -47,7 +47,7 @@ namespace SVGView
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            windowBar1 = new AntdUI.WindowBar();
+            windowBar1 = new AntdUI.PageHeader();
             button2 = new AntdUI.Button();
             button1 = new AntdUI.Button();
             input1 = new AntdUI.Input();
@@ -61,23 +61,25 @@ namespace SVGView
             windowBar1.Controls.Add(button2);
             windowBar1.Controls.Add(button1);
             windowBar1.Dock = DockStyle.Top;
+            windowBar1.LocalizationText = "Title";
             windowBar1.Location = new Point(0, 0);
             windowBar1.Name = "windowBar1";
+            windowBar1.ShowButton = true;
+            windowBar1.ShowIcon = true;
             windowBar1.Size = new Size(800, 36);
             windowBar1.TabIndex = 0;
-            windowBar1.LocalizationText = "Title";
             windowBar1.Text = "SVG视图";
             // 
             // button2
             // 
             button2.AutoSizeMode = AntdUI.TAutoSize.Width;
             button2.Dock = DockStyle.Right;
-            button2.IconSvg = resources.GetString("button2.ImageSvg");
-            button2.Location = new Point(525, 0);
-            button2.Name = "button2";
-            button2.Size = new Size(77, 36);
-            button2.TabIndex = 1;
+            button2.IconSvg = resources.GetString("button2.IconSvg");
             button2.LocalizationText = "Auto";
+            button2.Location = new Point(521, 0);
+            button2.Name = "button2";
+            button2.Size = new Size(78, 36);
+            button2.TabIndex = 1;
             button2.Text = "一键";
             button2.Type = AntdUI.TTypeMini.Success;
             button2.MouseClick += button2_Click;
@@ -86,11 +88,11 @@ namespace SVGView
             // 
             button1.AutoSizeMode = AntdUI.TAutoSize.Width;
             button1.Dock = DockStyle.Right;
-            button1.Location = new Point(602, 0);
+            button1.LocalizationText = "Zip";
+            button1.Location = new Point(599, 0);
             button1.Name = "button1";
             button1.Size = new Size(57, 36);
             button1.TabIndex = 0;
-            button1.LocalizationText = "Zip";
             button1.Text = "剔除";
             button1.Type = AntdUI.TTypeMini.Primary;
             button1.MouseClick += button1_Click;
@@ -132,7 +134,7 @@ namespace SVGView
 
         #endregion
 
-        private AntdUI.WindowBar windowBar1;
+        private AntdUI.PageHeader windowBar1;
         private AntdUI.Input input1;
         private AntdUI.Button button1;
         private PictureBox pictureBox1;

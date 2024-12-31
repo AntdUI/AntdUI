@@ -63,8 +63,8 @@ namespace AntdUI
                 HasBor = true;
                 FrmBor = 8;
             }
-            config.Content.BackColor = Style.Db.BgElevated;
-            config.Content.ForeColor = Style.Db.Text;
+            config.Content.BackColor = Colour.BgElevated.Get("Drawer");
+            config.Content.ForeColor = Colour.Text.Get("Drawer");
             SetPoint();
             SetSize(start_W, start_H);
             SetLocation(start_X, start_Y);
@@ -76,6 +76,7 @@ namespace AntdUI
                 config.Content.Tag = config.Content.Size;
                 Helper.DpiAuto(Config.Dpi, config.Content);
             }
+            config.Content.Location = new Point(-tempContent.Width, -tempContent.Height);
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
             LoadContent();
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
@@ -361,7 +362,7 @@ namespace AntdUI
             var hidelocation = new Point(-rect.Width, -rect.Height);
             if (config.Content is Form form_)
             {
-                form_.BackColor = Style.Db.BgElevated;
+                form_.BackColor = Colour.BgElevated.Get("Drawer");
                 form_.FormBorderStyle = FormBorderStyle.None;
                 form_.Location = hidelocation;
                 form_.ClientSize = rect.Size;
@@ -371,7 +372,7 @@ namespace AntdUI
             {
                 form = new DoubleBufferForm(this, config.Content)
                 {
-                    BackColor = Style.Db.BgElevated,
+                    BackColor = Colour.BgElevated.Get("Drawer"),
                     FormBorderStyle = FormBorderStyle.None,
                     Location = hidelocation,
                     ClientSize = rect.Size
@@ -406,6 +407,7 @@ namespace AntdUI
             config.OnLoad?.Invoke();
             LoadOK?.Invoke();
             if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
+            LoadEnd = false;
             config.Content.SizeChanged += Content_SizeChanged;
             tempContent?.Dispose();
             tempContent = null;
@@ -499,6 +501,7 @@ namespace AntdUI
             }
         }
 
+        internal bool LoadEnd = true;
         internal Action? LoadOK = null;
 
         Rectangle Ang()
@@ -636,7 +639,7 @@ namespace AntdUI
                 var rect_read = DrawShadow(g, rect);
                 using (var path = rect_read.RoundPath(FrmRadius))
                 {
-                    g.Fill(Style.Db.BgElevated, path);
+                    g.Fill(Colour.BgElevated.Get("Drawer"), path);
                     if (tempContent != null) g.Image(tempContent, new Rectangle(rect_read.X + padding, rect_read.Y + padding, tempContent.Width, tempContent.Height));
                 }
             }

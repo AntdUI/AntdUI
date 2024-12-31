@@ -37,7 +37,6 @@ namespace AntdUI
             set
             {
                 mode = value;
-                Style.Db = value == TMode.Light ? new Theme.Light() : new Theme.Dark();
                 EventHub.Dispatch(EventType.THEME, value);
             }
         }
@@ -72,6 +71,11 @@ namespace AntdUI
         /// 触屏使能
         /// </summary>
         public static bool TouchEnabled { get; set; } = true;
+
+        /// <summary>
+        /// 触屏点击使能
+        /// </summary>
+        public static bool TouchClickEnabled { get; set; }
 
         /// <summary>
         /// 阴影使能

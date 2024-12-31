@@ -40,6 +40,10 @@ namespace AntdUI
         public VirtualPanel()
         {
             ScrollBar = new ScrollBar(this);
+            invalidate = it =>
+            {
+                Invalidate(new Rectangle(it.RECT.X + ScrollBar.ValueX, it.RECT.Y + ScrollBar.ValueY, it.RECT.Width, it.RECT.Height));
+            };
             new Thread(LongTask)
             {
                 IsBackground = true
@@ -423,6 +427,7 @@ namespace AntdUI
         }
 
         internal int CellCount = -1;
+        Action<VirtualItem> invalidate;
         int HandLayout(List<VirtualItem> items)
         {
             var _rect = ClientRectangle;
@@ -440,6 +445,7 @@ namespace AntdUI
                     var size = it.Size(g, new VirtualPanelArgs(this, rect, r));
                     it.WIDTH = size.Width;
                     it.HEIGHT = size.Height;
+                    it.invalidate = invalidate;
                 }
                 if (waterfall)
                 {
@@ -931,6 +937,7 @@ namespace AntdUI
             if (items == null || items.Count == 0 || isEmpty)
             {
                 if (Empty) PaintEmpty(e.Graphics.High(), ClientRectangle);
+                base.OnPaint(e);
                 return;
             }
             var g = e.Graphics.High();
@@ -964,7 +971,7 @@ namespace AntdUI
         StringFormat stringCenter = Helper.SF_NoWrap();
         void PaintEmpty(Canvas g, Rectangle rect)
         {
-            using (var fore = new SolidBrush(Style.Db.Text))
+            using (var fore = new SolidBrush(Colour.Text.Get("VirtualPanel")))
             {
                 string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
                 if (EmptyImage == null) g.String(emptytext, Font, fore, rect, stringCenter);
@@ -1055,6 +1062,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+            LoadLayout();
             this.AddListener();
         }
         public void HandleEvent(EventType id, object? tag)
@@ -1085,7 +1093,7 @@ namespace AntdUI
                         int shadow = (int)(Shadow * Config.Dpi);
                         using (var path = new Rectangle(shadow, shadow, it.RECT.Width, it.RECT.Height).RoundPath(radius, shadowAlign))
                         {
-                            shadow_dir_tmp.Add(id, path.PaintShadow(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Style.Db.TextBase, shadow));
+                            shadow_dir_tmp.Add(id, path.PaintShadow(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Colour.TextBase.Get("VirtualPanel"), shadow));
                         }
                     }
                     if (shadow_dir_tmp.TryGetValue(id, out var shadow_temp))
@@ -1258,7 +1266,6 @@ namespace AntdUI
                     SetHover(it, false);
                 }
             }
-
             if (count > 0) Invalidate();
         }
 
@@ -1310,9 +1317,12 @@ namespace AntdUI
         public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
         public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }
 
+        public void Invalidate() { invalidate?.Invoke(this); }
+
         internal bool SHOW = false;
         internal bool SHOW_RECT = false;
         internal Rectangle RECT;
+        internal Action<VirtualItem>? invalidate;
         internal int WIDTH;
         internal int HEIGHT;
     }

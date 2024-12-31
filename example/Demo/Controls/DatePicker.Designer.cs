@@ -55,11 +55,11 @@ namespace Demo.Controls
             datePickerRange3 = new AntdUI.DatePickerRange();
             datePickerRange4 = new AntdUI.DatePickerRange();
             datePicker4 = new AntdUI.DatePicker();
-            datePickerRange2 = new AntdUI.DatePicker();
+            datePicker5 = new AntdUI.DatePicker();
             divider3 = new AntdUI.Divider();
             panel3 = new System.Windows.Forms.Panel();
             datePickerRange1 = new AntdUI.DatePickerRange();
-            inputRange1 = new AntdUI.DatePickerRange();
+            datePickerRange2 = new AntdUI.DatePickerRange();
             divider2 = new AntdUI.Divider();
             panel2 = new System.Windows.Forms.Panel();
             datePicker3 = new AntdUI.DatePicker();
@@ -107,7 +107,7 @@ namespace Demo.Controls
             panel4.Controls.Add(datePickerRange3);
             panel4.Controls.Add(datePickerRange4);
             panel4.Controls.Add(datePicker4);
-            panel4.Controls.Add(datePickerRange2);
+            panel4.Controls.Add(datePicker5);
             panel4.Dock = DockStyle.Top;
             panel4.Location = new Point(0, 320);
             panel4.Name = "panel4";
@@ -120,7 +120,7 @@ namespace Demo.Controls
             datePickerRange3.Name = "datePickerRange3";
             datePickerRange3.Size = new Size(286, 44);
             datePickerRange3.TabIndex = 25;
-            datePickerRange3.PresetsClickChanged += datePickerRange4_PresetsClickChanged;
+            datePickerRange3.PresetsClickChanged += datePicker_PresetsClickChanged;
             // 
             // datePickerRange4
             // 
@@ -134,7 +134,7 @@ namespace Demo.Controls
             datePickerRange4.Presets.AddRange(new object[] { "今天", "昨天", "过去7天", "过去39天", "本周", "上周", "本月", "上月", "本季", "上季", "本年", "去年" });
             datePickerRange4.Size = new Size(286, 44);
             datePickerRange4.TabIndex = 26;
-            datePickerRange4.PresetsClickChanged += datePickerRange4_PresetsClickChanged;
+            datePickerRange4.PresetsClickChanged += datePicker_PresetsClickChanged;
             // 
             // datePicker4
             // 
@@ -144,16 +144,16 @@ namespace Demo.Controls
             datePicker4.Presets.AddRange(new object[] { "今天", "昨天", "过去7天", "过去39天", "本周", "上周", "本月", "上月", "本季", "上季", "本年", "去年", "去年1", "去年2" });
             datePicker4.Size = new Size(221, 44);
             datePicker4.TabIndex = 23;
-            datePicker4.PresetsClickChanged += datePickerRange4_PresetsClickChanged;
+            datePicker4.PresetsClickChanged += datePicker_PresetsClickChanged;
             // 
-            // datePickerRange2
+            // datePicker5
             // 
-            datePickerRange2.Format = "yyyy-MM-dd HH:mm:ss";
-            datePickerRange2.Location = new Point(19, 16);
-            datePickerRange2.Name = "datePickerRange2";
-            datePickerRange2.Size = new Size(221, 44);
-            datePickerRange2.TabIndex = 24;
-            datePickerRange2.PresetsClickChanged += datePickerRange4_PresetsClickChanged;
+            datePicker5.Format = "yyyy-MM-dd HH:mm:ss";
+            datePicker5.Location = new Point(19, 16);
+            datePicker5.Name = "datePicker5";
+            datePicker5.Size = new Size(221, 44);
+            datePicker5.TabIndex = 24;
+            datePicker5.PresetsClickChanged += datePicker_PresetsClickChanged;
             // 
             // divider3
             // 
@@ -170,7 +170,7 @@ namespace Demo.Controls
             // panel3
             // 
             panel3.Controls.Add(datePickerRange1);
-            panel3.Controls.Add(inputRange1);
+            panel3.Controls.Add(datePickerRange2);
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 174);
             panel3.Name = "panel3";
@@ -184,16 +184,16 @@ namespace Demo.Controls
             datePickerRange1.Size = new Size(300, 40);
             datePickerRange1.TabIndex = 23;
             // 
-            // inputRange1
+            // datePickerRange2
             // 
-            inputRange1.LocalizationPlaceholderEnd = "DatePicker.PlaceholderE";
-            inputRange1.LocalizationPlaceholderStart = "DatePicker.PlaceholderS";
-            inputRange1.Location = new Point(19, 15);
-            inputRange1.Name = "inputRange1";
-            inputRange1.PlaceholderEnd = "结束时间";
-            inputRange1.PlaceholderStart = "开始时间";
-            inputRange1.Size = new Size(300, 40);
-            inputRange1.TabIndex = 24;
+            datePickerRange2.LocalizationPlaceholderEnd = "DatePicker.PlaceholderE";
+            datePickerRange2.LocalizationPlaceholderStart = "DatePicker.PlaceholderS";
+            datePickerRange2.Location = new Point(19, 15);
+            datePickerRange2.Name = "datePickerRange2";
+            datePickerRange2.PlaceholderEnd = "结束时间";
+            datePickerRange2.PlaceholderStart = "开始时间";
+            datePickerRange2.Size = new Size(300, 40);
+            datePickerRange2.TabIndex = 24;
             // 
             // divider2
             // 
@@ -286,11 +286,11 @@ namespace Demo.Controls
         private System.Windows.Forms.Panel panel3;
         private AntdUI.Divider divider2;
         private AntdUI.DatePickerRange datePickerRange1;
-        private AntdUI.DatePickerRange inputRange1;
+        private AntdUI.DatePickerRange datePickerRange2;
         private System.Windows.Forms.Panel panel4;
         private AntdUI.Divider divider3;
         private AntdUI.DatePicker datePicker4;
-        private AntdUI.DatePicker datePickerRange2;
+        private AntdUI.DatePicker datePicker5;
         private AntdUI.DatePickerRange datePickerRange3;
         private AntdUI.DatePickerRange datePickerRange4;
     }

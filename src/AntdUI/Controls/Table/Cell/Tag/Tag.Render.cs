@@ -22,9 +22,9 @@ namespace AntdUI
 {
     partial class CellTag
     {
-        internal override void PaintBack(Canvas g) { }
+        public override void PaintBack(Canvas g) { }
 
-        internal override void Paint(Canvas g, Font font, SolidBrush fore)
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
             using (var path = Rect.RoundPath(6))
             {
@@ -34,35 +34,35 @@ namespace AntdUI
                 switch (Type)
                 {
                     case TTypeMini.Default:
-                        _back = Style.Db.TagDefaultBg;
-                        _fore = Style.Db.TagDefaultColor;
-                        _bor = Style.Db.DefaultBorder;
+                        _back = Colour.TagDefaultBg.Get("Tag");
+                        _fore = Colour.TagDefaultColor.Get("Tag");
+                        _bor = Colour.DefaultBorder.Get("Tag");
                         break;
                     case TTypeMini.Error:
-                        _back = Style.Db.ErrorBg;
-                        _fore = Style.Db.Error;
-                        _bor = Style.Db.ErrorBorder;
+                        _back = Colour.ErrorBg.Get("Tag");
+                        _fore = Colour.Error.Get("Tag");
+                        _bor = Colour.ErrorBorder.Get("Tag");
                         break;
                     case TTypeMini.Success:
-                        _back = Style.Db.SuccessBg;
-                        _fore = Style.Db.Success;
-                        _bor = Style.Db.SuccessBorder;
+                        _back = Colour.SuccessBg.Get("Tag");
+                        _fore = Colour.Success.Get("Tag");
+                        _bor = Colour.SuccessBorder.Get("Tag");
                         break;
                     case TTypeMini.Info:
-                        _back = Style.Db.InfoBg;
-                        _fore = Style.Db.Info;
-                        _bor = Style.Db.InfoBorder;
+                        _back = Colour.InfoBg.Get("Tag");
+                        _fore = Colour.Info.Get("Tag");
+                        _bor = Colour.InfoBorder.Get("Tag");
                         break;
                     case TTypeMini.Warn:
-                        _back = Style.Db.WarningBg;
-                        _fore = Style.Db.Warning;
-                        _bor = Style.Db.WarningBorder;
+                        _back = Colour.WarningBg.Get("Tag");
+                        _fore = Colour.Warning.Get("Tag");
+                        _bor = Colour.WarningBorder.Get("Tag");
                         break;
                     case TTypeMini.Primary:
                     default:
-                        _back = Style.Db.PrimaryBg;
-                        _fore = Style.Db.Primary;
-                        _bor = Style.Db.Primary;
+                        _back = Colour.PrimaryBg.Get("Tag");
+                        _fore = Colour.Primary.Get("Tag");
+                        _bor = Colour.Primary.Get("Tag");
                         break;
                 }
 
@@ -79,14 +79,13 @@ namespace AntdUI
             }
         }
 
-        internal override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             var size = g.MeasureString(Text, font);
             return new Size(size.Width + gap2 * 2, size.Height + gap);
         }
 
-        Rectangle Rect;
-        internal override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
             Rect = new Rectangle(rect.X + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - gap2, size.Height);
         }

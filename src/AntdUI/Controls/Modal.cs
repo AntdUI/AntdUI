@@ -382,6 +382,11 @@ namespace AntdUI
             /// </summary>
             public bool LoadingDisableCancel { get; set; }
 
+            /// <summary>
+            /// 拖拽窗口
+            /// </summary>
+            public bool Draggable { get; set; } = true;
+
             #region 自定义按钮
 
             /// <summary>

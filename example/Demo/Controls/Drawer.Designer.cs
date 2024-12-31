@@ -114,7 +114,6 @@ namespace Demo.Controls
             // 
             // radio2
             // 
-            radio2.AutoCheck = true;
             radio2.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio2.Checked = true;
             radio2.Dock = DockStyle.Left;
@@ -126,7 +125,6 @@ namespace Demo.Controls
             // 
             // radio4
             // 
-            radio4.AutoCheck = true;
             radio4.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio4.Dock = DockStyle.Left;
             radio4.Location = new Point(184, 0);
@@ -137,7 +135,6 @@ namespace Demo.Controls
             // 
             // radio3
             // 
-            radio3.AutoCheck = true;
             radio3.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio3.Dock = DockStyle.Left;
             radio3.Location = new Point(76, 0);
@@ -148,7 +145,6 @@ namespace Demo.Controls
             // 
             // radio1
             // 
-            radio1.AutoCheck = true;
             radio1.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio1.Dock = DockStyle.Left;
             radio1.Location = new Point(0, 0);

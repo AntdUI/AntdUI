@@ -56,8 +56,7 @@ namespace AntdUI
                 if (columns == value) return;
                 SortHeader = null;
                 columns = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 if (value == null) return;
                 value.table = this;
                 OnPropertyChanged("Columns");
@@ -74,13 +73,13 @@ namespace AntdUI
             get => dataSource;
             set
             {
+                enableDir.Clear();
                 dataSource = value;
                 SortData = null;
                 ScrollBar.Clear();
                 ExtractHeaderFixed();
                 ExtractData();
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("DataSource");
             }
         }
@@ -131,8 +130,7 @@ namespace AntdUI
             {
                 if (_gap == value) return;
                 _gap = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("Gap");
             }
         }
@@ -167,8 +165,7 @@ namespace AntdUI
                 if (visibleHeader == value) return;
                 visibleHeader = value;
                 ScrollBar.RB = !value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("VisibleHeader");
             }
         }
@@ -185,8 +182,7 @@ namespace AntdUI
             {
                 if (enableHeaderResizing == value) return;
                 enableHeaderResizing = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("EnableHeaderResizing");
             }
         }
@@ -215,8 +211,7 @@ namespace AntdUI
             {
                 if (bordered == value) return;
                 bordered = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("Bordered");
             }
         }
@@ -252,8 +247,7 @@ namespace AntdUI
             {
                 if (_checksize == value) return;
                 _checksize = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("CheckSize");
             }
         }
@@ -270,8 +264,7 @@ namespace AntdUI
             {
                 if (_switchsize == value) return;
                 _switchsize = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("SwitchSize");
             }
         }
@@ -320,8 +313,7 @@ namespace AntdUI
             {
                 if (rowHeight == value) return;
                 rowHeight = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("RowHeight");
             }
         }
@@ -338,8 +330,7 @@ namespace AntdUI
             {
                 if (rowHeightHeader == value) return;
                 rowHeightHeader = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("RowHeightHeader");
             }
         }
@@ -389,8 +380,7 @@ namespace AntdUI
             {
                 if (emptyHeader == value) return;
                 emptyHeader = value;
-                LoadLayout();
-                Invalidate();
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged("EmptyHeader");
             }
         }
@@ -404,6 +394,23 @@ namespace AntdUI
         #endregion
 
         #region 主题
+
+        Color? rowHoverBg;
+        /// <summary>
+        /// 表格行悬浮背景色
+        /// </summary>
+        [Description("表格行悬浮背景色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? RowHoverBg
+        {
+            get => rowHoverBg;
+            set
+            {
+                if (rowHoverBg == value) return;
+                rowHoverBg = value;
+                OnPropertyChanged("RowHoverBg");
+            }
+        }
 
         Color? rowSelectedBg;
         /// <summary>
@@ -522,9 +529,9 @@ namespace AntdUI
 
         int[] selectedIndex = new int[0];
         /// <summary>
-        /// 选中行
+        /// 选中行（1开始）
         /// </summary>
-        [Description("选中行"), Category("数据"), DefaultValue(-1)]
+        [Browsable(false), Description("选中行（1开始）"), Category("数据"), DefaultValue(-1)]
         public int SelectedIndex
         {
             get
@@ -538,6 +545,7 @@ namespace AntdUI
                 {
                     Invalidate();
                     OnPropertyChanged("SelectedIndex");
+                    SelectIndexChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -545,9 +553,9 @@ namespace AntdUI
         /// <summary>
         /// 选中多行
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor", typeof(UITypeEditor))]
-        [Description("选中多行"), Category("数据")]
+        [Browsable(false), Description("选中多行"), Category("数据")]
         public int[] SelectedIndexs
         {
             get => selectedIndex;
@@ -557,6 +565,7 @@ namespace AntdUI
                 selectedIndex = value;
                 Invalidate();
                 OnPropertyChanged("SelectedIndexs");
+                SelectIndexChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -651,6 +660,47 @@ namespace AntdUI
         #endregion
 
         #region 方法
+
+        List<int> enableDir = new List<int>();
+        /// <summary>
+        /// 获取行使能
+        /// </summary>
+        /// <param name="i">行</param>
+        /// <returns>是否禁用</returns>
+        public bool GetRowEnable(int i)
+        {
+            if (enableDir.Contains(i)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 设置行使能
+        /// </summary>
+        /// <param name="i">行</param>
+        /// <param name="value">值</param>
+        /// <param name="ui">是否刷新ui</param>
+        /// <returns>成功失败</returns>
+        public void SetRowEnable(int i, bool value = true, bool ui = true)
+        {
+            if (value)
+            {
+                if (enableDir.Contains(i)) enableDir.Remove(i);
+                else return;
+            }
+            else
+            {
+                if (enableDir.Contains(i)) return;
+                else enableDir.Add(i);
+            }
+            if (rows == null) return;
+            try
+            {
+                var selectRow = rows[i + 1];
+                selectRow.ENABLE = value;
+                if (ui) Invalidate();
+            }
+            catch { }
+        }
 
         /// <summary>
         /// 滚动到指定行
@@ -877,7 +927,7 @@ namespace AntdUI
                     foreach (var cell in row.cells)
                     {
                         var obj = row[cell.Key];
-                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column)) obj = column.Render?.Invoke(obj, row.record, row.i);
+                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column) && column.Render != null) obj = column.Render(obj, row.record, row.i);
 
                         if (obj is IList<ICell> cells)
                         {
@@ -903,7 +953,7 @@ namespace AntdUI
                     foreach (var cell in row.cells)
                     {
                         var obj = row[cell.Key];
-                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column)) obj = column.Render?.Invoke(obj, row.record, row.i);
+                        if (enableRender && dir_columns.TryGetValue(cell.Key, out var column) && column.Render != null) obj = column.Render(obj, row.record, row.i);
                         data.Add(obj);
                     }
                     dt.Rows.Add(data.ToArray());
@@ -1241,10 +1291,20 @@ namespace AntdUI
         /// </summary>
         public bool Ellipsis { get; set; }
 
+        bool lineBreak = false;
         /// <summary>
         /// 自动换行
         /// </summary>
-        public bool LineBreak { get; set; }
+        public bool LineBreak
+        {
+            get => lineBreak;
+            set
+            {
+                if (lineBreak == value) return;
+                lineBreak = value;
+                Invalidates();
+            }
+        }
 
         bool _fixed = false;
         /// <summary>
@@ -1276,6 +1336,31 @@ namespace AntdUI
             }
         }
 
+        SortMode sortMode = SortMode.NONE;
+        /// <summary>
+        /// 排序模式
+        /// </summary>
+        public SortMode SortMode
+        {
+            get => sortMode;
+            set
+            {
+                if (sortMode == value) return;
+                if (PARENT == null || PARENT.rows == null)
+                {
+                    sortMode = value;
+                    Invalidate();
+                    return;
+                }
+                foreach (var item in PARENT.rows[0].cells)
+                {
+                    if (item.COLUMN.SortOrder) item.COLUMN.sortMode = SortMode.NONE;
+                }
+                sortMode = value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// 树形列
         /// </summary>
@@ -1295,19 +1380,23 @@ namespace AntdUI
 
         internal Table? PARENT { get; set; }
         internal int INDEX { get; set; }
-        internal int SortMode { get; set; }
         void Invalidate()
         {
             if (PARENT == null) return;
-            PARENT.LoadLayout();
-            PARENT.Invalidate();
+            if (PARENT.LoadLayout()) PARENT.Invalidate();
         }
         void Invalidates()
         {
             if (PARENT == null) return;
             PARENT.ExtractHeaderFixed();
-            PARENT.LoadLayout();
-            PARENT.Invalidate();
+            if (PARENT.LoadLayout()) PARENT.Invalidate();
+        }
+
+        internal bool SetSortMode(SortMode value)
+        {
+            if (sortMode == value) return false;
+            sortMode = value;
+            return true;
         }
 
         #endregion
@@ -1328,5 +1417,18 @@ namespace AntdUI
         Left,
         Right,
         Center
+    }
+
+    public enum SortMode : int
+    {
+        NONE = 0,
+        /// <summary>
+        /// 升序
+        /// </summary>
+        ASC = 1,
+        /// <summary>
+        /// 降序
+        /// </summary>
+        DESC = 2
     }
 }

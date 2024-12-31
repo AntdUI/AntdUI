@@ -27,7 +27,8 @@ namespace AntdUI.Icon
     /// 完成图标
     /// </summary>
     [Description("Icon 完成图标")]
-    [ToolboxItem(true)]
+    [ToolboxItem(false)]
+    [System.Obsolete("use IconState")]
     public class IconComplete : IControl
     {
         #region 属性
@@ -80,30 +81,10 @@ namespace AntdUI.Icon
                     g.FillEllipse(brush, new RectangleF(rect_dot.X + 1, rect_dot.Y + 1, rect_dot.Width - 2, rect_dot.Height - 2));
                 }
             }
-            g.GetImgExtend(SvgDb.IcoSuccess, rect, back ?? Style.Db.Success);
+            g.GetImgExtend(SvgDb.IcoSuccess, rect, back ?? Colour.Success.Get("IconComplete"));
             this.PaintBadge(g);
             base.OnPaint(e);
         }
-
-        #region 渲染帮助
-
-        internal PointF[] PaintArrow(RectangleF rect)
-        {
-            float wh = rect.Height / 2F;
-            float x = rect.X + wh, y = rect.Y + wh;
-            float y1 = y - wh * 0.092F, y2 = y - wh * 0.356F;
-            float x_1 = wh * 0.434F, x_2 = wh * 0.282F;
-            return new PointF[] {
-                new PointF(x - x_1, y1),
-                new PointF(x - x_2, y1),
-                new PointF(x - wh * 0.096F, y + wh * 0.149F),
-                new PointF(x + x_2, y2),
-                new PointF(x + x_1, y2),
-                new PointF(x - wh * 0.1F, y + wh * 0.357F),
-            };
-        }
-
-        #endregion
 
         #endregion
     }

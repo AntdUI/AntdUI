@@ -53,10 +53,7 @@ namespace AntdUI
             {
             }
 
-            public override string ToString()
-            {
-                return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
-            }
+            public override string ToString() => "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
         }
 
         public class Camera

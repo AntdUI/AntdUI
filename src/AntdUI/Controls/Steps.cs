@@ -107,6 +107,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(8)]
+        public int Gap { get; set; } = 8;
+
         StepsItemCollection? items;
         /// <summary>
         /// 集合
@@ -160,7 +166,7 @@ namespace AntdUI
             if (rect.Width == 0 || rect.Height == 0) return;
             Helper.GDI(g =>
             {
-                int gap = (int)(8F * Config.Dpi), split = (int)Config.Dpi;
+                int gap = (int)(Gap * Config.Dpi), split = (int)Config.Dpi;
                 var _splits = new List<RectangleF>(items.Count);
                 using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                 {
@@ -299,22 +305,26 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
-            Color color_fore = fore ?? Style.Db.Text;
+            Color color_fore = fore ?? Colour.Text.Get("Steps");
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_primarybg = new SolidBrush(Style.Db.PrimaryBg))
-            using (var brush_primary = new SolidBrush(Style.Db.Primary))
-            using (var brush_primary_fore = new SolidBrush(Style.Db.PrimaryColor))
-            using (var brush_dotback = new SolidBrush(Style.Db.BgBase))
-            using (var brush_fore2 = new SolidBrush(Style.Db.TextTertiary))
-            using (var brush_fore3 = new SolidBrush(Style.Db.TextSecondary))
-            using (var brush_bg2 = new SolidBrush(Style.Db.FillSecondary))
+            using (var brush_primarybg = new SolidBrush(Colour.PrimaryBg.Get("Steps")))
+            using (var brush_primary = new SolidBrush(Colour.Primary.Get("Steps")))
+            using (var brush_primary_fore = new SolidBrush(Colour.PrimaryColor.Get("Steps")))
+            using (var brush_dotback = new SolidBrush(Colour.BgBase.Get("Steps")))
+            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get("Steps")))
+            using (var brush_fore3 = new SolidBrush(Colour.TextSecondary.Get("Steps")))
+            using (var brush_bg2 = new SolidBrush(Colour.FillSecondary.Get("Steps")))
             using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
             {
-                using (var brush_split = new SolidBrush(Style.Db.Split))
+                using (var brush_split = new SolidBrush(Colour.Split.Get("Steps")))
                 {
                     for (int sp = 0; sp < splits.Length; sp++)
                     {
@@ -345,7 +355,7 @@ namespace AntdUI
                                     ccolor = brush_fore2.Color;
                                     break;
                                 case TStepState.Error:
-                                    using (var brush_error = new SolidBrush(Style.Db.Error))
+                                    using (var brush_error = new SolidBrush(Colour.Error.Get("Steps")))
                                     {
                                         g.String(it.Title, Font, brush_error, it.title_rect, stringLeft);
                                         g.String(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
@@ -395,7 +405,7 @@ namespace AntdUI
                                         g.String((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
                                         break;
                                     case TStepState.Error:
-                                        g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Style.Db.ErrorColor, Style.Db.Error);
+                                        g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Colour.ErrorColor.Get("Steps"), Colour.Error.Get("Steps"));
                                         break;
                                     case TStepState.Process:
                                     default:

@@ -178,18 +178,18 @@ namespace AntdUI
                 using (var path = rect_read.RoundPath(Radius))
                 {
                     DrawShadow(g, rect);
-                    using (var brush = new SolidBrush(Style.Db.BgElevated))
+                    using (var brush = new SolidBrush(Colour.BgElevated.Get("DatePicker")))
                     {
                         g.Fill(brush, path);
                         if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                     }
                 }
 
-                using (var brush_fore = new SolidBrush(Style.Db.TextBase))
+                using (var brush_fore = new SolidBrush(Colour.TextBase.Get("DatePicker")))
                 {
                     var state = g.Save();
                     g.SetClip(new Rectangle(0, 10, t_width + 20, t_height));
-                    using (var brush_bg = new SolidBrush(Style.Db.PrimaryBg))
+                    using (var brush_bg = new SolidBrush(Colour.PrimaryBg.Get("DatePicker")))
                     {
                         g.TranslateTransform(0, -scrollY_h.Value);
                         for (int i = 0; i < calendar_time.Count; i++)
@@ -219,7 +219,7 @@ namespace AntdUI
                                         if (it.t == SelDate.Seconds) g.Fill(brush_bg, path);
                                         break;
                                 }
-                                if (it.hover) g.Fill(Style.Db.FillTertiary, path);
+                                if (it.hover) g.Fill(Colour.FillTertiary.Get("DatePicker"), path);
                                 g.String(it.v, Font, brush_fore, it.rect_read, s_f);
                             }
                         }
@@ -230,13 +230,13 @@ namespace AntdUI
                     scrollY_m.Paint(g);
                     scrollY_s.Paint(g);
 
-                    var color_active = Style.Db.Primary;
-                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Style.Db.PrimaryActive), rect_button, s_f);
-                    else if (hover_button.Switch) g.String(button_text, Font, Style.Db.PrimaryActive, rect_button, s_f);
+                    var color_active = Colour.Primary.Get("DatePicker");
+                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get("DatePicker")), rect_button, s_f);
+                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get("DatePicker"), rect_button, s_f);
                     else g.String(button_text, Font, color_active, rect_button, s_f);
 
-                    if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Style.Db.PrimaryActive), rect_buttonok, s_f);
-                    else if (hover_buttonok.Switch) g.String(OKButton, Font, Style.Db.PrimaryActive, rect_buttonok, s_f);
+                    if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get("DatePicker")), rect_buttonok, s_f);
+                    else if (hover_buttonok.Switch) g.String(OKButton, Font, Colour.PrimaryActive.Get("DatePicker"), rect_buttonok, s_f);
                     else g.String(OKButton, Font, color_active, rect_buttonok, s_f);
                 }
             }

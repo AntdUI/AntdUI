@@ -51,7 +51,7 @@ namespace Demo.Controls
             };
         }
 
-        private void datePickerRange4_PresetsClickChanged(object sender, AntdUI.ObjectNEventArgs e)
+        private void datePicker_PresetsClickChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
             AntdUI.Message.info(form, "ÒÑµã»÷£º" + e.Value, Font);
         }

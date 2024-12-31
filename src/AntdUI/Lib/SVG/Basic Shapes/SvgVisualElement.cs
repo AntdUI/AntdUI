@@ -249,31 +249,31 @@ namespace AntdUI.Svg
         /// <param name="renderer">The <see cref="ISvgRenderer"/> object to render to.</param>
         protected internal virtual bool RenderStroke(ISvgRenderer renderer)
         {
-            if (Stroke != null && Stroke != SvgColourServer.None && StrokeWidth > 0)
+            if (Stroke != null && Stroke != SvgPaintServer.None && StrokeWidth > 0f)
             {
                 var strokeWidth = StrokeWidth.ToDeviceValue(renderer, UnitRenderingType.Other, this);
-                using (var brush = Stroke.GetBrush(this, renderer, Math.Min(Math.Max(StrokeOpacity, 0), 1), true))
+                using (var brush = Stroke.GetBrush(this, renderer, FixOpacityValue(StrokeOpacity), true))
                 {
                     if (brush != null)
                     {
                         var path = Path(renderer);
                         var bounds = path.GetBounds();
                         if (path.PointCount < 1) return false;
-                        if (bounds.Width <= 0 && bounds.Height <= 0)
+                        if (bounds.Width <= 0f && bounds.Height <= 0f)
                         {
                             switch (StrokeLineCap)
                             {
                                 case SvgStrokeLineCap.Round:
                                     using (var capPath = new GraphicsPath())
                                     {
-                                        capPath.AddEllipse(path.PathPoints[0].X - strokeWidth / 2, path.PathPoints[0].Y - strokeWidth / 2, strokeWidth, strokeWidth);
+                                        capPath.AddEllipse(path.PathPoints[0].X - strokeWidth / 2f, path.PathPoints[0].Y - strokeWidth / 2f, strokeWidth, strokeWidth);
                                         renderer.FillPath(brush, capPath);
                                     }
                                     break;
                                 case SvgStrokeLineCap.Square:
                                     using (var capPath = new GraphicsPath())
                                     {
-                                        capPath.AddRectangle(new RectangleF(path.PathPoints[0].X - strokeWidth / 2, path.PathPoints[0].Y - strokeWidth / 2, strokeWidth, strokeWidth));
+                                        capPath.AddRectangle(new RectangleF(path.PathPoints[0].X - strokeWidth / 2f, path.PathPoints[0].Y - strokeWidth / 2f, strokeWidth, strokeWidth));
                                         renderer.FillPath(brush, capPath);
                                     }
                                     break;
@@ -325,6 +325,10 @@ namespace AntdUI.Svg
                                     case SvgStrokeLineJoin.Round:
                                         pen.LineJoin = LineJoin.Round;
                                         break;
+                                    case SvgStrokeLineJoin.MiterClip:
+                                        pen.LineJoin = LineJoin.MiterClipped;
+                                        break;
+                                    // System.Drawing has no support for Arcs unfortunately
                                     default:
                                         pen.LineJoin = LineJoin.Miter;
                                         break;

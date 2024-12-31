@@ -256,10 +256,7 @@ namespace AntdUI
             subForm = null;
         }
 
-        internal bool DropDownChange()
-        {
-            return SelectedIndexsChanged == null;
-        }
+        internal bool DropDownChange() => SelectedIndexsChanged == null;
         internal void DropDownChange(int x, int y, object value)
         {
             ChangeValue(x, y, value);
@@ -366,7 +363,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var pen = new Pen(Style.Db.TextQuaternary, 2F))
+                using (var pen = new Pen(Colour.TextQuaternary.Get("Select"), 2F))
                 {
                     pen.StartCap = pen.EndCap = LineCap.Round;
                     g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
@@ -491,13 +488,14 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
+            bool result = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Down:
                     ExpandDrop = true;
-                    break;
+                    return true;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return result;
         }
         protected override void OnLostFocus(EventArgs e)
         {
@@ -648,10 +646,7 @@ namespace AntdUI
 
         public object? Tag { get; set; }
 
-        public override string ToString()
-        {
-            return Title;
-        }
+        public override string ToString() => Title;
     }
     public class ISelectItem { }
 

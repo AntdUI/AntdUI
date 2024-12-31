@@ -160,7 +160,7 @@ namespace AntdUI
         /// <param name="g"></param>
         public virtual void Paint(Canvas g)
         {
-            Paint(g, Style.Db.TextBase);
+            Paint(g, Colour.TextBase.Get("ScrollBar"));
         }
         public virtual void Paint(Canvas g, Color baseColor)
         {

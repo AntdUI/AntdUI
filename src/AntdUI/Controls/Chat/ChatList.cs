@@ -103,10 +103,13 @@ namespace AntdUI.Chat
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
-
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             float sy = ScrollBar.Value, radius = Config.Dpi * 8F;
             g.TranslateTransform(0, -sy);
@@ -129,7 +132,7 @@ namespace AntdUI.Chat
                 {
                     using (var path = text.rect_read.RoundPath(radius))
                     {
-                        using (var brush = new SolidBrush(Style.Db.TextTertiary))
+                        using (var brush = new SolidBrush(Colour.TextTertiary.Get("ChatList")))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
                         }
@@ -145,7 +148,7 @@ namespace AntdUI.Chat
                         else
                         {
                             g.Fill(Brushes.White, path);
-                            if (text.selectionLength > 0) g.Fill(Style.Db.FillQuaternary, path);
+                            if (text.selectionLength > 0) g.Fill(Colour.FillQuaternary.Get("ChatList"), path);
                             using (var brush = new SolidBrush(Color.Black))
                             {
                                 PaintItemText(g, text, brush);
@@ -418,16 +421,17 @@ namespace AntdUI.Chat
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
+            bool result = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Control | Keys.A:
                     SelectAll();
-                    break;
+                    return true;
                 case Keys.Control | Keys.C:
                     Copy();
-                    break;
+                    return true;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return result;
         }
 
         void SelectAll()
@@ -567,7 +571,7 @@ namespace AntdUI.Chat
                     gap = (int)Math.Round(item_height * 0.75),
                     spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * 0.8F) - item_height;
                 y = spilt;
-                foreach (IChatItem it in items)
+                foreach (var it in items)
                 {
                     it.PARENT = this;
                     if (it is TextChatItem text)
@@ -775,7 +779,7 @@ namespace AntdUI.Chat
             {
                 if (_icon == value) return;
                 _icon = value;
-                OnPropertyChanged("Icon");
+                Invalidates();
             }
         }
 
@@ -791,7 +795,7 @@ namespace AntdUI.Chat
             {
                 if (_name == value) return;
                 _name = value;
-                OnPropertyChanged("Name");
+                Invalidate();
             }
         }
 
@@ -936,7 +940,7 @@ namespace AntdUI.Chat
 
         #endregion
     }
-    public class IChatItem : NotifyProperty
+    public class IChatItem
     {
         public IChatItem() { }
 
@@ -946,10 +950,7 @@ namespace AntdUI.Chat
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
-        internal void Invalidate()
-        {
-            PARENT?.Invalidate();
-        }
+        internal void Invalidate() => PARENT?.Invalidate();
         internal void Invalidates()
         {
             if (PARENT == null) return;
@@ -964,10 +965,7 @@ namespace AntdUI.Chat
 
         internal Rectangle rect { get; set; }
 
-        internal bool Contains(Point point, int x, int y)
-        {
-            return rect.Contains(new Point(point.X + x, point.Y + y));
-        }
+        internal bool Contains(Point point, int x, int y) => rect.Contains(new Point(point.X + x, point.Y + y));
     }
 
     internal class CacheFont

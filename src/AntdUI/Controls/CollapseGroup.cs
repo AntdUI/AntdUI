@@ -231,18 +231,22 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
-            using (var brush_fore = new SolidBrush(fore ?? Style.Db.TextBase))
-            using (var brush_fore_active = new SolidBrush(ForeActive ?? Style.Db.Primary))
-            using (var brush_hover = new SolidBrush(BackHover ?? Style.Db.FillSecondary))
-            using (var brush_active = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
-            using (var brush_TextQuaternary = new SolidBrush(Style.Db.TextQuaternary))
+            using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get("CollapseGroup")))
+            using (var brush_fore_active = new SolidBrush(ForeActive ?? Colour.Primary.Get("CollapseGroup")))
+            using (var brush_hover = new SolidBrush(BackHover ?? Colour.FillSecondary.Get("CollapseGroup")))
+            using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get("CollapseGroup")))
+            using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.Get("CollapseGroup")))
             {
                 PaintItem(g, rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextQuaternary, _radius);
             }
@@ -469,7 +473,7 @@ namespace AntdUI
             }
         }
 
-        internal void IUSelect()
+        public void IUSelect()
         {
             if (items == null || items.Count == 0) return;
             foreach (var it in items)
@@ -568,7 +572,7 @@ namespace AntdUI
         }
     }
 
-    public class CollapseGroupItem : NotifyProperty
+    public class CollapseGroupItem
     {
         public CollapseGroupItem() { }
         public CollapseGroupItem(string text)
@@ -779,7 +783,7 @@ namespace AntdUI
             return this;
         }
     }
-    public class CollapseGroupSub : NotifyProperty
+    public class CollapseGroupSub
     {
         public CollapseGroupSub() { }
         public CollapseGroupSub(string text)
@@ -804,7 +808,7 @@ namespace AntdUI
             {
                 if (icon == value) return;
                 icon = value;
-                OnPropertyChanged("Icon");
+                Invalidates();
             }
         }
 
@@ -820,17 +824,14 @@ namespace AntdUI
             {
                 if (iconSvg == value) return;
                 iconSvg = value;
-                OnPropertyChanged("IconSvg");
+                Invalidates();
             }
         }
 
         /// <summary>
         /// 是否包含图片
         /// </summary>
-        internal bool HasIcon
-        {
-            get => iconSvg != null || Icon != null;
-        }
+        internal bool HasIcon => iconSvg != null || Icon != null;
 
         /// <summary>
         /// 名称
@@ -916,10 +917,7 @@ namespace AntdUI
 
         #endregion
 
-        void Invalidate()
-        {
-            PARENT?.Invalidate();
-        }
+        void Invalidate() => PARENT?.Invalidate();
         void Invalidates()
         {
             if (PARENT == null) return;

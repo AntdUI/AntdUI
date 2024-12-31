@@ -114,10 +114,7 @@ namespace AntdUI
         /// <param name="control">所属控件</param>
         /// <param name="text">文本</param>
         /// <param name="ArrowAlign">箭头方向</param>
-        public static Form? open(Control control, string text, TAlign ArrowAlign = TAlign.Top)
-        {
-            return open(new Config(control, text) { ArrowAlign = ArrowAlign });
-        }
+        public static Form? open(Control control, string text, TAlign ArrowAlign = TAlign.Top) => open(new Config(control, text) { ArrowAlign = ArrowAlign });
 
         /// <summary>
         /// Tooltip 文字提示
@@ -126,10 +123,7 @@ namespace AntdUI
         /// <param name="text">文本</param>
         /// <param name="rect">偏移量</param>
         /// <param name="ArrowAlign">箭头方向</param>
-        public static Form? open(Control control, string text, Rectangle rect, TAlign ArrowAlign = TAlign.Top)
-        {
-            return open(new Config(control, text) { Offset = rect, ArrowAlign = ArrowAlign });
-        }
+        public static Form? open(Control control, string text, Rectangle rect, TAlign ArrowAlign = TAlign.Top) => open(new Config(control, text) { Offset = rect, ArrowAlign = ArrowAlign });
 
         /// <summary>
         /// Tooltip 文字提示
@@ -276,10 +270,7 @@ namespace AntdUI
             Print();
         }
 
-        private void Control_LostFocus(object? sender, EventArgs e)
-        {
-            IClose();
-        }
+        private void Control_LostFocus(object? sender, EventArgs e) => IClose();
 
         #region 参数
 

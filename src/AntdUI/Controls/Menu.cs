@@ -347,10 +347,7 @@ namespace AntdUI
         [Description("Select 属性值更改时发生"), Category("行为")]
         public event SelectEventHandler? SelectChanged = null;
 
-        internal void OnSelectIndexChanged(MenuItem item)
-        {
-            SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
-        }
+        internal void OnSelectIndexChanged(MenuItem item) => SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
 
         #endregion
 
@@ -539,9 +536,13 @@ namespace AntdUI
         public Menu() { ScrollBar = new ScrollBar(this); }
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
@@ -564,25 +565,25 @@ namespace AntdUI
                     back_active = BackActive ?? "#1668DC".ToColor();
                     break;
                 default:
-                    scroll_color = Style.Db.TextBase;
-                    fore_enabled = Style.Db.TextQuaternary;
+                    scroll_color = Colour.TextBase.Get("Menu");
+                    fore_enabled = Colour.TextQuaternary.Get("Menu");
                     if (Config.IsDark)
                     {
-                        color_fore = fore ?? Style.Db.Text;
-                        back_hover = color_fore_active = ForeActive ?? Style.Db.TextBase;
-                        back_active = BackActive ?? Style.Db.Primary;
+                        color_fore = fore ?? Colour.Text.Get("Menu");
+                        back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get("Menu");
+                        back_active = BackActive ?? Colour.Primary.Get("Menu");
                     }
                     else
                     {
-                        color_fore = fore ?? Style.Db.TextBase;
-                        color_fore_active = ForeActive ?? Style.Db.Primary;
-                        back_hover = BackHover ?? Style.Db.FillSecondary;
-                        back_active = BackActive ?? Style.Db.PrimaryBg;
+                        color_fore = fore ?? Colour.TextBase.Get("Menu");
+                        color_fore_active = ForeActive ?? Colour.Primary.Get("Menu");
+                        back_hover = BackHover ?? Colour.FillSecondary.Get("Menu");
+                        back_active = BackActive ?? Colour.PrimaryBg.Get("Menu");
                     }
                     break;
             }
             float _radius = radius * Config.Dpi;
-            using (var sub_bg = new SolidBrush(Style.Db.FillQuaternary))
+            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu")))
             {
                 PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
@@ -793,8 +794,23 @@ namespace AntdUI
         }
         void PaintIcon(Canvas g, MenuItem it, Color fore)
         {
+            if (it.Select)
+            {
+                int count = 0;
+                if (it.IconActive != null)
+                {
+                    g.Image(it.IconActive, it.ico_rect); count++;
+                }
+                if (it.IconActiveSvg != null)
+                {
+                    if (g.GetImgExtend(it.IconActiveSvg, it.ico_rect, fore)) count++;
+                }
+                if (count > 0) return;
+            }
+
+
             if (it.Icon != null) g.Image(it.Icon, it.ico_rect);
-            else if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
+            if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
         }
 
         void PaintBack(Canvas g, Color color, Rectangle rect, float radius)
@@ -1083,6 +1099,11 @@ namespace AntdUI
             if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) ILeave(sub, ref count);
         }
 
+        public void IUSelect()
+        {
+            if (items == null) return;
+            IUSelect(items);
+        }
         void IUSelect(MenuItemCollection items)
         {
             foreach (var it in items) IUSelect(it);
@@ -1189,7 +1210,7 @@ namespace AntdUI
         }
     }
 
-    public class MenuItem : NotifyProperty
+    public class MenuItem
     {
         public MenuItem() { }
         public MenuItem(string text)
@@ -1250,10 +1271,19 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图片
         /// </summary>
-        internal bool HasIcon
-        {
-            get => !string.IsNullOrWhiteSpace(iconSvg) || icon != null;
-        }
+        internal bool HasIcon => !string.IsNullOrWhiteSpace(iconSvg) || icon != null;
+
+        /// <summary>
+        /// 图标激活
+        /// </summary>
+        [Description("图标激活"), Category("外观"), DefaultValue(null)]
+        public Image? IconActive { get; set; }
+
+        /// <summary>
+        /// 图标激活SVG
+        /// </summary>
+        [Description("图标激活SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconActiveSvg { get; set; }
 
         #endregion
 
@@ -1269,7 +1299,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 text = value;
-                OnPropertyChanged("Text");
+                Invalidates();
             }
         }
 
@@ -1465,10 +1495,7 @@ namespace AntdUI
 
         #endregion
 
-        void Invalidate()
-        {
-            PARENT?.Invalidate();
-        }
+        void Invalidate() => PARENT?.Invalidate();
         void Invalidates()
         {
             if (PARENT == null) return;

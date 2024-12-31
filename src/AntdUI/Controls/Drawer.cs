@@ -33,10 +33,7 @@ namespace AntdUI
         /// <param name="form">所属控件</param>
         /// <param name="content">控件</param>
         /// <param name="Align">方向</param>
-        public static Form? open(Form form, Control content, TAlignMini Align = TAlignMini.Right)
-        {
-            return open(new Config(form, content) { Align = Align });
-        }
+        public static Form? open(Form form, Control content, TAlignMini Align = TAlignMini.Right) => open(new Config(form, content) { Align = Align });
 
         #region 配置
 
@@ -46,10 +43,7 @@ namespace AntdUI
         /// <param name="form">所属控件</param>
         /// <param name="content">控件</param>
         /// <param name="Align">方向</param>
-        public static Config config(Form form, Control content, TAlignMini Align = TAlignMini.Right)
-        {
-            return new Config(form, content) { Align = Align };
-        }
+        public static Config config(Form form, Control content, TAlignMini Align = TAlignMini.Right) => new Config(form, content) { Align = Align };
 
         #endregion
 
@@ -72,16 +66,16 @@ namespace AntdUI
                 }
                 if (config.Mask)
                 {
-                    var formMask = new LayeredFormMask(config.Form);
-                    formMask.Show(config.Form);
-                    var frm = new LayeredFormDrawer(config, formMask);
+                    var mask = new LayeredFormMask(config.Form);
+                    mask.Show(config.Form);
+                    var frm = new LayeredFormDrawer(config, mask);
                     ITask.Run(() =>
                     {
                         System.Threading.Thread.Sleep(220);
                         if (frm.isclose) return;
-                        config.Form.BeginInvoke(new Action(() =>
+                        config.Form.Invoke(new Action(() =>
                         {
-                            frm.Show(formMask);
+                            frm.Show(mask);
                         }));
                     });
                     return frm;

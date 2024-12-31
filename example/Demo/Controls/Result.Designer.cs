@@ -54,7 +54,7 @@ namespace Demo.Controls
             label2 = new AntdUI.Label();
             button1 = new AntdUI.Button();
             button2 = new AntdUI.Button();
-            iconComplete1 = new AntdUI.Icon.IconComplete();
+            iconState = new AntdUI.IconState();
             SuspendLayout();
             // 
             // header1
@@ -114,22 +114,22 @@ namespace Demo.Controls
             button2.TabIndex = 3;
             button2.Text = "Buy Again";
             // 
-            // iconComplete1
+            // iconState
             // 
-            iconComplete1.Anchor = AnchorStyles.Top;
-            iconComplete1.Location = new Point(288, 99);
-            iconComplete1.Name = "iconComplete1";
-            iconComplete1.Size = new Size(100, 100);
-            iconComplete1.TabIndex = 4;
+            iconState.Anchor = AnchorStyles.Top;
+            iconState.Location = new Point(288, 99);
+            iconState.Name = "iconState";
+            iconState.Size = new Size(100, 100);
+            iconState.TabIndex = 4;
             // 
             // Result
             // 
-            Controls.Add(iconComplete1);
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(header1);
+            Controls.Add(iconState);
             Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Result";
             Size = new Size(677, 450);
@@ -143,6 +143,6 @@ namespace Demo.Controls
         private AntdUI.Label label2;
         private AntdUI.Button button1;
         private AntdUI.Button button2;
-        private AntdUI.Icon.IconComplete iconComplete1;
+        private AntdUI.IconState iconState;
     }
 }

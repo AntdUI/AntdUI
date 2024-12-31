@@ -332,14 +332,14 @@ namespace AntdUI
                 using (var path = rect_read.RoundPath(Radius))
                 {
                     DrawShadow(g, rect);
-                    if (isauto) g.Fill(Style.Db.BgElevated, path);
+                    if (isauto) g.Fill(Colour.BgElevated.Get("Menu"), path);
                     else if (isdark) g.Fill("#1F1F1F".ToColor(), path);
                     else g.Fill(Color.White, path);
 
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        using (var brush = new SolidBrush(Color.FromArgb(180, Style.Db.Text)))
+                        using (var brush = new SolidBrush(Color.FromArgb(180, Colour.Text.Get("Menu"))))
                         { g.String(emptytext, Font, brush, rect_read, s_f); }
                     }
                     else
@@ -358,7 +358,7 @@ namespace AntdUI
                         }
                         else if (isauto)
                         {
-                            using (var brush = new SolidBrush(Style.Db.Text))
+                            using (var brush = new SolidBrush(Colour.Text.Get("Menu")))
                             {
                                 foreach (var it in Items)
                                 {
@@ -407,9 +407,9 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackActive ?? Style.Db.Primary, path);
+                                g.Fill(BackActive ?? Colour.Primary.Get("Menu"), path);
                             }
-                            using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
+                            using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu")))
                             {
                                 g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                             }
@@ -421,7 +421,7 @@ namespace AntdUI
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
-                                    g.Fill(BackHover ?? Style.Db.FillTertiary, path);
+                                    g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu"), path);
                                 }
                             }
                             g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
@@ -434,9 +434,9 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackActive ?? Style.Db.PrimaryBg, path);
+                                g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu"), path);
                             }
-                            using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
+                            using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu")))
                             {
                                 g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                             }
@@ -447,7 +447,7 @@ namespace AntdUI
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
-                                    g.Fill(BackHover ?? Style.Db.FillTertiary, path);
+                                    g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu"), path);
                                 }
                             }
                             g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
@@ -490,9 +490,9 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackActive ?? Style.Db.PrimaryBg, path);
+                                g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu"), path);
                             }
-                            using (var brush_select = new SolidBrush(ForeActive ?? Style.Db.TextBase))
+                            using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu")))
                             {
                                 g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                             }
@@ -503,7 +503,7 @@ namespace AntdUI
                             {
                                 using (var path = it.Rect.RoundPath(Radius))
                                 {
-                                    g.Fill(BackHover ?? Style.Db.FillTertiary, path);
+                                    g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu"), path);
                                 }
                             }
                             g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
@@ -522,14 +522,14 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackActive ?? Style.Db.Primary, path);
+                                g.Fill(BackActive ?? Colour.Primary.Get("Menu"), path);
                             }
                         }
                         else
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackActive ?? Style.Db.PrimaryBg, path);
+                                g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu"), path);
                             }
                         }
                     }
@@ -546,12 +546,12 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackActive ?? Style.Db.PrimaryBg, path);
+                                g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu"), path);
                             }
                         }
                     }
                 }
-                using (var fore = new SolidBrush(Style.Db.TextQuaternary))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Menu")))
                 {
                     g.String(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, stringFormatLeft);
                 }

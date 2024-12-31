@@ -436,10 +436,6 @@ namespace Demo
                     return "Table";
                 case "Table.Description":
                     return "A table displays rows of data.";
-                case "Table.Tab1":
-                    return "Basic";
-                case "Table.Tab2":
-                    return "Pagination";
                 case "Table.checkFixedHeader":
                     return "FixedHeader";
                 case "Table.checkColumnDragSort":

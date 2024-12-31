@@ -78,10 +78,7 @@ namespace AntdUI
         [Description("全局 CheckState 属性值更改时发生"), Category("行为")]
         public event CheckStateEventHandler? CheckedOverallChanged = null;
 
-        internal void OnCheckedOverallChanged(ColumnCheck column, CheckState checkState)
-        {
-            CheckedOverallChanged?.Invoke(this, new CheckStateEventArgs(column, checkState));
-        }
+        internal void OnCheckedOverallChanged(ColumnCheck column, CheckState checkState) => CheckedOverallChanged?.Invoke(this, new CheckStateEventArgs(column, checkState));
 
         /// <summary>
         /// 单击时发生
@@ -136,6 +133,12 @@ namespace AntdUI
         [Description("编辑后发生"), Category("行为")]
         public event EndEditEventHandler? CellEndEdit;
 
+        /// <summary>
+        /// 编辑完成后发生
+        /// </summary>
+        [Description("编辑完成后发生"), Category("行为")]
+        public event EventHandler? CellEditComplete;
+
         #endregion
 
         public delegate CellStyleInfo? SetRowStyleEventHandler(object sender, TableSetRowStyleEventArgs e);
@@ -158,14 +161,22 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 点击事件
-        /// </summary>
-        public delegate void SortEventHandler(object sender, TableClickEventArgs e);
-
-        /// <summary>
         /// 行排序时发生
         /// </summary>
         [Description("行排序时发生"), Category("行为")]
         public event IntEventHandler? SortRows;
+
+        public delegate bool SortModeEventHandler(object sender, TableSortModeEventArgs e);
+        /// <summary>
+        /// 点击排序后发生
+        /// </summary>
+        [Description("点击排序后发生"), Category("行为")]
+        public event SortModeEventHandler? SortModeChanged;
+
+        /// <summary>
+        /// 选中变化后发生
+        /// </summary>
+        [Description("选中变化后发生"), Category("行为")]
+        public event EventHandler? SelectIndexChanged;
     }
 }

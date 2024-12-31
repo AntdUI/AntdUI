@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace AntdUI
@@ -35,7 +36,7 @@ namespace AntdUI
         /// <param name="font">字体</param>
         /// <param name="gap">边距</param>
         /// <param name="gap2">边距2</param>
-        internal abstract Size GetSize(Canvas g, Font font, int gap, int gap2);
+        public abstract Size GetSize(Canvas g, Font font, int gap, int gap2);
 
         /// <summary>
         /// 设置渲染位置坐标
@@ -46,22 +47,89 @@ namespace AntdUI
         /// <param name="size">真实区域</param>
         /// <param name="gap">边距</param>
         /// <param name="gap2">边距2</param>
-        internal abstract void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2);
+        public abstract void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2);
 
-        internal abstract void PaintBack(Canvas g);
-        internal abstract void Paint(Canvas g, Font font, SolidBrush fore);
+        public abstract void PaintBack(Canvas g);
+        public abstract void Paint(Canvas g, Font font, bool enable, SolidBrush fore);
 
+        Table.CELL? _PARENT = null;
         /// <summary>
         /// 模板父级
         /// </summary>
-        internal Table.Template? PARENT { get; set; }
+        public Table.CELL PARENT
+        {
+            get
+            {
+                if (_PARENT == null) throw new ArgumentNullException();
+                return _PARENT;
+            }
+        }
+
+        internal void SetCELL(Table.CELL row) => _PARENT = row;
 
         #endregion
 
-        internal Action<bool>? Changed { get; set; }
-        public void OnPropertyChanged(bool layout = false)
-        {
-            Changed?.Invoke(layout);
-        }
+        public Rectangle Rect { get; set; }
+
+        #region 下拉
+
+        /// <summary>
+        /// 菜单弹出位置
+        /// </summary>
+        public TAlignFrom DropDownPlacement { get; set; } = TAlignFrom.BL;
+
+        /// <summary>
+        /// 列表最多显示条数
+        /// </summary>
+        public int DropDownMaxCount { get; set; } = 4;
+
+        /// <summary>
+        /// 下拉圆角
+        /// </summary>
+        public int? DropDownRadius { get; set; }
+
+        /// <summary>
+        /// 下拉箭头是否显示
+        /// </summary>
+        public bool DropDownArrow { get; set; }
+
+        /// <summary>
+        /// 下拉边距
+        /// </summary>
+        public Size DropDownPadding { get; set; } = new Size(12, 5);
+
+        /// <summary>
+        /// 点击到最里层（无节点才能点击）
+        /// </summary>
+        public bool DropDownClickEnd { get; set; }
+
+        /// <summary>
+        /// 点击切换下拉
+        /// </summary>
+        public bool DropDownClickSwitchDropdown { get; set; } = true;
+
+        #region 数据
+
+        /// <summary>
+        /// 数据
+        /// </summary>
+        public IList<object>? DropDownItems { get; set; }
+
+        /// <summary>
+        /// 选中值
+        /// </summary>
+        public object? DropDownValue { get; set; }
+
+        /// <summary>
+        /// DropDownValue 属性值更改时发生
+        /// </summary>
+        public Action<object>? DropDownValueChanged = null;
+
+        #endregion
+
+        #endregion
+
+        public Action<bool>? Changed { get; set; }
+        public void OnPropertyChanged(bool layout = false) => Changed?.Invoke(layout);
     }
 }

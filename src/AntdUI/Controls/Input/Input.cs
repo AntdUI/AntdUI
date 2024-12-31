@@ -1165,7 +1165,7 @@ namespace AntdUI
                     OnImeStartPrivate(m_hIMC);
                     break;
                 case Win32.WM_IME_ENDCOMPOSITION:
-                    OnImeEndPrivate(m_hIMC);
+                    Win32.ImmReleaseContext(Handle, m_hIMC);
                     break;
                 case Win32.WM_IME_COMPOSITION:
                     if (((int)m.LParam & Win32.GCS_RESULTSTR) == Win32.GCS_RESULTSTR)
@@ -1179,6 +1179,15 @@ namespace AntdUI
                         return;
                     }
                     break;
+                case Win32.WM_GETDLGCODE:
+                    m_hIMC = Win32.ImmGetContext(Handle);
+                    OnImeStartPrivate(m_hIMC);
+#if NET40 || NET46 || NET48 || NET6_0
+                    m.Result = (IntPtr)0x0004;
+#else
+                    m.Result = 0x0004;
+#endif 
+                    return;
             }
             base.WndProc(ref m);
         }
@@ -1409,7 +1418,6 @@ namespace AntdUI
             };
             Win32.ImmSetCompositionFont(hIMC, ref logFont);
         }
-        void OnImeEndPrivate(IntPtr hIMC) => Win32.ImmReleaseContext(Handle, hIMC);
         void OnImeResultStrPrivate(IntPtr hIMC, string? strResult)
         {
             var CompositionForm = new Win32.COMPOSITIONFORM()

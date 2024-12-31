@@ -179,7 +179,7 @@ namespace AntdUI
             }
         }
 
-        Color _value = Style.Db.Primary;
+        Color _value = Colour.Primary.Get("ColorPicker");
         [Description("颜色的值"), Category("值"), DefaultValue(typeof(Color), "Transparent")]
         public Color Value
         {
@@ -254,7 +254,7 @@ namespace AntdUI
         {
             get
             {
-                if (allowclear && hasvalue) return null;
+                if (allowclear && !hasvalue) return null;
                 return _value;
             }
         }
@@ -262,7 +262,7 @@ namespace AntdUI
         /// <summary>
         /// 清空值
         /// </summary>
-        public void ClearValue() => ClearValue(Style.Db.Primary);
+        public void ClearValue() => ClearValue(Colour.Primary.Get("ColorPicker"));
 
         /// <summary>
         /// 清空值
@@ -378,10 +378,10 @@ namespace AntdUI
             float _radius = round ? rect_read.Height : radius * Config.Dpi;
             using (var path = Path(rect_read, _radius))
             {
-                Color _fore = fore ?? Style.Db.Text, _back = back ?? Style.Db.BgContainer,
-                    _border = borderColor ?? Style.Db.BorderColor,
-                    _borderHover = BorderHover ?? Style.Db.PrimaryHover,
-                _borderActive = BorderActive ?? Style.Db.Primary;
+                Color _fore = fore ?? Colour.Text.Get("ColorPicker"), _back = back ?? Colour.BgContainer.Get("ColorPicker"),
+                    _border = borderColor ?? Colour.BorderColor.Get("ColorPicker"),
+                    _borderHover = BorderHover ?? Colour.PrimaryHover.Get("ColorPicker"),
+                _borderActive = BorderActive ?? Colour.Primary.Get("ColorPicker");
                 PaintClick(g, path, rect, _borderActive, radius);
                 int size_color = (int)(rect_read.Height * 0.75F);
                 if (Enabled)
@@ -398,8 +398,8 @@ namespace AntdUI
                 }
                 else
                 {
-                    _fore = Style.Db.TextQuaternary;
-                    g.Fill(Style.Db.FillTertiary, path);
+                    _fore = Colour.TextQuaternary.Get("ColorPicker");
+                    g.Fill(Colour.FillTertiary.Get("ColorPicker"), path);
                     if (borderWidth > 0) g.Draw(_border, borderWidth * Config.Dpi, path);
                 }
                 var r = _radius * 0.75F;
@@ -413,16 +413,20 @@ namespace AntdUI
                         var wi = gap * 2 + size_color;
                         if (ValueFormatChanged == null)
                         {
-                            switch (mode)
+                            if (HasValue)
                             {
-                                case TColorMode.Hex:
-                                    g.String("#" + _value.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
-                                    break;
-                                case TColorMode.Rgb:
-                                    if (_value.A == 255) g.String(string.Format("rgb({0},{1},{2})", _value.R, _value.G, _value.B), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
-                                    else g.String(string.Format("rgba({0},{1},{2},{3})", _value.R, _value.G, _value.B, Math.Round(_value.A / 255D, 2)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
-                                    break;
+                                switch (mode)
+                                {
+                                    case TColorMode.Hex:
+                                        g.String("#" + _value.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                        break;
+                                    case TColorMode.Rgb:
+                                        if (_value.A == 255) g.String(string.Format("rgb({0},{1},{2})", _value.R, _value.G, _value.B), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                        else g.String(string.Format("rgba({0},{1},{2},{3})", _value.R, _value.G, _value.B, Math.Round(_value.A / 255D, 2)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
+                                        break;
+                                }
                             }
+                            else g.String("Transparent", Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
                         }
                         else g.String(ValueFormatChanged(this, new ColorEventArgs(_value)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), stringLeft);
                     }
@@ -451,7 +455,7 @@ namespace AntdUI
                         g.DrawLine(pen, new Point(rect_color.X, rect_color.Bottom), new Point(rect_color.Right, rect_color.Y));
                     }
                     g.ResetClip();
-                    g.Draw(Style.Db.Split, Config.Dpi, path);
+                    g.Draw(Colour.Split.Get("ColorPicker"), Config.Dpi, path);
                 }
                 else
                 {
@@ -487,7 +491,7 @@ namespace AntdUI
         {
             int u_y = 0, size = rect.Height / 4;
             bool ad = false;
-            using (var brush = new SolidBrush(Style.Db.FillSecondary))
+            using (var brush = new SolidBrush(Colour.FillSecondary.Get("ColorPicker")))
             {
                 while (u_y < rect.Height)
                 {
@@ -791,7 +795,7 @@ namespace AntdUI
             return PSize;
         }
 
-        internal Size PSize
+        Size PSize
         {
             get
             {
@@ -800,16 +804,20 @@ namespace AntdUI
                     Size font_size;
                     if (ValueFormatChanged == null)
                     {
-                        switch (mode)
+                        if (HasValue)
                         {
-                            case TColorMode.Rgb:
-                                font_size = g.MeasureString(_value.A == 255 ? "rgb(255,255,255)" : "rgba(255,255,255,0.99)", Font);
-                                break;
-                            case TColorMode.Hex:
-                            default:
-                                font_size = g.MeasureString(_value.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font);
-                                break;
+                            switch (mode)
+                            {
+                                case TColorMode.Rgb:
+                                    font_size = g.MeasureString(_value.A == 255 ? "rgb(255,255,255)" : "rgba(255,255,255,0.99)", Font);
+                                    break;
+                                case TColorMode.Hex:
+                                default:
+                                    font_size = g.MeasureString(_value.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font);
+                                    break;
+                            }
                         }
+                        else font_size = g.MeasureString("Transparent", Font);
                     }
                     else font_size = g.MeasureString(ValueFormatChanged(this, new ColorEventArgs(_value)), Font);
                     int gap = (int)((20 + WaveSize) * Config.Dpi);
@@ -833,7 +841,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal bool BeforeAutoSize()
+        bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)

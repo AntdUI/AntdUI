@@ -23,9 +23,6 @@ namespace AntdUI
     /// </summary>
     public partial class CellDivider : ICell
     {
-        public override string? ToString()
-        {
-            return null;
-        }
+        public override string? ToString() => null;
     }
 }

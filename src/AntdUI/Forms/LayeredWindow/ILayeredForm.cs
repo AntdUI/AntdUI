@@ -27,6 +27,7 @@ namespace AntdUI
 {
     public abstract class ILayeredForm : Form, IMessageFilter
     {
+        IntPtr? handle;
         public ILayeredForm()
         {
             SetStyle(
@@ -41,11 +42,15 @@ namespace AntdUI
             Size = new Size(0, 0);
             actionLoadMessage = LoadMessage;
             actionCursor = val => SetCursor(val);
-            actionRender = bmp => Render(bmp);
-            actionRenderB = (alpha, bmp) => Render(alpha, bmp);
-            actionRenderRect = (alpha, bmp, rect) => Render(alpha, bmp, rect);
             renderQueue = new RenderQueue(this);
         }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            handle = Handle;
+            base.OnHandleCreated(e);
+        }
+
         RenderQueue renderQueue;
 
         public Control? PARENT = null;
@@ -84,7 +89,13 @@ namespace AntdUI
 
         public byte alpha = 10;
 
-        public bool CanRender => IsHandleCreated && target_rect.Width > 0 && target_rect.Height > 0;
+        public bool CanRender(out IntPtr han)
+        {
+            if (handle.HasValue && target_rect.Width > 0 && target_rect.Height > 0)
+            { han = handle.Value; return true; }
+            han = IntPtr.Zero;
+            return false;
+        }
 
         #region 渲染坐标
 
@@ -162,47 +173,47 @@ namespace AntdUI
 
         void Render()
         {
+            if (CanRender(out var handle)) Render(handle);
+        }
+
+        void Render(IntPtr handle)
+        {
             try
             {
                 using (var bmp = PrintBit())
                 {
                     if (bmp == null) return;
-                    Render(bmp);
+                    Render(handle, bmp);
                 }
                 GC.Collect();
             }
             catch { }
         }
 
-        Action<Bitmap> actionRender;
-        void Render(Bitmap bmp)
+        void Render(IntPtr handle, Bitmap bmp)
         {
             try
             {
-                if (InvokeRequired) Invoke(actionRender, bmp);
-                else Win32.SetBits(bmp, target_rect, Handle, alpha);
+                Win32.SetBits(bmp, target_rect, handle, alpha);
             }
             catch { }
         }
 
-        Action<byte, Bitmap> actionRenderB;
-        void Render(byte alpha, Bitmap bmp)
+        void Render(IntPtr handle, byte alpha, Bitmap bmp)
         {
             try
             {
-                if (InvokeRequired) Invoke(actionRenderB, alpha, bmp);
-                else Win32.SetBits(bmp, target_rect, Handle, alpha);
+                Win32.SetBits(bmp, target_rect, handle, alpha);
             }
-            catch { }
+            catch
+            { }
         }
 
-        Action<byte, Bitmap, Rectangle> actionRenderRect;
-        void Render(byte alpha, Bitmap bmp, Rectangle rect)
+        void Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
         {
             try
             {
-                if (InvokeRequired) Invoke(actionRenderRect, alpha, bmp, rect);
-                else Win32.SetBits(bmp, rect, Handle, alpha);
+                Win32.SetBits(bmp, rect, handle, alpha);
             }
             catch { }
         }
@@ -558,7 +569,7 @@ namespace AntdUI
                     int count = 0;
                     while (Queue.TryDequeue(out var cmd))
                     {
-                        if (call.CanRender)
+                        if (call.CanRender(out var handle))
                         {
                             if (cmd == null)
                             {
@@ -566,14 +577,14 @@ namespace AntdUI
                                 if (count > 2)
                                 {
                                     count = 0;
-                                    call.Render();
+                                    call.Render(handle);
                                 }
                             }
                             else if (cmd.rect.HasValue)
                             {
-                                using (cmd.bmp) call.Render(cmd.alpha, cmd.bmp, cmd.rect.Value);
+                                using (cmd.bmp) call.Render(handle, cmd.alpha, cmd.bmp, cmd.rect.Value);
                             }
-                            else call.Render(cmd.alpha, cmd.bmp);
+                            else call.Render(handle, cmd.alpha, cmd.bmp);
                         }
                     }
                     if (count > 0) call.Render();

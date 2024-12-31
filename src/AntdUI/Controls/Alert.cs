@@ -165,11 +165,20 @@ namespace AntdUI
             base.OnFontChanged(e);
         }
 
+        int loopSpeed = 10;
         /// <summary>
         /// 文本轮播速率
         /// </summary>
         [Description("文本轮播速率"), Category("外观"), DefaultValue(10)]
-        public int LoopSpeed { get; set; } = 10;
+        public int LoopSpeed
+        {
+            get => loopSpeed;
+            set
+            {
+                if (value < 1) value = 1;
+                loopSpeed = value;
+            }
+        }
 
         #region 动画
 
@@ -181,7 +190,7 @@ namespace AntdUI
             {
                 task = new ITask(this, () =>
                 {
-                    if (font_size.HasValue)
+                    if (font_size.HasValue && font_size.Value.Width > 0)
                     {
                         val += 1;
                         if (val > font_size.Value.Width)
@@ -191,6 +200,7 @@ namespace AntdUI
                         }
                         Invalidate();
                     }
+                    else System.Threading.Thread.Sleep(1000);
                     return loop;
                 }, LoopSpeed);
             }
@@ -219,11 +229,12 @@ namespace AntdUI
         {
             var rect = DisplayRectangle;
             var g = e.Graphics.High();
+            bool hasText = string.IsNullOrEmpty(Text);
             if (icon == TType.None)
             {
                 if (loop)
                 {
-                    if (font_size == null && !string.IsNullOrEmpty(Text)) font_size = g.MeasureString(Text, Font);
+                    if (font_size == null && !hasText) font_size = g.MeasureString(Text, Font);
                     if (font_size.HasValue)
                     {
                         g.SetClip(rect);
@@ -235,12 +246,15 @@ namespace AntdUI
                 {
                     if (string.IsNullOrEmpty(TextTitle))
                     {
-                        var size = g.MeasureString(Text, Font);
-                        font_size = size;
-                        int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
+                        if (!hasText)
+                        {
+                            var size = g.MeasureString(Text, Font);
+                            font_size = size;
+                            int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
 
-                        var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
-                        g.String(Text, Font, ForeColor, rect_txt, stringLeft);
+                            var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
+                            g.String(Text, Font, ForeColor, rect_txt, stringLeft);
+                        }
                     }
                     else
                     {
@@ -265,28 +279,28 @@ namespace AntdUI
             else
             {
                 float _radius = radius * Config.Dpi;
-                Color back, bor_color, color = Style.Db.Text;
+                Color back, bor_color, color = Colour.Text.Get("Alert");
                 switch (icon)
                 {
                     case TType.Success:
-                        back = Style.Db.SuccessBg;
-                        bor_color = Style.Db.SuccessBorder;
+                        back = Colour.SuccessBg.Get("Alert");
+                        bor_color = Colour.SuccessBorder.Get("Alert");
                         break;
                     case TType.Info:
-                        back = Style.Db.InfoBg;
-                        bor_color = Style.Db.InfoBorder;
+                        back = Colour.InfoBg.Get("Alert");
+                        bor_color = Colour.InfoBorder.Get("Alert");
                         break;
                     case TType.Warn:
-                        back = Style.Db.WarningBg;
-                        bor_color = Style.Db.WarningBorder;
+                        back = Colour.WarningBg.Get("Alert");
+                        bor_color = Colour.WarningBorder.Get("Alert");
                         break;
                     case TType.Error:
-                        back = Style.Db.ErrorBg;
-                        bor_color = Style.Db.ErrorBorder;
+                        back = Colour.ErrorBg.Get("Alert");
+                        bor_color = Colour.ErrorBorder.Get("Alert");
                         break;
                     default:
-                        back = Style.Db.SuccessBg;
-                        bor_color = Style.Db.SuccessBorder;
+                        back = Colour.SuccessBg.Get("Alert");
+                        bor_color = Colour.SuccessBorder.Get("Alert");
                         break;
                 }
                 using (var path = rect.RoundPath(_radius))
@@ -295,25 +309,28 @@ namespace AntdUI
                     g.Fill(back, path);
                     if (loop)
                     {
-                        if (font_size == null && !string.IsNullOrEmpty(Text)) font_size = g.MeasureString(Text, Font);
+                        if (font_size == null && !hasText) font_size = g.MeasureString(Text, Font);
                         if (font_size.HasValue)
                         {
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_icon = new Rectangle(gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             PaintText(g, rect, rect_icon, font_size.Value, color, back, _radius);
                             g.ResetClip();
-                            g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
+                            g.PaintIcons(icon, rect_icon, Colour.BgBase.Get("Alert"), "Alert");
                         }
                     }
                     else
                     {
-                        var size = g.MeasureString(Text, Font);
-                        font_size = size;
+                        if (!hasText)
+                        {
+                            var size = g.MeasureString(Text, Font);
+                            font_size = size;
+                        }
                         if (string.IsNullOrEmpty(TextTitle))
                         {
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                            g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
+                            g.PaintIcons(icon, rect_icon, Colour.BgBase.Get("Alert"), "Alert");
                             var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 2), rect.Height);
                             g.String(Text, Font, color, rect_txt, stringLeft);
                         }
@@ -325,7 +342,7 @@ namespace AntdUI
                                 int icon_size = (int)(sizeT.Height * 1.2F), gap = (int)(icon_size * .5F);
 
                                 var rect_icon = new Rectangle(rect.X + gap, rect.Y + gap, icon_size, icon_size);
-                                g.PaintIcons(icon, rect_icon, Style.Db.BgBase);
+                                g.PaintIcons(icon, rect_icon, Colour.BgBase.Get("Alert"), "Alert");
 
                                 using (var brush = new SolidBrush(color))
                                 {

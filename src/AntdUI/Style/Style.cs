@@ -24,99 +24,299 @@ namespace AntdUI
 {
     public static class Style
     {
-        public static Theme.IColor<Color> Db = new Theme.Light();
+        #region 色卡
+
+        public static Theme.IColor Db;
+        static Style() { Db = new Theme.IColor(); }
+        public static Color Get(this Colour id, string control)
+        {
+            string key = id.ToString() + control;
+            if (colors.TryGetValue(key, out var color)) return color;
+            return Get(id);
+        }
+        public static Color Get(this Colour id)
+        {
+            string key = id.ToString();
+            if (colors.TryGetValue(key, out var color)) return color;
+            switch (Config.Mode)
+            {
+                case TMode.Light:
+                    switch (id)
+                    {
+                        case Colour.Primary: return "#1677FF".ToColor();
+                        case Colour.PrimaryHover: return "#4096FF".ToColor();
+                        case Colour.PrimaryColor: return Color.White;
+                        case Colour.PrimaryActive: return "#0958D9".ToColor();
+                        case Colour.PrimaryBg: return "#E6F4FF".ToColor();
+
+                        case Colour.Success: return "#52C41A".ToColor();
+                        case Colour.SuccessColor: return Color.White;
+                        case Colour.SuccessBg: return "#F6FFED".ToColor();
+                        case Colour.SuccessBorder: return "#B7EB8F".ToColor();
+                        case Colour.SuccessHover: return "#95DE64".ToColor();
+                        case Colour.SuccessActive: return "#389E0D".ToColor();
+
+                        case Colour.Warning: return "#FAAD14".ToColor();
+                        case Colour.WarningColor: return Color.White;
+                        case Colour.WarningBg: return "#FFFBE6".ToColor();
+                        case Colour.WarningBorder: return "#FFE58F".ToColor();
+                        case Colour.WarningHover: return "#FFD666".ToColor();
+                        case Colour.WarningActive: return "#D48806".ToColor();
+
+                        case Colour.Error: return "#FF4D4F".ToColor();
+                        case Colour.ErrorColor: return Color.White;
+                        case Colour.ErrorBg: return "#FFF2F0".ToColor();
+                        case Colour.ErrorBorder: return "#FFCCC7".ToColor();
+                        case Colour.ErrorHover: return "#FF7875".ToColor();
+                        case Colour.ErrorActive: return "#D9363E".ToColor();
+
+                        case Colour.Info: return "#1677FF".ToColor();
+                        case Colour.InfoColor: return Color.White;
+                        case Colour.InfoBg: return "#E6F4FF".ToColor();
+                        case Colour.InfoBorder: return "#91CAFF".ToColor();
+                        case Colour.InfoHover: return "#69B1FF".ToColor();
+                        case Colour.InfoActive: return "#0958D9".ToColor();
+
+                        case Colour.DefaultBg: return Color.White;
+                        case Colour.DefaultColor: return rgba(0, 0, 0, 0.88F);
+                        case Colour.DefaultBorder: return "#D9D9D9".ToColor();
+
+                        case Colour.TagDefaultBg: return "#FAFAFA".ToColor();
+                        case Colour.TagDefaultColor: return rgba(0, 0, 0, 0.88F);
+
+                        case Colour.TextBase: return Color.Black;
+                        case Colour.Text: return rgba(0, 0, 0, 0.88F);//224.4
+                        case Colour.TextSecondary: return rgba(0, 0, 0, 0.65F);//165.75
+                        case Colour.TextTertiary: return rgba(0, 0, 0, 0.45F);//114.75
+                        case Colour.TextQuaternary: return rgba(0, 0, 0, 0.25F);//63.75
+
+                        case Colour.BgBase: return Color.White;
+                        case Colour.BgContainer: return Color.White;
+                        case Colour.BgElevated: return Color.White;
+                        case Colour.BgLayout: return "#F5F5F5".ToColor();
+
+                        case Colour.Fill: return rgba(0, 0, 0, 0.18F);//45.9
+                        case Colour.FillSecondary: return rgba(0, 0, 0, 0.06F);//15.3
+                        case Colour.FillTertiary: return rgba(0, 0, 0, 0.04F);//10.2
+                        case Colour.FillQuaternary: return rgba(0, 0, 0, 0.02F);//5.1
+
+                        case Colour.BorderColor: return "#D9D9D9".ToColor();
+                        case Colour.BorderSecondary: return "#F0F0F0".ToColor();
+
+                        case Colour.BorderColorDisable: return Color.FromArgb(217, 217, 217);
+
+                        case Colour.Split: return rgba(5, 5, 5, 0.06F);//15.3
+
+                        case Colour.HoverBg: return rgba(0, 0, 0, 0.06F);
+                        case Colour.HoverColor: return rgba(0, 0, 0, 0.88F);
+
+                        case Colour.SliderHandleColorDisabled: return "#BFBFBF".ToColor();
+                    }
+                    break;
+                case TMode.Dark:
+                default:
+                    switch (id)
+                    {
+                        case Colour.Primary: return "#1668DC".ToColor();
+                        case Colour.PrimaryColor: return Color.White;
+                        case Colour.PrimaryHover: return "#3C89E8".ToColor();
+                        case Colour.PrimaryActive: return "#1554AD".ToColor();
+                        case Colour.PrimaryBg: return "#111A2C".ToColor();
+
+                        case Colour.Success: return "#49AA19".ToColor();
+                        case Colour.SuccessColor: return Color.White;
+                        case Colour.SuccessBg: return "#162312".ToColor();
+                        case Colour.SuccessBorder: return "#274916".ToColor();
+                        case Colour.SuccessHover: return "#306317".ToColor();
+                        case Colour.SuccessActive: return "#3C8618".ToColor();
+
+                        case Colour.Warning: return "#D89614".ToColor();
+                        case Colour.WarningColor: return Color.White;
+                        case Colour.WarningBg: return "#2B2111".ToColor();
+                        case Colour.WarningBorder: return "#594214".ToColor();
+                        case Colour.WarningHover: return "#7C5914".ToColor();
+                        case Colour.WarningActive: return "#AA7714".ToColor();
+
+                        case Colour.Error: return "#DC4446".ToColor();
+                        case Colour.ErrorColor: return Color.White;
+                        case Colour.ErrorBg: return "#2C1618".ToColor();
+                        case Colour.ErrorBorder: return "#5B2526".ToColor();
+                        case Colour.ErrorHover: return "#E86E6B".ToColor();
+                        case Colour.ErrorActive: return "#AD393A".ToColor();
+
+                        case Colour.Info: return "#1668DC".ToColor();
+                        case Colour.InfoColor: return Color.White;
+                        case Colour.InfoBg: return "#111A2C".ToColor();
+                        case Colour.InfoBorder: return "#15325B".ToColor();
+                        case Colour.InfoHover: return "#15417E".ToColor();
+                        case Colour.InfoActive: return "#1554AD".ToColor();
+
+                        case Colour.DefaultBg: return "#141414".ToColor();
+                        case Colour.DefaultColor: return rgba(255, 255, 255, 0.85F);
+                        case Colour.DefaultBorder: return "#424242".ToColor();
+
+                        case Colour.TagDefaultBg: return "#1D1D1D".ToColor();
+                        case Colour.TagDefaultColor: return rgba(255, 255, 255, 0.85F);
+
+                        case Colour.TextBase: return Color.White;
+                        case Colour.Text: return rgba(255, 255, 255, 0.85F);//216.75
+                        case Colour.TextSecondary: return rgba(255, 255, 255, 0.65F);//165.75
+                        case Colour.TextTertiary: return rgba(255, 255, 255, 0.45F);//114.75
+                        case Colour.TextQuaternary: return rgba(255, 255, 255, 0.25F);//63.75
+
+                        case Colour.BgBase: return Color.Black;
+                        case Colour.BgContainer: return "#141414".ToColor();
+                        case Colour.BgElevated: return "#1F1F1F".ToColor();
+                        case Colour.BgLayout: return Color.Black;
+
+                        case Colour.Fill: return rgba(255, 255, 255, 0.15F);//38.25
+                        case Colour.FillSecondary: return rgba(255, 255, 255, 0.12F);//30.6
+                        case Colour.FillTertiary: return rgba(255, 255, 255, 0.08F);//20.4
+                        case Colour.FillQuaternary: return rgba(255, 255, 255, 0.04F);//10.2
+
+                        case Colour.BorderColor: return "#424242".ToColor();
+                        case Colour.BorderSecondary: return "#303030".ToColor();
+
+                        case Colour.BorderColorDisable: return Color.FromArgb(66, 66, 66);
+
+                        case Colour.Split: return rgba(253, 253, 253, 0.12F);//30.6
+
+                        case Colour.HoverBg: return rgba(255, 255, 255, 0.06F);
+                        case Colour.HoverColor: return rgba(255, 255, 255, 0.88F);
+
+                        case Colour.SliderHandleColorDisabled: return "#4F4F4F".ToColor();
+                    }
+                    break;
+            }
+            return Color.Transparent;
+        }
+
+        static Dictionary<string, Color> colors = new Dictionary<string, Color>();
+        public static void Set(this Colour id, Color value)
+        {
+            string key = id.ToString();
+            if (colors.ContainsKey(key)) colors[key] = value;
+            else colors.Add(key, value);
+        }
+
+        public static void Set(this Colour id, Color value, string control)
+        {
+            string key = id.ToString() + control;
+            if (colors.ContainsKey(key)) colors[key] = value;
+            else colors.Add(key, value);
+        }
+
+        public static void SetPrimary(Color primary)
+        {
+            Colour.Primary.Set(primary);
+            var colors = primary.GenerateColors();
+            if (Config.Mode == TMode.Light) Colour.PrimaryBg.Set(colors[0]);
+            else Colour.PrimaryBg.Set(colors[9]);
+            Colour.PrimaryHover.Set(colors[4]);
+            Colour.PrimaryActive.Set(colors[6]);
+        }
+        public static void SetSuccess(Color success)
+        {
+            Colour.Success.Set(success);
+            var colors = success.GenerateColors();
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.SuccessBg.Set(colors[0]);
+                Colour.SuccessHover.Set(colors[2]);
+                Colour.SuccessBorder.Set(colors[2]);
+            }
+            else
+            {
+                Colour.SuccessBg.Set(colors[9]);
+                Colour.SuccessHover.Set(colors[5]);
+                Colour.SuccessBorder.Set(colors[5]);
+            }
+            Colour.SuccessActive.Set(colors[6]);
+        }
+        public static void SetWarning(Color warning)
+        {
+            Colour.Warning.Set(warning);
+            var colors = warning.GenerateColors();
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.WarningBg.Set(colors[0]);
+                Colour.WarningHover.Set(colors[2]);
+                Colour.WarningBorder.Set(colors[2]);
+            }
+            else
+            {
+                Colour.WarningBg.Set(colors[9]);
+                Colour.WarningHover.Set(colors[5]);
+                Colour.WarningBorder.Set(colors[5]);
+            }
+            Colour.WarningActive.Set(colors[6]);
+        }
+        public static void SetError(Color error)
+        {
+            Colour.Error.Set(error);
+            var colors = error.GenerateColors();
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.ErrorBg.Set(colors[0]);
+                Colour.ErrorHover.Set(colors[2]);
+                Colour.ErrorBorder.Set(colors[2]);
+            }
+            else
+            {
+                Colour.ErrorBg.Set(colors[9]);
+                Colour.ErrorHover.Set(colors[5]);
+                Colour.ErrorBorder.Set(colors[5]);
+            }
+            Colour.ErrorActive.Set(colors[6]);
+        }
+        public static void SetInfo(Color info)
+        {
+            Colour.Info.Set(info);
+            var colors = info.GenerateColors();
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.InfoBg.Set(colors[0]);
+                Colour.InfoHover.Set(colors[2]);
+                Colour.InfoBorder.Set(colors[2]);
+            }
+            else
+            {
+                Colour.InfoBg.Set(colors[9]);
+                Colour.InfoHover.Set(colors[5]);
+                Colour.InfoBorder.Set(colors[5]);
+            }
+            Colour.InfoActive.Set(colors[6]);
+        }
 
         /// <summary>
         /// 加载自定义主题
         /// </summary>
-        /// <param name="style"></param>
-        public static void LoadCustom(Theme.IColor<Color> style)
+        /// <param name="color">色卡</param>
+        public static void LoadCustom(this Dictionary<string, Color> color)
         {
-            Db = style;
+            colors = color;
             EventHub.Dispatch(EventType.THEME);
         }
 
-        public static void LoadCustom(Theme.IColor<string> style)
+        /// <summary>
+        /// 加载自定义主题
+        /// </summary>
+        /// <param name="color">色卡</param>
+        public static void LoadCustom(this Dictionary<string, string> color)
         {
-            Db.Primary = style.Primary.ToColor();
-            Db.PrimaryColor = style.PrimaryColor.ToColor();
-            Db.PrimaryHover = style.PrimaryHover.ToColor();
-            Db.PrimaryActive = style.PrimaryActive.ToColor();
-            Db.PrimaryBg = style.PrimaryBg.ToColor();
-
-            Db.Success = style.Success.ToColor();
-            Db.SuccessColor = style.SuccessColor.ToColor();
-            Db.SuccessBg = style.SuccessBg.ToColor();
-            Db.SuccessBorder = style.SuccessBorder.ToColor();
-            Db.SuccessHover = style.SuccessHover.ToColor();
-            Db.SuccessActive = style.SuccessActive.ToColor();
-
-            Db.Warning = style.Warning.ToColor();
-            Db.WarningColor = style.WarningColor.ToColor();
-            Db.WarningBg = style.WarningBg.ToColor();
-            Db.WarningBorder = style.WarningBorder.ToColor();
-            Db.WarningHover = style.WarningHover.ToColor();
-            Db.WarningActive = style.WarningActive.ToColor();
-
-            Db.Error = style.Error.ToColor();
-            Db.ErrorColor = style.ErrorColor.ToColor();
-            Db.ErrorBg = style.ErrorBg.ToColor();
-            Db.ErrorBorder = style.ErrorBorder.ToColor();
-            Db.ErrorHover = style.ErrorHover.ToColor();
-            Db.ErrorActive = style.ErrorActive.ToColor();
-
-            Db.Info = style.Info.ToColor();
-            Db.InfoColor = style.InfoColor.ToColor();
-            Db.InfoBg = style.InfoBg.ToColor();
-            Db.InfoBorder = style.InfoBorder.ToColor();
-            Db.InfoHover = style.InfoHover.ToColor();
-            Db.InfoActive = style.InfoActive.ToColor();
-
-            Db.DefaultBg = style.DefaultBg.ToColor();
-            Db.DefaultColor = style.DefaultColor.ToColor();
-            Db.DefaultBorder = style.DefaultBorder.ToColor();
-
-            Db.TagDefaultBg = style.TagDefaultBg.ToColor();
-            Db.TagDefaultColor = style.TagDefaultColor.ToColor();
-
-            Db.TextBase = style.TextBase.ToColor();
-            Db.Text = style.Text.ToColor();
-            Db.TextSecondary = style.TextSecondary.ToColor();
-            Db.TextTertiary = style.TextTertiary.ToColor();
-            Db.TextQuaternary = style.TextQuaternary.ToColor();
-
-            Db.BgBase = style.BgBase.ToColor();
-            Db.BgContainer = style.BgContainer.ToColor();
-            Db.BgElevated = style.BgElevated.ToColor();
-            Db.BgLayout = style.BgLayout.ToColor();
-
-            Db.Fill = style.Fill.ToColor();
-            Db.FillSecondary = style.FillSecondary.ToColor();
-            Db.FillTertiary = style.FillTertiary.ToColor();
-            Db.FillQuaternary = style.FillQuaternary.ToColor();
-
-            Db.BorderColor = style.BorderColor.ToColor();
-            Db.BorderSecondary = style.BorderSecondary.ToColor();
-            Db.BorderColorDisable = style.BorderColorDisable.ToColor();
-
-            Db.Split = style.Split.ToColor();
-
-            Db.HoverBg = style.HoverBg.ToColor();
-            Db.HoverColor = style.HoverColor.ToColor();
-
-            Db.SliderHandleColorDisabled = style.SliderHandleColorDisabled.ToColor();
-
+            var tmp = new Dictionary<string, Color>(color.Count);
+            foreach (var it in color) tmp.Add(it.Key, it.Value.ToColor());
+            colors = tmp;
             EventHub.Dispatch(EventType.THEME);
         }
+
+        #endregion
 
         /// <summary>
         /// 色彩模式（浅色、暗色）
         /// </summary>
         /// <returns>true Light;false Dark</returns>
-        public static bool ColorMode(this Color color)
-        {
-            return ((color.R * 299 + color.G * 587 + color.B * 114) / 1000) > 128;
-        }
+        public static bool ColorMode(this Color color) => ((color.R * 299 + color.G * 587 + color.B * 114) / 1000) > 128;
 
         #region 生成色卡
 
@@ -443,6 +643,278 @@ namespace AntdUI
                 return Color.FromArgb(alpha, r, g, b);
             }
         }
+    }
+
+    public enum Colour
+    {
+        #region 品牌色
+
+        /// <summary>
+        /// 品牌色
+        /// </summary>
+        Primary,
+
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
+        PrimaryColor,
+
+        /// <summary>
+        /// 主色悬浮态（按钮、开关、复选框）
+        /// </summary>
+        PrimaryHover,
+
+        /// <summary>
+        /// 主色激活态（按钮动画）
+        /// </summary>
+        PrimaryActive,
+
+        /// <summary>
+        /// 主色背景色（按钮底部、下拉激活、文本框激活、菜单激活）
+        /// </summary>
+        PrimaryBg,
+
+        #endregion
+
+        #region 成功色
+
+        /// <summary>
+        /// 成功色
+        /// </summary>
+        Success,
+
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
+        SuccessColor,
+
+        /// <summary>
+        /// 成功色的背景颜色
+        /// </summary>
+        SuccessBg,
+
+        /// <summary>
+        /// 成功色的描边色
+        /// </summary>
+        SuccessBorder,
+
+        /// <summary>
+        /// 成功色的悬浮态
+        /// </summary>
+        SuccessHover,
+
+        /// <summary>
+        /// 成功色的激活态
+        /// </summary>
+        SuccessActive,
+
+        #endregion
+
+        #region 警戒色
+
+        /// <summary>
+        /// 警戒色
+        /// </summary>
+        Warning,
+
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
+        WarningColor,
+
+        /// <summary>
+        /// 警戒色的背景颜色
+        /// </summary>
+        WarningBg,
+
+        /// <summary>
+        /// 警戒色的描边色
+        /// </summary>
+        WarningBorder,
+
+        /// <summary>
+        /// 警戒色的悬浮态
+        /// </summary>
+        WarningHover,
+
+        /// <summary>
+        /// 警戒色的激活态
+        /// </summary>
+        WarningActive,
+
+        #endregion
+
+        #region 错误色
+
+        /// <summary>
+        /// 错误色
+        /// </summary>
+        Error,
+
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
+        ErrorColor,
+
+        /// <summary>
+        /// 警戒色的背景颜色（按钮底部）
+        /// </summary>
+        ErrorBg,
+
+        /// <summary>
+        /// 警戒色的描边色
+        /// </summary>
+        ErrorBorder,
+
+        /// <summary>
+        /// 错误色的悬浮态
+        /// </summary>
+        ErrorHover,
+
+        /// <summary>
+        /// 错误色的激活态
+        /// </summary>
+        ErrorActive,
+
+        #endregion
+
+        #region 信息色
+
+        /// <summary>
+        /// 信息色
+        /// </summary>
+        Info,
+
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
+        InfoColor,
+
+        /// <summary>
+        /// 信息色的背景颜色（按钮底部）
+        /// </summary>
+        InfoBg,
+
+        /// <summary>
+        /// 信息色的描边色
+        /// </summary>
+        InfoBorder,
+
+        /// <summary>
+        /// 信息色的悬浮态
+        /// </summary>
+        InfoHover,
+
+        /// <summary>
+        /// 信息色的激活态
+        /// </summary>
+        InfoActive,
+
+        #endregion
+
+        DefaultBg,
+        DefaultColor,
+        DefaultBorder,
+
+        TagDefaultBg,
+        TagDefaultColor,
+
+        #region 中性色
+
+        /// <summary>
+        /// 基础文本色
+        /// </summary>
+        TextBase,
+
+        /// <summary>
+        /// 一级文本色（菜单颜色、非激活下颜色、小清除按钮悬浮态）
+        /// </summary>
+        Text,
+
+        /// <summary>
+        /// 二级文本色
+        /// </summary>
+        TextSecondary,
+
+        /// <summary>
+        /// 三级文本色（小清除按钮）
+        /// </summary>
+        TextTertiary,
+
+        /// <summary>
+        /// 四级文本色（禁用色）
+        /// </summary>
+        TextQuaternary,
+
+        /// <summary>
+        /// 基础背景色
+        /// </summary>
+        BgBase,
+
+        /// <summary>
+        /// 组件的容器背景色 例如：默认按钮、输入框等。务必不要将其与 `colorBgElevated` 混淆。
+        /// </summary>
+        BgContainer,
+
+        /// <summary>
+        /// 浮层容器背景色，在暗色模式下该 token 的色值会比 `colorBgContainer` 要亮一些。例如：模态框、弹出框、菜单等。
+        /// </summary>
+        BgElevated,
+
+        /// <summary>
+        /// 该色用于页面整体布局的背景色，只有需要在页面中处于 B1 的视觉层级时才会使用该 token，其他用法都是错误的
+        /// </summary>
+        BgLayout,
+
+        /// <summary>
+        /// 一级填充色
+        /// </summary>
+        Fill,
+
+        /// <summary>
+        /// 二级填充色（分页悬浮态、菜单悬浮态）
+        /// </summary>
+        FillSecondary,
+
+        /// <summary>
+        /// 三级填充色（下拉悬浮态）
+        /// </summary>
+        FillTertiary,
+
+        /// <summary>
+        /// 四级填充色（幽灵按钮底部）
+        /// </summary>
+        FillQuaternary,
+
+        /// <summary>
+        /// 边框颜色
+        /// </summary>
+        BorderColor,
+        BorderSecondary,
+
+        /// <summary>
+        /// 禁用边框颜色
+        /// </summary>
+        BorderColorDisable,
+
+        #endregion
+
+        /// <summary>
+        /// 用于作为分割线的颜色，此颜色和 BorderSecondary 的颜色一致，但是用的是透明色
+        /// </summary>
+        Split,
+
+        /// <summary>
+        /// 选项悬浮态背景颜色
+        /// </summary>
+        HoverBg,
+
+        /// <summary>
+        /// 选项悬浮态文本颜色
+        /// </summary>
+        HoverColor,
+
+        SliderHandleColorDisabled
     }
 
     public class HSL

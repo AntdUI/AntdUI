@@ -111,15 +111,9 @@ namespace AntdUI
         /// <summary>
         /// 最小化
         /// </summary>
-        public virtual void Min()
-        {
-            WindowState = FormWindowState.Minimized;
-        }
+        public virtual void Min() => WindowState = FormWindowState.Minimized;
 
-        public virtual bool IsMax
-        {
-            get => WindowState == FormWindowState.Maximized;
-        }
+        public virtual bool IsMax => WindowState == FormWindowState.Maximized;
 
         /// <summary>
         /// 最大化/还原
@@ -199,6 +193,7 @@ namespace AntdUI
                 WindowState = FormWindowState.Normal;
                 RefreshDWM();
             }
+            else if (IsMax) MaxRestore();
         }
 
         #endregion
@@ -373,6 +368,27 @@ namespace AntdUI
         }
 
         #endregion
+
+        #endregion
+
+        #region 按钮点击
+
+        internal Action? ONESC;
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (ONESC == null) return base.ProcessDialogKey(keyData);
+            if ((keyData & (Keys.Alt | Keys.Control)) == Keys.None)
+            {
+                Keys keyCode = keyData & Keys.KeyCode;
+                switch (keyCode)
+                {
+                    case Keys.Escape:
+                        ONESC();
+                        return true;
+                }
+            }
+            return base.ProcessDialogKey(keyData);
+        }
 
         #endregion
     }

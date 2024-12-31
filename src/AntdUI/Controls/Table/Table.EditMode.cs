@@ -64,7 +64,7 @@ namespace AntdUI
             if (inEditMode)
             {
                 ScrollBar.OnInvalidate = null;
-                if (!Focused)
+                if (!focused)
                 {
                     if (InvokeRequired)
                     {
@@ -79,20 +79,20 @@ namespace AntdUI
             }
         }
 
-        bool CanEditMode(RowTemplate it, TCell cell)
+        bool CanEditMode(RowTemplate it, CELL cell)
         {
             if (rows == null) return false;
             if (cell is TCellText cellText) return true;
             else if (cell is Template templates)
             {
-                foreach (ITemplate template in templates.value)
+                foreach (var template in templates.Value)
                 {
-                    if (template.Value is CellText text) return true;
+                    if (template is CellText text) return true;
                 }
             }
             return false;
         }
-        void OnEditMode(RowTemplate it, TCell cell, int i_row, int i_col, int sx, int sy)
+        void OnEditMode(RowTemplate it, CELL cell, int i_row, int i_col, int sx, int sy)
         {
             if (rows == null) return;
             if (it.AnimationHover)
@@ -129,12 +129,17 @@ namespace AntdUI
                         if (CellEndEdit != null) isok_end = CellEndEdit(this, new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col));
                         if (isok_end)
                         {
-                            cellText.value = _value;
-                            if (it.RECORD is DataRow) cellText.VALUE = cellText.value = _value;
                             if (GetValue(value, _value, out var o))
                             {
-                                if (it.RECORD is DataRow datarow) datarow[i_col] = o;
+                                cellText.value = _value;
+                                if (it.RECORD is DataRow datarow)
+                                {
+                                    cellText.VALUE = cellText.value = _value;
+                                    datarow[i_col] = o;
+                                }
                                 else SetValue(cell, o);
+                                if (multiline) LoadLayout();
+                                CellEditComplete?.Invoke(this, EventArgs.Empty);
                             }
                         }
                     });
@@ -147,9 +152,9 @@ namespace AntdUI
             }
             else if (cell is Template templates)
             {
-                foreach (ITemplate template in templates.value)
+                foreach (var template in templates.Value)
                 {
-                    if (template.Value is CellText text)
+                    if (template is CellText text)
                     {
                         object? value = null;
                         if (cell.PROPERTY != null && cell.VALUE != null) value = cell.PROPERTY.GetValue(cell.VALUE);
@@ -191,14 +196,12 @@ namespace AntdUI
                                             else SetValue(cell, o);
                                         }
                                     }
+                                    CellEditComplete?.Invoke(this, EventArgs.Empty);
                                 }
                             });
                             CellBeginEditInputStyle?.Invoke(this, new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, ref edit_input));
-                            if (template.Value.PARENT != null)
-                            {
-                                if (template.Value.PARENT.COLUMN.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
-                                else if (template.Value.PARENT.COLUMN.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
-                            }
+                            if (template.PARENT.COLUMN.Align == ColumnAlign.Center) edit_input.TextAlign = HorizontalAlignment.Center;
+                            else if (template.PARENT.COLUMN.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
                             Controls.Add(edit_input);
                             edit_input.Focus();
                         }));
@@ -251,7 +254,7 @@ namespace AntdUI
             return false;
         }
 
-        Input ShowInput(TCell cell, int sx, int sy, int height, bool multiline, object? value, Action<string> call)
+        Input ShowInput(CELL cell, int sx, int sy, int height, bool multiline, object? value, Action<string> call)
         {
             Input input;
             if (value is CellText text2)

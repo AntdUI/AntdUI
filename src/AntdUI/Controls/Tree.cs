@@ -364,7 +364,6 @@ namespace AntdUI
             set => items = value.BindData(this);
         }
 
-
         bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
         public bool PauseLayout
@@ -493,18 +492,22 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
             float _radius = radius * Config.Dpi;
-            using (var brush_fore = new SolidBrush(fore ?? Style.Db.TextBase))
-            using (var brush_fore_active = new SolidBrush(ForeActive ?? Style.Db.Primary))
-            using (var brush_hover = new SolidBrush(BackHover ?? Style.Db.FillSecondary))
-            using (var brush_active = new SolidBrush(BackActive ?? Style.Db.PrimaryBg))
-            using (var brush_TextTertiary = new SolidBrush(Style.Db.TextTertiary))
+            using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get("Tree")))
+            using (var brush_fore_active = new SolidBrush(ForeActive ?? Colour.Primary.Get("Tree")))
+            using (var brush_hover = new SolidBrush(BackHover ?? Colour.FillSecondary.Get("Tree")))
+            using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get("Tree")))
+            using (var brush_TextTertiary = new SolidBrush(Colour.TextTertiary.Get("Tree")))
             {
                 PaintItem(g, rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
             }
@@ -587,7 +590,7 @@ namespace AntdUI
                 if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
                 {
-                    using (var brush = new SolidBrush(Style.Db.TextQuaternary))
+                    using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Tree")))
                     {
                         PaintItemText(g, item, brush, brushTextTertiary);
                     }
@@ -606,45 +609,45 @@ namespace AntdUI
 
                             if (item.CheckState == CheckState.Indeterminate || (item.checkStateOld == CheckState.Indeterminate && !item.Checked))
                             {
-                                g.Draw(Style.Db.BorderColor, bor2, path_check);
-                                g.Fill(Helper.ToColor(alpha, Style.Db.Primary), PaintBlock(item.check_rect));
+                                g.Draw(Colour.BorderColor.Get("Tree"), bor2, path_check);
+                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Tree")), PaintBlock(item.check_rect));
                             }
                             else
                             {
                                 float dot = item.check_rect.Width * 0.3F;
 
-                                g.Fill(Helper.ToColor(alpha, Style.Db.Primary), path_check);
-                                g.DrawLines(Helper.ToColor(alpha, Style.Db.BgBase), 3F * Config.Dpi, PaintArrow(item.check_rect));
+                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Tree")), path_check);
+                                g.DrawLines(Helper.ToColor(alpha, Colour.BgBase.Get("Tree")), 3F * Config.Dpi, PaintArrow(item.check_rect));
 
                                 if (item.Checked)
                                 {
                                     float max = item.check_rect.Height + item.check_rect.Height * item.AnimationCheckValue, alpha2 = 100 * (1F - item.AnimationCheckValue);
-                                    using (var brush = new SolidBrush(Helper.ToColor(alpha2, Style.Db.Primary)))
+                                    using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Tree"))))
                                     {
                                         g.FillEllipse(brush, new RectangleF(item.check_rect.X + (item.check_rect.Width - max) / 2F, item.check_rect.Y + (item.check_rect.Height - max) / 2F, max, max));
                                     }
                                 }
-                                g.Draw(Style.Db.Primary, 2F * Config.Dpi, path_check);
+                                g.Draw(Colour.Primary.Get("Tree"), 2F * Config.Dpi, path_check);
                             }
                         }
                         else if (item.CheckState == CheckState.Indeterminate)
                         {
-                            g.Draw(Style.Db.BorderColor, bor2, path_check);
-                            g.Fill(Style.Db.Primary, PaintBlock(item.check_rect));
+                            g.Draw(Colour.BorderColor.Get("Tree"), bor2, path_check);
+                            g.Fill(Colour.Primary.Get("Tree"), PaintBlock(item.check_rect));
                         }
                         else if (item.Checked)
                         {
-                            g.Fill(Style.Db.Primary, path_check);
-                            g.DrawLines(Style.Db.BgBase, bor2, PaintArrow(item.check_rect));
+                            g.Fill(Colour.Primary.Get("Tree"), path_check);
+                            g.DrawLines(Colour.BgBase.Get("Tree"), bor2, PaintArrow(item.check_rect));
                         }
-                        else g.Draw(Style.Db.BorderColor, bor2, path_check);
+                        else g.Draw(Colour.BorderColor.Get("Tree"), bor2, path_check);
                     }
                     else
                     {
-                        g.Fill(Style.Db.FillQuaternary, path_check);
-                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Style.Db.TextQuaternary, PaintBlock(item.check_rect));
-                        else if (item.Checked) g.DrawLines(Style.Db.TextQuaternary, bor2, PaintArrow(item.check_rect));
-                        g.Draw(Style.Db.BorderColorDisable, bor2, path_check);
+                        g.Fill(Colour.FillQuaternary.Get("Tree"), path_check);
+                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Colour.TextQuaternary.Get("Tree"), PaintBlock(item.check_rect));
+                        else if (item.Checked) g.DrawLines(Colour.TextQuaternary.Get("Tree"), bor2, PaintArrow(item.check_rect));
+                        g.Draw(Colour.BorderColorDisable.Get("Tree"), bor2, path_check);
                     }
                 }
             }
@@ -751,7 +754,7 @@ namespace AntdUI
         }
         bool IMouseDown(MouseEventArgs e, TreeItem item)
         {
-            int down = item.Contains(e.Location, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable);
+            int down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
             if (down > 0)
             {
                 MDown = item;
@@ -771,7 +774,7 @@ namespace AntdUI
             bool can = item.CanExpand;
             if (MDown == item)
             {
-                int down = item.Contains(e.Location, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable);
+                int down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
                 if (down > 0)
                 {
                     if (blockNode)
@@ -851,19 +854,19 @@ namespace AntdUI
                 {
                     if (items == null || items.Count == 0) return;
                     int hand = 0;
-                    foreach (var it in items) IMouseMove(it, e.Location, ref hand);
+                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref hand);
                     SetCursor(hand > 0);
                 }
             }
             else ILeave();
         }
 
-        void IMouseMove(TreeItem item, Point point, ref int hand)
+        void IMouseMove(TreeItem item, int x, int y, ref int hand)
         {
             if (item.show)
             {
-                if (item.Contains(point, blockNode ? 0 : ScrollBar.ValueX, ScrollBar.ValueY, checkable) > 0) hand++;
-                if (item.items != null) foreach (var sub in item.items) IMouseMove(sub, point, ref hand);
+                if (item.Contains(x, y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode) > 0) hand++;
+                if (item.items != null) foreach (var sub in item.items) IMouseMove(sub, x, y, ref hand);
             }
         }
 
@@ -907,7 +910,7 @@ namespace AntdUI
                 foreach (var sub in item.items) ILeave(sub, ref count);
         }
 
-        internal void IUSelect()
+        public void IUSelect()
         {
             if (items == null || items.Count == 0) return;
             foreach (var it in items) IUSelect(it);
@@ -960,7 +963,7 @@ namespace AntdUI
         }
     }
 
-    public class TreeItem : NotifyProperty
+    public class TreeItem
     {
         public TreeItem() { }
         public TreeItem(string text)
@@ -991,7 +994,7 @@ namespace AntdUI
             {
                 if (icon == value) return;
                 icon = value;
-                OnPropertyChanged("Icon");
+                Invalidates();
             }
         }
 
@@ -1007,17 +1010,14 @@ namespace AntdUI
             {
                 if (iconSvg == value) return;
                 iconSvg = value;
-                OnPropertyChanged("IconSvg");
+                Invalidates();
             }
         }
 
         /// <summary>
         /// 是否包含图片
         /// </summary>
-        internal bool HasIcon
-        {
-            get => iconSvg != null || Icon != null;
-        }
+        internal bool HasIcon => iconSvg != null || Icon != null;
 
         /// <summary>
         /// 名称
@@ -1338,10 +1338,7 @@ namespace AntdUI
 
         #endregion
 
-        void Invalidate()
-        {
-            PARENT?.Invalidate();
-        }
+        void Invalidate() => PARENT?.Invalidate();
         void Invalidates()
         {
             if (PARENT == null) return;
@@ -1465,29 +1462,50 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle arr_rect { get; set; }
 
-        internal int Contains(Point point, int x, int y, bool checkable)
+        internal int Contains(int x, int y, int sx, int sy, bool checkable, bool blockNode)
         {
-            var p = new Point(point.X + x, point.Y + y);
-            if (rect.Contains(p))
+            if (visible && enabled)
             {
-                Hover = true;
-                return 1;
+                if (blockNode)
+                {
+                    sx = 0;
+                    if (rect.Contains(x + sx, y + sy))
+                    {
+                        Hover = true;
+                        return 1;
+                    }
+                    else if (arr_rect.Contains(x + sx, y + sy) && CanExpand)
+                    {
+                        Hover = rect.Contains(arr_rect);
+                        return 2;
+                    }
+                    else if (checkable && check_rect.Contains(x + sx, y + sy))
+                    {
+                        Hover = rect.Contains(arr_rect);
+                        return 3;
+                    }
+                }
+                else
+                {
+                    if (rect.Contains(x + sx, y + sy) || ico_rect.Contains(x + sx, y + sy))
+                    {
+                        Hover = true;
+                        return 1;
+                    }
+                    else if (arr_rect.Contains(x + sx, y + sy) && CanExpand)
+                    {
+                        Hover = rect.Contains(arr_rect);
+                        return 2;
+                    }
+                    else if (checkable && check_rect.Contains(x + sx, y + sy))
+                    {
+                        Hover = rect.Contains(arr_rect);
+                        return 3;
+                    }
+                }
             }
-            else if (arr_rect.Contains(p) && CanExpand)
-            {
-                Hover = rect.Contains(arr_rect);
-                return 2;
-            }
-            else if (checkable && check_rect.Contains(p))
-            {
-                Hover = rect.Contains(arr_rect);
-                return 3;
-            }
-            else
-            {
-                Hover = false;
-                return 0;
-            }
+            Hover = false;
+            return 0;
         }
 
         internal float AnimationHoverValue = 0;

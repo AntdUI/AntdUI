@@ -138,7 +138,7 @@ namespace AntdUI
         /// <summary>
         /// 点击时自动改变选中状态
         /// </summary>
-        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(false)]
+        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(true)]
         public bool AutoCheck { get; set; } = true;
 
         /// <summary>
@@ -186,6 +186,55 @@ namespace AntdUI
         [Description("未选中时显示的文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationTextUnCheckedText { get; set; }
 
+        #region 加载中
+
+        bool loading = false;
+        /// <summary>
+        /// 加载中
+        /// </summary>
+        [Description("加载中"), Category("外观"), DefaultValue(false)]
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                if (IsHandleCreated)
+                {
+                    if (loading)
+                    {
+                        bool ProgState = false;
+                        ThreadLoading = new ITask(this, () =>
+                        {
+                            if (ProgState)
+                            {
+                                LineAngle = LineAngle.Calculate(9F);
+                                LineWidth = LineWidth.Calculate(0.6F);
+                                if (LineWidth > 75) ProgState = false;
+                            }
+                            else
+                            {
+                                LineAngle = LineAngle.Calculate(9.6F);
+                                LineWidth = LineWidth.Calculate(-0.6F);
+                                if (LineWidth < 6) ProgState = true;
+                            }
+                            if (LineAngle >= 360) LineAngle = 0;
+                            Invalidate();
+                            return true;
+                        }, 10);
+                    }
+                    else ThreadLoading?.Dispose();
+                }
+                Invalidate();
+            }
+        }
+
+        ITask? ThreadLoading = null;
+        internal float LineWidth = 6, LineAngle = 0;
+
+        #endregion
+
         #endregion
 
         #region 事件
@@ -207,9 +256,9 @@ namespace AntdUI
             var rect_read = ReadRectangle;
             using (var path = rect_read.RoundPath(rect_read.Height))
             {
-                Color _color = fill ?? Style.Db.Primary;
+                Color _color = fill ?? Colour.Primary.Get("Switch");
                 PaintClick(g, path, rect, rect_read, _color);
-                using (var brush = new SolidBrush(Style.Db.TextQuaternary))
+                using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch")))
                 {
                     g.Fill(brush, path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
@@ -221,29 +270,50 @@ namespace AntdUI
                     var alpha = 255 * AnimationCheckValue;
                     g.Fill(Helper.ToColor(alpha, _color), path);
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    if (loading)
                     {
-                        g.FillEllipse(brush, dot_rect);
+                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                        float size = rect_read.Height * .1F;
+                        using (var brush = new Pen(_color, size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
+                        }
                     }
                 }
                 else if (_checked)
                 {
-                    var colorhover = FillHover ?? Style.Db.PrimaryHover;
+                    var colorhover = FillHover ?? Colour.PrimaryHover.Get("Switch");
                     g.Fill(Enabled ? _color : Color.FromArgb(200, _color), path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
                     else if (ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    if (loading)
                     {
-                        g.FillEllipse(brush, dot_rect);
+                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                        float size = rect_read.Height * .1F;
+                        using (var brush = new Pen(_color, size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
+                        }
                     }
                 }
                 else
                 {
                     var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    using (var brush = new SolidBrush(Enabled ? Style.Db.BgBase : Color.FromArgb(200, Style.Db.BgBase)))
+                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    if (loading)
                     {
-                        g.FillEllipse(brush, dot_rect);
+                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                        float size = rect_read.Height * .1F;
+                        using (var brush = new Pen(_color, size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
+                        }
                     }
                 }
 
@@ -251,7 +321,7 @@ namespace AntdUI
                 string? textToRender = Checked ? CheckedText : UnCheckedText;
                 if (textToRender != null)
                 {
-                    Color _fore = fore ?? Style.Db.PrimaryColor;
+                    Color _fore = fore ?? Colour.PrimaryColor.Get("Switch");
                     using (var brush = new SolidBrush(_fore))
                     {
                         var textSize = g.MeasureString(textToRender, Font);
@@ -366,6 +436,7 @@ namespace AntdUI
             ThreadClick?.Dispose();
             ThreadCheck?.Dispose();
             ThreadHover?.Dispose();
+            ThreadLoading?.Dispose();
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;

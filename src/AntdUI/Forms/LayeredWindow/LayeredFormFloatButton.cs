@@ -229,28 +229,28 @@ namespace AntdUI
                             switch (it.Type)
                             {
                                 case TTypeMini.Primary:
-                                    back = Style.Db.Primary;
-                                    fore = Style.Db.PrimaryColor;
+                                    back = Colour.Primary.Get("FloatButton");
+                                    fore = Colour.PrimaryColor.Get("FloatButton");
                                     break;
                                 case TTypeMini.Success:
-                                    back = Style.Db.Success;
-                                    fore = Style.Db.SuccessColor;
+                                    back = Colour.Success.Get("FloatButton");
+                                    fore = Colour.SuccessColor.Get("FloatButton");
                                     break;
                                 case TTypeMini.Error:
-                                    back = Style.Db.Error;
-                                    fore = Style.Db.ErrorColor;
+                                    back = Colour.Error.Get("FloatButton");
+                                    fore = Colour.ErrorColor.Get("FloatButton");
                                     break;
                                 case TTypeMini.Warn:
-                                    back = Style.Db.Warning;
-                                    fore = Style.Db.WarningColor;
+                                    back = Colour.Warning.Get("FloatButton");
+                                    fore = Colour.WarningColor.Get("FloatButton");
                                     break;
                                 case TTypeMini.Info:
-                                    back = Style.Db.Info;
-                                    fore = Style.Db.InfoColor;
+                                    back = Colour.Info.Get("FloatButton");
+                                    fore = Colour.InfoColor.Get("FloatButton");
                                     break;
                                 default:
-                                    back = Style.Db.BgElevated;
-                                    fore = Style.Db.Text;
+                                    back = Colour.BgElevated.Get("FloatButton");
+                                    fore = Colour.Text.Get("FloatButton");
                                     break;
                             }
                             if (it.Fore.HasValue) fore = it.Fore.Value;
@@ -258,8 +258,10 @@ namespace AntdUI
                             g.Fill(back, path);
 
                             float loading_size = it.rect_read.Height * 0.06F;
-                            using (var brush = new Pen(fore, loading_size))
+                            using (var pen = new Pen(Colour.Fill.Get("FloatButton"), loading_size))
+                            using (var brush = new Pen(fore, pen.Width))
                             {
+                                g.DrawEllipse(pen, it.rect_icon);
                                 brush.StartCap = brush.EndCap = LineCap.Round;
                                 g.DrawArc(brush, it.rect_icon, it.AnimationLoadingValue, it.LoadingValue * 360F);
                             }
@@ -272,42 +274,42 @@ namespace AntdUI
                                 switch (it.Type)
                                 {
                                     case TTypeMini.Primary:
-                                        back = Style.Db.Primary;
-                                        back_hover = Style.Db.PrimaryHover;
-                                        fore = Style.Db.PrimaryColor;
+                                        back = Colour.Primary.Get("FloatButton");
+                                        back_hover = Colour.PrimaryHover.Get("FloatButton");
+                                        fore = Colour.PrimaryColor.Get("FloatButton");
                                         break;
                                     case TTypeMini.Success:
-                                        back = Style.Db.Success;
-                                        back_hover = Style.Db.SuccessHover;
-                                        fore = Style.Db.SuccessColor;
+                                        back = Colour.Success.Get("FloatButton");
+                                        back_hover = Colour.SuccessHover.Get("FloatButton");
+                                        fore = Colour.SuccessColor.Get("FloatButton");
                                         break;
                                     case TTypeMini.Error:
-                                        back = Style.Db.Error;
-                                        back_hover = Style.Db.ErrorHover;
-                                        fore = Style.Db.ErrorColor;
+                                        back = Colour.Error.Get("FloatButton");
+                                        back_hover = Colour.ErrorHover.Get("FloatButton");
+                                        fore = Colour.ErrorColor.Get("FloatButton");
                                         break;
                                     case TTypeMini.Warn:
-                                        back = Style.Db.Warning;
-                                        back_hover = Style.Db.WarningHover;
-                                        fore = Style.Db.WarningColor;
+                                        back = Colour.Warning.Get("FloatButton");
+                                        back_hover = Colour.WarningHover.Get("FloatButton");
+                                        fore = Colour.WarningColor.Get("FloatButton");
                                         break;
                                     case TTypeMini.Info:
-                                        back = Style.Db.Info;
-                                        back_hover = Style.Db.InfoHover;
-                                        fore = Style.Db.InfoColor;
+                                        back = Colour.Info.Get("FloatButton");
+                                        back_hover = Colour.InfoHover.Get("FloatButton");
+                                        fore = Colour.InfoColor.Get("FloatButton");
                                         break;
                                     default:
-                                        back = Style.Db.BgElevated;
-                                        back_hover = Style.Db.FillSecondary;
-                                        fore = Style.Db.Text;
+                                        back = Colour.BgElevated.Get("FloatButton");
+                                        back_hover = Colour.FillSecondary.Get("FloatButton");
+                                        fore = Colour.Text.Get("FloatButton");
                                         break;
                                 }
                                 if (it.Fore.HasValue) fore = it.Fore.Value;
                             }
                             else
                             {
-                                back = back_hover = Style.Db.FillTertiary;
-                                fore = Style.Db.TextQuaternary;
+                                back = back_hover = Colour.FillTertiary.Get("FloatButton");
+                                fore = Colour.TextQuaternary.Get("FloatButton");
                             }
 
                             g.Fill(back, path);
@@ -329,9 +331,9 @@ namespace AntdUI
         {
             if (it.Badge != null)
             {
-                var color = it.BadgeBack ?? Style.Db.Error;
+                var color = it.BadgeBack ?? Colour.Error.Get("Badge");
 
-                using (var brush_fore = new SolidBrush(Style.Db.ErrorColor))
+                using (var brush_fore = new SolidBrush(Colour.ErrorColor.Get("Badge")))
                 {
                     if (it.Badge == " ")
                     {

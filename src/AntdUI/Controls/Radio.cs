@@ -191,7 +191,7 @@ namespace AntdUI
         /// <summary>
         /// 点击时自动改变选中状态
         /// </summary>
-        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(false)]
+        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(true)]
         public bool AutoCheck { get; set; } = true;
 
         RightToLeft rightToLeft = RightToLeft.No;
@@ -240,7 +240,7 @@ namespace AntdUI
                 bool right = rightToLeft == RightToLeft.Yes;
                 PaintChecked(g, rect, Enabled, icon_rect, right);
                 if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
-                using (var brush = new SolidBrush(Enabled ? (fore ?? Style.Db.Text) : Style.Db.TextQuaternary))
+                using (var brush = new SolidBrush(Enabled ? (fore ?? Colour.Text.Get("Radio")) : Colour.TextQuaternary.Get("Radio")))
                 {
                     g.String(Text, Font, brush, text_rect, stringFormat);
                 }
@@ -258,7 +258,7 @@ namespace AntdUI
             var bor2 = 2F * Config.Dpi;
             if (enabled)
             {
-                var color = fill ?? Style.Db.Primary;
+                var color = fill ?? Colour.Primary.Get("Radio");
                 if (AnimationCheck)
                 {
                     float dot = dot_size * 0.3F;
@@ -284,20 +284,20 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (AnimationHover) g.DrawEllipse(Style.Db.BorderColor.BlendColors(AnimationHoverValue, color), bor2, icon_rect);
+                    if (AnimationHover) g.DrawEllipse(Colour.BorderColor.Get("Radio").BlendColors(AnimationHoverValue, color), bor2, icon_rect);
                     else if (ExtraMouseHover) g.DrawEllipse(color, bor2, icon_rect);
-                    else g.DrawEllipse(Style.Db.BorderColor, bor2, icon_rect);
+                    else g.DrawEllipse(Colour.BorderColor.Get("Radio"), bor2, icon_rect);
                 }
             }
             else
             {
-                g.FillEllipse(Style.Db.FillQuaternary, icon_rect);
+                g.FillEllipse(Colour.FillQuaternary.Get("Radio"), icon_rect);
                 if (_checked)
                 {
                     float dot = dot_size / 2F, dot2 = dot / 2F;
-                    g.FillEllipse(Style.Db.TextQuaternary, new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
+                    g.FillEllipse(Colour.TextQuaternary.Get("Radio"), new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
                 }
-                g.DrawEllipse(Style.Db.BorderColorDisable, bor2, icon_rect);
+                g.DrawEllipse(Colour.BorderColorDisable.Get("Radio"), bor2, icon_rect);
             }
         }
 
@@ -457,7 +457,7 @@ namespace AntdUI
             return PSize;
         }
 
-        internal Size PSize
+        Size PSize
         {
             get
             {
@@ -484,7 +484,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal bool BeforeAutoSize()
+        bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired)

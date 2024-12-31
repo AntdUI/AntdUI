@@ -57,6 +57,12 @@ namespace AntdUI
         [Description("描述字体"), Category("外观"), DefaultValue(null)]
         public Font? FontDescription { get; set; }
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(null)]
+        public int? Gap { get; set; }
+
         TimelineItemCollection? items;
         /// <summary>
         /// 集合
@@ -117,8 +123,7 @@ namespace AntdUI
                 var size_def = g.MeasureString(Config.NullText, Font);
                 int text_size = size_def.Height;
                 float pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
-                int gap = (int)Math.Round(8F * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * 0.846D), gap_y = (int)Math.Round(text_size * 0.91D),
-                    ico_size = (int)Math.Round(text_size * 0.636D);
+                int gap = (int)Math.Round(8 * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * .846D), gap_y = (int)Math.Round((Gap * Config.Dpi) ?? (text_size * .91D)), ico_size = (int)Math.Round(text_size * .636D);
 
                 int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
                 y += gap_x;
@@ -178,22 +183,26 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             g.TranslateTransform(0, -ScrollBar.Value);
-            Color color_fore = fore ?? Style.Db.Text;
-            using (var brush_split = new SolidBrush(Style.Db.Split))
+            Color color_fore = fore ?? Colour.Text.Get("Timeline");
+            using (var brush_split = new SolidBrush(Colour.Split.Get("Timeline")))
             {
                 foreach (var it in splits) g.Fill(brush_split, it);
             }
             var font_Description = FontDescription ?? Font;
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_fore2 = new SolidBrush(Style.Db.TextTertiary))
-            using (var brush_dotback = new SolidBrush(Style.Db.BgBase))
+            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get("Timeline")))
+            using (var brush_dotback = new SolidBrush(Colour.BgBase.Get("Timeline")))
             {
-                foreach (TimelineItem it in items)
+                foreach (var it in items)
                 {
                     if (it.Visible)
                     {
@@ -208,23 +217,23 @@ namespace AntdUI
                                 switch (it.Type)
                                 {
                                     case TTypeMini.Error:
-                                        fill = Style.Db.Error;
+                                        fill = Colour.Error.Get("Timeline");
                                         break;
                                     case TTypeMini.Success:
-                                        fill = Style.Db.Success;
+                                        fill = Colour.Success.Get("Timeline");
                                         break;
                                     case TTypeMini.Info:
-                                        fill = Style.Db.Info;
+                                        fill = Colour.Info.Get("Timeline");
                                         break;
                                     case TTypeMini.Warn:
-                                        fill = Style.Db.Warning;
+                                        fill = Colour.Warning.Get("Timeline");
                                         break;
                                     case TTypeMini.Default:
-                                        fill = Style.Db.TextQuaternary;
+                                        fill = Colour.TextQuaternary.Get("Timeline");
                                         break;
                                     case TTypeMini.Primary:
                                     default:
-                                        fill = Style.Db.Primary;
+                                        fill = Colour.Primary.Get("Timeline");
                                         break;
                                 }
                             }

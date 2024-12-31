@@ -111,7 +111,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var bmp = SvgDb.IcoTime.SvgToBmp(rect_r.Width, rect_r.Height, Style.Db.TextQuaternary))
+                using (var bmp = SvgDb.IcoTime.SvgToBmp(rect_r.Width, rect_r.Height, Colour.TextQuaternary.Get("TimePicker")))
                 {
                     if (bmp == null) return;
                     g.Image(bmp, rect_r);
@@ -201,8 +201,17 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape && subForm != null) subForm.IClose();
-            else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
+            bool result = base.ProcessCmdKey(ref msg, keyData);
+            if (keyData == Keys.Escape && subForm != null)
+            {
+                subForm.IClose();
+                return true;
+            }
+            else if (keyData == Keys.Down && subForm == null)
+            {
+                ExpandDrop = true;
+                return true;
+            }
             else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d))
             {
                 Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
@@ -211,8 +220,9 @@ namespace AntdUI
                     _SubForm.SelDate = Value;
                     _SubForm.Print();
                 }
+                return true;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return result;
         }
 
         #endregion

@@ -571,13 +571,16 @@ namespace AntdUI
         readonly StringFormat s_f = Helper.SF_ALL();
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (items == null || items.Count == 0) return;
-
+            if (items == null || items.Count == 0)
+            {
+                base.OnPaint(e);
+                return;
+            }
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
             using (var path = Rect.RoundPath(_radius, Round))
             {
-                g.Fill(back ?? Style.Db.BgLayout, path);
+                g.Fill(back ?? Colour.BgLayout.Get("Segmented"), path);
             }
             var item_text = new System.Collections.Generic.List<SegmentedItem>(items.Count);
             int _hover = -1;
@@ -587,7 +590,7 @@ namespace AntdUI
                 if (it == null) continue;
                 if (i == _select && !AnimationBar)
                 {
-                    var color_active = backactive ?? Style.Db.BgElevated;
+                    var color_active = backactive ?? Colour.BgElevated.Get("Segmented");
                     if (barPosition == TAlignMini.None)
                     {
                         using (var path = TabSelectRect.RoundPath(_radius, Round))
@@ -614,14 +617,14 @@ namespace AntdUI
                     _hover = i;
                     using (var path = it.Rect.RoundPath(_radius, Round))
                     {
-                        g.Fill(BackHover ?? Style.Db.HoverBg, path);
+                        g.Fill(BackHover ?? Colour.HoverBg.Get("Segmented"), path);
                     }
                 }
                 item_text.Add(it);
             }
             if (AnimationBar)
             {
-                var color_active = backactive ?? Style.Db.BgElevated;
+                var color_active = backactive ?? Colour.BgElevated.Get("Segmented");
                 if (barPosition == TAlignMini.None)
                 {
                     using (var path = AnimationBarValue.RoundPath(_radius, Round))
@@ -643,8 +646,8 @@ namespace AntdUI
                     else g.Fill(color_active, rect);
                 }
             }
-            using (var brush = new SolidBrush((fore ?? Style.Db.TextSecondary)))
-            using (var brushDisable = new SolidBrush(Style.Db.TextQuaternary))
+            using (var brush = new SolidBrush((fore ?? Colour.TextSecondary.Get("Segmented"))))
+            using (var brushDisable = new SolidBrush(Colour.TextQuaternary.Get("Segmented")))
             {
                 for (int i = 0; i < item_text.Count; i++)
                 {
@@ -653,13 +656,13 @@ namespace AntdUI
                     {
                         if (Enabled && it.Enabled)
                         {
-                            var color_active = foreactive ?? Style.Db.Text;
+                            var color_active = foreactive ?? Colour.Text.Get("Segmented");
                             if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
                             g.String(it.Text, Font, color_active, it.RectText, s_f);
                         }
                         else
                         {
-                            var color_active = Style.Db.TextQuaternary;
+                            var color_active = Colour.TextQuaternary.Get("Segmented");
                             if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
                             g.String(it.Text, Font, color_active, it.RectText, s_f);
                         }
@@ -670,7 +673,7 @@ namespace AntdUI
                         {
                             if (i == _hover)
                             {
-                                var color_hover = ForeHover ?? Style.Db.HoverColor;
+                                var color_hover = ForeHover ?? Colour.HoverColor.Get("Segmented");
                                 PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
                                 g.String(it.Text, Font, color_hover, it.RectText, s_f);
                             }
@@ -933,7 +936,7 @@ namespace AntdUI
                                     else
                                     {
                                         var size = g.MeasureString(it.Text, Font);
-                                        it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, text_heigth, sp);
+                                        it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, size.Height, sp);
                                     }
                                     x += it.Rect.Width + _igap;
                                 }
@@ -947,7 +950,7 @@ namespace AntdUI
                                     else
                                     {
                                         var size = g.MeasureString(it.Text, Font);
-                                        it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, text_heigth, sp);
+                                        it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, size.Height, sp);
                                     }
                                     x += it.Rect.Width + _igap;
                                 }
@@ -1149,7 +1152,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        internal bool BeforeAutoSize()
+        bool BeforeAutoSize()
         {
             if (AutoSize)
             {
@@ -1259,10 +1262,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => IconSvg != null || Icon != null;
-        }
+        public bool HasIcon => IconSvg != null || Icon != null;
 
         /// <summary>
         /// 图标激活
