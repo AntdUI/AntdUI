@@ -1325,12 +1325,9 @@ namespace AntdUI
 
             if (badge_list.Count > 0)
             {
-                using (var font = new Font(control.Font.FontFamily, control.Font.Size * control.BadgeSize))
+                foreach (var it in datas)
                 {
-                    foreach (var it in datas)
-                    {
-                        if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, font, it.rect, g);
-                    }
+                    if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, it.rect, g);
                 }
             }
 

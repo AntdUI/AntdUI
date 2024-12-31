@@ -249,31 +249,31 @@ namespace AntdUI.Svg
         /// <param name="renderer">The <see cref="ISvgRenderer"/> object to render to.</param>
         protected internal virtual bool RenderStroke(ISvgRenderer renderer)
         {
-            if (Stroke != null && Stroke != SvgColourServer.None && StrokeWidth > 0)
+            if (Stroke != null && Stroke != SvgPaintServer.None && StrokeWidth > 0f)
             {
                 var strokeWidth = StrokeWidth.ToDeviceValue(renderer, UnitRenderingType.Other, this);
-                using (var brush = Stroke.GetBrush(this, renderer, Math.Min(Math.Max(StrokeOpacity, 0), 1), true))
+                using (var brush = Stroke.GetBrush(this, renderer, FixOpacityValue(StrokeOpacity), true))
                 {
                     if (brush != null)
                     {
                         var path = Path(renderer);
                         var bounds = path.GetBounds();
                         if (path.PointCount < 1) return false;
-                        if (bounds.Width <= 0 && bounds.Height <= 0)
+                        if (bounds.Width <= 0f && bounds.Height <= 0f)
                         {
                             switch (StrokeLineCap)
                             {
                                 case SvgStrokeLineCap.Round:
                                     using (var capPath = new GraphicsPath())
                                     {
-                                        capPath.AddEllipse(path.PathPoints[0].X - strokeWidth / 2, path.PathPoints[0].Y - strokeWidth / 2, strokeWidth, strokeWidth);
+                                        capPath.AddEllipse(path.PathPoints[0].X - strokeWidth / 2f, path.PathPoints[0].Y - strokeWidth / 2f, strokeWidth, strokeWidth);
                                         renderer.FillPath(brush, capPath);
                                     }
                                     break;
                                 case SvgStrokeLineCap.Square:
                                     using (var capPath = new GraphicsPath())
                                     {
-                                        capPath.AddRectangle(new RectangleF(path.PathPoints[0].X - strokeWidth / 2, path.PathPoints[0].Y - strokeWidth / 2, strokeWidth, strokeWidth));
+                                        capPath.AddRectangle(new RectangleF(path.PathPoints[0].X - strokeWidth / 2f, path.PathPoints[0].Y - strokeWidth / 2f, strokeWidth, strokeWidth));
                                         renderer.FillPath(brush, capPath);
                                     }
                                     break;
@@ -285,36 +285,83 @@ namespace AntdUI.Svg
                             {
                                 if (StrokeDashArray != null && StrokeDashArray.Count > 0)
                                 {
-                                    if (StrokeDashArray.Count % 2 != 0)
+                                    var strokeDashArray = StrokeDashArray;
+                                    if (strokeDashArray.Count % 2 != 0)
                                     {
                                         // handle odd dash arrays by repeating them once
-                                        StrokeDashArray.AddRange(StrokeDashArray);
+                                        strokeDashArray = (SvgUnitCollection)StrokeDashArray.Clone();
+                                        strokeDashArray.AddRange(StrokeDashArray);
                                     }
+                                    var dashOffset = StrokeDashOffset;
 
-                                    /* divide by stroke width - GDI behaviour that I don't quite understand yet.*/
-                                    pen.DashPattern = StrokeDashArray.ConvertAll(u => ((u.ToDeviceValue(renderer, UnitRenderingType.Other, this) <= 0) ? 1 : u.ToDeviceValue(renderer, UnitRenderingType.Other, this)) /
-                                        ((strokeWidth <= 0) ? 1 : strokeWidth)).ToArray();
+                                    strokeWidth = Math.Max(strokeWidth, 1f);
+
+                                    /* divide by stroke width - GDI uses stroke width as unit.*/
+                                    var dashPattern = strokeDashArray.Select(u => ((u.ToDeviceValue(renderer, UnitRenderingType.Other, this) <= 0f) ? 1f :
+                                        u.ToDeviceValue(renderer, UnitRenderingType.Other, this)) / strokeWidth).ToArray();
+                                    var length = dashPattern.Length;
 
                                     if (StrokeLineCap == SvgStrokeLineCap.Round)
                                     {
                                         // to handle round caps, we have to adapt the dash pattern
-                                        // by increasing the dash length by the stroke width - GDI draws the rounded 
+                                        // by increasing the dash length by the stroke width - GDI draws the rounded
                                         // edge inside the dash line, SVG draws it outside the line
-                                        var pattern = new float[pen.DashPattern.Length];
-                                        int offset = 1; // the values are already normalized to dash width
-                                        for (int i = 0; i < pen.DashPattern.Length; i++)
+                                        var pattern = new float[length];
+                                        var offset = 1; // the values are already normalized to dash width
+                                        for (var i = 0; i < length; i++)
                                         {
-                                            pattern[i] = pen.DashPattern[i] + offset;
+                                            pattern[i] = dashPattern[i] + offset;
+                                            if (pattern[i] <= 0f)
+                                            {
+                                                // overlapping caps - remove the gap for simplicity, see #508
+                                                if (i < length - 1)
+                                                {
+                                                    // add the next dash segment to the current one
+                                                    dashPattern[i - 1] += dashPattern[i] + dashPattern[i + 1];
+                                                    length -= 2;
+                                                    for (var k = i; k < length; k++)
+                                                        dashPattern[k] = dashPattern[k + 2];
+
+                                                    // and handle the combined segment again
+                                                    i -= 2;
+                                                }
+                                                else if (i > 2)
+                                                {
+                                                    // add the last dash segment to the first one
+                                                    // this will change the start point, so adapt the offset
+                                                    var dashLength = dashPattern[i - 1] + dashPattern[i];
+                                                    pattern[0] += dashLength;
+                                                    length -= 2;
+                                                    dashOffset += dashLength * strokeWidth;
+                                                }
+                                                else
+                                                {
+                                                    // we have only one dash with the gap too small -
+                                                    // do not use dash at all
+                                                    length = 0;
+                                                    break;
+                                                }
+                                            }
                                             offset *= -1; // increase dash length, decrease spaces
                                         }
-                                        pen.DashPattern = pattern;
-                                        pen.DashCap = DashCap.Round;
+                                        if (length > 0)
+                                        {
+                                            if (length < dashPattern.Length)
+                                                Array.Resize(ref pattern, length);
+                                            dashPattern = pattern;
+                                            pen.DashCap = DashCap.Round;
+                                        }
                                     }
 
-                                    if (StrokeDashOffset != null && StrokeDashOffset.Value != 0)
+                                    if (length > 0)
                                     {
-                                        pen.DashOffset = ((StrokeDashOffset.ToDeviceValue(renderer, UnitRenderingType.Other, this) <= 0) ? 1 : StrokeDashOffset.ToDeviceValue(renderer, UnitRenderingType.Other, this)) /
-                                            ((strokeWidth <= 0) ? 1 : strokeWidth);
+                                        pen.DashPattern = dashPattern;
+
+                                        if (dashOffset != 0f)
+                                        {
+                                            pen.DashOffset = ((dashOffset.ToDeviceValue(renderer, UnitRenderingType.Other, this) <= 0f) ? 1f :
+                                                dashOffset.ToDeviceValue(renderer, UnitRenderingType.Other, this)) / strokeWidth;
+                                        }
                                     }
                                 }
                                 switch (StrokeLineJoin)
@@ -325,6 +372,10 @@ namespace AntdUI.Svg
                                     case SvgStrokeLineJoin.Round:
                                         pen.LineJoin = LineJoin.Round;
                                         break;
+                                    case SvgStrokeLineJoin.MiterClip:
+                                        pen.LineJoin = LineJoin.MiterClipped;
+                                        break;
+                                    // System.Drawing has no support for Arcs unfortunately
                                     default:
                                         pen.LineJoin = LineJoin.Miter;
                                         break;

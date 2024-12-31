@@ -353,5 +353,25 @@ namespace AntdUI
         public bool Round { get; set; }
 
         public int Radius { get; set; } = 6;
+
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
+        public TAlignFrom Align { get; set; } = TAlignFrom.TR;
+
+        /// <summary>
+        /// 徽标比例
+        /// </summary>
+        public float Size { get; set; } = .6F;
+
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        public int OffsetX { get; set; } = 2;
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        public int OffsetY { get; set; } = 2;
     }
 }

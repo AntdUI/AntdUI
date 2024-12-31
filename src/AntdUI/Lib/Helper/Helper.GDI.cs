@@ -683,7 +683,7 @@ namespace AntdUI
                     int hasx = (int)(control.BadgeOffsetX * Config.Dpi), hasy = (int)(control.BadgeOffsetY * Config.Dpi);
                     if (string.IsNullOrWhiteSpace(control.Badge))
                     {
-                        var size = g.MeasureString(Config.NullText, font).Height;
+                        var size = g.MeasureString(Config.NullText, font).Height / 2;
                         var rect_badge = PaintBadge(rect, control.BadgeAlign, hasx, hasy, size, size);
                         using (var brush = new SolidBrush(color))
                         {
@@ -753,62 +753,44 @@ namespace AntdUI
                     return new Rectangle(rect.Right - x - w, rect.Y + y, w, h);
             }
         }
-        public static void PaintBadge(this IControl control, DateBadge badge, Font font, Rectangle rect, Canvas g)
+        public static void PaintBadge(this IControl control, DateBadge badge, Rectangle rect, Canvas g)
         {
             var color = badge.Fill ?? control.BadgeBack ?? Colour.Error.Get("Badge");
             float borsize = Config.Dpi;
-            if (badge.Content == null || string.IsNullOrEmpty(badge.Content))
+            using (var font = new Font(control.Font.FontFamily, control.Font.Size * badge.Size))
             {
-                var rect_badge = new RectangleF(rect.Right - 10F, rect.Top + 2F, 8, 8);
-                g.FillEllipse(color, rect_badge);
-                g.DrawEllipse(color, borsize, rect_badge);
-            }
-            else
-            {
-                using (var s_f = SF_NoWrap())
+                int hasx = (int)(badge.OffsetX * Config.Dpi), hasy = (int)(badge.OffsetY * Config.Dpi);
+                if (string.IsNullOrWhiteSpace(badge.Content))
                 {
-                    string countStr = badge.Content;
-                    var size = g.MeasureString(countStr, font);
-                    int size_badge = (int)(size.Height * 1.2F);
-                    if (size.Height > size.Width)
+                    var size_badge = g.MeasureString(Config.NullText, font).Height / 2;
+                    var rect_badge = PaintBadge(rect, badge.Align, hasx, hasy, size_badge, size_badge);
+                    g.FillEllipse(color, rect_badge);
+                    g.DrawEllipse(Colour.ErrorColor.Get("Badge"), borsize, rect_badge);
+                }
+                else
+                {
+                    var size = g.MeasureString(badge.Content, font);
+                    using (var s_f = SF_NoWrap())
                     {
-                        var rect_badge = new Rectangle(rect.Right - size_badge + 6, rect.Top - 8, size_badge, size_badge);
-                        if (badge.Round)
+                        int size_badge = (int)(size.Height * 1.2F);
+                        if (size.Height > size.Width)
                         {
+                            var rect_badge = PaintBadge(rect, badge.Align, hasx, hasy, size_badge, size_badge);
                             g.FillEllipse(color, rect_badge);
                             g.DrawEllipse(Colour.ErrorColor.Get("Badge"), borsize, rect_badge);
+                            g.String(badge.Content, font, Colour.ErrorColor.Get("Badge"), rect_badge, s_f);
                         }
                         else
                         {
-                            using (var path = rect_badge.RoundPath(badge.Radius * Config.Dpi))
-                            {
-                                g.Fill(color, path);
-                                g.Draw(Colour.ErrorColor.Get("Badge"), borsize, path);
-                            }
-                        }
-                        g.String(countStr, font, Colour.ErrorColor.Get("Badge"), rect_badge, s_f);
-                    }
-                    else
-                    {
-                        int w_badge = size.Width + (size_badge - size.Height);
-                        var rect_badge = new Rectangle(rect.Right - w_badge + 6, rect.Top - 8, w_badge, size_badge);
-                        if (badge.Round)
-                        {
+                            int w_badge = size.Width + (size_badge - size.Height);
+                            var rect_badge = PaintBadge(rect, badge.Align, hasx, hasy, w_badge, size_badge);
                             using (var path = rect_badge.RoundPath(rect_badge.Height))
                             {
                                 g.Fill(color, path);
                                 g.Draw(Colour.ErrorColor.Get("Badge"), borsize, path);
                             }
+                            g.String(badge.Content, font, Colour.ErrorColor.Get("Badge"), rect_badge, s_f);
                         }
-                        else
-                        {
-                            using (var path = rect_badge.RoundPath(badge.Radius * Config.Dpi))
-                            {
-                                g.Fill(color, path);
-                                g.Draw(Colour.ErrorColor.Get("Badge"), borsize, path);
-                            }
-                        }
-                        g.String(countStr, font, Colour.ErrorColor.Get("Badge"), rect_badge, s_f);
                     }
                 }
             }
