@@ -90,6 +90,20 @@ namespace AntdUI
             }
         }
 
+        Font? descFont = null;
+        [Description("副标题字体"), Category("外观"), DefaultValue(null)]
+        public Font? SubFont
+        {
+            get => descFont;
+            set
+            {
+                if (descFont == value) return;
+                descFont = value;
+                Invalidate();
+                OnPropertyChanged("SubFont");
+            }
+        }
+
         [Description("副标题"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationSubText { get; set; }
 
@@ -515,6 +529,27 @@ namespace AntdUI
 
         #endregion
 
+        #region 背景
+
+        string? backExtend = null;
+        /// <summary>
+        /// 背景渐变色
+        /// </summary>
+        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        public string? BackExtend
+        {
+            get => backExtend;
+            set
+            {
+                if (backExtend == value) return;
+                backExtend = value;
+                Invalidate();
+                OnPropertyChanged("BackExtend");
+            }
+        }
+
+        #endregion
+
         #endregion
 
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
@@ -529,6 +564,8 @@ namespace AntdUI
             if (rect_.Width == 0 || rect_.Height == 0) return;
             var rect = rect_.PaddingRect(Padding, 0, 0, hasr, 0);
             var g = e.Graphics.High();
+
+            backExtend.BrushEx(rect_, g);
 
             #region 显示颜色
 
@@ -592,7 +629,7 @@ namespace AntdUI
                             int desc_t_w = sizeTitle.Width + (int)(subGap * Config.Dpi);
                             using (var brushsub = new SolidBrush(foreSecondary))
                             {
-                                g.String(SubText, Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
+                                g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
                                 if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft);
                             }
                         }
@@ -627,7 +664,7 @@ namespace AntdUI
                         int desc_t_w = size.Width + (int)(subGap * Config.Dpi);
                         using (var brushsub = new SolidBrush(foreSecondary))
                         {
-                            g.String(SubText, Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
+                            g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
                             if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft);
                         }
                     }

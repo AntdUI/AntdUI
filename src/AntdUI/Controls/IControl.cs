@@ -503,6 +503,7 @@ namespace AntdUI
         protected override void OnDragEnter(DragEventArgs e)
         {
             base.OnDragEnter(e);
+            if (DragChanged == null) return;
             if (AllowDrop)
             {
                 OnDragEnter();
@@ -521,13 +522,14 @@ namespace AntdUI
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
+            if (DragChanged == null) return;
             if (DragData(e.Data, out var files))
             {
-                if (ONDRAG == null) DragChanged?.Invoke(this, new StringsEventArgs(files));
+                if (ONDRAG == null) DragChanged(this, new StringsEventArgs(files));
                 else
                 {
                     var r = ONDRAG(files);
-                    if (r != null) DragChanged?.Invoke(this, new StringsEventArgs(r));
+                    if (r != null) DragChanged(this, new StringsEventArgs(r));
                 }
             }
             OnDragLeave();

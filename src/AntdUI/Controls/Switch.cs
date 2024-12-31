@@ -186,6 +186,55 @@ namespace AntdUI
         [Description("未选中时显示的文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationTextUnCheckedText { get; set; }
 
+        #region 加载中
+
+        bool loading = false;
+        /// <summary>
+        /// 加载中
+        /// </summary>
+        [Description("加载中"), Category("外观"), DefaultValue(false)]
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                if (IsHandleCreated)
+                {
+                    if (loading)
+                    {
+                        bool ProgState = false;
+                        ThreadLoading = new ITask(this, () =>
+                        {
+                            if (ProgState)
+                            {
+                                LineAngle = LineAngle.Calculate(9F);
+                                LineWidth = LineWidth.Calculate(0.6F);
+                                if (LineWidth > 75) ProgState = false;
+                            }
+                            else
+                            {
+                                LineAngle = LineAngle.Calculate(9.6F);
+                                LineWidth = LineWidth.Calculate(-0.6F);
+                                if (LineWidth < 6) ProgState = true;
+                            }
+                            if (LineAngle >= 360) LineAngle = 0;
+                            Invalidate();
+                            return true;
+                        }, 10);
+                    }
+                    else ThreadLoading?.Dispose();
+                }
+                Invalidate();
+            }
+        }
+
+        ITask? ThreadLoading = null;
+        internal float LineWidth = 6, LineAngle = 0;
+
+        #endregion
+
         #endregion
 
         #region 事件
@@ -222,6 +271,16 @@ namespace AntdUI
                     g.Fill(Helper.ToColor(alpha, _color), path);
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                     g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    if (loading)
+                    {
+                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                        float size = rect_read.Height * .1F;
+                        using (var brush = new Pen(_color, size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
+                        }
+                    }
                 }
                 else if (_checked)
                 {
@@ -231,11 +290,31 @@ namespace AntdUI
                     else if (ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                     g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    if (loading)
+                    {
+                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                        float size = rect_read.Height * .1F;
+                        using (var brush = new Pen(_color, size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
+                        }
+                    }
                 }
                 else
                 {
                     var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                     g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    if (loading)
+                    {
+                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                        float size = rect_read.Height * .1F;
+                        using (var brush = new Pen(_color, size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
+                        }
+                    }
                 }
 
                 // 绘制文本
@@ -357,6 +436,7 @@ namespace AntdUI
             ThreadClick?.Dispose();
             ThreadCheck?.Dispose();
             ThreadHover?.Dispose();
+            ThreadLoading?.Dispose();
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;

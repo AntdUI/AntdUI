@@ -221,6 +221,37 @@ namespace AntdUI
             return new SolidBrush(def);
         }
 
+        /// <summary>
+        /// 画刷（渐变色）
+        /// </summary>
+        public static bool BrushEx(this string? code, Rectangle rect, Canvas g)
+        {
+            if (code != null)
+            {
+                var arr = code.Split(',');
+                if (arr.Length > 1)
+                {
+                    if (arr.Length > 2 && float.TryParse(arr[0], out float deg))
+                    {
+                        using (var brush = new LinearGradientBrush(rect, arr[1].Trim().ToColor(), arr[2].Trim().ToColor(), 270 + deg))
+                        {
+                            g.Fill(brush, rect);
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        using (var brush = new LinearGradientBrush(rect, arr[0].Trim().ToColor(), arr[1].Trim().ToColor(), 270F))
+                        {
+                            g.Fill(brush, rect);
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public static Canvas High(this Graphics g)
         {
             g.SmoothingMode = SmoothingMode.AntiAlias;

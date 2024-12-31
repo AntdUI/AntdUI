@@ -66,16 +66,16 @@ namespace AntdUI
                 }
                 if (config.Mask)
                 {
-                    var formMask = new LayeredFormMask(config.Form);
-                    formMask.Show(config.Form);
-                    var frm = new LayeredFormDrawer(config, formMask);
+                    var mask = new LayeredFormMask(config.Form);
+                    mask.Show(config.Form);
+                    var frm = new LayeredFormDrawer(config, mask);
                     ITask.Run(() =>
                     {
                         System.Threading.Thread.Sleep(220);
                         if (frm.isclose) return;
-                        config.Form.BeginInvoke(new Action(() =>
+                        config.Form.Invoke(new Action(() =>
                         {
-                            frm.Show(formMask);
+                            frm.Show(mask);
                         }));
                     });
                     return frm;

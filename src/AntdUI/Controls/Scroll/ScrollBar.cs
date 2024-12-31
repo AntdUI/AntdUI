@@ -18,6 +18,7 @@
 
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -833,7 +834,15 @@ namespace AntdUI
         }
         public bool MouseWheel(int delta)
         {
-            if (EnabledY)
+            if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift && EnabledX && ShowX)
+            {
+                if (delta != 0)
+                {
+                    ValueX -= delta;
+                    return true;
+                }
+            }
+            else if (EnabledY)
             {
                 if (ShowY && delta != 0)
                 {

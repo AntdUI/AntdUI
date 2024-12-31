@@ -41,7 +41,11 @@ namespace AntdUI
             try
             {
                 var osVersionInfo = new OSVERSIONINFOEX { OSVersionInfoSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(OSVERSIONINFOEX)) };
-                if (RtlGetVersion(ref osVersionInfo) == 0) Version = new Version(osVersionInfo.MajorVersion, osVersionInfo.MinorVersion, osVersionInfo.BuildNumber);
+                if (RtlGetVersion(ref osVersionInfo) == 0)
+                {
+                    Version = new Version(osVersionInfo.MajorVersion, osVersionInfo.MinorVersion, osVersionInfo.BuildNumber);
+                    return;
+                }
             }
             catch { }
             Version = Environment.OSVersion.Version;

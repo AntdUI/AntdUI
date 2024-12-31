@@ -111,15 +111,9 @@ namespace AntdUI
         /// <summary>
         /// 最小化
         /// </summary>
-        public virtual void Min()
-        {
-            WindowState = FormWindowState.Minimized;
-        }
+        public virtual void Min() => WindowState = FormWindowState.Minimized;
 
-        public virtual bool IsMax
-        {
-            get => WindowState == FormWindowState.Maximized;
-        }
+        public virtual bool IsMax => WindowState == FormWindowState.Maximized;
 
         /// <summary>
         /// 最大化/还原
