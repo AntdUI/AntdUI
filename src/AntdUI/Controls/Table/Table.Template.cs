@@ -904,41 +904,26 @@ namespace AntdUI
                 RECT = RECT_REAL = _rect;
                 int rx = _rect.X + ox;
                 int gap = _gap / 2, gap2 = _gap;
-                if (Value.Count == 1 && (Value[0] is CellText || Value[0] is CellProgress))
+                int use_x;
+                switch (COLUMN.Align)
                 {
-                    var it = Value[0];
-                    var size = SIZES[0];
-                    it.SetRect(g, font, new Rectangle(rx, _rect.Y, _rect.Width, _rect.Height), size, gap, gap2);
+                    case ColumnAlign.Center:
+                        use_x = rx + (_rect.Width - MinWidth + gap2) / 2;
+                        break;
+                    case ColumnAlign.Right:
+                        use_x = _rect.Right - MinWidth + gap;
+                        break;
+                    case ColumnAlign.Left:
+                    default:
+                        use_x = rx + gap;
+                        break;
                 }
-                else
+                for (int i = 0; i < Value.Count; i++)
                 {
-                    int nogap = 0;
-                    foreach (var it in Value)
-                    {
-                        if (it is CellText) nogap++;
-                    }
-                    int use_x;
-                    switch (COLUMN.Align)
-                    {
-                        case ColumnAlign.Center:
-                            use_x = rx + (_rect.Width - MinWidth) / 2;
-                            break;
-                        case ColumnAlign.Right:
-                            use_x = _rect.Right - MinWidth;
-                            break;
-                        case ColumnAlign.Left:
-                        default:
-                            if (nogap == Value.Count) use_x = rx;
-                            else use_x = rx + gap2;
-                            break;
-                    }
-                    for (int i = 0; i < Value.Count; i++)
-                    {
-                        var it = Value[i];
-                        var size = SIZES[i];
-                        it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, gap, gap2);
-                        use_x += size.Width;
-                    }
+                    var it = Value[i];
+                    var size = SIZES[i];
+                    it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, gap, gap2);
+                    use_x += size.Width + gap;
                 }
             }
 
@@ -948,18 +933,16 @@ namespace AntdUI
                 int gap = _gap / 2, gap2 = _gap;
                 int w = 0, h = 0;
                 var sizes = new List<Size>(Value.Count);
-                int nogap = 0;
                 foreach (var it in Value)
                 {
-                    if (it is CellText) nogap++;
                     var size = it.GetSize(g, font, gap, gap2);
                     sizes.Add(size);
-                    w += size.Width;
+                    w += size.Width + gap;
                     if (h < size.Height) h = size.Height;
                 }
-                MinWidth = w;
+                MinWidth = w + gap;
                 SIZES = sizes.ToArray();
-                return new Size(MinWidth + (nogap == sizes.Count ? 0 : _gap2), h);
+                return new Size(MinWidth, h);
             }
 
             public override string? ToString()

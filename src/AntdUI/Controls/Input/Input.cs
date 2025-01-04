@@ -1182,11 +1182,6 @@ namespace AntdUI
                 case Win32.WM_GETDLGCODE:
                     m_hIMC = Win32.ImmGetContext(Handle);
                     OnImeStartPrivate(m_hIMC);
-#if NET40 || NET46 || NET48 || NET6_0
-                    m.Result = (IntPtr)0x0004;
-#else
-                    m.Result = 0x0004;
-#endif 
                     return;
             }
             base.WndProc(ref m);

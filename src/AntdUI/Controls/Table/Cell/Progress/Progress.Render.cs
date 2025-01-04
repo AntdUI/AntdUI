@@ -91,16 +91,12 @@ namespace AntdUI
                 int size = gap2 + height;
                 return new Size(size, size);
             }
-            else
-            {
-                int size = gap2 + height * 2;
-                return new Size(size, height / 2);
-            }
+            else return new Size(height * 2, height / 2);
         }
 
         public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
         {
-            int w = rect.Width - gap2, h = size.Height;
+            int w = rect.Width, h = size.Height;
             if (Shape == TShape.Circle)
             {
                 w = size.Width - gap2;

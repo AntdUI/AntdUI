@@ -48,10 +48,7 @@ namespace AntdUI
                     {
                         brush.TranslateTransform(Rect.X, Rect.Y);
                         if (Round) g.FillEllipse(brush, Rect);
-                        else
-                        {
-                            g.Fill(brush, path);
-                        }
+                        else g.Fill(brush, path);
                     }
                 }
 
@@ -61,10 +58,7 @@ namespace AntdUI
 
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
-            if (Size.HasValue)
-            {
-                return new Size((int)Math.Ceiling(Size.Value.Width * Config.Dpi) + gap2, (int)Math.Ceiling(Size.Value.Height * Config.Dpi) + gap2);
-            }
+            if (Size.HasValue) return new Size((int)Math.Ceiling(Size.Value.Width * Config.Dpi), (int)Math.Ceiling(Size.Value.Height * Config.Dpi));
             else
             {
                 int size = gap2 + g.MeasureString(Config.NullText, font).Height;
