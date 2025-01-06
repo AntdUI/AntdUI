@@ -127,6 +127,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(null)]
+        public int? Gap { get; set; }
+
         float iconratio = 1.2F;
         /// <summary>
         /// 图标比例
@@ -443,12 +449,12 @@ namespace AntdUI
             {
                 var lists = items;
                 var size = g.MeasureString(Config.NullText, Font);
-                int icon_size = (int)Math.Ceiling(size.Height * iconratio), gap = icon_size / 2, gapI = gap / 2, height = size.Height + gap * 2;
+                int icon_size = (int)Math.Ceiling(size.Height * iconratio), gap = icon_size / 2, gapI = gap / 2, gapy = Gap == null ? gapI : (int)(Gap * Config.Dpi), height = size.Height + gap * 2;
                 if (mode == TMenuMode.Horizontal) ChangeListHorizontal(rect, g, lists, 0, icon_size, gap, gapI);
                 else
                 {
                     collapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
-                    collapsedWidth = ChangeList(rect, g, null, lists, ref y, ref icon_count, height, icon_size, gap, gapI, 0) + Padding.Horizontal;
+                    collapsedWidth = ChangeList(rect, g, null, lists, ref y, ref icon_count, height, icon_size, gap, gapy, 0) + Padding.Horizontal;
                     if (AutoCollapse)
                     {
                         if (icon_count > 0) collapsed = collapsedWidth >= _rect.Width;
@@ -461,7 +467,7 @@ namespace AntdUI
             return _rect;
         }
 
-        int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapI, int depth)
+        int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapy, int depth)
         {
             int collapsedWidth = 0;
             foreach (var it in items)
@@ -474,17 +480,17 @@ namespace AntdUI
                 {
                     int size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
                     if (size > collapsedWidth) collapsedWidth = size;
-                    y += height + gapI;
+                    y += height + gapy;
                     if (mode == TMenuMode.Inline && it.CanExpand)
                     {
                         if (!collapsed)
                         {
                             int y_item = y;
 
-                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
+                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapy, depth + 1);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
 
-                            it.SubY = y_item - gapI / 2;
+                            it.SubY = y_item - gapy / 2;
                             it.SubHeight = y - y_item;
 
                             if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
@@ -497,7 +503,7 @@ namespace AntdUI
                         else
                         {
                             int oldy = y;
-                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapI, depth + 1);
+                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, ref icon_count, height, icon_size, gap, gapy, depth + 1);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
                             y = oldy;
                         }

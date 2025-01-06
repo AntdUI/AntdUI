@@ -40,6 +40,7 @@ namespace AntdUI
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
+            actionRender = (handle, alpha, bmp, rect) => Win32.SetBits(bmp, rect, handle, alpha);
             actionLoadMessage = LoadMessage;
             actionCursor = val => SetCursor(val);
             renderQueue = new RenderQueue(this);
@@ -103,14 +104,8 @@ namespace AntdUI
         /// <summary>
         /// 目标区域
         /// </summary>
-        public Rectangle TargetRect
-        {
-            get => target_rect;
-        }
-        public Rectangle TargetRectXY
-        {
-            get => new Rectangle(0, 0, target_rect.Width, target_rect.Height);
-        }
+        public Rectangle TargetRect => target_rect;
+        public Rectangle TargetRectXY => new Rectangle(0, 0, target_rect.Width, target_rect.Height);
 
         public void SetRect(Rectangle rect)
         {
@@ -190,30 +185,19 @@ namespace AntdUI
             catch { }
         }
 
-        void Render(IntPtr handle, Bitmap bmp)
-        {
-            try
-            {
-                Win32.SetBits(bmp, target_rect, handle, alpha);
-            }
-            catch { }
-        }
-
-        void Render(IntPtr handle, byte alpha, Bitmap bmp)
-        {
-            try
-            {
-                Win32.SetBits(bmp, target_rect, handle, alpha);
-            }
-            catch
-            { }
-        }
-
+        Action<IntPtr, byte, Bitmap, Rectangle> actionRender;
+        void Render(IntPtr handle, Bitmap bmp) => Render(handle, alpha, bmp, target_rect);
+        void Render(IntPtr handle, byte alpha, Bitmap bmp) => Render(handle, alpha, bmp, target_rect);
         void Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
         {
             try
             {
-                Win32.SetBits(bmp, rect, handle, alpha);
+                if (InvokeRequired)
+                {
+                    Invoke(actionRender, handle, alpha, bmp, rect);
+                    return;
+                }
+                else actionRender(handle, alpha, bmp, rect);
             }
             catch { }
         }
@@ -587,7 +571,7 @@ namespace AntdUI
                             else call.Render(handle, cmd.alpha, cmd.bmp);
                         }
                     }
-                    if (count > 0) call.Render();
+                    if (count > 0 && call.CanRender(out var handle2)) call.Render(handle2);
                     if (isDispose) return;
                     if (Event.ResetWait()) return;
                 }

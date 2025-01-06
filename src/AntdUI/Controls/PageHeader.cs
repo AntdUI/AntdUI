@@ -76,7 +76,7 @@ namespace AntdUI
         public bool UseTextBold { get; set; } = true;
 
         [Description("副标题居中"), Category("外观"), DefaultValue(false)]
-        public bool UseSubCenter { get; set; } = true;
+        public bool UseSubCenter { get; set; }
 
         string? desc = null;
         [Description("副标题"), Category("外观"), DefaultValue(null)]

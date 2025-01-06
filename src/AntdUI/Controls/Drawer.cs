@@ -73,7 +73,7 @@ namespace AntdUI
                     {
                         System.Threading.Thread.Sleep(220);
                         if (frm.isclose) return;
-                        config.Form.Invoke(new Action(() =>
+                        config.Form.BeginInvoke(new Action(() =>
                         {
                             frm.Show(mask);
                         }));

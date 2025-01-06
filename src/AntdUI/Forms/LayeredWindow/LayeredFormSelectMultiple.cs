@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -30,6 +31,7 @@ namespace AntdUI
         internal List<object> selectedValue;
         int r_w = 0;
         List<ObjectItem> Items;
+        ObjectItemSearch[]? ItemsSearch;
         public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, IList<object> items, string filtertext)
         {
             control.Parent.SetTopMost(Handle);
@@ -247,6 +249,7 @@ namespace AntdUI
 
         public override void TextChange(string val)
         {
+            ItemsSearch = null;
             int count = 0;
             if (string.IsNullOrEmpty(val))
             {
@@ -262,17 +265,19 @@ namespace AntdUI
             }
             else
             {
-                val = val.ToLower();
                 int showcount = 0;
+                var listSearch = new List<ObjectItemSearch>(Items.Count);
                 for (int i = 0; i < Items.Count; i++)
                 {
                     var it = Items[i];
                     if (it.ID > -1)
                     {
-                        if (it.Contains(val))
+                        int score = it.Contains(val, out var select);
+                        if (score > 0)
                         {
+                            listSearch.Add(new ObjectItemSearch(score, it));
                             showcount++;
-                            if (it.Text.ToLower() == val)
+                            if (select)
                             {
                                 it.Hover = true;
                                 hoveindex = i;
@@ -293,6 +298,11 @@ namespace AntdUI
                             }
                         }
                     }
+                }
+                if (listSearch.Count > 0)
+                {
+                    listSearch.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                    ItemsSearch = listSearch.ToArray();
                 }
                 nodata = showcount == 0;
             }
@@ -315,7 +325,7 @@ namespace AntdUI
                         gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                         text_height = size.Height, item_height = text_height + gap_y2;
                         y += gap;
-                        foreach (var it in Items)
+                        ForEach(it =>
                         {
                             if (it.ID > -1 && it.Show)
                             {
@@ -325,8 +335,7 @@ namespace AntdUI
                                 it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
                                 y += item_height;
                             }
-                        }
-
+                        });
                         var vr = item_height * list_count;
                         if (list_count > MaxCount)
                         {
@@ -354,6 +363,7 @@ namespace AntdUI
         }
         internal int TextChangeCore(string val)
         {
+            ItemsSearch = null;
             if (string.IsNullOrEmpty(val))
             {
                 nodata = false;
@@ -361,17 +371,19 @@ namespace AntdUI
             }
             else
             {
-                val = val.ToLower();
                 int showcount = 0;
+                var listSearch = new List<ObjectItemSearch>(Items.Count);
                 for (int i = 0; i < Items.Count; i++)
                 {
                     var it = Items[i];
                     if (it.ID > -1)
                     {
-                        if (it.Contains(val))
+                        int score = it.Contains(val, out var select);
+                        if (score > 0)
                         {
+                            listSearch.Add(new ObjectItemSearch(score, it));
                             showcount++;
-                            if (it.Text.ToLower() == val)
+                            if (select)
                             {
                                 it.Hover = true;
                                 hoveindex = i;
@@ -380,6 +392,11 @@ namespace AntdUI
                         }
                         else it.Show = false;
                     }
+                }
+                if (listSearch.Count > 0)
+                {
+                    listSearch.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                    ItemsSearch = listSearch.ToArray();
                 }
                 nodata = showcount == 0;
             }
@@ -395,7 +412,7 @@ namespace AntdUI
                     gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                     text_height = size.Height, item_height = text_height + gap_y2;
                     y += gap;
-                    foreach (var it in Items)
+                    ForEach(it =>
                     {
                         if (it.ID > -1 && it.Show)
                         {
@@ -405,8 +422,7 @@ namespace AntdUI
                             it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
                             y += item_height;
                         }
-                    }
-
+                    });
                     var vr = item_height * list_count;
                     if (list_count > MaxCount)
                     {
@@ -422,6 +438,18 @@ namespace AntdUI
                     }
                 });
                 return y + 10;
+            }
+        }
+
+        void ForEach(Action<ObjectItem> action)
+        {
+            if (ItemsSearch == null)
+            {
+                foreach (var it in Items) action(it);
+            }
+            else
+            {
+                foreach (var it in ItemsSearch) action(it.Value);
             }
         }
 
@@ -458,7 +486,8 @@ namespace AntdUI
                 {
                     if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
                     {
-                        OnClick(it); return;
+                        OnClick(it);
+                        return;
                     }
                 }
             }
