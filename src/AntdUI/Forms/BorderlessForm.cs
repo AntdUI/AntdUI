@@ -152,6 +152,23 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 确定窗体是否出现在 Windows 任务栏中
+        /// </summary>
+        [Description("确定窗体是否出现在 Windows 任务栏中"), Category("行为"), DefaultValue(true)]
+        public new bool ShowInTaskbar
+        {
+            get => base.ShowInTaskbar;
+            set
+            {
+                if (base.ShowInTaskbar == value) return;
+                if (InvokeRequired) { Invoke(new Action(() => base.ShowInTaskbar = value)); }
+                else base.ShowInTaskbar = value;
+                oldmargin = 0;
+                DwmArea();
+            }
+        }
+
         #endregion
 
         #region 重载事件
