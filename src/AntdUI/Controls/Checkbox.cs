@@ -34,6 +34,8 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Checkbox : IControl, IEventListener
     {
+        public Checkbox() : base(ControlType.Select) { }
+
         #region 属性
 
         Color? fore;

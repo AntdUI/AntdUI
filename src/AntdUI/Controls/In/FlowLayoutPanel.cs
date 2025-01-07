@@ -29,12 +29,10 @@ namespace AntdUI.In
         public FlowLayoutPanel()
         {
             SetStyle(
-                ControlStyles.Selectable |
                 ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.OptimizedDoubleBuffer |
                 ControlStyles.DoubleBuffer |
                 ControlStyles.ResizeRedraw |
-                ControlStyles.ContainerControl |
                 ControlStyles.UserPaint, true);
             UpdateStyles();
             scrollY = new ScrollY(this);

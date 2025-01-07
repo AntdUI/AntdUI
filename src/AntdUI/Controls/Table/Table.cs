@@ -648,7 +648,7 @@ namespace AntdUI
 
         #region 初始化
 
-        public Table() { ScrollBar = new ScrollBar(this, true, true, radius, !visibleHeader); }
+        public Table() : base(ControlType.Select) { ScrollBar = new ScrollBar(this, true, true, radius, !visibleHeader); }
 
         protected override void Dispose(bool disposing)
         {

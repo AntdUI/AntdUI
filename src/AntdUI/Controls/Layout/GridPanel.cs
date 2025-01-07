@@ -35,10 +35,7 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class GridPanel : IControl
     {
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.DeflateRect(Padding);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding);
 
         /// <summary>
         /// 跨度

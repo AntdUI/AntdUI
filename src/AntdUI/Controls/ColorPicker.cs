@@ -35,7 +35,7 @@ namespace AntdUI
     [DefaultEvent("ValueChanged")]
     public class ColorPicker : IControl, SubLayeredForm
     {
-        public ColorPicker()
+        public ColorPicker() : base(ControlType.Select)
         {
             base.BackColor = Color.Transparent;
         }

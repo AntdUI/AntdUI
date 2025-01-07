@@ -35,6 +35,8 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Radio : IControl, IEventListener
     {
+        public Radio() : base(ControlType.Select) { }
+
         #region 属性
 
         Color? fore;

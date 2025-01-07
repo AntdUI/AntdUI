@@ -28,18 +28,43 @@ namespace AntdUI
     [Localizable(true)]
     public class IControl : Control, BadgeConfig
     {
-        public IControl()
+        public IControl(ControlType ctype = ControlType.Default)
         {
-            SetStyle(
-               ControlStyles.AllPaintingInWmPaint |
-               ControlStyles.OptimizedDoubleBuffer |
-               ControlStyles.ResizeRedraw |
-               ControlStyles.DoubleBuffer |
-               ControlStyles.SupportsTransparentBackColor |
-               ControlStyles.ContainerControl |
-               ControlStyles.UserPaint, true);
+            switch (ctype)
+            {
+                case ControlType.Default:
+                    SetStyle(
+                       ControlStyles.AllPaintingInWmPaint |
+                       ControlStyles.OptimizedDoubleBuffer |
+                       ControlStyles.ResizeRedraw |
+                       ControlStyles.DoubleBuffer |
+                       ControlStyles.SupportsTransparentBackColor |
+                       ControlStyles.UserPaint, true);
+                    SetStyle(ControlStyles.ContainerControl | ControlStyles.Selectable, false);
+                    break;
+                case ControlType.Select:
+                    SetStyle(ControlStyles.ContainerControl | ControlStyles.Selectable |
+                       ControlStyles.AllPaintingInWmPaint |
+                       ControlStyles.OptimizedDoubleBuffer |
+                       ControlStyles.ResizeRedraw |
+                       ControlStyles.DoubleBuffer |
+                       ControlStyles.SupportsTransparentBackColor |
+                       ControlStyles.UserPaint, true);
+                    break;
+                case ControlType.Button:
+                    SetStyle(ControlStyles.ContainerControl | ControlStyles.Selectable |
+                       ControlStyles.AllPaintingInWmPaint |
+                       ControlStyles.OptimizedDoubleBuffer |
+                       ControlStyles.ResizeRedraw |
+                       ControlStyles.DoubleBuffer |
+                       ControlStyles.SupportsTransparentBackColor |
+                       ControlStyles.UserPaint, true);
+                    SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
+                    break;
+            }
             UpdateStyles();
         }
+
 
         #region 属性
 
@@ -613,6 +638,20 @@ namespace AntdUI
         }
 
         #endregion
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            string name = GetType().Name;
+            System.Diagnostics.Debug.WriteLine(Name + "|" + name);
+        }
+    }
+
+    public enum ControlType
+    {
+        Default,
+        Select,
+        Button
     }
 
     public enum CursorType

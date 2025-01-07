@@ -122,16 +122,18 @@ namespace AntdUI
                 int SIZE = 20;
 
                 ScrollRect = new Rectangle(rect_read.Right - SIZE, rect_read.Y, SIZE, rect_read.Height);
-                var color = Color.FromArgb(10, Colour.TextBase.Get("Input"));
-                if (JoinRight) g.Fill(color, ScrollRect);
-                else
+                if (IsPaintScroll())
                 {
-                    using (var pathScroll = Helper.RoundPath(ScrollRect, _radius, false, true, true, false))
+                    var color = Color.FromArgb(10, Colour.TextBase.Get("Input"));
+                    if (JoinRight) g.Fill(color, ScrollRect);
+                    else
                     {
-                        g.Fill(color, pathScroll);
+                        using (var pathScroll = Helper.RoundPath(ScrollRect, _radius, false, true, true, false))
+                        {
+                            g.Fill(color, pathScroll);
+                        }
                     }
                 }
-
                 float val = scrolly, VrValue = ScrollYMax + ScrollRect.Height;
                 float height = ((ScrollRect.Height / VrValue) * ScrollRect.Height) - 20;
                 if (height < SIZE) height = SIZE;
@@ -145,6 +147,12 @@ namespace AntdUI
                     g.Fill(Color.FromArgb(141, Colour.TextBase.Get("Input")), path);
                 }
             }
+        }
+
+        bool IsPaintScroll()
+        {
+            if (Config.ScrollBarHide) return ExtraMouseHover;
+            else return true;
         }
 
         #region 渲染帮助

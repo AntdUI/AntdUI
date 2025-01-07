@@ -35,9 +35,8 @@ namespace AntdUI
     [DefaultProperty("Text")]
     public class Button : IControl, IButtonControl, IEventListener
     {
-        public Button()
+        public Button() : base(ControlType.Button)
         {
-            SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
             base.BackColor = Color.Transparent;
         }
 

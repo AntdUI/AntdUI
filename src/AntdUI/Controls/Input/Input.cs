@@ -36,11 +36,9 @@ namespace AntdUI
     [DefaultEvent("TextChanged")]
     public partial class Input : IControl
     {
-        public Input()
+        public Input() : base(ControlType.Select)
         {
             base.BackColor = Color.Transparent;
-            SetStyle(ControlStyles.Selectable, true);
-            UpdateStyles();
             CaretInfo = new ICaret(this);
         }
 
