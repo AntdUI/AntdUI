@@ -680,10 +680,13 @@ namespace AntdUI
         #region 展开
 
         ITask? ThreadExpand = null;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category("外观"), Description("展开进度"), DefaultValue(0F)]
         internal float ExpandProg { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category("外观"), Description("展开状态"), DefaultValue(false)]
         internal bool ExpandThread { get; set; }
 
         bool expand = false;

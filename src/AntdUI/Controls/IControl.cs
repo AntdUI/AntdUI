@@ -65,7 +65,6 @@ namespace AntdUI
             UpdateStyles();
         }
 
-
         #region 属性
 
         bool visible = true;
@@ -638,13 +637,6 @@ namespace AntdUI
         }
 
         #endregion
-
-        protected override void OnGotFocus(EventArgs e)
-        {
-            base.OnGotFocus(e);
-            string name = GetType().Name;
-            System.Diagnostics.Debug.WriteLine(Name + "|" + name);
-        }
     }
 
     public enum ControlType

@@ -49,7 +49,7 @@ namespace AntdUI
                     else if (has_icon) return new Size(size.Width + gap2 + (int)Math.Ceiling(size.Height * 1.2F), height);
                     else return new Size(size.Width + gap2 + (int)Math.Ceiling(size.Height * .8F), height);
                 }
-                else return new Size(size.Width, size.Height);
+                else return new Size(size.Width + gap, size.Height + gap);
             }
         }
 

@@ -310,10 +310,11 @@ namespace AntdUI
                 else rect_read = new Rectangle(_rect.X + DotS, _rect.Y + (_rect.Height - LineSize) / 2, _rect.Width - DotS2, LineSize);
             }
 
-            Color color = Enabled ? fill ?? Colour.InfoBorder.Get("Slider") : Colour.FillTertiary.Get("Slider"), color_dot = Enabled ? fill ?? Colour.InfoBorder.Get("Slider") : Colour.SliderHandleColorDisabled.Get("Slider"), color_hover = FillHover ?? Colour.InfoHover.Get("Slider"), color_active = FillActive ?? Colour.Primary.Get("Slider");
+            var enabled = Enabled;
+            Color color = enabled ? fill ?? Colour.InfoBorder.Get("Slider") : Colour.FillTertiary.Get("Slider"), color_dot = enabled ? fill ?? Colour.InfoBorder.Get("Slider") : Colour.SliderHandleColorDisabled.Get("Slider"), color_hover = FillHover ?? Colour.InfoHover.Get("Slider"), color_active = FillActive ?? Colour.Primary.Get("Slider");
 
             var g = e.Graphics.High();
-            IPaint(g, _rect, Enabled, color, color_dot, color_hover, color_active);
+            IPaint(g, _rect, enabled, color, color_dot, color_hover, color_active);
             this.PaintBadge(g);
             base.OnPaint(e);
         }

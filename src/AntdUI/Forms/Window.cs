@@ -89,8 +89,11 @@ namespace AntdUI
                 if (base.ShowInTaskbar == value) return;
                 if (InvokeRequired) { Invoke(new Action(() => base.ShowInTaskbar = value)); }
                 else base.ShowInTaskbar = value;
-                oldmargin = 0;
-                DwmArea();
+                if (IsHandleCreated)
+                {
+                    oldmargin = 0;
+                    DwmArea();
+                }
             }
         }
 
