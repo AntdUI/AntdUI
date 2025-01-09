@@ -20,7 +20,7 @@ DatePicker 日期选择框 👚
 **MaxDate** 🔴 | 最大日期 | DateTime`?` | `null` |
 **Presets** | 预置菜单 | object[] | [] |
 ||||
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum#talignfrom) | BL |
+**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **ShowIcon** | 是否显示图标 | bool | true |
 
@@ -75,7 +75,7 @@ DatePickerRange 日期范围选择框 👚
 **PlaceholderStart** | 显示的水印文本S | string`?` | `null` |
 **PlaceholderEnd** | 显示的水印文本E | string`?` | `null` |
 **SwapSvg** 🔴 | 交换图标SVG | string`?` | `null` |
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum#talignfrom) | BL |
+**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **ShowIcon** | 是否显示图标 | bool | true |
 

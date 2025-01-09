@@ -50,11 +50,12 @@ namespace Demo.Controls
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
-            panel2 = new System.Windows.Forms.Panel();
+            panel1 = new FlowLayoutPanel();
+            button3 = new AntdUI.Button();
             button2 = new AntdUI.Button();
             button1 = new AntdUI.Button();
             divider1 = new AntdUI.Divider();
-            panel2.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
@@ -72,34 +73,49 @@ namespace Demo.Controls
             header1.Text = "Preview 图片预览";
             header1.UseTitleFont = true;
             // 
-            // panel2
+            // panel1
             // 
-            panel2.Controls.Add(button2);
-            panel2.Controls.Add(button1);
-            panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 102);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(614, 62);
-            panel2.TabIndex = 6;
+            panel1.Controls.Add(button1);
+            panel1.Controls.Add(button2);
+            panel1.Controls.Add(button3);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 102);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(614, 62);
+            panel1.TabIndex = 2;
+            // 
+            // button3
+            // 
+            button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button3.BorderWidth = 1F;
+            button3.LocalizationText = "Preview.{id}";
+            button3.Location = new Point(347, 3);
+            button3.Name = "button3";
+            button3.Size = new Size(133, 47);
+            button3.TabIndex = 1;
+            button3.Text = "动态加载图片";
+            button3.Click += button3_Click;
             // 
             // button2
             // 
+            button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button2.BorderWidth = 1F;
             button2.LocalizationText = "Preview.{id}";
-            button2.Location = new Point(169, 3);
+            button2.Location = new Point(175, 3);
             button2.Name = "button2";
-            button2.Size = new Size(160, 41);
+            button2.Size = new Size(166, 47);
             button2.TabIndex = 0;
             button2.Text = "弹出多张图片预览";
             button2.Click += button2_Click;
             // 
             // button1
             // 
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.BorderWidth = 1F;
             button1.LocalizationText = "Preview.{id}";
             button1.Location = new Point(3, 3);
             button1.Name = "button1";
-            button1.Size = new Size(160, 41);
+            button1.Size = new Size(166, 47);
             button1.TabIndex = 0;
             button1.Text = "弹出一张图片预览";
             button1.Click += button1_Click;
@@ -118,21 +134,23 @@ namespace Demo.Controls
             // 
             // Preview
             // 
-            Controls.Add(panel2);
+            Controls.Add(panel1);
             Controls.Add(divider1);
             Controls.Add(header1);
             Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Preview";
             Size = new Size(614, 446);
-            panel2.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
         private AntdUI.PageHeader header1;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.FlowLayoutPanel panel1;
         private AntdUI.Divider divider1;
         private AntdUI.Button button1;
         private AntdUI.Button button2;
+        private AntdUI.Button button3;
     }
 }

@@ -31,7 +31,7 @@ namespace AntdUI
             {
                 var size = g.MeasureString(Config.NullText, font);
                 int sizei = size.Height + gap;
-                return new Size(sizei + gap2, sizei);
+                return new Size(sizei, sizei);
             }
             else
             {
@@ -45,11 +45,11 @@ namespace AntdUI
                         return new Size(size.Width + gap2 * 2 + size_read, size.Height + gap + size_read);
                     }
                     int height = size.Height + gap;
-                    if (has_icon && ShowArrow) return new Size(size.Width + gap2 * 2 + size.Height * 2, height);
-                    else if (has_icon) return new Size(size.Width + gap2 * 2 + (int)Math.Ceiling(size.Height * 1.2F), height);
-                    else return new Size(size.Width + gap2 * 2 + (int)Math.Ceiling(size.Height * .8F), height);
+                    if (has_icon && ShowArrow) return new Size(size.Width + gap2 + size.Height * 2, height);
+                    else if (has_icon) return new Size(size.Width + gap2 + (int)Math.Ceiling(size.Height * 1.2F), height);
+                    else return new Size(size.Width + gap2 + (int)Math.Ceiling(size.Height * .8F), height);
                 }
-                else return new Size(size.Width + gap2 * 2, size.Height + gap);
+                else return new Size(size.Width + gap, size.Height + gap);
             }
         }
 

@@ -21,7 +21,7 @@ UploadDragger 拖拽上传 👚
 **Back** | 背景颜色 | Color`?` | `null` |
 ||||
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
-**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum#tfit) | Fill |
+**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
 ||||
 **IconRatio** | 图标比例 | float | 1.92F |
 **Icon** | 图标 | Image`?` | `null` |

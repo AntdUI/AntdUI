@@ -158,6 +158,7 @@ namespace AntdUI
             {
                 if (Text != null)
                 {
+                    var enabled = Enabled;
                     if (Vertical)
                     {
                         var text_ = string.Join(Environment.NewLine, Text.ToCharArray());
@@ -173,13 +174,13 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y + f_margin + font_margin, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(x, rect.Y, thickness, f_margin));
                                     g.Fill(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, rect.Height - size.Height - f_margin - font_margin * 2F));
-                                    g.String(text_, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f);
+                                    g.String(text_, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, rect.Height - size.Height - font_margin));
-                                    g.String(text_, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f);
+                                    g.String(text_, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f);
                                 }
                                 break;
                             case TOrientation.Right:
@@ -188,20 +189,20 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Bottom - size.Height - f_margin - font_margin, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(x, rect.Y, thickness, rect.Height - size.Height - f_margin - font_margin * 2F));
                                     g.Fill(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, f_margin));
-                                    g.String(text_, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f);
+                                    g.String(text_, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Bottom - size.Height, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(x, rect.Y, thickness, rect.Height - size.Height - font_margin));
-                                    g.String(text_, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f);
+                                    g.String(text_, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f);
                                 }
                                 break;
                             default:
                                 float f_h = (rect.Height - size.Height) / 2 - f_margin - font_margin;
                                 g.Fill(brush, new RectangleF(x, rect.Y, thickness, f_h));
                                 g.Fill(brush, new RectangleF(x, rect.Y + f_h + size.Height + (f_margin + font_margin) * 2F, thickness, f_h));
-                                g.String(text_, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), _rect, s_f);
+                                g.String(text_, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), _rect, s_f);
                                 break;
                         }
                     }
@@ -218,13 +219,13 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.X + f_margin + font_margin, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(rect.X, y, f_margin, thickness));
                                     g.Fill(brush, new RectangleF(font_irect.Right + font_margin, y, rect.Width - size.Width - f_margin - font_margin * 2F, thickness));
-                                    g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f_all);
+                                    g.String(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f_all);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(font_irect.Right + font_margin, y, rect.Width - size.Width - font_margin, thickness));
-                                    g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f_all);
+                                    g.String(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f_all);
                                 }
                                 break;
                             case TOrientation.Right:
@@ -233,20 +234,20 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.Right - size.Width - f_margin - font_margin, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(rect.X, y, rect.Width - size.Width - f_margin - font_margin * 2F, thickness));
                                     g.Fill(brush, new RectangleF(font_irect.Right + font_margin, y, f_margin, thickness));
-                                    g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f_all);
+                                    g.String(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f_all);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.Right - size.Width, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(rect.X, y, rect.Width - size.Width - font_margin, thickness));
-                                    g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f_all);
+                                    g.String(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), font_irect, s_f_all);
                                 }
                                 break;
                             default:
                                 float f_w = (rect.Width - size.Width) / 2 - f_margin - font_margin;
                                 g.Fill(brush, new RectangleF(rect.X, y, f_w, thickness));
                                 g.Fill(brush, new RectangleF(rect.X + f_w + size.Width + (f_margin + font_margin) * 2F, y, f_w, thickness));
-                                g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), _rect, s_f_all);
+                                g.String(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider"), _rect, s_f_all);
                                 break;
                         }
                     }

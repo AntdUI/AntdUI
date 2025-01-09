@@ -815,8 +815,7 @@ namespace AntdUI
             {
                 if (_mouseHover == value) return;
                 _mouseHover = value;
-                var enabled = Enabled;
-                SetCursor(value && enabled);
+                SetCursor(value && Enabled);
                 if (!value && autoplay) now = DateTime.Now.AddSeconds(Autodelay);
             }
         }

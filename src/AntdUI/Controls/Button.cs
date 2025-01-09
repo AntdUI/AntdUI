@@ -35,9 +35,8 @@ namespace AntdUI
     [DefaultProperty("Text")]
     public class Button : IControl, IButtonControl, IEventListener
     {
-        public Button()
+        public Button() : base(ControlType.Button)
         {
-            SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
             base.BackColor = Color.Transparent;
         }
 
@@ -379,7 +378,7 @@ namespace AntdUI
             set
             {
                 if (textAlign == value) return;
-                if (loading || HasIcon || showArrow)
+                if ((loading && LoadingValue > -1) || HasIcon || showArrow)
                 {
                     value = ContentAlignment.MiddleCenter;
                     if (textAlign == value) return;
@@ -818,6 +817,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 加载响应点击
+        /// </summary>
+        [Description("加载响应点击"), Category("行为"), DefaultValue(false)]
+        public bool LoadingRespondClick { get; set; }
+
+        /// <summary>
         /// 加载进度
         /// </summary>
         [Description("加载进度"), Category("加载"), DefaultValue(0.3F)]
@@ -956,8 +961,9 @@ namespace AntdUI
             {
                 if (_mouseHover == value) return;
                 _mouseHover = value;
-                SetCursor(value && Enabled && !loading);
-                if (Enabled)
+                bool enabled = Enabled;
+                SetCursor(value && enabled && !loading);
+                if (enabled)
                 {
                     var backHover = GetColorO();
                     int alpha = backHover.A;
@@ -1096,13 +1102,15 @@ namespace AntdUI
 
         #region 渲染
 
+        bool init = false;
         protected override void OnPaint(PaintEventArgs e)
         {
+            init = true;
             var g = e.Graphics.High();
             Rectangle rect = ClientRectangle.PaddingRect(Padding), rect_read = ReadRectangle;
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
-            bool is_default = type == TTypeMini.Default;
+            bool is_default = type == TTypeMini.Default, enabled = Enabled;
             if (toggle && typeToggle.HasValue) is_default = typeToggle.Value == TTypeMini.Default;
             if (is_default)
             {
@@ -1129,23 +1137,11 @@ namespace AntdUI
 
                     #endregion
 
-                    if (Enabled)
+                    if (enabled)
                     {
                         if (!ghost)
                         {
-                            #region 绘制阴影
-
-                            if (WaveSize > 0)
-                            {
-                                using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
-                                {
-                                    path_shadow.AddPath(path, false);
-                                    g.Fill(Colour.FillQuaternary.Get("Button"), path_shadow);
-                                }
-                            }
-
-                            #endregion
-
+                            if (WaveSize > 0) PaintShadow(g, rect_read, path, Colour.FillQuaternary.Get("Button"), _radius);
                             g.Fill(defaultback ?? Colour.DefaultBg.Get("Button"), path);
                         }
                         if (borderWidth > 0)
@@ -1155,24 +1151,24 @@ namespace AntdUI
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, Text, _back_active, rect_read);
+                                PaintTextLoading(g, Text, _back_active, rect_read, enabled, _radius);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
                                 g.Draw(Colour.DefaultBorder.Get("Button").BlendColors(colorHover), border, path);
-                                PaintTextLoading(g, Text, _fore.BlendColors(colorHover), rect_read);
+                                PaintTextLoading(g, Text, _fore.BlendColors(colorHover), rect_read, enabled, _radius);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, Text, _back_hover, rect_read);
+                                PaintTextLoading(g, Text, _back_hover, rect_read, enabled, _radius);
                             }
                             else
                             {
                                 if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, border, path);
                                 else g.Draw(defaultbordercolor ?? Colour.DefaultBorder.Get("Button"), border, path);
-                                PaintTextLoading(g, Text, _fore, rect_read);
+                                PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
                             }
                         }
                         else
@@ -1181,14 +1177,14 @@ namespace AntdUI
                             else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
                             else if (ExtraMouseHover) g.Fill(_back_hover, path);
                             PaintLoadingWave(g, path, rect_read);
-                            PaintTextLoading(g, Text, _fore, rect_read);
+                            PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
                         }
                     }
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
                         if (!ghost) g.Fill(Colour.FillTertiary.Get("Button"), path);
-                        PaintTextLoading(g, Text, Colour.TextQuaternary.Get("Button"), rect_read);
+                        PaintTextLoading(g, Text, Colour.TextQuaternary.Get("Button"), rect_read, enabled, _radius);
                     }
                 }
             }
@@ -1229,22 +1225,22 @@ namespace AntdUI
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, Text, _back_active, rect_read);
+                                PaintTextLoading(g, Text, _back_active, rect_read, enabled, _radius);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                g.Draw((Enabled ? _back : Colour.FillTertiary.Get("Button")).BlendColors(colorHover), border, path);
-                                PaintTextLoading(g, Text, _back.BlendColors(colorHover), rect_read);
+                                g.Draw((enabled ? _back : Colour.FillTertiary.Get("Button")).BlendColors(colorHover), border, path);
+                                PaintTextLoading(g, Text, _back.BlendColors(colorHover), rect_read, enabled, _radius);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, Text, _back_hover, rect_read);
+                                PaintTextLoading(g, Text, _back_hover, rect_read, enabled, _radius);
                             }
                             else
                             {
-                                if (Enabled)
+                                if (enabled)
                                 {
                                     if (toggle)
                                     {
@@ -1262,31 +1258,20 @@ namespace AntdUI
                                     }
                                 }
                                 else g.Draw(Colour.FillTertiary.Get("Button"), border, path);
-                                PaintTextLoading(g, Text, Enabled ? _back : Colour.TextQuaternary.Get("Button"), rect_read);
+                                PaintTextLoading(g, Text, enabled ? _back : Colour.TextQuaternary.Get("Button"), rect_read, enabled, _radius);
                             }
                         }
-                        else PaintTextLoading(g, Text, Enabled ? _back : Colour.TextQuaternary.Get("Button"), rect_read);
+                        else PaintTextLoading(g, Text, enabled ? _back : Colour.TextQuaternary.Get("Button"), rect_read, enabled, _radius);
 
                         #endregion
                     }
                     else
                     {
-                        #region 绘制阴影
-
-                        if (Enabled && WaveSize > 0)
-                        {
-                            using (var path_shadow = new RectangleF(rect_read.X, rect_read.Y + 3, rect_read.Width, rect_read.Height).RoundPath(_radius))
-                            {
-                                path_shadow.AddPath(path, false);
-                                g.Fill(_back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), path_shadow);
-                            }
-                        }
-
-                        #endregion
+                        if (enabled && WaveSize > 0) PaintShadow(g, rect_read, path, _back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), _radius);
 
                         #region 绘制背景
 
-                        if (Enabled)
+                        if (enabled)
                         {
                             if (toggle)
                             {
@@ -1312,7 +1297,7 @@ namespace AntdUI
                         #endregion
 
                         PaintLoadingWave(g, path, rect_read);
-                        PaintTextLoading(g, Text, Enabled ? _fore : Colour.TextQuaternary.Get("Button"), rect_read);
+                        PaintTextLoading(g, Text, enabled ? _fore : Colour.TextQuaternary.Get("Button"), rect_read, enabled, _radius);
                     }
                 }
             }
@@ -1321,6 +1306,19 @@ namespace AntdUI
         }
 
         #region 渲染帮助
+
+        /// <summary>
+        /// 绘制阴影
+        /// </summary>
+        void PaintShadow(Canvas g, Rectangle rect, GraphicsPath path, Color color, float radius)
+        {
+            float wave = (WaveSize * Config.Dpi / 2);
+            using (var path_shadow = new RectangleF(rect.X, rect.Y + wave, rect.Width, rect.Height).RoundPath(radius))
+            {
+                path_shadow.AddPath(path, false);
+                g.Fill(color, path_shadow);
+            }
+        }
 
         void PaintLoadingWave(Canvas g, GraphicsPath path, Rectangle rect)
         {
@@ -1417,14 +1415,23 @@ namespace AntdUI
                 }
             }
         }
-        void PaintTextLoading(Canvas g, string? text, Color color, Rectangle rect_read)
+        void PaintTextLoading(Canvas g, string? text, Color color, Rectangle rect_read, bool enabled, float radius)
         {
+            if (enabled && hasFocus && WaveSize > 0)
+            {
+                float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2;
+                using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(radius + wave))
+                {
+                    g.Draw(Colour.PrimaryBorder.Get("Button"), wave, path_focus);
+                }
+            }
+            bool has_loading = loading && LoadingValue > -1;
             var font_size = g.MeasureString(text ?? Config.NullText, Font);
             if (text == null)
             {
                 //没有文字
                 var rect = GetIconRectCenter(font_size, rect_read);
-                if (loading)
+                if (has_loading)
                 {
                     float loading_size = rect_read.Height * 0.06F;
                     using (var brush = new Pen(color, loading_size))
@@ -1435,7 +1442,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (PaintIcon(g, color, rect, false, Enabled) && showArrow)
+                    if (PaintIcon(g, color, rect, false, enabled) && showArrow)
                     {
                         int size = (int)(font_size.Height * IconRatio);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
@@ -1445,7 +1452,7 @@ namespace AntdUI
             }
             else
             {
-                bool has_left = loading || HasIcon, has_right = showArrow;
+                bool has_left = has_loading || HasIcon, has_right = showArrow;
                 Rectangle rect_text;
                 if (has_left || has_right)
                 {
@@ -1453,7 +1460,7 @@ namespace AntdUI
                     {
                         rect_text = RectAlignLR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
 
-                        if (loading)
+                        if (has_loading)
                         {
                             float loading_size = rect_l.Height * .14F;
                             using (var brush = new Pen(color, loading_size))
@@ -1462,14 +1469,14 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
-                        else PaintIcon(g, color, rect_l, true, Enabled);
+                        else PaintIcon(g, color, rect_l, true, enabled);
 
                         PaintTextArrow(g, rect_r, color);
                     }
                     else if (has_left)
                     {
                         rect_text = RectAlignL(g, textLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
-                        if (loading)
+                        if (has_loading)
                         {
                             float loading_size = rect_l.Height * .14F;
                             using (var brush = new Pen(color, loading_size))
@@ -1478,7 +1485,7 @@ namespace AntdUI
                                 g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
                             }
                         }
-                        else PaintIcon(g, color, rect_l, true, Enabled);
+                        else PaintIcon(g, color, rect_l, true, enabled);
                     }
                     else
                     {
@@ -1709,7 +1716,7 @@ namespace AntdUI
             }
             else
             {
-                if (Enabled)
+                if (enabled)
                 {
                     if (ExtraMouseHover)
                     {
@@ -1769,18 +1776,18 @@ namespace AntdUI
 
         #endregion
 
-        public GraphicsPath Path(RectangleF rect_read, float _radius)
+        public GraphicsPath Path(RectangleF rect, float radius)
         {
             if (shape == TShape.Circle)
             {
                 var path = new GraphicsPath();
-                path.AddEllipse(rect_read);
+                path.AddEllipse(rect);
                 return path;
             }
-            if (joinLeft && joinRight) return rect_read.RoundPath(0);
-            else if (joinRight) return rect_read.RoundPath(_radius, true, false, false, true);
-            else if (joinLeft) return rect_read.RoundPath(_radius, false, true, true, false);
-            return rect_read.RoundPath(_radius);
+            if (joinLeft && joinRight) return rect.RoundPath(0);
+            else if (joinRight) return rect.RoundPath(radius, true, false, false, true);
+            else if (joinLeft) return rect.RoundPath(radius, false, true, true, false);
+            return rect.RoundPath(radius);
         }
 
         #endregion
@@ -1853,7 +1860,7 @@ namespace AntdUI
                 if (BackActive.HasValue) backActive = BackActive.Value;
             }
             if (AnimationBlinkState && colorBlink.HasValue) Color = colorBlink.Value;
-            if (loading)
+            if (loading && LoadingValue > -1)
             {
                 Fore = Color.FromArgb(165, Fore);
                 Color = Color.FromArgb(165, Color);
@@ -1871,7 +1878,7 @@ namespace AntdUI
                 if (backToggle.HasValue) Back = backToggle.Value;
                 if (ToggleBackHover.HasValue) backHover = ToggleBackHover.Value;
                 if (ToggleBackActive.HasValue) backActive = ToggleBackActive.Value;
-                if (loading) Back = Color.FromArgb(165, Back);
+                if (loading && LoadingValue > -1) Back = Color.FromArgb(165, Back);
                 return;
             }
             GetColorConfig(type, out Fore, out Back, out backHover, out backActive);
@@ -1880,7 +1887,7 @@ namespace AntdUI
             if (BackHover.HasValue) backHover = BackHover.Value;
             if (BackActive.HasValue) backActive = BackActive.Value;
             if (AnimationBlinkState && colorBlink.HasValue) back = colorBlink.Value;
-            if (loading) Back = Color.FromArgb(165, Back);
+            if (loading && LoadingValue > -1) Back = Color.FromArgb(165, Back);
         }
 
         void GetColorConfig(TTypeMini type, out Color Fore, out Color Back, out Color backHover, out Color backActive)
@@ -1921,21 +1928,16 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, shape, joinLeft, joinRight);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, shape, joinLeft, joinRight);
 
         public override GraphicsPath RenderRegion
         {
             get
             {
-                var rect_read = ReadRectangle;
-                float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
-                return Path(rect_read, _radius);
+                var rect = ReadRectangle;
+                return Path(rect, (shape == TShape.Round || shape == TShape.Circle) ? rect.Height : radius * Config.Dpi);
             }
         }
-
         #endregion
 
         #endregion
@@ -2076,7 +2078,7 @@ namespace AntdUI
                     {
                         int m = wave * 2;
                         if (joinLeft || joinRight) m = 0;
-                        bool has_icon = loading || HasIcon;
+                        bool has_icon = (loading && LoadingValue > -1) || HasIcon;
                         if (has_icon || showArrow)
                         {
                             if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
@@ -2154,10 +2156,7 @@ namespace AntdUI
         /// <summary>
         /// 是否默认按钮
         /// </summary>
-        public void NotifyDefault(bool value)
-        {
-
-        }
+        public void NotifyDefault(bool value) { }
 
         public void PerformClick()
         {
@@ -2170,7 +2169,7 @@ namespace AntdUI
 
         bool CanClick(Point e)
         {
-            if (loading) return false;
+            if (loading) return LoadingRespondClick;
             else
             {
                 if (RespondRealAreas)
@@ -2199,6 +2198,40 @@ namespace AntdUI
         {
             add => base.MouseDoubleClick += value;
             remove => base.MouseDoubleClick -= value;
+        }
+
+        #endregion
+
+        #region 焦点
+
+        bool hasFocus = false;
+        /// <summary>
+        /// 是否存在焦点
+        /// </summary>
+        [Browsable(false)]
+        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        public bool HasFocus
+        {
+            get => hasFocus;
+            private set
+            {
+                if (value && (_mouseDown || _mouseHover)) value = false;
+                if (hasFocus == value) return;
+                hasFocus = value;
+                Invalidate();
+            }
+        }
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            if (init) HasFocus = true;
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            HasFocus = false;
         }
 
         #endregion

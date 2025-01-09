@@ -153,7 +153,7 @@ namespace AntdUI
             {
                 if (loading == value) return;
                 loading = value;
-                Print();
+                Print(true);
             }
         }
 
@@ -178,6 +178,7 @@ namespace AntdUI
 
         Image? Img = null;
         int SelectIndex = 0;
+        object? SelectValue;
         Size ImgSize = new Size();
         void LoadImg()
         {
@@ -193,7 +194,8 @@ namespace AntdUI
                 if (list[1] is Func<int, object, Image?> call)
                 {
                     Img?.Dispose();
-                    Img = call.Invoke(SelectIndex, data[SelectIndex]);
+                    SelectValue = data[SelectIndex];
+                    Img = call.Invoke(SelectIndex, SelectValue);
                     if (Img == null)
                     {
                         Print();
@@ -207,23 +209,33 @@ namespace AntdUI
                     LoadingProgressStr = null;
                     _value = -1F;
                     Loading = true;
+                    int selectIndex = SelectIndex;
+                    SelectValue = data[SelectIndex];
                     ITask.Run(() =>
                     {
-                        var img = callprog.Invoke(SelectIndex, data[SelectIndex], (prog, progstr) => { LoadingProgressStr = progstr; LoadingProgress = prog; });
-                        if (img == null)
+                        var img = callprog.Invoke(SelectIndex, SelectValue, (prog, progstr) =>
                         {
+                            LoadingProgressStr = progstr;
+                            LoadingProgress = prog;
+                        });
+                        if (selectIndex == SelectIndex)
+                        {
+                            if (img == null)
+                            {
+                                Img?.Dispose();
+                                Img = null;
+                                return;
+                            }
+                            LoadingProgressStr = null;
                             Img?.Dispose();
-                            Img = null;
-                            return;
+                            Img = img;
+                            ImgSize = Img.Size;
+                            FillScaleImg();
                         }
-                        LoadingProgressStr = null;
-                        Img?.Dispose();
-                        Img = img;
-                        ImgSize = Img.Size;
-                        FillScaleImg();
+                        else img?.Dispose();
                     }, () =>
                     {
-                        Loading = false;
+                        if (selectIndex == SelectIndex) Loading = false;
                     });
                 }
             }
@@ -334,31 +346,14 @@ namespace AntdUI
                     else g.Fill(brush, rect_read);
                 }
 
-                if (Img != null) g.Image(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
-                if (loading)
+                if (Img == null)
                 {
-                    var bor6 = 6F * Config.Dpi;
-                    int loading_size = (int)(40 * Config.Dpi);
-                    var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
-                    g.DrawEllipse(Color.FromArgb(220, Colour.PrimaryColor.Get("Preview")), bor6, rect_loading);
-                    if (_value > -1)
-                    {
-                        using (var penpro = new Pen(Colour.Primary.Get("Preview"), bor6))
-                        {
-                            g.DrawArc(penpro, rect_loading, -90, 360F * _value);
-                        }
-                        if (LoadingProgressStr != null)
-                        {
-                            rect_loading.Offset(0, loading_size);
-                            g.String(LoadingProgressStr, Font, Colour.PrimaryColor.Get("Preview"), rect_loading, s_f);
-                        }
-                    }
-                    else if (LoadingProgressStr != null)
-                    {
-                        g.DrawEllipse(Colour.Error.Get("Preview"), bor6, rect_loading);
-                        rect_loading.Offset(0, loading_size);
-                        g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get("Preview"), rect_loading, s_f);
-                    }
+                    if (LoadingProgressStr != null) PaintLoading(g, true);
+                }
+                else
+                {
+                    g.Image(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
+                    if (loading) PaintLoading(g);
                 }
                 using (var path = rect_panel.RoundPath(rect_panel.Height))
                 {
@@ -386,6 +381,43 @@ namespace AntdUI
                 }
             }
             return original_bmp;
+        }
+
+        void PaintLoading(Canvas g, bool error = false)
+        {
+            var bor6 = 6F * Config.Dpi;
+            int loading_size = (int)(40 * Config.Dpi);
+            var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
+            Color color, bg;
+            if (error)
+            {
+                bg = Colour.Error.Get("Preview");
+                color = Colour.ErrorColor.Get("Preview");
+            }
+            else
+            {
+                bg = Colour.Primary.Get("Preview");
+                color = Colour.PrimaryColor.Get("Preview");
+            }
+            g.DrawEllipse(Color.FromArgb(220, color), bor6, rect_loading);
+            if (_value > -1)
+            {
+                using (var penpro = new Pen(bg, bor6))
+                {
+                    g.DrawArc(penpro, rect_loading, -90, 360F * _value);
+                }
+                if (LoadingProgressStr != null)
+                {
+                    rect_loading.Offset(0, loading_size);
+                    g.String(LoadingProgressStr, Font, color, rect_loading, s_f);
+                }
+            }
+            else if (LoadingProgressStr != null)
+            {
+                g.DrawEllipse(Colour.Error.Get("Preview"), bor6, rect_loading);
+                rect_loading.Offset(0, loading_size);
+                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get("Preview"), rect_loading, s_f);
+            }
         }
 
         void PaintBtn(Canvas g, SolidBrush brush, Rectangle rect, Rectangle rect_ico, string svg, bool hover, bool enabled)
@@ -481,14 +513,8 @@ namespace AntdUI
         #region 鼠标
 
         bool hoverClose = false, hoverLeft = false, hoverRight = false;
-        bool enabledLeft
-        {
-            get => SelectIndex > 0;
-        }
-        bool enabledRight
-        {
-            get => SelectIndex < PageSize - 1;
-        }
+        bool enabledLeft => SelectIndex > 0;
+        bool enabledRight => SelectIndex < PageSize - 1;
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             if (Img != null)
@@ -537,31 +563,55 @@ namespace AntdUI
             if (rect_close.Contains(e.Location))
             {
                 hand++;
-                if (!hoverClose) { hoverClose = true; count++; }
+                if (!hoverClose)
+                {
+                    hoverClose = true;
+                    count++;
+                }
             }
             else
             {
-                if (hoverClose) { hoverClose = false; count++; }
+                if (hoverClose)
+                {
+                    hoverClose = false;
+                    count++;
+                }
             }
             if (PageSize > 1)
             {
                 if (enabledLeft && rect_left.Contains(e.Location))
                 {
                     hand++;
-                    if (!hoverLeft) { hoverLeft = true; count++; }
+                    if (!hoverLeft)
+                    {
+                        hoverLeft = true;
+                        count++;
+                    }
                 }
                 else
                 {
-                    if (hoverLeft) { hoverLeft = false; count++; }
+                    if (hoverLeft)
+                    {
+                        hoverLeft = false;
+                        count++;
+                    }
                 }
                 if (enabledRight && rect_right.Contains(e.Location))
                 {
                     hand++;
-                    if (!hoverRight) { hoverRight = true; count++; }
+                    if (!hoverRight)
+                    {
+                        hoverRight = true;
+                        count++;
+                    }
                 }
                 else
                 {
-                    if (hoverRight) { hoverRight = false; count++; }
+                    if (hoverRight)
+                    {
+                        hoverRight = false;
+                        count++;
+                    }
                 }
             }
             foreach (var it in btns)
@@ -569,18 +619,23 @@ namespace AntdUI
                 if (it.enabled && it.Rect.Contains(e.Location))
                 {
                     hand++;
-                    if (!it.hover) { it.hover = true; count++; }
+                    if (!it.hover)
+                    {
+                        it.hover = true;
+                        count++;
+                    }
                 }
                 else
                 {
-                    if (it.hover) { it.hover = false; count++; }
+                    if (it.hover)
+                    {
+                        it.hover = false;
+                        count++;
+                    }
                 }
             }
             SetCursor(hand > 0);
-            if (count > 0)
-            {
-                Print();
-            }
+            if (count > 0) Print();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -687,7 +742,7 @@ namespace AntdUI
                                 Print();
                                 break;
                             default:
-                                config.OnBtns?.Invoke(it.id, it.tag);
+                                config.OnBtns?.Invoke(it.id, new Preview.BtnEvent(SelectIndex, SelectValue, it.tag));
                                 break;
                         }
                     }

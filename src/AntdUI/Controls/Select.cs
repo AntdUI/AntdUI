@@ -650,6 +650,17 @@ namespace AntdUI
     }
     public class ISelectItem { }
 
+    internal class ObjectItemSearch
+    {
+        public ObjectItemSearch(int weigth, ObjectItem value)
+        {
+            Weight = weigth;
+            Value = value;
+        }
+        public int Weight { get; set; }
+        public ObjectItem Value { get; set; }
+    }
+
     internal class ObjectItem
     {
         public ObjectItem(object _val, int _i, Rectangle rect, Rectangle rect_text)
@@ -740,10 +751,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => IconSvg != null || Icon != null;
-        }
+        public bool HasIcon => IconSvg != null || Icon != null;
 
         public Rectangle RectIcon { get; set; }
         public Rectangle RectOnline { get; set; }
@@ -751,13 +759,33 @@ namespace AntdUI
         public string? SubText { get; set; }
         public string Text { get; set; }
         string[] PY { get; set; }
-        public bool Contains(string val)
+        public int Contains(string val, out bool select)
         {
+            select = false;
+            int gear = PY.Length, score = 0;
+            if (Text == val)
+            {
+                select = true;
+                score += gear * 10;
+            }
+            val = val.ToLower();
+            if (Text == val)
+            {
+                select = true;
+                score += gear * 8;
+            }
             foreach (var pinyin in PY)
             {
-                if (pinyin.Contains(val)) return true;
+                if (pinyin == val)
+                {
+                    select = true;
+                    score += gear * 3;
+                }
+                else if (pinyin.StartsWith(val)) score += gear * 2;
+                else if (pinyin.Contains(val)) score += gear;
+                gear--;
             }
-            return false;
+            return score;
         }
 
         public int ID { get; set; }

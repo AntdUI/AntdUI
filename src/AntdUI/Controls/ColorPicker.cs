@@ -35,7 +35,7 @@ namespace AntdUI
     [DefaultEvent("ValueChanged")]
     public class ColorPicker : IControl, SubLayeredForm
     {
-        public ColorPicker()
+        public ColorPicker() : base(ControlType.Select)
         {
             base.BackColor = Color.Transparent;
         }
@@ -147,7 +147,7 @@ namespace AntdUI
         [Description("波浪大小"), Category("外观"), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
 
-        internal int radius = 6;
+        int radius = 6;
         /// <summary>
         /// 圆角
         /// </summary>
@@ -369,9 +369,11 @@ namespace AntdUI
 
         #region 渲染
 
+        bool init = false;
         internal StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
+            init = true;
             var rect = ClientRectangle.PaddingRect(Padding);
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
@@ -382,10 +384,18 @@ namespace AntdUI
                     _border = borderColor ?? Colour.BorderColor.Get("ColorPicker"),
                     _borderHover = BorderHover ?? Colour.PrimaryHover.Get("ColorPicker"),
                 _borderActive = BorderActive ?? Colour.Primary.Get("ColorPicker");
-                PaintClick(g, path, rect, _borderActive, radius);
+                PaintClick(g, path, rect, _borderActive, _radius);
                 int size_color = (int)(rect_read.Height * 0.75F);
                 if (Enabled)
                 {
+                    if (hasFocus && WaveSize > 0)
+                    {
+                        float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2;
+                        using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(_radius + wave))
+                        {
+                            g.Draw(Colour.PrimaryBorder.Get("ColorPicker"), wave, path_focus);
+                        }
+                    }
                     g.Fill(_back, path);
                     if (borderWidth > 0)
                     {
@@ -558,7 +568,7 @@ namespace AntdUI
             get
             {
                 var rect_read = ReadRectangle;
-                float _radius = round ? rect_read.Height : radius;
+                float _radius = round ? rect_read.Height : radius * Config.Dpi;
                 return Path(rect_read, _radius);
             }
         }
@@ -569,6 +579,35 @@ namespace AntdUI
 
         bool AnimationFocus = false;
         int AnimationFocusValue = 0;
+        bool hasFocus = false;
+        /// <summary>
+        /// 是否存在焦点
+        /// </summary>
+        [Browsable(false)]
+        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        public bool HasFocus
+        {
+            get => hasFocus;
+            private set
+            {
+                if (value && (_mouseDown || _mouseHover)) value = false;
+                if (hasFocus == value) return;
+                hasFocus = value;
+                Invalidate();
+            }
+        }
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            if (init) HasFocus = true;
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            HasFocus = false;
+        }
 
         #endregion
 

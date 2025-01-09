@@ -21,7 +21,7 @@ Slider 滑动输入条 👚
 **MaxValue** | 最大值 | int | 100 |
 **Value** | 当前值 | int | 0 |
 ||||
-**Align** | 方向 | [TAlignMini](Enum#talignmini) | Left |
+**Align** | 方向 | [TAlignMini](Enum.md#talignmini) | Left |
 **ShowValue** | 是否显示数值 | bool | false |
 **LineSize** | 线条粗细 | int | 4 |
 **DotSize** | 点大小 | int | 10 |

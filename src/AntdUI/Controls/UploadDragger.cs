@@ -38,6 +38,8 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class UploadDragger : IControl
     {
+        public UploadDragger() : base(ControlType.Select) { }
+
         #region 属性
 
         int radius = 8;

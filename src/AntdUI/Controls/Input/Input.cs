@@ -36,11 +36,9 @@ namespace AntdUI
     [DefaultEvent("TextChanged")]
     public partial class Input : IControl
     {
-        public Input()
+        public Input() : base(ControlType.Select)
         {
             base.BackColor = Color.Transparent;
-            SetStyle(ControlStyles.Selectable, true);
-            UpdateStyles();
             CaretInfo = new ICaret(this);
         }
 
@@ -1132,8 +1130,12 @@ namespace AntdUI
         bool AnimationFocus = false;
         int AnimationFocusValue = 0;
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool HasFocus { get; internal set; }
+        /// <summary>
+        /// 是否存在焦点
+        /// </summary>
+        [Browsable(false)]
+        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        public bool HasFocus { get; private set; }
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
@@ -1183,10 +1185,13 @@ namespace AntdUI
                     m_hIMC = Win32.ImmGetContext(Handle);
                     OnImeStartPrivate(m_hIMC);
 #if NET40 || NET46 || NET48 || NET6_0
-                    m.Result = (IntPtr)0x0004;
+                    if (multiline) m.Result = (IntPtr)(Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS);
+                    else m.Result = (IntPtr)(Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS);
 #else
-                    m.Result = 0x0004;
-#endif 
+                    if (multiline) m.Result = Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
+                    else m.Result = Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
+#endif
+
                     return;
             }
             base.WndProc(ref m);
@@ -1209,7 +1214,8 @@ namespace AntdUI
         /// </summary>
         protected virtual bool ShowPlaceholder => true;
         protected virtual bool HasLeft() => false;
-        protected virtual int UseLeft(Rectangle rect, bool delgap) => 0;
+        protected virtual int[] UseLeft(Rectangle rect, bool delgap) => new int[] { 0, 0 };
+        protected virtual void UseLeftAutoHeight(int height, int gap, int y) { }
 
         protected virtual void IBackSpaceKey() { }
 

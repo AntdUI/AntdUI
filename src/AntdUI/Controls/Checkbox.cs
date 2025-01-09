@@ -34,6 +34,8 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Checkbox : IControl, IEventListener
     {
+        public Checkbox() : base(ControlType.Select) { }
+
         #region 属性
 
         Color? fore;
@@ -205,20 +207,21 @@ namespace AntdUI
         {
             var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
+            bool enabled = Enabled;
             if (string.IsNullOrWhiteSpace(Text))
             {
                 var font_size = g.MeasureString(Config.NullText, Font);
                 var icon_rect = new Rectangle(rect.X + (rect.Width - font_size.Height) / 2, rect.Y + (rect.Height - font_size.Height) / 2, font_size.Height, font_size.Height);
-                PaintChecked(g, rect, Enabled, icon_rect, false);
+                PaintChecked(g, rect, enabled, icon_rect, false);
             }
             else
             {
                 var font_size = g.MeasureString(Text, Font);
                 rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
                 bool right = rightToLeft == RightToLeft.Yes;
-                PaintChecked(g, rect, Enabled, icon_rect, right);
+                PaintChecked(g, rect, enabled, icon_rect, right);
                 if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
-                using (var brush = fore.Brush(Colour.Text.Get("Checkbox"), Colour.TextQuaternary.Get("Checkbox"), Enabled))
+                using (var brush = fore.Brush(Colour.Text.Get("Checkbox"), Colour.TextQuaternary.Get("Checkbox"), enabled))
                 {
                     g.String(Text, Font, brush, text_rect, stringFormat);
                 }

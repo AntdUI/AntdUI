@@ -27,6 +27,9 @@ namespace AntdUI.Theme
         public Color PrimaryHover => Style.Get(Colour.PrimaryHover);
         public Color PrimaryActive => Style.Get(Colour.PrimaryActive);
         public Color PrimaryBg => Style.Get(Colour.PrimaryBg);
+        public Color PrimaryBgHover => Style.Get(Colour.PrimaryBgHover);
+        public Color PrimaryBorder => Style.Get(Colour.PrimaryBorder);
+        public Color PrimaryBorderHover => Style.Get(Colour.PrimaryBorderHover);
 
         [System.Obsolete("use Style.SetPrimary")]
         public void SetPrimary(Color primary) => Style.SetPrimary(primary);

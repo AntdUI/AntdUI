@@ -48,7 +48,7 @@ namespace AntdUI
             var hsv = ValueNAlpha.ToHSV();
             hsv.s = hsv.v = 1;
             ValueHue = hsv.HSVToColor();
-            Radius = control.radius;
+            Radius = control.Radius * Config.Dpi;
             Radius2 = Radius * 0.75F;
             PARENT = control;
             action = _action;

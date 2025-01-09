@@ -39,6 +39,6 @@ Timeline 时间轴 👚
 **IconSvg** 🔴 | 图标SVG | string`?` | `null` |
 **Visible** | 是否显示 | bool | true |
 **Description** | 详情描述 | string`?` | `null` |
-**Type** | 颜色类型 | [TTypeMini](Enum#ttypemini) | Primary |
+**Type** | 颜色类型 | [TTypeMini](Enum.md#ttypemini) | Primary |
 **Fill** | 填充颜色 | Color`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

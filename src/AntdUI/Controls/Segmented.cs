@@ -646,6 +646,7 @@ namespace AntdUI
                     else g.Fill(color_active, rect);
                 }
             }
+            var enabled = Enabled;
             using (var brush = new SolidBrush((fore ?? Colour.TextSecondary.Get("Segmented"))))
             using (var brushDisable = new SolidBrush(Colour.TextQuaternary.Get("Segmented")))
             {
@@ -654,7 +655,7 @@ namespace AntdUI
                     var it = item_text[i];
                     if (i == _select)
                     {
-                        if (Enabled && it.Enabled)
+                        if (enabled && it.Enabled)
                         {
                             var color_active = foreactive ?? Colour.Text.Get("Segmented");
                             if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
@@ -669,7 +670,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (Enabled && it.Enabled)
+                        if (enabled && it.Enabled)
                         {
                             if (i == _hover)
                             {

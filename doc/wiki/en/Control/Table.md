@@ -27,10 +27,10 @@ Table 表格 👚
 **EnableHeaderResizing** | 手动调整列头宽度 | bool | false |
 **ColumnDragSort** | 列拖拽排序 | bool | false |
 **LostFocusClearSelection** | 焦点离开清空选中 | bool | false |
-**AutoSizeColumnsMode** 🔴 | 列宽自动调整模式 | [ColumnsMode](Enum#columnsmode) | Auto |
+**AutoSizeColumnsMode** 🔴 | 列宽自动调整模式 | [ColumnsMode](Enum.md#columnsmode) | Auto |
 ||||
 **ClipboardCopy** | 行复制 | bool | true |
-**EditMode** | 编辑模式 | [TEditMode](Enum#teditmode) | None |
+**EditMode** | 编辑模式 | [TEditMode](Enum.md#teditmode) | None |
 **ShowTip** | 省略文字提示 | bool | true |
 **DefaultExpand** 🔴 | 默认是否展开 `树` | bool | false |
 ||||
@@ -180,7 +180,7 @@ private AntdUI.Table.CellStyleInfo? Table1_SetRowStyle(object sender, object? re
 **Fore** | 字体颜色 | Color`?` ||
 **Fill** | 颜色 | Color`?` ||
 ||||
-**State** | 状态 | [TState](Enum#tstate) | Default |
+**State** | 状态 | [TState](Enum.md#tstate) | Default |
 **Text** | 文本 | string`?` |
 
 #### CellTag
@@ -193,7 +193,7 @@ private AntdUI.Table.CellStyleInfo? Table1_SetRowStyle(object sender, object? re
 **Back** | 背景颜色 | Color`?` ||
 **BorderWidth** | 边框宽度 | float |1F|
 ||||
-**Type** | 类型 | [TTypeMini](Enum#ttypemini) | Default |
+**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
 **Text** | 文本 | string`?` ||
 
 #### CellImage
@@ -212,7 +212,7 @@ private AntdUI.Table.CellStyleInfo? Table1_SetRowStyle(object sender, object? re
 **Image** | 图片 | Image`?` | `null` |
 **ImageSvg** | 图片SVG | string`?` | `null` |
 **FillSvg** | SVG填充颜色 | Color`?` ||
-**ImageFit** | 图片布局 | [TFit](Enum#tfit) | Fill |
+**ImageFit** | 图片布局 | [TFit](Enum.md#tfit) | Fill |
 ||||
 **Tooltip** 🔴 | 文本提示 | string`?` ||
 
@@ -240,12 +240,12 @@ private AntdUI.Table.CellStyleInfo? Table1_SetRowStyle(object sender, object? re
 **ImageHoverSvg** 🔴 | 悬停图像SVG | string`?` | `null` |
 **ImageHoverAnimation** 🔴 | 悬停图像动画时长 | int | 200 |
 ||||
-**Shape** | 形状 | [TShape](Enum#tshape) | Default |
+**Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
 **Ghost** | 幽灵属性 `使按钮背景透明` | bool |false |
 **ShowArrow** | 显示箭头 | bool |false |
 **IsLink** | 箭头链接样式 | bool |false |
 ||||
-**Type** | 类型 | [TTypeMini](Enum#ttypemini) | Default |
+**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
 **Text** | 文本 | string`?` ||
 
 #### CellLink
@@ -272,7 +272,7 @@ private AntdUI.Table.CellStyleInfo? Table1_SetRowStyle(object sender, object? re
 **Fill** | 进度条颜色 | Color`?` ||
 ||||
 **Radius** | 圆角 | int |6|
-**Shape** | 形状 | [TShape](Enum#tshape) | Default |
+**Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
 ||||
 **Value** | 进度条 `0.0-1.0` | float |0F|
 

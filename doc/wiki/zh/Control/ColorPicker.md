@@ -16,8 +16,8 @@ ColorPicker 颜色选择器 👚
 **OriginalBackColor** 🔴 | 原装背景颜色 | Color | Transparent |
 ||||
 **AutoSize** | 自动大小 | bool | false |
-**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum#tautosize) | None |
-**Mode** 🔴 | 颜色模式 | [TColorMode](Enum#tcolormode) | Hex |
+**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
+**Mode** 🔴 | 颜色模式 | [TColorMode](Enum.md#tcolormode) | Hex |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **BackColor** | 背景颜色 | Color`?` | `null` |

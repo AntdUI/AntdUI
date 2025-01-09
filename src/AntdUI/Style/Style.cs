@@ -48,6 +48,9 @@ namespace AntdUI
                         case Colour.PrimaryColor: return Color.White;
                         case Colour.PrimaryActive: return "#0958D9".ToColor();
                         case Colour.PrimaryBg: return "#E6F4FF".ToColor();
+                        case Colour.PrimaryBgHover: return "#BAE0FF".ToColor();
+                        case Colour.PrimaryBorder: return "#91CAFF".ToColor();
+                        case Colour.PrimaryBorderHover: return "#69B1FF".ToColor();
 
                         case Colour.Success: return "#52C41A".ToColor();
                         case Colour.SuccessColor: return Color.White;
@@ -118,10 +121,13 @@ namespace AntdUI
                     switch (id)
                     {
                         case Colour.Primary: return "#1668DC".ToColor();
-                        case Colour.PrimaryColor: return Color.White;
                         case Colour.PrimaryHover: return "#3C89E8".ToColor();
+                        case Colour.PrimaryColor: return Color.White;
                         case Colour.PrimaryActive: return "#1554AD".ToColor();
                         case Colour.PrimaryBg: return "#111A2C".ToColor();
+                        case Colour.PrimaryBgHover: return "#112545".ToColor();
+                        case Colour.PrimaryBorder: return "#15325B".ToColor();
+                        case Colour.PrimaryBorderHover: return "#15417E".ToColor();
 
                         case Colour.Success: return "#49AA19".ToColor();
                         case Colour.SuccessColor: return Color.White;
@@ -210,8 +216,21 @@ namespace AntdUI
         {
             Colour.Primary.Set(primary);
             var colors = primary.GenerateColors();
-            if (Config.Mode == TMode.Light) Colour.PrimaryBg.Set(colors[0]);
-            else Colour.PrimaryBg.Set(colors[9]);
+            if (Config.Mode == TMode.Light)
+            {
+                Colour.PrimaryBg.Set(colors[0]);
+                Colour.PrimaryBgHover.Set(colors[1]);
+                Colour.PrimaryBorder.Set(colors[2]);
+                Colour.PrimaryBorderHover.Set(colors[3]);
+            }
+            else
+            {
+                Colour.PrimaryBg.Set(colors[9]);
+                Colour.PrimaryBgHover.Set(colors[8]);
+                Colour.PrimaryBorder.Set(colors[5]);
+                Colour.PrimaryBorderHover.Set(colors[6]);
+            }
+
             Colour.PrimaryHover.Set(colors[4]);
             Colour.PrimaryActive.Set(colors[6]);
         }
@@ -310,6 +329,15 @@ namespace AntdUI
             EventHub.Dispatch(EventType.THEME);
         }
 
+        /// <summary>
+        /// 清空自定义
+        /// </summary>
+        public static void Clear()
+        {
+            colors.Clear();
+            EventHub.Dispatch(EventType.THEME);
+        }
+
         #endregion
 
         /// <summary>
@@ -358,17 +386,11 @@ namespace AntdUI
             var hsv = primaryColor.ToHSV();
             var colors = new List<Color>(lightColorCount + darkColorCount);
             // 主色前
-            for (var i = lightColorCount; i > 0; i--)
-            {
-                colors.Add(GenerateColor(hsv, i, true));
-            }
+            for (var i = lightColorCount; i > 0; i--) colors.Add(GenerateColor(hsv, i, true));
             // 主色
             colors.Add(primaryColor);
             // 主色后
-            for (var i = 1; i <= darkColorCount; i++)
-            {
-                colors.Add(GenerateColor(hsv, i, false));
-            }
+            for (var i = 1; i <= darkColorCount; i++) colors.Add(GenerateColor(hsv, i, false));
             return colors;
         }
 
@@ -673,6 +695,21 @@ namespace AntdUI
         /// 主色背景色（按钮底部、下拉激活、文本框激活、菜单激活）
         /// </summary>
         PrimaryBg,
+
+        /// <summary>
+        /// 主色背景悬浮态
+        /// </summary>
+        PrimaryBgHover,
+
+        /// <summary>
+        /// 主色的描边色
+        /// </summary>
+        PrimaryBorder,
+
+        /// <summary>
+        /// 主色描边色悬浮态
+        /// </summary>
+        PrimaryBorderHover,
 
         #endregion
 

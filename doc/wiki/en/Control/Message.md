@@ -15,12 +15,12 @@ Message 全局提示
 **ID** 🔴 | ID | string`?` | `null` |
 **Form** | 所属窗口 | Form | `必填` |
 **Text** | 文本 | string | `必填` |
-**Icon** | 图标 | [TType](Enum#ttype) | None |
+**Icon** | 图标 | [TType](Enum.md#ttype) | None |
 **Font** | 字体 | Font | `null` |
 **Radius** | 圆角 | int | 6 |
 **AutoClose** | 自动关闭时间（秒）`0等于不关闭` | int | 6 |
 **ClickClose** 🔴 | 是否可以点击关闭 | bool | true |
-**Align** 🔴 | 方向 | [TAlignFrom](Enum#talignfrom) | Top |
+**Align** 🔴 | 方向 | [TAlignFrom](Enum.md#talignfrom) | Top |
 **Padding** 🔴 | 边距 | Size | 12, 9 |
 **ShowInWindow** 🔴 | 弹出在窗口 | bool | false |
 **Call** | 加载回调 | Action<Config>`?` | `null` |

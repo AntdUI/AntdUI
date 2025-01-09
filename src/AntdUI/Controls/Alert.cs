@@ -251,7 +251,6 @@ namespace AntdUI
                             var size = g.MeasureString(Text, Font);
                             font_size = size;
                             int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
-
                             var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
                             g.String(Text, Font, ForeColor, rect_txt, stringLeft);
                         }
@@ -262,7 +261,6 @@ namespace AntdUI
                         {
                             var size_title = g.MeasureString(TextTitle, font_title);
                             int icon_size = (int)(size_title.Height * 1.2F), gap = (int)(icon_size * .5F);
-
                             using (var brush = new SolidBrush(ForeColor))
                             {
                                 var rect_txt = new Rectangle(rect.X + gap, rect.Y + gap, rect.Width - (gap * 2), size_title.Height);
@@ -331,14 +329,13 @@ namespace AntdUI
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             g.PaintIcons(icon, rect_icon, Colour.BgBase.Get("Alert"), "Alert");
-                            var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 2), rect.Height);
+                            var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 3), rect.Height);
                             g.String(Text, Font, color, rect_txt, stringLeft);
                         }
                         else
                         {
                             using (var font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style))
                             {
-                                var size_title = g.MeasureString(TextTitle, font_title);
                                 int icon_size = (int)(sizeT.Height * 1.2F), gap = (int)(icon_size * .5F);
 
                                 var rect_icon = new Rectangle(rect.X + gap, rect.Y + gap, icon_size, icon_size);
@@ -346,7 +343,7 @@ namespace AntdUI
 
                                 using (var brush = new SolidBrush(color))
                                 {
-                                    var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + icon_size / 2, rect_icon.Y, rect.Width - (rect_icon.Width + gap * 2), rect_icon.Height);
+                                    var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + icon_size / 2, rect_icon.Y, rect.Width - (rect_icon.Width + gap * 3), rect_icon.Height);
                                     g.String(TextTitle, font_title, brush, rect_txt, stringLeft);
 
                                     var desc_y = rect_txt.Bottom + (int)(icon_size * .2F);
@@ -356,7 +353,6 @@ namespace AntdUI
                             }
                         }
                     }
-
                     if (borWidth > 0) g.Draw(bor_color, borWidth * Config.Dpi, path);
                 }
             }

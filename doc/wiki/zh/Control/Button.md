@@ -16,7 +16,7 @@ Button 按钮 👚
 **OriginalBackColor** 🔴 | 原装背景颜色 | Color | Transparent |
 ||||
 **AutoSize** | 自动大小 | bool | false |
-**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum#tautosize) | None |
+**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **BackColor** | 背景颜色 | Color`?` | `null` |
@@ -28,14 +28,14 @@ Button 按钮 👚
 **DefaultBorderColor** | Default模式边框颜色 | Color`?` | `null` |
 ||||
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
-**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum#tfit) | Fill |
+**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
 ||||
 **BorderWidth** | 边框宽度 | float | 0F |
 ||||
 **WaveSize** | 波浪大小 `点击动画` | int | 4 |
 **Radius** | 圆角 | int | 6 |
-**Shape** | 形状 | [TShape](Enum#tshape) | Default |
-**Type** | 类型 | [TTypeMini](Enum#ttypemini) | Default |
+**Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
+**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
 **Ghost** | 幽灵属性 `使按钮背景透明` | bool | false |
 **ShowArrow** | 显示箭头 | bool | false |
 **IsLink** | 箭头链接样式 | bool | false |
@@ -53,7 +53,7 @@ Button 按钮 👚
 **IconHover** | 悬停图标 | Image`?` | `null` |
 **IconHoverSvg** | 悬停图标SVG | string`?` | `null` |
 **IconHoverAnimation** | 悬停图标动画时长 | int | 200 |
-**IconPosition** | 按钮图标组件的位置 | [TAlignMini](Enum#talignmini) | Left |
+**IconPosition** | 按钮图标组件的位置 | [TAlignMini](Enum.md#talignmini) | Left |
 **IconSize** | 图标大小 `不设置为自动大小` | Size | 0 × 0 |
 ||||
 |**切换** 🔴||
@@ -64,7 +64,7 @@ Button 按钮 👚
 **ToggleIconHoverSvg** | 切换悬停图标SVG | string`?` | `null` |
 **IconToggleAnimation** | 图标切换动画时长 | int | 200 |
 **ToggleFore** | 切换文字颜色 | Color`?` | `null` |
-**ToggleType** | 切换类型 | [TTypeMini](Enum#ttypemini)`?` | `null` |
+**ToggleType** | 切换类型 | [TTypeMini](Enum.md#ttypemini)`?` | `null` |
 **ToggleBack** | 切换背景颜色 | Color`?` | `null` |
 **ToggleBackExtend** | 切换背景渐变色 | string`?` | `null` |
 **ToggleBackHover** | 切换悬停背景颜色 | Color`?` | `null` |

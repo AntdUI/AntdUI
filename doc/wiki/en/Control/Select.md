@@ -15,7 +15,7 @@ Select 选择器 👚
 :--|:--|:--|:--|
 **List** | 是否列表样式 `与Dropdown一样` | bool | false |
 **ListAutoWidth** | 是否列表自动宽度 | bool | true |
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum#talignfrom) | BL |
+**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **MaxCount** | 列表最多显示条数 | int | 4 |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **DropDownPadding** 🔴 | 下拉边距 | Size | 12, 5 |
@@ -53,7 +53,7 @@ Select 多选器 👚
 :--|:--|:--|:--|
 **List** | 是否列表样式 `与Dropdown一样` | bool | false |
 **ListAutoWidth** | 是否列表自动宽度 | bool | true |
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum#talignfrom) | BL |
+**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **MaxCount** | 列表最多显示条数 | int | 4 |
 **MaxChoiceCount** | 最大选中数量 | int | 0 |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |

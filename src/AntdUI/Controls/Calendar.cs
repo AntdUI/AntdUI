@@ -414,7 +414,8 @@ namespace AntdUI
             var rect = ClientRectangle;
             var rect_read = ReadRectangle;
 
-            using (var path = rect_read.RoundPath(radius * Config.Dpi))
+            var _radius = radius * Config.Dpi;
+            using (var path = rect_read.RoundPath(_radius))
             {
                 g.Fill(Colour.BgElevated.Get("Calendar"), path);
             }
@@ -501,9 +502,9 @@ namespace AntdUI
 
             #endregion
 
-            if (showType == 1 && calendar_month != null) PrintMonth(g, rect_read, radius, calendar_month);
-            else if (showType == 2 && calendar_year != null) PrintYear(g, rect_read, radius, calendar_year);
-            else if (calendar_day != null) PrintDay(g, rect_read, radius, calendar_day);
+            if (showType == 1 && calendar_month != null) PrintMonth(g, rect_read, _radius, calendar_month);
+            else if (showType == 2 && calendar_year != null) PrintYear(g, rect_read, _radius, calendar_year);
+            else if (calendar_day != null) PrintDay(g, rect_read, _radius, calendar_day);
             this.PaintBadge(g);
             base.OnPaint(e);
         }
@@ -759,20 +760,9 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding);
 
-        public override GraphicsPath RenderRegion
-        {
-            get
-            {
-                var rect_read = ReadRectangle;
-                float _radius = radius * Config.Dpi;
-                return rect_read.RoundPath(_radius);
-            }
-        }
+        public override GraphicsPath RenderRegion => ReadRectangle.RoundPath(radius * Config.Dpi);
 
         #endregion
 

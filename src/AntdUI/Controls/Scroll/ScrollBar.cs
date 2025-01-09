@@ -428,10 +428,7 @@ namespace AntdUI
 
         #region 渲染
 
-        public virtual void Paint(Canvas g)
-        {
-            Paint(g, Colour.TextBase.Get("ScrollBar"));
-        }
+        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get("ScrollBar"));
         public virtual void Paint(Canvas g, Color baseColor)
         {
             if (Config.ScrollBarHide)

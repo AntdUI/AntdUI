@@ -149,24 +149,18 @@ namespace AntdUI
 
         public int SIZE { get; set; } = 20;
         public bool ShowX { get; set; }
-        public virtual void SizeChange(Rectangle rect)
-        {
-            Rect = new Rectangle(rect.Right - SIZE, rect.Y, SIZE, rect.Height);
-        }
+        public virtual void SizeChange(Rectangle rect) => Rect = new Rectangle(rect.Right - SIZE, rect.Y, SIZE, rect.Height);
 
         /// <summary>
         /// 渲染滚动条竖
         /// </summary>
         /// <param name="g"></param>
-        public virtual void Paint(Canvas g)
-        {
-            Paint(g, Colour.TextBase.Get("ScrollBar"));
-        }
+        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get("ScrollBar"));
         public virtual void Paint(Canvas g, Color baseColor)
         {
             if (Show)
             {
-                if (Back)
+                if (Back && IsPaintScroll())
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(10, baseColor)))
                     {
@@ -190,6 +184,12 @@ namespace AntdUI
                     g.Fill(Color.FromArgb(141, baseColor), path);
                 }
             }
+        }
+
+        bool IsPaintScroll()
+        {
+            if (Config.ScrollBarHide) return hover;
+            else return true;
         }
 
         public bool ShowDown = false;
@@ -291,9 +291,6 @@ namespace AntdUI
             return false;
         }
 
-        public void Leave()
-        {
-            Hover = false;
-        }
+        public void Leave() => Hover = false;
     }
 }

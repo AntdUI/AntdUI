@@ -14,8 +14,8 @@ Dropdown 选择器 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **ListAutoWidth** | 列表自动宽度 | bool | true |
-**Trigger** | 触发下拉的行为 | [Trigger](Enum#trigger) | Click |
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum#talignfrom) | BL |
+**Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
+**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **MaxCount** | 列表最多显示条数 | int | 4 |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **DropDownPadding** 🔴 | 下拉边距 | Size | 12, 5 |

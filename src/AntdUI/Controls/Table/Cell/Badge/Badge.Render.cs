@@ -63,14 +63,12 @@ namespace AntdUI
             if (string.IsNullOrEmpty(Text))
             {
                 var size = g.MeasureString(Config.NullText, font);
-                int height = size.Height;
-                return new Size(height + gap2, size.Height);
+                return new Size(size.Height, size.Height);
             }
             else
             {
                 var size = g.MeasureString(Text, font);
-                int height = size.Height;
-                return new Size(size.Width + height + gap2, height);
+                return new Size(size.Width + size.Height, size.Height);
             }
         }
 
@@ -83,22 +81,8 @@ namespace AntdUI
             if (string.IsNullOrEmpty(Text)) RectDot = new Rectangle(rect.X + (rect.Width - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
             else
             {
-                Rect = new Rectangle(rect.X + gap + size.Height, rect.Y, rect.Width - size.Height - gap2, rect.Height);
-                switch (PARENT.COLUMN.Align)
-                {
-                    case ColumnAlign.Center:
-                        var sizec = g.MeasureString(Text, font);
-                        RectDot = new Rectangle(rect.X + (rect.Width - sizec.Width - sizec.Height + gap2) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
-                        break;
-                    case ColumnAlign.Right:
-                        var sizer = g.MeasureString(Text, font);
-                        RectDot = new Rectangle(Rect.Right - sizer.Width - gap2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
-                        break;
-                    case ColumnAlign.Left:
-                    default:
-                        RectDot = new Rectangle(rect.X + gap + (size.Height - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
-                        break;
-                }
+                Rect = new Rectangle(rect.X + size.Height, rect.Y, rect.Width - size.Height, rect.Height);
+                RectDot = new Rectangle(rect.X + (size.Height - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
             }
         }
     }

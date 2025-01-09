@@ -77,6 +77,31 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 确定窗体是否出现在 Windows 任务栏中
+        /// </summary>
+        [Description("确定窗体是否出现在 Windows 任务栏中"), Category("行为"), DefaultValue(true)]
+        public new bool ShowInTaskbar
+        {
+            get => base.ShowInTaskbar;
+            set
+            {
+                if (base.ShowInTaskbar == value) return;
+                if (IsHandleCreated)
+                {
+                    Size max = MaximumSize, min = MinimumSize;
+                    MaximumSize = MinimumSize = ClientSize;
+                    if (InvokeRequired) { Invoke(new Action(() => base.ShowInTaskbar = value)); }
+                    else base.ShowInTaskbar = value;
+                    MinimumSize = min;
+                    MaximumSize = max;
+                    oldmargin = 0;
+                    DwmArea();
+                }
+                else base.ShowInTaskbar = value;
+            }
+        }
+
         #endregion
 
         protected override void OnHandleCreated(EventArgs e)
@@ -228,18 +253,12 @@ namespace AntdUI
         /// <summary>
         /// 控件的右坐标
         /// </summary>
-        public new int Right
-        {
-            get => ScreenRectangle.Right;
-        }
+        public new int Right => ScreenRectangle.Right;
 
         /// <summary>
         /// 控件的底部坐标
         /// </summary>
-        public new int Bottom
-        {
-            get => ScreenRectangle.Bottom;
-        }
+        public new int Bottom => ScreenRectangle.Bottom;
 
         /// <summary>
         /// 获取或设置窗体的大小

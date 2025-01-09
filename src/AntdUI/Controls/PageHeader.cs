@@ -75,6 +75,9 @@ namespace AntdUI
         [Description("标题使用粗体"), Category("外观"), DefaultValue(true)]
         public bool UseTextBold { get; set; } = true;
 
+        [Description("副标题居中"), Category("外观"), DefaultValue(false)]
+        public bool UseSubCenter { get; set; }
+
         string? desc = null;
         [Description("副标题"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
@@ -596,6 +599,7 @@ namespace AntdUI
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
 
         StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
+        StringFormat stringCenter = Helper.SF_ALL();
 
         #region 渲染
 
@@ -647,76 +651,12 @@ namespace AntdUI
 
             if (UseTitleFont)
             {
-                var size = g.MeasureString(Config.NullText, Font);
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
-                    bool showDescription = false;
-                    int heightDescription = rect.Height;
-                    if (Description != null)
-                    {
-                        showDescription = true;
-                        heightDescription = rect.Height / 3;
-                        rect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - heightDescription);
-                    }
-                    int u_x = IPaint(g, rect, fore, size.Height, 1.36F);
-                    rect.X += u_x;
-                    rect.Width -= u_x;
-                    using (var brush = new SolidBrush(forebase))
-                    {
-                        var sizeTitle = g.MeasureString(Text, fontTitle);
-                        g.String(Text, fontTitle, brush, rect, stringLeft);
-                        if (SubText != null)
-                        {
-                            int desc_t_w = sizeTitle.Width + (int)(subGap * Config.Dpi);
-                            using (var brushsub = new SolidBrush(foreSecondary))
-                            {
-                                g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
-                                if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft);
-                            }
-                        }
-                        else if (showDescription)
-                        {
-                            using (var brushsub = new SolidBrush(foreSecondary))
-                            { g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft); }
-                        }
-                    }
-                    if (showButton) IPaintButton(g, rect, fore, fillsecondary, size);
+                    IPaint(g, rect_, rect, g.MeasureString(Config.NullText, Font), 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
                 }
             }
-            else
-            {
-                var size = g.MeasureString(Text ?? Config.NullText, Font);
-                bool showDescription = false;
-                int heightDescription = rect.Height;
-                if (Description != null)
-                {
-                    showDescription = true;
-                    heightDescription = rect.Height / 3;
-                    rect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - heightDescription);
-                }
-                int u_x = IPaint(g, rect, fore, size.Height, 1F);
-                rect.X += u_x;
-                rect.Width -= u_x;
-                using (var brush = new SolidBrush(forebase))
-                {
-                    g.String(Text, Font, brush, rect, stringLeft);
-                    if (SubText != null)
-                    {
-                        int desc_t_w = size.Width + (int)(subGap * Config.Dpi);
-                        using (var brushsub = new SolidBrush(foreSecondary))
-                        {
-                            g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect.X + desc_t_w, rect.Y, rect.Width - desc_t_w, rect.Height), stringLeft);
-                            if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft);
-                        }
-                    }
-                    else if (showDescription)
-                    {
-                        using (var brushsub = new SolidBrush(foreSecondary))
-                        { g.String(Description, Font, brushsub, new Rectangle(rect.X, rect.Bottom, rect.Width, heightDescription), stringLeft); }
-                    }
-                }
-                if (showButton) IPaintButton(g, rect, fore, fillsecondary, size);
-            }
+            else IPaint(g, rect_, rect, g.MeasureString(Text ?? Config.NullText, Font), 1F, null, fore, forebase, foreSecondary, fillsecondary);
             this.PaintBadge(g);
             if (showDivider)
             {
@@ -727,6 +667,48 @@ namespace AntdUI
                 }
             }
             base.OnPaint(e);
+        }
+
+        void IPaint(Canvas g, Rectangle rect, Rectangle rect_real, Size size, float ratio, Font? fontTitle, Color fore, Color forebase, Color foreSecondary, Color fillsecondary)
+        {
+            bool showDescription = false;
+            int heightDescription = rect_real.Height;
+            if (Description != null)
+            {
+                showDescription = true;
+                heightDescription = rect_real.Height / 3;
+                rect_real = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, rect_real.Height - heightDescription);
+            }
+            int u_x = IPaint(g, rect_real, fore, size.Height, ratio);
+            rect_real.X += u_x;
+            rect_real.Width -= u_x;
+            using (var brush = new SolidBrush(forebase))
+            {
+                int size_w = size.Width;
+                if (fontTitle == null) g.String(Text, Font, brush, rect_real, stringLeft);
+                else
+                {
+                    var sizeTitle = g.MeasureString(Text, fontTitle);
+                    g.String(Text, fontTitle, brush, rect_real, stringLeft);
+                    size_w = sizeTitle.Width;
+                }
+                if (SubText != null)
+                {
+                    int desc_t_w = size_w + (int)(subGap * Config.Dpi);
+                    using (var brushsub = new SolidBrush(foreSecondary))
+                    {
+                        if (UseSubCenter) g.String(SubText, descFont ?? Font, brushsub, rect, stringCenter);
+                        else g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect_real.X + desc_t_w, rect_real.Y, rect_real.Width - desc_t_w, rect_real.Height), stringLeft);
+                        if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft);
+                    }
+                }
+                else if (showDescription)
+                {
+                    using (var brushsub = new SolidBrush(foreSecondary))
+                    { g.String(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft); }
+                }
+            }
+            if (showButton) IPaintButton(g, rect_real, fore, fillsecondary, size);
         }
 
         public Rectangle GetTitleRect(Canvas g)

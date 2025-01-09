@@ -17,6 +17,6 @@ Alert 警告提示 👚
 **TextTitle** | 标题 | string`?` | `null` |
 **Radius** | 圆角 | int | 6 |
 **BorderWidth** | 边框宽度 | float | 0F |
-**Icon** | 样式 | [TType](Enum#ttype) | None |
+**Icon** | 样式 | [TType](Enum.md#ttype) | None |
 **Loop** | 文本轮播 | bool | false |
 **LoopSpeed** 🔴 | 文本轮播速率 | int | 10 |

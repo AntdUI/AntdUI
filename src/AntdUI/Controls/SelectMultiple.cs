@@ -62,6 +62,12 @@ namespace AntdUI
         [Description("复选框模式"), Category("行为"), DefaultValue(false)]
         public bool CheckMode { get; set; }
 
+        /// <summary>
+        /// 自动高度
+        /// </summary>
+        [Description("自动高度"), Category("行为"), DefaultValue(false)]
+        public bool AutoHeight { get; set; }
+
         bool canDelete = true;
         /// <summary>
         /// 是否可以删除
@@ -279,7 +285,7 @@ namespace AntdUI
 
         protected override bool HasLeft() => selectedValue.Length > 0;
 
-        protected override int UseLeft(Rectangle rect_read, bool delgap)
+        protected override int[] UseLeft(Rectangle rect_read, bool delgap)
         {
             if (selectedValue.Length > 0)
             {
@@ -298,60 +304,144 @@ namespace AntdUI
                 }
                 return Helper.GDI(g =>
                 {
-                    int height = g.MeasureString(Config.NullText, Font).Height, del_icon = (int)(height * 0.4);
                     var _style_left = new List<SelectItem?>(selectedValue.Length);
                     List<Rectangle> _rect_left = new List<Rectangle>(selectedValue.Length), _rect_left_txt = new List<Rectangle>(selectedValue.Length), _rect_left_del = new List<Rectangle>(selectedValue.Length);
-                    int y = (rect_read.Height - height) / 2, use = delgap ? 0 : y, gap = (int)(2 * Config.Dpi);
-                    for (int i = 0; i < selectedValue.Length; i++)
-                    {
-                        var it = selectedValue[i];
-                        string? showtext;
-                        SelectItem? style = null;
-                        if (style_dir.TryGetValue(it, out var find)) { style = find; showtext = find.Text; }
-                        else showtext = it.ToString();
 
-                        var size = g.MeasureString(showtext, Font);
-                        var size2 = g.MeasureString("+" + (selectedValue.Length - i), Font);
-                        int use_base = use + size.Width + height + gap;
-                        if (use_base + (size2.Width + gap) > rect_read.Width)
+                    int gap = (int)(2 * Config.Dpi), gap2 = gap * 2, gap4 = gap2 * 2, height = g.MeasureString(Config.NullText, Font).Height + gap2, del_icon = (int)(height * 0.4);
+                    if (AutoHeight || rect_read.Height > height * 2)
+                    {
+                        //多行
+                        int y = gap, usex = delgap ? 0 : y, usey = 0;
+                        for (int i = 0; i < selectedValue.Length; i++)
                         {
-                            //超出
-                            _rect_left_txt.Add(new Rectangle(rect_read.X + use, rect_read.Y + y, size2.Width, height));
-                            style_left = _style_left.ToArray();
-                            rect_left_txts = _rect_left_txt.ToArray();
-                            rect_left_dels = _rect_left_del.ToArray();
-                            rect_lefts = _rect_left.ToArray();
-                            if (_rect_left_txt.Count == 1) return size2.Width + gap;
-                            return use + size2.Width + gap;
+                            var it = selectedValue[i];
+                            string? showtext;
+                            SelectItem? style = null;
+                            if (style_dir.TryGetValue(it, out var find))
+                            {
+                                style = find;
+                                showtext = find.Text;
+                            }
+                            else showtext = it.ToString();
+
+                            int sizeWidth = g.MeasureString(showtext, Font).Width + gap4,
+                            size2Width = g.MeasureString("+" + (selectedValue.Length - i), Font).Width + gap4;
+                            int use_base_x = usex + sizeWidth + height + gap;
+                            if (use_base_x + (size2Width + gap) > rect_read.Width)
+                            {
+                                if (AutoHeight)
+                                {
+                                    usey += height + gap;
+                                    usex = delgap ? 0 : y;
+                                }
+                                else if ((usey + height + gap) + (height + gap) > rect_read.Height)//超出
+                                {
+                                    _rect_left_txt.Add(new Rectangle(rect_read.X + usex, rect_read.Y + y + usey, size2Width, height));
+                                    style_left = _style_left.ToArray();
+                                    rect_left_txts = _rect_left_txt.ToArray();
+                                    rect_left_dels = _rect_left_del.ToArray();
+                                    rect_lefts = _rect_left.ToArray();
+                                    if (_rect_left_txt.Count == 1) return new int[] { size2Width + gap, usey };
+                                    return new int[] { usex + size2Width + gap, usey };
+                                }
+                                else
+                                {
+                                    usey += height + gap;
+                                    usex = delgap ? 0 : y;
+                                }
+                            }
+                            _style_left.Add(style);
+                            if (enable_dir.Contains(it) || !canDelete)
+                            {
+                                var rect = new Rectangle(rect_read.X + usex, rect_read.Y + y + usey, sizeWidth, height);
+                                _rect_left_txt.Add(rect);
+                                _rect_left_del.Add(new Rectangle(-10, -10, 0, 0));
+                                _rect_left.Add(rect);
+                                usex += sizeWidth + gap;
+                            }
+                            else
+                            {
+                                var rect = new Rectangle(rect_read.X + usex, rect_read.Y + y + usey, sizeWidth, height);
+                                _rect_left_txt.Add(rect);
+                                int gapdelxy = (height - del_icon) / 2;
+                                _rect_left_del.Add(new Rectangle(rect.Right + gapdelxy / 2, rect.Y + gapdelxy, del_icon, del_icon));
+                                rect.Width += height;
+                                _rect_left.Add(rect);
+                                usex += sizeWidth + height + gap;
+                            }
                         }
-                        _style_left.Add(style);
-                        if (enable_dir.Contains(it) || !canDelete)
-                        {
-                            var rect = new Rectangle(rect_read.X + use, rect_read.Y + y, size.Width, height);
-                            _rect_left_txt.Add(rect);
-                            _rect_left_del.Add(new Rectangle(-10, -10, 0, 0));
-                            _rect_left.Add(rect);
-                            use += size.Width + gap;
-                        }
-                        else
-                        {
-                            var rect = new Rectangle(rect_read.X + use, rect_read.Y + y, size.Width, height);
-                            _rect_left_txt.Add(rect);
-                            int gapdelxy = (height - del_icon) / 2;
-                            _rect_left_del.Add(new Rectangle(rect.Right + gapdelxy / 2, rect.Y + gapdelxy, del_icon, del_icon));
-                            rect.Width += height;
-                            _rect_left.Add(rect);
-                            use += size.Width + height + gap;
-                        }
+                        style_left = _style_left.ToArray();
+                        rect_left_txts = _rect_left_txt.ToArray();
+                        rect_left_dels = _rect_left_del.ToArray();
+                        rect_lefts = _rect_left.ToArray();
+                        return new int[] { usex - (delgap ? 0 : gap), usey };
                     }
-                    style_left = _style_left.ToArray();
-                    rect_left_txts = _rect_left_txt.ToArray();
-                    rect_left_dels = _rect_left_del.ToArray();
-                    rect_lefts = _rect_left.ToArray();
-                    return use - (delgap ? 0 : gap);
+                    else
+                    {
+                        int y = (rect_read.Height - height) / 2, use = delgap ? 0 : y;
+                        for (int i = 0; i < selectedValue.Length; i++)
+                        {
+                            var it = selectedValue[i];
+                            string? showtext;
+                            SelectItem? style = null;
+                            if (style_dir.TryGetValue(it, out var find))
+                            {
+                                style = find;
+                                showtext = find.Text;
+                            }
+                            else showtext = it.ToString();
+
+                            int sizeWidth = g.MeasureString(showtext, Font).Width + gap4,
+                            size2Width = g.MeasureString("+" + (selectedValue.Length - i), Font).Width + gap4;
+                            int use_base = use + sizeWidth + height + gap;
+                            if (use_base + (size2Width + gap) > rect_read.Width)
+                            {
+                                //超出
+                                _rect_left_txt.Add(new Rectangle(rect_read.X + use, rect_read.Y + y, size2Width, height));
+                                style_left = _style_left.ToArray();
+                                rect_left_txts = _rect_left_txt.ToArray();
+                                rect_left_dels = _rect_left_del.ToArray();
+                                rect_lefts = _rect_left.ToArray();
+                                if (_rect_left_txt.Count == 1) return new int[] { size2Width + gap, 0 };
+                                return new int[] { use + size2Width + gap, 0 };
+                            }
+                            _style_left.Add(style);
+                            if (enable_dir.Contains(it) || !canDelete)
+                            {
+                                var rect = new Rectangle(rect_read.X + use, rect_read.Y + y, sizeWidth, height);
+                                _rect_left_txt.Add(rect);
+                                _rect_left_del.Add(new Rectangle(-10, -10, 0, 0));
+                                _rect_left.Add(rect);
+                                use += sizeWidth + gap;
+                            }
+                            else
+                            {
+                                var rect = new Rectangle(rect_read.X + use, rect_read.Y + y, sizeWidth, height);
+                                _rect_left_txt.Add(rect);
+                                int gapdelxy = (height - del_icon) / 2;
+                                _rect_left_del.Add(new Rectangle(rect.Right + gapdelxy / 2, rect.Y + gapdelxy, del_icon, del_icon));
+                                rect.Width += height;
+                                _rect_left.Add(rect);
+                                use += sizeWidth + height + gap;
+                            }
+                        }
+                        style_left = _style_left.ToArray();
+                        rect_left_txts = _rect_left_txt.ToArray();
+                        rect_left_dels = _rect_left_del.ToArray();
+                        rect_lefts = _rect_left.ToArray();
+                        return new int[] { use - (delgap ? 0 : gap), 0 };
+                    }
                 });
             }
-            return 0;
+            return new int[] { 0, 0 };
+        }
+        protected override void UseLeftAutoHeight(int height, int gap, int y)
+        {
+            if (AutoHeight)
+            {
+                if (y > 0) Height = height + gap + y + (int)(2 * Config.Dpi) * 3;
+                else Height = height + gap + y;
+            }
         }
 
         protected override void PaintOtherBor(Canvas g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive)

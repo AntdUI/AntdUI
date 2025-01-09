@@ -10,7 +10,7 @@ Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **AutoHandDpi** | Auto process DPI enable | bool | true |
 **Dark** | Dark Mode | bool | false |
-**Mode** | Color mode | [TAMode](../Control/Enum#tamode) | Auto |
+**Mode** | Color mode | [TAMode](../Control/Enum.md#tamode) | Auto |
 **IsMax** 🔴 | Is it maximizing | bool | false `ReadOnly` |
 
 ### Method

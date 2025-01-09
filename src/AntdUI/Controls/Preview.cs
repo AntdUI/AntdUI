@@ -139,9 +139,32 @@ namespace AntdUI
             /// <summary>
             /// 自定义按钮回调
             /// </summary>
-            public Action<string, object?>? OnBtns { get; set; }
+            public Action<string, BtnEvent>? OnBtns { get; set; }
 
             #endregion
+        }
+
+        public class BtnEvent
+        {
+            public BtnEvent(int index, object? data, object? tag)
+            {
+                Index = index;
+                Data = data;
+                Tag = tag;
+            }
+
+            /// <summary>
+            /// 数据序号
+            /// </summary>
+            public int Index { get; set; }
+            /// <summary>
+            /// 元数据
+            /// </summary>
+            public object? Data { get; set; }
+            /// <summary>
+            /// Btn的Tag
+            /// </summary>
+            public object? Tag { get; set; }
         }
 
         /// <summary>

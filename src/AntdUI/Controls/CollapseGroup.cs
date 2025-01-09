@@ -275,15 +275,15 @@ namespace AntdUI
                                 {
                                     if (sub.Select)
                                     {
-                                        PaintBack(g, sub, active);
+                                        PaintBack(g, sub, active, radius);
                                         if (sub.AnimationHover)
                                         {
                                             using (var brush = new SolidBrush(Helper.ToColorN(sub.AnimationHoverValue, hover.Color)))
                                             {
-                                                PaintBack(g, sub, brush);
+                                                PaintBack(g, sub, brush, radius);
                                             }
                                         }
-                                        else if (sub.Hover) PaintBack(g, sub, hover);
+                                        else if (sub.Hover) PaintBack(g, sub, hover, radius);
 
                                         if (sub.Icon != null) g.Image(sub.Icon, sub.ico_rect);
                                         else if (sub.IconSvg != null) g.GetImgExtend(sub.IconSvg, sub.ico_rect, fore_active.Color);
@@ -295,10 +295,10 @@ namespace AntdUI
                                         {
                                             using (var brush = new SolidBrush(Helper.ToColorN(sub.AnimationHoverValue, hover.Color)))
                                             {
-                                                PaintBack(g, sub, brush);
+                                                PaintBack(g, sub, brush, radius);
                                             }
                                         }
-                                        else if (sub.Hover) PaintBack(g, sub, hover);
+                                        else if (sub.Hover) PaintBack(g, sub, hover, radius);
 
                                         if (sub.Icon != null) g.Image(sub.Icon, sub.ico_rect);
                                         else if (sub.IconSvg != null) g.GetImgExtend(sub.IconSvg, sub.ico_rect, fore.Color);
@@ -319,7 +319,7 @@ namespace AntdUI
             }
         }
 
-        void PaintBack(Canvas g, CollapseGroupSub sub, SolidBrush brush)
+        void PaintBack(Canvas g, CollapseGroupSub sub, SolidBrush brush, float radius)
         {
             if (radius > 0)
             {

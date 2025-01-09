@@ -17,7 +17,7 @@ TimePicker 时间选择框 👚
 ||||
 **Value** | 控件当前日期 | TimeSpan | `00:00:00` |
 ||||
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum#talignfrom) | BL |
+**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **ShowIcon** | 是否显示图标 | bool | true |
 

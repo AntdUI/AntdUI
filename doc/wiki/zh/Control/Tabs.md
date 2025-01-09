@@ -22,7 +22,7 @@ Tabs 标签页 👚 [beta]
 **Alignment** | 位置 | TabAlignment |Top|
 **Centered** 🔴 | 标签居中展示 | bool | false |
 ||||
-**TypExceed** 🔴 | 超出UI类型 | [TabTypExceed](Enum#tabtypexceed) | Button |
+**TypExceed** 🔴 | 超出UI类型 | [TabTypExceed](Enum.md#tabtypexceed) | Button |
 **ScrollBack** 🔴 | 滚动条颜色 | Color`?` | `null` |
 **ScrollBackHover** 🔴 | 滚动条悬停颜色 | Color`?` | `null` |
 **ScrollFore** 🔴 | 滚动条文本颜色 | Color`?` | `null` |
@@ -32,7 +32,7 @@ Tabs 标签页 👚 [beta]
 **IconRatio** | 图标比例 | float | 0.7F |
 **ItemSize** 🔴 | 自定义项大小 | int? | `null` |
 ||||
-**Type** | 类型 | [TabType](Enum#tabtype) | Line |
+**Type** | 类型 | [TabType](Enum.md#tabtype) | Line |
 **Style** | 样式类型 | [IStyle](#istyle) | `非空` |
 ||||
 **TabMenuVisible** | 是否显示头 | bool | true |

@@ -141,7 +141,7 @@ namespace AntdUI
 
         #endregion
 
-        internal int radius = 6;
+        int radius = 6;
         /// <summary>
         /// 圆角
         /// </summary>

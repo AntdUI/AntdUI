@@ -35,6 +35,8 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Switch : IControl
     {
+        public Switch() : base(ControlType.Select) { }
+
         #region 属性
 
         Color? fore;
@@ -249,15 +251,26 @@ namespace AntdUI
 
         #region 渲染
 
+        bool init = false;
         protected override void OnPaint(PaintEventArgs e)
         {
+            init = true;
             var g = e.Graphics.High();
             var rect = ClientRectangle.PaddingRect(Padding);
             var rect_read = ReadRectangle;
+            bool enabled = Enabled;
             using (var path = rect_read.RoundPath(rect_read.Height))
             {
                 Color _color = fill ?? Colour.Primary.Get("Switch");
                 PaintClick(g, path, rect, rect_read, _color);
+                if (enabled && hasFocus && WaveSize > 0)
+                {
+                    float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2;
+                    using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))
+                    {
+                        g.Draw(Colour.PrimaryBorder.Get("Switch"), wave, path_focus);
+                    }
+                }
                 using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch")))
                 {
                     g.Fill(brush, path);
@@ -270,7 +283,7 @@ namespace AntdUI
                     var alpha = 255 * AnimationCheckValue;
                     g.Fill(Helper.ToColor(alpha, _color), path);
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    g.FillEllipse(enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                     if (loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -285,11 +298,11 @@ namespace AntdUI
                 else if (_checked)
                 {
                     var colorhover = FillHover ?? Colour.PrimaryHover.Get("Switch");
-                    g.Fill(Enabled ? _color : Color.FromArgb(200, _color), path);
+                    g.Fill(enabled ? _color : Color.FromArgb(200, _color), path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
                     else if (ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    g.FillEllipse(enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                     if (loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -304,7 +317,7 @@ namespace AntdUI
                 else
                 {
                     var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(Enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    g.FillEllipse(enabled ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
                     if (loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -484,6 +497,40 @@ namespace AntdUI
         {
             base.OnLeave(e);
             ExtraMouseHover = false;
+        }
+
+        #endregion
+
+        #region 焦点
+
+        bool hasFocus = false;
+        /// <summary>
+        /// 是否存在焦点
+        /// </summary>
+        [Browsable(false)]
+        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        public bool HasFocus
+        {
+            get => hasFocus;
+            private set
+            {
+                if (value && _mouseHover) value = false;
+                if (hasFocus == value) return;
+                hasFocus = value;
+                Invalidate();
+            }
+        }
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            if (init) HasFocus = true;
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            HasFocus = false;
         }
 
         #endregion

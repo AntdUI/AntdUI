@@ -540,16 +540,15 @@ namespace AntdUI
 
                 #region 绘制阴影
 
-                var rect_show = new Rectangle(rect.X + last.RECT.Right - _gap, rect.Y, _gap * 2, last.RECT.Bottom);
-                using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table"), Color.Transparent, 0F))
+                if (_gap > 0)
                 {
-                    g.Fill(brush, rect_show);
+                    var rect_show = new Rectangle(rect.X + last.RECT.Right - _gap, rect.Y, _gap * 2, last.RECT.Bottom);
+                    using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table"), Color.Transparent, 0F))
+                    {
+                        g.Fill(brush, rect_show);
+                    }
                 }
-
-                using (var brush = new SolidBrush(Colour.BgBase.Get("Table")))
-                {
-                    g.Fill(brush, rect_Fixed);
-                }
+                g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
 
                 #endregion
 
@@ -602,16 +601,15 @@ namespace AntdUI
 
                         #region 绘制阴影
 
-                        var rect_show = new Rectangle(rect.Right - w - _gap, rect.Y, _gap * 2, last.RECT.Bottom);
-                        using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table"), 0F))
+                        if (_gap > 0)
                         {
-                            g.Fill(brush, rect_show);
+                            var rect_show = new Rectangle(rect.Right - w - _gap, rect.Y, _gap * 2, last.RECT.Bottom);
+                            using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table"), 0F))
+                            {
+                                g.Fill(brush, rect_show);
+                            }
                         }
-
-                        using (var brush = new SolidBrush(Colour.BgBase.Get("Table")))
-                        {
-                            g.Fill(brush, rect_Fixed);
-                        }
+                        g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
 
                         #endregion
 
