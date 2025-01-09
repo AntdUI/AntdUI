@@ -18,13 +18,13 @@ Progress 进度条 👚
 **Fill** | 进度条颜色 | Color`?` | `null` |
 ||||
 **Radius** | 圆角 | int | 0 |
-**Shape** 🔴 | 形状 | [TShapeProgress](Enum#tshapeprogress) | Round |
+**Shape** 🔴 | 形状 | [TShapeProgress](Enum.md#tshapeprogress) | Round |
 **IconRatio** | 图标比例 | float | 0.7F |
 **ValueRatio** 🔴 | 进度条比例 | float | 0.4F |
 ||||
 **UseSystemText** 🔴 | 使用系统文本 | bool | false |
 **ShowTextDot** 🔴 | 显示进度文本小数点位数 | int | 0 |
-**State** | 样式 | [TType](Enum#ttype) | None |
+**State** | 样式 | [TType](Enum.md#ttype) | None |
 **ShowInTaskbar** | 任务栏中显示进度 | bool | false |
 ||||
 **Text** | 文本 | string`?` | `null` |

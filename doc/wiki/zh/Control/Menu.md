@@ -23,10 +23,10 @@ Menu 导航菜单 👚
 **Indent** | 常规缩进 `和Tree那样缩进` | bool | false |
 **ShowSubBack** | 显示子菜单背景 | bool | false |
 **Unique** 🔴 | 只保持一个子菜单的展开 | bool | false |
-**Trigger** 🔴 | 触发下拉的行为 | [Trigger](Enum#trigger) | Click |
+**Trigger** 🔴 | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
 ||||
-**Theme** | 色彩模式 | [TAMode](Enum#tamode) | Auto |
-**Mode** 🔴 | 菜单类型 | [TMenuMode](Enum#tmenumode) | Inline |
+**Theme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
+**Mode** 🔴 | 菜单类型 | [TMenuMode](Enum.md#tmenumode) | Inline |
 **AutoCollapse** | 自动折叠 | bool | false |
 **Collapsed** | 是否折叠 | bool | false |
 ||||

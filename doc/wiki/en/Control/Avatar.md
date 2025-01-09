@@ -25,7 +25,7 @@ Avatar 头像 👚
 ||||
 **Image** | 图片 | Image`?` | `null` |
 **ImageSvg** 🔴 | 图片SVG | string`?` | `null` |
-**ImageFit** | 图片布局 | [TFit](Enum#tfit) | Cover |
+**ImageFit** | 图片布局 | [TFit](Enum.md#tfit) | Cover |
 **PlayGIF** 🔴 | 播放GIF | bool | true |
 ||||
 **Shadow** | 阴影大小 | int | 0 |

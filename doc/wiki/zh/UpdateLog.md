@@ -1,5 +1,120 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)・[SVG](SVG.md)
 
+### `1.8.2` 2025-01-09
+- ➕ SelectMultiple 多行样式，AutoHeight
+- ➕ Button/Switch/ColorPicker 焦点样式
+- ➕ Button LoadingRespondClick
+- ➕ Button Loading -1 支持
+- ➕ Style Clear 清空样式
+- ✍️ ShowInTaskbar 大小变更
+- ✍️ Input 键盘消息
+- ✍️ Alert 文本靠边
+- ✍️ ShowInTaskbar 窗口缩小
+- ✍️ 丰富 Preview OnBtns 返回内容，优化体验
+- ✍️ LabelTime 国际化
+- ✍️ 统一圆角计算
+
+### `1.8.1` 2025-01-07
+[移除 WindowBar 请使用 PageHeader+ShowButton]
+- ➕ Menu Gap
+- ➕ Select 筛选权重
+- ➕ PageHeader UseSubCenter
+- ✍️ Message 等高频 渲染错位
+- ✍️ Input 无法 Tab 到下一个
+- ✍️ 规范 Table Cell 间距
+- ✍️ Drawer 抑制闪烁
+- ✍️ Window ShowInTaskbar 无边框异常
+- ✍️ Input 滚动条隐藏样式无效
+- ✍️ 控件 Tab 焦点问题
+
+### `1.8.0` 2024-12-31 🐍
+- ➕ 日期徽标功能对齐
+- ➕ 横向滚动快捷键
+- ➕ PageHeader SubFont，BackExtend
+- ➕ PageHeader 全屏
+- ➕ Switch Loading
+- ✍️ Drawer 渲染问题
+- ✍️ 部分组件掉帧
+- ✍️ OS 在 framework 旧问题
+- ✍️ Tree 拖拽
+
+### `1.7.14` 2024-12-26
+- ➕ UploadDragger 点击选择文件 ClickHand 点击上传等属性
+- ➕ UploadDragger 拖拽文件夹
+- ✍️ Button 鼠标离开后依然响应点击
+- ✍️ 优化 PageHeader CancelButton 交互
+- ✍️ Tabs Clear 后异常
+- ✍️ Spin 在 Drawer 中不生效
+- ✍️ Modal BtnHeight=0 Keyboard 无效
+- ✍️ Tabs Card2
+
+### `1.7.13` 2024-12-20
+- ➕ Table 排序模式、SortModeChanged
+- ➕ 触屏点击 Config.TouchClickEnabled
+- ➕ Table SelectIndexChanged
+- ➕ 日期徽标新增字符串和圆角支持
+- ➕ Modal 拖拽窗口
+- ✍️ Table PARENT 异常
+- ✍️ 布局 控件初始化问题
+
+### `1.7.12` 2024-12-16
+- ✍️ Alert Loop 空文本卡死
+- ✍️ Tree 交互新增点击图标
+- ✍️ 按钮回车多重触发
+- ✍️ Popover 自定义控件内部 TopMost
+- ✍️ Tree 隐藏后依然响应事件
+- ✍️ Label 自动宽度 空值
+- ✍️ Timeline Gap
+
+### `1.7.11` 2024-12-11
+- ✍️ DPI 处理 隐藏后异常
+
+### `1.7.10` 2024-12-09
+- ➕ Timeline / Steps 开放 Gap
+- ➕ Table 新增 DropDown 下拉
+- ✍️ Button 回车 触发两次 Click
+- ✍️ Table 编辑多行、编辑模式不同类型恢复旧值、RowHoverBg 透明闪烁
+- ✍️ Pagination 圆角
+- ✍️ Progress 大小0异常
+
+### `1.7.9` 2024-12-03
+- ➕ VirtualPanel 单个刷新
+- ✍️ Table 多个 CellText 错位
+- ✍️ DatePicker Format 解析异常
+- ✍️ Table 单元格修改，绑定数据类型为uint16时报错
+- ✍️ ProcessCmdKey
+- ✍️ Tree 无数据不触发 Paint
+- ✍️ Button 下拉箭头居中
+- ✍️ Input 上下 异常
+- ✍️ DateChanged 多次触发
+
+### `1.7.8` 2024-11-28
+- ➕ Table 新增禁用行
+- ➕ Badge DotRatio/Gap
+- ➕ Menu IconActive
+- ➕ IconState
+- ✍️ Table 编辑模式复制异常
+- ✍️ 日期选择最大值
+- ✍️ ColorPicker AllowClear
+- ✍️ Table ToDataTable 插槽
+- ✍️ DataBindings 不支持AOT
+- ✍️ Window 大小变化
+- ✍️ Splitter DPI 异常
+- ✍️ Loading 加入背景
+- ✍️ 图片 渲染并发
+- ✍️ 公开 Table.ICell 容器
+- ✍️ 色卡集中
+
+### `1.7.7` 2024-11-25
+- ➕ Table 多行选中
+- ➕ Table 处理快捷键
+- ➕ Table ToDataTable 插槽
+- ➕ Menu 滚动条和屏幕边缘碰撞
+- ✍️ Table DataTable 无法应用编辑
+- ✍️ Button 背景重叠
+- ✍️ 适配 DataBindings
+- ✍️ TreeCheckedEventArgs 值
+
 ### `1.7.6` 2024-11-21
 - ✍️ Table 复选框不显示
 - ✍️ Tree 父级多选状态异常

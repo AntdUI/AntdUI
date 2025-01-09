@@ -18,7 +18,7 @@ Popover 气泡卡片
 **Font** | 字体 | Font |`null`|
 **AutoClose** |自动关闭时间（秒）`0等于不关闭` | int |0|
 **Radius** | 圆角 | int | 6 |
-**ArrowAlign** | 箭头方向 | [TAlign](Enum#talign) | Bottom |
+**ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | Bottom |
 **ArrowSize** | 箭头大小 | int | 8 |
 **Offset** | 偏移量 | Rectangle / RectangleF | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

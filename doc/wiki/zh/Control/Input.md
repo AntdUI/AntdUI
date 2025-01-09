@@ -22,7 +22,7 @@ Input 输入框 👚
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
 ||||
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
-**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum#tfit) | Fill |
+**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
 ||||
 **BorderWidth** | 边框宽度 | float | 0F |
 **BorderColor** | 边框颜色 | Color`?` | `null` |
@@ -37,7 +37,7 @@ Input 输入框 👚
 **WaveSize** | 波浪大小 `点击动画` | int | 4 |
 **Radius** | 圆角 | int | 6 |
 **Round** | 圆角样式 | bool | false |
-**Status** | 设置校验状态 | [TType](Enum#ttype) | None |
+**Status** | 设置校验状态 | [TType](Enum.md#ttype) | None |
 ||||
 **AllowClear** | 支持清除 | bool | false |
 **AutoScroll** | 显示滚动条 | bool | false |

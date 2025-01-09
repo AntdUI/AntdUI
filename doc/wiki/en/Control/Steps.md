@@ -16,7 +16,7 @@ Steps 步骤条 👚
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 ||||
 **Current** | 指定当前步骤 `从 0 开始记数。在子 Step 元素中，可以通过 status 属性覆盖状态` | int | 0 |
-**Status** | 指定当前步骤的状态 | [TStepState](Enum#tstepstate) | Process |
+**Status** | 指定当前步骤的状态 | [TStepState](Enum.md#tstepstate) | Process |
 **Vertical** | 垂直方向 | bool | false |
 **Items** | 数据 `StepsItem[]` | [StepsItem[]](#stepsitem) | [] |
 ||||

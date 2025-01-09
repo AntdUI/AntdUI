@@ -343,6 +343,8 @@ namespace Demo
                     return "Single Image";
                 case "Preview.button2":
                     return "Multiple Images";
+                case "Preview.button3":
+                    return "Dynamic Load Images";
 
                 //Progress ----------------------------
                 case "Progress.Text":

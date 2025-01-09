@@ -20,7 +20,7 @@ ContextMenuStrip 右键菜单
 **CallSleep** 🔴 | 延迟回调 | int |0|
 **UFocus** 🔴 | 是否抢占焦点 | bool |false|
 **Location** 🔴 | 自定义坐标 | Point`?` |`null`|
-**Align** 🔴 | 方向 | [TAlignFrom](Enum#talignfrom) | BR |
+**Align** 🔴 | 方向 | [TAlignFrom](Enum.md#talignfrom) | BR |
 **Call** | 点击回调 | Action<ContextMenuStripItem> | `必填` |
 
 ### 数据

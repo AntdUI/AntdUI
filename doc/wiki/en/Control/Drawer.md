@@ -17,7 +17,7 @@ Drawer 抽屉
 **Mask** | 是否展示遮罩 | bool | true |
 **MaskClosable** | 点击蒙层是否允许关闭 | bool | true |
 **Padding** | 边距 | int | 24 |
-**Align** | 方向 | [TAlignMini](Enum#talignmini) | Right |
+**Align** | 方向 | [TAlignMini](Enum.md#talignmini) | Right |
 **Dispose** 🔴 | 是否释放 | bool | true |
 **Tag** | 用户定义数据 | object`?` | `null` |
 **OnLoad** 🔴 | 加载回调 | Action`?` | `null` |

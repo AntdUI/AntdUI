@@ -10,7 +10,7 @@
 :--|:--|:--|:--|
 **AutoHandDpi** | 自动处理DPI | bool | true |
 **Dark** | 深色模式 | bool | false |
-**Mode** | 色彩模式 | [TAMode](../Control/Enum#tamode) | Auto |
+**Mode** | 色彩模式 | [TAMode](../Control/Enum.md#tamode) | Auto |
 **IsMax** 🔴 | 是否最大化 | bool | false |
 
 ### 方法

@@ -17,7 +17,7 @@ Modal 对话框
 **Content** | 控件/内容 | object | `必填` |
 **Width** | 消息框宽度 | int | 416 |
 **Font** | 字体 | Font`?` | `null` |
-**Icon** | 图标 | [TType](Enum#ttype) | None |
+**Icon** | 图标 | [TType](Enum.md#ttype) | None |
 **Keyboard** | 是否支持键盘 esc 关闭 | bool | true |
 **Mask** | 是否展示遮罩 | bool | true |
 **MaskClosable** | 点击蒙层是否允许关闭 | bool | true |
@@ -29,7 +29,7 @@ Modal 对话框
 **CancelText** | 取消按钮文字 | string | "取消" |
 **CancelFont** 🔴 | 取消按钮字体 | Font`?` | `null` |
 **OkText** | 确认按钮文字 | string | "确定" |
-**OkType** | 确认按钮类型 | [TTypeMini](Enum#ttypemini) | Primary |
+**OkType** | 确认按钮类型 | [TTypeMini](Enum.md#ttypemini) | Primary |
 **OkFont** 🔴 | 确认按钮字体 | Font`?` | `null` |
 **OnOk** | 确定回调 | `Func<Config, bool>?` | `null` |
 ||||
@@ -48,7 +48,7 @@ Modal 对话框
 :--|:--|:--|:--|
 **Name** | 按钮名称 | string | `必填` |
 **Text** | 按钮文字 | string | `必填` |
-**Type** | 按钮类型 | [TTypeMini](Enum#ttypemini) | Default |
+**Type** | 按钮类型 | [TTypeMini](Enum.md#ttypemini) | Default |
 **Fore** | 文字颜色 | Color`?` | `null` |
 **Back** | 背景颜色 | Color`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

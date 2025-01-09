@@ -12,7 +12,7 @@
 :--|:--|:--|:--|
 **Resizable** | 调整窗口大小 | bool | true |
 **Dark** | 深色模式 | bool | false |
-**Mode** | 色彩模式 | [TAMode](../Control/Enum#tamode) | Auto |
+**Mode** | 色彩模式 | [TAMode](../Control/Enum.md#tamode) | Auto |
 **Radius** | 圆角 | int | 0 |
 ||||
 **UseDwm** 🔴 | 使用DWM阴影 `使用系统阴影后颜色、边框、圆角等不生效` | bool | true |

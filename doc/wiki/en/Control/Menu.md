@@ -24,8 +24,8 @@ Menu 导航菜单 👚
 **ShowSubBack** | 显示子菜单背景 | bool | false |
 **Unique** 🔴 | 只保持一个子菜单的展开 | bool | false |
 ||||
-**Theme** | 色彩模式 | [TAMode](Enum#tamode) | Auto |
-**Mode** 🔴 | 菜单类型 | [TMenuMode](Enum#tmenumode) | Inline |
+**Theme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
+**Mode** 🔴 | 菜单类型 | [TMenuMode](Enum.md#tmenumode) | Inline |
 **AutoCollapse** | 自动折叠 | bool | false |
 **Collapsed** | 是否折叠 | bool | false |
 ||||

@@ -15,7 +15,7 @@ FloatButton 悬浮按钮
 **Form** | 所属窗口 | Form | `必填` |
 **Font** | 字体 | Font`?` ||
 **Control** | 所属控件 | Control`?` ||
-**Align** | 方向 | [TAlign](Enum#talign) | BR |
+**Align** | 方向 | [TAlign](Enum.md#talign) | BR |
 **Vertical** | 是否垂直方向 | bool | true |
 **TopMost** | 是否置顶 | bool | false |
 **Size** | 大小 | int | 40 |
@@ -36,7 +36,7 @@ FloatButton 悬浮按钮
 **Fore** 🔴 | 文字颜色 | Color`?` | `null` |
 **Tooltip** | 气泡的内容 | string`?` | `null` |
 **Round** 🔴 | 圆角样式 | bool | true |
-**Type** | 类型 | [TTypeMini](Enum#ttypemini) | Default |
+**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
 **Radius** | 圆角 | int | 6 |
 ||||
 **Icon** | 自定义图标 | Image`?` | `null` |

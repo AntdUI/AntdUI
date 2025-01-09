@@ -30,11 +30,11 @@ Segmented 分段控制器 👚
 ||||
 **Gap** | 间距 | int | 0 |
 **Vertical** | 是否竖向 | bool | false |
-**IconAlign** 🔴 | 图标对齐方向 | [TAlignMini](Enum#talignmini) | Top |
+**IconAlign** 🔴 | 图标对齐方向 | [TAlignMini](Enum.md#talignmini) | Top |
 **IconRatio** 🔴 | 图标比例 | float`?` | `null` |
 **IconGap** 🔴 | 图标与文字间距比例 | float | 0.2F |
 ||||
-**BarPosition** 🔴 | 线条位置 | [TAlignMini](Enum#talignmini) | None |
+**BarPosition** 🔴 | 线条位置 | [TAlignMini](Enum.md#talignmini) | None |
 **BarSize** 🔴 | 条大小 | float | 3F |
 **BarPadding** 🔴 | 条边距 | int | 0 |
 **BarRadius** 🔴 | 条圆角 | int | 0 |

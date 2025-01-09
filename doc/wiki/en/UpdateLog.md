@@ -1,5 +1,120 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
+### `1.8.2` 2025-01-09
+- ➕ SelectMultiple multiline style, AutoHeight
+- ➕ Button/Switch/ColorPicker Focus Style
+- ➕ Button LoadingRespondClick
+- ➕ Button Loading -1 support
+- ➕ Style Clear Clear Style
+- ✍️ ShowInTaskbar size change
+- ✍️ Input keyboard message
+- ✍️ Alert text on the side
+- ✍️ Shrink ShowInTaskbar window
+- ✍️ Enrich Preview OnBtns return content, optimize experience
+- ✍️ LabelTime internationalization
+- ✍️ Unified rounded corner calculation
+
+### `1.8.1` 2025-01-07
+[To remove WindowBar, use PageHeader+ShowButton]
+- ➕ Menu Gap
+- ➕ Select filtering weight
+- ➕ PageHeader UseSubCenter
+- ✍️ Message and other high-frequency rendering misalignment
+- ✍️ Input cannot tab to the next one
+- ✍️ Standardize Table Cell Spacing
+- ✍️ Drawer suppresses flicker
+- ✍️ Window ShowInTaskbar frameless exception
+- ✍️ Input scrollbar hidden style is invalid
+- ✍️ Control Tab Focus Issue
+
+### `1.8.0` 2024-12-31 🐍
+- ➕ Date logo function alignment
+- ➕ Horizontal scrolling shortcut key
+- ➕ PageHeader SubFont，BackExtend
+- ➕ PageHeader Full Screen
+- ➕ Switch Loading
+- ✍️ Drawer rendering issue
+- ✍️ Partial components have dropped frames
+- ✍️ Old issues with the OS framework
+- ✍️ Tree drag and drop
+
+### `1.7.14` 2024-12-26
+- ➕ UploadDragger Click to select file ClickHand Click to upload and other attributes
+- ➕ UploadDragger Drag and Drop Folder
+- ✍️ Button responds to clicks even after the mouse is away
+- ✍️ Optimize PageHeader CancelButton interaction
+- ✍️ Abnormal after Tabs Clear
+- ✍️ Spin does not work in Drawer
+- ✍️ Modal BtnHeight=0 Keyboard is invalid
+- ✍️ Tabs Card2
+
+### `1.7.13` 2024-12-20
+- ➕ Table sorting mode SortModeChanged
+- ➕ Click on Configure on the touch screen TouchClickEnabled
+- ➕ Table SelectIndexChanged
+- ➕ Date logo adds string and rounded corner support
+- ➕ Modal drag and drop window
+- ✍️ Table PART exception
+- ✍️ Layout control initialization issue
+
+### `1.7.12` 2024-12-16
+- ✍️ Alert Loop Empty Text Stuck
+- ✍️ Tree interaction adds click icon
+- ✍️ Press Enter button with multiple triggers
+- ✍️ Popover custom control internal TopMost
+- ✍️ Tree still responds to events after hiding
+- ✍️ Label automatic width null value
+- ✍️ Timeline Gap
+
+### `1.7.11` 2024-12-11
+- ✍️ DPI processing hidden exception
+
+### `1.7.10` 2024-12-09
+- ➕ Timeline/Steps Open Gap
+- ➕ Table adds DropDown dropdown menu
+- ✍️ Button press triggers two clicks
+- ✍️ Table editing with multiple rows, different editing modes to restore old values, RowHoverBg transparent flashing
+- ✍️ Pagination rounded corner
+- ✍️ Progress size 0 is abnormal
+
+### `1.7.9` 2024-12-03
+- ➕ VirtualPanel single refresh
+- ✍️ Multiple CellTexts in Table are misaligned
+- ✍️ DatePicker Format parsing exception
+- ✍️ Table cell modification, error reported when binding data type to uint16
+- ✍️ ProcessCmdKey
+- ✍️ Tree without data does not trigger Paint
+- ✍️ Button dropdown arrow centered
+- ✍️ Input up and down abnormality
+- ✍️ DateChanged triggered multiple times
+
+### `1.7.8` 2024-11-28
+- ➕ Table adds disabled rows
+- ➕ Badge DotRatio/Gap
+- ➕ Menu IconActive
+- ➕ IconState
+- ✍️ Table editing mode replication exception
+- ✍️ Date selection maximum value
+- ✍️ ColorPicker AllowClear
+- ✍️ Table ToVNet Slot
+- ✍️ Data bindings do not support AOT
+- ✍️ Window size change
+- ✍️ Spliter DPI exception
+- ✍️ Loading Add Background
+- ✍️ Concurrent image rendering
+- ✍️ Public Table ICell container
+- ✍️ Color card collection
+
+### `1.7.7` 2024-11-25
+- ➕ Table multi row selection
+- ➕ Table Processing Shortcut Keys
+- ➕ Table ToVNet Slot
+- ➕ Menu scrollbar collides with screen edge
+- ✍️ Table VNet cannot apply editing
+- ✍️ Button background overlap
+- ✍️ Adapt to Data Binding
+- ✍️ TreeCheckdEventArgs value
+
 ### `1.7.6` 2024-11-21
 - ✍️ Table Check box not displayed
 - ✍️ Tree Parent level multiple-choice status exception

@@ -13,7 +13,7 @@ PageHeader 页头 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Mode** | 色彩模式 | [TAMode](Enum#tamode) | Auto |
+**Mode** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
 **Loading** | 加载状态 | bool | false |
 ||||
 **Text** | 文本 | string`?` | `null` |

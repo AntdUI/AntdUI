@@ -12,7 +12,7 @@ Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Resizable** | Adjust window size to enable | bool | true |
 **Dark** | Dark Mode | bool | false |
-**Mode** | Color mode | [TAMode](../Control/Enum#tamode) | Auto 
+**Mode** | Color mode | [TAMode](../Control/Enum.md#tamode) | Auto 
 **ScreenRectangle** | Get or set the screen area of the form | Rectangle |
 
 ### Method

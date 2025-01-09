@@ -14,7 +14,7 @@ Notification 通知提醒框
 :--|:--|:--|:--|
 **ID** 🔴 | ID | string`?` | `null` |
 **Form** | 所属窗口 | Form | `必填` |
-**Icon** | 图标 | [TType](Enum#ttype) | None |
+**Icon** | 图标 | [TType](Enum.md#ttype) | None |
 **Font** | 字体 | Font`?` | `null` |
 **Text** | 文本 | string | `必填` |
 |||||
@@ -23,7 +23,7 @@ Notification 通知提醒框
 **FontStyleTitle** 🔴 | 标题字体样式 | FontStyle`?` | `null` |
 |||||
 **Radius** | 圆角 | int | 10 |
-**Align** | 方向 | [TAlignFrom](Enum#talignfrom) | Right |
+**Align** | 方向 | [TAlignFrom](Enum.md#talignfrom) | Right |
 **Padding** 🔴 | 边距 | Size | 24, 20 |
 **AutoClose** | 自动关闭时间（秒）`0等于不关闭` | int | 6 |
 **ClickClose** 🔴 | 是否可以点击关闭 | bool | true |

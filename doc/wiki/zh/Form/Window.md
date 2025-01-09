@@ -12,7 +12,7 @@
 :--|:--|:--|:--|
 **Resizable** | 调整窗口大小 | bool | true |
 **Dark** | 深色模式 | bool | false |
-**Mode** | 色彩模式 | [TAMode](../Control/Enum#tamode) | Auto |
+**Mode** | 色彩模式 | [TAMode](../Control/Enum.md#tamode) | Auto |
 **ScreenRectangle** | 获取或设置窗体屏幕区域 | Rectangle |
 
 ### 方法
