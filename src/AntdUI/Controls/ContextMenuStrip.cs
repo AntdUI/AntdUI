@@ -33,10 +33,7 @@ namespace AntdUI
         /// <param name="control">所属控件</param>
         /// <param name="call">点击回调</param>
         /// <param name="items">内容</param>
-        public static Form? open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
-        {
-            return open(new Config(control, call, items, sleep));
-        }
+        public static Form? open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0) => open(new Config(control, call, items, sleep));
 
         /// <summary>
         /// ContextMenuStrip 右键菜单

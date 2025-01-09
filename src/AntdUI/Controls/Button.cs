@@ -817,6 +817,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 加载响应点击
+        /// </summary>
+        [Description("加载响应点击"), Category("行为"), DefaultValue(false)]
+        public bool LoadingRespondClick { get; set; }
+
+        /// <summary>
         /// 加载进度
         /// </summary>
         [Description("加载进度"), Category("加载"), DefaultValue(0.3F)]
@@ -2163,7 +2169,7 @@ namespace AntdUI
 
         bool CanClick(Point e)
         {
-            if (loading) return false;
+            if (loading) return LoadingRespondClick;
             else
             {
                 if (RespondRealAreas)

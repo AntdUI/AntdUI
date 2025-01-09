@@ -104,18 +104,18 @@ namespace AntdUI
             {
                 return new string[4]
                 {
-                "24:59:59",
-                now.ToString("HH:mm:ss"),
-                now.ToString("MM-dd"),
-                now.ToString("dddd")
+                    "24:59:59",
+                    now.ToString("HH:mm:ss"),
+                    now.ToString("MM-dd"),
+                    now.ToString("dddd", Thread.CurrentThread.CurrentUICulture)
                 };
             }
             return new string[4]
             {
-            "24:59",
-            now.ToString("HH:mm"),
-            now.ToString("MM-dd"),
-            now.ToString("dddd")
+                "24:59",
+                now.ToString("HH:mm"),
+                now.ToString("MM-dd"),
+                now.ToString("dddd", Thread.CurrentThread.CurrentUICulture)
             };
         }
     }
