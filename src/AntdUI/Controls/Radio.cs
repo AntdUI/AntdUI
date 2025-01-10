@@ -225,8 +225,10 @@ namespace AntdUI
 
         #region 渲染
 
+        bool init = false;
         protected override void OnPaint(PaintEventArgs e)
         {
+            init = true;
             var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
             var enabled = Enabled;
@@ -261,6 +263,11 @@ namespace AntdUI
             var bor2 = 2F * Config.Dpi;
             if (enabled)
             {
+                if (hasFocus && (rect.Height - icon_rect.Height) > bor2)
+                {
+                    float wave = bor2, wave2 = wave * 2;
+                    g.DrawEllipse(Colour.PrimaryBorder.Get("Radio"), wave, new RectangleF(icon_rect.X - wave, icon_rect.Y - wave, icon_rect.Width + wave2, icon_rect.Height + wave2));
+                }
                 var color = fill ?? Colour.Primary.Get("Radio");
                 if (AnimationCheck)
                 {
@@ -318,8 +325,19 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            init = false;
             Focus();
             base.OnMouseDown(e);
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            if (e.KeyCode is Keys.Space)
+            {
+                OnClick(EventArgs.Empty);
+                e.Handled = true;
+            }
         }
 
         int AnimationHoverValue = 0;
@@ -517,6 +535,40 @@ namespace AntdUI
                     break;
             }
             return false;
+        }
+
+        #endregion
+
+        #region 焦点
+
+        bool hasFocus = false;
+        /// <summary>
+        /// 是否存在焦点
+        /// </summary>
+        [Browsable(false)]
+        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        public bool HasFocus
+        {
+            get => hasFocus;
+            private set
+            {
+                if (value && _mouseHover) value = false;
+                if (hasFocus == value) return;
+                hasFocus = value;
+                Invalidate();
+            }
+        }
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            if (init) HasFocus = true;
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            HasFocus = false;
         }
 
         #endregion

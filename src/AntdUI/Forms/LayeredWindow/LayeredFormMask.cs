@@ -31,20 +31,7 @@ namespace AntdUI
         {
             form = _form;
             TopMost = _form.TopMost;
-            if (form.WindowState != FormWindowState.Maximized)
-            {
-                if (form is BorderlessForm borderless) Radius = (int)(borderless.Radius * Config.Dpi);
-                else if (OS.Win11) Radius = (int)(8 * Config.Dpi); //Win11
-                if (form is Window || form is FormNoBar)
-                {
-                    //无边框处理
-                }
-                else if (form.FormBorderStyle != FormBorderStyle.None)
-                {
-                    HasBor = true;
-                    Bor = (int)(7 * Config.Dpi);
-                }
-            }
+            HasBor = form.FormFrame(out Radius, out Bor);
             if (form is Window window)
             {
                 SetSize(window.Size);
@@ -114,10 +101,8 @@ namespace AntdUI
         Bitmap? temp = null;
         public override Bitmap PrintBit()
         {
-            Rectangle rect;
             var rect_read = TargetRectXY;
-            if (HasBor) rect = new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor);
-            else rect = rect_read;
+            var rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
             if (temp == null || (temp.Width != rect_read.Width || temp.Height != rect_read.Height))
             {
                 temp?.Dispose();

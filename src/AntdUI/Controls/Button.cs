@@ -1980,6 +1980,7 @@ namespace AntdUI
         {
             if (CanClick(e.Location))
             {
+                init = false;
                 Focus();
                 base.OnMouseDown(e);
                 ExtraMouseDown = true;

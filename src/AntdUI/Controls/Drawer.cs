@@ -71,7 +71,7 @@ namespace AntdUI
                     var frm = new LayeredFormDrawer(config, mask);
                     ITask.Run(() =>
                     {
-                        System.Threading.Thread.Sleep(220);
+                        if (config.DisplayDelay > 0) System.Threading.Thread.Sleep(config.DisplayDelay);
                         if (frm.isclose) return;
                         config.Form.BeginInvoke(new Action(() =>
                         {
@@ -155,6 +155,8 @@ namespace AntdUI
             /// 关闭回调
             /// </summary>
             public Action? OnClose { get; set; }
+
+            public int DisplayDelay { get; set; } = 100;
         }
     }
 }

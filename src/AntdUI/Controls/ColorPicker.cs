@@ -740,6 +740,7 @@ namespace AntdUI
         {
             if (e.Button == MouseButtons.Left && Trigger == Trigger.Click)
             {
+                init = false;
                 ImeMode = ImeMode.Disable;
                 Focus();
                 ClickDown();

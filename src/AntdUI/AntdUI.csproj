@@ -18,8 +18,6 @@
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<LangVersion>9.0</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">True</GeneratePackageOnBuild>
-		<GenerateDocumentationFile Condition="'$(Configuration)'=='Release'">True</GenerateDocumentationFile>
 		<RepositoryUrl>https://gitee.com/andtui/AntdUI</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>AntdUI;Winform;WinformUI;AntDesign;UI;Control;Ant;界面库;控件;</PackageTags>
@@ -29,6 +27,11 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<SignAssembly>False</SignAssembly>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net40' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net48'">

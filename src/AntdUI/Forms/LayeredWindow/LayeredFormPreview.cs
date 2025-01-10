@@ -39,20 +39,7 @@ namespace AntdUI
             form = _config.Form;
             Font = form.Font;
             TopMost = _config.Form.TopMost;
-            if (form.WindowState != FormWindowState.Maximized)
-            {
-                if (form is BorderlessForm borderless) Radius = (int)(borderless.Radius * Config.Dpi);
-                else if (OS.Win11) Radius = (int)(8 * Config.Dpi); //Win11
-                if (form is Window || form is FormNoBar)
-                {
-                    //无边框处理
-                }
-                else if (form.FormBorderStyle != FormBorderStyle.None)
-                {
-                    HasBor = true;
-                    Bor = (int)(7 * Config.Dpi);
-                }
-            }
+            HasBor = form.FormFrame(out Radius, out Bor);
             if (form is Window window)
             {
                 SetSize(window.Size);
@@ -472,9 +459,8 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             if (btns == null) return;
-            if (HasBor) rect_read = new Rectangle(Bor, 0, TargetRect.Width - Bor * 2, TargetRect.Height - Bor);
-            else rect_read = TargetRectXY;
-
+            var rect_target = TargetRectXY;
+            rect_read = HasBor ? new Rectangle(Bor, 0, rect_target.Width - Bor * 2, rect_target.Height - Bor) : rect_target;
             int btn_height = (int)(46 * Config.Dpi), lr_size = (int)(40 * Config.Dpi), btn_width = (int)(42 * Config.Dpi),
                 padding = (int)(24 * Config.Dpi), padding_lr = (int)(12 * Config.Dpi), padding_buttom = (int)(32 * Config.Dpi),
                 icon_size = (int)(18 * Config.Dpi);
