@@ -48,7 +48,7 @@ namespace AntdUI
                 autoscroll = value;
                 if (autoscroll) ScrollBar = new ScrollBar(this);
                 else ScrollBar = null;
-                IOnSizeChanged();
+                if (IsHandleCreated) IOnSizeChanged();
                 OnPropertyChanged("AutoScroll");
             }
         }
@@ -86,7 +86,7 @@ namespace AntdUI
                 layoutengine.Vertical = value;
                 if (autoscroll) ScrollBar = new ScrollBar(this);
                 else ScrollBar = null;
-                IOnSizeChanged();
+                if (IsHandleCreated) IOnSizeChanged();
                 OnPropertyChanged("Vertical");
             }
         }
@@ -102,7 +102,7 @@ namespace AntdUI
             {
                 if (layoutengine.ItemSize == value) return;
                 layoutengine.ItemSize = value;
-                IOnSizeChanged();
+                if (IsHandleCreated) IOnSizeChanged();
                 OnPropertyChanged("ItemSize");
             }
         }
@@ -118,10 +118,29 @@ namespace AntdUI
             {
                 if (layoutengine.Gap == value) return;
                 layoutengine.Gap = value;
-                IOnSizeChanged();
+                if (IsHandleCreated) IOnSizeChanged();
                 OnPropertyChanged("Gap");
             }
         }
+
+        bool pauseLayout = false;
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        public bool PauseLayout
+        {
+            get => pauseLayout;
+            set
+            {
+                if (pauseLayout == value) return;
+                pauseLayout = value;
+                if (!value)
+                {
+                    Invalidate();
+                    IOnSizeChanged();
+                }
+                OnPropertyChanged("PauseLayout");
+            }
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             ScrollBar?.Paint(e.Graphics.High());
@@ -163,8 +182,9 @@ namespace AntdUI
 
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
-                if (container is StackPanel parent && parent.Controls.Count > 0)
+                if (container is StackPanel parent && parent.IsHandleCreated && parent.Controls.Count > 0)
                 {
+                    if (parent.PauseLayout) return false;
                     var controls = new List<Control>(parent.Controls.Count);
                     foreach (Control it in parent.Controls)
                     {

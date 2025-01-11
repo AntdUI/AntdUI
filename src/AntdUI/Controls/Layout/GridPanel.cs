@@ -49,7 +49,7 @@ namespace AntdUI
             {
                 if (layoutengine.Span == value) return;
                 layoutengine.Span = value;
-                IOnSizeChanged();
+                if (IsHandleCreated) IOnSizeChanged();
                 OnPropertyChanged("Span");
             }
         }
@@ -65,8 +65,26 @@ namespace AntdUI
             {
                 if (layoutengine.Gap == value) return;
                 layoutengine.Gap = value;
-                IOnSizeChanged();
+                if (IsHandleCreated) IOnSizeChanged();
                 OnPropertyChanged("Gap");
+            }
+        }
+
+        bool pauseLayout = false;
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        public bool PauseLayout
+        {
+            get => pauseLayout;
+            set
+            {
+                if (pauseLayout == value) return;
+                pauseLayout = value;
+                if (!value)
+                {
+                    Invalidate();
+                    IOnSizeChanged();
+                }
+                OnPropertyChanged("PauseLayout");
             }
         }
 
@@ -94,8 +112,9 @@ namespace AntdUI
 
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
-                if (container is GridPanel parent)
+                if (container is GridPanel parent && parent.IsHandleCreated)
                 {
+                    if (parent.PauseLayout) return false;
                     var rect = parent.DisplayRectangle;
                     if (!string.IsNullOrEmpty(Span) && parent.Controls.Count > 0)
                     {

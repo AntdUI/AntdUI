@@ -102,7 +102,7 @@ namespace Demo.Controls
             tBadge6.Name = "tBadge6";
             tBadge6.Size = new Size(40, 40);
             tBadge6.State = AntdUI.TState.Warn;
-            tBadge6.TabIndex = 1;
+            tBadge6.TabIndex = 3;
             // 
             // tBadge7
             // 
@@ -117,7 +117,7 @@ namespace Demo.Controls
             tBadge8.Location = new Point(3, 3);
             tBadge8.Name = "tBadge8";
             tBadge8.Size = new Size(40, 40);
-            tBadge8.TabIndex = 3;
+            tBadge8.TabIndex = 0;
             // 
             // tBadge9
             // 
@@ -133,7 +133,7 @@ namespace Demo.Controls
             tBadge10.Name = "tBadge10";
             tBadge10.Size = new Size(40, 40);
             tBadge10.State = AntdUI.TState.Success;
-            tBadge10.TabIndex = 5;
+            tBadge10.TabIndex = 1;
             // 
             // divider1
             // 
@@ -173,7 +173,7 @@ namespace Demo.Controls
             badge2.Name = "badge2";
             badge2.Size = new Size(90, 23);
             badge2.State = AntdUI.TState.Success;
-            badge2.TabIndex = 0;
+            badge2.TabIndex = 1;
             badge2.Text = "Success";
             // 
             // badge3
@@ -183,7 +183,7 @@ namespace Demo.Controls
             badge3.Name = "badge3";
             badge3.Size = new Size(89, 23);
             badge3.State = AntdUI.TState.Primary;
-            badge3.TabIndex = 0;
+            badge3.TabIndex = 2;
             badge3.Text = "Primary";
             // 
             // badge4
@@ -193,7 +193,7 @@ namespace Demo.Controls
             badge4.Name = "badge4";
             badge4.Size = new Size(114, 23);
             badge4.State = AntdUI.TState.Processing;
-            badge4.TabIndex = 0;
+            badge4.TabIndex = 3;
             badge4.Text = "Processing";
             // 
             // badge5
@@ -203,7 +203,7 @@ namespace Demo.Controls
             badge5.Name = "badge5";
             badge5.Size = new Size(96, 23);
             badge5.State = AntdUI.TState.Warn;
-            badge5.TabIndex = 0;
+            badge5.TabIndex = 4;
             badge5.Text = "Warning";
             // 
             // badge6
@@ -213,7 +213,7 @@ namespace Demo.Controls
             badge6.Name = "badge6";
             badge6.Size = new Size(67, 23);
             badge6.State = AntdUI.TState.Error;
-            badge6.TabIndex = 0;
+            badge6.TabIndex = 5;
             badge6.Text = "Error";
             // 
             // flowLayoutPanel1
@@ -252,7 +252,7 @@ namespace Demo.Controls
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
             divider2.Size = new Size(616, 28);
-            divider2.TabIndex = 3;
+            divider2.TabIndex = 0;
             divider2.Text = "更多";
             // 
             // flowLayoutPanel3
@@ -266,7 +266,7 @@ namespace Demo.Controls
             flowLayoutPanel3.Location = new Point(0, 226);
             flowLayoutPanel3.Name = "flowLayoutPanel3";
             flowLayoutPanel3.Size = new Size(616, 121);
-            flowLayoutPanel3.TabIndex = 4;
+            flowLayoutPanel3.TabIndex = 3;
             // 
             // button1
             // 
@@ -324,7 +324,7 @@ namespace Demo.Controls
             button5.Name = "button5";
             button5.Shape = AntdUI.TShape.Circle;
             button5.Size = new Size(37, 37);
-            button5.TabIndex = 0;
+            button5.TabIndex = 1;
             button5.Type = AntdUI.TTypeMini.Error;
             button5.Click += button5_Click;
             // 
@@ -347,7 +347,7 @@ namespace Demo.Controls
             tag1.Location = new Point(71, 3);
             tag1.Name = "tag1";
             tag1.Size = new Size(56, 25);
-            tag1.TabIndex = 5;
+            tag1.TabIndex = 1;
             tag1.Text = "猥琐发育";
             tag1.Type = AntdUI.TTypeMini.Primary;
             // 

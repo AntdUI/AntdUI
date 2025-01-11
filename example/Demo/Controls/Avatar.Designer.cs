@@ -50,18 +50,18 @@ namespace Demo.Controls
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
-            avatar4 = new AntdUI.Avatar();
-            avatar1 = new AntdUI.Avatar();
-            avatar6 = new AntdUI.Avatar();
-            avatar9 = new AntdUI.Avatar();
+            panel1 = new System.Windows.Forms.Panel();
+            avatar11 = new AntdUI.Avatar();
             avatar10 = new AntdUI.Avatar();
+            avatar9 = new AntdUI.Avatar();
+            avatar8 = new AntdUI.Avatar();
+            avatar7 = new AntdUI.Avatar();
+            avatar6 = new AntdUI.Avatar();
+            avatar5 = new AntdUI.Avatar();
+            avatar4 = new AntdUI.Avatar();
             avatar3 = new AntdUI.Avatar();
             avatar2 = new AntdUI.Avatar();
-            avatar11 = new AntdUI.Avatar();
-            panel1 = new System.Windows.Forms.Panel();
-            avatar5 = new AntdUI.Avatar();
-            avatar7 = new AntdUI.Avatar();
-            avatar12 = new AntdUI.Avatar();
+            avatar1 = new AntdUI.Avatar();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -80,79 +80,25 @@ namespace Demo.Controls
             header1.Text = "Avatar 头像";
             header1.UseTitleFont = true;
             // 
-            // avatar4
+            // panel1
             // 
-            avatar4.Image = Properties.Resources.img1;
-            avatar4.Location = new Point(8, 6);
-            avatar4.Name = "avatar4";
-            avatar4.Round = true;
-            avatar4.Size = new Size(54, 54);
-            avatar4.TabIndex = 7;
-            // 
-            // avatar1
-            // 
-            avatar1.Image = Properties.Resources.img1;
-            avatar1.Location = new Point(68, 6);
-            avatar1.Name = "avatar1";
-            avatar1.Radius = 10;
-            avatar1.Size = new Size(54, 54);
-            avatar1.TabIndex = 8;
-            // 
-            // avatar6
-            // 
-            avatar6.BackColor = Color.FromArgb(253, 227, 207);
-            avatar6.Badge = "1";
-            avatar6.ForeColor = Color.FromArgb(245, 106, 0);
-            avatar6.Location = new Point(128, 6);
-            avatar6.Name = "avatar6";
-            avatar6.Round = true;
-            avatar6.Size = new Size(54, 54);
-            avatar6.TabIndex = 9;
-            avatar6.Text = "U";
-            // 
-            // avatar9
-            // 
-            avatar9.BackColor = Color.FromArgb(135, 208, 104);
-            avatar9.Badge = "99+";
-            avatar9.ForeColor = Color.White;
-            avatar9.Location = new Point(188, 6);
-            avatar9.Name = "avatar9";
-            avatar9.Round = true;
-            avatar9.Size = new Size(54, 54);
-            avatar9.TabIndex = 9;
-            avatar9.Text = "U";
-            // 
-            // avatar10
-            // 
-            avatar10.BackColor = Color.FromArgb(0, 144, 255);
-            avatar10.Badge = "0";
-            avatar10.Font = new Font("Microsoft YaHei UI", 14F);
-            avatar10.ForeColor = Color.White;
-            avatar10.LocalizationText = "Avatar.{id}";
-            avatar10.Location = new Point(248, 6);
-            avatar10.Name = "avatar10";
-            avatar10.Radius = 10;
-            avatar10.Size = new Size(54, 54);
-            avatar10.TabIndex = 10;
-            avatar10.Text = "名";
-            // 
-            // avatar3
-            // 
-            avatar3.Image = Properties.Resources.img1;
-            avatar3.Location = new Point(8, 75);
-            avatar3.Name = "avatar3";
-            avatar3.Radius = 10;
-            avatar3.Size = new Size(155, 60);
-            avatar3.TabIndex = 2;
-            // 
-            // avatar2
-            // 
-            avatar2.Image = Properties.Resources.img1;
-            avatar2.Location = new Point(169, 75);
-            avatar2.Name = "avatar2";
-            avatar2.Radius = 10;
-            avatar2.Size = new Size(73, 126);
-            avatar2.TabIndex = 4;
+            panel1.AutoScroll = true;
+            panel1.Controls.Add(avatar11);
+            panel1.Controls.Add(avatar10);
+            panel1.Controls.Add(avatar9);
+            panel1.Controls.Add(avatar8);
+            panel1.Controls.Add(avatar7);
+            panel1.Controls.Add(avatar6);
+            panel1.Controls.Add(avatar5);
+            panel1.Controls.Add(avatar4);
+            panel1.Controls.Add(avatar3);
+            panel1.Controls.Add(avatar2);
+            panel1.Controls.Add(avatar1);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 74);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(614, 372);
+            panel1.TabIndex = 0;
             // 
             // avatar11
             // 
@@ -162,45 +108,43 @@ namespace Demo.Controls
             avatar11.Name = "avatar11";
             avatar11.Radius = 6;
             avatar11.Size = new Size(73, 126);
-            avatar11.TabIndex = 11;
+            avatar11.TabIndex = 10;
             avatar11.Text = "U";
             // 
-            // panel1
+            // avatar10
             // 
-            panel1.AutoScroll = true;
-            panel1.Controls.Add(avatar5);
-            panel1.Controls.Add(avatar7);
-            panel1.Controls.Add(avatar4);
-            panel1.Controls.Add(avatar1);
-            panel1.Controls.Add(avatar11);
-            panel1.Controls.Add(avatar6);
-            panel1.Controls.Add(avatar2);
-            panel1.Controls.Add(avatar12);
-            panel1.Controls.Add(avatar9);
-            panel1.Controls.Add(avatar10);
-            panel1.Controls.Add(avatar3);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 74);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(614, 372);
-            panel1.TabIndex = 6;
+            avatar10.Image = Properties.Resources.img1;
+            avatar10.Location = new Point(169, 75);
+            avatar10.Name = "avatar10";
+            avatar10.Radius = 10;
+            avatar10.Size = new Size(73, 126);
+            avatar10.TabIndex = 9;
             // 
-            // avatar5
+            // avatar9
             // 
-            avatar5.Image = Properties.Resources.img1;
-            avatar5.Location = new Point(333, 6);
-            avatar5.Margin = new Padding(2, 3, 2, 3);
-            avatar5.Name = "avatar5";
-            avatar5.Padding = new Padding(8);
-            avatar5.Round = true;
-            avatar5.Shadow = 8;
-            avatar5.Size = new Size(60, 60);
-            avatar5.TabIndex = 15;
+            avatar9.BackColor = Color.FromArgb(135, 208, 104);
+            avatar9.Badge = "999+";
+            avatar9.ForeColor = Color.White;
+            avatar9.Location = new Point(8, 141);
+            avatar9.Name = "avatar9";
+            avatar9.Radius = 10;
+            avatar9.Size = new Size(155, 60);
+            avatar9.TabIndex = 8;
+            avatar9.Text = "U";
+            // 
+            // avatar8
+            // 
+            avatar8.Image = Properties.Resources.img1;
+            avatar8.Location = new Point(8, 75);
+            avatar8.Name = "avatar8";
+            avatar8.Radius = 10;
+            avatar8.Size = new Size(155, 60);
+            avatar8.TabIndex = 7;
             // 
             // avatar7
             // 
             avatar7.BackColor = Color.FromArgb(253, 227, 207);
-            avatar7.Badge = "1";
+            avatar7.Badge = "2";
             avatar7.ForeColor = Color.FromArgb(245, 106, 0);
             avatar7.Location = new Point(415, 6);
             avatar7.Name = "avatar7";
@@ -209,20 +153,76 @@ namespace Demo.Controls
             avatar7.Shadow = 8;
             avatar7.ShadowOffsetY = 4;
             avatar7.Size = new Size(60, 60);
-            avatar7.TabIndex = 16;
+            avatar7.TabIndex = 6;
             avatar7.Text = "U";
             // 
-            // avatar12
+            // avatar6
             // 
-            avatar12.BackColor = Color.FromArgb(135, 208, 104);
-            avatar12.Badge = "999+";
-            avatar12.ForeColor = Color.White;
-            avatar12.Location = new Point(8, 141);
-            avatar12.Name = "avatar12";
-            avatar12.Radius = 10;
-            avatar12.Size = new Size(155, 60);
-            avatar12.TabIndex = 9;
-            avatar12.Text = "U";
+            avatar6.Image = Properties.Resources.img1;
+            avatar6.Location = new Point(333, 6);
+            avatar6.Margin = new Padding(2, 3, 2, 3);
+            avatar6.Name = "avatar6";
+            avatar6.Padding = new Padding(8);
+            avatar6.Round = true;
+            avatar6.Shadow = 8;
+            avatar6.Size = new Size(60, 60);
+            avatar6.TabIndex = 5;
+            // 
+            // avatar5
+            // 
+            avatar5.BackColor = Color.FromArgb(0, 144, 255);
+            avatar5.Badge = " ";
+            avatar5.Font = new Font("Microsoft YaHei UI", 14F);
+            avatar5.ForeColor = Color.White;
+            avatar5.LocalizationText = "Avatar.{id}";
+            avatar5.Location = new Point(248, 6);
+            avatar5.Name = "avatar5";
+            avatar5.Radius = 10;
+            avatar5.Size = new Size(54, 54);
+            avatar5.TabIndex = 4;
+            avatar5.Text = "名";
+            // 
+            // avatar4
+            // 
+            avatar4.BackColor = Color.FromArgb(135, 208, 104);
+            avatar4.Badge = "99+";
+            avatar4.ForeColor = Color.White;
+            avatar4.Location = new Point(188, 6);
+            avatar4.Name = "avatar4";
+            avatar4.Round = true;
+            avatar4.Size = new Size(54, 54);
+            avatar4.TabIndex = 3;
+            avatar4.Text = "U";
+            // 
+            // avatar3
+            // 
+            avatar3.BackColor = Color.FromArgb(253, 227, 207);
+            avatar3.Badge = "1";
+            avatar3.ForeColor = Color.FromArgb(245, 106, 0);
+            avatar3.Location = new Point(128, 6);
+            avatar3.Name = "avatar3";
+            avatar3.Round = true;
+            avatar3.Size = new Size(54, 54);
+            avatar3.TabIndex = 2;
+            avatar3.Text = "U";
+            // 
+            // avatar2
+            // 
+            avatar2.Image = Properties.Resources.img1;
+            avatar2.Location = new Point(68, 6);
+            avatar2.Name = "avatar2";
+            avatar2.Radius = 10;
+            avatar2.Size = new Size(54, 54);
+            avatar2.TabIndex = 1;
+            // 
+            // avatar1
+            // 
+            avatar1.Image = Properties.Resources.img1;
+            avatar1.Location = new Point(8, 6);
+            avatar1.Name = "avatar1";
+            avatar1.Round = true;
+            avatar1.Size = new Size(54, 54);
+            avatar1.TabIndex = 0;
             // 
             // Avatar
             // 
@@ -236,18 +236,19 @@ namespace Demo.Controls
         }
 
         #endregion
+
         private AntdUI.PageHeader header1;
-        private AntdUI.Avatar avatar3;
-        private AntdUI.Avatar avatar2;
-        private AntdUI.Avatar avatar4;
+        private System.Windows.Forms.Panel panel1;
         private AntdUI.Avatar avatar1;
+        private AntdUI.Avatar avatar2;
+        private AntdUI.Avatar avatar3;
+        private AntdUI.Avatar avatar4;
+        private AntdUI.Avatar avatar5;
         private AntdUI.Avatar avatar6;
+        private AntdUI.Avatar avatar7;
+        private AntdUI.Avatar avatar8;
         private AntdUI.Avatar avatar9;
         private AntdUI.Avatar avatar10;
         private AntdUI.Avatar avatar11;
-        private System.Windows.Forms.Panel panel1;
-        private AntdUI.Avatar avatar12;
-        private AntdUI.Avatar avatar5;
-        private AntdUI.Avatar avatar7;
     }
 }

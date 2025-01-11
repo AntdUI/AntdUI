@@ -20,6 +20,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -291,6 +292,23 @@ namespace AntdUI
         [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
         public TooltipConfig? TooltipConfig { get; set; }
 
+        TRotate rotate = TRotate.None;
+        /// <summary>
+        /// 旋转
+        /// </summary>
+        [Description("旋转"), Category("外观"), DefaultValue(TRotate.None)]
+        public TRotate Rotate
+        {
+            get => rotate;
+            set
+            {
+                if (rotate == value) return;
+                rotate = value;
+                IOnSizeChanged();
+                if (BeforeAutoSize()) Invalidate();
+            }
+        }
+
         #endregion
 
         #region 阴影
@@ -367,6 +385,24 @@ namespace AntdUI
         {
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
+
+            if (rotate == TRotate.Clockwise_90)
+            {
+                using (var rotationMatrix = new Matrix())
+                {
+                    rotationMatrix.RotateAt(90, new PointF(Width / 2, Height / 2));
+                    e.Graphics.Transform = rotationMatrix;
+                }
+            }
+            else if (rotate == TRotate.CounterClockwise_90)
+            {
+                using (var rotationMatrix = new Matrix())
+                {
+                    rotationMatrix.RotateAt(-90, new PointF(Width / 2, Height / 2));
+                    e.Graphics.Transform = rotationMatrix;
+                }
+            }
+
             Color _fore = Colour.DefaultColor.Get("Label");
             if (fore.HasValue) _fore = fore.Value;
             PaintText(g, Text, _fore, rect_read);
@@ -416,8 +452,26 @@ namespace AntdUI
                     }
                 }
                 else rec = rect_read;
-                if (autoEllipsis) ellipsis = rec.Width < font_size.Width;
-                else ellipsis = false;
+
+                switch (rotate)
+                {
+                    case TRotate.Clockwise_90:
+                    case TRotate.CounterClockwise_90:
+
+                        if (autoEllipsis) ellipsis = rec.Height < font_size.Width;
+                        else ellipsis = false;
+                        int off = (rec.Width - rec.Height) / 2, tmp = rec.Width, tmpx = rec.X;
+                        rec.X = rec.Y + off;
+                        rec.Width = rec.Height;
+                        rec.Height = tmp;
+                        rec.Y = tmpx - off;
+                        break;
+                    default:
+                        if (autoEllipsis) ellipsis = rec.Width < font_size.Width;
+                        else ellipsis = false;
+                        break;
+                }
+
                 using (var brush = colorExtend.BrushEx(rec, color))
                 {
                     g.String(text, Font, brush, rec, stringFormat);

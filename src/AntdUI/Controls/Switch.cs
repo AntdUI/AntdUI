@@ -385,8 +385,19 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            init = false;
             Focus();
             base.OnMouseDown(e);
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            if (e.KeyCode is Keys.Space)
+            {
+                OnClick(EventArgs.Empty);
+                e.Handled = true;
+            }
         }
 
         float AnimationHoverValue = 0;

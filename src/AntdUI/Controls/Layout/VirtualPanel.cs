@@ -42,7 +42,7 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this);
             invalidate = it =>
             {
-                Invalidate(new Rectangle(it.RECT.X + ScrollBar.ValueX, it.RECT.Y + ScrollBar.ValueY, it.RECT.Width, it.RECT.Height));
+                Invalidate(new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height));
             };
             new Thread(LongTask)
             {

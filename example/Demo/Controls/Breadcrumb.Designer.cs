@@ -80,13 +80,9 @@ namespace Demo.Controls
             // breadcrumb1
             // 
             breadcrumb1.Dock = DockStyle.Top;
-            breadcrumbItem1.ID = null;
             breadcrumbItem1.Text = "Home";
-            breadcrumbItem2.ID = null;
             breadcrumbItem2.Text = "Application Center";
-            breadcrumbItem3.ID = null;
             breadcrumbItem3.Text = "Application List";
-            breadcrumbItem4.ID = null;
             breadcrumbItem4.Text = "An Application";
             breadcrumb1.Items.Add(breadcrumbItem1);
             breadcrumb1.Items.Add(breadcrumbItem2);
@@ -95,19 +91,15 @@ namespace Demo.Controls
             breadcrumb1.Location = new Point(0, 74);
             breadcrumb1.Name = "breadcrumb1";
             breadcrumb1.Size = new Size(740, 40);
-            breadcrumb1.TabIndex = 16;
-            breadcrumb1.Text = "breadcrumb1";
+            breadcrumb1.TabIndex = 1;
             breadcrumb1.ItemClick += breadcrumb1_ItemClick;
             // 
             // breadcrumb2
             // 
             breadcrumb2.Dock = DockStyle.Top;
             breadcrumbItem5.IconSvg = "HomeOutlined";
-            breadcrumbItem5.ID = null;
             breadcrumbItem6.IconSvg = "UserOutlined";
-            breadcrumbItem6.ID = null;
             breadcrumbItem6.Text = "Application List";
-            breadcrumbItem7.ID = null;
             breadcrumbItem7.Text = "Application";
             breadcrumb2.Items.Add(breadcrumbItem5);
             breadcrumb2.Items.Add(breadcrumbItem6);
@@ -115,8 +107,7 @@ namespace Demo.Controls
             breadcrumb2.Location = new Point(0, 114);
             breadcrumb2.Name = "breadcrumb2";
             breadcrumb2.Size = new Size(740, 40);
-            breadcrumb2.TabIndex = 17;
-            breadcrumb2.Text = "breadcrumb2";
+            breadcrumb2.TabIndex = 2;
             breadcrumb2.ItemClick += breadcrumb1_ItemClick;
             // 
             // Breadcrumb

@@ -356,10 +356,12 @@ namespace AntdUI
             SetLocation(_control.PointToScreen(Point.Empty));
             if (_config.Radius.HasValue) Radius = _config.Radius.Value;
             else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
+            else if (_control is Form form) HasBor = form.FormFrame(out Radius, out Bor);
         }
 
         GraphicsPath? gpath = null;
-        int Radius = 0;
+        int Radius = 0, Bor = 0;
+        bool HasBor = false;
 
         protected override void OnLoad(EventArgs e)
         {
@@ -392,7 +394,8 @@ namespace AntdUI
         SpinCore spin_core = new SpinCore();
         public override Bitmap PrintBit()
         {
-            var rect = TargetRectXY;
+            var rect_read = TargetRectXY;
+            var rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
             var original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
