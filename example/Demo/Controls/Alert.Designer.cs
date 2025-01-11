@@ -51,14 +51,14 @@ namespace Demo.Controls
         {
             header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
-            alert12 = new AntdUI.Alert();
-            alert10 = new AntdUI.Alert();
+            alert14 = new AntdUI.Alert();
+            alert13 = new AntdUI.Alert();
             divider3 = new AntdUI.Divider();
             panel3 = new System.Windows.Forms.Panel();
             alert9 = new AntdUI.Alert();
-            alert15 = new AntdUI.Alert();
+            alert12 = new AntdUI.Alert();
+            alert10 = new AntdUI.Alert();
             alert11 = new AntdUI.Alert();
-            alert13 = new AntdUI.Alert();
             divider2 = new AntdUI.Divider();
             panel2 = new System.Windows.Forms.Panel();
             alert8 = new AntdUI.Alert();
@@ -93,8 +93,8 @@ namespace Demo.Controls
             // panel1
             // 
             panel1.AutoScroll = true;
-            panel1.Controls.Add(alert12);
-            panel1.Controls.Add(alert10);
+            panel1.Controls.Add(alert14);
+            panel1.Controls.Add(alert13);
             panel1.Controls.Add(divider3);
             panel1.Controls.Add(panel3);
             panel1.Controls.Add(divider2);
@@ -106,32 +106,32 @@ namespace Demo.Controls
             panel1.Size = new Size(614, 606);
             panel1.TabIndex = 5;
             // 
-            // alert12
+            // alert14
             // 
-            alert12.BackColor = Color.Black;
-            alert12.Dock = DockStyle.Top;
-            alert12.Font = new Font("楷体", 12F, FontStyle.Bold);
-            alert12.ForeColor = Color.White;
-            alert12.LocalizationText = "Alert.{id}";
-            alert12.Location = new Point(0, 454);
-            alert12.Loop = true;
-            alert12.Name = "alert12";
-            alert12.Radius = 0;
-            alert12.Size = new Size(614, 40);
-            alert12.TabIndex = 7;
-            alert12.Text = "中国吉利 因快乐而伟大 老用户置换5000补贴，限时活动";
+            alert14.BackColor = Color.Black;
+            alert14.Dock = DockStyle.Top;
+            alert14.Font = new Font("楷体", 12F, FontStyle.Bold);
+            alert14.ForeColor = Color.White;
+            alert14.LocalizationText = "Alert.{id}";
+            alert14.Location = new Point(0, 454);
+            alert14.Loop = true;
+            alert14.Name = "alert14";
+            alert14.Radius = 0;
+            alert14.Size = new Size(614, 40);
+            alert14.TabIndex = 4;
+            alert14.Text = "中国吉利 因快乐而伟大 老用户置换5000补贴，限时活动";
             // 
-            // alert10
+            // alert13
             // 
-            alert10.Dock = DockStyle.Top;
-            alert10.Icon = AntdUI.TType.Warn;
-            alert10.Location = new Point(0, 424);
-            alert10.Loop = true;
-            alert10.Name = "alert10";
-            alert10.Radius = 0;
-            alert10.Size = new Size(614, 30);
-            alert10.TabIndex = 6;
-            alert10.Text = "I can be a React component, multiple React components, or just some text.";
+            alert13.Dock = DockStyle.Top;
+            alert13.Icon = AntdUI.TType.Warn;
+            alert13.Location = new Point(0, 424);
+            alert13.Loop = true;
+            alert13.Name = "alert13";
+            alert13.Radius = 0;
+            alert13.Size = new Size(614, 30);
+            alert13.TabIndex = 3;
+            alert13.Text = "I can be a React component, multiple React components, or just some text.";
             // 
             // divider3
             // 
@@ -142,21 +142,21 @@ namespace Demo.Controls
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
             divider3.Size = new Size(614, 28);
-            divider3.TabIndex = 5;
+            divider3.TabIndex = 0;
             divider3.Text = "轮播的公告\r\n";
             // 
             // panel3
             // 
-            panel3.Controls.Add(alert9);
-            panel3.Controls.Add(alert15);
+            panel3.Controls.Add(alert12);
             panel3.Controls.Add(alert11);
-            panel3.Controls.Add(alert13);
+            panel3.Controls.Add(alert10);
+            panel3.Controls.Add(alert9);
             panel3.Dock = DockStyle.Top;
             panel3.Font = new Font("Microsoft YaHei UI", 10F);
             panel3.Location = new Point(0, 145);
             panel3.Name = "panel3";
             panel3.Size = new Size(614, 251);
-            panel3.TabIndex = 4;
+            panel3.TabIndex = 2;
             // 
             // alert9
             // 
@@ -165,42 +165,42 @@ namespace Demo.Controls
             alert9.Location = new Point(16, 6);
             alert9.Name = "alert9";
             alert9.Size = new Size(264, 111);
-            alert9.TabIndex = 1;
+            alert9.TabIndex = 0;
             alert9.Text = "Success Description Success Description Success Description";
             alert9.TextTitle = "Success Text";
             // 
-            // alert15
+            // alert12
             // 
-            alert15.BorderWidth = 1F;
-            alert15.Icon = AntdUI.TType.Error;
-            alert15.Location = new Point(293, 123);
-            alert15.Name = "alert15";
-            alert15.Size = new Size(264, 111);
-            alert15.TabIndex = 1;
-            alert15.Text = "Error Description Error Description Error Description Error Description";
-            alert15.TextTitle = "Error Text";
+            alert12.BorderWidth = 1F;
+            alert12.Icon = AntdUI.TType.Error;
+            alert12.Location = new Point(293, 123);
+            alert12.Name = "alert12";
+            alert12.Size = new Size(264, 111);
+            alert12.TabIndex = 3;
+            alert12.Text = "Error Description Error Description Error Description Error Description";
+            alert12.TextTitle = "Error Text";
+            // 
+            // alert10
+            // 
+            alert10.BorderWidth = 1F;
+            alert10.Icon = AntdUI.TType.Info;
+            alert10.Location = new Point(16, 123);
+            alert10.Name = "alert10";
+            alert10.Size = new Size(264, 111);
+            alert10.TabIndex = 2;
+            alert10.Text = "Info Description Info Description Info Description Info Description";
+            alert10.TextTitle = "Info Text";
             // 
             // alert11
             // 
             alert11.BorderWidth = 1F;
-            alert11.Icon = AntdUI.TType.Info;
-            alert11.Location = new Point(16, 123);
+            alert11.Icon = AntdUI.TType.Warn;
+            alert11.Location = new Point(293, 6);
             alert11.Name = "alert11";
             alert11.Size = new Size(264, 111);
             alert11.TabIndex = 1;
-            alert11.Text = "Info Description Info Description Info Description Info Description";
-            alert11.TextTitle = "Info Text";
-            // 
-            // alert13
-            // 
-            alert13.BorderWidth = 1F;
-            alert13.Icon = AntdUI.TType.Warn;
-            alert13.Location = new Point(293, 6);
-            alert13.Name = "alert13";
-            alert13.Size = new Size(264, 111);
-            alert13.TabIndex = 1;
-            alert13.Text = "Warning Description Warning Description Warning Description ";
-            alert13.TextTitle = "Warning Text";
+            alert11.Text = "Warning Description Warning Description Warning Description ";
+            alert11.TextTitle = "Warning Text";
             // 
             // divider2
             // 
@@ -211,24 +211,24 @@ namespace Demo.Controls
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
             divider2.Size = new Size(614, 28);
-            divider2.TabIndex = 3;
+            divider2.TabIndex = 0;
             divider2.Text = "含有辅助性文字介绍";
             // 
             // panel2
             // 
             panel2.Controls.Add(alert8);
-            panel2.Controls.Add(alert4);
             panel2.Controls.Add(alert7);
-            panel2.Controls.Add(alert3);
             panel2.Controls.Add(alert6);
-            panel2.Controls.Add(alert2);
             panel2.Controls.Add(alert5);
+            panel2.Controls.Add(alert4);
+            panel2.Controls.Add(alert3);
+            panel2.Controls.Add(alert2);
             panel2.Controls.Add(alert1);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(614, 89);
-            panel2.TabIndex = 2;
+            panel2.TabIndex = 1;
             // 
             // alert8
             // 
@@ -236,7 +236,7 @@ namespace Demo.Controls
             alert8.Location = new Point(454, 43);
             alert8.Name = "alert8";
             alert8.Size = new Size(122, 31);
-            alert8.TabIndex = 1;
+            alert8.TabIndex = 7;
             alert8.Text = "Error Text";
             // 
             // alert4
@@ -246,7 +246,7 @@ namespace Demo.Controls
             alert4.Location = new Point(169, 43);
             alert4.Name = "alert4";
             alert4.Size = new Size(122, 31);
-            alert4.TabIndex = 1;
+            alert4.TabIndex = 5;
             alert4.Text = "Error Text";
             // 
             // alert7
@@ -255,7 +255,7 @@ namespace Demo.Controls
             alert7.Location = new Point(301, 43);
             alert7.Name = "alert7";
             alert7.Size = new Size(148, 31);
-            alert7.TabIndex = 1;
+            alert7.TabIndex = 6;
             alert7.Text = "Warning Text";
             // 
             // alert3
@@ -265,7 +265,7 @@ namespace Demo.Controls
             alert3.Location = new Point(16, 43);
             alert3.Name = "alert3";
             alert3.Size = new Size(148, 31);
-            alert3.TabIndex = 1;
+            alert3.TabIndex = 4;
             alert3.Text = "Warning Text";
             // 
             // alert6
@@ -274,7 +274,7 @@ namespace Demo.Controls
             alert6.Location = new Point(454, 6);
             alert6.Name = "alert6";
             alert6.Size = new Size(122, 31);
-            alert6.TabIndex = 1;
+            alert6.TabIndex = 3;
             alert6.Text = "Info Text";
             // 
             // alert2
@@ -293,7 +293,7 @@ namespace Demo.Controls
             alert5.Location = new Point(301, 6);
             alert5.Name = "alert5";
             alert5.Size = new Size(148, 31);
-            alert5.TabIndex = 1;
+            alert5.TabIndex = 2;
             alert5.Text = "Success Text";
             // 
             // alert1
@@ -303,7 +303,7 @@ namespace Demo.Controls
             alert1.Location = new Point(16, 6);
             alert1.Name = "alert1";
             alert1.Size = new Size(148, 31);
-            alert1.TabIndex = 1;
+            alert1.TabIndex = 0;
             alert1.Text = "Success Text";
             // 
             // divider1
@@ -332,6 +332,7 @@ namespace Demo.Controls
         }
 
         #endregion
+
         private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Alert alert4;
@@ -343,15 +344,15 @@ namespace Demo.Controls
         private AntdUI.Alert alert7;
         private AntdUI.Alert alert6;
         private AntdUI.Alert alert5;
-        private AntdUI.Alert alert10;
+        private AntdUI.Alert alert13;
         private AntdUI.Divider divider3;
         private System.Windows.Forms.Panel panel3;
         private AntdUI.Alert alert9;
-        private AntdUI.Alert alert15;
+        private AntdUI.Alert alert12;
+        private AntdUI.Alert alert10;
         private AntdUI.Alert alert11;
-        private AntdUI.Alert alert13;
         private AntdUI.Divider divider2;
         private System.Windows.Forms.Panel panel2;
-        private AntdUI.Alert alert12;
+        private AntdUI.Alert alert14;
     }
 }

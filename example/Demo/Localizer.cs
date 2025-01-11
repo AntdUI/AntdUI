@@ -85,7 +85,7 @@ namespace Demo
                     return "Description";
                 case "Alert.divider3":
                     return "Loop Banner";
-                case "Alert.alert12":
+                case "Alert.alert14":
                     return "Nike Just Do It";
 
                 //Avatar ----------------------------
@@ -93,7 +93,7 @@ namespace Demo
                     return "Avatar";
                 case "Avatar.Description":
                     return "Used to represent users or things, supporting the display of images, icons, or characters.";
-                case "Avatar.avatar10":
+                case "Avatar.avatar5":
                     return "N";
 
                 //Badge ----------------------------
@@ -145,6 +145,12 @@ namespace Demo
                     return "Checkbox";
                 case "Checkbox.Description":
                     return "Collect user's choices.";
+                case "Checkbox.divider1":
+                    return "Basic";
+                case "Checkbox.divider2":
+                    return "Custom color";
+                case "Checkbox.divider3":
+                    return "Linkage";
 
                 //Collapse ----------------------------
                 case "Collapse.Text":
@@ -367,6 +373,12 @@ namespace Demo
                     return "Radio";
                 case "Radio.Description":
                     return "Used to select a single state from multiple options.";
+                case "Radio.divider1":
+                    return "Basic";
+                case "Radio.divider2":
+                    return "Custom color";
+                case "Radio.divider3":
+                    return "Linkage";
 
                 //Rate ----------------------------
                 case "Rate.Text":
