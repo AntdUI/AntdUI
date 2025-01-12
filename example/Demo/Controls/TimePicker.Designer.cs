@@ -126,6 +126,7 @@ namespace Demo.Controls
             datePicker1.Size = new Size(112, 44);
             datePicker1.TabIndex = 3;
             datePicker1.Text = "00:00:00";
+            datePicker1.ValueTimeHorizontal = true;
             // 
             // divider1
             // 
