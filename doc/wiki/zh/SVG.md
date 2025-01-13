@@ -1,6 +1,6 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)・[SVG](SVG.md)
 
-### 申明
+### 声明
 
 > SVG实现来自 [https://github.com/svg-net/SVG](https://github.com/svg-net/SVG)
 
