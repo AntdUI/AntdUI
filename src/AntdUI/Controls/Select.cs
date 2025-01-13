@@ -209,6 +209,22 @@ namespace AntdUI
                     ChangeValue(i, item);
                     return;
                 }
+                else if (item is SelectItem itp && itp.Sub != null && itp.Sub.Count > 0)
+                {
+                    foreach (var sub in itp.Sub)
+                    {
+                        if (val.Equals(sub))
+                        {
+                            ChangeValue(i, sub);
+                            return;
+                        }
+                        else if (sub is SelectItem it2 && it2.Tag.Equals(val))
+                        {
+                            ChangeValue(i, sub);
+                            return;
+                        }
+                    }
+                }
                 else if (item is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                 {
                     foreach (var sub in group.Sub)
