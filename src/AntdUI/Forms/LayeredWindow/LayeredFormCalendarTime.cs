@@ -60,7 +60,7 @@ namespace AntdUI
                 t_time = (int)(t_time * dpi);
                 t_time_height = (int)(t_time_height * dpi);
                 t_button = (int)(t_button * dpi);
-                t_height = (int)(t_time_height * 7);
+                t_height = t_time_height * 7;
             }
             else Radius = _control.Radius;
 
@@ -93,9 +93,9 @@ namespace AntdUI
             if (ValueTimeHorizontal)
             {
                 int exceed = 6;
-                scrollY_h.SetVrSize(t_time_height * (24 + exceed) - 2.5F * dpi, endh2);
-                scrollY_m.SetVrSize(t_time_height * (60 + exceed) - 2.5F * dpi, endh2);
-                scrollY_s.SetVrSize(t_time_height * (60 + exceed) - 2.5F * dpi, endh2);
+                scrollY_h.SetVrSize(t_time_height * (24 + exceed) - 4, endh2);
+                scrollY_m.SetVrSize(t_time_height * (60 + exceed) - 4, endh2);
+                scrollY_s.SetVrSize(t_time_height * (60 + exceed) - 4, endh2);
             }
             else
             {

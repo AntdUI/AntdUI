@@ -184,102 +184,61 @@ namespace AntdUI
             }
         }
 
-        #region 集合操作
-
+        TreeItemCollection? items;
         /// <summary>
-        /// 展开全部
+        /// 集合
         /// </summary>
-        /// <param name="value">true 展开、false 收起</param>
-        public void ExpandAll(bool value = true)
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("集合"), Category("数据")]
+        public TreeItemCollection Items
         {
-            if (items != null && items.Count > 0) ExpandAll(items, value);
+            get
+            {
+                items ??= new TreeItemCollection(this);
+                return items;
+            }
+            set => items = value.BindData(this);
         }
 
-        public void ExpandAll(TreeItemCollection items, bool value = true)
+        TreeItem? selectItem;
+        /// <summary>
+        /// 选择项
+        /// </summary>
+        [Browsable(false), Description("选择项"), Category("数据"), DefaultValue(null)]
+        public TreeItem? SelectItem
         {
-            if (items != null && items.Count > 0)
+            get => selectItem;
+            set
             {
-                foreach (var it in items)
+                selectItem = value;
+                if (value == null) USelect();
+                else Select(value);
+            }
+        }
+
+        bool pauseLayout = false;
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        public bool PauseLayout
+        {
+            get => pauseLayout;
+            set
+            {
+                if (pauseLayout == value) return;
+                pauseLayout = value;
+                if (!value)
                 {
-                    it.Expand = value;
-                    ExpandAll(it.Sub, value);
+                    ChangeList();
+                    Invalidate();
                 }
+                OnPropertyChanged("PauseLayout");
             }
-        }
-
-        #region 获取项
-
-        /// <summary>
-        /// 获取所有选中项
-        /// </summary>
-        /// <param name="Indeterminate">是否包含 Indeterminate</param>
-        public List<TreeItem> GetCheckeds(bool Indeterminate = true)
-        {
-            if (items == null) return new List<TreeItem>(0);
-            return GetCheckeds(items, Indeterminate);
-        }
-        List<TreeItem> GetCheckeds(TreeItemCollection items, bool Indeterminate)
-        {
-            var list = new List<TreeItem>();
-            if (Indeterminate)
-            {
-                foreach (var it in items)
-                {
-                    if (it.CheckState != CheckState.Unchecked) list.Add(it);
-                    if (it.items != null && it.items.Count > 0)
-                    {
-                        var list_sub = GetCheckeds(it.items, Indeterminate);
-                        if (list_sub.Count > 0) list.AddRange(list_sub);
-                    }
-                }
-            }
-            else
-            {
-                foreach (var it in items)
-                {
-                    if (it.Checked) list.Add(it);
-                    if (it.items != null && it.items.Count > 0)
-                    {
-                        var list_sub = GetCheckeds(it.items, Indeterminate);
-                        if (list_sub.Count > 0) list.AddRange(list_sub);
-                    }
-                }
-            }
-            return list;
         }
 
         /// <summary>
-        /// 全选/全不选
+        /// 滚动条
         /// </summary>
-        public void SetCheckeds()
-        {
-            if (items == null) return;
-            var list = GetCheckeds();
-            SetCheckeds(list.Count == 0);
-        }
-
-        /// <summary>
-        /// 全选/全不选
-        /// </summary>
-        public void SetCheckeds(bool check)
-        {
-            if (items == null) return;
-            SetCheckeds(items, check);
-        }
-        public void SetCheckeds(TreeItemCollection items, bool check)
-        {
-            foreach (var it in items)
-            {
-                it.Checked = check;
-                if (it.items != null && it.items.Count > 0) SetCheckeds(it.items, check);
-            }
-        }
-
-        public void Focus(TreeItem item)
-        {
-            if (ScrollBar.ShowY) ScrollBar.ValueY = item.rect.Y - (int)(_gap * Config.Dpi);
-            Invalidate();
-        }
+        [Browsable(false)]
+        public ScrollBar ScrollBar;
 
         #endregion
 
@@ -339,54 +298,7 @@ namespace AntdUI
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
         }
-        internal void OnCheckedChanged(TreeItem item, bool value)
-        {
-            CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
-        }
-
-        #endregion
-
-        #endregion
-
-        TreeItemCollection? items;
-        /// <summary>
-        /// 集合
-        /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据")]
-        public TreeItemCollection Items
-        {
-            get
-            {
-                items ??= new TreeItemCollection(this);
-                return items;
-            }
-            set => items = value.BindData(this);
-        }
-
-        bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
-        public bool PauseLayout
-        {
-            get => pauseLayout;
-            set
-            {
-                if (pauseLayout == value) return;
-                pauseLayout = value;
-                if (!value)
-                {
-                    ChangeList();
-                    Invalidate();
-                }
-                OnPropertyChanged("PauseLayout");
-            }
-        }
-
-        /// <summary>
-        /// 滚动条
-        /// </summary>
-        [Browsable(false)]
-        public ScrollBar ScrollBar;
+        internal void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
 
         #endregion
 
@@ -780,6 +692,7 @@ namespace AntdUI
                     if (blockNode)
                     {
                         if (can) item.Expand = !item.Expand;
+                        selectItem = item;
                         item.Select = true;
                         OnSelectChanged(item, e);
                         Invalidate();
@@ -796,6 +709,7 @@ namespace AntdUI
                     else if (down == 2 && can) item.Expand = !item.Expand;
                     else
                     {
+                        selectItem = item;
                         item.Select = true;
                         OnSelectChanged(item, e);
                         Invalidate();
@@ -904,22 +818,158 @@ namespace AntdUI
         }
         void ILeave(TreeItem item, ref int count)
         {
+            selectItem = null;
             if (item.Hover) count++;
             item.Hover = false;
             if (item.items != null)
                 foreach (var sub in item.items) ILeave(sub, ref count);
-        }
-
-        public void IUSelect()
-        {
-            if (items == null || items.Count == 0) return;
-            foreach (var it in items) IUSelect(it);
         }
         void IUSelect(TreeItem item)
         {
             item.Select = false;
             if (item.items != null) foreach (var sub in item.items) IUSelect(sub);
         }
+
+        #endregion
+
+        #region 方法
+
+        /// <summary>
+        /// 选择指定项
+        /// </summary>
+        public bool Select(TreeItem item) => Select(items, item);
+
+        bool Select(TreeItemCollection? items, TreeItem item)
+        {
+            if (items == null || items.Count == 0) return false;
+            foreach (var it in items)
+            {
+                if (it == item)
+                {
+                    selectItem = item;
+                    it.Select = true;
+                    return true;
+                }
+                if (Select(it.items, item)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 取消全部选择
+        /// </summary>
+        public void USelect()
+        {
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items) IUSelect(it);
+        }
+
+        /// <summary>
+        /// 取消全部选择
+        /// </summary>
+        [Obsolete("use USelect")]
+        public void IUSelect() => USelect();
+
+        #region 集合操作
+
+        /// <summary>
+        /// 展开全部
+        /// </summary>
+        /// <param name="value">true 展开、false 收起</param>
+        public void ExpandAll(bool value = true)
+        {
+            if (items != null && items.Count > 0) ExpandAll(items, value);
+        }
+
+        public void ExpandAll(TreeItemCollection items, bool value = true)
+        {
+            if (items != null && items.Count > 0)
+            {
+                foreach (var it in items)
+                {
+                    it.Expand = value;
+                    ExpandAll(it.Sub, value);
+                }
+            }
+        }
+
+        #region 获取项
+
+        /// <summary>
+        /// 获取所有选中项
+        /// </summary>
+        /// <param name="Indeterminate">是否包含 Indeterminate</param>
+        public List<TreeItem> GetCheckeds(bool Indeterminate = true)
+        {
+            if (items == null) return new List<TreeItem>(0);
+            return GetCheckeds(items, Indeterminate);
+        }
+        List<TreeItem> GetCheckeds(TreeItemCollection items, bool Indeterminate)
+        {
+            var list = new List<TreeItem>();
+            if (Indeterminate)
+            {
+                foreach (var it in items)
+                {
+                    if (it.CheckState != CheckState.Unchecked) list.Add(it);
+                    if (it.items != null && it.items.Count > 0)
+                    {
+                        var list_sub = GetCheckeds(it.items, Indeterminate);
+                        if (list_sub.Count > 0) list.AddRange(list_sub);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var it in items)
+                {
+                    if (it.Checked) list.Add(it);
+                    if (it.items != null && it.items.Count > 0)
+                    {
+                        var list_sub = GetCheckeds(it.items, Indeterminate);
+                        if (list_sub.Count > 0) list.AddRange(list_sub);
+                    }
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 全选/全不选
+        /// </summary>
+        public void SetCheckeds()
+        {
+            if (items == null) return;
+            var list = GetCheckeds();
+            SetCheckeds(list.Count == 0);
+        }
+
+        /// <summary>
+        /// 全选/全不选
+        /// </summary>
+        public void SetCheckeds(bool check)
+        {
+            if (items == null) return;
+            SetCheckeds(items, check);
+        }
+        public void SetCheckeds(TreeItemCollection items, bool check)
+        {
+            foreach (var it in items)
+            {
+                it.Checked = check;
+                if (it.items != null && it.items.Count > 0) SetCheckeds(it.items, check);
+            }
+        }
+
+        public void Focus(TreeItem item)
+        {
+            if (ScrollBar.ShowY) ScrollBar.ValueY = item.rect.Y - (int)(_gap * Config.Dpi);
+            Invalidate();
+        }
+
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -1412,7 +1462,7 @@ namespace AntdUI
             set
             {
                 if (select == value) return;
-                if (value) PARENT?.IUSelect();
+                if (value) PARENT?.USelect();
                 select = value;
                 Invalidate();
             }

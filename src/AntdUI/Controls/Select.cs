@@ -135,6 +135,7 @@ namespace AntdUI
             set
             {
                 if (selectedIndex == value) return;
+                TerminateExpand = true;
                 if (items == null || items.Count == 0 || value == -1) ChangeValueNULL();
                 else
                 {
@@ -158,6 +159,7 @@ namespace AntdUI
             set
             {
                 if (selectedValue == value) return;
+                TerminateExpand = true;
                 if (value == null || items == null || items.Count == 0) ChangeValueNULL();
                 else SetChangeValue(items, value);
                 if (_list) Invalidate();
@@ -315,7 +317,11 @@ namespace AntdUI
             base.OnTextChanged(e);
             if (HasFocus)
             {
-                if (TerminateExpand) { TerminateExpand = false; return; }
+                if (TerminateExpand)
+                {
+                    TerminateExpand = false;
+                    return;
+                }
                 filtertext = Text;
 
                 if (FilterChanged == null)
