@@ -514,6 +514,7 @@ namespace AntdUI
             switch (keyData)
             {
                 case Keys.Down:
+                case Keys.Enter:
                     ExpandDrop = true;
                     return true;
             }

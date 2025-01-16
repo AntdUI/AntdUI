@@ -393,7 +393,7 @@ namespace AntdUI
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
-            if (e.KeyCode is Keys.Space)
+            if (e.KeyCode is Keys.Space || e.KeyCode is Keys.Enter)
             {
                 OnClick(EventArgs.Empty);
                 e.Handled = true;

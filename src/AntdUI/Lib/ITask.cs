@@ -245,5 +245,14 @@ namespace AntdUI
             return Task.Run(action).ContinueWith(action => { end(); });
 #endif
         }
+
+        public static Task<TResult> Run<TResult>(Func<TResult> action)
+        {
+#if NET40
+            return Task.Factory.StartNew(action);
+#else
+            return Task.Run(action);
+#endif
+        }
     }
 }

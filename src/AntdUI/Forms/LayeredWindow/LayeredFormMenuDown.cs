@@ -124,8 +124,8 @@ namespace AntdUI
             }
             else
             {
-                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) InitPoint(rect_read.X - 10, rect_read.Bottom, w + 20, h);
-                else InitPoint(rect_read.Right, rect_read.Y, w + 20, h);
+                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) InitPoint(rect_read.X - 10, Config.ShadowEnabled ? rect_read.Bottom : rect_read.Bottom - 10, w + 20, h);
+                else InitPoint(Config.ShadowEnabled ? rect_read.Right : rect_read.Right - 10, rect_read.Y, w + 20, h);
             }
             KeyCall = keys =>
             {

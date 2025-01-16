@@ -48,6 +48,13 @@ namespace AntdUI
         /// Model 对话框
         /// </summary>
         /// <param name="form">所属窗口</param>
+        /// <param name="content">内容</param>
+        public static DialogResult open(Form form, Control content) => open(new Config(form, content));
+
+        /// <summary>
+        /// Model 对话框
+        /// </summary>
+        /// <param name="form">所属窗口</param>
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
         /// <param name="icon">图标</param>
@@ -168,6 +175,18 @@ namespace AntdUI
             /// <summary>
             /// Model 配置
             /// </summary>
+            /// <param name="form">所属窗口</param>
+            /// <param name="content">内容</param>
+            public Config(Form form, Control content)
+            {
+                Form = form;
+                Content = content;
+                Padding = new Size(0, 0);
+            }
+
+            /// <summary>
+            /// Model 配置
+            /// </summary>
             /// <param name="title">标题</param>
             /// <param name="content">内容</param>
             public Config(string title, string content)
@@ -268,7 +287,7 @@ namespace AntdUI
             /// <summary>
             /// 标题
             /// </summary>
-            public string Title { get; set; }
+            public string? Title { get; set; }
 
             /// <summary>
             /// 控件/内容

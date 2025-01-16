@@ -210,13 +210,23 @@ namespace AntdUI
                         };
                         if (_config.Icon == TType.None)
                         {
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            if (config.Title == null && !config.CloseIcon)
+                            {
+                                rectTitle = new Rectangle(0, 0, 0, 0);
+                                int h = control.Height + butt_h;
+                                rectContent = new Rectangle(paddingx, paddingy, wp, h - butt_h);
+                                MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                            }
+                            else
+                            {
+                                var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
 
-                            int h = sizeTitle.Height + gap + control.Height + butt_h;
+                                int h = sizeTitle.Height + gap + control.Height + butt_h;
 
-                            rectTitle = new Rectangle(paddingx, paddingy, wp, sizeTitle.Height + gap);
-                            rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
-                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                                rectTitle = new Rectangle(paddingx, paddingy, wp, sizeTitle.Height + gap);
+                                rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
+                                MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                            }
                         }
                         else
                         {
