@@ -1,5 +1,27 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
+### `1.8.4` 2025-01-16
+- ➕ VirtualPanel exposes some properties
+- ➕ Tree SelectItem Rich Attribute Method
+- ➕ Tabs IStyle GetTabRect
+- ➕ Modal title can be empty
+- ➕ Segmented icon supports line breaks up and down
+- ✍️ Select Value value cannot be set to Sub sub item
+- ✍️ TimePicker ValueTimeHorizontal misalignment
+- ✍️ Select Focus Set Properties Pop Up UI
+- ✍️ Bottom pop-up window in Drawer
+- ✍️ Input multiple lines, first line. Enter cannot select
+- ✍️ Menu cannot be selected without shadow, expand menu
+- ✍️ Rich keyboard interaction, added carriage return support
+
+### `1.8.3` 2025-01-10
+- ➕ Label Rotate
+- ➕ Checkbox/Radio Focus Style
+- ➕ Drawer DisplayDelay
+- ✍️ VirtualPanel dirty rendering area
+- ✍️ Spin adaptation form
+- ✍️ StackPanel Designer Copy Paste
+
 ### `1.8.2` 2025-01-09
 - ➕ SelectMultiple multiline style, AutoHeight
 - ➕ Button/Switch/ColorPicker Focus Style

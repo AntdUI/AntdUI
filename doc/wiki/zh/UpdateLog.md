@@ -1,5 +1,27 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)・[SVG](SVG.md)
 
+### `1.8.4` 2025-01-16
+- ➕ VirtualPanel 公开一些属性
+- ➕ Tree SelectItem 丰富属性方法
+- ➕ Tabs IStyle GetTabRect
+- ➕ Modal 标题可为空
+- ➕ Segmented 图标上下支持换行
+- ✍️ Select Value 值无法设置到 Sub子项目
+- ✍️ TimePicker ValueTimeHorizontal 错位
+- ✍️ Select 焦点下设置属性弹出UI
+- ✍️ Drawer 内弹出窗口置底
+- ✍️ Input 多行首行回车无法选中
+- ✍️ Menu 无阴影无法选中展开菜单
+- ✍️ 键盘交互丰富 新增回车支持
+
+### `1.8.3` 2025-01-10
+- ➕ Label Rotate 旋转
+- ➕ Checkbox / Radio 焦点样式
+- ➕ Drawer DisplayDelay
+- ✍️ VirtualPanel 脏渲染区域
+- ✍️ Spin 适配 Form
+- ✍️ StackPanel 设计器复制粘贴
+
 ### `1.8.2` 2025-01-09
 - ➕ SelectMultiple 多行样式，AutoHeight
 - ➕ Button/Switch/ColorPicker 焦点样式

@@ -107,8 +107,7 @@
 ➡️| **MsgList** 好友消息列表 | ✅ | ❎ |
 ➡️| **ChatList** 气泡聊天列表 | ✅ | ❎ |
 ||||
-⬇️| 其他 `5` | 动画 | 禁用 |
-➡️| [**WindowBar** 窗口栏](doc/wiki/zh/Control/WindowBar.md) | ✅ | ❎ |
+⬇️| 其他 `4` | 动画 | 禁用 |
 ➡️| [**Battery** 电量](doc/wiki/zh/Control/Battery.md) | ✅ | ❎ |
 ➡️| [**Signal** 信号强度](doc/wiki/zh/Control/Signal.md) | ✅ | ❎ |
 ➡️| [**ContextMenuStrip** 右键菜单](doc/wiki/zh/Control/ContextMenuStrip.md) | ✅ | ❎ |

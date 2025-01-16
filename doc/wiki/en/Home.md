@@ -174,7 +174,10 @@ Take each one Remove/restore the default value of `AutoScaleMode` in `.Designer.
 
 ### Other `5`
 
-#### [WindowBar](Control/WindowBar.md)
+#### ~~[WindowBar](Control/WindowBar.md)~~
+
+> ⚠ Removed using [PageHeader](Control/PageHeader.md) replacement
+
 #### [Battery](Control/Battery.md)
 #### [Signal](Control/Signal.md)
 #### [ContextMenuStrip](Control/ContextMenuStrip.md)
