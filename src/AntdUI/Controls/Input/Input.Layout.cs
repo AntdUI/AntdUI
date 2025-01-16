@@ -288,13 +288,23 @@ namespace AntdUI
                         }
                         else if (it.text == "\n" || it.text == "\r\n")
                         {
-                            line++;
                             it.ret = true;
-                            usey += lineHeight;
-                            usex = 0;
-                            it.line = line;
-                            it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
-                            line++;
+                            if (usex == 0 && usey == 0)
+                            {
+                                it.line = 0;
+                                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
+                                line++;
+                                usey += lineHeight;
+                            }
+                            else
+                            {
+                                line++;
+                                usey += lineHeight;
+                                usex = 0;
+                                it.line = line;
+                                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
+                                line++;
+                            }
                             continue;
                         }
                         else if (usex + it.width > rectText.Width)

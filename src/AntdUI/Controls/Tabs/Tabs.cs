@@ -520,8 +520,8 @@ namespace AntdUI
         {
             if (page.Badge != null)
             {
-                var color = page.BadgeBack ?? AntdUI.Colour.Error.Get("Tabs");
-                using (var brush_fore = new SolidBrush(AntdUI.Colour.ErrorColor.Get("Tabs")))
+                var color = page.BadgeBack ?? Colour.Error.Get("Tabs");
+                using (var brush_fore = new SolidBrush(Colour.ErrorColor.Get("Tabs")))
                 {
                     using (var font = new Font(Font.FontFamily, Font.Size * page.BadgeSize))
                     {
@@ -1047,10 +1047,10 @@ namespace AntdUI
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
                         int size = (int)(last.Height * .6F);
-                        using (var brush = new SolidBrush(scrollback ?? AntdUI.Colour.FillSecondary.Get("Tabs")))
-                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? AntdUI.Colour.Primary.Get("Tabs")))
+                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs")))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs")))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? AntdUI.Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
                         {
                             if (scroll_y > 0)
                             {
@@ -1095,10 +1095,10 @@ namespace AntdUI
                     if (scroll_x > 0 || scroll_max != scroll_x)
                     {
                         int size = (int)(last.Height * .6F);
-                        using (var brush = new SolidBrush(scrollback ?? AntdUI.Colour.FillSecondary.Get("Tabs")))
-                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? AntdUI.Colour.Primary.Get("Tabs")))
+                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs")))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs")))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? AntdUI.Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
                         {
                             if (scroll_x > 0)
                             {
@@ -1150,10 +1150,10 @@ namespace AntdUI
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
                         int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
-                        using (var brush = new SolidBrush(scrollback ?? AntdUI.Colour.FillSecondary.Get("Tabs")))
-                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? AntdUI.Colour.Primary.Get("Tabs")))
+                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs")))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs")))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? AntdUI.Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
                         {
                             if (scroll_y > 0)
                             {
@@ -1232,10 +1232,10 @@ namespace AntdUI
                     if (scroll_x > 0 || scroll_max != scroll_x)
                     {
                         int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
-                        using (var brush = new SolidBrush(scrollback ?? AntdUI.Colour.FillSecondary.Get("Tabs")))
-                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? AntdUI.Colour.Primary.Get("Tabs")))
+                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs")))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs")))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? AntdUI.Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
                         {
                             if (scroll_x > 0)
                             {

@@ -175,7 +175,10 @@ CORE 可以轻而易举的解决[Application.SetHighDpiMode(HighDpiMode.SystemAw
 
 ### 其他 `5`
 
-#### [WindowBar 窗口栏](Control/WindowBar.md)
+#### ~~[WindowBar 窗口栏](Control/WindowBar.md)~~
+
+> ⚠ 已移除 使用 [PageHeader 页头](Control/PageHeader.md) 替换
+
 #### [Battery 电量](Control/Battery.md)
 #### [Signal 信号强度](Control/Signal.md)
 #### [ContextMenuStrip 右键菜单](Control/ContextMenuStrip.md)

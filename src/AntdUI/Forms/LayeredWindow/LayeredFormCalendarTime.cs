@@ -57,10 +57,10 @@ namespace AntdUI
             if (dpi != 1F)
             {
                 Radius = _control.Radius * dpi;
-                t_height = (int)(t_height * dpi);
                 t_time = (int)(t_time * dpi);
                 t_time_height = (int)(t_time_height * dpi);
                 t_button = (int)(t_button * dpi);
+                t_height = t_time_height * 7;
             }
             else Radius = _control.Radius;
 
@@ -93,9 +93,9 @@ namespace AntdUI
             if (ValueTimeHorizontal)
             {
                 int exceed = 6;
-                scrollY_h.SetVrSize(t_time_height * (24 + exceed), endh2);
-                scrollY_m.SetVrSize(t_time_height * (60 + exceed), endh2);
-                scrollY_s.SetVrSize(t_time_height * (60 + exceed), endh2);
+                scrollY_h.SetVrSize(t_time_height * (24 + exceed) - 4, endh2);
+                scrollY_m.SetVrSize(t_time_height * (60 + exceed) - 4, endh2);
+                scrollY_s.SetVrSize(t_time_height * (60 + exceed) - 4, endh2);
             }
             else
             {
@@ -141,7 +141,7 @@ namespace AntdUI
         IControl control;
 
         float Radius = 6;
-        int t_width = 0, t_button = 38, t_time = 56, t_height = 224, t_time_height = 30;
+        int t_width = 0, t_button = 38, t_time = 56, t_height = 210, t_time_height = 30;
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
 

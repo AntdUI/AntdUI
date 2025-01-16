@@ -47,22 +47,11 @@ namespace AntdUI
         public LayeredFormDrawer(Drawer.Config _config)
         {
             config = _config;
-            TopMost = config.Form.TopMost;
+            config.Form.SetTopMost(Handle);
             Font = config.Form.Font;
-
             padding = (int)Math.Round(config.Padding * Config.Dpi);
             Padding = new Padding(padding);
-            var version = OS.Version;
-            if (version.Major >= 10 && version.Build > 22000) FrmRadius = 8; //Win11
-            if (config.Form is Window)
-            {
-                //无边框处理
-            }
-            else if (config.Form.FormBorderStyle != FormBorderStyle.None && config.Form.WindowState != FormWindowState.Maximized)
-            {
-                HasBor = true;
-                FrmBor = 8;
-            }
+            HasBor = Helper.FormFrame(config.Form, out FrmRadius, out FrmBor);
             config.Content.BackColor = Colour.BgElevated.Get("Drawer");
             config.Content.ForeColor = Colour.Text.Get("Drawer");
             SetPoint();
@@ -76,7 +65,7 @@ namespace AntdUI
                 config.Content.Tag = config.Content.Size;
                 Helper.DpiAuto(Config.Dpi, config.Content);
             }
-            config.Content.Location = new Point(-tempContent.Width, -tempContent.Height);
+            config.Content.Location = new Point(-tempContent.Width * 2, -tempContent.Height * 2);
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
             LoadContent();
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
@@ -359,7 +348,7 @@ namespace AntdUI
         void LoadContent()
         {
             var rect = Ang();
-            var hidelocation = new Point(-rect.Width, -rect.Height);
+            var hidelocation = new Point(-rect.Width * 2, -rect.Height * 2);
             if (config.Content is Form form_)
             {
                 form_.BackColor = Colour.BgElevated.Get("Drawer");
@@ -384,7 +373,7 @@ namespace AntdUI
                 {
                     config.Content.Dock = DockStyle.None;
                     config.Content.Size = size;
-                    config.Content.Location = new Point(-config.Content.Width, -config.Content.Height);
+                    config.Content.Location = new Point(-config.Content.Width * 2, -config.Content.Height * 2);
                     config.Form.Controls.Add(config.Content);
                 };
             }
@@ -570,7 +559,7 @@ namespace AntdUI
 
                 tempContent = new Bitmap(config.Content.Width, config.Content.Height);
                 config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
-                form?.Hide();
+                if (form != null) form.Location = new Point(-form.Width * 2, -form.Height * 2);
                 e.Cancel = true;
                 if (Config.Animation)
                 {

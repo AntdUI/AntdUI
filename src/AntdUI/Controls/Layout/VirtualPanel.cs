@@ -483,23 +483,10 @@ namespace AntdUI
                     if (max_height < it.HEIGHT) max_height = it.HEIGHT;
                     if (it is VirtualShadowItem virtualShadow)
                     {
-                        it.RECT.Width = it.WIDTH - shadow2;
-                        it.RECT.Height = it.HEIGHT - shadow2;
-                        it.RECT.X = use_x + shadow;
-                        it.RECT.Y = use_y + shadow;
-
-                        virtualShadow.RECT_S.Width = it.WIDTH;
-                        virtualShadow.RECT_S.Height = it.HEIGHT;
-                        virtualShadow.RECT_S.X = use_x;
-                        virtualShadow.RECT_S.Y = use_y;
+                        it.SetRECT(use_x + shadow, use_y + shadow, it.WIDTH - shadow2, it.HEIGHT - shadow2);
+                        virtualShadow.SetRECTS(use_x, use_y, it.WIDTH, it.HEIGHT);
                     }
-                    else
-                    {
-                        it.RECT.Width = it.WIDTH;
-                        it.RECT.Height = it.HEIGHT;
-                        it.RECT.X = use_x;
-                        it.RECT.Y = use_y;
-                    }
+                    else it.SetRECT(use_x, use_y, it.WIDTH, it.HEIGHT);
                     use_x += it.WIDTH + gap;
                     last_len = use_y + it.HEIGHT + gap;
                     it.SHOW = true;
@@ -1304,6 +1291,14 @@ namespace AntdUI
         internal ITask? ThreadHover = null;
         internal float AnimationHoverValue = 0.1F;
         internal bool AnimationHover = false;
+
+        internal void SetRECTS(int x, int y, int w, int h)
+        {
+            RECT_S.Width = w;
+            RECT_S.Height = h;
+            RECT_S.X = x;
+            RECT_S.Y = y;
+        }
     }
     public abstract class VirtualItem
     {
@@ -1317,11 +1312,31 @@ namespace AntdUI
         public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
         public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }
 
-        public void Invalidate() { invalidate?.Invoke(this); }
+        public void Invalidate() => invalidate?.Invoke(this);
 
-        internal bool SHOW = false;
-        internal bool SHOW_RECT = false;
-        internal Rectangle RECT;
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        public bool SHOW = false;
+
+        /// <summary>
+        /// 是否在容器中渲染
+        /// </summary>
+        public bool SHOW_RECT = false;
+
+        /// <summary>
+        /// 渲染区域
+        /// </summary>
+        public Rectangle RECT;
+
+        internal void SetRECT(int x, int y, int w, int h)
+        {
+            RECT.Width = w;
+            RECT.Height = h;
+            RECT.X = x;
+            RECT.Y = y;
+        }
+
         internal Action<VirtualItem>? invalidate;
         internal int WIDTH;
         internal int HEIGHT;

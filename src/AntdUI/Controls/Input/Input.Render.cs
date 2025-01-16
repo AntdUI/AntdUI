@@ -217,6 +217,7 @@ namespace AntdUI
                             it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
                             if (it.show)
                             {
+                                if (it.ret) continue;
                                 if (IsPassWord) g.String(PassWordChar, Font, fore, it.rect, sf_font);
                                 else g.String(it.text, Font, fore, it.rect, sf_font);
                             }

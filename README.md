@@ -105,8 +105,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| **MsgList** Friend message list | ✅ | ❎ |
 ➡️| **ChatList** Chat bubble list | ✅ | ❎ |
 ||||
-⬇️| Other `5` | Animation | Disable |
-➡️| [**WindowBar**](doc/wiki/en/Control/WindowBar.md) | ✅ | ❎ |
+⬇️| Other `4` | Animation | Disable |
 ➡️| [**Battery**](doc/wiki/en/Control/Battery.md) | ✅ | ❎ |
 ➡️| [**Signal**](doc/wiki/en/Control/Signal.md) | ✅ | ❎ |
 ➡️| [**ContextMenuStrip**](doc/wiki/en/Control/ContextMenuStrip.md) | ✅ | ❎ |

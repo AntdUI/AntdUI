@@ -757,7 +757,7 @@ namespace AntdUI
                                 {
                                     it.PARENT = this;
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t);
-                                    else it.SetRectTop(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t, text_heigth, sp);
+                                    else it.SetRectTopFull(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t, text_heigth, sp, g, Font);
                                     y += heightone + _igap;
                                 }
                                 break;
@@ -767,7 +767,7 @@ namespace AntdUI
                                 {
                                     it.PARENT = this;
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b);
-                                    else it.SetRectBottom(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b, text_heigth, sp);
+                                    else it.SetRectBottomFull(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b, text_heigth, sp, g, Font);
                                     y += heightone + _igap;
                                 }
                                 break;
@@ -871,7 +871,7 @@ namespace AntdUI
                                 {
                                     it.PARENT = this;
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t);
-                                    else it.SetRectTop(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t, text_heigth, sp);
+                                    else it.SetRectTop(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t, text_heigth, sp, g, Font);
                                     y += it.Rect.Height + _igap;
                                 }
                                 break;
@@ -881,7 +881,7 @@ namespace AntdUI
                                 {
                                     it.PARENT = this;
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b);
-                                    else it.SetRectBottom(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b, text_heigth, sp);
+                                    else it.SetRectBottom(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b, text_heigth, sp, g, Font);
                                     y += it.Rect.Height + _igap;
                                 }
                                 break;
@@ -1278,9 +1278,11 @@ namespace AntdUI
         public string? IconActiveSvg { get; set; }
 
         string? text = null;
+        bool multiLine = false;
         /// <summary>
         /// 文本
         /// </summary>
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public string? Text
         {
@@ -1288,6 +1290,8 @@ namespace AntdUI
             set
             {
                 if (text == value) return;
+                if (value == null) multiLine = false;
+                else multiLine = value.Contains("\n");
                 text = value;
                 Invalidates();
             }
@@ -1314,6 +1318,9 @@ namespace AntdUI
             Rect = rect;
             RectImg = RectText = new Rectangle(rect.X + (rect.Width - imgsize) / 2, rect.Y + (rect.Height - imgsize) / 2, imgsize, imgsize);
         }
+
+        #region SetRectTop
+
         internal void SetRectTop(Rectangle rect, int imgsize, int text_heigth, int gap)
         {
             Rect = rect;
@@ -1325,6 +1332,48 @@ namespace AntdUI
             }
             else RectText = rect;
         }
+        internal void SetRectTop(Rectangle rect, int imgsize, int text_heigth, int gap, Canvas g, Font font)
+        {
+            Rect = rect;
+            if (HasIcon)
+            {
+                if (multiLine)
+                {
+                    int text_heigth_new = g.MeasureString(Text, font).Height;
+                    if (text_heigth_new > text_heigth)
+                    {
+                        rect.Height += text_heigth_new - text_heigth;
+                        Rect = rect;
+                        text_heigth = text_heigth_new;
+                    }
+                }
+                int y = (rect.Height - (imgsize + text_heigth + gap)) / 2;
+                RectImg = new Rectangle(rect.X + (rect.Width - imgsize) / 2, rect.Y + y, imgsize, imgsize);
+                RectText = new Rectangle(rect.X, RectImg.Bottom + gap, rect.Width, text_heigth);
+            }
+            else RectText = rect;
+        }
+        internal void SetRectTopFull(Rectangle rect, int imgsize, int text_heigth, int gap, Canvas g, Font font)
+        {
+            Rect = rect;
+            if (HasIcon)
+            {
+                if (multiLine)
+                {
+                    int text_heigth_new = g.MeasureString(Text, font).Height;
+                    if (text_heigth_new > text_heigth) text_heigth = text_heigth_new;
+                }
+                int y = (rect.Height - (imgsize + text_heigth + gap)) / 2;
+                RectImg = new Rectangle(rect.X + (rect.Width - imgsize) / 2, rect.Y + y, imgsize, imgsize);
+                RectText = new Rectangle(rect.X, RectImg.Bottom + gap, rect.Width, text_heigth);
+            }
+            else RectText = rect;
+        }
+
+        #endregion
+
+        #region SetRectBottom
+
         internal void SetRectBottom(Rectangle rect, int imgsize, int text_heigth, int gap)
         {
             Rect = rect;
@@ -1336,6 +1385,46 @@ namespace AntdUI
             }
             else RectText = rect;
         }
+        internal void SetRectBottom(Rectangle rect, int imgsize, int text_heigth, int gap, Canvas g, Font font)
+        {
+            Rect = rect;
+            if (HasIcon)
+            {
+                if (multiLine)
+                {
+                    int text_heigth_new = g.MeasureString(Text, font).Height;
+                    if (text_heigth_new > text_heigth)
+                    {
+                        rect.Height += text_heigth_new - text_heigth;
+                        Rect = rect;
+                        text_heigth = text_heigth_new;
+                    }
+                }
+                int y = (rect.Height - (imgsize + text_heigth + gap)) / 2;
+                RectText = new Rectangle(rect.X, rect.Y + y, rect.Width, text_heigth);
+                RectImg = new Rectangle(rect.X + (rect.Width - imgsize) / 2, RectText.Bottom + gap, imgsize, imgsize);
+            }
+            else RectText = rect;
+        }
+        internal void SetRectBottomFull(Rectangle rect, int imgsize, int text_heigth, int gap, Canvas g, Font font)
+        {
+            Rect = rect;
+            if (HasIcon)
+            {
+                if (multiLine)
+                {
+                    int text_heigth_new = g.MeasureString(Text, font).Height;
+                    if (text_heigth_new > text_heigth) text_heigth = text_heigth_new;
+                }
+                int y = (rect.Height - (imgsize + text_heigth + gap)) / 2;
+                RectText = new Rectangle(rect.X, rect.Y + y, rect.Width, text_heigth);
+                RectImg = new Rectangle(rect.X + (rect.Width - imgsize) / 2, RectText.Bottom + gap, imgsize, imgsize);
+            }
+            else RectText = rect;
+        }
+
+        #endregion
+
         internal void SetRectLeft(Rectangle rect, int imgsize, int gap, int sp)
         {
             Rect = rect;
