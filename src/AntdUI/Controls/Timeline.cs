@@ -417,19 +417,46 @@ namespace AntdUI
         [Description("名称"), Category("数据"), DefaultValue(null)]
         public string? Name { get; set; }
 
+        string? description = null;
         /// <summary>
         /// 描述，可选
         /// </summary>
         [Description("描述，可选"), Category("外观"), DefaultValue(null)]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
-        public string? Description { get; set; }
+        public string? Description
+        {
+            get => Localization.GetLangI(LocalizationDescription, description, new string?[] { "{id}", ID });
+            set
+            {
+                if (description == value) return;
+                description = value;
+                Invalidates();
+            }
+        }
 
+        [Description("详情描述"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationDescription { get; set; }
+
+
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
         [Description("文本"), Category("外观"), DefaultValue(null)]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
-        public string? Text { get; set; }
+        public string? Text
+        {
+            get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
+            set
+            {
+                if (text == value) return;
+                text = value;
+                Invalidates();
+            }
+        }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         [Description("颜色类型"), Category("外观"), DefaultValue(TTypeMini.Primary)]
         public TTypeMini Type { get; set; } = TTypeMini.Primary;

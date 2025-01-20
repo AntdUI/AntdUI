@@ -36,6 +36,7 @@ namespace AntdUI
                 ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
         }
+
         public void SetCursor(bool val)
         {
             if (InvokeRequired)

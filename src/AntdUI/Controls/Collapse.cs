@@ -179,10 +179,7 @@ namespace AntdUI
         [Description("只保持一个展开"), Category("外观"), DefaultValue(false)]
         public bool Unique { get; set; }
 
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.PaddingRect(Margin, Padding);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Margin, Padding);
 
         #region 数据
 
@@ -761,6 +758,28 @@ namespace AntdUI
                 PARENT?.LoadLayout();
             }
         }
+
+        #endregion
+
+        #region 国际化
+
+        string text = "";
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category("外观"), DefaultValue("")]
+        public override string Text
+        {
+            get => this.GetLangIN(LocalizationText, text);
+            set
+            {
+                if (text == value) return;
+                base.Text = text = value;
+            }
+        }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         #endregion
 

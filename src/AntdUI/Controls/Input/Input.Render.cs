@@ -304,10 +304,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
 
         public override GraphicsPath RenderRegion
         {

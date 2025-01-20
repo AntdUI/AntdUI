@@ -482,15 +482,9 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle
-        {
-            get => DisplayRectangle;
-        }
+        public override Rectangle ReadRectangle => DisplayRectangle;
 
-        public override GraphicsPath RenderRegion
-        {
-            get => DisplayRectangle.RoundPath(radius * Config.Dpi);
-        }
+        public override GraphicsPath RenderRegion => DisplayRectangle.RoundPath(radius * Config.Dpi);
 
         #endregion
 

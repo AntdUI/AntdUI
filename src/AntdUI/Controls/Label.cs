@@ -672,10 +672,7 @@ namespace AntdUI
             base.OnMouseHover(e);
         }
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding);
 
         #endregion
 

@@ -1300,7 +1300,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public string? Text
         {
-            get => text;
+            get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
             set
             {
                 if (text == value) return;
@@ -1308,6 +1308,9 @@ namespace AntdUI
                 Invalidates();
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         /// <summary>
         /// 自定义字体
@@ -1480,10 +1483,7 @@ namespace AntdUI
         }
 
         [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
-        public bool CanExpand
-        {
-            get => visible && items != null && items.Count > 0;
-        }
+        public bool CanExpand => visible && items != null && items.Count > 0;
 
         /// <summary>
         /// 菜单坐标位置
@@ -1656,6 +1656,6 @@ namespace AntdUI
         internal Rectangle txt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
 
-        public override string? ToString() => text;
+        public override string? ToString() => Text;
     }
 }

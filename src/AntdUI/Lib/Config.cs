@@ -73,6 +73,11 @@ namespace AntdUI
         public static bool TouchEnabled { get; set; } = true;
 
         /// <summary>
+        /// 触屏阈值
+        /// </summary>
+        public static int TouchThreshold { get; set; } = 10;
+
+        /// <summary>
         /// 触屏点击使能
         /// </summary>
         public static bool TouchClickEnabled { get; set; }

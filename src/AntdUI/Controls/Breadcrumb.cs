@@ -414,10 +414,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => IconSvg != null || Icon != null;
-        }
+        public bool HasIcon => IconSvg != null || Icon != null;
 
         string? text = null;
         /// <summary>
@@ -426,7 +423,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public string? Text
         {
-            get => text;
+            get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
             set
             {
                 if (text == value) return;
@@ -434,6 +431,9 @@ namespace AntdUI
                 Invalidates();
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         /// <summary>
         /// 用户定义数据
@@ -456,6 +456,6 @@ namespace AntdUI
             PARENT.Invalidate();
         }
 
-        public override string? ToString() => text;
+        public override string? ToString() => Text;
     }
 }

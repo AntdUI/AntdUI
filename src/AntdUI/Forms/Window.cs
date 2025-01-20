@@ -381,10 +381,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        public override bool IsMax
-        {
-            get => winState == WState.Maximize;
-        }
+        public override bool IsMax => winState == WState.Maximize;
 
         public static bool CanHandMessage = true;
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)

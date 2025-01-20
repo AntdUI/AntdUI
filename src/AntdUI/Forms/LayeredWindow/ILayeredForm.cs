@@ -222,10 +222,7 @@ namespace AntdUI
             }
         }
 
-        protected override bool ShowWithoutActivation
-        {
-            get => UFocus;
-        }
+        protected override bool ShowWithoutActivation => UFocus;
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
@@ -416,31 +413,26 @@ namespace AntdUI
         {
             if (mdown)
             {
-                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY);
-                oldMY = moveY;
-                if (mdownd > 0)
+                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                if (mdownd > 0 || (moveXa > threshold || moveYa > threshold))
                 {
-                    if (mdownd == 1) OnTouchScrollY(-moveY);
-                    else OnTouchScrollX(-moveX);
-                    oldX = x;
-                    oldY = y;
-                    return false;
-                }
-                else if (moveXa > 2 || moveYa > 2)
-                {
-                    if (moveYa > moveXa)
+                    oldMY = moveY;
+                    if (mdownd > 0)
                     {
-                        mdownd = 1;
-                        OnTouchScrollY(-moveY);
+                        if (mdownd == 1) OnTouchScrollY(-moveY);
+                        else OnTouchScrollX(-moveX);
+                        oldX = x;
+                        oldY = y;
+                        return false;
                     }
                     else
                     {
-                        mdownd = 2;
-                        OnTouchScrollX(-moveX);
+                        if (moveYa > moveXa) mdownd = 1;
+                        else mdownd = 2;
+                        oldX = x;
+                        oldY = y;
+                        return false;
                     }
-                    oldX = x;
-                    oldY = y;
-                    return false;
                 }
             }
             return true;

@@ -1462,10 +1462,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => iconSvg != null || icon != null;
-        }
+        public bool HasIcon => iconSvg != null || icon != null;
 
         bool readOnly = false;
         /// <summary>
@@ -1540,6 +1537,28 @@ namespace AntdUI
         /// </summary>
         [Description("徽标偏移Y"), Category("徽标"), DefaultValue(1)]
         public int BadgeOffsetY { get; set; } = 1;
+
+        #endregion
+
+        #region 国际化
+
+        string text = "";
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category("外观"), DefaultValue("")]
+        public override string Text
+        {
+            get => this.GetLangIN(LocalizationText, text);
+            set
+            {
+                if (text == value) return;
+                base.Text = text = value;
+            }
+        }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         #endregion
 

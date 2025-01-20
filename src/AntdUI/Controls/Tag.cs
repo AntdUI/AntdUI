@@ -309,10 +309,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图片
         /// </summary>
-        public bool HasImage
-        {
-            get => imageSvg != null || image != null;
-        }
+        public bool HasImage => imageSvg != null || image != null;
 
         /// <summary>
         /// 图像大小
@@ -504,10 +501,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Config.Dpi);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Config.Dpi);
 
         public override GraphicsPath RenderRegion
         {
