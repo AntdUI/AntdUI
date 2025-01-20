@@ -155,7 +155,7 @@ namespace AntdUI
             {
                 if (selectedValue == value) return;
                 selectedValue = value;
-                if (value == null || items == null || items.Count == 0)
+                if (value.Length == 0 || items == null || items.Count == 0)
                 {
                     ClearSelect();
                     SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
@@ -220,6 +220,7 @@ namespace AntdUI
             Invalidate();
             subForm?.ClearValues();
         }
+
         protected override void IBackSpaceKey()
         {
             if (selectedValue.Length > 0)
@@ -686,8 +687,9 @@ namespace AntdUI
             if (selectedValue.Length > 0)
             {
                 TerminateExpand = true;
-                ClearSelect();
+                SelectedValue = new object[0];
             }
+            base.OnClearValue();
         }
 
         protected override void OnClickContent() => ExpandDrop = !expandDrop;

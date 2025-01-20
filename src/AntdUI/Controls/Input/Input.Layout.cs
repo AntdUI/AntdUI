@@ -238,6 +238,7 @@ namespace AntdUI
             public int line { get; set; }
             public string text { get; set; }
             public Rectangle rect { get; set; }
+            public Rectangle? rect2 { get; set; }
             public bool ret { get; set; }
             public bool emoji { get; set; }
             public int width { get; set; }
@@ -289,22 +290,12 @@ namespace AntdUI
                         else if (it.text == "\n" || it.text == "\r\n")
                         {
                             it.ret = true;
-                            if (usex == 0 && usey == 0)
-                            {
-                                it.line = 0;
-                                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
-                                line++;
-                                usey += lineHeight;
-                            }
-                            else
-                            {
-                                line++;
-                                usey += lineHeight;
-                                usex = 0;
-                                it.line = line;
-                                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
-                                line++;
-                            }
+                            it.line = line;
+                            line++;
+                            if (usex == 0 && usey == 0) it.rect2 = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
+                            usey += lineHeight;
+                            usex = 0;
+                            it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
                             continue;
                         }
                         else if (usex + it.width > rectText.Width)

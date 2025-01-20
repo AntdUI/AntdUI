@@ -41,15 +41,19 @@ namespace AntdUI
                 base.OnPaint(e);
                 return;
             }
-            if (columnfont == null)
+            try
             {
-                using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                if (columnfont == null)
                 {
-                    PaintTable(g, rows, rect, column_font);
+                    using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                    {
+                        PaintTable(g, rows, rect, column_font);
+                    }
                 }
+                else PaintTable(g, rows, rect, columnfont);
+                if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect, rows[0].RECT.Height);
             }
-            else PaintTable(g, rows, rect, columnfont);
-            if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect, rows[0].RECT.Height);
+            catch { }
             ScrollBar.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);

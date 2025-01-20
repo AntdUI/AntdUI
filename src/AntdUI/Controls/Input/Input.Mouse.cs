@@ -51,7 +51,7 @@ namespace AntdUI
                     if (index >= cache_font.Length) end = cache_font.Length;
                     else end = FindEnd(cache_font, index);
 
-                    SelectionStart = start;
+                    SetSelectionStart(start);
                     SelectionLength = end - start;
                     return;
                 }
@@ -87,19 +87,19 @@ namespace AntdUI
                 {
                     if (indeX > selectionStartTemp)
                     {
-                        if (selectionStart != selectionStartTemp) SelectionStart = selectionStartTemp;
+                        if (selectionStart != selectionStartTemp) SetSelectionStart(selectionStartTemp);
                         SelectionLength = indeX - selectionStartTemp;
                     }
                     else
                     {
                         int len = selectionStartTemp - indeX;
-                        SelectionStart = indeX;
+                        SetSelectionStart(indeX);
                         SelectionLength = len;
                     }
                 }
                 else
                 {
-                    SelectionStart = indeX;
+                    SetSelectionStart(indeX);
                     SelectionLength = 0;
                     SetCaretPostion(selectionStart);
                 }
@@ -198,13 +198,13 @@ namespace AntdUI
                 else if (index > selectionStart)
                 {
                     SelectionLength = Math.Abs(index - selectionStart);
-                    SelectionStart = selectionStart;
+                    SetSelectionStart(selectionStart);
                 }
                 else
                 {
                     int x = scrollx;
                     SelectionLength = Math.Abs(index - selectionStart);
-                    SelectionStart = index;
+                    SetSelectionStart(index);
                     ScrollX = x;
                 }
             }

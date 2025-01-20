@@ -616,17 +616,24 @@ namespace AntdUI
             get => selectionStart;
             set
             {
-                if (value < 0) value = 0;
-                else if (value > 0)
-                {
-                    if (cache_font == null) value = 0;
-                    else if (value > cache_font.Length) value = cache_font.Length;
-                }
-                if (selectionStart == value) return;
-                selectionStart = selectionStartTemp = value;
-                SetCaretPostion(value);
-                OnPropertyChanged("SelectionStart");
+                SpeedScrollTo = true;
+                SetSelectionStart(value);
+                SpeedScrollTo = false;
             }
+        }
+
+        void SetSelectionStart(int value)
+        {
+            if (value < 0) value = 0;
+            else if (value > 0)
+            {
+                if (cache_font == null) value = 0;
+                else if (value > cache_font.Length) value = cache_font.Length;
+            }
+            if (selectionStart == value) return;
+            selectionStart = selectionStartTemp = value;
+            SetCaretPostion(value);
+            OnPropertyChanged("SelectionStart");
         }
 
         /// <summary>
@@ -1036,7 +1043,7 @@ namespace AntdUI
             {
                 if (ismax && text.Length > MaxLength) text = text.Substring(0, MaxLength);
                 Text = text;
-                SelectionStart = len;
+                SetSelectionStart(len);
             }
             else
             {
@@ -1056,7 +1063,7 @@ namespace AntdUI
                     if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
                     Text = tmp;
                     SelectionLength = 0;
-                    SelectionStart = start + len;
+                    SetSelectionStart(start + len);
                 }
                 else
                 {
@@ -1067,7 +1074,12 @@ namespace AntdUI
                     var tmp = string.Join("", texts);
                     if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
                     Text = tmp;
-                    SelectionStart = start + 1 + len;
+                    if (CaretInfo.FirstRet)
+                    {
+                        CaretInfo.Place = true;
+                        CaretInfo.FirstRet = false;
+                    }
+                    SetSelectionStart(start + 1 + len);
                 }
             }
         }
@@ -1261,7 +1273,7 @@ namespace AntdUI
             {
                 foreach (var it in cache_font)
                 {
-                    if (it.rect.X <= x && it.rect.Right >= x && it.rect.Y <= y && it.rect.Bottom >= y)
+                    if (HasRect(it.rect, x, y))
                     {
                         if (x > it.rect.X + it.rect.Width / 2)
                         {
@@ -1272,8 +1284,14 @@ namespace AntdUI
                         }
                         return it.i;
                     }
+                    else if (it.rect2.HasValue && HasRect(it.rect2.Value, x, y))
+                    {
+                        CaretInfo.Place = false;
+                        return it.i;
+                    }
                 }
-                var nearest = FindNearestFont(x, y, cache_font);
+                var nearest = FindNearestFont(x, y, cache_font, out bool two);
+                CaretInfo.FirstRet = two;
                 if (nearest == null)
                 {
                     if (x > cache_font[cache_font.Length - 1].rect.Right) return cache_font.Length;
@@ -1281,6 +1299,7 @@ namespace AntdUI
                 }
                 else
                 {
+                    if (two) return nearest.i;
                     if (x > nearest.rect.X + nearest.rect.Width / 2)
                     {
                         int i = nearest.i + 1;
@@ -1296,18 +1315,13 @@ namespace AntdUI
         /// <summary>
         /// 寻找最近的矩形和距离的辅助方法
         /// </summary>
-        CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font)
+        CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font, out bool two)
         {
+            two = false;
             CacheFont first = cache_font[0], last = cache_font[cache_font.Length - 1];
-            if (x < first.rect.X && y < first.rect.Y)
-            {
-                return first;
-            }
-            else if (x > last.rect.X && y > last.rect.Y)
-            {
-                return last;
-            }
-            var findy = FindNearestFontY(y, cache_font);
+            if (x < first.rect.X && y < first.rect.Y) return first;
+            else if (x > last.rect.X && y > last.rect.Y) return last;
+            var findy = FindNearestFontY(y, cache_font, out two);
             CacheFont? result = null;
             if (findy == null)
             {
@@ -1330,20 +1344,54 @@ namespace AntdUI
             }
             else
             {
-                int ry = findy.rect.Y;
-                int minDistance = int.MaxValue;
-                for (int i = 0; i < cache_font.Length; i++)
+                if (two && findy.rect2.HasValue)
                 {
-                    var it = cache_font[i];
-                    if (it.rect.Y == ry)
+                    int ry = findy.rect2.Value.Y;
+                    int minDistance = int.MaxValue;
+                    for (int i = 0; i < cache_font.Length; i++)
                     {
-                        // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
-                        int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
-                        // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
-                        if (currentMinDistance < minDistance)
+                        var it = cache_font[i];
+                        if (it.rect2.HasValue && it.rect2.Value.Y == ry)
                         {
-                            minDistance = currentMinDistance;
-                            result = it;
+                            // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
+                            int currentMinDistance = Math.Abs(x - (it.rect2.Value.X + it.rect2.Value.Width / 2));
+                            // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                            if (currentMinDistance < minDistance)
+                            {
+                                minDistance = currentMinDistance;
+                                result = it;
+                            }
+                        }
+                        else if (it.rect.Y == ry)
+                        {
+                            // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
+                            int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
+                            // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                            if (currentMinDistance < minDistance)
+                            {
+                                minDistance = currentMinDistance;
+                                result = it;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    int ry = findy.rect.Y;
+                    int minDistance = int.MaxValue;
+                    for (int i = 0; i < cache_font.Length; i++)
+                    {
+                        var it = cache_font[i];
+                        if (it.rect.Y == ry)
+                        {
+                            // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
+                            int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
+                            // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                            if (currentMinDistance < minDistance)
+                            {
+                                minDistance = currentMinDistance;
+                                result = it;
+                            }
                         }
                     }
                 }
@@ -1351,8 +1399,9 @@ namespace AntdUI
             if (result == null) return result;
             return result;
         }
-        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font)
+        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font, out bool two)
         {
+            two = false;
             int minDistance = int.MaxValue;
             CacheFont? result = null;
             for (int i = 0; i < cache_font.Length; i++)
@@ -1363,12 +1412,26 @@ namespace AntdUI
                 // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
                 if (currentMinDistance < minDistance)
                 {
+                    two = false;
                     minDistance = currentMinDistance;
                     result = it;
+                }
+                if (it.rect2.HasValue)
+                {
+                    currentMinDistance = Math.Abs(y - (it.rect2.Value.Y + it.rect2.Value.Height / 2));
+                    // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                    if (currentMinDistance < minDistance)
+                    {
+                        two = true;
+                        minDistance = currentMinDistance;
+                        result = it;
+                    }
                 }
             }
             return result;
         }
+
+        bool HasRect(Rectangle rect, int x, int y) => rect.X <= x && rect.Right >= x && rect.Y <= y && rect.Bottom >= y;
 
         #endregion
 
@@ -1456,10 +1519,25 @@ namespace AntdUI
 
             public Rectangle Rect = new Rectangle(-1, -1000, (int)Config.Dpi, 0);
 
-            public bool Place = false;
+            public bool Place = false, FirstRet = false;
 
             public Rectangle SetXY(CacheFont[] cache_font, int i)
             {
+                if (FirstRet)
+                {
+                    Rectangle? r;
+                    if (i >= cache_font.Length) r = cache_font[cache_font.Length - 1].rect2;
+                    else
+                    {
+                        if (i > 0) r = cache_font[i - 1].rect2;
+                        else r = cache_font[i].rect2;
+                    }
+                    if (r.HasValue)
+                    {
+                        SetXY(r.Value.X, r.Value.Y);
+                        return r.Value;
+                    }
+                }
                 if (i >= cache_font.Length)
                 {
                     var r = cache_font[cache_font.Length - 1].rect;
