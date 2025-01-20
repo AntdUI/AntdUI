@@ -41,7 +41,7 @@ namespace AntdUI
         /// <summary>
         /// 跨度
         /// </summary>
-        [Description("跨度"), Category("外观"), DefaultValue("50% 50%;50% 50%-50% 50%")]
+        [Description("跨度"), Category("外观"), DefaultValue("50% 50%;50% 50%")]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public string Span
         {
@@ -104,7 +104,7 @@ namespace AntdUI
             /// <summary>
             /// 内容大小
             /// </summary>
-            public string Span { get; set; } = "50% 50%;50% 50%-50% 50%";
+            public string Span { get; set; } = "50% 50%;50% 50%";
 
             /// <summary>
             /// 间距
@@ -157,16 +157,14 @@ namespace AntdUI
                                     foreach (string xaxis in abs)
                                     {
                                         var x = xaxis.Trim();
-                                        if (x.EndsWith("%") && float.TryParse(x.TrimEnd('%'), out var xF))
-                                            xObjTemp.Add(xF / 100F);
+                                        if (x.EndsWith("%") && float.TryParse(x.TrimEnd('%'), out var xF)) xObjTemp.Add(xF / 100F);
                                         else if (int.TryParse(x, out var xi))
                                         {
                                             int uw = (int)Math.Round(xi * Config.Dpi);
                                             xObjTemp.Add(uw);
                                             use_width += uw;
                                         }
-                                        else if (float.TryParse(x, out float xF2))
-                                            xObjTemp.Add(xF2);
+                                        else if (float.TryParse(x, out float xF2)) xObjTemp.Add(xF2);
                                     }
 
                                     int read_width = rect.Width - use_width;
@@ -174,10 +172,8 @@ namespace AntdUI
 
                                     foreach (var it in xObjTemp)
                                     {
-                                        if (it is float f)
-                                            x_temp.Add((int)Math.Round(read_width * f));
-                                        else if (it is int i)
-                                            x_temp.Add(i);
+                                        if (it is float f) x_temp.Add((int)Math.Round(read_width * f));
+                                        else if (it is int i) x_temp.Add(i);
                                     }
 
                                     // 转换后实际行高
@@ -194,48 +190,38 @@ namespace AntdUI
 
                                             // 剩余行高
                                             int read_height = rect.Height - use_height;
-                                            if (y.EndsWith("%") && float.TryParse(y.TrimEnd('%'), out var yF))
-                                                height = (int)Math.Round(read_height * (yF / 100F));
+                                            if (y.EndsWith("%") && float.TryParse(y.TrimEnd('%'), out var yF)) height = (int)Math.Round(read_height * (yF / 100F));
                                             else if (int.TryParse(y, out var i))
                                             {
                                                 int uh = (int)Math.Round(i * Config.Dpi);
                                                 height = uh;
                                                 use_height += uh;
                                             }
-                                            else if (float.TryParse(y, out float yF2))
-                                                height = (int)Math.Round(read_height * yF2);
+                                            else if (float.TryParse(y, out float yF2)) height = (int)Math.Round(read_height * yF2);
                                         }
-                                        else
-                                        {
-                                            height = -999;
-                                        }
+                                        else height = -999;
                                     }
-                          
-                                    else
-                                    {
-                                        height = -999;
-                                    }
+                                    else height = -999;
 
                                     if (x_temp.Count > 0)
                                     {
                                         data_count += x_temp.Count;
                                         data.Add(x_temp, height);
-                                    }                                    
+                                    }
                                 }
                             }
 
                             if (data.Count > 0)
                             {
                                 Rectangle[] rects;
-                                if (data.Count == 1)
-                                    rects = new Rectangle[1] { rect };
+                                if (data.Count == 1) rects = new Rectangle[1] { rect };
                                 else
                                 {
                                     if (data.Count > 1)
                                     {
                                         var tmp_rects = new List<Rectangle>();
                                         int hasx = 0, hasy = 0;
-                                        
+
                                         foreach (var item in data)
                                         {
                                             int y = item.Value == -999 ? rect.Height / data.Count : item.Value;

@@ -355,7 +355,6 @@ namespace Demo
             // 
             // progress1
             // 
-            progress1.ContainerControl = this;
             progress1.Loading = true;
             progress1.Location = new Point(40, 332);
             progress1.Name = "progress1";
@@ -366,7 +365,6 @@ namespace Demo
             // 
             // progress2
             // 
-            progress2.ContainerControl = this;
             progress2.Location = new Point(40, 378);
             progress2.Name = "progress2";
             progress2.Size = new Size(480, 30);
@@ -376,7 +374,6 @@ namespace Demo
             // 
             // progress3
             // 
-            progress3.ContainerControl = this;
             progress3.Location = new Point(40, 424);
             progress3.Name = "progress3";
             progress3.Size = new Size(480, 30);
@@ -387,7 +384,6 @@ namespace Demo
             // 
             // progress4
             // 
-            progress4.ContainerControl = this;
             progress4.Font = new Font("Microsoft YaHei UI Light", 16F);
             progress4.Loading = true;
             progress4.Location = new Point(42, 488);
@@ -401,7 +397,6 @@ namespace Demo
             // 
             // progress5
             // 
-            progress5.ContainerControl = this;
             progress5.Font = new Font("Microsoft YaHei UI Light", 16F);
             progress5.Location = new Point(201, 488);
             progress5.Name = "progress5";
@@ -414,7 +409,6 @@ namespace Demo
             // 
             // progress6
             // 
-            progress6.ContainerControl = this;
             progress6.Font = new Font("Microsoft YaHei UI Light", 16F);
             progress6.Location = new Point(360, 488);
             progress6.Name = "progress6";
@@ -429,7 +423,6 @@ namespace Demo
             // progress7
             // 
             progress7.Back = Color.FromArgb(40, 22, 119, 255);
-            progress7.ContainerControl = this;
             progress7.Location = new Point(42, 622);
             progress7.Name = "progress7";
             progress7.Radius = 4;
@@ -444,7 +437,6 @@ namespace Demo
             // progress8
             // 
             progress8.Back = Color.FromArgb(40, 0, 204, 0);
-            progress8.ContainerControl = this;
             progress8.Location = new Point(201, 622);
             progress8.Name = "progress8";
             progress8.Radius = 4;
@@ -459,7 +451,6 @@ namespace Demo
             // progress9
             // 
             progress9.Back = Color.FromArgb(40, 255, 79, 87);
-            progress9.ContainerControl = this;
             progress9.Location = new Point(360, 622);
             progress9.Name = "progress9";
             progress9.Radius = 4;

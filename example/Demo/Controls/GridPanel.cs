@@ -16,38 +16,21 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using AntdUI;
-
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Demo.Controls
 {
     public partial class GridPanel : UserControl
     {
-        private Window window;
-        public GridPanel()
+        Form form;
+        public GridPanel(Form _form)
         {
+            form = _form;
             InitializeComponent();
-
             gridPanel1.Span = input1.Text.Trim();
         }
 
-        public GridPanel(Window _window) : this()
-        {
-            window = _window;
-        }
-
-        private void input1_TextChanged(object sender, EventArgs e)
-        {
-            gridPanel1.Span = input1.Text.Trim();
-        }
+        private void input1_TextChanged(object sender, EventArgs e) => gridPanel1.Span = input1.Text.Trim();
     }
 }

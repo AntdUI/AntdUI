@@ -101,7 +101,6 @@ namespace Demo.Controls
             // 
             // progress1
             // 
-            progress1.ContainerControl = this;
             progress1.Dock = DockStyle.Top;
             progress1.Location = new Point(0, 28);
             progress1.Name = "progress1";
@@ -132,7 +131,6 @@ namespace Demo.Controls
             // 
             // progress8
             // 
-            progress8.ContainerControl = this;
             progress8.Dock = DockStyle.Top;
             progress8.Font = new Font("Microsoft YaHei UI", 8F);
             progress8.Location = new Point(0, 236);
@@ -145,7 +143,6 @@ namespace Demo.Controls
             // 
             // progress9
             // 
-            progress9.ContainerControl = this;
             progress9.Dock = DockStyle.Top;
             progress9.Font = new Font("Microsoft YaHei UI", 8F);
             progress9.Location = new Point(0, 216);
@@ -158,7 +155,6 @@ namespace Demo.Controls
             // 
             // progress10
             // 
-            progress10.ContainerControl = this;
             progress10.Dock = DockStyle.Top;
             progress10.Font = new Font("Microsoft YaHei UI", 8F);
             progress10.Loading = true;
@@ -171,7 +167,6 @@ namespace Demo.Controls
             // 
             // progress11
             // 
-            progress11.ContainerControl = this;
             progress11.Dock = DockStyle.Top;
             progress11.Font = new Font("Microsoft YaHei UI", 8F);
             progress11.Location = new Point(0, 176);
@@ -195,7 +190,6 @@ namespace Demo.Controls
             // 
             // progress4
             // 
-            progress4.ContainerControl = this;
             progress4.Dock = DockStyle.Top;
             progress4.Location = new Point(0, 118);
             progress4.Name = "progress4";
@@ -207,7 +201,6 @@ namespace Demo.Controls
             // 
             // progress3
             // 
-            progress3.ContainerControl = this;
             progress3.Dock = DockStyle.Top;
             progress3.Location = new Point(0, 88);
             progress3.Name = "progress3";
@@ -219,7 +212,6 @@ namespace Demo.Controls
             // 
             // progress2
             // 
-            progress2.ContainerControl = this;
             progress2.Dock = DockStyle.Top;
             progress2.Loading = true;
             progress2.Location = new Point(0, 58);
@@ -299,7 +291,6 @@ namespace Demo.Controls
             // 
             // progress15
             // 
-            progress15.ContainerControl = this;
             progress15.Dock = DockStyle.Top;
             progress15.Location = new Point(0, 334);
             progress15.Name = "progress15";
@@ -314,7 +305,6 @@ namespace Demo.Controls
             // 
             // progress16
             // 
-            progress16.ContainerControl = this;
             progress16.Dock = DockStyle.Top;
             progress16.Location = new Point(0, 304);
             progress16.Name = "progress16";
@@ -327,7 +317,6 @@ namespace Demo.Controls
             // 
             // progress17
             // 
-            progress17.ContainerControl = this;
             progress17.Dock = DockStyle.Top;
             progress17.Location = new Point(0, 274);
             progress17.Name = "progress17";
