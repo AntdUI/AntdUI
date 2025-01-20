@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Layout;
 
@@ -40,7 +41,7 @@ namespace AntdUI
         /// <summary>
         /// 跨度
         /// </summary>
-        [Description("跨度"), Category("外观"), DefaultValue("50% 50%;50% 50%")]
+        [Description("跨度"), Category("外观"), DefaultValue("50% 50%;50% 50%-50% 50%")]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public string Span
         {
@@ -103,7 +104,7 @@ namespace AntdUI
             /// <summary>
             /// 内容大小
             /// </summary>
-            public string Span { get; set; } = "50% 50%;50% 50%";
+            public string Span { get; set; } = "50% 50%;50% 50%-50% 50%";
 
             /// <summary>
             /// 间距
@@ -125,73 +126,138 @@ namespace AntdUI
                         }
                         if (controls.Count > 0)
                         {
+                            // 最终坐标数据（列宽，行高）每一条数据为一行控件的数据
+                            var data = new Dictionary<List<int>, int>();
+                            // 分割成row跟columns
+                            var temp = Span.Split('-', '\n');
+                            // 分割为rows数组
+                            var rows = temp[0].Split(';');
+                            /* 分割columns数组，注意，还是以行为主，这个数组的count应与rows数组count对应。
+                             * 即整行控件统一用一个行高。
+                             * 同时兼容之前没有设置行高的代码
+                             */
+                            var columns = temp.Length == 2 ? temp[1]?.Split(' ') : new string[0];
+
                             int data_count = 0;
-                            var rows = Span.Split(';', '\n');
-                            var data = new List<int[]>(rows.Length);
+
+                            // 已使用行高
+                            int use_height = 0;
+
                             foreach (var row in rows)
                             {
                                 if (!string.IsNullOrEmpty(row))
                                 {
-                                    var cels = row.Split(' ', ',');
-                                    var cels_tmp = new List<object>(cels.Length);
+                                    // 获得当前行的列数量（也就是控件数量）
+                                    var abs = row.Split(' ', ',');
+                                    // 定义当前行的控件x坐标(列宽)
+                                    var xObjTemp = new List<object>(abs.Length);
+                                    // 已使用列宽
                                     int use_width = 0;
-                                    foreach (string it in cels)
+
+                                    foreach (string xaxis in abs)
                                     {
-                                        var cel = it.Trim();
-                                        if (cel.EndsWith("%") && float.TryParse(cel.TrimEnd('%'), out var f)) cels_tmp.Add(f / 100F);
-                                        else if (int.TryParse(cel, out var i))
+                                        var x = xaxis.Trim();
+                                        if (x.EndsWith("%") && float.TryParse(x.TrimEnd('%'), out var xF))
+                                            xObjTemp.Add(xF / 100F);
+                                        else if (int.TryParse(x, out var xi))
                                         {
-                                            int uw = (int)Math.Round(i * Config.Dpi);
-                                            cels_tmp.Add(uw);
+                                            int uw = (int)Math.Round(xi * Config.Dpi);
+                                            xObjTemp.Add(uw);
                                             use_width += uw;
                                         }
-                                        else if (float.TryParse(cel, out float f2)) cels_tmp.Add(f2);
+                                        else if (float.TryParse(x, out float xF2))
+                                            xObjTemp.Add(xF2);
                                     }
+
                                     int read_width = rect.Width - use_width;
-                                    var cel_tmp = new List<int>(cels_tmp.Count);
-                                    foreach (var it in cels_tmp)
+                                    var x_temp = new List<int>(xObjTemp.Count);
+
+                                    foreach (var it in xObjTemp)
                                     {
-                                        if (it is float f) cel_tmp.Add((int)Math.Round(read_width * f));
-                                        else if (it is int i) cel_tmp.Add(i);
+                                        if (it is float f)
+                                            x_temp.Add((int)Math.Round(read_width * f));
+                                        else if (it is int i)
+                                            x_temp.Add(i);
                                     }
-                                    if (cel_tmp.Count > 0)
+
+                                    // 转换后实际行高
+                                    int height = 0;
+                                    if (columns != null && columns.Length > 0)
                                     {
-                                        data_count += cel_tmp.Count;
-                                        data.Add(cel_tmp.ToArray());
+                                        int length = columns.Length;
+                                        int index = Array.IndexOf(rows, row);
+                                        if (index < length)
+                                        {
+                                            // 获得当前行的行高
+                                            var yaxis = columns[index];
+                                            var y = yaxis.Trim();
+
+                                            // 剩余行高
+                                            int read_height = rect.Height - use_height;
+                                            if (y.EndsWith("%") && float.TryParse(y.TrimEnd('%'), out var yF))
+                                                height = (int)Math.Round(read_height * (yF / 100F));
+                                            else if (int.TryParse(y, out var i))
+                                            {
+                                                int uh = (int)Math.Round(i * Config.Dpi);
+                                                height = uh;
+                                                use_height += uh;
+                                            }
+                                            else if (float.TryParse(y, out float yF2))
+                                                height = (int)Math.Round(read_height * yF2);
+                                        }
+                                        else
+                                        {
+                                            height = -999;
+                                        }
                                     }
+                          
+                                    else
+                                    {
+                                        height = -999;
+                                    }
+
+                                    if (x_temp.Count > 0)
+                                    {
+                                        data_count += x_temp.Count;
+                                        data.Add(x_temp, height);
+                                    }                                    
                                 }
                             }
-                            if (data_count > 0)
+
+                            if (data.Count > 0)
                             {
                                 Rectangle[] rects;
-                                if (data_count == 1) rects = new Rectangle[1] { rect };
+                                if (data.Count == 1)
+                                    rects = new Rectangle[1] { rect };
                                 else
                                 {
                                     if (data.Count > 1)
                                     {
-                                        int height_one = rect.Height / data.Count;
                                         var tmp_rects = new List<Rectangle>();
                                         int hasx = 0, hasy = 0;
+                                        
                                         foreach (var item in data)
                                         {
-                                            foreach (var it in item)
+                                            int y = item.Value == -999 ? rect.Height / data.Count : item.Value;
+                                            foreach (var x in item.Key)
                                             {
-                                                tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, it, height_one));
-                                                hasx += it;
+                                                tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, y));
+                                                hasx += x;
                                             }
                                             hasx = 0;
-                                            hasy += height_one;
+                                            hasy += y;
                                         }
                                         rects = tmp_rects.ToArray();
                                     }
                                     else
                                     {
-                                        var tmp_rects = new List<Rectangle>(data[0].Length);
+                                        var xt = data.First().Key;
+                                        var tmp_rects = new List<Rectangle>(xt.Count);
                                         int hasx = 0, hasy = 0;
-                                        foreach (var it in data[0])
+                                        foreach (var x in xt)
                                         {
-                                            tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, it, rect.Height));
-                                            hasx += it;
+                                            tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, rect.Height));
+                                            hasx += x;
                                         }
                                         rects = tmp_rects.ToArray();
                                     }
