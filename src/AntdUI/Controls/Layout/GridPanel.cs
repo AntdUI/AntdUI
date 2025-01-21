@@ -214,39 +214,35 @@ namespace AntdUI
                             if (data.Count > 0)
                             {
                                 Rectangle[] rects;
-                                if (data.Count == 1) rects = new Rectangle[1] { rect };
-                                else
+                                if (data.Count > 1)
                                 {
-                                    if (data.Count > 1)
-                                    {
-                                        var tmp_rects = new List<Rectangle>();
-                                        int hasx = 0, hasy = 0;
+                                    var tmp_rects = new List<Rectangle>();
+                                    int hasx = 0, hasy = 0;
 
-                                        foreach (var item in data)
-                                        {
-                                            int y = item.Value == -999 ? rect.Height / data.Count : item.Value;
-                                            foreach (var x in item.Key)
-                                            {
-                                                tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, y));
-                                                hasx += x;
-                                            }
-                                            hasx = 0;
-                                            hasy += y;
-                                        }
-                                        rects = tmp_rects.ToArray();
-                                    }
-                                    else
+                                    foreach (var item in data)
                                     {
-                                        var xt = data.First().Key;
-                                        var tmp_rects = new List<Rectangle>(xt.Count);
-                                        int hasx = 0, hasy = 0;
-                                        foreach (var x in xt)
+                                        int y = item.Value == -999 ? rect.Height / data.Count : item.Value;
+                                        foreach (var x in item.Key)
                                         {
-                                            tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, rect.Height));
+                                            tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, y));
                                             hasx += x;
                                         }
-                                        rects = tmp_rects.ToArray();
+                                        hasx = 0;
+                                        hasy += y;
                                     }
+                                    rects = tmp_rects.ToArray();
+                                }
+                                else
+                                {
+                                    var xt = data.First().Key;
+                                    var tmp_rects = new List<Rectangle>(xt.Count);
+                                    int hasx = 0, hasy = 0;
+                                    foreach (var x in xt)
+                                    {
+                                        tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, rect.Height));
+                                        hasx += x;
+                                    }
+                                    rects = tmp_rects.ToArray();
                                 }
                                 HandLayout(controls, rects);
                             }
