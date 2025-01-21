@@ -153,6 +153,7 @@ namespace AntdUI
         Bitmap? tempContent;
         private void Form_SizeChanged(object? sender, EventArgs e)
         {
+            if (config.Form.WindowState == FormWindowState.Minimized) return;
             switch (config.Align)
             {
                 case TAlignMini.Top:
@@ -233,6 +234,16 @@ namespace AntdUI
 
         private void Form_LocationChanged(object? sender, EventArgs e)
         {
+            if (config.Form.WindowState == FormWindowState.Minimized)
+            {
+                SetLocation(-end_W * 2, -end_H * 2);
+                if (task_start == null)
+                {
+                    if (form != null) form.Location = new Point(-form.Width * 2, -form.Height * 2);
+                    Print();
+                }
+                return;
+            }
             switch (config.Align)
             {
                 case TAlignMini.Top:

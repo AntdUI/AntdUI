@@ -36,7 +36,12 @@ namespace AntdUI
         #region String
 
         void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null);
-        void String(string? text, Font font, Color brush, Rectangle rect, StringFormat? format = null);
+        void String(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null);
+        void String(string? text, Font font, Color color, int x, int y);
+        void String(string? text, Font font, Brush brush, int x, int y);
+        void String(string? text, Font font, Color color, Point point);
+        void String(string? text, Font font, Brush brush, Point point);
+        void String(string? text, Font font, Color color, float x, float y);
         void String(string? text, Font font, Brush brush, float x, float y);
 
         #endregion
@@ -49,7 +54,7 @@ namespace AntdUI
 
         void Image(Image image, int srcX, int srcY, int srcWidth, int srcHeight);
         void Image(Bitmap image, Rectangle rect);
-        void Icon(System.Drawing.Icon icon, Rectangle rect);
+        void Icon(Icon icon, Rectangle rect);
 
         void Image(Image image, Rectangle rect);
         void Image(Image image, RectangleF rect);

@@ -552,44 +552,22 @@ namespace AntdUI
             var g = e.Graphics.High();
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
-            Color scroll_color, color_fore, color_fore_active, fore_enabled, back_hover, back_active;
-            switch (theme)
+            Color scroll_color = Colour.TextBase.Get("Menu", theme), color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get("Menu", theme), back_hover, back_active;
+            if (Config.IsDark || theme == TAMode.Dark)
             {
-                case TAMode.Light:
-                    scroll_color = Color.Black;
-                    fore_enabled = Style.rgba(0, 0, 0, 0.25F);
-                    color_fore = fore ?? Color.Black;
-                    color_fore_active = ForeActive ?? "#1677FF".ToColor();
-                    back_hover = BackHover ?? Style.rgba(0, 0, 0, 0.06F);
-                    back_active = BackActive ?? "#E6F4FF".ToColor();
-                    break;
-                case TAMode.Dark:
-                    scroll_color = Color.White;
-                    fore_enabled = Style.rgba(255, 255, 255, 0.25F);
-                    color_fore = fore ?? Style.rgba(255, 255, 255, 0.85F);
-                    back_hover = color_fore_active = ForeActive ?? Color.White;
-                    back_active = BackActive ?? "#1668DC".ToColor();
-                    break;
-                default:
-                    scroll_color = Colour.TextBase.Get("Menu");
-                    fore_enabled = Colour.TextQuaternary.Get("Menu");
-                    if (Config.IsDark)
-                    {
-                        color_fore = fore ?? Colour.Text.Get("Menu");
-                        back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get("Menu");
-                        back_active = BackActive ?? Colour.Primary.Get("Menu");
-                    }
-                    else
-                    {
-                        color_fore = fore ?? Colour.TextBase.Get("Menu");
-                        color_fore_active = ForeActive ?? Colour.Primary.Get("Menu");
-                        back_hover = BackHover ?? Colour.FillSecondary.Get("Menu");
-                        back_active = BackActive ?? Colour.PrimaryBg.Get("Menu");
-                    }
-                    break;
+                color_fore = fore ?? Colour.Text.Get("Menu", theme);
+                back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get("Menu", theme);
+                back_active = BackActive ?? Colour.Primary.Get("Menu", theme);
+            }
+            else
+            {
+                color_fore = fore ?? Colour.TextBase.Get("Menu", theme);
+                color_fore_active = ForeActive ?? Colour.Primary.Get("Menu", theme);
+                back_hover = BackHover ?? Colour.FillSecondary.Get("Menu", theme);
+                back_active = BackActive ?? Colour.PrimaryBg.Get("Menu", theme);
             }
             float _radius = radius * Config.Dpi;
-            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu")))
+            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu", theme)))
             {
                 PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
@@ -699,7 +677,11 @@ namespace AntdUI
                 {
                     if (it.Select)
                     {
-                        if (it.CanExpand) PaintTextIconExpand(g, it, fore_active);
+                        if (it.CanExpand)
+                        {
+                            if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
+                            PaintTextIconExpand(g, it, fore_active);
+                        }
                         else
                         {
                             PaintBack(g, back_active, it.rect, radius);
@@ -721,7 +703,11 @@ namespace AntdUI
                 {
                     if (it.Select)
                     {
-                        if (it.CanExpand) PaintTextIconExpand(g, it, fore_active);
+                        if (it.CanExpand)
+                        {
+                            if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
+                            PaintTextIconExpand(g, it, fore_active);
+                        }
                         else
                         {
                             PaintBack(g, back_active, it.rect, radius);
@@ -742,6 +728,7 @@ namespace AntdUI
                 {
                     if (it.CanExpand)
                     {
+                        if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
                         using (var pen = new Pen(fore_active, 2F))
                         {
                             pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;

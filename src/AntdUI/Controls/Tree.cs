@@ -277,26 +277,26 @@ namespace AntdUI
         {
             if (NodeMouseMove == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseMove(this, new TreeHoverEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), hover));
+            NodeMouseMove(this, new TreeHoverEventArgs(item, item.Rect("Text", sx, sy), hover));
         }
 
         internal void OnSelectChanged(TreeItem item, MouseEventArgs args)
         {
             if (SelectChanged == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            SelectChanged(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
+            SelectChanged(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
         }
         internal void OnNodeMouseClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseClick == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
+            NodeMouseClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
         }
         internal void OnNodeMouseDoubleClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseDoubleClick == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
+            NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
         }
         internal void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
 
@@ -1569,6 +1569,48 @@ namespace AntdUI
         internal Rectangle txt_rect { get; set; }
         internal Rectangle subtxt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
+
+        public Rectangle Rect(string type = "", bool actual = true)
+        {
+            if (actual || PARENT == null) return Rect(type, 0, 0);
+            else return Rect(type, PARENT.ScrollBar.ValueX, PARENT.ScrollBar.ValueY);
+        }
+        public Rectangle Rect(string type = "", int sx = 0, int sy = 0)
+        {
+            if (sx > 0 || sy > 0)
+            {
+                switch (type)
+                {
+                    case "Text":
+                        return new Rectangle(txt_rect.X - sx, txt_rect.Y - sy, txt_rect.Width, txt_rect.Height);
+                    case "SubTitle":
+                        return new Rectangle(subtxt_rect.X - sx, subtxt_rect.Y - sy, subtxt_rect.Width, subtxt_rect.Height);
+                    case "Checked":
+                        return new Rectangle(check_rect.X - sx, check_rect.Y - sy, check_rect.Width, check_rect.Height);
+                    case "Icon":
+                        return new Rectangle(ico_rect.X - sx, ico_rect.Y - sy, ico_rect.Width, ico_rect.Height);
+                    case "Arrow":
+                        return new Rectangle(arr_rect.X - sx, arr_rect.Y - sy, arr_rect.Width, arr_rect.Height);
+                    default:
+                        return new Rectangle(rect.X - sx, rect.Y - sy, rect.Width, rect.Height);
+                }
+            }
+            switch (type)
+            {
+                case "Text":
+                    return txt_rect;
+                case "SubTitle":
+                    return subtxt_rect;
+                case "Checked":
+                    return check_rect;
+                case "Icon":
+                    return ico_rect;
+                case "Arrow":
+                    return arr_rect;
+                default:
+                    return rect;
+            }
+        }
 
         public override string? ToString() => Text;
     }

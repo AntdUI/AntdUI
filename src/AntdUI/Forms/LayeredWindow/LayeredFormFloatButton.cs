@@ -318,57 +318,11 @@ namespace AntdUI
                             else if (it.Icon != null) g.Image(it.Icon, it.rect_icon);
                             else g.String(it.Text, Font, fore, it.rect_read, stringCenter);
                         }
-                        PrintBadge(g, it);
+                        it.PaintBadge(Font, it.rect_read, g);
                     }
                 }
             }
             return original_bmp;
-        }
-
-        readonly StringFormat stringBadge = Helper.SF_NoWrap();
-
-        void PrintBadge(Canvas g, FloatButton.ConfigBtn it)
-        {
-            if (it.Badge != null)
-            {
-                var color = it.BadgeBack ?? Colour.Error.Get("Badge");
-
-                using (var brush_fore = new SolidBrush(Colour.ErrorColor.Get("Badge")))
-                {
-                    if (it.Badge == " ")
-                    {
-                        var rect_badge = new Rectangle(it.rect_read.Right - BadgeSize, it.rect_read.Y, BadgeSize, BadgeSize);
-                        g.FillEllipse(color, rect_badge);
-                        g.DrawEllipse(color, Config.Dpi, rect_badge);
-                    }
-                    else
-                    {
-                        using (var font = new Font(Font.FontFamily, it.BadgeSize))
-                        {
-                            var size = g.MeasureString(it.Badge, font);
-                            int size_badge = (int)(size.Height * 1.2F), size_badge2 = (int)(size_badge * .4F);
-                            if (size.Height > size.Width)
-                            {
-                                var rect_badge = new Rectangle(it.rect_read.Right + size_badge2 - size_badge, it.rect_read.Y - size_badge2, size_badge, size_badge);
-                                g.FillEllipse(color, rect_badge);
-                                g.DrawEllipse(color, Config.Dpi, rect_badge);
-                                g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
-                            }
-                            else
-                            {
-                                int w_badge = size.Width + (size_badge - size.Height);
-                                var rect_badge = new Rectangle(it.rect_read.Right + size_badge2 - w_badge, it.rect_read.Y - size_badge2, w_badge, size_badge);
-                                using (var path = rect_badge.RoundPath(rect_badge.Height))
-                                {
-                                    g.Fill(color, path);
-                                    g.Draw(color, Config.Dpi, path);
-                                }
-                                g.String(it.Badge, font, brush_fore, rect_badge, stringBadge);
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         /// <summary>

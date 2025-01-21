@@ -424,7 +424,32 @@ namespace AntdUI
             /// <summary>
             /// 徽标大小
             /// </summary>
-            public float BadgeSize { get; set; } = 9F;
+            public float BadgeSize { get; set; } = .6F;
+
+            bool badgeMode = false;
+            /// <summary>
+            /// 徽标模式（镂空）
+            /// </summary>
+            public bool BadgeMode
+            {
+                get => badgeMode;
+                set
+                {
+                    if (badgeMode == value) return;
+                    badgeMode = value;
+                    OnPropertyChanged("BadgeMode");
+                }
+            }
+
+            /// <summary>
+            /// 徽标偏移X
+            /// </summary>
+            public int BadgeOffsetX { get; set; }
+
+            /// <summary>
+            /// 徽标偏移Y
+            /// </summary>
+            public int BadgeOffsetY { get; set; }
 
             /// <summary>
             /// 徽标背景颜色

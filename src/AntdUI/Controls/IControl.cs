@@ -671,9 +671,24 @@ namespace AntdUI
         float BadgeSize { get; set; }
 
         /// <summary>
+        /// 徽标模式（镂空）
+        /// </summary>
+        bool BadgeMode { get; set; }
+
+        /// <summary>
         /// 徽标背景颜色
         /// </summary>
         Color? BadgeBack { get; set; }
+
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        int BadgeOffsetX { get; set; }
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        int BadgeOffsetY { get; set; }
     }
 
     public interface ShadowConfig

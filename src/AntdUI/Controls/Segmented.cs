@@ -690,6 +690,7 @@ namespace AntdUI
                             g.String(it.Text, Font, brushDisable, it.RectText, s_f);
                         }
                     }
+                    it.PaintBadge(Font, it.Rect, g);
                 }
             }
             this.PaintBadge(g);
@@ -1204,7 +1205,7 @@ namespace AntdUI
         }
     }
 
-    public class SegmentedItem
+    public class SegmentedItem : BadgeConfig
     {
         /// <summary>
         /// ID
@@ -1459,6 +1460,90 @@ namespace AntdUI
         internal Rectangle RectText { get; set; }
 
         internal Segmented? PARENT { get; set; }
+
+        #region 徽标
+
+        string? badge;
+        /// <summary>
+        /// 徽标文本
+        /// </summary>
+        public string? Badge
+        {
+            get => badge;
+            set
+            {
+                if (badge == value) return;
+                badge = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        string? badgeSvg = null;
+        /// <summary>
+        /// 徽标SVG
+        /// </summary>
+        public string? BadgeSvg
+        {
+            get => badgeSvg;
+            set
+            {
+                if (badgeSvg == value) return;
+                badgeSvg = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        TAlignFrom badgeAlign = TAlignFrom.TR;
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
+        public TAlignFrom BadgeAlign
+        {
+            get => badgeAlign;
+            set
+            {
+                if (badgeAlign == value) return;
+                badgeAlign = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标大小
+        /// </summary>
+        public float BadgeSize { get; set; } = .6F;
+
+        /// <summary>
+        /// 徽标背景颜色
+        /// </summary>
+        public Color? BadgeBack { get; set; }
+
+        bool badgeMode = false;
+        /// <summary>
+        /// 徽标模式（镂空）
+        /// </summary>
+        public bool BadgeMode
+        {
+            get => badgeMode;
+            set
+            {
+                if (badgeMode == value) return;
+                badgeMode = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        public int BadgeOffsetX { get; set; }
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        public int BadgeOffsetY { get; set; }
+
+        #endregion
 
         void Invalidates()
         {
