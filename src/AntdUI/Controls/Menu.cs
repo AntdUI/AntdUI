@@ -407,8 +407,55 @@ namespace AntdUI
         {
             var rect = ChangeList();
             ScrollBar.SizeChange(rect);
+            var item = GetSelectItem(out var sub);
+            if (item != null)
+            {
+                foreach (var it in sub) it.Select = true;
+            }
             base.OnHandleCreated(e);
         }
+
+        #region 获取选中项目
+
+        public MenuItem? GetSelectItem()
+        {
+            var list = new List<MenuItem>(0);
+            return GetSelectItem(ref list, items);
+        }
+
+        public MenuItem? GetSelectItem(out List<MenuItem> list)
+        {
+            list = new List<MenuItem>(0);
+            return GetSelectItem(ref list, items);
+        }
+
+        MenuItem? GetSelectItem(ref List<MenuItem> list, MenuItemCollection? items)
+        {
+            if (items == null || items.Count == 0) return null;
+            foreach (var it in items)
+            {
+                var list_ = new List<MenuItem>(list.Count + 1);
+                list_.AddRange(list);
+                list_.Add(it);
+                var select = GetSelectItem(ref list_, it.Sub);
+                if (select == null)
+                {
+                    if (it.Select)
+                    {
+                        list = list_;
+                        return it;
+                    }
+                }
+                else
+                {
+                    list = list_;
+                    return select;
+                }
+            }
+            return null;
+        }
+
+        #endregion
 
         protected override void OnFontChanged(EventArgs e)
         {
@@ -1092,6 +1139,19 @@ namespace AntdUI
             if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) ILeave(sub, ref count);
         }
 
+        /// <summary>
+        /// 取消全部选择
+        /// </summary>
+        public void USelect()
+        {
+            if (items == null || items.Count == 0) return;
+            IUSelect(items);
+        }
+
+        /// <summary>
+        /// 取消全部选择
+        /// </summary>
+        [Obsolete("use USelect")]
         public void IUSelect()
         {
             if (items == null) return;

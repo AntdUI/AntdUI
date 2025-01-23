@@ -33,7 +33,7 @@ namespace AntdUI
     [Description("Table 表格")]
     [DefaultEvent("CellClick")]
     [ToolboxItem(true)]
-    public partial class Table : IControl
+    public partial class Table : IControl, IEventListener
     {
         #region 属性
 
@@ -963,6 +963,37 @@ namespace AntdUI
         }
 
         #endregion
+
+        #region 本地化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    if (ColumnsHasLocalization() && LoadLayout()) Invalidate();
+                    break;
+            }
+        }
+
+        bool ColumnsHasLocalization()
+        {
+            if (columns == null) return false;
+            foreach (var column in columns)
+            {
+                if (column.LocalizationTitle == null) continue;
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
     }
 
     #region 表头
@@ -1226,7 +1257,7 @@ namespace AntdUI
         public Column(string key, string title)
         {
             Key = key;
-            Title = title;
+            _title = title;
         }
         /// <summary>
         /// 表头
@@ -1237,7 +1268,7 @@ namespace AntdUI
         public Column(string key, string title, ColumnAlign align)
         {
             Key = key;
-            Title = title;
+            _title = title;
             Align = align;
         }
 
@@ -1246,10 +1277,41 @@ namespace AntdUI
         /// </summary>
         public string Key { get; set; }
 
+        string _title;
         /// <summary>
         /// 显示文字
         /// </summary>
-        public string Title { get; set; }
+        public string Title
+        {
+            get => Localization.GetLangIN(LocalizationTitle, _title, new string[] { "{id}", Key });
+            set
+            {
+                if (_title == value) return;
+                _title = value;
+                Invalidates();
+            }
+        }
+
+        [Description("显示文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationTitle { get; set; }
+
+        /// <summary>
+        /// 设置国际化显示文本
+        /// </summary>
+        public Column SetLocalizationTitle(string? value)
+        {
+            LocalizationTitle = value;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置国际化显示文本（后面插入id）
+        /// </summary>
+        public Column SetLocalizationTitleID(string value)
+        {
+            LocalizationTitle = value + "{id}";
+            return this;
+        }
 
         bool visible = true;
         /// <summary>
@@ -1267,9 +1329,27 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置是否显示
+        /// </summary>
+        public Column SetVisible(bool value = false)
+        {
+            Visible = value;
+            return this;
+        }
+
+        /// <summary>
         /// 对齐方式
         /// </summary>
         public ColumnAlign Align { get; set; } = ColumnAlign.Left;
+
+        /// <summary>
+        /// 设置对齐方式
+        /// </summary>
+        public Column SetAlign(ColumnAlign value = ColumnAlign.Center)
+        {
+            Align = value;
+            return this;
+        }
 
         /// <summary>
         /// 表头对齐方式
@@ -1277,9 +1357,39 @@ namespace AntdUI
         public ColumnAlign? ColAlign { get; set; }
 
         /// <summary>
+        /// 设置表头对齐方式
+        /// </summary>
+        public Column SetColAlign(ColumnAlign value = ColumnAlign.Center)
+        {
+            Align = value;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置对齐方式
+        /// </summary>
+        /// <param name="value">内容对齐方式</param>
+        /// <param name="col">表头对齐方式</param>
+        public Column SetAligns(ColumnAlign value = ColumnAlign.Center, ColumnAlign col = ColumnAlign.Center)
+        {
+            Align = value;
+            ColAlign = col;
+            return this;
+        }
+
+        /// <summary>
         /// 列宽度
         /// </summary>
         public string? Width { get; set; }
+
+        /// <summary>
+        /// 设置列宽度
+        /// </summary>
+        public Column SetWidth(string? value = null)
+        {
+            Width = value;
+            return this;
+        }
 
         /// <summary>
         /// 列最大宽度
@@ -1287,9 +1397,27 @@ namespace AntdUI
         public string? MaxWidth { get; set; }
 
         /// <summary>
+        /// 设置列最大宽度
+        /// </summary>
+        public Column SetMaxWidth(string? value = null)
+        {
+            MaxWidth = value;
+            return this;
+        }
+
+        /// <summary>
         /// 超过宽度将自动省略
         /// </summary>
         public bool Ellipsis { get; set; }
+
+        /// <summary>
+        /// 设置超过宽度将自动省略
+        /// </summary>
+        public Column SetEllipsis(bool value = true)
+        {
+            Ellipsis = value;
+            return this;
+        }
 
         bool lineBreak = false;
         /// <summary>
@@ -1304,6 +1432,15 @@ namespace AntdUI
                 lineBreak = value;
                 Invalidates();
             }
+        }
+
+        /// <summary>
+        /// 设置自动换行
+        /// </summary>
+        public Column SetLineBreak(bool value = true)
+        {
+            LineBreak = value;
+            return this;
         }
 
         bool _fixed = false;
@@ -1321,6 +1458,15 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 设置列是否固定
+        /// </summary>
+        public Column SetFixed(bool value = true)
+        {
+            Fixed = value;
+            return this;
+        }
+
         bool sortorder = false;
         /// <summary>
         /// 启用排序
@@ -1334,6 +1480,15 @@ namespace AntdUI
                 sortorder = value;
                 Invalidate();
             }
+        }
+
+        /// <summary>
+        /// 设置启用排序
+        /// </summary>
+        public Column SetSortOrder(bool value = true)
+        {
+            SortOrder = value;
+            return this;
         }
 
         SortMode sortMode = SortMode.NONE;

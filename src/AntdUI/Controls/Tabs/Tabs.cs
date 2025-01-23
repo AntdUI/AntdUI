@@ -607,6 +607,7 @@ namespace AntdUI
                         if (item.Contains(x, y))
                         {
                             if (style.MouseClick(item, i, x, y)) return;
+                            TabClick?.Invoke(this, new TabsItemEventArgs(item, style, e));
                             SelectedIndex = i;
                         }
                         else Invalidate();
@@ -616,6 +617,12 @@ namespace AntdUI
                 }
             }
         }
+
+        /// <summary>
+        /// 点击标签时发生
+        /// </summary>
+        [Description("点击标签时发生"), Category("行为")]
+        public event TabsItemEventHandler? TabClick = null;
 
         int hover_i = -1;
         int Hover_i

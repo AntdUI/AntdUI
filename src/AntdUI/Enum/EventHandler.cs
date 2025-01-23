@@ -492,6 +492,20 @@ namespace AntdUI
 
     public delegate bool ClosingPageEventHandler(object sender, ClosingPageEventArgs e);
 
+    public class TabsItemEventArgs : VMEventArgs<TabPage>
+    {
+        public Tabs.IStyle Style { get; private set; }
+        public TabsItemEventArgs(TabPage item, Tabs.IStyle style, MouseEventArgs e) : base(item, e)
+        {
+            Style = style;
+        }
+    }
+
+    /// <summary>
+    /// 点击事件
+    /// </summary>
+    public delegate void TabsItemEventHandler(object sender, TabsItemEventArgs e);
+
     #endregion
 
     #region Tag

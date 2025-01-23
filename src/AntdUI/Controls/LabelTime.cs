@@ -48,6 +48,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 自动宽度
+        /// </summary>
+        [Description("自动宽度"), Category("外观"), DefaultValue(false)]
+        public bool AutoWidth { get; set; }
+
         #endregion
 
         public LabelTime()
@@ -72,10 +78,24 @@ namespace AntdUI
                 var rect_time = new Rectangle(rect.X, rect.Y, size.Width, rect.Height);
                 g.String(time[1], font, ForeColor, rect_time, s_f_l);
                 int h2 = rect_time.Height / 2, r = rect_time.Width + (int)(size.Height * .24F), w2 = rect.Width - r;
-                using (var font_sub = new Font(Font.FontFamily, font.Size * .36F, GraphicsUnit.Pixel))
+
+                if (AutoWidth)
                 {
-                    g.String(time[2], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y, w2, h2), s_f_r1);
-                    g.String(time[3], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y + h2, w2, h2), s_f_r2);
+                    using (var font_sub = new Font(Font.FontFamily, font.Size * .36F, GraphicsUnit.Pixel))
+                    {
+                        Size size1 = g.MeasureString(time[2], font_sub), size2 = g.MeasureString(time[3], font_sub);
+                        g.String(time[2], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y, w2, h2), s_f_r1);
+                        g.String(time[3], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y + h2, w2, h2), s_f_r2);
+                        Width = r + (size1.Width > size2.Width ? size1.Width : size2.Width);
+                    }
+                }
+                else
+                {
+                    using (var font_sub = new Font(Font.FontFamily, font.Size * .36F, GraphicsUnit.Pixel))
+                    {
+                        g.String(time[2], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y, w2, h2), s_f_r1);
+                        g.String(time[3], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y + h2, w2, h2), s_f_r2);
+                    }
                 }
             }
             this.PaintBadge(g);
@@ -100,6 +120,8 @@ namespace AntdUI
         string[] GTime()
         {
             DateTime now = DateTime.Now;
+            var lang = Thread.CurrentThread.CurrentUICulture;
+            string ddd = lang.Name.StartsWith("zh") ? now.ToString("dddd", lang) : now.ToString("ddd", lang);
             if (ShowTime)
             {
                 return new string[4]
@@ -107,7 +129,7 @@ namespace AntdUI
                     "24:59:59",
                     now.ToString("HH:mm:ss"),
                     now.ToString("MM-dd"),
-                    now.ToString("dddd", Thread.CurrentThread.CurrentUICulture)
+                    ddd
                 };
             }
             return new string[4]
@@ -115,7 +137,7 @@ namespace AntdUI
                 "24:59",
                 now.ToString("HH:mm"),
                 now.ToString("MM-dd"),
-                now.ToString("dddd", Thread.CurrentThread.CurrentUICulture)
+                ddd
             };
         }
     }
