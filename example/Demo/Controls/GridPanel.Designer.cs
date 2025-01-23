@@ -79,6 +79,7 @@ namespace Demo.Controls
             // label1
             // 
             label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            label1.LocalizationText = "GridPanel.Describe";
             label1.Location = new System.Drawing.Point(503, 3);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(494, 60);
@@ -88,6 +89,7 @@ namespace Demo.Controls
             // input1
             // 
             input1.Dock = System.Windows.Forms.DockStyle.Fill;
+            input1.LocalizationPrefixText = "GridPanel.Prefix";
             input1.Location = new System.Drawing.Point(3, 3);
             input1.Multiline = true;
             input1.Name = "input1";

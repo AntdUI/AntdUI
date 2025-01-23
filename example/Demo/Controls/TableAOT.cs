@@ -34,23 +34,24 @@ namespace Demo.Controls
             #region Table
 
             table1.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.ColumnCheck("check") { Fixed = true },
-                new AntdUI.Column("name", "姓名") { Fixed = true },
-                new AntdUI.ColumnCheck("checkTitle", "不全选标题") { ColAlign = AntdUI.ColumnAlign.Center },
-                new AntdUI.ColumnRadio("radio", "单选"),
-                new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center),
+                new AntdUI.ColumnCheck("check").SetFixed(),
+                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnSwitch("enable", "启用", AntdUI.ColumnAlign.Center)
                 {
+                    LocalizationTitle ="Table.Column.{id}",
                     Call = (value, record, i_row, i_col) => {
                         System.Threading.Thread.Sleep(2000);
                         return value;
                     }
                 },
-                new AntdUI.Column("age", "年龄", AntdUI.ColumnAlign.Center),
-                new AntdUI.Column("address", "住址"),
+                new AntdUI.Column("age", "年龄", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("tag", "Tag"),
-                new AntdUI.Column("imgs", "图片"),
-                new AntdUI.Column("btns", "操作") { Fixed = true, Width = "auto" },
+                new AntdUI.Column("imgs", "图片").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
             };
 
             table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);

@@ -192,6 +192,16 @@ namespace Demo
                 case "Divider.Description":
                     return "A divider line separates different content.";
 
+                //GridPanel ----------------------------
+                case "GridPanel.Text":
+                    return "GridPanel";
+                case "GridPanel.Description":
+                    return "Grid layout container with precise division of areas.";
+                case "GridPanel.Prefix":
+                    return "Span Attribute";
+                case "GridPanel.Describe":
+                    return "-The column width attribute is before, and the row height attribute is after; grouping. Each row represents the number of row height attributes corresponding to the number of rows, with spaces separating each number";
+
                 //Drawer ----------------------------
                 case "Drawer.Text":
                     return "Drawer";
@@ -466,6 +476,26 @@ namespace Demo
                     return "EnableHeaderResizing";
                 case "Table.checkVisibleHeader":
                     return "VisibleHeader";
+                case "Table.checkAddressLineBreak":
+                    return "AddressLineBreak";
+                case "Table.Column.name":
+                    return "Name";
+                case "Table.Column.checkTitle":
+                    return "No Title";
+                case "Table.Column.radio":
+                    return "Radio";
+                case "Table.Column.online":
+                    return "Online";
+                case "Table.Column.enable":
+                    return "Enable";
+                case "Table.Column.age":
+                    return "Age";
+                case "Table.Column.address":
+                    return "Address";
+                case "Table.Column.imgs":
+                    return "Imgs";
+                case "Table.Column.btns":
+                    return "Action";
 
                 //Tabs ----------------------------
                 case "Tabs.Text":
