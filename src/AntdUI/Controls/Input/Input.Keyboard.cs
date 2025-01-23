@@ -257,6 +257,7 @@ namespace AntdUI
 
         void ProcessLeftKey(bool shift)
         {
+            tmpUp = 0;
             if (shift)
             {
                 int old = selectionStartTemp;
@@ -289,6 +290,7 @@ namespace AntdUI
 
         void ProcessRightKey(bool shift)
         {
+            tmpUp = 0;
             if (CaretInfo.FirstRet)
             {
                 CaretInfo.FirstRet = false;
@@ -328,6 +330,7 @@ namespace AntdUI
             }
         }
 
+        int tmpUp = 0;
         void ProcessUpKey(bool shift)
         {
             if (shift)
@@ -367,11 +370,22 @@ namespace AntdUI
                     var it = cache_font[end];
                     var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out bool two);
                     CaretInfo.FirstRet = two;
-                    if (nearest == null || nearest.i == selectionStart) SetSelectionStart(selectionStart - 1);
+                    if (nearest == null) SetSelectionStart(selectionStart - 1);
                     else
                     {
-                        if (nearest.i == 0) CaretInfo.FirstRet = true;
-                        SetSelectionStart(nearest.i);
+                        if (nearest.i == 0)
+                        {
+                            if (tmpUp > 0)
+                            {
+                                CaretInfo.FirstRet = true;
+                                tmpUp = 0;
+                                SetCaretPostion(nearest.i);
+                            }
+                            else if (!CaretInfo.FirstRet) tmpUp++;
+                        }
+                        else tmpUp = 0;
+                        if (nearest.i == selectionStart) SetSelectionStart(selectionStart - 1);
+                        else SetSelectionStart(nearest.i);
                     }
                 }
             }
@@ -379,10 +393,12 @@ namespace AntdUI
 
         void ProcessDownKey(bool shift)
         {
+            tmpUp = 0;
             if (CaretInfo.FirstRet)
             {
                 CaretInfo.FirstRet = false;
                 CaretInfo.Place = true;
+                tmpUp++;
             }
             if (shift)
             {

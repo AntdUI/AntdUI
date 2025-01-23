@@ -111,10 +111,8 @@ namespace AntdUI
                     if (it.SizeType == SizeType.Absolute) it.Height = it.Height * dpi;
                 }
             }
-            else if (control is TabControl tab && tab.ItemSize.Width > 1 && tab.ItemSize.Height > 1)
-            {
-                tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
-            }
+            else if (control is TabControl tab && tab.ItemSize.Width > 1 && tab.ItemSize.Height > 1) tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
+            else if (control is SplitContainer splitContainer) splitContainer.SplitterWidth = (int)(splitContainer.SplitterWidth * dpi);
             else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
             DpiLSS(dpi, control);
         }

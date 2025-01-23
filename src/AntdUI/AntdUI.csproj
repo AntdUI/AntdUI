@@ -24,7 +24,7 @@
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageProjectUrl>https://gitee.com/andtui</PackageProjectUrl>
-		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<SignAssembly>False</SignAssembly>
 	</PropertyGroup>
