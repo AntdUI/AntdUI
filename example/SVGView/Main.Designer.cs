@@ -99,6 +99,7 @@ namespace SVGView
             // 
             // input1
             // 
+            input1.AutoScroll = true;
             input1.Dock = DockStyle.Left;
             input1.Location = new Point(0, 36);
             input1.Multiline = true;

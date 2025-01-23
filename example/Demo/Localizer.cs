@@ -202,6 +202,12 @@ namespace Demo
                 case "GridPanel.Describe":
                     return "-The column width attribute is before, and the row height attribute is after; grouping. Each row represents the number of row height attributes corresponding to the number of rows, with spaces separating each number";
 
+                //Splitter ----------------------------
+                case "Splitter.Text":
+                    return "Splitter";
+                case "Splitter.Description":
+                    return "Split panels to isolate";
+
                 //Drawer ----------------------------
                 case "Drawer.Text":
                     return "Drawer";

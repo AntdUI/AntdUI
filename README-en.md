@@ -45,11 +45,12 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Button**](doc/wiki/en/Control/Button.md) | ✅ | ✅ |
 ➡️| [**FloatButton**](doc/wiki/en/Control/FloatButton.md) | ✅ | ❎ |
 ||||
-⬇️| Layout `4` | Animation | Disable |
+⬇️| Layout `5` | Animation | Disable |
 ➡️| [**Divider**](doc/wiki/en/Control/Divider.md) | ❎ | ❎ |
 ➡️| [**StackPanel**](doc/wiki/en/Control/StackPanel.md) | ❎ | ❎ |
 ➡️| [**FlowPanel**](doc/wiki/en/Control/FlowPanel.md) | ❎ | ❎ |
 ➡️| [**GridPanel**](doc/wiki/en/Control/GridPanel.md) | ❎ | ❎ |
+➡️| [**Splitter**](doc/wiki/zh/Control/Splitter.md) | ❎ | ❎ |
 ||||
 ⬇️| Navigation `6` | Animation | Disable |
 ➡️| [**Breadcrumb**](doc/wiki/en/Control/Breadcrumb.md) | ✅ | ❎ |

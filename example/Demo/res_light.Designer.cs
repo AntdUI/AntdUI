@@ -367,6 +367,15 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 160 112&quot;&gt;&lt;rect width=&quot;160&quot; height=&quot;112&quot; rx=&quot;4&quot; fill=&quot;#1668DC&quot; fill-opacity=&quot;0.1&quot;/&gt;&lt;path d=&quot;M10 12C10 10.8954 10.8954 10 12 10H56V102H12C10.8954 102 10 101.105 10 100V12Z&quot; fill=&quot;#ffffff&quot;/&gt;&lt;rect x=&quot;57&quot; y=&quot;10&quot; width=&quot;46&quot; height=&quot;92&quot; fill=&quot;#ffffff&quot;/&gt;&lt;path d=&quot;M104 10H148C149.105 10 150 10.8954 150 12V100C150 101.105 149.105 102 148 102H104V10Z&quot; fill=&quot;#ffffff&quot;/&gt;&lt;path d=&quot;M55.625 49H57.375V63H55.625V49ZM52.125 53.375L49.5 56L52.125 58.625V56.875H54.75V55.125H52.125V53.375ZM63.5 56L60.875 53.375V55 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Splitter {
+            get {
+                return ResourceManager.GetString("Splitter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 108 116&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版&quot; transform=&quot;translate(-566.000000, -1360.000000)&quot;&gt;&lt;g id=&quot;小-垂直-带描述&quot; transform=&quot;translate(566.000000, 1361.000000)&quot;&gt;&lt;g id=&quot;导航/Steps步骤条/Light/小-垂直-带描述-完成项&quot; transform=&quot;translate(0.000000, -0.600000)&quot;&gt;&lt;text id=&quot;Finished&quot; font-family=&quot;PingFangSC-Regular, PingFang SC&quot; font-size=&quot;9.6&quot; font-weight=&quot;normal&quot; line-spacing=&quot;14.4&quot; fill=&quot;#000000&quot; fill-opacity [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Steps {

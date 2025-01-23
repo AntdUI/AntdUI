@@ -46,11 +46,12 @@
 ➡️| [**Button** 按钮](doc/wiki/zh/Control/Button.md) | ✅ | ✅ |
 ➡️| [**FloatButton** 悬浮按钮](doc/wiki/zh/Control/FloatButton.md) | ✅ | ❎ |
 ||||
-⬇️| 布局 `4` | 动画 | 禁用 |
+⬇️| 布局 `5` | 动画 | 禁用 |
 ➡️| [**Divider** 分割线](doc/wiki/zh/Control/Divider.md) | ❎ | ❎ |
 ➡️| [**StackPanel** 堆栈布局](doc/wiki/zh/Control/StackPanel.md) | ❎ | ❎ |
 ➡️| [**FlowPanel** 流动布局](doc/wiki/zh/Control/FlowPanel.md) | ❎ | ❎ |
 ➡️| [**GridPanel** 格栅布局](doc/wiki/zh/Control/GridPanel.md) | ❎ | ❎ |
+➡️| [**Splitter** 分隔面板](doc/wiki/zh/Control/Splitter.md) | ❎ | ❎ |
 ||||
 ⬇️| 导航 `6` | 动画 | 禁用 |
 ➡️| [**Breadcrumb** 面包屑](doc/wiki/zh/Control/Breadcrumb.md) | ✅ | ❎ |
