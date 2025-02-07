@@ -74,9 +74,10 @@ namespace AntdUI
 
                 if (ScrollYShow && autoscroll && ScrollHover)
                 {
-                    float y = (e.Y - ScrollSlider.Height / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
+                    float y = (e.Y - ScrollSliderFull / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
                     ScrollY = (int)(y * VrValue);
                     ScrollYDown = true;
+                    SetCursor(false);
                     return;
                 }
                 mDownMove = false;
@@ -114,7 +115,7 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (ScrollYDown)
             {
-                float y = (e.Y - ScrollSlider.Height / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
+                float y = (e.Y - ScrollSliderFull / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
                 ScrollY = (int)(y * VrValue);
                 return;
             }
@@ -130,7 +131,12 @@ namespace AntdUI
             }
             else
             {
-                if (ScrollYShow && autoscroll) ScrollHover = ScrollRect.Contains(e.Location);
+                bool setScroll = true;
+                if (ScrollYShow && autoscroll)
+                {
+                    ScrollHover = ScrollRect.Contains(e.Location);
+                    if (ScrollHover) setScroll = false;
+                }
                 if (is_clear)
                 {
                     var hover = rect_r.Contains(e.Location);
@@ -154,7 +160,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (rect_text.Contains(e.Location)) SetCursor(CursorType.IBeam);
+                    if (setScroll && rect_text.Contains(e.Location)) SetCursor(CursorType.IBeam);
                     else SetCursor(false);
                 }
             }

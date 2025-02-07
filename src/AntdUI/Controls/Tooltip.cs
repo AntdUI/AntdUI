@@ -221,6 +221,7 @@ namespace AntdUI
             Text = txt;
             if (component.Font != null) Font = component.Font;
             else if (Config.Font != null) Font = Config.Font;
+            else Font = control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
@@ -248,6 +249,7 @@ namespace AntdUI
             Text = txt;
             if (component.Font != null) Font = component.Font;
             else if (Config.Font != null) Font = Config.Font;
+            else Font = control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;

@@ -33,28 +33,16 @@ namespace AntdUI
 
         public ScrollBar(FlowPanel control, bool enabledY = true, bool enabledX = false)
         {
-            OnInvalidate = ChangeSize = () =>
-            {
-                control.IOnSizeChanged();
-            };
-            Invalidate = rect =>
-            {
-                OnInvalidate?.Invoke();
-            };
+            OnInvalidate = ChangeSize = () => control.IOnSizeChanged();
+            Invalidate = rect => OnInvalidate?.Invoke();
             EnabledX = enabledX;
             EnabledY = enabledY;
             Init();
         }
         public ScrollBar(StackPanel control)
         {
-            OnInvalidate = ChangeSize = () =>
-            {
-                control.IOnSizeChanged();
-            };
-            Invalidate = rect =>
-            {
-                OnInvalidate?.Invoke();
-            };
+            OnInvalidate = ChangeSize = () => control.IOnSizeChanged();
+            Invalidate = rect => OnInvalidate?.Invoke();
             if (control.Vertical) EnabledY = true;
             else EnabledX = true;
             Init();
@@ -72,10 +60,7 @@ namespace AntdUI
                 if (rect.HasValue) control.Invalidate(rect.Value);
                 else control.Invalidate();
             };
-            ChangeSize = () =>
-            {
-                control.IOnSizeChanged();
-            };
+            ChangeSize = () => control.IOnSizeChanged();
             EnabledX = enabledX;
             EnabledY = enabledY;
             Init();
@@ -374,10 +359,7 @@ namespace AntdUI
         #region 设置是否显示
 
         string show_oldx = "", show_oldy = "";
-        void SetShow(int x, int y)
-        {
-            SetShow(x, RectX.Width, y, RectY.Height);
-        }
+        void SetShow(int x, int y) => SetShow(x, RectX.Width, y, RectY.Height);
         void SetShow(int x, int x2, int y, int y2)
         {
             string show_x = x + "_" + x2, show_y = y + "_" + y2;
@@ -699,13 +681,13 @@ namespace AntdUI
             {
                 old = e;
                 var slider = RectSliderFullX();
-                if (!slider.Contains(e))
+                if (slider.Contains(e)) SliderX = slider.X;
+                else
                 {
                     float read = RectX.Width - (showY ? SIZE : 0), x = (e.X - slider.Width / 2F) / read;
                     ValueX = (int)Math.Round(x * maxX);
                     SliderX = RectSliderFullX().X;
                 }
-                else SliderX = slider.X;
                 SliderDownX = true;
                 Window.CanHandMessage = false;
                 return false;
@@ -721,13 +703,13 @@ namespace AntdUI
             {
                 old = e;
                 var slider = RectSliderFullY();
-                if (!slider.Contains(e))
+                if (slider.Contains(e)) SliderY = slider.Y;
+                else
                 {
                     float read = RectY.Height - (showX ? SIZE : 0), y = (e.Y - slider.Height / 2F) / read;
                     ValueY = (int)Math.Round(y * maxY);
                     SliderY = RectSliderFullY().Y;
                 }
-                else SliderY = slider.Y;
                 SliderDownY = true;
                 Window.CanHandMessage = false;
                 return false;
@@ -858,10 +840,7 @@ namespace AntdUI
             return false;
         }
 
-        public void Leave()
-        {
-            HoverX = HoverY = false;
-        }
+        public void Leave() => HoverX = HoverY = false;
 
         #endregion
 
