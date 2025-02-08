@@ -325,10 +325,7 @@ namespace AntdUI
             return rect_dir;
         }
 
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.PaddingRect(Margin, Padding, _padding);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Margin, Padding, _padding);
 
         #region 数据
 
@@ -707,6 +704,32 @@ namespace AntdUI
                 if (value == _scroll_y) return;
                 _scroll_y = value;
                 Invalidate();
+            }
+        }
+
+        bool TabFocusMove(TabPageRect oldTab, TabPageRect newTab, int value, int max)
+        {
+            switch (alignment)
+            {
+                case TabAlignment.Left:
+                case TabAlignment.Right:
+                    int sy = scroll_y;
+                    bool showy = scroll_show && newTab.Rect.Y > sy && newTab.Rect.Bottom < sy + ClientRectangle.Height;
+                    if (showy) return false;
+                    if (value == 0) scroll_y = 0;
+                    else if (value == max - 1) scroll_y = scroll_max;
+                    else scroll_y = newTab.Rect.Y;
+                    return true;
+                case TabAlignment.Top:
+                case TabAlignment.Bottom:
+                default:
+                    int sx = scroll_x;
+                    bool showx = scroll_show && newTab.Rect.X > sx && newTab.Rect.Right < sx + ClientRectangle.Width;
+                    if (showx) return false;
+                    if (value == 0) scroll_x = 0;
+                    else if (value == max - 1) scroll_x = scroll_max;
+                    else scroll_x = newTab.Rect.X;
+                    return true;
             }
         }
 

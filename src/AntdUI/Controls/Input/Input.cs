@@ -906,18 +906,12 @@ namespace AntdUI
         /// <summary>
         /// 清除所有文本
         /// </summary>
-        public void Clear()
-        {
-            Text = "";
-        }
+        public void Clear() => Text = "";
 
         /// <summary>
         /// 清除撤消缓冲区信息
         /// </summary>
-        public void ClearUndo()
-        {
-            history_Log.Clear();
-        }
+        public void ClearUndo() => history_Log.Clear();
 
         /// <summary>
         /// 复制
@@ -955,7 +949,7 @@ namespace AntdUI
             {
                 if (Verify(key, out var change)) chars.Add(change ?? key.ToString());
             }
-            if (chars.Count > 0) EnterText(string.Join("", chars), false);
+            if (chars.Count > 0) EnterText(string.Join("", chars));
         }
 
         /// <summary>
@@ -1037,7 +1031,7 @@ namespace AntdUI
 
         void EnterText(string text, bool ismax = true)
         {
-            if (ReadOnly || BanInput) return;
+            if (ReadOnly || BanInput || (ismax && _text.Length >= MaxLength)) return;
             AddHistoryRecord();
             int len = 0;
             GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
@@ -1076,6 +1070,11 @@ namespace AntdUI
                     int start = selectionStart - 1;
                     var texts = new List<string>(cache_font.Length);
                     foreach (var it in cache_font) texts.Add(it.text);
+                    if (!CaretInfo.Place && !CaretInfo.FirstRet && cache_font.Length - 1 != start && !cache_font[start].ret)
+                    {
+                        start++;
+                        CaretInfo.Place = true;
+                    }
                     texts.Insert(start + 1, text);
                     var tmp = string.Join("", texts);
                     if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
@@ -1514,8 +1513,15 @@ namespace AntdUI
 
         protected virtual bool Verify(char key, out string? change)
         {
-            change = null;
-            return true;
+            if (VerifyChar == null)
+            {
+                change = null;
+                return true;
+            }
+            var args = new InputVerifyCharEventArgs(key);
+            VerifyChar(this, args);
+            change = args.ReplaceText;
+            return args.Result;
         }
 
         internal class ICaret

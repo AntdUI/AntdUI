@@ -33,14 +33,14 @@ namespace AntdUI
             switch (ctype)
             {
                 case ControlType.Default:
-                    SetStyle(
+                    SetStyle(ControlStyles.ContainerControl |
                        ControlStyles.AllPaintingInWmPaint |
                        ControlStyles.OptimizedDoubleBuffer |
                        ControlStyles.ResizeRedraw |
                        ControlStyles.DoubleBuffer |
                        ControlStyles.SupportsTransparentBackColor |
                        ControlStyles.UserPaint, true);
-                    SetStyle(ControlStyles.ContainerControl | ControlStyles.Selectable, false);
+                    SetStyle(ControlStyles.Selectable, false);
                     break;
                 case ControlType.Select:
                     SetStyle(ControlStyles.ContainerControl | ControlStyles.Selectable |

@@ -231,6 +231,7 @@ namespace AntdUI
 
             "\r","\t","\n","\r\n"
         };
+
         #region 查找
 
         /// <summary>
@@ -418,6 +419,9 @@ namespace AntdUI
 
         [Description("后缀 点击时发生"), Category("行为")]
         public event MouseEventHandler? SuffixClick = null;
+
+        [Description("验证字符时发生"), Category("行为")]
+        public event InputVerifyCharEventHandler? VerifyChar = null;
 
         #endregion
     }

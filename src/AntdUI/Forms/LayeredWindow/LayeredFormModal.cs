@@ -349,6 +349,13 @@ namespace AntdUI
             config.Layered = this;
         }
 
+        public bool isLoad = false;
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            isLoad = true;
+        }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public override bool AutoHandDpi { get; set; }
 

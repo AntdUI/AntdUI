@@ -169,6 +169,36 @@ namespace AntdUI
 
     #region 更多
 
+    #region Input
+
+    public class InputVerifyCharEventArgs : EventArgs
+    {
+        public InputVerifyCharEventArgs(char c)
+        {
+            Char = c;
+        }
+
+        /// <summary>
+        /// 输入字符
+        /// </summary>
+        public char Char { get; private set; }
+
+        /// <summary>
+        /// 替换文本
+        /// </summary>
+        public string? ReplaceText { get; set; }
+
+        /// <summary>
+        /// 验证结果
+        /// </summary>
+        public bool Result { get; set; } = true;
+    }
+
+
+    public delegate void InputVerifyCharEventHandler(object sender, InputVerifyCharEventArgs e);
+
+    #endregion
+
     #region Menu
 
     public class MenuSelectEventArgs : VEventArgs<MenuItem>

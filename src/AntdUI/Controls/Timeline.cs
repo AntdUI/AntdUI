@@ -139,7 +139,7 @@ namespace AntdUI
                     if (it.Visible)
                     {
                         var size = g.MeasureString(it.Text, Font, max_w);
-
+                        int ytmp = y, htmp = size.Height;
                         it.ico_rect = new Rectangle(rect.X + gap_x, y + (text_size - ico_size) / 2, ico_size, ico_size);
                         it.txt_rect = new Rectangle(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
                         if (!string.IsNullOrEmpty(it.Description))
@@ -147,8 +147,9 @@ namespace AntdUI
                             var DescriptionSize = g.MeasureString(it.Description, font_Description, max_w);
                             it.description_rect = new Rectangle(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
                             y += gap * 2 + DescriptionSize.Height;
+                            htmp += DescriptionSize.Height + gap;
                         }
-                        it.rect = new Rectangle(it.ico_rect.X - gap, y - gap, it.txt_rect.Width + ico_size + gap_x_icon + gap2, size.Height + gap2);
+                        it.rect = new Rectangle(it.ico_rect.X - gap, ytmp - gap, it.txt_rect.Width + ico_size + gap_x_icon + gap2, htmp + gap2);
                         y += size.Height + gap_y;
 
                         if (i > 0)

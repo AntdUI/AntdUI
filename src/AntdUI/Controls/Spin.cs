@@ -190,24 +190,44 @@ namespace AntdUI
             var parent = control.FindPARENT();
             if (parent is LayeredFormModal model)
             {
-                model.Load += (a, b) =>
+                if (model.isLoad)
                 {
                     control.BeginInvoke(new Action(() =>
                     {
                         open_core(control, parent, config, action, end);
                     }));
-                };
+                }
+                else
+                {
+                    model.Load += (a, b) =>
+                    {
+                        control.BeginInvoke(new Action(() =>
+                        {
+                            open_core(control, parent, config, action, end);
+                        }));
+                    };
+                }
                 return;
             }
             else if (parent is LayeredFormDrawer drawer && drawer.LoadEnd)
             {
-                drawer.LoadOK = () =>
+                if (drawer.LoadEnd)
+                {
+                    drawer.LoadOK = () =>
+                    {
+                        control.BeginInvoke(new Action(() =>
+                        {
+                            open_core(control, parent, config, action, end);
+                        }));
+                    };
+                }
+                else
                 {
                     control.BeginInvoke(new Action(() =>
                     {
                         open_core(control, parent, config, action, end);
                     }));
-                };
+                }
                 return;
             }
             else if (control.InvokeRequired)

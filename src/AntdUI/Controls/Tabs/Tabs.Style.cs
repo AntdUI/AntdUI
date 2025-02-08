@@ -427,9 +427,11 @@ namespace AntdUI
                     return;
                 }
                 ThreadBar?.Dispose();
+                TabPageRect oldTab = rects[old], newTab = rects[value];
+                owner.TabFocusMove(oldTab, newTab, value, rects.Length);
                 Helper.GDI(g =>
                 {
-                    RectangleF OldValue = rects[old].Rect_Line, NewValue = rects[value].Rect_Line;
+                    RectangleF OldValue = oldTab.Rect_Line, NewValue = newTab.Rect_Line;
                     if (AnimationBarValue.Height == 0) AnimationBarValue = OldValue;
                     if (Config.Animation)
                     {
@@ -550,10 +552,7 @@ namespace AntdUI
             #endregion
 
             public void SelectedIndexChanged(int i, int old) => SetRect(old, i);
-            public void Dispose()
-            {
-                ThreadBar?.Dispose();
-            }
+            public void Dispose() => ThreadBar?.Dispose();
 
             public void MouseWheel(int delta)
             {
@@ -1260,7 +1259,10 @@ namespace AntdUI
 
             public void SelectedIndexChanged(int i, int old)
             {
-                owner?.Invalidate();
+                if (owner == null) return;
+                TabPageRect oldTab = rects[old], newTab = rects[i];
+                if (owner.TabFocusMove(oldTab, newTab, i, rects.Length)) return;
+                owner.Invalidate();
             }
 
             public void Dispose()
@@ -2089,14 +2091,17 @@ namespace AntdUI
 
             #endregion
 
-            public void SelectedIndexChanged(int i, int old) => owner?.Invalidate();
+            public void SelectedIndexChanged(int i, int old)
+            {
+                if (owner == null) return;
+                TabPageRect oldTab = rects[old], newTab = rects[i];
+                if (owner.TabFocusMove(oldTab, newTab, i, rects.Length)) return;
+                owner.Invalidate();
+            }
 
             public void Dispose()
             {
-                foreach (var item in rects)
-                {
-                    item.hover_close?.Dispose();
-                }
+                foreach (var item in rects) item.hover_close?.Dispose();
             }
 
             public bool MouseClick(TabPage page, int i, int x, int y)
