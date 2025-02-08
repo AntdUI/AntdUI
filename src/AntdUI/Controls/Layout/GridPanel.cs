@@ -138,13 +138,13 @@ namespace AntdUI
                              */
                             var columns = temp.Length == 2 ? temp[1]?.Split(' ') : new string[0];
 
-                            int data_count = 0;
-
                             // 已使用行高
                             int use_height = 0;
 
-                            foreach (var row in rows)
+                            for (int i = 0; i < rows.Length; i++)
                             {
+                                var row = rows[i];
+
                                 if (!string.IsNullOrEmpty(row))
                                 {
                                     // 获得当前行的列数量（也就是控件数量）
@@ -173,27 +173,25 @@ namespace AntdUI
                                     foreach (var it in xObjTemp)
                                     {
                                         if (it is float f) x_temp.Add((int)Math.Round(read_width * f));
-                                        else if (it is int i) x_temp.Add(i);
+                                        else if (it is int ix) x_temp.Add(ix);
                                     }
 
                                     // 转换后实际行高
                                     int height = 0;
                                     if (columns != null && columns.Length > 0)
                                     {
-                                        int length = columns.Length;
-                                        int index = Array.IndexOf(rows, row);
-                                        if (index < length)
+                                        if (i < columns.Length)
                                         {
                                             // 获得当前行的行高
-                                            var yaxis = columns[index];
+                                            var yaxis = columns[i];
                                             var y = yaxis.Trim();
 
                                             // 剩余行高
                                             int read_height = rect.Height - use_height;
                                             if (y.EndsWith("%") && float.TryParse(y.TrimEnd('%'), out var yF)) height = (int)Math.Round(read_height * (yF / 100F));
-                                            else if (int.TryParse(y, out var i))
+                                            else if (int.TryParse(y, out var iy))
                                             {
-                                                int uh = (int)Math.Round(i * Config.Dpi);
+                                                int uh = (int)Math.Round(iy * Config.Dpi);
                                                 height = uh;
                                                 use_height += uh;
                                             }
@@ -204,12 +202,74 @@ namespace AntdUI
                                     else height = -999;
 
                                     if (x_temp.Count > 0)
-                                    {
-                                        data_count += x_temp.Count;
                                         data.Add(x_temp, height);
-                                    }
                                 }
                             }
+
+                            //foreach (var row in rows)
+                            //{
+                            //    if (!string.IsNullOrEmpty(row))
+                            //    {
+                            //        // 获得当前行的列数量（也就是控件数量）
+                            //        var abs = row.Split(' ', ',');
+                            //        // 定义当前行的控件x坐标(列宽)
+                            //        var xObjTemp = new List<object>(abs.Length);
+                            //        // 已使用列宽
+                            //        int use_width = 0;
+
+                            //        foreach (string xaxis in abs)
+                            //        {
+                            //            var x = xaxis.Trim();
+                            //            if (x.EndsWith("%") && float.TryParse(x.TrimEnd('%'), out var xF)) xObjTemp.Add(xF / 100F);
+                            //            else if (int.TryParse(x, out var xi))
+                            //            {
+                            //                int uw = (int)Math.Round(xi * Config.Dpi);
+                            //                xObjTemp.Add(uw);
+                            //                use_width += uw;
+                            //            }
+                            //            else if (float.TryParse(x, out float xF2)) xObjTemp.Add(xF2);
+                            //        }
+
+                            //        int read_width = rect.Width - use_width;
+                            //        var x_temp = new List<int>(xObjTemp.Count);
+
+                            //        foreach (var it in xObjTemp)
+                            //        {
+                            //            if (it is float f) x_temp.Add((int)Math.Round(read_width * f));
+                            //            else if (it is int i) x_temp.Add(i);
+                            //        }
+
+                            //        // 转换后实际行高
+                            //        int height = 0;
+                            //        if (columns != null && columns.Length > 0)
+                            //        {
+                            //            int length = columns.Length;
+                            //            int index = Array.IndexOf(rows, row);
+                            //            if (index < length)
+                            //            {
+                            //                // 获得当前行的行高
+                            //                var yaxis = columns[index];
+                            //                var y = yaxis.Trim();
+
+                            //                // 剩余行高
+                            //                int read_height = rect.Height - use_height;
+                            //                if (y.EndsWith("%") && float.TryParse(y.TrimEnd('%'), out var yF)) height = (int)Math.Round(read_height * (yF / 100F));
+                            //                else if (int.TryParse(y, out var i))
+                            //                {
+                            //                    int uh = (int)Math.Round(i * Config.Dpi);
+                            //                    height = uh;
+                            //                    use_height += uh;
+                            //                }
+                            //                else if (float.TryParse(y, out float yF2)) height = (int)Math.Round(read_height * yF2);
+                            //            }
+                            //            else height = -999;
+                            //        }
+                            //        else height = -999;
+
+                            //        if (x_temp.Count > 0)
+                            //            data.Add(x_temp, height);
+                            //    }
+                            //}
 
                             if (data.Count > 0)
                             {
