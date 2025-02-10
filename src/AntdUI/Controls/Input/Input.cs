@@ -1031,62 +1031,72 @@ namespace AntdUI
 
         void EnterText(string text, bool ismax = true)
         {
-            if (ReadOnly || BanInput || (ismax && _text.Length >= MaxLength)) return;
-            AddHistoryRecord();
+            if (ReadOnly || BanInput) return;
+            int offset = 0;
+            if (cache_font == null)
+            {
+                if (ismax && text.Length > MaxLength)
+                {
+                    text = text.Substring(0, MaxLength);
+                    if (text.Length == 0) return;
+                }
+                AddHistoryRecord();
+                Text = text;
+            }
+            else
+            {
+                if (selectionLength > 0)
+                {
+                    int start = selectionStartTemp, end = selectionLength, end_temp = start + end;
+                    if (ismax && (cache_font.Length - end + text.Length) > MaxLength)
+                    {
+                        text = text.Substring(0, end);
+                        if (text.Length == 0) return;
+                    }
+                    AddHistoryRecord();
+                    var texts = new List<string>(end);
+                    foreach (var it in cache_font)
+                    {
+                        if (it.i < start || it.i >= end_temp) texts.Add(it.text);
+                    }
+                    texts.Insert(start, text);
+                    Text = string.Join("", texts);
+                    SelectionLength = 0;
+                    offset = start;
+                }
+                else
+                {
+                    int start = selectionStart - 1;
+                    if (ismax && (cache_font.Length + text.Length) > MaxLength)
+                    {
+                        text = text.Substring(0, MaxLength - cache_font.Length);
+                        if (text.Length == 0) return;
+                    }
+                    AddHistoryRecord();
+                    var texts = new List<string>(cache_font.Length);
+                    foreach (var it in cache_font) texts.Add(it.text);
+                    if (retnot && !CaretInfo.Place && !CaretInfo.FirstRet && cache_font.Length - 1 != start && !cache_font[start].ret)
+                    {
+                        start++;
+                        CaretInfo.Place = true;
+                    }
+                    texts.Insert(start + 1, text);
+                    Text = string.Join("", texts);
+                    if (CaretInfo.FirstRet)
+                    {
+                        CaretInfo.Place = true;
+                        CaretInfo.FirstRet = false;
+                    }
+                    offset = start + 1;
+                }
+            }
             int len = 0;
             GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
             {
                 len++;
                 return true;
             });
-            if (cache_font == null)
-            {
-                if (ismax && text.Length > MaxLength) text = text.Substring(0, MaxLength);
-                Text = text;
-                SetSelectionStart(len);
-            }
-            else
-            {
-                if (selectionLength > 0)
-                {
-                    int start = selectionStartTemp, end = selectionLength;
-                    AddHistoryRecord();
-                    int end_temp = start + end;
-                    var texts = new List<string>(end);
-                    foreach (var it in cache_font)
-                    {
-                        if (it.i < start || it.i >= end_temp)
-                            texts.Add(it.text);
-                    }
-                    texts.Insert(start, text);
-                    var tmp = string.Join("", texts);
-                    if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
-                    Text = tmp;
-                    SelectionLength = 0;
-                    SetSelectionStart(start + len);
-                }
-                else
-                {
-                    int start = selectionStart - 1;
-                    var texts = new List<string>(cache_font.Length);
-                    foreach (var it in cache_font) texts.Add(it.text);
-                    if (!CaretInfo.Place && !CaretInfo.FirstRet && cache_font.Length - 1 != start && !cache_font[start].ret)
-                    {
-                        start++;
-                        CaretInfo.Place = true;
-                    }
-                    texts.Insert(start + 1, text);
-                    var tmp = string.Join("", texts);
-                    if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
-                    Text = tmp;
-                    if (CaretInfo.FirstRet)
-                    {
-                        CaretInfo.Place = true;
-                        CaretInfo.FirstRet = false;
-                    }
-                    SetSelectionStart(start + 1 + len);
-                }
-            }
+            SetSelectionStart(offset + len);
         }
 
         string? GetSelectionText()

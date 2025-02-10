@@ -236,16 +236,21 @@ namespace AntdUI
                     g.String(PlaceholderText, Font, fore, rect_text, sf_placeholder);
                 }
             }
+            g.ResetClip();
             if (CaretInfo.Show && CaretInfo.Flag)
             {
+                if (multiline) g.SetClip(new Rectangle(0, rect_text.Y, w, rect_text.Height));
+                else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
+                else g.SetClip(new Rectangle(0, 0, w, Height));
+
                 g.TranslateTransform(-ScrollX, -ScrollY);
                 using (var brush = new SolidBrush(CaretColor ?? _fore))
                 {
                     g.Fill(brush, CaretInfo.Rect);
                 }
                 g.ResetTransform();
+                g.ResetClip();
             }
-            g.ResetClip();
         }
         void PaintTextSelected(Canvas g, CacheFont[] cache_font)
         {
