@@ -917,17 +917,11 @@ namespace AntdUI
                 {
                     using (var brush_fore = new SolidBrush(owner.ForeColor ?? Colour.Text.Get("Tabs")))
                     using (var brush_fill = new SolidBrush(owner.Fill ?? Colour.Primary.Get("Tabs")))
-                    using (var brush_active = new SolidBrush(owner.FillActive ?? Colour.PrimaryActive.Get("Tabs")))
-                    using (var brush_hover = new SolidBrush(owner.FillHover ?? Colour.PrimaryHover.Get("Tabs")))
-                    using (var brush_bg = new SolidBrush(Fill ?? Colour.FillQuaternary.Get("Tabs")))
-                    using (var brush_bg_hover = new SolidBrush(FillHover ?? Colour.FillQuaternary.Get("Tabs")))
-                    using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get("Tabs")))
                     {
                         var rect_t = owner.ClientRectangle;
-                        int radius = (int)(Radius * Config.Dpi), bor = (int)(bordersize * Config.Dpi), bor2 = bor * 6, bor22 = bor2 * 2;
-                        float borb2 = bor / 2F;
+                        int radius = (int)(Radius * Config.Dpi), bor = (int)(bordersize * Config.Dpi), bor2 = bor * 6, bor22 = bor2 * 2, borb2 = bor / 2;
                         TabPage? sel = null;
-                        int i = 0, select = owner.SelectedIndex;
+                        int select = owner.SelectedIndex;
                         switch (owner.Alignment)
                         {
                             case TabAlignment.Bottom:
@@ -939,54 +933,29 @@ namespace AntdUI
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_b);
-                                foreach (var page in items)
-                                {
-                                    if (page.Visible)
-                                    {
-                                        if (select == i) sel = page;
-                                        else
-                                        {
-                                            using (var path = Helper.RoundPath(page.Rect, radius, false, false, true, true))
-                                            {
-                                                g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
-                                                else PaintText(g, rects[i], owner, page, brush_fore);
-                                            }
-                                        }
-                                    }
-                                    i++;
-                                }
-                                g.ResetClip();
+                                sel = PaintTABS(owner, g, items, radius, brush_fore, bor, false, false, true, true);
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
                                     var rect_page = sel.Rect;
-                                    using (var path = Helper.RoundPath(rect_page, radius, false, false, true, true))
+                                    if (bor > 0)
                                     {
-                                        if (bor > 0)
+                                        float ly = rect_page.Y + borb2;
+                                        var rect_card = new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2);
+                                        var rect_line = new Rectangle(rect_page.X - bor, rect_page.Y + bor, rect_page.Width + bor2, rect_page.Height + bor);
+                                        g.Image(PaintTABS(owner, rect_t, rect_page, radius, rect_card, rect_line, rect_t.X, ly, rect_t.Right, ly, bor, false, false, true, true), rect_t);
+                                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                    }
+                                    else
+                                    {
+                                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                        using (var path = Helper.RoundPath(rect_page, radius, false, false, true, true))
+                                        using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get("Tabs")))
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? Colour.BorderColor.Get("Tabs"), bor))
-                                            {
-                                                float ly = rect_page.Y + borb2;
-                                                g.DrawLine(pen_bg, rect_t.X, ly, rect_t.Right, ly);
-                                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2), radius, false, false, true, true))
-                                                {
-                                                    g.Fill(brush_bg_active, path2);
-                                                }
-                                                g.SetClip(new Rectangle(rect_page.X - bor, rect_page.Y + bor, rect_page.Width + bor2, rect_page.Height + bor));
-                                                g.Draw(pen_bg, path);
-                                                g.ResetClip();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                             g.Fill(brush_bg_active, path);
                                         }
-                                        PaintText(g, rects[select], owner, sel, brush_fill);
                                     }
+                                    PaintText(g, rects[select], owner, sel, brush_fill);
                                 }
                                 break;
                             case TabAlignment.Left:
@@ -997,54 +966,29 @@ namespace AntdUI
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_l);
-                                foreach (var page in items)
-                                {
-                                    if (page.Visible)
-                                    {
-                                        if (owner.SelectedIndex == i) sel = page;
-                                        else
-                                        {
-                                            using (var path = Helper.RoundPath(page.Rect, radius, true, false, false, true))
-                                            {
-                                                g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
-                                                else PaintText(g, rects[i], owner, page, brush_fore);
-                                            }
-                                        }
-                                    }
-                                    i++;
-                                }
-                                g.ResetClip();
+                                sel = PaintTABS(owner, g, items, radius, brush_fore, bor, true, false, false, true);
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
                                     var rect_page = sel.Rect;
-                                    using (var path = Helper.RoundPath(rect_page, radius, true, false, false, true))
+                                    if (bor > 0)
                                     {
-                                        if (bor > 0)
+                                        float lx = rect_page.Right - borb2;
+                                        var rect_card = new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor);
+                                        var rect_line = new Rectangle(rect_page.X - borb2, rect_page.Y - bor, rect_page.Width, rect_page.Height + bor2);
+                                        g.Image(PaintTABS(owner, rect_t, rect_page, radius, rect_card, rect_line, lx, rect_t.Y, lx, rect_t.Bottom, bor, true, false, false, true), rect_t);
+                                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                    }
+                                    else
+                                    {
+                                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                        using (var path = Helper.RoundPath(rect_page, radius, true, false, false, true))
+                                        using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get("Tabs")))
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? Colour.BorderColor.Get("Tabs"), bor))
-                                            {
-                                                float lx = rect_page.Right - borb2;
-                                                g.DrawLine(pen_bg, lx, rect_t.Y, lx, rect_t.Bottom);
-                                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor), radius, true, false, false, true))
-                                                {
-                                                    g.Fill(brush_bg_active, path2);
-                                                }
-                                                g.SetClip(new RectangleF(rect_page.X - borb2, rect_page.Y - bor, rect_page.Width, rect_page.Height + bor2));
-                                                g.Draw(pen_bg, path);
-                                                g.ResetClip();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                             g.Fill(brush_bg_active, path);
                                         }
-                                        PaintText(g, rects[select], owner, sel, brush_fill);
                                     }
+                                    PaintText(g, rects[select], owner, sel, brush_fill);
                                 }
                                 break;
                             case TabAlignment.Right:
@@ -1056,54 +1000,29 @@ namespace AntdUI
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_r);
-                                foreach (var page in items)
-                                {
-                                    if (page.Visible)
-                                    {
-                                        if (owner.SelectedIndex == i) sel = page;
-                                        else
-                                        {
-                                            using (var path = Helper.RoundPath(page.Rect, radius, false, true, true, false))
-                                            {
-                                                g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
-                                                else PaintText(g, rects[i], owner, page, brush_fore);
-                                            }
-                                        }
-                                    }
-                                    i++;
-                                }
-                                g.ResetClip();
+                                sel = PaintTABS(owner, g, items, radius, brush_fore, bor, false, true, true, false);
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
                                     var rect_page = sel.Rect;
-                                    using (var path = Helper.RoundPath(rect_page, radius, false, true, true, false))
+                                    if (bor > 0)
                                     {
-                                        if (bor > 0)
+                                        float lx = rect_page.X + borb2;
+                                        var rect_card = new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor);
+                                        var rect_line = new Rectangle(rect_page.X + bor, rect_page.Y - bor, rect_page.Width + bor, rect_page.Height + bor2);
+                                        g.Image(PaintTABS(owner, rect_t, rect_page, radius, rect_card, rect_line, lx, rect_t.Y, lx, rect_t.Bottom, bor, false, true, true, false), rect_t);
+                                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                    }
+                                    else
+                                    {
+                                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                        using (var path = Helper.RoundPath(rect_page, radius, false, true, true, false))
+                                        using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get("Tabs")))
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? Colour.BorderColor.Get("Tabs"), bor))
-                                            {
-                                                float lx = rect_page.X + borb2;
-                                                g.DrawLine(pen_bg, lx, rect_t.Y, lx, rect_t.Bottom);
-                                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor), radius, false, true, true, false))
-                                                {
-                                                    g.Fill(brush_bg_active, path2);
-                                                }
-                                                g.SetClip(new Rectangle(rect_page.X + bor, rect_page.Y - bor, rect_page.Width + bor, rect_page.Height + bor2));
-                                                g.Draw(pen_bg, path);
-                                                g.ResetClip();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                             g.Fill(brush_bg_active, path);
                                         }
-                                        PaintText(g, rects[select], owner, sel, brush_fill);
                                     }
+                                    PaintText(g, rects[select], owner, sel, brush_fill);
                                 }
                                 break;
                             case TabAlignment.Top:
@@ -1115,61 +1034,89 @@ namespace AntdUI
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_t);
-                                foreach (var page in items)
-                                {
-                                    if (page.Visible)
-                                    {
-                                        if (owner.SelectedIndex == i) sel = page;
-                                        else
-                                        {
-                                            using (var path = Helper.RoundPath(page.Rect, radius, true, true, false, false))
-                                            {
-                                                g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
-                                                if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
-                                                else PaintText(g, rects[i], owner, page, brush_fore);
-                                            }
-                                        }
-                                    }
-                                    i++;
-                                }
-                                g.ResetClip();
+                                sel = PaintTABS(owner, g, items, radius, brush_fore, bor, true, true, false, false);
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
                                     var rect_page = sel.Rect;
-                                    using (var path = Helper.RoundPath(rect_page, radius, true, true, false, false))
+                                    if (bor > 0)
                                     {
-                                        if (bor > 0)
+                                        float ly = rect_page.Bottom - borb2;
+                                        var rect_card = new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2);
+                                        var rect_line = new Rectangle(rect_page.X - bor, rect_page.Y - bor, rect_page.Width + bor2, rect_page.Height);
+                                        g.Image(PaintTABS(owner, rect_t, rect_page, radius, rect_card, rect_line, rect_t.X, ly, rect_t.Right, ly, bor, true, true, false, false), rect_t);
+                                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                    }
+                                    else
+                                    {
+                                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                        using (var path = Helper.RoundPath(rect_page, radius, true, true, false, false))
+                                        using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get("Tabs")))
                                         {
-                                            using (var pen_bg = new Pen(BorderActive ?? Colour.BorderColor.Get("Tabs"), bor))
-                                            {
-                                                float ly = rect_page.Bottom - borb2;
-                                                g.DrawLine(pen_bg, rect_t.X, ly, rect_t.Right, ly);
-                                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                                                using (var path2 = Helper.RoundPath(new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2), radius, true, true, false, false))
-                                                {
-                                                    g.Fill(brush_bg_active, path2);
-                                                }
-                                                g.SetClip(new Rectangle(rect_page.X - bor, rect_page.Y - bor, rect_page.Width + bor2, rect_page.Height));
-                                                g.Draw(pen_bg, path);
-                                                g.ResetClip();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                             g.Fill(brush_bg_active, path);
                                         }
-                                        PaintText(g, rects[select], owner, sel, brush_fill);
                                     }
+                                    PaintText(g, rects[select], owner, sel, brush_fill);
                                 }
                                 break;
                         }
-
+                        g.ResetClip();
                         if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, radius, rect_t, rects[0].Rect, rects[rects.Length - 1].Rect, true);
                     }
                 }
+            }
+
+            TabPage? PaintTABS(Tabs owner, Canvas g, TabCollection items, int radius, SolidBrush brush_fore, int bor, bool TL, bool TR, bool BR, bool BL)
+            {
+                int i = 0;
+                TabPage? sel = null;
+                using (var brush_active = new SolidBrush(owner.FillActive ?? Colour.PrimaryActive.Get("Tabs")))
+                using (var brush_hover = new SolidBrush(owner.FillHover ?? Colour.PrimaryHover.Get("Tabs")))
+                using (var brush_bg = new SolidBrush(Fill ?? Colour.FillQuaternary.Get("Tabs")))
+                using (var brush_bg_hover = new SolidBrush(FillHover ?? Colour.FillQuaternary.Get("Tabs")))
+                {
+                    foreach (var page in items)
+                    {
+                        if (page.Visible)
+                        {
+                            if (owner.SelectedIndex == i) sel = page;
+                            else
+                            {
+                                using (var path = Helper.RoundPath(page.Rect, radius, TL, TR, BR, BL))
+                                {
+                                    g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
+                                    if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
+                                    if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
+                                    else PaintText(g, rects[i], owner, page, brush_fore);
+                                }
+                            }
+                        }
+                        i++;
+                    }
+                }
+                return sel;
+            }
+            Bitmap PaintTABS(Tabs owner, Rectangle rect_t, Rectangle rect_page, int radius, RectangleF rect_card, Rectangle rect_line, float x, float y, float x2, float y2, int bor, bool TL, bool TR, bool BR, bool BL)
+            {
+                var bmp = new Bitmap(rect_t.Width, rect_t.Height);
+                using (var graphics = Graphics.FromImage(bmp))
+                {
+                    var g = graphics.High();
+                    using (var path = Helper.RoundPath(rect_page, radius, TL, TR, BR, BL))
+                    using (var pen_bg = new Pen(BorderActive ?? Colour.BorderColor.Get("Tabs"), bor))
+                    using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get("Tabs")))
+                    {
+                        g.DrawLine(pen_bg, x, y, x2, y2);
+                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                        using (var path_card = Helper.RoundPath(rect_card, radius, TL, TR, BR, BL))
+                        {
+                            g.Fill(brush_bg_active, path_card);
+                        }
+                        g.SetClip(rect_line);
+                        g.Draw(pen_bg, path);
+                    }
+                }
+                return bmp;
             }
 
             public TabPageRect GetTabRect(int i) => rects[i];
