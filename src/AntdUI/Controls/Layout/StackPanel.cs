@@ -367,6 +367,50 @@ namespace AntdUI
 
         #endregion
 
+        #region 控件添加和移除
+
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
+            base.OnControlAdded(e);
+            e.Control!.GotFocus += Control_GotFocus;
+        }
+
+        protected override void OnControlRemoved(ControlEventArgs e)
+        {
+            base.OnControlRemoved(e);
+            e.Control!.GotFocus -= Control_GotFocus;
+        }
+
+        private void Control_GotFocus(object? sender, EventArgs e)
+        {
+            if (sender is Control control) ScrollControlIntoView(control);
+        }
+
+        #endregion
+
+        #region 滚动控件到视图
+
+        public void ScrollControlIntoView(Control activeControl)
+        {
+            if (ScrollBar == null) return;
+            if (ScrollBar.Show)
+            {
+                Rectangle clientRect = ClientRectangle, controlRect = activeControl.Bounds;
+                if (Vertical)
+                {
+                    if (controlRect.Top < clientRect.Top) ScrollBar.ValueY = Math.Max(0, ScrollBar.ValueY + controlRect.Top - clientRect.Top);
+                    else if (controlRect.Bottom > clientRect.Bottom) ScrollBar.ValueY = Math.Min(ScrollBar.MaxY, ScrollBar.ValueY + controlRect.Bottom - clientRect.Bottom);
+                }
+                else
+                {
+                    if (controlRect.Left < clientRect.Left) ScrollBar.ValueX = Math.Max(0, ScrollBar.ValueX + controlRect.Left - clientRect.Left);
+                    else if (controlRect.Right > clientRect.Right) ScrollBar.ValueX = Math.Min(ScrollBar.MaxX, ScrollBar.ValueX + controlRect.Right - clientRect.Right);
+                }
+            }
+        }
+
+        #endregion
+
         protected override void Dispose(bool disposing)
         {
             ScrollBar?.Dispose();

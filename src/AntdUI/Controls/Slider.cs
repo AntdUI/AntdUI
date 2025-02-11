@@ -770,6 +770,25 @@ namespace AntdUI
         }
 
         #endregion
+
+        #region 方法
+
+        /// <summary>
+        /// 设置最小最大值
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        public void SetMinMax(int min, int max)
+        {
+            if (min > max) return;
+            _minValue = min;
+            _maxValue = max;
+            if (_value < min) _value = min;
+            else if (_value > max) _value = max;
+            Invalidate();
+        }
+
+        #endregion
     }
 
     public class SliderMarkItemCollection : iCollection<SliderMarkItem>

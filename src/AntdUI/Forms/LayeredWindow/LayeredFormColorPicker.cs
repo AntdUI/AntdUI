@@ -35,11 +35,12 @@ namespace AntdUI
         Action<Color> action;
         TColorMode mode;
         PointF[]? rect_arrow;
-        bool AllowClear = false;
+        bool AllowClear = false, ShowClose = false;
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             control.Parent.SetTopMost(Handle);
             AllowClear = control.AllowClear;
+            ShowClose = control.ShowClose;
             Font = control.Font;
             mode = control.Mode;
             MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
@@ -92,9 +93,10 @@ namespace AntdUI
             }
             int y = 10;
 
-            if (AllowClear)
+            if (AllowClear || ShowClose)
             {
-                rect_btn = new Rectangle(10 + w - gap - btn_size, y + gap, btn_size, btn_size);
+                if (AllowClear) rect_btn = new Rectangle(10 + w - gap - btn_size, y + gap, btn_size, btn_size);
+                if (ShowClose) rect_close = new Rectangle(10 + gap, y + gap, btn_size, btn_size);
                 offy = btn_size + line_h + line_h / 2;
                 y += offy;
                 h += offy;
@@ -445,6 +447,7 @@ namespace AntdUI
                         Print();
                     }
                 }
+                else if (ShowClose && rect_close.Contains(e.Location)) IClose();
             }
             base.OnMouseDown(e);
         }
@@ -452,15 +455,26 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (RunAnimation) return;
+            int count = 0;
             if (AllowClear)
             {
                 var hover = rect_btn.Contains(e.X, e.Y);
                 if (hover != hover_btn)
                 {
                     hover_btn = hover;
-                    Print();
+                    count++;
                 }
             }
+            if (ShowClose)
+            {
+                var hover = rect_close.Contains(e.X, e.Y);
+                if (hover != hover_close)
+                {
+                    hover_close = hover;
+                    count++;
+                }
+            }
+            if (count > 0) Print();
             if (down_colors && bmp_colors_mouse != null)
             {
                 var value = GetColors(e.X, e.Y, bmp_colors_mouse);
@@ -529,8 +543,8 @@ namespace AntdUI
 
         #region 渲染
 
-        bool hover_btn = false;
-        Rectangle rect_btn;
+        bool hover_btn = false, hover_close = false;
+        Rectangle rect_btn, rect_close;
 
         public override Bitmap PrintBit()
         {
@@ -565,6 +579,15 @@ namespace AntdUI
                             g.ResetClip();
                             g.Draw(hover_btn ? Colour.BorderColor.Get("ColorPicker") : Colour.Split.Get("ColorPicker"), Config.Dpi, path);
                         }
+                    }
+
+                    if (ShowClose)
+                    {
+                        using (var path = rect_close.RoundPath(Radius2))
+                        {
+                            g.Draw(hover_close ? Colour.BorderColor.Get("ColorPicker") : Colour.Split.Get("ColorPicker"), Config.Dpi, path);
+                        }
+                        g.PaintIconClose(rect_close, Colour.TextTertiary.Get("ColorPicker"), .8F);
                     }
 
                     #region 调色板

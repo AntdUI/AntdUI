@@ -19,6 +19,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 
 namespace AntdUI.Chat
@@ -32,6 +33,45 @@ namespace AntdUI.Chat
     public class MsgList : IControl
     {
         #region 属性
+
+        Color? fore;
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? ForeColor
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) return;
+                fore = value;
+                Invalidate();
+                OnPropertyChanged("ForeColor");
+            }
+        }
+
+        /// <summary>
+        /// 悬停背景色
+        /// </summary>
+        [Description("悬停背景色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? BackHover { get; set; }
+
+        /// <summary>
+        /// 激活背景颜色
+        /// </summary>
+        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? BackActive { get; set; }
+
+        /// <summary>
+        /// 激活文字颜色
+        /// </summary>
+        [Description("激活文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ForeActive { get; set; }
 
         MsgItemCollection? items;
         /// <summary>
@@ -71,8 +111,8 @@ namespace AntdUI.Chat
             var g = e.Graphics.High();
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
-            using (var font_text = new Font(Font.FontFamily, Font.Size * 0.9F))
-            using (var font_time = new Font(Font.FontFamily, Font.Size * 0.82F))
+            using (var font_text = new Font(Font.FontFamily, Font.Size * .9F))
+            using (var font_time = new Font(Font.FontFamily, Font.Size * .82F))
             {
                 foreach (MsgItem it in items) PaintItem(g, it, rect, sy, font_text, font_time);
             }
@@ -92,40 +132,30 @@ namespace AntdUI.Chat
             {
                 if (it.Select)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(0, 153, 255)))
-                    {
-                        g.Fill(brush, it.rect);
-                    }
-                    using (var brush = new SolidBrush(Color.White))
+                    g.Fill(BackActive ?? Color.FromArgb(0, 153, 255), it.rect);
+                    using (var brush = new SolidBrush(ForeActive ?? Color.White))
                     {
                         try
                         {
                             g.String(it.Name, Font, brush, it.rect_name, SFL);
-                            g.String(it.Text, font_text, brush, it.rect_text, SFL);
-
-                            g.String(it.Time, font_time, brush, it.rect_time, SFR);
+                            g.String(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
+                            g.String(it.Time, it.TimeFont ?? font_time, brush, it.rect_time, SFR);
                         }
                         catch { }
                     }
-
                 }
                 else
                 {
-                    if (it.Hover)
-                    {
-                        using (var brush = new SolidBrush(Colour.FillTertiary.Get("MsgList")))
-                        {
-                            g.Fill(brush, it.rect);
-                        }
-                    }
-                    using (var brush = new SolidBrush(ForeColor))
+                    if (it.Hover) g.Fill(BackHover ?? Colour.FillTertiary.Get("MsgList"), it.rect);
+                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get("MsgList")))
                     {
                         try
                         {
                             g.String(it.Name, Font, brush, it.rect_name, SFL);
-                            g.String(it.Text, font_text, brush, it.rect_text, SFL);
-
-                            g.String(it.Time, font_time, brush, it.rect_time, SFR);
+                            if (it.TextColor.HasValue) g.String(it.Text, it.TextFont ?? font_text, it.TextColor.Value, it.rect_text, it.TextFormat ?? SFL);
+                            else g.String(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
+                            if (it.TimeColor.HasValue) g.String(it.Time, it.TimeFont ?? font_time, it.TimeColor.Value, it.rect_time, SFR);
+                            else g.String(it.Time, it.TimeFont ?? font_time, brush, it.rect_time, SFR);
                         }
                         catch { }
                     }
@@ -133,31 +163,33 @@ namespace AntdUI.Chat
                 if (it.Icon != null)
                 {
                     g.Image(it.rect_icon, it.Icon, TFit.Cover, 0, true);
-                    if (it.Count > 0)
+                    if (it.Badge != null)
                     {
-                        if (it.Count > 99)
-                        {
-                            var badgesize = g.MeasureString("99+", font_time);
-                            var rect_badge = new Rectangle(it.rect_icon.Right - badgesize.Width + badgesize.Width / 3, it.rect_icon.Y - badgesize.Height / 3, badgesize.Width, badgesize.Height);
-                            using (var path = rect_badge.RoundPath(6 * Config.Dpi))
-                            {
-                                g.Fill(Brushes.Red, path);
-                            }
-                            g.String("99+", font_time, Brushes.White, rect_badge, SFBage);
-                        }
-                        else if (it.Count > 1)
-                        {
-                            var badgesize = g.MeasureString(it.Count.ToString(), font_time);
-                            int badge_size = badgesize.Width > badgesize.Height ? badgesize.Width : badgesize.Height, xy = badge_size / 3;
-                            var rect_badge = new Rectangle(it.rect_icon.Right - badge_size + xy, it.rect_icon.Y - xy, badge_size, badge_size);
-                            g.FillEllipse(Brushes.Red, rect_badge);
-                            g.String(it.Count.ToString(), font_time, Brushes.White, rect_badge, SFBage);
-                        }
-                        else
+                        if (string.IsNullOrEmpty(it.Badge))
                         {
                             int badge_size = it.rect_time.Height / 2, xy = badge_size / 3;
                             var rect_badge = new Rectangle(it.rect_icon.Right - badge_size + xy, it.rect_icon.Y - xy, badge_size, badge_size);
-                            g.FillEllipse(Brushes.Red, rect_badge);
+                            g.FillEllipse(it.BadgeBack ?? Color.Red, rect_badge);
+                        }
+                        else
+                        {
+                            var badgesize = g.MeasureString(it.Badge, font_time);
+                            Rectangle rect_badge;
+                            if (badgesize.Width > badgesize.Height)
+                            {
+                                rect_badge = new Rectangle(it.rect_icon.Right - badgesize.Width + badgesize.Width / 3, it.rect_icon.Y - badgesize.Height / 3, badgesize.Width, badgesize.Height);
+                                using (var path = rect_badge.RoundPath(6 * Config.Dpi))
+                                {
+                                    g.Fill(it.BadgeBack ?? Color.Red, path);
+                                }
+                            }
+                            else
+                            {
+                                int badge_size = badgesize.Width > badgesize.Height ? badgesize.Width : badgesize.Height, xy = badge_size / 3;
+                                rect_badge = new Rectangle(it.rect_icon.Right - badge_size + xy, it.rect_icon.Y - xy, badge_size, badge_size);
+                                g.FillEllipse(it.BadgeBack ?? Color.Red, rect_badge);
+                            }
+                            g.String(it.Badge, font_time, it.BadgeFore ?? Color.White, rect_badge, SFBage);
                         }
                     }
                 }
@@ -295,15 +327,15 @@ namespace AntdUI.Chat
             {
                 var size = g.MeasureString(Config.NullText, Font).Height;
                 int item_height = (int)Math.Ceiling(size * 3.856),
-                    gap = (int)Math.Round(item_height * 0.212),
-                    spilt = (int)Math.Round(gap * 0.478),
-                    gap_name = (int)Math.Round(gap * 0.304),
-                    gap_desc = (int)Math.Round(gap * 0.217),
-                    name_height = (int)Math.Round(item_height * 0.185),
-                    desc_height = (int)Math.Round(item_height * 0.157),
+                    gap = (int)Math.Round(item_height * .212),
+                    spilt = (int)Math.Round(gap * .478),
+                    gap_name = (int)Math.Round(gap * .304),
+                    gap_desc = (int)Math.Round(gap * .217),
+                    name_height = (int)Math.Round(item_height * .185),
+                    desc_height = (int)Math.Round(item_height * .157),
                     image_size = item_height - gap * 2;
 
-                using (var font_time = new Font(Font.FontFamily, Font.Size * 0.82F))
+                using (var font_time = new Font(Font.FontFamily, Font.Size * .82F))
                 {
                     foreach (MsgItem it in items)
                     {
@@ -376,12 +408,12 @@ namespace AntdUI.Chat
             }
         }
 
-        string _name;
+        string? _name;
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("外观")]
-        public string Name
+        [Description("名称"), Category("外观"), DefaultValue(null)]
+        public string? Name
         {
             get => _name;
             set
@@ -391,6 +423,8 @@ namespace AntdUI.Chat
                 Invalidate();
             }
         }
+
+        #region 文本
 
         string? _text = null;
         /// <summary>
@@ -408,6 +442,58 @@ namespace AntdUI.Chat
             }
         }
 
+        StringFormat? _textFormat;
+        /// <summary>
+        /// 文本对齐方式
+        /// </summary>
+        [Description("文本对齐方式"), Category("外观"), DefaultValue(null)]
+        public StringFormat? TextFormat
+        {
+            get => _textFormat;
+            set
+            {
+                if (_textFormat == value) return;
+                _textFormat = value;
+                Invalidate();
+            }
+        }
+
+        Font? _textFont;
+        /// <summary>
+        /// 文本字体
+        /// </summary>
+        [Description("文本字体"), Category("外观"), DefaultValue(null)]
+        public Font? TextFont
+        {
+            get => _textFont;
+            set
+            {
+                if (_textFont == value) return;
+                _textFont = value;
+                Invalidates();
+            }
+        }
+
+        Color? _textColor;
+        /// <summary>
+        /// 消息文本颜色
+        /// </summary>
+        [Description("消息文本颜色"), Category("外观"), DefaultValue(null)]
+        public Color? TextColor
+        {
+            get => _textColor;
+            set
+            {
+                if (_textColor == value) return;
+                _textColor = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
+
+        #region 徽标
+
         int count = 0;
         /// <summary>
         /// 消息数量
@@ -418,11 +504,68 @@ namespace AntdUI.Chat
             get => count;
             set
             {
-                if (count == value) return;
                 count = value;
+                if (value > 0)
+                {
+                    if (value > 99) Badge = "99+";
+                    else if (value > 1) Badge = value.ToString();
+                    else Badge = "";
+                }
+                else Badge = null;
+            }
+        }
+
+        string? badge;
+        /// <summary>
+        /// 徽标
+        /// </summary>
+        [Description("徽标"), Category("外观"), DefaultValue(null)]
+        public string? Badge
+        {
+            get => badge;
+            set
+            {
+                if (badge == value) return;
+                badge = value;
                 Invalidates();
             }
         }
+
+        Color? badgeBack;
+        /// <summary>
+        /// 徽标背景色
+        /// </summary>
+        [Description("徽标背景色"), Category("外观"), DefaultValue(null)]
+        public Color? BadgeBack
+        {
+            get => badgeBack;
+            set
+            {
+                if (badgeBack == value) return;
+                badgeBack = value;
+                Invalidate();
+            }
+        }
+
+        Color? badgeFore;
+        /// <summary>
+        /// 徽标文本色
+        /// </summary>
+        [Description("徽标文本色"), Category("外观"), DefaultValue(null)]
+        public Color? BadgeFore
+        {
+            get => badgeFore;
+            set
+            {
+                if (badgeFore == value) return;
+                badgeFore = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
+
+        #region 时间
 
         string? time = null;
         /// <summary>
@@ -439,6 +582,40 @@ namespace AntdUI.Chat
                 Invalidates();
             }
         }
+
+        Color? _timeColor;
+        /// <summary>
+        /// 时间文本颜色
+        /// </summary>
+        [Description("时间文本颜色"), Category("外观"), DefaultValue(null)]
+        public Color? TimeColor
+        {
+            get => _timeColor;
+            set
+            {
+                if (_timeColor == value) return;
+                _timeColor = value;
+                Invalidate();
+            }
+        }
+
+        Font? _timeFont;
+        /// <summary>
+        /// 时间字体
+        /// </summary>
+        [Description("时间字体"), Category("外观"), DefaultValue(null)]
+        public Font? TimeFont
+        {
+            get => _timeFont;
+            set
+            {
+                if (_timeFont == value) return;
+                _timeFont = value;
+                Invalidates();
+            }
+        }
+
+        #endregion
 
         bool visible = true;
         /// <summary>

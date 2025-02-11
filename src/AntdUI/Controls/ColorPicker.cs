@@ -234,6 +234,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 显示关闭按钮
+        /// </summary>
+        [Description("显示关闭按钮"), Category("行为"), DefaultValue(false)]
+        public bool ShowClose { get; set; }
+
         bool hasvalue = false;
         /// <summary>
         /// 是否包含值
