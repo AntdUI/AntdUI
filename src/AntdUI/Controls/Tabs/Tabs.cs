@@ -1413,7 +1413,6 @@ namespace AntdUI
             };
             action_del = (item, index) =>
             {
-                it.Controls.Remove(item);
                 if (index == -1) it.SelectedIndex = 0;
                 else
                 {
@@ -1426,6 +1425,8 @@ namespace AntdUI
                     }
                     else if (old > index) it.SelectedIndex = old - 1;
                 }
+                // 针对 #IBLKEA 修正
+                it.Controls.Remove(item);
             };
             return this;
         }
