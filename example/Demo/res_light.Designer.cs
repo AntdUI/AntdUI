@@ -448,6 +448,15 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 175 104&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新_202311&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---白&quot; transform=&quot;translate(-896.000000, -3968.000000)&quot; fill-rule=&quot;nonzero&quot;&gt;&lt;g id=&quot;cc3fcbfa-bf5b-4c8c-8a3d-c3f8388c75e8&quot; transform=&quot;translate(897.000000, 3969.000000)&quot;&gt;&lt;path d=&quot;M27.3015827,0.481523055 C27.3793404,0.54817244 27.4518638,0.620695897 27.5185132,0.698453513 L30.0476259,3.64908497 C30.1294246,3.74451681 30.2137064,3.8372747 30.3 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Tour {
+            get {
+                return ResourceManager.GetString("Tour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 91 92&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版&quot; transform=&quot;translate(-1302.000000, -3974.000000)&quot;&gt;&lt;g id=&quot;Tree&quot; transform=&quot;translate(1302.000000, 3974.000000)&quot;&gt;&lt;g id=&quot;编组-15&quot;&gt;&lt;g id=&quot;编组-12&quot; transform=&quot;translate(0.000000, 4.556962)&quot;&gt;&lt;rect id=&quot;矩形&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;9.11392405&quot; height=&quot;6.07594937&quot;&gt;&lt;/rect&gt;&lt;path d=&quot;M7.36230459,4.76344426 L4.61669573,1.58717625 C4.53810644,1.49625892 4.38678025,1.496 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Tree {

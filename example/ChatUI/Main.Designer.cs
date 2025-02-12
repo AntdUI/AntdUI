@@ -101,7 +101,7 @@
             Margin = new Padding(2);
             Name = "Main";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Form1";
+            Text = "ChatUI";
             ResumeLayout(false);
         }
 

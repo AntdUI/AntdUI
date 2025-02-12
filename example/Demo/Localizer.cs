@@ -74,6 +74,13 @@ namespace Demo
                 case "ScrollBarHidden":
                     return "ScrollBar Hidden Style";
 
+                case "Previous":
+                    return "Previous";
+                case "Next":
+                    return "Next";
+                case "Finish":
+                    return "Finish";
+
                 //Alert ----------------------------
                 case "Alert.Text":
                     return "Alert";
@@ -548,6 +555,12 @@ namespace Demo
                     return "Placement";
                 case "Tooltip.label4":
                     return "Simplest usage";
+
+                //Tour ----------------------------
+                case "Tour.Text":
+                    return "Tour";
+                case "Tour.Description":
+                    return "A popup component for guiding users through a product.";
 
                 //Tree ----------------------------
                 case "Tree.Text":
