@@ -76,7 +76,7 @@
 ➡️| [**TimePicker** 时间选择框](doc/wiki/zh/Control/TimePicker.md) | ✅ | ✅ |
 ➡️| [**UploadDragger** 拖拽上传](doc/wiki/zh/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| 数据展示 `17` | 动画 | 禁用 |
+⬇️| 数据展示 `18` | 动画 | 禁用 |
 ➡️| [**Avatar** 头像](doc/wiki/zh/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge** 徽标数](doc/wiki/zh/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar** 日历](doc/wiki/zh/Control/Calendar.md) | ✅ | ❎ |
@@ -92,6 +92,7 @@
 ➡️| [**Timeline** 时间轴](doc/wiki/zh/Control/Timeline.md) | ❎ | ❎ |
 ➡️| [**Tooltip** 文字提示](doc/wiki/zh/Control/Tooltip.md) | ✅ | ❎ |
 ➡️| [**Tree** 树形控件](doc/wiki/zh/Control/Tree.md) | ✅ | ✅ |
+➡️| [**Tour** 漫游式引导](doc/wiki/zh/Control/Tour.md) | ✅ | ❎ |
 ➡️| [**Label** 文本](doc/wiki/zh/Control/Label.md) | ✅ | ❎ |
 ➡️| [**LabelTime** 时间文本](doc/wiki/zh/Control/LabelTime.md) | ✅ | ❎ |
 ||||
