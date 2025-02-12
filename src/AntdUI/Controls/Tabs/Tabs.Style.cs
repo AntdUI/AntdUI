@@ -1207,8 +1207,11 @@ namespace AntdUI
             public void SelectedIndexChanged(int i, int old)
             {
                 if (owner == null) return;
-                TabPageRect oldTab = rects[old], newTab = rects[i];
-                if (owner.TabFocusMove(oldTab, newTab, i, rects.Length)) return;
+                if (old > -1 && i > -1)
+                {
+                    TabPageRect oldTab = rects[old], newTab = rects[i];
+                    if (owner.TabFocusMove(oldTab, newTab, i, rects.Length)) return;
+                }
                 owner.Invalidate();
             }
 
@@ -2041,8 +2044,11 @@ namespace AntdUI
             public void SelectedIndexChanged(int i, int old)
             {
                 if (owner == null) return;
-                TabPageRect oldTab = rects[old], newTab = rects[i];
-                if (owner.TabFocusMove(oldTab, newTab, i, rects.Length)) return;
+                if (old > -1 && i > -1)
+                {
+                    TabPageRect oldTab = rects[old], newTab = rects[i];
+                    if (owner.TabFocusMove(oldTab, newTab, i, rects.Length)) return;
+                }
                 owner.Invalidate();
             }
 

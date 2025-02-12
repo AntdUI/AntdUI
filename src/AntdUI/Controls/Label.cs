@@ -730,7 +730,7 @@ namespace AntdUI
             return PSize;
         }
 
-        Size PSize
+        public Size PSize
         {
             get
             {

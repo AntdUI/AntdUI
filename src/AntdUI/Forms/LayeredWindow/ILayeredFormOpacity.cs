@@ -71,6 +71,7 @@ namespace AntdUI
         #endregion
 
         public virtual void LoadOK() { }
+        public virtual void ClosingAnimation() { }
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -82,6 +83,7 @@ namespace AntdUI
                 {
                     if (!run_end)
                     {
+                        ClosingAnimation();
                         run_end = true;
                         var t = Animation.TotalFrames(10, 80);
                         new ITask((i) =>

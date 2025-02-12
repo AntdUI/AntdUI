@@ -197,6 +197,11 @@ namespace AntdUI
             /// 自定义位置
             /// </summary>
             public Rectangle? CustomPoint { get; set; }
+
+            /// <summary>
+            /// 获取焦点
+            /// </summary>
+            public bool Focus { get; set; } = true;
         }
 
         /// <summary>
