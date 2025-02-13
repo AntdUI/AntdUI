@@ -73,6 +73,24 @@ namespace AntdUI.Chat
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
+        /// <summary>
+        /// 头像圆角
+        /// </summary>
+        [Description("头像圆角"), Category("外观"), DefaultValue(6)]
+        public int IconRadius { get; set; } = 6;
+
+        /// <summary>
+        /// 圆形头像
+        /// </summary>
+        [Description("圆形头像"), Category("外观"), DefaultValue(true)]
+        public bool IconRound { get; set; } = true;
+
+        /// <summary>
+        /// 圆形布局
+        /// </summary>
+        [Description("圆形布局"), Category("外观"), DefaultValue(TFit.Cover)]
+        public TFit IconFit { get; set; } = TFit.Cover;
+
         MsgItemCollection? items;
         /// <summary>
         /// 数据集合
@@ -109,12 +127,12 @@ namespace AntdUI.Chat
                 return;
             }
             var g = e.Graphics.High();
-            int sy = ScrollBar.Value;
+            int sy = ScrollBar.Value, radius = (int)Math.Ceiling(IconRadius * Config.Dpi);
             g.TranslateTransform(0, -sy);
             using (var font_text = new Font(Font.FontFamily, Font.Size * .9F))
             using (var font_time = new Font(Font.FontFamily, Font.Size * .82F))
             {
-                foreach (MsgItem it in items) PaintItem(g, it, rect, sy, font_text, font_time);
+                foreach (MsgItem it in items) PaintItem(g, it, rect, sy, font_text, font_time, radius);
             }
 
             g.ResetTransform();
@@ -125,7 +143,7 @@ namespace AntdUI.Chat
         StringFormat SFBage = Helper.SF();
         StringFormat SFL = Helper.SF_ALL(lr: StringAlignment.Near);
         StringFormat SFR = Helper.SF_ALL(lr: StringAlignment.Far);
-        void PaintItem(Canvas g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time)
+        void PaintItem(Canvas g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time, int radius)
         {
             it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
             if (it.show)
@@ -162,7 +180,7 @@ namespace AntdUI.Chat
                 }
                 if (it.Icon != null)
                 {
-                    g.Image(it.rect_icon, it.Icon, TFit.Cover, 0, true);
+                    g.Image(it.rect_icon, it.Icon, IconFit, radius, IconRound);
                     if (it.Badge != null)
                     {
                         if (string.IsNullOrEmpty(it.Badge))
@@ -684,7 +702,7 @@ namespace AntdUI.Chat
             rect_icon = new Rectangle(_rect.X + gap, _rect.Y + gap, image_size, image_size);
 
             rect_name = new Rectangle(rect_icon.Right + spilt, rect_icon.Y + gap_name - gap_desc, text_width - time_width, name_height + gap_desc * 2);
-            rect_time = new Rectangle(rect_name.Right, rect_name.Y, time_width, rect_name.Height);
+            rect_time = new Rectangle(rect_name.Right - spilt, rect_name.Y, time_width, rect_name.Height);
 
             rect_text = new Rectangle(rect_name.X, rect_icon.Bottom - gap_desc - desc_height - gap_desc, text_width, desc_height + gap_desc * 2);
 

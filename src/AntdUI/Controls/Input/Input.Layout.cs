@@ -253,15 +253,15 @@ namespace AntdUI
         internal Rectangle rect_d_ico, rect_d_l, rect_d_r;
 
         internal Rectangle? RECTDIV = null;
-        bool retnot = false;
+        List<int> retnot = new List<int>(0);
         internal void CalculateRect()
         {
-            retnot = false;
             var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight) : ReadRectangle;
             int sps = (int)(CaretInfo.Height * .4F), sps2 = sps * 2;
             RectAuto(rect, sps, sps2);
             if (cache_font == null)
             {
+                if (retnot.Count > 0) retnot.Clear();
                 if (ModeRange)
                 {
                     int center = rect_text.Width / 2;
@@ -277,6 +277,7 @@ namespace AntdUI
             {
                 if (multiline)
                 {
+                    var _retnot = new List<int>();
                     var rectText = rect_text;
                     if (ScrollYShow) rectText.Width -= 16;
                     int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
@@ -291,7 +292,7 @@ namespace AntdUI
                             it.line = line;
                             line++;
                             if (usex == 0 && usey == 0) it.rect2 = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
-                            if (retindex > 0) retnot = true;
+                            if (retindex > 0) _retnot.Add(rectText.Y + usey - lineHeight);
                             usey += lineHeight;
                             usex = 0;
                             it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
@@ -317,8 +318,13 @@ namespace AntdUI
                         usex += it.width;
                     }
                     HandTextAlignCore(cache_font);
+                    retnot = _retnot;
                 }
-                else HandTextAlign(cache_font);
+                else
+                {
+                    if (retnot.Count > 0) retnot.Clear();
+                    HandTextAlign(cache_font);
+                }
                 var last = cache_font[cache_font.Length - 1];
                 ScrollXMax = last.rect.Right - rect_text.Right;
                 switch (textalign)

@@ -530,7 +530,11 @@ namespace AntdUI
         {
             if (DefaultExpand && dataOne)
             {
-                if (!rows_Expand.Contains(row.record)) rows_Expand.Add(row.record);
+                if (!rows_Expand.Contains(row.record))
+                {
+                    rows_Expand.Add(row.record);
+                    ExpandChanged?.Invoke(this, new TableExpandEventArgs(row.record, true));
+                }
             }
             row_new.ShowExpand = show;
             row_new.ExpandDepth = depth;

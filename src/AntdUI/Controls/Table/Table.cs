@@ -974,6 +974,81 @@ namespace AntdUI
             return dt;
         }
 
+        #region 树
+
+        /// <summary>
+        /// 展开全部
+        /// </summary>
+        /// <param name="value">展开或折叠</param>
+        public void ExpandAll(bool value = true)
+        {
+            if (ExpandChanged == null)
+            {
+                if (value)
+                {
+                    if (rows == null) return;
+                    rows_Expand = new List<object>(rows.Length - 1);
+                    for (int i = 1; i < rows.Length; i++)
+                    {
+                        var record = rows[i].RECORD;
+                        if (record == null) continue;
+                        rows_Expand.Add(record);
+                    }
+                }
+                else rows_Expand.Clear();
+            }
+            else
+            {
+                if (value)
+                {
+                    if (rows == null) return;
+                    var temp = rows_Expand;
+                    rows_Expand = new List<object>(rows.Length - 1);
+                    rows_Expand.AddRange(temp);
+                    for (int i = 1; i < rows.Length; i++)
+                    {
+                        var record = rows[i].RECORD;
+                        if (record == null || rows_Expand.Contains(record)) continue;
+                        rows_Expand.Add(record);
+                        ExpandChanged(this, new TableExpandEventArgs(record, false));
+                    }
+                }
+                else
+                {
+                    foreach (var it in rows_Expand) ExpandChanged(this, new TableExpandEventArgs(it, false));
+                    rows_Expand.Clear();
+                }
+            }
+            if (LoadLayout()) Invalidate();
+        }
+
+        /// <summary>
+        /// 展开或折叠
+        /// </summary>
+        /// <param name="record">元数据</param>
+        /// <param name="value">展开或折叠</param>
+        public void Expand(object record, bool value = true)
+        {
+            if (value)
+            {
+                if (rows_Expand.Contains(record)) return;
+                rows_Expand.Add(record);
+                ExpandChanged?.Invoke(this, new TableExpandEventArgs(record, true));
+            }
+            else
+            {
+                if (rows_Expand.Contains(record))
+                {
+                    rows_Expand.Remove(record);
+                    ExpandChanged?.Invoke(this, new TableExpandEventArgs(record, false));
+                }
+                else return;
+            }
+            if (LoadLayout()) Invalidate();
+        }
+
+        #endregion
+
         #endregion
 
         #region 本地化
@@ -1534,14 +1609,41 @@ namespace AntdUI
         public string? KeyTree { get; set; }
 
         /// <summary>
+        /// 设置树形列
+        /// </summary>
+        public Column SetTree(string? key)
+        {
+            KeyTree = key;
+            return this;
+        }
+
+        /// <summary>
         /// 列样式
         /// </summary>
         public Table.CellStyleInfo? Style { get; set; }
 
         /// <summary>
+        /// 设置列样式
+        /// </summary>
+        public Column SetStyle(Table.CellStyleInfo? style)
+        {
+            Style = style;
+            return this;
+        }
+
+        /// <summary>
         /// 标题列样式
         /// </summary>
         public Table.CellStyleInfo? ColStyle { get; set; }
+
+        /// <summary>
+        /// 设置标题列样式
+        /// </summary>
+        public Column SetColStyle(Table.CellStyleInfo? style)
+        {
+            ColStyle = style;
+            return this;
+        }
 
         #region 内部
 

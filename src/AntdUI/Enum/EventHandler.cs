@@ -453,16 +453,23 @@ namespace AntdUI
 
     public class TableSetRowStyleEventArgs : EventArgs
     {
-        public TableSetRowStyleEventArgs(object? record, int rowIndex)
+        public TableSetRowStyleEventArgs(object? record, int rowIndex, int index)
         {
             Record = record;
             RowIndex = rowIndex;
+            Index = index;
         }
 
         /// <summary>
         /// 原始行
         /// </summary>
         public object? Record { get; private set; }
+
+        /// <summary>
+        /// 序号
+        /// </summary>
+        public int Index { get; private set; }
+
         /// <summary>
         /// 行序号
         /// </summary>
@@ -486,6 +493,24 @@ namespace AntdUI
         /// 表头
         /// </summary>
         public Column Column { get; private set; }
+    }
+    public class TableExpandEventArgs : EventArgs
+    {
+        public TableExpandEventArgs(object? record, bool expand)
+        {
+            Record = record;
+            Expand = expand;
+        }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+
+        /// <summary>
+        /// 是否展开
+        /// </summary>
+        public bool Expand { get; private set; }
     }
 
     public class ITableEventArgs : EventArgs

@@ -107,6 +107,7 @@ namespace AntdUI
                         {
                             if (cell.ROW.Expand) rows_Expand.Remove(cell.ROW.RECORD);
                             else rows_Expand.Add(cell.ROW.RECORD);
+                            ExpandChanged?.Invoke(this, new TableExpandEventArgs(cell.ROW.RECORD, !cell.ROW.Expand));
                             LoadLayout();
                             Invalidate();
                             return;

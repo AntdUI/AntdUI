@@ -80,11 +80,16 @@ namespace AntdUI
                     }
                     if (fixedHeader)
                     {
+                        int showIndex = 0;
                         foreach (var it in rows)
                         {
                             int y = it.RECT.Y - sy, b = it.RECT.Bottom - sy;
                             it.SHOW = it.ShowExpand && !it.IsColumn && (rect_read.Contains(rect_read.X, y) || rect_read.Contains(rect_read.X, b) || (it.RECT.Height > rect_read.Height && rect_read.Y > y && rect_read.Bottom < b));
-                            if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
+                            if (it.SHOW)
+                            {
+                                shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                                showIndex++;
+                            }
                         }
 
                         g.TranslateTransform(0, -sy);
@@ -117,10 +122,15 @@ namespace AntdUI
                     }
                     else
                     {
+                        int showIndex = 0;
                         foreach (var it in rows)
                         {
                             it.SHOW = it.ShowExpand && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
-                            if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
+                            if (it.SHOW)
+                            {
+                                shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                                showIndex++;
+                            }
                         }
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows)
@@ -168,11 +178,16 @@ namespace AntdUI
                         }
                     }
                     rows[0].SHOW = false;
+                    int showIndex = 0;
                     for (int index_r = 1; index_r < rows.Length; index_r++)
                     {
                         var it = rows[index_r];
                         it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
-                        if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
+                        if (it.SHOW)
+                        {
+                            shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                            showIndex++;
+                        }
                     }
 
                     g.TranslateTransform(0, -sy);
