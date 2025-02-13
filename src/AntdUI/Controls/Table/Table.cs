@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -1373,7 +1373,7 @@ namespace AntdUI
         /// </summary>
         public Column SetColAlign(ColumnAlign value = ColumnAlign.Center)
         {
-            Align = value;
+            ColAlign = value;
             return this;
         }
 
