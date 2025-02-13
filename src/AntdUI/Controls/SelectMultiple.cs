@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -181,10 +182,12 @@ namespace AntdUI
                 if (it is DividerSelectItem) { }
                 else selecteds.Add(it);
             }
+            if (selectedValue.SequenceEqual(selecteds)) return;
             selectedValue = selecteds.ToArray();
             CalculateRect();
             SetCaretPostion();
             subForm?.SetValues(selecteds);
+            SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
         }
 
         /// <summary>
@@ -213,9 +216,13 @@ namespace AntdUI
         /// </summary>
         public void ClearSelect()
         {
-            Text = "";
-            selectedValue = new object[0];
-            CalculateRect();
+            if (selectedValue.Length > 0)
+            {
+                TerminateExpand = true;
+                SelectedValue = new object[0];
+            }
+            base.OnClearValue();
+
             SetCaretPostion();
             Invalidate();
             subForm?.ClearValues();
