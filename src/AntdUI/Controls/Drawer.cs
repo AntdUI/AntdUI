@@ -55,15 +55,7 @@ namespace AntdUI
         {
             if (config.Form.IsHandleCreated)
             {
-                if (config.Form.InvokeRequired)
-                {
-                    Form? form = null;
-                    config.Form.Invoke(new Action(() =>
-                    {
-                        form = open(config);
-                    }));
-                    return form;
-                }
+                if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<Form?>(() => open(config)));
                 if (config.Mask)
                 {
                     var mask = new LayeredFormMask(config.Form);

@@ -1158,15 +1158,7 @@ namespace AntdUI
         {
             if (AutoSize)
             {
-                if (InvokeRequired)
-                {
-                    bool flag = false;
-                    Invoke(new Action(() =>
-                    {
-                        flag = BeforeAutoSize();
-                    }));
-                    return flag;
-                }
+                if (InvokeRequired) return ITask.Invoke(this, new Func<bool>(BeforeAutoSize));
                 if (Vertical)
                 {
                     int height = Rect.Height;

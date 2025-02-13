@@ -37,15 +37,7 @@ namespace AntdUI
         {
             if (config.Form.IsHandleCreated)
             {
-                if (config.Form.InvokeRequired)
-                {
-                    Form? frm2 = null;
-                    config.Form.Invoke(new Action(() =>
-                    {
-                        frm2 = open(config);
-                    }));
-                    return frm2;
-                }
+                if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<Form?>(() => open(config)));
                 var frm = new LayeredFormPreview(config);
                 frm.Show(config.Form);
                 return frm;

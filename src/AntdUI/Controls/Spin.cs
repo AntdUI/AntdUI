@@ -21,6 +21,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -167,7 +169,7 @@ namespace AntdUI
         /// <param name="control">控件主体</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, Action<Config> action, Action? end = null) => open(control, new Config(), action, end);
+        public static Task open(Control control, Action<Config> action, Action? end = null) => open(control, new Config(), action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -176,7 +178,7 @@ namespace AntdUI
         /// <param name="text">加载文本</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, string text, Action<Config> action, Action? end = null) => open(control, new Config { Text = text }, action, end);
+        public static Task open(Control control, string text, Action<Config> action, Action? end = null) => open(control, new Config { Text = text }, action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -185,73 +187,46 @@ namespace AntdUI
         /// <param name="config">自定义配置</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, Config config, Action<Config> action, Action? end = null)
+        public static Task open(Control control, Config config, Action<Config> action, Action? end = null)
         {
             var parent = control.FindPARENT();
-            if (parent is LayeredFormModal model)
+            if (parent is LayeredFormAsynLoad model)
             {
-                if (model.isLoad)
+                if (model.IsLoad)
                 {
-                    control.BeginInvoke(new Action(() =>
+                    var Event = new ManualResetEvent(false);
+                    model.LoadCompleted += () => Event.SetWait();
+                    return ITask.Run(() =>
                     {
-                        open_core(control, parent, config, action, end);
-                    }));
+                        if (Event.Wait(1000)) return;
+                        open_core(control, true, parent, config, action, end)?.Wait();
+                    });
                 }
-                else
-                {
-                    model.Load += (a, b) =>
-                    {
-                        control.BeginInvoke(new Action(() =>
-                        {
-                            open_core(control, parent, config, action, end);
-                        }));
-                    };
-                }
-                return;
+                else return open_core(control, control.InvokeRequired, parent, config, action, end);
             }
-            else if (parent is LayeredFormDrawer drawer && drawer.LoadEnd)
-            {
-                if (drawer.LoadEnd)
-                {
-                    drawer.LoadOK = () =>
-                    {
-                        control.BeginInvoke(new Action(() =>
-                        {
-                            open_core(control, parent, config, action, end);
-                        }));
-                    };
-                }
-                else
-                {
-                    control.BeginInvoke(new Action(() =>
-                    {
-                        open_core(control, parent, config, action, end);
-                    }));
-                }
-                return;
-            }
-            else if (control.InvokeRequired)
-            {
-                control.BeginInvoke(new Action(() =>
-                {
-                    open_core(control, parent, config, action, end);
-                }));
-                return;
-            }
-            open_core(control, parent, config, action, end);
+            return open_core(control, control.InvokeRequired, parent, config, action, end);
         }
 
-        static void open_core(Control control, Form? parent, Config config, Action<Config> action, Action? end = null)
+        static SpinForm open_core(Control control, bool InvokeRequired, Form? parent, Config config)
         {
-            var frm = new SpinForm(control, parent, config);
+            SpinForm frm;
+            if (InvokeRequired) return ITask.Invoke(control, new Func<SpinForm>(() => open_core(control, false, parent, config)));
+            frm = new SpinForm(control, parent, config);
             frm.Show(control);
-            ITask.Run(() =>
+            return frm;
+        }
+        static Task open_core(Control control, bool InvokeRequired, Form? parent, Config config, Action<Config> action, Action? end = null)
+        {
+            var frm = open_core(control, InvokeRequired, parent, config);
+            return ITask.Run(() =>
             {
+                if (frm == null) return;
                 try
                 {
                     action(config);
                 }
                 catch { }
+                if (frm.IsDisposed) return;
                 frm.Invoke(new Action(() =>
                 {
                     frm.Dispose();

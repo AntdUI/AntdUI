@@ -245,10 +245,7 @@ namespace AntdUI
                 {
                     if (InvokeRequired)
                     {
-                        Invoke(new Action(() =>
-                        {
-                            IClose(isdispose);
-                        }));
+                        Invoke(new Action(() => IClose(isdispose)));
                         return;
                     }
                     if (switchClose) Close();

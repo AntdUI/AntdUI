@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormDrawer : ILayeredForm
+    internal class LayeredFormDrawer : ILayeredForm, LayeredFormAsynLoad
     {
         int FrmRadius = 0, FrmBor = 0;
         bool HasBor = false;
@@ -405,9 +405,9 @@ namespace AntdUI
             if (form.ClientSize != rect.Size) form.ClientSize = rect.Size;
             form.Location = rect.Location;
             config.OnLoad?.Invoke();
-            LoadOK?.Invoke();
             if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
-            LoadEnd = false;
+            IsLoad = false;
+            LoadCompleted?.Invoke();
             config.Content.SizeChanged += Content_SizeChanged;
             tempContent?.Dispose();
             tempContent = null;
@@ -501,8 +501,17 @@ namespace AntdUI
             }
         }
 
-        internal bool LoadEnd = true;
-        internal Action? LoadOK = null;
+        /// <summary>
+        /// 是否正在加载
+        /// </summary>
+        [Description("是否正在加载"), Category("参数"), DefaultValue(true)]
+        public bool IsLoad { get; set; } = true;
+
+        /// <summary>
+        /// 加载完成回调
+        /// </summary>
+        [Description("加载完成回调"), Category("参数"), DefaultValue(null)]
+        public Action? LoadCompleted { get; set; }
 
         Rectangle Ang()
         {

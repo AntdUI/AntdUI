@@ -82,15 +82,7 @@ namespace AntdUI
         {
             if (config.Form.IsHandleCreated)
             {
-                if (config.Form.InvokeRequired)
-                {
-                    FormFloatButton? form = null;
-                    config.Form.Invoke(new Action(() =>
-                    {
-                        form = open(config);
-                    }));
-                    return form;
-                }
+                if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<FormFloatButton?>(() => open(config)));
                 var floatButton = new LayeredFormFloatButton(config);
                 floatButton.Show(config.Form);
                 return floatButton;

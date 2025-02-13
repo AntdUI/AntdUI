@@ -1086,7 +1086,7 @@ namespace AntdUI
                     var form = Parent.FindPARENT();
                     if (form != null)
                     {
-                        if (form is LayeredFormDrawer) return;
+                        if (form is LayeredFormDrawer || form is LayeredFormPopover) return;
                         if (e.Clicks > 1)
                         {
                             if (maximizeBox)

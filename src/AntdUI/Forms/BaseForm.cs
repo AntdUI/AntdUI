@@ -41,10 +41,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() =>
-                {
-                    SetCursor(val);
-                }));
+                Invoke(new Action(() => SetCursor(val)));
                 return;
             }
             Cursor = val ? Cursors.Hand : DefaultCursor;

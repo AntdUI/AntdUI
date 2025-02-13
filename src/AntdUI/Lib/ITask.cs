@@ -254,5 +254,14 @@ namespace AntdUI
             return Task.Run(action);
 #endif
         }
+
+        public static T Invoke<T>(Control control, Func<T> method)
+        {
+#if NET40 || NET46 || NET48
+            return (T)control.Invoke(method);
+#else
+            return control.Invoke(method);
+#endif
+        }
     }
 }
