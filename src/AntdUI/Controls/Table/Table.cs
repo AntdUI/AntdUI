@@ -59,6 +59,7 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
                 if (value == null) return;
                 value.table = this;
+                ExtractHeaderFixed();
                 OnPropertyChanged("Columns");
             }
         }
