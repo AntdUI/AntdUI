@@ -660,6 +660,15 @@ namespace AntdUI
         #endregion
 
         #region 方法
+        /// <summary>
+        /// 刷新界面
+        /// </summary>
+        public override void Refresh()
+        {
+            ExtractHeaderFixed();
+            ExtractData();
+            if (LoadLayout()) Invalidate();
+        }
 
         List<int> enableDir = new List<int>();
         /// <summary>

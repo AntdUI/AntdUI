@@ -28,7 +28,8 @@ namespace AntdUI
         void R()
         {
             if (table == null) return;
-            table.LoadLayout();
+            table.ExtractHeaderFixed();
+            if (table.LoadLayout()) table.Invalidate();
         }
         List<Column> list;
         public ColumnCollection() { list = new List<Column>(); }
