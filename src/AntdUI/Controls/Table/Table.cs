@@ -661,6 +661,7 @@ namespace AntdUI
         #endregion
 
         #region 方法
+
         /// <summary>
         /// 刷新界面
         /// </summary>
@@ -668,6 +669,7 @@ namespace AntdUI
         {
             ExtractHeaderFixed();
             ExtractData();
+            base.Refresh();
             if (LoadLayout()) Invalidate();
         }
 

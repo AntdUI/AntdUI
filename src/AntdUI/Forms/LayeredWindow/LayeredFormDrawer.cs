@@ -639,10 +639,8 @@ namespace AntdUI
 
         public override Bitmap PrintBit()
         {
-            Rectangle rect;
-            if (HasBor) rect = new Rectangle(FrmBor, 0, TargetRect.Width - FrmBor * 2, TargetRect.Height - FrmBor);
-            else rect = TargetRectXY;
-            var original_bmp = new Bitmap(TargetRect.Width, TargetRect.Height);
+            Rectangle rect_t = TargetRectXY, rect = HasBor ? new Rectangle(FrmBor, 0, rect_t.Width - FrmBor * 2, rect_t.Height - FrmBor) : rect_t;
+            var original_bmp = new Bitmap(rect_t.Width, rect_t.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
                 var rect_read = DrawShadow(g, rect);

@@ -347,11 +347,21 @@ namespace AntdUI
             Font = _control.Font;
             config = _config;
             _control.SetTopMost(Handle);
-            SetSize(_control.Size);
-            SetLocation(_control.PointToScreen(Point.Empty));
-            if (_config.Radius.HasValue) Radius = _config.Radius.Value;
-            else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
-            else if (_control is Form form) HasBor = form.FormFrame(out Radius, out Bor);
+            if (_control is Form form)
+            {
+                SetSize(form.Size);
+                SetLocation(form.Location);
+                if (_config.Radius.HasValue) Radius = _config.Radius.Value;
+                else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
+                else HasBor = form.FormFrame(out Radius, out Bor);
+            }
+            else
+            {
+                SetSize(_control.Size);
+                SetLocation(_control.PointToScreen(Point.Empty));
+                if (_config.Radius.HasValue) Radius = _config.Radius.Value;
+                else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
+            }
         }
 
         GraphicsPath? gpath = null;
@@ -371,16 +381,25 @@ namespace AntdUI
 
         private void Parent_LocationChanged(object? sender, EventArgs e)
         {
-            SetLocation(control.PointToScreen(Point.Empty));
+            if (control is Form form) SetLocation(form.Location);
+            else SetLocation(control.PointToScreen(Point.Empty));
         }
         private void Parent_SizeChanged(object? sender, EventArgs e)
         {
-            SetLocation(control.PointToScreen(Point.Empty));
-            SetSize(control.Size);
-            if (!config.Radius.HasValue && control is IControl icontrol)
+            if (control is Form form)
             {
-                gpath?.Dispose();
-                gpath = icontrol.RenderRegion;
+                SetSize(form.Size);
+                SetLocation(form.Location);
+            }
+            else
+            {
+                SetLocation(control.PointToScreen(Point.Empty));
+                SetSize(control.Size);
+                if (!config.Radius.HasValue && control is IControl icontrol)
+                {
+                    gpath?.Dispose();
+                    gpath = icontrol.RenderRegion;
+                }
             }
         }
 
@@ -389,9 +408,8 @@ namespace AntdUI
         SpinCore spin_core = new SpinCore();
         public override Bitmap PrintBit()
         {
-            var rect_read = TargetRectXY;
-            var rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
-            var original_bmp = new Bitmap(rect.Width, rect.Height);
+            Rectangle rect_read = TargetRectXY, rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
+            var original_bmp = new Bitmap(rect_read.Width, rect_read.Height);
             using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
                 using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get("Spin"), .8F)))

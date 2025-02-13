@@ -34,6 +34,12 @@ namespace AntdUI
         /// <summary>
         /// 图片
         /// </summary>
+        /// <param name="img">图片</param>
+        public CellImage(Image img) { image = img; }
+
+        /// <summary>
+        /// 图片
+        /// </summary>
         /// <param name="svg">SVG</param>
         public CellImage(string svg) { imageSvg = svg; }
 
@@ -50,6 +56,13 @@ namespace AntdUI
         /// <param name="img">图片</param>
         /// <param name="_radius">圆角</param>
         public CellImage(Bitmap img, int _radius) { image = img; radius = _radius; }
+
+        /// <summary>
+        /// 图片
+        /// </summary>
+        /// <param name="img">图片</param>
+        /// <param name="_radius">圆角</param>
+        public CellImage(Image img, int _radius) { image = img; radius = _radius; }
 
         #region 边框
 
@@ -145,11 +158,11 @@ namespace AntdUI
             }
         }
 
-        Bitmap? image;
+        Image? image;
         /// <summary>
         /// 图片
         /// </summary>
-        public Bitmap? Image
+        public Image? Image
         {
             get => image;
             set
