@@ -29,11 +29,8 @@ namespace AntdUI
 
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
-            var state = g.Save();
-            g.SetClip(Rect);
-            if (Fore.HasValue) g.String(Text, Font ?? font, Fore.Value, Rect, Table.StringF(PARENT.COLUMN));
-            else g.String(Text, Font ?? font, fore, Rect, Table.StringF(PARENT.COLUMN));
-            g.Restore(state);
+            if (Fore.HasValue) g.String(Text, Font ?? font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
+            else g.String(Text, Font ?? font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
             if (PrefixSvg != null) g.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color);
             else if (Prefix != null) g.Image(Prefix, RectL);
 
@@ -59,8 +56,10 @@ namespace AntdUI
         }
 
         Rectangle RectL, RectR;
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
         {
+            int width = rect.Width;
+            if (width > maxwidth) width = maxwidth;
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;
             if (has_prefix && has_suffix)
             {
@@ -68,21 +67,21 @@ namespace AntdUI
                 RectL = new Rectangle(rect.X, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                 RectR = new Rectangle(rect.Right - icon_size, RectL.Y, icon_size, icon_size);
 
-                Rect = new Rectangle(RectL.Right + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - (icon_size * 2 + gap2), size.Height);
+                Rect = new Rectangle(RectL.Right + gap, rect.Y + (rect.Height - size.Height) / 2, width - (icon_size * 2 + gap2), size.Height);
             }
             else if (has_prefix)
             {
                 int icon_size = (int)(size.Height * IconRatio);
                 RectL = new Rectangle(rect.X, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                Rect = new Rectangle(RectL.Right + gap, rect.Y + (rect.Height - size.Height) / 2, rect.Width - icon_size - gap, size.Height);
+                Rect = new Rectangle(RectL.Right + gap, rect.Y + (rect.Height - size.Height) / 2, width - icon_size - gap, size.Height);
             }
             else if (has_suffix)
             {
                 int icon_size = (int)(size.Height * IconRatio);
                 RectR = new Rectangle(rect.Right - icon_size, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                Rect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, rect.Width - icon_size - gap2, size.Height);
+                Rect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, width - icon_size - gap2, size.Height);
             }
-            else Rect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, rect.Width, size.Height);
+            else Rect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, width, size.Height);
         }
     }
 }

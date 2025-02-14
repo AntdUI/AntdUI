@@ -572,11 +572,7 @@ namespace AntdUI
 
         bool SetIndex(int value)
         {
-            if (selectedIndex.Length > 0)
-            {
-                if (selectedIndex[0] == value) return false;
-            }
-            else
+            if (selectedIndex.Length < 1)
             {
                 if (value == -1) return false;
             }

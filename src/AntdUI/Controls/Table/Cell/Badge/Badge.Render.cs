@@ -54,8 +54,8 @@ namespace AntdUI
                 }
                 g.FillEllipse(brush, RectDot);
             }
-            if (Fore.HasValue) g.String(Text, font, Fore.Value, Rect, Table.StringF(PARENT.COLUMN));
-            else g.String(Text, font, fore, Rect, Table.StringF(PARENT.COLUMN));
+            if (Fore.HasValue) g.String(Text, font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
+            else g.String(Text, font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
         }
 
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
@@ -74,7 +74,7 @@ namespace AntdUI
 
         int TxtHeight = 0;
         Rectangle RectDot;
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
         {
             TxtHeight = size.Height;
             int dot_size = (int)(size.Height * dotratio);
