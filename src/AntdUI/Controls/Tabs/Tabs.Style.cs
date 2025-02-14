@@ -1475,7 +1475,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, 0, xy2 + 2);
+                                tabs.SetPadding(0, 0, 0, xy2 + 2 + bordersize);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1503,7 +1503,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(xy2 + 2, 0, 0, 0);
+                                tabs.SetPadding(xy2 + 2 + bordersize, 0, 0, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1534,7 +1534,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, xy2 + 2, 0);
+                                tabs.SetPadding(0, 0, xy2 + 2 + bordersize, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1577,7 +1577,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, xy2 + 2, 0, 0);
+                                tabs.SetPadding(0, xy2 + 2 + bordersize, 0, 0);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1601,7 +1601,7 @@ namespace AntdUI
                                         }
                                         else
                                         {
-                                            rect_it = new Rectangle(rect.X + xy, y + 2 + bordersize, it.Value.Width + gap, xy2);
+                                            rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap, xy2);
                                             rect_list.Add(new TabPageRect(rect_it));
                                         }
                                         it.Key.SetRect(rect_it);
@@ -1610,7 +1610,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, 0, xy2 + 2);
+                                tabs.SetPadding(0, 0, 0, xy2 + 2 + bordersize);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1628,7 +1628,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(xy2 + 2, 0, 0, 0);
+                                tabs.SetPadding(xy2 + 2 + bordersize, 0, 0, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1649,7 +1649,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, 0, xy2 + 2, 0);
+                                tabs.SetPadding(0, 0, xy2 + 2 + bordersize, 0);
                                 owner.scroll_max = xy - rect.Height;
                                 owner.scroll_show = xy > rect.Height;
                                 break;
@@ -1676,7 +1676,7 @@ namespace AntdUI
                                     else rect_list.Add(new TabPageRect());
                                 }
                                 xy -= cardgap;
-                                tabs.SetPadding(0, xy2 + 2, 0, 0);
+                                tabs.SetPadding(0, xy2 + 2 + bordersize, 0, 0);
                                 owner.scroll_max = xy - rect.Width;
                                 owner.scroll_show = xy > rect.Width;
                                 break;
@@ -1744,7 +1744,7 @@ namespace AntdUI
                         {
                             case TabAlignment.Bottom:
                                 int read_b_h = rects[0].Rect.Height + rects[0].Rect.X;
-                                var rect_s_b = new Rectangle(rect_t.X, rect_t.Bottom - read_b_h, rect_t.Width, read_b_h);
+                                var rect_s_b = new Rectangle(rect_t.X, rect_t.Bottom - read_b_h - bor, rect_t.Width, read_b_h + bor);
                                 if (owner.scroll_show)
                                 {
                                     g.SetClip(owner.PaintExceedPre(rect_s_b, rects[0].Rect.Height));
@@ -1795,7 +1795,7 @@ namespace AntdUI
                                 }
                                 break;
                             case TabAlignment.Left:
-                                var rect_s_l = new Rectangle(rect_t.X, rect_t.Y, rects[0].Rect.Right, rect_t.Height);
+                                var rect_s_l = new Rectangle(rect_t.X, rect_t.Y, rects[0].Rect.Right + bor, rect_t.Height);
                                 if (owner.scroll_show)
                                 {
                                     g.SetClip(owner.PaintExceedPre(rect_s_l, rects[0].Rect.Height));
@@ -1847,7 +1847,7 @@ namespace AntdUI
                                 break;
                             case TabAlignment.Right:
                                 int read_r_w = rects[0].Rect.Width + rects[0].Rect.Y;
-                                var rect_s_r = new Rectangle(rect_t.Right - read_r_w, rect_t.Y, read_r_w, rect_t.Height);
+                                var rect_s_r = new Rectangle(rect_t.Right - read_r_w - bor, rect_t.Y, read_r_w + bor, rect_t.Height);
                                 if (owner.scroll_show)
                                 {
                                     g.SetClip(owner.PaintExceedPre(rect_s_r, rects[0].Rect.Height));
@@ -1899,7 +1899,7 @@ namespace AntdUI
                                 break;
                             case TabAlignment.Top:
                             default:
-                                var rect_s_t = new Rectangle(rect_t.X, rect_t.Y, rect_t.Width, rects[0].Rect.Bottom);
+                                var rect_s_t = new Rectangle(rect_t.X, rect_t.Y, rect_t.Width, rects[0].Rect.Bottom + bor);
                                 if (owner.scroll_show)
                                 {
                                     g.SetClip(owner.PaintExceedPre(rect_s_t, rects[0].Rect.Height));
