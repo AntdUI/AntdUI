@@ -51,7 +51,7 @@ namespace AntdUI
                     if (index >= cache_font.Length) end = cache_font.Length;
                     else end = FindEnd(cache_font, index);
 
-                    SelectionStart = start;
+                    SetSelectionStart(start);
                     SelectionLength = end - start;
                     return;
                 }
@@ -74,9 +74,10 @@ namespace AntdUI
 
                 if (ScrollYShow && autoscroll && ScrollHover)
                 {
-                    float y = (e.Y - ScrollSlider.Height / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
+                    float y = (e.Y - ScrollSliderFull / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
                     ScrollY = (int)(y * VrValue);
                     ScrollYDown = true;
+                    SetCursor(false);
                     return;
                 }
                 mDownMove = false;
@@ -87,19 +88,19 @@ namespace AntdUI
                 {
                     if (indeX > selectionStartTemp)
                     {
-                        if (selectionStart != selectionStartTemp) SelectionStart = selectionStartTemp;
+                        if (selectionStart != selectionStartTemp) SetSelectionStart(selectionStartTemp);
                         SelectionLength = indeX - selectionStartTemp;
                     }
                     else
                     {
                         int len = selectionStartTemp - indeX;
-                        SelectionStart = indeX;
+                        SetSelectionStart(indeX);
                         SelectionLength = len;
                     }
                 }
                 else
                 {
-                    SelectionStart = indeX;
+                    SetSelectionStart(indeX);
                     SelectionLength = 0;
                     SetCaretPostion(selectionStart);
                 }
@@ -114,7 +115,7 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (ScrollYDown)
             {
-                float y = (e.Y - ScrollSlider.Height / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
+                float y = (e.Y - ScrollSliderFull / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
                 ScrollY = (int)(y * VrValue);
                 return;
             }
@@ -130,7 +131,12 @@ namespace AntdUI
             }
             else
             {
-                if (ScrollYShow && autoscroll) ScrollHover = ScrollRect.Contains(e.Location);
+                bool setScroll = true;
+                if (ScrollYShow && autoscroll)
+                {
+                    ScrollHover = ScrollRect.Contains(e.Location);
+                    if (ScrollHover) setScroll = false;
+                }
                 if (is_clear)
                 {
                     var hover = rect_r.Contains(e.Location);
@@ -154,7 +160,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (rect_text.Contains(e.Location)) SetCursor(CursorType.IBeam);
+                    if (setScroll && rect_text.Contains(e.Location)) SetCursor(CursorType.IBeam);
                     else SetCursor(false);
                 }
             }
@@ -198,13 +204,13 @@ namespace AntdUI
                 else if (index > selectionStart)
                 {
                     SelectionLength = Math.Abs(index - selectionStart);
-                    SelectionStart = selectionStart;
+                    SetSelectionStart(selectionStart);
                 }
                 else
                 {
                     int x = scrollx;
                     SelectionLength = Math.Abs(index - selectionStart);
-                    SelectionStart = index;
+                    SetSelectionStart(index);
                     ScrollX = x;
                 }
             }
@@ -225,6 +231,7 @@ namespace AntdUI
 
             "\r","\t","\n","\r\n"
         };
+
         #region 查找
 
         /// <summary>
@@ -412,6 +419,9 @@ namespace AntdUI
 
         [Description("后缀 点击时发生"), Category("行为")]
         public event MouseEventHandler? SuffixClick = null;
+
+        [Description("验证字符时发生"), Category("行为")]
+        public event InputVerifyCharEventHandler? VerifyChar = null;
 
         #endregion
     }

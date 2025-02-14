@@ -140,7 +140,7 @@ namespace AntdUI
             {
                 if (loading == value) return;
                 loading = value;
-                Print(true);
+                Print();
             }
         }
 
@@ -198,6 +198,7 @@ namespace AntdUI
                     Loading = true;
                     int selectIndex = SelectIndex;
                     SelectValue = data[SelectIndex];
+                    DateTime now = DateTime.Now, now2 = DateTime.Now;
                     ITask.Run(() =>
                     {
                         var img = callprog.Invoke(SelectIndex, SelectValue, (prog, progstr) =>
@@ -205,6 +206,7 @@ namespace AntdUI
                             LoadingProgressStr = progstr;
                             LoadingProgress = prog;
                         });
+                        now2 = DateTime.Now;
                         if (selectIndex == SelectIndex)
                         {
                             if (img == null)
@@ -222,7 +224,15 @@ namespace AntdUI
                         else img?.Dispose();
                     }, () =>
                     {
-                        if (selectIndex == SelectIndex) Loading = false;
+                        if (selectIndex == SelectIndex)
+                        {
+                            Loading = false;
+                            if ((now2 - now).TotalMilliseconds < 100)
+                            {
+                                System.Threading.Thread.Sleep(100);
+                                if (selectIndex == SelectIndex) Print();
+                            }
+                        }
                     });
                 }
             }

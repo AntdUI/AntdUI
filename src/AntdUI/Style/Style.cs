@@ -34,11 +34,35 @@ namespace AntdUI
             if (colors.TryGetValue(key, out var color)) return color;
             return Get(id);
         }
+        public static Color Get(this Colour id, string control, TAMode mode)
+        {
+            string key = id.ToString() + control;
+            if (colors.TryGetValue(key, out var color)) return color;
+            return Get(id, mode);
+        }
+
         public static Color Get(this Colour id)
         {
             string key = id.ToString();
             if (colors.TryGetValue(key, out var color)) return color;
-            switch (Config.Mode)
+            return GetSystem(id, Config.Mode);
+        }
+        public static Color Get(this Colour id, TAMode mode)
+        {
+            string key = id.ToString();
+            if (colors.TryGetValue(key, out var color)) return color;
+            switch (mode)
+            {
+                case TAMode.Light: return GetSystem(id, TMode.Light);
+                case TAMode.Dark: return GetSystem(id, TMode.Dark);
+                case TAMode.Auto:
+                default:
+                    return GetSystem(id, Config.Mode);
+            }
+        }
+        public static Color GetSystem(this Colour id, TMode mode)
+        {
+            switch (mode)
             {
                 case TMode.Light:
                     switch (id)

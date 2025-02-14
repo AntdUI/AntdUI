@@ -594,7 +594,7 @@ namespace AntdUI
         [Description("标题"), Category("外观"), DefaultValue("Title")]
         public string Title
         {
-            get => title;
+            get => Localization.GetLangIN(LocalizationTitle, title, new string?[] { "{id}", ID });
             set
             {
                 if (title == value) return;
@@ -602,6 +602,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("标题"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationTitle { get; set; }
 
         internal Size TitleSize { get; set; }
 
@@ -613,7 +616,7 @@ namespace AntdUI
         [Description("子标题"), Category("外观"), DefaultValue(null)]
         public string? SubTitle
         {
-            get => subTitle;
+            get => Localization.GetLangI(LocalizationSubTitle, subTitle, new string?[] { "{id}", ID });
             set
             {
                 if (string.IsNullOrEmpty(value)) value = null;
@@ -623,6 +626,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("子标题"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSubTitle { get; set; }
         internal Size SubTitleSize { get; set; }
 
         string? description = null;
@@ -633,7 +639,7 @@ namespace AntdUI
         [Description("详情描述，可选"), Category("外观"), DefaultValue(null)]
         public string? Description
         {
-            get => description;
+            get => Localization.GetLangI(LocalizationDescription, description, new string?[] { "{id}", ID });
             set
             {
                 if (string.IsNullOrEmpty(value)) value = null;
@@ -643,6 +649,10 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("详情描述"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationDescription { get; set; }
+
         internal Size DescriptionSize { get; set; }
 
         bool visible = true;
@@ -683,6 +693,6 @@ namespace AntdUI
         internal Rectangle description_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
 
-        public override string ToString() => title + " " + subTitle;
+        public override string ToString() => Title + " " + SubTitle;
     }
 }

@@ -614,38 +614,9 @@ namespace AntdUI
 
             #region 显示颜色
 
-            Color fore = Colour.Text.Get("PageHeader"), forebase = Colour.TextBase.Get("PageHeader"), foreSecondary = Colour.TextSecondary.Get("PageHeader"),
-                fillsecondary = Colour.FillSecondary.Get("PageHeader");
-            if (useSystemStyleColor)
-            {
-                forebase = ForeColor;
-                if (mode == TAMode.Dark)
-                {
-                    fore = Style.rgba(forebase, 0.85F);
-                    foreSecondary = Style.rgba(forebase, 0.65F);
-                    fillsecondary = Style.rgba(forebase, 0.12F);
-                }
-                else
-                {
-                    fore = Style.rgba(forebase, 0.88F);
-                    foreSecondary = Style.rgba(forebase, 0.65F);
-                    fillsecondary = Style.rgba(forebase, 0.06F);
-                }
-            }
-            else if (mode == TAMode.Light)
-            {
-                forebase = Color.Black;
-                fore = Style.rgba(forebase, 0.88F);
-                foreSecondary = Style.rgba(forebase, 0.65F);
-                fillsecondary = Style.rgba(forebase, 0.06F);
-            }
-            else if (mode == TAMode.Dark)
-            {
-                forebase = Color.White;
-                fore = Style.rgba(forebase, 0.85F);
-                foreSecondary = Style.rgba(forebase, 0.65F);
-                fillsecondary = Style.rgba(forebase, 0.12F);
-            }
+            Color fore = Colour.Text.Get("PageHeader", mode), forebase = Colour.TextBase.Get("PageHeader", mode), foreSecondary = Colour.TextSecondary.Get("PageHeader", mode),
+                fillsecondary = Colour.FillSecondary.Get("PageHeader", mode);
+            if (useSystemStyleColor) forebase = ForeColor;
 
             #endregion
 
@@ -1075,10 +1046,7 @@ namespace AntdUI
                 bool _close = rect_close.Contains(e.Location), _full = rect_full.Contains(e.Location), _max = rect_max.Contains(e.Location), _min = rect_min.Contains(e.Location);
                 if (_close != hove_close.Switch || _full != hove_full.Switch || _max != hove_max.Switch || _min != hove_min.Switch)
                 {
-                    Color fillsecondary = Colour.FillSecondary.Get("PageHeader");
-                    if (mode == TAMode.Light) fillsecondary = Style.rgba(0, 0, 0, 0.06F);
-                    else if (mode == TAMode.Dark) fillsecondary = Style.rgba(255, 255, 255, 0.12F);
-
+                    var fillsecondary = Colour.FillSecondary.Get("PageHeader", mode);
                     hove_max.MaxValue = hove_min.MaxValue = hove_full.MaxValue = fillsecondary.A;
                     hove_close.Switch = _close;
                     hove_full.Switch = _full;
@@ -1118,7 +1086,7 @@ namespace AntdUI
                     var form = Parent.FindPARENT();
                     if (form != null)
                     {
-                        if (form is LayeredFormDrawer) return;
+                        if (form is LayeredFormDrawer || form is LayeredFormPopover) return;
                         if (e.Clicks > 1)
                         {
                             if (maximizeBox)

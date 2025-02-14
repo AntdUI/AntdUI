@@ -21,6 +21,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -167,7 +169,7 @@ namespace AntdUI
         /// <param name="control">控件主体</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, Action<Config> action, Action? end = null) => open(control, new Config(), action, end);
+        public static Task open(Control control, Action<Config> action, Action? end = null) => open(control, new Config(), action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -176,7 +178,7 @@ namespace AntdUI
         /// <param name="text">加载文本</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, string text, Action<Config> action, Action? end = null) => open(control, new Config { Text = text }, action, end);
+        public static Task open(Control control, string text, Action<Config> action, Action? end = null) => open(control, new Config { Text = text }, action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -185,53 +187,46 @@ namespace AntdUI
         /// <param name="config">自定义配置</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public static void open(Control control, Config config, Action<Config> action, Action? end = null)
+        public static Task open(Control control, Config config, Action<Config> action, Action? end = null)
         {
             var parent = control.FindPARENT();
-            if (parent is LayeredFormModal model)
+            if (parent is LayeredFormAsynLoad model)
             {
-                model.Load += (a, b) =>
+                if (model.IsLoad)
                 {
-                    control.BeginInvoke(new Action(() =>
+                    var Event = new ManualResetEvent(false);
+                    model.LoadCompleted += () => Event.SetWait();
+                    return ITask.Run(() =>
                     {
-                        open_core(control, parent, config, action, end);
-                    }));
-                };
-                return;
+                        if (Event.Wait(1000)) return;
+                        open_core(control, true, parent, config, action, end)?.Wait();
+                    });
+                }
+                else return open_core(control, control.InvokeRequired, parent, config, action, end);
             }
-            else if (parent is LayeredFormDrawer drawer && drawer.LoadEnd)
-            {
-                drawer.LoadOK = () =>
-                {
-                    control.BeginInvoke(new Action(() =>
-                    {
-                        open_core(control, parent, config, action, end);
-                    }));
-                };
-                return;
-            }
-            else if (control.InvokeRequired)
-            {
-                control.BeginInvoke(new Action(() =>
-                {
-                    open_core(control, parent, config, action, end);
-                }));
-                return;
-            }
-            open_core(control, parent, config, action, end);
+            return open_core(control, control.InvokeRequired, parent, config, action, end);
         }
 
-        static void open_core(Control control, Form? parent, Config config, Action<Config> action, Action? end = null)
+        static SpinForm open_core(Control control, bool InvokeRequired, Form? parent, Config config)
         {
-            var frm = new SpinForm(control, parent, config);
+            SpinForm frm;
+            if (InvokeRequired) return ITask.Invoke(control, new Func<SpinForm>(() => open_core(control, false, parent, config)));
+            frm = new SpinForm(control, parent, config);
             frm.Show(control);
-            ITask.Run(() =>
+            return frm;
+        }
+        static Task open_core(Control control, bool InvokeRequired, Form? parent, Config config, Action<Config> action, Action? end = null)
+        {
+            var frm = open_core(control, InvokeRequired, parent, config);
+            return ITask.Run(() =>
             {
+                if (frm == null) return;
                 try
                 {
                     action(config);
                 }
                 catch { }
+                if (frm.IsDisposed) return;
                 frm.Invoke(new Action(() =>
                 {
                     frm.Dispose();
@@ -352,11 +347,21 @@ namespace AntdUI
             Font = _control.Font;
             config = _config;
             _control.SetTopMost(Handle);
-            SetSize(_control.Size);
-            SetLocation(_control.PointToScreen(Point.Empty));
-            if (_config.Radius.HasValue) Radius = _config.Radius.Value;
-            else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
-            else if (_control is Form form) HasBor = form.FormFrame(out Radius, out Bor);
+            if (_control is Form form)
+            {
+                SetSize(form.Size);
+                SetLocation(form.Location);
+                if (_config.Radius.HasValue) Radius = _config.Radius.Value;
+                else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
+                else HasBor = form.FormFrame(out Radius, out Bor);
+            }
+            else
+            {
+                SetSize(_control.Size);
+                SetLocation(_control.PointToScreen(Point.Empty));
+                if (_config.Radius.HasValue) Radius = _config.Radius.Value;
+                else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
+            }
         }
 
         GraphicsPath? gpath = null;
@@ -376,16 +381,25 @@ namespace AntdUI
 
         private void Parent_LocationChanged(object? sender, EventArgs e)
         {
-            SetLocation(control.PointToScreen(Point.Empty));
+            if (control is Form form) SetLocation(form.Location);
+            else SetLocation(control.PointToScreen(Point.Empty));
         }
         private void Parent_SizeChanged(object? sender, EventArgs e)
         {
-            SetLocation(control.PointToScreen(Point.Empty));
-            SetSize(control.Size);
-            if (!config.Radius.HasValue && control is IControl icontrol)
+            if (control is Form form)
             {
-                gpath?.Dispose();
-                gpath = icontrol.RenderRegion;
+                SetSize(form.Size);
+                SetLocation(form.Location);
+            }
+            else
+            {
+                SetLocation(control.PointToScreen(Point.Empty));
+                SetSize(control.Size);
+                if (!config.Radius.HasValue && control is IControl icontrol)
+                {
+                    gpath?.Dispose();
+                    gpath = icontrol.RenderRegion;
+                }
             }
         }
 
@@ -394,9 +408,8 @@ namespace AntdUI
         SpinCore spin_core = new SpinCore();
         public override Bitmap PrintBit()
         {
-            var rect_read = TargetRectXY;
-            var rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
-            var original_bmp = new Bitmap(rect.Width, rect.Height);
+            Rectangle rect_read = TargetRectXY, rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
+            var original_bmp = new Bitmap(rect_read.Width, rect_read.Height);
             using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
                 using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get("Spin"), .8F)))

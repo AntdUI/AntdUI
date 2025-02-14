@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormModal : Window, IEventListener
+    internal class LayeredFormModal : Window, IEventListener, LayeredFormAsynLoad
     {
         Modal.Config config;
         Panel? panel_main;
@@ -349,6 +349,25 @@ namespace AntdUI
             config.Layered = this;
         }
 
+        /// <summary>
+        /// 是否正在加载
+        /// </summary>
+        [Description("是否正在加载"), Category("参数"), DefaultValue(true)]
+        public bool IsLoad { get; set; } = true;
+
+        /// <summary>
+        /// 加载完成回调
+        /// </summary>
+        [Description("加载完成回调"), Category("参数"), DefaultValue(null)]
+        public Action? LoadCompleted { get; set; }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            IsLoad = false;
+            LoadCompleted?.Invoke();
+        }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public override bool AutoHandDpi { get; set; }
 
@@ -602,5 +621,11 @@ namespace AntdUI
         }
 
         #endregion
+    }
+
+    internal interface LayeredFormAsynLoad
+    {
+        bool IsLoad { get; set; }
+        Action? LoadCompleted { get; set; }
     }
 }

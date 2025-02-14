@@ -72,15 +72,7 @@ namespace AntdUI
                 return new LayeredFormModal(config).ShowDialog(config.Form);
             }
             if (!config.Form.IsHandleCreated) config.Mask = config.MaskClosable = false;
-            if (config.Form.InvokeRequired)
-            {
-                var dialog = DialogResult.None;
-                config.Form.Invoke(new Action(() =>
-                {
-                    dialog = open(config);
-                }));
-                return dialog;
-            }
+            if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<DialogResult>(() => open(config)));
             var frm = new LayeredFormModal(config);
             if (config.Mask) return frm.ShowDialog(config.Form.FormMask(frm));
             else return frm.ShowDialog(config.Form);

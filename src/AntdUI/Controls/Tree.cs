@@ -277,26 +277,26 @@ namespace AntdUI
         {
             if (NodeMouseMove == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseMove(this, new TreeHoverEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), hover));
+            NodeMouseMove(this, new TreeHoverEventArgs(item, item.Rect("Text", sx, sy), hover));
         }
 
         internal void OnSelectChanged(TreeItem item, MouseEventArgs args)
         {
             if (SelectChanged == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            SelectChanged(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
+            SelectChanged(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
         }
         internal void OnNodeMouseClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseClick == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
+            NodeMouseClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
         }
         internal void OnNodeMouseDoubleClick(TreeItem item, MouseEventArgs args)
         {
             if (NodeMouseDoubleClick == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, new Rectangle(item.txt_rect.X, item.txt_rect.Y - sy, item.txt_rect.Width, item.txt_rect.Height), args));
+            NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
         }
         internal void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
 
@@ -371,7 +371,11 @@ namespace AntdUI
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
                 it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), icon_size, gap);
-                if (expand && it.txt_rect.Right > x) x = it.txt_rect.Right;
+                if (expand)
+                {
+                    if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
+                    else if (it.txt_rect.Right > x) x = it.txt_rect.Right;
+                }
                 if (it.Show && it.Visible)
                 {
                     y += height + gapI;
@@ -453,14 +457,7 @@ namespace AntdUI
         {
             if (item.Select)
             {
-                if (blockNode)
-                {
-                    g.ResetTransform();
-                    g.TranslateTransform(0, -sy);
-                    PaintBack(g, active, item.rect, radius);
-                    g.TranslateTransform(-sx, 0);
-                }
-                else PaintBack(g, active, item.rect, radius);
+                PaintBack(g, active, item.rect, radius);
                 if (item.CanExpand) PaintArrow(g, item, fore_active, sx, sy);
                 PaintItemText(g, item, fore_active, brushTextTertiary);
             }
@@ -473,31 +470,15 @@ namespace AntdUI
                         PaintBack(g, brush, item.rect, radius);
                     }
                 }
-                if (blockNode)
+
+                if (item.AnimationHover)
                 {
-                    g.ResetTransform();
-                    g.TranslateTransform(0, -sy);
-                    if (item.AnimationHover)
+                    using (var brush = new SolidBrush(Helper.ToColorN(item.AnimationHoverValue, hover.Color)))
                     {
-                        using (var brush = new SolidBrush(Helper.ToColorN(item.AnimationHoverValue, hover.Color)))
-                        {
-                            PaintBack(g, brush, item.rect, radius);
-                        }
+                        PaintBack(g, brush, item.rect, radius);
                     }
-                    else if (item.Hover) PaintBack(g, hover, item.rect, radius);
-                    g.TranslateTransform(-sx, 0);
                 }
-                else
-                {
-                    if (item.AnimationHover)
-                    {
-                        using (var brush = new SolidBrush(Helper.ToColorN(item.AnimationHoverValue, hover.Color)))
-                        {
-                            PaintBack(g, brush, item.rect, radius);
-                        }
-                    }
-                    else if (item.Hover) PaintBack(g, hover, item.rect, radius);
-                }
+                else if (item.Hover) PaintBack(g, hover, item.rect, radius);
                 if (item.CanExpand) PaintArrow(g, item, fore, sx, sy);
                 if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
@@ -572,10 +553,10 @@ namespace AntdUI
                 color = item.Fore.Value;
                 using (var brush = new SolidBrush(color))
                 {
-                    g.String(item.Text, Font, brush, item.txt_rect, blockNode ? s_l : s_c);
+                    g.String(item.Text, Font, brush, item.txt_rect, s_c);
                 }
             }
-            else g.String(item.Text, Font, fore, item.txt_rect, blockNode ? s_l : s_c);
+            else g.String(item.Text, Font, fore, item.txt_rect, s_c);
             if (item.SubTitle != null) g.String(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
             if (item.Icon != null) g.Image(item.Icon, item.ico_rect);
             if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
@@ -603,17 +584,17 @@ namespace AntdUI
                 pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
 
                 if (item.ExpandThread) PaintArrow(g, item, pen, sx, sy, -90F + (90F * item.ExpandProg));
-                else if (item.Expand) g.DrawLines(pen, item.arr_rect.TriangleLines(-1, .4F));
+                else if (item.Expand) g.DrawLines(pen, item.arrow_rect.TriangleLines(-1, .4F));
                 else PaintArrow(g, item, pen, sx, sy, -90F);
             }
         }
 
         void PaintArrow(Canvas g, TreeItem item, Pen pen, int sx, int sy, float rotate)
         {
-            int size_arrow = item.arr_rect.Width / 2;
-            g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
+            int size_arrow = item.arrow_rect.Width / 2;
+            g.TranslateTransform(item.arrow_rect.X + size_arrow, item.arrow_rect.Y + size_arrow);
             g.RotateTransform(rotate);
-            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .4F));
+            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arrow_rect.Width, item.arrow_rect.Height).TriangleLines(-1, .4F));
             g.ResetTransform();
             g.TranslateTransform(-sx, -sy);
         }
@@ -689,15 +670,7 @@ namespace AntdUI
                 int down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
                 if (down > 0)
                 {
-                    if (blockNode)
-                    {
-                        if (can) item.Expand = !item.Expand;
-                        selectItem = item;
-                        item.Select = true;
-                        OnSelectChanged(item, e);
-                        Invalidate();
-                    }
-                    else if (down == 3 && item.Enabled)
+                    if (down == 3 && item.Enabled)
                     {
                         item.Checked = !item.Checked;
                         if (CheckStrictly)
@@ -709,10 +682,14 @@ namespace AntdUI
                     else if (down == 2 && can) item.Expand = !item.Expand;
                     else
                     {
-                        selectItem = item;
-                        item.Select = true;
-                        OnSelectChanged(item, e);
-                        Invalidate();
+                        if (doubleClick && can) item.Expand = !item.Expand;
+                        else
+                        {
+                            selectItem = item;
+                            item.Select = true;
+                            OnSelectChanged(item, e);
+                            Invalidate();
+                        }
                     }
                     if (doubleClick) OnNodeMouseDoubleClick(item, e);
                     OnNodeMouseClick(item, e);
@@ -1082,7 +1059,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public string? Text
         {
-            get => text;
+            get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
             set
             {
                 if (text == value) return;
@@ -1091,6 +1068,9 @@ namespace AntdUI
             }
         }
 
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
+
         string? subTitle = null;
         /// <summary>
         /// 子标题
@@ -1098,7 +1078,7 @@ namespace AntdUI
         [Description("子标题"), Category("外观"), DefaultValue(null)]
         public string? SubTitle
         {
-            get => subTitle;
+            get => Localization.GetLangI(LocalizationSubTitle, subTitle, new string?[] { "{id}", ID });
             set
             {
                 if (string.IsNullOrEmpty(value)) value = null;
@@ -1107,6 +1087,9 @@ namespace AntdUI
                 Invalidates();
             }
         }
+
+        [Description("子标题"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSubTitle { get; set; }
 
         bool visible = true;
         /// <summary>
@@ -1250,10 +1233,7 @@ namespace AntdUI
         }
 
         [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
-        public bool CanExpand
-        {
-            get => visible && items != null && items.Count > 0;
-        }
+        public bool CanExpand => visible && items != null && items.Count > 0;
 
         #endregion
 
@@ -1477,11 +1457,10 @@ namespace AntdUI
         internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;
-            rect = _rect;
             int x = _rect.X + gap + (icon_size * depth), y = _rect.Y + (_rect.Height - icon_size) / 2;
             if (has_sub)
             {
-                arr_rect = new Rectangle(x, y, icon_size, icon_size);
+                arrow_rect = new Rectangle(x, y, icon_size, icon_size);
                 x += icon_size + gap;
             }
 
@@ -1498,60 +1477,67 @@ namespace AntdUI
             }
 
             var size = g.MeasureString(Text, font);
-            txt_rect = new Rectangle(x, _rect.Y + (_rect.Height - size.Height) / 2, size.Width, size.Height);
-            if (SubTitle != null)
+            int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _rect.Y + (_rect.Height - txt_h) / 2;
+
+            if (subTitle == null)
+            {
+                if (blockNode)
+                {
+                    int rw = _rect.Width - x - gap;
+                    txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
+                    if (rw < txt_w) rw = txt_w;
+                    rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
+                }
+                else
+                {
+                    txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
+                    rect = txt_rect;
+                }
+            }
+            else
             {
                 var sizesub = g.MeasureString(SubTitle, font);
-                subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
-                if (!blockNode) rect = new Rectangle(txt_rect.X, txt_rect.Y, txt_rect.Width + subtxt_rect.Width, subtxt_rect.Height);
+                if (blockNode)
+                {
+                    int rw = _rect.Width - x - gap;
+                    txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
+                    subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
+                    txt_w += sizesub.Width;
+                    if (rw < txt_w) rw = txt_w;
+                    rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
+                }
+                else
+                {
+                    txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
+                    subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
+                    rect = new Rectangle(x, txt_y, txt_w + sizesub.Width, txt_h);
+                }
             }
-            else if (!blockNode) rect = txt_rect;
+
 
             Show = true;
         }
         internal Rectangle rect { get; set; }
-        internal Rectangle arr_rect { get; set; }
+        internal Rectangle arrow_rect { get; set; }
 
         internal int Contains(int x, int y, int sx, int sy, bool checkable, bool blockNode)
         {
             if (visible && enabled)
             {
-                if (blockNode)
+                if (arrow_rect.Contains(x + sx, y + sy) && CanExpand)
                 {
-                    sx = 0;
-                    if (rect.Contains(x + sx, y + sy))
-                    {
-                        Hover = true;
-                        return 1;
-                    }
-                    else if (arr_rect.Contains(x + sx, y + sy) && CanExpand)
-                    {
-                        Hover = rect.Contains(arr_rect);
-                        return 2;
-                    }
-                    else if (checkable && check_rect.Contains(x + sx, y + sy))
-                    {
-                        Hover = rect.Contains(arr_rect);
-                        return 3;
-                    }
+                    Hover = rect.Contains(arrow_rect);
+                    return 2;
                 }
-                else
+                else if (checkable && check_rect.Contains(x + sx, y + sy))
                 {
-                    if (rect.Contains(x + sx, y + sy) || ico_rect.Contains(x + sx, y + sy))
-                    {
-                        Hover = true;
-                        return 1;
-                    }
-                    else if (arr_rect.Contains(x + sx, y + sy) && CanExpand)
-                    {
-                        Hover = rect.Contains(arr_rect);
-                        return 2;
-                    }
-                    else if (checkable && check_rect.Contains(x + sx, y + sy))
-                    {
-                        Hover = rect.Contains(arr_rect);
-                        return 3;
-                    }
+                    Hover = rect.Contains(arrow_rect);
+                    return 3;
+                }
+                else if (rect.Contains(x + sx, y + sy) || ico_rect.Contains(x + sx, y + sy))
+                {
+                    Hover = true;
+                    return 1;
                 }
             }
             Hover = false;
@@ -1567,6 +1553,48 @@ namespace AntdUI
         internal Rectangle subtxt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
 
-        public override string? ToString() => text;
+        public Rectangle Rect(string type = "", bool actual = true)
+        {
+            if (actual || PARENT == null) return Rect(type, 0, 0);
+            else return Rect(type, PARENT.ScrollBar.ValueX, PARENT.ScrollBar.ValueY);
+        }
+        public Rectangle Rect(string type = "", int sx = 0, int sy = 0)
+        {
+            if (sx > 0 || sy > 0)
+            {
+                switch (type)
+                {
+                    case "Text":
+                        return new Rectangle(txt_rect.X - sx, txt_rect.Y - sy, txt_rect.Width, txt_rect.Height);
+                    case "SubTitle":
+                        return new Rectangle(subtxt_rect.X - sx, subtxt_rect.Y - sy, subtxt_rect.Width, subtxt_rect.Height);
+                    case "Checked":
+                        return new Rectangle(check_rect.X - sx, check_rect.Y - sy, check_rect.Width, check_rect.Height);
+                    case "Icon":
+                        return new Rectangle(ico_rect.X - sx, ico_rect.Y - sy, ico_rect.Width, ico_rect.Height);
+                    case "Arrow":
+                        return new Rectangle(arrow_rect.X - sx, arrow_rect.Y - sy, arrow_rect.Width, arrow_rect.Height);
+                    default:
+                        return new Rectangle(rect.X - sx, rect.Y - sy, rect.Width, rect.Height);
+                }
+            }
+            switch (type)
+            {
+                case "Text":
+                    return txt_rect;
+                case "SubTitle":
+                    return subtxt_rect;
+                case "Checked":
+                    return check_rect;
+                case "Icon":
+                    return ico_rect;
+                case "Arrow":
+                    return arrow_rect;
+                default:
+                    return rect;
+            }
+        }
+
+        public override string? ToString() => Text;
     }
 }

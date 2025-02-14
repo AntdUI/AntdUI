@@ -238,6 +238,7 @@ namespace AntdUI
             public int line { get; set; }
             public string text { get; set; }
             public Rectangle rect { get; set; }
+            public Rectangle? rect2 { get; set; }
             public bool ret { get; set; }
             public bool emoji { get; set; }
             public int width { get; set; }
@@ -252,6 +253,7 @@ namespace AntdUI
         internal Rectangle rect_d_ico, rect_d_l, rect_d_r;
 
         internal Rectangle? RECTDIV = null;
+        List<int> retnot = new List<int>(0);
         internal void CalculateRect()
         {
             var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight) : ReadRectangle;
@@ -259,6 +261,7 @@ namespace AntdUI
             RectAuto(rect, sps, sps2);
             if (cache_font == null)
             {
+                if (retnot.Count > 0) retnot.Clear();
                 if (ModeRange)
                 {
                     int center = rect_text.Width / 2;
@@ -274,237 +277,54 @@ namespace AntdUI
             {
                 if (multiline)
                 {
+                    var _retnot = new List<int>();
                     var rectText = rect_text;
                     if (ScrollYShow) rectText.Width -= 16;
                     int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
-                    int usex = 0, usey = 0, line = 0;
+                    int usex = 0, usey = 0, line = 0, retindex = -1;
                     foreach (var it in cache_font)
                     {
                         it.show = false;
-                        if (it.text == "\r")
+                        if (it.text == "\n" || it.text == "\r\n")
                         {
-                            it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
+                            retindex++;
+                            it.ret = true;
+                            it.line = line;
+                            line++;
+                            if (usex == 0 && usey == 0) it.rect2 = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
+                            if (retindex > 0) _retnot.Add(rectText.Y + usey - lineHeight);
+                            usey += lineHeight;
+                            usex = 0;
+                            it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
                             continue;
                         }
-                        else if (it.text == "\n" || it.text == "\r\n")
+                        else
                         {
-                            it.ret = true;
-                            if (usex == 0 && usey == 0)
+                            retindex = -1;
+                            if (it.text == "\r")
                             {
-                                it.line = 0;
-                                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
-                                line++;
-                                usey += lineHeight;
+                                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
+                                continue;
                             }
-                            else
+                            else if (usex + it.width > rectText.Width)
                             {
                                 line++;
                                 usey += lineHeight;
                                 usex = 0;
-                                it.line = line;
-                                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
-                                line++;
                             }
-                            continue;
-                        }
-                        else if (usex + it.width > rectText.Width)
-                        {
-                            line++;
-                            usey += lineHeight;
-                            usex = 0;
                         }
                         it.line = line;
                         it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                         usex += it.width;
                     }
+                    HandTextAlignCore(cache_font);
+                    retnot = _retnot;
                 }
                 else
                 {
-                    int usex = 0;
-                    if (ModeRange)
-                    {
-                        int center = rect_text.Width / 2;
-                        int h2 = CaretInfo.Height / 2;
-                        rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
-                        rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
-                        rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
-                        int GetTabIndex()
-                        {
-                            foreach (var it in cache_font)
-                            {
-                                if (it.text == "\t") return it.i;
-                            }
-                            return -1;
-                        }
-                        int tabindex = GetTabIndex();
-                        List<int> i_l = new List<int>(cache_font.Length), i_r = new List<int>(i_l.Count);
-                        if (tabindex == -1)
-                        {
-                            for (int i = 0; i < cache_font.Length; i++)
-                            {
-                                var it = cache_font[i];
-                                it.show = true;
-                                it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
-                                usex += it.width;
-                                i_l.Add(i);
-                            }
-                        }
-                        else if (tabindex > 0)
-                        {
-                            for (int i = 0; i < tabindex; i++)
-                            {
-                                var it = cache_font[i];
-                                it.show = true;
-                                it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
-                                usex += it.width;
-                                i_l.Add(i);
-                            }
-                            var left = cache_font[tabindex - 1].rect;
-                            cache_font[tabindex].rect = new Rectangle(left.Right, left.Y, 0, left.Height);
-
-                            int user = 0;
-                            for (int i = tabindex + 1; i < cache_font.Length; i++)
-                            {
-                                var it = cache_font[i];
-                                it.show = true;
-                                it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
-                                user += it.width;
-                                i_r.Add(i);
-                            }
-                        }
-                        else
-                        {
-                            int user = 0;
-                            for (int i = tabindex + 1; i < cache_font.Length; i++)
-                            {
-                                var it = cache_font[i];
-                                it.show = true;
-                                it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
-                                user += it.width;
-                                i_r.Add(i);
-                            }
-                        }
-                        if (textalign == HorizontalAlignment.Right)
-                        {
-                            if (i_l.Count > 0)
-                            {
-                                int left = rect_d_l.Right - cache_font[i_l[i_l.Count - 1]].rect.Right;
-                                foreach (var i in i_l)
-                                {
-                                    var it = cache_font[i];
-                                    var rect_tmp = it.rect;
-                                    rect_tmp.Offset(left, 0);
-                                    it.rect = rect_tmp;
-                                }
-                            }
-                            if (i_r.Count > 0)
-                            {
-                                int right = rect_d_r.Right - cache_font[i_r[i_r.Count - 1]].rect.Right;
-                                foreach (var i in i_r)
-                                {
-                                    var it = cache_font[i];
-                                    var rect_tmp = it.rect;
-                                    rect_tmp.Offset(right, 0);
-                                    it.rect = rect_tmp;
-                                }
-                            }
-                        }
-                        else if (textalign == HorizontalAlignment.Center)
-                        {
-                            if (i_l.Count > 0)
-                            {
-                                int left = (rect_d_l.Right - cache_font[i_l[i_l.Count - 1]].rect.Right) / 2;
-                                foreach (var i in i_l)
-                                {
-                                    var it = cache_font[i];
-                                    var rect_tmp = it.rect;
-                                    rect_tmp.Offset(left, 0);
-                                    it.rect = rect_tmp;
-                                }
-                            }
-                            if (i_r.Count > 0)
-                            {
-                                int right = (rect_d_r.Right - cache_font[i_r[i_r.Count - 1]].rect.Right) / 2;
-                                foreach (var i in i_r)
-                                {
-                                    var it = cache_font[i];
-                                    var rect_tmp = it.rect;
-                                    rect_tmp.Offset(right, 0);
-                                    it.rect = rect_tmp;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var it in cache_font)
-                        {
-                            it.show = true;
-                            it.rect = new Rectangle(rect_text.X + usex, rect_text.Y, it.width, CaretInfo.Height);
-                            usex += it.width;
-                        }
-
-                        if (textalign == HorizontalAlignment.Right)
-                        {
-                            int y = -1;
-                            var list = new List<CacheFont>();
-                            Action action = () =>
-                            {
-                                if (list.Count > 0)
-                                {
-                                    int w = rect_text.Right - list[list.Count - 1].rect.Right;
-                                    foreach (var it in list)
-                                    {
-                                        var rect_tmp = it.rect;
-                                        rect_tmp.Offset(w, 0);
-                                        it.rect = rect_tmp;
-                                    }
-                                    list.Clear();
-                                }
-                            };
-                            foreach (var it in cache_font)
-                            {
-                                if (it.rect.Y != y)
-                                {
-                                    y = it.rect.Y;
-                                    action();
-                                }
-                                list.Add(it);
-                            }
-                            action();
-                        }
-                        else if (textalign == HorizontalAlignment.Center)
-                        {
-                            int y = -1;
-                            var list = new List<CacheFont>();
-                            Action action = () =>
-                            {
-                                if (list.Count > 0)
-                                {
-                                    int w = (rect_text.Right - list[list.Count - 1].rect.Right) / 2;
-                                    foreach (var it in list)
-                                    {
-                                        var rect_tmp = it.rect;
-                                        rect_tmp.Offset(w, 0);
-                                        it.rect = rect_tmp;
-                                    }
-                                    list.Clear();
-                                }
-                            };
-                            foreach (var it in cache_font)
-                            {
-                                if (it.rect.Y != y)
-                                {
-                                    y = it.rect.Y;
-                                    action();
-                                }
-                                list.Add(it);
-                            }
-                            action();
-                        }
-                    }
+                    if (retnot.Count > 0) retnot.Clear();
+                    HandTextAlign(cache_font);
                 }
-
                 var last = cache_font[cache_font.Length - 1];
                 ScrollXMax = last.rect.Right - rect_text.Right;
                 switch (textalign)
@@ -552,6 +372,200 @@ namespace AntdUI
             }
             SetCaretPostion();
         }
+
+        #region 处理文本方向
+
+        void HandTextAlign(CacheFont[] cache_font)
+        {
+            int usex = 0;
+            if (ModeRange)
+            {
+                int center = rect_text.Width / 2;
+                int h2 = CaretInfo.Height / 2;
+                rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
+                rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
+                rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
+                int GetTabIndex()
+                {
+                    foreach (var it in cache_font)
+                    {
+                        if (it.text == "\t") return it.i;
+                    }
+                    return -1;
+                }
+                int tabindex = GetTabIndex();
+                List<int> i_l = new List<int>(cache_font.Length), i_r = new List<int>(i_l.Count);
+                if (tabindex == -1)
+                {
+                    for (int i = 0; i < cache_font.Length; i++)
+                    {
+                        var it = cache_font[i];
+                        it.show = true;
+                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
+                        usex += it.width;
+                        i_l.Add(i);
+                    }
+                }
+                else if (tabindex > 0)
+                {
+                    for (int i = 0; i < tabindex; i++)
+                    {
+                        var it = cache_font[i];
+                        it.show = true;
+                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
+                        usex += it.width;
+                        i_l.Add(i);
+                    }
+                    var left = cache_font[tabindex - 1].rect;
+                    cache_font[tabindex].rect = new Rectangle(left.Right, left.Y, 0, left.Height);
+
+                    int user = 0;
+                    for (int i = tabindex + 1; i < cache_font.Length; i++)
+                    {
+                        var it = cache_font[i];
+                        it.show = true;
+                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
+                        user += it.width;
+                        i_r.Add(i);
+                    }
+                }
+                else
+                {
+                    int user = 0;
+                    for (int i = tabindex + 1; i < cache_font.Length; i++)
+                    {
+                        var it = cache_font[i];
+                        it.show = true;
+                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
+                        user += it.width;
+                        i_r.Add(i);
+                    }
+                }
+                if (textalign == HorizontalAlignment.Right)
+                {
+                    if (i_l.Count > 0)
+                    {
+                        int left = rect_d_l.Right - cache_font[i_l[i_l.Count - 1]].rect.Right;
+                        foreach (var i in i_l)
+                        {
+                            var it = cache_font[i];
+                            var rect_tmp = it.rect;
+                            rect_tmp.Offset(left, 0);
+                            it.rect = rect_tmp;
+                        }
+                    }
+                    if (i_r.Count > 0)
+                    {
+                        int right = rect_d_r.Right - cache_font[i_r[i_r.Count - 1]].rect.Right;
+                        foreach (var i in i_r)
+                        {
+                            var it = cache_font[i];
+                            var rect_tmp = it.rect;
+                            rect_tmp.Offset(right, 0);
+                            it.rect = rect_tmp;
+                        }
+                    }
+                }
+                else if (textalign == HorizontalAlignment.Center)
+                {
+                    if (i_l.Count > 0)
+                    {
+                        int left = (rect_d_l.Right - cache_font[i_l[i_l.Count - 1]].rect.Right) / 2;
+                        foreach (var i in i_l)
+                        {
+                            var it = cache_font[i];
+                            var rect_tmp = it.rect;
+                            rect_tmp.Offset(left, 0);
+                            it.rect = rect_tmp;
+                        }
+                    }
+                    if (i_r.Count > 0)
+                    {
+                        int right = (rect_d_r.Right - cache_font[i_r[i_r.Count - 1]].rect.Right) / 2;
+                        foreach (var i in i_r)
+                        {
+                            var it = cache_font[i];
+                            var rect_tmp = it.rect;
+                            rect_tmp.Offset(right, 0);
+                            it.rect = rect_tmp;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var it in cache_font)
+                {
+                    it.show = true;
+                    it.rect = new Rectangle(rect_text.X + usex, rect_text.Y, it.width, CaretInfo.Height);
+                    usex += it.width;
+                }
+                HandTextAlignCore(cache_font);
+            }
+        }
+        void HandTextAlignCore(CacheFont[] cache_font)
+        {
+            if (textalign == HorizontalAlignment.Right)
+            {
+                int y = -1;
+                var list = new List<CacheFont>(cache_font.Length);
+                foreach (var it in cache_font)
+                {
+                    if (it.rect.Y != y)
+                    {
+                        y = it.rect.Y;
+                        HandTextAlignRight(ref list);
+                    }
+                    list.Add(it);
+                }
+                HandTextAlignRight(ref list);
+            }
+            else if (textalign == HorizontalAlignment.Center)
+            {
+                int y = -1;
+                var list = new List<CacheFont>(cache_font.Length);
+                foreach (var it in cache_font)
+                {
+                    if (it.rect.Y != y)
+                    {
+                        y = it.rect.Y;
+                        HandTextAlignCenter(ref list);
+                    }
+                    list.Add(it);
+                }
+                HandTextAlignCenter(ref list);
+            }
+        }
+        void HandTextAlignRight(ref List<CacheFont> list)
+        {
+            if (list.Count > 0)
+            {
+                int w = rect_text.Right - list[list.Count - 1].rect.Right;
+                foreach (var it in list)
+                {
+                    var rect_tmp = it.rect;
+                    rect_tmp.Offset(w, 0);
+                    it.rect = rect_tmp;
+                }
+                list.Clear();
+            }
+        }
+        void HandTextAlignCenter(ref List<CacheFont> list)
+        {
+            if (list.Count > 0)
+            {
+                int w = (rect_text.Right - list[list.Count - 1].rect.Right) / 2;
+                foreach (var it in list)
+                {
+                    var rect_tmp = it.rect;
+                    rect_tmp.Offset(w, 0);
+                    it.rect = rect_tmp;
+                }
+                list.Clear();
+            }
+        }
+
+        #endregion
 
         #region 最终区域计算
 

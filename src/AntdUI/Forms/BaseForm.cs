@@ -36,14 +36,12 @@ namespace AntdUI
                 ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
         }
+
         public void SetCursor(bool val)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() =>
-                {
-                    SetCursor(val);
-                }));
+                Invoke(new Action(() => SetCursor(val)));
                 return;
             }
             Cursor = val ? Cursors.Hand : DefaultCursor;

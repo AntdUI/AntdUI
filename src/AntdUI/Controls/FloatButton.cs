@@ -34,10 +34,7 @@ namespace AntdUI
         /// <param name="form">所属窗口</param>
         /// <param name="btns">按钮</param>
         /// <param name="call">回调</param>
-        public static FormFloatButton? open(Form form, ConfigBtn[] btns, Action<ConfigBtn> call)
-        {
-            return open(new Config(form, btns, call));
-        }
+        public static FormFloatButton? open(Form form, ConfigBtn[] btns, Action<ConfigBtn> call) => open(new Config(form, btns, call));
 
         /// <summary>
         /// FloatButton 悬浮按钮
@@ -60,10 +57,7 @@ namespace AntdUI
         /// <param name="form">所属窗口</param>
         /// <param name="btns">按钮</param>
         /// <param name="call">回调</param>
-        public static Config config(Form form, ConfigBtn[] btns, Action<ConfigBtn> call)
-        {
-            return new Config(form, btns, call);
-        }
+        public static Config config(Form form, ConfigBtn[] btns, Action<ConfigBtn> call) => new Config(form, btns, call);
 
         /// <summary>
         /// FloatButton 配置
@@ -88,15 +82,7 @@ namespace AntdUI
         {
             if (config.Form.IsHandleCreated)
             {
-                if (config.Form.InvokeRequired)
-                {
-                    FormFloatButton? form = null;
-                    config.Form.Invoke(new Action(() =>
-                    {
-                        form = open(config);
-                    }));
-                    return form;
-                }
+                if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<FormFloatButton?>(() => open(config)));
                 var floatButton = new LayeredFormFloatButton(config);
                 floatButton.Show(config.Form);
                 return floatButton;
@@ -322,10 +308,25 @@ namespace AntdUI
                 }
             }
 
+            string? text = null;
             /// <summary>
             /// 文字及其它内容
             /// </summary>
-            public string? Text { get; set; }
+            public string? Text
+            {
+                get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", Name });
+                set
+                {
+                    if (text == value) return;
+                    text = value;
+                    OnPropertyChanged("Text");
+                }
+            }
+
+            /// <summary>
+            /// 国际化（文本）
+            /// </summary>
+            public string? LocalizationText { get; set; }
 
             /// <summary>
             /// 气泡的内容
@@ -415,7 +416,32 @@ namespace AntdUI
             /// <summary>
             /// 徽标大小
             /// </summary>
-            public float BadgeSize { get; set; } = 9F;
+            public float BadgeSize { get; set; } = .6F;
+
+            bool badgeMode = false;
+            /// <summary>
+            /// 徽标模式（镂空）
+            /// </summary>
+            public bool BadgeMode
+            {
+                get => badgeMode;
+                set
+                {
+                    if (badgeMode == value) return;
+                    badgeMode = value;
+                    OnPropertyChanged("BadgeMode");
+                }
+            }
+
+            /// <summary>
+            /// 徽标偏移X
+            /// </summary>
+            public int BadgeOffsetX { get; set; }
+
+            /// <summary>
+            /// 徽标偏移Y
+            /// </summary>
+            public int BadgeOffsetY { get; set; }
 
             /// <summary>
             /// 徽标背景颜色

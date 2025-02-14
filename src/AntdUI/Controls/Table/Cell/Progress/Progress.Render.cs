@@ -94,7 +94,7 @@ namespace AntdUI
             else return new Size(height * 2, height / 2);
         }
 
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
         {
             int w = rect.Width, h = size.Height;
             if (Shape == TShape.Circle)

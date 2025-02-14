@@ -33,122 +33,146 @@ namespace AntdUI
             {
                 case Keys.Back:
                     ProcessBackSpaceKey();
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Delete:
                     ProcessDelete();
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 //========================================================
                 case Keys.Left:
                     ProcessLeftKey(false);
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Left | Keys.Shift:
                     ProcessLeftKey(true);
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Up:
                     if (multiline) ProcessUpKey(false);
                     else ProcessLeftKey(false);
-                    return multiline;
+                    if (HandShortcutKeys) return multiline;
+                    break;
                 case Keys.Up | Keys.Shift:
                     if (multiline) ProcessUpKey(true);
                     else ProcessLeftKey(false);
-                    return multiline;
+                    if (HandShortcutKeys) return multiline;
+                    break;
                 case Keys.Right:
                     ProcessRightKey(false);
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Right | Keys.Shift:
                     ProcessRightKey(true);
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Down:
                     if (multiline) ProcessDownKey(false);
                     else ProcessRightKey(false);
-                    return multiline;
+                    if (HandShortcutKeys) return multiline;
+                    break;
                 case Keys.Down | Keys.Shift:
                     if (multiline) ProcessDownKey(true);
                     else ProcessRightKey(false);
-                    return multiline;
+                    if (HandShortcutKeys) return multiline;
+                    break;
                 case Keys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(false, false);
                     SpeedScrollTo = false;
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(false, false);
                     SpeedScrollTo = false;
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(true, false);
                     SpeedScrollTo = false;
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(true, false);
                     SpeedScrollTo = false;
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Shift | Keys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(false, true);
                     SpeedScrollTo = false;
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Shift | Keys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(false, true);
                     SpeedScrollTo = false;
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.Shift | Keys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(true, true);
                     SpeedScrollTo = false;
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.Shift | Keys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(true, true);
                     SpeedScrollTo = false;
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 //========================================================
                 case Keys.Tab:
                     if (multiline && AcceptsTab)
                     {
                         EnterText("\t");
-                        return true;
+                        if (HandShortcutKeys) return true;
                     }
                     break;
                 case Keys.Enter:
                     if (multiline)
                     {
                         EnterText(Environment.NewLine);
-                        return true;
+                        if (HandShortcutKeys) return true;
                     }
                     break;
                 //========================================================
                 case Keys.Control | Keys.A:
                     SelectAll();
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.C:
                     Copy();
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.X:
                     Cut();
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.V:
                     Paste();
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.Z:
                     Undo();
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.Control | Keys.Y:
                     Redo();
-                    return true;
+                    if (HandShortcutKeys) return true;
+                    break;
                 case Keys.PageUp:
                     if (ScrollYShow && cache_font != null)
                     {
                         SpeedScrollTo = true;
                         SelectionLength = 0;
                         var index = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - (rect_text.Height - cache_font[0].rect.Height));
-                        SelectionStart = index;
+                        SetSelectionStart(index);
                         SpeedScrollTo = false;
-                        return true;
+                        if (HandShortcutKeys) return true;
                     }
                     break;
                 case Keys.PageDown:
@@ -157,9 +181,9 @@ namespace AntdUI
                         SpeedScrollTo = true;
                         SelectionLength = 0;
                         var index = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + (rect_text.Height - cache_font[0].rect.Height));
-                        SelectionStart = index;
+                        SetSelectionStart(index);
                         SpeedScrollTo = false;
-                        return true;
+                        if (HandShortcutKeys) return true;
                     }
                     break;
             }
@@ -206,18 +230,19 @@ namespace AntdUI
                 }
                 Text = string.Join("", texts);
                 SelectionLength = 0;
-                SelectionStart = start;
+                SetSelectionStart(start);
             }
             else if (selectionStart > 0)
             {
                 int start = selectionStart - 1;
+                if (start == 0) CaretInfo.FirstRet = true;
                 var texts = new List<string>(cache_font.Length);
                 foreach (var it in cache_font)
                 {
                     if (start != it.i) texts.Add(it.text);
                 }
                 Text = string.Join("", texts);
-                SelectionStart = start;
+                SetSelectionStart(start);
             }
         }
 
@@ -239,7 +264,7 @@ namespace AntdUI
                 }
                 Text = string.Join("", texts);
                 SelectionLength = 0;
-                SelectionStart = start;
+                SetSelectionStart(start);
             }
             else if (selectionStart < cache_font.Length)
             {
@@ -250,12 +275,13 @@ namespace AntdUI
                     if (start != it.i) texts.Add(it.text);
                 }
                 Text = string.Join("", texts);
-                SelectionStart = start;
+                SetSelectionStart(start);
             }
         }
 
         void ProcessLeftKey(bool shift)
         {
+            tmpUp = 0;
             if (shift)
             {
                 int old = selectionStartTemp;
@@ -269,24 +295,31 @@ namespace AntdUI
             }
             if (SelectionLength > 0)
             {
-                if (selectionStartTemp < selectionStart) SelectionStart = selectionStartTemp;
+                if (selectionStartTemp < selectionStart) SetSelectionStart(selectionStartTemp);
                 else
                 {
                     int old = selectionStart;
                     selectionStart--;
-                    SelectionStart = old;
+                    SetSelectionStart(old);
                 }
                 SelectionLength = 0;
             }
             else
             {
                 SelectionLength = 0;
-                SelectionStart--;
+                if (selectionStart == 1) CaretInfo.FirstRet = true;
+                SetSelectionStart(selectionStart - 1);
             }
         }
 
         void ProcessRightKey(bool shift)
         {
+            tmpUp = 0;
+            if (CaretInfo.FirstRet)
+            {
+                CaretInfo.FirstRet = false;
+                CaretInfo.Place = true;
+            }
             if (shift)
             {
                 if (selectionStart > selectionStartTemp)
@@ -305,22 +338,23 @@ namespace AntdUI
             }
             if (SelectionLength > 0)
             {
-                if (selectionStartTemp > selectionStart) SelectionStart = selectionStartTemp + selectionLength;
+                if (selectionStartTemp > selectionStart) SetSelectionStart(selectionStartTemp + selectionLength);
                 else
                 {
                     int old = selectionStart;
                     selectionStart--;
-                    SelectionStart = old + selectionLength;
+                    SetSelectionStart(old + selectionLength);
                 }
                 SelectionLength = 0;
             }
             else
             {
                 SelectionLength = 0;
-                SelectionStart++;
+                SetSelectionStart(selectionStart + 1);
             }
         }
 
+        int tmpUp = 0;
         void ProcessUpKey(bool shift)
         {
             if (shift)
@@ -328,22 +362,23 @@ namespace AntdUI
                 if (cache_font == null)
                 {
                     SelectionLength = 0;
-                    SelectionStart--;
+                    SetSelectionStart(selectionStart - 1);
                 }
                 else
                 {
                     int index = selectionStartTemp, cend = cache_font.Length - 1;
                     if (index > cend) index = cend;
                     var it = cache_font[index];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font);
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out bool two);
+                    CaretInfo.FirstRet = two;
                     if (nearest == null || nearest.i == selectionStartTemp)
                     {
-                        SelectionStart = index - 1;
+                        SetSelectionStart(index - 1);
                         SelectionLength++;
                     }
                     else
                     {
-                        SelectionStart = nearest.i;
+                        SetSelectionStart(nearest.i);
                         SelectionLength += index - nearest.i + (index >= cend ? 1 : 0);
                     }
                 }
@@ -351,34 +386,58 @@ namespace AntdUI
             else
             {
                 SelectionLength = 0;
-                if (cache_font == null) SelectionStart--;
+                if (cache_font == null) SetSelectionStart(selectionStart - 1);
                 else
                 {
                     int end = SelectionStart;
                     if (end > cache_font.Length - 1) end = cache_font.Length - 1;
                     var it = cache_font[end];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font);
-                    if (nearest == null || nearest.i == selectionStart) SelectionStart--;
-                    else SelectionStart = nearest.i;
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out bool two);
+                    CaretInfo.FirstRet = two;
+                    if (nearest == null) SetSelectionStart(selectionStart - 1);
+                    else
+                    {
+                        if (nearest.i == 0)
+                        {
+                            if (tmpUp > 0)
+                            {
+                                CaretInfo.FirstRet = true;
+                                tmpUp = 0;
+                                SetCaretPostion(nearest.i);
+                            }
+                            else if (!CaretInfo.FirstRet) tmpUp++;
+                        }
+                        else tmpUp = 0;
+                        if (nearest.i == selectionStart) SetSelectionStart(selectionStart - 1);
+                        else SetSelectionStart(nearest.i);
+                    }
                 }
             }
         }
 
         void ProcessDownKey(bool shift)
         {
+            tmpUp = 0;
+            if (CaretInfo.FirstRet)
+            {
+                CaretInfo.FirstRet = false;
+                CaretInfo.Place = true;
+                tmpUp++;
+            }
             if (shift)
             {
                 if (cache_font == null)
                 {
                     SelectionLength = 0;
-                    SelectionStart++;
+                    SetSelectionStart(selectionStart + 1);
                 }
                 else
                 {
                     int index = selectionStartTemp + selectionLength;
                     if (index > cache_font.Length - 1) return;
                     var it = cache_font[index];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font);
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out bool two);
+                    CaretInfo.FirstRet = two;
                     if (nearest == null || nearest.i == index) SelectionLength++;
                     else SelectionLength += nearest.i - index;
                     CurrentPosIndex = selectionStart + selectionLength;
@@ -388,15 +447,16 @@ namespace AntdUI
             else
             {
                 SelectionLength = 0;
-                if (cache_font == null) SelectionStart++;
+                if (cache_font == null) SetSelectionStart(selectionStart + 1);
                 else
                 {
                     int end = SelectionStart;
                     if (end > cache_font.Length - 1) return;
                     var it = cache_font[end];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font);
-                    if (nearest == null || nearest.i == selectionStart) SelectionStart++;
-                    else SelectionStart = nearest.i;
+                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out bool two);
+                    CaretInfo.FirstRet = two;
+                    if (nearest == null || nearest.i == selectionStart) SetSelectionStart(selectionStart + 1);
+                    else SetSelectionStart(nearest.i);
                 }
             }
         }
@@ -408,7 +468,7 @@ namespace AntdUI
                 int index = selectionStartTemp;
                 if (index == 0) return;
                 if (ScrollYShow) ScrollY = 0;
-                SelectionStart = 0;
+                SetSelectionStart(0);
                 SelectionLength += index;
             }
             else
@@ -417,7 +477,7 @@ namespace AntdUI
                 if (ctrl)
                 {
                     if (ScrollYShow) ScrollY = 0;
-                    SelectionStart = 0;
+                    SetSelectionStart(0);
                 }
                 else
                 {
@@ -430,13 +490,13 @@ namespace AntdUI
                             int start = FindStartY(cache_font, index - 1);
                             if (start == index) return;
                             CaretInfo.Place = false;
-                            SelectionStart = start;
+                            SetSelectionStart(start);
                         }
                     }
                     else
                     {
                         if (ScrollYShow) ScrollY = 0;
-                        SelectionStart = 0;
+                        SetSelectionStart(0);
                     }
                 }
             }
@@ -458,7 +518,7 @@ namespace AntdUI
                 {
                     if (ScrollYShow) ScrollY = ScrollYMax;
                     SelectionLength = 0;
-                    SelectionStart = cache_font.Length;
+                    SetSelectionStart(cache_font.Length);
                 }
                 else
                 {
@@ -469,13 +529,13 @@ namespace AntdUI
                         int start = FindEndY(cache_font, index) + 1;
                         if (start == index) return;
                         CaretInfo.Place = true;
-                        SelectionStart = start;
+                        SetSelectionStart(start);
                     }
                     else
                     {
                         if (ScrollYShow) ScrollY = ScrollYMax;
                         SelectionLength = 0;
-                        SelectionStart = cache_font.Length;
+                        SetSelectionStart(cache_font.Length);
                     }
                 }
             }

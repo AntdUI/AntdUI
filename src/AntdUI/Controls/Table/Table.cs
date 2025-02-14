@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -33,7 +33,7 @@ namespace AntdUI
     [Description("Table 表格")]
     [DefaultEvent("CellClick")]
     [ToolboxItem(true)]
-    public partial class Table : IControl
+    public partial class Table : IControl, IEventListener
     {
         #region 属性
 
@@ -59,6 +59,7 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
                 if (value == null) return;
                 value.table = this;
+                ExtractHeaderFixed();
                 OnPropertyChanged("Columns");
             }
         }
@@ -571,11 +572,7 @@ namespace AntdUI
 
         bool SetIndex(int value)
         {
-            if (selectedIndex.Length > 0)
-            {
-                if (selectedIndex[0] == value) return false;
-            }
-            else
+            if (selectedIndex.Length < 1)
             {
                 if (value == -1) return false;
             }
@@ -660,6 +657,17 @@ namespace AntdUI
         #endregion
 
         #region 方法
+
+        /// <summary>
+        /// 刷新界面
+        /// </summary>
+        public override void Refresh()
+        {
+            ExtractHeaderFixed();
+            ExtractData();
+            base.Refresh();
+            if (LoadLayout()) Invalidate();
+        }
 
         List<int> enableDir = new List<int>();
         /// <summary>
@@ -962,6 +970,112 @@ namespace AntdUI
             return dt;
         }
 
+        #region 树
+
+        /// <summary>
+        /// 展开全部
+        /// </summary>
+        /// <param name="value">展开或折叠</param>
+        public void ExpandAll(bool value = true)
+        {
+            if (ExpandChanged == null)
+            {
+                if (value)
+                {
+                    if (rows == null) return;
+                    rows_Expand = new List<object>(rows.Length - 1);
+                    for (int i = 1; i < rows.Length; i++)
+                    {
+                        var record = rows[i].RECORD;
+                        if (record == null) continue;
+                        rows_Expand.Add(record);
+                    }
+                }
+                else rows_Expand.Clear();
+            }
+            else
+            {
+                if (value)
+                {
+                    if (rows == null) return;
+                    var temp = rows_Expand;
+                    rows_Expand = new List<object>(rows.Length - 1);
+                    rows_Expand.AddRange(temp);
+                    for (int i = 1; i < rows.Length; i++)
+                    {
+                        var record = rows[i].RECORD;
+                        if (record == null || rows_Expand.Contains(record)) continue;
+                        rows_Expand.Add(record);
+                        ExpandChanged(this, new TableExpandEventArgs(record, false));
+                    }
+                }
+                else
+                {
+                    foreach (var it in rows_Expand) ExpandChanged(this, new TableExpandEventArgs(it, false));
+                    rows_Expand.Clear();
+                }
+            }
+            if (LoadLayout()) Invalidate();
+        }
+
+        /// <summary>
+        /// 展开或折叠
+        /// </summary>
+        /// <param name="record">元数据</param>
+        /// <param name="value">展开或折叠</param>
+        public void Expand(object record, bool value = true)
+        {
+            if (value)
+            {
+                if (rows_Expand.Contains(record)) return;
+                rows_Expand.Add(record);
+                ExpandChanged?.Invoke(this, new TableExpandEventArgs(record, true));
+            }
+            else
+            {
+                if (rows_Expand.Contains(record))
+                {
+                    rows_Expand.Remove(record);
+                    ExpandChanged?.Invoke(this, new TableExpandEventArgs(record, false));
+                }
+                else return;
+            }
+            if (LoadLayout()) Invalidate();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region 本地化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    if (ColumnsHasLocalization() && LoadLayout()) Invalidate();
+                    break;
+            }
+        }
+
+        bool ColumnsHasLocalization()
+        {
+            if (columns == null) return false;
+            foreach (var column in columns)
+            {
+                if (column.LocalizationTitle == null) continue;
+                return true;
+            }
+            return false;
+        }
+
         #endregion
     }
 
@@ -1226,7 +1340,7 @@ namespace AntdUI
         public Column(string key, string title)
         {
             Key = key;
-            Title = title;
+            _title = title;
         }
         /// <summary>
         /// 表头
@@ -1237,7 +1351,7 @@ namespace AntdUI
         public Column(string key, string title, ColumnAlign align)
         {
             Key = key;
-            Title = title;
+            _title = title;
             Align = align;
         }
 
@@ -1246,10 +1360,41 @@ namespace AntdUI
         /// </summary>
         public string Key { get; set; }
 
+        string _title;
         /// <summary>
         /// 显示文字
         /// </summary>
-        public string Title { get; set; }
+        public string Title
+        {
+            get => Localization.GetLangIN(LocalizationTitle, _title, new string[] { "{id}", Key });
+            set
+            {
+                if (_title == value) return;
+                _title = value;
+                Invalidates();
+            }
+        }
+
+        [Description("显示文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationTitle { get; set; }
+
+        /// <summary>
+        /// 设置国际化显示文本
+        /// </summary>
+        public Column SetLocalizationTitle(string? value)
+        {
+            LocalizationTitle = value;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置国际化显示文本（后面插入id）
+        /// </summary>
+        public Column SetLocalizationTitleID(string value)
+        {
+            LocalizationTitle = value + "{id}";
+            return this;
+        }
 
         bool visible = true;
         /// <summary>
@@ -1267,9 +1412,27 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置是否显示
+        /// </summary>
+        public Column SetVisible(bool value = false)
+        {
+            Visible = value;
+            return this;
+        }
+
+        /// <summary>
         /// 对齐方式
         /// </summary>
         public ColumnAlign Align { get; set; } = ColumnAlign.Left;
+
+        /// <summary>
+        /// 设置对齐方式
+        /// </summary>
+        public Column SetAlign(ColumnAlign value = ColumnAlign.Center)
+        {
+            Align = value;
+            return this;
+        }
 
         /// <summary>
         /// 表头对齐方式
@@ -1277,9 +1440,39 @@ namespace AntdUI
         public ColumnAlign? ColAlign { get; set; }
 
         /// <summary>
+        /// 设置表头对齐方式
+        /// </summary>
+        public Column SetColAlign(ColumnAlign value = ColumnAlign.Center)
+        {
+            ColAlign = value;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置对齐方式
+        /// </summary>
+        /// <param name="value">内容对齐方式</param>
+        /// <param name="col">表头对齐方式</param>
+        public Column SetAligns(ColumnAlign value = ColumnAlign.Center, ColumnAlign col = ColumnAlign.Center)
+        {
+            Align = value;
+            ColAlign = col;
+            return this;
+        }
+
+        /// <summary>
         /// 列宽度
         /// </summary>
         public string? Width { get; set; }
+
+        /// <summary>
+        /// 设置列宽度
+        /// </summary>
+        public Column SetWidth(string? value = null)
+        {
+            Width = value;
+            return this;
+        }
 
         /// <summary>
         /// 列最大宽度
@@ -1287,9 +1480,27 @@ namespace AntdUI
         public string? MaxWidth { get; set; }
 
         /// <summary>
+        /// 设置列最大宽度
+        /// </summary>
+        public Column SetMaxWidth(string? value = null)
+        {
+            MaxWidth = value;
+            return this;
+        }
+
+        /// <summary>
         /// 超过宽度将自动省略
         /// </summary>
         public bool Ellipsis { get; set; }
+
+        /// <summary>
+        /// 设置超过宽度将自动省略
+        /// </summary>
+        public Column SetEllipsis(bool value = true)
+        {
+            Ellipsis = value;
+            return this;
+        }
 
         bool lineBreak = false;
         /// <summary>
@@ -1304,6 +1515,15 @@ namespace AntdUI
                 lineBreak = value;
                 Invalidates();
             }
+        }
+
+        /// <summary>
+        /// 设置自动换行
+        /// </summary>
+        public Column SetLineBreak(bool value = true)
+        {
+            LineBreak = value;
+            return this;
         }
 
         bool _fixed = false;
@@ -1321,6 +1541,15 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 设置列是否固定
+        /// </summary>
+        public Column SetFixed(bool value = true)
+        {
+            Fixed = value;
+            return this;
+        }
+
         bool sortorder = false;
         /// <summary>
         /// 启用排序
@@ -1334,6 +1563,15 @@ namespace AntdUI
                 sortorder = value;
                 Invalidate();
             }
+        }
+
+        /// <summary>
+        /// 设置启用排序
+        /// </summary>
+        public Column SetSortOrder(bool value = true)
+        {
+            SortOrder = value;
+            return this;
         }
 
         SortMode sortMode = SortMode.NONE;
@@ -1367,14 +1605,41 @@ namespace AntdUI
         public string? KeyTree { get; set; }
 
         /// <summary>
+        /// 设置树形列
+        /// </summary>
+        public Column SetTree(string? key)
+        {
+            KeyTree = key;
+            return this;
+        }
+
+        /// <summary>
         /// 列样式
         /// </summary>
         public Table.CellStyleInfo? Style { get; set; }
 
         /// <summary>
+        /// 设置列样式
+        /// </summary>
+        public Column SetStyle(Table.CellStyleInfo? style)
+        {
+            Style = style;
+            return this;
+        }
+
+        /// <summary>
         /// 标题列样式
         /// </summary>
         public Table.CellStyleInfo? ColStyle { get; set; }
+
+        /// <summary>
+        /// 设置标题列样式
+        /// </summary>
+        public Column SetColStyle(Table.CellStyleInfo? style)
+        {
+            ColStyle = style;
+            return this;
+        }
 
         #region 内部
 

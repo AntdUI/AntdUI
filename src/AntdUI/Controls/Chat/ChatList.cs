@@ -568,8 +568,8 @@ namespace AntdUI.Chat
             {
                 var size = g.MeasureString(Config.NullText, Font).Height;
                 int item_height = (int)Math.Ceiling(size * 1.714),
-                    gap = (int)Math.Round(item_height * 0.75),
-                    spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * 0.8F) - item_height;
+                    gap = (int)Math.Round(item_height * .75),
+                    spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
                 y = spilt;
                 foreach (var it in items)
                 {

@@ -74,6 +74,13 @@ namespace Demo
                 case "ScrollBarHidden":
                     return "ScrollBar Hidden Style";
 
+                case "Previous":
+                    return "Previous";
+                case "Next":
+                    return "Next";
+                case "Finish":
+                    return "Finish";
+
                 //Alert ----------------------------
                 case "Alert.Text":
                     return "Alert";
@@ -191,6 +198,22 @@ namespace Demo
                     return "Divider";
                 case "Divider.Description":
                     return "A divider line separates different content.";
+
+                //GridPanel ----------------------------
+                case "GridPanel.Text":
+                    return "GridPanel";
+                case "GridPanel.Description":
+                    return "Grid layout container with precise division of areas.";
+                case "GridPanel.Prefix":
+                    return "Span Attribute";
+                case "GridPanel.Describe":
+                    return "-The column width attribute is before, and the row height attribute is after; grouping. Each row represents the number of row height attributes corresponding to the number of rows, with spaces separating each number";
+
+                //Splitter ----------------------------
+                case "Splitter.Text":
+                    return "Splitter";
+                case "Splitter.Description":
+                    return "Split panels to isolate";
 
                 //Drawer ----------------------------
                 case "Drawer.Text":
@@ -466,6 +489,26 @@ namespace Demo
                     return "EnableHeaderResizing";
                 case "Table.checkVisibleHeader":
                     return "VisibleHeader";
+                case "Table.checkAddressLineBreak":
+                    return "AddressLineBreak";
+                case "Table.Column.name":
+                    return "Name";
+                case "Table.Column.checkTitle":
+                    return "No Title";
+                case "Table.Column.radio":
+                    return "Radio";
+                case "Table.Column.online":
+                    return "Online";
+                case "Table.Column.enable":
+                    return "Enable";
+                case "Table.Column.age":
+                    return "Age";
+                case "Table.Column.address":
+                    return "Address";
+                case "Table.Column.imgs":
+                    return "Imgs";
+                case "Table.Column.btns":
+                    return "Action";
 
                 //Tabs ----------------------------
                 case "Tabs.Text":
@@ -512,6 +555,12 @@ namespace Demo
                     return "Placement";
                 case "Tooltip.label4":
                     return "Simplest usage";
+
+                //Tour ----------------------------
+                case "Tour.Text":
+                    return "Tour";
+                case "Tour.Description":
+                    return "A popup component for guiding users through a product.";
 
                 //Tree ----------------------------
                 case "Tree.Text":

@@ -16,18 +16,22 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.Windows.Forms;
 
 namespace AntdUI
 {
     internal class DoubleBufferForm : Form
     {
-        public DoubleBufferForm(Form form, Control control) : this()
+        bool UFocus = false;
+        public DoubleBufferForm(Form form, Control control, bool focus = true) : this()
         {
+            UFocus = !focus;
             Tag = form;
             control.Dock = DockStyle.Fill;
             Controls.Add(control);
         }
+
         public DoubleBufferForm()
         {
             SetStyle(
@@ -39,5 +43,21 @@ namespace AntdUI
             UpdateStyles();
             ShowInTaskbar = false;
         }
+
+        #region 无焦点窗体
+
+        protected override bool ShowWithoutActivation => UFocus;
+
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            if (UFocus && m.Msg == 0x21)
+            {
+                m.Result = new IntPtr(3);
+                return;
+            }
+            base.WndProc(ref m);
+        }
+
+        #endregion
     }
 }

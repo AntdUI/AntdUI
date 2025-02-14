@@ -407,8 +407,55 @@ namespace AntdUI
         {
             var rect = ChangeList();
             ScrollBar.SizeChange(rect);
+            var item = GetSelectItem(out var sub);
+            if (item != null)
+            {
+                foreach (var it in sub) it.Select = true;
+            }
             base.OnHandleCreated(e);
         }
+
+        #region 获取选中项目
+
+        public MenuItem? GetSelectItem()
+        {
+            var list = new List<MenuItem>(0);
+            return GetSelectItem(ref list, items);
+        }
+
+        public MenuItem? GetSelectItem(out List<MenuItem> list)
+        {
+            list = new List<MenuItem>(0);
+            return GetSelectItem(ref list, items);
+        }
+
+        MenuItem? GetSelectItem(ref List<MenuItem> list, MenuItemCollection? items)
+        {
+            if (items == null || items.Count == 0) return null;
+            foreach (var it in items)
+            {
+                var list_ = new List<MenuItem>(list.Count + 1);
+                list_.AddRange(list);
+                list_.Add(it);
+                var select = GetSelectItem(ref list_, it.Sub);
+                if (select == null)
+                {
+                    if (it.Select)
+                    {
+                        list = list_;
+                        return it;
+                    }
+                }
+                else
+                {
+                    list = list_;
+                    return select;
+                }
+            }
+            return null;
+        }
+
+        #endregion
 
         protected override void OnFontChanged(EventArgs e)
         {
@@ -552,44 +599,22 @@ namespace AntdUI
             var g = e.Graphics.High();
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
-            Color scroll_color, color_fore, color_fore_active, fore_enabled, back_hover, back_active;
-            switch (theme)
+            Color scroll_color = Colour.TextBase.Get("Menu", theme), color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get("Menu", theme), back_hover, back_active;
+            if (Config.IsDark || theme == TAMode.Dark)
             {
-                case TAMode.Light:
-                    scroll_color = Color.Black;
-                    fore_enabled = Style.rgba(0, 0, 0, 0.25F);
-                    color_fore = fore ?? Color.Black;
-                    color_fore_active = ForeActive ?? "#1677FF".ToColor();
-                    back_hover = BackHover ?? Style.rgba(0, 0, 0, 0.06F);
-                    back_active = BackActive ?? "#E6F4FF".ToColor();
-                    break;
-                case TAMode.Dark:
-                    scroll_color = Color.White;
-                    fore_enabled = Style.rgba(255, 255, 255, 0.25F);
-                    color_fore = fore ?? Style.rgba(255, 255, 255, 0.85F);
-                    back_hover = color_fore_active = ForeActive ?? Color.White;
-                    back_active = BackActive ?? "#1668DC".ToColor();
-                    break;
-                default:
-                    scroll_color = Colour.TextBase.Get("Menu");
-                    fore_enabled = Colour.TextQuaternary.Get("Menu");
-                    if (Config.IsDark)
-                    {
-                        color_fore = fore ?? Colour.Text.Get("Menu");
-                        back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get("Menu");
-                        back_active = BackActive ?? Colour.Primary.Get("Menu");
-                    }
-                    else
-                    {
-                        color_fore = fore ?? Colour.TextBase.Get("Menu");
-                        color_fore_active = ForeActive ?? Colour.Primary.Get("Menu");
-                        back_hover = BackHover ?? Colour.FillSecondary.Get("Menu");
-                        back_active = BackActive ?? Colour.PrimaryBg.Get("Menu");
-                    }
-                    break;
+                color_fore = fore ?? Colour.Text.Get("Menu", theme);
+                back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get("Menu", theme);
+                back_active = BackActive ?? Colour.Primary.Get("Menu", theme);
+            }
+            else
+            {
+                color_fore = fore ?? Colour.TextBase.Get("Menu", theme);
+                color_fore_active = ForeActive ?? Colour.Primary.Get("Menu", theme);
+                back_hover = BackHover ?? Colour.FillSecondary.Get("Menu", theme);
+                back_active = BackActive ?? Colour.PrimaryBg.Get("Menu", theme);
             }
             float _radius = radius * Config.Dpi;
-            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu")))
+            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu", theme)))
             {
                 PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
@@ -699,7 +724,11 @@ namespace AntdUI
                 {
                     if (it.Select)
                     {
-                        if (it.CanExpand) PaintTextIconExpand(g, it, fore_active);
+                        if (it.CanExpand)
+                        {
+                            if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
+                            PaintTextIconExpand(g, it, fore_active);
+                        }
                         else
                         {
                             PaintBack(g, back_active, it.rect, radius);
@@ -721,7 +750,11 @@ namespace AntdUI
                 {
                     if (it.Select)
                     {
-                        if (it.CanExpand) PaintTextIconExpand(g, it, fore_active);
+                        if (it.CanExpand)
+                        {
+                            if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
+                            PaintTextIconExpand(g, it, fore_active);
+                        }
                         else
                         {
                             PaintBack(g, back_active, it.rect, radius);
@@ -742,6 +775,7 @@ namespace AntdUI
                 {
                     if (it.CanExpand)
                     {
+                        if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
                         using (var pen = new Pen(fore_active, 2F))
                         {
                             pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
@@ -1105,6 +1139,19 @@ namespace AntdUI
             if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) ILeave(sub, ref count);
         }
 
+        /// <summary>
+        /// 取消全部选择
+        /// </summary>
+        public void USelect()
+        {
+            if (items == null || items.Count == 0) return;
+            IUSelect(items);
+        }
+
+        /// <summary>
+        /// 取消全部选择
+        /// </summary>
+        [Obsolete("use USelect")]
         public void IUSelect()
         {
             if (items == null) return;
@@ -1300,7 +1347,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public string? Text
         {
-            get => text;
+            get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
             set
             {
                 if (text == value) return;
@@ -1308,6 +1355,9 @@ namespace AntdUI
                 Invalidates();
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         /// <summary>
         /// 自定义字体
@@ -1480,10 +1530,7 @@ namespace AntdUI
         }
 
         [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
-        public bool CanExpand
-        {
-            get => visible && items != null && items.Count > 0;
-        }
+        public bool CanExpand => visible && items != null && items.Count > 0;
 
         /// <summary>
         /// 菜单坐标位置
@@ -1656,6 +1703,6 @@ namespace AntdUI
         internal Rectangle txt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
 
-        public override string? ToString() => text;
+        public override string? ToString() => Text;
     }
 }

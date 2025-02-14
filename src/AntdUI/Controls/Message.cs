@@ -164,10 +164,20 @@ namespace AntdUI
             /// </summary>
             public Form Form { get; set; }
 
+            string? text = null;
             /// <summary>
             /// 文本
             /// </summary>
-            public string Text { get; set; }
+            public string? Text
+            {
+                get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
+                set => text = value;
+            }
+
+            /// <summary>
+            /// 国际化（文本）
+            /// </summary>
+            public string? LocalizationText { get; set; }
 
             /// <summary>
             /// 图标

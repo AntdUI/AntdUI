@@ -2062,7 +2062,7 @@ namespace AntdUI
             return PSize;
         }
 
-        Size PSize
+        public Size PSize
         {
             get
             {
@@ -2107,15 +2107,7 @@ namespace AntdUI
         bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
-            if (InvokeRequired)
-            {
-                bool flag = false;
-                Invoke(new Action(() =>
-                {
-                    flag = BeforeAutoSize();
-                }));
-                return flag;
-            }
+            if (InvokeRequired) return ITask.Invoke(this, new Func<bool>(BeforeAutoSize));
             var PS = PSize;
             switch (autoSize)
             {
@@ -2143,7 +2135,7 @@ namespace AntdUI
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
-            if (e.KeyCode is Keys.Space)
+            if (e.KeyCode is Keys.Space && CanClick())
             {
                 ClickAnimation();
                 OnClick(EventArgs.Empty);
@@ -2161,7 +2153,7 @@ namespace AntdUI
 
         public void PerformClick()
         {
-            if (CanSelect)
+            if (CanSelect && CanClick())
             {
                 ClickAnimation();
                 OnClick(EventArgs.Empty);
@@ -2183,6 +2175,12 @@ namespace AntdUI
                 }
                 else return ClientRectangle.Contains(e);
             }
+        }
+
+        bool CanClick()
+        {
+            if (loading) return LoadingRespondClick;
+            else return true;
         }
 
         [Browsable(false)]

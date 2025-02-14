@@ -26,20 +26,22 @@ namespace AntdUI
     internal class LayeredFormMenuDown : ILayeredFormOpacityDown, SubLayeredForm
     {
         internal float Radius = 0;
-        bool isauto = true, isdark = false;
+        TAMode Theme;
+        bool isdark = false;
         List<OMenuItem> Items;
-        Color? BackHover, BackActive, foreColor, ForeActive;
+        Color? backColor, BackHover, BackActive, foreColor, ForeActive;
 
         ScrollY? scrollY;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, MenuItemCollection items)
         {
             MessageCloseMouseLeave = true;
-            isauto = control.Theme == TAMode.Auto;
+            Theme = control.Theme;
             isdark = Config.IsDark || control.Theme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             select_x = 0;
             Font = control.Font;
+            if (control.ShowSubBack) backColor = control.BackColor;
             foreColor = control.ForeColor;
             ForeActive = control.ForeActive;
             BackHover = control.BackHover;
@@ -51,12 +53,13 @@ namespace AntdUI
 
         public LayeredFormMenuDown(Menu parent, int sx, LayeredFormMenuDown control, float radius, Rectangle rect_read, MenuItemCollection items)
         {
-            isauto = parent.Theme == TAMode.Auto;
+            Theme = parent.Theme;
             isdark = Config.IsDark || parent.Theme == TAMode.Dark;
             parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
             Font = control.Font;
+            backColor = control.backColor;
             foreColor = control.foreColor;
             ForeActive = control.ForeActive;
             BackHover = control.BackHover;
@@ -332,14 +335,11 @@ namespace AntdUI
                 using (var path = rect_read.RoundPath(Radius))
                 {
                     DrawShadow(g, rect);
-                    if (isauto) g.Fill(Colour.BgElevated.Get("Menu"), path);
-                    else if (isdark) g.Fill("#1F1F1F".ToColor(), path);
-                    else g.Fill(Color.White, path);
-
+                    g.Fill(backColor ?? Colour.BgElevated.Get("Menu", Theme), path);
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        using (var brush = new SolidBrush(Color.FromArgb(180, Colour.Text.Get("Menu"))))
+                        using (var brush = new SolidBrush(Color.FromArgb(180, Colour.Text.Get("Menu", Theme))))
                         { g.String(emptytext, Font, brush, rect_read, s_f); }
                     }
                     else
@@ -356,29 +356,9 @@ namespace AntdUI
                                 }
                             }
                         }
-                        else if (isauto)
-                        {
-                            using (var brush = new SolidBrush(Colour.Text.Get("Menu")))
-                            {
-                                foreach (var it in Items)
-                                {
-                                    if (it.Show) DrawItem(g, brush, it);
-                                }
-                            }
-                        }
-                        else if (isdark)
-                        {
-                            using (var brush = new SolidBrush(Color.White))
-                            {
-                                foreach (var it in Items)
-                                {
-                                    if (it.Show) DrawItem(g, brush, it);
-                                }
-                            }
-                        }
                         else
                         {
-                            using (var brush = new SolidBrush(Color.Black))
+                            using (var brush = new SolidBrush(Colour.Text.Get("Menu", Theme)))
                             {
                                 foreach (var it in Items)
                                 {
@@ -399,159 +379,80 @@ namespace AntdUI
         {
             if (it.Val.Enabled)
             {
-                if (isauto)
+                if (isdark)
                 {
-                    if (isdark)
+                    if (it.Val.Select)
                     {
-                        if (it.Val.Select)
+                        using (var path = it.Rect.RoundPath(Radius))
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.Fill(BackActive ?? Colour.Primary.Get("Menu"), path);
-                            }
-                            using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu")))
-                            {
-                                g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
-                            }
-                            PaintIcon(g, it, brush.Color);
+                            g.Fill(BackActive ?? Colour.Primary.Get("Menu", Theme), path);
                         }
-                        else
+                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", Theme)))
                         {
-                            if (it.Hover)
-                            {
-                                using (var path = it.Rect.RoundPath(Radius))
-                                {
-                                    g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu"), path);
-                                }
-                            }
-                            g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
-                            PaintIcon(g, it, brush.Color);
+                            g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                         }
+                        PaintIcon(g, it, brush.Color);
                     }
                     else
                     {
-                        if (it.Val.Select)
+                        if (it.Hover)
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu"), path);
-                            }
-                            using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu")))
-                            {
-                                g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                                g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", Theme), path);
                             }
                         }
-                        else
-                        {
-                            if (it.Hover)
-                            {
-                                using (var path = it.Rect.RoundPath(Radius))
-                                {
-                                    g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu"), path);
-                                }
-                            }
-                            g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
-                        }
+                        g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
                         PaintIcon(g, it, brush.Color);
                     }
                 }
                 else
                 {
-                    if (isdark)
+                    if (it.Val.Select)
                     {
-                        if (it.Val.Select)
+                        using (var path = it.Rect.RoundPath(Radius))
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.Fill(BackActive ?? "#1668DC".ToColor(), path);
-                            }
-                            using (var brush_select = new SolidBrush(ForeActive ?? Color.White))
-                            {
-                                g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
-                            }
-                            PaintIcon(g, it, brush.Color);
+                            g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu", Theme), path);
                         }
-                        else
+                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", Theme)))
                         {
-                            if (it.Hover)
-                            {
-                                using (var path = it.Rect.RoundPath(Radius))
-                                {
-                                    g.Fill(BackHover ?? Style.rgba(255, 255, 255, 0.08F), path);
-                                }
-                            }
-                            g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
-                            PaintIcon(g, it, brush.Color);
+                            g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                         }
                     }
                     else
                     {
-                        if (it.Val.Select)
+                        if (it.Hover)
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu"), path);
-                            }
-                            using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu")))
-                            {
-                                g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                                g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", Theme), path);
                             }
                         }
-                        else
-                        {
-                            if (it.Hover)
-                            {
-                                using (var path = it.Rect.RoundPath(Radius))
-                                {
-                                    g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu"), path);
-                                }
-                            }
-                            g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
-                        }
-                        PaintIcon(g, it, brush.Color);
+                        g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
                     }
+                    PaintIcon(g, it, brush.Color);
                 }
             }
             else
             {
                 if (it.Val.Select)
                 {
-                    if (isauto)
+                    if (isdark)
                     {
-                        if (isdark)
+                        using (var path = it.Rect.RoundPath(Radius))
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.Fill(BackActive ?? Colour.Primary.Get("Menu"), path);
-                            }
-                        }
-                        else
-                        {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu"), path);
-                            }
+                            g.Fill(BackActive ?? Colour.Primary.Get("Menu", Theme), path);
                         }
                     }
                     else
                     {
-                        if (isdark)
+                        using (var path = it.Rect.RoundPath(Radius))
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.Fill(BackActive ?? "#1668DC".ToColor(), path);
-                            }
-                        }
-                        else
-                        {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu"), path);
-                            }
+                            g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu", Theme), path);
                         }
                     }
                 }
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Menu")))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Menu", Theme)))
                 {
                     g.String(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, stringFormatLeft);
                 }

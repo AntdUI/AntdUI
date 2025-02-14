@@ -101,8 +101,7 @@ namespace AntdUI
         Bitmap? temp = null;
         public override Bitmap PrintBit()
         {
-            var rect_read = TargetRectXY;
-            var rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
+            Rectangle rect_read = TargetRectXY, rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
             if (temp == null || (temp.Width != rect_read.Width || temp.Height != rect_read.Height))
             {
                 temp?.Dispose();

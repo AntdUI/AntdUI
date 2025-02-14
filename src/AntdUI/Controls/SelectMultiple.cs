@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -155,7 +156,7 @@ namespace AntdUI
             {
                 if (selectedValue == value) return;
                 selectedValue = value;
-                if (value == null || items == null || items.Count == 0)
+                if (value.Length == 0 || items == null || items.Count == 0)
                 {
                     ClearSelect();
                     SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
@@ -181,10 +182,12 @@ namespace AntdUI
                 if (it is DividerSelectItem) { }
                 else selecteds.Add(it);
             }
+            if (selectedValue.SequenceEqual(selecteds)) return;
             selectedValue = selecteds.ToArray();
             CalculateRect();
             SetCaretPostion();
             subForm?.SetValues(selecteds);
+            SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
         }
 
         /// <summary>
@@ -213,13 +216,18 @@ namespace AntdUI
         /// </summary>
         public void ClearSelect()
         {
-            Text = "";
-            selectedValue = new object[0];
-            CalculateRect();
+            if (selectedValue.Length > 0)
+            {
+                TerminateExpand = true;
+                SelectedValue = new object[0];
+            }
+            base.OnClearValue();
+
             SetCaretPostion();
             Invalidate();
             subForm?.ClearValues();
         }
+
         protected override void IBackSpaceKey()
         {
             if (selectedValue.Length > 0)
@@ -642,7 +650,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                BeginInvoke(new Action(() => { ShowLayeredForm(list); }));
+                BeginInvoke(new Action(() => ShowLayeredForm(list)));
                 return;
             }
             Expand = true;
@@ -686,8 +694,9 @@ namespace AntdUI
             if (selectedValue.Length > 0)
             {
                 TerminateExpand = true;
-                ClearSelect();
+                SelectedValue = new object[0];
             }
+            base.OnClearValue();
         }
 
         protected override void OnClickContent() => ExpandDrop = !expandDrop;

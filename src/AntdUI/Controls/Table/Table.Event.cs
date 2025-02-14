@@ -178,5 +178,22 @@ namespace AntdUI
         /// </summary>
         [Description("选中变化后发生"), Category("行为")]
         public event EventHandler? SelectIndexChanged;
+
+        /// <summary>
+        /// 自定义排序
+        /// </summary>
+        [Description("自定义排序"), Category("行为")]
+        public event Comparison<string>? CustomSort = null;
+
+        /// <summary>
+        /// 展开事件
+        /// </summary>
+        public delegate void ExpandEventHandler(object sender, TableExpandEventArgs e);
+
+        /// <summary>
+        /// 展开改变时发生
+        /// </summary>
+        [Description("展开改变时发生"), Category("行为")]
+        public event ExpandEventHandler? ExpandChanged;
     }
 }

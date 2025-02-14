@@ -918,12 +918,14 @@ namespace AntdUI
                         use_x = rx + gap;
                         break;
                 }
+                int maxwidth = _rect.Width - gap2;
                 for (int i = 0; i < Value.Count; i++)
                 {
                     var it = Value[i];
                     var size = SIZES[i];
-                    it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, gap, gap2);
+                    it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, maxwidth, gap, gap2);
                     use_x += size.Width + gap;
+                    maxwidth -= size.Width + gap2;
                 }
             }
 

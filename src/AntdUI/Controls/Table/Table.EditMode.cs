@@ -68,10 +68,7 @@ namespace AntdUI
                 {
                     if (InvokeRequired)
                     {
-                        Invoke(new Action(() =>
-                        {
-                            Focus();
-                        }));
+                        Invoke(new Action(() => Focus()));
                     }
                     else Focus();
                 }

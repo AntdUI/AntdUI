@@ -90,6 +90,22 @@ namespace AntdUI
                 return true;
             }
         }
+
+        public static bool Wait(this System.Threading.WaitHandle? handle, int timeout, bool close = true)
+        {
+            if (handle == null) return true;
+            try
+            {
+                handle.WaitOne(timeout);
+                if (handle.SafeWaitHandle.IsClosed) return close;
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
         public static bool SetWait(this System.Threading.EventWaitHandle? handle)
         {
             if (handle == null) return true;
@@ -205,52 +221,36 @@ namespace AntdUI
 
         public static string? ClipboardGetText(this Control control)
         {
-            if (control.InvokeRequired)
-            {
-                string? r = null;
-                control.Invoke(new Action(() =>
-                {
-                    r = ClipboardGetText();
-                }));
-                return r;
-            }
+            if (control.InvokeRequired) return ITask.Invoke(control, new Func<string?>(() => ClipboardGetText()));
             return ClipboardGetText();
         }
         public static string? ClipboardGetText()
         {
             try
             {
-                return Win32.GetClipBoardText();
+                return Clipboard.GetText();
             }
             catch
             {
-                return Clipboard.GetText();
+                return Win32.GetClipBoardText();
             }
         }
         public static bool ClipboardSetText(this Control control, string? text)
         {
-            if (control.InvokeRequired)
-            {
-                bool r = false;
-                control.Invoke(new Action(() =>
-                {
-                    r = ClipboardSetText(text);
-                }));
-                return r;
-            }
+            if (control.InvokeRequired) return ITask.Invoke(control, new Func<bool>(() => ClipboardSetText(text)));
             return ClipboardSetText(text);
         }
         public static bool ClipboardSetText(string? text)
         {
             try
             {
-                if (Win32.SetClipBoardText(text)) return true;
-            }
-            catch
-            {
                 if (text == null) Clipboard.Clear();
                 else Clipboard.SetText(text);
                 return true;
+            }
+            catch
+            {
+                if (Win32.SetClipBoardText(text)) return true;
             }
             return false;
         }

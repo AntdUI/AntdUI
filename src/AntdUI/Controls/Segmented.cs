@@ -690,6 +690,7 @@ namespace AntdUI
                             g.String(it.Text, Font, brushDisable, it.RectText, s_f);
                         }
                     }
+                    it.PaintBadge(Font, it.Rect, g);
                 }
             }
             this.PaintBadge(g);
@@ -1157,15 +1158,7 @@ namespace AntdUI
         {
             if (AutoSize)
             {
-                if (InvokeRequired)
-                {
-                    bool flag = false;
-                    Invoke(new Action(() =>
-                    {
-                        flag = BeforeAutoSize();
-                    }));
-                    return flag;
-                }
+                if (InvokeRequired) return ITask.Invoke(this, new Func<bool>(BeforeAutoSize));
                 if (Vertical)
                 {
                     int height = Rect.Height;
@@ -1204,7 +1197,7 @@ namespace AntdUI
         }
     }
 
-    public class SegmentedItem
+    public class SegmentedItem : BadgeConfig
     {
         /// <summary>
         /// ID
@@ -1286,7 +1279,7 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public string? Text
         {
-            get => text;
+            get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
             set
             {
                 if (text == value) return;
@@ -1297,6 +1290,9 @@ namespace AntdUI
             }
         }
 
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
+
         /// <summary>
         /// 用户定义数据
         /// </summary>
@@ -1305,7 +1301,7 @@ namespace AntdUI
 
         internal bool Hover { get; set; }
 
-        internal bool HasEmptyText => text == null || string.IsNullOrEmpty(text);
+        internal bool HasEmptyText => Text == null || string.IsNullOrEmpty(Text);
 
         internal void SetOffset(int x, int y)
         {
@@ -1457,6 +1453,90 @@ namespace AntdUI
 
         internal Segmented? PARENT { get; set; }
 
+        #region 徽标
+
+        string? badge;
+        /// <summary>
+        /// 徽标文本
+        /// </summary>
+        public string? Badge
+        {
+            get => badge;
+            set
+            {
+                if (badge == value) return;
+                badge = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        string? badgeSvg = null;
+        /// <summary>
+        /// 徽标SVG
+        /// </summary>
+        public string? BadgeSvg
+        {
+            get => badgeSvg;
+            set
+            {
+                if (badgeSvg == value) return;
+                badgeSvg = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        TAlignFrom badgeAlign = TAlignFrom.TR;
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
+        public TAlignFrom BadgeAlign
+        {
+            get => badgeAlign;
+            set
+            {
+                if (badgeAlign == value) return;
+                badgeAlign = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标大小
+        /// </summary>
+        public float BadgeSize { get; set; } = .6F;
+
+        /// <summary>
+        /// 徽标背景颜色
+        /// </summary>
+        public Color? BadgeBack { get; set; }
+
+        bool badgeMode = false;
+        /// <summary>
+        /// 徽标模式（镂空）
+        /// </summary>
+        public bool BadgeMode
+        {
+            get => badgeMode;
+            set
+            {
+                if (badgeMode == value) return;
+                badgeMode = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        public int BadgeOffsetX { get; set; }
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        public int BadgeOffsetY { get; set; }
+
+        #endregion
+
         void Invalidates()
         {
             if (PARENT == null) return;
@@ -1464,6 +1544,6 @@ namespace AntdUI
             PARENT.Invalidate();
         }
 
-        public override string? ToString() => text;
+        public override string? ToString() => Text;
     }
 }

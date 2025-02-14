@@ -35,7 +35,7 @@ namespace AntdUI
             return new Size(0, size.Height - gap);
         }
 
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
         {
             Rect = new Rectangle(rect.X + (rect.Width - 1) / 2, rect.Y + (rect.Height - size.Height) / 2, 1, size.Height);
         }

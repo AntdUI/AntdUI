@@ -325,10 +325,7 @@ namespace AntdUI
             return rect_dir;
         }
 
-        public override Rectangle DisplayRectangle
-        {
-            get => ClientRectangle.PaddingRect(Margin, Padding, _padding);
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Margin, Padding, _padding);
 
         #region 数据
 
@@ -607,6 +604,7 @@ namespace AntdUI
                         if (item.Contains(x, y))
                         {
                             if (style.MouseClick(item, i, x, y)) return;
+                            TabClick?.Invoke(this, new TabsItemEventArgs(item, style, e));
                             SelectedIndex = i;
                         }
                         else Invalidate();
@@ -616,6 +614,12 @@ namespace AntdUI
                 }
             }
         }
+
+        /// <summary>
+        /// 点击标签时发生
+        /// </summary>
+        [Description("点击标签时发生"), Category("行为")]
+        public event TabsItemEventHandler? TabClick = null;
 
         int hover_i = -1;
         int Hover_i
@@ -701,6 +705,36 @@ namespace AntdUI
                 _scroll_y = value;
                 Invalidate();
             }
+        }
+
+        bool TabFocusMove(TabPageRect oldTab, TabPageRect newTab, int value, int max)
+        {
+            if (scroll_show)
+            {
+                switch (alignment)
+                {
+                    case TabAlignment.Left:
+                    case TabAlignment.Right:
+                        int sy = scroll_y;
+                        bool showy = newTab.Rect.Y > sy && newTab.Rect.Bottom < sy + ClientRectangle.Height;
+                        if (showy) return false;
+                        if (value == 0) scroll_y = 0;
+                        else if (value == max - 1) scroll_y = scroll_max;
+                        else scroll_y = newTab.Rect.Y;
+                        return true;
+                    case TabAlignment.Top:
+                    case TabAlignment.Bottom:
+                    default:
+                        int sx = scroll_x;
+                        bool showx = newTab.Rect.X > sx && newTab.Rect.Right < sx + ClientRectangle.Width;
+                        if (showx) return false;
+                        if (value == 0) scroll_x = 0;
+                        else if (value == max - 1) scroll_x = scroll_max;
+                        else scroll_x = newTab.Rect.X;
+                        return true;
+                }
+            }
+            return false;
         }
 
         #region 超出
@@ -1379,7 +1413,6 @@ namespace AntdUI
             };
             action_del = (item, index) =>
             {
-                it.Controls.Remove(item);
                 if (index == -1) it.SelectedIndex = 0;
                 else
                 {
@@ -1392,6 +1425,8 @@ namespace AntdUI
                     }
                     else if (old > index) it.SelectedIndex = old - 1;
                 }
+                // 针对 #IBLKEA 修正
+                it.Controls.Remove(item);
             };
             return this;
         }
@@ -1462,10 +1497,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => iconSvg != null || icon != null;
-        }
+        public bool HasIcon => iconSvg != null || icon != null;
 
         bool readOnly = false;
         /// <summary>
@@ -1540,6 +1572,28 @@ namespace AntdUI
         /// </summary>
         [Description("徽标偏移Y"), Category("徽标"), DefaultValue(1)]
         public int BadgeOffsetY { get; set; } = 1;
+
+        #endregion
+
+        #region 国际化
+
+        string text = "";
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category("外观"), DefaultValue("")]
+        public override string Text
+        {
+            get => this.GetLangIN(LocalizationText, text);
+            set
+            {
+                if (text == value) return;
+                base.Text = text = value;
+            }
+        }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         #endregion
 

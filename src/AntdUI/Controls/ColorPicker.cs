@@ -234,6 +234,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 显示关闭按钮
+        /// </summary>
+        [Description("显示关闭按钮"), Category("行为"), DefaultValue(false)]
+        public bool ShowClose { get; set; }
+
         bool hasvalue = false;
         /// <summary>
         /// 是否包含值
@@ -558,10 +564,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
 
         public override GraphicsPath RenderRegion
         {
@@ -835,7 +838,7 @@ namespace AntdUI
             return PSize;
         }
 
-        Size PSize
+        public Size PSize
         {
             get
             {
@@ -884,15 +887,7 @@ namespace AntdUI
         bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
-            if (InvokeRequired)
-            {
-                bool flag = false;
-                Invoke(new Action(() =>
-                {
-                    flag = BeforeAutoSize();
-                }));
-                return flag;
-            }
+            if (InvokeRequired) return ITask.Invoke(this, new Func<bool>(BeforeAutoSize));
             var PS = PSize;
             switch (autoSize)
             {

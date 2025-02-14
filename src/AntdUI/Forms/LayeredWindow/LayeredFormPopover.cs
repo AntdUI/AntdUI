@@ -50,6 +50,7 @@ namespace AntdUI
 
                 if (config.Content is Control control)
                 {
+                    control.Parent = this;
                     control.BackColor = Colour.BgElevated.Get("Popover");
                     control.ForeColor = Colour.Text.Get("Popover");
                     int w = (int)Math.Round(control.Width * dpi) + 2;
@@ -190,7 +191,9 @@ namespace AntdUI
                         LoadContent(control);
                     }));
                 }
+                else base.LoadOK();
             }
+            else base.LoadOK();
             if (config.AutoClose > 0)
             {
                 ITask.Run(() =>
@@ -206,7 +209,7 @@ namespace AntdUI
         {
             var flocation = new Point(TargetRect.Location.X + rectContent.X, TargetRect.Location.Y + rectContent.Y);
             var fsize = new Size(rectContent.Width, rectContent.Height);
-            form = new DoubleBufferForm(this, control)
+            form = new DoubleBufferForm(this, control, config.Focus)
             {
                 FormBorderStyle = FormBorderStyle.None,
                 Location = flocation,
@@ -219,6 +222,7 @@ namespace AntdUI
             form.Location = flocation;
             PARENT = form;
             config.OnControlLoad?.Invoke();
+            base.LoadOK();
         }
 
         private void Control_Disposed(object? sender, EventArgs e) => IClose();

@@ -119,8 +119,7 @@ namespace AntdUI
         {
             if (ScrollYShow && autoscroll)
             {
-                int SIZE = 20;
-
+                int SIZE = (int)(16 * Config.Dpi), SIZE_BAR = (int)(6 * Config.Dpi), SIZE_MINIY = (int)(Config.ScrollMinSizeY * Config.Dpi);
                 ScrollRect = new Rectangle(rect_read.Right - SIZE, rect_read.Y, SIZE, rect_read.Height);
                 if (IsPaintScroll())
                 {
@@ -134,24 +133,28 @@ namespace AntdUI
                         }
                     }
                 }
-                float val = scrolly, VrValue = ScrollYMax + ScrollRect.Height;
-                float height = ((ScrollRect.Height / VrValue) * ScrollRect.Height) - 20;
-                if (height < SIZE) height = SIZE;
+                float val = scrolly, VrValue = ScrollYMax + ScrollRect.Height, gap = (ScrollRect.Width - SIZE_BAR) / 2, min = SIZE_MINIY + gap * 2;
+                float heightfull = ((ScrollRect.Height / VrValue) * ScrollRect.Height), height = heightfull - SIZE;
+                if (height < min) height = min;
+                else if (height < SIZE) height = SIZE;
                 float y = val == 0 ? 0 : (val / (VrValue - ScrollRect.Height)) * (ScrollRect.Height - height);
-                if (ScrollHover) ScrollSlider = new RectangleF(ScrollRect.X + 6, ScrollRect.Y + y, 8, height);
-                else ScrollSlider = new RectangleF(ScrollRect.X + 7, ScrollRect.Y + y, 6, height);
-                if (ScrollSlider.Y < 10) ScrollSlider.Y = 10;
-                else if (ScrollSlider.Y > ScrollRect.Height - height - 6) ScrollSlider.Y = ScrollRect.Height - height - 6;
+                ScrollSlider = new RectangleF(ScrollRect.X + gap, ScrollRect.Y + y + gap, SIZE_BAR, height - gap * 2);
+
+                if (heightfull < SIZE_MINIY) heightfull = SIZE_MINIY;
+                else if (heightfull < SIZE) heightfull = SIZE;
+                ScrollSliderFull = heightfull;
+
+                int alpha = ScrollHover ? 141 : 110;
                 using (var path = ScrollSlider.RoundPath(ScrollSlider.Width))
                 {
-                    g.Fill(Color.FromArgb(141, Colour.TextBase.Get("Input")), path);
+                    g.Fill(Color.FromArgb(alpha, Colour.TextBase.Get("Input")), path);
                 }
             }
         }
 
         bool IsPaintScroll()
         {
-            if (Config.ScrollBarHide) return ExtraMouseHover;
+            if (Config.ScrollBarHide) return ScrollHover;
             else return true;
         }
 
@@ -236,12 +239,17 @@ namespace AntdUI
             g.ResetClip();
             if (CaretInfo.Show && CaretInfo.Flag)
             {
+                if (multiline) g.SetClip(new Rectangle(0, rect_text.Y, w, rect_text.Height));
+                else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
+                else g.SetClip(new Rectangle(0, 0, w, Height));
+
                 g.TranslateTransform(-ScrollX, -ScrollY);
                 using (var brush = new SolidBrush(CaretColor ?? _fore))
                 {
                     g.Fill(brush, CaretInfo.Rect);
                 }
                 g.ResetTransform();
+                g.ResetClip();
             }
         }
         void PaintTextSelected(Canvas g, CacheFont[] cache_font)
@@ -304,10 +312,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
 
         public override GraphicsPath RenderRegion
         {
@@ -335,6 +340,7 @@ namespace AntdUI
 
         Rectangle ScrollRect;
         RectangleF ScrollSlider;
+        float ScrollSliderFull;
         bool scrollhover = false;
         bool ScrollHover
         {

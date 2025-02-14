@@ -459,7 +459,7 @@ namespace AntdUI
             return PSize;
         }
 
-        Size PSize
+        public Size PSize
         {
             get
             {
@@ -489,15 +489,7 @@ namespace AntdUI
         bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
-            if (InvokeRequired)
-            {
-                bool flag = false;
-                Invoke(new Action(() =>
-                {
-                    flag = BeforeAutoSize();
-                }));
-                return flag;
-            }
+            if (InvokeRequired) return ITask.Invoke(this, new Func<bool>(BeforeAutoSize));
             var PS = PSize;
             switch (autoSize)
             {

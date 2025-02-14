@@ -89,12 +89,17 @@ namespace AntdUI
             Padd = Radius = 0;
             if (form.WindowState != FormWindowState.Maximized)
             {
-                if (form is BorderlessForm borderless) Radius = (int)(borderless.Radius * Config.Dpi);
-                else if (OS.Win11) Radius = (int)(8 * Config.Dpi); //Win11
-                if (form is Window || form is FormNoBar) return false;//无边框处理
-                else if (form.FormBorderStyle != FormBorderStyle.None)
+                if (form is BorderlessForm borderless)
                 {
-                    Padd = (int)(7 * Config.Dpi);
+                    Radius = (int)(borderless.Radius * Config.Dpi);
+                    return false;
+                }
+                else
+                {
+                    if (form.FormBorderStyle == FormBorderStyle.None) return false;
+                    if (OS.Win11) Radius = (int)(8 * Config.Dpi); //Win11
+                    if (form is Window || form is FormNoBar) return false;//无边框处理
+                    Padd = (int)(3 * Config.Dpi);
                     return true;
                 }
             }

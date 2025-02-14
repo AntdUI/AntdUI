@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -59,15 +59,7 @@ namespace AntdUI
         {
             if (config.Control.IsHandleCreated)
             {
-                if (config.Control.InvokeRequired)
-                {
-                    Form? form = null;
-                    config.Control.Invoke(new Action(() =>
-                    {
-                        form = open(config);
-                    }));
-                    return form;
-                }
+                if (config.Control.InvokeRequired) return ITask.Invoke(config.Control, new Func<Form?>(() => open(config)));
                 var frm = new LayeredFormContextMenuStrip(config);
                 frm.Show(config.Control);
                 return frm;
@@ -151,7 +143,7 @@ namespace AntdUI
         /// <param name="text">文本</param>
         public ContextMenuStripItem(string text)
         {
-            Text = text;
+            _text = text;
         }
 
         /// <summary>
@@ -161,8 +153,8 @@ namespace AntdUI
         /// <param name="subtext">子文本</param>
         public ContextMenuStripItem(string text, string subtext)
         {
-            Text = text;
-            SubText = subtext;
+            _text = text;
+            subText = subtext;
         }
 
         /// <summary>
@@ -170,15 +162,35 @@ namespace AntdUI
         /// </summary>
         public string? ID { get; set; }
 
+        string _text;
         /// <summary>
         /// 文本
         /// </summary>
-        public string Text { get; set; }
+        public string Text
+        {
+            get => Localization.GetLangIN(LocalizationText, _text, new string?[] { "{id}", ID });
+            set => _text = value;
+        }
 
+        /// <summary>
+        /// 国际化（文本）
+        /// </summary>
+        public string? LocalizationText { get; set; }
+
+        string? subText = null;
         /// <summary>
         /// 子文本
         /// </summary>
-        public string? SubText { get; set; }
+        public string? SubText
+        {
+            get => Localization.GetLangI(LocalizationSubText, subText, new string?[] { "{id}", ID });
+            set => subText = value;
+        }
+
+        /// <summary>
+        /// 国际化（子文本）
+        /// </summary>
+        public string? LocalizationSubText { get; set; }
 
         /// <summary>
         /// 文字颜色

@@ -70,15 +70,7 @@ namespace AntdUI
         {
             if (config.Control.IsHandleCreated)
             {
-                if (config.Control.InvokeRequired)
-                {
-                    Form? form = null;
-                    config.Control.Invoke(new Action(() =>
-                    {
-                        form = open(config);
-                    }));
-                    return form;
-                }
+                if (config.Control.InvokeRequired) return ITask.Invoke(config.Control, new Func<Form?>(() => open(config)));
                 var popover = new LayeredFormPopover(config);
                 popover.Show(config.Control);
                 return popover;
@@ -197,6 +189,11 @@ namespace AntdUI
             /// 自定义位置
             /// </summary>
             public Rectangle? CustomPoint { get; set; }
+
+            /// <summary>
+            /// 获取焦点
+            /// </summary>
+            public bool Focus { get; set; } = true;
         }
 
         /// <summary>

@@ -45,11 +45,12 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Button**](doc/wiki/en/Control/Button.md) | ✅ | ✅ |
 ➡️| [**FloatButton**](doc/wiki/en/Control/FloatButton.md) | ✅ | ❎ |
 ||||
-⬇️| Layout `4` | Animation | Disable |
+⬇️| Layout `5` | Animation | Disable |
 ➡️| [**Divider**](doc/wiki/en/Control/Divider.md) | ❎ | ❎ |
 ➡️| [**StackPanel**](doc/wiki/en/Control/StackPanel.md) | ❎ | ❎ |
 ➡️| [**FlowPanel**](doc/wiki/en/Control/FlowPanel.md) | ❎ | ❎ |
 ➡️| [**GridPanel**](doc/wiki/en/Control/GridPanel.md) | ❎ | ❎ |
+➡️| [**Splitter**](doc/wiki/zh/Control/Splitter.md) | ❎ | ❎ |
 ||||
 ⬇️| Navigation `6` | Animation | Disable |
 ➡️| [**Breadcrumb**](doc/wiki/en/Control/Breadcrumb.md) | ✅ | ❎ |
@@ -74,7 +75,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**TimePicker**](doc/wiki/en/Control/TimePicker.md) | ✅ | ✅ |
 ➡️| [**UploadDragger**](doc/wiki/en/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| Data Display `17` | Animation | Disable |
+⬇️| Data Display `18` | Animation | Disable |
 ➡️| [**Avatar**](doc/wiki/en/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge**](doc/wiki/en/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar**](doc/wiki/en/Control/Calendar.md) | ✅ | ❎ |
@@ -89,6 +90,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Tag**](doc/wiki/en/Control/Tag.md) | ✅ | ❎ |
 ➡️| [**Timeline**](doc/wiki/en/Control/Timeline.md) | ❎ | ❎ |
 ➡️| [**Tooltip**](doc/wiki/en/Control/Tooltip.md) | ✅ | ❎ |
+➡️| [**Tour**](doc/wiki/en/Control/Tour.md) | ✅ | ❎ |
 ➡️| [**Tree**](doc/wiki/en/Control/Tree.md) | ✅ | ✅ |
 ➡️| [**Label**](doc/wiki/en/Control/Label.md) | ✅ | ❎ |
 ➡️| [**LabelTime**](doc/wiki/zh/Control/LabelTime.md) | ✅ | ❎ |

@@ -685,10 +685,7 @@ namespace AntdUI
         }
 
         [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
-        public bool CanExpand
-        {
-            get => items != null && items.Count > 0;
-        }
+        public bool CanExpand => items != null && items.Count > 0;
 
         #endregion
 

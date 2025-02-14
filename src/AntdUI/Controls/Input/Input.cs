@@ -538,6 +538,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 处理快捷键
+        /// </summary>
+        [Description("处理快捷键"), Category("行为"), DefaultValue(true)]
+        public bool HandShortcutKeys { get; set; } = true;
+
         #endregion
 
         #region 原生属性
@@ -616,17 +622,24 @@ namespace AntdUI
             get => selectionStart;
             set
             {
-                if (value < 0) value = 0;
-                else if (value > 0)
-                {
-                    if (cache_font == null) value = 0;
-                    else if (value > cache_font.Length) value = cache_font.Length;
-                }
-                if (selectionStart == value) return;
-                selectionStart = selectionStartTemp = value;
-                SetCaretPostion(value);
-                OnPropertyChanged("SelectionStart");
+                SpeedScrollTo = true;
+                SetSelectionStart(value);
+                SpeedScrollTo = false;
             }
+        }
+
+        void SetSelectionStart(int value)
+        {
+            if (value < 0) value = 0;
+            else if (value > 0)
+            {
+                if (cache_font == null) value = 0;
+                else if (value > cache_font.Length) value = cache_font.Length;
+            }
+            if (selectionStart == value) return;
+            selectionStart = selectionStartTemp = value;
+            SetCaretPostion(value);
+            OnPropertyChanged("SelectionStart");
         }
 
         /// <summary>
@@ -893,18 +906,12 @@ namespace AntdUI
         /// <summary>
         /// 清除所有文本
         /// </summary>
-        public void Clear()
-        {
-            Text = "";
-        }
+        public void Clear() => Text = "";
 
         /// <summary>
         /// 清除撤消缓冲区信息
         /// </summary>
-        public void ClearUndo()
-        {
-            history_Log.Clear();
-        }
+        public void ClearUndo() => history_Log.Clear();
 
         /// <summary>
         /// 复制
@@ -942,7 +949,7 @@ namespace AntdUI
             {
                 if (Verify(key, out var change)) chars.Add(change ?? key.ToString());
             }
-            if (chars.Count > 0) EnterText(string.Join("", chars), false);
+            if (chars.Count > 0) EnterText(string.Join("", chars));
         }
 
         /// <summary>
@@ -1025,51 +1032,71 @@ namespace AntdUI
         void EnterText(string text, bool ismax = true)
         {
             if (ReadOnly || BanInput) return;
-            AddHistoryRecord();
+            int offset = 0;
+            if (cache_font == null)
+            {
+                if (ismax && text.Length > MaxLength)
+                {
+                    text = text.Substring(0, MaxLength);
+                    if (text.Length == 0) return;
+                }
+                AddHistoryRecord();
+                Text = text;
+            }
+            else
+            {
+                if (selectionLength > 0)
+                {
+                    int start = selectionStartTemp, end = selectionLength, end_temp = start + end;
+                    if (ismax && (cache_font.Length - end + text.Length) > MaxLength)
+                    {
+                        text = text.Substring(0, end);
+                        if (text.Length == 0) return;
+                    }
+                    AddHistoryRecord();
+                    var texts = new List<string>(end);
+                    foreach (var it in cache_font)
+                    {
+                        if (it.i < start || it.i >= end_temp) texts.Add(it.text);
+                    }
+                    texts.Insert(start, text);
+                    Text = string.Join("", texts);
+                    SelectionLength = 0;
+                    offset = start;
+                }
+                else
+                {
+                    int start = selectionStart - 1;
+                    if (ismax && (cache_font.Length + text.Length) > MaxLength)
+                    {
+                        text = text.Substring(0, MaxLength - cache_font.Length);
+                        if (text.Length == 0) return;
+                    }
+                    AddHistoryRecord();
+                    var texts = new List<string>(cache_font.Length);
+                    foreach (var it in cache_font) texts.Add(it.text);
+                    if (retnot.Contains(CaretInfo.Y) && !CaretInfo.Place && !CaretInfo.FirstRet && cache_font.Length - 1 != start && !cache_font[start].ret)
+                    {
+                        start++;
+                        CaretInfo.Place = true;
+                    }
+                    texts.Insert(start + 1, text);
+                    Text = string.Join("", texts);
+                    if (CaretInfo.FirstRet)
+                    {
+                        CaretInfo.Place = true;
+                        CaretInfo.FirstRet = false;
+                    }
+                    offset = start + 1;
+                }
+            }
             int len = 0;
             GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
             {
                 len++;
                 return true;
             });
-            if (cache_font == null)
-            {
-                if (ismax && text.Length > MaxLength) text = text.Substring(0, MaxLength);
-                Text = text;
-                SelectionStart = len;
-            }
-            else
-            {
-                if (selectionLength > 0)
-                {
-                    int start = selectionStartTemp, end = selectionLength;
-                    AddHistoryRecord();
-                    int end_temp = start + end;
-                    var texts = new List<string>(end);
-                    foreach (var it in cache_font)
-                    {
-                        if (it.i < start || it.i >= end_temp)
-                            texts.Add(it.text);
-                    }
-                    texts.Insert(start, text);
-                    var tmp = string.Join("", texts);
-                    if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
-                    Text = tmp;
-                    SelectionLength = 0;
-                    SelectionStart = start + len;
-                }
-                else
-                {
-                    int start = selectionStart - 1;
-                    var texts = new List<string>(cache_font.Length);
-                    foreach (var it in cache_font) texts.Add(it.text);
-                    texts.Insert(start + 1, text);
-                    var tmp = string.Join("", texts);
-                    if (ismax && tmp.Length > MaxLength) tmp = tmp.Substring(0, MaxLength);
-                    Text = tmp;
-                    SelectionStart = start + 1 + len;
-                }
-            }
+            SetSelectionStart(offset + len);
         }
 
         string? GetSelectionText()
@@ -1261,7 +1288,7 @@ namespace AntdUI
             {
                 foreach (var it in cache_font)
                 {
-                    if (it.rect.X <= x && it.rect.Right >= x && it.rect.Y <= y && it.rect.Bottom >= y)
+                    if (HasRect(it.rect, x, y))
                     {
                         if (x > it.rect.X + it.rect.Width / 2)
                         {
@@ -1272,8 +1299,14 @@ namespace AntdUI
                         }
                         return it.i;
                     }
+                    else if (it.rect2.HasValue && HasRect(it.rect2.Value, x, y))
+                    {
+                        CaretInfo.Place = false;
+                        return it.i;
+                    }
                 }
-                var nearest = FindNearestFont(x, y, cache_font);
+                var nearest = FindNearestFont(x, y, cache_font, out bool two);
+                CaretInfo.FirstRet = two;
                 if (nearest == null)
                 {
                     if (x > cache_font[cache_font.Length - 1].rect.Right) return cache_font.Length;
@@ -1281,6 +1314,7 @@ namespace AntdUI
                 }
                 else
                 {
+                    if (two) return nearest.i;
                     if (x > nearest.rect.X + nearest.rect.Width / 2)
                     {
                         int i = nearest.i + 1;
@@ -1296,18 +1330,13 @@ namespace AntdUI
         /// <summary>
         /// 寻找最近的矩形和距离的辅助方法
         /// </summary>
-        CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font)
+        CacheFont? FindNearestFont(int x, int y, CacheFont[] cache_font, out bool two)
         {
+            two = false;
             CacheFont first = cache_font[0], last = cache_font[cache_font.Length - 1];
-            if (x < first.rect.X && y < first.rect.Y)
-            {
-                return first;
-            }
-            else if (x > last.rect.X && y > last.rect.Y)
-            {
-                return last;
-            }
-            var findy = FindNearestFontY(y, cache_font);
+            if (x < first.rect.X && y < first.rect.Y) return first;
+            else if (x > last.rect.X && y > last.rect.Y) return last;
+            var findy = FindNearestFontY(y, cache_font, out two);
             CacheFont? result = null;
             if (findy == null)
             {
@@ -1330,20 +1359,54 @@ namespace AntdUI
             }
             else
             {
-                int ry = findy.rect.Y;
-                int minDistance = int.MaxValue;
-                for (int i = 0; i < cache_font.Length; i++)
+                if (two && findy.rect2.HasValue)
                 {
-                    var it = cache_font[i];
-                    if (it.rect.Y == ry)
+                    int ry = findy.rect2.Value.Y;
+                    int minDistance = int.MaxValue;
+                    for (int i = 0; i < cache_font.Length; i++)
                     {
-                        // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
-                        int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
-                        // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
-                        if (currentMinDistance < minDistance)
+                        var it = cache_font[i];
+                        if (it.rect2.HasValue && it.rect2.Value.Y == ry)
                         {
-                            minDistance = currentMinDistance;
-                            result = it;
+                            // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
+                            int currentMinDistance = Math.Abs(x - (it.rect2.Value.X + it.rect2.Value.Width / 2));
+                            // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                            if (currentMinDistance < minDistance)
+                            {
+                                minDistance = currentMinDistance;
+                                result = it;
+                            }
+                        }
+                        else if (it.rect.Y == ry)
+                        {
+                            // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
+                            int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
+                            // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                            if (currentMinDistance < minDistance)
+                            {
+                                minDistance = currentMinDistance;
+                                result = it;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    int ry = findy.rect.Y;
+                    int minDistance = int.MaxValue;
+                    for (int i = 0; i < cache_font.Length; i++)
+                    {
+                        var it = cache_font[i];
+                        if (it.rect.Y == ry)
+                        {
+                            // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
+                            int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
+                            // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                            if (currentMinDistance < minDistance)
+                            {
+                                minDistance = currentMinDistance;
+                                result = it;
+                            }
                         }
                     }
                 }
@@ -1351,8 +1414,9 @@ namespace AntdUI
             if (result == null) return result;
             return result;
         }
-        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font)
+        CacheFont? FindNearestFontY(int y, CacheFont[] cache_font, out bool two)
         {
+            two = false;
             int minDistance = int.MaxValue;
             CacheFont? result = null;
             for (int i = 0; i < cache_font.Length; i++)
@@ -1363,12 +1427,26 @@ namespace AntdUI
                 // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
                 if (currentMinDistance < minDistance)
                 {
+                    two = false;
                     minDistance = currentMinDistance;
                     result = it;
+                }
+                if (it.rect2.HasValue)
+                {
+                    currentMinDistance = Math.Abs(y - (it.rect2.Value.Y + it.rect2.Value.Height / 2));
+                    // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
+                    if (currentMinDistance < minDistance)
+                    {
+                        two = true;
+                        minDistance = currentMinDistance;
+                        result = it;
+                    }
                 }
             }
             return result;
         }
+
+        bool HasRect(Rectangle rect, int x, int y) => rect.X <= x && rect.Right >= x && rect.Y <= y && rect.Bottom >= y;
 
         #endregion
 
@@ -1445,8 +1523,15 @@ namespace AntdUI
 
         protected virtual bool Verify(char key, out string? change)
         {
-            change = null;
-            return true;
+            if (VerifyChar == null)
+            {
+                change = null;
+                return true;
+            }
+            var args = new InputVerifyCharEventArgs(key);
+            VerifyChar(this, args);
+            change = args.ReplaceText;
+            return args.Result;
         }
 
         internal class ICaret
@@ -1456,10 +1541,25 @@ namespace AntdUI
 
             public Rectangle Rect = new Rectangle(-1, -1000, (int)Config.Dpi, 0);
 
-            public bool Place = false;
+            public bool Place = false, FirstRet = false;
 
             public Rectangle SetXY(CacheFont[] cache_font, int i)
             {
+                if (FirstRet)
+                {
+                    Rectangle? r;
+                    if (i >= cache_font.Length) r = cache_font[cache_font.Length - 1].rect2;
+                    else
+                    {
+                        if (i > 0) r = cache_font[i - 1].rect2;
+                        else r = cache_font[i].rect2;
+                    }
+                    if (r.HasValue)
+                    {
+                        SetXY(r.Value.X, r.Value.Y);
+                        return r.Value;
+                    }
+                }
                 if (i >= cache_font.Length)
                 {
                     var r = cache_font[cache_font.Length - 1].rect;

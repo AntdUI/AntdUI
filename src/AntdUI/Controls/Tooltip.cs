@@ -133,15 +133,7 @@ namespace AntdUI
         {
             if (config.Control.IsHandleCreated)
             {
-                if (config.Control.InvokeRequired)
-                {
-                    Form? form = null;
-                    config.Control.Invoke(new Action(() =>
-                    {
-                        form = open(config);
-                    }));
-                    return form;
-                }
+                if (config.Control.InvokeRequired) return ITask.Invoke(config.Control, new Func<Form?>(() => open(config)));
                 var tip = new TooltipForm(config.Control, config.Text, config);
                 tip.Show(config.Control);
                 return tip;
@@ -221,6 +213,7 @@ namespace AntdUI
             Text = txt;
             if (component.Font != null) Font = component.Font;
             else if (Config.Font != null) Font = Config.Font;
+            else Font = control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
@@ -248,6 +241,7 @@ namespace AntdUI
             Text = txt;
             if (component.Font != null) Font = component.Font;
             else if (Config.Font != null) Font = Config.Font;
+            else Font = control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;

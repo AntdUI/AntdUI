@@ -219,10 +219,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => iconSvg != null || icon != null;
-        }
+        public bool HasIcon => iconSvg != null || icon != null;
 
         /// <summary>
         /// 悬停图标

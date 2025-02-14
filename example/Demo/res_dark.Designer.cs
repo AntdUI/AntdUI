@@ -187,6 +187,15 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 156 104&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-540.000000, -775.000000)&quot;&gt;&lt;g id=&quot;Grid&quot; transform=&quot;translate(541.000000, 775.500000)&quot;&gt;&lt;rect id=&quot;矩形&quot; fill=&quot;#001D66&quot; x=&quot;9.8333333&quot; y=&quot;15.5&quot; width=&quot;93&quot; height=&quot;72&quot;&gt;&lt;/rect&gt;&lt;rect id=&quot;矩形复制-38&quot; fill=&quot;#001D66&quot; x=&quot;113.166667&quot; y=&quot;15.5&quot; width=&quot;31&quot; height=&quot;72&quot;&gt;&lt;/rect&gt;&lt;g id=&quot;编组-27&quot;&gt;&lt;rect id=&quot;矩形&quot; fill-opacity=&quot;0.15&quot; fill=&quot;#FFFFFF&quot; f [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Grid {
+            get {
+                return ResourceManager.GetString("Grid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 112 32&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-562.000000, -463.000000)&quot;&gt;&lt;g id=&quot;Icon&quot; transform=&quot;translate(562.000000, 463.000000)&quot;&gt;&lt;g id=&quot;smile-fill&quot;&gt;&lt;rect id=&quot;矩形&quot; fill=&quot;#000000&quot; fill-rule=&quot;nonzero&quot; opacity=&quot;0&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;32&quot; height=&quot;32&quot;&gt;&lt;/rect&gt;&lt;path d=&quot;M16,2 C8.26875,2 2,8.26875 2,16 C2,23.73125 8.26875,30 16,30 C23.73125,30 30,23.73125 30,16 C30,8.26875  [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Icon {
@@ -358,6 +367,15 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 160 112&quot; fill=&quot;none&quot;&gt;&lt;rect width=&quot;160&quot; height=&quot;112&quot; rx=&quot;4&quot; fill=&quot;#1668DC&quot; fill-opacity=&quot;0.2&quot;/&gt;&lt;path opacity=&quot;0.5&quot; d=&quot;M10 12C10 10.8954 10.8954 10 12 10H56V102H12C10.8954 102 10 101.105 10 100V12Z&quot; fill=&quot;#1668DC&quot; fill-opacity=&quot;0.8&quot;/&gt;&lt;rect opacity=&quot;0.5&quot; x=&quot;57&quot; y=&quot;10&quot; width=&quot;46&quot; height=&quot;92&quot; fill=&quot;#1668DC&quot; fill-opacity=&quot;0.8&quot;/&gt;&lt;path opacity=&quot;0.5&quot; d=&quot;M104 10H148C149.105 10 150 10.8954 150 12V100C150 101.105 149.105 102 148 102H104V10Z&quot; fill=&quot;#1668DC&quot; fill-opacity=&quot;0.8&quot;/&gt;&lt;path d=&quot;M55.625 49H57.37 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Splitter {
+            get {
+                return ResourceManager.GetString("Splitter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 108 116&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-566.000000, -1360.000000)&quot;&gt;&lt;g id=&quot;Steps&quot; transform=&quot;translate(566.000000, 1360.400000)&quot;&gt;&lt;g id=&quot;导航/Steps步骤条/Light/小-垂直-带描述-完成项&quot;&gt;&lt;text id=&quot;Finished&quot; font-family=&quot;PingFangSC-Regular, PingFang SC&quot; font-size=&quot;9.60000038&quot; font-weight=&quot;normal&quot; line-spacing=&quot;14.4&quot; fill=&quot;#FFFFFF&quot; fill-opacity=&quot;0.88&quot;&gt;&lt;tspan x=&quot;19.2&quot; y=&quot;10&quot;&gt;Fini [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Steps {
@@ -426,6 +444,15 @@ namespace Demo {
         internal static string Tooltip {
             get {
                 return ResourceManager.GetString("Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 173 102&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新_202311&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-897.000000, -3969.000000)&quot;&gt;&lt;g id=&quot;cc3fcbfa-bf5b-4c8c-8a3d-c3f8388c75e8&quot; transform=&quot;translate(897.000000, 3969.000000)&quot;&gt;&lt;path d=&quot;M27.3015827,0.481523055 C27.3793404,0.54817244 27.4518638,0.620695897 27.5185132,0.698453513 L30.0476259,3.64908497 C30.1294246,3.74451681 30.2137064,3.8372747 30.3003347,3.92729583 L1 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Tour {
+            get {
+                return ResourceManager.GetString("Tour", resourceCulture);
             }
         }
         

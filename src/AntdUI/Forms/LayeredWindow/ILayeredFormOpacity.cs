@@ -21,7 +21,7 @@ using System.ComponentModel;
 
 namespace AntdUI
 {
-    public abstract class ILayeredFormOpacity : ILayeredForm
+    public abstract class ILayeredFormOpacity : ILayeredForm, LayeredFormAsynLoad
     {
         ITask? task_start = null;
         bool run_end = false, ok_end = false;
@@ -70,7 +70,24 @@ namespace AntdUI
 
         #endregion
 
-        public virtual void LoadOK() { }
+        /// <summary>
+        /// 是否正在加载
+        /// </summary>
+        [Description("是否正在加载"), Category("参数"), DefaultValue(true)]
+        public bool IsLoad { get; set; } = true;
+
+        /// <summary>
+        /// 加载完成回调
+        /// </summary>
+        [Description("加载完成回调"), Category("参数"), DefaultValue(null)]
+        public Action? LoadCompleted { get; set; }
+
+        public virtual void LoadOK()
+        {
+            IsLoad = false;
+            LoadCompleted?.Invoke();
+        }
+        public virtual void ClosingAnimation() { }
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -82,6 +99,7 @@ namespace AntdUI
                 {
                     if (!run_end)
                     {
+                        ClosingAnimation();
                         run_end = true;
                         var t = Animation.TotalFrames(10, 80);
                         new ITask((i) =>

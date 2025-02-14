@@ -90,7 +90,7 @@ namespace AntdUI
                 if (IsHandleCreated)
                 {
                     Size max = MaximumSize, min = MinimumSize;
-                    MaximumSize = MinimumSize = ClientSize;
+                    MaximumSize = MinimumSize = base.ClientSize;
                     if (InvokeRequired) { Invoke(new Action(() => base.ShowInTaskbar = value)); }
                     else base.ShowInTaskbar = value;
                     MinimumSize = min;
@@ -111,7 +111,7 @@ namespace AntdUI
             DisableProcessWindowsGhosting();
             if (FormBorderStyle != FormBorderStyle.None && WindowState != FormWindowState.Maximized)
             {
-                sizeInit = ClientSize;
+                sizeInit = base.ClientSize;
                 SetSize(sizeInit.Value);
             }
             HandMessage();
@@ -121,7 +121,7 @@ namespace AntdUI
         void SetSize(Size size)
         {
             Size max = MaximumSize, min = MinimumSize;
-            MaximumSize = MinimumSize = ClientSize = size;
+            MaximumSize = MinimumSize = base.ClientSize = size;
             MinimumSize = min;
             MaximumSize = max;
         }
@@ -275,7 +275,23 @@ namespace AntdUI
             {
                 sizeNormal = null;
                 base.Size = value;
-                sizeInit = ClientSize;
+                sizeInit = base.ClientSize;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置窗体的客户端区域的大小
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Localizable(true)]
+        public new Size ClientSize
+        {
+            get => base.ClientSize;
+            set
+            {
+                sizeNormal = null;
+                base.ClientSize = value;
+                sizeInit = base.ClientSize;
             }
         }
 
@@ -290,7 +306,7 @@ namespace AntdUI
             {
                 sizeNormal = null;
                 base.Width = value;
-                sizeInit = ClientSize;
+                sizeInit = base.ClientSize;
             }
         }
 
@@ -305,7 +321,7 @@ namespace AntdUI
             {
                 sizeNormal = null;
                 base.Height = value;
-                sizeInit = ClientSize;
+                sizeInit = base.ClientSize;
             }
         }
 
@@ -329,7 +345,7 @@ namespace AntdUI
                 sizeNormal = null;
                 base.Location = value.Location;
                 base.Size = value.Size;
-                sizeInit = ClientSize;
+                sizeInit = base.ClientSize;
             }
         }
 
@@ -381,10 +397,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        public override bool IsMax
-        {
-            get => winState == WState.Maximize;
-        }
+        public override bool IsMax => winState == WState.Maximize;
 
         public static bool CanHandMessage = true;
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
@@ -456,10 +469,10 @@ namespace AntdUI
             }
             else if (m.WParam == SIZE_RESTORED)
             {
-                sizeNormal = ClientSize;
                 WinState = WState.Restore;
                 InvalidateNonclient();
                 Invalidate();
+                sizeNormal = ClientSize;
             }
         }
 

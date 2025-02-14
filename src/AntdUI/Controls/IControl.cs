@@ -20,6 +20,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -33,14 +34,14 @@ namespace AntdUI
             switch (ctype)
             {
                 case ControlType.Default:
-                    SetStyle(
+                    SetStyle(ControlStyles.ContainerControl |
                        ControlStyles.AllPaintingInWmPaint |
                        ControlStyles.OptimizedDoubleBuffer |
                        ControlStyles.ResizeRedraw |
                        ControlStyles.DoubleBuffer |
                        ControlStyles.SupportsTransparentBackColor |
                        ControlStyles.UserPaint, true);
-                    SetStyle(ControlStyles.ContainerControl | ControlStyles.Selectable, false);
+                    SetStyle(ControlStyles.Selectable, false);
                     break;
                 case ControlType.Select:
                     SetStyle(ControlStyles.ContainerControl | ControlStyles.Selectable |
@@ -224,7 +225,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config(), action, end);
+        public Task Spin(Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config(), action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -232,7 +233,7 @@ namespace AntdUI
         /// <param name="text">加载文本</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(string text, Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config { Text = text }, action, end);
+        public Task Spin(string text, Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config { Text = text }, action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -240,7 +241,7 @@ namespace AntdUI
         /// <param name="config">自定义配置</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public void Spin(Spin.Config config, Action<Spin.Config> action, Action? end = null) => AntdUI.Spin.open(this, config, action, end);
+        public Task Spin(Spin.Config config, Action<Spin.Config> action, Action? end = null) => AntdUI.Spin.open(this, config, action, end);
 
         #region 帮助类
 
@@ -259,19 +260,13 @@ namespace AntdUI
         /// 真实区域
         /// </summary>
         [Browsable(false)]
-        public virtual Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding);
-        }
+        public virtual Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding);
 
         internal void IOnSizeChanged()
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() =>
-                {
-                    IOnSizeChanged();
-                }));
+                Invoke(new Action(IOnSizeChanged));
                 return;
             }
             OnSizeChanged(EventArgs.Empty);
@@ -338,10 +333,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() =>
-                {
-                    SetCursor(cursor);
-                }));
+                Invoke(new Action(() => SetCursor(cursor)));
                 return;
             }
             Cursor = cursor;
@@ -386,31 +378,26 @@ namespace AntdUI
         {
             if (mdown)
             {
-                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY);
-                oldMY = moveY;
-                if (mdownd > 0)
+                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                if (mdownd > 0 || (moveXa > threshold || moveYa > threshold))
                 {
-                    if (mdownd == 1) OnTouchScrollY(-moveY);
-                    else OnTouchScrollX(-moveX);
-                    oldX = x;
-                    oldY = y;
-                    return false;
-                }
-                else if (moveXa > 2 || moveYa > 2)
-                {
-                    if (moveYa > moveXa)
+                    oldMY = moveY;
+                    if (mdownd > 0)
                     {
-                        mdownd = 1;
-                        OnTouchScrollY(-moveY);
+                        if (mdownd == 1) OnTouchScrollY(-moveY);
+                        else OnTouchScrollX(-moveX);
+                        oldX = x;
+                        oldY = y;
+                        return false;
                     }
                     else
                     {
-                        mdownd = 2;
-                        OnTouchScrollX(-moveX);
+                        if (moveYa > moveXa) mdownd = 1;
+                        else mdownd = 2;
+                        oldX = x;
+                        oldY = y;
+                        return false;
                     }
-                    oldX = x;
-                    oldY = y;
-                    return false;
                 }
             }
             return true;
@@ -679,9 +666,24 @@ namespace AntdUI
         float BadgeSize { get; set; }
 
         /// <summary>
+        /// 徽标模式（镂空）
+        /// </summary>
+        bool BadgeMode { get; set; }
+
+        /// <summary>
         /// 徽标背景颜色
         /// </summary>
         Color? BadgeBack { get; set; }
+
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        int BadgeOffsetX { get; set; }
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        int BadgeOffsetY { get; set; }
     }
 
     public interface ShadowConfig

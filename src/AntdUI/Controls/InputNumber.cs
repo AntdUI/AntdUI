@@ -219,26 +219,10 @@ namespace AntdUI
         {
             change = null;
             string keyInput = key.ToString();
-            if (char.IsDigit(key))
-            {
-                // 数字可以
-                return true;
-            }
-            else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
-            {
-                // 小数分隔符可以
-                return true;
-            }
-            else if (key == '\b')
-            {
-                // Backspace键可以
-                return true;
-            }
-            else if (Hexadecimal && ((key >= 'a' && key <= 'f') || (key >= 'A' && key <= 'F')))
-            {
-                // 十六进制数字可以
-                return true;
-            }
+            if (char.IsDigit(key)) return true; // 数字可以
+            else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign)) return true;// 小数分隔符可以
+            else if (key == '\b') return true;// Backspace键可以
+            else if (Hexadecimal && ((key >= 'a' && key <= 'f') || (key >= 'A' && key <= 'F'))) return true;// 十六进制数字可以
             return false;
         }
 

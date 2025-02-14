@@ -493,7 +493,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                BeginInvoke(new Action(() => { ShowLayeredForm(list); }));
+                BeginInvoke(new Action(() => ShowLayeredForm(list)));
                 return;
             }
             Expand = true;
@@ -595,12 +595,12 @@ namespace AntdUI
 
         public SelectItem(object tag)
         {
-            Text = tag.ToString() ?? string.Empty;
+            _text = tag.ToString() ?? string.Empty;
             Tag = tag;
         }
         public SelectItem(string text, object tag)
         {
-            Text = text;
+            _text = text;
             Tag = tag;
         }
         /// <summary>
@@ -613,17 +613,41 @@ namespace AntdUI
         public Color? OnlineCustom { get; set; }
         public Image? Icon { get; set; }
         public string? IconSvg { get; set; }
-        public string Text { get; set; }
+
+        string _text;
+        /// <summary>
+        /// 文本
+        /// </summary>
+        public string Text
+        {
+            get => Localization.GetLangIN(LocalizationText, _text, new string?[] { "{id}", Tag.ToString() });
+            set => _text = value;
+        }
+
+        /// <summary>
+        /// 国际化（文本）
+        /// </summary>
+        public string? LocalizationText { get; set; }
 
         /// <summary>
         /// 是否启用
         /// </summary>
         public bool Enable { get; set; } = true;
 
+        string? subText = null;
         /// <summary>
         /// 子文本
         /// </summary>
-        public string? SubText { get; set; }
+        public string? SubText
+        {
+            get => Localization.GetLangI(LocalizationSubText, subText, new string?[] { "{id}", Tag.ToString() });
+            set => subText = value;
+        }
+
+        /// <summary>
+        /// 国际化（子文本）
+        /// </summary>
+        public string? LocalizationSubText { get; set; }
 
         /// <summary>
         /// 子选项
@@ -657,10 +681,23 @@ namespace AntdUI
     {
         public GroupSelectItem(string title)
         {
-            Title = title;
+            _title = title;
         }
 
-        public string Title { get; set; }
+        string _title;
+        /// <summary>
+        /// 文本
+        /// </summary>
+        public string Title
+        {
+            get => Localization.GetLangIN(LocalizationTitle, _title);
+            set => _title = value;
+        }
+
+        /// <summary>
+        /// 国际化（文本）
+        /// </summary>
+        public string? LocalizationTitle { get; set; }
 
         /// <summary>
         /// 子选项
@@ -982,10 +1019,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图标
         /// </summary>
-        public bool HasIcon
-        {
-            get => IconSvg != null || Icon != null;
-        }
+        public bool HasIcon => IconSvg != null || Icon != null;
 
         public Rectangle RectIcon { get; set; }
         public Rectangle RectOnline { get; set; }

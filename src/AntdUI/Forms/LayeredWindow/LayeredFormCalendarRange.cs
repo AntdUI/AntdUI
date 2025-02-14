@@ -806,6 +806,7 @@ namespace AntdUI
         {
             CanLoadMessage = true;
             LoadMessage();
+            base.LoadOK();
         }
 
         float AnimationBarValue = 0;

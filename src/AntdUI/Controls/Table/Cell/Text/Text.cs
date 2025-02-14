@@ -152,10 +152,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含前缀
         /// </summary>
-        public bool HasPrefix
-        {
-            get => prefixSvg != null || prefix != null;
-        }
+        public bool HasPrefix => prefixSvg != null || prefix != null;
 
         Image? suffix = null;
         /// <summary>
@@ -190,10 +187,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含后缀
         /// </summary>
-        public bool HasSuffix
-        {
-            get => suffixSvg != null || suffix != null;
-        }
+        public bool HasSuffix => suffixSvg != null || suffix != null;
 
         #endregion
 

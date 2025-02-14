@@ -169,6 +169,36 @@ namespace AntdUI
 
     #region 更多
 
+    #region Input
+
+    public class InputVerifyCharEventArgs : EventArgs
+    {
+        public InputVerifyCharEventArgs(char c)
+        {
+            Char = c;
+        }
+
+        /// <summary>
+        /// 输入字符
+        /// </summary>
+        public char Char { get; private set; }
+
+        /// <summary>
+        /// 替换文本
+        /// </summary>
+        public string? ReplaceText { get; set; }
+
+        /// <summary>
+        /// 验证结果
+        /// </summary>
+        public bool Result { get; set; } = true;
+    }
+
+
+    public delegate void InputVerifyCharEventHandler(object sender, InputVerifyCharEventArgs e);
+
+    #endregion
+
     #region Menu
 
     public class MenuSelectEventArgs : VEventArgs<MenuItem>
@@ -423,16 +453,23 @@ namespace AntdUI
 
     public class TableSetRowStyleEventArgs : EventArgs
     {
-        public TableSetRowStyleEventArgs(object? record, int rowIndex)
+        public TableSetRowStyleEventArgs(object? record, int rowIndex, int index)
         {
             Record = record;
             RowIndex = rowIndex;
+            Index = index;
         }
 
         /// <summary>
         /// 原始行
         /// </summary>
         public object? Record { get; private set; }
+
+        /// <summary>
+        /// 序号
+        /// </summary>
+        public int Index { get; private set; }
+
         /// <summary>
         /// 行序号
         /// </summary>
@@ -456,6 +493,24 @@ namespace AntdUI
         /// 表头
         /// </summary>
         public Column Column { get; private set; }
+    }
+    public class TableExpandEventArgs : EventArgs
+    {
+        public TableExpandEventArgs(object? record, bool expand)
+        {
+            Record = record;
+            Expand = expand;
+        }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+
+        /// <summary>
+        /// 是否展开
+        /// </summary>
+        public bool Expand { get; private set; }
     }
 
     public class ITableEventArgs : EventArgs
@@ -491,6 +546,20 @@ namespace AntdUI
     }
 
     public delegate bool ClosingPageEventHandler(object sender, ClosingPageEventArgs e);
+
+    public class TabsItemEventArgs : VMEventArgs<TabPage>
+    {
+        public Tabs.IStyle Style { get; private set; }
+        public TabsItemEventArgs(TabPage item, Tabs.IStyle style, MouseEventArgs e) : base(item, e)
+        {
+            Style = style;
+        }
+    }
+
+    /// <summary>
+    /// 点击事件
+    /// </summary>
+    public delegate void TabsItemEventHandler(object sender, TabsItemEventArgs e);
 
     #endregion
 

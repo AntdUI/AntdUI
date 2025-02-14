@@ -177,10 +177,20 @@ namespace AntdUI
             /// </summary>
             public Form Form { get; set; }
 
+            string? title = null;
             /// <summary>
             /// 标题
             /// </summary>
-            public string Title { get; set; }
+            public string? Title
+            {
+                get => Localization.GetLangI(LocalizationTitle, title, new string?[] { "{id}", ID });
+                set => title = value;
+            }
+
+            /// <summary>
+            /// 国际化（标题）
+            /// </summary>
+            public string? LocalizationTitle { get; set; }
 
             /// <summary>
             /// 标题字体
@@ -192,10 +202,20 @@ namespace AntdUI
             /// </summary>
             public FontStyle? FontStyleTitle { get; set; }
 
+            string? text = null;
             /// <summary>
             /// 文本
             /// </summary>
-            public string Text { get; set; }
+            public string? Text
+            {
+                get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
+                set => text = value;
+            }
+
+            /// <summary>
+            /// 国际化（文本）
+            /// </summary>
+            public string? LocalizationText { get; set; }
 
             /// <summary>
             /// 图标

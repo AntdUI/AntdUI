@@ -309,10 +309,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含图片
         /// </summary>
-        public bool HasImage
-        {
-            get => imageSvg != null || image != null;
-        }
+        public bool HasImage => imageSvg != null || image != null;
 
         /// <summary>
         /// 图像大小
@@ -504,10 +501,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle
-        {
-            get => ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Config.Dpi);
-        }
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Config.Dpi);
 
         public override GraphicsPath RenderRegion
         {
@@ -610,7 +604,7 @@ namespace AntdUI
             return PSize;
         }
 
-        Size PSize
+        public Size PSize
         {
             get
             {
@@ -634,15 +628,7 @@ namespace AntdUI
         bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
-            if (InvokeRequired)
-            {
-                bool flag = false;
-                Invoke(new Action(() =>
-                {
-                    flag = BeforeAutoSize();
-                }));
-                return flag;
-            }
+            if (InvokeRequired) return ITask.Invoke(this, new Func<bool>(BeforeAutoSize));
             var PS = PSize;
             switch (autoSize)
             {

@@ -55,6 +55,34 @@ namespace AntdUI.Core
             g.DrawString(text, font, brush, rect, format);
         }
 
+        public void String(string? text, Font font, Color color, int x, int y)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                String(text, font, brush, x, y);
+            }
+        }
+
+        public void String(string? text, Font font, Brush brush, int x, int y) => g.DrawString(text, font, brush, x, y);
+
+        public void String(string? text, Font font, Color color, Point point)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                String(text, font, brush, point);
+            }
+        }
+
+        public void String(string? text, Font font, Brush brush, Point point) => g.DrawString(text, font, brush, point);
+
+        public void String(string? text, Font font, Color color, float x, float y)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                String(text, font, brush, x, y);
+            }
+        }
+
         public void String(string? text, Font font, Brush brush, float x, float y) => g.DrawString(text, font, brush, x, y);
 
         #endregion
@@ -107,7 +135,7 @@ namespace AntdUI.Core
             }
             catch { }
         }
-        public void Icon(System.Drawing.Icon icon, Rectangle rect)
+        public void Icon(Icon icon, Rectangle rect)
         {
             try
             {

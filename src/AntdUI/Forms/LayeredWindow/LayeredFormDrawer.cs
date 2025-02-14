@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormDrawer : ILayeredForm
+    internal class LayeredFormDrawer : ILayeredForm, LayeredFormAsynLoad
     {
         int FrmRadius = 0, FrmBor = 0;
         bool HasBor = false;
@@ -153,6 +153,7 @@ namespace AntdUI
         Bitmap? tempContent;
         private void Form_SizeChanged(object? sender, EventArgs e)
         {
+            if (config.Form.WindowState == FormWindowState.Minimized) return;
             switch (config.Align)
             {
                 case TAlignMini.Top:
@@ -233,6 +234,16 @@ namespace AntdUI
 
         private void Form_LocationChanged(object? sender, EventArgs e)
         {
+            if (config.Form.WindowState == FormWindowState.Minimized)
+            {
+                SetLocation(-end_W * 2, -end_H * 2);
+                if (task_start == null)
+                {
+                    if (form != null) form.Location = new Point(-form.Width * 2, -form.Height * 2);
+                    Print();
+                }
+                return;
+            }
             switch (config.Align)
             {
                 case TAlignMini.Top:
@@ -394,9 +405,9 @@ namespace AntdUI
             if (form.ClientSize != rect.Size) form.ClientSize = rect.Size;
             form.Location = rect.Location;
             config.OnLoad?.Invoke();
-            LoadOK?.Invoke();
             if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
-            LoadEnd = false;
+            IsLoad = false;
+            LoadCompleted?.Invoke();
             config.Content.SizeChanged += Content_SizeChanged;
             tempContent?.Dispose();
             tempContent = null;
@@ -490,8 +501,17 @@ namespace AntdUI
             }
         }
 
-        internal bool LoadEnd = true;
-        internal Action? LoadOK = null;
+        /// <summary>
+        /// 是否正在加载
+        /// </summary>
+        [Description("是否正在加载"), Category("参数"), DefaultValue(true)]
+        public bool IsLoad { get; set; } = true;
+
+        /// <summary>
+        /// 加载完成回调
+        /// </summary>
+        [Description("加载完成回调"), Category("参数"), DefaultValue(null)]
+        public Action? LoadCompleted { get; set; }
 
         Rectangle Ang()
         {
@@ -619,10 +639,8 @@ namespace AntdUI
 
         public override Bitmap PrintBit()
         {
-            Rectangle rect;
-            if (HasBor) rect = new Rectangle(FrmBor, 0, TargetRect.Width - FrmBor * 2, TargetRect.Height - FrmBor);
-            else rect = TargetRectXY;
-            var original_bmp = new Bitmap(TargetRect.Width, TargetRect.Height);
+            Rectangle rect_t = TargetRectXY, rect = HasBor ? new Rectangle(FrmBor, 0, rect_t.Width - FrmBor * 2, rect_t.Height - FrmBor) : rect_t;
+            var original_bmp = new Bitmap(rect_t.Width, rect_t.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
                 var rect_read = DrawShadow(g, rect);

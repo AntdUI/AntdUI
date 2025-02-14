@@ -77,8 +77,10 @@ namespace AntdUI
             if (CanLoadMessage) LoadMessage();
         }
 
+        bool FunRun = true;
         protected override void Dispose(bool disposing)
         {
+            FunRun = false;
             Application.RemoveMessageFilter(this);
             base.Dispose(disposing);
             renderQueue.Dispose();
@@ -92,11 +94,13 @@ namespace AntdUI
 
         public bool CanRender(out IntPtr han)
         {
-            if (handle.HasValue && target_rect.Width > 0 && target_rect.Height > 0)
+            if (handle.HasValue && FunRun && target_rect.Width > 0 && target_rect.Height > 0)
             { han = handle.Value; return true; }
             han = IntPtr.Zero;
             return false;
         }
+
+        public bool CanRender() => handle.HasValue && FunRun;
 
         #region 渲染坐标
 
@@ -166,40 +170,42 @@ namespace AntdUI
         public void Print(Bitmap bmp) => renderQueue.Set(alpha, bmp);
         public void Print(Bitmap bmp, Rectangle rect) => renderQueue.Set(alpha, bmp, rect);
 
-        void Render()
+        bool Render()
         {
-            if (CanRender(out var handle)) Render(handle);
+            if (CanRender(out var handle)) return Render(handle);
+            return false;
         }
 
-        void Render(IntPtr handle)
+        bool Render(IntPtr handle)
         {
             try
             {
                 using (var bmp = PrintBit())
                 {
-                    if (bmp == null) return;
-                    Render(handle, bmp);
+                    if (bmp == null) return false;
+                    return Render(handle, bmp);
                 }
-                GC.Collect();
             }
             catch { }
+            return true;
         }
 
         Action<IntPtr, byte, Bitmap, Rectangle> actionRender;
-        void Render(IntPtr handle, Bitmap bmp) => Render(handle, alpha, bmp, target_rect);
-        void Render(IntPtr handle, byte alpha, Bitmap bmp) => Render(handle, alpha, bmp, target_rect);
-        void Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
+        bool Render(IntPtr handle, Bitmap bmp) => Render(handle, alpha, bmp, target_rect);
+        bool Render(IntPtr handle, byte alpha, Bitmap bmp) => Render(handle, alpha, bmp, target_rect);
+        bool Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
         {
             try
             {
                 if (InvokeRequired)
                 {
-                    Invoke(actionRender, handle, alpha, bmp, rect);
-                    return;
+                    if (CanRender()) Invoke(actionRender, handle, alpha, bmp, rect);
+                    return false;
                 }
                 else actionRender(handle, alpha, bmp, rect);
             }
             catch { }
+            return true;
         }
 
         Action<bool> actionCursor;
@@ -222,10 +228,7 @@ namespace AntdUI
             }
         }
 
-        protected override bool ShowWithoutActivation
-        {
-            get => UFocus;
-        }
+        protected override bool ShowWithoutActivation => UFocus;
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
@@ -248,10 +251,7 @@ namespace AntdUI
                 {
                     if (InvokeRequired)
                     {
-                        Invoke(new Action(() =>
-                        {
-                            IClose(isdispose);
-                        }));
+                        Invoke(new Action(() => IClose(isdispose)));
                         return;
                     }
                     if (switchClose) Close();
@@ -416,31 +416,26 @@ namespace AntdUI
         {
             if (mdown)
             {
-                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY);
-                oldMY = moveY;
-                if (mdownd > 0)
+                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                if (mdownd > 0 || (moveXa > threshold || moveYa > threshold))
                 {
-                    if (mdownd == 1) OnTouchScrollY(-moveY);
-                    else OnTouchScrollX(-moveX);
-                    oldX = x;
-                    oldY = y;
-                    return false;
-                }
-                else if (moveXa > 2 || moveYa > 2)
-                {
-                    if (moveYa > moveXa)
+                    oldMY = moveY;
+                    if (mdownd > 0)
                     {
-                        mdownd = 1;
-                        OnTouchScrollY(-moveY);
+                        if (mdownd == 1) OnTouchScrollY(-moveY);
+                        else OnTouchScrollX(-moveX);
+                        oldX = x;
+                        oldY = y;
+                        return false;
                     }
                     else
                     {
-                        mdownd = 2;
-                        OnTouchScrollX(-moveX);
+                        if (moveYa > moveXa) mdownd = 1;
+                        else mdownd = 2;
+                        oldX = x;
+                        oldY = y;
+                        return false;
                     }
-                    oldX = x;
-                    oldY = y;
-                    return false;
                 }
             }
             return true;
@@ -561,17 +556,23 @@ namespace AntdUI
                                 if (count > 2)
                                 {
                                     count = 0;
-                                    call.Render(handle);
+                                    if (call.Render(handle)) Set();
                                 }
                             }
                             else if (cmd.rect.HasValue)
                             {
-                                using (cmd.bmp) call.Render(handle, cmd.alpha, cmd.bmp, cmd.rect.Value);
+                                using (cmd.bmp)
+                                {
+                                    if (call.Render(handle, cmd.alpha, cmd.bmp, cmd.rect.Value)) Set();
+                                }
                             }
-                            else call.Render(handle, cmd.alpha, cmd.bmp);
+                            else if (call.Render(handle, cmd.alpha, cmd.bmp)) Set();
                         }
                     }
-                    if (count > 0 && call.CanRender(out var handle2)) call.Render(handle2);
+                    if (count > 0 && call.CanRender(out var handle2))
+                    {
+                        if (call.Render(handle2)) Set();
+                    }
                     if (isDispose) return;
                     if (Event.ResetWait()) return;
                 }

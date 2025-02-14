@@ -27,10 +27,6 @@ namespace AntdUI
 {
     partial class Table
     {
-        internal static StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near), stringCenter = Helper.SF_NoWrap(), stringRight = Helper.SF_NoWrap(lr: StringAlignment.Far);
-        static StringFormat stringLeftEllipsis = Helper.SF_ALL(lr: StringAlignment.Near), stringCenterEllipsis = Helper.SF_ALL(), stringRightEllipsis = Helper.SF_ALL(lr: StringAlignment.Far);
-        static StringFormat stringLeftN = Helper.SF(lr: StringAlignment.Near), stringCenterN = Helper.SF(), stringRightN = Helper.SF(lr: StringAlignment.Far);
-
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
@@ -41,15 +37,19 @@ namespace AntdUI
                 base.OnPaint(e);
                 return;
             }
-            if (columnfont == null)
+            try
             {
-                using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                if (columnfont == null)
                 {
-                    PaintTable(g, rows, rect, column_font);
+                    using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                    {
+                        PaintTable(g, rows, rect, column_font);
+                    }
                 }
+                else PaintTable(g, rows, rect, columnfont);
+                if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect, rows[0].RECT.Height);
             }
-            else PaintTable(g, rows, rect, columnfont);
-            if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect, rows[0].RECT.Height);
+            catch { }
             ScrollBar.Paint(g);
             this.PaintBadge(g);
             base.OnPaint(e);
@@ -76,11 +76,16 @@ namespace AntdUI
                     }
                     if (fixedHeader)
                     {
+                        int showIndex = 0;
                         foreach (var it in rows)
                         {
                             int y = it.RECT.Y - sy, b = it.RECT.Bottom - sy;
                             it.SHOW = it.ShowExpand && !it.IsColumn && (rect_read.Contains(rect_read.X, y) || rect_read.Contains(rect_read.X, b) || (it.RECT.Height > rect_read.Height && rect_read.Y > y && rect_read.Bottom < b));
-                            if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
+                            if (it.SHOW)
+                            {
+                                shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                                showIndex++;
+                            }
                         }
 
                         g.TranslateTransform(0, -sy);
@@ -113,10 +118,15 @@ namespace AntdUI
                     }
                     else
                     {
+                        int showIndex = 0;
                         foreach (var it in rows)
                         {
                             it.SHOW = it.ShowExpand && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
-                            if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
+                            if (it.SHOW)
+                            {
+                                shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                                showIndex++;
+                            }
                         }
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows)
@@ -164,11 +174,16 @@ namespace AntdUI
                         }
                     }
                     rows[0].SHOW = false;
+                    int showIndex = 0;
                     for (int index_r = 1; index_r < rows.Length; index_r++)
                     {
                         var it = rows[index_r];
                         it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
-                        if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX))));
+                        if (it.SHOW)
+                        {
+                            shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                            showIndex++;
+                        }
                     }
 
                     g.TranslateTransform(0, -sy);
@@ -279,10 +294,10 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
                         {
-                            g.String(column.value, column_font, brush, column.RECT_REAL, StringF(column.COLUMN.ColAlign ?? column.COLUMN.Align));
+                            g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN.ColAlign ?? column.COLUMN.Align));
                         }
                     }
-                    else g.String(column.value, column_font, fore, column.RECT_REAL, StringF(column.COLUMN.ColAlign ?? column.COLUMN.Align));
+                    else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN.ColAlign ?? column.COLUMN.Align));
                 }
             }
             if (dragHeader == null) return;
@@ -488,12 +503,13 @@ namespace AntdUI
                 }
                 else if (it is Template template)
                 {
+                    g.SetClip(it.RECT);
                     foreach (var item in template.Value) item.Paint(g, Font, enable, fore);
                 }
                 else if (it is TCellText text)
                 {
                     g.SetClip(it.RECT);
-                    g.String(text.value, Font, fore, text.RECT_REAL, StringF(text.COLUMN));
+                    g.String(text.value, Font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
                 }
                 if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table"), it.RECT);
                 if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
@@ -916,7 +932,7 @@ namespace AntdUI
                     rect.Offset(0, offset);
                     rect.Height -= offset;
                 }
-                if (EmptyImage == null) g.String(emptytext, Font, brush, rect, stringCenter);
+                if (EmptyImage == null) g.String(emptytext, Font, brush, rect, StringFormat(ColumnAlign.Center));
                 else
                 {
                     int gap = (int)(_gap * Config.Dpi);
@@ -924,52 +940,96 @@ namespace AntdUI
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
                         rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                     g.Image(EmptyImage, rect_img);
-                    g.String(emptytext, Font, brush, rect_font, stringCenter);
+                    g.String(emptytext, Font, brush, rect_font, StringFormat(ColumnAlign.Center));
                 }
             }
         }
 
-        internal static StringFormat StringF(Column column)
+        public static StringFormat StringFormat(Column column) => StringFormat(column.Align, column.Ellipsis, column.LineBreak);
+
+        static Dictionary<string, StringFormat> sf_cache = new Dictionary<string, StringFormat>(12) { { "Center00", Helper.SF_NoWrap() } };
+        public static StringFormat StringFormat(ColumnAlign Align, bool Ellipsis = false, bool LineBreak = false)
         {
-            if (column.LineBreak)
-            {
-                switch (column.Align)
-                {
-                    case ColumnAlign.Center: return stringCenterN;
-                    case ColumnAlign.Right: return stringRightN;
-                    case ColumnAlign.Left:
-                    default: return stringLeftN;
-                }
-            }
-            else if (column.Ellipsis)
-            {
-                switch (column.Align)
-                {
-                    case ColumnAlign.Center: return stringCenterEllipsis;
-                    case ColumnAlign.Right: return stringRightEllipsis;
-                    case ColumnAlign.Left:
-                    default: return stringLeftEllipsis;
-                }
-            }
+            var id = Align.ToString() + (Ellipsis ? 1 : 0) + (LineBreak ? 1 : 0);
+            if (sf_cache.TryGetValue(id, out var value)) return value;
             else
             {
-                switch (column.Align)
+                if (Ellipsis && LineBreak)
                 {
-                    case ColumnAlign.Center: return stringCenter;
-                    case ColumnAlign.Right: return stringRight;
-                    case ColumnAlign.Left:
-                    default: return stringLeft;
+                    switch (Align)
+                    {
+                        case ColumnAlign.Center:
+                            StringFormat resultCenter = Helper.SF_Ellipsis();
+                            sf_cache.Add(id, resultCenter);
+                            return resultCenter;
+                        case ColumnAlign.Left:
+                            StringFormat resultLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);
+                            sf_cache.Add(id, resultLeft);
+                            return resultLeft;
+                        case ColumnAlign.Right:
+                        default:
+                            StringFormat resultRight = Helper.SF_Ellipsis(lr: StringAlignment.Far);
+                            sf_cache.Add(id, resultRight);
+                            return resultRight;
+                    }
                 }
-            }
-        }
-        static StringFormat StringF(ColumnAlign align)
-        {
-            switch (align)
-            {
-                case ColumnAlign.Center: return stringCenter;
-                case ColumnAlign.Right: return stringRight;
-                case ColumnAlign.Left:
-                default: return stringLeft;
+                else if (Ellipsis)
+                {
+                    switch (Align)
+                    {
+                        case ColumnAlign.Center:
+                            StringFormat resultCenter = Helper.SF_ALL();
+                            sf_cache.Add(id, resultCenter);
+                            return resultCenter;
+                        case ColumnAlign.Left:
+                            StringFormat resultLeft = Helper.SF_ALL(lr: StringAlignment.Near);
+                            sf_cache.Add(id, resultLeft);
+                            return resultLeft;
+                        case ColumnAlign.Right:
+                        default:
+                            StringFormat resultRight = Helper.SF_ALL(lr: StringAlignment.Far);
+                            sf_cache.Add(id, resultRight);
+                            return resultRight;
+                    }
+                }
+                else if (LineBreak)
+                {
+                    switch (Align)
+                    {
+                        case ColumnAlign.Center:
+                            StringFormat resultCenter = Helper.SF();
+                            sf_cache.Add(id, resultCenter);
+                            return resultCenter;
+                        case ColumnAlign.Left:
+                            StringFormat resultLeft = Helper.SF(lr: StringAlignment.Near);
+                            sf_cache.Add(id, resultLeft);
+                            return resultLeft;
+                        case ColumnAlign.Right:
+                        default:
+                            StringFormat resultRight = Helper.SF(lr: StringAlignment.Far);
+                            sf_cache.Add(id, resultRight);
+                            return resultRight;
+                    }
+                }
+                else
+                {
+                    switch (Align)
+                    {
+                        case ColumnAlign.Center:
+                            StringFormat resultCenter = Helper.SF_NoWrap();
+                            sf_cache.Add(id, resultCenter);
+                            return resultCenter;
+                        case ColumnAlign.Left:
+                            StringFormat resultLeft = Helper.SF_NoWrap(lr: StringAlignment.Near);
+                            sf_cache.Add(id, resultLeft);
+                            return resultLeft;
+                        case ColumnAlign.Right:
+                        default:
+                            StringFormat resultRight = Helper.SF_NoWrap(lr: StringAlignment.Far);
+                            sf_cache.Add(id, resultRight);
+                            return resultRight;
+                    }
+                }
             }
         }
     }

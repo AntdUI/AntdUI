@@ -64,18 +64,62 @@ namespace AntdUI
         }
 
         public static string Get(string id, string def) => Provider?.GetLocalizedString(id) ?? def;
-        internal static string? GetLangI(this IControl control, string? id, string? def)
+
+        #region 获取
+
+        public static string? GetLangI(this Control control, string? id, string? def)
         {
             if (id == null) return def;
             if (DefaultLanguage == CurrentLanguage) return def;
             return Provider?.GetLocalizedString(id.Replace("{id}", control.Name)) ?? def;
         }
-        internal static string GetLangIN(this IControl control, string? id, string def)
+        public static string GetLangIN(this Control control, string? id, string def)
         {
             if (id == null) return def;
             if (DefaultLanguage == CurrentLanguage) return def;
             return Provider?.GetLocalizedString(id.Replace("{id}", control.Name)) ?? def;
         }
+
+        public static string? GetLangI(string? id, string? def)
+        {
+            if (id == null) return def;
+            if (DefaultLanguage == CurrentLanguage) return def;
+            return Provider?.GetLocalizedString(id) ?? def;
+        }
+
+        public static string? GetLangI(string? id, string? def, params string?[][] dir)
+        {
+            if (id == null) return def;
+            if (DefaultLanguage == CurrentLanguage) return def;
+            if (dir.Length > 0)
+            {
+                foreach (var it in dir)
+                {
+                    string? k = it[0], v = it[1];
+                    if (k == null || v == null) continue;
+                    id = id.Replace(k, v);
+                }
+            }
+            return Provider?.GetLocalizedString(id) ?? def;
+        }
+
+        public static string GetLangIN(string? id, string def, params string?[][] dir)
+        {
+            if (id == null) return def;
+            if (DefaultLanguage == CurrentLanguage) return def;
+            if (dir.Length > 0)
+            {
+                foreach (var it in dir)
+                {
+                    string? k = it[0], v = it[1];
+                    if (k == null || v == null) continue;
+                    id = id.Replace(k, v);
+                }
+            }
+            return Provider?.GetLocalizedString(id) ?? def;
+        }
+
+        #endregion
 
         /// <summary>
         /// 加载语言

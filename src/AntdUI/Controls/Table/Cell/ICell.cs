@@ -45,9 +45,10 @@ namespace AntdUI
         /// <param name="font">字体</param>
         /// <param name="rect">区域</param>
         /// <param name="size">真实区域</param>
+        /// <param name="maxwidth">最大宽度</param>
         /// <param name="gap">边距</param>
         /// <param name="gap2">边距2</param>
-        public abstract void SetRect(Canvas g, Font font, Rectangle rect, Size size, int gap, int gap2);
+        public abstract void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2);
 
         public abstract void PaintBack(Canvas g);
         public abstract void Paint(Canvas g, Font font, bool enable, SolidBrush fore);

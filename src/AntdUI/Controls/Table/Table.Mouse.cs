@@ -107,6 +107,7 @@ namespace AntdUI
                         {
                             if (cell.ROW.Expand) rows_Expand.Remove(cell.ROW.RECORD);
                             else rows_Expand.Add(cell.ROW.RECORD);
+                            ExpandChanged?.Invoke(this, new TableExpandEventArgs(cell.ROW.RECORD, !cell.ROW.Expand));
                             LoadLayout();
                             Invalidate();
                             return;
@@ -1000,10 +1001,12 @@ namespace AntdUI
             }
             return list;
         }
+
         void SortDataASC(string key)
         {
             var list = SortDatas(key);
-            list.Sort((x, y) => FilesNameComparerClass.Compare(x, y));
+            if (CustomSort == null) list.Sort((x, y) => FilesNameComparerClass.Compare(x.v, y.v));
+            else list.Sort((x, y) => CustomSort(x.v, y.v));
             var SortTmp = new List<int>(list.Count);
             foreach (var it in list) SortTmp.Add(it.i);
             SortData = SortTmp.ToArray();
@@ -1011,7 +1014,8 @@ namespace AntdUI
         void SortDataDESC(string key)
         {
             var list = SortDatas(key);
-            list.Sort((y, x) => FilesNameComparerClass.Compare(x, y));
+            if (CustomSort == null) list.Sort((y, x) => FilesNameComparerClass.Compare(x.v, y.v));
+            else list.Sort((y, x) => CustomSort(x.v, y.v));
             var SortTmp = new List<int>(list.Count);
             foreach (var it in list) SortTmp.Add(it.i);
             SortData = SortTmp.ToArray();
