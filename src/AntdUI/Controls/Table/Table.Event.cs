@@ -167,6 +167,7 @@ namespace AntdUI
         public event IntEventHandler? SortRows;
 
         public delegate bool SortModeEventHandler(object sender, TableSortModeEventArgs e);
+
         /// <summary>
         /// 点击排序后发生
         /// </summary>

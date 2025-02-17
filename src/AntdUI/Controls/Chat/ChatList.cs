@@ -544,25 +544,21 @@ namespace AntdUI.Chat
 
         protected override void OnFontChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             base.OnFontChanged(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             base.OnSizeChanged(e);
         }
 
         StringFormat m_sf = Helper.SF_MEASURE_FONT();
-        internal Rectangle ChangeList()
+        internal void ChangeList()
         {
             var rect = ClientRectangle;
-            if (items == null || items.Count == 0) return rect;
-            if (rect.Width == 0 || rect.Height == 0) return rect;
-
+            if (items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return;
             int y = 0;
             Helper.GDI(g =>
             {
@@ -574,14 +570,12 @@ namespace AntdUI.Chat
                 foreach (var it in items)
                 {
                     it.PARENT = this;
-                    if (it is TextChatItem text)
-                    {
-                        y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height) + gap;
-                    }
+                    if (it is TextChatItem text) y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height) + gap;
                 }
             });
             ScrollBar.SetVrSize(y);
-            return rect;
+            ScrollBar.SizeChange(rect);
+            return;
         }
 
         #region 字体

@@ -158,18 +158,15 @@ namespace AntdUI
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             base.OnSizeChanged(e);
         }
 
-        internal Rectangle ChangeList()
+        internal void ChangeList()
         {
             var _rect = ClientRectangle;
-            if (pauseLayout || items == null || items.Count == 0 || (_rect.Width == 0 || _rect.Height == 0)) return _rect;
-
+            if (pauseLayout || items == null || items.Count == 0 || (_rect.Width == 0 || _rect.Height == 0)) return;
             var rect = ClientRectangle.DeflateRect(Padding);
-
             int y = rect.Y;
             Helper.GDI(g =>
             {
@@ -196,7 +193,7 @@ namespace AntdUI
                 }
             });
             ScrollBar.SetVrSize(0, y);
-            return _rect;
+            ScrollBar.SizeChange(_rect);
         }
 
         void ChangeList(Canvas g, Rectangle rect, CollapseGroupItem Parent, CollapseGroupSubCollection items, ref int y, int font_height, int csize, int icon_size, int gap)

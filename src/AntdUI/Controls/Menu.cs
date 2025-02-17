@@ -405,8 +405,7 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             var item = GetSelectItem(out var sub);
             if (item != null)
             {
@@ -459,18 +458,13 @@ namespace AntdUI
 
         protected override void OnFontChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             base.OnFontChanged(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            if (IsHandleCreated)
-            {
-                var rect = ChangeList();
-                ScrollBar.SizeChange(rect);
-            }
+            if (IsHandleCreated) ChangeList();
             base.OnSizeChanged(e);
         }
 
@@ -485,10 +479,10 @@ namespace AntdUI
         /// </summary>
         public int CollapsedWidth => collapsedWidth;
 
-        internal Rectangle ChangeList()
+        internal void ChangeList()
         {
             var _rect = ClientRectangle;
-            if (_rect.Width == 0 || _rect.Height == 0 || pauseLayout || items == null || items.Count == 0) return _rect;
+            if (_rect.Width == 0 || _rect.Height == 0 || pauseLayout || items == null || items.Count == 0) return;
             var rect = _rect.PaddingRect(Padding);
             int y = 0;
             int icon_count = 0;
@@ -511,7 +505,7 @@ namespace AntdUI
                 }
             });
             ScrollBar.SetVrSize(y);
-            return _rect;
+            ScrollBar.SizeChange(_rect);
         }
 
         int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapy, int depth)
