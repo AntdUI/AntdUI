@@ -658,13 +658,14 @@ namespace AntdUI
         #endregion
 
         #region 方法
+
         /// <summary>
         /// 刷新界面
         /// 不适用DataSource为AntList<T>的场景
         /// </summary>
         public override void Refresh()
         {
-            ExtractHeaderFixed();         
+            ExtractHeaderFixed();
             // 重新提取数据 不适用DataSource为AntList<T>的场景
             if (dataSource == null || dataSource is DataTable || dataSource is IList) ExtractData();
             base.Refresh();
@@ -677,16 +678,13 @@ namespace AntdUI
         /// </summary>
         public void Refresh<T>(AntList<T>? list = null)
         {
-            if (list == null)
-            {
-                Refresh();
-            }
+            if (list == null) Refresh();
             else
             {
                 // 刷新数据
                 IBinding(list);
                 base.Refresh();
-            }          
+            }
         }
 
         List<int> enableDir = new List<int>();

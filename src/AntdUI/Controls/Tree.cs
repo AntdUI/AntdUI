@@ -307,7 +307,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            if (rect.Width > 0 && rect.Height > 0) ScrollBar.SizeChange(rect);
             base.OnSizeChanged(e);
         }
 

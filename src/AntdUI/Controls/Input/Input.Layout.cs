@@ -287,7 +287,8 @@ namespace AntdUI
                         it.show = false;
                         if (it.text == "\n" || it.text == "\r\n")
                         {
-                            retindex++;
+                            if (usex == 0) retindex++;
+                            else retindex = -1;
                             it.ret = true;
                             it.line = line;
                             line++;

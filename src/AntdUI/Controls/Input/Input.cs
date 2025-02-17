@@ -1075,7 +1075,7 @@ namespace AntdUI
                     AddHistoryRecord();
                     var texts = new List<string>(cache_font.Length);
                     foreach (var it in cache_font) texts.Add(it.text);
-                    if (retnot.Contains(CaretInfo.Y) && !CaretInfo.Place && !CaretInfo.FirstRet && cache_font.Length - 1 != start && !cache_font[start].ret)
+                    if (retnot.Contains(CaretInfo.Y) && !CaretInfo.Place && !CaretInfo.FirstRet && start > 0 && cache_font.Length - 1 != start && !cache_font[start].ret)
                     {
                         start++;
                         CaretInfo.Place = true;
