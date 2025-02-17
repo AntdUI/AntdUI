@@ -361,6 +361,7 @@ namespace AntdUI
         readonly Dictionary<Control, string> dic = new Dictionary<Control, string>();
         [Description("设置是否提示"), DefaultValue(null)]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
+        [Localizable(true)]
         public string? GetTip(Control item)
         {
             if (dic.TryGetValue(item, out string? value)) return value;

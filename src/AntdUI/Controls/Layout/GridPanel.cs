@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Layout;
 
@@ -126,86 +125,51 @@ namespace AntdUI
                         }
                         if (controls.Count > 0)
                         {
-                            // 最终坐标数据（列宽，行高）每一条数据为一行控件的数据
-                            var data = new Dictionary<List<int>, int>();
-                            // 分割成row跟columns
-                            var temp = Span.Split('-', '\n');
-                            // 分割为rows数组
-                            var rows = temp[0].Split(';');
-                            /* 分割columns数组，注意，还是以行为主，这个数组的count应与rows数组count对应。
-                             * 即整行控件统一用一个行高。
-                             * 同时兼容之前没有设置行高的代码
-                             */
-                            var columns = temp.Length == 2 ? temp[1]?.Split(' ') : new string[0];
-
-                            // 已使用行高
-                            int use_height = 0;
-
-                            for (int i = 0; i < rows.Length; i++)
+                            string[] tmp = Span.Split('-', '\n'), rows = tmp[0].Split(';');
+                            var data = new List<List<int>>(rows.Length);
+                            int i = 0;
+                            var celltmp = new Dictionary<int, object>(rows.Length);
+                            foreach (var it in rows)
                             {
-                                var row = rows[i];
-
-                                if (!string.IsNullOrEmpty(row))
+                                if (string.IsNullOrEmpty(it)) continue;
+                                string row = it;
+                                int index = row.IndexOf(":");
+                                if (index > -1)
                                 {
-                                    // 获得当前行的列数量（也就是控件数量）
-                                    var abs = row.Split(' ', ',');
-                                    // 定义当前行的控件x坐标(列宽)
-                                    var xObjTemp = new List<object>(abs.Length);
-                                    // 已使用列宽
-                                    int use_width = 0;
-
-                                    foreach (string xaxis in abs)
+                                    if (index > 0)
                                     {
-                                        var x = xaxis.Trim();
-                                        if (x.EndsWith("%") && float.TryParse(x.TrimEnd('%'), out var xF)) xObjTemp.Add(xF / 100F);
-                                        else if (int.TryParse(x, out var xi))
-                                        {
-                                            int uw = (int)Math.Round(xi * Config.Dpi);
-                                            xObjTemp.Add(uw);
-                                            use_width += uw;
-                                        }
-                                        else if (float.TryParse(x, out float xF2)) xObjTemp.Add(xF2);
+                                        var value = row.Substring(0, index);
+                                        if (value.EndsWith("%") && float.TryParse(value.TrimEnd('%'), out var percentageValue)) celltmp.Add(i, percentageValue / 100F);
+                                        else if (int.TryParse(value, out var intValue)) celltmp.Add(i, (int)Math.Round(intValue * Config.Dpi));
+                                        else if (float.TryParse(value, out float floatValue)) celltmp.Add(i, floatValue);
+
+                                        row = row.Substring(index + 1);
                                     }
-
-                                    int read_width = rect.Width - use_width;
-                                    var x_temp = new List<int>(xObjTemp.Count);
-
-                                    foreach (var it in xObjTemp)
-                                    {
-                                        if (it is float f) x_temp.Add((int)Math.Round(read_width * f));
-                                        else if (it is int ix) x_temp.Add(ix);
-                                    }
-
-                                    // 转换后实际行高
-                                    int height = 0;
-                                    if (columns != null && columns.Length > 0)
-                                    {
-                                        if (i < columns.Length)
-                                        {
-                                            // 获得当前行的行高
-                                            var yaxis = columns[i];
-                                            var y = yaxis.Trim();
-
-                                            // 剩余行高
-                                            int read_height = rect.Height - use_height;
-                                            if (y.EndsWith("%") && float.TryParse(y.TrimEnd('%'), out var yF)) height = (int)Math.Round(read_height * (yF / 100F));
-                                            else if (int.TryParse(y, out var iy))
-                                            {
-                                                int uh = (int)Math.Round(iy * Config.Dpi);
-                                                height = uh;
-                                                use_height += uh;
-                                            }
-                                            else if (float.TryParse(y, out float yF2)) height = (int)Math.Round(read_height * yF2);
-                                        }
-                                        else height = -999;
-                                    }
-                                    else height = -999;
-
-                                    if (x_temp.Count > 0)
-                                        data.Add(x_temp, height);
+                                    else row = row.Substring(1);
+                                }
+                                var x_tmp = GetRows(row, rect.Width);
+                                if (x_tmp.Count > 0)
+                                {
+                                    data.Add(x_tmp);
+                                    i++;
                                 }
                             }
-
+                            if (tmp.Length == 2)
+                            {
+                                i = 0;
+                                foreach (var item in GetRows(tmp[1]))
+                                {
+                                    if (celltmp.ContainsKey(i))
+                                    {
+                                        i++;
+                                        continue;
+                                    }
+                                    celltmp.Add(i, item);
+                                    i++;
+                                }
+                            }
+                            int real_height = rect.Height;
+                            var cells = GetRows(celltmp, real_height, out real_height);
                             if (data.Count > 0)
                             {
                                 Rectangle[] rects;
@@ -213,23 +177,24 @@ namespace AntdUI
                                 {
                                     var tmp_rects = new List<Rectangle>();
                                     int hasx = 0, hasy = 0;
-
+                                    i = 0;
                                     foreach (var item in data)
                                     {
-                                        int y = item.Value == -999 ? rect.Height / data.Count : item.Value;
-                                        foreach (var x in item.Key)
+                                        int y = cells.TryGetValue(i, out var value) ? value : real_height / data.Count;
+                                        foreach (var x in item)
                                         {
                                             tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, y));
                                             hasx += x;
                                         }
                                         hasx = 0;
                                         hasy += y;
+                                        i++;
                                     }
                                     rects = tmp_rects.ToArray();
                                 }
                                 else
                                 {
-                                    var xt = data.First().Key;
+                                    var xt = data[0];
                                     var tmp_rects = new List<Rectangle>(xt.Count);
                                     int hasx = 0, hasy = 0;
                                     foreach (var x in xt)
@@ -245,6 +210,53 @@ namespace AntdUI
                     }
                 }
                 return false;
+            }
+
+            List<int> GetRows(string cells, int value) => GetRows(GetRows(cells), value);
+            List<object> GetRows(string cells)
+            {
+                var arr = cells.Split(' ', ',');
+                var tmp = new List<object>(arr.Length);
+                foreach (string it in arr)
+                {
+                    var str = it.Trim();
+                    if (str.EndsWith("%") && float.TryParse(str.TrimEnd('%'), out var percentageValue)) tmp.Add(percentageValue / 100F);
+                    else if (int.TryParse(str, out var intValue)) tmp.Add((int)Math.Round(intValue * Config.Dpi));
+                    else if (float.TryParse(str, out float floatValue)) tmp.Add(floatValue);
+                }
+                return tmp;
+            }
+            List<int> GetRows(List<object> tmp, int value)
+            {
+                int use = 0;
+                foreach (var it in tmp)
+                {
+                    if (it is int intValue) use += intValue;
+                }
+                int real = value - use;
+                var temp = new List<int>(tmp.Count);
+                foreach (var it in tmp)
+                {
+                    if (it is float floatValue) temp.Add((int)Math.Round(real * floatValue));
+                    else if (it is int intValue) temp.Add(intValue);
+                }
+                return temp;
+            }
+            Dictionary<int, int> GetRows(Dictionary<int, object> tmp, int value, out int real)
+            {
+                int use = 0;
+                foreach (var it in tmp)
+                {
+                    if (it.Value is int intValue) use += intValue;
+                }
+                real = value - use;
+                var temp = new Dictionary<int, int>(tmp.Count);
+                foreach (var it in tmp)
+                {
+                    if (it.Value is float floatValue) temp.Add(it.Key, (int)Math.Round(real * floatValue));
+                    else if (it.Value is int intValue) temp.Add(it.Key, intValue);
+                }
+                return temp;
             }
 
             void HandLayout(List<Control> controls, Rectangle[] rects)
