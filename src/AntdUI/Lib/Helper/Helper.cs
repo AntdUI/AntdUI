@@ -66,7 +66,7 @@ namespace AntdUI
         public static bool SetTopMost(this Control? control, IntPtr hand)
         {
             var form = control.FindPARENT();
-            if (form != null && form.TopMost || (form is LayeredFormPopover layered && layered.topMost))
+            if (form != null && form.TopMost || (form is LayeredFormPopover layered && layered.topMost) || (form is LayeredFormTour layeredTour && layeredTour.topMost))
             {
                 SetTopMost(hand);
                 return true;

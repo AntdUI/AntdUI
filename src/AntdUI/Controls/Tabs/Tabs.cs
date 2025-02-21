@@ -418,10 +418,6 @@ namespace AntdUI
             }
         }
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public new ControlCollection Controls => base.Controls;
-
         protected override void Dispose(bool disposing)
         {
             style.Dispose();
