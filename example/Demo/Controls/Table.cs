@@ -93,7 +93,7 @@ namespace Demo.Controls
         }
         AntdUI.Table.CellStyleInfo table1_SetRowStyle(object sender, AntdUI.TableSetRowStyleEventArgs e)
         {
-            if (e.RowIndex % 2 == 0)
+            if (e.Index % 2 == 0)
             {
                 return new AntdUI.Table.CellStyleInfo
                 {
@@ -347,7 +347,6 @@ namespace Demo.Controls
                     OnPropertyChanged();
                 }
             }
-
 
             bool _enable = false;
             public bool enable
