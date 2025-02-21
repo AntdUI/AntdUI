@@ -1589,6 +1589,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 base.Text = text = value;
+                PARENT?.LoadLayout();
             }
         }
 
