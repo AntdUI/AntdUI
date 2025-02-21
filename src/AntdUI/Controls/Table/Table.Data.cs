@@ -179,24 +179,23 @@ namespace AntdUI
         {
             dataOne = true;
             if (list == null) return;
-            list.ListChanged += (Sender, Args) =>
-            {
-                BindingItem<T>(Sender, Args);
-            };
+            list.ListChanged -= Binding_ListChanged;
+            list.ListChanged += Binding_ListChanged;
             DataSource = list;
         }
-        void BindingItem<T>(object? sender, ListChangedEventArgs args)
+
+        void Binding_ListChanged(object? sender, ListChangedEventArgs e)
         {
-            switch (args.ListChangedType)
+            switch (e.ListChangedType)
             {
                 case ListChangedType.ItemAdded:
-                    BindingItemAdded<T>(sender, args.NewIndex);
+                    BindingItemAdded(sender, e.NewIndex);
                     break;
                 case ListChangedType.ItemDeleted:
-                    BindingItemDeleted<T>(sender, args.NewIndex);
+                    BindingItemDeleted(sender, e.NewIndex);
                     break;
                 case ListChangedType.ItemChanged:
-                    BindingItemChanged<T>(sender, args.NewIndex);
+                    BindingItemChanged(sender, e.NewIndex);
                     break;
                 case ListChangedType.Reset:
                     if (dataTmp == null) return;
@@ -205,14 +204,15 @@ namespace AntdUI
                     break;
                 case ListChangedType.ItemMoved:
                 default:
-                    if (sender is IList<T> list) DataSource = list;
+                    if (sender is IList list) DataSource = list;
                     break;
             }
         }
-        void BindingItemAdded<T>(object? sender, int i)
+
+        void BindingItemAdded(object? sender, int i)
         {
             if (dataTmp == null) return;
-            if (sender is IList<T> list)
+            if (sender is IList list)
             {
                 var row = list[i];
                 if (row == null) return;
@@ -227,10 +227,10 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
             }
         }
-        void BindingItemChanged<T>(object? sender, int i)
+        void BindingItemChanged(object? sender, int i)
         {
             if (dataTmp == null) return;
-            if (sender is IList<T> list)
+            if (sender is IList list)
             {
                 var row = list[i];
                 if (row == null) return;
@@ -244,10 +244,10 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
             }
         }
-        void BindingItemDeleted<T>(object? sender, int i)
+        void BindingItemDeleted(object? sender, int i)
         {
             if (dataTmp == null) return;
-            if (sender is IList<T> list)
+            if (sender is IList list)
             {
                 var rows = new List<IRow>(dataTmp.rows.Length);
                 rows.AddRange(dataTmp.rows);

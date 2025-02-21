@@ -64,7 +64,7 @@ namespace AntdUI
             /// <summary>
             /// 数值
             /// </summary>
-            public CheckState? Value { get; private set; }
+            public CheckState Value { get; private set; }
         }
 
         /// <summary>

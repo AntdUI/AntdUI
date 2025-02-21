@@ -175,12 +175,13 @@ namespace AntdUI
                                 Rectangle[] rects;
                                 if (data.Count > 1)
                                 {
+                                    int rcount = data.Count - cells.Count;
                                     var tmp_rects = new List<Rectangle>();
                                     int hasx = 0, hasy = 0;
                                     i = 0;
                                     foreach (var item in data)
                                     {
-                                        int y = cells.TryGetValue(i, out var value) ? value : real_height / data.Count;
+                                        int y = cells.TryGetValue(i, out var value) ? value : real_height / rcount;
                                         foreach (var x in item)
                                         {
                                             tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, y));
