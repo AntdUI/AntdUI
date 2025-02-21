@@ -17,10 +17,12 @@
 // QQ: 17379620
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Layout;
 
@@ -33,10 +35,40 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Span")]
     [Designer(typeof(IControlDesigner))]
-    public class GridPanel : IControl
+    [ProvideProperty("Index", typeof(Control))]
+    public class GridPanel : IControl, IExtenderProvider
     {
         public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding);
 
+        #region 给子控件增加Index属性
+        public bool CanExtend(object extendee) => extendee is Control control && control.Parent == this;
+
+        //private List<Control> list = new();
+        private Dictionary<Control,int> Map = new();
+
+        [DisplayName("Index"), Description("排序"), Category("外观"), DefaultValue("-1")]
+        public int GetIndex(Control control) => IndexExists(control);
+
+        public void SetIndex(Control control, int index)
+        {
+            if (control == null) return;
+            var old = IndexExists(control);
+            if (index >= 0)
+            {
+                if (old != index) Map[control] = index;
+            }
+            IOnSizeChanged();
+            OnPropertyChanged("SetIndex");
+        }
+
+        private int IndexExists(Control control)
+        {
+            if (control == null) return -1;
+            if (!Map.ContainsKey(control)) Map.Add(control, Map.Count);
+            return Map[control];
+        }
+
+        #endregion
         /// <summary>
         /// 跨度
         /// </summary>
@@ -118,11 +150,8 @@ namespace AntdUI
                     var rect = parent.DisplayRectangle;
                     if (!string.IsNullOrEmpty(Span) && parent.Controls.Count > 0)
                     {
-                        var controls = new List<Control>(parent.Controls.Count);
-                        foreach (Control it in parent.Controls)
-                        {
-                            if (it.Visible) controls.Insert(0, it);
-                        }
+                        var controls = SyncMap(parent);
+
                         if (controls.Count > 0)
                         {
                             string[] tmp = Span.Split('-', '\n'), rows = tmp[0].Split(';');
@@ -211,6 +240,24 @@ namespace AntdUI
                     }
                 }
                 return false;
+            }
+
+            List<Control> SyncMap(GridPanel parent)
+            {
+                foreach (var d in parent.Map)
+                {
+                    if(!parent.Controls.Contains(d.Key)) parent.Map.Remove(d.Key);
+                }
+
+                var result = new List<Control>();
+
+                var map = parent.Map.OrderBy(p => p.Value).ToList();
+                foreach (var id in map)
+                {
+                    if (id.Key.Visible) result.Add(id.Key);
+                }
+
+                return result;
             }
 
             List<int> GetRows(string cells, int value) => GetRows(GetRows(cells), value);
