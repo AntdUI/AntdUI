@@ -1545,6 +1545,30 @@ namespace AntdUI
             return this;
         }
 
+        bool colBreak = false;
+        /// <summary>
+        /// 表头自动换行
+        /// </summary>
+        public bool ColBreak
+        {
+            get => colBreak;
+            set
+            {
+                if (colBreak == value) return;
+                colBreak = value;
+                Invalidates();
+            }
+        }
+
+        /// <summary>
+        /// 设置表头自动换行
+        /// </summary>
+        public Column SetColumBreak(bool value = true)
+        {
+            ColBreak = value;
+            return this;
+        }
+
         bool _fixed = false;
         /// <summary>
         /// 列是否固定

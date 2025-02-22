@@ -57,18 +57,25 @@ namespace AntdUI
             {
                 if (old != index) Map[control] = index;
             }
-            IOnSizeChanged();
+
             OnPropertyChanged("SetIndex");
         }
 
         private int IndexExists(Control control)
         {
             if (control == null) return -1;
-            if (!Map.ContainsKey(control)) Map.Add(control, Map.Count);
+            if (!Map.ContainsKey(control))
+            {
+                Map.Add(control, Map.Count);
+
+                Invalidate();
+                IOnSizeChanged();
+            } 
             return Map[control];
         }
 
         #endregion
+
         /// <summary>
         /// 跨度
         /// </summary>
