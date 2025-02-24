@@ -510,15 +510,14 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            bool result = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Down:
                 case Keys.Enter:
                     ExpandDrop = true;
-                    return true;
+                    break;
             }
-            return result;
+            return base.ProcessCmdKey(ref msg, keyData);
         }
         protected override void OnLostFocus(EventArgs e)
         {

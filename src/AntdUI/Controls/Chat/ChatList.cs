@@ -421,17 +421,16 @@ namespace AntdUI.Chat
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            bool result = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Control | Keys.A:
                     SelectAll();
-                    return true;
+                    break;
                 case Keys.Control | Keys.C:
                     Copy();
-                    return true;
+                    break;
             }
-            return result;
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         void SelectAll()

@@ -294,7 +294,7 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
                         {
-                            g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN,true));
+                            g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
                         }
                     }
                     else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));

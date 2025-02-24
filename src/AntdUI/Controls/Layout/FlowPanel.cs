@@ -36,6 +36,8 @@ namespace AntdUI
     [ProvideProperty("Index", typeof(Control))]
     public class FlowPanel : IControl, IExtenderProvider
     {
+        #region 属性
+
         bool autoscroll = false;
         /// <summary>
         /// 是否显示滚动条
@@ -120,6 +122,8 @@ namespace AntdUI
                 OnPropertyChanged("PauseLayout");
             }
         }
+
+        #endregion
 
         protected override void OnHandleCreated(EventArgs e)
         {

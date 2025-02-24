@@ -172,6 +172,7 @@ namespace AntdUI
             int y = 10, w = rect_read.Width;
             r_w = w;
             var point = control.PointToScreen(Point.Empty);
+            var screen = Screen.FromPoint(point).WorkingArea;
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
@@ -214,14 +215,28 @@ namespace AntdUI
                 }
                 else
                 {
-                    var screen = Screen.FromPoint(point).WorkingArea;
-                    int sh;
-                    if (ShowArrow) sh = point.Y + control.Height + 20 + ArrowSize + gap2;
-                    else sh = point.Y + control.Height + 20 + gap2;
 
                     int ry = 10 + gap2 + vr;
-                    if (ry > (screen.Height - point.Y))
+                    if (control is LayeredFormSelectDown)
                     {
+                        if (ry > screen.Height)
+                        {
+                            MaxCount = (int)Math.Floor(screen.Height / (item_height * 1.0));
+                            if (MaxCount < 1) MaxCount = 1;
+                            y = 10 + gap2 + (item_height * MaxCount);
+                            scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
+                            scrollY.Show = true;
+                            scrollY.SetVrSize(vr, scrollY.Rect.Height);
+                            if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap);
+                        }
+                        else y = 10 + gap2 + vr;
+                    }
+                    else if (ry > (screen.Height - point.Y))
+                    {
+                        int sh;
+                        if (ShowArrow) sh = point.Y + control.Height + 20 + ArrowSize + gap2;
+                        else sh = point.Y + control.Height + 20 + gap2;
+
                         MaxCount = (int)Math.Floor((screen.Height - sh) / (item_height * 1.0)) - 1;
                         if (MaxCount < 1) MaxCount = 1;
                         y = 10 + gap2 + (item_height * MaxCount);
@@ -230,14 +245,20 @@ namespace AntdUI
                         scrollY.SetVrSize(vr, scrollY.Rect.Height);
                         if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap);
                     }
-                    else y = ry;
+                    else y = 10 + gap2 + vr;
                 }
             });
             int r_h;
             if (filtertext == null || string.IsNullOrEmpty(filtertext)) r_h = y + 10;
             else r_h = TextChangeCore(filtertext);
             SetSize(w + 20, r_h);
-            if (control is LayeredFormSelectDown) SetLocation(point.X + rect_read.Width, point.Y + rect_read.Y - 10);
+            if (control is LayeredFormSelectDown)
+            {
+                int rx = point.X + rect_read.Width, ry = point.Y + rect_read.Y - 10;
+                if (rx > screen.Right - TargetRect.Width) rx = screen.Right - TargetRect.Width;
+                if (ry > screen.Bottom - TargetRect.Height) ry = screen.Bottom - TargetRect.Height;
+                SetLocation(rx, ry);
+            }
             else MyPoint(point, Placement, ShowArrow, rect_read);
 
             KeyCall = keys =>
