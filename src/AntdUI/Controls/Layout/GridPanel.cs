@@ -17,12 +17,10 @@
 // QQ: 17379620
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Layout;
 
@@ -38,43 +36,7 @@ namespace AntdUI
     [ProvideProperty("Index", typeof(Control))]
     public class GridPanel : IControl, IExtenderProvider
     {
-        public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding);
-
-        #region 给子控件增加Index属性
-        public bool CanExtend(object extendee) => extendee is Control control && control.Parent == this;
-
-        //private List<Control> list = new();
-        private Dictionary<Control,int> Map = new();
-
-        [DisplayName("Index"), Description("排序"), Category("外观"), DefaultValue("-1")]
-        public int GetIndex(Control control) => IndexExists(control);
-
-        public void SetIndex(Control control, int index)
-        {
-            if (control == null) return;
-            var old = IndexExists(control);
-            if (index >= 0)
-            {
-                if (old != index) Map[control] = index;
-            }
-
-            OnPropertyChanged("SetIndex");
-        }
-
-        private int IndexExists(Control control)
-        {
-            if (control == null) return -1;
-            if (!Map.ContainsKey(control))
-            {
-                Map.Add(control, Map.Count);
-
-                Invalidate();
-                IOnSizeChanged();
-            } 
-            return Map[control];
-        }
-
-        #endregion
+        #region 属性
 
         /// <summary>
         /// 跨度
@@ -127,7 +89,43 @@ namespace AntdUI
             }
         }
 
+        #endregion
+
+        #region Index 排序
+
+        public bool CanExtend(object extendee) => extendee is Control control && control.Parent == this;
+
+        Dictionary<Control, int> Map = new Dictionary<Control, int>();
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        [DisplayName("Index"), Description("排序"), DefaultValue(-1)]
+        public int GetIndex(Control control) => IndexExists(control);
+
+        public void SetIndex(Control control, int index)
+        {
+            int old = IndexExists(control);
+            if (old == index) return;
+            if (index > -1)
+            {
+                if (old == -1) Map.Add(control, index);
+                else Map[control] = index;
+            }
+            else if (old > -1) Map.Remove(control);
+            if (IsHandleCreated) IOnSizeChanged();
+        }
+
+        int IndexExists(Control control)
+        {
+            if (Map.TryGetValue(control, out int index)) return index;
+            return -1;
+        }
+
+        #endregion
+
         #region 布局
+        public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding);
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -158,7 +156,6 @@ namespace AntdUI
                     if (!string.IsNullOrEmpty(Span) && parent.Controls.Count > 0)
                     {
                         var controls = SyncMap(parent);
-
                         if (controls.Count > 0)
                         {
                             string[] tmp = Span.Split('-', '\n'), rows = tmp[0].Split(';');
@@ -249,23 +246,40 @@ namespace AntdUI
                 return false;
             }
 
+            #region 排序
+
             List<Control> SyncMap(GridPanel parent)
             {
-                foreach (var d in parent.Map)
+                int count = parent.Controls.Count, i = count;
+                var tmp = new List<IList>(count);
+                foreach (Control it in parent.Controls)
                 {
-                    if(!parent.Controls.Contains(d.Key)) parent.Map.Remove(d.Key);
+                    if (it.Visible)
+                    {
+                        if (parent.Map.TryGetValue(it, out int index)) tmp.Insert(0, new IList(it, index));
+                        else tmp.Insert(0, new IList(it, i));
+                        i--;
+                    }
                 }
-
-                var result = new List<Control>();
-
-                var map = parent.Map.OrderBy(p => p.Value).ToList();
-                foreach (var id in map)
-                {
-                    if (id.Key.Visible) result.Add(id.Key);
-                }
-
-                return result;
+                tmp.Sort((a, b) => a.Index.CompareTo(b.Index));
+                var controls = new List<Control>(tmp.Count);
+                foreach (var it in tmp) controls.Add(it.Control);
+                return controls;
             }
+
+            class IList
+            {
+                public IList(Control control, int index)
+                {
+                    Control = control;
+                    Index = index;
+                }
+
+                public Control Control { get; set; }
+                public int Index { get; set; }
+            }
+
+            #endregion
 
             List<int> GetRows(string cells, int value) => GetRows(GetRows(cells), value);
             List<object> GetRows(string cells)
