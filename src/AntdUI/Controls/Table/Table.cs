@@ -1072,6 +1072,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             this.AddListener();
+            if (dataOne) LoadLayout();
         }
 
         public void HandleEvent(EventType id, object? tag)

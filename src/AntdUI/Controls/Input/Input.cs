@@ -1212,13 +1212,20 @@ namespace AntdUI
                     m_hIMC = Win32.ImmGetContext(Handle);
                     OnImeStartPrivate(m_hIMC);
 #if NET40 || NET46 || NET48 || NET6_0
-                    if (multiline) m.Result = (IntPtr)(Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS);
+                    if (multiline)
+                    {
+                        m.Result = (IntPtr)(Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS);
+                        base.WndProc(ref m);
+                    }
                     else m.Result = (IntPtr)(Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS);
 #else
-                    if (multiline) m.Result = Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
+                    if (multiline)
+                    {
+                        m.Result = Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
+                        base.WndProc(ref m);
+                    }
                     else m.Result = Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
 #endif
-
                     return;
             }
             base.WndProc(ref m);

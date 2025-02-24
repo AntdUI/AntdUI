@@ -78,6 +78,9 @@ namespace AntdUI
         [Description("副标题居中"), Category("外观"), DefaultValue(false)]
         public bool UseSubCenter { get; set; }
 
+        [Description("使用左边边距"), Category("外观"), DefaultValue(true)]
+        public bool UseLeftMargin { get; set; } = true;
+
         string? desc = null;
         [Description("副标题"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
@@ -596,7 +599,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, hasl, 0, hasr, 0);
 
         StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
         StringFormat stringCenter = Helper.SF_ALL();
@@ -651,6 +654,7 @@ namespace AntdUI
                 rect_real = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, rect_real.Height - heightDescription);
             }
             int u_x = IPaint(g, rect_real, fore, size.Height, ratio);
+            int rl = u_x;
             rect_real.X += u_x;
             rect_real.Width -= u_x;
             using (var brush = new SolidBrush(forebase))
@@ -663,13 +667,21 @@ namespace AntdUI
                     g.String(Text, fontTitle, brush, rect_real, stringLeft);
                     size_w = sizeTitle.Width;
                 }
+                rl += size_w;
                 if (SubText != null)
                 {
                     int desc_t_w = size_w + (int)(subGap * Config.Dpi);
                     using (var brushsub = new SolidBrush(foreSecondary))
                     {
                         if (UseSubCenter) g.String(SubText, descFont ?? Font, brushsub, rect, stringCenter);
-                        else g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect_real.X + desc_t_w, rect_real.Y, rect_real.Width - desc_t_w, rect_real.Height), stringLeft);
+                        else
+                        {
+                            g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect_real.X + desc_t_w, rect_real.Y, rect_real.Width - desc_t_w, rect_real.Height), stringLeft);
+                            if (UseLeftMargin)
+                            {
+                                rl = u_x + desc_t_w + g.MeasureString(SubText, descFont ?? Font).Width;
+                            }
+                        }
                         if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft);
                     }
                 }
@@ -679,6 +691,7 @@ namespace AntdUI
                     { g.String(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft); }
                 }
             }
+            hasl = rl;
             if (showButton) IPaintButton(g, rect_real, fore, fillsecondary, size);
         }
 
@@ -976,36 +989,55 @@ namespace AntdUI
 
         #endregion
 
-        int hasr = 0;
+        bool setsize = false;
+        int _hasl = 0, hasr = 0;
+        int hasl
+        {
+            get => _hasl;
+            set
+            {
+                if (_hasl == value) return;
+                _hasl = value;
+                setsize = true;
+                IOnSizeChanged();
+            }
+        }
+
         protected override void OnSizeChanged(EventArgs e)
         {
+            base.OnSizeChanged(e);
+            if (setsize)
+            {
+                setsize = false;
+                return;
+            }
             var rect = ClientRectangle.PaddingRect(Padding);
+            int rr = 0;
             if (CloseSize > 0 && showButton)
             {
                 int btn_size = (fullBox || maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Config.Dpi) : (int)Math.Round((CloseSize - 8) * Config.Dpi);
                 rect_close = new Rectangle(rect.Right - btn_size, rect.Y, btn_size, rect.Height);
-                hasr = btn_size;
+                rr = btn_size;
                 int left = rect_close.Left;
                 if (fullBox)
                 {
                     rect_full = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
                     left -= btn_size;
-                    hasr += btn_size;
+                    rr += btn_size;
                 }
                 if (maximizeBox)
                 {
                     rect_max = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
                     left -= btn_size;
-                    hasr += btn_size;
+                    rr += btn_size;
                 }
                 if (minimizeBox)
                 {
                     rect_min = new Rectangle(left - btn_size, rect.Y, btn_size, rect.Height);
-                    hasr += btn_size;
+                    rr += btn_size;
                 }
             }
-            else hasr = 0;
-
+            hasr = rr;
             if (DragMove)
             {
                 var form = Parent.FindPARENT();
@@ -1025,7 +1057,6 @@ namespace AntdUI
                     }
                 }
             }
-            base.OnSizeChanged(e);
         }
 
         #region 动画
