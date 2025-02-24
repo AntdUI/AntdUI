@@ -33,7 +33,8 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Align")]
     [Designer(typeof(IControlDesigner))]
-    public class FlowPanel : IControl
+    [ProvideProperty("Index", typeof(Control))]
+    public class FlowPanel : IControl, IExtenderProvider
     {
         bool autoscroll = false;
         /// <summary>
@@ -132,6 +133,39 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
+        #region Index 排序
+
+        public bool CanExtend(object extendee) => extendee is Control control && control.Parent == this;
+
+        Dictionary<Control, int> Map = new Dictionary<Control, int>();
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        [DisplayName("Index"), Description("排序"), DefaultValue(-1)]
+        public int GetIndex(Control control) => IndexExists(control);
+
+        public void SetIndex(Control control, int index)
+        {
+            int old = IndexExists(control);
+            if (old == index) return;
+            if (index > -1)
+            {
+                if (old == -1) Map.Add(control, index);
+                else Map[control] = index;
+            }
+            else if (old > -1) Map.Remove(control);
+            if (IsHandleCreated) IOnSizeChanged();
+        }
+
+        int IndexExists(Control control)
+        {
+            if (Map.TryGetValue(control, out int index)) return index;
+            return -1;
+        }
+
+        #endregion
+
         #region 布局
 
         protected override void OnSizeChanged(EventArgs e)
@@ -156,11 +190,8 @@ namespace AntdUI
                 if (container is FlowPanel parent && parent.IsHandleCreated && parent.Controls.Count > 0)
                 {
                     if (parent.PauseLayout) return false;
-                    var controls = new List<Control>(parent.Controls.Count);
-                    foreach (Control it in parent.Controls)
-                    {
-                        if (it.Visible) controls.Insert(0, it);
-                    }
+                    var controls = SyncMap(parent);
+
                     if (controls.Count > 0)
                     {
                         int val = HandLayout(parent, controls);
@@ -175,6 +206,41 @@ namespace AntdUI
                 }
                 return false;
             }
+
+            #region 排序
+
+            List<Control> SyncMap(FlowPanel parent)
+            {
+                int count = parent.Controls.Count, i = count;
+                var tmp = new List<IList>(count);
+                foreach (Control it in parent.Controls)
+                {
+                    if (it.Visible)
+                    {
+                        if (parent.Map.TryGetValue(it, out int index)) tmp.Insert(0, new IList(it, index));
+                        else tmp.Insert(0, new IList(it, i));
+                        i--;
+                    }
+                }
+                tmp.Sort((a, b) => a.Index.CompareTo(b.Index));
+                var controls = new List<Control>(tmp.Count);
+                foreach (var it in tmp) controls.Add(it.Control);
+                return controls;
+            }
+
+            class IList
+            {
+                public IList(Control control, int index)
+                {
+                    Control = control;
+                    Index = index;
+                }
+
+                public Control Control { get; set; }
+                public int Index { get; set; }
+            }
+
+            #endregion
 
             int HandLayout(FlowPanel parent, List<Control> controls)
             {
