@@ -235,24 +235,26 @@ namespace AntdUI
 
         #region 剪贴板
 
-        internal static string? GetClipBoardText()
+        internal static bool GetClipBoardText(out string? text)
         {
             IntPtr handle = default, pointer = default;
             try
             {
-                if (!OpenClipboard(IntPtr.Zero)) return null;
+                if (!OpenClipboard(IntPtr.Zero)) { text = null; return false; }
                 handle = GetClipboardData(13);
-                if (handle == default) return null;
+                if (handle == default) { text = null; return false; }
                 pointer = GlobalLock(handle);
-                if (pointer == default) return null;
+                if (pointer == default) { text = null; return false; }
                 var size = GlobalSize(handle);
                 var buff = new byte[size];
                 Marshal.Copy(pointer, buff, 0, size);
-                return Encoding.Unicode.GetString(buff).TrimEnd('\0');
+                text = Encoding.Unicode.GetString(buff).TrimEnd('\0');
+                return true;
             }
             catch
             {
-                return null;
+                text = null;
+                return false;
             }
             finally
             {
@@ -294,7 +296,7 @@ namespace AntdUI
             }
         }
 
-        [DllImport("User32.dll", SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true)]
         extern static IntPtr GetClipboardData(uint uFormat);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -311,20 +313,20 @@ namespace AntdUI
         /// 打开剪切板
         /// </summary>
         /// <param name="hWndNewOwner"></param>
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         extern static bool OpenClipboard(IntPtr hWndNewOwner);
 
         /// <summary>
         /// 关闭剪切板
         /// </summary>
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         extern static bool CloseClipboard();
 
         /// <summary>
         /// 清空剪贴板
         /// </summary>
         /// <returns></returns>
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         extern static bool EmptyClipboard();
 
         /// <summary>
@@ -332,7 +334,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="uFormat"></param>
         /// <param name="hMem"></param>
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         extern static IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
 
         #endregion

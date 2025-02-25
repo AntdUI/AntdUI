@@ -226,13 +226,17 @@ namespace AntdUI
         }
         public static string? ClipboardGetText()
         {
-            try
+            if (Win32.GetClipBoardText(out var text)) return text;
+            else
             {
-                return Clipboard.GetText();
-            }
-            catch
-            {
-                return Win32.GetClipBoardText();
+                try
+                {
+                    return Clipboard.GetText();
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
         public static bool ClipboardSetText(this Control control, string? text)
@@ -242,17 +246,20 @@ namespace AntdUI
         }
         public static bool ClipboardSetText(string? text)
         {
-            try
+            if (Win32.SetClipBoardText(text)) return true;
+            else
             {
-                if (text == null) Clipboard.Clear();
-                else Clipboard.SetText(text);
-                return true;
+                try
+                {
+                    if (text == null) Clipboard.Clear();
+                    else Clipboard.SetText(text);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
-            catch
-            {
-                if (Win32.SetClipBoardText(text)) return true;
-            }
-            return false;
         }
 
         #endregion

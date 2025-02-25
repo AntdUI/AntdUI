@@ -636,7 +636,11 @@ namespace AntdUI
                 if (cache_font == null) value = 0;
                 else if (value > cache_font.Length) value = cache_font.Length;
             }
-            if (selectionStart == value) return;
+            if (selectionStart == value)
+            {
+                SetCaretPostion(value);
+                return;
+            }
             selectionStart = selectionStartTemp = value;
             SetCaretPostion(value);
             OnPropertyChanged("SelectionStart");

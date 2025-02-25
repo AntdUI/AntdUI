@@ -55,6 +55,22 @@ namespace AntdUI.Core
             g.DrawString(text, font, brush, rect, format);
         }
 
+        public void String(string? text, Font font, Color color, RectangleF rect, StringFormat? format = null)
+        {
+            CorrectionTextRendering.CORE(font, text, ref rect);
+            using (var brush = new SolidBrush(color))
+            {
+                String(text, font, brush, rect, format);
+            }
+        }
+
+
+        public void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat? format = null)
+        {
+            CorrectionTextRendering.CORE(font, text, ref rect);
+            g.DrawString(text, font, brush, rect, format);
+        }
+
         public void String(string? text, Font font, Color color, int x, int y)
         {
             using (var brush = new SolidBrush(color))
@@ -64,6 +80,17 @@ namespace AntdUI.Core
         }
 
         public void String(string? text, Font font, Brush brush, int x, int y) => g.DrawString(text, font, brush, x, y);
+
+        public void String(string? text, Font font, Color color, float x, float y)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                String(text, font, brush, x, y);
+            }
+        }
+
+        public void String(string? text, Font font, Brush brush, float x, float y) => g.DrawString(text, font, brush, x, y);
+
 
         public void String(string? text, Font font, Color color, Point point)
         {
@@ -75,15 +102,16 @@ namespace AntdUI.Core
 
         public void String(string? text, Font font, Brush brush, Point point) => g.DrawString(text, font, brush, point);
 
-        public void String(string? text, Font font, Color color, float x, float y)
+
+        public void String(string? text, Font font, Color color, PointF point)
         {
             using (var brush = new SolidBrush(color))
             {
-                String(text, font, brush, x, y);
+                String(text, font, brush, point);
             }
         }
 
-        public void String(string? text, Font font, Brush brush, float x, float y) => g.DrawString(text, font, brush, x, y);
+        public void String(string? text, Font font, Brush brush, PointF point) => g.DrawString(text, font, brush, point);
 
         #endregion
 
@@ -113,28 +141,18 @@ namespace AntdUI.Core
             catch { }
         }
 
-        public void Image(Image image, int srcX, int srcY, int srcWidth, int srcHeight)
+        public void Image(Image image, int x, int y, int w, int h)
         {
             try
             {
                 lock (image)
                 {
-                    g.DrawImage(image, srcX, srcY, srcWidth, srcHeight);
+                    g.DrawImage(image, x, y, w, h);
                 }
             }
             catch { }
         }
-        public void Image(Bitmap image, Rectangle rect)
-        {
-            try
-            {
-                lock (image)
-                {
-                    g.DrawImage(image, rect);
-                }
-            }
-            catch { }
-        }
+
         public void Icon(Icon icon, Rectangle rect)
         {
             try
@@ -169,6 +187,18 @@ namespace AntdUI.Core
             }
             catch { }
         }
+        public void Image(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit)
+        {
+            try
+            {
+                lock (image)
+                {
+
+                    g.DrawImage(image, destRect, srcRect, srcUnit);
+                }
+            }
+            catch { }
+        }
         public void Image(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit srcUnit)
         {
             try
@@ -183,28 +213,6 @@ namespace AntdUI.Core
         }
 
         #region 图片透明度
-
-        public void Image(Bitmap bmp, Rectangle rect, float opacity)
-        {
-            try
-            {
-                lock (bmp)
-                {
-                    if (opacity >= 1F)
-                    {
-                        g.DrawImage(bmp, rect);
-                        return;
-                    }
-                    using (var attributes = new ImageAttributes())
-                    {
-                        var matrix = new ColorMatrix { Matrix33 = opacity };
-                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                        g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-                    }
-                }
-            }
-            catch { }
-        }
 
         public void Image(Image bmp, Rectangle rect, float opacity)
         {
@@ -390,8 +398,10 @@ namespace AntdUI.Core
             catch { }
         }
         public void Fill(Brush brush, Rectangle rect) => g.FillRectangle(brush, rect);
-        public void Fill(Brush brush, int x, int y, int w, int h) => g.FillRectangle(brush, x, y, w, h);
         public void Fill(Brush brush, RectangleF rect) => g.FillRectangle(brush, rect);
+        public void Fill(Brush brush, int x, int y, int w, int h) => g.FillRectangle(brush, x, y, w, h);
+        public void Fill(Brush brush, float x, float y, float w, float h) => g.FillRectangle(brush, x, y, w, h);
+
         public void Fill(Color color, GraphicsPath path)
         {
             using (var brush = new SolidBrush(color))
@@ -411,6 +421,20 @@ namespace AntdUI.Core
             using (var brush = new SolidBrush(color))
             {
                 Fill(brush, rect);
+            }
+        }
+        public void Fill(Color color, int x, int y, int w, int h)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                Fill(brush, x, y, w, h);
+            }
+        }
+        public void Fill(Color color, float x, float y, float w, float h)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                Fill(brush, x, y, w, h);
             }
         }
 
@@ -433,6 +457,13 @@ namespace AntdUI.Core
 
         public void FillPolygon(Brush brush, Point[] points) => g.FillPolygon(brush, points);
         public void FillPolygon(Brush brush, PointF[] points) => g.FillPolygon(brush, points);
+        public void FillPolygon(Color color, Point[] points)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                FillPolygon(brush, points);
+            }
+        }
         public void FillPolygon(Color color, PointF[] points)
         {
             using (var brush = new SolidBrush(color))
@@ -442,6 +473,7 @@ namespace AntdUI.Core
         }
 
         public void FillPie(Brush brush, Rectangle rect, float startAngle, float sweepAngle) => g.FillPie(brush, rect, startAngle, sweepAngle);
+        public void FillPie(Brush brush, RectangleF rect, float startAngle, float sweepAngle) => g.FillPie(brush, rect.X, rect.Y, rect.Width, rect.Height, startAngle, sweepAngle);
         public void FillPie(Brush brush, float x, float y, float w, float h, float startAngle, float sweepAngle) => g.FillPie(brush, x, y, w, h, startAngle, sweepAngle);
 
         #endregion
@@ -450,6 +482,7 @@ namespace AntdUI.Core
 
         public void Draw(Pen pen, GraphicsPath path) => g.DrawPath(pen, path);
         public void Draw(Pen pen, Rectangle rect) => g.DrawRectangle(pen, rect);
+        public void Draw(Pen pen, RectangleF rect) => g.DrawRectangles(pen, new RectangleF[] { rect });
 
         public void Draw(Brush brush, float width, GraphicsPath path)
         {
@@ -472,6 +505,13 @@ namespace AntdUI.Core
                 Draw(pen, rect);
             }
         }
+        public void Draw(Color color, float width, RectangleF rect)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                Draw(pen, rect);
+            }
+        }
         public void Draw(Color color, float width, DashStyle dashStyle, GraphicsPath path)
         {
             using (var pen = new Pen(color, width))
@@ -480,9 +520,32 @@ namespace AntdUI.Core
                 Draw(pen, path);
             }
         }
+        public void Draw(Color color, float width, DashStyle dashStyle, Rectangle rect)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                pen.DashStyle = dashStyle;
+                Draw(pen, rect);
+            }
+        }
+        public void Draw(Color color, float width, DashStyle dashStyle, RectangleF rect)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                pen.DashStyle = dashStyle;
+                Draw(pen, rect);
+            }
+        }
 
         public void DrawEllipse(Pen pen, Rectangle rect) => g.DrawEllipse(pen, rect);
         public void DrawEllipse(Pen pen, RectangleF rect) => g.DrawEllipse(pen, rect);
+        public void DrawEllipse(Color color, float width, Rectangle rect)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                g.DrawEllipse(pen, rect);
+            }
+        }
         public void DrawEllipse(Color color, float width, RectangleF rect)
         {
             using (var pen = new Pen(color, width))
@@ -493,6 +556,20 @@ namespace AntdUI.Core
 
         public void DrawPolygon(Pen pen, Point[] points) => g.DrawPolygon(pen, points);
         public void DrawPolygon(Pen pen, PointF[] points) => g.DrawPolygon(pen, points);
+        public void DrawPolygon(Color color, float width, Point[] points)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawPolygon(pen, points);
+            }
+        }
+        public void DrawPolygon(Color color, float width, PointF[] points)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawPolygon(pen, points);
+            }
+        }
 
         public void DrawArc(Pen pen, Rectangle rect, float startAngle, float sweepAngle)
         {
@@ -510,15 +587,52 @@ namespace AntdUI.Core
             }
             catch { }
         }
+        public void DrawArc(Color color, float width, Rectangle rect, float startAngle, float sweepAngle)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawArc(pen, rect, startAngle, sweepAngle);
+            }
+        }
+        public void DrawArc(Color color, float width, RectangleF rect, float startAngle, float sweepAngle)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawArc(pen, rect, startAngle, sweepAngle);
+            }
+        }
 
         public void DrawPie(Pen pen, Rectangle rect, float startAngle, float sweepAngle) => g.DrawPie(pen, rect, startAngle, sweepAngle);
+        public void DrawPie(Pen pen, RectangleF rect, float startAngle, float sweepAngle) => g.DrawPie(pen, rect, startAngle, sweepAngle);
+        public void DrawPie(Color color, float width, Rectangle rect, float startAngle, float sweepAngle)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawPie(pen, rect, startAngle, sweepAngle);
+            }
+        }
+        public void DrawPie(Color color, float width, RectangleF rect, float startAngle, float sweepAngle)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawPie(pen, rect, startAngle, sweepAngle);
+            }
+        }
 
         public void DrawLine(Pen pen, Point pt1, Point pt2) => g.DrawLine(pen, pt1, pt2);
         public void DrawLine(Pen pen, PointF pt1, PointF pt2) => g.DrawLine(pen, pt1, pt2);
+        public void DrawLine(Pen pen, int x, int y, int x2, int y2) => g.DrawLine(pen, x, y, x2, y2);
         public void DrawLine(Pen pen, float x, float y, float x2, float y2) => g.DrawLine(pen, x, y, x2, y2);
 
         public void DrawLines(Pen pen, Point[] points) => g.DrawLines(pen, points);
         public void DrawLines(Pen pen, PointF[] points) => g.DrawLines(pen, points);
+        public void DrawLines(Color color, float width, Point[] points)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawLines(pen, points);
+            }
+        }
         public void DrawLines(Color color, float width, PointF[] points)
         {
             using (var pen = new Pen(color, width))
@@ -526,7 +640,6 @@ namespace AntdUI.Core
                 DrawLines(pen, points);
             }
         }
-
 
         #endregion
 

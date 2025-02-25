@@ -35,14 +35,18 @@ namespace AntdUI
 
         #region String
 
-        void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null);
         void String(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null);
+        void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null);
+        void String(string? text, Font font, Color color, RectangleF rect, StringFormat? format = null);
+        void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat? format = null);
         void String(string? text, Font font, Color color, int x, int y);
         void String(string? text, Font font, Brush brush, int x, int y);
-        void String(string? text, Font font, Color color, Point point);
-        void String(string? text, Font font, Brush brush, Point point);
         void String(string? text, Font font, Color color, float x, float y);
         void String(string? text, Font font, Brush brush, float x, float y);
+        void String(string? text, Font font, Color color, Point point);
+        void String(string? text, Font font, Brush brush, Point point);
+        void String(string? text, Font font, Color color, PointF point);
+        void String(string? text, Font font, Brush brush, PointF point);
 
         #endregion
 
@@ -51,18 +55,15 @@ namespace AntdUI
         void Image(Image image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, GraphicsUnit srcUnit, ImageAttributes? imageAttr);
 
         void Image(Image image, float x, float y, float w, float h);
-
-        void Image(Image image, int srcX, int srcY, int srcWidth, int srcHeight);
-        void Image(Bitmap image, Rectangle rect);
+        void Image(Image image, int x, int y, int w, int h);
         void Icon(Icon icon, Rectangle rect);
 
         void Image(Image image, Rectangle rect);
         void Image(Image image, RectangleF rect);
+        void Image(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit);
         void Image(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit srcUnit);
 
         #region 图片透明度
-
-        void Image(Bitmap bmp, Rectangle rect, float opacity);
 
         void Image(Image bmp, Rectangle rect, float opacity);
 
@@ -78,12 +79,15 @@ namespace AntdUI
 
         void Fill(Brush brush, GraphicsPath path);
         void Fill(Brush brush, Rectangle rect);
-        void Fill(Brush brush, int x, int y, int w, int h);
         void Fill(Brush brush, RectangleF rect);
+        void Fill(Brush brush, int x, int y, int w, int h);
+        void Fill(Brush brush, float x, float y, float w, float h);
 
-        void Fill(Color color, GraphicsPath path);
-        void Fill(Color color, Rectangle rect);
-        void Fill(Color color, RectangleF rect);
+        void Fill(Color brush, GraphicsPath path);
+        void Fill(Color brush, Rectangle rect);
+        void Fill(Color brush, RectangleF rect);
+        void Fill(Color brush, int x, int y, int w, int h);
+        void Fill(Color brush, float x, float y, float w, float h);
 
         void FillEllipse(Brush brush, Rectangle rect);
         void FillEllipse(Brush brush, RectangleF rect);
@@ -92,9 +96,11 @@ namespace AntdUI
 
         void FillPolygon(Brush brush, Point[] points);
         void FillPolygon(Brush brush, PointF[] points);
+        void FillPolygon(Color color, Point[] points);
         void FillPolygon(Color color, PointF[] points);
 
         void FillPie(Brush brush, Rectangle rect, float startAngle, float sweepAngle);
+        void FillPie(Brush brush, RectangleF rect, float startAngle, float sweepAngle);
         void FillPie(Brush brush, float x, float y, float w, float h, float startAngle, float sweepAngle);
 
         #endregion
@@ -103,26 +109,42 @@ namespace AntdUI
 
         void Draw(Pen pen, GraphicsPath path);
         void Draw(Pen pen, Rectangle rect);
+        void Draw(Pen pen, RectangleF rect);
         void Draw(Color color, float width, GraphicsPath path);
         void Draw(Brush brush, float width, GraphicsPath path);
         void Draw(Color color, float width, Rectangle rect);
+        void Draw(Color color, float width, RectangleF rect);
         void Draw(Color color, float width, DashStyle dashStyle, GraphicsPath path);
+        void Draw(Color color, float width, DashStyle dashStyle, Rectangle rect);
+        void Draw(Color color, float width, DashStyle dashStyle, RectangleF rect);
 
         void DrawEllipse(Pen pen, Rectangle rect);
         void DrawEllipse(Pen pen, RectangleF rect);
+        void DrawEllipse(Color color, float width, Rectangle rect);
         void DrawEllipse(Color color, float width, RectangleF rect);
 
         void DrawPolygon(Pen pen, Point[] points);
         void DrawPolygon(Pen pen, PointF[] points);
+        void DrawPolygon(Color color, float width, Point[] points);
+        void DrawPolygon(Color color, float width, PointF[] points);
 
         void DrawArc(Pen pen, Rectangle rect, float startAngle, float sweepAngle);
         void DrawArc(Pen pen, RectangleF rect, float startAngle, float sweepAngle);
 
+        void DrawArc(Color color, float width, Rectangle rect, float startAngle, float sweepAngle);
+        void DrawArc(Color color, float width, RectangleF rect, float startAngle, float sweepAngle);
+
         void DrawPie(Pen pen, Rectangle rect, float startAngle, float sweepAngle);
+        void DrawPie(Pen pen, RectangleF rect, float startAngle, float sweepAngle);
+
+        void DrawPie(Color color, float width, Rectangle rect, float startAngle, float sweepAngle);
+        void DrawPie(Color color, float width, RectangleF rect, float startAngle, float sweepAngle);
 
         void DrawLine(Pen pen, Point points, Point points2);
         void DrawLine(Pen pen, PointF points, PointF points2);
+        void DrawLine(Pen pen, int x, int y, int x2, int y2);
         void DrawLine(Pen pen, float x, float y, float x2, float y2);
+        void DrawLines(Color color, float width, Point[] points);
         void DrawLines(Color color, float width, PointF[] points);
 
         void DrawLines(Pen pen, Point[] points);
