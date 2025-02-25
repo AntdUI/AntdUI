@@ -1108,6 +1108,7 @@ namespace AntdUI
             init = true;
             var g = e.Graphics.High();
             Rectangle rect = ClientRectangle.PaddingRect(Padding), rect_read = ReadRectangle;
+            if (rect_read.Width == 0 || rect_read.Height == 0) return;
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
             bool is_default = type == TTypeMini.Default, enabled = Enabled;

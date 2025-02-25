@@ -306,16 +306,14 @@ namespace AntdUI
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             base.OnSizeChanged(e);
         }
 
-        internal Rectangle ChangeList()
+        internal void ChangeList()
         {
             var rect = ClientRectangle;
-            if (pauseLayout || items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return rect;
-
+            if (pauseLayout || items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return;
             int x = 0, y = 0;
             bool has = HasSub(items);
             Helper.GDI(g =>
@@ -341,7 +339,7 @@ namespace AntdUI
                 ChangeList(g, rect, null, items, has, ref x, ref y, height, icon_size, gap, gapI, 0, true);
             });
             ScrollBar.SetVrSize(x, y);
-            return rect;
+            ScrollBar.SizeChange(rect);
         }
 
         bool HasSub(TreeItemCollection items)

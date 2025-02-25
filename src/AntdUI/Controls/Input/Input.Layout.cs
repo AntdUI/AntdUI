@@ -287,7 +287,8 @@ namespace AntdUI
                         it.show = false;
                         if (it.text == "\n" || it.text == "\r\n")
                         {
-                            retindex++;
+                            if (usex == 0) retindex++;
+                            else retindex = -1;
                             it.ret = true;
                             it.line = line;
                             line++;
@@ -644,7 +645,7 @@ namespace AntdUI
                     int ul = -1;
                     if (HasLeft())
                     {
-                        var useLeft = UseLeft(rect, false);
+                        var useLeft = UseLeft(rect, CaretInfo.Height, false);
                         if (useLeft[0] > 0 || useLeft[1] > 0)
                         {
                             int ux = useLeft[0], uy = useLeft[1];
@@ -659,14 +660,14 @@ namespace AntdUI
                     rect_l.Width = rect_r.Width = 0;
                     if (multiline) rect_text = new Rectangle(rect.X + sps, rect.Y + sps, rect.Width - sps2, rect.Height - sps2);
                     else rect_text = new Rectangle(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - sps2, read_height);
-                    if (ul > -1) UseLeftAutoHeight(read_height, sps2, ul);
+                    if (ul > -1) UseLeftAutoHeight(read_height, ul);
                 }
             }
         }
         void RectLR(Rectangle rect, int read_height, int sps, int sps2, int w_L, int h_L, int w_R, int h_R)
         {
             int ul = -1, sp = (int)(read_height * icongap), hasx = sps + w_L + sp, hasr = w_L + w_R + ((sps + sp) * 2);
-            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasr, rect.Height), true) : new int[] { 0, 0 };
+            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasr, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
             {
                 rect_l = new Rectangle(rect.X + sps, rect.Y + sps + (read_height - h_L) / 2, w_L, h_L);
@@ -691,7 +692,7 @@ namespace AntdUI
                 else rect_text = new Rectangle(rect.X + hasx, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasr, read_height);
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + (rect.Height - h_R) / 2, w_R, h_R);
             }
-            if (ul > -1) UseLeftAutoHeight(read_height, sps2, ul);
+            if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
 
         #region 前缀布局
@@ -699,7 +700,7 @@ namespace AntdUI
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w)
         {
             int ul = -1, sp = (int)(read_height * icongap), hasx = sps + w + sp, hasx2 = sps2 + w + sp;
-            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), true) : new int[] { 0, 0 };
+            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
             {
                 int y = rect.Y + sps, h = rect.Height - sps2;
@@ -725,12 +726,12 @@ namespace AntdUI
                 else rect_text = new Rectangle(rect.X + hasx, y, rect.Width - hasx2, read_height);
             }
             rect_r.Width = 0;
-            if (ul > -1) UseLeftAutoHeight(read_height, sps2, ul);
+            if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
             int ul = -1, sp = (int)(read_height * icongap), hasx = sps + w + sp, hasx2 = sps2 + w + sp;
-            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), true) : new int[] { 0, 0 };
+            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
             {
                 rect_l = new Rectangle(rect.X + sps, rect.Y + sps + (read_height - h) / 2, w, h);
@@ -754,7 +755,7 @@ namespace AntdUI
                 else rect_text = new Rectangle(rect.X + hasx, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasx2, read_height);
             }
             rect_r.Width = 0;
-            if (ul > -1) UseLeftAutoHeight(read_height, sps2, ul);
+            if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
 
         #endregion
@@ -766,7 +767,7 @@ namespace AntdUI
             int ul = -1, sp = (int)(read_height * icongap);
             if (HasLeft())
             {
-                var useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), false);
+                var useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), CaretInfo.Height, false);
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
@@ -788,14 +789,14 @@ namespace AntdUI
                 rect_r = new Rectangle(rect_text.Right + sp, rect_text.Y, w, rect_text.Height);
             }
             rect_l.Width = 0;
-            if (ul > -1) UseLeftAutoHeight(read_height, sps2, ul);
+            if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
             int ul = -1, sp = (int)(read_height * icongap);
             if (HasLeft())
             {
-                var useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), false);
+                var useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), CaretInfo.Height, false);
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
@@ -817,7 +818,7 @@ namespace AntdUI
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + (rect.Height - h) / 2, w, h);
             }
             rect_l.Width = 0;
-            if (ul > -1) UseLeftAutoHeight(read_height, sps2, ul);
+            if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
 
         #endregion

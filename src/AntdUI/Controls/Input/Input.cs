@@ -636,7 +636,11 @@ namespace AntdUI
                 if (cache_font == null) value = 0;
                 else if (value > cache_font.Length) value = cache_font.Length;
             }
-            if (selectionStart == value) return;
+            if (selectionStart == value)
+            {
+                SetCaretPostion(value);
+                return;
+            }
             selectionStart = selectionStartTemp = value;
             SetCaretPostion(value);
             OnPropertyChanged("SelectionStart");
@@ -1075,7 +1079,7 @@ namespace AntdUI
                     AddHistoryRecord();
                     var texts = new List<string>(cache_font.Length);
                     foreach (var it in cache_font) texts.Add(it.text);
-                    if (retnot.Contains(CaretInfo.Y) && !CaretInfo.Place && !CaretInfo.FirstRet && cache_font.Length - 1 != start && !cache_font[start].ret)
+                    if (retnot.Contains(CaretInfo.Y) && !CaretInfo.Place && !CaretInfo.FirstRet && start > 0 && cache_font.Length - 1 != start && !cache_font[start].ret)
                     {
                         start++;
                         CaretInfo.Place = true;
@@ -1212,13 +1216,20 @@ namespace AntdUI
                     m_hIMC = Win32.ImmGetContext(Handle);
                     OnImeStartPrivate(m_hIMC);
 #if NET40 || NET46 || NET48 || NET6_0
-                    if (multiline) m.Result = (IntPtr)(Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS);
+                    if (multiline)
+                    {
+                        m.Result = (IntPtr)(Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS);
+                        base.WndProc(ref m);
+                    }
                     else m.Result = (IntPtr)(Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS);
 #else
-                    if (multiline) m.Result = Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
+                    if (multiline)
+                    {
+                        m.Result = Win32.DLGC_WANTALLKEYS | Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
+                        base.WndProc(ref m);
+                    }
                     else m.Result = Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
 #endif
-
                     return;
             }
             base.WndProc(ref m);
@@ -1241,8 +1252,8 @@ namespace AntdUI
         /// </summary>
         protected virtual bool ShowPlaceholder => true;
         protected virtual bool HasLeft() => false;
-        protected virtual int[] UseLeft(Rectangle rect, bool delgap) => new int[] { 0, 0 };
-        protected virtual void UseLeftAutoHeight(int height, int gap, int y) { }
+        protected virtual int[] UseLeft(Rectangle rect, int font_height, bool delgap) => new int[] { 0, 0 };
+        protected virtual void UseLeftAutoHeight(int height, int y) { }
 
         protected virtual void IBackSpaceKey() { }
 

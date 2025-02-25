@@ -385,7 +385,7 @@ namespace AntdUI
         {
             var g = e.Graphics.High();
             var rect_read = ReadRectangle;
-
+            if (rect_read.Width == 0 || rect_read.Height == 0) return;
             if (rotate == TRotate.Clockwise_90)
             {
                 using (var rotationMatrix = new Matrix())

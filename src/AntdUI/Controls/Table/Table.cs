@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -354,6 +355,7 @@ namespace AntdUI
 
         string? emptyText;
         [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? EmptyText
         {
             get => emptyText;
@@ -660,13 +662,30 @@ namespace AntdUI
 
         /// <summary>
         /// 刷新界面
+        /// 不适用DataSource为AntList<T>的场景
         /// </summary>
         public override void Refresh()
         {
             ExtractHeaderFixed();
-            ExtractData();
+            // 重新提取数据 不适用DataSource为AntList<T>的场景
+            if (dataSource == null || dataSource is DataTable || dataSource is IList) ExtractData();
             base.Refresh();
             if (LoadLayout()) Invalidate();
+        }
+
+        /// <summary>
+        /// 刷新界面
+        /// 适用于DataSource为AntList<T>的场景
+        /// </summary>
+        public void Refresh<T>(AntList<T>? list = null)
+        {
+            if (list == null) Refresh();
+            else
+            {
+                // 刷新数据
+                IBinding(list);
+                base.Refresh();
+            }
         }
 
         List<int> enableDir = new List<int>();
@@ -1053,6 +1072,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             this.AddListener();
+            if (dataOne) LoadLayout();
         }
 
         public void HandleEvent(EventType id, object? tag)
@@ -1523,6 +1543,30 @@ namespace AntdUI
         public Column SetLineBreak(bool value = true)
         {
             LineBreak = value;
+            return this;
+        }
+
+        bool colBreak = false;
+        /// <summary>
+        /// 表头自动换行
+        /// </summary>
+        public bool ColBreak
+        {
+            get => colBreak;
+            set
+            {
+                if (colBreak == value) return;
+                colBreak = value;
+                Invalidates();
+            }
+        }
+
+        /// <summary>
+        /// 设置表头自动换行
+        /// </summary>
+        public Column SetColumBreak(bool value = true)
+        {
+            ColBreak = value;
             return this;
         }
 

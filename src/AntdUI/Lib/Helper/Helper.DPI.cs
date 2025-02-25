@@ -93,7 +93,6 @@ namespace AntdUI
         {
             var size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
             var point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
-
             if (!control.MinimumSize.IsEmpty) control.MinimumSize = new Size((int)(control.MinimumSize.Width * dpi), (int)(control.MinimumSize.Height * dpi));
             if (!control.MaximumSize.IsEmpty) control.MaximumSize = new Size((int)(control.MaximumSize.Width * dpi), (int)(control.MaximumSize.Height * dpi));
             control.Padding = SetPadding(dpi, control.Padding);
@@ -116,6 +115,7 @@ namespace AntdUI
             else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
             DpiLSS(dpi, control);
         }
+
         static void DpiLS(float dpi, Form form)
         {
             if (form is Window window)

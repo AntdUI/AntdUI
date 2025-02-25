@@ -299,10 +299,7 @@ namespace AntdUI
                 return rect;
             }
         }
-        public static Rectangle PaddingRect(this Rectangle rect, Padding padding, int x, int y, int r, int b)
-        {
-            return new Rectangle(rect.X + padding.Left + x, rect.Y + padding.Top + y, rect.Width - padding.Horizontal - r, rect.Height - padding.Vertical - b);
-        }
+        public static Rectangle PaddingRect(this Rectangle rect, Padding padding, int x, int y, int r, int b) => new Rectangle(rect.X + padding.Left + x, rect.Y + padding.Top + y, rect.Width - padding.Horizontal - x - r, rect.Height - padding.Vertical - y - b);
         public static Rectangle PaddingRect(this Rectangle rect, params Padding[] paddings)
         {
             foreach (var padding in paddings)

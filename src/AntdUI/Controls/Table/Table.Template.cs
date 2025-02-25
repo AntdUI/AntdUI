@@ -787,9 +787,28 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
+                if (COLUMN.ColBreak)
+                {
+                    if (COLUMN.Width != null)
+                    {
+                        if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
+                        {
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)));
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
+                        }
+                        else if (int.TryParse(COLUMN.Width, out var i))
+                        {
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi));
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
+                        }
+                    }
+                }
                 var size = g.MeasureString(value, font);
                 SortWidth = COLUMN.SortOrder ? (int)(size.Height * 0.8F) : 0;
                 MinWidth = size.Width + gap2 + SortWidth;
+
                 return new Size(size.Width + gap2 + SortWidth, size.Height);
             }
 

@@ -221,6 +221,7 @@ namespace AntdUI
         Tour.Config config;
         Func<int, Rectangle?> call;
         int i = 0;
+        internal bool topMost = false;
         public LayeredFormTour(Tour.Config _config, Func<int, Rectangle?> _call)
         {
             config = _config;
@@ -231,7 +232,7 @@ namespace AntdUI
                 Close();
                 return;
             }
-            config.Form.SetTopMost(Handle);
+            topMost = config.Form.SetTopMost(Handle);
             HasBor = config.Form.FormFrame(out Radius, out Bor);
             if (config.Form is Window window)
             {

@@ -68,18 +68,15 @@ namespace AntdUI
 
         #region 属性
 
-        bool visible = true;
         /// <summary>
         /// 确定该控件是可见的还是隐藏的
         /// </summary>
         [Description("确定该控件是可见的还是隐藏的"), Category("行为"), DefaultValue(true)]
         public new bool Visible
         {
-            get => visible;
+            get => base.Visible;
             set
             {
-                if (visible == value) return;
-                visible = value;
                 if (InvokeRequired) Invoke(new Action(() => base.Visible = value));
                 else base.Visible = value;
             }
@@ -97,12 +94,6 @@ namespace AntdUI
                 if (InvokeRequired) Invoke(new Action(() => base.Enabled = value));
                 else base.Enabled = value;
             }
-        }
-
-        protected override void OnVisibleChanged(EventArgs e)
-        {
-            visible = base.Visible;
-            base.OnVisibleChanged(e);
         }
 
         #region 徽标

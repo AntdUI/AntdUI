@@ -81,8 +81,7 @@ namespace AntdUI
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             base.OnSizeChanged(e);
         }
 
@@ -111,12 +110,10 @@ namespace AntdUI
         [Browsable(false)]
         public ScrollBar ScrollBar;
 
-        internal Rectangle ChangeList()
+        internal void ChangeList()
         {
             var rect = ClientRectangle.DeflateRect(Padding);
-            if (pauseLayout || items == null || items.Count == 0) return rect;
-            if (rect.Width == 0 || rect.Height == 0) return rect;
-
+            if (pauseLayout || items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return;
             int y = rect.Y;
             Helper.GDI(g =>
             {
@@ -164,7 +161,7 @@ namespace AntdUI
                 y = y - gap_y + gap_x;
             });
             ScrollBar.SetVrSize(y);
-            return rect;
+            ScrollBar.SizeChange(rect);
         }
 
         RectangleF[] splits = new RectangleF[0];

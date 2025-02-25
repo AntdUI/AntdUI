@@ -917,7 +917,7 @@ namespace AntdUI
         }
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            if (subForm != null) subForm.IKeyPress(e);
+            subForm?.IKeyPress(e);
             base.OnKeyPress(e);
         }
     }

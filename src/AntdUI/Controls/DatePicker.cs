@@ -269,17 +269,8 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            bool result = base.ProcessCmdKey(ref msg, keyData);
-            if (keyData == Keys.Escape && subForm != null)
-            {
-                subForm.IClose();
-                return true;
-            }
-            else if (keyData == Keys.Down && subForm == null)
-            {
-                ExpandDrop = true;
-                return true;
-            }
+            if (keyData == Keys.Escape && subForm != null) subForm.IClose();
+            else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
             else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d))
             {
                 Value = _d;
@@ -288,9 +279,8 @@ namespace AntdUI
                     subForm.SelDate = subForm.Date = _d;
                     subForm.Print();
                 }
-                return true;
             }
-            return result;
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         #endregion

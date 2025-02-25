@@ -1,5 +1,85 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)・[SVG](SVG.md)
 
+### `1.8.9` 2025-02-18
+
+- ➕ Tour 漫游式引导
+- ➕ Popover Focus
+- ➕ 适配国际化 TooltipComponent，EmptyText
+- ➕ Chat.MsgList 丰富头像属性，防止滚动条遮挡
+- ➕ Table 树展开方法与事件
+- ➕ Table 适用于DataSource为AntList的场景的Refresh方法
+- ✍️ Table 表头变更增删未生效
+- ✍️ Table Column.SetColAlign() 赋值不正确
+- ✍️ Table Refresh 适配 AntList
+- ✍️ Table 多选第一个
+- ✍️ Table CellText 适配 Ellipsis
+- ✍️ Spin 在部分容器中加载问题
+- ✍️ Spin 方法返回 Task
+- ✍️ Spin 在原生窗口不显示
+- ✍️ Tabs Card 切换异常
+- ✍️ Tabs 删除 TabPage 数组下标越界
+- ✍️ Tabs Card2样式边框遮挡
+- ✍️ Input 换行错位、多行第一行交互
+- ✍️ SelectMultiple ClearSelect()及SelectAllItems()方法
+- ✍️ 优化渲染队列
+- ✍️ GridPanel 自定义行高度
+- ✍️ MsgList 预留 滚动条空间
+- ✍️ Tree 最小化 滚动条初始
+- ✍️ 修正全部可能隐藏初始滚动条
+- ✍️ Visible 恢复原生
+
+### `1.8.8` 2025-02-11
+
+- ➕ 布局容器 ScrollControlIntoView
+- ➕ Slider SetMinMax
+- ➕ ColorPicker ShowClose
+- ➕ Input 多行支持文本方向
+- ✍️ Tabs 切换异常，超出部分卡片UI
+- ✍️ Input MaxLength 替换交互
+- ✍️ Tree BlockNode 交互
+
+### `1.8.7` 2025-02-08
+
+- ➕ Input VerifyChar 验证字符事件
+- ➕ Input HandShortcutKeys
+- ✍️ 容器 无法穿透 ValidateChildren
+- ✍️ Input 最大值 无法限制粘贴
+- ✍️ Input 多行交互
+- ✍️ Spin 中途不显示
+- ✍️ Timeline 添加 Description 区域异常
+- ✍️ Tabs 超出显示切换滚动
+- ✍️ 多行列宽设定相同时控制失效
+- ✍️ Input 光标统一滚动条UI
+- ✍️ Tooltip 没有使用对象字体
+- ✍️ Window 无边框处理大小
+
+### `1.8.6` 2025-01-23
+
+- ➕ 国际化 Table 表头/ContextMenuStrip/LabelTime
+- ➕ Splitter 分隔面板
+- ➕ LabelTime AutoWidth
+- ➕ Tabs TabClick
+- ✍️ Table 表头丰富接口
+- ✍️ Menu 代码设置 Select
+- ✍️ Mask 在原生窗口的判断
+- ✍️ GridPanel 单行列宽失效
+- ✍️ Input 光标
+
+### `1.8.5` 2025-01-21
+
+- ➕ 国际化 Tabs/Menu/Breadcrumb/Collapse/FloatButton/Message/Notification/Segmented/Select/Steps/Timeline/Tree
+- ➕ Config TouchThreshold
+- ➕ Tree 获取区域方法
+- ➕ Segmented 徽标
+- ➕ Table CustomSort
+- ➕ GridPanel  Span 扩展行高设置
+- ✍️ Menu/PageHeader 主题
+- ✍️ FloatButton 补全徽标能力
+- ✍️ Button Loading 键盘交互
+- ✍️ SelectMultiple 清空不触发事件
+- ✍️ Input SelectionStart 光标问
+- ✍️ Table 负数排序
+
 ### `1.8.4` 2025-01-16
 - ➕ VirtualPanel 公开一些属性
 - ➕ Tree SelectItem 丰富属性方法

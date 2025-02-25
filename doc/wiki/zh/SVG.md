@@ -51,6 +51,9 @@
 阿里巴巴矢量图标库 - [https://www.iconfont.cn](https://www.iconfont.cn)
 > 由阿里巴巴矢量图标库提供的一种开放式的矢量图标管理和交流平台，提供了丰富的矢量图标资源和方便的管理和下载服务。
 
+Yesicon - 精选全球高品质、开源、免费的矢量图标库 - [https://yesicon.app](https://yesicon.app)
+> 开源、免费、高品质矢量图标来自全球顶尖设计团队。
+
 Iconstore - [https://www.iconstore.co](https://www.iconstore.co)
 > 丰富的图标和符号资源库，并且每个图标都提供了多种不同的格式和尺寸，其网站界面简洁明了，搜索和浏览更加便捷。**可商用**
 

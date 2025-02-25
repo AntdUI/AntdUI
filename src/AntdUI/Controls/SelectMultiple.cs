@@ -122,6 +122,12 @@ namespace AntdUI
         [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "12, 5")]
         public Size DropDownPadding { get; set; } = new Size(12, 5);
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(2)]
+        public int Gap { get; set; } = 2;
+
         #region 数据
 
         BaseCollection? items;
@@ -267,10 +273,7 @@ namespace AntdUI
             }
         }
 
-        public override bool HasSuffix
-        {
-            get => showicon;
-        }
+        public override bool HasSuffix => showicon;
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
@@ -293,7 +296,7 @@ namespace AntdUI
 
         protected override bool HasLeft() => selectedValue.Length > 0;
 
-        protected override int[] UseLeft(Rectangle rect_read, bool delgap)
+        protected override int[] UseLeft(Rectangle rect_read, int font_height, bool delgap)
         {
             if (selectedValue.Length > 0)
             {
@@ -314,8 +317,7 @@ namespace AntdUI
                 {
                     var _style_left = new List<SelectItem?>(selectedValue.Length);
                     List<Rectangle> _rect_left = new List<Rectangle>(selectedValue.Length), _rect_left_txt = new List<Rectangle>(selectedValue.Length), _rect_left_del = new List<Rectangle>(selectedValue.Length);
-
-                    int gap = (int)(2 * Config.Dpi), gap2 = gap * 2, gap4 = gap2 * 2, height = g.MeasureString(Config.NullText, Font).Height + gap2, del_icon = (int)(height * 0.4);
+                    int gap = (int)(Gap * Config.Dpi), gap2 = gap * 2, gap4 = gap2 * 2, height = font_height + gap2, del_icon = (int)(height * .4);
                     if (AutoHeight || rect_read.Height > height * 2)
                     {
                         //多行
@@ -443,12 +445,13 @@ namespace AntdUI
             }
             return new int[] { 0, 0 };
         }
-        protected override void UseLeftAutoHeight(int height, int gap, int y)
+
+        protected override void UseLeftAutoHeight(int height, int y)
         {
             if (AutoHeight)
             {
-                if (y > 0) Height = height + gap + y + (int)(2 * Config.Dpi) * 3;
-                else Height = height + gap + y;
+                int pr = (int)Math.Round((WaveSize + BorderWidth / 2F) * Config.Dpi) * 2, gap = (int)(Gap * Config.Dpi) * 4;
+                Height = (height + Padding.Top + Padding.Vertical + pr) + y + gap;
             }
         }
 
@@ -668,15 +671,14 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            bool result = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Down:
                 case Keys.Enter:
                     ExpandDrop = true;
-                    return true;
+                    break;
             }
-            return result;
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         protected override void OnLostFocus(EventArgs e)

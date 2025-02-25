@@ -294,10 +294,10 @@ namespace AntdUI
                     {
                         using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
                         {
-                            g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN.ColAlign ?? column.COLUMN.Align));
+                            g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
                         }
                     }
-                    else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN.ColAlign ?? column.COLUMN.Align));
+                    else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
                 }
             }
             if (dragHeader == null) return;
@@ -339,7 +339,6 @@ namespace AntdUI
                 }
             }
         }
-
         #endregion
 
         #region 表体
@@ -944,6 +943,9 @@ namespace AntdUI
                 }
             }
         }
+
+        public static StringFormat StringFormat(Column column, bool isColumn) =>
+          isColumn ? StringFormat(column.ColAlign ?? column.Align, LineBreak: column.ColBreak) : StringFormat(column);
 
         public static StringFormat StringFormat(Column column) => StringFormat(column.Align, column.Ellipsis, column.LineBreak);
 

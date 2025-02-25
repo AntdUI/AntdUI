@@ -27,15 +27,8 @@ namespace AntdUI
     {
         protected override void OnFontChanged(EventArgs e)
         {
-            if (LoadLayout()) Invalidate();
             base.OnFontChanged(e);
-        }
-
-        protected override void OnCreateControl()
-        {
-            base.OnCreateControl();
-            if (dataSource == null) return;
-            if (dataOne) LoadLayout();
+            if (LoadLayout()) Invalidate();
         }
 
         string? show_oldrect = null;

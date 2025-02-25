@@ -158,8 +158,9 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle;
-            ScrollBar?.SizeChange(rect);
             base.OnSizeChanged(e);
+            if (rect.Width == 0 || rect.Height == 0) return;
+            ScrollBar?.SizeChange(rect);
         }
 
         StackLayout layoutengine = new StackLayout();

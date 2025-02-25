@@ -263,6 +263,7 @@ namespace AntdUI
 
         string? emptyText;
         [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
         public string? EmptyText
         {
             get => emptyText;
@@ -419,8 +420,7 @@ namespace AntdUI
                 if (controls.Count > 0)
                 {
                     isEmpty = false;
-                    int val = HandLayout(controls);
-                    ScrollBar.SetVrSize(val);
+                    HandLayout(controls);
                 }
                 else isEmpty = true;
             }
@@ -428,13 +428,12 @@ namespace AntdUI
 
         internal int CellCount = -1;
         Action<VirtualItem> invalidate;
-        int HandLayout(List<VirtualItem> items)
+        void HandLayout(List<VirtualItem> items)
         {
             var _rect = ClientRectangle;
-            if (_rect.Width == 0 || _rect.Height == 0) return 0;
-            ScrollBar.SizeChange(_rect);
+            if (_rect.Width == 0 || _rect.Height == 0) return;
             var rect = _rect.PaddingRect(Padding);
-            return Helper.GDI(g =>
+            var val = Helper.GDI(g =>
             {
                 int gap = (int)Math.Round(Gap * Config.Dpi), use_x = rect.X, use_y = rect.Y + gap, last_len = 0, max_height = 0;
                 int shadow = (int)(Shadow * Config.Dpi), shadow2 = shadow * 2, r = (int)(radius * Config.Dpi);
@@ -710,6 +709,8 @@ namespace AntdUI
 
                 return last_len + gap * 2;
             });
+            ScrollBar.SetVrSize(val);
+            ScrollBar.SizeChange(_rect);
         }
 
         #region 瀑布流

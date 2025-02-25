@@ -64,7 +64,7 @@ namespace AntdUI
             /// <summary>
             /// 数值
             /// </summary>
-            public CheckState? Value { get; private set; }
+            public CheckState Value { get; private set; }
         }
 
         /// <summary>
@@ -167,6 +167,7 @@ namespace AntdUI
         public event IntEventHandler? SortRows;
 
         public delegate bool SortModeEventHandler(object sender, TableSortModeEventArgs e);
+
         /// <summary>
         /// 点击排序后发生
         /// </summary>

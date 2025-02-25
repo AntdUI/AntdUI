@@ -323,23 +323,19 @@ namespace AntdUI.Chat
 
         protected override void OnFontChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             base.OnFontChanged(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            var rect = ChangeList();
-            ScrollBar.SizeChange(rect);
+            ChangeList();
             base.OnSizeChanged(e);
         }
-        internal Rectangle ChangeList()
+        internal void ChangeList()
         {
             var rect = ClientRectangle;
-            if (items == null || items.Count == 0) return rect;
-            if (rect.Width == 0 || rect.Height == 0) return rect;
-
+            if (items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return;
             int y = 0;
             Helper.GDI(g =>
             {
@@ -367,7 +363,7 @@ namespace AntdUI.Chat
                 }
             });
             ScrollBar.SetVrSize(y);
-            return rect;
+            ScrollBar.SizeChange(rect);
         }
 
         #endregion
@@ -698,11 +694,11 @@ namespace AntdUI.Chat
         {
             rect = _rect;
 
-            int text_width = _rect.Width - image_size - gap - spilt * 2;
+            int text_width = _rect.Width - image_size - gap - spilt * 3;
             rect_icon = new Rectangle(_rect.X + gap, _rect.Y + gap, image_size, image_size);
 
             rect_name = new Rectangle(rect_icon.Right + spilt, rect_icon.Y + gap_name - gap_desc, text_width - time_width, name_height + gap_desc * 2);
-            rect_time = new Rectangle(rect_name.Right - spilt, rect_name.Y, time_width, rect_name.Height);
+            rect_time = new Rectangle(rect_name.Right, rect_name.Y, time_width, rect_name.Height);
 
             rect_text = new Rectangle(rect_name.X, rect_icon.Bottom - gap_desc - desc_height - gap_desc, text_width, desc_height + gap_desc * 2);
 

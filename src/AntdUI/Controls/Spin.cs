@@ -221,16 +221,18 @@ namespace AntdUI
             return ITask.Run(() =>
             {
                 if (frm == null) return;
+                Exception? ex = null;
                 try
                 {
                     action(config);
                 }
-                catch { }
+                catch (Exception e) { ex = e; }
                 if (frm.IsDisposed) return;
                 frm.Invoke(new Action(() =>
                 {
                     frm.Dispose();
                 }));
+                if (ex != null) throw ex;
             }, end);
         }
 
