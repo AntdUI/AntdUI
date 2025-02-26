@@ -311,34 +311,25 @@ namespace AntdUI
 
         #region 圆角
 
-        public static GraphicsPath RoundPath(this Rectangle rect, float radius)
-        {
-            return RoundPathCore(rect, radius);
-        }
+        public static GraphicsPath RoundPath(this Rectangle rect, float radius) => RoundPathCore(rect, radius);
 
-        public static GraphicsPath RoundPath(this RectangleF rect, float radius)
-        {
-            return RoundPathCore(rect, radius);
-        }
+        public static GraphicsPath RoundPath(this RectangleF rect, float radius) => RoundPathCore(rect, radius);
 
-        internal static GraphicsPath RoundPath(this RectangleF rect, float radius, TShape shape)
-        {
-            return RoundPath(rect, radius, shape == TShape.Round);
-        }
+        public static GraphicsPath RoundPath(this RectangleF rect, float radius, TShape shape) => RoundPath(rect, radius, shape == TShape.Round);
 
-        internal static GraphicsPath RoundPath(this Rectangle rect, float radius, bool round)
+        public static GraphicsPath RoundPath(this Rectangle rect, float radius, bool round)
         {
             if (round) return CapsulePathCore(rect);
             return RoundPathCore(rect, radius);
         }
 
-        internal static GraphicsPath RoundPath(this RectangleF rect, float radius, bool round)
+        public static GraphicsPath RoundPath(this RectangleF rect, float radius, bool round)
         {
             if (round) return CapsulePathCore(rect);
             return RoundPathCore(rect, radius);
         }
 
-        internal static GraphicsPath RoundPath(this Rectangle rect, float radius, TAlignMini shadowAlign)
+        public static GraphicsPath RoundPath(this Rectangle rect, float radius, TAlignMini shadowAlign)
         {
             switch (shadowAlign)
             {

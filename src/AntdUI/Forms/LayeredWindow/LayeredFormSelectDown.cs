@@ -255,11 +255,26 @@ namespace AntdUI
             if (control is LayeredFormSelectDown)
             {
                 int rx = point.X + rect_read.Width, ry = point.Y + rect_read.Y - 10;
-                if (rx > screen.Right - TargetRect.Width) rx = screen.Right - TargetRect.Width;
-                if (ry > screen.Bottom - TargetRect.Height) ry = screen.Bottom - TargetRect.Height;
+                if ((rx > screen.Right - TargetRect.Width) || ((LayeredFormSelectDown)control).ShowLeft)
+                {
+                    rx = point.X - rect_read.Width;
+                    ShowLeft = true;
+                }
+                if (ry > screen.Bottom - TargetRect.Height)
+                {
+                    ry = screen.Bottom - TargetRect.Height;
+                }
                 SetLocation(rx, ry);
             }
-            else MyPoint(point, Placement, ShowArrow, rect_read);
+            else
+            {
+                int ry = point.Y + rect_read.Y;
+                if (ry > screen.Bottom - TargetRect.Height)
+                {
+                    Placement = TAlignFrom.Top;
+                }
+                MyPoint(point, Placement, ShowArrow, rect_read);
+            }
 
             KeyCall = keys =>
             {

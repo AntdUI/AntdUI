@@ -213,6 +213,8 @@ namespace AntdUI
                 g.ResetClip();
                 g.ResetTransform();
 
+                PaintMergeCells(g, rows, sx, sy, brush_split.Color, brush_fore, brush_foreEnable);
+
                 #region 渲染浮动列
 
                 if (shows.Count > 0 && (fixedColumnL != null || fixedColumnR != null))
@@ -685,6 +687,96 @@ namespace AntdUI
         }
 
         #endregion
+
+        #endregion
+
+        #region 合并
+
+        void PaintMergeCells(Canvas g, RowTemplate[] rows, int sx, int sy, Color split_color, SolidBrush fore, SolidBrush foreEnable)
+        {
+            if (CellRanges == null || CellRanges.Length == 0) return;
+            g.TranslateTransform(-sx, -sy);
+            int sps = dividerHs.Length > 0 ? dividerHs[0].Width : (int)Config.Dpi;
+            var sps2 = sps / 2F;
+            using (var bg = new SolidBrush(Colour.BgBase.Get("Table")))
+            {
+                foreach (var it in CellRanges)
+                {
+                    PaintMergeCells(g, rows, bg, split_color, fore, foreEnable, sps, sps2, it);
+                }
+            }
+            g.ResetClip();
+            g.ResetTransform();
+        }
+
+        void PaintMergeCells(Canvas g, RowTemplate[] rows, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, float sps2, CellRange range)
+        {
+            if (range.FirstRow == range.LastRow)
+            {
+                foreach (var item in rows)
+                {
+                    if (item.INDEX_REAL == range.FirstRow)
+                    {
+                        PaintMergeCells(g, bg, split_color, fore, foreEnable, sps, sps2, item.cells[range.FirstColumn], item.cells[range.LastColumn]);
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                CELL? first = null, last = null;
+                foreach (var item in rows)
+                {
+                    if (item.INDEX_REAL == range.FirstRow)
+                    {
+                        first = item.cells[range.FirstColumn];
+                        if (last == null) continue;
+                        PaintMergeCells(g, bg, split_color, fore, foreEnable, sps, sps2, first, last);
+                        return;
+                    }
+                    else if (item.INDEX_REAL == range.LastRow)
+                    {
+                        last = item.cells[range.LastColumn];
+                        if (first == null) continue;
+                        PaintMergeCells(g, bg, split_color, fore, foreEnable, sps, sps2, first, last);
+                        return;
+                    }
+                }
+            }
+        }
+
+        void PaintMergeCells(Canvas g, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, float sps2, CELL first, CELL last)
+        {
+            var state = g.Save();
+            var rect = RectMergeCells(first, last, out bool fz);
+            g.Fill(bg, rect);
+            if (first.ROW.AnimationHover) g.Fill(Helper.ToColorN(first.ROW.AnimationHoverValue, Colour.FillSecondary.Get("Table")), rect);
+            else if (first.ROW.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table"), rect);
+            g.Draw(split_color, sps, new RectangleF(rect.X + sps2, rect.Y + sps2, rect.Width, rect.Height));
+
+            #region 绘制内容
+
+            if (fz) g.TranslateTransform((rect.Width - first.RECT.Width) / 2, -(rect.Height - first.RECT.Height) / 2);
+            else g.TranslateTransform((rect.Width - first.RECT.Width) / 2, (rect.Height - first.RECT.Height) / 2);
+
+            PaintItem(g, first, first.ROW.ENABLE, first.ROW.ENABLE ? fore : foreEnable);
+
+            #endregion
+
+            g.Restore(state);
+        }
+
+        Rectangle RectMergeCells(CELL first, CELL last, out bool fz)
+        {
+            fz = false;
+            if (last.RECT.X >= first.RECT.X && last.RECT.Y >= first.RECT.Y) return new Rectangle(first.RECT.X, first.RECT.Y, last.RECT.Right - first.RECT.X, last.RECT.Bottom - first.RECT.Y);
+            else if (last.RECT.X >= first.RECT.X)
+            {
+                fz = true;
+                return new Rectangle(first.RECT.X, last.RECT.Y, last.RECT.Right - first.RECT.X, first.RECT.Bottom - last.RECT.Y);
+            }
+            else return new Rectangle(last.RECT.X, last.RECT.Y, first.RECT.Right - last.RECT.X, first.RECT.Bottom - last.RECT.Y);
+        }
 
         #endregion
 

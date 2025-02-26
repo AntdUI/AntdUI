@@ -368,7 +368,7 @@ namespace AntdUI
             if (items == null) return;
             foreach (var it in items)
             {
-                if (it.Text == tabPageName)
+                if (it.Name == tabPageName)
                 {
                     SelectedTab = it;
                     return;

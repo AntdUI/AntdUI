@@ -76,6 +76,7 @@ namespace AntdUI
             set
             {
                 enableDir.Clear();
+                CellRanges = null;
                 dataSource = value;
                 SortData = null;
                 ScrollBar.Clear();
@@ -1066,6 +1067,51 @@ namespace AntdUI
 
         #endregion
 
+        #region 合并单元格
+
+        CellRange[]? CellRanges;
+        public void AddMergedRegion(CellRange range)
+        {
+            if (CellRanges == null) CellRanges = new CellRange[1] { range };
+            else
+            {
+                var tmp = new List<CellRange>(CellRanges.Length + 1);
+                tmp.AddRange(CellRanges);
+                tmp.Add(range);
+                CellRanges = tmp.ToArray();
+            }
+            Invalidate();
+        }
+        public void AddMergedRegion(CellRange[] ranges)
+        {
+            if (CellRanges == null) CellRanges = ranges;
+            else
+            {
+                var tmp = new List<CellRange>(CellRanges.Length + ranges.Length);
+                tmp.AddRange(CellRanges);
+                tmp.AddRange(ranges);
+                CellRanges = tmp.ToArray();
+            }
+            Invalidate();
+        }
+        public bool ContainsMergedRegion(CellRange range)
+        {
+            if (CellRanges == null) return false;
+            else
+            {
+                var tmp = new List<int>(CellRanges.Length);
+                foreach (var it in CellRanges) tmp.Add(it.GetHashCode());
+                return tmp.Contains(range.GetHashCode());
+            }
+        }
+        public void ClearMergedRegion()
+        {
+            CellRanges = null;
+            Invalidate();
+        }
+
+        #endregion
+
         #region 本地化
 
         protected override void OnHandleCreated(EventArgs e)
@@ -1717,6 +1763,77 @@ namespace AntdUI
     }
 
     #endregion
+
+    /// <summary>
+    /// 单元格范围
+    /// </summary>
+    public class CellRange
+    {
+        /// <summary>
+        /// 单元格范围
+        /// </summary>
+        /// <param name="firstRow">第一行</param>
+        /// <param name="lastRow">最后行</param>
+        /// <param name="firstCol">第一列</param>
+        /// <param name="lastCol">最后列</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public CellRange(int firstRow, int lastRow, int firstCol, int lastCol)
+        {
+            FirstColumn = firstCol;
+            FirstRow = firstRow;
+            LastColumn = lastCol;
+            LastRow = lastRow;
+            if (lastRow < firstRow || lastCol < firstCol) throw new ArgumentException("lastRow < firstRow || lastCol < firstCol");
+        }
+
+        /// <summary>
+        /// 第一行
+        /// </summary>
+        public int FirstRow { get; set; }
+        /// <summary>
+        /// 第一列
+        /// </summary>
+        public int FirstColumn { get; set; }
+        /// <summary>
+        /// 最后行
+        /// </summary>
+        public int LastRow { get; set; }
+
+        /// <summary>
+        /// 最后列
+        /// </summary>
+        public int LastColumn { get; set; }
+
+        public int MinRow => Math.Min(FirstRow, LastRow);
+
+        public int MaxRow => Math.Max(FirstRow, LastRow);
+
+        public int MinColumn => Math.Min(FirstColumn, LastColumn);
+
+        public int MaxColumn => Math.Max(FirstColumn, LastColumn);
+
+        public bool IsInRange(int rowInd, int colInd)
+        {
+            if (FirstRow <= rowInd && rowInd <= LastRow && FirstColumn <= colInd) return colInd <= LastColumn;
+            return false;
+        }
+
+        public bool ContainsRow(int rowInd)
+        {
+            if (FirstRow <= rowInd) return rowInd <= LastRow;
+            return false;
+        }
+
+        public bool ContainsColumn(int colInd)
+        {
+            if (FirstColumn <= colInd) return colInd <= LastColumn;
+            return false;
+        }
+
+        public override int GetHashCode() => MinColumn + (MaxColumn << 8) + (MinRow << 16) + (MaxRow << 24);
+
+        public CellRange Copy() => new CellRange(FirstRow, LastRow, FirstColumn, LastColumn);
+    }
 
     /// <summary>
     /// 列的对齐方式
