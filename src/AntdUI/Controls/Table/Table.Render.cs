@@ -769,8 +769,8 @@ namespace AntdUI
         Rectangle RectMergeCells(CELL first, CELL last, out bool fz)
         {
             fz = false;
-            if (last.RECT.X > first.RECT.X && last.RECT.Y > first.RECT.Y) return new Rectangle(first.RECT.X, first.RECT.Y, last.RECT.Right - first.RECT.X, last.RECT.Bottom - first.RECT.Y);
-            else if (last.RECT.X > first.RECT.X)
+            if (last.RECT.X >= first.RECT.X && last.RECT.Y >= first.RECT.Y) return new Rectangle(first.RECT.X, first.RECT.Y, last.RECT.Right - first.RECT.X, last.RECT.Bottom - first.RECT.Y);
+            else if (last.RECT.X >= first.RECT.X)
             {
                 fz = true;
                 return new Rectangle(first.RECT.X, last.RECT.Y, last.RECT.Right - first.RECT.X, first.RECT.Bottom - last.RECT.Y);

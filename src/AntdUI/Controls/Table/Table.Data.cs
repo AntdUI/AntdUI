@@ -216,14 +216,18 @@ namespace AntdUI
             {
                 var row = list[i];
                 if (row == null) return;
-                var cells = GetRow(row, dataTmp.columns.Length);
-                if (cells.Count == 0) return;
-                int len = dataTmp.rows.Length + 1;
-                if (len < i) return;
-                var rows = new List<IRow>(len);
-                rows.AddRange(dataTmp.rows);
-                rows.Insert(i, new IRow(i, row, cells));
-                dataTmp.rows = ChangeList(rows);
+                if (dataTmp.columns.Length == 0) ExtractData();
+                else
+                {
+                    var cells = GetRow(row, dataTmp.columns.Length);
+                    if (cells.Count == 0) return;
+                    int len = dataTmp.rows.Length + 1;
+                    if (len < i) return;
+                    var rows = new List<IRow>(len);
+                    rows.AddRange(dataTmp.rows);
+                    rows.Insert(i, new IRow(i, row, cells));
+                    dataTmp.rows = ChangeList(rows);
+                }
                 if (LoadLayout()) Invalidate();
             }
         }
