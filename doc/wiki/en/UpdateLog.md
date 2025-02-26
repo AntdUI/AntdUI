@@ -1,5 +1,85 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
+### `1.8.9` 2025-02-18
+
+- ➕ Tour style guidance
+- ➕ Popover Focus
+- ➕ Adapt to international TooltipComponent, EmptyText
+- ➕ Chat.MsgList enriches avatar attributes to prevent scrollbar occlusion
+- ➕ Table tree expansion method and events
+- ➕ Table Refresh method applicable to scenarios where the Data Source is AntList
+- ✍️ Table header changes, additions, and deletions have not taken effect
+- ✍️ Incorrect assignment of Table Column. SetClAling()
+- ✍️ Table Refresh Adaptation to AntList
+- ✍️ Multiple Choice of First Table
+- ✍️ Table CellText Adapts to Ellipsis
+- ✍️ Spin loading issue in some containers
+- ✍️ Spin method returns Task
+- ✍️ Spin does not display in the native window
+- ✍️ Tabs Card switching exception
+- ✍️ Tabs delete TabPage array index out of bounds
+- ✍️ Tabs Card2 style border occlusion
+- ✍️ Input line break misalignment, multi line first line interaction
+- ✍️ SelectMultipleClearSelect() and SelectAllItem() methods
+- ✍️ Optimize rendering queue
+- ✍️ GridPanel custom row height
+- ✍️ Reserve scrollbar space in the sgList
+- ✍️ Tree Minimizes Scroll Bar Initial
+- ✍️ Fix all possible hidden initial scrollbars
+- ✍️ Visible Restore Native
+
+### `1.8.8` 2025-02-11
+
+- ➕ Layout Container ScrollControlIntoView
+- ➕ Slider SetMinMax
+- ➕ ColorPicker ShowClose
+- ➕ Input multi line supports text orientation
+- ✍️ Tabs switching exception, exceeding the UI of some cards
+- ✍️ Input MaxLength replaces interaction
+- ✍️ Tree BlockNode Interaction
+
+### `1.8.7` 2025-02-08
+
+- ➕ Input VerifyChar verification character event
+- ➕ Input HandShortcutKeys
+- ✍️ Container cannot penetrate ValidChildren
+- ✍️ The maximum input value cannot limit pasting
+- ✍️ Input multi line interaction
+- ✍️ Spin does not display midway
+- ✍️ Exception in adding Description area to Timeline
+- ✍️ Tabs exceeding display switch scroll
+- ✍️ Control failure when setting the same column width for multiple rows
+- ✍️ Input cursor unified scrollbar UI
+- ✍️ Tooltip did not use object fonts
+- ✍️ Window Borderless Processing Size
+
+### `1.8.6` 2025-01-23
+
+- ➕ Internationalization Table Header/ContextMenuStripe/LabelTime
+- ➕ Split Panel
+- ➕ LabelTime AutoWidth
+- ➕ Tabs TabClick
+- ✍️ Rich interfaces in the table header
+- ✍️ Menu Code Settings Select
+- ✍️ Mask judgment in native window
+- ✍️ GridPanel single row column width failure
+- ✍️ Input cursor
+
+### `1.8.5` 2025-01-21
+
+- ➕ International Tabs/Menu/Readcrumb/Collapse/FloatButton/Message/Notification/Segmented/Lecture/Steps/Timeline/Tree
+- ➕ Config TouchThreshold
+- ➕ Tree method for obtaining regions
+- ➕ Segmented Logo
+- ➕ Table CustomSort
+- ➕ GridPanel Span Extension Row Height Setting
+- ✍️ Menu/PageHeader Theme
+- ✍️ FloatButton's ability to complete logos
+- ✍️ Button Loading Keyboard Interaction
+- ✍️ SelectMultiple clearing does not trigger an event
+- ✍️ Input SelectionStart cursor question
+- ✍️ Table Negative Sorting
+
 ### `1.8.4` 2025-01-16
 - ➕ VirtualPanel exposes some properties
 - ➕ Tree SelectItem Rich Attribute Method

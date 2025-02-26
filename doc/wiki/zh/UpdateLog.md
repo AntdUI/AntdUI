@@ -55,7 +55,7 @@
 
 ### `1.8.6` 2025-01-23
 
-- 💎 国际化 Table 表头/ContextMenuStrip/LabelTime
+- ➕ 国际化 Table 表头/ContextMenuStrip/LabelTime
 - ➕ Splitter 分隔面板
 - ➕ LabelTime AutoWidth
 - ➕ Tabs TabClick
@@ -67,7 +67,7 @@
 
 ### `1.8.5` 2025-01-21
 
-- 💎 国际化 Tabs/Menu/Breadcrumb/Collapse/FloatButton/Message/Notification/Segmented/Select/Steps/Timeline/Tree
+- ➕ 国际化 Tabs/Menu/Breadcrumb/Collapse/FloatButton/Message/Notification/Segmented/Select/Steps/Timeline/Tree
 - ➕ Config TouchThreshold
 - ➕ Tree 获取区域方法
 - ➕ Segmented 徽标
@@ -78,7 +78,7 @@
 - ✍️ Button Loading 键盘交互
 - ✍️ SelectMultiple 清空不触发事件
 - ✍️ Input SelectionStart 光标问
-- ✍️Table 负数排序
+- ✍️ Table 负数排序
 
 ### `1.8.4` 2025-01-16
 - ➕ VirtualPanel 公开一些属性
