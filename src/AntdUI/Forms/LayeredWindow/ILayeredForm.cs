@@ -45,6 +45,8 @@ namespace AntdUI
             actionCursor = val => SetCursor(val);
             renderQueue = new RenderQueue(this);
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public virtual bool ShowLeft { get; set; } = false;
 
         protected override void OnHandleCreated(EventArgs e)
         {
