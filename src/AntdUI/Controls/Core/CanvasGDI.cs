@@ -42,7 +42,6 @@ namespace AntdUI.Core
 
         public void String(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null)
         {
-            CorrectionTextRendering.CORE(font, text, ref rect);
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
@@ -51,13 +50,21 @@ namespace AntdUI.Core
 
         public void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null)
         {
+            if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
-            g.DrawString(text, font, brush, rect, format);
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), rect, format);
+                    Fill(brush, path);
+                }
+            }
+            else g.DrawString(text, font, brush, rect, format);
         }
 
         public void String(string? text, Font font, Color color, RectangleF rect, StringFormat? format = null)
         {
-            CorrectionTextRendering.CORE(font, text, ref rect);
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
@@ -67,8 +74,17 @@ namespace AntdUI.Core
 
         public void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat? format = null)
         {
+            if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
-            g.DrawString(text, font, brush, rect, format);
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), rect, format);
+                    Fill(brush, path);
+                }
+            }
+            else g.DrawString(text, font, brush, rect, format);
         }
 
         public void String(string? text, Font font, Color color, int x, int y)
@@ -79,7 +95,19 @@ namespace AntdUI.Core
             }
         }
 
-        public void String(string? text, Font font, Brush brush, int x, int y) => g.DrawString(text, font, brush, x, y);
+        public void String(string? text, Font font, Brush brush, int x, int y)
+        {
+            if (text == null) return;
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), new Point(x, y), null);
+                    Fill(brush, path);
+                }
+            }
+            else g.DrawString(text, font, brush, x, y);
+        }
 
         public void String(string? text, Font font, Color color, float x, float y)
         {
@@ -89,7 +117,19 @@ namespace AntdUI.Core
             }
         }
 
-        public void String(string? text, Font font, Brush brush, float x, float y) => g.DrawString(text, font, brush, x, y);
+        public void String(string? text, Font font, Brush brush, float x, float y)
+        {
+            if (text == null) return;
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), new PointF(x, y), null);
+                    Fill(brush, path);
+                }
+            }
+            else g.DrawString(text, font, brush, x, y);
+        }
 
 
         public void String(string? text, Font font, Color color, Point point)
@@ -100,7 +140,19 @@ namespace AntdUI.Core
             }
         }
 
-        public void String(string? text, Font font, Brush brush, Point point) => g.DrawString(text, font, brush, point);
+        public void String(string? text, Font font, Brush brush, Point point)
+        {
+            if (text == null) return;
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), point, null);
+                    Fill(brush, path);
+                }
+            }
+            else g.DrawString(text, font, brush, point);
+        }
 
 
         public void String(string? text, Font font, Color color, PointF point)
@@ -111,7 +163,19 @@ namespace AntdUI.Core
             }
         }
 
-        public void String(string? text, Font font, Brush brush, PointF point) => g.DrawString(text, font, brush, point);
+        public void String(string? text, Font font, Brush brush, PointF point)
+        {
+            if (text == null) return;
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), point, null);
+                    Fill(brush, path);
+                }
+            }
+            else g.DrawString(text, font, brush, point);
+        }
 
         #endregion
 

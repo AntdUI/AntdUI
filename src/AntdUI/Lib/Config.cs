@@ -117,6 +117,11 @@ namespace AntdUI
         public static System.Drawing.Text.TextRenderingHint? TextRenderingHint { get; set; }
 
         /// <summary>
+        /// 文本高质量呈现
+        /// </summary>
+        public static bool TextRenderingHighQuality { get; set; }
+
+        /// <summary>
         /// 默认字体
         /// </summary>
         public static Font? Font { get; set; }

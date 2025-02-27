@@ -415,7 +415,7 @@ namespace AntdUI
             if (IsHandleCreated)
             {
                 if (decimal.TryParse(Text, out var _d)) Value = _d;
-                else Text = GetNumberText(currentValue);
+                Text = GetNumberText(currentValue);
             }
             base.OnLostFocus(e);
         }

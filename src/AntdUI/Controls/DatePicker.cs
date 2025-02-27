@@ -236,11 +236,8 @@ namespace AntdUI
                         subForm.Print();
                     }
                 }
-                else
-                {
-                    if (_value.HasValue) Text = _value.Value.ToString(Format);
-                    else Text = "";
-                }
+                if (_value.HasValue) Text = _value.Value.ToString(Format);
+                else Text = "";
             }
         }
 
