@@ -99,7 +99,7 @@ namespace AntdUI
         #region 徽标
 
         string? badge = null;
-        [Description("徽标内容"), Category("徽标"), DefaultValue(null)]
+        [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
         public string? Badge
         {
             get => badge;

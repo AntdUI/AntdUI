@@ -1640,6 +1640,22 @@ namespace AntdUI
             return this;
         }
 
+        /// <summary>
+        /// 列可编辑
+        /// </summary>
+        public bool Editable { get; set; } = true;
+
+        /// <summary>
+        /// 设置列是否可编辑
+        /// 注意：该方法必须配合EditMode使用控制某列在编辑模式下是否可编辑
+        /// 默认设置为false
+        /// </summary>
+        public Column SetEditable(bool value = false)
+        {
+            Editable = value;
+            return this;
+        }
+
         bool sortorder = false;
         /// <summary>
         /// 启用排序
