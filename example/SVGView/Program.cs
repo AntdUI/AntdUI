@@ -29,9 +29,8 @@ namespace SVGView
         static void Main()
         {
             ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
-            AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+            AntdUI.Config.TextRenderingHighQuality = true;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.SetCompatibleTextRenderingDefault(false);
             AntdUI.Localization.DefaultLanguage = "zh-CN";
             var lang = AntdUI.Localization.CurrentLanguage;
             if (lang.StartsWith("en")) AntdUI.Localization.Provider = new Localizer();

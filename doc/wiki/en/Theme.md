@@ -26,16 +26,22 @@ Name | Description | Parameters | Auto Color Matching |
 
 #### Custom Theme
 
+> Global setting theme color
+
 ``` csharp
-var color = new AntdUI.Theme.Dark();
-color.SetPrimary(Color.FromArgb(0, 173, 154));
-AndtUI.Style.LoadCustom(color);
+AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154));
+```
+
+> Set a separate theme color for the Button
+
+``` csharp
+AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154), "Button");
 ```
 
 #### Current theme setting brand color
 
 ``` csharp
-AntdUI.Style.Db.SetPrimary(Color.FromArgb(0, 173, 154));
+AntdUI.Style.SetPrimary(Color.FromArgb(0, 173, 154));
 ```
 
 #### Enable dark mode
@@ -56,11 +62,12 @@ var primary = AntdUI.Style.Db.Primary;// Get the current theme brand color
 
 > Suggest using HEX format
 
-Inherit `AntdUI.Theme.IColor<string>` class, used as a color card configuration file
-
 ``` csharp
-AntdUI.Theme.IColor<string> db = File.ReadAllText(地址).ToJson();
-AndtUI.Style.LoadCustom(db);
+var dir = new Dictionary<string, string> {
+    { "Primary", "#1677FF" },
+    { "PrimaryButton", "#1677FF" } // Set a separate theme color for the Button
+};
+AntdUI.Style.LoadCustom(dir);
 ```
 
 
