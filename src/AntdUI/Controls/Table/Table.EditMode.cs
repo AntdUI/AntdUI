@@ -79,6 +79,9 @@ namespace AntdUI
         bool CanEditMode(RowTemplate it, CELL cell)
         {
             if (rows == null) return false;
+
+            if(!cell.COLUMN.Editable) return false;
+
             if (cell is TCellText cellText) return true;
             else if (cell is Template templates)
             {
