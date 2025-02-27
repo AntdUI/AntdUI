@@ -1640,21 +1640,10 @@ namespace AntdUI
             return this;
         }
 
-
-        bool _editable = true;
         /// <summary>
         /// 列可编辑
         /// </summary>
-        public bool Editable
-        {
-            get => _editable;
-            set
-            {
-                if (_editable == value) return;
-                _editable = value;
-                Invalidates();
-            }
-        }
+        public bool Editable { get; set; } = true;
 
         /// <summary>
         /// 设置列是否可编辑

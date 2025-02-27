@@ -1,5 +1,34 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
+### `1.9.0` 2025-02-27 🥥
+
+- ➕ Table Merge Cells
+- ➕ Table columns can be individually set to edit or not in edit mode
+- ➕ Table ColBreak Header Automatic Line Break Properties and Related Methods
+- ➕ FlowPanel sub control Index property
+- ➕ GridPanel sub control Index property
+- ➕ PageHeader UseLeftMargin
+- ➕ Menu Text property with multilingual features
+- ➕ Badge subscript internationalization language features
+- ➕ High quality presentation of text
+- ✍️ After binding empty data to Table Binding List, ToVNet encountered an exception
+- ✍️ Table merging cells at the same level exception
+- ✍️ Table Binding List is bound multiple times
+- ✍️ Table initialization display
+- ✍️ Tabs SelectTab uses Name to determine
+- ✍️ Tabs active control removed
+- ✍️ Adaptation of Tabs TabPage Text property when non constructed calls are made
+- ✍️ Select Sub Node Region Collision
+- ✍️ Input deleted, cursor position abnormal
+- ✍️ Input AOT cannot be copied
+- ✍️ Input Multiple Choice Tab Switch Focus
+- ✍️ SelectMultiple AutoHeight
+- ✍️ Button gradient color space size exception
+- ✍️ Tour window top bubble cover
+- ✍️ Spin asynchronously throws an exception
+- ✍️ GridPanel is placed at the top, with an average height of a certain row
+- ✍️ Partial keyboard removal of interception
+
 ### `1.8.9` 2025-02-18
 
 - ➕ Tour style guidance
