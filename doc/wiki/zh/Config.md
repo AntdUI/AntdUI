@@ -101,6 +101,12 @@ AntdUI.Config.NoticeWindowOffsetXY = 0;
 AntdUI.Config.TextRenderingHint = System.Drawing.Text.ClearTypeGridFit;
 ```
 
+### 文本高质量呈现 🔴
+
+``` csharp
+AntdUI.Config.TextRenderingHighQuality = true;
+```
+
 ### 默认字体
 
 ``` csharp

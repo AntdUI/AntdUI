@@ -35,10 +35,9 @@ namespace Demo
             AntdUI.Localization.DefaultLanguage = "zh-CN";
             var lang = AntdUI.Localization.CurrentLanguage;
             if (lang.StartsWith("en")) AntdUI.Localization.Provider = new Localizer();
+            AntdUI.Config.TextRenderingHighQuality = true;
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.SetCompatibleTextRenderingDefault(false);
-            AntdUI.Config.SetCorrectionTextRendering("Microsoft YaHei UI");
             if (command == "m") Application.Run(new Main());
             else if (command == "color") Application.Run(new Colors());
             else Application.Run(new Overview(command == "t"));

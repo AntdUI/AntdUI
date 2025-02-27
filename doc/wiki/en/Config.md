@@ -101,6 +101,12 @@ AntdUI.Config.NoticeWindowOffsetXY = 0;
 AntdUI.Config.TextRenderingHint = System.Drawing.Text.ClearTypeGridFit;
 ```
 
+### Text Rendering HighQuality 🔴
+
+``` csharp
+AntdUI.Config.TextRenderingHighQuality = true;
+```
+
 ### Default Font
 
 ``` csharp

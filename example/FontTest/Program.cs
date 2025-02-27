@@ -26,7 +26,7 @@ namespace FontTest
         [STAThread]
         static void Main()
         {
-            Application.SetCompatibleTextRenderingDefault(false);
+            AntdUI.Config.TextRenderingHighQuality = true;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.Run(new Main());
         }

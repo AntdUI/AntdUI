@@ -26,16 +26,22 @@
 
 #### 自定义主题
 
+> 全局设置主题色
+
 ``` csharp
-var color = new AntdUI.Theme.Dark();
-color.SetPrimary(Color.FromArgb(0, 173, 154));
-AndtUI.Style.LoadCustom(color);
+AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154));
+```
+
+> 为 Button 单独设置主题色
+
+``` csharp
+AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154), "Button");
 ```
 
 #### 当前主题设置品牌色
 
 ``` csharp
-AntdUI.Style.Db.SetPrimary(Color.FromArgb(0, 173, 154));
+AntdUI.Style.SetPrimary(Color.FromArgb(0, 173, 154));
 ```
 
 #### 启用深色模式
@@ -56,11 +62,12 @@ var primary = AntdUI.Style.Db.Primary;// 获取当前主题品牌色
 
 > 建议使用HEX格式
 
-继承 `AntdUI.Theme.IColor<string>` 类，作为色卡配置文件
-
 ``` csharp
-AntdUI.Theme.IColor<string> db = File.ReadAllText(地址).ToJson();
-AndtUI.Style.LoadCustom(db);
+var dir = new Dictionary<string, string> {
+    { "Primary", "#1677FF" },
+    { "PrimaryButton", "#1677FF" } // 为 Button 单独设置主题色
+};
+AntdUI.Style.LoadCustom(dir);
 ```
 
 

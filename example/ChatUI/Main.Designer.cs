@@ -97,7 +97,7 @@
             Controls.Add(chatList);
             Controls.Add(msgList);
             Controls.Add(win);
-            Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             Margin = new Padding(2);
             Name = "Main";
             StartPosition = FormStartPosition.CenterScreen;
