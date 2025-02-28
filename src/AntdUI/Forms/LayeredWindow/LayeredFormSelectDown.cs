@@ -257,7 +257,7 @@ namespace AntdUI
                 int rx = point.X + rect_read.Width, ry = point.Y + rect_read.Y - 10;
                 if ((rx > screen.Right - TargetRect.Width) || ((LayeredFormSelectDown)control).ShowLeft)
                 {
-                    rx = point.X - rect_read.Width;
+                    rx = point.X - r_w + 10;
                     ShowLeft = true;
                 }
                 if (ry > screen.Bottom - TargetRect.Height)
