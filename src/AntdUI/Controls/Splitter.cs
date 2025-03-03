@@ -17,7 +17,6 @@
 // QQ: 17379620
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -33,14 +32,28 @@ namespace AntdUI
     [ToolboxItem(true)]
     public class Splitter : SplitContainer
     {
+        public Splitter()
+        {
+            SetStyle(
+                ControlStyles.UserPaint |
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw, true);
+
+            SplitterMoving += Splitter_SplitterMoving;
+            SplitterMoved += Splitter_SplitterMoved;
+        }
+
+        #region 参数
+
         /// <summary>
         /// 记录折叠前的分隔距离
         /// </summary>
-        private int _lastDistance;
+        int _lastDistance;
 
         //记录折叠控件最小大小
         //折叠忽略最小，最小只在拖动分割栏时有效
-        private int _minSize;
+        int _minSize;
 
         /// <summary>
         /// 当前鼠标状态
@@ -48,17 +61,12 @@ namespace AntdUI
         /// false = 移动
         /// true = 箭头
         /// </summary>
-        private bool? _MouseState;
-
-        /// <summary>
-        /// 记录折叠控件的当前大小
-        /// </summary>
-        private int _size;
+        bool? _MouseState;
 
         /// <summary>
         /// 箭头SVG
         /// </summary>
-        private string[] arrowSvg = new string[4]
+        string[] arrowSvg = new string[4]
         {
             "UpOutlined" , "DownOutlined",
             "LeftOutlined" , "RightOutlined"
@@ -67,77 +75,42 @@ namespace AntdUI
         /// <summary>
         /// 鼠标是否在箭头区域
         /// </summary>
-        private bool m_bIsArrowRegion;
+        bool m_bIsArrowRegion;
 
-        public Splitter()
-        {
-            SetStyle(
-                ControlStyles.UserPaint |
-                ControlStyles.AllPaintingInWmPaint |
-                ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.ResizeRedraw, true);
-        }
-
-        #region 事件
-
-        /// <summary>
-        /// SplitPanelState 属性值更改时发生
-        /// </summary>
-        [Description("SplitPanelState 属性值更改时发生"), Category("行为")]
-        public event BoolEventHandler? SplitPanelStateChanged = null;
-
-        #endregion 事件
+        #endregion
 
         #region 属性
 
-        private Color? _arrawBackHoverColor;
-
-        private Color? _arrowBackColor;
-
-        private Color? _arrowColor;
-
-        private int _arrowSize = 30;
-
-        private ADCollapsePanel _collapsePanel = ADCollapsePanel.Panel1;
-
         /// <summary>
-        /// 当前折叠状态
+        /// 滑块大小
         /// </summary>
-        private bool _splitPanelState = true;
+        [Description("滑块大小"), Category("行为"), DefaultValue(20)]
+        public int SplitterSize { get; set; } = 20;
 
-        private Color? back;
-
-        public enum ADCollapsePanel
-        {
-            None = 0,
-            Panel1 = 1,
-            Panel2 = 2,
-        }
-
-        [Description("箭头背景色"), DefaultValue(null), Category("外观")]
+        Color? splitterBack;
+        /// <summary>
+        /// 滑块背景
+        /// </summary>
+        [Description("滑块背景"), DefaultValue(null), Category("外观")]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? ArrawBackColor
+        public Color? SplitterBack
         {
-            get => _arrowBackColor;
+            get => splitterBack;
             set
             {
-                _arrowBackColor = value;
+                if (splitterBack == value) return;
+                splitterBack = value;
                 Invalidate();
             }
         }
-
-        [Description("鼠标悬浮箭头背景色"), DefaultValue(null), Category("外观")]
+        /// <summary>
+        /// 滑块移动背景
+        /// </summary>
+        [Description("滑块移动背景"), DefaultValue(null), Category("外观")]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? ArrawBackHoverColor
-        {
-            get => _arrawBackHoverColor;
-            set
-            {
-                _arrawBackHoverColor = value;
-                Invalidate();
-            }
-        }
+        public Color? SplitterBackMove { get; set; }
 
+        Color? _arrowColor;
         [Description("箭头颜色"), DefaultValue(null), Category("外观")]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ArrowColor
@@ -145,55 +118,58 @@ namespace AntdUI
             get => _arrowColor;
             set
             {
+                if (_arrowColor == value) return;
                 _arrowColor = value;
                 Invalidate();
             }
         }
 
         /// <summary>
-        /// 箭头大小
+        /// 鼠标悬浮箭头颜色
         /// </summary>
-        [Description("箭头大小"), Category("外观"), DefaultValue(30)]
-        public int ArrowSize
+        [Description("鼠标悬浮箭头颜色"), DefaultValue(null), Category("外观")]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ArrawColorHover { get; set; }
+
+        Color? _arrowBackColor;
+        [Description("箭头背景色"), DefaultValue(null), Category("外观")]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ArrawBackColor
         {
-            get => _arrowSize;
+            get => _arrowBackColor;
             set
             {
-                if (_arrowSize == value) return;
-                _arrowSize = value;
+                if (_arrowBackColor == value) return;
+                _arrowBackColor = value;
                 Invalidate();
             }
         }
 
         /// <summary>
-        /// 背景颜色
+        /// 鼠标悬浮箭头背景色
         /// </summary>
-        [Description("背景颜色"), DefaultValue(null), Category("外观")]
+        [Description("鼠标悬浮箭头背景色"), DefaultValue(null), Category("外观")]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public new Color? BackColor
-        {
-            get => back;
-            set
-            {
-                if (back == value) return;
-                back = value;
-                Invalidate();
-            }
-        }
+        public Color? ArrawBackHover { get; set; }
 
-        [Description("点击后收起的Panel"), Category("行为"), DefaultValue(ADCollapsePanel.Panel1)]
+        ADCollapsePanel _collapsePanel = ADCollapsePanel.None;
+        [Description("点击后收起的Panel"), Category("行为"), DefaultValue(ADCollapsePanel.None)]
         public ADCollapsePanel CollapsePanel
         {
             get => _collapsePanel;
             set
             {
-                if (_collapsePanel != value)
-                {
-                    Expand();
-                    _collapsePanel = value;
-                    Invalidate();
-                }
+                if (_collapsePanel == value) return;
+                _collapsePanel = value;
+                Expand();
             }
+        }
+
+        public enum ADCollapsePanel
+        {
+            None = 0,
+            Panel1 = 1,
+            Panel2 = 2,
         }
 
         [Description("拆分器是水平的还是垂直的"), Category("行为"), DefaultValue(Orientation.Vertical)]
@@ -204,6 +180,7 @@ namespace AntdUI
             {
                 if (base.Orientation == value) return;
                 base.Orientation = value;
+                if (_collapsePanel == ADCollapsePanel.None) return;
                 if (!SplitPanelState)
                 {
                     SplitPanelState = true;
@@ -213,44 +190,33 @@ namespace AntdUI
             }
         }
 
-        [Description("分隔栏宽度"), Category("外观"), DefaultValue(15)]
-        public new int SplitterWidth
-        {
-            get => base.SplitterWidth;
-            set
-            {
-                if (base.SplitterWidth == value) return;
-                base.SplitterWidth = value;
-                Invalidate();
-            }
-        }
-
+        /// <summary>
+        /// 当前折叠状态
+        /// </summary>
+        bool _splitPanelState = true;
         [Description("是否进行展开"), Category("行为"), DefaultValue(true)]
         private bool SplitPanelState
         {
             get => _splitPanelState;
             set
             {
-                if (_splitPanelState == value)
-                    return;
-
-                if (value)
-                    Expand();
-                else
-                    Collapse();
-
+                if (_splitPanelState == value) return;
+                if (value) Expand();
+                else Collapse();
                 _splitPanelState = value;
             }
         }
+
+        #endregion
+
+        #region 方法
 
         /// <summary>
         /// 折叠
         /// </summary>
         public void Collapse()
         {
-            if (_collapsePanel == ADCollapsePanel.None)
-                return;
-
+            if (_collapsePanel == ADCollapsePanel.None) return;
             _lastDistance = SplitterDistance;
             if (_collapsePanel == ADCollapsePanel.Panel1)
             {
@@ -260,13 +226,11 @@ namespace AntdUI
             }
             else
             {
-                int width = Orientation == Orientation.Horizontal ?
-                    Height : Width;
+                int width = Orientation == Orientation.Horizontal ? Height : Width;
                 _minSize = Panel2MinSize;
                 Panel2MinSize = 0;
                 SplitterDistance = width - SplitterWidth - Padding.Vertical;
             }
-
             _splitPanelState = false;
             Invalidate();
         }
@@ -276,268 +240,293 @@ namespace AntdUI
         /// </summary>
         public void Expand()
         {
-            if (_collapsePanel == ADCollapsePanel.None)
-                return;
-
+            if (_collapsePanel == ADCollapsePanel.None) return;
             SplitterDistance = _lastDistance;
-
-            if (_collapsePanel == ADCollapsePanel.Panel1)
-                Panel1MinSize = _minSize;
-            else
-                Panel2MinSize = _minSize;
-
+            if (_collapsePanel == ADCollapsePanel.Panel1) Panel1MinSize = _minSize;
+            else Panel2MinSize = _minSize;
             _splitPanelState = true;
             Invalidate();
         }
 
-        #endregion 属性
+        #endregion
 
-        #region 渲染
+        #region 事件
 
         /// <summary>
-        /// 箭头背景区域
+        /// SplitPanelState 属性值更改时发生
         /// </summary>
-        private Rectangle ArrowRect
-        {
-            get
-            {
-                if (_collapsePanel == ADCollapsePanel.None)
-                    return Rectangle.Empty;
+        [Description("SplitPanelState 属性值更改时发生"), Category("行为")]
+        public event BoolEventHandler? SplitPanelStateChanged;
 
-                int size = ArrowSize;
-                Rectangle rect = SplitterRectangle;
-                if (Orientation == Orientation.Horizontal)
-                {
-                    rect.X = (int)((Width - size) / 2);
-                    rect.Width = (int)(size);
-                }
-                else
-                {
-                    rect.Y = (int)((Height - size) / 2);
-                    rect.Height = (int)(size);
-                }
+        #endregion
 
-                return rect;
-            }
-        }
+        #region 渲染
 
         protected override void OnPaint(PaintEventArgs e)
         {
             if (Panel1Collapsed || Panel2Collapsed) return;
             var g = e.Graphics.High();
             var rect = SplitterRectangle;
-
-            //绘制背景
-            g.Fill(back ?? Colour.Split.Get("Splitter"), rect);
-
-            //不进行折叠
             if (_collapsePanel == ADCollapsePanel.None)
-                return;
-
-            //画箭头背景
-            Point[] points = GetHandlePoints();
-            if (m_bIsArrowRegion)
-                g.FillPolygon(_arrawBackHoverColor ?? Colour.PrimaryBgHover.Get("Splitter"), points);
+            {
+                if (moving) g.Fill(SplitterBackMove ?? Style.Db.PrimaryBg, rect);
+                else g.Fill(splitterBack ?? Style.Db.FillTertiary, rect);
+                int size = (int)(SplitterSize * Config.Dpi);
+                if (Orientation == Orientation.Horizontal) g.Fill(Style.Db.Fill, new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y, size, rect.Height));
+                else g.Fill(Style.Db.Fill, new Rectangle(rect.X, rect.Y + (rect.Height - size) / 2, rect.Width, size));
+            }
             else
-                g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get("Splitter"), points);
+            {
+                if (moving) g.Fill(SplitterBackMove ?? Style.Db.PrimaryBg, rect);
+                else g.Fill(splitterBack ?? Style.Db.FillTertiary, rect);
 
-            //计算显示图标
-            bool is_p1 = _collapsePanel == ADCollapsePanel.Panel1;
-            int index = 0;
+                //计算显示图标
+                int index = 0;
+                if (Orientation == Orientation.Horizontal) index = 1;
+                else index = 3;
+                if ((_collapsePanel == ADCollapsePanel.Panel1) == SplitPanelState) index--;
+
+                //画箭头背景
+                var points = GetHandlePoints(out var rect_arrow);
+
+                //绘制箭头
+                if (m_bIsArrowRegion)
+                {
+                    g.FillPolygon(ArrawBackHover ?? Colour.Primary.Get("Splitter"), points);
+                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get("Splitter"));
+                }
+                else
+                {
+                    g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get("Splitter"), points);
+                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get("Splitter"));
+                }
+
+            }
+        }
+
+        // <summary>
+        /// 箭头背景区域
+        /// </summary>
+        Rectangle ArrowRect(Rectangle rect)
+        {
+            if (_collapsePanel == ADCollapsePanel.None) return Rectangle.Empty;
+            int size = (int)(SplitterSize * Config.Dpi);
             if (Orientation == Orientation.Horizontal)
-                index = 1;
+            {
+                rect.X = (Width - size) / 2;
+                rect.Width = size;
+            }
             else
-                index = 3;
-
-            if (is_p1 == SplitPanelState)
-                index--;
-
-            //绘制箭头
-            DrawArrow(g, arrowSvg[index]);
+            {
+                rect.Y = (Height - size) / 2;
+                rect.Height = size;
+            }
+            return rect;
         }
 
-        protected override void OnSizeChanged(EventArgs e)
+        Point[] GetHandlePoints(out Rectangle rect_arrow)
         {
-            base.OnSizeChanged(e);
-            Invalidate();
-        }
+            bool isCollapsed = (CollapsePanel == ADCollapsePanel.Panel1) == SplitPanelState;
 
-        private void DrawArrow(Canvas g, string svg)
-        {
-            int size = Math.Min(ArrowSize, SplitterWidth);
-            Point point;
+            int size = (int)(4 * Config.Dpi);
 
-            //居中显示
-            if (Orientation == Orientation.Horizontal)
-                point = new Point((SplitterRectangle.Width - size) / 2, SplitterRectangle.Top);
-            else
-                point = new Point(SplitterRectangle.Left, (SplitterRectangle.Height - size) / 2);
-
-            Rectangle rectangle = new Rectangle(point.X, point.Y, size, size);
-
-            SvgExtend.GetImgExtend(g, svg, rectangle, _arrowColor ?? Colour.PrimaryBorder.Get("Splitter"));
-        }
-
-        private Point[] GetHandlePoints()
-        {
-            var points = new List<Point>();
-            bool isPanel1 = CollapsePanel == ADCollapsePanel.Panel1;
-            bool isCollapsed = isPanel1 == SplitPanelState;
-
-            int size = 5;
-
+            rect_arrow = ArrowRect(SplitterRectangle);
             if (Orientation == Orientation.Horizontal)
             {
                 int y1 = 0, y2 = 0;
                 if (isCollapsed)
                 {
-                    y1 = ArrowRect.Bottom;
-                    y2 = ArrowRect.Top;
+                    y1 = rect_arrow.Bottom;
+                    y2 = rect_arrow.Top;
                 }
                 else
                 {
-                    y1 = ArrowRect.Top;
-                    y2 = ArrowRect.Bottom;
+                    y1 = rect_arrow.Top;
+                    y2 = rect_arrow.Bottom;
                 }
-                points.Add(new Point(ArrowRect.Left, y1));
-                points.Add(new Point(ArrowRect.Right, y1));
-                points.Add(new Point(ArrowRect.Right - size, y2));
-                points.Add(new Point(ArrowRect.Left + size, y2));
+                return new Point[] {
+                    new Point(rect_arrow.Left, y1),
+                    new Point(rect_arrow.Right, y1),
+                    new Point(rect_arrow.Right - size, y2),
+                    new Point(rect_arrow.Left + size, y2)
+                };
             }
-            else if (Orientation == Orientation.Vertical)
+            else
             {
                 int x1 = 0, x2 = 0;
                 if (isCollapsed)
                 {
-                    x1 = ArrowRect.Right;
-                    x2 = ArrowRect.Left;
+                    x1 = rect_arrow.Right;
+                    x2 = rect_arrow.Left;
                 }
                 else
                 {
-                    x1 = ArrowRect.Left;
-                    x2 = ArrowRect.Right;
+                    x1 = rect_arrow.Left;
+                    x2 = rect_arrow.Right;
                 }
-                points.Add(new Point(x1, ArrowRect.Top));
-                points.Add(new Point(x1, ArrowRect.Bottom));
-                points.Add(new Point(x2, ArrowRect.Bottom - size));
-                points.Add(new Point(x2, ArrowRect.Top + size));
+                return new Point[] {
+                    new Point(x1, rect_arrow.Top),
+                    new Point(x1, rect_arrow.Bottom),
+                    new Point(x2, rect_arrow.Bottom - size),
+                    new Point(x2, rect_arrow.Top + size)
+                };
             }
-
-            return points.ToArray();
         }
 
-        #endregion 渲染
+        #endregion
 
         #region 鼠标
 
-        /// <summary>
-        /// 重载鼠标按下事件
-        /// </summary>
-        /// <param name="e">鼠标参数</param>
+        bool moving = false;
+        private void Splitter_SplitterMoving(object? sender, SplitterCancelEventArgs e)
+        {
+            if (e.Cancel) return;
+            moving = true;
+            Invalidate();
+        }
+
+        private void Splitter_SplitterMoved(object? sender, SplitterEventArgs e)
+        {
+            moving = false;
+            Invalidate();
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (DesignMode)
-                return;
-
-            //点位在箭头矩形内
-            if (ArrowRect.Contains(e.Location))
-                _MouseState = true;
-            else if (!SplitPanelState)
-                _MouseState = null;
-            //点位在分割线内
-            else if (SplitterRectangle.Contains(e.Location))
-                _MouseState = false;
-
-            if (_MouseState != true)
+            if (DesignMode || _collapsePanel == ADCollapsePanel.None)
+            {
                 base.OnMouseDown(e);
+                return;
+            }
+            Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
+            if (rect_arrow.Contains(e.Location)) _MouseState = true;//点位在箭头矩形内
+            else if (!SplitPanelState) _MouseState = null;
+            else if (rect.Contains(e.Location)) _MouseState = false;//点位在分割线内
+            if (_MouseState != true) base.OnMouseDown(e);
         }
 
-        /// <summary>
-        /// 重载鼠标离开事件
-        /// </summary>
-        /// <param name="e">鼠标参数</param>
         protected override void OnMouseLeave(EventArgs e)
         {
-            if (DesignMode)
-                return;
-            base.Cursor = Cursors.Default;
+            base.OnMouseLeave(e);
+            if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
+            SetCursor(CursorType.Default);
             m_bIsArrowRegion = false;
             Invalidate();
-            base.OnMouseLeave(e);
         }
 
-        /// <summary>
-        /// 重载鼠标移动事件
-        /// </summary>
-        /// <param name="e">鼠标参数</param>
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DesignMode)
-                return;
+            base.OnMouseMove(e);
+            if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
 
             //如果鼠标的左键没有按下，重置鼠标状态
-            if (e.Button != MouseButtons.Left)
-                _MouseState = null;
-
+            if (e.Button != MouseButtons.Left) _MouseState = null;
             //鼠标在Arrow矩形里，并且不是在拖动
-            if (ArrowRect.Contains(e.Location) && _MouseState != false)
+            Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
+            if (rect_arrow.Contains(e.Location) && _MouseState != false)
             {
-                Cursor = Cursors.Hand;
+                SetCursor(CursorType.Hand);
                 m_bIsArrowRegion = true;
                 Invalidate();
                 return;
             }
 
-            if (_MouseState == true)
-                return;
-
+            if (_MouseState == true) return;
             m_bIsArrowRegion = false;
             Invalidate();
-
             //鼠标在分隔栏矩形里
-            if (SplitterRectangle.Contains(e.Location))
+            if (rect.Contains(e.Location))
             {
                 //如果已经折叠，就不允许拖动了
-                if (_collapsePanel != ADCollapsePanel.None && !SplitPanelState)
-                    Cursor = Cursors.Default;
-                //鼠标没有按下，设置Split光标
-                else if (_MouseState == null && !IsSplitterFixed)
-                    Cursor = Orientation == Orientation.Horizontal ? Cursors.HSplit : Cursors.VSplit;
+                if (_collapsePanel != ADCollapsePanel.None && !SplitPanelState) SetCursor(CursorType.Default);
+                else if (_MouseState == null && !IsSplitterFixed) SetCursor(Orientation == Orientation.Horizontal ? CursorType.HSplit : CursorType.VSplit);//鼠标没有按下，设置Split光标
                 return;
             }
-
             //正在拖动分隔栏
-            if (_MouseState == false && !IsSplitterFixed)
-            {
-                Cursor = Orientation == Orientation.Horizontal ? Cursors.HSplit : Cursors.VSplit;
-                base.OnMouseMove(e);
-                return;
-            }
-
-            base.Cursor = Cursors.Default;
+            if (_MouseState == false && !IsSplitterFixed) SetCursor(Orientation == Orientation.Horizontal ? CursorType.HSplit : CursorType.VSplit);
+            else SetCursor(CursorType.Default);
         }
 
-        /// <summary>
-        /// 重载鼠标抬起事件
-        /// </summary>
-        /// <param name="e">鼠标参数</param>
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (DesignMode)
-                return;
-
             base.OnMouseUp(e);
+            if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
             Invalidate();
-
-            if (_MouseState == true && e.Button == MouseButtons.Left && ArrowRect.Contains(e.Location))
+            if (_MouseState == true && e.Button == MouseButtons.Left && ArrowRect(SplitterRectangle).Contains(e.Location))
             {
-                SplitPanelState = !SplitPanelState;
+                SplitPanelState = !_splitPanelState;
                 SplitPanelStateChanged?.Invoke(this, new BoolEventArgs(SplitPanelState));
             }
-
             _MouseState = null;
         }
 
-        #endregion 鼠标
+        #region 鼠标
+
+        CursorType oldcursor = CursorType.Default;
+        public void SetCursor(bool val) => SetCursor(val ? CursorType.Hand : CursorType.Default);
+        public void SetCursor(CursorType cursor = CursorType.Default)
+        {
+            if (oldcursor == cursor) return;
+            oldcursor = cursor;
+            bool flag = true;
+            switch (cursor)
+            {
+                case CursorType.Hand:
+                    SetCursor(Cursors.Hand);
+                    break;
+                case CursorType.IBeam:
+                    SetCursor(Cursors.IBeam);
+                    break;
+                case CursorType.No:
+                    SetCursor(Cursors.No);
+                    break;
+                case CursorType.SizeAll:
+                    flag = false;
+                    SetCursor(Cursors.SizeAll);
+                    break;
+                case CursorType.VSplit:
+                    flag = false;
+                    SetCursor(Cursors.VSplit);
+                    break;
+                case CursorType.HSplit:
+                    flag = false;
+                    SetCursor(Cursors.HSplit);
+                    break;
+                case CursorType.Default:
+                default:
+                    SetCursor(DefaultCursor);
+                    break;
+            }
+            SetWindow(flag);
+        }
+        void SetCursor(Cursor cursor)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => SetCursor(cursor)));
+                return;
+            }
+            Cursor = cursor;
+        }
+
+        bool setwindow = false;
+        void SetWindow(bool flag)
+        {
+            if (setwindow == flag) return;
+            setwindow = flag;
+            var form = Parent.FindPARENT();
+            if (form is BaseForm baseForm) baseForm.EnableHitTest = setwindow;
+        }
+
+        #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            SplitterMoving -= Splitter_SplitterMoving;
+            SplitterMoved -= Splitter_SplitterMoved;
+            base.Dispose(disposing);
+        }
+
+        #endregion
     }
 }
