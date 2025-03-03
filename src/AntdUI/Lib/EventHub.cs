@@ -67,6 +67,10 @@ namespace AntdUI
         /// <summary>
         /// Window 状态改变
         /// </summary>
-        WINDOW_STATE = 70
+        WINDOW_STATE = 70,
+        /// <summary>
+        /// 自定义
+        /// </summary>
+        DIV = 100
     }
 }

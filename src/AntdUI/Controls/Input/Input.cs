@@ -551,6 +551,12 @@ namespace AntdUI
         #region 文本
 
         internal bool isempty = true;
+
+        /// <summary>
+        /// 文本是否为空
+        /// </summary>
+        public bool IsTextEmpty => isempty;
+
         string _text = "";
         [Description("文本"), Category("外观"), DefaultValue("")]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
@@ -1193,6 +1199,12 @@ namespace AntdUI
         {
             switch (m.Msg)
             {
+                case 0x0102:
+                case 0x0109:
+                    IKeyPress((char)m.WParam.ToInt32());
+                    break;
+                //case 0x0286:
+                //    break;
                 case Win32.WM_IME_STARTCOMPOSITION:
                     m_hIMC = Win32.ImmGetContext(Handle);
                     OnImeStartPrivate(m_hIMC);
@@ -1230,7 +1242,7 @@ namespace AntdUI
                     }
                     else m.Result = Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
 #endif
-                    return;
+                    break;
             }
             base.WndProc(ref m);
         }
@@ -1492,44 +1504,52 @@ namespace AntdUI
 
         void OnImeStartPrivate(IntPtr hIMC)
         {
-            var point = CaretInfo.Rect.Location;
-            point.Offset(0, -scrolly);
-            var CandidateForm = new Win32.CANDIDATEFORM()
+            try
             {
-                dwStyle = Win32.CFS_CANDIDATEPOS,
-                ptCurrentPos = point,
-            };
-            Win32.ImmSetCandidateWindow(hIMC, ref CandidateForm);
-            var CompositionForm = new Win32.COMPOSITIONFORM()
-            {
-                dwStyle = Win32.CFS_FORCE_POSITION,
-                ptCurrentPos = point,
-            };
-            Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
-            var logFont = new Win32.LOGFONT()
-            {
-                lfHeight = CaretInfo.Rect.Height,
-                lfFaceName = Font.Name + "\0"
-            };
-            Win32.ImmSetCompositionFont(hIMC, ref logFont);
+                var point = CaretInfo.Rect.Location;
+                point.Offset(0, -scrolly);
+                var CandidateForm = new Win32.CANDIDATEFORM()
+                {
+                    dwStyle = Win32.CFS_CANDIDATEPOS,
+                    ptCurrentPos = point,
+                };
+                Win32.ImmSetCandidateWindow(hIMC, ref CandidateForm);
+                var CompositionForm = new Win32.COMPOSITIONFORM()
+                {
+                    dwStyle = Win32.CFS_FORCE_POSITION,
+                    ptCurrentPos = point,
+                };
+                Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
+                var logFont = new Win32.LOGFONT()
+                {
+                    lfHeight = CaretInfo.Rect.Height,
+                    lfFaceName = Font.Name + "\0"
+                };
+                Win32.ImmSetCompositionFont(hIMC, ref logFont);
+            }
+            catch { }
         }
         void OnImeResultStrPrivate(IntPtr hIMC, string? strResult)
         {
-            var CompositionForm = new Win32.COMPOSITIONFORM()
+            try
             {
-                dwStyle = Win32.CFS_FORCE_POSITION,
-                ptCurrentPos = CaretInfo.Rect.Location
-            };
-            Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
-            if (strResult != null && !string.IsNullOrEmpty(strResult))
-            {
-                var chars = new List<string>(strResult.Length);
-                foreach (char key in strResult)
+                var CompositionForm = new Win32.COMPOSITIONFORM()
                 {
-                    if (Verify(key, out var change)) chars.Add(change ?? key.ToString());
+                    dwStyle = Win32.CFS_FORCE_POSITION,
+                    ptCurrentPos = CaretInfo.Rect.Location
+                };
+                Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
+                if (strResult != null && !string.IsNullOrEmpty(strResult))
+                {
+                    var chars = new List<string>(strResult.Length);
+                    foreach (char key in strResult)
+                    {
+                        if (Verify(key, out var change)) chars.Add(change ?? key.ToString());
+                    }
+                    if (chars.Count > 0) EnterText(string.Join("", chars));
                 }
-                if (chars.Count > 0) EnterText(string.Join("", chars));
             }
+            catch { }
         }
 
         protected virtual bool Verify(char key, out string? change)

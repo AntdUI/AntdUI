@@ -354,6 +354,7 @@ namespace AntdUI
             AnimationBarValue = RectangleF.Empty;
             if (IsHandleCreated)
             {
+                if (IsTextEmpty) return;
                 string text = Text;
                 int index = text.IndexOf("\t");
                 if (index > 0)

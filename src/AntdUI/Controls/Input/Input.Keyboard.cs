@@ -190,21 +190,10 @@ namespace AntdUI
             return result;
         }
 
-        internal void IKeyPress(KeyPressEventArgs e) => OnKeyPress(e);
-
-        protected override void OnKeyPress(KeyPressEventArgs e)
+        internal void IKeyPress(char keyChar)
         {
-            if (e.KeyChar < 32)
-            {
-                base.OnKeyPress(e);
-                return;
-            }
-            if (Verify(e.KeyChar, out var change))
-            {
-                EnterText(change ?? e.KeyChar.ToString());
-                base.OnKeyPress(e);
-            }
-            else e.Handled = true;
+            if (keyChar < 32) return;
+            if (Verify(keyChar, out var change)) EnterText(change ?? keyChar.ToString());
         }
 
         /// <summary>

@@ -165,6 +165,7 @@ namespace AntdUI
         void RotateTransform(float angle);
         float DpiX { get; }
         float DpiY { get; }
+        Matrix Transform { get; set; }
         CompositingMode CompositingMode { get; set; }
 
         #endregion

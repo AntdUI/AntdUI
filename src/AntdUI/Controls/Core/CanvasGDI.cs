@@ -56,7 +56,7 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), rect, format);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, format);
                     Fill(brush, path);
                 }
             }
@@ -80,7 +80,7 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), rect, format);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, format);
                     Fill(brush, path);
                 }
             }
@@ -102,7 +102,7 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), new Point(x, y), null);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), new Point(x, y), null);
                     Fill(brush, path);
                 }
             }
@@ -124,7 +124,7 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), new PointF(x, y), null);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), new PointF(x, y), null);
                     Fill(brush, path);
                 }
             }
@@ -147,7 +147,7 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), point, null);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), point, null);
                     Fill(brush, path);
                 }
             }
@@ -170,11 +170,34 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, font.Size * (g.DpiY / 72), point, null);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), point, null);
                     Fill(brush, path);
                 }
             }
             else g.DrawString(text, font, brush, point);
+        }
+
+        float StringPathFontSize(Font font)
+        {
+            switch (font.Unit)
+            {
+                case GraphicsUnit.Point:
+                    return font.Size * (g.DpiY / 72);
+                case GraphicsUnit.Pixel:
+                    return font.Size;
+                case GraphicsUnit.Inch:
+                    return font.Size * g.DpiY;
+                case GraphicsUnit.Display:
+                    return font.Size * .01F * g.DpiY;
+                case GraphicsUnit.Document:
+                    return font.Size * (1 / 300F) * g.DpiY;
+                case GraphicsUnit.Millimeter:
+                    return font.Size * (1 / 25.4F) * g.DpiY;
+                case GraphicsUnit.World:
+                    return font.Size * g.PageScale;
+                default:
+                    return font.Size * (g.DpiY / 72);
+            }
         }
 
         #endregion
@@ -720,6 +743,11 @@ namespace AntdUI.Core
         public void RotateTransform(float angle) => g.RotateTransform(angle);
         public float DpiX => g.DpiX;
         public float DpiY => g.DpiY;
+        public Matrix Transform
+        {
+            get => g.Transform;
+            set => g.Transform = value;
+        }
         public CompositingMode CompositingMode
         {
             get => g.CompositingMode;

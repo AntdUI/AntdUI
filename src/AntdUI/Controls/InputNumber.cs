@@ -412,12 +412,13 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
+            base.OnLostFocus(e);
             if (IsHandleCreated)
             {
+                if (IsTextEmpty) return;
                 if (decimal.TryParse(Text, out var _d)) Value = _d;
                 Text = GetNumberText(currentValue);
             }
-            base.OnLostFocus(e);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

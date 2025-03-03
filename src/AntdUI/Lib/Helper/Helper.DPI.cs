@@ -93,8 +93,8 @@ namespace AntdUI
         {
             var size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
             var point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
-            if (!control.MinimumSize.IsEmpty) control.MinimumSize = new Size((int)(control.MinimumSize.Width * dpi), (int)(control.MinimumSize.Height * dpi));
             if (!control.MaximumSize.IsEmpty) control.MaximumSize = new Size((int)(control.MaximumSize.Width * dpi), (int)(control.MaximumSize.Height * dpi));
+            if (!control.MinimumSize.IsEmpty) control.MinimumSize = new Size((int)(control.MinimumSize.Width * dpi), (int)(control.MinimumSize.Height * dpi));
             control.Padding = SetPadding(dpi, control.Padding);
             control.Margin = SetPadding(dpi, control.Margin);
             control.Size = size;
@@ -160,8 +160,8 @@ namespace AntdUI
                 if (point.X < 0 || point.Y < 0) point = form.Location;
             }
             if (form.StartPosition == FormStartPosition.CenterScreen) point = new Point(screen.X + (screen.Width - size.Width) / 2, screen.Y + (screen.Height - size.Height) / 2);
-            if (!form.MinimumSize.IsEmpty) form.MinimumSize = new Size((int)(form.MinimumSize.Width * dpi), (int)(form.MinimumSize.Height * dpi));
             if (!form.MaximumSize.IsEmpty) form.MaximumSize = new Size((int)(form.MaximumSize.Width * dpi), (int)(form.MaximumSize.Height * dpi));
+            if (!form.MinimumSize.IsEmpty) form.MinimumSize = new Size((int)(form.MinimumSize.Width * dpi), (int)(form.MinimumSize.Height * dpi));
             form.Padding = SetPadding(dpi, form.Padding);
             form.Margin = SetPadding(dpi, form.Margin);
 

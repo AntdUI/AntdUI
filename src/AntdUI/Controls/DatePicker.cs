@@ -227,6 +227,7 @@ namespace AntdUI
             ExpandDrop = false;
             if (IsHandleCreated)
             {
+                if (IsTextEmpty) return;
                 if (DateTime.TryParseExact(Text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d))
                 {
                     Value = _d;
