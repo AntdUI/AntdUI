@@ -228,7 +228,8 @@ namespace AntdUI
         {
             if (hIMC == IntPtr.Zero) return null;
             int nLen = ImmGetCompositionString(hIMC, dwIndex, m_byString, m_byString.Length);
-            return Encoding.Unicode.GetString(m_byString, 0, nLen);
+            if (nLen > 0) return Encoding.Unicode.GetString(m_byString, 0, nLen);
+            return null;
         }
 
         #endregion

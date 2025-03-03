@@ -537,4 +537,9 @@ namespace AntdUI
             public Font? Font { get; set; }
         }
     }
+
+    public interface ControlEvent
+    {
+        void LoadCompleted();
+    }
 }

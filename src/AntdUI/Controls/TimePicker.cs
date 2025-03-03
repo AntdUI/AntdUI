@@ -168,6 +168,7 @@ namespace AntdUI
             ExpandDrop = false;
             if (IsHandleCreated)
             {
+                if (IsTextEmpty) return;
                 if (DateTime.TryParse("1997-1-1 " + Text, out var _d)) Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
                 Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
             }

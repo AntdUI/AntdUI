@@ -411,6 +411,7 @@ namespace AntdUI
             config.Content.SizeChanged += Content_SizeChanged;
             tempContent?.Dispose();
             tempContent = null;
+            if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
         }
 
         bool isok = true;

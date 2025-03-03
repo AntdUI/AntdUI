@@ -961,7 +961,7 @@ namespace AntdUI
             {
                 if (input.input.Focused)
                 {
-                    input.input.IKeyPress(e);
+                    input.input.IKeyPress(e.KeyChar);
                     return;
                 }
             }

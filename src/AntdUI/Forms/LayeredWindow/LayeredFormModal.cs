@@ -366,6 +366,7 @@ namespace AntdUI
             base.OnLoad(e);
             IsLoad = false;
             LoadCompleted?.Invoke();
+            if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]

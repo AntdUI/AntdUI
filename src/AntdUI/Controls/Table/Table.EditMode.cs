@@ -117,12 +117,7 @@ namespace AntdUI
                 BeginInvoke(new Action(() =>
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                    int gap = (int)(Math.Max(_gap, 8) * Config.Dpi), height_real = Helper.GDI(g =>
-                    {
-                        return g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height + gap;
-                    }), height2 = cell.RECT_REAL.Height + gap;
-                    int height = multiline ? cell.RECT.Height : (height_real > height2 ? height_real : height2);
-                    if (cell.RECT_REAL.Height == cell.RECT.Height && height > cell.RECT.Height) height = cell.RECT.Height;
+                    int height = EditInputHeight(value, cell);
                     var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
                     {
                         bool isok_end = true;
@@ -169,13 +164,7 @@ namespace AntdUI
                         BeginInvoke(new Action(() =>
                         {
                             for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-
-                            int gap = (int)(Math.Max(_gap, 8) * Config.Dpi), height_real = Helper.GDI(g =>
-                            {
-                                return g.MeasureString(value?.ToString(), Font, cell.RECT_REAL.Width).Height + gap;
-                            }), height2 = cell.RECT_REAL.Height + gap;
-                            int height = multiline ? cell.RECT.Height : (height_real > height2 ? height_real : height2);
-                            if (cell.RECT_REAL.Height == cell.RECT.Height && height > cell.RECT.Height) height = cell.RECT.Height;
+                            int height = EditInputHeight(value, cell);
                             var edit_input = ShowInput(cell, sx, sy, height, multiline, value, _value =>
                             {
                                 bool isok_end = true;
@@ -208,6 +197,17 @@ namespace AntdUI
                         return;
                     }
                 }
+            }
+        }
+
+        int EditInputHeight(object? value, CELL cell)
+        {
+            if (cell.COLUMN.LineBreak) return cell.RECT.Height;
+            else
+            {
+                int gap = (int)(Math.Max(_gap, 8) * Config.Dpi), height2 = cell.RECT_REAL.Height + gap,
+                    height_real = Helper.GDI(g => g.MeasureString(value?.ToString(), Font).Height + gap);
+                return height_real > height2 ? height_real : height2;
             }
         }
 
