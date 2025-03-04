@@ -313,6 +313,10 @@ namespace AntdUI
                     flag = false;
                     SetCursor(Cursors.VSplit);
                     break;
+                case CursorType.HSplit:
+                    flag = false;
+                    SetCursor(Cursors.HSplit);
+                    break;
                 case CursorType.Default:
                 default:
                     SetCursor(DefaultCursor);
@@ -632,6 +636,7 @@ namespace AntdUI
         No,
         SizeAll,
         VSplit,
+        HSplit,
     }
 
     public interface BadgeConfig

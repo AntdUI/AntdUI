@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -63,11 +62,10 @@ namespace AntdUI
                         }
                         else
                         {
-                            GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
+                            GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
                             {
                                 string txt = str.Substring(nStart, nLen);
-                                var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(txt[0]);
-                                if (IsEmoji(unicodeInfo))
+                                if (nType == 18)
                                 {
                                     HasEmoji = true;
                                     font_widths.Add(new CacheFont(txt, true, 0));
@@ -151,12 +149,10 @@ namespace AntdUI
                             {
                                 foreach (var it in cache_font) if (!it.emoji && !font_dir.ContainsKey(it.text)) font_dir.Add(it.text, it);
                             }
-                            GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
+                            GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
                             {
                                 string txt = str.Substring(nStart, nLen);
-                                var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(txt[0]);
-
-                                if (IsEmoji(unicodeInfo))
+                                if (nType == 18)
                                 {
                                     HasEmoji = true;
                                     font_widths.Add(new CacheFont(txt, true, 0));
@@ -217,14 +213,7 @@ namespace AntdUI
                 }
             }
         }
-        bool IsEmoji(UnicodeCategory unicodeInfo)
-        {
-            return unicodeInfo == UnicodeCategory.Surrogate || unicodeInfo == UnicodeCategory.OtherSymbol ||
-                unicodeInfo == UnicodeCategory.MathSymbol ||
-                unicodeInfo == UnicodeCategory.EnclosingMark ||
-                unicodeInfo == UnicodeCategory.NonSpacingMark ||
-                unicodeInfo == UnicodeCategory.ModifierLetter;
-        }
+
 
         internal class CacheFont
         {

@@ -104,6 +104,12 @@ namespace AntdUI
         [Description("点击切换下拉"), Category("行为"), DefaultValue(true)]
         public bool ClickSwitchDropdown { get; set; } = true;
 
+        /// <summary>
+        /// 是否显示关闭图标
+        /// </summary>
+        [Description("是否显示关闭图标"), Category("行为"), DefaultValue(false)]
+        public bool CloseIcon { get; set; }
+
         #region 数据
 
         BaseCollection? items;
@@ -283,6 +289,14 @@ namespace AntdUI
             subForm = null;
         }
 
+        internal bool DropDownClose(object value)
+        {
+            if (ClosedItem == null) return false;
+            if (value is SelectItem it) ClosedItem(this, new ObjectNEventArgs(it.Tag));
+            else ClosedItem(this, new ObjectNEventArgs(value));
+            return true;
+        }
+
         #endregion
 
         /// <summary>
@@ -302,6 +316,12 @@ namespace AntdUI
         /// </summary>
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
         public event ObjectNEventHandler? SelectedValueChanged = null;
+
+        /// <summary>
+        /// 关闭某项 时发生
+        /// </summary>
+        [Description("关闭某项 时发生"), Category("行为")]
+        public event ObjectNEventHandler? ClosedItem = null;
 
         public delegate IList<object>? FilterEventHandler(object sender, string value);
         /// <summary>
@@ -722,13 +742,13 @@ namespace AntdUI
 
     internal class ObjectItem
     {
-        public ObjectItem(object _val, int _i, Rectangle rect, Rectangle rect_text)
+        public ObjectItem(object _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
         {
             Show = true;
             Val = _val;
             Text = _val.ToString() ?? string.Empty;
             ID = _i;
-            SetRect(rect, rect_text);
+            SetRectBase(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
             string pinyin = Text;
             PY = new string[] {
                 pinyin.ToLower(),
@@ -737,13 +757,13 @@ namespace AntdUI
             };
         }
 
-        public ObjectItem(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text)
+        public ObjectItem(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
         {
             Show = Group = true;
             Val = _val;
             Text = _val.Title;
             ID = _i;
-            SetRect(rect, rect_text);
+            SetRectBase(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
             string pinyin = Text;
             PY = new string[] {
                 pinyin.ToLower(),
@@ -752,7 +772,7 @@ namespace AntdUI
             };
         }
 
-        public ObjectItem(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        public ObjectItem(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
         {
             Sub = _val.Sub;
             if (Sub != null && Sub.Count > 0) has_sub = true;
@@ -766,7 +786,7 @@ namespace AntdUI
             SubText = _val.SubText;
             Enable = _val.Enable;
             ID = _i;
-            SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+            SetRect(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
             string pinyin = _val.Text + _val.SubText;
             PY = new string[] {
                 pinyin.ToLower(),
@@ -857,43 +877,58 @@ namespace AntdUI
         internal bool ShowAndID => ID == -1 || !Show;
 
         internal Rectangle RectArrow { get; set; }
-
+        internal Rectangle RectClose { get; set; }
+        internal Rectangle RectCloseIcon { get; set; }
+        internal bool HoverClose { get; set; }
         public Rectangle Rect { get; set; }
 
-        internal void SetRect(Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        internal void SetRectAuto(Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
         {
-            Rect = rect;
-            if (Val is SelectItem)
-            {
-                if (Online > -1 || HasIcon)
-                {
-                    if (Online > -1 && HasIcon)
-                    {
-                        RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
-                        RectIcon = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Height, rect_text.Height);
-                        RectText = new Rectangle(rect_text.X + gap_y + gap_y2 + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - gap_y2, rect_text.Height);
-                    }
-                    else if (Online > -1)
-                    {
-                        RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
-                        RectText = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Width - gap_y2, rect_text.Height);
-                    }
-                    else
-                    {
-                        RectIcon = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
-                        RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
-                    }
-                }
-                else RectText = rect_text;
-                RectArrow = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
-            }
-            else RectText = rect_text;
+            if (Val is SelectItem) SetRect(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
+            else SetRectBase(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
         }
 
-        internal void SetRect(Rectangle rect, Rectangle rect_text)
+        internal void SetRect(Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        {
+            Rect = rect;
+            if (Online > -1 || HasIcon)
+            {
+                if (Online > -1 && HasIcon)
+                {
+                    RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
+                    RectIcon = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Height, rect_text.Height);
+                    RectText = new Rectangle(rect_text.X + gap_y + gap_y2 + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - gap_y2, rect_text.Height);
+                }
+                else if (Online > -1)
+                {
+                    RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
+                    RectText = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Width - gap_y2, rect_text.Height);
+                }
+                else
+                {
+                    RectIcon = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
+                    RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
+                }
+            }
+            else RectText = rect_text;
+            RectArrow = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
+            if (closeIcon)
+            {
+                RectClose = new Rectangle(RectArrow.X + gap_y, RectArrow.Y + gap_y, RectArrow.Width - gap_y2, RectArrow.Height - gap_y2);
+                RectCloseIcon = new Rectangle(RectClose.X + gap_y, RectClose.Y + gap_y, RectClose.Width - gap_y2, RectClose.Height - gap_y2);
+            }
+        }
+
+        internal void SetRectBase(Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
         {
             Rect = rect;
             RectText = rect_text;
+            RectArrow = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
+            if (closeIcon)
+            {
+                RectClose = new Rectangle(RectArrow.X + gap_y, RectArrow.Y + gap_y, RectArrow.Width - gap_y2, RectArrow.Height - gap_y2);
+                RectCloseIcon = new Rectangle(RectClose.X + gap_y, RectClose.Y + gap_y, RectClose.Width - gap_y2, RectClose.Height - gap_y2);
+            }
         }
 
         internal bool SetHover(bool val)
@@ -911,9 +946,9 @@ namespace AntdUI
             }
             return change;
         }
-        internal bool Contains(Point point, int x, int y, out bool change)
+        internal bool Contains(int x, int y, int sx, int sy, out bool change)
         {
-            if (ID > -1 && Rect.Contains(point.X + x, point.Y + y))
+            if (ID > -1 && Rect.Contains(x + sx, y + sy))
             {
                 change = SetHover(true);
                 return true;

@@ -29,7 +29,7 @@ namespace AntdUI
         int MaxCount = 0;
         Size DPadding;
         internal float Radius = 0;
-        bool ClickEnd = false;
+        bool ClickEnd = false, CloseIcon = false;
         object? selectedValue;
         int r_w = 0;
         List<ObjectItem> Items;
@@ -41,6 +41,7 @@ namespace AntdUI
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             ClickEnd = control.ClickEnd;
+            CloseIcon = control.CloseIcon;
             select_x = 0;
             scrollY = new ScrollY(this);
             MaxCount = control.MaxCount;
@@ -192,6 +193,7 @@ namespace AntdUI
                         else b_w += gap_y;
                     }
                     if (ui_arrow) b_w += gap_y2;
+                    else if (CloseIcon) b_w += text_height;
                     w = r_w = b_w + gap_x2 + gap2;
                 }
                 else stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter;
@@ -215,7 +217,6 @@ namespace AntdUI
                 }
                 else
                 {
-
                     int ry = 10 + gap2 + vr;
                     if (control is LayeredFormSelectDown)
                     {
@@ -260,19 +261,13 @@ namespace AntdUI
                     rx = point.X - r_w + 10;
                     ShowLeft = true;
                 }
-                if (ry > screen.Bottom - TargetRect.Height)
-                {
-                    ry = screen.Bottom - TargetRect.Height;
-                }
+                if (ry > screen.Bottom - TargetRect.Height) ry = screen.Bottom - TargetRect.Height;
                 SetLocation(rx, ry);
             }
             else
             {
                 int ry = point.Y + rect_read.Y;
-                if (ry > screen.Bottom - TargetRect.Height)
-                {
-                    Placement = TAlignFrom.Top;
-                }
+                if (ry > screen.Bottom - TargetRect.Height) Placement = TAlignFrom.Top;
                 MyPoint(point, Placement, ShowArrow, rect_read);
             }
 
@@ -395,20 +390,20 @@ namespace AntdUI
                 Rectangle rect = new Rectangle(10 + gap, y, width - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
                 if (value is SelectItem it)
                 {
-                    Items.Add(new ObjectItem(it, i, rect, rect_text, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
+                    Items.Add(new ObjectItem(it, i, rect, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
                     if (selectedValue == it.Tag) select_y = y;
                     y += item_height;
                 }
                 else if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                 {
-                    Items.Add(new ObjectItem(group, i, rect, rect_text));
+                    Items.Add(new ObjectItem(group, i, rect, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2));
                     if (selectedValue == value) select_y = y;
                     y += item_height;
                     foreach (var item in group.Sub) ReadList(item, i, width, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref select_y, false);
                 }
                 else
                 {
-                    Items.Add(new ObjectItem(value, i, rect, rect_text) { NoIndex = NoIndex });
+                    Items.Add(new ObjectItem(value, i, rect, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
                     if (selectedValue == value) select_y = y;
                     y += item_height;
                 }
@@ -541,7 +536,7 @@ namespace AntdUI
                                 list_count++;
                                 Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
                                 rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                                it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+                                it.SetRectAuto(rect_bg, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2);
                                 y += item_height;
                             }
                         });
@@ -661,7 +656,7 @@ namespace AntdUI
                                 list_count++;
                                 Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
                                 rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                                it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+                                it.SetRectAuto(rect_bg, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2);
                                 y += item_height;
                             }
                         });
@@ -748,7 +743,7 @@ namespace AntdUI
                             list_count++;
                             Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
                             rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                            it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+                            it.SetRectAuto(rect_bg, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2);
                             y += item_height;
                         }
                     });
@@ -816,11 +811,30 @@ namespace AntdUI
             if (scrollY.MouseUp(e.Location) && OnTouchUp() && down)
             {
                 if (RunAnimation) return;
-                foreach (var it in Items)
+                int sy = (int)scrollY.Value;
+                if (CloseIcon)
                 {
-                    if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
+                    foreach (var it in Items)
                     {
-                        if (OnClick(it)) return;
+                        if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.X, e.Y, 0, sy, out _))
+                        {
+                            if (it.RectClose.Contains(e.X, e.Y + sy) && PARENT is Select select && select.DropDownClose(it.Val))
+                            {
+                                IClose();
+                                return;
+                            }
+                            else if (OnClick(it)) return;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var it in Items)
+                    {
+                        if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.X, e.Y, 0, sy, out _))
+                        {
+                            if (OnClick(it)) return;
+                        }
                     }
                 }
             }
@@ -887,14 +901,56 @@ namespace AntdUI
             hoveindex = -1;
             if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
             {
-                int count = 0;
-                for (int i = 0; i < Items.Count; i++)
+                int count = 0, sy = (int)scrollY.Value;
+                if (CloseIcon)
                 {
-                    var it = Items[i];
-                    if (it.Enable)
+                    for (int i = 0; i < Items.Count; i++)
                     {
-                        if (it.Contains(e.Location, 0, (int)scrollY.Value, out var change)) hoveindex = i;
-                        if (change) count++;
+                        var it = Items[i];
+                        if (it.Enable)
+                        {
+                            if (it.has_sub)
+                            {
+                                if (it.Contains(e.X, e.Y, 0, sy, out var change)) hoveindex = i;
+                                if (change) count++;
+                            }
+                            else
+                            {
+                                if (it.Contains(e.X, e.Y, 0, sy, out var change))
+                                {
+                                    hoveindex = i;
+                                    bool hover = it.RectArrow.Contains(e.X, e.Y + sy);
+                                    if (it.HoverClose == hover)
+                                    {
+                                        if (change) count++;
+                                    }
+                                    else
+                                    {
+                                        it.HoverClose = hover;
+                                        count++;
+                                    }
+
+                                }
+                                else if (it.HoverClose)
+                                {
+                                    it.HoverClose = false;
+                                    count++;
+                                }
+                                else if (change) count++;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < Items.Count; i++)
+                    {
+                        var it = Items[i];
+                        if (it.Enable)
+                        {
+                            if (it.Contains(e.X, e.Y, 0, sy, out var change)) hoveindex = i;
+                            if (change) count++;
+                        }
                     }
                 }
                 if (count > 0) Print();
@@ -1005,6 +1061,18 @@ namespace AntdUI
                 }
             }
             if (it.has_sub) DrawArrow(g, it, Colour.TextBase.Get(keyid));
+            else if (CloseIcon)
+            {
+                if (it.HoverClose)
+                {
+                    using (var path = it.RectClose.RoundPath((int)(4 * Config.Dpi)))
+                    {
+                        g.Fill(Colour.FillSecondary.Get(keyid), path);
+                    }
+                    g.PaintIconClose(it.RectCloseIcon, Colour.Text.Get(keyid));
+                }
+                else g.PaintIconClose(it.RectCloseIcon, Colour.TextTertiary.Get(keyid));
+            }
         }
 
         void DrawTextIconSelect(Canvas g, ObjectItem it)

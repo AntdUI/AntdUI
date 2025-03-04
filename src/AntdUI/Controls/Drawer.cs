@@ -82,6 +82,60 @@ namespace AntdUI
             return null;
         }
 
+#if !NET40
+
+        /// <summary>
+        /// Drawer 抽屉 等待
+        /// </summary>
+        /// <param name="form">所属控件</param>
+        /// <param name="content">控件</param>
+        /// <param name="Align">方向</param>
+        public static async System.Threading.Tasks.Task<Config?> wait(Form form, Control content, TAlignMini Align = TAlignMini.Right) => await wait(new Config(form, content) { Align = Align });
+
+        /// <summary>
+        /// Drawer 抽屉 等待
+        /// </summary>
+        /// <param name="config">配置</param>
+        public static async System.Threading.Tasks.Task<Config?> wait(this Config config)
+        {
+            return await ITask.Run(() =>
+            {
+                if (config.Form.IsHandleCreated)
+                {
+                    using (var resetEvent = new System.Threading.ManualResetEvent(false))
+                    {
+                        if (config.Mask)
+                        {
+                            var mask = ITask.Invoke(config.Form, new Func<LayeredFormMask>(() =>
+                            {
+                                var mask = new LayeredFormMask(config.Form);
+                                mask.Show(config.Form);
+                                return mask;
+                            }));
+                            var frm = ITask.Invoke(config.Form, new Func<LayeredFormDrawer>(() => new LayeredFormDrawer(config, mask)));
+                            if (config.DisplayDelay > 0) System.Threading.Thread.Sleep(config.DisplayDelay);
+                            if (frm.isclose) return config;
+                            config.Form.BeginInvoke(new Action(() =>
+                            {
+                                frm.Show(mask);
+                                frm.FormClosed += (a, b) => resetEvent.Set();
+                            }));
+                        }
+                        else
+                        {
+                            var frm = new LayeredFormDrawer(config);
+                            frm.Show(config.Form);
+                            frm.FormClosed += (a, b) => resetEvent.Set();
+                        }
+                        resetEvent.Wait();
+                    }
+                    return config;
+                }
+                return null;
+            });
+        }
+#endif
+
         /// <summary>
         /// 配置
         /// </summary>

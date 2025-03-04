@@ -185,20 +185,20 @@ namespace AntdUI
                 Rectangle rect = new Rectangle(10 + gap, y, width - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
                 if (value is SelectItem it)
                 {
-                    Items.Add(new ObjectItem(it, i, rect, rect_text, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
+                    Items.Add(new ObjectItem(it, i, rect, rect_text, false, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
                     if (selectedValue == it.Tag) select_y = y;
                     y += item_height;
                 }
                 else if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                 {
-                    Items.Add(new ObjectItem(group, i, rect, rect_text));
+                    Items.Add(new ObjectItem(group, i, rect, rect_text, false, gap_x, gap_x2, gap_y, gap_y2));
                     if (selectedValue == value) select_y = y;
                     y += item_height;
                     foreach (var item in group.Sub) ReadList(item, i, width, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref select_y, false);
                 }
                 else
                 {
-                    Items.Add(new ObjectItem(value, i, rect, rect_text) { NoIndex = NoIndex });
+                    Items.Add(new ObjectItem(value, i, rect, rect_text, false, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
                     if (selectedValue == value) select_y = y;
                     y += item_height;
                 }
@@ -332,7 +332,7 @@ namespace AntdUI
                                 list_count++;
                                 Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
                                 rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                                it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+                                it.SetRectAuto(rect_bg, rect_text, false, gap_x, gap_x2, gap_y, gap_y2);
                                 y += item_height;
                             }
                         });
@@ -419,7 +419,7 @@ namespace AntdUI
                             list_count++;
                             Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
                             rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                            it.SetRect(rect_bg, rect_text, gap_x, gap_x2, gap_y, gap_y2);
+                            it.SetRectAuto(rect_bg, rect_text, false, gap_x, gap_x2, gap_y, gap_y2);
                             y += item_height;
                         }
                     });
@@ -482,9 +482,10 @@ namespace AntdUI
             if (scrollY.MouseUp(e.Location) && OnTouchUp() && down)
             {
                 if (RunAnimation) return;
+                int sy = (int)scrollY.Value;
                 foreach (var it in Items)
                 {
-                    if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
+                    if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.X, e.Y, 0, sy, out _))
                     {
                         OnClick(it);
                         return;
@@ -548,13 +549,13 @@ namespace AntdUI
             hoveindex = -1;
             if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
             {
-                int count = 0;
+                int count = 0, sy = (int)scrollY.Value;
                 for (int i = 0; i < Items.Count; i++)
                 {
                     var it = Items[i];
                     if (it.Enable)
                     {
-                        if (it.Contains(e.Location, 0, (int)scrollY.Value, out var change)) hoveindex = i;
+                        if (it.Contains(e.X, e.Y, 0, sy, out var change)) hoveindex = i;
                         if (change) count++;
                     }
                 }

@@ -32,11 +32,11 @@ namespace AntdUI
             public int End;
             public int Type;
         }
-        public static int Each(string strText, Func<string, int, int, bool> cb)
+        public static int Each(string strText, Func<string, int, int, int, bool> cb)
         {
             return Each(strText, 0, cb);
         }
-        public static int Each(string strText, int nIndex, Func<string, int, int, bool> cb)
+        public static int Each(string strText, int nIndex, Func<string, int, int, int, bool> cb)
         {
             int nCounter = 0;
             if (string.IsNullOrEmpty(strText) || nIndex >= strText.Length) return 0;
@@ -52,7 +52,7 @@ namespace AntdUI
             if (nCharLen != 0)
             {
                 nCounter++;
-                if (!CharCompleted(strText, nIndex - nCharLen, nCharLen, cb)) return nCounter;
+                if (!CharCompleted(strText, nIndex - nCharLen, nCharLen, nLeftBreakType, cb)) return nCounter;
             }
             nIndexCharStart = nIndex;
             nCodePoint = GetCodePoint(strText, nIndex);
@@ -69,7 +69,7 @@ namespace AntdUI
                 if (ShouldBreak(nRightBreakType, lst_history_break_type))
                 {
                     nCounter++;
-                    if (!CharCompleted(strText, nIndexCharStart, nCharLen, cb)) return nCounter;
+                    if (!CharCompleted(strText, nIndexCharStart, nCharLen, nLeftBreakType, cb)) return nCounter;
                     nIndexCharStart = nIndex;
                     nCharLen = nLastCharLen;
                     lst_history_break_type.Clear();
@@ -82,12 +82,12 @@ namespace AntdUI
             if (nCharLen != 0)
             {
                 nCounter++;
-                CharCompleted(strText, nIndexCharStart, nCharLen, cb);
+                CharCompleted(strText, nIndexCharStart, nCharLen, nLeftBreakType, cb);
             }
             return nCounter;
         }
 
-        public static int EachT(string strText, int nIndex, Func<string, STRE_TYPE, int, int, bool> cb)
+        public static int EachT(string strText, int nIndex, Func<string, STRE_TYPE, int, int, int, bool> cb)
         {
             int nCounter = 0;
             if (string.IsNullOrEmpty(strText) || nIndex >= strText.Length) return 0;
@@ -103,7 +103,7 @@ namespace AntdUI
             if (nCharLen != 0)
             {
                 nCounter++;
-                if (!cb(strText, STRE_TYPE.STR, nIndex - nCharLen, nCharLen)) return nCounter;
+                if (!cb(strText, STRE_TYPE.STR, nIndex - nCharLen, nCharLen, nLeftBreakType)) return nCounter;
             }
             nIndexCharStart = nIndex;
             nCodePoint = GetCodePoint(strText, nIndex);
@@ -123,21 +123,21 @@ namespace AntdUI
                     nCounter++;
                     if (ReadSvg(strText, nIndexCharStart, nCharLen, out var endIndexSvg))
                     {
-                        if (!cb(strText, STRE_TYPE.SVG, nIndexCharStart, endIndexSvg)) return nCounter;
+                        if (!cb(strText, STRE_TYPE.SVG, nIndexCharStart, endIndexSvg, 0)) return nCounter;
                         nIndexCharStart += endIndexSvg;
                         LastLen = endIndexSvg;
                         nCharLen = nLastCharLen;
                     }
                     else if (ReadBase64Image(strText, nIndexCharStart, nCharLen, out var endIndex))
                     {
-                        if (!cb(strText, STRE_TYPE.BASE64IMG, nIndexCharStart, endIndex)) return nCounter;
+                        if (!cb(strText, STRE_TYPE.BASE64IMG, nIndexCharStart, endIndex, 0)) return nCounter;
                         nIndexCharStart += endIndex;
                         LastLen = endIndex;
                         nCharLen = nLastCharLen;
                     }
                     else
                     {
-                        if (!cb(strText, STRE_TYPE.STR, nIndexCharStart, nCharLen)) return nCounter;
+                        if (!cb(strText, STRE_TYPE.STR, nIndexCharStart, nCharLen, nLeftBreakType)) return nCounter;
                         nIndexCharStart = nIndex;
                         nCharLen = nLastCharLen;
                     }
@@ -151,7 +151,7 @@ namespace AntdUI
             if (nCharLen != 0 && nIndexCharStart < strText.Length)
             {
                 nCounter++;
-                cb(strText, STRE_TYPE.STR, nIndexCharStart, nCharLen);
+                cb(strText, STRE_TYPE.STR, nIndexCharStart, nCharLen, nLeftBreakType);
             }
             return nCounter;
         }
@@ -211,9 +211,9 @@ namespace AntdUI
             return ((strText[nIndex] & 0x03FF) << 10) + (strText[nIndex + 1] & 0x03FF) + 0x10000;
         }
 
-        static bool CharCompleted(string strText, int nIndex, int nLen, Func<string, int, int, bool> cb_bool)
+        static bool CharCompleted(string strText, int nIndex, int nLen, int nType, Func<string, int, int, int, bool> cb_bool)
         {
-            if (!cb_bool(strText, nIndex, nLen)) return false;
+            if (!cb_bool(strText, nIndex, nLen, nType)) return false;
             return true;
         }
 
@@ -232,11 +232,7 @@ namespace AntdUI
         public const int LV = 10;
         public const int LVT = 11;
         public const int Prepend = 12;
-        public const int E_Base = 13;
-        public const int E_Modifier = 14;
         public const int ZWJ = 15;
-        public const int Glue_After_Zwj = 16;
-        public const int E_Base_GAZ = 17;
         public const int Extended_Pictographic = 18;
 
         static List<RangeInfo> m_lst_code_range = new List<RangeInfo>();
