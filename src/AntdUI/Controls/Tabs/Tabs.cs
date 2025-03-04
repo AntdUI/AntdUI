@@ -670,6 +670,20 @@ namespace AntdUI
             base.OnMouseWheel(e);
         }
 
+        /// <summary>
+        /// 判断鼠标在不在标签上
+        /// </summary>
+        public TabPage? ContainsTabPage(int x, int y)
+        {
+            if (items == null) return null;
+            int rx = x + scroll_x, ry = y + scroll_y;
+            foreach (var item in items)
+            {
+                if (item.Visible && item.Contains(rx, ry)) return item;
+            }
+            return null;
+        }
+
         #endregion
 
         #region 滚动条

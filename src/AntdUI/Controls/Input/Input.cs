@@ -1101,7 +1101,7 @@ namespace AntdUI
                 }
             }
             int len = 0;
-            GraphemeSplitter.Each(text, 0, (str, nStart, nLen) =>
+            GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
             {
                 len++;
                 return true;

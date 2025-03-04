@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -584,7 +583,7 @@ namespace AntdUI.Chat
             item.HasEmoji = false;
             int font_height = 0;
             var font_widths = new List<CacheFont>(item.Text.Length);
-            GraphemeSplitter.EachT(item.Text, 0, (str, type, nStart, nLen) =>
+            GraphemeSplitter.EachT(item.Text, 0, (str, type, nStart, nLen, nType) =>
             {
                 string it = str.Substring(nStart, nLen);
                 switch (type)
@@ -622,8 +621,7 @@ namespace AntdUI.Chat
                         }
                         break;
                     default:
-                        var unicodeInfo = CharUnicodeInfo.GetUnicodeCategory(it[0]);
-                        if (IsEmoji(unicodeInfo))
+                        if (nType == 18)
                         {
                             item.HasEmoji = true;
                             font_widths.Add(new CacheFont(it, true, 0, type));
@@ -696,16 +694,6 @@ namespace AntdUI.Chat
 
             return new Size(maxx + spilt, maxy + spilt);
         }
-        bool IsEmoji(UnicodeCategory unicodeInfo)
-        {
-            //return unicodeInfo == UnicodeCategory.Surrogate;
-            return unicodeInfo == UnicodeCategory.Surrogate || unicodeInfo == UnicodeCategory.OtherSymbol ||
-                 unicodeInfo == UnicodeCategory.MathSymbol ||
-                  unicodeInfo == UnicodeCategory.EnclosingMark ||
-                   unicodeInfo == UnicodeCategory.NonSpacingMark ||
-                  unicodeInfo == UnicodeCategory.ModifierLetter;
-        }
-
 
         #endregion
 

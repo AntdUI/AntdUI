@@ -405,12 +405,12 @@ namespace AntdUI
             if (form.ClientSize != rect.Size) form.ClientSize = rect.Size;
             form.Location = rect.Location;
             config.OnLoad?.Invoke();
-            if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
             IsLoad = false;
             LoadCompleted?.Invoke();
             config.Content.SizeChanged += Content_SizeChanged;
             tempContent?.Dispose();
             tempContent = null;
+            if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
         }
 
@@ -744,6 +744,7 @@ namespace AntdUI
         #endregion
     }
 
+    [Obsolete("use ControlEvent")]
     public interface DrawerLoad
     {
         void LoadOK();
