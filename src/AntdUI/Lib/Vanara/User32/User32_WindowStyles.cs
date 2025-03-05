@@ -13,7 +13,7 @@ namespace Vanara.PInvoke
         /// Window Styles. The following styles can be specified wherever a window style is required. After the control has been created,
         /// these styles cannot be modified, except as noted.
         /// </summary>
-        [Flags()]
+        [Flags]
         public enum WindowStyles : uint
         {
             /// <summary>The window has a thin-line border.</summary>

@@ -189,7 +189,7 @@ namespace AntdUI
         /// 当前折叠状态
         /// </summary>
         bool _splitPanelState = true;
-        [Description("是否进行展开"), Category("行为"), DefaultValue(true),]
+        [Description("是否进行展开"), Category("行为"), DefaultValue(true)]
         public bool SplitPanelState
         {
             get => _splitPanelState;
@@ -536,6 +536,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            SetWindow(true);
             SplitterMoving -= Splitter_SplitterMoving;
             SplitterMoved -= Splitter_SplitterMoved;
             base.Dispose(disposing);

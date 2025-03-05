@@ -614,6 +614,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            SetWindow(true);
             fileDrop?.Dispose();
             base.Dispose(disposing);
         }
@@ -636,7 +637,7 @@ namespace AntdUI
         No,
         SizeAll,
         VSplit,
-        HSplit,
+        HSplit
     }
 
     public interface BadgeConfig

@@ -292,7 +292,7 @@ namespace AntdUI
                 is_resizable = true;
                 SetCursorHit(mode);
                 ReleaseCapture();
-                SendMessage(Handle, (uint)WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
+                SendMessage(Handle, WindowMessage.WM_NCLBUTTONDOWN, mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
                 is_resizable = false;
                 return true;
             }
@@ -360,9 +360,9 @@ namespace AntdUI
 
         internal void LoadCursors(int id)
         {
-            var handle = LoadCursor(lpCursorName: Macros.MAKEINTRESOURCE(id));
-            var oldCursor = User32.SetCursor(handle);
-            oldCursor.Close();
+            var handle = LoadCursor(IntPtr.Zero, id);
+            if (handle == IntPtr.Zero) return;
+            User32.SetCursor(handle);
         }
 
         #endregion

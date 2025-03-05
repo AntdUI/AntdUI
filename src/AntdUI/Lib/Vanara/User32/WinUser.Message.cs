@@ -37,7 +37,6 @@ namespace Vanara.PInvoke
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-getmessagepos DWORD GetMessagePos( );
         [DllImport("user32.dll", SetLastError = false, ExactSpelling = true)]
-        [PInvokeData("winuser.h")]
         public static extern uint GetMessagePos();
 
         /// <summary>
@@ -134,7 +133,6 @@ namespace Vanara.PInvoke
         // https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-postmessagea BOOL PostMessageA( HWND hWnd, UINT Msg,
         // WPARAM wParam, LPARAM lParam );
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        [PInvokeData("winuser.h")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool PostMessage([Optional] HWND hWnd, uint Msg, [Optional] IntPtr wParam, [Optional] IntPtr lParam);
 
@@ -203,7 +201,6 @@ namespace Vanara.PInvoke
         /// <para>For an example, see Displaying Keyboard Input.</para>
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessage
-        [PInvokeData("winuser.h", MSDNShortId = "NF:winuser.SendMessage")]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         [System.Security.SecurityCritical]
         public static extern IntPtr SendMessage(HWND hWnd, uint msg, [In, Optional] IntPtr wParam, [In, Out, Optional] IntPtr lParam);
@@ -273,7 +270,6 @@ namespace Vanara.PInvoke
         /// <para>For an example, see Displaying Keyboard Input.</para>
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessage
-        [PInvokeData("winuser.h", MSDNShortId = "NF:winuser.SendMessage")]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         [System.Security.SecurityCritical]
         public static extern IntPtr SendMessage(HWND hWnd, uint msg, [In, Optional] IntPtr wParam, string lParam);
@@ -343,7 +339,6 @@ namespace Vanara.PInvoke
         /// <para>For an example, see Displaying Keyboard Input.</para>
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessage
-        [PInvokeData("winuser.h", MSDNShortId = "NF:winuser.SendMessage")]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         [System.Security.SecurityCritical]
         public static extern IntPtr SendMessage(HWND hWnd, uint msg, ref int wParam, [In, Out] StringBuilder lParam);
@@ -413,7 +408,6 @@ namespace Vanara.PInvoke
         /// <para>For an example, see Displaying Keyboard Input.</para>
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessage
-        [PInvokeData("winuser.h", MSDNShortId = "NF:winuser.SendMessage")]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         [System.Security.SecurityCritical]
         public static extern IntPtr SendMessage(HWND hWnd, uint msg, [In, Optional] IntPtr wParam, [In, Out] StringBuilder lParam);
@@ -476,7 +470,6 @@ namespace Vanara.PInvoke
         /// <para>For an example, see Displaying Keyboard Input.</para>
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessage
-        [PInvokeData("winuser.h", MSDNShortId = "NF:winuser.SendMessage")]
         public static IntPtr SendMessage<TMsg>(HWND hWnd, TMsg msg, [Optional] IntPtr wParam, [Optional] IntPtr lParam)
             where TMsg : struct, IConvertible
             => SendMessage(hWnd, Convert.ToUInt32(msg), IntPtr.Zero, IntPtr.Zero);
@@ -548,7 +541,6 @@ namespace Vanara.PInvoke
         /// <para>For an example, see Displaying Keyboard Input.</para>
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessage
-        [PInvokeData("winuser.h", MSDNShortId = "NF:winuser.SendMessage")]
         public static IntPtr SendMessage<TMsg, TWP>(HWND hWnd, TMsg msg, TWP wParam, [Optional] IntPtr lParam)
             where TMsg : struct, IConvertible where TWP : struct, IConvertible
             => SendMessage(hWnd, Convert.ToUInt32(msg), (IntPtr)Convert.ToInt64(wParam), IntPtr.Zero);

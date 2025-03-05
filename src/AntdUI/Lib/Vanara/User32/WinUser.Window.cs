@@ -11,7 +11,6 @@ namespace Vanara.PInvoke
     public static partial class User32
     {
         /// <summary>Window sizing and positioning flags.</summary>
-        [PInvokeData("winuser.h", MSDNShortId = "setwindowpos")]
         [Flags]
         public enum SetWindowPosFlags : uint
         {
@@ -123,7 +122,6 @@ namespace Vanara.PInvoke
         // https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-adjustwindowrect BOOL AdjustWindowRect( LPRECT lpRect,
         // DWORD dwStyle, BOOL bMenu );
         [DllImport("user32.dll", SetLastError = true, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "adjustwindowrect")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool AdjustWindowRect(ref RECT lpRect, WindowStyles dwStyle, [MarshalAs(UnmanagedType.Bool)] bool bMenu);
 
@@ -178,7 +176,6 @@ namespace Vanara.PInvoke
         // https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-adjustwindowrectex BOOL AdjustWindowRectEx( LPRECT lpRect,
         // DWORD dwStyle, BOOL bMenu, DWORD dwExStyle );
         [DllImport("user32.dll", SetLastError = true, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "adjustwindowrectex")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool AdjustWindowRectEx(ref RECT lpRect, WindowStyles dwStyle, [MarshalAs(UnmanagedType.Bool)] bool bMenu, WindowStylesEx dwExStyle);
 
@@ -215,7 +212,6 @@ namespace Vanara.PInvoke
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-destroywindow BOOL DestroyWindow( HWND hWnd );
         [DllImport("user32.dll", SetLastError = true, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "destroywindow")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DestroyWindow(HWND hWnd);
 
@@ -231,7 +227,6 @@ namespace Vanara.PInvoke
         /// If the function succeeds, the return value is true. If the function fails, the return value is false. To get extended error
         /// information, call GetLastError.
         /// </returns>
-        [PInvokeData("WinUser.h", MSDNShortId = "ms633519")]
         [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         [System.Security.SecurityCritical]
@@ -251,7 +246,6 @@ namespace Vanara.PInvoke
         /// </returns>
         // https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-iszoomed BOOL IsZoomed( HWND hWnd );
         [DllImport("user32.dll", SetLastError = false, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "iszoomed")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsZoomed(HWND hWnd);
 
@@ -272,7 +266,6 @@ namespace Vanara.PInvoke
         /// </remarks>
         // https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-releasecapture BOOL ReleaseCapture( );
         [DllImport("user32.dll", SetLastError = true, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool ReleaseCapture();
 
@@ -303,35 +296,28 @@ namespace Vanara.PInvoke
         public static extern int EndPaint(HWND hwnd, ref PAINTSTRUCT lpPaint);
 
         [DllImport("user32.dll", SetLastError = false, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "isiconic")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsIconic(HWND hWnd);
 
         [DllImport("user32.dll", SetLastError = false, CharSet = CharSet.Auto)]
-        [PInvokeData("winuser.h")]
         public static extern IntPtr DefWindowProc(HWND hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "c6cb7f74-237e-4d3e-a852-894da36e990c")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool RedrawWindow(HWND hWnd, [In] PRECT? lprcUpdate, HWND hrgnUpdate, RedrawWindowFlags flags);
 
         [DllImport("user32.dll", SetLastError = false, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "51a50f1f-7b4d-4acd-83a0-1877f5181766")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool UpdateWindow(HWND hWnd);
 
         [DllImport("user32.dll", SetLastError = true, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "setwindowpos")]
         [System.Security.SecurityCritical]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
 
         [DllImport("user32.dll", SetLastError = false, ExactSpelling = true)]
-        [PInvokeData("winuser.h", MSDNShortId = "")]
         public static extern void DisableProcessWindowsGhosting();
 
-        [PInvokeData("winuser.h", MSDNShortId = "c6cb7f74-237e-4d3e-a852-894da36e990c")]
         [Flags]
         public enum RedrawWindowFlags
         {

@@ -315,6 +315,13 @@ namespace AntdUI
                     if (retnot.Count > 0) retnot.Clear();
                     HandTextAlign(cache_font);
                 }
+                if (cache_font.Length == 0)
+                {
+                    isempty = true;
+                    _text = "";
+                    cache_font = null;
+                    return;
+                }
                 var last = cache_font[cache_font.Length - 1];
                 ScrollXMax = last.rect.Right - rect_text.Right;
                 switch (textalign)
