@@ -322,7 +322,7 @@ namespace AntdUI
         {
             if (size > 0)
             {
-                int pr = (int)Math.Round(size), pr2 = pr * 2;
+                int pr = (int)Math.Ceiling(size), pr2 = pr * 2;
                 return new Rectangle(rect.X + padding.Left + pr, rect.Y + padding.Top + pr, rect.Width - padding.Horizontal - pr2, rect.Height - padding.Vertical - pr2);
             }
             return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
@@ -331,7 +331,7 @@ namespace AntdUI
         {
             if (size > 0)
             {
-                int pr = (int)Math.Round(size), pr2 = pr * 2;
+                int pr = (int)Math.Ceiling(size), pr2 = pr * 2;
                 return new Rectangle(rect.X + padding.Left + pr + x, rect.Y + padding.Top + pr + y, rect.Width - padding.Horizontal - pr2 - r, rect.Height - padding.Vertical - pr2 - b);
             }
             return new Rectangle(rect.X + padding.Left + x, rect.Y + padding.Top + y, rect.Width - padding.Horizontal - r, rect.Height - padding.Vertical - b);
@@ -349,7 +349,7 @@ namespace AntdUI
         {
             if (shape == TShape.Circle)
             {
-                int pr = (int)Math.Round(size), pr2 = pr * 2;
+                int pr = (int)Math.Ceiling(size), pr2 = pr * 2;
                 if (rect.Width > rect.Height)
                 {
                     int h = rect.Height - pr2;
@@ -373,7 +373,7 @@ namespace AntdUI
         /// <param name="joinRight">连接右边</param>
         public static Rectangle ReadRect(this Rectangle rect, float size, bool joinLeft, bool joinRight)
         {
-            int pr = (int)Math.Round(size), pr2 = pr * 2;
+            int pr = (int)Math.Ceiling(size), pr2 = pr * 2;
             if (joinLeft && joinRight) return new Rectangle(rect.X, rect.Y + pr, rect.Width, rect.Height - pr2);
             else if (joinLeft)
             {

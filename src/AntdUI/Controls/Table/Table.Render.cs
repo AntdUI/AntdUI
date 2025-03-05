@@ -93,6 +93,7 @@ namespace AntdUI
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
+                        foreach (var it in shows) PaintBgRowFrontStyle(g, it);
                         foreach (var it in shows) PaintBgRowItem(g, it.row);
 
                         g.ResetTransform();
@@ -129,15 +130,18 @@ namespace AntdUI
                             }
                         }
                         g.TranslateTransform(0, -sy);
+                        var showsNoColumn = new List<StyleRow>(shows.Count);
                         foreach (var it in shows)
                         {
-                            if (!it.row.IsColumn) PaintBgRowFront(g, it);
+                            if (!it.row.IsColumn)
+                            {
+                                showsNoColumn.Add(it);
+                                PaintBgRowFront(g, it);
+                            }
                         }
                         g.TranslateTransform(-sx, 0);
-                        foreach (var it in shows)
-                        {
-                            if (!it.row.IsColumn) PaintBgRowItem(g, it.row);
-                        }
+                        foreach (var it in showsNoColumn) PaintBgRowFrontStyle(g, it);
+                        foreach (var it in showsNoColumn) PaintBgRowItem(g, it.row);
 
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
@@ -341,6 +345,7 @@ namespace AntdUI
                 }
             }
         }
+
         #endregion
 
         #region 表体
@@ -356,6 +361,9 @@ namespace AntdUI
                 g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get("Table"), row.row.RECT);
                 if (selectedIndex.Contains(row.row.INDEX) && row.row.Select) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table")), row.row.RECT);
             }
+        }
+        void PaintBgRowFrontStyle(Canvas g, StyleRow row)
+        {
             foreach (var cel in row.row.cells)
             {
                 if (cel.COLUMN.Style != null && cel.COLUMN.Style.BackColor.HasValue) g.Fill(cel.COLUMN.Style.BackColor.Value, cel.RECT);
@@ -573,7 +581,11 @@ namespace AntdUI
                 g.TranslateTransform(0, -sy);
                 foreach (var row in shows)
                 {
-                    if (row.row.IsColumn) { PaintTableBgHeader(g, row.row, radius); PaintTableHeader(g, row.row, forecolumn, column_font, radius); }
+                    if (row.row.IsColumn)
+                    {
+                        PaintTableBgHeader(g, row.row, radius);
+                        PaintTableHeader(g, row.row, forecolumn, column_font, radius);
+                    }
                     else
                     {
                         PaintBgRowFront(g, row);
