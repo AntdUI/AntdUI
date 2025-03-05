@@ -59,10 +59,7 @@ namespace AntdUI.In
             get
             {
                 var rect = ClientRectangle.DeflateRect(Padding);
-                if (scrollYVisible)
-                {
-                    return new Rectangle(rect.X, rect.Y - VerticalScroll.Value, rect.Width - scrollY.Rect.Width, rect.Height);
-                }
+                if (scrollYVisible) return new Rectangle(rect.X, rect.Y - VerticalScroll.Value, rect.Width - scrollY.Rect.Width, rect.Height);
                 return rect;
             }
         }

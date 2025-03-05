@@ -10,7 +10,6 @@ namespace Vanara.PInvoke
     public static partial class User32
     {
         /// <summary>Windows Messages</summary>
-        //[Flags]
         public enum WindowMessage
         {
             /// <summary>

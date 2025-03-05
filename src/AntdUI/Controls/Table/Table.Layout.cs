@@ -499,13 +499,17 @@ namespace AntdUI
                 {
                     if (it.Visible) dir.Add(dir.Count, it);
                 }
-                foreach (var index in SortHeader)
+                try
                 {
-                    var it = dir[index];
-                    it.PARENT = this;
-                    it.INDEX = index;
-                    if (it.Visible) action(it);
+                    foreach (var index in SortHeader)
+                    {
+                        var it = dir[index];
+                        it.PARENT = this;
+                        it.INDEX = index;
+                        if (it.Visible) action(it);
+                    }
                 }
+                catch { }
             }
         }
         void ForRow(TempTable data_temp, Action<IRow> action)

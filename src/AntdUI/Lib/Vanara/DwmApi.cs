@@ -18,12 +18,10 @@ namespace Vanara.PInvoke
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [DllImport("dwmapi.dll", SetLastError = false, ExactSpelling = true)]
         [System.Security.SecurityCritical]
-        [PInvokeData("dwmapi.h")]
         public static extern void DwmExtendFrameIntoClientArea(HWND hWnd, in MARGINS pMarInset);
 
         /// <summary>Returned by the GetThemeMargins function to define the margins of windows that have visual styles applied.</summary>
         [StructLayout(LayoutKind.Sequential)]
-        [PInvokeData("dwmapi.h")]
         public struct MARGINS
         {
             /// <summary>Width of the left border that retains its size.</summary>
