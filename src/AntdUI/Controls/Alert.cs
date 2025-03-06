@@ -152,10 +152,17 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 轮播文本无尽
+        /// </summary>
+        [Description("轮播文本无尽"), Category("外观"), DefaultValue(true)]
+        public bool LoopInfinite { get; set; } = true;
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             this.AddListener();
+            val = icon == TType.None ? 0 : -Height;
             if (loop) StartTask();
         }
 
@@ -183,35 +190,38 @@ namespace AntdUI
         #region 动画
 
         ITask? task = null;
-        private void StartTask()
+        void StartTask()
         {
             task?.Dispose();
-            if (loop)
-            {
-                task = new ITask(this, () =>
-                {
-                    if (font_size.HasValue && font_size.Value.Width > 0)
-                    {
-                        val += 1;
-                        if (val > font_size.Value.Width)
-                        {
-                            if (Width > font_size.Value.Width) val = 0;
-                            else val = -(Width - Padding.Horizontal);
-                        }
-                        Invalidate();
-                    }
-                    else System.Threading.Thread.Sleep(1000);
-                    return loop;
-                }, LoopSpeed);
-            }
+            if (loop) task = new ITask(this, TextAnimation, LoopSpeed);
             else Invalidate();
+        }
+
+        bool TextAnimation()
+        {
+            if (font_size.HasValue && font_size.Value.Width > 0)
+            {
+                val += 1;
+                if (val > font_size.Value.Width)
+                {
+                    if (LoopInfinite)
+                    {
+                        if (Width > font_size.Value.Width) val = 0;
+                        else val = -(Width - Padding.Horizontal);
+                    }
+                    else val = -(Width - Padding.Horizontal);
+                }
+                Invalidate();
+            }
+            else System.Threading.Thread.Sleep(1000);
+            return loop;
         }
 
         #endregion
 
         #region 参数
 
-        int val = 0;
+        int val;
         Size? font_size = null;
 
         #endregion
@@ -381,7 +391,7 @@ namespace AntdUI
                 {
                     var rect_txt = new Rectangle(rect.X - val, rect.Y, size.Width, rect.Height);
                     g.String(Text, Font, brush, rect_txt, stringCenter);
-                    if (rect.Width > size.Width)
+                    if (LoopInfinite && rect.Width > size.Width)
                     {
                         var maxw = rect.Width + rect_txt.Width / 2;
                         var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
@@ -397,7 +407,7 @@ namespace AntdUI
                     var size_title = g.MeasureString(TextTitle, Font);
                     var rect_txt = new Rectangle(rect.X + size_title.Width - val, rect.Y, size.Width, rect.Height);
                     g.String(Text, Font, brush, rect_txt, stringCenter);
-                    if (rect.Width > size.Width)
+                    if (LoopInfinite && rect.Width > size.Width)
                     {
                         var maxw = rect.Width + rect_txt.Width / 2;
                         var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
@@ -436,7 +446,7 @@ namespace AntdUI
                 g.SetClip(new Rectangle(rect.X, rect_txt.Y + ((rect.Height - size.Height) / 2), rect.Width, size.Height));
 
                 g.String(Text, Font, brush_fore, rect_txt, stringCenter);
-                if (rect.Width > size.Width)
+                if (LoopInfinite && rect.Width > size.Width)
                 {
                     var maxw = rect.Width + rect_txt.Width / 2;
                     var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);

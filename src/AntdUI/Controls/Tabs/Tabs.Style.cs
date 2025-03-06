@@ -943,7 +943,7 @@ namespace AntdUI
                                         float ly = rect_page.Y + borb2;
                                         var rect_card = new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2);
                                         var rect_line = new Rectangle(rect_page.X - bor, rect_page.Y + bor, rect_page.Width + bor2, rect_page.Height + bor);
-                                        g.Image(PaintTABS(owner, rect_t, rect_page, radius, rect_card, rect_line, rect_t.X, ly, rect_t.Right, ly, bor, false, false, true, true), rect_t);
+                                        PaintTABS(owner, g, rect_t, rect_page, radius, rect_card, rect_line, rect_t.X, ly, rect_t.Right, ly, bor, false, false, true, true);
                                         if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                     }
                                     else
@@ -976,7 +976,7 @@ namespace AntdUI
                                         float lx = rect_page.Right - borb2;
                                         var rect_card = new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor);
                                         var rect_line = new Rectangle(rect_page.X - borb2, rect_page.Y - bor, rect_page.Width, rect_page.Height + bor2);
-                                        g.Image(PaintTABS(owner, rect_t, rect_page, radius, rect_card, rect_line, lx, rect_t.Y, lx, rect_t.Bottom, bor, true, false, false, true), rect_t);
+                                        PaintTABS(owner, g, rect_t, rect_page, radius, rect_card, rect_line, lx, rect_t.Y, lx, rect_t.Bottom, bor, true, false, false, true);
                                         if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                     }
                                     else
@@ -1010,7 +1010,7 @@ namespace AntdUI
                                         float lx = rect_page.X + borb2;
                                         var rect_card = new RectangleF(rect_page.X - borb2, rect_page.Y + borb2, rect_page.Width + borb2, rect_page.Height - bor);
                                         var rect_line = new Rectangle(rect_page.X + bor, rect_page.Y - bor, rect_page.Width + bor, rect_page.Height + bor2);
-                                        g.Image(PaintTABS(owner, rect_t, rect_page, radius, rect_card, rect_line, lx, rect_t.Y, lx, rect_t.Bottom, bor, false, true, true, false), rect_t);
+                                        PaintTABS(owner, g, rect_t, rect_page, radius, rect_card, rect_line, lx, rect_t.Y, lx, rect_t.Bottom, bor, false, true, true, false);
                                         if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                     }
                                     else
@@ -1044,7 +1044,7 @@ namespace AntdUI
                                         float ly = rect_page.Bottom - borb2;
                                         var rect_card = new RectangleF(rect_page.X + borb2, rect_page.Y - borb2, rect_page.Width - bor, rect_page.Height + borb2);
                                         var rect_line = new Rectangle(rect_page.X - bor, rect_page.Y - bor, rect_page.Width + bor2, rect_page.Height);
-                                        g.Image(PaintTABS(owner, rect_t, rect_page, radius, rect_card, rect_line, rect_t.X, ly, rect_t.Right, ly, bor, true, true, false, false), rect_t);
+                                        PaintTABS(owner, g, rect_t, rect_page, radius, rect_card, rect_line, rect_t.X, ly, rect_t.Right, ly, bor, true, true, false, false);
                                         if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                     }
                                     else
@@ -1096,27 +1096,33 @@ namespace AntdUI
                 }
                 return sel;
             }
-            Bitmap PaintTABS(Tabs owner, Rectangle rect_t, Rectangle rect_page, int radius, RectangleF rect_card, Rectangle rect_line, float x, float y, float x2, float y2, int bor, bool TL, bool TR, bool BR, bool BL)
+            void PaintTABS(Tabs owner, Canvas gg, Rectangle rect_t, Rectangle rect_page, int radius, RectangleF rect_card, Rectangle rect_line, float x, float y, float x2, float y2, int bor, bool TL, bool TR, bool BR, bool BL)
             {
-                var bmp = new Bitmap(rect_t.Width, rect_t.Height);
-                using (var graphics = Graphics.FromImage(bmp))
+                try
                 {
-                    var g = graphics.High();
-                    using (var path = Helper.RoundPath(rect_page, radius, TL, TR, BR, BL))
-                    using (var pen_bg = new Pen(BorderActive ?? Colour.BorderColor.Get("Tabs"), bor))
-                    using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get("Tabs")))
+                    using (var bmp = new Bitmap(rect_t.Width, rect_t.Height))
                     {
-                        g.DrawLine(pen_bg, x, y, x2, y2);
-                        if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
-                        using (var path_card = Helper.RoundPath(rect_card, radius, TL, TR, BR, BL))
+                        using (var g = Graphics.FromImage(bmp).High())
                         {
-                            g.Fill(brush_bg_active, path_card);
+                            using (var path = Helper.RoundPath(rect_page, radius, TL, TR, BR, BL))
+                            using (var pen_bg = new Pen(BorderActive ?? Colour.BorderColor.Get("Tabs"), bor))
+                            using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get("Tabs")))
+                            {
+                                g.DrawLine(pen_bg, x, y, x2, y2);
+                                if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
+                                using (var path_card = Helper.RoundPath(rect_card, radius, TL, TR, BR, BL))
+                                {
+                                    g.Fill(brush_bg_active, path_card);
+                                }
+                                g.SetClip(rect_line);
+                                g.Draw(pen_bg, path);
+                            }
                         }
-                        g.SetClip(rect_line);
-                        g.Draw(pen_bg, path);
+
+                        gg.Image(bmp, rect_t);
                     }
                 }
-                return bmp;
+                catch { }
             }
 
             public TabPageRect GetTabRect(int i) => rects[i];
