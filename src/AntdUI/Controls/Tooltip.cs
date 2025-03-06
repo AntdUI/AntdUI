@@ -99,7 +99,7 @@ namespace AntdUI
         {
             var rect = ClientRectangle;
             var g = e.Graphics.High();
-            MaximumSize = MinimumSize = this.RenderMeasure(g, out var multiline);
+            MaximumSize = MinimumSize = this.RenderMeasure(g, null, out var multiline);
             this.Render(g, rect, multiline, s_c, s_l);
             base.OnPaint(e);
         }
@@ -206,6 +206,7 @@ namespace AntdUI
     {
         readonly Control? ocontrol = null;
         bool multiline = false;
+        int? maxWidth;
         public TooltipForm(Control control, string txt, ITooltipConfig component)
         {
             ocontrol = control;
@@ -218,11 +219,13 @@ namespace AntdUI
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
             CustomWidth = component.CustomWidth;
+            var point = control.PointToScreen(Point.Empty);
+            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+            maxWidth = screen.Width;
             Helper.GDI(g =>
             {
-                SetSize(this.RenderMeasure(g, out multiline));
+                SetSize(this.RenderMeasure(g, maxWidth, out multiline));
             });
-            var point = control.PointToScreen(Point.Empty);
             if (component is Tooltip.Config config)
             {
                 if (config.Offset is RectangleF rectf) SetLocation(ArrowAlign.AlignPoint(new Rectangle(point.X + (int)rectf.X, point.Y + (int)rectf.Y, (int)rectf.Width, (int)rectf.Height), TargetRect.Width, TargetRect.Height));
@@ -230,9 +233,11 @@ namespace AntdUI
                 else SetLocation(ArrowAlign.AlignPoint(point, control.Size, TargetRect.Width, TargetRect.Height));
             }
             else SetLocation(ArrowAlign.AlignPoint(point, control.Size, TargetRect.Width, TargetRect.Height));
-
             control.LostFocus += Control_LostFocus;
             control.MouseLeave += Control_LostFocus;
+            if (component.ArrowAlign == TAlign.Left || component.ArrowAlign == TAlign.Right || component.ArrowAlign == TAlign.RB || component.ArrowAlign == TAlign.RT || component.ArrowAlign == TAlign.LT || component.ArrowAlign == TAlign.LB) return;
+            if (TargetRect.X < 0) SetLocationX(0);
+            else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
         }
         public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component)
         {
@@ -246,11 +251,17 @@ namespace AntdUI
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
             CustomWidth = component.CustomWidth;
+            var point = control.PointToScreen(Point.Empty);
+            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+            maxWidth = screen.Width;
             Helper.GDI(g =>
             {
-                SetSize(this.RenderMeasure(g, out multiline));
+                SetSize(this.RenderMeasure(g, maxWidth, out multiline));
             });
             SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
+            if (component.ArrowAlign == TAlign.Left || component.ArrowAlign == TAlign.Right || component.ArrowAlign == TAlign.RB || component.ArrowAlign == TAlign.RT || component.ArrowAlign == TAlign.LT || component.ArrowAlign == TAlign.LB) return;
+            if (TargetRect.X < 0) SetLocationX(0);
+            else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
         }
 
         public void SetText(Rectangle rect, string text)
@@ -258,7 +269,7 @@ namespace AntdUI
             Text = text;
             Helper.GDI(g =>
             {
-                SetSize(this.RenderMeasure(g, out multiline));
+                SetSize(this.RenderMeasure(g, maxWidth, out multiline));
             });
             SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
             Print();
@@ -423,7 +434,7 @@ namespace AntdUI
     {
         #region 渲染
 
-        public static Size RenderMeasure(this ITooltip core, Canvas g, out bool multiline)
+        public static Size RenderMeasure(this ITooltip core, Canvas g, int? maxWidth, out bool multiline)
         {
             multiline = core.Text.Contains("\n");
             int padding = (int)Math.Ceiling(20 * Config.Dpi);
@@ -431,6 +442,15 @@ namespace AntdUI
             if (core.CustomWidth.HasValue)
             {
                 int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);
+                if (font_size.Width > width)
+                {
+                    font_size = g.MeasureString(core.Text, core.Font, width);
+                    multiline = true;
+                }
+            }
+            else if (maxWidth.HasValue)
+            {
+                int width = maxWidth.Value - padding;
                 if (font_size.Width > width)
                 {
                     font_size = g.MeasureString(core.Text, core.Font, width);

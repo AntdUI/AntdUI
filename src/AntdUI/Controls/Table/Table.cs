@@ -1706,6 +1706,20 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 列可拖拽
+        /// </summary>
+        public bool DragSort { get; set; } = true;
+
+        /// <summary>
+        /// 设置列可拖拽
+        /// </summary>
+        public Column SetDragSort(bool value = false)
+        {
+            DragSort = value;
+            return this;
+        }
+
+        /// <summary>
         /// 树形列
         /// </summary>
         public string? KeyTree { get; set; }

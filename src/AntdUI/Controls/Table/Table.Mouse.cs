@@ -82,7 +82,7 @@ namespace AntdUI
                                 return;
                             }
                         }
-                        if (ColumnDragSort)
+                        if (ColumnDragSort && cell.COLUMN.DragSort)
                         {
                             dragHeader = new DragHeader
                             {
@@ -593,7 +593,7 @@ namespace AntdUI
                         }
                         if (cel.SortWidth > 0) SetCursor(true);
                         else if (has_check && cel.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle && cel.CONTAIN_REAL(r_x, r_y)) SetCursor(true);
-                        else if (ColumnDragSort)
+                        else if (ColumnDragSort && cel.COLUMN.DragSort)
                         {
                             SetCursor(CursorType.SizeAll);
                             return;

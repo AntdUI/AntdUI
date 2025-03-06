@@ -887,8 +887,9 @@ namespace AntdUI
             /// </summary>
             public int MouseDown { get; set; }
 
-            public bool CONTAIN(int x, int y) => RECT.Contains(x, y);
-            public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x, y);
+            internal int offsetx = 0, offsety = 0;
+            public bool CONTAIN(int x, int y) => RECT.Contains(x - offsetx, y - offsety);
+            public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x - offsetx, y - offsety);
 
             public abstract void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2);
             public abstract Size GetSize(Canvas g, Font font, int width, int gap, int gap2);
