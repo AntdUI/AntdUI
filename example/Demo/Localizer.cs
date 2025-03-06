@@ -73,6 +73,8 @@ namespace Demo
                     return "Popup in the window";
                 case "ScrollBarHidden":
                     return "ScrollBar Hidden Style";
+                case "TextRenderingHighQuality":
+                    return "TextRendering HighQuality";
 
                 case "Previous":
                     return "Previous";
