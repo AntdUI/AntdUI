@@ -286,64 +286,221 @@ namespace AntdUI
         }
         void PaintTableHeader(Canvas g, RowTemplate row, SolidBrush fore, Font column_font, float radius)
         {
-            foreach (TCellColumn column in row.cells)
+            if (StackedHeaderRows == null)
             {
-                if (column.COLUMN.SortOrder)
+                foreach (TCellColumn column in row.cells)
                 {
-                    g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
-                    g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
-                }
-                if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
-                else
-                {
-                    if (column.COLUMN.ColStyle != null && column.COLUMN.ColStyle.ForeColor.HasValue)
+                    if (column.COLUMN.SortOrder)
                     {
-                        using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
-                        {
-                            g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
-                        }
+                        g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
+                        g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
                     }
-                    else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
-                }
-            }
-            if (dragHeader == null) return;
-            foreach (var column in row.cells)
-            {
-                if (dragHeader.i == column.INDEX)
-                {
-                    using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table")))
+                    if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
+                    else
                     {
-                        if (radius > 0)
+                        if (column.COLUMN.ColStyle != null && column.COLUMN.ColStyle.ForeColor.HasValue)
                         {
-                            if (column.INDEX == 0)
+                            using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
                             {
-                                using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
-                                {
-                                    g.Fill(brush, path);
-                                }
+                                g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
                             }
-                            else if (column.INDEX == row.cells.Length - 1)
+                        }
+                        else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
+                    }
+                }
+                if (dragHeader == null) return;
+                foreach (var column in row.cells)
+                {
+                    if (dragHeader.i == column.INDEX)
+                    {
+                        using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table")))
+                        {
+                            if (radius > 0)
                             {
-                                using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
+                                if (column.INDEX == 0)
                                 {
-                                    g.Fill(brush, path);
+                                    using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
+                                    {
+                                        g.Fill(brush, path);
+                                    }
                                 }
+                                else if (column.INDEX == row.cells.Length - 1)
+                                {
+                                    using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
+                                    {
+                                        g.Fill(brush, path);
+                                    }
+                                }
+                                else g.Fill(brush, column.RECT);
                             }
                             else g.Fill(brush, column.RECT);
                         }
-                        else g.Fill(brush, column.RECT);
                     }
-                }
-                if (dragHeader.im == column.INDEX)
-                {
-                    using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table")))
+                    if (dragHeader.im == column.INDEX)
                     {
-                        int sp = (int)(2 * Config.Dpi);
-                        if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
-                        else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                        using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table")))
+                        {
+                            int sp = (int)(2 * Config.Dpi);
+                            if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                            else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                        }
                     }
                 }
             }
+            else
+            {
+                int len = StackedHeaderRows.Length + 1;
+                List<int> handkey = new List<int>(len), dskey = new List<int>(len);
+                var state = g.Save();
+                int rY = row.RECT.Y, rHeight = row.Height / len;
+                int i = 0, gap = (int)(_gap * Config.Dpi), gap2 = gap * 2;
+                foreach (var it in StackedHeaderRows)
+                {
+                    //if (it.StackedColumns == null || it.StackedColumns.Length == 0) continue;
+                    foreach (var item in it.StackedColumns) PaintTableHeaderStacked(g, row, fore, column_font, ref handkey, ref dskey, rY, rHeight, item);
+                    rY += rHeight;
+                }
+                int sy = row.RECT.Y + (rHeight / 2 * (len - 1));
+                foreach (TCellColumn column in row.cells)
+                {
+                    if (dskey.Contains(i))
+                    {
+                        dividerHs[i].Y = rY + gap;
+                        dividerHs[i].Height = rHeight - gap2;
+                    }
+                    if (handkey.Contains(column.INDEX))
+                    {
+                        column.offsety = sy;
+                        g.TranslateTransform(0, sy);
+                    }
+                    if (column.COLUMN.SortOrder)
+                    {
+                        g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
+                        g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
+                    }
+                    if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
+                    else
+                    {
+                        if (column.COLUMN.ColStyle != null && column.COLUMN.ColStyle.ForeColor.HasValue)
+                        {
+                            using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
+                            {
+                                g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
+                            }
+                        }
+                        else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
+                    }
+                    g.Restore(state);
+                    state = g.Save();
+                    i++;
+                }
+                g.Restore(state);
+                if (dragHeader == null) return;
+                foreach (var column in row.cells)
+                {
+                    if (dragHeader.i == column.INDEX)
+                    {
+                        using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table")))
+                        {
+                            if (radius > 0)
+                            {
+                                if (column.INDEX == 0)
+                                {
+                                    using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
+                                    {
+                                        g.Fill(brush, path);
+                                    }
+                                }
+                                else if (column.INDEX == row.cells.Length - 1)
+                                {
+                                    using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
+                                    {
+                                        g.Fill(brush, path);
+                                    }
+                                }
+                                else g.Fill(brush, column.RECT);
+                            }
+                            else g.Fill(brush, column.RECT);
+                        }
+                    }
+                    if (dragHeader.im == column.INDEX)
+                    {
+                        using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table")))
+                        {
+                            int sp = (int)(2 * Config.Dpi);
+                            if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                            else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                        }
+                    }
+                }
+            }
+        }
+        void PaintTableHeaderStacked(Canvas g, RowTemplate row, SolidBrush fore, Font column_font, ref List<int> handkey, ref List<int> dskey, int rY, int rHeight, StackedColumn item)
+        {
+            if (item.ChildColumns.Length > 1)
+            {
+                CELL? first = null, last = null;
+                int i = 0;
+                foreach (var column in row.cells)
+                {
+                    if (column.COLUMN.Key == item.ChildColumns[0])
+                    {
+                        first = column;
+                        dskey.Add(i);
+                        handkey.Add(first.INDEX);
+                        if (last == null) continue;
+                        PaintTableHeaderStacked(g, fore, column_font, rY, rHeight, item, first, last);
+                    }
+                    else if (column.COLUMN.Key == item.ChildColumns[item.ChildColumns.Length - 1])
+                    {
+                        last = column;
+                        if (first == null) return;
+                        dskey.Add(i);
+                        handkey.Add(last.INDEX);
+                        PaintTableHeaderStacked(g, fore, column_font, rY, rHeight, item, first, last);
+                        return;
+                    }
+                    else if (first != null)
+                    {
+                        dskey.Add(i);
+                        handkey.Add(column.INDEX);
+                    }
+                    i++;
+                }
+            }
+            else
+            {
+                string key = item.ChildColumns[0];
+                int i = 0;
+                foreach (var column in row.cells)
+                {
+                    if (column.COLUMN.Key == key)
+                    {
+                        handkey.Add(column.INDEX);
+                        PaintTableHeaderStacked(g, fore, column_font, rY, rHeight, item, column);
+                        return;
+                    }
+                    i++;
+                }
+            }
+        }
+
+        void PaintTableHeaderStacked(Canvas g, SolidBrush fore, Font column_font, int rY, int rHeight, StackedColumn item, CELL column)
+        {
+            var state = g.Save();
+            var rect = new Rectangle(column.RECT_REAL.X, rY, column.RECT_REAL.Width, rHeight);
+            if (item.ForeColor.HasValue) g.String(item.HeaderText, column_font, item.ForeColor.Value, rect, StringFormat(column.COLUMN, true));
+            else g.String(item.HeaderText, column_font, fore, rect, StringFormat(column.COLUMN, true));
+            g.Restore(state);
+        }
+
+        void PaintTableHeaderStacked(Canvas g, SolidBrush fore, Font column_font, int rY, int rHeight, StackedColumn item, CELL first, CELL last)
+        {
+            var state = g.Save();
+            var rect = new Rectangle(first.RECT.X, rY, last.RECT.Right - first.RECT.X, rHeight);
+            if (item.ForeColor.HasValue) g.String(item.HeaderText, column_font, item.ForeColor.Value, rect, StringFormat(ColumnAlign.Center));
+            else g.String(item.HeaderText, column_font, fore, rect, StringFormat(ColumnAlign.Center));
+            g.Restore(state);
         }
 
         #endregion

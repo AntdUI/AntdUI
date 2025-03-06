@@ -346,6 +346,8 @@ namespace AntdUI
 
                 #region 最终坐标
 
+                if (StackedHeaderRows != null) _rows[0].Height += _rows[0].Height * StackedHeaderRows.Length;
+
                 int use_y;
                 if (visibleHeader) use_y = rect.Y;
                 else use_y = rect.Y - _rows[0].Height;
