@@ -255,6 +255,7 @@ namespace AntdUI
                 var cps = new List<CP>();
                 var dir = new List<CP>(controls.Count);
                 int oldx = 0;
+                int cpsmaxheight = 0;
                 foreach (var control in controls)
                 {
                     var point = rect.Location;
@@ -283,14 +284,15 @@ namespace AntdUI
                         }
                         cps.Clear();
                         use_x = 0;
-                        use_y += control.Height + gap + control.Margin.Vertical;
+                        use_y += cpsmaxheight + gap + control.Margin.Vertical;
+                        cpsmaxheight = 0;
                     }
                     point.Offset(control.Margin.Left + use_x, -offset + control.Margin.Top + use_y);
                     var it = new CP(control, point);
                     dir.Add(it);
                     cps.Add(it);
                     use_x += control.Width + gap + control.Margin.Horizontal;
-
+                    cpsmaxheight = cpsmaxheight > control.Height ? cpsmaxheight : control.Height;
                     last_len = point.Y + offset + control.Height;
                 }
                 if (cps.Count > 0)
