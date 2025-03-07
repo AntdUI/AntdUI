@@ -663,12 +663,11 @@ namespace AntdUI
 
         /// <summary>
         /// 刷新界面
-        /// 不适用DataSource为AntList<T>的场景
         /// </summary>
+        /// <remarks>不适用DataSource为AntList<T>的场景</remarks>
         public override void Refresh()
         {
             ExtractHeaderFixed();
-            // 重新提取数据 不适用DataSource为AntList<T>的场景
             if (dataSource == null || dataSource is DataTable || dataSource is IList) ExtractData();
             base.Refresh();
             if (LoadLayout()) Invalidate();
@@ -676,14 +675,13 @@ namespace AntdUI
 
         /// <summary>
         /// 刷新界面
-        /// 适用于DataSource为AntList<T>的场景
         /// </summary>
+        /// <remarks>适用DataSource为AntList<T>的场景</remarks>
         public void Refresh<T>(AntList<T>? list = null)
         {
             if (list == null) Refresh();
             else
             {
-                // 刷新数据
                 IBinding(list);
                 base.Refresh();
             }

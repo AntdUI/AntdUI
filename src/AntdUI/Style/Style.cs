@@ -421,9 +421,7 @@ namespace AntdUI
         /// <summary>
         /// 生成色卡
         /// </summary>
-        /// <param name="h">色调</param>
-        /// <param name="s">饱和度</param>
-        /// <param name="v">亮度</param>
+        /// <param name="hsv">色调/饱和度/亮度</param>
         /// <param name="i">序号</param>
         /// <param name="isLight">是否浅色</param>
         public static Color GenerateColor(HSV hsv, int i, bool isLight)

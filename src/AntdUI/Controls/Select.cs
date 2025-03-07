@@ -324,6 +324,7 @@ namespace AntdUI
         public event ObjectNEventHandler? ClosedItem = null;
 
         public delegate IList<object>? FilterEventHandler(object sender, string value);
+
         /// <summary>
         /// 控制筛选 Text更改时发生
         /// </summary>

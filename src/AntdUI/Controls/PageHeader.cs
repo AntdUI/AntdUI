@@ -37,6 +37,9 @@ namespace AntdUI
         #region 属性
 
         TAMode mode = TAMode.Auto;
+        /// <summary>
+        /// 色彩模式
+        /// </summary>
         [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
         public TAMode Mode
         {
@@ -52,6 +55,9 @@ namespace AntdUI
         }
 
         string? text = null;
+        /// <summary>
+        /// 文字
+        /// </summary>
         [Description("文字"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
@@ -66,22 +72,51 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 国际化文字
+        /// </summary>
         [Description("文字"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
+        /// <summary>
+        /// 使用标题大小
+        /// </summary>
         [Description("使用标题大小"), Category("外观"), DefaultValue(false)]
         public bool UseTitleFont { get; set; }
 
+        /// <summary>
+        /// 标题使用粗体
+        /// </summary>
         [Description("标题使用粗体"), Category("外观"), DefaultValue(true)]
         public bool UseTextBold { get; set; } = true;
 
+        /// <summary>
+        /// 副标题居中
+        /// </summary>
         [Description("副标题居中"), Category("外观"), DefaultValue(false)]
         public bool UseSubCenter { get; set; }
 
+        bool useLeftMargin = true;
+        /// <summary>
+        /// 使用左边边距
+        /// </summary>
         [Description("使用左边边距"), Category("外观"), DefaultValue(true)]
-        public bool UseLeftMargin { get; set; } = true;
+        public bool UseLeftMargin
+        {
+            get => useLeftMargin;
+            set
+            {
+                if (useLeftMargin == value) return;
+                useLeftMargin = value;
+                SizeChange();
+                IOnSizeChanged();
+            }
+        }
 
         string? desc = null;
+        /// <summary>
+        /// 副标题
+        /// </summary>
         [Description("副标题"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? SubText
@@ -97,6 +132,9 @@ namespace AntdUI
         }
 
         Font? descFont = null;
+        /// <summary>
+        /// 副标题字体
+        /// </summary>
         [Description("副标题字体"), Category("外观"), DefaultValue(null)]
         public Font? SubFont
         {
@@ -110,6 +148,9 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 国际化副标题
+        /// </summary>
         [Description("副标题"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationSubText { get; set; }
 
@@ -132,6 +173,9 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 国际化描述文本
+        /// </summary>
         [Description("描述文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationDescription { get; set; }
 
@@ -170,6 +214,9 @@ namespace AntdUI
         }
 
         bool useSystemStyleColor = false;
+        /// <summary>
+        /// 使用系统颜色
+        /// </summary>
         [Description("使用系统颜色"), Category("外观"), DefaultValue(false)]
         public bool UseSystemStyleColor
         {
@@ -185,6 +232,9 @@ namespace AntdUI
         }
 
         bool cancelButton = false;
+        /// <summary>
+        /// 点击退出关闭
+        /// </summary>
         [Description("点击退出关闭"), Category("行为"), DefaultValue(false)]
         public bool CancelButton
         {
@@ -216,6 +266,9 @@ namespace AntdUI
         #region 图标
 
         bool showicon = false;
+        /// <summary>
+        /// 是否显示图标
+        /// </summary>
         [Description("是否显示图标"), Category("外观"), DefaultValue(false)]
         public bool ShowIcon
         {
@@ -230,6 +283,9 @@ namespace AntdUI
         }
 
         Image? icon = null;
+        /// <summary>
+        /// 图标
+        /// </summary>
         [Description("图标"), Category("外观"), DefaultValue(null)]
         public Image? Icon
         {
@@ -244,6 +300,9 @@ namespace AntdUI
         }
 
         string? iconSvg = null;
+        /// <summary>
+        /// 图标SVG
+        /// </summary>
         [Description("图标SVG"), Category("外观"), DefaultValue(null)]
         public string? IconSvg
         {
@@ -263,6 +322,9 @@ namespace AntdUI
 
         bool loading = false;
         int AnimationLoadingValue = 0;
+        /// <summary>
+        /// 加载状态
+        /// </summary>
         [Description("加载状态"), Category("外观"), DefaultValue(false)]
         public bool Loading
         {
@@ -389,6 +451,7 @@ namespace AntdUI
             {
                 if (showButton == value) return;
                 showButton = value;
+                SizeChange();
                 IOnSizeChanged();
                 Invalidate();
                 OnPropertyChanged("ShowButton");
@@ -409,6 +472,7 @@ namespace AntdUI
                 fullBox = value;
                 if (showButton)
                 {
+                    SizeChange();
                     IOnSizeChanged();
                     Invalidate();
                 }
@@ -430,6 +494,7 @@ namespace AntdUI
                 maximizeBox = value;
                 if (showButton)
                 {
+                    SizeChange();
                     IOnSizeChanged();
                     Invalidate();
                 }
@@ -451,6 +516,7 @@ namespace AntdUI
                 minimizeBox = value;
                 if (showButton)
                 {
+                    SizeChange();
                     IOnSizeChanged();
                     Invalidate();
                 }
@@ -500,6 +566,9 @@ namespace AntdUI
         [Description("是否可以拖动位置"), Category("行为"), DefaultValue(true)]
         public bool DragMove { get; set; } = true;
 
+        /// <summary>
+        /// 关闭按钮大小
+        /// </summary>
         [Description("关闭按钮大小"), Category("行为"), DefaultValue(48)]
         public int CloseSize { get; set; } = 48;
 
@@ -599,7 +668,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, hasl, 0, hasr, 0);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, useLeftMargin ? hasl : 0, 0, hasr, 0);
 
         StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
         StringFormat stringCenter = Helper.SF_ALL();
@@ -677,10 +746,7 @@ namespace AntdUI
                         else
                         {
                             g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect_real.X + desc_t_w, rect_real.Y, rect_real.Width - desc_t_w, rect_real.Height), stringLeft);
-                            if (UseLeftMargin)
-                            {
-                                rl = u_x + desc_t_w + g.MeasureString(SubText, descFont ?? Font).Width;
-                            }
+                            if (useLeftMargin) rl = u_x + desc_t_w + g.MeasureString(SubText, descFont ?? Font).Width;
                         }
                         if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft);
                     }
@@ -999,13 +1065,19 @@ namespace AntdUI
                 if (_hasl == value) return;
                 _hasl = value;
                 setsize = true;
-                IOnSizeChanged();
+                SizeChange();
+                if (useLeftMargin) IOnSizeChanged();
             }
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
+            SizeChange();
+        }
+
+        void SizeChange()
+        {
             if (setsize)
             {
                 setsize = false;
@@ -1074,7 +1146,7 @@ namespace AntdUI
         {
             if (showButton)
             {
-                bool _close = rect_close.Contains(e.Location), _full = rect_full.Contains(e.Location), _max = rect_max.Contains(e.Location), _min = rect_min.Contains(e.Location);
+                bool _close = rect_close.Contains(e.X, e.Y), _full = fullBox && rect_full.Contains(e.X, e.Y), _max = maximizeBox && rect_max.Contains(e.X, e.Y), _min = minimizeBox && rect_min.Contains(e.X, e.Y);
                 if (_close != hove_close.Switch || _full != hove_full.Switch || _max != hove_max.Switch || _min != hove_min.Switch)
                 {
                     var fillsecondary = Colour.FillSecondary.Get("PageHeader", mode);
@@ -1085,7 +1157,7 @@ namespace AntdUI
                     hove_min.Switch = _min;
                 }
             }
-            if (showback) hove_back.Switch = rect_back.Contains(e.Location);
+            if (showback) hove_back.Switch = rect_back.Contains(e.X, e.Y);
             base.OnMouseMove(e);
         }
 
@@ -1101,15 +1173,15 @@ namespace AntdUI
             {
                 if (showButton)
                 {
-                    hove_close.Down = rect_close.Contains(e.Location);
-                    hove_full.Down = rect_full.Contains(e.Location);
-                    hove_max.Down = rect_max.Contains(e.Location);
-                    hove_min.Down = rect_min.Contains(e.Location);
+                    hove_close.Down = rect_close.Contains(e.X, e.Y);
+                    hove_full.Down = fullBox && rect_full.Contains(e.X, e.Y);
+                    hove_max.Down = maximizeBox && rect_max.Contains(e.X, e.Y);
+                    hove_min.Down = minimizeBox && rect_min.Contains(e.X, e.Y);
                     if (hove_close.Down || hove_full.Down || hove_max.Down || hove_min.Down) return;
                 }
                 if (showback)
                 {
-                    hove_back.Down = rect_back.Contains(e.Location);
+                    hove_back.Down = rect_back.Contains(e.X, e.Y);
                     if (hove_back.Down) return;
                 }
                 if (DragMove)
@@ -1158,8 +1230,8 @@ namespace AntdUI
         {
             if (showButton)
             {
-                if (hove_close.Down && rect_close.Contains(e.Location)) Parent.FindPARENT()?.Close();
-                else if (hove_full.Down && rect_full.Contains(e.Location))
+                if (hove_close.Down && rect_close.Contains(e.X, e.Y)) Parent.FindPARENT()?.Close();
+                else if (hove_full.Down && rect_full.Contains(e.X, e.Y))
                 {
                     var form = Parent.FindPARENT();
                     if (form != null)
@@ -1183,7 +1255,7 @@ namespace AntdUI
                         }
                     }
                 }
-                else if (hove_max.Down && rect_max.Contains(e.Location))
+                else if (hove_max.Down && rect_max.Contains(e.X, e.Y))
                 {
                     var form = Parent.FindPARENT();
                     if (form != null)
@@ -1205,7 +1277,7 @@ namespace AntdUI
                         }
                     }
                 }
-                else if (hove_min.Down && rect_min.Contains(e.Location))
+                else if (hove_min.Down && rect_min.Contains(e.X, e.Y))
                 {
                     var form = Parent.FindPARENT();
                     if (form != null)
@@ -1218,7 +1290,7 @@ namespace AntdUI
             }
             if (showback)
             {
-                if (hove_back.Down && rect_back.Contains(e.Location)) BackClick?.Invoke(this, EventArgs.Empty);
+                if (hove_back.Down && rect_back.Contains(e.X, e.Y)) BackClick?.Invoke(this, EventArgs.Empty);
             }
             hove_back.Down = hove_close.Down = hove_full.Down = hove_max.Down = hove_min.Down = false;
             base.OnMouseUp(e);

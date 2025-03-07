@@ -150,7 +150,7 @@ namespace AntdUI
             /// Tooltip 配置
             /// </summary>
             /// <param name="control">所属控件</param>
-            /// <param name="content">文本</param>
+            /// <param name="text">文本</param>
             public Config(Control control, string text)
             {
                 Font = control.Font;

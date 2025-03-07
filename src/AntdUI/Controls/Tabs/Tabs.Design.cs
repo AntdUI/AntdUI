@@ -92,36 +92,26 @@ namespace AntdUI
 
             #region Actions
 
-            /// <summary>
-            /// Gets or sets the ContentAlignment of the designed control.
-            /// </summary>
-            public System.Windows.Forms.TabAlignment Alignment
+            public TabAlignment Alignment
             {
                 get { return Control.Alignment; }
                 set { GetPropertyByName("Alignment").SetValue(Control, value); }
             }
 
-            /// <summary>
-            /// Adds a tab to the designed control.
-            /// </summary>
             public void AddTab()
             {
                 if (DesignerHost != null)
                 {
-                    TabPage tab = (TabPage)DesignerHost.CreateComponent(typeof(TabPage));
-                    PropertyDescriptor nameProp = TypeDescriptor.GetProperties(tab)["Name"];
-                    string name = (string)nameProp.GetValue(tab);
-                    PropertyDescriptor textProp = TypeDescriptor.GetProperties(tab)["Text"];
-                    textProp.SetValue(tab, name);
-
+                    var tab = (TabPage)DesignerHost.CreateComponent(typeof(TabPage));
+                    var nameProp = TypeDescriptor.GetProperties(tab)["Name"];
+                    var name = (string?)nameProp?.GetValue(tab);
+                    var textProp = TypeDescriptor.GetProperties(tab)["Text"];
+                    textProp?.SetValue(tab, name);
                     Control.Pages.Add(tab);
                     Control.SelectedIndex = Control.Pages.IndexOf(tab);
                 }
             }
 
-            /// <summary>
-            /// Removes the current page of the designed control.
-            /// </summary>
             protected void RemoveTab()
             {
                 if (DesignerHost != null)
@@ -139,39 +129,28 @@ namespace AntdUI
             #endregion
 
             #region Constructor
-            /// <summary>
-            /// Initializes a new instance of the <see cref="TabControlActionList"/> class.
-            /// </summary>
-            /// <param name="component">A component related to the DesignerActionList.</param>
+
             public TabControlActionList(IComponent component) : base(component)
             {
                 Control = (Tabs)component;
                 DesignerHost = (IDesignerHost)GetService(typeof(IDesignerHost));
                 SelectionService = (ISelectionService)GetService(typeof(ISelectionService));
             }
+
             #endregion
 
             #region Helper Methods
 
-            /// <summary>
-            /// Helper method to retrieve control properties for undo support.
-            /// </summary>
-            /// <param name="propName">Property name.</param>
             private PropertyDescriptor GetPropertyByName(string propName)
             {
-                PropertyDescriptor prop;
-                prop = TypeDescriptor.GetProperties(Control)[propName];
-                if (prop == null)
-                    throw new ArgumentException("Unknown property.", propName);
-                else
-                    return prop;
+                var prop = TypeDescriptor.GetProperties(Control)[propName];
+                if (prop == null) throw new ArgumentException("Unknown property.", propName);
+                else return prop;
             }
             #endregion
 
             #region Overrides
-            // <summary>
-            /// Returns the collection of <see cref="T:System.ComponentModel.Design.DesignerActionItem"/> objects contained in the list.
-            /// </summary>
+
             public override DesignerActionItemCollection GetSortedActionItems()
             {
                 return new DesignerActionItemCollection() {

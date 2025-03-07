@@ -679,7 +679,8 @@ namespace AntdUI
                     height = y;
                 }
                 SetSizeH(height);
-                MyPoint();
+                if (InvokeRequired) Invoke(new Action(MyPoint));
+                else MyPoint();
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 Print();
