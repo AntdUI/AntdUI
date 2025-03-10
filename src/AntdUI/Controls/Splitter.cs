@@ -206,6 +206,12 @@ namespace AntdUI
         /// </summary>
         private int Length => Orientation == Orientation.Horizontal ? Height : Width;
 
+        /// <summary>
+        /// 延时渲染
+        /// </summary>
+        [Description("延时渲染"), Category("行为"), DefaultValue(true)]
+        public bool Lazy { get; set; } = true;
+
         #endregion
 
         #region 方法
@@ -221,12 +227,12 @@ namespace AntdUI
             if (_collapsePanel == ADCollapsePanel.Panel1)
             {
                 _minSize = Panel1MinSize;
-                SplitterDistance = 0;
+                SplitterDistance = _minSize;
             }
             else
             {
                 _minSize = Panel2MinSize;
-                SplitterDistance = Length - SplitterWidth - Padding.Vertical;
+                SplitterDistance = Length - SplitterWidth - Padding.Vertical + _minSize;
             }
             Invalidate();
         }
@@ -300,23 +306,23 @@ namespace AntdUI
             }
         }
 
-        protected override void OnLayout(LayoutEventArgs e)
-        {
-            base.OnLayout(e);
-            if (!SplitPanelState)
-            {
-                if (_collapsePanel == ADCollapsePanel.Panel1)
-                {
-                    Panel1MinSize = 0;
-                    SplitterDistance = 0;
-                }
-                else
-                {
-                    Panel2MinSize = 0;
-                    SplitterDistance = Length - SplitterWidth - Padding.Vertical;
-                }
-            }
-        }
+        //protected override void OnLayout(LayoutEventArgs e)
+        //{
+        //    base.OnLayout(e);
+        //    if (!SplitPanelState)
+        //    {
+        //        if (_collapsePanel == ADCollapsePanel.Panel1)
+        //        {
+        //            Panel1MinSize = 0;
+        //            SplitterDistance = 0;
+        //        }
+        //        else
+        //        {
+        //            Panel2MinSize = 0;
+        //            SplitterDistance = Length - SplitterWidth - Padding.Vertical;
+        //        }
+        //    }
+        //}
 
         // <summary>
         /// 箭头背景区域
@@ -404,7 +410,7 @@ namespace AntdUI
             moving = false;
             Invalidate();
         }
-
+        Point initialMousePoint;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (DesignMode || _collapsePanel == ADCollapsePanel.None)
@@ -415,7 +421,7 @@ namespace AntdUI
             Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
             if (rect_arrow.Contains(e.Location)) _MouseState = true;//点位在箭头矩形内
             else if (!SplitPanelState) _MouseState = null;
-            else if (rect.Contains(e.Location)) _MouseState = false;//点位在分割线内
+            else if (rect.Contains(e.Location)) { _MouseState = false; initialMousePoint = e.Location; }//点位在分割线内
             if (_MouseState != true && SplitPanelState) base.OnMouseDown(e);
         }
 
@@ -430,7 +436,7 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            base.OnMouseMove(e);
+
             if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
 
             //如果鼠标的左键没有按下，重置鼠标状态
@@ -459,11 +465,76 @@ namespace AntdUI
             //正在拖动分隔栏
             if (_MouseState == false && !IsSplitterFixed) SetCursor(Orientation == Orientation.Horizontal ? CursorType.HSplit : CursorType.VSplit);
             else SetCursor(CursorType.Default);
+            if (Lazy)
+            {
+                base.OnMouseMove(e);
+            }
+            else
+            {
+                SplitMove(e.X, e.Y);
+                initialMousePoint = e.Location;
+            }
+        }
+
+        private void SplitMove(int x, int y)
+        {
+            int size = GetSplitterDistance(x, y);
+            if (SplitterDistance != size)
+            {
+
+                if (Orientation == Orientation.Vertical)
+                {
+                    if (size + SplitterWidth <= this.Width - Panel2MinSize)
+                    {
+
+                        SplitterDistance = size;
+                    }
+                }
+                else
+                {
+                    if (size + SplitterWidth <= this.Height - Panel2MinSize)
+                    {
+                        SplitterDistance = size;
+                    }
+                }
+            }
+        }
+
+        private int GetSplitterDistance(int x, int y)
+        {
+            int delta;
+            if (Orientation == Orientation.Vertical)
+            {
+                delta = x - initialMousePoint.X;
+            }
+            else
+            {
+                delta = y - initialMousePoint.Y;
+            }
+
+            int size = 0;
+            switch (Orientation)
+            {
+                case Orientation.Vertical:
+                    size = Panel1.Width + delta;
+                    break;
+                case Orientation.Horizontal:
+                    size = Panel1.Height + delta;
+                    break;
+            }
+            if (Orientation == Orientation.Vertical)
+            {
+                return Math.Max(Math.Min(size, Width - Panel2MinSize), Panel1MinSize);
+            }
+            else
+            {
+                return Math.Max(Math.Min(size, Height - Panel2MinSize), Panel1MinSize);
+            }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            base.OnMouseUp(e);
+            if (Lazy) base.OnMouseUp(e);
             if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
             Invalidate();
             if (_MouseState == true && e.Button == MouseButtons.Left && ArrowRect(SplitterRectangle).Contains(e.Location))
