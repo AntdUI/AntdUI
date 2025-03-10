@@ -56,6 +56,7 @@ namespace AntdUI
             ForeColor = Colour.TextBase.Get("Modal");
             ShowInTaskbar = false;
             if (config.Form == null) StartPosition = FormStartPosition.CenterScreen;
+            else if (config.Form.WindowState == FormWindowState.Minimized || !config.Form.Visible) StartPosition = FormStartPosition.CenterScreen;
             else StartPosition = FormStartPosition.CenterParent;
 
             if (butt_h > 0)
@@ -366,6 +367,7 @@ namespace AntdUI
             base.OnLoad(e);
             IsLoad = false;
             LoadCompleted?.Invoke();
+            if (config.Content is Control control) control.ControlEvent();
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
         }
 

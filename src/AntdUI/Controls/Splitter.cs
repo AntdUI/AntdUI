@@ -103,6 +103,7 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
         /// <summary>
         /// 滑块移动背景
         /// </summary>
@@ -111,6 +112,9 @@ namespace AntdUI
         public Color? SplitterBackMove { get; set; }
 
         Color? _arrowColor;
+        /// <summary>
+        /// 箭头颜色
+        /// </summary>
         [Description("箭头颜色"), DefaultValue(null), Category("外观")]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ArrowColor
@@ -153,6 +157,9 @@ namespace AntdUI
         public Color? ArrawBackHover { get; set; }
 
         ADCollapsePanel _collapsePanel = ADCollapsePanel.None;
+        /// <summary>
+        /// 点击后收起的Panel
+        /// </summary>
         [Description("点击后收起的Panel"), Category("行为"), DefaultValue(ADCollapsePanel.None)]
         public ADCollapsePanel CollapsePanel
         {
@@ -173,6 +180,9 @@ namespace AntdUI
             Panel2 = 2,
         }
 
+        /// <summary>
+        /// 拆分器是水平的还是垂直的
+        /// </summary>
         [Description("拆分器是水平的还是垂直的"), Category("行为"), DefaultValue(Orientation.Vertical)]
         public new Orientation Orientation
         {
@@ -306,24 +316,6 @@ namespace AntdUI
             }
         }
 
-        //protected override void OnLayout(LayoutEventArgs e)
-        //{
-        //    base.OnLayout(e);
-        //    if (!SplitPanelState)
-        //    {
-        //        if (_collapsePanel == ADCollapsePanel.Panel1)
-        //        {
-        //            Panel1MinSize = 0;
-        //            SplitterDistance = 0;
-        //        }
-        //        else
-        //        {
-        //            Panel2MinSize = 0;
-        //            SplitterDistance = Length - SplitterWidth - Padding.Vertical;
-        //        }
-        //    }
-        //}
-
         // <summary>
         /// 箭头背景区域
         /// </summary>
@@ -410,6 +402,7 @@ namespace AntdUI
             moving = false;
             Invalidate();
         }
+
         Point initialMousePoint;
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -421,7 +414,11 @@ namespace AntdUI
             Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
             if (rect_arrow.Contains(e.Location)) _MouseState = true;//点位在箭头矩形内
             else if (!SplitPanelState) _MouseState = null;
-            else if (rect.Contains(e.Location)) { _MouseState = false; initialMousePoint = e.Location; }//点位在分割线内
+            else if (rect.Contains(e.Location))
+            {
+                _MouseState = false;//点位在分割线内
+                initialMousePoint = e.Location;
+            }
             if (_MouseState != true && SplitPanelState) base.OnMouseDown(e);
         }
 
@@ -436,7 +433,6 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-
             if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
 
             //如果鼠标的左键没有按下，重置鼠标状态
@@ -465,10 +461,7 @@ namespace AntdUI
             //正在拖动分隔栏
             if (_MouseState == false && !IsSplitterFixed) SetCursor(Orientation == Orientation.Horizontal ? CursorType.HSplit : CursorType.VSplit);
             else SetCursor(CursorType.Default);
-            if (Lazy)
-            {
-                base.OnMouseMove(e);
-            }
+            if (Lazy) base.OnMouseMove(e);
             else
             {
                 SplitMove(e.X, e.Y);
@@ -481,21 +474,13 @@ namespace AntdUI
             int size = GetSplitterDistance(x, y);
             if (SplitterDistance != size)
             {
-
                 if (Orientation == Orientation.Vertical)
                 {
-                    if (size + SplitterWidth <= this.Width - Panel2MinSize)
-                    {
-
-                        SplitterDistance = size;
-                    }
+                    if (size + SplitterWidth <= Width - Panel2MinSize) SplitterDistance = size;
                 }
                 else
                 {
-                    if (size + SplitterWidth <= this.Height - Panel2MinSize)
-                    {
-                        SplitterDistance = size;
-                    }
+                    if (size + SplitterWidth <= Height - Panel2MinSize) SplitterDistance = size;
                 }
             }
         }
@@ -503,14 +488,8 @@ namespace AntdUI
         private int GetSplitterDistance(int x, int y)
         {
             int delta;
-            if (Orientation == Orientation.Vertical)
-            {
-                delta = x - initialMousePoint.X;
-            }
-            else
-            {
-                delta = y - initialMousePoint.Y;
-            }
+            if (Orientation == Orientation.Vertical) delta = x - initialMousePoint.X;
+            else delta = y - initialMousePoint.Y;
 
             int size = 0;
             switch (Orientation)
@@ -522,14 +501,8 @@ namespace AntdUI
                     size = Panel1.Height + delta;
                     break;
             }
-            if (Orientation == Orientation.Vertical)
-            {
-                return Math.Max(Math.Min(size, Width - Panel2MinSize), Panel1MinSize);
-            }
-            else
-            {
-                return Math.Max(Math.Min(size, Height - Panel2MinSize), Panel1MinSize);
-            }
+            if (Orientation == Orientation.Vertical) return Math.Max(Math.Min(size, Width - Panel2MinSize), Panel1MinSize);
+            else return Math.Max(Math.Min(size, Height - Panel2MinSize), Panel1MinSize);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)

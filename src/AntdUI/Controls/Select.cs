@@ -364,7 +364,7 @@ namespace AntdUI
                             {
                                 Items.AddRange(list);
                                 if (subForm == null) ShowLayeredForm(list);
-                                else subForm.TextChange(Text, list);
+                                else subForm.TextChange(list);
                             }
                         }
                     });

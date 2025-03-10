@@ -222,6 +222,7 @@ namespace AntdUI
             form.Location = flocation;
             PARENT = form;
             config.OnControlLoad?.Invoke();
+            control.ControlEvent();
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
             base.LoadOK();
         }
