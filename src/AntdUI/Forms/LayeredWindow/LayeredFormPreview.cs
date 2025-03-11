@@ -56,7 +56,11 @@ namespace AntdUI
             }
             PageSize = config.ContentCount;
 
-            var btnwiths = new PreBtns[] {
+            //优化为使用List集合，去掉转换的代码
+            int len = 8;
+            if (config.Btns != null && config.Btns.Length > 0) len += config.Btns.Length;
+            var btnwiths = new List<PreBtns>(len)
+            {
                 new PreBtns("@t_flipY",SvgDb.Custom["SwapOutlined"].Insert(28," transform=\"rotate(90),translate(0 -100%)\"")),
                 new PreBtns("@t_flipX","SwapOutlined"),
                 new PreBtns("@t_rotateL","RotateLeftOutlined"),
@@ -64,14 +68,12 @@ namespace AntdUI
                 new PreBtns("@t_zoomOut","ZoomOutOutlined"),
                 new PreBtns("@t_zoomIn","ZoomInOutlined"),
             };
-            if (config.Btns == null || config.Btns.Length == 0) btns = btnwiths;
-            else
+            if (config.Content is IList<Preview.ImageTextContent>) btnwiths.Add(new PreBtns("@t_copyText", SvgDb.Custom["CopyOutlined"]));//这里是如果存在文字，则添加一个可以复制文本的按钮
+            if (config.Btns != null && config.Btns.Length > 0)
             {
-                var btntmp = new List<PreBtns>(config.Btns.Length + btnwiths.Length);
-                foreach (var it in config.Btns) btntmp.Add(new PreBtns(it.Name, it.IconSvg, it.Tag));
-                btntmp.AddRange(btnwiths);
-                btns = btntmp.ToArray();
+                foreach (var it in config.Btns) btnwiths.Add(new PreBtns(it.Name, it.IconSvg, it.Tag));
             }
+            btns = btnwiths.ToArray();
         }
 
         int PageSize = 0;
@@ -173,6 +175,13 @@ namespace AntdUI
             if (config.Content is IList<Image> images)
             {
                 Img = images[SelectIndex];
+                ImgSize = Img.Size;
+                FillScaleImg();
+            }
+            else if (config.Content is IList<Preview.ImageTextContent> imgTxtList)
+            {
+                Img = imgTxtList[SelectIndex].Image;
+                Tag = imgTxtList[SelectIndex];
                 ImgSize = Img.Size;
                 FillScaleImg();
             }
@@ -376,7 +385,78 @@ namespace AntdUI
                         }
                     }
                 }
+
+                if (Tag is Preview.ImageTextContent content && content.Text != null)
+                {
+                    // 测量文本大小
+                    var size = g.MeasureString(content.Text, content.Font ?? Font);
+                    using (var brush = new SolidBrush(content.ForeColor ?? Style.Db.Text))
+                    using (var format = new StringFormat())
+                    {
+                        Rectangle textRect;
+                        int width = TargetRect.Width, height = size.Height;
+
+                        if (size.Width > TargetRect.Width)
+                        {
+                            format.FormatFlags = StringFormatFlags.LineLimit;
+                            format.Trimming = StringTrimming.Word;
+                            // 重新测量换行后的文本所需区域
+                            size = g.MeasureString(content.Text, content.Font ?? Font, TargetRect.Width, format);
+
+                            //重新测量后重新赋值矩形高度
+                            height = Math.Min(size.Height, TargetRect.Height);
+                            width = TargetRect.Width;
+                        }
+
+                        switch (content.TextAlign)
+                        {
+                            case ContentAlignment.TopLeft:
+                                textRect = new Rectangle(0, 0, width, height);
+                                format.Alignment = StringAlignment.Near;
+                                break;
+                            case ContentAlignment.TopCenter:
+                                textRect = new Rectangle(0, 0, width, height);
+                                format.Alignment = StringAlignment.Center;
+                                break;
+                            case ContentAlignment.TopRight:
+                                textRect = new Rectangle(0, 0, width, height);
+                                format.Alignment = StringAlignment.Far;
+                                break;
+                            case ContentAlignment.MiddleLeft:
+                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
+                                format.Alignment = StringAlignment.Near;
+                                break;
+                            case ContentAlignment.MiddleCenter:
+                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
+                                format.Alignment = StringAlignment.Center;
+                                break;
+                            case ContentAlignment.MiddleRight:
+                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
+                                format.Alignment = StringAlignment.Far;
+                                break;
+                            case ContentAlignment.BottomLeft:
+                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
+                                format.Alignment = StringAlignment.Near;
+                                break;
+                            case ContentAlignment.BottomCenter:
+                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
+                                format.Alignment = StringAlignment.Center;
+                                break;
+                            case ContentAlignment.BottomRight:
+                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
+                                format.Alignment = StringAlignment.Far;
+                                break;
+                            default:
+                                throw new Exception("什么鬼，你怎么可能进入这个异常");
+                        }
+
+                        format.LineAlignment = StringAlignment.Far;
+
+                        g.String(content.Text, content.Font ?? Font, brush, textRect, format);
+                    }
+                }
             }
+
             return original_bmp;
         }
 
@@ -736,6 +816,18 @@ namespace AntdUI
                                 Dpi += 0.1F;
                                 SetBtnEnabled("@t_zoomOut", true);
                                 Print();
+                                break;
+                            case "@t_copyText":
+                                if (Tag is Preview.ImageTextContent content && content.Text != null && content.Text.Length > 0)
+                                {
+                                    if (Helper.ClipboardSetText(this, content.Text))
+                                    {
+                                        Message.open(new Message.Config(this, "复制成功", TType.Success, Font)
+                                        {
+                                            ShowInWindow = true
+                                        });
+                                    }
+                                }
                                 break;
                             default:
                                 config.OnBtns?.Invoke(it.id, new Preview.BtnEvent(SelectIndex, SelectValue, it.tag));

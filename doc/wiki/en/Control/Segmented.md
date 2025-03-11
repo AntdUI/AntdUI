@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## Segmented
 
@@ -13,9 +13,9 @@ Segmented 分段控制器 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**OriginalBackColor** 🔴 | 原装背景颜色 | Color | Transparent |
+**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
 ||||
-**AutoSize** 🔴 | 自动大小 | bool | false |
+**AutoSize** | 自动大小 | bool | false |
 ||||
 **Full** | 是否铺满 | bool | false |
 **Radius** | 圆角 | int | 6 |
@@ -30,14 +30,14 @@ Segmented 分段控制器 👚
 ||||
 **Gap** | 间距 | int | 0 |
 **Vertical** | 是否竖向 | bool | false |
-**IconAlign** 🔴 | 图标对齐方向 | [TAlignMini](Enum.md#talignmini) | Top |
-**IconRatio** 🔴 | 图标比例 | float`?` | `null` |
-**IconGap** 🔴 | 图标与文字间距比例 | float | 0.2F |
+**IconAlign** | 图标对齐方向 | [TAlignMini](Enum.md#talignmini) | Top |
+**IconRatio** | 图标比例 | float`?` | `null` |
+**IconGap** | 图标与文字间距比例 | float | 0.2F |
 ||||
-**BarPosition** 🔴 | 线条位置 | [TAlignMini](Enum.md#talignmini) | None |
-**BarSize** 🔴 | 条大小 | float | 3F |
-**BarPadding** 🔴 | 条边距 | int | 0 |
-**BarRadius** 🔴 | 条圆角 | int | 0 |
+**BarPosition** | 线条位置 | [TAlignMini](Enum.md#talignmini) | None |
+**BarSize** | 条大小 | float | 3F |
+**BarPadding** | 条边距 | int | 0 |
+**BarRadius** | 条圆角 | int | 0 |
 ||||
 **Items** | 集合 `SegmentedItem[]` | [SegmentedItem[]](#segmenteditem) | [] |
 **SelectIndex** | 选择序号 | int | 0 |
@@ -57,10 +57,22 @@ Segmented 分段控制器 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Icon** | 图标S | Image`?` | `null` |
+**ID** | ID | string`?` | `null` |
+**Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
 **IconActive** | 图标激活 | Image`?` | `null` |
 **IconActiveSvg** | 图标激活SVG | string`?` | `null` |
 |||||
 **Text** | 文本 | string`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**Enabled** | 使能 | bool | true |
 **Tag** | 用户定义数据 | object`?` | `null` |
+||||
+**Badge** | 徽标文本 | string`?` | `null` |
+**BadgeSvg** | 徽标SVG | string`?` | `null` |
+**BadgeAlign** | 徽标方向 | [TAlignFrom](Enum.md#talignfrom) | TR |
+**BadgeSize** | 徽标大小 | float | 0.6F |
+**BadgeMode** | 徽标模式（镂空） | bool | false |
+**BadgeOffsetX** | 徽标偏移X | float | 0 |
+**BadgeOffsetY** | 徽标偏移Y | float | 0 |
+**BadgeBack** | 徽标背景颜色 | Color`?` | `null` |

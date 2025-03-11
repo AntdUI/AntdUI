@@ -16,13 +16,14 @@ DatePicker 日期选择框 👚
 **Format** | 格式化 | string | yyyy-MM-dd `HH:mm:ss 可显示时分秒选择框` |
 ||||
 **Value** | 控件当前日期 | DateTime`?` | `null` |
-**MinDate** 🔴 | 最小日期 | DateTime`?` | `null` |
-**MaxDate** 🔴 | 最大日期 | DateTime`?` | `null` |
+**MinDate** | 最小日期 | DateTime`?` | `null` |
+**MaxDate** | 最大日期 | DateTime`?` | `null` |
 **Presets** | 预置菜单 | object[] | [] |
 ||||
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **ShowIcon** | 是否显示图标 | bool | true |
+**ValueTimeHorizontal** | 时间值水平对齐 | bool | false |
 
 ### 日期上的徽标
 

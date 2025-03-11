@@ -147,6 +147,50 @@ namespace AntdUI
             /// </summary>
             public int Gap { get; set; }
 
+            enum RV_TYPE
+            {
+                CONTROL,
+                SPRING
+            }
+
+            struct RV
+            {
+                public RV_TYPE type;
+                public object value;
+                public static implicit operator RV(int v) => new RV() { type = RV_TYPE.CONTROL, value = v };
+                public static implicit operator int(RV v) => v.value is int ? (int)v.value : 0;
+
+                public static implicit operator RV(float v) => new RV() { type = RV_TYPE.CONTROL, value = v };
+                public static implicit operator float(RV v) => v.value is float ? (float)v.value : 0;
+
+                public static implicit operator RV(RV_TYPE v) => new RV() { type = v };
+                public static implicit operator RV_TYPE(RV v) => v.type;
+                public bool I => value is int;
+                public bool F => value is float;
+            }
+
+            struct RV_F
+            {
+                public RV_TYPE type;
+                public float value;
+                public static implicit operator RV_F(float v) => new RV_F() { type = RV_TYPE.CONTROL, value = v };
+                public static implicit operator float(RV_F v) => v.value;
+
+                public static implicit operator RV_F(RV_TYPE v) => new RV_F() { type = v };
+                public static implicit operator RV_TYPE(RV_F v) => v.type;
+            }
+
+            struct RV_I
+            {
+                public RV_TYPE type;
+                public int value;
+                public static implicit operator RV_I(int v) => new RV_I() { type = RV_TYPE.CONTROL, value = v };
+                public static implicit operator int(RV_I v) => v.value;
+
+                public static implicit operator RV_I(RV_TYPE v) => new RV_I() { type = v };
+                public static implicit operator RV_TYPE(RV_I v) => v.type;
+            }
+
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
                 if (container is GridPanel parent && parent.IsHandleCreated)
@@ -159,9 +203,9 @@ namespace AntdUI
                         if (controls.Count > 0)
                         {
                             string[] tmp = Span.Split('-', '\n'), rows = tmp[0].Split(';');
-                            var data = new List<List<int>>(rows.Length);
+                            var data = new List<List<RV_I>>(rows.Length);
                             int i = 0;
-                            var celltmp = new Dictionary<int, object>(rows.Length);
+                            var celltmp = new Dictionary<int, RV>(rows.Length);
                             foreach (var it in rows)
                             {
                                 if (string.IsNullOrEmpty(it)) continue;
@@ -169,12 +213,14 @@ namespace AntdUI
                                 int index = row.IndexOf(":");
                                 if (index > -1)
                                 {
+                                    if (index == row.Length - 1) continue;
                                     if (index > 0)
                                     {
                                         var value = row.Substring(0, index);
                                         if (value.EndsWith("%") && float.TryParse(value.TrimEnd('%'), out var percentageValue)) celltmp.Add(i, percentageValue / 100F);
                                         else if (int.TryParse(value, out var intValue)) celltmp.Add(i, (int)Math.Round(intValue * Config.Dpi));
                                         else if (float.TryParse(value, out float floatValue)) celltmp.Add(i, floatValue);
+                                        else continue;
 
                                         row = row.Substring(index + 1);
                                     }
@@ -217,7 +263,7 @@ namespace AntdUI
                                         int y = cells.TryGetValue(i, out var value) ? value : real_height / rcount;
                                         foreach (var x in item)
                                         {
-                                            tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, y));
+                                            if (x.type == RV_TYPE.CONTROL) tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, y));
                                             hasx += x;
                                         }
                                         hasx = 0;
@@ -233,12 +279,12 @@ namespace AntdUI
                                     int hasx = 0, hasy = 0;
                                     foreach (var x in xt)
                                     {
-                                        tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, rect.Height));
+                                        if (x.type == RV_TYPE.CONTROL) tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, rect.Height));
                                         hasx += x;
                                     }
                                     rects = tmp_rects.ToArray();
                                 }
-                                HandLayout(controls, rects);
+                                HandLayout(controls, rects, rect);
                             }
                         }
                     }
@@ -281,58 +327,84 @@ namespace AntdUI
 
             #endregion
 
-            List<int> GetRows(string cells, int value) => GetRows(GetRows(cells), value);
-            List<object> GetRows(string cells)
+            List<RV_I> GetRows(string cells, int value) => GetRows(GetRows(cells), value);
+            List<RV> GetRows(string cells)
             {
                 var arr = cells.Split(' ', ',');
-                var tmp = new List<object>(arr.Length);
+                var tmp = new List<RV>(arr.Length);
                 foreach (string it in arr)
                 {
                     var str = it.Trim();
-                    if (str.EndsWith("%") && float.TryParse(str.TrimEnd('%'), out var percentageValue)) tmp.Add(percentageValue / 100F);
-                    else if (int.TryParse(str, out var intValue)) tmp.Add((int)Math.Round(intValue * Config.Dpi));
-                    else if (float.TryParse(str, out float floatValue)) tmp.Add(floatValue);
+                    RV tmp_rv; bool spring = false;
+                    if (str.StartsWith("S"))
+                    {
+                        spring = true;
+                        str = str.TrimStart('S');
+                    }
+
+                    if (spring && str.Length == 0) tmp_rv = 0;
+                    else if (str.EndsWith("%") && float.TryParse(str.TrimEnd('%'), out var percentageValue)) tmp_rv = percentageValue / 100F;
+                    else if (int.TryParse(str, out var intValue)) tmp_rv = (int)Math.Round(intValue * Config.Dpi);
+                    else if (float.TryParse(str, out float floatValue)) tmp_rv = floatValue;
+                    else continue;
+
+                    if (spring) tmp_rv.type = RV_TYPE.SPRING;
+                    tmp.Add(tmp_rv);
                 }
                 return tmp;
             }
-            List<int> GetRows(List<object> tmp, int value)
+            List<RV_I> GetRows(List<RV> tmp, int value)
             {
                 int use = 0;
                 foreach (var it in tmp)
                 {
-                    if (it is int intValue) use += intValue;
+                    if (it.I) use += it;
                 }
                 int real = value - use;
-                var temp = new List<int>(tmp.Count);
+                var temp = new List<RV_I>(tmp.Count);
                 foreach (var it in tmp)
                 {
-                    if (it is float floatValue) temp.Add((int)Math.Round(real * floatValue));
-                    else if (it is int intValue) temp.Add(intValue);
+                    RV_I tmp_rv;
+                    if (it.F) tmp_rv = (int)Math.Round(real * (float)it);
+                    else if (it.I) tmp_rv = (int)it;
+                    else continue;
+                    tmp_rv.type = it.type;
+                    temp.Add(tmp_rv);
                 }
                 return temp;
             }
-            Dictionary<int, int> GetRows(Dictionary<int, object> tmp, int value, out int real)
+            Dictionary<int, RV_I> GetRows(Dictionary<int, RV> tmp, int value, out int real)
             {
                 int use = 0;
                 foreach (var it in tmp)
                 {
-                    if (it.Value is int intValue) use += intValue;
+                    if (it.Value.I) use += it.Value;
                 }
                 real = value - use;
-                var temp = new Dictionary<int, int>(tmp.Count);
+                var temp = new Dictionary<int, RV_I>(tmp.Count);
                 foreach (var it in tmp)
                 {
-                    if (it.Value is float floatValue) temp.Add(it.Key, (int)Math.Round(real * floatValue));
-                    else if (it.Value is int intValue) temp.Add(it.Key, intValue);
+                    RV_I tmp_rv;
+                    if (it.Value.F) tmp_rv = (int)Math.Round(real * (float)it.Value);
+                    else if (it.Value.I) tmp_rv = (int)it.Value;
+                    else continue;
+                    tmp_rv.type = it.Value.type;
+                    temp.Add(it.Key, tmp_rv);
                 }
                 return temp;
             }
 
-            void HandLayout(List<Control> controls, Rectangle[] rects)
+            void HandLayout(List<Control> controls, Rectangle[] rects, Rectangle rect)
             {
+                if (rects.Length == 0 || controls.Count == 0)
+                    return;
                 int gap = (int)Math.Round(Gap * Config.Dpi), gap2 = gap * 2;
                 int max_len = controls.Count;
-                if (rects.Length < controls.Count) max_len = rects.Length;
+                if (rects.Length < controls.Count)
+                {
+                    max_len = rects.Length;
+                    for (int i = max_len - 1; i < controls.Count; i++) controls[i].Location = new Point(rect.Width, rect.Y);
+                }
                 for (int i = 0; i < max_len; i++)
                 {
                     Control control = controls[i];

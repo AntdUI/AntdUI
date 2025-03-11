@@ -22,11 +22,13 @@ Menu 导航菜单 👚
 **Round** | 圆角样式 | bool | false |
 **Indent** | 常规缩进 `和Tree那样缩进` | bool | false |
 **ShowSubBack** | 显示子菜单背景 | bool | false |
-**Unique** 🔴 | 只保持一个子菜单的展开 | bool | false |
-**Trigger** 🔴 | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
+**Unique** | 只保持一个子菜单的展开 | bool | false |
+**Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
+**Gap** | 间距 | int | 0 |
+**IconRatio** | 图标比例 | float | 1.2F |
 ||||
 **Theme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
-**Mode** 🔴 | 菜单类型 | [TMenuMode](Enum.md#tmenumode) | Inline |
+**Mode** | 菜单类型 | [TMenuMode](Enum.md#tmenumode) | Inline |
 **AutoCollapse** | 自动折叠 | bool | false |
 **Collapsed** | 是否折叠 | bool | false |
 ||||
@@ -48,8 +50,8 @@ Menu 导航菜单 👚
 **SelectIndex** | 选中第二层 | void | int i1 `序号1` , int i2 `序号2`, bool focus `设置焦点` = true |
 **SelectIndex** | 选中第三次 | void | int i1 `序号1` , int i2 `序号2`  , int i3 `序号3`, bool focus `设置焦点` = true |
 ||||
-**Select** 🔴 | 选中菜单 | void | MenuItem item `项`, bool focus `设置焦点` = true |
-**Remove** 🔴 | 移除菜单 | void | MenuItem item `项` |
+**Select** | 选中菜单 | void | MenuItem item `项`, bool focus `设置焦点` = true |
+**Remove** | 移除菜单 | void | MenuItem item `项` |
 
 
 ### 数据
@@ -58,11 +60,14 @@ Menu 导航菜单 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**IconRatio** 🔴 | 图标比例 | float | 1.2F |
+**ID** | ID | string`?` | `null` |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string | `null` |
+**IconActive** | 图标激活 | Image`?` | `null` |
+**IconActiveSvg** | 图标激活SVG | string | `null` |
 **Text** | 文本 | string | `必填` |
-**Font** 🔴 | 自定义字体 | Font`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**Font** | 自定义字体 | Font`?` | `null` |
 **Visible** | 是否显示 | bool | true |
 **Enabled** | 禁用状态 | bool | true |
 **Select** | 是否选中 | bool | false |
@@ -70,3 +75,5 @@ Menu 导航菜单 👚
 **CanExpand** | 是否可以展开 | bool | `只读` |
 **Sub** | 子集合 ♾️ | [MenuItem[]](#menuitem) | [] |
 **Tag** | 用户定义数据 | object`?` | `null` |
+||||
+**PARENTITEM** | 父级对象 | [MenuItem](#menuitem)`?` | `null` |

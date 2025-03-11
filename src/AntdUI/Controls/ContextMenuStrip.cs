@@ -200,7 +200,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        public Bitmap? Icon { get; set; }
+        public Image? Icon { get; set; }
 
         /// <summary>
         /// 图标SVG

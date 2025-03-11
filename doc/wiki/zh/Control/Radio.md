@@ -20,8 +20,10 @@ Radio 单选框 👚
 **Fill** | 填充颜色 | Color`?` | `null` |
 ||||
 **Text** | 文本 | string`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**TextAlign** 🔴 | 文本位置 | ContentAlignment | MiddleLeft |
 **Checked** | 选中状态 | bool | false |
-**AutoCheck** 🔴 | 点击时自动改变选中状态 | bool | true |
+**AutoCheck** | 点击时自动改变选中状态 | bool | true |
 ||||
 **RightToLeft** | 反向 | RightToLeft | No |
 

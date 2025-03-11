@@ -102,6 +102,18 @@ namespace AntdUI
             }
 
             /// <summary>
+            /// Preview 配置
+            /// </summary>
+            /// <param name="form">所属窗口</param>
+            /// <param name="list">多个图片和图片对应的文字和文字样式</param>
+            public Config(Form form, IList<ImageTextContent> list)
+            {
+                Form = form;
+                Content = list;
+                ContentCount = list.Count;
+            }
+
+            /// <summary>
             /// 所属窗口
             /// </summary>
             public Form Form { get; set; }
@@ -191,6 +203,52 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+        }
+
+        /// <summary>
+        /// 图片和文本内容
+        /// </summary>
+        public class ImageTextContent
+        {
+            public ImageTextContent(Image image)
+            {
+                Image = image;
+            }
+
+            public ImageTextContent(Image image, string? text)
+            {
+                Image = image;
+                Text = text;
+            }
+
+            public ImageTextContent(Image image, string? text, Color? foreColor)
+            {
+                Image = image;
+                Text = text;
+                ForeColor = foreColor;
+            }
+
+            public Image Image { get; set; }
+
+            /// <summary>
+            /// 显示文本
+            /// </summary>
+            public string? Text { get; set; }
+
+            /// <summary>
+            /// 文本字体
+            /// </summary>
+            public Font? Font { get; set; }
+
+            /// <summary>
+            /// 文本颜色
+            /// </summary>
+            public Color? ForeColor { get; set; }
+
+            /// <summary>
+            /// 文本位置
+            /// </summary>
+            public ContentAlignment TextAlign { get; set; } = ContentAlignment.TopCenter;
         }
     }
 }

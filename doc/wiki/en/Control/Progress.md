@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## Progress
 
@@ -18,29 +18,31 @@ Progress 进度条 👚
 **Fill** | 进度条颜色 | Color`?` | `null` |
 ||||
 **Radius** | 圆角 | int | 0 |
-**Shape** 🔴 | 形状 | [TShapeProgress](Enum.md#tshapeprogress) | Round |
+**Shape** | 形状 | [TShapeProgress](Enum.md#tshapeprogress) | Round |
 **IconRatio** | 图标比例 | float | 0.7F |
-**ValueRatio** 🔴 | 进度条比例 | float | 0.4F |
+**ValueRatio** | 进度条比例 | float | 0.4F |
 ||||
-**UseSystemText** 🔴 | 使用系统文本 | bool | false |
-**ShowTextDot** 🔴 | 显示进度文本小数点位数 | int | 0 |
+**UseSystemText** | 使用系统文本 | bool | false |
+**ShowTextDot** | 显示进度文本小数点位数 | int | 0 |
 **State** | 样式 | [TType](Enum.md#ttype) | None |
 **ShowInTaskbar** | 任务栏中显示进度 | bool | false |
 ||||
 **Text** | 文本 | string`?` | `null` |
-**TextUnit** 🔴 | 单位文本 | string`?` | % |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**TextUnit** | 单位文本 | string`?` | % |
+🌏 **LocalizationTextUnit** | 国际化单位文本 | string`?` | `null` |
 **Value** | 进度条 `0F-1F` | float | 0F |
 **Loading** | 加载状态 | bool | false |
 **LoadingFull** | 动画铺满 | bool | false |
 **Loading** | 加载状态 | bool | false |
 **Animation** | 动画时长 | int | 200 |
 ||||
-**Steps** 🔴 | 进度条总共步数 | int | 3 |
-**StepSize** 🔴 | 步数大小 | int | 14 |
-**StepGap** 🔴 | 步数间隔 | int | 2 |
+**Steps** | 进度条总共步数 | int | 3 |
+**StepSize** | 步数大小 | int | 14 |
+**StepGap** | 步数间隔 | int | 2 |
 
 ### 事件
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
-**ValueFormatChanged** 🔴 | Value格式化时发生 | string | float value `进度` |
+**ValueFormatChanged** | Value格式化时发生 | string | float value `进度` |

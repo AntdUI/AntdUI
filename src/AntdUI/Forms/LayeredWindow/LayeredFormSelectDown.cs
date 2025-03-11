@@ -566,8 +566,7 @@ namespace AntdUI
             }
         }
 
-
-        internal void TextChange(string val, IList<object> items)
+        internal void TextChange(IList<object> items)
         {
             ItemsSearch = null;
             int selY = -1, y_ = 0;
@@ -575,7 +574,7 @@ namespace AntdUI
             Items.Clear();
             for (int i = 0; i < items.Count; i++) ReadList(items[i], i, 20, 10, 10, 0, 0, 0, 0, 0, 0, 1, ref item_count, ref divider_count, ref y_, ref selY);
             int count = 0;
-            if (string.IsNullOrEmpty(val))
+            if (items.Count == 0)
             {
                 nodata = false;
                 foreach (var it in Items)
@@ -589,46 +588,19 @@ namespace AntdUI
             }
             else
             {
-                int showcount = 0;
                 var listSearch = new List<ObjectItemSearch>(Items.Count);
                 for (int i = 0; i < Items.Count; i++)
                 {
                     var it = Items[i];
                     if (it.ID > -1)
                     {
-                        int score = it.Contains(val, out var select);
-                        if (score > 0)
-                        {
-                            listSearch.Add(new ObjectItemSearch(score, it));
-                            showcount++;
-                            if (select)
-                            {
-                                it.Hover = true;
-                                hoveindex = i;
-                                count++;
-                            }
-                            if (!it.Show)
-                            {
-                                it.Show = true;
-                                count++;
-                            }
-                        }
-                        else
-                        {
-                            if (it.Show)
-                            {
-                                it.Show = false;
-                                count++;
-                            }
-                        }
+                        listSearch.Add(new ObjectItemSearch(1, it));
+                        it.Show = true;
+                        count++;
                     }
                 }
-                if (listSearch.Count > 0)
-                {
-                    listSearch.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
-                    ItemsSearch = listSearch.ToArray();
-                }
-                nodata = showcount == 0;
+                ItemsSearch = listSearch.ToArray();
+                nodata = listSearch.Count == 0;
             }
             if (count > 0)
             {
@@ -679,7 +651,8 @@ namespace AntdUI
                     height = y;
                 }
                 SetSizeH(height);
-                MyPoint();
+                if (InvokeRequired) Invoke(new Action(MyPoint));
+                else MyPoint();
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 Print();
@@ -876,7 +849,7 @@ namespace AntdUI
                 else select.DropDownChange(select_x, it.ID, it.Val);
             }
             else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Val);
-            else if (PARENT is Tabs tabs) tabs.SelectedIndex = it.ID;
+            else if (PARENT is Tabs tabs) tabs.MouseChangeIndex(it.ID);
             else if (Tag is ICell table) table.DropDownValueChanged?.Invoke(it.Val);
         }
 

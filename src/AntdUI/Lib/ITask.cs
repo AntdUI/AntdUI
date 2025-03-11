@@ -30,10 +30,12 @@ namespace AntdUI
         /// <summary>
         /// 循环任务
         /// </summary>
+        /// <param name="control">委托对象</param>
         /// <param name="action">回调</param>
         /// <param name="interval">间隔</param>
         /// <param name="max">最大值</param>
         /// <param name="add">更新量</param>
+        /// <param name="end">结束回调</param>
         public ITask(Control control, Func<int, bool> action, int interval, int max, int add, Action? end = null)
         {
             bool ok = true;
@@ -62,6 +64,16 @@ namespace AntdUI
                 Dispose();
             });
         }
+
+        /// <summary>
+        /// 循环任务
+        /// </summary>
+        /// <param name="control">委托对象</param>
+        /// <param name="action">回调</param>
+        /// <param name="interval">间隔</param>
+        /// <param name="max">最大值</param>
+        /// <param name="add">更新量</param>
+        /// <param name="end">结束回调</param>
         public ITask(Control control, Action<float> action, int interval, float max, float add, Action? end = null)
         {
             bool ok = true;
@@ -91,6 +103,14 @@ namespace AntdUI
             });
         }
 
+        /// <summary>
+        /// 循环任务
+        /// </summary>
+        /// <param name="control">委托对象</param>
+        /// <param name="action">回调</param>
+        /// <param name="interval">间隔</param>
+        /// <param name="end">结束回调</param>
+        /// <param name="sleep">运行前睡眠</param>
         public ITask(Control control, Func<bool> action, int interval, Action? end = null, int sleep = 0)
         {
             bool ok = true;
@@ -117,6 +137,15 @@ namespace AntdUI
                 Dispose();
             });
         }
+
+        /// <summary>
+        /// 循环任务
+        /// </summary>
+        /// <param name="action">回调</param>
+        /// <param name="interval">间隔</param>
+        /// <param name="totalFrames">总帧数</param>
+        /// <param name="end">结束回调</param>
+        /// <param name="sleep">运行前睡眠</param>
         public ITask(Func<int, bool> action, int interval, int totalFrames, Action end, int sleep = 0)
         {
             IsRun = true;
@@ -210,10 +239,7 @@ namespace AntdUI
 
         public object? Tag { get; set; }
 
-        public void Cancel()
-        {
-            token?.Cancel();
-        }
+        public void Cancel() => token?.Cancel();
 
         public void Dispose()
         {

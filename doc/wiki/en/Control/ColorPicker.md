@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## ColorPicker
 
@@ -13,11 +13,11 @@ ColorPicker 颜色选择器 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**OriginalBackColor** 🔴 | 原装背景颜色 | Color | Transparent |
+**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
 ||||
 **AutoSize** | 自动大小 | bool | false |
 **AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
-**Mode** 🔴 | 颜色模式 | [TColorMode](Enum.md#tcolormode) | Hex |
+**Mode** | 颜色模式 | [TColorMode](Enum.md#tcolormode) | Hex |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **BackColor** | 背景颜色 | Color`?` | `null` |
@@ -36,6 +36,20 @@ ColorPicker 颜色选择器 👚
 **JoinRight** | 连接右边 `组合按钮` | bool | false |
 ||||
 **Value** | 颜色的值 | Color | Style.Db.Primary `主题色` |
+**DisabledAlpha** 🔴 | 禁用透明度 | bool | false |
+**AllowClear** 🔴 | 支持清除 | bool | false |
+**ShowClose** 🔴 | 显示关闭按钮 | bool | false |
+||||
+**Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
+**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
+**DropDownArrow** | 下拉箭头是否显示 | bool | false |
+
+### 方法
+
+名称 | 描述 | 返回值 | 参数 |
+:--|:--|:--|:--|
+**ClearValue** | 清空值 | void | |
+**ClearValue** | 清空值 | void | Color def `默认色` |
 
 ### 事件
 

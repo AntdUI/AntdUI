@@ -549,9 +549,18 @@ namespace AntdUI
 
     public class TabsItemEventArgs : VMEventArgs<TabPage>
     {
+        public int Index { get; private set; }
+
         public Tabs.IStyle Style { get; private set; }
-        public TabsItemEventArgs(TabPage item, Tabs.IStyle style, MouseEventArgs e) : base(item, e)
+
+        /// <summary>
+        /// 是否取消
+        /// </summary>
+        public bool Cancel { get; set; }
+
+        public TabsItemEventArgs(TabPage item, int index, Tabs.IStyle style, MouseEventArgs e) : base(item, e)
         {
+            Index = index;
             Style = style;
         }
     }

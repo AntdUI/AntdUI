@@ -21,6 +21,8 @@ Popover 气泡卡片
 **ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | Bottom |
 **ArrowSize** | 箭头大小 | int | 8 |
 **Offset** | 偏移量 | Rectangle / RectangleF | `null` |
+**CustomPoint** 🔴 | 自定义位置 | Rectangle`?` |`null`|
+**Focus** 🔴 | 获取焦点 | bool | true |
 **Tag** | 用户定义数据 | object`?` | `null` |
 ||||
 **OnControlLoad** | 控件显示后回调 | `Action?` | `null` |
@@ -39,3 +41,23 @@ Popover 气泡卡片
 **Font** | 字体 | Font`?` | `null` |
 ||||
 **Call** | 点击回调 `设置后鼠标悬停可点击` | Action | `null` |
+
+***
+
+### UserControl 监控 Load 示例
+
+~~~csharp
+public partial class UserControl1 : UserControl, AntdUI.ControlEvent
+{
+    public void LoadCompleted()
+    {
+        System.Diagnostics.Debug.WriteLine("Load");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        System.Diagnostics.Debug.WriteLine("Close");
+    }
+}
+~~~

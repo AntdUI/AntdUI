@@ -17,8 +17,9 @@ Dropdown 选择器 👚
 **Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **MaxCount** | 列表最多显示条数 | int | 4 |
+**DropDownRadius** 🔴 | 下拉圆角 | int`?` | `null` |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**DropDownPadding** 🔴 | 下拉边距 | Size | 12, 5 |
+**DropDownPadding** | 下拉边距 | Size | 12, 5 |
 **ClickEnd** | 点击到最里层 `无节点才能点击` | bool | false |
 ||||
 **Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |

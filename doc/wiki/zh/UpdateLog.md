@@ -1,5 +1,47 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)・[SVG](SVG.md)
 
+### `1.9.3` 2025-03-11
+
+- ➕ Preview 可以显示文本数据
+- ➕ PageHeader IconRatio
+- ➕ Tabs TabClick Cancel 可取消跳转
+- ➕ Splitter 延时渲染属性
+- ➕ Splitter 折叠功能最小宽度限制
+- ➕ GridPanel 增加"弹簧"
+- ✍️ Button 多行宽度碰撞
+- ✍️ Modal 父窗口隐藏处理
+- ✍️ 布局容器在 Popover 等控件未布局
+- ✍️ Select FilterChanged与线程调用
+- ✍️ DPI 适配 SplitContainer.PanelMinSize
+- ✍️ PageHeader 隐藏三金刚键后依旧生效
+- ✍️ PageHeader UseLeftMargin
+
+### `1.9.2` 2025-03-06
+
+- ➕ Table StackedHeader 堆叠表头
+- ➕ Table Column DragSort
+- ➕ Alert LoopInfinite
+- ➕ Tooltip 区域碰撞
+- ✍️ FlowPanel 控件重叠
+- ✍️ Tabs Card 异常
+- ✍️ 优化边框裁剪
+- ✍️ Table 列 Style 背景无法跟随横向滚动条
+- ✍️ 折叠面板按比例进行复原
+
+### `1.9.1` 2025-03-04
+
+- ➕ Tabs ContainsTabPage
+- ➕ Drawer wait
+- ➕ Splitter 折叠功能
+- ➕ Select 属性 CloseIcon，事件 ClosedItem
+- ➕ ControlEvent 在 Modal/Drawer/Popover 中通知加载成功
+- ✍️ 补全 TextRenderingHighQuality Size 转换
+- ✍️ Input 使用 WM_CHAR 替换 KeyPress
+- ✍️ DatePicker等控件 清空内容后 失焦还会填充Value
+- ✍️ Table 编辑模式文本框高度异常
+- ✍️ Input Emoji 判断
+- ✍️ 窗口最大值二次放大
+
 ### `1.9.0` 2025-02-27 🥥
 
 - ➕ Table 合并单元格

@@ -1453,13 +1453,14 @@ namespace AntdUI
             }
             else
             {
+                if (textMultiLine && font_size.Width > rect_read.Width) font_size.Width = rect_read.Width;
                 bool has_left = has_loading || HasIcon, has_right = showArrow;
                 Rectangle rect_text;
                 if (has_left || has_right)
                 {
                     if (has_left && has_right)
                     {
-                        rect_text = RectAlignLR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
+                        rect_text = RectAlignLR(g, textLine, textMultiLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
 
                         if (has_loading)
                         {
@@ -1476,7 +1477,7 @@ namespace AntdUI
                     }
                     else if (has_left)
                     {
-                        rect_text = RectAlignL(g, textLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
+                        rect_text = RectAlignL(g, textLine, textMultiLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
                         if (has_loading)
                         {
                             float loading_size = rect_l.Height * .14F;
@@ -1490,7 +1491,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        rect_text = RectAlignR(g, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
+                        rect_text = RectAlignR(g, textLine, textMultiLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
 
                         PaintTextArrow(g, rect_r, color);
                     }
@@ -1522,11 +1523,16 @@ namespace AntdUI
             }
         }
 
-        internal static Rectangle RectAlignL(Canvas g, bool textLine, bool textCenter, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l)
+        internal static Rectangle RectAlignL(Canvas g, bool textLine, bool textMultiLine, bool textCenter, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l)
         {
             int font_Height = font_size.Height;
             if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Height;
             int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap);
+            if (textMultiLine && (iconPosition == TAlignMini.Left || iconPosition == TAlignMini.Right))
+            {
+                int rw = icon_size + sp;
+                if (font_size.Width + rw > rect_read.Width) font_size.Width = rect_read.Width - rw;
+            }
             Rectangle rect_text;
             if (textCenter)
             {
@@ -1584,11 +1590,16 @@ namespace AntdUI
             }
             return rect_text;
         }
-        internal static Rectangle RectAlignLR(Canvas g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l, out Rectangle rect_r)
+        internal static Rectangle RectAlignLR(Canvas g, bool textLine, bool textMultiLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l, out Rectangle rect_r)
         {
             int font_Height = font_size.Height;
             if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Height;
             int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_size.Height * .4F);
+            if (textMultiLine && (iconPosition == TAlignMini.Left || iconPosition == TAlignMini.Right))
+            {
+                int rw = (icon_size + sp) * 2;
+                if (font_size.Width + rw > rect_read.Width) font_size.Width = rect_read.Width - rw;
+            }
             Rectangle rect_text;
             switch (iconPosition)
             {
@@ -1620,11 +1631,16 @@ namespace AntdUI
             }
             return rect_text;
         }
-        internal static Rectangle RectAlignR(Canvas g, bool textLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_r)
+        internal static Rectangle RectAlignR(Canvas g, bool textLine, bool textMultiLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_r)
         {
             int font_Height = font_size.Height;
             if (textLine && (iconPosition == TAlignMini.Top || iconPosition == TAlignMini.Bottom)) font_Height = g.MeasureString(Config.NullText, font).Height;
             int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_size.Height * .4F), rsps = icon_size + sp;
+            if (textMultiLine && (iconPosition == TAlignMini.Left || iconPosition == TAlignMini.Right))
+            {
+                int rw = icon_size + sp;
+                if (font_size.Width + rw > rect_read.Width) font_size.Width = rect_read.Width - rw;
+            }
             Rectangle rect_text;
             switch (iconPosition)
             {

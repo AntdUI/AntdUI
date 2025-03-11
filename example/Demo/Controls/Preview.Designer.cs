@@ -51,9 +51,10 @@ namespace Demo.Controls
         {
             header1 = new AntdUI.PageHeader();
             panel1 = new FlowLayoutPanel();
-            button3 = new AntdUI.Button();
-            button2 = new AntdUI.Button();
             button1 = new AntdUI.Button();
+            button2 = new AntdUI.Button();
+            button3 = new AntdUI.Button();
+            button4 = new AntdUI.Button();
             divider1 = new AntdUI.Divider();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -78,23 +79,24 @@ namespace Demo.Controls
             panel1.Controls.Add(button1);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(button3);
+            panel1.Controls.Add(button4);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 102);
             panel1.Name = "panel1";
-            panel1.Size = new Size(614, 62);
+            panel1.Size = new Size(614, 110);
             panel1.TabIndex = 2;
             // 
-            // button3
+            // button1
             // 
-            button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button3.BorderWidth = 1F;
-            button3.LocalizationText = "Preview.{id}";
-            button3.Location = new Point(347, 3);
-            button3.Name = "button3";
-            button3.Size = new Size(133, 47);
-            button3.TabIndex = 1;
-            button3.Text = "动态加载图片";
-            button3.Click += button3_Click;
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button1.BorderWidth = 1F;
+            button1.LocalizationText = "Preview.{id}";
+            button1.Location = new Point(3, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(166, 47);
+            button1.TabIndex = 0;
+            button1.Text = "弹出一张图片预览";
+            button1.Click += button1_Click;
             // 
             // button2
             // 
@@ -108,17 +110,29 @@ namespace Demo.Controls
             button2.Text = "弹出多张图片预览";
             button2.Click += button2_Click;
             // 
-            // button1
+            // button3
             // 
-            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            button1.BorderWidth = 1F;
-            button1.LocalizationText = "Preview.{id}";
-            button1.Location = new Point(3, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(166, 47);
-            button1.TabIndex = 0;
-            button1.Text = "弹出一张图片预览";
-            button1.Click += button1_Click;
+            button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button3.BorderWidth = 1F;
+            button3.LocalizationText = "Preview.{id}";
+            button3.Location = new Point(347, 3);
+            button3.Name = "button3";
+            button3.Size = new Size(133, 47);
+            button3.TabIndex = 1;
+            button3.Text = "动态加载图片";
+            button3.Click += button3_Click;
+            // 
+            // button4
+            // 
+            button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button4.BorderWidth = 1F;
+            button4.LocalizationText = "Preview.{id}";
+            button4.Location = new Point(3, 56);
+            button4.Name = "button4";
+            button4.Size = new Size(215, 47);
+            button4.TabIndex = 2;
+            button4.Text = "弹出多张图片带文字预览";
+            button4.Click += button4_Click;
             // 
             // divider1
             // 
@@ -152,5 +166,6 @@ namespace Demo.Controls
         private AntdUI.Button button1;
         private AntdUI.Button button2;
         private AntdUI.Button button3;
+        private AntdUI.Button button4;
     }
 }

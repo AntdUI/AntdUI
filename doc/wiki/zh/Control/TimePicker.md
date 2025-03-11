@@ -20,6 +20,7 @@ TimePicker 时间选择框 👚
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **ShowIcon** | 是否显示图标 | bool | true |
+**ValueTimeHorizontal** | 时间值水平对齐 | bool | false |
 
 
 ### 事件

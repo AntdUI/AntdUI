@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -94,6 +95,55 @@ namespace Demo.Controls
                     }
                 }
             });
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var imgTextList = new List<AntdUI.Preview.ImageTextContent>()
+            {
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "绿绿的树叶(顶部居中)", Color.Green)
+                {
+                    TextAlign = ContentAlignment.TopCenter
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "韦一敏,这盛世如你所愿(顶部居左)", Color.Red)
+                {
+                    TextAlign = ContentAlignment.TopLeft
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "这叫艺术(顶部居右)")
+                {
+                    TextAlign = ContentAlignment.TopRight
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "绿绿的树叶(中部居中)", Color.Green)
+                {
+                    TextAlign = ContentAlignment.MiddleCenter
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "韦一敏,这盛世如你所愿(中部居左)", Color.Red)
+                {
+                    TextAlign = ContentAlignment.MiddleLeft
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "这叫艺术(中部居右)")
+                {
+                    TextAlign = ContentAlignment.MiddleRight
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "绿绿的树叶(底部居中)", Color.Green)
+                {
+                    TextAlign = ContentAlignment.BottomCenter
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "韦一敏,这盛世如你所愿(底部居左)",Color.Red)
+                {
+                    TextAlign = ContentAlignment.BottomLeft
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "这叫艺术(底部居右)")
+                {
+                    TextAlign = ContentAlignment.BottomRight
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7)
+                {
+                    Text = "这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行",
+                    TextAlign = ContentAlignment.BottomLeft
+                }
+            };
+            AntdUI.Preview.open(new AntdUI.Preview.Config(form, imgTextList));
         }
     }
 }

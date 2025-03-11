@@ -324,6 +324,7 @@ namespace AntdUI
         public event ObjectNEventHandler? ClosedItem = null;
 
         public delegate IList<object>? FilterEventHandler(object sender, string value);
+
         /// <summary>
         /// 控制筛选 Text更改时发生
         /// </summary>
@@ -363,7 +364,7 @@ namespace AntdUI
                             {
                                 Items.AddRange(list);
                                 if (subForm == null) ShowLayeredForm(list);
-                                else subForm.TextChange(Text, list);
+                                else subForm.TextChange(list);
                             }
                         }
                     });

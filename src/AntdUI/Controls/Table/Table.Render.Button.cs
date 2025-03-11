@@ -291,18 +291,18 @@ namespace AntdUI
                 {
                     if (has_left && has_right)
                     {
-                        rect_text = Button.RectAlignLR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l, out var rect_r);
+                        rect_text = Button.RectAlignLR(g, btn.textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l, out var rect_r);
                         PaintButtonPaintImage(g, btn, color, rect_l);
                         PaintButtonTextArrow(g, btn, rect_r, color);
                     }
                     else if (has_left)
                     {
-                        rect_text = Button.RectAlignL(g, btn.textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l);
+                        rect_text = Button.RectAlignL(g, btn.textLine, false, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l);
                         PaintButtonPaintImage(g, btn, color, rect_l);
                     }
                     else
                     {
-                        rect_text = Button.RectAlignR(g, btn.textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_r);
+                        rect_text = Button.RectAlignR(g, btn.textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_r);
                         PaintButtonTextArrow(g, btn, rect_r, color);
                     }
                 }

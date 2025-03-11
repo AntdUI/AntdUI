@@ -14,3 +14,4 @@ StackPanel 堆栈布局 👚
 **Vertical** | 是否垂直方向 | bool | false |
 **ItemSize** | 内容大小 | string`?` | `null` |
 **Gap** | 间距 | int | 0 |
+**PauseLayout** | 暂停布局 | bool | false ||

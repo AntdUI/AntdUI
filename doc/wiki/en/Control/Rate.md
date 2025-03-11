@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## Rate
 
@@ -17,12 +17,14 @@ Rate 评分 👚
 ||||
 **Fill** | 颜色 | Color | 250, 219, 20 |
 ||||
+**AllowClear** | 支持清除 | bool | false |
 **AllowHalf** | 是否允许半选 | bool | false |
 **Count** | Star 总数 | int | 5 |
 **Value** | 当前值 | float | 0F |
 ||||
 **Tooltips** | 自定义每项的提示信息 | string[]`?` | `null` |
 **Character** | 自定义字符SVG | string`?` | `null` |
+🌏 **LocalizationCharacter** | 国际化自定义字符 | string`?` | `null` |
 
 ### 事件
 

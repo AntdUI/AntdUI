@@ -27,7 +27,7 @@ Collapse 折叠面板 👚
 ||||
 **Items** | 数据 `CollapseItem[]` | [CollapseItem[]](#collapseitem) | [] |
 
-### 事件 🔴
+### 事件
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
@@ -38,8 +38,11 @@ Collapse 折叠面板 👚
 
 #### CollapseItem
 
-> 继承于 ScrollableControl
+> 继承于 [ScrollableControl](https://github.com/dotnet/winforms/blob/main/src/System.Windows.Forms/System/Windows/Forms/Scrolling/ScrollableControl.cs)
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Expand** | 展开 | bool | true |
+**Full** 🔴 | 是否铺满剩下空间 | bool | false |
+**Text** | 文本 | string`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |

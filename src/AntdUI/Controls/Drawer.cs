@@ -202,6 +202,9 @@ namespace AntdUI
             /// </summary>
             public Action? OnClose { get; set; }
 
+            /// <summary>
+            /// 显示延迟
+            /// </summary>
             public int DisplayDelay { get; set; } = 100;
         }
     }

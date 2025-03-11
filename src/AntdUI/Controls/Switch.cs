@@ -175,7 +175,7 @@ namespace AntdUI
         [Localizable(true)]
         public string? UnCheckedText
         {
-            get => this.GetLangI(LocalizationTextUnCheckedText, _unCheckedText);
+            get => this.GetLangI(LocalizationUnCheckedText, _unCheckedText);
             set
             {
                 if (_unCheckedText == value) return;
@@ -186,7 +186,7 @@ namespace AntdUI
         }
 
         [Description("未选中时显示的文本"), Category("国际化"), DefaultValue(null)]
-        public string? LocalizationTextUnCheckedText { get; set; }
+        public string? LocalizationUnCheckedText { get; set; }
 
         #region 加载中
 

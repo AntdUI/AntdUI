@@ -66,16 +66,16 @@ namespace AntdUI
         /// <param name="config">配置</param>
         public static DialogResult open(this Config config)
         {
-            if (config.Form == null)
+            if (config.Form == null || config.Form.WindowState == FormWindowState.Minimized || !config.Form.Visible)
             {
                 config.Mask = config.MaskClosable = false;
-                return new LayeredFormModal(config).ShowDialog(config.Form);
+                return new LayeredFormModal(config).ShowDialog();
             }
             if (!config.Form.IsHandleCreated) config.Mask = config.MaskClosable = false;
             if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<DialogResult>(() => open(config)));
             var frm = new LayeredFormModal(config);
             if (config.Mask) return frm.ShowDialog(config.Form.FormMask(frm));
-            else return frm.ShowDialog(config.Form);
+            else return frm.ShowDialog();
         }
 
         #region 配置

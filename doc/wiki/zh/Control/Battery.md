@@ -13,7 +13,7 @@ Battery 电量 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**OriginalBackColor** 🔴 | 原装背景颜色 | Color | Transparent |
+**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **BackColor** | 背景颜色 | Color`?` | `null` |
@@ -25,3 +25,5 @@ Battery 电量 👚
 **FillFully** | 满电颜色 | Color | 0, 210, 121 |
 **FillWarn** | 警告电量颜色 | Color | 250, 173, 20 |
 **FillDanger** | 危险电量颜色 | Color | 255, 77, 79 |
+**ValueWarn** 🔴 | 警告电量阈值 | int | 30 |
+**ValueDanger** 🔴 | 危险电量阈值 | int | 20 |

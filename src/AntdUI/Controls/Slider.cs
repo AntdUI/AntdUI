@@ -61,6 +61,13 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillHover { get; set; }
 
+        /// <summary>
+        /// 激活颜色
+        /// </summary>
+        [Description("激活颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? FillActive { get; set; }
+
         Color? trackColor;
         /// <summary>
         /// 滑轨颜色
@@ -76,15 +83,7 @@ namespace AntdUI
                 trackColor = value;
                 Invalidate();
             }
-
         }
-
-        /// <summary>
-        /// 激活颜色
-        /// </summary>
-        [Description("激活颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? FillActive { get; set; }
 
         int _minValue = 0;
         /// <summary>

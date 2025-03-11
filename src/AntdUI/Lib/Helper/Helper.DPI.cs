@@ -111,7 +111,12 @@ namespace AntdUI
                 }
             }
             else if (control is TabControl tab && tab.ItemSize.Width > 1 && tab.ItemSize.Height > 1) tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
-            else if (control is SplitContainer splitContainer) splitContainer.SplitterWidth = (int)(splitContainer.SplitterWidth * dpi);
+            else if (control is SplitContainer splitContainer)
+            {
+                splitContainer.SplitterWidth = (int)(splitContainer.SplitterWidth * dpi);
+                if (splitContainer.Panel1MinSize > 0) splitContainer.Panel1MinSize = (int)(splitContainer.Panel1MinSize * dpi);
+                if (splitContainer.Panel2MinSize > 0) splitContainer.Panel2MinSize = (int)(splitContainer.Panel2MinSize * dpi);
+            }
             else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
             DpiLSS(dpi, control);
         }
@@ -182,6 +187,14 @@ namespace AntdUI
             if (padding.All == 0) return padding;
             else if (padding.All > 0) return new Padding((int)(padding.All * dpi));
             else return new Padding((int)(padding.Left * dpi), (int)(padding.Top * dpi), (int)(padding.Right * dpi), (int)(padding.Bottom * dpi));
+        }
+
+        internal static void ControlEvent(this Control control)
+        {
+            if (control is GridPanel gridpanel) gridpanel.IOnSizeChanged();
+            else if (control is FlowPanel flowpanel) flowpanel.IOnSizeChanged();
+            else if (control is StackPanel stackpanel) stackpanel.IOnSizeChanged();
+            foreach (Control it in control.Controls) ControlEvent(it);
         }
     }
 }

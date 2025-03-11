@@ -13,7 +13,7 @@ Button 按钮 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**OriginalBackColor** 🔴 | 原装背景颜色 | Color | Transparent |
+**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
 ||||
 **AutoSize** | 自动大小 | bool | false |
 **AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
@@ -42,12 +42,14 @@ Button 按钮 👚
 **RespondRealAreas** | 响应真实区域 | bool | false |
 ||||
 **Text** | 文本 | string`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **TextAlign** | 文本位置 | ContentAlignment | MiddleCenter |
 **AutoEllipsis** | 文本超出自动处理 | bool | false |
 **TextMultiLine** | 是否多行 | bool | false |
+**TextCenterHasIcon** 🔴 | 文本居中显示(包含图标后) | bool | false |
 ||||
 **IconRatio** | 图标比例 | float | 0.7F |
-**IconGap** 🔴 | 图标与文字间距比例 | float | 0.25F |
+**IconGap** | 图标与文字间距比例 | float | 0.25F |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
 **IconHover** | 悬停图标 | Image`?` | `null` |
@@ -56,7 +58,7 @@ Button 按钮 👚
 **IconPosition** | 按钮图标组件的位置 | [TAlignMini](Enum.md#talignmini) | Left |
 **IconSize** | 图标大小 `不设置为自动大小` | Size | 0 × 0 |
 ||||
-|**切换** 🔴||
+|**切换**||
 **Toggle** | 选中状态 | bool | false |
 **ToggleIcon** | 切换图标 | Image`?` | `null` |
 **ToggleIconSvg** | 切换图标SVG | string`?` | `null` |
@@ -70,7 +72,7 @@ Button 按钮 👚
 **ToggleBackHover** | 切换悬停背景颜色 | Color`?` | `null` |
 **ToggleBackActive** | 切换激活背景颜色 | Color`?` | `null` |
 ||||
-|**加载** 🔴||
+|**加载**||
 **Loading** | 加载状态 `true屏蔽点击` | bool | false |
 **LoadingValue** | 加载进度 `0F-1F` | float | 0.3F |
 **LoadingWaveValue** | 水波进度 `0F-1F` | float | 0F |

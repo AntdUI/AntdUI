@@ -600,7 +600,14 @@ namespace AntdUI
                         if (item.Contains(x, y))
                         {
                             if (style.MouseClick(item, i, x, y)) return;
-                            TabClick?.Invoke(this, new TabsItemEventArgs(item, style, e));
+                            if (TabClick == null)
+                            {
+                                SelectedIndex = i;
+                                return;
+                            }
+                            var args = new TabsItemEventArgs(item, i, style, e);
+                            TabClick(this, args);
+                            if (args.Cancel) return;
                             SelectedIndex = i;
                         }
                         else Invalidate();
@@ -1391,6 +1398,20 @@ namespace AntdUI
         /// </summary>
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectedIndexChanged = null;
+
+        internal void MouseChangeIndex(int index)
+        {
+            if (TabClick == null)
+            {
+                SelectedIndex = index;
+                return;
+            }
+            if (items == null) return;
+            var args = new TabsItemEventArgs(items[index], index, style, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+            TabClick(this, args);
+            if (args.Cancel) return;
+            SelectedIndex = index;
+        }
 
         /// <summary>
         /// 关闭页面前发生

@@ -410,6 +410,7 @@ namespace AntdUI
             config.Content.SizeChanged += Content_SizeChanged;
             tempContent?.Dispose();
             tempContent = null;
+            config.Content.ControlEvent();
             if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
         }
