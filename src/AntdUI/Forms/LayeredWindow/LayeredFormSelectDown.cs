@@ -849,7 +849,7 @@ namespace AntdUI
                 else select.DropDownChange(select_x, it.ID, it.Val);
             }
             else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Val);
-            else if (PARENT is Tabs tabs) tabs.SelectedIndex = it.ID;
+            else if (PARENT is Tabs tabs) tabs.MouseChangeIndex(it.ID);
             else if (Tag is ICell table) table.DropDownValueChanged?.Invoke(it.Val);
         }
 

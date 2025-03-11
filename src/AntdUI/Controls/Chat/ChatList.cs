@@ -724,12 +724,12 @@ namespace AntdUI.Chat
         {
             _text = text;
         }
-        public TextChatItem(string text, Bitmap? icon)
+        public TextChatItem(string text, Image? icon)
         {
             _text = text;
             _icon = icon;
         }
-        public TextChatItem(string text, Bitmap? icon, string name)
+        public TextChatItem(string text, Image? icon, string name)
         {
             _text = text;
             _name = name;

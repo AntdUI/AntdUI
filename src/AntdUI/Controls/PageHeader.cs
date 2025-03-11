@@ -316,6 +316,23 @@ namespace AntdUI
             }
         }
 
+        float? iconratio;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(null)]
+        public float? IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                Invalidate();
+                OnPropertyChanged("IconRatio");
+            }
+        }
+
         #endregion
 
         #region 加载动画
@@ -696,10 +713,10 @@ namespace AntdUI
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
-                    IPaint(g, rect_, rect, g.MeasureString(Config.NullText, Font), 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
+                    IPaint(g, rect_, rect, g.MeasureString(Config.NullText, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
                 }
             }
-            else IPaint(g, rect_, rect, g.MeasureString(Text ?? Config.NullText, Font), 1F, null, fore, forebase, foreSecondary, fillsecondary);
+            else IPaint(g, rect_, rect, g.MeasureString(Text ?? Config.NullText, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
             this.PaintBadge(g);
             if (showDivider)
             {
@@ -770,13 +787,13 @@ namespace AntdUI
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
                     var sizeTitle = g.MeasureString(Text, fontTitle);
-                    rect.X += IPaintS(g, rect, size.Height, 1.36F) / 2;
+                    rect.X += IPaintS(g, rect, size.Height, iconratio ?? 1.36F) / 2;
                     return new Rectangle(rect.X, rect.Y + (rect.Height - sizeTitle.Height) / 2, sizeTitle.Width, sizeTitle.Height);
                 }
             }
             else
             {
-                rect.X += IPaintS(g, rect, size.Height, 1F) / 2;
+                rect.X += IPaintS(g, rect, size.Height, iconratio ?? 1F) / 2;
                 return new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
             }
         }

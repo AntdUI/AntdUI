@@ -109,18 +109,6 @@ namespace AntdUI
             public Config(Form form, IList<ImageTextContent> list)
             {
                 Form = form;
-                foreach (var item in list)
-                {
-                    if (item.TextStyle == null)
-                    {
-                        item.TextStyle = new TextStyle();
-                        item.TextStyle.Font = form.Font;
-                    }
-                    else if (item.TextStyle.Font == null)
-                    {
-                        item.TextStyle.Font = form.Font;
-                    }
-                }
                 Content = list;
                 ContentCount = list.Count;
             }
@@ -218,23 +206,49 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 文本样式配置类
-        /// </summary>
-        public class TextStyle
-        {
-            public Font? Font { get; set; }
-            public Color ForeColor { get; set; } = Color.White;
-            public ContentAlignment TextAlign { get; set; } = ContentAlignment.TopCenter;
-        }
-
-        /// <summary>
         /// 图片和文本内容
         /// </summary>
         public class ImageTextContent
         {
+            public ImageTextContent(Image image)
+            {
+                Image = image;
+            }
+
+            public ImageTextContent(Image image, string? text)
+            {
+                Image = image;
+                Text = text;
+            }
+
+            public ImageTextContent(Image image, string? text, Color? foreColor)
+            {
+                Image = image;
+                Text = text;
+                ForeColor = foreColor;
+            }
+
             public Image Image { get; set; }
+
+            /// <summary>
+            /// 显示文本
+            /// </summary>
             public string? Text { get; set; }
-            public TextStyle? TextStyle { get; set; }
+
+            /// <summary>
+            /// 文本字体
+            /// </summary>
+            public Font? Font { get; set; }
+
+            /// <summary>
+            /// 文本颜色
+            /// </summary>
+            public Color? ForeColor { get; set; }
+
+            /// <summary>
+            /// 文本位置
+            /// </summary>
+            public ContentAlignment TextAlign { get; set; } = ContentAlignment.TopCenter;
         }
     }
 }

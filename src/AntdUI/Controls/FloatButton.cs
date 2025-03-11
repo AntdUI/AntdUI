@@ -188,7 +188,7 @@ namespace AntdUI
             /// </summary>
             /// <param name="name">名称</param>
             /// <param name="icon">图标</param>
-            public ConfigBtn(string name, Bitmap icon)
+            public ConfigBtn(string name, Image icon)
             {
                 Name = name;
                 Icon = icon;
@@ -263,11 +263,11 @@ namespace AntdUI
                 }
             }
 
-            Bitmap? icon;
+            Image? icon;
             /// <summary>
             /// 自定义图标
             /// </summary>
-            public Bitmap? Icon
+            public Image? Icon
             {
                 get => icon;
                 set

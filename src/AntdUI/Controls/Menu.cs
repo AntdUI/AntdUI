@@ -1264,7 +1264,7 @@ namespace AntdUI
         {
             Text = text;
         }
-        public MenuItem(string text, Bitmap? icon)
+        public MenuItem(string text, Image? icon)
         {
             Text = text;
             Icon = icon;

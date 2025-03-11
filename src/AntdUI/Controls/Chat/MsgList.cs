@@ -394,7 +394,7 @@ namespace AntdUI.Chat
         {
             _name = name;
         }
-        public MsgItem(string name, Bitmap? icon)
+        public MsgItem(string name, Image? icon)
         {
             _name = name;
             _icon = icon;

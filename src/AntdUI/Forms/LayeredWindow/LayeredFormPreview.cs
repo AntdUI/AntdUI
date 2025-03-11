@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -57,38 +56,19 @@ namespace AntdUI
             }
             PageSize = config.ContentCount;
 
-            //var btnwiths = new PreBtns[] {
-            //    new PreBtns("@t_flipY",SvgDb.Custom["SwapOutlined"].Insert(28," transform=\"rotate(90),translate(0 -100%)\"")),
-            //    new PreBtns("@t_flipX","SwapOutlined"),
-            //    new PreBtns("@t_rotateL","RotateLeftOutlined"),
-            //    new PreBtns("@t_rotateR","RotateRightOutlined"),
-            //    new PreBtns("@t_zoomOut","ZoomOutOutlined"),
-            //    new PreBtns("@t_zoomIn","ZoomInOutlined"),
-            //};
-            //if (config.Btns == null || config.Btns.Length == 0) btns = btnwiths;
-            //else
-            //{
-            //    var btntmp = new List<PreBtns>(config.Btns.Length + btnwiths.Length);
-            //    foreach (var it in config.Btns) btntmp.Add(new PreBtns(it.Name, it.IconSvg, it.Tag));
-            //    btntmp.AddRange(btnwiths);
-            //    btns = btntmp.ToArray();
-            //}
-
             //优化为使用List集合，去掉转换的代码
-            var btnwiths = new List<PreBtns>()
+            int len = 8;
+            if (config.Btns != null && config.Btns.Length > 0) len += config.Btns.Length;
+            var btnwiths = new List<PreBtns>(len)
             {
-               new PreBtns("@t_flipY",SvgDb.Custom["SwapOutlined"].Insert(28," transform=\"rotate(90),translate(0 -100%)\"")),
+                new PreBtns("@t_flipY",SvgDb.Custom["SwapOutlined"].Insert(28," transform=\"rotate(90),translate(0 -100%)\"")),
                 new PreBtns("@t_flipX","SwapOutlined"),
                 new PreBtns("@t_rotateL","RotateLeftOutlined"),
                 new PreBtns("@t_rotateR","RotateRightOutlined"),
                 new PreBtns("@t_zoomOut","ZoomOutOutlined"),
                 new PreBtns("@t_zoomIn","ZoomInOutlined"),
             };
-            if (config.Content is IList<Preview.ImageTextContent>)
-            {
-                //这里是如果存在文字，则添加一个可以复制文本的按钮
-                btnwiths.Add(new PreBtns("@t_copyText", SvgDb.Custom["CopyOutlined"]));
-            }
+            if (config.Content is IList<Preview.ImageTextContent>) btnwiths.Add(new PreBtns("@t_copyText", SvgDb.Custom["CopyOutlined"]));//这里是如果存在文字，则添加一个可以复制文本的按钮
             if (config.Btns != null && config.Btns.Length > 0)
             {
                 foreach (var it in config.Btns) btnwiths.Add(new PreBtns(it.Name, it.IconSvg, it.Tag));
@@ -189,8 +169,6 @@ namespace AntdUI
         int SelectIndex = 0;
         object? SelectValue;
         Size ImgSize = new Size();
-        string topText = string.Empty;
-        Preview.TextStyle tStyle;
         void LoadImg()
         {
             autoDpi = true;
@@ -203,8 +181,7 @@ namespace AntdUI
             else if (config.Content is IList<Preview.ImageTextContent> imgTxtList)
             {
                 Img = imgTxtList[SelectIndex].Image;
-                topText = imgTxtList[SelectIndex].Text ?? "";
-                tStyle = imgTxtList[SelectIndex].TextStyle ?? new Preview.TextStyle();
+                Tag = imgTxtList[SelectIndex];
                 ImgSize = Img.Size;
                 FillScaleImg();
             }
@@ -408,80 +385,65 @@ namespace AntdUI
                         }
                     }
                 }
-            }
 
-            //在顶层绘制文本
-            if (!string.IsNullOrEmpty(topText) && tStyle != null)
-            {
-                using (var g = Graphics.FromImage(original_bmp))
+                if (Tag is Preview.ImageTextContent content && content.Text != null)
                 {
-                    //高质量渲染文本（以防止大字体带颜色的文本绘制的很丑）
-                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                     // 测量文本大小
-                    SizeF size = g.MeasureString(topText, tStyle.Font ?? Font);
-                    using (var brush = new SolidBrush(tStyle.ForeColor))
+                    var size = g.MeasureString(content.Text, content.Font ?? Font);
+                    using (var brush = new SolidBrush(content.ForeColor ?? Style.Db.Text))
                     using (var format = new StringFormat())
                     {
-
-                        RectangleF textRect;
-                        float width = TargetRect.Width;
-                        float height = size.Height;
+                        Rectangle textRect;
+                        int width = TargetRect.Width, height = size.Height;
 
                         if (size.Width > TargetRect.Width)
                         {
                             format.FormatFlags = StringFormatFlags.LineLimit;
                             format.Trimming = StringTrimming.Word;
-
                             // 重新测量换行后的文本所需区域
-                            size = g.MeasureString(
-                                topText,
-                                tStyle.Font ?? Font,
-                                (int)TargetRect.Width, // 指定允许的最大宽度
-                                format
-                            );
+                            size = g.MeasureString(content.Text, content.Font ?? Font, TargetRect.Width, format);
 
                             //重新测量后重新赋值矩形高度
                             height = Math.Min(size.Height, TargetRect.Height);
                             width = TargetRect.Width;
                         }
 
-                        switch (tStyle.TextAlign)
+                        switch (content.TextAlign)
                         {
                             case ContentAlignment.TopLeft:
-                                textRect = new RectangleF(0, 0, width, height);
+                                textRect = new Rectangle(0, 0, width, height);
                                 format.Alignment = StringAlignment.Near;
                                 break;
                             case ContentAlignment.TopCenter:
-                                textRect = new RectangleF(0, 0, width, height);
+                                textRect = new Rectangle(0, 0, width, height);
                                 format.Alignment = StringAlignment.Center;
                                 break;
                             case ContentAlignment.TopRight:
-                                textRect = new RectangleF(0, 0, width, height);
+                                textRect = new Rectangle(0, 0, width, height);
                                 format.Alignment = StringAlignment.Far;
                                 break;
                             case ContentAlignment.MiddleLeft:
-                                textRect = new RectangleF(0, TargetRect.Height / 2, width, height);
+                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
                                 format.Alignment = StringAlignment.Near;
                                 break;
                             case ContentAlignment.MiddleCenter:
-                                textRect = new RectangleF(0, TargetRect.Height / 2, width, height);
+                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
                                 format.Alignment = StringAlignment.Center;
                                 break;
                             case ContentAlignment.MiddleRight:
-                                textRect = new RectangleF(0, TargetRect.Height / 2, width, height);
+                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
                                 format.Alignment = StringAlignment.Far;
                                 break;
                             case ContentAlignment.BottomLeft:
-                                textRect = new RectangleF(0, TargetRect.Height - height, width, height);
+                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
                                 format.Alignment = StringAlignment.Near;
                                 break;
                             case ContentAlignment.BottomCenter:
-                                textRect = new RectangleF(0, TargetRect.Height - height, width, height);
+                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
                                 format.Alignment = StringAlignment.Center;
                                 break;
                             case ContentAlignment.BottomRight:
-                                textRect = new RectangleF(0, TargetRect.Height - height, width, height);
+                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
                                 format.Alignment = StringAlignment.Far;
                                 break;
                             default:
@@ -490,13 +452,7 @@ namespace AntdUI
 
                         format.LineAlignment = StringAlignment.Far;
 
-                        g.DrawString(
-                            topText,
-                            tStyle.Font ?? Font,
-                            brush,
-                            textRect,
-                            format
-                        );
+                        g.String(content.Text, content.Font ?? Font, brush, textRect, format);
                     }
                 }
             }
@@ -862,13 +818,15 @@ namespace AntdUI
                                 Print();
                                 break;
                             case "@t_copyText":
-                                if (topText != null && topText.Length > 0)
+                                if (Tag is Preview.ImageTextContent content && content.Text != null && content.Text.Length > 0)
                                 {
-                                    if (AntdUI.Helper.ClipboardSetText(this, topText))
-                                        AntdUI.Message.open(new AntdUI.Message.Config(this, "复制成功", TType.Success, Font)
+                                    if (Helper.ClipboardSetText(this, content.Text))
+                                    {
+                                        Message.open(new Message.Config(this, "复制成功", TType.Success, Font)
                                         {
                                             ShowInWindow = true
                                         });
+                                    }
                                 }
                                 break;
                             default:
