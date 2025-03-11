@@ -188,6 +188,16 @@ namespace Demo.Controls
                         TextAlign = ContentAlignment.BottomRight
                     }
                 }
+                ,
+                new AntdUI.Preview.ImageTextContent()
+                {
+                    Image = Properties.Resources.bg7,
+                    Text = "这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行",
+                    TextStyle = new AntdUI.Preview.TextStyle()
+                    {
+                        TextAlign = ContentAlignment.BottomLeft
+                    }
+                }
             };
             AntdUI.Preview.open(new AntdUI.Preview.Config(form, imgTextList));
         }

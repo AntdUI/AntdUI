@@ -426,7 +426,7 @@ namespace AntdUI
 
                         RectangleF textRect;
                         float width = TargetRect.Width;
-                        float height = Math.Min(size.Height, TargetRect.Height);
+                        float height = size.Height;
 
                         if (size.Width > TargetRect.Width)
                         {
@@ -441,6 +441,8 @@ namespace AntdUI
                                 format
                             );
 
+                            //重新测量后重新赋值矩形高度
+                            height = Math.Min(size.Height, TargetRect.Height);
                             width = TargetRect.Width;
                         }
 
@@ -858,6 +860,16 @@ namespace AntdUI
                                 Dpi += 0.1F;
                                 SetBtnEnabled("@t_zoomOut", true);
                                 Print();
+                                break;
+                            case "@t_copyText":
+                                if (topText != null && topText.Length > 0)
+                                {
+                                    if (AntdUI.Helper.ClipboardSetText(this, topText))
+                                        AntdUI.Message.open(new AntdUI.Message.Config(this, "复制成功", TType.Success, Font)
+                                        {
+                                            ShowInWindow = true
+                                        });
+                                }
                                 break;
                             default:
                                 config.OnBtns?.Invoke(it.id, new Preview.BtnEvent(SelectIndex, SelectValue, it.tag));
