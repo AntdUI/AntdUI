@@ -15,11 +15,12 @@ Tooltip 文字提示 👚
 :--|:--|:--|:--|
 **Font** | 字体 | Color | `系统默认` |
 **Text** | 文本 | string | `必填` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 ||||
 **Radius** | 圆角 | int | 6 |
 **ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | None |
 **ArrowSize** | 箭头大小 | int | 8 |
-**CustomWidth** 🔴 | 设定宽度 | int`?` | `null` |
+**CustomWidth** | 设定宽度 | int`?` | `null` |
 
 ### 静态方法
 
@@ -49,4 +50,5 @@ Tooltip 文字提示 👚
 **Radius** | 圆角 | int | 6 |
 **ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | None |
 **ArrowSize** | 箭头大小 | int | 8 |
+**Offset** | 偏移量 | Rectangle / RectangleF | `null` |
 **CustomWidth** 🔴 | 设定宽度 | int`?` | `null` |

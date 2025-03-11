@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## ContextMenuStrip
 
@@ -17,10 +17,10 @@ ContextMenuStrip 右键菜单
 **Font** | 字体 | Font |`null`|
 **Radius** | 圆角 | int | 6 |
 **TopMost** | 是否置顶 | bool |false|
-**CallSleep** 🔴 | 延迟回调 | int |0|
-**UFocus** 🔴 | 是否抢占焦点 | bool |false|
-**Location** 🔴 | 自定义坐标 | Point`?` |`null`|
-**Align** 🔴 | 方向 | [TAlignFrom](Enum.md#talignfrom) | BR |
+**CallSleep** | 延迟回调 | int |0|
+**UFocus** | 是否抢占焦点 | bool |false|
+**Location** | 自定义坐标 | Point`?` |`null`|
+**Align** | 方向 | [TAlignFrom](Enum.md#talignfrom) | BR |
 **Call** | 点击回调 | Action<ContextMenuStripItem> | `必填` |
 
 ### 数据
@@ -29,11 +29,15 @@ ContextMenuStrip 右键菜单
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
 **Text** | 文本 | string | `必填` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **SubText** | 子文本 | string`?` | `null` |
+🌏 **LocalizationSubText** | 国际化子文本 | string`?` | `null` |
 **Fore** | 文字颜色 | Color`?` | `null` |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
+**Enabled** 🔴 | 使能 | bool | true |
 **Checked** | 选中 | bool | false |
 **Sub** | 子项 `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

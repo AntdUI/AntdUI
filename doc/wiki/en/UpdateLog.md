@@ -1,5 +1,47 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)・[SVG](SVG.md)
 
+### `1.9.3` 2025-03-11
+
+- ➕ Preview can display text data
+- ➕ PageHeader IconRatio
+- ➕ Tabs TabClick Cancel can cancel the jump
+- ➕ Split Delay Rendering Properties
+- ➕ Minimum width limit for splitter folding function
+- ➕ GridPanel adds 'spring'
+- ✍️ Button multi line width collision
+- ✍️ Modal parent window hiding processing
+- ✍️ The layout container is not laid out in controls such as Popover
+- ✍️ Select FilterChanged and Thread Call
+- ✍️ DPI adaptation to SplitContainer PanelMinSize
+- ✍️ PageHeader still works after hiding the three golden keys
+- ✍️ PageHeader UseLeftMargin
+
+### `1.9.2` 2025-03-06
+
+- ➕ Table StackedHeader Stacked Header
+- ➕ Table Column DragSort
+- ➕ Alert LoopInfinite
+- ➕ Tooltip area collision
+- ✍️ FlowPanel controls overlap
+- ✍️ Tabs Card exception
+- ✍️ Optimize border cropping
+- ✍️ Table column Style background cannot follow the horizontal scrollbar
+- ✍️ Fold the panel and restore it proportionally
+
+### `1.9.1` 2025-03-04
+
+- ➕ Tabs ContainsTabPage
+- ➕ Drawer wait
+- ➕ Spliter folding function
+- ➕ Select property CloseIcon, event ClosedItem
+- ➕ ControlEvent notifies successful loading in Modal/Drawer/Popover
+- ✍️ Complete TextRendering HighQuality Size conversion
+- ✍️ Replace KeyPress with VNet CHAR for Input
+- ✍️ DatePicker and other controls will fill in Value even if they lose focus after clearing the content
+- ✍️ Table editing mode text box height exception
+- ✍️ Input Emoji Judgment
+- ✍️ Window maximum value secondary enlargement
+
 ### `1.9.0` 2025-02-27 🥥
 
 - ➕ Table Merge Cells

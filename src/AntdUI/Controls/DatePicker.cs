@@ -153,10 +153,7 @@ namespace AntdUI
             }
         }
 
-        public override bool HasSuffix
-        {
-            get => showicon;
-        }
+        public override bool HasSuffix => showicon;
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {

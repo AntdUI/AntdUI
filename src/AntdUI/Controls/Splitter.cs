@@ -27,7 +27,7 @@ namespace AntdUI
     /// <summary>
     /// Splitter 分隔面板
     /// </summary>
-    /// <remarks>自由切分指定区域</remarks>
+    /// <remarks>自由切分指定区域。</remarks>
     [Description("Splitter 分隔面板")]
     [ToolboxItem(true)]
     public class Splitter : SplitContainer
@@ -233,7 +233,7 @@ namespace AntdUI
         {
             if (_collapsePanel == ADCollapsePanel.None || !SplitPanelState) return;
             _splitPanelState = false;
-            _lastDistance = SplitterDistance * 1.0F / Length;
+            _lastDistance = SplitterDistance * 1F / Length;
             if (_collapsePanel == ADCollapsePanel.Panel1)
             {
                 _minSize = Panel1MinSize;

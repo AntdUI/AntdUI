@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## Slider
 
@@ -16,6 +16,7 @@ Slider 滑动输入条 👚
 **Fill** | 颜色 | Color`?` | `null` |
 **FillHover** | 悬停颜色 | Color`?` | `null` |
 **FillActive** | 激活颜色 | Color`?` | `null` |
+**TrackColor** 🔴 | 滑轨颜色 | Color`?` | `null` |
 ||||
 **MinValue** | 最小值 | int | 0 |
 **MaxValue** | 最大值 | int | 100 |
@@ -27,9 +28,9 @@ Slider 滑动输入条 👚
 **DotSize** | 点大小 | int | 10 |
 **DotSizeActive** | 点激活大小 | int | 12 |
 ||||
-**Dots** 🔴 | 是否只能拖拽到刻度上 | bool | false |
-**Marks** 🔴 | 刻度标记 `SliderMarkItem[]` | [SliderMarkItem[]](#slidermarkitem) | [] |
-**MarkTextGap** 🔴 | 刻度文本间距 | int | 4 |
+**Dots** | 是否只能拖拽到刻度上 | bool | false |
+**Marks** | 刻度标记 `SliderMarkItem[]` | [SliderMarkItem[]](#slidermarkitem) | [] |
+**MarkTextGap** | 刻度文本间距 | int | 4 |
 
 ### 事件
 

@@ -268,3 +268,15 @@ Tab类型
 **Button** | 超出按钮 |
 **LR** | 左右按钮 |
 **LR_Shadow** | 左右按钮+阴影 |
+
+***
+
+## TRotate
+
+旋转
+
+名称 | 描述 |
+:--|:--|
+**None** | 不旋转 |
+**Clockwise_90** | 顺时针90° |
+**CounterClockwise_90** | 逆时针90° |

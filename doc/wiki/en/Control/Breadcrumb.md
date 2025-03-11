@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## Breadcrumb
 
@@ -40,4 +40,5 @@ Breadcrumb 面包屑 👚
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string | `null` |
 **Text** | 文本 | string | `必填` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

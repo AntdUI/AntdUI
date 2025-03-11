@@ -24,21 +24,22 @@ Modal 对话框
 **CloseIcon** | 是否显示关闭图标 | bool | false |
 **Tag** | 用户定义数据 | object`?` | `null` |
 ||||
-**Padding** 🔴 | 边距 | Size | 24, 20 |
-**BtnHeight** 🔴 | 按钮栏高度 | int | 38 |
+**Padding** | 边距 | Size | 24, 20 |
+**BtnHeight** | 按钮栏高度 | int | 38 |
 **CancelText** | 取消按钮文字 | string | "取消" |
-**CancelFont** 🔴 | 取消按钮字体 | Font`?` | `null` |
+**CancelFont** | 取消按钮字体 | Font`?` | `null` |
 **OkText** | 确认按钮文字 | string | "确定" |
 **OkType** | 确认按钮类型 | [TTypeMini](Enum.md#ttypemini) | Primary |
-**OkFont** 🔴 | 确认按钮字体 | Font`?` | `null` |
+**OkFont** | 确认按钮字体 | Font`?` | `null` |
 **OnOk** | 确定回调 | `Func<Config, bool>?` | `null` |
 ||||
 **Btns** | 自定义按钮 | [Btn[]](#modal.btn) | `null` |
 **OnBtns** | 自定义按钮回调 | Action<[Button](#button)> | `null` |
+**OnButtonStyle** | 自定义按钮样式回调 | Action<string, [Button](Button)> | `null` |
 ||||
-**LoadingDisableCancel** 🔴 | 加载时禁用取消按钮 | bool | false |
-||||
-**OnButtonStyle** 🔴 | 自定义按钮样式回调 | Action<string, [Button](Button)> | `null` |
+**LoadingDisableCancel** | 加载时禁用取消按钮 | bool | false |
+**Draggable** | 拖拽窗口 | bool | true |
+**Close()** | 主动关闭 | void | |
 
 ### Modal.Btn
 
@@ -52,3 +53,23 @@ Modal 对话框
 **Fore** | 文字颜色 | Color`?` | `null` |
 **Back** | 背景颜色 | Color`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |
+
+***
+
+### UserControl 监控 Load 示例
+
+~~~csharp
+public partial class UserControl1 : UserControl, AntdUI.ControlEvent
+{
+    public void LoadCompleted()
+    {
+        System.Diagnostics.Debug.WriteLine("Load");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        System.Diagnostics.Debug.WriteLine("Close");
+    }
+}
+~~~

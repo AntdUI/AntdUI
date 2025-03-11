@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## Tag
 
@@ -13,7 +13,7 @@ Tag 标签页 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**OriginalBackColor** 🔴 | 原装背景颜色 | Color | Transparent |
+**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
 ||||
 **AutoSize** | 自动大小 | bool | false |
 **AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
@@ -31,6 +31,7 @@ Tag 标签页 👚
 **CloseIcon** | 是否显示关闭图标 | bool | false |
 ||||
 **Text** | 文本 | string`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **TextAlign** | 文本位置 | ContentAlignment | MiddleCenter |
 **AutoEllipsis** | 文本超出自动处理 | bool | false |
 **TextMultiLine** | 是否多行 | bool | false |

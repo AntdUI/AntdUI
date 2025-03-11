@@ -15,6 +15,7 @@ Timeline 时间轴 👚
 :--|:--|:--|:--|
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **FontDescription** | 描述字体 | Font`?` | `null` |
+**Gap** | 间距 🔴 | int`?` | `null` |
 ||||
 **Items** | 数据 `TimelineItem[]` | [TimelineItem[]](#timelineitem) | [] |
 ||||

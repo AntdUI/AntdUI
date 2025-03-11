@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## Calendar
 
@@ -18,11 +18,11 @@ Calendar 日历 👚
 ||||
 **Full** | 是否撑满 | bool | false |
 **ShowChinese** | 显示农历 | bool | false |
-**ShowButtonToDay** 🔴 | 显示今天 | bool | true |
+**ShowButtonToDay** | 显示今天 | bool | true |
 ||||
 **Value** | 控件当前日期 | DateTime | `DateTime.Now` |
-**MinDate** 🔴 | 最小日期 | DateTime`?` | `null` |
-**MaxDate** 🔴 | 最大日期 | DateTime`?` | `null` |
+**MinDate** | 最小日期 | DateTime`?` | `null` |
+**MaxDate** | 最大日期 | DateTime`?` | `null` |
 
 ### 日期上的徽标
 

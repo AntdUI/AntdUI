@@ -246,7 +246,7 @@ namespace AntdUI
             /// <summary>
             /// 加载进度
             /// </summary>
-            public float LoadingValue { get; set; } = 0.3F;
+            public float LoadingValue { get; set; } = .3F;
 
             Color? fore;
             /// <summary>

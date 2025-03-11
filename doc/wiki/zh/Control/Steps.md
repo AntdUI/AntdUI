@@ -18,6 +18,7 @@ Steps 步骤条 👚
 **Current** | 指定当前步骤 `从 0 开始记数。在子 Step 元素中，可以通过 status 属性覆盖状态` | int | 0 |
 **Status** | 指定当前步骤的状态 | [TStepState](Enum.md#tstepstate) | Process |
 **Vertical** | 垂直方向 | bool | false |
+**Gap** 🔴 | 间距 | int | 8 |
 **Items** | 数据 `StepsItem[]` | [StepsItem[]](#stepsitem) | [] |
 ||||
 **PauseLayout** | 暂停布局 | bool | false |
@@ -35,12 +36,16 @@ Steps 步骤条 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
 **Name** | 名称 | string`?` | `null` |
 **Icon** | 图标 | Image`?` | `null` |
-**IconSvg** 🔴 | 图标SVG | string`?` | `null` |
+**IconSvg** | 图标SVG | string`?` | `null` |
 **IconSize** | 图标大小 | int`?` | `null` |
 **Visible** | 是否显示 | bool | true |
 **Title** | 标题 | string | `必填` |
+🌏 **LocalizationTitle** | 国际化标题 | string`?` | `null` |
 **SubTitle** | 子标题 | string`?` | `null` |
+🌏 **LocalizationSubTitle** | 国际化子标题 | string`?` | `null` |
 **Description** | 详情描述 | string`?` | `null` |
+🌏 **LocalizationDescription** | 国际化详情描述 | string`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

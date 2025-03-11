@@ -20,7 +20,7 @@ Panel 面板 👚
 ||||
 **BorderWidth** | 边框宽度 | float | 0F |
 **BorderColor** | 边框颜色 | Color`?` | `null` |
-**BorderStyle** 🔴 | 边框样式 | DashStyle | Solid |
+**BorderStyle** | 边框样式 | DashStyle | Solid |
 ||||
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
 **BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
@@ -29,8 +29,8 @@ Panel 面板 👚
 **ShadowColor** | 阴影颜色 | Color`?` | `null` |
 **ShadowOpacity** | 阴影透明度 | float | 0.1F |
 **ShadowOpacityHover** | 悬停阴影后透明度 | float | 0.3F |
-**ShadowOpacityAnimation** 🔴 | 阴影透明度动画使能 | bool | false |
+**ShadowOpacityAnimation** | 阴影透明度动画使能 | bool | false |
 **ShadowOffsetX** | 阴影偏移X | int | 0 |
 **ShadowOffsetY** | 阴影偏移Y | int | 0 |
-**ShadowAlign** 🔴 | 阴影方向 | [TAlignMini](Enum.md#talignmini) | None |
-**padding** 🔴 | 内边距 | Padding | 0, 0, 0, 0 |
+**ShadowAlign** | 阴影方向 | [TAlignMini](Enum.md#talignmini) | None |
+**padding** | 内边距 | Padding | 0, 0, 0, 0 |

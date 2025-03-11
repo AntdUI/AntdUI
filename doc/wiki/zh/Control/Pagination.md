@@ -20,17 +20,24 @@ Pagination 分页 👚
 **PageTotal** | 总页数 | int | 1 `只读` |
 ||||
 **ShowSizeChanger** | 是否展示 `PageSize` 切换器 | bool | false |
-**SizeChangerWidth** 🔴 | `SizeChanger` 宽度 | int | 0 `0 自动宽度` |
-**PageSizeOptions** 🔴 | 指定每页可以显示多少条 `下拉选择` | int[]? | null |
+**SizeChangerWidth** | `SizeChanger` 宽度 | int | 0 `0 自动宽度` |
+**PageSizeOptions** | 指定每页可以显示多少条 `下拉选择` | int[]? | null |
 ||||
 **Fill** | 颜色 | Color`?` | `null` |
 ||||
-**Gap** 🔴 | 间距 | int | 8 |
+**Gap** | 间距 | int | 8 |
 **Radius** | 圆角 | int | 6 |
 **BorderWidth** | 边框宽度 | float | 1F |
 ||||
 **TextDesc** | 主动显示内容 `设置非空后 ShowTotalChanged 失效` | string`?` | `null` |
+🌏 **LocalizationTextDesc** | 国际化主动显示内容 | string`?` | `null` |
 **RightToLeft** | 反向 | RightToLeft | No |
+
+### 方法
+
+名称 | 描述 | 返回值 | 参数 |
+:--|:--|:--|:--|
+**InitData** | 初始化 `不触发事件` | void | int Current = 1, int PageSize = 10 |
 
 ### 事件
 

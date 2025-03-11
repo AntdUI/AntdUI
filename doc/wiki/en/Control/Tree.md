@@ -1,4 +1,4 @@
-﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
 
 ## Tree
 
@@ -18,9 +18,10 @@ Tree 树形控件 👚
 **BackHover** | 悬停背景颜色 | Color`?` | `null` |
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
 ||||
-**Gap** 🔴 | 间距 | int | 8 |
+**Gap** | 间距 | int | 8 |
 **Radius** | 圆角 | int | 6 |
 **Round** | 圆角样式 | bool | false |
+**IconRatio** | 图标比例 | float | 1F |
 **Checkable** | 节点前添加 Checkbox 复选框 | bool | false |
 **CheckStrictly** | Checkable 状态下节点选择完全受控 `父子节点选中状态不再关联` | bool | true |
 **BlockNode** | 节点占据一行 | bool | false |
@@ -45,6 +46,10 @@ Tree 树形控件 👚
 :--|:--|:--|:--|
 **ExpandAll** | 展开全部 | void | bool value `true 展开、false 收起` |
 **GetCheckeds** | 获取所有选中项 | List<[TreeItem](#treeitem)> ||
+**Select** | 选择指定项 | bool | [TreeItem](#treeitem) item |
+**USelect** | 取消全部选择 | void ||
+**SetCheckeds** | 全选/全不选 | void ||
+**Focus** | 跳转指定项 | bool | [TreeItem](#treeitem) item |
 
 
 ### 数据
@@ -53,13 +58,16 @@ Tree 树形控件 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
 **Name** | 名称 | string`?` | `null` |
-**IconRatio** 🔴 | 图标比例 | float | 1F |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
 **Text** | 文本 | string | `必填` |
-**Fore** 🔴 | 字体颜色 | Color`?` |`null`|
-**Back** 🔴 | 背景颜色 | Color`?` |`null`|
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**SubTitle** | 子标题 | string | `null` |
+🌏 **LocalizationSubTitle** | 国际化子标题 | string`?` | `null` |
+**Fore** | 字体颜色 | Color`?` |`null`|
+**Back** | 背景颜色 | Color`?` |`null`|
 **Visible** | 是否显示 | bool | true |
 **Enabled** | 禁用状态 | bool | true |
 **Expand** | 展开 | bool | true |
@@ -68,3 +76,5 @@ Tree 树形控件 👚
 **CheckState** | 选中状态 | CheckState | `Unchecked` |
 **Sub** | 子集合 ♾️ | [TreeItem[]](#treeitem) | [] |
 **Tag** | 用户定义数据 | object`?` | `null` |
+||||
+**PARENTITEM** | 父级对象 | [TreeItem](#treeitem)`?` | `null` |
