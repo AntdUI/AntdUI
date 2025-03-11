@@ -146,10 +146,12 @@ namespace Demo.Controls
             // splitter2.Panel1
             // 
             splitter2.Panel1.Controls.Add(label3);
+            splitter2.Panel1MinSize = 0;
             // 
             // splitter2.Panel2
             // 
             splitter2.Panel2.Controls.Add(label4);
+            splitter2.Panel2MinSize = 0;
             splitter2.Size = new Size(610, 250);
             splitter2.SplitterDistance = 290;
             splitter2.SplitterSize = 80;

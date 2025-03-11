@@ -54,8 +54,8 @@ namespace Demo.Controls
             button1 = new AntdUI.Button();
             button2 = new AntdUI.Button();
             button3 = new AntdUI.Button();
-            divider1 = new AntdUI.Divider();
             button4 = new AntdUI.Button();
+            divider1 = new AntdUI.Divider();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -122,6 +122,18 @@ namespace Demo.Controls
             button3.Text = "动态加载图片";
             button3.Click += button3_Click;
             // 
+            // button4
+            // 
+            button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button4.BorderWidth = 1F;
+            button4.LocalizationText = "Preview.{id}";
+            button4.Location = new Point(3, 56);
+            button4.Name = "button4";
+            button4.Size = new Size(215, 47);
+            button4.TabIndex = 2;
+            button4.Text = "弹出多张图片带文字预览";
+            button4.Click += button4_Click;
+            // 
             // divider1
             // 
             divider1.Dock = DockStyle.Top;
@@ -133,17 +145,6 @@ namespace Demo.Controls
             divider1.Size = new Size(614, 28);
             divider1.TabIndex = 5;
             divider1.Text = "基本";
-            // 
-            // button4
-            // 
-            button4.BorderWidth = 1F;
-            button4.LocalizationText = "Preview.{id}";
-            button4.Location = new Point(3, 56);
-            button4.Name = "button4";
-            button4.Size = new Size(477, 47);
-            button4.TabIndex = 2;
-            button4.Text = "弹出多张图片带文字预览";
-            button4.Click += button4_Click;
             // 
             // Preview
             // 

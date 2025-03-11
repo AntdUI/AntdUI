@@ -101,102 +101,46 @@ namespace Demo.Controls
         {
             var imgTextList = new List<AntdUI.Preview.ImageTextContent>()
             {
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "绿绿的树叶(顶部居中)", Color.Green)
                 {
-                    Image = Properties.Resources.bg1,
-                    Text = "绿绿的树叶(顶部居中)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        ForeColor = Color.Green,
-                        TextAlign = ContentAlignment.TopCenter
-                    }
+                    TextAlign = ContentAlignment.TopCenter
                 },
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "韦一敏,这盛世如你所愿(顶部居左)", Color.Red)
                 {
-                    Image = Properties.Resources.bg7,
-                    Text = "韦一敏,这盛世如你所愿(顶部居左)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        ForeColor = Color.Red,
-                        TextAlign = ContentAlignment.TopLeft
-                    }
+                    TextAlign = ContentAlignment.TopLeft
                 },
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "这叫艺术(顶部居右)")
                 {
-                    Image = Properties.Resources.bg2,
-                    Text = "这叫艺术(顶部居右)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        TextAlign = ContentAlignment.TopRight
-                    }
+                    TextAlign = ContentAlignment.TopRight
                 },
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "绿绿的树叶(中部居中)", Color.Green)
                 {
-                    Image = Properties.Resources.bg1,
-                    Text = "绿绿的树叶(中部居中)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        ForeColor = Color.Green,
-                        TextAlign = ContentAlignment.MiddleCenter
-                    }
+                    TextAlign = ContentAlignment.MiddleCenter
                 },
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "韦一敏,这盛世如你所愿(中部居左)", Color.Red)
                 {
-                    Image = Properties.Resources.bg7,
-                    Text = "韦一敏,这盛世如你所愿(中部居左)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        ForeColor = Color.Red,
-                        TextAlign = ContentAlignment.MiddleLeft
-                    }
+                    TextAlign = ContentAlignment.MiddleLeft
                 },
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "这叫艺术(中部居右)")
                 {
-                    Image = Properties.Resources.bg2,
-                    Text = "这叫艺术(中部居右)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        TextAlign = ContentAlignment.MiddleRight
-                    }
+                    TextAlign = ContentAlignment.MiddleRight
                 },
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "绿绿的树叶(底部居中)", Color.Green)
                 {
-                    Image = Properties.Resources.bg1,
-                    Text = "绿绿的树叶(底部居中)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        ForeColor = Color.Green,
-                        TextAlign = ContentAlignment.BottomCenter
-                    }
+                    TextAlign = ContentAlignment.BottomCenter
                 },
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "韦一敏,这盛世如你所愿(底部居左)",Color.Red)
                 {
-                    Image = Properties.Resources.bg7,
-                    Text = "韦一敏,这盛世如你所愿(底部居左)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        ForeColor = Color.Red,
-                        TextAlign = ContentAlignment.BottomLeft
-                    }
+                    TextAlign = ContentAlignment.BottomLeft
                 },
-                new AntdUI.Preview.ImageTextContent()
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "这叫艺术(底部居右)")
                 {
-                    Image = Properties.Resources.bg2,
-                    Text = "这叫艺术(底部居右)",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        TextAlign = ContentAlignment.BottomRight
-                    }
-                }
-                ,
-                new AntdUI.Preview.ImageTextContent()
+                    TextAlign = ContentAlignment.BottomRight
+                },
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7)
                 {
-                    Image = Properties.Resources.bg7,
                     Text = "这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行,这个是自动换行",
-                    TextStyle = new AntdUI.Preview.TextStyle()
-                    {
-                        TextAlign = ContentAlignment.BottomLeft
-                    }
+                    TextAlign = ContentAlignment.BottomLeft
                 }
             };
             AntdUI.Preview.open(new AntdUI.Preview.Config(form, imgTextList));
