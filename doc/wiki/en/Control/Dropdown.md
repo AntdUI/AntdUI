@@ -1,31 +1,30 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Dropdown
+👚
 
-Dropdown 选择器 👚
+> A dropdown list. Inherited from [Button](Button)
 
-> 向下弹出的列表。继承于 [Button](Button)
+- DefaultProperty：Text
+- DefaultEvent：SelectedValueChanged
 
-- 默认属性：Text
-- 默认事件：SelectedValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**ListAutoWidth** | 列表自动宽度 | bool | true |
-**Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
-**MaxCount** | 列表最多显示条数 | int | 4 |
-**DropDownRadius** 🔴 | 下拉圆角 | int`?` | `null` |
-**DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**DropDownPadding** | 下拉边距 | Size | 12, 5 |
-**ClickEnd** | 点击到最里层 `无节点才能点击` | bool | false |
+**ListAutoWidth** | List automatic width | bool | true |
+**Trigger** | Trigger dropdown behavior | [Trigger](Enum.md#trigger) | Click |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+**MaxCount** | Maximum of displayed items in the list | int | 4 |
+**DropDownRadius** 🔴 | Pull down rounded corner | int`?` | `null` |
+**DropDownArrow** | Is the dropdown arrow displayed | bool | false |
+**DropDownPadding** | Pull down margin | Size | 12, 5 |
+**ClickEnd** | Click to the end | bool | false |
 ||||
-**Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |
+**Items** | Data [More Styles](../DropdownStyles.md) | object[] | [] |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectedValueChanged** | SelectedValue 属性值更改时发生 | void | object? value `数值` |
+**SelectedValueChanged** | Occurred when the SelectedValue property value is changed | void | object? value |

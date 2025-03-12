@@ -1,84 +1,82 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Select
+👚
 
-Select 选择器 👚
+> A dropdown menu for displaying choices. Inherited from [Input](Input)
 
-> 下拉选择器。继承于 [Input](Input)
+- DefaultProperty：Text
+- DefaultEvent：SelectedIndexChanged
 
-- 默认属性：Text
-- 默认事件：SelectedIndexChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**List** | 是否列表样式 `与Dropdown一样` | bool | false |
-**ListAutoWidth** | 是否列表自动宽度 | bool | true |
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
-**MaxCount** | 列表最多显示条数 | int | 4 |
-**DropDownRadius** 🔴 | 下拉圆角 | int`?` | `null` |
-**DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**DropDownPadding** | 下拉边距 | Size | 12, 5 |
-**ClickEnd** | 点击到最里层 `无节点才能点击` | bool | false |
-**ClickSwitchDropdown** | 点击切换下拉 | bool | true |
-**CloseIcon** 🔴 | 是否显示关闭图标 | bool | false |
+**List** | Is it a list style `Like Dropdown` | bool | false |
+**ListAutoWidth** | List automatic width | bool | true |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+**MaxCount** | Maximum of displayed items in the list | int | 4 |
+**DropDownRadius** 🔴 | Pull down rounded corner | int`?` | `null` |
+**DropDownArrow** | Is the dropdown arrow displayed | bool | false |
+**DropDownPadding** | Pull down margin | Size | 12, 5 |
+**ClickEnd** | Click to the end | bool | false |
+**ClickSwitchDropdown** | Click to switch dropdown menu | bool | true |
+**CloseIcon** 🔴 | Display close icon | bool | false |
 ||||
-**Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |
-**SelectedIndex** | 选中序号 | int | -1 |
-**SelectedValue** | 选中值 | object`?` | `null` |
+**Items** | Data [More Styles](../DropdownStyles.md) | object[] | [] |
+**SelectedIndex** | Select Index | int | -1 |
+**SelectedValue** | Select Value | object`?` | `null` |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectedIndexChanged** | SelectedIndex 属性值更改时发生 | void | int index `序号` |
-**SelectedIndexsChanged** | 多层树结构更改时发生 | void | int x `第几列`, int y `第几行` |
-**SelectedValueChanged** | SelectedValue 属性值更改时发生 | void | object? value `数值` |
-**FilterChanged** | 控制筛选 Text更改时发生 | IList<object>`?` | string value `搜索内容` |
-**ClosedItem** | 关闭某项 时发生 | void | object? value `数值` |
+**SelectedIndexChanged** | Occurred when the SelectedIndex property value is changed | void | int index |
+**SelectedIndexsChanged** | Occurred when changing the multi-layer tree structure | void | int x `Column`, int y `Row` |
+**SelectedValueChanged** | Occurred when the SelectedValue property value is changed | void | object? value |
+**FilterChanged** | Control filter Text changes that occur | IList<object>`?` | string value `Search For` |
+**ClosedItem** | Occurred when closing a certain item | void | object? value |
 
 
 ***
 
 
 ## SelectMultiple
+👚
 
-Select 多选器 👚
+> Pull down selector. Inherited from [Input](Input)
 
-> 下拉多选器。继承于 [Input](Input)
+- DefaultProperty：Text
+- DefaultEvent：SelectedValueChanged
 
-- 默认属性：Text
-- 默认事件：SelectedValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoHeight** 🔴 | 自动高度 | bool | false |
-**Gap** 🔴 | 间距 | int | 2 |
-**List** | 是否列表样式 `与Dropdown一样` | bool | false |
-**ListAutoWidth** | 是否列表自动宽度 | bool | true |
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
-**MaxCount** | 列表最多显示条数 | int | 4 |
-**MaxChoiceCount** | 最大选中数量 | int | 0 |
-**DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**DropDownPadding** | 下拉边距 | Size | 12, 5 |
-**CheckMode** | 复选框模式 | bool | false |
-**CanDelete** | 是否可以删除 | bool | true |
+**AutoHeight** 🔴 | Automatic height | bool | false |
+**Gap** 🔴 | Gap | int | 2 |
+**List** | Is it a list style `Like Dropdown` | bool | false |
+**ListAutoWidth** | List automatic width | bool | true |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+**MaxCount** | Maximum of displayed items in the list | int | 4 |
+**MaxChoiceCount** | Maximum selected quantity | int | 0 |
+**DropDownArrow** | Is the dropdown arrow displayed | bool | false |
+**DropDownPadding** | Pull down margin | Size | 12, 5 |
+**CheckMode** | Checkbox mode | bool | false |
+**CanDelete** | Can it be deleted | bool | true |
 ||||
-**Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |
-**SelectedValue** | 选中值 | object[] | |
+**Items** | Data [More Styles](../DropdownStyles.md) | object[] | [] |
+**SelectedValue** | Select Value | object[] | |
 
-### 方法
+### Method
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectAllItems** | 全选项目 | void | |
-**ClearSelect** | 清空选中 | void | |
+**SelectAllItems** | Select all projects | void | |
+**ClearSelect** | Clear Selection | void | |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectedValueChanged** | SelectedValue 属性值更改时发生 | void | object[] value `数组` |
+**SelectedValueChanged** | Occurred when the SelectedValue property value is changed | void | object[] value |

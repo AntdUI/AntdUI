@@ -1,39 +1,36 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## WindowBar
+👚
 
-WindowBar 窗口栏 👚
+- DefaultProperty：Text
+- DefaultEvent：Click
 
-> 窗口栏。
+### Property
 
-- 默认属性：Text
-- 默认事件：Click
-
-### 属性
-
-名称 | 描述 | 类型 | 默认值 | 
+Name | Description | Type | Default Value | 
 :--|:--|:--|:--|
-**Mode** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
-**Loading** | 加载状态 | bool | false |
+**Mode** | Color mode | [TAMode](Enum.md#tamode) | Auto |
+**Loading** | Loading State | bool | false |
 ||||
-**Text** | 文本 | string`?` | `null` |
-**SubText** | 副标题 | string`?` | `null` |
+**Text** | Text | string`?` | `null` |
+**SubText** | Subtext | string`?` | `null` |
 ||||
-**ShowIcon** | 是否显示图标 | bool | true |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string | `null` |
+**ShowIcon** | Display icon or not | bool | true |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string | `null` |
 ||||
-**MaximizeBox** | 是否显示最大化按钮 | bool | true |
-**MinimizeBox** | 是否显示最小化按钮 | bool | true |
-**DragMove** | 是否可以拖动位置 | bool | true |
-**CloseSize** | 关闭按钮大小 | int | 48 |
+**MaximizeBox** | Do you want to display the maximize button | bool | true |
+**MinimizeBox** | Whether to display the minimize button | bool | true |
+**DragMove** | Can I drag the position | bool | true |
+**CloseSize** | Close button size | int | 48 |
 ||||
-**UseLeft** | 左侧使用 | int | 0 |
-**UseSystemStyleColor** | 使用系统颜色 | bool | false |
-**DividerMargin** 🔴 | 线边距 | int | 0 |
+**UseLeft** | Use pixels on the left side | int | 0 |
+**UseSystemStyleColor** | Use system colors | bool | false |
+**DividerMargin** | Line and margin at both ends | int | 0 |
 ||||
-**DividerShow** 🔴 | 显示线 | bool | false |
-**DividerColor** 🔴 | 线颜色 | Color`?` | `null` |
-**DividerThickness** 🔴 | 线厚度 | float | 1F |
+**DividerShow** | Display the dividing line at the bottom | bool | false |
+**DividerColor** | Line color | Color`?` | `null` |
+**DividerThickness** | Line thickness | float | 1F |
 ||||
-**CancelButton** 🔴 | 点击退出关闭 | bool | false |
+**CancelButton** | Click to exit and close | bool | false |

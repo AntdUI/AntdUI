@@ -1,54 +1,53 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## PageHeader
+👚
 
-PageHeader 页头 👚
+> A header with common actions and design elements built in.
 
-> 页头位于页容器中，页容器顶部，起到了内容概览和引导页级操作的作用。包括由面包屑、标题、页面内容简介、页面级操作等、页面级导航组成。
+- DefaultProperty：Text
+- DefaultEvent：Click
 
-- 默认属性：Text
-- 默认事件：Click
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Mode** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
-**Loading** | 加载状态 | bool | false |
-**BackExtend** | 背景渐变色 | string`?` | `null` |
+**Mode** | Color mode | [TAMode](Enum.md#tamode) | Auto |
+**Loading** | Loading State | bool | false |
+**BackExtend** | Background gradient color | string`?` | `null` |
 ||||
-**Text** | 文本 | string`?` | `null` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**SubText** | 副标题 | string`?` | `null` |
-🌏 **LocalizationSubText** | 国际化副标题 | string`?` | `null` |
-**Description** | 描述文本 | string`?` | `null` |
-🌏 **LocalizationDescription** | 国际化描述文本 | string`?` | `null` |
-**UseTitleFont** | 使用标题大小 | bool | false |
-**UseTextBold** | 标题使用粗体 | bool | true |
-**UseSubCenter** 🔴 | 副标题居中 | bool | false |
-**UseLeftMargin** 🔴 | 使用左边边距 | bool | true |
-**SubFont** | 副标题字体 | Font`Font` | `null` |
+**Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**SubText** | Subtext | string`?` | `null` |
+🌏 **LocalizationSubText** | International Subtext | string`?` | `null` |
+**Description** | Description text | string`?` | `null` |
+🌏 **LocalizationDescription** | International Description text | string`?` | `null` |
+**UseTitleFont** | Use title font size | bool | false |
+**UseTextBold** | Title in bold | bool | true |
+**UseSubCenter** 🔴 | Subtext centered | bool | false |
+**UseLeftMargin** 🔴 | Use left margin | bool | true |
+**SubFont** | Subtext font | Font`Font` | `null` |
 ||||
-**Gap** | 间隔 | int`?` | `null` |
-**SubGap** | 副标题与标题间隔 | int | 6 |
+**Gap** | Gap | int`?` | `null` |
+**SubGap** | Subtitle and title spacing | int | 6 |
 ||||
-**ShowIcon** | 是否显示图标 | bool | false |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string | `null` |
-**IconRatio** | 图标比例 | float`?` | `null` |
+**ShowIcon** | Display icon or not | bool | false |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string | `null` |
+**IconRatio** | Icon Scale | float`?` | `null` |
 ||||
-**ShowBack** | 是否显示返回按钮 | bool | false |
-**ShowButton** | 是否显示标题栏按钮 | bool | false |
-**MaximizeBox** | 是否显示最大化按钮 | bool | true |
-**MinimizeBox** | 是否显示最小化按钮 | bool | true |
-**FullBox** | 是否显示全屏按钮 | bool | false |
-**DragMove** | 是否可以拖动位置 | bool | true |
-**CloseSize** | 关闭按钮大小 | int | 48 |
+**ShowBack** | Whether to display the return button | bool | false |
+**ShowButton** | Display title bar button or not | bool | false |
+**MaximizeBox** | Do you want to display the maximize button | bool | true |
+**MinimizeBox** | Whether to display the minimize button | bool | true |
+**FullBox** | Whether to display the full screen button | bool | false |
+**DragMove** | Can I drag the position | bool | true |
+**CloseSize** | Close button size | int | 48 |
 ||||
-**UseSystemStyleColor** | 使用系统颜色 | bool | false |
-**CancelButton** | 点击退出关闭 | bool | false |
+**UseSystemStyleColor** | Use system colors | bool | false |
+**CancelButton** | Click to exit and close | bool | false |
 ||||
-**DividerShow** | 显示线 | bool | false |
-**DividerColor** | 线颜色 | Color`?` | `null` |
-**DividerThickness** | 线厚度 | float | 1F |
-**DividerMargin** | 线边距 | int | 0 |
+**DividerShow** | Display the dividing line at the bottom | bool | false |
+**DividerColor** | Line color | Color`?` | `null` |
+**DividerThickness** | Line thickness | float | 1F |
+**DividerMargin** | Line and margin at both ends | int | 0 |

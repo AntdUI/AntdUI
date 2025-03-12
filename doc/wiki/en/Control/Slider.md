@@ -1,77 +1,75 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Slider
+👚
 
-Slider 滑动输入条 👚
+> A Slider component for displaying current value and intervals in range.
 
-> 滑动型输入器，展示当前值和可选范围。
+- DefaultProperty：Value
+- DefaultEvent：ValueChanged
 
-- 默认属性：Value
-- 默认事件：ValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fill** | 颜色 | Color`?` | `null` |
-**FillHover** | 悬停颜色 | Color`?` | `null` |
-**FillActive** | 激活颜色 | Color`?` | `null` |
-**TrackColor** 🔴 | 滑轨颜色 | Color`?` | `null` |
+**Fill** | Colour | Color`?` | `null` |
+**FillHover** | Hover color | Color`?` | `null` |
+**FillActive** | Activate color | Color`?` | `null` |
+**TrackColor** 🔴 | Slide color | Color`?` | `null` |
 ||||
-**MinValue** | 最小值 | int | 0 |
-**MaxValue** | 最大值 | int | 100 |
-**Value** | 当前值 | int | 0 |
+**MinValue** | Minimum value | int | 0 |
+**MaxValue** | Maximum value | int | 100 |
+**Value** | Current value | int | 0 |
 ||||
-**Align** | 方向 | [TAlignMini](Enum.md#talignmini) | Left |
-**ShowValue** | 是否显示数值 | bool | false |
-**LineSize** | 线条粗细 | int | 4 |
-**DotSize** | 点大小 | int | 10 |
-**DotSizeActive** | 点激活大小 | int | 12 |
+**Align** | Align | [TAlignMini](Enum.md#talignmini) | Left |
+**ShowValue** | Whether to display numerical values | bool | false |
+**LineSize** | line Thickness | int | 4 |
+**DotSize** | Dot size | int | 10 |
+**DotSizeActive** | Click to activate size | int | 12 |
 ||||
-**Dots** | 是否只能拖拽到刻度上 | bool | false |
-**Marks** | 刻度标记 `SliderMarkItem[]` | [SliderMarkItem[]](#slidermarkitem) | [] |
-**MarkTextGap** | 刻度文本间距 | int | 4 |
+**Dots** | Can only be dragged onto the scale | bool | false |
+**Marks** | Tick marks `SliderMarkItem[]` | [SliderMarkItem[]](#slidermarkitem) | [] |
+**MarkTextGap** | Scale text spacing | int | 4 |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ValueChanged** | Value 属性值更改时发生 | void | int value `当前值` |
-**ValueFormatChanged** | Value格式化时发生 `ShowValue = true 发生` | string | int value `当前值` |
+**ValueChanged** | Occurred when the value of the Value property is changed | void | int value |
+**ValueFormatChanged** | Occurred during Value formatting `ShowValue = true occur` | string | int value |
 
 
-### 数据
+### Data
 
 #### SliderMarkItem
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Value** | 值 | int | 0 |
-**Fore** | 文本颜色 | Color`?` | `null` |
-**Text** | 文本 | string`?` | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Value** | Value | int | 0 |
+**Fore** | Text color | Color`?` | `null` |
+**Text** | Text | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
 
 
 ***
 
 
 ## SliderRange
+👚
 
-SliderRange 滑动范围输入条 👚
+> A Slider component for displaying current value and intervals in range. Inherited from [Slider](Slider)
 
-> 滑动型输入器，展示当前值和可选范围 [Slider](Slider)
+- DefaultProperty：Value
+- DefaultEvent：ValueChanged
 
-- 默认属性：Value
-- 默认事件：ValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Value2** | 当前值2 | int | 10 |
+**Value2** | Value2 | int | 10 |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**Value2Changed** | Value 属性值更改时发生 | void | DateTime[]? value `控件当前日期` |
+**Value2Changed** | Occurred when the value of the Value2 property is changed | void | int value2 |

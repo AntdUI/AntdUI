@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## Badge
 
@@ -23,5 +23,5 @@ Badge 徽标数 👚
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **TextAlign** | 文本位置 | ContentAlignment | MiddleCenter |
 ||||
-**DotRatio** | 点比例 🔴 | float | 0.4F |
-**Gap** | 间隔 🔴 | int | 0 |
+**DotRatio** 🔴 | 点比例 | float | 0.4F |
+**Gap** 🔴 | 间隔 | int | 0 |

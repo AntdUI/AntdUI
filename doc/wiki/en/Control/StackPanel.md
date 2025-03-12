@@ -1,17 +1,16 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## StackPanel
+👚
 
-StackPanel 堆栈布局 👚
+- DefaultProperty：Vertical
 
-- 默认属性：Vertical
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoScroll** | 是否显示滚动条 | bool | false |
-**Vertical** | 是否垂直方向 | bool | false |
-**ItemSize** | 内容大小 | string`?` | `null` |
-**Gap** | 间距 | int | 0 |
-**PauseLayout** | 暂停布局 | bool | false ||
+**AutoScroll** | Display scrollbar or not | bool | false |
+**Vertical** | Is it in the vertical direction | bool | false |
+**ItemSize** | Content size | string`?` | `null` |
+**Gap** | Gap | int | 0 |
+**PauseLayout** | Pause Layout | bool | false ||

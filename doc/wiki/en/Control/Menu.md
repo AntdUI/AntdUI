@@ -1,79 +1,78 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Menu
+👚
 
-Menu 导航菜单 👚
+> A versatile menu for navigation.
 
-> 为页面和功能提供导航的菜单列表。
+- DefaultProperty：Items
+- DefaultEvent：SelectChanged
 
-- 默认属性：Items
-- 默认事件：SelectChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**ForeActive** | 激活字体颜色 | Color`?` | `null` |
-**BackHover** | 悬停背景颜色 | Color`?` | `null` |
-**BackActive** | 激活背景颜色 | Color`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
+**ForeActive** | Activate Text color | Color`?` | `null` |
+**BackHover** | Hover background color | Color`?` | `null` |
+**BackActive** | Activate background color | Color`?` | `null` |
 ||||
-**Radius** | 圆角 | int | 6 |
-**Round** | 圆角样式 | bool | false |
-**Indent** | 常规缩进 `和Tree那样缩进` | bool | false |
-**ShowSubBack** | 显示子菜单背景 | bool | false |
-**Unique** | 只保持一个子菜单的展开 | bool | false |
-**Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
-**Gap** | 间距 | int | 0 |
-**IconRatio** | 图标比例 | float | 1.2F |
+**Radius** | Rounded corners | int | 6 |
+**Round** | Rounded corner style | bool | false |
+**Indent** | Tree like indentation | bool | false |
+**ShowSubBack** | Display submenu background | bool | false |
+**Unique** | Keep only one submenu expanded | bool | false |
+**Trigger** | Trigger dropdown behavior | [Trigger](Enum.md#trigger) | Click |
+**Gap** | Gap | int | 0 |
+**IconRatio** | Icon Scale | float | 1.2F |
 ||||
-**Theme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
-**Mode** | 菜单类型 | [TMenuMode](Enum.md#tmenumode) | Inline |
-**AutoCollapse** | 自动折叠 | bool | false |
-**Collapsed** | 是否折叠 | bool | false |
+**Theme** | Color mode | [TAMode](Enum.md#tamode) | Auto |
+**Mode** | Menu Type | [TMenuMode](Enum.md#tmenumode) | Inline |
+**AutoCollapse** | Auto Collapse | bool | false |
+**Collapsed** | Whether to fold or not | bool | false |
 ||||
-**Items** | 数据 `MenuItem[]` | [MenuItem[]](#menuitem) | [] |
+**Items** | Data `MenuItem[]` | [MenuItem[]](#menuitem) | [] |
 ||||
-**PauseLayout** | 暂停布局 | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectChanged** | Select 属性值更改时发生 | void | [MenuItem](#menuitem) item `数值` |
+**SelectChanged** | Occurred when the value of the Select attribute is changed | void | [MenuItem](#menuitem) item |
 
-### 方法
+### Method
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectIndex** | 选中第一层 | void | int index `序号`, bool focus `设置焦点` = true |
-**SelectIndex** | 选中第二层 | void | int i1 `序号1` , int i2 `序号2`, bool focus `设置焦点` = true |
-**SelectIndex** | 选中第三次 | void | int i1 `序号1` , int i2 `序号2`  , int i3 `序号3`, bool focus `设置焦点` = true |
+**SelectIndex** | Select the first layer | void | int index, bool focus `set focus` = true |
+**SelectIndex** | Select the second layer | void | int i1 `index 1` , int i2 `index 2`, bool focus `set focus` = true |
+**SelectIndex** | Select the third layer | void | int i1 `index 1` , int i2 `index 2`  , int i3 `index 3`, bool focus `set focus` = true |
 ||||
-**Select** | 选中菜单 | void | MenuItem item `项`, bool focus `设置焦点` = true |
-**Remove** | 移除菜单 | void | MenuItem item `项` |
+**Select** | Select menu | void | MenuItem item, bool focus `set focus` = true |
+**Remove** | Remove menu | void | MenuItem item |
 
 
-### 数据
+### Data
 
 #### MenuItem
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string | `null` |
-**IconActive** | 图标激活 | Image`?` | `null` |
-**IconActiveSvg** | 图标激活SVG | string | `null` |
-**Text** | 文本 | string | `必填` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**Font** | 自定义字体 | Font`?` | `null` |
-**Visible** | 是否显示 | bool | true |
-**Enabled** | 禁用状态 | bool | true |
-**Select** | 是否选中 | bool | false |
-**Expand** | 展开 | bool | true |
-**CanExpand** | 是否可以展开 | bool | `只读` |
-**Sub** | 子集合 ♾️ | [MenuItem[]](#menuitem) | [] |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string | `null` |
+**IconActive** | Icon activate | Image`?` | `null` |
+**IconActiveSvg** | Icon activate SVG | string | `null` |
+**Text** | Text | string | `Required` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**Font** | Custom Font | Font`?` | `null` |
+**Visible** | Is it displayed | bool | true |
+**Enabled** | Enable | bool | true |
+**Select** | Select | bool | false |
+**Expand** | Expand | bool | true |
+**CanExpand** | Can it be expanded | bool | `Read only` |
+**Sub** | Subset ♾️ | [MenuItem[]](#menuitem) | [] |
+**Tag** | User defined data | object`?` | `null` |
 ||||
-**PARENTITEM** | 父级对象 | [MenuItem](#menuitem)`?` | `null` |
+**PARENTITEM** | Parent object | [MenuItem](#menuitem)`?` | `null` |

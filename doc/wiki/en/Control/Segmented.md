@@ -1,78 +1,77 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Segmented
+👚
 
-Segmented 分段控制器 👚
+> Display multiple options and allow users to select a single option.
 
-> 分段控制器。
+- DefaultProperty：Items
+- DefaultEvent：SelectIndexChanged
 
-- 默认属性：Items
-- 默认事件：SelectIndexChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
+**OriginalBackColor** | Original background color | Color | Transparent |
 ||||
-**AutoSize** | 自动大小 | bool | false |
+**AutoSize** | Auto Size | bool | false |
 ||||
-**Full** | 是否铺满 | bool | false |
-**Radius** | 圆角 | int | 6 |
-**Round** | 圆角样式 | bool | false |
+**Full** | Is it fully covered | bool | false |
+**Radius** | Rounded corners | int | 6 |
+**Round** | Rounded corner style | bool | false |
 ||||
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**ForeHover** | 悬停文字颜色 | Color`?` | `null` |
-**ForeActive** | 激活文字颜色 | Color`?` | `null` |
-**BackColor** | 背景颜色 | Color`?` | `null` |
-**BackHover** | 悬停背景颜色 | Color`?` | `null` |
-**BackActive** | 激活背景颜色 | Color`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
+**ForeHover** | Hover text color | Color`?` | `null` |
+**ForeActive** | Activate text color | Color`?` | `null` |
+**BackColor** | Background color | Color`?` | `null` |
+**BackHover** | Hover background color | Color`?` | `null` |
+**BackActive** | Activate background color | Color`?` | `null` |
 ||||
-**Gap** | 间距 | int | 0 |
-**Vertical** | 是否竖向 | bool | false |
-**IconAlign** | 图标对齐方向 | [TAlignMini](Enum.md#talignmini) | Top |
-**IconRatio** | 图标比例 | float`?` | `null` |
-**IconGap** | 图标与文字间距比例 | float | 0.2F |
+**Gap** | Gap | int | 0 |
+**Vertical** | Is it vertical | bool | false |
+**IconAlign** | Icon alignment direction | [TAlignMini](Enum.md#talignmini) | Top |
+**IconRatio** | Icon Scale | float`?` | `null` |
+**IconGap** | Ratio of icon to text spacing | float | 0.2F |
 ||||
-**BarPosition** | 线条位置 | [TAlignMini](Enum.md#talignmini) | None |
-**BarSize** | 条大小 | float | 3F |
-**BarPadding** | 条边距 | int | 0 |
-**BarRadius** | 条圆角 | int | 0 |
+**BarPosition** | Bar position | [TAlignMini](Enum.md#talignmini) | None |
+**BarSize** | Bar size | float | 3F |
+**BarPadding** | Bar padding | int | 0 |
+**BarRadius** | Bar rounded corners | int | 0 |
 ||||
-**Items** | 集合 `SegmentedItem[]` | [SegmentedItem[]](#segmenteditem) | [] |
-**SelectIndex** | 选择序号 | int | 0 |
+**Items** | Set `SegmentedItem[]` | [SegmentedItem[]](#segmenteditem) | [] |
+**SelectIndex** | Select Index | int | 0 |
 ||||
-**PauseLayout** | 暂停布局 | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectIndexChanged** | SelectIndex 属性值更改时发生 | void | int index `序号` |
-**ItemClick** | 项点击时发生 | void | MouseEventArgs e `点击`, SegmentedItem value |
+**SelectIndexChanged** | Occurred when the SelectIndex property value is changed | void | int index |
+**ItemClick** | Occurrence upon item click | void | MouseEventArgs e, SegmentedItem value |
 
-### 数据
+### Data
 
 #### SegmentedItem
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
-**IconActive** | 图标激活 | Image`?` | `null` |
-**IconActiveSvg** | 图标激活SVG | string`?` | `null` |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**IconActive** | Icon activate | Image`?` | `null` |
+**IconActiveSvg** | Icon activate SVG | string`?` | `null` |
 |||||
-**Text** | 文本 | string`?` | `null` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**Enabled** | 使能 | bool | true |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**Enabled** | Enable | bool | true |
+**Tag** | User defined data | object`?` | `null` |
 ||||
-**Badge** | 徽标文本 | string`?` | `null` |
-**BadgeSvg** | 徽标SVG | string`?` | `null` |
-**BadgeAlign** | 徽标方向 | [TAlignFrom](Enum.md#talignfrom) | TR |
-**BadgeSize** | 徽标大小 | float | 0.6F |
-**BadgeMode** | 徽标模式（镂空） | bool | false |
-**BadgeOffsetX** | 徽标偏移X | float | 0 |
-**BadgeOffsetY** | 徽标偏移Y | float | 0 |
-**BadgeBack** | 徽标背景颜色 | Color`?` | `null` |
+**Badge** | Badge text | string`?` | `null` |
+**BadgeSvg** | Badge SVG | string`?` | `null` |
+**BadgeAlign** | Badge align | [TAlignFrom](Enum.md#talignfrom) | TR |
+**BadgeSize** | Badge size | float | 0.6F |
+**BadgeMode** | Badge mode (hollow out) | bool | false |
+**BadgeOffsetX** | Badge offset X | float | 0 |
+**BadgeOffsetY** | Badge offset Y | float | 0 |
+**BadgeBack** | Badge background color | Color`?` | `null` |

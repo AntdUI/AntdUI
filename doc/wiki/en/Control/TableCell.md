@@ -1,134 +1,136 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
-[返回 Table](Table.md)
+[Return to Table](Table.md)
 
 ## ICell
 
-> 丰富的单元格
+> Rich Cells
 
 #### CellText
 
-> 文字
+> Text
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Back** | 背景颜色 | Color`?` ||
-**Font** | 字体 | Font`?` ||
+**Fore** | Font color | Color`?` ||
+**Back** | Background color | Color`?` ||
+**Font** | Font | Font`?` ||
 ||||
-**IconRatio** | 图标比例 | float | 0.7F |
-**Prefix** | 前缀 | Image`?` ||
-**PrefixSvg** | 前缀SVG | string`?` ||
-**Suffix** | 后缀 | Image`?` ||
-**SuffixSvg** | 后缀SVG | string`?` ||
+**IconRatio** | Icon Scale | float | 0.7F |
+**Prefix** | Prefix | Image`?` ||
+**PrefixSvg** | Prefix SVG | string`?` ||
+**Suffix** | Suffix | Image`?` ||
+**SuffixSvg** | Suffix SVG | string`?` ||
 ||||
-**Text** | 文本 | string`?` ||
+**Text** | Text | string`?` ||
 
 #### CellBadge
 
-> 徽标
+> Badge
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Fill** | 颜色 | Color`?` ||
+**Fore** | Font color | Color`?` ||
+**Fill** | Colour | Color`?` ||
 ||||
-**State** | 状态 | [TState](Enum.md#tstate) | Default |
-**Text** | 文本 | string`?` |
+**State** | State | [TState](Enum.md#tstate) | Default |
+**Text** | Text | string`?` |
 
 #### CellTag
 
-> 标签
+> Tag
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Back** | 背景颜色 | Color`?` ||
-**BorderWidth** | 边框宽度 | float |1F|
+**Fore** | Font color | Color`?` ||
+**Back** | Background color | Color`?` ||
+**BorderWidth** | Border width | float |1F|
 ||||
-**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
-**Text** | 文本 | string`?` ||
+**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
+**Text** | Text | string`?` ||
 
 #### CellImage
 
-> 图片
+> Image
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**BorderColor** | 边框颜色 | Color`?` ||
-**BorderWidth** | 边框宽度 | float |0F|
-**Radius** | 圆角 | int |6|
+**BorderColor** | Border color | Color`?` ||
+**BorderWidth** | Border width | float |0F|
+**Radius** | Rounded corners | int |6|
 ||||
-**Round** | 圆角样式 | bool |false|
-**Size** | 自定义大小 | Size`?` ||
+**Round** | Rounded corner style | bool |false|
+**Size** | Custom size | Size`?` ||
 ||||
-**Image** | 图片 | Image`?` | `null` |
-**ImageSvg** | 图片SVG | string`?` | `null` |
-**FillSvg** | SVG填充颜色 | Color`?` ||
-**ImageFit** | 图片布局 | [TFit](Enum.md#tfit) | Fill |
+**Image** | Image | Image`?` | `null` |
+**ImageSvg** | Image SVG | string`?` | `null` |
+**FillSvg** | SVG Fill Color | Color`?` ||
+**ImageFit** | Image layout | [TFit](Enum.md#tfit) | Fill |
 ||||
-**Tooltip** | 文本提示 | string`?` ||
+**Tooltip** | Text Tips | string`?` ||
 
 #### CellButton
 
-> 按钮，继承于 [CellLink](#celllink)
+> Button，Inherited from [CellLink](#celllink)
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Back** | 背景颜色 | Color`?` ||
-**BackHover** | 悬停背景颜色 | Color`?` ||
-**BackActive** | 激活背景颜色 | Color`?` ||
+**Fore** | Font color | Color`?` ||
+**Back** | Background color | Color`?` ||
+**BackHover** | Hover background color | Color`?` ||
+**BackActive** | Activate background color | Color`?` ||
 ||||
-**DefaultBack** | Default模式背景颜色 | Color`?` ||
-**DefaultBorderColor** | Default模式边框颜色 | Color`?` ||
+**DefaultBack** | Default type background color | Color`?` ||
+**DefaultBorderColor** | Default type border color | Color`?` ||
 ||||
-**Radius** | 圆角 | int |6|
-**BorderWidth** | 边框宽度 | float |0F|
+**Radius** | Rounded corners | int |6|
+**BorderWidth** | Border width | float |0F|
 ||||
-**IconRatio** | 图标比例 | float | 0.7F |
-**Image** | 图像 | Image`?` | `null` |
-**ImageSvg** | 图像SVG | string`?` | `null` |
-**ImageHover** | 悬停图像 | Image`?` | `null` |
-**ImageHoverSvg** | 悬停图像SVG | string`?` | `null` |
-**ImageHoverAnimation** | 悬停图像动画时长 | int | 200 |
+**IconRatio** | Icon Scale | float | 0.7F |
+**IconGap** | Ratio of icon to text spacing | float | 0.25F |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**IconHover** | Hover icon | Image`?` | `null` |
+**IconHoverSvg** | Hover icon SVG | string`?` | `null` |
+**IconHoverAnimation** | Hover icon animation duration | int | 200 |
+**IconPosition** | Location of button icon components | [TAlignMini](Enum.md#talignmini) | Left |
 ||||
-**Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
-**Ghost** | 幽灵属性 `使按钮背景透明` | bool |false |
-**ShowArrow** | 显示箭头 | bool |false |
-**IsLink** | 箭头链接样式 | bool |false |
+**Shape** | Shape | [TShape](Enum.md#tshape) | Default |
+**Ghost** | Ghost attribute `Transparent button background` | bool | false |
+**ShowArrow** | Display arrows | bool | false |
+**IsLink** | Arrow Link Style | bool | false |
 ||||
-**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
-**Text** | 文本 | string`?` ||
+**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
+**Text** | Text | string`?` ||
 
 #### CellLink
 
-> 按钮
+> Link
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Id** | ID | string ||
-**Enabled** | 启用 | bool |true|
+**Enabled** | Enable | bool |true|
 ||||
-**Text** | 文本 | string`?` ||
-**TextAlign** | 文本位置 | ContentAlignment | MiddleCenter |
+**Text** | Text | string`?` ||
+**TextAlign** | Text position | ContentAlignment | MiddleCenter |
 ||||
-**Tooltip** | 文本提示 | string`?` ||
+**Tooltip** | Text Tips | string`?` ||
 
 #### CellProgress
 
-> 进度条
+> Progress
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Back** | 背景颜色 | Color`?` ||
-**Fill** | 进度条颜色 | Color`?` ||
+**Back** | Background color | Color`?` ||
+**Fill** | Progress bar color | Color`?` ||
 ||||
-**Radius** | 圆角 | int |6|
-**Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
+**Radius** | Rounded corners | int |6|
+**Shape** | Shape | [TShape](Enum.md#tshape) | Default |
 ||||
-**Value** | 进度条 `0.0-1.0` | float |0F|
+**Value** | Progress `0.0-1.0` | float |0F|
 
 #### CellDivider
 
-> 分割线
+> Divider

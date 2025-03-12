@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## Timeline
 
@@ -15,7 +15,7 @@ Timeline 时间轴 👚
 :--|:--|:--|:--|
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **FontDescription** | 描述字体 | Font`?` | `null` |
-**Gap** | 间距 🔴 | int`?` | `null` |
+**Gap** | 间距 | int`?` | `null` |
 ||||
 **Items** | 数据 `TimelineItem[]` | [TimelineItem[]](#timelineitem) | [] |
 ||||
@@ -37,7 +37,7 @@ Timeline 时间轴 👚
 **Name** | 名称 | string`?` | `null` |
 **Text** | 文本 | string | `必填` |
 **Icon** | 图标 | Image`?` | `null` |
-**IconSvg** 🔴 | 图标SVG | string`?` | `null` |
+**IconSvg** | 图标SVG | string`?` | `null` |
 **Visible** | 是否显示 | bool | true |
 **Description** | 详情描述 | string`?` | `null` |
 **Type** | 颜色类型 | [TTypeMini](Enum.md#ttypemini) | Primary |

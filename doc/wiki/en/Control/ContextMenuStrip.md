@@ -1,54 +1,50 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## ContextMenuStrip
 
-ContextMenuStrip 右键菜单
-
-> 右键菜单。
-
 ### ContextMenuStrip.Config
 
-> 配置右键菜单
+> Configure ContextMenuStrip
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Control** | 所属控件 | Form | `必填` |
-**Items** | 菜单内容 `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | [] |
-**Font** | 字体 | Font |`null`|
-**Radius** | 圆角 | int | 6 |
-**TopMost** | 是否置顶 | bool |false|
-**CallSleep** | 延迟回调 | int |0|
-**UFocus** | 是否抢占焦点 | bool |false|
-**Location** | 自定义坐标 | Point`?` |`null`|
-**Align** | 方向 | [TAlignFrom](Enum.md#talignfrom) | BR |
-**Call** | 点击回调 | Action<ContextMenuStripItem> | `必填` |
+**Control** | Belonging Control | Form | `Required` |
+**Items** | Menu content `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | [] |
+**Font** | Font | Font |`null`|
+**Radius** | Rounded corners | int | 6 |
+**TopMost** | Topped | bool |false|
+**CallSleep** | Delay callback | int |0|
+**UFocus** | Whether to seize the focus | bool |false|
+**Location** | Custom coordinates | Point`?` |`null`|
+**Align** | Align | [TAlignFrom](Enum.md#talignfrom) | BR |
+**Call** | Click on callback | Action<ContextMenuStripItem> | `Required` |
 
-### 数据
+### Data
 
 #### ContextMenuStripItem
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Text** | 文本 | string | `必填` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**SubText** | 子文本 | string`?` | `null` |
-🌏 **LocalizationSubText** | 国际化子文本 | string`?` | `null` |
-**Fore** | 文字颜色 | Color`?` | `null` |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
-**Enabled** 🔴 | 使能 | bool | true |
-**Checked** | 选中 | bool | false |
-**Sub** | 子项 `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Text** | Text | string | `Required` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**SubText** | Subtext | string`?` | `null` |
+🌏 **LocalizationSubText** | International Subtext | string`?` | `null` |
+**Fore** | Text color | Color`?` | `null` |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**Enabled** 🔴 | Enable | bool | true |
+**Checked** | Checked | bool | false |
+**Sub** | Sub item `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | `null` |
+**Tag** | User defined data | object`?` | `null` |
 
 #### ContextMenuStripItemDivider
 
-> 分割线
+> Divider
 
 ***
 
-### 示例
+### Example
 
 ![Demo](ContextMenuStripDemo.png)
 
@@ -157,6 +153,6 @@ var menulist = new AntdUI.IContextMenuStripItem[]
 };
 AntdUI.ContextMenuStrip.open(this, it =>
 {
-    Debug.WriteLine("点击内容：" + it.Text);
+    Debug.WriteLine("Click on the content：" + it.Text);
 }, menulist);
 ~~~

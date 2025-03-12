@@ -1,24 +1,23 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Signal
+👚
 
-Signal 信号强度 👚
+> Display device signals.
 
-> 展示设备信号。
+- DefaultProperty：Value
+- DefaultEvent：Click
 
-- 默认属性：Value
-- 默认事件：Click
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Value** | 信号强度 | int | 0 `0-5` |
+**Value** | Signal strength | int | 0 `0-5` |
 ||||
-**StyleLine** | 启用线样式 | bool | false |
-**Loading** 🔴 | 加载状态 | bool | false |
+**StyleLine** | Enable line style | bool | false |
+**Loading** 🔴 | Loading State | bool | false |
 ||||
-**Fill** | 填充颜色 | Color`?` | `null` |
-**FillFully** | 满格颜色 | Color`?` | `null` |
-**FillWarn** | 警告颜色 | Color`?` | `null` |
-**FillDanger** | 危险颜色 | Color`?` | `null` |
+**Fill** | Fill color | Color`?` | `null` |
+**FillFully** | Full grid color | Color`?` | `null` |
+**FillWarn** | Warning color | Color`?` | `null` |
+**FillDanger** | Dangerous colors | Color`?` | `null` |

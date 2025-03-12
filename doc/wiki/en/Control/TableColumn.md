@@ -1,73 +1,73 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
-[返回 Table](Table.md)
+[Return to Table](Table.md)
 
 ## Column
 
-> 多样表头
+> Diverse header
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Key** | 绑定名称 | string ||
-**Title** | 显示文字 | string ||
-🌏 **LocalizationTitle** | 国际化显示文字 | string`?` | `null` |
+**Key** | Bind field name | string ||
+**Title** | Display text | string ||
+🌏 **LocalizationTitle** | International Display text | string`?` | `null` |
 ||||
-**Visible** | 是否显示 | bool|true|
-**Align** | 对齐方式 | ColumnAlign |ColumnAlign.Left|
-**ColAlign** | 表头对齐方式 | ColumnAlign`?` | `null` |
-**Width** | 列宽度 | string`?` ||
-**MaxWidth** | 列最大宽度 | string`?` ||
+**Visible** | Is it displayed | bool|true|
+**Align** | Align | ColumnAlign |ColumnAlign.Left|
+**ColAlign** | Header Align | ColumnAlign`?` | `null` |
+**Width** | Column Width | string`?` ||
+**MaxWidth** | Maximum width of column | string`?` ||
 ||||
-**Fixed** | 列是否固定 | bool |false|
-**Ellipsis** | 超过宽度将自动省略 | bool |false|
-**LineBreak** | 自动换行 | bool |false|
-**ColBreak** | 表头自动换行 | bool |false|
-**SortOrder** | 启用排序 | bool |false|
-**SortMode** | 排序模式 | SortMode |NONE|
-**Editable** | 列可编辑 | bool |true|
-**DragSort** | 列可拖拽 | bool |true|
-**KeyTree** | 树形列 | string`?` ||
+**Fixed** | Is the column fixed | bool |false|
+**Ellipsis** | Exceeding the width will be automatically omitted | bool |false|
+**LineBreak** | Automatic line wrapping | bool |false|
+**ColBreak** | Automatic line wrapping in the header | bool |false|
+**SortOrder** | Enable sorting | bool |false|
+**SortMode** | Sort Mode | SortMode |NONE|
+**Editable** | Column editable | bool |true|
+**DragSort** | Column can be dragged and dropped | bool |true|
+**KeyTree** | Tree Column | string`?` ||
 ||||
-**Style** | 列样式 | CellStyleInfo`?` ||
-**ColStyle** | 标题列样式 | CellStyleInfo`?` ||
-**Render** | 插槽 | Func<object? `当前值`, object `行元数据`, int `行号`, object?>? | 返回格式化后数据 |
+**Style** | Column Style | CellStyleInfo`?` ||
+**ColStyle** | Title column style | CellStyleInfo`?` ||
+**Render** | SLOT | Func<object? `Current value`, object `Row metadata`, int `rowIndex`, object?>? | Return formatted data |
 
 #### ColumnCheck
 
-> 复选框表头。继承于 [Column](#column)
+> Checkbox header. Inherited from [Column](#column)
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Key** | 绑定名称 | string ||
-**AutoCheck** | 点击时自动改变选中状态 | bool | true |
-**全选** ||||
-**Checked** | 选中状态 | bool | false |
-**CheckState** | 选中状态 | CheckState | Unchecked |
+**Key** | Bind field name | string ||
+**AutoCheck** | Click to automatically change the selected status | bool | true |
 ||||
-**Call** | 复选回调 | Func<bool `改变后check值`, object? `行元数据`, int `行`, int `列`, bool>`?` | 返回最终选中值 |
+**Checked** | Checked state | bool | false |
+**CheckState** | Checked state | CheckState | Unchecked |
+||||
+**Call** | Checkbox callback | Func<bool `Check value after change`, object? `Row metadata`, int `rowIndex`, int `columnIndex`, bool>`?` | Return to the final Select Value |
 
 #### ColumnRadio
 
-> 单选框表头。继承于 [Column](#column)
+> Radio header. Inherited from [Column](#column)
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Key** | 绑定名称 | string ||
-**Title** | 显示文字 | string ||
-**AutoCheck** | 点击时自动改变选中状态 | bool | true |
-**Call** | 复选回调 | Func<bool `改变后check值`, object? `行元数据`, int `行`, int `列`, bool>`?` | 返回最终选中值 |
+**Key** | Bind field name | string ||
+**Title** | Display text | string ||
+**AutoCheck** | Click to automatically change the selected status | bool | true |
+**Call** | Checkbox callback | Func<bool `Check value after change`, object? `Row metadata`, int `rowIndex`, int `columnIndex`, bool>`?` | Return to the final Select Value |
 
 #### ColumnSwitch
 
-> 开关表头。继承于 [Column](#column)
+> Switch header. Inherited from [Column](#column)
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Key** | 绑定名称 | string ||
-**Title** | 显示文字 | string ||
-**AutoCheck** | 点击时自动改变选中状态 | bool | true |
-**Call** | 复选回调 | Func<bool `改变后check值`, object? `行元数据`, int `行`, int `列`, bool>`?` | 返回最终选中值 |
+**Key** | Bind field name | string ||
+**Title** | Display text | string ||
+**AutoCheck** | Click to automatically change the selected status | bool | true |
+**Call** | Checkbox callback | Func<bool `Check value after change`, object? `Row metadata`, int `rowIndex`, int `columnIndex`, bool>`?` | Return to the final Select Value |
 
 #### ColumnSort
 
-> 拖拽手柄列。继承于 [Column](#column)
+> Drag and drop handle column. Inherited from [Column](#column)

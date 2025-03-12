@@ -1,44 +1,43 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Splitter
+👚
 
-Splitter 分隔面板 👚
+> Split panels to isolate. Inherited from [SplitContainer](https://github.com/dotnet/winforms/blob/main/src/System.Windows.Forms/System/Windows/Forms/Layout/Containers/SplitContainer.cs)
 
-> 自由切分指定区域。继承于 [SplitContainer](https://github.com/dotnet/winforms/blob/main/src/System.Windows.Forms/System/Windows/Forms/Layout/Containers/SplitContainer.cs)
+- DefaultProperty：Text
+- DefaultEvent：SplitterMoved
 
-- 默认属性：Text
-- 默认事件：SplitterMoved
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**SplitterBack** | 滑块背景 | Color`?` | `null` |
-**SplitterBackMove** | 滑块移动背景 | Color`?` | `null` |
-**ArrowColor** | 箭头颜色 | Color`?` | `null` |
-**ArrawColorHover** | 鼠标悬浮箭头颜色 | Color`?` | `null` |
-**ArrawBackColor** | 箭头背景色 | Color`?` | `null` |
+**SplitterBack** | Slide background | Color`?` | `null` |
+**SplitterBackMove** | Slide to move background | Color`?` | `null` |
+**ArrowColor** | Arrow Color | Color`?` | `null` |
+**ArrawColorHover** | Arrow hover color | Color`?` | `null` |
+**ArrawBackColor** | Arrow background color | Color`?` | `null` |
 ||||
-**SplitterWidth** | 拆分器的粗细 | int | 4 |
-**SplitterSize** | 滑块大小 | int | 20 |
-**SplitterDistance** | 拆分器与左边缘或上边缘的距离 | int | |
-**Panel1MinSize** | 拆分器与 Panel1 的左边缘或上边缘的最小距离 | int | 25 |
-**Panel2MinSize** | 拆分器与 Panel2 的右边缘或下边缘的最小距离 | int | 25 |
+**SplitterWidth** | Thickness of the splitter | int | 4 |
+**SplitterSize** | Slide size | int | 20 |
+**SplitterDistance** | The distance between the splitter and the left or upper edge | int | |
+**Panel1MinSize** | The minimum distance between the splitter and the left or upper edge of Panel1 | int | 25 |
+**Panel2MinSize** | The minimum distance between the splitter and the right or lower edge of Panel2 | int | 25 |
 ||||
-**CollapsePanel** | 点击后收起的Panel | ADCollapsePanel | None |
-**Orientation** | 拆分器是水平的还是垂直的 | Orientation | Vertical |
-**SplitPanelState** | 当前折叠状态 | bool | true |
-**Lazy** | 延时渲染 | bool | true |
+**CollapsePanel** | Collapse after clicking Panel | ADCollapsePanel | None |
+**Orientation** | Is the splitter horizontal or vertical | Orientation | Vertical |
+**SplitPanelState** | Current folding state | bool | true |
+**Lazy** | Delayed rendering | bool | true |
 
-### 方法
+### Method
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**Collapse** | 折叠 | void | |
-**Expand** | 展开 | void | |
+**Collapse** | Collapse | void | |
+**Expand** | Expand | void | |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SplitPanelStateChanged** | SplitPanelState 属性值更改时发生 | void | bool value `当前值` |
+**SplitPanelStateChanged** | Occurred when the value of the SplitPanelState property is changed | void | bool value |

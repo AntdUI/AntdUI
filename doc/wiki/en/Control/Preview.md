@@ -1,31 +1,29 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Preview
 
-Preview 图片预览
-
-> 图片预览框。
+> Picture preview box.
 
 ### Preview.Config
 
-> 配置图片预览
+> Configure Preview
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Form** | 所属窗口 | Form | `必填` |
-**Content** | 图片内容 | `IList<Image>` |`必填`|
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Form** | Belonging window | Form | `Required` |
+**Content** | Picture content | `IList<Image>` |`Required`|
+**Tag** | User defined data | object`?` | `null` |
 ||||
-**Btns** | 自定义按钮 | [Btn[]](#preview.btn) | `null` |
-**OnBtns** | 自定义按钮回调 | Action<string, object?> | `null` |
+**Btns** | Custom button | [Btn[]](#preview.btn) | `null` |
+**OnBtns** | Custom button callback | Action<string, object?> | `null` |
 
 ### Preview.Btn
 
-> 自定义按钮
+> Configure Custom button
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Name** | 按钮名称 | string | `必填` |
-**IconSvg** | 图标SVG | string | `必填` |
+**Name** | Button name | string | `Required` |
+**IconSvg** | Icon SVG | string | `Required` |
 ||||
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |

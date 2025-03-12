@@ -1,51 +1,50 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Steps
+👚
 
-Steps 步骤条 👚
+> A navigation bar that guides users through the steps of a task.
 
-> 引导用户按照流程完成任务的导航条。
+- DefaultProperty：Current
+- DefaultEvent：ItemClick
 
-- 默认属性：Current
-- 默认事件：ItemClick
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**ForeColor** | 文字颜色 | Color`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
 ||||
-**Current** | 指定当前步骤 `从 0 开始记数。在子 Step 元素中，可以通过 status 属性覆盖状态` | int | 0 |
-**Status** | 指定当前步骤的状态 | [TStepState](Enum.md#tstepstate) | Process |
-**Vertical** | 垂直方向 | bool | false |
-**Gap** 🔴 | 间距 | int | 8 |
-**Items** | 数据 `StepsItem[]` | [StepsItem[]](#stepsitem) | [] |
+**Current** | Get or set the current step `Start counting from 0. In the sub Step element, the status attribute can be used to override the status` | int | 0 |
+**Status** | The status of the current step | [TStepState](Enum.md#tstepstate) | Process |
+**Vertical** | Vertical direction | bool | false |
+**Gap** | Gap | int | 8 |
+**Items** | Data `StepsItem[]` | [StepsItem[]](#stepsitem) | [] |
 ||||
-**PauseLayout** | 暂停布局 | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ItemClick** | 点击项时发生 | void | MouseEventArgs e, [StepsItem](#stepsitem) value |
+**ItemClick** | Occurred when clicking on an item | void | MouseEventArgs e, [StepsItem](#stepsitem) value |
 
 
-### 数据
+### Data
 
 #### StepsItem
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Name** | 名称 | string`?` | `null` |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
-**IconSize** | 图标大小 | int`?` | `null` |
-**Visible** | 是否显示 | bool | true |
-**Title** | 标题 | string | `必填` |
-🌏 **LocalizationTitle** | 国际化标题 | string`?` | `null` |
-**SubTitle** | 子标题 | string`?` | `null` |
-🌏 **LocalizationSubTitle** | 国际化子标题 | string`?` | `null` |
-**Description** | 详情描述 | string`?` | `null` |
-🌏 **LocalizationDescription** | 国际化详情描述 | string`?` | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Name** | Name | string`?` | `null` |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**IconSize** | Icon size | int`?` | `null` |
+**Visible** | Is it displayed | bool | true |
+**Title** | Title | string | `Required` |
+🌏 **LocalizationTitle** | International Title | string`?` | `null` |
+**SubTitle** | Subtitle | string`?` | `null` |
+🌏 **LocalizationSubTitle** | International Subtitle | string`?` | `null` |
+**Description** | Description | string`?` | `null` |
+🌏 **LocalizationDescription** | International Description | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |

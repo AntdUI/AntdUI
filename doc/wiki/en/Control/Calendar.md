@@ -1,35 +1,34 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Calendar
+👚
 
-Calendar 日历 👚
+> A container that displays data in calendar form.
 
-> 按照日历形式展示数据的容器。
+- DefaultProperty：Date
+- DefaultEvent：DateChanged
 
-- 默认属性：Date
-- 默认事件：DateChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 ||||
-**Radius** | 圆角 | int | 6 |
+**Radius** | Rounded corners | int | 6 |
 ||||
-**Full** | 是否撑满 | bool | false |
-**ShowChinese** | 显示农历 | bool | false |
-**ShowButtonToDay** | 显示今天 | bool | true |
+**Full** | Is it fully supported | bool | false |
+**ShowChinese** | Display Lunar Calendar | bool | false |
+**ShowButtonToDay** | Display today | bool | true |
 ||||
-**Value** | 控件当前日期 | DateTime | `DateTime.Now` |
-**MinDate** | 最小日期 | DateTime`?` | `null` |
-**MaxDate** | 最大日期 | DateTime`?` | `null` |
+**Value** | Current date | DateTime | `DateTime.Now` |
+**MinDate** | Min date | DateTime`?` | `null` |
+**MaxDate** | Max date | DateTime`?` | `null` |
 
-### 日期上的徽标
+### Badge on the date
 
 ~~~ csharp
 BadgeAction = dates =>
 {
-    // dates 参数为 DateTime[] 数组长度固定为2，返回UI上显示的开始日期与结束日期
+    // The dates parameter is FHIR [], and the array length is fixed at 2. It returns the start and end dates displayed on the UI
     // DateTime start_date = dates[0], end_date = dates[1];
     var now = dates[1];
     return new List<AntdUI.DateBadge> {
@@ -41,14 +40,14 @@ BadgeAction = dates =>
 };
 ~~~
 
-### 方法
+### Method
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**LoadBadge** | 加载徽标 | void | |
+**LoadBadge** | Load Badge | void | |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**DateChanged** | 日期 改变时发生 | void | DateTime value `控件当前日期` |
+**DateChanged** | Occurred when the Value changes | void | DateTime value |

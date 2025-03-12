@@ -1,19 +1,18 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## LabelTime
+👚
 
-LabelTime 时间文本 👚
+> Display time text.
 
-> 显示时间文本。
+- DefaultProperty：ShowTime
+- DefaultEvent：Click
 
-- 默认属性：ShowTime
-- 默认事件：Click
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoWidth** 🔴 | 自动宽度 | bool | false |
+**AutoWidth** 🔴 | Auto Width | bool | false |
 ||||
-**ForeColor** | 文字颜色 | Color |  |
-**ShowTime** | 是否显示秒 | bool | true |
+**ForeColor** | Text color | Color |  |
+**ShowTime** | Display seconds | bool | true |

@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## Slider
 
@@ -59,7 +59,7 @@ Slider 滑动输入条 👚
 
 SliderRange 滑动范围输入条 👚
 
-> 滑动型输入器，展示当前值和可选范围 [Slider](Slider)
+> 滑动型输入器，展示当前值和可选范围。继承于 [Slider](Slider)
 
 - 默认属性：Value
 - 默认事件：ValueChanged
@@ -74,4 +74,4 @@ SliderRange 滑动范围输入条 👚
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
-**Value2Changed** | Value 属性值更改时发生 | void | DateTime[]? value `控件当前日期` |
+**Value2Changed** | Value 属性值更改时发生 | void | int value2 `当前值` |

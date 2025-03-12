@@ -1,36 +1,35 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## DatePicker
+👚
 
-DatePicker 日期选择框 👚
+> To select or input a date. Inherited from [Input](Input)
 
-> 输入或选择日期的控件。继承于 [Input](Input)
+- DefaultProperty：Value
+- DefaultEvent：ValueChanged
 
-- 默认属性：Value
-- 默认事件：ValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Format** | 格式化 | string | yyyy-MM-dd `HH:mm:ss 可显示时分秒选择框` |
+**Format** | Format | string | yyyy-MM-dd `HH:mm:ss Display hour minute second selection box` |
 ||||
-**Value** | 控件当前日期 | DateTime`?` | `null` |
-**MinDate** | 最小日期 | DateTime`?` | `null` |
-**MaxDate** | 最大日期 | DateTime`?` | `null` |
-**Presets** | 预置菜单 | object[] | [] |
+**Value** | Current date | DateTime`?` | `null` |
+**MinDate** | Min date | DateTime`?` | `null` |
+**MaxDate** | Max date | DateTime`?` | `null` |
+**Presets** | Presets Menu | object[] | [] |
 ||||
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
-**DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**ShowIcon** | 是否显示图标 | bool | true |
-**ValueTimeHorizontal** | 时间值水平对齐 | bool | false |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+**DropDownArrow** | Is the dropdown arrow displayed | bool | false |
+**ShowIcon** | Display icon or not | bool | true |
+**ValueTimeHorizontal** | Horizontal alignment of time item | bool | false |
 
-### 日期上的徽标
+### Badge on the date
 
 ~~~ csharp
 BadgeAction = dates =>
 {
-    // dates 参数为 DateTime[] 数组长度固定为2，返回UI上显示的开始日期与结束日期
+    // The dates parameter is FHIR [], and the array length is fixed at 2. It returns the start and end dates displayed on the UI
     // DateTime start_date = dates[0], end_date = dates[1];
     var now = dates[1];
     return new List<AntdUI.DateBadge> {
@@ -42,47 +41,45 @@ BadgeAction = dates =>
 };
 ~~~
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ValueChanged** | Value 属性值更改时发生 | void | DateTime? value `控件当前日期` |
-**PresetsClickChanged** | 预置点击时发生 | void | object? value `点击项` |
+**ValueChanged** | Occurred when the Value changes | void | DateTime? value |
+**PresetsClickChanged** | Occurrence upon preset click | void | object? value `Click on item` |
 
 
 ***
 
 
-## DatePickerRange
+## DatePickerRange 👚
 
-DatePickerRange 日期范围选择框 👚
+> Enter or select a date range. Inherited from [Input](Input)
 
-> 输入或选择日期范围的控件。继承于 [Input](Input)
+- DefaultProperty：Value
+- DefaultEvent：ValueChanged
 
-- 默认属性：Value
-- 默认事件：ValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Format** | 格式化 | string | yyyy-MM-dd `HH:mm:ss 可显示时分秒选择框` |
+**Format** | Format | string | yyyy-MM-dd `HH:mm:ss Display hour minute second selection box` |
 ||||
-**Value** | 控件当前日期 | DateTime[]`?` | `null` |
-**MinDate** 🔴 | 最小日期 | DateTime`?` | `null` |
-**MaxDate** 🔴 | 最大日期 | DateTime`?` | `null` |
-**Presets** | 预置菜单 | object[] | [] |
+**Value** | Current date | DateTime[]`?` | `null` |
+**MinDate** | Min date | DateTime`?` | `null` |
+**MaxDate** | Max date | DateTime`?` | `null` |
+**Presets** | Presets Menu | object[] | [] |
 ||||
-**PlaceholderStart** | 显示的水印文本S | string`?` | `null` |
-**PlaceholderEnd** | 显示的水印文本E | string`?` | `null` |
-**SwapSvg** 🔴 | 交换图标SVG | string`?` | `null` |
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
-**DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**ShowIcon** | 是否显示图标 | bool | true |
+**PlaceholderStart** | Displayed watermark text S | string`?` | `null` |
+**PlaceholderEnd** | Displayed watermark text E | string`?` | `null` |
+**SwapSvg** | Exchange icon SVG | string`?` | `null` |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+**DropDownArrow** | Is the dropdown arrow displayed | bool | false |
+**ShowIcon** | Display icon or not | bool | true |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ValueChanged** | Value 属性值更改时发生 | void | DateTime[]? value `控件当前日期` |
-**PresetsClickChanged** | 预置点击时发生 | void | object? value `点击项` |
+**ValueChanged** | Occurred when the value of the Value property is changed | void | DateTime[]? value |
+**PresetsClickChanged** | Occurrence upon preset click | void | object? value `Click on item` |

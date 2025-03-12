@@ -1,45 +1,44 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Label
+👚
 
-Label 文本 👚
+> Display a piece of text.
 
-> 显示一段文本。
+- DefaultProperty：Text
+- DefaultEvent：Click
 
-- 默认属性：Text
-- 默认事件：Click
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoSize** | 自动大小 | bool | false |
-**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
+**AutoSize** | Auto Size | bool | false |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
 ||||
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**ColorExtend** | 文字渐变色 | string`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
+**ColorExtend** | Text gradient color | string`?` | `null` |
 ||||
-**Text** | 文本 | string ||
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**TextAlign** | 文本位置 | ContentAlignment | MiddleLeft |
-**AutoEllipsis** | 文本超出自动处理 | bool | false |
-**TextMultiLine** | 是否多行 | bool | true |
+**Text** | Text | string ||
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**TextAlign** | Text position | ContentAlignment | MiddleLeft |
+**AutoEllipsis** | Text exceeds automatic processing | bool | false |
+**TextMultiLine** | Multiple lines | bool | true |
 ||||
-**IconRatio** | 图标比例 | float | 0.7F |
-**Prefix** | 前缀文本 | string`?` | `null` |
-🌏 **LocalizationPrefix** | 国际化前缀 | string`?` | `null` |
-**PrefixSvg** | 前缀SVG | string`?` | `null` |
-**PrefixColor** | 前缀颜色 | Color`?` | `null` |
-**Suffix** | 后缀文本 | string`?` | `null` |
-🌏 **LocalizationSuffix** | 国际化后缀 | string`?` | `null` |
-**SuffixSvg** | 后缀SVG | string`?` | `null` |
-**SuffixColor** | 后缀颜色 | Color`?` | `null` |
-**Highlight** | 缀标完全展示 | bool | true |
-**ShowTooltip** | 超出文字显示 Tooltip | bool | true |
-**Rotate** 🔴 | 旋转 | [TRotate](Enum.md#trotate) | None |
+**IconRatio** | Icon Scale | float | 0.7F |
+**Prefix** | Prefix text | string`?` | `null` |
+🌏 **LocalizationPrefix** | International Prefix | string`?` | `null` |
+**PrefixSvg** | Prefix SVG | string`?` | `null` |
+**PrefixColor** | Prefix color | Color`?` | `null` |
+**Suffix** | Suffix text | string`?` | `null` |
+🌏 **LocalizationSuffix** | International Suffix | string`?` | `null` |
+**SuffixSvg** | Suffix SVG | string`?` | `null` |
+**SuffixColor** | Suffix color | Color`?` | `null` |
+**Highlight** | Full display of tags | bool | true |
+**ShowTooltip** | Exceeding text display Tooltip | bool | true |
+**Rotate** 🔴 | Rotate | [TRotate](Enum.md#trotate) | None |
 ||||
-**Shadow** | 阴影大小 | int | 0 |
-**ShadowColor** | 阴影颜色 | Color`?` | `null` |
-**ShadowOpacity** | 阴影透明度 | float | 0.3F |
-**ShadowOffsetX** | 阴影偏移X | int | 0 |
-**ShadowOffsetY** | 阴影偏移Y | int | 0 |
+**Shadow** | Shadow size | int | 0 |
+**ShadowColor** | Shadow color | Color`?` | `null` |
+**ShadowOpacity** | Shadow Transparency | float | 0.3F |
+**ShadowOffsetX** | Shadow offset X | int | 0 |
+**ShadowOffsetY** | Shadow offset Y | int | 0 |

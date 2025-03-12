@@ -1,45 +1,44 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Timeline
+👚
 
-Timeline 时间轴 👚
+> Vertical display timeline.
 
-> 垂直展示的时间流信息。
+- DefaultProperty：Items
+- DefaultEvent：ItemClick
 
-- 默认属性：Items
-- 默认事件：ItemClick
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**FontDescription** | 描述字体 | Font`?` | `null` |
-**Gap** | 间距 🔴 | int`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
+**FontDescription** | Description font | Font`?` | `null` |
+**Gap** | Gap | int`?` | `null` |
 ||||
-**Items** | 数据 `TimelineItem[]` | [TimelineItem[]](#timelineitem) | [] |
+**Items** | Data `TimelineItem[]` | [TimelineItem[]](#timelineitem) | [] |
 ||||
-**PauseLayout** | 暂停布局 | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ItemClick** | 点击项时发生 | void | MouseEventArgs e, [TimelineItem](#timelineitem) value |
+**ItemClick** | Occurred when clicking on an item | void | MouseEventArgs e, [TimelineItem](#timelineitem) value |
 
 
-### 数据
+### Data
 
 #### TimelineItem
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Name** | 名称 | string`?` | `null` |
-**Text** | 文本 | string | `必填` |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** 🔴 | 图标SVG | string`?` | `null` |
-**Visible** | 是否显示 | bool | true |
-**Description** | 详情描述 | string`?` | `null` |
-**Type** | 颜色类型 | [TTypeMini](Enum.md#ttypemini) | Primary |
-**Fill** | 填充颜色 | Color`?` | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Name** | Name | string`?` | `null` |
+**Text** | Text | string | `Required` |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**Visible** | Is it displayed | bool | true |
+**Description** | Description | string`?` | `null` |
+**Type** | Color Type | [TTypeMini](Enum.md#ttypemini) | Primary |
+**Fill** | Fill color | Color`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
