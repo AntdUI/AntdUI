@@ -268,7 +268,7 @@ namespace Demo.Controls
             // 
             switch4.CheckedText = "折叠";
             switch4.LocalizationCheckedText = "Menu.collapse";
-            switch4.LocalizationTextUnCheckedText = "Menu.expand";
+            switch4.LocalizationUnCheckedText = "Menu.expand";
             switch4.Location = new Point(267, 52);
             switch4.Name = "switch4";
             switch4.Size = new Size(84, 33);
@@ -352,7 +352,7 @@ namespace Demo.Controls
             // 
             switch2.CheckedText = "折叠";
             switch2.LocalizationCheckedText = "Menu.collapse";
-            switch2.LocalizationTextUnCheckedText = "Menu.expand";
+            switch2.LocalizationUnCheckedText = "Menu.expand";
             switch2.Location = new Point(267, 52);
             switch2.Name = "switch2";
             switch2.Size = new Size(84, 33);

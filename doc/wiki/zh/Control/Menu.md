@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## Menu
 
@@ -40,7 +40,7 @@ Menu 导航菜单 👚
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
-**SelectChanged** | Select 属性值更改时发生 | void | [MenuItem](#menuitem) item `数值` |
+**SelectChanged** | Select 属性值更改时发生 | void | [MenuItem](#menuitem) item `项` |
 
 ### 方法
 
@@ -48,7 +48,7 @@ Menu 导航菜单 👚
 :--|:--|:--|:--|
 **SelectIndex** | 选中第一层 | void | int index `序号`, bool focus `设置焦点` = true |
 **SelectIndex** | 选中第二层 | void | int i1 `序号1` , int i2 `序号2`, bool focus `设置焦点` = true |
-**SelectIndex** | 选中第三次 | void | int i1 `序号1` , int i2 `序号2`  , int i3 `序号3`, bool focus `设置焦点` = true |
+**SelectIndex** | 选中第三层 | void | int i1 `序号1` , int i2 `序号2`  , int i3 `序号3`, bool focus `设置焦点` = true |
 ||||
 **Select** | 选中菜单 | void | MenuItem item `项`, bool focus `设置焦点` = true |
 **Remove** | 移除菜单 | void | MenuItem item `项` |

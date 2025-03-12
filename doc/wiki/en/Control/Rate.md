@@ -1,33 +1,32 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Rate
+👚
 
-Rate 评分 👚
+> Used for rating operation on something.
 
-> 评分组件。
+- DefaultProperty：Value
+- DefaultEvent：ValueChanged
 
-- 默认属性：Value
-- 默认事件：ValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoSize** | 自动宽度 | bool | false |
+**AutoSize** | Auto Width | bool | false |
 ||||
-**Fill** | 颜色 | Color | 250, 219, 20 |
+**Fill** | colour | Color | 250, 219, 20 |
 ||||
-**AllowClear** | 支持清除 | bool | false |
-**AllowHalf** | 是否允许半选 | bool | false |
-**Count** | Star 总数 | int | 5 |
-**Value** | 当前值 | float | 0F |
+**AllowClear** | Support clearing | bool | false |
+**AllowHalf** | Is half selection allowed | bool | false |
+**Count** | Star total | int | 5 |
+**Value** | Current value | float | 0F |
 ||||
-**Tooltips** | 自定义每项的提示信息 | string[]`?` | `null` |
-**Character** | 自定义字符SVG | string`?` | `null` |
-🌏 **LocalizationCharacter** | 国际化自定义字符 | string`?` | `null` |
+**Tooltips** | Customize the prompt information for each item | string[]`?` | `null` |
+**Character** | Custom Characters SVG | string`?` | `null` |
+🌏 **LocalizationCharacter** | Internationalized Custom characters | string`?` | `null` |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ValueChanged** | Value 属性值更改时发生 | void | float value `当前值` |
+**ValueChanged** | Occurred when the value of the Value property is changed | void | float value |

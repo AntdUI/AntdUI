@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## DatePicker
 
@@ -69,13 +69,13 @@ DatePickerRange 日期范围选择框 👚
 **Format** | 格式化 | string | yyyy-MM-dd `HH:mm:ss 可显示时分秒选择框` |
 ||||
 **Value** | 控件当前日期 | DateTime[]`?` | `null` |
-**MinDate** 🔴 | 最小日期 | DateTime`?` | `null` |
-**MaxDate** 🔴 | 最大日期 | DateTime`?` | `null` |
+**MinDate** | 最小日期 | DateTime`?` | `null` |
+**MaxDate** | 最大日期 | DateTime`?` | `null` |
 **Presets** | 预置菜单 | object[] | [] |
 ||||
 **PlaceholderStart** | 显示的水印文本S | string`?` | `null` |
 **PlaceholderEnd** | 显示的水印文本E | string`?` | `null` |
-**SwapSvg** 🔴 | 交换图标SVG | string`?` | `null` |
+**SwapSvg** | 交换图标SVG | string`?` | `null` |
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **ShowIcon** | 是否显示图标 | bool | true |

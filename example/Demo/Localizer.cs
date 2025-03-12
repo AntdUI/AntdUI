@@ -121,7 +121,7 @@ namespace Demo
                 case "Breadcrumb.Text":
                     return "Breadcrumb";
                 case "Breadcrumb.Description":
-                    return "Description";
+                    return "Display the current location within a hierarchy. And allow going back to states higher up in the hierarchy.";
 
                 //Button ----------------------------
                 case "Button.Text":

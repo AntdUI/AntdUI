@@ -1,44 +1,43 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Breadcrumb
+👚
 
-Breadcrumb 面包屑 👚
+> Display the current location within a hierarchy. And allow going back to states higher up in the hierarchy.
 
-> 显示当前页面在系统层级结构中的位置，并能向上返回。
+- DefaultProperty：Items
+- DefaultEvent：ItemClick
 
-- 默认属性：Items
-- 默认事件：ItemClick
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**ForeActive** | 激活字体颜色 | Color`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
+**ForeActive** | Activate Text color | Color`?` | `null` |
 ||||
-**Radius** | 圆角 | int | 4 |
-**Gap** | 间距 | int | 12 |
+**Radius** | Rounded corners | int | 4 |
+**Gap** | Gap | int | 12 |
 ||||
-**Items** | 数据 `BreadcrumbItem[]` | [BreadcrumbItem[]](#breadcrumbitem) | [] |
+**Items** | Data `BreadcrumbItem[]` | [BreadcrumbItem[]](#breadcrumbitem) | [] |
 ||||
-**PauseLayout** | 暂停布局 | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ItemClick** | 点击项时发生 | void | [BreadcrumbItem](#breadcrumbitem) item `项` |
+**ItemClick** | Appears when clicking on an item | void | [BreadcrumbItem](#breadcrumbitem) item |
 
 
-### 数据
+### Data
 
 #### BreadcrumbItem
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` |`null`|
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string | `null` |
-**Text** | 文本 | string | `必填` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string | `null` |
+**Text** | Text | string | `Required` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |

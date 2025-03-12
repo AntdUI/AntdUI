@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## WindowBar
 
@@ -30,10 +30,10 @@ WindowBar 窗口栏 👚
 ||||
 **UseLeft** | 左侧使用 | int | 0 |
 **UseSystemStyleColor** | 使用系统颜色 | bool | false |
-**DividerMargin** 🔴 | 线边距 | int | 0 |
+**DividerMargin** | 线边距 | int | 0 |
 ||||
-**DividerShow** 🔴 | 显示线 | bool | false |
-**DividerColor** 🔴 | 线颜色 | Color`?` | `null` |
-**DividerThickness** 🔴 | 线厚度 | float | 1F |
+**DividerShow** | 显示线 | bool | false |
+**DividerColor** | 线颜色 | Color`?` | `null` |
+**DividerThickness** | 线厚度 | float | 1F |
 ||||
-**CancelButton** 🔴 | 点击退出关闭 | bool | false |
+**CancelButton** | 点击退出关闭 | bool | false |

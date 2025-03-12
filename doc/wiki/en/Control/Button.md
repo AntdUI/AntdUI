@@ -1,90 +1,89 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Button
+👚
 
-Button 按钮 👚
+> To trigger an operation.
 
-> 按钮用于开始一个即时操作。
+- DefaultProperty：Text
+- DefaultEvent：Click
 
-- 默认属性：Text
-- 默认事件：Click
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
+**OriginalBackColor** | Original background color | Color | Transparent |
 ||||
-**AutoSize** | 自动大小 | bool | false |
-**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
+**AutoSize** | Auto Size | bool | false |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
 ||||
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**BackColor** | 背景颜色 | Color`?` | `null` |
-**BackExtend** | 背景渐变色 | string`?` | `null` |
-**BackHover** | 悬停背景颜色 | Color`?` | `null` |
-**BackActive** | 激活背景颜色 | Color`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
+**BackColor** | Background color | Color`?` | `null` |
+**BackExtend** | Background gradient color | string`?` | `null` |
+**BackHover** | Hover background color | Color`?` | `null` |
+**BackActive** | Activate background color | Color`?` | `null` |
 ||||
-**DefaultBack** | Default模式背景颜色 | Color`?` | `null` |
-**DefaultBorderColor** | Default模式边框颜色 | Color`?` | `null` |
+**DefaultBack** | Default type background color | Color`?` | `null` |
+**DefaultBorderColor** | Default type border color | Color`?` | `null` |
 ||||
-**BackgroundImage** | 背景图片 | Image`?` | `null` |
-**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
+**BackgroundImage** | Background image | Image`?` | `null` |
+**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
 ||||
-**BorderWidth** | 边框宽度 | float | 0F |
+**BorderWidth** | Border width | float | 0F |
 ||||
-**WaveSize** | 波浪大小 `点击动画` | int | 4 |
-**Radius** | 圆角 | int | 6 |
-**Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
-**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
-**Ghost** | 幽灵属性 `使按钮背景透明` | bool | false |
-**ShowArrow** | 显示箭头 | bool | false |
-**IsLink** | 箭头链接样式 | bool | false |
-**RespondRealAreas** | 响应真实区域 | bool | false |
+**WaveSize** | Wave size `Click animation` | int | 4 |
+**Radius** | Rounded corners | int | 6 |
+**Shape** | Shape | [TShape](Enum.md#tshape) | Default |
+**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
+**Ghost** | Ghost attribute `Transparent button background` | bool | false |
+**ShowArrow** | Display arrows | bool | false |
+**IsLink** | Arrow Link Style | bool | false |
+**RespondRealAreas** | Response button real area | bool | false |
 ||||
-**Text** | 文本 | string`?` | `null` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**TextAlign** | 文本位置 | ContentAlignment | MiddleCenter |
-**AutoEllipsis** | 文本超出自动处理 | bool | false |
-**TextMultiLine** | 是否多行 | bool | false |
-**TextCenterHasIcon** 🔴 | 文本居中显示(包含图标后) | bool | false |
+**Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**TextAlign** | Text position | ContentAlignment | MiddleCenter |
+**AutoEllipsis** | Text exceeds automatic processing | bool | false |
+**TextMultiLine** | Multiple lines | bool | false |
+**TextCenterHasIcon** 🔴 | Text centered display(After including icons) | bool | false |
 ||||
-**IconRatio** | 图标比例 | float | 0.7F |
-**IconGap** | 图标与文字间距比例 | float | 0.25F |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
-**IconHover** | 悬停图标 | Image`?` | `null` |
-**IconHoverSvg** | 悬停图标SVG | string`?` | `null` |
-**IconHoverAnimation** | 悬停图标动画时长 | int | 200 |
-**IconPosition** | 按钮图标组件的位置 | [TAlignMini](Enum.md#talignmini) | Left |
-**IconSize** | 图标大小 `不设置为自动大小` | Size | 0 × 0 |
+**IconRatio** | Icon Scale | float | 0.7F |
+**IconGap** | Ratio of icon to text spacing | float | 0.25F |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**IconHover** | Hover icon | Image`?` | `null` |
+**IconHoverSvg** | Hover icon SVG | string`?` | `null` |
+**IconHoverAnimation** | Hover icon animation duration | int | 200 |
+**IconPosition** | Location of button icon components | [TAlignMini](Enum.md#talignmini) | Left |
+**IconSize** | Icon size `Default automatic size` | Size | 0 × 0 |
 ||||
-|**切换**||
-**Toggle** | 选中状态 | bool | false |
-**ToggleIcon** | 切换图标 | Image`?` | `null` |
-**ToggleIconSvg** | 切换图标SVG | string`?` | `null` |
-**ToggleIconHover** | 切换悬停图标 | Image`?` | `null` |
-**ToggleIconHoverSvg** | 切换悬停图标SVG | string`?` | `null` |
-**IconToggleAnimation** | 图标切换动画时长 | int | 200 |
-**ToggleFore** | 切换文字颜色 | Color`?` | `null` |
-**ToggleType** | 切换类型 | [TTypeMini](Enum.md#ttypemini)`?` | `null` |
-**ToggleBack** | 切换背景颜色 | Color`?` | `null` |
-**ToggleBackExtend** | 切换背景渐变色 | string`?` | `null` |
-**ToggleBackHover** | 切换悬停背景颜色 | Color`?` | `null` |
-**ToggleBackActive** | 切换激活背景颜色 | Color`?` | `null` |
+|**Switch**||
+**Toggle** | Toggle state | bool | false |
+**ToggleIcon** | Toggle icon | Image`?` | `null` |
+**ToggleIconSvg** | Toggle icon SVG | string`?` | `null` |
+**ToggleIconHover** | Toggle Hover icon | Image`?` | `null` |
+**ToggleIconHoverSvg** | Toggle Hover icon SVG | string`?` | `null` |
+**IconToggleAnimation** | Icon toggling animation duration | int | 200 |
+**ToggleFore** | Toggle text color | Color`?` | `null` |
+**ToggleType** | Toggle type | [TTypeMini](Enum.md#ttypemini)`?` | `null` |
+**ToggleBack** | Toggle background color | Color`?` | `null` |
+**ToggleBackExtend** | Toggle background gradient color | string`?` | `null` |
+**ToggleBackHover** | Toggle hover background color | Color`?` | `null` |
+**ToggleBackActive** | Toggle to activate background color | Color`?` | `null` |
 ||||
-|**加载**||
-**Loading** | 加载状态 `true屏蔽点击` | bool | false |
-**LoadingValue** | 加载进度 `0F-1F` | float | 0.3F |
-**LoadingWaveValue** | 水波进度 `0F-1F` | float | 0F |
-**LoadingWaveColor** | 水波颜色 | Color`?` | `null` |
-**LoadingWaveVertical** | 水波是否垂直 | bool | false |
-**LoadingWaveSize** | 水波大小 | int | 2 |
-**LoadingWaveCount** | 水波数量 | int | 1 |
+|**Loading**||
+**Loading** | Loading State `true Block clicks` | bool | false |
+**LoadingValue** | Loading progress `0F-1F` | float | 0.3F |
+**LoadingWaveValue** | Water wave progress `0F-1F` | float | 0F |
+**LoadingWaveColor** | Water wave color | Color`?` | `null` |
+**LoadingWaveVertical** | Is the water wave vertical | bool | false |
+**LoadingWaveSize** | Water wave size | int | 2 |
+**LoadingWaveCount** | Number of water waves | int | 1 |
 ||||
-**JoinLeft** | 连接左边 `组合按钮` | bool | false |
-**JoinRight** | 连接右边 `组合按钮` | bool | false |
+**JoinLeft** | Connect left area `Combination button` | bool | false |
+**JoinRight** | Connect right area `Combination button` | bool | false |
 
-- 按钮类型 `Type` 右`Ghost=true` `BorderWidth=2F`
+- Button type `Type` right`Ghost=true` `BorderWidth=2F`
 ![ButtonStyle](ButtonStyle.png)
-- 圆角按钮 `Shape=TShape.Round` 右`ShowArrow=true` `IsLink=true`
+- Rounded button `Shape=TShape.Round` right`ShowArrow=true` `IsLink=true`
 ![ButtonStyleRound](ButtonStyleRound.png)

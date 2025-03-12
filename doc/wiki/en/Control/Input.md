@@ -1,139 +1,137 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Input
+👚
 
-Input 输入框 👚
+> Through mouse or keyboard input content, it is the most basic form field wrapper.
 
-> 通过鼠标或键盘输入内容，是最基础的表单域的包装。
+- DefaultProperty：Text
+- DefaultEvent：TextChanged
 
-- 默认属性：Text
-- 默认事件：TextChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
+**OriginalBackColor** | Original background color | Color | Transparent |
 ||||
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**BackColor** | 背景颜色 | Color`?` | `null` |
-**BackExtend** | 背景渐变色 | string`?` | `null` |
-**BackHover** | 悬停背景颜色 | Color`?` | `null` |
-**BackActive** | 激活背景颜色 | Color`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
+**BackColor** | Background color | Color`?` | `null` |
+**BackExtend** | Background gradient color | string`?` | `null` |
+**BackHover** | Hover background color | Color`?` | `null` |
+**BackActive** | Activate background color | Color`?` | `null` |
 ||||
-**BackgroundImage** | 背景图片 | Image`?` | `null` |
-**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
+**BackgroundImage** | Background image | Image`?` | `null` |
+**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
 ||||
-**BorderWidth** | 边框宽度 | float | 0F |
-**BorderColor** | 边框颜色 | Color`?` | `null` |
-**BorderHover** | 悬停边框颜色 | Color`?` | `null` |
-**BorderActive** | 激活边框颜色 | Color`?` | `null` |
+**BorderWidth** | Border width | float | 0F |
+**BorderColor** | Border color | Color`?` | `null` |
+**BorderHover** | Hover border color | Color`?` | `null` |
+**BorderActive** | Activate border color | Color`?` | `null` |
 ||||
-**SelectionColor** | 选中颜色 | Color | 102, 0, 127, 255 |
+**SelectionColor** | Select color | Color | 102, 0, 127, 255 |
 ||||
-**CaretColor** | 光标颜色 | Color`?` | `null` |
-**CaretSpeed** | 光标速度 | int | 1000 |
+**CaretColor** | Caret color | Color`?` | `null` |
+**CaretSpeed** | Caret speed | int | 1000 |
 ||||
-**WaveSize** | 波浪大小 `点击动画` | int | 4 |
-**Radius** | 圆角 | int | 6 |
-**Round** | 圆角样式 | bool | false |
-**Status** | 设置校验状态 | [TType](Enum.md#ttype) | None |
+**WaveSize** | Wave size `Click animation` | int | 4 |
+**Radius** | Rounded corners | int | 6 |
+**Round** | Rounded corner style | bool | false |
+**Status** | Set verification status | [TType](Enum.md#ttype) | None |
 ||||
-**AllowClear** | 支持清除 | bool | false |
-**AutoScroll** | 显示滚动条 | bool | false |
-**Text** | 文本 | string ||
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**ImeMode** | IME(输入法编辑器)状态 | ImeMode | NoControl |
-**EmojiFont** | Emoji字体 | string | Segoe UI Emoj |
-**AcceptsTab** | 多行编辑是否允许输入制表符 | bool | false |
-**Multiline** | 多行文本 | bool | false |
-**LineHeight** | 多行行高 | int | 0 |
-**ReadOnly** | 只读 | bool | false |
-**PlaceholderText** | 水印文本 | string`?` | `null` |
-🌏 **LocalizationPlaceholderText** | 国际化水印文本 | string`?` | `null` |
-**PlaceholderColor** | 水印颜色 | Color`?` | `null` |
-**PlaceholderColorExtend** | 水印渐变色 | string`?` | `null` |
-**LostFocusClearSelection** | 焦点离开清空选中 | bool | true |
-**HandShortcutKeys** 🔴 | 处理快捷键 | bool | true |
+**AllowClear** | Support clearing | bool | false |
+**AutoScroll** | Show scrollbars | bool | false |
+**Text** | Text | string ||
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**ImeMode** | IME (Input Method Editor) Status | ImeMode | NoControl |
+**EmojiFont** | EmojiFont | string | Segoe UI Emoj |
+**AcceptsTab** | Does multi line editing allow the input of tab characters | bool | false |
+**Multiline** | Multiline | bool | false |
+**LineHeight** | Multi row height | int | 0 |
+**ReadOnly** | Read only | bool | false |
+**PlaceholderText** | Watermark Text | string`?` | `null` |
+🌏 **LocalizationPlaceholderText** | International Watermark Text | string`?` | `null` |
+**PlaceholderColor** | Watermark color | Color`?` | `null` |
+**PlaceholderColorExtend** | Watermark gradient color | string`?` | `null` |
+**LostFocusClearSelection** | Loss of focus, clear selection | bool | true |
+**HandShortcutKeys** 🔴 | Process shortcut keys | bool | true |
 ||||
-**TextAlign** | 文本对齐方向 | HorizontalAlignment | Left |
-**UseSystemPasswordChar** | 使用密码框 | bool | false |
-**PasswordChar** | 自定义密码字符 | char | (char)0 |
-**PasswordCopy** | 密码可以复制 | bool | false |
-**PasswordPaste** | 密码可以粘贴 | bool | true |
-**MaxLength** | 文本最大长度 | int | 32767 |
+**TextAlign** | Text alignment | HorizontalAlignment | Left |
+**UseSystemPasswordChar** | Use password box | bool | false |
+**PasswordChar** | Custom password characters | char | (char)0 |
+**PasswordCopy** | Passwords can be copied | bool | false |
+**PasswordPaste** | Password can be pasted | bool | true |
+**MaxLength** | Maximum Text Length | int | 32767 |
 ||||
-**IconRatio** | 图标比例 | float | 0.7F |
-**IconGap** | 图标与文字间距比例 | float | 0.25F |
-**Prefix** | 前缀 | Image`?` | `null` |
-**PrefixFore** | 前缀前景色 | Color`?` | `null` |
-**PrefixSvg** | 前缀SVG | string`?` | `null` |
-**PrefixText** | 前缀文本 | string`?` | `null` |
+**IconRatio** | Icon Scale | float | 0.7F |
+**IconGap** | Ratio of icon to text spacing | float | 0.25F |
+**Prefix** | Prefix | Image`?` | `null` |
+**PrefixFore** | Prefix foreground | Color`?` | `null` |
+**PrefixSvg** | Prefix SVG | string`?` | `null` |
+**PrefixText** | Prefix text | string`?` | `null` |
 ||||
-**Suffix** | 后缀 | Image`?` | `null` |
-**SuffixFore** | 后缀前景色 | Color`?` | `null` |
-**SuffixSvg** | 后缀SVG | string`?` | `null` |
-**SuffixText** | 后缀文本 | string`?` | `null` |
+**Suffix** | Suffix | Image`?` | `null` |
+**SuffixFore** | Suffix foreground | Color`?` | `null` |
+**SuffixSvg** | Suffix SVG | string`?` | `null` |
+**SuffixText** | Suffix text | string`?` | `null` |
 ||||
-**JoinLeft** | 连接左边 `组合按钮` | bool | false |
-**JoinRight** | 连接右边 `组合按钮` | bool | false |
+**JoinLeft** | Connect left area `Combination button` | bool | false |
+**JoinRight** | Connect right area `Combination button` | bool | false |
 ||||
-**RightToLeft** | 反向 | RightToLeft | No |
+**RightToLeft** | Reverse | RightToLeft | No |
 
-### 方法
+### Method
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**AppendText** | 将文本追加到当前文本中 | void | string text `追加的文本` |
-**Clear** | 清除所有文本 | void ||
-**ClearUndo** | 清除撤消缓冲区信息 | void ||
-**Copy** | 复制 | void ||
-**Cut** | 剪贴 | void ||
-**Paste** | 粘贴 | void ||
-**Undo** | 撤消 | void ||
-**Select** | 文本选择范围 | void | int start `第一个字符的位置`, int length `字符长度` |
-**SelectAll** | 选择所有文本 | void ||
-**DeselectAll** | 取消全部选中 | void ||
-**ScrollToCaret** | 内容滚动到当前插入符号位置 | void ||
-**ScrollToEnd** | 内容滚动到最下面 | void ||
+**AppendText** | Append text to the current text | void | string text `Additional Text` |
+**Clear** | Clear all text | void ||
+**ClearUndo** | Clear undo buffer information | void ||
+**Copy** | Copy | void ||
+**Cut** | Cut | void ||
+**Paste** | Paste | void ||
+**Undo** | Undo | void ||
+**Select** | Text selection range | void | int start, int length |
+**SelectAll** | Select all texts | void ||
+**DeselectAll** | Uncheck All | void ||
+**ScrollToCaret** | Scroll the content to the current insertion symbol position | void ||
+**ScrollToEnd** | Scroll to the bottom of the content | void ||
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**PrefixClick** | 前缀 点击时发生 | void | MouseEventArgs e |
-**SuffixClick** | 后缀 点击时发生 | void | MouseEventArgs e |
+**PrefixClick** | Occurrence when Prefix is clicked | void | MouseEventArgs e |
+**SuffixClick** | Occurrence when Suffix is clicked | void | MouseEventArgs e |
 
 
 ***
 
 
 ## InputNumber
+👚
 
-InputNumber 数字输入框 👚
+> Enter a number within certain range with the mouse or keyboard. Inherited from [Input](#input)
 
-> 通过鼠标或键盘，输入范围内的数值。继承于 [Input](#input)
+- DefaultProperty：Value
+- DefaultEvent：ValueChanged
 
-- 默认属性：Value
-- 默认事件：ValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Minimum** | 最小值 | decimal`?` | `null` |
-**Maximum** | 最大值 | decimal`?` | `null` |
-**Value** | 当前值 | decimal | 0 |
+**Minimum** | Minimum value | decimal`?` | `null` |
+**Maximum** | Maximum value | decimal`?` | `null` |
+**Value** | Current value | decimal | 0 |
 ||||
-**ShowControl** | 显示控制器 | bool | true |
-**DecimalPlaces** | 显示的小数点位数 | int | 0 |
-**ThousandsSeparator** | 是否显示千分隔符 | bool | false |
-**Hexadecimal** | 值是否应以十六进制显示 | bool | false |
-**InterceptArrowKeys** | 当按下箭头键时，是否持续增加/减少 | bool | true |
-**Increment** | 每次单击箭头键时增加/减少的数量 | decimal | 1 |
+**ShowControl** | Controller | bool | true |
+**DecimalPlaces** | Number of decimal places displayed | int | 0 |
+**ThousandsSeparator** | Do you want to display the thousand separator | bool | false |
+**Hexadecimal** | Should values be displayed in hexadecimal format | bool | false |
+**InterceptArrowKeys** | Does the arrow key continuously increase/decrease when pressed | bool | true |
+**Increment** | The amount of increase/decrease each time the arrow key is clicked | decimal | 1 |
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ValueChanged** | Value 属性值更改时发生 | void | decimal value `当前值` |
+**ValueChanged** | Occurred when the value of the Value property is changed | void | decimal value |

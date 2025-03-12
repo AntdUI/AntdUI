@@ -1,51 +1,50 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## UploadDragger
+👚
 
-UploadDragger 拖拽上传 👚
+> Drag the file to a specific area for uploading. Alternatively, by selecting upload.
 
-> 文件选择上传和拖拽上传控件。
+- DefaultProperty：Text
+- DefaultEvent：Click
 
-- 默认属性：Text
-- 默认事件：Click
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Text** | 文本 | string`?` | `null` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**TextDesc** | 文本描述 | string`?` | `null` |
-**Radius** | 圆角 | int | 8 |
+**Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**TextDesc** | Text description | string`?` | `null` |
+**Radius** | Rounded corners | int | 8 |
 ||||
-**ForeColor** | 文字颜色 | Color`?` | `null` ||
-**Back** | 背景颜色 | Color`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` ||
+**Back** | Background color | Color`?` | `null` |
 ||||
-**BackgroundImage** | 背景图片 | Image`?` | `null` |
-**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
+**BackgroundImage** | Background image | Image`?` | `null` |
+**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
 ||||
-**IconRatio** | 图标比例 | float | 1.92F |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
+**IconRatio** | Icon Scale | float | 1.92F |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
 ||||
-**BorderWidth** | 边框宽度 | float | 1F |
-**BorderColor** | 边框颜色 | Color`?` | `null` |
-**BorderStyle** | 边框样式 | DashStyle | Solid |
+**BorderWidth** | Border width | float | 1F |
+**BorderColor** | Border color | Color`?` | `null` |
+**BorderStyle** | Border Style | DashStyle | Solid |
 ||||
-**ClickHand** 🔴 | 点击上传 | bool | true |
-**Multiselect** 🔴 | 多个文件 | bool | true |
-**Filter** 🔴 | 文件名筛选器字符串 | string`?` | `null` 参考 OpenFileDialog 格式 |
+**ClickHand** 🔴 | Click to upload | bool | true |
+**Multiselect** 🔴 | Multiple files | bool | true |
+**Filter** 🔴 | Filename filter string | string`?` | `null` Refer to OpenFileDialog format |
 
-### 方法
+### Method
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ManualSelection** | 手动触发选择文件 | void | |
-**SetFilter** | 设置常用Filter | void | FilterType filterType `可叠加` |
+**ManualSelection** | Manually trigger file selection | void | |
+**SetFilter** | Set commonly used filters | void | FilterType filterType [Flags] |
 
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**DragChanged** | 文件拖拽后时发生 | void | string[] files `文件列表` |
+**DragChanged** | Occurrence when dragging files | void | string[] files `file list` |

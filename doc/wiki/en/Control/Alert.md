@@ -1,25 +1,24 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Alert
+👚
 
-Alert 警告提示 👚
+> Display warning messages that require attention.
 
-> 警告提示，展现需要关注的信息。
+- DefaultProperty：Text
+- DefaultEvent：Click
 
-- 默认属性：Text
-- 默认事件：Click
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Text** | 文本 | string`?` | `null` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**TextTitle** | 标题 | string`?` | `null` |
-🌏 **LocalizationTextTitle** | 国际化标题 | string`?` | `null` |
-**Radius** | 圆角 | int | 6 |
-**BorderWidth** | 边框宽度 | float | 0F |
-**Icon** | 样式 | [TType](Enum.md#ttype) | None |
-**Loop** | 文本轮播 | bool | false |
-**LoopSpeed** | 文本轮播速率 | int | 10 |
-**LoopInfinite** 🔴 | 轮播文本无尽 | bool | true |
+**Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**TextTitle** | Title | string`?` | `null` |
+🌏 **LocalizationTextTitle** | International Title | string`?` | `null` |
+**Radius** | Rounded corners | int | 6 |
+**BorderWidth** | Border width | float | 0F |
+**Icon** | Style | [TType](Enum.md#ttype) | None |
+**Loop** | Text carousel | bool | false |
+**LoopSpeed** | Text carousel speed | int | 10 |
+**LoopInfinite** 🔴 | Endless carousel text | bool | true |

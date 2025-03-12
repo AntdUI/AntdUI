@@ -1,30 +1,29 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## TimePicker
+👚
 
-TimePicker 时间选择框 👚
+> To select/input a time. Inherited from [Input](Input)
 
-> 输入或选择时间的控件。继承于 [Input](Input)
+- DefaultProperty：Value
+- DefaultEvent：ValueChanged
 
-- 默认属性：Value
-- 默认事件：ValueChanged
+### Property
 
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Format** | 格式化 | string | HH:mm:ss |
+**Format** | Format | string | HH:mm:ss |
 ||||
-**Value** | 控件当前日期 | TimeSpan | `00:00:00` |
+**Value** | Current time | TimeSpan | `00:00:00` |
 ||||
-**Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
-**DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**ShowIcon** | 是否显示图标 | bool | true |
-**ValueTimeHorizontal** | 时间值水平对齐 | bool | false |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+**DropDownArrow** | Is the dropdown arrow displayed | bool | false |
+**ShowIcon** | Display icon or not | bool | true |
+**ValueTimeHorizontal** | Horizontal alignment of time item | bool | false |
 
 
-### 事件
+### Event
 
-名称 | 描述 | 返回值 | 参数 |
+Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ValueChanged** | Value 属性值更改时发生 | void | TimeSpan value `控件当前时间` |
+**ValueChanged** | Occurred when the value of the Value property is changed | void | TimeSpan value |

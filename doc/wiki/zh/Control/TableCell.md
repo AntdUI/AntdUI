@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 [返回 Table](Table.md)
 
@@ -87,11 +87,13 @@
 **BorderWidth** | 边框宽度 | float |0F|
 ||||
 **IconRatio** | 图标比例 | float | 0.7F |
-**Image** | 图像 | Image`?` | `null` |
-**ImageSvg** | 图像SVG | string`?` | `null` |
-**ImageHover** | 悬停图像 | Image`?` | `null` |
-**ImageHoverSvg** | 悬停图像SVG | string`?` | `null` |
-**ImageHoverAnimation** | 悬停图像动画时长 | int | 200 |
+**IconGap** | 图标与文字间距比例 | float | 0.25F |
+**Icon** | 图标 | Image`?` | `null` |
+**IconSvg** | 图标SVG | string`?` | `null` |
+**IconHover** | 悬停图标 | Image`?` | `null` |
+**IconHoverSvg** | 悬停图标SVG | string`?` | `null` |
+**IconHoverAnimation** | 悬停图标动画时长 | int | 200 |
+**IconPosition** | 按钮图标组件的位置 | [TAlignMini](Enum.md#talignmini) | Left |
 ||||
 **Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
 **Ghost** | 幽灵属性 `使按钮背景透明` | bool |false |
@@ -103,7 +105,7 @@
 
 #### CellLink
 
-> 按钮
+> 超链接
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|

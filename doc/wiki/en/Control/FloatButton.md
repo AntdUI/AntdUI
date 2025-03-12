@@ -1,58 +1,56 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## FloatButton
 
-FloatButton 悬浮按钮
-
-> 悬浮按钮。
+> A button that floats at the top of the page.
 
 ### FloatButton.Config
 
-> 配置悬浮按钮
+> Configure FloatButton
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Form** | 所属窗口 | Form | `必填` |
-**Font** | 字体 | Font`?` ||
-**Control** | 所属控件 | Control`?` ||
-**Align** | 方向 | [TAlign](Enum.md#talign) | BR |
-**Vertical** | 是否垂直方向 | bool | true |
-**TopMost** | 是否置顶 | bool | false |
-**Size** | 大小 | int | 40 |
-**MarginX** | 边距X | int | 24 |
-**MarginY** | 边距Y | int | 24 |
-**Gap** | 间距 | int | 40 |
-**Btns** | 按钮列表 | [ConfigBtn[]](#floatbutton.configbtn) | `必填` |
-**Call** | 点击回调 | Action<ConfigBtn> | `必填` |
+**Form** | Belonging window | Form | `Required` |
+**Font** | Font | Font`?` ||
+**Control** | Belonging Control | Control`?` ||
+**Align** | Align | [TAlign](Enum.md#talign) | BR |
+**Vertical** | Is it in the vertical direction | bool | true |
+**TopMost** | Topped | bool | false |
+**Size** | Size | int | 40 |
+**MarginX** | MarginX | int | 24 |
+**MarginY** | MarginY | int | 24 |
+**Gap** | Gap | int | 40 |
+**Btns** | Button List | [ConfigBtn[]](#floatbutton.configbtn) | `Required` |
+**Call** | Click on callback | Action<ConfigBtn> | `Required` |
 
 ### FloatButton.ConfigBtn
 
-> 配置按钮
+> Configure ConfigBtn
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Name** | 名称 | string | `null` |
-**Text** | 文本 | string`?` | `null` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**Fore** | 文字颜色 | Color`?` | `null` |
-**Enabled** | 使能 | bool | true |
-**Loading** | 加载 | bool | false |
-**LoadingValue** 🔴 | 加载进度 | float | 0.3F |
-**Round** | 圆角样式 | bool | true |
-**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
-**Radius** | 圆角 | int | 6 |
+**Name** | Name | string | `null` |
+**Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**Fore** | Text color | Color`?` | `null` |
+**Enabled** | Enable | bool | true |
+**Loading** | Loading | bool | false |
+**LoadingValue** 🔴 | Loading progress | float | 0.3F |
+**Round** | Rounded corner style | bool | true |
+**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
+**Radius** | Rounded corners | int | 6 |
 ||||
-**Icon** | 自定义图标 | Image`?` | `null` |
-**IconSvg** | 自定义图标SVG | string`?` | `null` |
-**IconSize** | 图标大小 `不设置为自动大小` | Size | 0 × 0 |
+**Icon** | Custom Icon | Image`?` | `null` |
+**IconSvg** | Custom Icon SVG | string`?` | `null` |
+**IconSize** | Icon size `Default automatic size` | Size | 0 × 0 |
 ||||
-**Badge** | 徽标文本 | string`?` | `null` |
-**BadgeSvg** 🔴 | 徽标SVG | string`?` | `null` |
-**BadgeAlign** 🔴 | 徽标方向 | [TAlignFrom](Enum.md#talignfrom) | TR |
-**BadgeSize** | 徽标大小 | float | 0.6F |
-**BadgeMode** 🔴 | 徽标模式（镂空） | bool | false |
-**BadgeOffsetX** 🔴 | 徽标偏移X | float | 0 |
-**BadgeOffsetY** 🔴 | 徽标偏移Y | float | 0 |
-**BadgeBack** | 徽标背景颜色 | Color`?` | `null` |
+**Badge** | Badge text | string`?` | `null` |
+**BadgeSvg** 🔴 | Badge SVG | string`?` | `null` |
+**BadgeAlign** 🔴 | Badge align | [TAlignFrom](Enum.md#talignfrom) | TR |
+**BadgeSize** | Badge size | float | 0.6F |
+**BadgeMode** 🔴 | Badge mode (hollow out) | bool | false |
+**BadgeOffsetX** 🔴 | Badge offset X | float | 0 |
+**BadgeOffsetY** 🔴 | Badge offset Y | float | 0 |
+**BadgeBack** | Badge background color | Color`?` | `null` |
 ||||
-**Tooltip** | 气泡的内容 | string`?` | `null` |
+**Tooltip** | The content of bubbles | string`?` | `null` |

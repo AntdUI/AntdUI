@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## Table
 
@@ -134,13 +134,14 @@ private AntdUI.Table.CellStyleInfo? table1_SetRowStyle(object sender, AntdUI.Tab
 使用之前的注意事项：
 
 > **问**：如何实现MVVM❓
+> ---
 > 答：使用类继承 `NotifyProperty` OR `INotifyPropertyChanged`，并在`set`时触发 OnPropertyChanged(string `字段名称`)
 
 > **问**：为何插入、删除表格没有触发界面刷新❓
+> ---
 > 答：使用 `BindingList` 作为List，**并在设置数据时**使用`Binding(BindingList<T> list)`来绑定实现监控
-``` csharp
-var list = new BindingList<我的类>(10);
-for (int i = 0; i < 10; i++) list.Add(new 我的类(i));
-table.Binding(list);
-```
-### 
+> ``` csharp
+> var list = new BindingList<我的类>(10);
+> for (int i = 0; i < 10; i++) list.Add(new 我的类(i));
+> table.Binding(list);
+> ```

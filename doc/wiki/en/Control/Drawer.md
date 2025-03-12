@@ -1,32 +1,30 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## Drawer
 
-Drawer 抽屉
-
-> 屏幕边缘滑出的浮层面板。
+> A panel that slides out from the edge of the screen.
 
 ### Drawer.Config
 
-> 配置抽屉
+> Configure Drawer
 
-名称 | 描述 | 类型 | 默认值 |
+Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Form** | 所属窗口 | Form | `必填` |
-**Content** | 控件 | Control | `必填` |
-**Mask** | 是否展示遮罩 | bool | true |
-**MaskClosable** | 点击蒙层是否允许关闭 | bool | true |
-**Padding** | 边距 | int | 24 |
-**Align** | 方向 | [TAlignMini](Enum.md#talignmini) | Right |
-**Dispose** | 是否释放 | bool | true |
-**Tag** | 用户定义数据 | object`?` | `null` |
-**OnLoad** | 加载回调 | Action`?` | `null` |
-**OnClose** | 关闭回调 | Action`?` | `null` |
-**DisplayDelay** 🔴 | 显示延迟 `加入延迟可有效避免与Mask动画抢占` | int | 100 |
+**Form** | Belonging window | Form | `Required` |
+**Content** | Content | Control | `Required` |
+**Mask** | Display mask or not | bool | true |
+**MaskClosable** | Click whether to allow the mask to be closed | bool | true |
+**Padding** | Padding | int | 24 |
+**Align** | Align | [TAlignMini](Enum.md#talignmini) | Right |
+**Dispose** | Should it be released | bool | true |
+**Tag** | User defined data | object`?` | `null` |
+**OnLoad** | Load callback | Action`?` | `null` |
+**OnClose** | Close callback | Action`?` | `null` |
+**DisplayDelay** 🔴 | Display Delay `Adding delay can effectively avoid competing with Mask animation` | int | 100 |
 
 ***
 
-### UserControl 监控 Load 示例
+### UserControl Monitoring Load Example
 
 ~~~csharp
 public partial class UserControl1 : UserControl, AntdUI.ControlEvent
@@ -44,7 +42,7 @@ public partial class UserControl1 : UserControl, AntdUI.ControlEvent
 }
 ~~~
 
-### 堵塞/等待示例
+### Example of blockage/waiting
 
 ~~~csharp
 private async void button1_Click(object sender, EventArgs e)

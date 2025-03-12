@@ -1,4 +1,4 @@
-﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)・[SVG](../SVG.md)
+﻿[首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## Popover
 
@@ -30,7 +30,19 @@ Popover 气泡卡片
 ### Popover.TextRow
 
 > 多列文本 `使用 数组/集合 给到 Content` 
-> 用于单行显示多个色彩的文本或交互链接![TextRow](Popover.TextRow.jpg)
+> 用于单行显示多个色彩的文本或交互链接 ![TextRow](Popover.TextRow.png)
+> ```csharp
+> AntdUI.Popover.open(button1, new AntdUI.Popover.TextRow[] {
+>     new AntdUI.Popover.TextRow("您有"),
+>     new AntdUI.Popover.TextRow("3", 2, AntdUI.Style.Db.Primary),
+>     new AntdUI.Popover.TextRow("条新零售待确认订单等待处理"),
+>     new AntdUI.Popover.TextRow("查看", 2, AntdUI.Style.Db.Primary) {
+>         Call = () => {
+>             MessageBox.Show("点击查看");
+>         }
+>     },
+> }, AntdUI.TAlign.BL);
+> ```
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
