@@ -49,7 +49,7 @@ namespace AntdUI
                 if (autoscroll) ScrollBar = new ScrollBar(this);
                 else ScrollBar = null;
                 if (IsHandleCreated) IOnSizeChanged();
-                OnPropertyChanged("AutoScroll");
+                OnPropertyChanged(nameof(AutoScroll));
             }
         }
 
@@ -87,7 +87,7 @@ namespace AntdUI
                 if (autoscroll) ScrollBar = new ScrollBar(this);
                 else ScrollBar = null;
                 if (IsHandleCreated) IOnSizeChanged();
-                OnPropertyChanged("Vertical");
+                OnPropertyChanged(nameof(Vertical));
             }
         }
 
@@ -103,7 +103,7 @@ namespace AntdUI
                 if (layoutengine.ItemSize == value) return;
                 layoutengine.ItemSize = value;
                 if (IsHandleCreated) IOnSizeChanged();
-                OnPropertyChanged("ItemSize");
+                OnPropertyChanged(nameof(ItemSize));
             }
         }
 
@@ -119,7 +119,7 @@ namespace AntdUI
                 if (layoutengine.Gap == value) return;
                 layoutengine.Gap = value;
                 if (IsHandleCreated) IOnSizeChanged();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -137,7 +137,7 @@ namespace AntdUI
                     Invalidate();
                     IOnSizeChanged();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 

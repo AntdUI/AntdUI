@@ -60,7 +60,7 @@ namespace AntdUI
                 if (config.Fore == value) return;
                 config.Fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -79,7 +79,7 @@ namespace AntdUI
                 spin_core.Clear();
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
-                OnPropertyChanged("Text");
+                OnPropertyChanged(nameof(Text));
             }
         }
 

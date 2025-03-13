@@ -51,7 +51,7 @@ namespace AntdUI
                 if (layoutengine.Span == value) return;
                 layoutengine.Span = value;
                 if (IsHandleCreated) IOnSizeChanged();
-                OnPropertyChanged("Span");
+                OnPropertyChanged(nameof(Span));
             }
         }
 
@@ -67,7 +67,7 @@ namespace AntdUI
                 if (layoutengine.Gap == value) return;
                 layoutengine.Gap = value;
                 if (IsHandleCreated) IOnSizeChanged();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -85,7 +85,7 @@ namespace AntdUI
                     Invalidate();
                     IOnSizeChanged();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 

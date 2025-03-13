@@ -85,7 +85,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -105,7 +105,7 @@ namespace AntdUI
                 shadow = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("Shadow");
+                OnPropertyChanged(nameof(Shadow));
             }
         }
 
@@ -124,7 +124,7 @@ namespace AntdUI
                 shadowColor = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("ShadowColor");
+                OnPropertyChanged(nameof(ShadowColor));
             }
         }
 
@@ -142,7 +142,7 @@ namespace AntdUI
                 shadowOffsetX = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("ShadowOffsetX");
+                OnPropertyChanged(nameof(ShadowOffsetX));
             }
         }
 
@@ -160,7 +160,7 @@ namespace AntdUI
                 shadowOffsetY = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("ShadowOffsetY");
+                OnPropertyChanged(nameof(ShadowOffsetY));
             }
         }
 
@@ -179,7 +179,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacity = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacity");
+                OnPropertyChanged(nameof(ShadowOpacity));
             }
         }
 
@@ -204,7 +204,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacityHover = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacityHover");
+                OnPropertyChanged(nameof(ShadowOpacityHover));
             }
         }
 
@@ -219,7 +219,7 @@ namespace AntdUI
                 shadowAlign = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("ShadowAlign");
+                OnPropertyChanged(nameof(ShadowAlign));
             }
         }
 
@@ -250,7 +250,7 @@ namespace AntdUI
                 gap = value;
                 LoadLayout();
                 Invalidate();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -272,7 +272,7 @@ namespace AntdUI
                 if (emptyText == value) return;
                 emptyText = value;
                 Invalidate();
-                OnPropertyChanged("EmptyText");
+                OnPropertyChanged(nameof(EmptyText));
             }
         }
 
@@ -384,7 +384,7 @@ namespace AntdUI
                     LoadLayout();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 

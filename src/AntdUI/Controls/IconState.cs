@@ -43,7 +43,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("Back");
+                OnPropertyChanged(nameof(Back));
             }
         }
 
@@ -58,7 +58,7 @@ namespace AntdUI
                 if (color == value) return;
                 color = value;
                 Invalidate();
-                OnPropertyChanged("Color");
+                OnPropertyChanged(nameof(Color));
             }
         }
 
@@ -75,7 +75,7 @@ namespace AntdUI
                 if (state == value) return;
                 state = value;
                 Invalidate();
-                OnPropertyChanged("State");
+                OnPropertyChanged(nameof(State));
             }
         }
 

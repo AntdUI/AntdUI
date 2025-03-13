@@ -54,7 +54,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -72,7 +72,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
-                OnPropertyChanged("Fill");
+                OnPropertyChanged(nameof(Fill));
             }
         }
 
@@ -103,7 +103,7 @@ namespace AntdUI
                 if (alignment == value) return;
                 alignment = value;
                 LoadLayout();
-                OnPropertyChanged("Alignment");
+                OnPropertyChanged(nameof(Alignment));
             }
         }
 
@@ -120,7 +120,7 @@ namespace AntdUI
                 if (centered == value) return;
                 centered = value;
                 LoadLayout();
-                OnPropertyChanged("Centered");
+                OnPropertyChanged(nameof(Centered));
             }
         }
 
@@ -140,7 +140,7 @@ namespace AntdUI
                 bitblock_r?.Dispose();
                 bitblock_l = bitblock_r = null;
                 LoadLayout();
-                OnPropertyChanged("TypExceed");
+                OnPropertyChanged(nameof(TypExceed));
             }
         }
 
@@ -161,7 +161,7 @@ namespace AntdUI
                 bitblock_r?.Dispose();
                 bitblock_l = bitblock_r = null;
                 Invalidate();
-                OnPropertyChanged("ScrollBack");
+                OnPropertyChanged(nameof(ScrollBack));
             }
         }
 
@@ -179,7 +179,7 @@ namespace AntdUI
                 if (scrollfore == value) return;
                 scrollfore = value;
                 Invalidate();
-                OnPropertyChanged("ScrollFore");
+                OnPropertyChanged(nameof(ScrollFore));
             }
         }
 
@@ -225,7 +225,7 @@ namespace AntdUI
                 type = value;
                 style = SetType(value);
                 LoadLayout();
-                OnPropertyChanged("Type");
+                OnPropertyChanged(nameof(Type));
             }
         }
 
@@ -261,7 +261,7 @@ namespace AntdUI
                 if (_gap == value) return;
                 _gap = value;
                 LoadLayout();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -278,7 +278,7 @@ namespace AntdUI
                 if (iconratio == value) return;
                 iconratio = value;
                 LoadLayout();
-                OnPropertyChanged("IconRatio");
+                OnPropertyChanged(nameof(IconRatio));
             }
         }
 
@@ -291,7 +291,7 @@ namespace AntdUI
             {
                 _tabMenuVisible = value;
                 LoadLayout();
-                OnPropertyChanged("TabMenuVisible");
+                OnPropertyChanged(nameof(TabMenuVisible));
             }
         }
 
@@ -308,9 +308,15 @@ namespace AntdUI
                 if (_itemSize == value) return;
                 _itemSize = value;
                 LoadLayout();
-                OnPropertyChanged("ItemSize");
+                OnPropertyChanged(nameof(ItemSize));
             }
         }
+
+        /// <summary>
+        /// 拖动顺序
+        /// </summary>
+        [Description("拖动顺序"), Category("行为"), DefaultValue(false)]
+        public bool DragOrder { get; set; }
 
         internal Dictionary<TabPage, Size> HandItemSize(Dictionary<TabPage, Size> rect_dir, ref int sizewh)
         {
@@ -359,7 +365,7 @@ namespace AntdUI
                 if (items == null || value == null) return;
                 var index = items.IndexOf(value);
                 SelectedIndex = index;
-                OnPropertyChanged("SelectedTab");
+                OnPropertyChanged(nameof(SelectedTab));
             }
         }
 
@@ -396,7 +402,7 @@ namespace AntdUI
                 SelectedIndexChanged?.Invoke(this, new IntEventArgs(value));
                 Invalidate();
                 ShowPage(_select);
-                OnPropertyChanged("SelectedIndex");
+                OnPropertyChanged(nameof(SelectedIndex));
             }
         }
 
@@ -568,6 +574,8 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            pageDown = pageMove = null;
+            offsetx = offsety = 0;
             base.OnMouseDown(e);
             if (items == null || MouseDownPre(e.X, e.Y)) return;
             if (_tabMenuVisible)
@@ -577,7 +585,7 @@ namespace AntdUI
                 {
                     if (item.Visible && item.Contains(x, y))
                     {
-                        item.MDown = true;
+                        pageDown = item;
                         Invalidate();
                         return;
                     }
@@ -585,18 +593,105 @@ namespace AntdUI
                 }
             }
         }
+
+        TabPage? pageDown, pageMove;
+        int oldXY, offsetx = 0, offsety = 0;
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (items == null) return;
+            if (pageMove != null)
+            {
+                if (alignment == TabAlignment.Top || alignment == TabAlignment.Bottom)
+                {
+                    int moveXY = oldXY - e.X;
+                    offsetx += moveXY;
+                    Invalidate();
+                    oldXY = e.X;
+                }
+                else
+                {
+                    int moveXY = oldXY - e.Y;
+                    offsety += moveXY;
+                    Invalidate();
+                    oldXY = e.Y;
+                }
+                return;
+            }
+            if (DragOrder && pageDown != null)
+            {
+                if (alignment == TabAlignment.Top || alignment == TabAlignment.Bottom)
+                {
+                    int moveXY = oldXY - e.X, moveXYa = Math.Abs(moveXY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                    if (moveXYa > threshold)
+                    {
+                        oldXY = e.X;
+                        pageMove = pageDown;
+                        return;
+                    }
+                }
+                else
+                {
+                    int moveXY = oldXY - e.Y, moveXYa = Math.Abs(moveXY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                    if (moveXYa > threshold)
+                    {
+                        oldXY = e.Y;
+                        pageMove = pageDown;
+                        return;
+                    }
+                }
+            }
+            if (MouseMovePre(e.X, e.Y))
+            {
+                Hover_i = -1;
+                SetCursor(true);
+                return;
+            }
+            int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
+            foreach (var item in items)
+            {
+                if (item.Visible && item.Contains(x, y))
+                {
+                    SetCursor(true);
+                    Hover_i = i;
+                    style.MouseMove(x, y);
+                    return;
+                }
+                i++;
+            }
+            style.MouseMove(x, y);
+            SetCursor(false);
+        }
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            TabPage? _pageDown = pageDown, _pageMove = pageMove;
+            pageDown = pageMove = null;
             base.OnMouseUp(e);
             if (items == null) return;
             if (_tabMenuVisible)
             {
+                if (_pageMove != null)
+                {
+                    Rectangle rect;
+                    if (alignment == TabAlignment.Top || alignment == TabAlignment.Bottom) rect = _pageMove.GetRect(scroll_x - offsetx, 0);
+                    else rect = _pageMove.GetRect(0, scroll_y - offsety);
+                    var page = FindNearestPage(rect, items, _pageMove);
+                    if (page != _pageMove)
+                    {
+                        int old = items.IndexOf(_pageMove);
+                        int index = items.IndexOf(page);
+                        items.InsertAntRemove(index, _pageMove);
+                        if (_select == index) SelectedIndex = old;
+                        else if (_select == old) SelectedIndex = index;
+                        return;
+                    }
+                    Invalidate();
+                }
                 int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
                 foreach (var item in items)
                 {
-                    if (item.MDown)
+                    if (item == _pageDown)
                     {
-                        item.MDown = false;
                         if (item.Contains(x, y))
                         {
                             if (style.MouseClick(item, i, x, y)) return;
@@ -618,6 +713,29 @@ namespace AntdUI
             }
         }
 
+
+        TabPage FindNearestPage(Rectangle currentRect, TabCollection items, TabPage page)
+        {
+            double minDistance = int.MaxValue;
+            TabPage? result = null;
+            foreach (var it in items)
+            {
+                double distance = CalculateDistance(currentRect, it.Rect);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    result = it;
+                }
+            }
+            return result ?? page;
+        }
+
+        double CalculateDistance(Rectangle rect1, Rectangle rect2)
+        {
+            int dx = (rect1.X + rect1.Width / 2) - (rect2.X + rect2.Width / 2), dy = (rect1.Y + rect1.Height / 2) - (rect2.Y + rect2.Height / 2);
+            return Math.Sqrt(dx * dx + dy * dy);
+        }
+
         /// <summary>
         /// 点击标签时发生
         /// </summary>
@@ -634,32 +752,6 @@ namespace AntdUI
                 hover_i = value;
                 Invalidate();
             }
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-            if (items == null) return;
-            if (MouseMovePre(e.X, e.Y))
-            {
-                Hover_i = -1;
-                SetCursor(true);
-                return;
-            }
-            int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
-            foreach (var item in items)
-            {
-                if (item.Visible && item.Contains(x, y))
-                {
-                    SetCursor(true);
-                    Hover_i = i;
-                    style.MouseMove(x, y);
-                    return;
-                }
-                i++;
-            }
-            style.MouseMove(x, y);
-            SetCursor(false);
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -1633,12 +1725,9 @@ namespace AntdUI
 
         #region 坐标
 
-        internal bool MDown = false;
         internal Rectangle Rect = new Rectangle(-10, -10, 0, 0);
-        internal bool Contains(int x, int y)
-        {
-            return Rect.Contains(x, y);
-        }
+        internal bool Contains(int x, int y) => Rect.Contains(x, y);
+        internal Rectangle GetRect(int offsetx, int offsety) => new Rectangle(Rect.X + offsetx, Rect.Y + offsety, Rect.Width, Rect.Height);
         internal Rectangle SetRect(Rectangle rect)
         {
             Rect = rect;

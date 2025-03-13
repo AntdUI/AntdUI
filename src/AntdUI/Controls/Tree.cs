@@ -230,7 +230,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 

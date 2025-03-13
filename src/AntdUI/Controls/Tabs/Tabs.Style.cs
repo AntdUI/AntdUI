@@ -308,25 +308,56 @@ namespace AntdUI
                         else
                         {
                             int i = 0;
-                            foreach (var page in items)
+                            if (owner.pageMove == null)
                             {
-                                if (page.Visible)
+                                foreach (var page in items)
                                 {
-                                    if (owner.SelectedIndex == i)//是否选中
+                                    if (page.Visible)
                                     {
-                                        PaintBar(g, rects[i].Rect_Line, brush_fill);
-                                        PaintText(g, rects[i], owner, page, brush_fill);
+                                        if (owner.SelectedIndex == i)//是否选中
+                                        {
+                                            PaintBar(g, rects[i].Rect_Line, brush_fill);
+                                            PaintText(g, rects[i], owner, page, brush_fill);
+                                        }
+                                        else if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover);
+                                        else PaintText(g, rects[i], owner, page, brush_fore);
                                     }
-                                    else if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
-                                    else PaintText(g, rects[i], owner, page, brush_fore);
+                                    i++;
                                 }
-                                i++;
+                            }
+                            else
+                            {
+                                int sel = 0;
+                                foreach (var page in items)
+                                {
+                                    if (page.Visible)
+                                    {
+                                        if (owner.pageMove == page) sel = i;
+                                        else PaintItem(owner, g, i, page, brush_fore, brush_fill, brush_hover, brush_active);
+                                    }
+                                    i++;
+                                }
+                                var state = g.Save();
+                                g.TranslateTransform(-owner.offsetx, -owner.offsety);
+                                PaintItem(owner, g, sel, owner.pageMove, brush_fore, brush_fill, brush_hover, brush_active);
+                                g.Restore(state);
                             }
                         }
 
                         if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, (int)(radius * Config.Dpi), rect_ful, rects[0].Rect, rects[rects.Length - 1].Rect, false);
                     }
                 }
+            }
+
+            void PaintItem(Tabs owner, Canvas g, int i, TabPage page, SolidBrush brush_fore, SolidBrush brush_fill, SolidBrush brush_hover, SolidBrush brush_active)
+            {
+                if (owner.SelectedIndex == i)
+                {
+                    PaintBar(g, rects[i].Rect_Line, brush_fill);
+                    PaintText(g, rects[i], owner, page, brush_fill);
+                }
+                else if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover);
+                else PaintText(g, rects[i], owner, page, brush_fore);
             }
 
             public TabPageRect GetTabRect(int i) => rects[i];
@@ -937,6 +968,9 @@ namespace AntdUI
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
+                                    var state = g.Save();
+                                    if (owner.pageMove == sel) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                     var rect_page = sel.Rect;
                                     if (bor > 0)
                                     {
@@ -956,6 +990,7 @@ namespace AntdUI
                                         }
                                     }
                                     PaintText(g, rects[select], owner, sel, brush_fill);
+                                    g.Restore(state);
                                 }
                                 break;
                             case TabAlignment.Left:
@@ -970,6 +1005,9 @@ namespace AntdUI
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
+                                    var state = g.Save();
+                                    if (owner.pageMove == sel) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                     var rect_page = sel.Rect;
                                     if (bor > 0)
                                     {
@@ -989,6 +1027,7 @@ namespace AntdUI
                                         }
                                     }
                                     PaintText(g, rects[select], owner, sel, brush_fill);
+                                    g.Restore(state);
                                 }
                                 break;
                             case TabAlignment.Right:
@@ -1004,6 +1043,9 @@ namespace AntdUI
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
+                                    var state = g.Save();
+                                    if (owner.pageMove == sel) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                     var rect_page = sel.Rect;
                                     if (bor > 0)
                                     {
@@ -1023,6 +1065,7 @@ namespace AntdUI
                                         }
                                     }
                                     PaintText(g, rects[select], owner, sel, brush_fill);
+                                    g.Restore(state);
                                 }
                                 break;
                             case TabAlignment.Top:
@@ -1038,6 +1081,9 @@ namespace AntdUI
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
+                                    var state = g.Save();
+                                    if (owner.pageMove == sel) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                     var rect_page = sel.Rect;
                                     if (bor > 0)
                                     {
@@ -1057,6 +1103,7 @@ namespace AntdUI
                                         }
                                     }
                                     PaintText(g, rects[select], owner, sel, brush_fill);
+                                    g.Restore(state);
                                 }
                                 break;
                         }
@@ -1082,13 +1129,17 @@ namespace AntdUI
                             if (owner.SelectedIndex == i) sel = page;
                             else
                             {
+                                var state = g.Save();
+                                if (owner.pageMove == page) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                 using (var path = Helper.RoundPath(page.Rect, radius, TL, TR, BR, BL))
                                 {
                                     g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                     if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                    if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover);
+                                    if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover);
                                     else PaintText(g, rects[i], owner, page, brush_fore);
                                 }
+                                g.Restore(state);
                             }
                         }
                         i++;
@@ -1764,13 +1815,17 @@ namespace AntdUI
                                         if (select == i) sel = page;
                                         else
                                         {
+                                            var state = g.Save();
+                                            if (owner.pageMove == page) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
+                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
+                                            g.Restore(state);
                                         }
                                     }
                                     i++;
@@ -1778,6 +1833,9 @@ namespace AntdUI
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
+                                    var state = g.Save();
+                                    if (owner.pageMove == sel) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                     var rect_page = sel.Rect;
                                     using (var path = Helper.RoundPath(rect_page, radius, true, true, true, true))
                                     {
@@ -1798,6 +1856,7 @@ namespace AntdUI
                                         }
                                         PaintText(g, rects[select], owner, sel, brush_fill, true);
                                     }
+                                    g.Restore(state);
                                 }
                                 break;
                             case TabAlignment.Left:
@@ -1815,13 +1874,17 @@ namespace AntdUI
                                         if (owner.SelectedIndex == i) sel = page;
                                         else
                                         {
+                                            var state = g.Save();
+                                            if (owner.pageMove == page) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
+                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
+                                            g.Restore(state);
                                         }
                                     }
                                     i++;
@@ -1829,6 +1892,9 @@ namespace AntdUI
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
+                                    var state = g.Save();
+                                    if (owner.pageMove == sel) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                     var rect_page = sel.Rect;
                                     using (var path = Helper.RoundPath(rect_page, radius, true, true, true, true))
                                     {
@@ -1849,6 +1915,7 @@ namespace AntdUI
                                         }
                                         PaintText(g, rects[select], owner, sel, brush_fill, true);
                                     }
+                                    g.Restore(state);
                                 }
                                 break;
                             case TabAlignment.Right:
@@ -1867,13 +1934,17 @@ namespace AntdUI
                                         if (owner.SelectedIndex == i) sel = page;
                                         else
                                         {
+                                            var state = g.Save();
+                                            if (owner.pageMove == page) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
+                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
                                             }
+                                            g.Restore(state);
                                         }
                                     }
                                     i++;
@@ -1881,6 +1952,9 @@ namespace AntdUI
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
+                                    var state = g.Save();
+                                    if (owner.pageMove == sel) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                     var rect_page = sel.Rect;
                                     using (var path = Helper.RoundPath(rect_page, radius, true, true, true, true))
                                     {
@@ -1901,6 +1975,7 @@ namespace AntdUI
                                         }
                                         PaintText(g, rects[select], owner, sel, brush_fill, true);
                                     }
+                                    g.Restore(state);
                                 }
                                 break;
                             case TabAlignment.Top:
@@ -1919,13 +1994,17 @@ namespace AntdUI
                                         if (owner.SelectedIndex == i) sel = page;
                                         else
                                         {
+                                            var state = g.Save();
+                                            if (owner.pageMove == page) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                             using (var path = Helper.RoundPath(page.Rect, radius, true, true, true, true))
                                             {
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs"), bor, path);
-                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, page.MDown ? brush_active : brush_hover, true);
+                                                if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover, true);
                                                 else PaintText(g, rects[i], owner, page, brush_fore, (closable == CloseType.always && !page.ReadOnly) ? true : false);
                                             }
+                                            g.Restore(state);
                                         }
                                     }
                                     i++;
@@ -1933,6 +2012,9 @@ namespace AntdUI
                                 g.ResetTransform();
                                 if (sel != null)//是否选中
                                 {
+                                    var state = g.Save();
+                                    if (owner.pageMove == sel) g.TranslateTransform(-owner.offsetx, -owner.offsety);
+
                                     var rect_page = sel.Rect;
                                     using (var path = Helper.RoundPath(rect_page, radius, true, true, true, true))
                                     {
@@ -1953,6 +2035,7 @@ namespace AntdUI
                                         }
                                         PaintText(g, rects[select], owner, sel, brush_fill, !sel.ReadOnly);
                                     }
+                                    g.Restore(state);
                                 }
                                 break;
                         }

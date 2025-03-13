@@ -75,7 +75,7 @@ namespace AntdUI
         /// <summary>
         /// 触屏阈值
         /// </summary>
-        public static int TouchThreshold { get; set; } = 10;
+        public static int TouchThreshold { get; set; } = 20;
 
         /// <summary>
         /// 触屏点击使能

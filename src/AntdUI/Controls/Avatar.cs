@@ -67,7 +67,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("BackColor");
+                OnPropertyChanged(nameof(BackColor));
             }
         }
 
@@ -86,7 +86,7 @@ namespace AntdUI
                 text = value;
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
-                OnPropertyChanged("Text");
+                OnPropertyChanged(nameof(Text));
             }
         }
 
@@ -106,7 +106,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -123,7 +123,7 @@ namespace AntdUI
                 if (round == value) return;
                 round = value;
                 Invalidate();
-                OnPropertyChanged("Round");
+                OnPropertyChanged(nameof(Round));
             }
         }
 
@@ -149,7 +149,7 @@ namespace AntdUI
                     else Invalidate();
                 }
                 else Invalidate();
-                OnPropertyChanged("Image");
+                OnPropertyChanged(nameof(Image));
             }
         }
 
@@ -212,7 +212,7 @@ namespace AntdUI
                 if (imageSvg == value) return;
                 imageSvg = value;
                 Invalidate();
-                OnPropertyChanged("ImageSvg");
+                OnPropertyChanged(nameof(ImageSvg));
             }
         }
 
@@ -229,7 +229,7 @@ namespace AntdUI
                 if (imageFit == value) return;
                 imageFit = value;
                 Invalidate();
-                OnPropertyChanged("ImageFit");
+                OnPropertyChanged(nameof(ImageFit));
             }
         }
 
@@ -250,7 +250,7 @@ namespace AntdUI
                 if (loading == value) return;
                 loading = value;
                 Invalidate();
-                OnPropertyChanged("Loading");
+                OnPropertyChanged(nameof(Loading));
             }
         }
 
@@ -269,7 +269,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 _value = value;
                 if (loading) Invalidate();
-                OnPropertyChanged("LoadingProgress");
+                OnPropertyChanged(nameof(LoadingProgress));
             }
         }
 
@@ -290,7 +290,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 Invalidate();
-                OnPropertyChanged("BorderWidth");
+                OnPropertyChanged(nameof(BorderWidth));
             }
         }
 
@@ -307,7 +307,7 @@ namespace AntdUI
                 if (borColor == value) return;
                 borColor = value;
                 if (borderWidth > 0) Invalidate();
-                OnPropertyChanged("BorderColor");
+                OnPropertyChanged(nameof(BorderColor));
             }
         }
 
@@ -325,7 +325,7 @@ namespace AntdUI
                 if (shadow == value) return;
                 shadow = value;
                 Invalidate();
-                OnPropertyChanged("Shadow");
+                OnPropertyChanged(nameof(Shadow));
             }
         }
 
@@ -345,7 +345,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacity = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacity");
+                OnPropertyChanged(nameof(ShadowOpacity));
             }
         }
 
@@ -359,7 +359,7 @@ namespace AntdUI
                 if (shadowOffsetX == value) return;
                 shadowOffsetX = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOffsetX");
+                OnPropertyChanged(nameof(ShadowOffsetX));
             }
         }
 
@@ -373,7 +373,7 @@ namespace AntdUI
                 if (shadowOffsetY == value) return;
                 shadowOffsetY = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOffsetY");
+                OnPropertyChanged(nameof(ShadowOffsetY));
             }
         }
 
