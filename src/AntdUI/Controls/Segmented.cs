@@ -1131,7 +1131,7 @@ namespace AntdUI
                 }
                 if (it.Hover)
                 {
-                    if (it.Tooltip != null) hoveindex = i;
+                    if (!string.IsNullOrWhiteSpace(it.Tooltip)) hoveindex = i;
                     hand++;
                 }
                 i++;
