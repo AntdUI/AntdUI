@@ -220,7 +220,7 @@ namespace AntdUI
             ArrowAlign = component.ArrowAlign;
             CustomWidth = component.CustomWidth;
             var point = control.PointToScreen(Point.Empty);
-            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+            var screen = Screen.FromPoint(point).WorkingArea;
             maxWidth = screen.Width;
             Helper.GDI(g =>
             {
@@ -252,7 +252,7 @@ namespace AntdUI
             ArrowAlign = component.ArrowAlign;
             CustomWidth = component.CustomWidth;
             var point = control.PointToScreen(Point.Empty);
-            var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
+            var screen = Screen.FromPoint(point).WorkingArea;
             maxWidth = screen.Width;
             Helper.GDI(g =>
             {

@@ -700,7 +700,7 @@ namespace AntdUI
                             var rect = new Rectangle(_rect.X + btn_template.Rect.X - offset_xi, _rect.Y + btn_template.Rect.Y - offset_y, btn_template.Rect.Width, btn_template.Rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(this, rect, btn_template.Tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, btn_template.Tooltip, TooltipConfig ?? new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,
@@ -719,7 +719,7 @@ namespace AntdUI
                             var rect = new Rectangle(_rect.X + img_template.Rect.X - offset_xi, _rect.Y + img_template.Rect.Y - offset_y, img_template.Rect.Width, img_template.Rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(this, rect, img_template.Tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, img_template.Tooltip, TooltipConfig ?? new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,
@@ -748,7 +748,7 @@ namespace AntdUI
                             var rect = new Rectangle(_rect.X + cel.RECT.X - offset_xi, _rect.Y + cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(this, rect, text, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, text, TooltipConfig ?? new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,

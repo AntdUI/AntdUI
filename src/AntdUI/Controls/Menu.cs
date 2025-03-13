@@ -226,6 +226,13 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 超出文字提示配置
+        /// </summary>
+        [Browsable(false)]
+        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        public TooltipConfig? TooltipConfig { get; set; }
+
         #region 集合操作
 
         public void SelectIndex(int i1, bool focus = true)
@@ -1017,7 +1024,7 @@ namespace AntdUI
                                 {
                                     if (tooltipForm == null)
                                     {
-                                        tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
+                                        tooltipForm = new TooltipForm(this, rect, it.Text, TooltipConfig ?? new TooltipConfig
                                         {
                                             Font = it.Font ?? Font,
                                             ArrowAlign = TAlign.Right,
