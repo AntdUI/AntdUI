@@ -55,7 +55,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -73,7 +73,7 @@ namespace AntdUI
                 text = value;
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
-                OnPropertyChanged("Text");
+                OnPropertyChanged(nameof(Text));
             }
         }
 
@@ -94,7 +94,7 @@ namespace AntdUI
                 if (textDesc == value) return;
                 textDesc = value;
                 Invalidate();
-                OnPropertyChanged("TextDesc");
+                OnPropertyChanged(nameof(TextDesc));
             }
         }
 
@@ -112,7 +112,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -191,7 +191,7 @@ namespace AntdUI
                 if (iconratio == value) return;
                 iconratio = value;
                 Invalidate();
-                OnPropertyChanged("IconRatio");
+                OnPropertyChanged(nameof(IconRatio));
             }
         }
 
@@ -208,7 +208,7 @@ namespace AntdUI
                 if (icon == value) return;
                 icon = value;
                 Invalidate();
-                OnPropertyChanged("Icon");
+                OnPropertyChanged(nameof(Icon));
             }
         }
 
@@ -225,7 +225,7 @@ namespace AntdUI
                 if (iconSvg == value) return;
                 iconSvg = value;
                 Invalidate();
-                OnPropertyChanged("IconSvg");
+                OnPropertyChanged(nameof(IconSvg));
             }
         }
 
@@ -247,7 +247,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("Back");
+                OnPropertyChanged(nameof(Back));
             }
         }
 
@@ -264,7 +264,7 @@ namespace AntdUI
                 if (backImage == value) return;
                 backImage = value;
                 Invalidate();
-                OnPropertyChanged("BackgroundImage");
+                OnPropertyChanged(nameof(BackgroundImage));
             }
         }
 
@@ -281,7 +281,7 @@ namespace AntdUI
                 if (backFit == value) return;
                 backFit = value;
                 Invalidate();
-                OnPropertyChanged("BackgroundImageLayout");
+                OnPropertyChanged(nameof(BackgroundImageLayout));
             }
         }
 
@@ -302,7 +302,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 Invalidate();
-                OnPropertyChanged("BorderWidth");
+                OnPropertyChanged(nameof(BorderWidth));
             }
         }
 
@@ -320,7 +320,7 @@ namespace AntdUI
                 if (borderColor == value) return;
                 borderColor = value;
                 if (borderWidth > 0) Invalidate();
-                OnPropertyChanged("BorderColor");
+                OnPropertyChanged(nameof(BorderColor));
             }
         }
 
@@ -337,7 +337,7 @@ namespace AntdUI
                 if (borderStyle == value) return;
                 borderStyle = value;
                 if (borderWidth > 0) Invalidate();
-                OnPropertyChanged("BorderStyle");
+                OnPropertyChanged(nameof(BorderStyle));
             }
         }
 

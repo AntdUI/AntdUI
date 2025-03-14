@@ -61,7 +61,7 @@ namespace AntdUI
                 if (value == null) return;
                 value.table = this;
                 ExtractHeaderFixed();
-                OnPropertyChanged("Columns");
+                OnPropertyChanged(nameof(Columns));
             }
         }
 
@@ -83,7 +83,7 @@ namespace AntdUI
                 ExtractHeaderFixed();
                 ExtractData();
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("DataSource");
+                OnPropertyChanged(nameof(DataSource));
             }
         }
 
@@ -117,7 +117,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -134,7 +134,7 @@ namespace AntdUI
                 if (_gap == value) return;
                 _gap = value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -151,7 +151,7 @@ namespace AntdUI
                 if (fixedHeader == value) return;
                 fixedHeader = value;
                 Invalidate();
-                OnPropertyChanged("FixedHeader");
+                OnPropertyChanged(nameof(FixedHeader));
             }
         }
 
@@ -169,7 +169,7 @@ namespace AntdUI
                 visibleHeader = value;
                 ScrollBar.RB = !value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("VisibleHeader");
+                OnPropertyChanged(nameof(VisibleHeader));
             }
         }
 
@@ -186,7 +186,7 @@ namespace AntdUI
                 if (enableHeaderResizing == value) return;
                 enableHeaderResizing = value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("EnableHeaderResizing");
+                OnPropertyChanged(nameof(EnableHeaderResizing));
             }
         }
 
@@ -215,7 +215,7 @@ namespace AntdUI
                 if (bordered == value) return;
                 bordered = value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("Bordered");
+                OnPropertyChanged(nameof(Bordered));
             }
         }
 
@@ -232,7 +232,7 @@ namespace AntdUI
                 if (radius == value) return;
                 ScrollBar.Radius = radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -251,7 +251,7 @@ namespace AntdUI
                 if (_checksize == value) return;
                 _checksize = value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("CheckSize");
+                OnPropertyChanged(nameof(CheckSize));
             }
         }
 
@@ -268,7 +268,7 @@ namespace AntdUI
                 if (_switchsize == value) return;
                 _switchsize = value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("SwitchSize");
+                OnPropertyChanged(nameof(SwitchSize));
             }
         }
 
@@ -317,7 +317,7 @@ namespace AntdUI
                 if (rowHeight == value) return;
                 rowHeight = value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("RowHeight");
+                OnPropertyChanged(nameof(RowHeight));
             }
         }
 
@@ -334,7 +334,7 @@ namespace AntdUI
                 if (rowHeightHeader == value) return;
                 rowHeightHeader = value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("RowHeightHeader");
+                OnPropertyChanged(nameof(RowHeightHeader));
             }
         }
 
@@ -350,7 +350,7 @@ namespace AntdUI
                 if (empty == value) return;
                 empty = value;
                 Invalidate();
-                OnPropertyChanged("Empty");
+                OnPropertyChanged(nameof(Empty));
             }
         }
 
@@ -365,7 +365,7 @@ namespace AntdUI
                 if (emptyText == value) return;
                 emptyText = value;
                 Invalidate();
-                OnPropertyChanged("EmptyText");
+                OnPropertyChanged(nameof(EmptyText));
             }
         }
 
@@ -385,7 +385,7 @@ namespace AntdUI
                 if (emptyHeader == value) return;
                 emptyHeader = value;
                 if (LoadLayout()) Invalidate();
-                OnPropertyChanged("EmptyHeader");
+                OnPropertyChanged(nameof(EmptyHeader));
             }
         }
 
@@ -412,7 +412,7 @@ namespace AntdUI
             {
                 if (rowHoverBg == value) return;
                 rowHoverBg = value;
-                OnPropertyChanged("RowHoverBg");
+                OnPropertyChanged(nameof(RowHoverBg));
             }
         }
 
@@ -430,7 +430,7 @@ namespace AntdUI
                 if (rowSelectedBg == value) return;
                 rowSelectedBg = value;
                 if (selectedIndex.Length > 0) Invalidate();
-                OnPropertyChanged("RowSelectedBg");
+                OnPropertyChanged(nameof(RowSelectedBg));
             }
         }
 
@@ -448,7 +448,7 @@ namespace AntdUI
                 if (rowSelectedFore == value) return;
                 rowSelectedFore = value;
                 if (selectedIndex.Length > 0) Invalidate();
-                OnPropertyChanged("RowSelectedFore");
+                OnPropertyChanged(nameof(RowSelectedFore));
             }
         }
 
@@ -466,7 +466,7 @@ namespace AntdUI
                 if (borderColor == value) return;
                 borderColor = value;
                 Invalidate();
-                OnPropertyChanged("BorderColor");
+                OnPropertyChanged(nameof(BorderColor));
             }
         }
 
@@ -485,7 +485,7 @@ namespace AntdUI
                 if (columnfont == value) return;
                 columnfont = value;
                 Invalidate();
-                OnPropertyChanged("ColumnFont");
+                OnPropertyChanged(nameof(ColumnFont));
             }
         }
 
@@ -503,7 +503,7 @@ namespace AntdUI
                 if (columnback == value) return;
                 columnback = value;
                 Invalidate();
-                OnPropertyChanged("ColumnBack");
+                OnPropertyChanged(nameof(ColumnBack));
             }
         }
 
@@ -521,7 +521,7 @@ namespace AntdUI
                 if (columnfore == value) return;
                 columnfore = value;
                 Invalidate();
-                OnPropertyChanged("ColumnFore");
+                OnPropertyChanged(nameof(ColumnFore));
             }
         }
 
@@ -548,7 +548,7 @@ namespace AntdUI
                 if (SetIndex(value))
                 {
                     Invalidate();
-                    OnPropertyChanged("SelectedIndex");
+                    OnPropertyChanged(nameof(SelectedIndex));
                     SelectIndexChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -568,7 +568,7 @@ namespace AntdUI
                 if (selectedIndex == value) return;
                 selectedIndex = value;
                 Invalidate();
-                OnPropertyChanged("SelectedIndexs");
+                OnPropertyChanged(nameof(SelectedIndexs));
                 SelectIndexChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -618,6 +618,13 @@ namespace AntdUI
         public bool ShowTip { get; set; } = true;
 
         /// <summary>
+        /// 超出文字提示配置
+        /// </summary>
+        [Browsable(false)]
+        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        public TooltipConfig? TooltipConfig { get; set; }
+
+        /// <summary>
         /// 滚动条
         /// </summary>
         [Browsable(false)]
@@ -638,7 +645,7 @@ namespace AntdUI
                 if (editmode == value) return;
                 editmode = value;
                 Invalidate();
-                OnPropertyChanged("EditMode");
+                OnPropertyChanged(nameof(EditMode));
             }
         }
 

@@ -113,10 +113,15 @@ namespace AntdUI
                 if (_value == value) return;
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
-                if (value == null) Text = "";
-                else Text = value[0].ToString(Format) + "\t" + value[1].ToString(Format);
-                OnPropertyChanged("Value");
+                SetText(value);
+                OnPropertyChanged(nameof(Value));
             }
+        }
+
+        void SetText(DateTime[]? value)
+        {
+            if (value == null) Text = "";
+            else Text = value[0].ToString(Format) + "\t" + value[1].ToString(Format);
         }
 
         /// <summary>
@@ -228,7 +233,7 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            if (_value != null) Text = _value[0].ToString(Format) + "\t" + _value[1].ToString(Format);
+            SetText(_value);
             base.OnHandleCreated(e);
         }
 
@@ -354,15 +359,18 @@ namespace AntdUI
             AnimationBarValue = RectangleF.Empty;
             if (IsHandleCreated)
             {
-                if (IsTextEmpty) return;
+                if (IsTextEmpty)
+                {
+                    Value = null;
+                    return;
+                }
                 string text = Text;
                 int index = text.IndexOf("\t");
                 if (index > 0)
                 {
                     string stext = text.Substring(0, index), etext = text.Substring(index + 1);
                     if (DateTime.TryParse(stext, out var date_s) && DateTime.TryParse(etext, out var date_e)) Value = new DateTime[] { date_s, date_e };
-                    if (_value == null) Text = "";
-                    else Text = _value[0].ToString(Format) + "\t" + _value[1].ToString(Format);
+                    SetText(_value);
                 }
             }
         }

@@ -563,9 +563,8 @@ namespace AntdUI
 
         static IList<object>? ForTreeValue(IRow row, string KeyTree)
         {
-            if (row.cells.ContainsKey(KeyTree))
+            if (row.cells.TryGetValue(KeyTree, out var ov_tree))
             {
-                var ov_tree = row.cells[KeyTree];
                 if (ov_tree is AntItem item)
                 {
                     var value_tree = item.value;

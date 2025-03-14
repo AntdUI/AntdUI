@@ -54,7 +54,7 @@ namespace AntdUI
                 ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
                 ButtonLayout();
                 Invalidate();
-                OnPropertyChanged("Current");
+                OnPropertyChanged(nameof(Current));
             }
         }
 
@@ -72,7 +72,7 @@ namespace AntdUI
                 total = value;
                 ButtonLayout();
                 Invalidate();
-                OnPropertyChanged("Total");
+                OnPropertyChanged(nameof(Total));
             }
         }
 
@@ -98,7 +98,7 @@ namespace AntdUI
                 }
                 ButtonLayout();
                 Invalidate();
-                OnPropertyChanged("PageSize");
+                OnPropertyChanged(nameof(PageSize));
             }
         }
 
@@ -129,7 +129,7 @@ namespace AntdUI
                 _gap = value;
                 ButtonLayout();
                 Invalidate();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -160,7 +160,7 @@ namespace AntdUI
                 if (!value) InputSizeChangerDispose();
                 ButtonLayout();
                 Invalidate();
-                OnPropertyChanged("ShowSizeChanger");
+                OnPropertyChanged(nameof(ShowSizeChanger));
             }
         }
 
@@ -182,7 +182,7 @@ namespace AntdUI
                     ButtonLayout();
                     Invalidate();
                 }
-                OnPropertyChanged("PageSizeOptions");
+                OnPropertyChanged(nameof(PageSizeOptions));
             }
         }
 
@@ -201,7 +201,7 @@ namespace AntdUI
                     ButtonLayout();
                     Invalidate();
                 }
-                OnPropertyChanged("SizeChangerWidth");
+                OnPropertyChanged(nameof(SizeChangerWidth));
             }
         }
 
@@ -222,7 +222,7 @@ namespace AntdUI
                 fill = value;
                 if (input_SizeChanger != null) input_SizeChanger.BorderColor = value;
                 Invalidate();
-                OnPropertyChanged("Fill");
+                OnPropertyChanged(nameof(Fill));
             }
         }
 
@@ -240,7 +240,7 @@ namespace AntdUI
                 radius = value;
                 if (input_SizeChanger != null) input_SizeChanger.Radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -257,7 +257,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 Invalidate();
-                OnPropertyChanged("BorderWidth");
+                OnPropertyChanged(nameof(BorderWidth));
             }
         }
 
@@ -272,7 +272,7 @@ namespace AntdUI
                 rightToLeft = value;
                 ButtonLayout();
                 Invalidate();
-                OnPropertyChanged("RightToLeft");
+                OnPropertyChanged(nameof(RightToLeft));
             }
         }
 
@@ -288,7 +288,7 @@ namespace AntdUI
                 textdesc = value;
                 ButtonLayout();
                 Invalidate();
-                OnPropertyChanged("TextDesc");
+                OnPropertyChanged(nameof(TextDesc));
             }
         }
 

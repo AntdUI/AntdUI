@@ -51,7 +51,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -68,7 +68,7 @@ namespace AntdUI
                 if (current == value) return;
                 current = value;
                 Invalidate();
-                OnPropertyChanged("Current");
+                OnPropertyChanged(nameof(Current));
             }
         }
 
@@ -85,7 +85,7 @@ namespace AntdUI
                 if (status == value) return;
                 status = value;
                 Invalidate();
-                OnPropertyChanged("Status");
+                OnPropertyChanged(nameof(Status));
             }
         }
 
@@ -103,7 +103,7 @@ namespace AntdUI
                 vertical = value;
                 ChangeList();
                 Invalidate();
-                OnPropertyChanged("Vertical");
+                OnPropertyChanged(nameof(Vertical));
             }
         }
 
@@ -155,7 +155,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 

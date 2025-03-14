@@ -65,8 +65,44 @@ namespace AntdUI
             {
                 if (barPosition == value) return;
                 barPosition = value;
+                showBar = barBg || barPosition != TAlignMini.None;
                 Invalidate();
-                OnPropertyChanged("BarPosition");
+                OnPropertyChanged(nameof(BarPosition));
+            }
+        }
+
+        bool barBg = false, showBar = false;
+        /// <summary>
+        /// 显示条背景
+        /// </summary>
+        [Description("显示条背景"), Category("条"), DefaultValue(false)]
+        public bool BarBg
+        {
+            get => barBg;
+            set
+            {
+                if (barBg == value) return;
+                barBg = value;
+                showBar = barBg || barPosition != TAlignMini.None;
+                Invalidate();
+            }
+        }
+
+        Color? barColor;
+        /// <summary>
+        /// 条背景色
+        /// </summary>
+        [Description("条背景色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? BarColor
+        {
+            get => barColor;
+            set
+            {
+                if (barColor == value) return;
+                barColor = value;
+                Invalidate();
+                OnPropertyChanged(nameof(BarColor));
             }
         }
 
@@ -82,8 +118,8 @@ namespace AntdUI
             {
                 if (barsize == value) return;
                 barsize = value;
-                if (barPosition != TAlignMini.None) Invalidate();
-                OnPropertyChanged("BarSize");
+                if (showBar) Invalidate();
+                OnPropertyChanged(nameof(BarSize));
             }
         }
 
@@ -99,8 +135,8 @@ namespace AntdUI
             {
                 if (barpadding == value) return;
                 barpadding = value;
-                if (barPosition != TAlignMini.None) Invalidate();
-                OnPropertyChanged("BarPadding");
+                if (showBar) Invalidate();
+                OnPropertyChanged(nameof(BarPadding));
             }
         }
 
@@ -126,7 +162,7 @@ namespace AntdUI
                 vertical = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("Vertical");
+                OnPropertyChanged(nameof(Vertical));
             }
         }
 
@@ -144,7 +180,7 @@ namespace AntdUI
                 full = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("Full");
+                OnPropertyChanged(nameof(Full));
             }
         }
 
@@ -161,7 +197,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -179,7 +215,7 @@ namespace AntdUI
                 iconratio = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("IconRatio");
+                OnPropertyChanged(nameof(IconRatio));
             }
         }
 
@@ -197,7 +233,7 @@ namespace AntdUI
                 icongap = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("IconGap");
+                OnPropertyChanged(nameof(IconGap));
             }
         }
 
@@ -214,7 +250,7 @@ namespace AntdUI
                 if (round == value) return;
                 round = value;
                 Invalidate();
-                OnPropertyChanged("Round");
+                OnPropertyChanged(nameof(Round));
             }
         }
 
@@ -229,7 +265,7 @@ namespace AntdUI
                 iconalign = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("IconAlign");
+                OnPropertyChanged(nameof(IconAlign));
             }
         }
 
@@ -244,7 +280,7 @@ namespace AntdUI
                 igap = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -262,7 +298,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("BackColor");
+                OnPropertyChanged(nameof(BackColor));
             }
         }
 
@@ -287,7 +323,7 @@ namespace AntdUI
                 if (backactive == value) return;
                 backactive = value;
                 Invalidate();
-                OnPropertyChanged("BackActive");
+                OnPropertyChanged(nameof(BackActive));
             }
         }
 
@@ -305,7 +341,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -330,7 +366,7 @@ namespace AntdUI
                 if (foreactive == value) return;
                 foreactive = value;
                 Invalidate();
-                OnPropertyChanged("ForeActive");
+                OnPropertyChanged(nameof(ForeActive));
             }
         }
 
@@ -346,9 +382,16 @@ namespace AntdUI
                 if (full) return;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("RightToLeft");
+                OnPropertyChanged(nameof(RightToLeft));
             }
         }
+
+        /// <summary>
+        /// 超出文字提示配置
+        /// </summary>
+        [Browsable(false)]
+        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        public TooltipConfig? TooltipConfig { get; set; }
 
         SegmentedItemCollection? items;
         /// <summary>
@@ -381,7 +424,7 @@ namespace AntdUI
                 _select = value;
                 SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
                 SetRect(old, _select);
-                OnPropertyChanged("SelectIndex");
+                OnPropertyChanged(nameof(SelectIndex));
             }
         }
 
@@ -560,7 +603,7 @@ namespace AntdUI
                     ChangeItems();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 
@@ -588,31 +631,7 @@ namespace AntdUI
             {
                 var it = items[i];
                 if (it == null) continue;
-                if (i == _select && !AnimationBar)
-                {
-                    var color_active = backactive ?? Colour.BgElevated.Get("Segmented");
-                    if (barPosition == TAlignMini.None)
-                    {
-                        using (var path = TabSelectRect.RoundPath(_radius, Round))
-                        {
-                            g.Fill(color_active, path);
-                        }
-                    }
-                    else
-                    {
-                        float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
-                        var rect = GetBarRect(TabSelectRect, barSize, barPadding, barPadding2);
-                        if (BarRadius > 0)
-                        {
-                            using (var path = rect.RoundPath(BarRadius * Config.Dpi))
-                            {
-                                g.Fill(color_active, path);
-                            }
-                        }
-                        else g.Fill(color_active, rect);
-                    }
-                }
-                else if (it.Hover)
+                if (PaintItem(g, it, i, _radius, ref _hover) && it.Hover)
                 {
                     _hover = i;
                     using (var path = it.Rect.RoundPath(_radius, Round))
@@ -624,18 +643,18 @@ namespace AntdUI
             }
             if (AnimationBar)
             {
-                var color_active = backactive ?? Colour.BgElevated.Get("Segmented");
                 if (barPosition == TAlignMini.None)
                 {
                     using (var path = AnimationBarValue.RoundPath(_radius, Round))
                     {
-                        g.Fill(color_active, path);
+                        g.Fill(backactive ?? Colour.BgElevated.Get("Segmented"), path);
                     }
                 }
                 else
                 {
                     float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
                     var rect = GetBarRect(AnimationBarValue, barSize, barPadding, barPadding2);
+                    var color_active = barColor ?? backactive ?? Colour.BgElevated.Get("Segmented");
                     if (BarRadius > 0)
                     {
                         using (var path = rect.RoundPath(BarRadius * Config.Dpi))
@@ -675,7 +694,7 @@ namespace AntdUI
                             if (i == _hover)
                             {
                                 var color_hover = ForeHover ?? Colour.HoverColor.Get("Segmented");
-                                PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
+                                PaintImg(g, it, color_hover, it.IconHoverSvg ?? it.IconSvg, it.IconHover ?? it.Icon);
                                 g.String(it.Text, Font, color_hover, it.RectText, s_f);
                             }
                             else
@@ -695,6 +714,56 @@ namespace AntdUI
             }
             this.PaintBadge(g);
             base.OnPaint(e);
+        }
+
+        bool PaintItem(Canvas g, SegmentedItem it, int i, float _radius, ref int _hover)
+        {
+            if (i == _select)
+            {
+                if (barPosition == TAlignMini.None)
+                {
+                    if (AnimationBar) return true;
+                    using (var path = TabSelectRect.RoundPath(_radius, Round))
+                    {
+                        g.Fill(backactive ?? Colour.BgElevated.Get("Segmented"), path);
+                    }
+                }
+                else
+                {
+                    if (AnimationBar)
+                    {
+                        if (barBg)
+                        {
+                            using (var path = TabSelectRect.RoundPath(_radius, Round))
+                            {
+                                g.Fill(backactive ?? Colour.BgElevated.Get("Segmented"), path);
+                            }
+                            return false;
+                        }
+                        return true;
+                    }
+                    if (barBg)
+                    {
+                        using (var path = TabSelectRect.RoundPath(_radius, Round))
+                        {
+                            g.Fill(backactive ?? Colour.BgElevated.Get("Segmented"), path);
+                        }
+                    }
+                    var color_active = barColor ?? backactive ?? Colour.BgElevated.Get("Segmented");
+                    float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
+                    var rect = GetBarRect(TabSelectRect, barSize, barPadding, barPadding2);
+                    if (BarRadius > 0)
+                    {
+                        using (var path = rect.RoundPath(BarRadius * Config.Dpi))
+                        {
+                            g.Fill(color_active, path);
+                        }
+                    }
+                    else g.Fill(color_active, rect);
+                }
+                return false;
+            }
+            else return true;
         }
 
         bool PaintImg(Canvas g, SegmentedItem it, Color color, string? svg, Image? bmp)
@@ -1046,11 +1115,12 @@ namespace AntdUI
 
         #region 鼠标
 
+        int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
             if (items == null || items.Count == 0) return;
-            int hand = 0, change = 0;
+            int hand = 0, change = 0, i = 0, hoveindex = -1;
             foreach (var it in items)
             {
                 bool hover = it.Enabled && it.Rect.Contains(e.Location);
@@ -1059,16 +1129,47 @@ namespace AntdUI
                     it.Hover = hover;
                     change++;
                 }
-                if (it.Hover) hand++;
+                if (it.Hover)
+                {
+                    if (!string.IsNullOrWhiteSpace(it.Tooltip)) hoveindex = i;
+                    hand++;
+                }
+                i++;
             }
             SetCursor(hand > 0);
             if (change > 0) Invalidate();
+            if (hoveindex == hoveindexold) return;
+            hoveindexold = hoveindex;
+            if (hoveindex == -1)
+            {
+                tooltipForm?.Close();
+                tooltipForm = null;
+            }
+            else
+            {
+                var _rect = RectangleToScreen(ClientRectangle);
+                var it = items[hoveindex];
+                var rect = new Rectangle(_rect.X + it.Rect.X, _rect.Y + it.Rect.Y, it.Rect.Width, it.Rect.Height);
+                if (tooltipForm == null)
+                {
+                    tooltipForm = new TooltipForm(this, rect, it.Tooltip, TooltipConfig ?? new TooltipConfig
+                    {
+                        Font = Font,
+                        ArrowAlign = TAlign.Right,
+                    });
+                    tooltipForm.Show(this);
+                }
+                else tooltipForm.SetText(rect, it.Tooltip);
+            }
         }
+        TooltipForm? tooltipForm = null;
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
             SetCursor(false);
+            tooltipForm?.Close();
+            tooltipForm = null;
             if (items == null || items.Count == 0) return;
             int change = 0;
             foreach (var it in items)
@@ -1265,10 +1366,22 @@ namespace AntdUI
         public Image? IconActive { get; set; }
 
         /// <summary>
+        /// 图标悬浮态
+        /// </summary>
+        [Description("图标悬浮态"), Category("外观"), DefaultValue(null)]
+        public Image? IconHover { get; set; }
+
+        /// <summary>
         /// 图标激活SVG
         /// </summary>
         [Description("图标激活SVG"), Category("外观"), DefaultValue(null)]
         public string? IconActiveSvg { get; set; }
+
+        /// <summary>
+        /// 图标悬浮态SVG
+        /// </summary>
+        [Description("图标悬浮态SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconHoverSvg { get; set; }
 
         string? text = null;
         bool multiLine = false;
@@ -1298,6 +1411,24 @@ namespace AntdUI
         /// </summary>
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
+
+        #region Tooltip
+
+        string? tooltip = null;
+        /// <summary>
+        /// 提示
+        /// </summary>
+        [Description("提示"), Category("外观"), DefaultValue(null), Localizable(true)]
+        public string? Tooltip
+        {
+            get => Localization.GetLangI(LocalizationTooltip, tooltip, new string?[] { "{id}", ID });
+            set => tooltip = value;
+        }
+
+        [Description("提示"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationTooltip { get; set; }
+
+        #endregion
 
         internal bool Hover { get; set; }
 

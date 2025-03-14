@@ -72,7 +72,7 @@ namespace AntdUI.Svg
         }
 
         #region Equals and GetHashCode implementation
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return (obj is SvgViewBox) && Equals((SvgViewBox)obj);
         }

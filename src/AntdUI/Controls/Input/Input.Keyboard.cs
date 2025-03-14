@@ -29,110 +29,200 @@ namespace AntdUI
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
             bool result = base.ProcessCmdKey(ref msg, keyData);
+            if (OnVerifyKeyboard(keyData))
+            {
+                switch (keyData)
+                {
+                    case Keys.Back:
+                        return ProcessShortcutKeys(ShortcutKeys.Back);
+                    case Keys.Delete:
+                        return ProcessShortcutKeys(ShortcutKeys.Delete);
+
+                    case Keys.Tab:
+                        return ProcessShortcutKeys(ShortcutKeys.Tab);
+                    case Keys.Enter:
+                        return ProcessShortcutKeys(ShortcutKeys.Enter);
+                    case Keys.Control | Keys.A:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlA);
+                    case Keys.Control | Keys.C:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlC);
+                    case Keys.Control | Keys.X:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlX);
+                    case Keys.Control | Keys.V:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlV);
+                    case Keys.Control | Keys.Z:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlZ);
+                    case Keys.Control | Keys.Y:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlY);
+
+                    case Keys.Left:
+                        return ProcessShortcutKeys(ShortcutKeys.Left);
+                    case Keys.Left | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.LeftShift);
+                    case Keys.Up:
+                        return ProcessShortcutKeys(ShortcutKeys.Up);
+                    case Keys.Up | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.UpShift);
+                    case Keys.Right:
+                        return ProcessShortcutKeys(ShortcutKeys.Right);
+                    case Keys.Right | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.RightShift);
+                    case Keys.Down:
+                        return ProcessShortcutKeys(ShortcutKeys.Down);
+                    case Keys.Down | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.DownShift);
+                    case Keys.Home:
+                        return ProcessShortcutKeys(ShortcutKeys.Home);
+                    case Keys.Home | Keys.Control:
+                        return ProcessShortcutKeys(ShortcutKeys.HomeControl);
+                    case Keys.Home | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.HomeShift);
+                    case Keys.Home | Keys.Control | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.HomeControlShift);
+                    case Keys.End:
+                        return ProcessShortcutKeys(ShortcutKeys.End);
+                    case Keys.End | Keys.Control:
+                        return ProcessShortcutKeys(ShortcutKeys.EndControl);
+                    case Keys.End | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.EndShift);
+                    case Keys.End | Keys.Control | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.EndControlShift);
+                    case Keys.PageUp:
+                        return ProcessShortcutKeys(ShortcutKeys.PageUp);
+                    case Keys.PageDown:
+                        return ProcessShortcutKeys(ShortcutKeys.PageDown);
+                }
+            }
+            return result;
+        }
+
+        internal void IKeyPress(char keyChar)
+        {
+            if (keyChar < 32) return;
+            if (Verify(keyChar, out var change)) EnterText(change ?? keyChar.ToString());
+        }
+
+        #region 处理快捷键
+
+        protected virtual bool OnVerifyKeyboard(Keys keyData)
+        {
+            if (VerifyKeyboard == null) return true;
+            var args = new InputVerifyKeyboardEventArgs(keyData);
+            VerifyKeyboard(this, args);
+            return args.Result;
+        }
+
+        /// <summary>
+        /// 主动触发快捷键
+        /// </summary>
+        /// <param name="keyData">键盘数据</param>
+        /// <returns>返回true拦截消息</returns>
+        public bool ProcessShortcutKeys(ShortcutKeys keyData)
+        {
             switch (keyData)
             {
-                case Keys.Back:
+                case ShortcutKeys.Back:
                     ProcessBackSpaceKey();
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Delete:
+                case ShortcutKeys.Delete:
                     ProcessDelete();
                     if (HandShortcutKeys) return true;
                     break;
                 //========================================================
-                case Keys.Left:
+                case ShortcutKeys.Left:
                     ProcessLeftKey(false);
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Left | Keys.Shift:
+                case ShortcutKeys.LeftShift:
                     ProcessLeftKey(true);
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Up:
+                case ShortcutKeys.Up:
                     if (multiline) ProcessUpKey(false);
                     else ProcessLeftKey(false);
                     if (HandShortcutKeys) return multiline;
                     break;
-                case Keys.Up | Keys.Shift:
+                case ShortcutKeys.UpShift:
                     if (multiline) ProcessUpKey(true);
                     else ProcessLeftKey(false);
                     if (HandShortcutKeys) return multiline;
                     break;
-                case Keys.Right:
+                case ShortcutKeys.Right:
                     ProcessRightKey(false);
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Right | Keys.Shift:
+                case ShortcutKeys.RightShift:
                     ProcessRightKey(true);
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Down:
+                case ShortcutKeys.Down:
                     if (multiline) ProcessDownKey(false);
                     else ProcessRightKey(false);
                     if (HandShortcutKeys) return multiline;
                     break;
-                case Keys.Down | Keys.Shift:
+                case ShortcutKeys.DownShift:
                     if (multiline) ProcessDownKey(true);
                     else ProcessRightKey(false);
                     if (HandShortcutKeys) return multiline;
                     break;
-                case Keys.Home:
+                case ShortcutKeys.Home:
                     SpeedScrollTo = true;
                     ProcessHomeKey(false, false);
                     SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.End:
+                case ShortcutKeys.End:
                     SpeedScrollTo = true;
                     ProcessEndKey(false, false);
                     SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.Home:
+                case ShortcutKeys.HomeControl:
                     SpeedScrollTo = true;
                     ProcessHomeKey(true, false);
                     SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.End:
+                case ShortcutKeys.EndControl:
                     SpeedScrollTo = true;
                     ProcessEndKey(true, false);
                     SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Shift | Keys.Home:
+                case ShortcutKeys.HomeShift:
                     SpeedScrollTo = true;
                     ProcessHomeKey(false, true);
                     SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Shift | Keys.End:
+                case ShortcutKeys.EndShift:
                     SpeedScrollTo = true;
                     ProcessEndKey(false, true);
                     SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.Shift | Keys.Home:
+                case ShortcutKeys.HomeControlShift:
                     SpeedScrollTo = true;
                     ProcessHomeKey(true, true);
                     SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.Shift | Keys.End:
+                case ShortcutKeys.EndControlShift:
                     SpeedScrollTo = true;
                     ProcessEndKey(true, true);
                     SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 //========================================================
-                case Keys.Tab:
+                case ShortcutKeys.Tab:
                     if (multiline && AcceptsTab)
                     {
                         EnterText("\t");
                         if (HandShortcutKeys) return true;
                     }
                     break;
-                case Keys.Enter:
+                case ShortcutKeys.Enter:
                     if (multiline)
                     {
                         EnterText(Environment.NewLine);
@@ -140,31 +230,31 @@ namespace AntdUI
                     }
                     break;
                 //========================================================
-                case Keys.Control | Keys.A:
+                case ShortcutKeys.ControlA:
                     SelectAll();
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.C:
+                case ShortcutKeys.ControlC:
                     Copy();
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.X:
+                case ShortcutKeys.ControlX:
                     Cut();
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.V:
+                case ShortcutKeys.ControlV:
                     Paste();
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.Z:
+                case ShortcutKeys.ControlZ:
                     Undo();
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.Control | Keys.Y:
+                case ShortcutKeys.ControlY:
                     Redo();
                     if (HandShortcutKeys) return true;
                     break;
-                case Keys.PageUp:
+                case ShortcutKeys.PageUp:
                     if (ScrollYShow && cache_font != null)
                     {
                         SpeedScrollTo = true;
@@ -175,7 +265,7 @@ namespace AntdUI
                         if (HandShortcutKeys) return true;
                     }
                     break;
-                case Keys.PageDown:
+                case ShortcutKeys.PageDown:
                     if (ScrollYShow && cache_font != null)
                     {
                         SpeedScrollTo = true;
@@ -187,13 +277,73 @@ namespace AntdUI
                     }
                     break;
             }
-            return result;
+            return false;
         }
 
-        internal void IKeyPress(char keyChar)
+        /// <summary>
+        /// 快捷键枚举
+        /// </summary>
+        public enum ShortcutKeys
         {
-            if (keyChar < 32) return;
-            if (Verify(keyChar, out var change)) EnterText(change ?? keyChar.ToString());
+            None,
+            /// <summary>
+            /// BackSpace
+            /// </summary>
+            Back,
+            /// <summary>
+            /// 删除
+            /// </summary>
+            Delete,
+            /// <summary>
+            /// 制表符
+            /// </summary>
+            Tab,
+            /// <summary>
+            /// 回车
+            /// </summary>
+            Enter,
+            /// <summary>
+            /// 全选
+            /// </summary>
+            ControlA,
+            /// <summary>
+            /// 复制
+            /// </summary>
+            ControlC,
+            /// <summary>
+            /// 剪贴
+            /// </summary>
+            ControlX,
+            /// <summary>
+            /// 粘贴
+            /// </summary>
+            ControlV,
+            /// <summary>
+            /// 撤消
+            /// </summary>
+            ControlZ,
+            /// <summary>
+            /// 重做
+            /// </summary>
+            ControlY,
+            Left,
+            LeftShift,
+            Right,
+            RightShift,
+            Up,
+            UpShift,
+            Down,
+            DownShift,
+            Home,
+            HomeShift,
+            HomeControl,
+            HomeControlShift,
+            End,
+            EndShift,
+            EndControl,
+            EndControlShift,
+            PageUp,
+            PageDown
         }
 
         /// <summary>
@@ -529,5 +679,7 @@ namespace AntdUI
                 }
             }
         }
+
+        #endregion
     }
 }

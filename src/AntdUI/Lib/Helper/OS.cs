@@ -23,6 +23,10 @@ namespace AntdUI
     public class OS
     {
         public static Version Version;
+
+        /// <summary>
+        /// 大于等于Windows 11
+        /// </summary>
         public static bool Win11
         {
             get
@@ -32,6 +36,11 @@ namespace AntdUI
                 return false;
             }
         }
+
+        /// <summary>
+        /// 大于等于Windows 10
+        /// </summary>
+        public static bool Win10 => Version.Major >= 10;
 
         #region OS版本
 

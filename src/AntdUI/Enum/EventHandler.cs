@@ -197,6 +197,24 @@ namespace AntdUI
 
     public delegate void InputVerifyCharEventHandler(object sender, InputVerifyCharEventArgs e);
 
+    public class InputVerifyKeyboardEventArgs : EventArgs
+    {
+        public InputVerifyKeyboardEventArgs(Keys keyData)
+        {
+            KeyData = keyData;
+        }
+
+        public Keys KeyData { get; private set; }
+
+        /// <summary>
+        /// 验证结果
+        /// </summary>
+        public bool Result { get; set; } = true;
+    }
+
+
+    public delegate void InputVerifyKeyboardEventHandler(object sender, InputVerifyKeyboardEventArgs e);
+
     #endregion
 
     #region Menu

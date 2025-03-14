@@ -85,7 +85,21 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
+            }
+        }
+
+        TAlignRound radiusAlign = TAlignRound.ALL;
+        [Description("圆角方向"), Category("外观"), DefaultValue(TAlignRound.ALL)]
+        public TAlignRound RadiusAlign
+        {
+            get => radiusAlign;
+            set
+            {
+                if (radiusAlign == value) return;
+                radiusAlign = value;
+                Invalidate();
+                OnPropertyChanged(nameof(RadiusAlign));
             }
         }
 
@@ -105,7 +119,7 @@ namespace AntdUI
                 shadow = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("Shadow");
+                OnPropertyChanged(nameof(Shadow));
             }
         }
 
@@ -124,7 +138,7 @@ namespace AntdUI
                 shadowColor = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("ShadowColor");
+                OnPropertyChanged(nameof(ShadowColor));
             }
         }
 
@@ -142,7 +156,7 @@ namespace AntdUI
                 shadowOffsetX = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("ShadowOffsetX");
+                OnPropertyChanged(nameof(ShadowOffsetX));
             }
         }
 
@@ -160,7 +174,7 @@ namespace AntdUI
                 shadowOffsetY = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("ShadowOffsetY");
+                OnPropertyChanged(nameof(ShadowOffsetY));
             }
         }
 
@@ -179,7 +193,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacity = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacity");
+                OnPropertyChanged(nameof(ShadowOpacity));
             }
         }
 
@@ -204,7 +218,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacityHover = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacityHover");
+                OnPropertyChanged(nameof(ShadowOpacityHover));
             }
         }
 
@@ -219,7 +233,7 @@ namespace AntdUI
                 shadowAlign = value;
                 DisposeShadow();
                 LoadLayout();
-                OnPropertyChanged("ShadowAlign");
+                OnPropertyChanged(nameof(ShadowAlign));
             }
         }
 
@@ -250,7 +264,7 @@ namespace AntdUI
                 gap = value;
                 LoadLayout();
                 Invalidate();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -272,7 +286,7 @@ namespace AntdUI
                 if (emptyText == value) return;
                 emptyText = value;
                 Invalidate();
-                OnPropertyChanged("EmptyText");
+                OnPropertyChanged(nameof(EmptyText));
             }
         }
 
@@ -384,7 +398,7 @@ namespace AntdUI
                     LoadLayout();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 
@@ -1079,7 +1093,7 @@ namespace AntdUI
                     if (!shadow_dir_tmp.ContainsKey(id))
                     {
                         int shadow = (int)(Shadow * Config.Dpi);
-                        using (var path = new Rectangle(shadow, shadow, it.RECT.Width, it.RECT.Height).RoundPath(radius, shadowAlign))
+                        using (var path = new Rectangle(shadow, shadow, it.RECT.Width, it.RECT.Height).RoundPath(radius, shadowAlign, radiusAlign))
                         {
                             shadow_dir_tmp.Add(id, path.PaintShadow(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Colour.TextBase.Get("VirtualPanel"), shadow));
                         }

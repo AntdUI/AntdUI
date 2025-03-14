@@ -89,7 +89,7 @@ namespace AntdUI
                 currentValue = Constrain(value);
                 Text = GetNumberText(currentValue);
                 ValueChanged?.Invoke(this, new DecimalEventArgs(currentValue));
-                OnPropertyChanged("Value");
+                OnPropertyChanged(nameof(Value));
             }
         }
 
@@ -415,7 +415,11 @@ namespace AntdUI
             base.OnLostFocus(e);
             if (IsHandleCreated)
             {
-                if (IsTextEmpty) return;
+                if (IsTextEmpty)
+                {
+                    Value = minimum ?? 0;
+                    return;
+                }
                 if (decimal.TryParse(Text, out var _d)) Value = _d;
                 Text = GetNumberText(currentValue);
             }

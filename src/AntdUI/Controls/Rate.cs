@@ -104,7 +104,7 @@ namespace AntdUI
                 }
                 Invalidate();
                 ValueChanged?.Invoke(this, new FloatEventArgs(_value));
-                OnPropertyChanged("Value");
+                OnPropertyChanged(nameof(Value));
             }
         }
 
@@ -142,6 +142,13 @@ namespace AntdUI
 
         [Description("自定义字符"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationCharacter { get; set; }
+
+        /// <summary>
+        /// 超出文字提示配置
+        /// </summary>
+        [Browsable(false)]
+        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        public TooltipConfig? TooltipConfig { get; set; }
 
         #endregion
 
@@ -467,7 +474,7 @@ namespace AntdUI
             var rect = new Rectangle(_rect.X + dot_rect.X, _rect.Y + dot_rect.Y, dot_rect.Width, dot_rect.Height);
             if (tooltipForm == null)
             {
-                tooltipForm = new TooltipForm(this, rect, tooltipText, new TooltipConfig
+                tooltipForm = new TooltipForm(this, rect, tooltipText, TooltipConfig ?? new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Top,

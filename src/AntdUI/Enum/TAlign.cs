@@ -134,6 +134,64 @@ namespace AntdUI
     }
 
     /// <summary>
+    /// 圆角方向
+    /// </summary>
+    public enum TAlignRound
+    {
+        /// <summary>
+        /// 无
+        /// </summary>
+        ALL,
+
+
+        /// <summary>
+        /// ↑上
+        /// </summary>
+        Top,
+
+
+        /// <summary>
+        /// → 右
+        /// </summary>
+        Right,
+
+
+        /// <summary>
+        /// ↓ 下
+        /// </summary>
+        Bottom,
+
+
+        /// <summary>
+        /// ← 左
+        /// </summary>
+        Left,
+
+
+        /// <summary>
+        /// ↖左上
+        /// </summary>
+        TL,
+
+
+        /// <summary>
+        /// ↗右上
+        /// </summary>
+        TR,
+
+
+        /// <summary>
+        /// ↘右下
+        /// </summary>
+        BR,
+
+        /// <summary>
+        /// ↙左下
+        /// </summary>
+        BL
+    }
+
+    /// <summary>
     /// 方向
     /// </summary>
     public enum TAlignFrom

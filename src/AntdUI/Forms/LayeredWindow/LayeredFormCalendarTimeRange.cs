@@ -194,7 +194,7 @@ namespace AntdUI
                 else SelData = new DateTime[] { new DateTime(value[0].Year, value[0].Month, value[0].Day), new DateTime(value[1].Year, value[1].Month, value[1].Day) };
             }
         }
-        DateTime _Date, _Date_R;
+        DateTime _Date;
         DateTime DateNow = DateTime.Now;
         List<Calendari>? calendar_year = null;
         List<Calendari>? calendar_month = null;

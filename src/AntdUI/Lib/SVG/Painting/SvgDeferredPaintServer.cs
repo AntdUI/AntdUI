@@ -53,7 +53,7 @@ namespace AntdUI.Svg
             return _concreteServer.GetBrush(styleOwner, renderer, opacity, forStroke);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var other = obj as SvgDeferredPaintServer;
             if (other == null)

@@ -329,15 +329,42 @@ namespace AntdUI
             return RoundPathCore(rect, radius);
         }
 
-        public static GraphicsPath RoundPath(this Rectangle rect, float radius, TAlignMini shadowAlign)
+        public static GraphicsPath RoundPath(this Rectangle rect, float radius, TAlignMini shadowAlign, TAlignRound align)
         {
-            switch (shadowAlign)
+            if (align == TAlignRound.ALL)
             {
-                case TAlignMini.Top: return RoundPath(rect, radius, true, true, false, false);
-                case TAlignMini.Bottom: return RoundPath(rect, radius, false, false, true, true);
-                case TAlignMini.Left: return RoundPath(rect, radius, true, false, false, true);
-                case TAlignMini.Right: return RoundPath(rect, radius, false, true, true, false);
-                case TAlignMini.None:
+                switch (shadowAlign)
+                {
+                    case TAlignMini.Top: return RoundPath(rect, radius, true, true, false, false);
+                    case TAlignMini.Bottom: return RoundPath(rect, radius, false, false, true, true);
+                    case TAlignMini.Left: return RoundPath(rect, radius, true, false, false, true);
+                    case TAlignMini.Right: return RoundPath(rect, radius, false, true, true, false);
+                    case TAlignMini.None:
+                    default: return RoundPath(rect, radius, align);
+                }
+            }
+            return RoundPath(rect, radius, align);
+        }
+
+        /// <summary>
+        /// 自定义圆角
+        /// </summary>
+        /// <param name="rect">区域</param>
+        /// <param name="radius">圆角大小</param>
+        /// <param name="align">圆角方向</param>
+        public static GraphicsPath RoundPath(this Rectangle rect, float radius, TAlignRound align)
+        {
+            switch (align)
+            {
+                case TAlignRound.Top: return RoundPath(rect, radius, true, true, false, false);
+                case TAlignRound.Bottom: return RoundPath(rect, radius, false, false, true, true);
+                case TAlignRound.Left: return RoundPath(rect, radius, true, false, false, true);
+                case TAlignRound.Right: return RoundPath(rect, radius, false, true, true, false);
+                case TAlignRound.TL: return RoundPath(rect, radius, true, false, false, false);
+                case TAlignRound.TR: return RoundPath(rect, radius, false, true, false, false);
+                case TAlignRound.BR: return RoundPath(rect, radius, false, false, true, false);
+                case TAlignRound.BL: return RoundPath(rect, radius, false, false, false, true);
+                case TAlignRound.ALL:
                 default: return RoundPathCore(rect, radius);
             }
         }

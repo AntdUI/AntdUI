@@ -54,7 +54,7 @@ namespace AntdUI
                 dateFormat = value;
                 ShowTime = dateFormat.Contains("H");
                 Text = _value.HasValue ? _value.Value.ToString(dateFormat) : "";
-                OnPropertyChanged("Format");
+                OnPropertyChanged(nameof(Format));
             }
         }
 
@@ -71,10 +71,12 @@ namespace AntdUI
                 if (_value == value) return;
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimeNEventArgs(value));
-                Text = value.HasValue ? value.Value.ToString(Format) : "";
-                OnPropertyChanged("Value");
+                SetText(value);
+                OnPropertyChanged(nameof(Value));
             }
         }
+
+        void SetText(DateTime? value) => Text = value.HasValue ? value.Value.ToString(Format) : "";
 
         /// <summary>
         /// 最小日期
@@ -130,7 +132,7 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            if (_value.HasValue) Text = _value.Value.ToString(Format);
+            SetText(_value);
             base.OnHandleCreated(e);
         }
 
@@ -224,7 +226,11 @@ namespace AntdUI
             ExpandDrop = false;
             if (IsHandleCreated)
             {
-                if (IsTextEmpty) return;
+                if (IsTextEmpty)
+                {
+                    Value = null;
+                    return;
+                }
                 if (DateTime.TryParseExact(Text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d))
                 {
                     Value = _d;
@@ -234,8 +240,7 @@ namespace AntdUI
                         subForm.Print();
                     }
                 }
-                if (_value.HasValue) Text = _value.Value.ToString(Format);
-                else Text = "";
+                SetText(_value);
             }
         }
 

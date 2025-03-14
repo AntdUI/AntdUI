@@ -411,7 +411,6 @@ namespace AntdUI
             tempContent?.Dispose();
             tempContent = null;
             config.Content.ControlEvent();
-            if (config.Content is DrawerLoad idrawer) idrawer.LoadOK();
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
         }
 
@@ -743,11 +742,5 @@ namespace AntdUI
         }
 
         #endregion
-    }
-
-    [Obsolete("use ControlEvent")]
-    public interface DrawerLoad
-    {
-        void LoadOK();
     }
 }

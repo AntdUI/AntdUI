@@ -60,7 +60,7 @@ namespace AntdUI.Svg.Transforms
             return transformMatrix;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (Count == 0 && Count == base.Count) //default will be an empty list 
                 return true;

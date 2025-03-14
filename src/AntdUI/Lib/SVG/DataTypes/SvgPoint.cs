@@ -35,7 +35,7 @@ namespace AntdUI.Svg
             return (X.Value == 0.0f && Y.Value == 0.0f);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null) return false;
 

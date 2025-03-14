@@ -184,6 +184,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 支持点选多个节点
+        /// </summary>
+        [Description("支持点选多个节点"), Category("行为"), DefaultValue(false)]
+        public bool Multiple { get; set; }
+
         TreeItemCollection? items;
         /// <summary>
         /// 集合
@@ -230,7 +236,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 
@@ -660,6 +666,9 @@ namespace AntdUI
             }
             return false;
         }
+
+        bool _multiple = false;
+        TreeItem? shift_index;
         bool IMouseUp(MouseEventArgs e, TreeItem item, TreeItem MDown)
         {
             bool can = item.CanExpand;
@@ -668,29 +677,58 @@ namespace AntdUI
                 int down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
                 if (down > 0)
                 {
-                    if (down == 3 && item.Enabled)
+                    if (e.Button == MouseButtons.Left)
                     {
-                        item.Checked = !item.Checked;
-                        if (CheckStrictly)
+                        if (down == 3 && item.Enabled)
                         {
-                            SetCheck(item, item.Checked);
-                            SetCheckStrictly(item.PARENTITEM);
+                            item.Checked = !item.Checked;
+                            if (CheckStrictly)
+                            {
+                                SetCheck(item, item.Checked);
+                                SetCheckStrictly(item.PARENTITEM);
+                            }
                         }
-                    }
-                    else if (down == 2 && can) item.Expand = !item.Expand;
-                    else
-                    {
-                        if (doubleClick && can) item.Expand = !item.Expand;
+                        else if (down == 2 && can) item.Expand = !item.Expand;
                         else
                         {
-                            selectItem = item;
-                            item.Select = true;
-                            OnSelectChanged(item, e);
-                            Invalidate();
+                            if (doubleClick && can) item.Expand = !item.Expand;
+                            else
+                            {
+                                selectItem = item;
+                                if (Multiple && ModifierKeys.HasFlag(Keys.Shift))
+                                {
+                                    _multiple = true;
+                                    if (shift_index == null) item.SetSelect();
+                                    else
+                                    {
+                                        if (item == shift_index) item.SetSelect();
+                                        else if (shift_index.rect.Y > item.rect.Y) SetSelects(items!, item, shift_index);
+                                        else SetSelects(items!, shift_index, item);
+                                    }
+                                }
+                                else if (Multiple && ModifierKeys.HasFlag(Keys.Control))
+                                {
+                                    _multiple = true;
+                                    item.SetSelect();
+                                }
+                                else
+                                {
+                                    if (_multiple)
+                                    {
+                                        _multiple = false;
+                                        if (item.Select) USelect();
+                                        item.Select = true;
+                                    }
+                                    else item.Select = true;
+                                }
+                                shift_index = item;
+                                OnSelectChanged(item, e);
+                                Invalidate();
+                            }
                         }
                     }
                     if (doubleClick) OnNodeMouseDoubleClick(item, e);
-                    OnNodeMouseClick(item, e);
+                    else OnNodeMouseClick(item, e);
                 }
                 return true;
             }
@@ -699,6 +737,25 @@ namespace AntdUI
                 foreach (var sub in item.Sub)
                 {
                     if (IMouseUp(e, sub, MDown)) return true;
+                }
+            }
+            return false;
+        }
+
+        bool SetSelects(TreeItemCollection items, TreeItem first, TreeItem last, bool start = false)
+        {
+            foreach (var it in items)
+            {
+                if (last == it)
+                {
+                    it.SetSelect();
+                    return true;
+                }
+                else if (first == it) start = true;
+                if (start) it.SetSelect();
+                if (it.items != null && it.items.Count > 0)
+                {
+                    if (SetSelects(it.items, first, last, start)) return true;
                 }
             }
             return false;
@@ -871,6 +928,30 @@ namespace AntdUI
         #region 获取项
 
         /// <summary>
+        /// 获取所有选择项
+        /// </summary>
+        public List<TreeItem> GetSelects()
+        {
+            if (items == null) return new List<TreeItem>(0);
+            return GetSelects(items);
+        }
+
+        List<TreeItem> GetSelects(TreeItemCollection items)
+        {
+            var list = new List<TreeItem>(items.Count);
+            foreach (var it in items)
+            {
+                if (it.Select) list.Add(it);
+                if (it.items != null && it.items.Count > 0)
+                {
+                    var list_sub = GetSelects(it.items);
+                    if (list_sub.Count > 0) list.AddRange(list_sub);
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
         /// 获取所有选中项
         /// </summary>
         /// <param name="Indeterminate">是否包含 Indeterminate</param>
@@ -881,7 +962,7 @@ namespace AntdUI
         }
         List<TreeItem> GetCheckeds(TreeItemCollection items, bool Indeterminate)
         {
-            var list = new List<TreeItem>();
+            var list = new List<TreeItem>(items.Count);
             if (Indeterminate)
             {
                 foreach (var it in items)
@@ -1444,6 +1525,13 @@ namespace AntdUI
                 select = value;
                 Invalidate();
             }
+        }
+
+        internal void SetSelect(bool value = true)
+        {
+            if (select == value) return;
+            select = value;
+            Invalidate();
         }
 
         public int Depth { get; private set; }

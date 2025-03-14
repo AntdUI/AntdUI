@@ -223,7 +223,7 @@ namespace AntdUI
                 {
                     if (enabled == value) return;
                     enabled = value;
-                    OnPropertyChanged("Enabled");
+                    OnPropertyChanged(nameof(Enabled));
                 }
             }
 
@@ -239,7 +239,7 @@ namespace AntdUI
                 {
                     if (loading == value) return;
                     loading = value;
-                    OnPropertyChanged("Loading");
+                    OnPropertyChanged(nameof(Loading));
                 }
             }
 
@@ -259,7 +259,7 @@ namespace AntdUI
                 {
                     if (fore == value) return;
                     fore = value;
-                    OnPropertyChanged("Fore");
+                    OnPropertyChanged(nameof(Fore));
                 }
             }
 
@@ -274,7 +274,7 @@ namespace AntdUI
                 {
                     if (icon == value) return;
                     icon = value;
-                    OnPropertyChanged("Icon");
+                    OnPropertyChanged(nameof(Icon));
                 }
             }
 
@@ -289,7 +289,7 @@ namespace AntdUI
                 {
                     if (iconSvg == value) return;
                     iconSvg = value;
-                    OnPropertyChanged("IconSvg");
+                    OnPropertyChanged(nameof(IconSvg));
                 }
             }
 
@@ -304,7 +304,7 @@ namespace AntdUI
                 {
                     if (iconSize == value) return;
                     iconSize = value;
-                    OnPropertyChanged("IconSize");
+                    OnPropertyChanged(nameof(IconSize));
                 }
             }
 
@@ -319,7 +319,7 @@ namespace AntdUI
                 {
                     if (text == value) return;
                     text = value;
-                    OnPropertyChanged("Text");
+                    OnPropertyChanged(nameof(Text));
                 }
             }
 
@@ -344,7 +344,7 @@ namespace AntdUI
                 {
                     if (type == value) return;
                     type = value;
-                    OnPropertyChanged("Type");
+                    OnPropertyChanged(nameof(Type));
                 }
             }
 
@@ -364,7 +364,7 @@ namespace AntdUI
                 {
                     if (round == value) return;
                     round = value;
-                    OnPropertyChanged("Round");
+                    OnPropertyChanged(nameof(Round));
                 }
             }
 
@@ -379,7 +379,7 @@ namespace AntdUI
                 {
                     if (badge == value) return;
                     badge = value;
-                    OnPropertyChanged("Badge");
+                    OnPropertyChanged(nameof(Badge));
                 }
             }
 
@@ -394,7 +394,7 @@ namespace AntdUI
                 {
                     if (badgeSvg == value) return;
                     badgeSvg = value;
-                    OnPropertyChanged("Badge");
+                    OnPropertyChanged(nameof(Badge));
                 }
             }
 
@@ -409,7 +409,7 @@ namespace AntdUI
                 {
                     if (badgeAlign == value) return;
                     badgeAlign = value;
-                    OnPropertyChanged("Badge");
+                    OnPropertyChanged(nameof(Badge));
                 }
             }
 
@@ -429,7 +429,7 @@ namespace AntdUI
                 {
                     if (badgeMode == value) return;
                     badgeMode = value;
-                    OnPropertyChanged("BadgeMode");
+                    OnPropertyChanged(nameof(BadgeMode));
                 }
             }
 

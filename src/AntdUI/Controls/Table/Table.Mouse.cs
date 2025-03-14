@@ -44,17 +44,20 @@ namespace AntdUI
                 if (cell == null) return;
                 else
                 {
-                    if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
+                    if (e.Button == MouseButtons.Left)
                     {
-                        if (shift_index == -1) SelectedIndexs = SetIndexs(i_row);
-                        else
+                        if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
                         {
-                            if (shift_index > i_row) SelectedIndexs = SetIndexs(i_row, shift_index);
-                            else SelectedIndexs = SetIndexs(shift_index, i_row);
+                            if (shift_index == -1) SelectedIndexs = SetIndexs(i_row);
+                            else
+                            {
+                                if (shift_index > i_row) SelectedIndexs = SetIndexs(i_row, shift_index);
+                                else SelectedIndexs = SetIndexs(shift_index, i_row);
+                            }
                         }
+                        else if (MultipleRows && ModifierKeys.HasFlag(Keys.Control)) SelectedIndexs = SetIndexs(i_row);
+                        else SelectedIndex = i_row;
                     }
-                    else if (MultipleRows && ModifierKeys.HasFlag(Keys.Control)) SelectedIndexs = SetIndexs(i_row);
-                    else SelectedIndex = i_row;
                     shift_index = i_row;
                     var it = rows[i_row];
                     if (mode > 0)
@@ -421,8 +424,6 @@ namespace AntdUI
                     }
                     bool doubleClick = cell.MouseDown == 2;
                     cell.MouseDown = 0;
-                    CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
-
                     bool enterEdit = false;
                     if (doubleClick)
                     {
@@ -431,6 +432,7 @@ namespace AntdUI
                     }
                     else
                     {
+                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
                         if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
                     }
                     if (enterEdit)
@@ -700,7 +702,7 @@ namespace AntdUI
                             var rect = new Rectangle(_rect.X + btn_template.Rect.X - offset_xi, _rect.Y + btn_template.Rect.Y - offset_y, btn_template.Rect.Width, btn_template.Rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(this, rect, btn_template.Tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, btn_template.Tooltip, TooltipConfig ?? new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,
@@ -719,7 +721,7 @@ namespace AntdUI
                             var rect = new Rectangle(_rect.X + img_template.Rect.X - offset_xi, _rect.Y + img_template.Rect.Y - offset_y, img_template.Rect.Width, img_template.Rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(this, rect, img_template.Tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, img_template.Tooltip, TooltipConfig ?? new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,
@@ -748,7 +750,7 @@ namespace AntdUI
                             var rect = new Rectangle(_rect.X + cel.RECT.X - offset_xi, _rect.Y + cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(this, rect, text, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, rect, text, TooltipConfig ?? new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = TAlign.Top,

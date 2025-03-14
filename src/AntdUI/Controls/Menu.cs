@@ -65,7 +65,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -89,7 +89,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -106,7 +106,7 @@ namespace AntdUI
                 if (round == value) return;
                 round = value;
                 Invalidate();
-                OnPropertyChanged("Round");
+                OnPropertyChanged(nameof(Round));
             }
         }
 
@@ -123,7 +123,7 @@ namespace AntdUI
                 if (theme == value) return;
                 theme = value;
                 Invalidate();
-                OnPropertyChanged("Theme");
+                OnPropertyChanged(nameof(Theme));
             }
         }
 
@@ -150,7 +150,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("IconRatio");
+                OnPropertyChanged(nameof(IconRatio));
             }
         }
 
@@ -171,7 +171,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("Mode");
+                OnPropertyChanged(nameof(Mode));
             }
         }
 
@@ -222,9 +222,16 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("Collapsed");
+                OnPropertyChanged(nameof(Collapsed));
             }
         }
+
+        /// <summary>
+        /// 超出文字提示配置
+        /// </summary>
+        [Browsable(false)]
+        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        public TooltipConfig? TooltipConfig { get; set; }
 
         #region 集合操作
 
@@ -389,7 +396,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 
@@ -1017,7 +1024,7 @@ namespace AntdUI
                                 {
                                     if (tooltipForm == null)
                                     {
-                                        tooltipForm = new TooltipForm(this, rect, it.Text, new TooltipConfig
+                                        tooltipForm = new TooltipForm(this, rect, it.Text, TooltipConfig ?? new TooltipConfig
                                         {
                                             Font = it.Font ?? Font,
                                             ArrowAlign = TAlign.Right,

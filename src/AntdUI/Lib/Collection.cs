@@ -150,6 +150,13 @@ namespace AntdUI
             action_add?.Invoke(item);
             action?.Invoke(true);
         }
+        public void InsertAntRemove(int index, T item)
+        {
+            list.Remove(item);
+            list.Insert(index, item);
+            PropertyChanged(item);
+            action?.Invoke(true);
+        }
         public void Insert(int index, object? value)
         {
             if (value is T item)
@@ -379,7 +386,7 @@ namespace AntdUI
         public IEnumerator GetEnumerator()
         {
             for (int i = 0, Len = count; i < Len; i++)
-                yield return list[i];
+                yield return list![i];
         }
 
         public int IndexOf(object? value)
@@ -446,6 +453,7 @@ namespace AntdUI
         #endregion
     }
 
+    [Obsolete("use BindingList")]
     public class AntList<T> : IList<T>
     {
         public AntList() { }
@@ -573,12 +581,12 @@ namespace AntdUI
         public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0, Len = count; i < Len; i++)
-                yield return list[i];
+                yield return list![i];
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
             for (int i = 0, Len = count; i < Len; i++)
-                yield return list[i];
+                yield return list![i];
         }
 
         public int Count => count;

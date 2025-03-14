@@ -51,7 +51,21 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
+            }
+        }
+
+        TAlignRound radiusAlign = TAlignRound.ALL;
+        [Description("圆角方向"), Category("外观"), DefaultValue(TAlignRound.ALL)]
+        public TAlignRound RadiusAlign
+        {
+            get => radiusAlign;
+            set
+            {
+                if (radiusAlign == value) return;
+                radiusAlign = value;
+                Invalidate();
+                OnPropertyChanged(nameof(RadiusAlign));
             }
         }
 
@@ -69,7 +83,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("padding");
+                OnPropertyChanged(nameof(padding));
             }
         }
 
@@ -88,7 +102,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("Shadow");
+                OnPropertyChanged(nameof(Shadow));
             }
         }
 
@@ -108,7 +122,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 Invalidate();
-                OnPropertyChanged("ShadowColor");
+                OnPropertyChanged(nameof(ShadowColor));
             }
         }
 
@@ -127,7 +141,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("ShadowOffsetX");
+                OnPropertyChanged(nameof(ShadowOffsetX));
             }
         }
 
@@ -146,7 +160,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("ShadowOffsetY");
+                OnPropertyChanged(nameof(ShadowOffsetY));
             }
         }
 
@@ -166,7 +180,7 @@ namespace AntdUI
                 shadowOpacity = value;
                 AnimationHoverValue = shadowOpacity;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacity");
+                OnPropertyChanged(nameof(ShadowOpacity));
             }
         }
 
@@ -191,7 +205,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacityHover = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacityHover");
+                OnPropertyChanged(nameof(ShadowOpacityHover));
             }
         }
 
@@ -207,7 +221,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("ShadowAlign");
+                OnPropertyChanged(nameof(ShadowAlign));
             }
         }
 
@@ -229,7 +243,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("Back");
+                OnPropertyChanged(nameof(Back));
             }
         }
 
@@ -246,7 +260,7 @@ namespace AntdUI
                 if (backImage == value) return;
                 backImage = value;
                 Invalidate();
-                OnPropertyChanged("BackgroundImage");
+                OnPropertyChanged(nameof(BackgroundImage));
             }
         }
 
@@ -263,7 +277,7 @@ namespace AntdUI
                 if (backFit == value) return;
                 backFit = value;
                 Invalidate();
-                OnPropertyChanged("BackgroundImageLayout");
+                OnPropertyChanged(nameof(BackgroundImageLayout));
             }
         }
 
@@ -284,7 +298,7 @@ namespace AntdUI
                 if (arrwoSize == value) return;
                 arrwoSize = value;
                 Invalidate();
-                OnPropertyChanged("ArrowSize");
+                OnPropertyChanged(nameof(ArrowSize));
             }
         }
 
@@ -301,7 +315,7 @@ namespace AntdUI
                 if (arrowAlign == value) return;
                 arrowAlign = value;
                 Invalidate();
-                OnPropertyChanged("ArrowAlign");
+                OnPropertyChanged(nameof(ArrowAlign));
             }
         }
 
@@ -322,7 +336,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 IOnSizeChanged();
-                OnPropertyChanged("BorderWidth");
+                OnPropertyChanged(nameof(BorderWidth));
             }
         }
 
@@ -340,7 +354,7 @@ namespace AntdUI
                 if (borderColor == value) return;
                 borderColor = value;
                 if (borderWidth > 0) Invalidate();
-                OnPropertyChanged("BorderColor");
+                OnPropertyChanged(nameof(BorderColor));
             }
         }
 
@@ -357,7 +371,7 @@ namespace AntdUI
                 if (borderStyle == value) return;
                 borderStyle = value;
                 if (borderWidth > 0) Invalidate();
-                OnPropertyChanged("BorderStyle");
+                OnPropertyChanged(nameof(BorderStyle));
             }
         }
 
@@ -401,7 +415,7 @@ namespace AntdUI
         /// <param name="rect_read">真实区域</param>
         GraphicsPath DrawShadow(Canvas g, float radius, Rectangle rect_client, Rectangle rect_read)
         {
-            var path = rect_read.RoundPath(radius, shadowAlign);
+            var path = rect_read.RoundPath(radius, shadowAlign, radiusAlign);
             if (shadow > 0)
             {
                 int shadow = (int)(Shadow * Config.Dpi), shadowOffsetX = (int)(ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(ShadowOffsetY * Config.Dpi);

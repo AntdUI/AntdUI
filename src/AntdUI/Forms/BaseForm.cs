@@ -85,7 +85,7 @@ namespace AntdUI
 
         internal void SetTheme()
         {
-            if (mode == TAMode.Dark || (mode == TAMode.Auto || Config.Mode == TMode.Dark)) DarkUI.UseImmersiveDarkMode(Handle, true);
+            if (mode == TAMode.Dark || (mode == TAMode.Auto && Config.Mode == TMode.Dark)) DarkUI.UseImmersiveDarkMode(Handle, true);
         }
 
         #endregion

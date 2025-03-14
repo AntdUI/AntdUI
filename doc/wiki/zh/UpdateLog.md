@@ -1,5 +1,20 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `1.9.4` 2025-03-14
+
+- ➕ Tabs DragOrder 拖动顺序
+- ➕ Segmented SegmentedItem Hover 图标属性
+- ➕ Segmented BarBg BarColor Tooltip
+- ➕ Input VerifyKeyboard 快捷键拦截
+- ➕ Panel RadiusAlign
+- ➕ Tree 支持点选多个节点
+- ✍️ Table MultipleRows 右键生效
+- ✍️ Tooltip 多屏异常
+- ✍️ DatePicker Text 清空后 Value 依旧存在值
+- ✍️ Table 双击触发两次点击
+- ✍️ 浅色模式误入暗色API
+- ✍️ Window 抑制 重复渲染
+
 ### `1.9.3` 2025-03-11
 
 - ➕ Preview 可以显示文本数据
