@@ -424,8 +424,6 @@ namespace AntdUI
                     }
                     bool doubleClick = cell.MouseDown == 2;
                     cell.MouseDown = 0;
-                    CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
-
                     bool enterEdit = false;
                     if (doubleClick)
                     {
@@ -434,6 +432,7 @@ namespace AntdUI
                     }
                     else
                     {
+                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
                         if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
                     }
                     if (enterEdit)
