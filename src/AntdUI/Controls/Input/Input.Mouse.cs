@@ -423,6 +423,9 @@ namespace AntdUI
         [Description("验证字符时发生"), Category("行为")]
         public event InputVerifyCharEventHandler? VerifyChar = null;
 
+        [Description("验证键盘时发生"), Category("行为")]
+        public event InputVerifyKeyboardEventHandler? VerifyKeyboard = null;
+
         #endregion
     }
 }

@@ -55,6 +55,20 @@ namespace AntdUI
             }
         }
 
+        TAlignRound radiusAlign = TAlignRound.ALL;
+        [Description("圆角方向"), Category("外观"), DefaultValue(TAlignRound.ALL)]
+        public TAlignRound RadiusAlign
+        {
+            get => radiusAlign;
+            set
+            {
+                if (radiusAlign == value) return;
+                radiusAlign = value;
+                Invalidate();
+                OnPropertyChanged(nameof(RadiusAlign));
+            }
+        }
+
         #region 阴影
 
         Padding _padding = new Padding(0);
@@ -401,7 +415,7 @@ namespace AntdUI
         /// <param name="rect_read">真实区域</param>
         GraphicsPath DrawShadow(Canvas g, float radius, Rectangle rect_client, Rectangle rect_read)
         {
-            var path = rect_read.RoundPath(radius, shadowAlign);
+            var path = rect_read.RoundPath(radius, shadowAlign, radiusAlign);
             if (shadow > 0)
             {
                 int shadow = (int)(Shadow * Config.Dpi), shadowOffsetX = (int)(ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(ShadowOffsetY * Config.Dpi);

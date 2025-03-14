@@ -242,7 +242,7 @@ namespace AntdUI
         internal Rectangle rect_d_ico, rect_d_l, rect_d_r;
 
         internal Rectangle? RECTDIV = null;
-        List<int> retnot = new List<int>(0);
+        List<int> LineBreakNumber = new List<int>(0);
         internal void CalculateRect()
         {
             var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight) : ReadRectangle;
@@ -250,7 +250,7 @@ namespace AntdUI
             RectAuto(rect, sps, sps2);
             if (cache_font == null)
             {
-                if (retnot.Count > 0) retnot.Clear();
+                if (LineBreakNumber.Count > 0) LineBreakNumber.Clear();
                 if (ModeRange)
                 {
                     int center = rect_text.Width / 2;
@@ -308,11 +308,11 @@ namespace AntdUI
                         usex += it.width;
                     }
                     HandTextAlignCore(cache_font);
-                    retnot = _retnot;
+                    LineBreakNumber = _retnot;
                 }
                 else
                 {
-                    if (retnot.Count > 0) retnot.Clear();
+                    if (LineBreakNumber.Count > 0) LineBreakNumber.Clear();
                     HandTextAlign(cache_font);
                 }
                 if (cache_font.Length == 0)

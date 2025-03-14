@@ -1039,7 +1039,12 @@ namespace AntdUI
             }
         }
 
-        void EnterText(string text, bool ismax = true)
+        /// <summary>
+        /// 当前位置插入文本
+        /// </summary>
+        /// <param name="text">文本</param>
+        /// <param name="ismax">是否限制MaxLength</param>
+        public void EnterText(string text, bool ismax = true)
         {
             if (ReadOnly || BanInput) return;
             int offset = 0;
@@ -1085,7 +1090,7 @@ namespace AntdUI
                     AddHistoryRecord();
                     var texts = new List<string>(cache_font.Length);
                     foreach (var it in cache_font) texts.Add(it.text);
-                    if (retnot.Contains(CaretInfo.Y) && !CaretInfo.Place && !CaretInfo.FirstRet && start > 0 && cache_font.Length - 1 != start && !cache_font[start].ret)
+                    if (LineBreakNumber.Contains(CaretInfo.Y) && !CaretInfo.Place && !CaretInfo.FirstRet && start > 0 && cache_font.Length - 1 != start && !cache_font[start].ret)
                     {
                         start++;
                         CaretInfo.Place = true;
@@ -1147,10 +1152,7 @@ namespace AntdUI
         /// <summary>
         /// 内容滚动到最下面
         /// </summary>
-        public void ScrollToEnd()
-        {
-            ScrollY = ScrollYMax;
-        }
+        public void ScrollToEnd() => ScrollY = ScrollYMax;
 
         #endregion
 

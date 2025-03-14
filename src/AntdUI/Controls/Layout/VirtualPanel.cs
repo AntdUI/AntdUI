@@ -89,6 +89,20 @@ namespace AntdUI
             }
         }
 
+        TAlignRound radiusAlign = TAlignRound.ALL;
+        [Description("圆角方向"), Category("外观"), DefaultValue(TAlignRound.ALL)]
+        public TAlignRound RadiusAlign
+        {
+            get => radiusAlign;
+            set
+            {
+                if (radiusAlign == value) return;
+                radiusAlign = value;
+                Invalidate();
+                OnPropertyChanged(nameof(RadiusAlign));
+            }
+        }
+
         #region 阴影
 
         int shadow = 0;
@@ -1079,7 +1093,7 @@ namespace AntdUI
                     if (!shadow_dir_tmp.ContainsKey(id))
                     {
                         int shadow = (int)(Shadow * Config.Dpi);
-                        using (var path = new Rectangle(shadow, shadow, it.RECT.Width, it.RECT.Height).RoundPath(radius, shadowAlign))
+                        using (var path = new Rectangle(shadow, shadow, it.RECT.Width, it.RECT.Height).RoundPath(radius, shadowAlign, radiusAlign))
                         {
                             shadow_dir_tmp.Add(id, path.PaintShadow(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Colour.TextBase.Get("VirtualPanel"), shadow));
                         }

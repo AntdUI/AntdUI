@@ -44,17 +44,20 @@ namespace AntdUI
                 if (cell == null) return;
                 else
                 {
-                    if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
+                    if (e.Button == MouseButtons.Left)
                     {
-                        if (shift_index == -1) SelectedIndexs = SetIndexs(i_row);
-                        else
+                        if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
                         {
-                            if (shift_index > i_row) SelectedIndexs = SetIndexs(i_row, shift_index);
-                            else SelectedIndexs = SetIndexs(shift_index, i_row);
+                            if (shift_index == -1) SelectedIndexs = SetIndexs(i_row);
+                            else
+                            {
+                                if (shift_index > i_row) SelectedIndexs = SetIndexs(i_row, shift_index);
+                                else SelectedIndexs = SetIndexs(shift_index, i_row);
+                            }
                         }
+                        else if (MultipleRows && ModifierKeys.HasFlag(Keys.Control)) SelectedIndexs = SetIndexs(i_row);
+                        else SelectedIndex = i_row;
                     }
-                    else if (MultipleRows && ModifierKeys.HasFlag(Keys.Control)) SelectedIndexs = SetIndexs(i_row);
-                    else SelectedIndex = i_row;
                     shift_index = i_row;
                     var it = rows[i_row];
                     if (mode > 0)
