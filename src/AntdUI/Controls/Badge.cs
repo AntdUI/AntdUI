@@ -49,7 +49,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -67,7 +67,7 @@ namespace AntdUI
                 state = value;
                 StartAnimation();
                 Invalidate();
-                OnPropertyChanged("State");
+                OnPropertyChanged(nameof(State));
             }
         }
 
@@ -84,7 +84,7 @@ namespace AntdUI
                 if (dotratio == value) return;
                 dotratio = value;
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("DotRatio");
+                OnPropertyChanged(nameof(DotRatio));
             }
         }
 
@@ -101,7 +101,7 @@ namespace AntdUI
                 if (gap == value) return;
                 gap = value;
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -121,7 +121,7 @@ namespace AntdUI
                 has_text = string.IsNullOrEmpty(text);
                 if (BeforeAutoSize()) Invalidate();
                 OnTextChanged(EventArgs.Empty);
-                OnPropertyChanged("Text");
+                OnPropertyChanged(nameof(Text));
             }
         }
 
@@ -143,7 +143,7 @@ namespace AntdUI
                 textAlign = value;
                 textAlign.SetAlignment(ref s_f);
                 Invalidate();
-                OnPropertyChanged("TextAlign");
+                OnPropertyChanged(nameof(TextAlign));
             }
         }
 
@@ -161,7 +161,7 @@ namespace AntdUI
                 if (fill == value) return;
                 fill = value;
                 Invalidate();
-                OnPropertyChanged("Fill");
+                OnPropertyChanged(nameof(Fill));
             }
         }
 

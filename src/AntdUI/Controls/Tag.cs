@@ -60,7 +60,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -80,7 +80,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("BackColor");
+                OnPropertyChanged(nameof(BackColor));
             }
         }
 
@@ -97,7 +97,7 @@ namespace AntdUI
                 if (backImage == value) return;
                 backImage = value;
                 Invalidate();
-                OnPropertyChanged("BackgroundImage");
+                OnPropertyChanged(nameof(BackgroundImage));
             }
         }
 
@@ -114,7 +114,7 @@ namespace AntdUI
                 if (backFit == value) return;
                 backFit = value;
                 Invalidate();
-                OnPropertyChanged("BackgroundImageLayout");
+                OnPropertyChanged(nameof(BackgroundImageLayout));
             }
         }
 
@@ -135,7 +135,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 Invalidate();
-                OnPropertyChanged("BorderWidth");
+                OnPropertyChanged(nameof(BorderWidth));
             }
         }
 
@@ -154,7 +154,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -171,7 +171,7 @@ namespace AntdUI
                 if (type == value) return;
                 type = value;
                 Invalidate();
-                OnPropertyChanged("Type");
+                OnPropertyChanged(nameof(Type));
             }
         }
 
@@ -188,7 +188,7 @@ namespace AntdUI
                 if (closeIcon == value) return;
                 closeIcon = value;
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("CloseIcon");
+                OnPropertyChanged(nameof(CloseIcon));
             }
         }
 
@@ -209,7 +209,7 @@ namespace AntdUI
                 text = value;
                 if (BeforeAutoSize()) Invalidate();
                 OnTextChanged(EventArgs.Empty);
-                OnPropertyChanged("Text");
+                OnPropertyChanged(nameof(Text));
             }
         }
 
@@ -232,7 +232,7 @@ namespace AntdUI
                 textAlign = value;
                 textAlign.SetAlignment(ref stringFormat);
                 Invalidate();
-                OnPropertyChanged("TextAlign");
+                OnPropertyChanged(nameof(TextAlign));
             }
         }
 
@@ -249,7 +249,7 @@ namespace AntdUI
                 if (autoEllipsis == value) return;
                 autoEllipsis = value;
                 stringFormat.Trimming = value ? StringTrimming.EllipsisCharacter : StringTrimming.None;
-                OnPropertyChanged("AutoEllipsis");
+                OnPropertyChanged(nameof(AutoEllipsis));
             }
         }
 
@@ -267,7 +267,7 @@ namespace AntdUI
                 textMultiLine = value;
                 stringFormat.FormatFlags = value ? 0 : StringFormatFlags.NoWrap;
                 Invalidate();
-                OnPropertyChanged("TextMultiLine");
+                OnPropertyChanged(nameof(TextMultiLine));
             }
         }
 
@@ -288,7 +288,7 @@ namespace AntdUI
                 if (image == value) return;
                 image = value;
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("Image");
+                OnPropertyChanged(nameof(Image));
             }
         }
 
@@ -302,7 +302,7 @@ namespace AntdUI
                 if (imageSvg == value) return;
                 imageSvg = value;
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("ImageSvg");
+                OnPropertyChanged(nameof(ImageSvg));
             }
         }
 

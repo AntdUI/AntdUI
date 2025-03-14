@@ -67,7 +67,7 @@ namespace AntdUI
                 barPosition = value;
                 showBar = barBg || barPosition != TAlignMini.None;
                 Invalidate();
-                OnPropertyChanged("BarPosition");
+                OnPropertyChanged(nameof(BarPosition));
             }
         }
 
@@ -102,7 +102,7 @@ namespace AntdUI
                 if (barColor == value) return;
                 barColor = value;
                 Invalidate();
-                OnPropertyChanged("BarColor");
+                OnPropertyChanged(nameof(BarColor));
             }
         }
 
@@ -119,7 +119,7 @@ namespace AntdUI
                 if (barsize == value) return;
                 barsize = value;
                 if (showBar) Invalidate();
-                OnPropertyChanged("BarSize");
+                OnPropertyChanged(nameof(BarSize));
             }
         }
 
@@ -136,7 +136,7 @@ namespace AntdUI
                 if (barpadding == value) return;
                 barpadding = value;
                 if (showBar) Invalidate();
-                OnPropertyChanged("BarPadding");
+                OnPropertyChanged(nameof(BarPadding));
             }
         }
 
@@ -162,7 +162,7 @@ namespace AntdUI
                 vertical = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("Vertical");
+                OnPropertyChanged(nameof(Vertical));
             }
         }
 
@@ -180,7 +180,7 @@ namespace AntdUI
                 full = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("Full");
+                OnPropertyChanged(nameof(Full));
             }
         }
 
@@ -197,7 +197,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -215,7 +215,7 @@ namespace AntdUI
                 iconratio = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("IconRatio");
+                OnPropertyChanged(nameof(IconRatio));
             }
         }
 
@@ -233,7 +233,7 @@ namespace AntdUI
                 icongap = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("IconGap");
+                OnPropertyChanged(nameof(IconGap));
             }
         }
 
@@ -250,7 +250,7 @@ namespace AntdUI
                 if (round == value) return;
                 round = value;
                 Invalidate();
-                OnPropertyChanged("Round");
+                OnPropertyChanged(nameof(Round));
             }
         }
 
@@ -265,7 +265,7 @@ namespace AntdUI
                 iconalign = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("IconAlign");
+                OnPropertyChanged(nameof(IconAlign));
             }
         }
 
@@ -280,7 +280,7 @@ namespace AntdUI
                 igap = value;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("Gap");
+                OnPropertyChanged(nameof(Gap));
             }
         }
 
@@ -298,7 +298,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("BackColor");
+                OnPropertyChanged(nameof(BackColor));
             }
         }
 
@@ -323,7 +323,7 @@ namespace AntdUI
                 if (backactive == value) return;
                 backactive = value;
                 Invalidate();
-                OnPropertyChanged("BackActive");
+                OnPropertyChanged(nameof(BackActive));
             }
         }
 
@@ -341,7 +341,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -366,7 +366,7 @@ namespace AntdUI
                 if (foreactive == value) return;
                 foreactive = value;
                 Invalidate();
-                OnPropertyChanged("ForeActive");
+                OnPropertyChanged(nameof(ForeActive));
             }
         }
 
@@ -382,7 +382,7 @@ namespace AntdUI
                 if (full) return;
                 ChangeItems();
                 Invalidate();
-                OnPropertyChanged("RightToLeft");
+                OnPropertyChanged(nameof(RightToLeft));
             }
         }
 
@@ -424,7 +424,7 @@ namespace AntdUI
                 _select = value;
                 SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
                 SetRect(old, _select);
-                OnPropertyChanged("SelectIndex");
+                OnPropertyChanged(nameof(SelectIndex));
             }
         }
 
@@ -603,7 +603,7 @@ namespace AntdUI
                     ChangeItems();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 

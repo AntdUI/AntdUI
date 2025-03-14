@@ -114,7 +114,7 @@ namespace AntdUI
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
                 SetText(value);
-                OnPropertyChanged("Value");
+                OnPropertyChanged(nameof(Value));
             }
         }
 

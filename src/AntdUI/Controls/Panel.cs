@@ -51,7 +51,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -69,7 +69,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("padding");
+                OnPropertyChanged(nameof(padding));
             }
         }
 
@@ -88,7 +88,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("Shadow");
+                OnPropertyChanged(nameof(Shadow));
             }
         }
 
@@ -108,7 +108,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 Invalidate();
-                OnPropertyChanged("ShadowColor");
+                OnPropertyChanged(nameof(ShadowColor));
             }
         }
 
@@ -127,7 +127,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("ShadowOffsetX");
+                OnPropertyChanged(nameof(ShadowOffsetX));
             }
         }
 
@@ -146,7 +146,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("ShadowOffsetY");
+                OnPropertyChanged(nameof(ShadowOffsetY));
             }
         }
 
@@ -166,7 +166,7 @@ namespace AntdUI
                 shadowOpacity = value;
                 AnimationHoverValue = shadowOpacity;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacity");
+                OnPropertyChanged(nameof(ShadowOpacity));
             }
         }
 
@@ -191,7 +191,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacityHover = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacityHover");
+                OnPropertyChanged(nameof(ShadowOpacityHover));
             }
         }
 
@@ -207,7 +207,7 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged("ShadowAlign");
+                OnPropertyChanged(nameof(ShadowAlign));
             }
         }
 
@@ -229,7 +229,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("Back");
+                OnPropertyChanged(nameof(Back));
             }
         }
 
@@ -246,7 +246,7 @@ namespace AntdUI
                 if (backImage == value) return;
                 backImage = value;
                 Invalidate();
-                OnPropertyChanged("BackgroundImage");
+                OnPropertyChanged(nameof(BackgroundImage));
             }
         }
 
@@ -263,7 +263,7 @@ namespace AntdUI
                 if (backFit == value) return;
                 backFit = value;
                 Invalidate();
-                OnPropertyChanged("BackgroundImageLayout");
+                OnPropertyChanged(nameof(BackgroundImageLayout));
             }
         }
 
@@ -284,7 +284,7 @@ namespace AntdUI
                 if (arrwoSize == value) return;
                 arrwoSize = value;
                 Invalidate();
-                OnPropertyChanged("ArrowSize");
+                OnPropertyChanged(nameof(ArrowSize));
             }
         }
 
@@ -301,7 +301,7 @@ namespace AntdUI
                 if (arrowAlign == value) return;
                 arrowAlign = value;
                 Invalidate();
-                OnPropertyChanged("ArrowAlign");
+                OnPropertyChanged(nameof(ArrowAlign));
             }
         }
 
@@ -322,7 +322,7 @@ namespace AntdUI
                 if (borderWidth == value) return;
                 borderWidth = value;
                 IOnSizeChanged();
-                OnPropertyChanged("BorderWidth");
+                OnPropertyChanged(nameof(BorderWidth));
             }
         }
 
@@ -340,7 +340,7 @@ namespace AntdUI
                 if (borderColor == value) return;
                 borderColor = value;
                 if (borderWidth > 0) Invalidate();
-                OnPropertyChanged("BorderColor");
+                OnPropertyChanged(nameof(BorderColor));
             }
         }
 
@@ -357,7 +357,7 @@ namespace AntdUI
                 if (borderStyle == value) return;
                 borderStyle = value;
                 if (borderWidth > 0) Invalidate();
-                OnPropertyChanged("BorderStyle");
+                OnPropertyChanged(nameof(BorderStyle));
             }
         }
 

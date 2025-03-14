@@ -63,7 +63,7 @@ namespace AntdUI
                 if (back == value) return;
                 back = value;
                 Invalidate();
-                OnPropertyChanged("BackColor");
+                OnPropertyChanged(nameof(BackColor));
             }
         }
 
@@ -81,7 +81,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -98,7 +98,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -115,7 +115,7 @@ namespace AntdUI
                 if (dotsize == value) return;
                 dotsize = value;
                 Invalidate();
-                OnPropertyChanged("DotSize");
+                OnPropertyChanged(nameof(DotSize));
             }
         }
 
@@ -136,7 +136,7 @@ namespace AntdUI
                 else if (value > 100) value = 100;
                 _value = value;
                 Invalidate();
-                OnPropertyChanged("Value");
+                OnPropertyChanged(nameof(Value));
             }
         }
 
@@ -158,7 +158,7 @@ namespace AntdUI
                 if (fillfully == value) return;
                 fillfully = value;
                 Invalidate();
-                OnPropertyChanged("FillFully");
+                OnPropertyChanged(nameof(FillFully));
             }
         }
 

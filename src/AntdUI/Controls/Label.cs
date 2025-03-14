@@ -50,7 +50,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -67,7 +67,7 @@ namespace AntdUI
                 if (colorExtend == value) return;
                 colorExtend = value;
                 Invalidate();
-                OnPropertyChanged("ColorExtend");
+                OnPropertyChanged(nameof(ColorExtend));
             }
         }
 
@@ -88,7 +88,7 @@ namespace AntdUI
                 text = value;
                 if (BeforeAutoSize()) Invalidate();
                 OnTextChanged(EventArgs.Empty);
-                OnPropertyChanged("Text");
+                OnPropertyChanged(nameof(Text));
             }
         }
 
@@ -111,7 +111,7 @@ namespace AntdUI
                 textAlign = value;
                 textAlign.SetAlignment(ref stringFormat);
                 Invalidate();
-                OnPropertyChanged("TextAlign");
+                OnPropertyChanged(nameof(TextAlign));
             }
         }
 
@@ -129,7 +129,7 @@ namespace AntdUI
                 autoEllipsis = value;
                 stringFormat.Trimming = value ? StringTrimming.EllipsisCharacter : StringTrimming.None;
                 Invalidate();
-                OnPropertyChanged("AutoEllipsis");
+                OnPropertyChanged(nameof(AutoEllipsis));
             }
         }
 
@@ -147,7 +147,7 @@ namespace AntdUI
                 textMultiLine = value;
                 stringFormat.FormatFlags = value ? 0 : StringFormatFlags.NoWrap;
                 Invalidate();
-                OnPropertyChanged("TextMultiLine");
+                OnPropertyChanged(nameof(TextMultiLine));
             }
         }
 
@@ -165,7 +165,7 @@ namespace AntdUI
                 iconratio = value;
                 IOnSizeChanged();
                 Invalidate();
-                OnPropertyChanged("IconRatio");
+                OnPropertyChanged(nameof(IconRatio));
             }
         }
 
@@ -184,7 +184,7 @@ namespace AntdUI
                 prefix = value;
                 IOnSizeChanged();
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("Prefix");
+                OnPropertyChanged(nameof(Prefix));
             }
         }
 
@@ -205,7 +205,7 @@ namespace AntdUI
                 prefixSvg = value;
                 IOnSizeChanged();
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("PrefixSvg");
+                OnPropertyChanged(nameof(PrefixSvg));
             }
         }
 
@@ -236,7 +236,7 @@ namespace AntdUI
                 suffix = value;
                 IOnSizeChanged();
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("Suffix");
+                OnPropertyChanged(nameof(Suffix));
             }
         }
 
@@ -257,7 +257,7 @@ namespace AntdUI
                 suffixSvg = value;
                 IOnSizeChanged();
                 if (BeforeAutoSize()) Invalidate();
-                OnPropertyChanged("SuffixSvg");
+                OnPropertyChanged(nameof(SuffixSvg));
             }
         }
 
@@ -323,7 +323,7 @@ namespace AntdUI
                 if (shadow == value) return;
                 shadow = value;
                 Invalidate();
-                OnPropertyChanged("Shadow");
+                OnPropertyChanged(nameof(Shadow));
             }
         }
 
@@ -343,7 +343,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacity = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOpacity");
+                OnPropertyChanged(nameof(ShadowOpacity));
             }
         }
 
@@ -357,7 +357,7 @@ namespace AntdUI
                 if (shadowOffsetX == value) return;
                 shadowOffsetX = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOffsetX");
+                OnPropertyChanged(nameof(ShadowOffsetX));
             }
         }
 
@@ -371,7 +371,7 @@ namespace AntdUI
                 if (shadowOffsetY == value) return;
                 shadowOffsetY = value;
                 Invalidate();
-                OnPropertyChanged("ShadowOffsetY");
+                OnPropertyChanged(nameof(ShadowOffsetY));
             }
         }
 

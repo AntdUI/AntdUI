@@ -33,7 +33,7 @@ namespace AntdUI.Svg
         private string _name;
         private string _namespace;
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Match(obj);
         }

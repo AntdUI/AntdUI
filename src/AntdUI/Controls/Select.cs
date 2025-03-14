@@ -150,7 +150,7 @@ namespace AntdUI
                     ChangeValue(value, obj);
                 }
                 if (_list) Invalidate();
-                OnPropertyChanged("SelectedIndex");
+                OnPropertyChanged(nameof(SelectedIndex));
             }
         }
 
@@ -169,7 +169,7 @@ namespace AntdUI
                 if (value == null || items == null || items.Count == 0) ChangeValueNULL();
                 else SetChangeValue(items, value);
                 if (_list) Invalidate();
-                OnPropertyChanged("SelectedValue");
+                OnPropertyChanged(nameof(SelectedValue));
             }
         }
 

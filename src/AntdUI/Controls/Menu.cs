@@ -65,7 +65,7 @@ namespace AntdUI
                 if (fore == value) return;
                 fore = value;
                 Invalidate();
-                OnPropertyChanged("ForeColor");
+                OnPropertyChanged(nameof(ForeColor));
             }
         }
 
@@ -89,7 +89,7 @@ namespace AntdUI
                 if (radius == value) return;
                 radius = value;
                 Invalidate();
-                OnPropertyChanged("Radius");
+                OnPropertyChanged(nameof(Radius));
             }
         }
 
@@ -106,7 +106,7 @@ namespace AntdUI
                 if (round == value) return;
                 round = value;
                 Invalidate();
-                OnPropertyChanged("Round");
+                OnPropertyChanged(nameof(Round));
             }
         }
 
@@ -123,7 +123,7 @@ namespace AntdUI
                 if (theme == value) return;
                 theme = value;
                 Invalidate();
-                OnPropertyChanged("Theme");
+                OnPropertyChanged(nameof(Theme));
             }
         }
 
@@ -150,7 +150,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("IconRatio");
+                OnPropertyChanged(nameof(IconRatio));
             }
         }
 
@@ -171,7 +171,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("Mode");
+                OnPropertyChanged(nameof(Mode));
             }
         }
 
@@ -222,7 +222,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("Collapsed");
+                OnPropertyChanged(nameof(Collapsed));
             }
         }
 
@@ -396,7 +396,7 @@ namespace AntdUI
                     ChangeList();
                     Invalidate();
                 }
-                OnPropertyChanged("PauseLayout");
+                OnPropertyChanged(nameof(PauseLayout));
             }
         }
 
