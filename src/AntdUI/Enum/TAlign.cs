@@ -130,7 +130,30 @@ namespace AntdUI
         /// <summary>
         /// ← 左
         /// </summary>
-        Left
+        Left,
+
+
+        /// <summary>
+        /// ↖左上
+        /// </summary>
+        TopLeft,
+
+
+        /// <summary>
+        /// ↗右上
+        /// </summary>
+        TopRight,
+
+
+        /// <summary>
+        /// ↘右下
+        /// </summary>
+        BottomRight,
+
+        /// <summary>
+        /// ↙左下
+        /// </summary>
+        BottomLeft
     }
 
     /// <summary>

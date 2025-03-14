@@ -337,6 +337,10 @@ namespace AntdUI
                 case TAlignMini.Bottom: return RoundPath(rect, radius, false, false, true, true);
                 case TAlignMini.Left: return RoundPath(rect, radius, true, false, false, true);
                 case TAlignMini.Right: return RoundPath(rect, radius, false, true, true, false);
+                case TAlignMini.TopLeft: return RoundPath(rect, radius, true, false, false, false);
+                case TAlignMini.TopRight: return RoundPath(rect, radius, false, true, false, false);
+                case TAlignMini.BottomRight: return RoundPath(rect, radius, false, false, true, false);
+                case TAlignMini.BottomLeft: return RoundPath(rect, radius, false, false, false, true);
                 case TAlignMini.None:
                 default: return RoundPathCore(rect, radius);
             }
