@@ -694,7 +694,7 @@ namespace AntdUI
                             if (i == _hover)
                             {
                                 var color_hover = ForeHover ?? Colour.HoverColor.Get("Segmented");
-                                PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
+                                PaintImg(g, it, color_hover, it.IconHoverSvg ?? it.IconSvg, it.IconHover ?? it.Icon);
                                 g.String(it.Text, Font, color_hover, it.RectText, s_f);
                             }
                             else
@@ -1366,10 +1366,22 @@ namespace AntdUI
         public Image? IconActive { get; set; }
 
         /// <summary>
+        /// 图标悬浮态
+        /// </summary>
+        [Description("图标悬浮态"), Category("外观"), DefaultValue(null)]
+        public Image? IconHover { get; set; }
+
+        /// <summary>
         /// 图标激活SVG
         /// </summary>
         [Description("图标激活SVG"), Category("外观"), DefaultValue(null)]
         public string? IconActiveSvg { get; set; }
+
+        /// <summary>
+        /// 图标悬浮态SVG
+        /// </summary>
+        [Description("图标悬浮态SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconHoverSvg { get; set; }
 
         string? text = null;
         bool multiLine = false;
