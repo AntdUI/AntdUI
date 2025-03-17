@@ -406,7 +406,7 @@ namespace AntdUI
         Point initialMousePoint;
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (DesignMode || _collapsePanel == ADCollapsePanel.None)
+            if (_collapsePanel == ADCollapsePanel.None)
             {
                 base.OnMouseDown(e);
                 return;
@@ -425,7 +425,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
+            if (_collapsePanel == ADCollapsePanel.None) return;
             SetCursor(CursorType.Default);
             m_bIsArrowRegion = false;
             Invalidate();
@@ -433,7 +433,7 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
+            if (_collapsePanel == ADCollapsePanel.None) return;
 
             //如果鼠标的左键没有按下，重置鼠标状态
             if (e.Button != MouseButtons.Left) _MouseState = null;
@@ -508,7 +508,7 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (Lazy) base.OnMouseUp(e);
-            if (DesignMode || _collapsePanel == ADCollapsePanel.None) return;
+            if (_collapsePanel == ADCollapsePanel.None) return;
             Invalidate();
             if (_MouseState == true && e.Button == MouseButtons.Left && ArrowRect(SplitterRectangle).Contains(e.Location))
             {
