@@ -1,4 +1,19 @@
-﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)d)
+﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
+
+### `1.9.4` 2025-03-14
+
+- ➕ Tabs DragOrder Drag Order
+- ➕ Segmented Segmented Item Hover icon properties
+- ➕ Segmented BarBg BarColor Tooltip
+- ➕ Input VerifiyKeyboard shortcut key interception
+- ➕ Panel RadiusAlign
+- ➕ Tree supports selecting multiple nodes
+- ✍️ Table MultipleRows takes effect by right clicking
+- ✍️ Tooltip multi screen abnormality
+- ✍️ After clearing DatePicker Text, Value still exists
+- ✍️ Double clicking on the table triggers two clicks
+- ✍️ Light color mode mistakenly enters dark color API
+- ✍️ Window suppresses duplicate rendering
 
 ### `1.9.3` 2025-03-11
 

@@ -115,7 +115,7 @@
 ➡️| [**ContextMenuStrip** 右键菜单](doc/wiki/zh/Control/ContextMenuStrip.md) | ✅ | ❎ |
 ➡️| **Image3D** 图片3D | ✅ | ❎ |
 
-### 🐿️ 捐赠 🥣💲🐖👚
+### 🐿️ 捐赠
 ![Payment](doc/pre/Payment.png)
 
 ### 🎨 截图
