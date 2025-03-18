@@ -78,6 +78,7 @@ namespace AntdUI
                 enableDir.Clear();
                 CellRanges = null;
                 dataSource = value;
+                dataTypeBindingList = value is IBindingList;
                 SortData = null;
                 ScrollBar.Clear();
                 ExtractHeaderFixed();

@@ -27,6 +27,7 @@ namespace AntdUI
     partial class Table
     {
         TempTable? dataTmp = null;
+        bool dataTypeBindingList = false;
         bool dataOne = true;
         void ExtractData()
         {
@@ -83,6 +84,7 @@ namespace AntdUI
             dataOne = true;
             if (list == null) return;
             dataSource = list;
+            dataTypeBindingList = false;
             list.action = (code, obj) =>
             {
                 if (dataTmp != null)

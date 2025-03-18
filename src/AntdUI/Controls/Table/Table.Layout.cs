@@ -770,13 +770,14 @@ namespace AntdUI
         void AddRows(ref List<CELL> cells, CELL data)
         {
             cells.Add(data);
-            var data_temp = data;
+            if (dataTypeBindingList) return;
             if (data is Template template)
             {
                 foreach (var it in template.Value)
                 {
                     it.Changed = layout =>
                     {
+                        if (dataTypeBindingList) return;
                         if (layout) LoadLayout();
                         Invalidate();
                     };

@@ -228,8 +228,7 @@ namespace AntdUI
                 SelectedValue = new object[0];
             }
             base.OnClearValue();
-
-            SetCaretPostion();
+            CalculateRect();
             Invalidate();
             subForm?.ClearValues();
         }
