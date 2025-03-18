@@ -145,17 +145,17 @@ namespace AntdUI
                                 if (result)
                                 {
                                     System.Threading.Thread.Sleep(10);
-                                    BeginInvoke(new Action(() =>
+                                    BeginInvoke(() =>
                                     {
                                         if (IsHandleCreated && !IsDisposed) Close();
-                                    }));
+                                    });
                                 }
                                 else if (DisableCancel && btn_no != null)
                                 {
-                                    BeginInvoke(new Action(() =>
+                                    BeginInvoke(() =>
                                     {
                                         if (btn_no.IsHandleCreated && !btn_no.IsDisposed) btn_no.Enabled = true;
-                                    }));
+                                    });
                                 }
                             });
                         };
@@ -543,17 +543,17 @@ namespace AntdUI
                         if (result)
                         {
                             System.Threading.Thread.Sleep(10);
-                            BeginInvoke(new Action(() =>
+                            BeginInvoke(() =>
                             {
                                 if (IsHandleCreated && !IsDisposed) DialogResult = DialogResult.OK;
-                            }));
+                            });
                         }
                         else if (DisableCancel && btn_no != null)
                         {
-                            BeginInvoke(new Action(() =>
+                            BeginInvoke(() =>
                             {
                                 if (btn_no.IsHandleCreated && !btn_no.IsDisposed) btn_no.Enabled = true;
-                            }));
+                            });
                         }
                     }
                 });

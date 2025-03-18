@@ -652,7 +652,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                BeginInvoke(new Action(() => ShowLayeredForm(list)));
+                BeginInvoke(() => ShowLayeredForm(list));
                 return;
             }
             Expand = true;

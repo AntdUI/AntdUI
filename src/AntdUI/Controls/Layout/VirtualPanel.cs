@@ -1043,11 +1043,11 @@ namespace AntdUI
 
         void IBlurBar(Control BlurBar, Bitmap? bmp)
         {
-            Invoke(new Action(() =>
+            Invoke(() =>
             {
                 BlurBar.BackgroundImage?.Dispose();
                 BlurBar.BackgroundImage = bmp;
-            }));
+            });
         }
 
         protected override void Dispose(bool disposing)

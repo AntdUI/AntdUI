@@ -530,7 +530,7 @@ namespace AntdUI
             old_state = state;
             if (InvokeRequired)
             {
-                Invoke(new Action(() => Windows7Taskbar.SetProgressState(hwnd.Handle, state)));
+                Invoke(() => Windows7Taskbar.SetProgressState(hwnd.Handle, state));
                 return;
             }
             Windows7Taskbar.SetProgressState(hwnd.Handle, state);
@@ -544,7 +544,7 @@ namespace AntdUI
             old_value = value;
             if (InvokeRequired)
             {
-                Invoke(new Action(() => Windows7Taskbar.SetProgressValue(hwnd.Handle, value)));
+                Invoke(() => Windows7Taskbar.SetProgressValue(hwnd.Handle, value));
                 return;
             }
             Windows7Taskbar.SetProgressValue(hwnd.Handle, value);

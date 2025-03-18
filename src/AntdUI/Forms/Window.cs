@@ -91,7 +91,7 @@ namespace AntdUI
                 {
                     Size max = MaximumSize, min = MinimumSize;
                     MaximumSize = MinimumSize = base.ClientSize;
-                    if (InvokeRequired) { Invoke(new Action(() => base.ShowInTaskbar = value)); }
+                    if (InvokeRequired) { Invoke(() => base.ShowInTaskbar = value); }
                     else base.ShowInTaskbar = value;
                     MinimumSize = min;
                     MaximumSize = max;

@@ -162,7 +162,7 @@ namespace AntdUI
             set
             {
                 if (base.ShowInTaskbar == value) return;
-                if (InvokeRequired) { Invoke(new Action(() => base.ShowInTaskbar = value)); }
+                if (InvokeRequired) { Invoke(() => base.ShowInTaskbar = value); }
                 else base.ShowInTaskbar = value;
                 oldmargin = 0;
                 DwmArea();
@@ -412,11 +412,11 @@ namespace AntdUI
                             if ((Math.Abs(mousePosition.X - mouseOffset.X) >= 6 || Math.Abs(mousePosition.Y - mouseOffset.Y) >= 6))
                             {
                                 handmax = true;
-                                Invoke(new Action(() =>
+                                Invoke(() =>
                                 {
                                     WindowState = FormWindowState.Normal;
                                     isMax = false;
-                                }));
+                                });
                                 return;
                             }
                         }

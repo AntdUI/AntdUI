@@ -614,7 +614,7 @@ namespace AntdUI
 
         void SetImeMode(ImeMode value)
         {
-            if (InvokeRequired) Invoke(new Action(() => SetImeMode(value)));
+            if (InvokeRequired) Invoke(() => SetImeMode(value));
             else base.ImeMode = value;
         }
 

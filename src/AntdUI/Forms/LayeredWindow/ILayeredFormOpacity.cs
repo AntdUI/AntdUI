@@ -47,24 +47,23 @@ namespace AntdUI
         System.Drawing.Bitmap? bmp_tmp = null;
         void SetAnimateValue(byte _alpha, bool isrint = false)
         {
-            if (alpha != _alpha)
+            if (isrint)
             {
                 alpha = _alpha;
-                if (isrint)
+                Print(true);
+                return;
+            }
+            if (alpha == _alpha) return;
+            alpha = _alpha;
+            if (IsHandleCreated && TargetRect.Width > 0 && TargetRect.Height > 0)
+            {
+                try
                 {
-                    Print();
-                    return;
+                    if (bmp_tmp == null) bmp_tmp = PrintBit();
+                    if (bmp_tmp == null) return;
+                    Print(bmp_tmp);
                 }
-                if (IsHandleCreated && TargetRect.Width > 0 && TargetRect.Height > 0)
-                {
-                    try
-                    {
-                        if (bmp_tmp == null) bmp_tmp = PrintBit();
-                        if (bmp_tmp == null) return;
-                        Print(bmp_tmp);
-                    }
-                    catch { }
-                }
+                catch { }
             }
         }
 

@@ -66,10 +66,7 @@ namespace AntdUI
                 ScrollBar.OnInvalidate = null;
                 if (!focused)
                 {
-                    if (InvokeRequired)
-                    {
-                        Invoke(new Action(() => Focus()));
-                    }
+                    if (InvokeRequired) Invoke(Focus);
                     else Focus();
                 }
                 inEditMode = false;
@@ -114,7 +111,7 @@ namespace AntdUI
                 inEditMode = true;
 
                 ScrollBar.OnInvalidate = () => EditModeClose();
-                BeginInvoke(new Action(() =>
+                BeginInvoke(() =>
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
                     int height = EditInputHeight(value, cell);
@@ -143,7 +140,7 @@ namespace AntdUI
                     CellBeginEditInputStyle?.Invoke(this, new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, ref edit_input));
                     Controls.Add(edit_input);
                     edit_input.Focus();
-                }));
+                });
             }
             else if (cell is Template templates)
             {
@@ -161,7 +158,7 @@ namespace AntdUI
                         inEditMode = true;
 
                         ScrollBar.OnInvalidate = () => EditModeClose();
-                        BeginInvoke(new Action(() =>
+                        BeginInvoke(() =>
                         {
                             for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
                             int height = EditInputHeight(value, cell);
@@ -193,7 +190,7 @@ namespace AntdUI
                             else if (template.PARENT.COLUMN.Align == ColumnAlign.Right) edit_input.TextAlign = HorizontalAlignment.Right;
                             Controls.Add(edit_input);
                             edit_input.Focus();
-                        }));
+                        });
                         return;
                     }
                 }
@@ -299,9 +296,19 @@ namespace AntdUI
                 if (a is Input input && isone)
                 {
                     isone = false;
+                    input.Visible = false;
                     ScrollBar.OnInvalidate = null;
                     if (old_text != input.Text) call(input.Text);
                     inEditMode = false;
+                    if (Modal.ModalCount > 0)
+                    {
+                        ITask.Run(() =>
+                        {
+                            System.Threading.Thread.Sleep(200);
+                            BeginInvoke(() => input.Dispose());
+                        });
+                        return;
+                    }
                     input.Dispose();
                 }
             };

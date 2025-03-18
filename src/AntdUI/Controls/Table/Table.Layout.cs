@@ -351,6 +351,12 @@ namespace AntdUI
                 int use_y;
                 if (visibleHeader) use_y = rect.Y;
                 else use_y = rect.Y - _rows[0].Height;
+                int i2 = 0;
+                foreach (var cell in _rows[0].cells)
+                {
+                    cell.COLUMN.WidthPixel = width_cell[i2];
+                    i2++;
+                }
                 foreach (var row in _rows)
                 {
                     if (row.ShowExpand)

@@ -164,19 +164,9 @@ namespace AntdUI
 
         #endregion
 
-        public void Print(bool fore = false)
-        {
-            if (fore) Render();
-            else renderQueue.Set();
-        }
+        public void Print(bool fore = false) => renderQueue.Set(fore);
         public void Print(Bitmap bmp) => renderQueue.Set(alpha, bmp);
         public void Print(Bitmap bmp, Rectangle rect) => renderQueue.Set(alpha, bmp, rect);
-
-        bool Render()
-        {
-            if (CanRender(out var handle)) return Render(handle);
-            return false;
-        }
 
         bool Render(IntPtr handle)
         {
@@ -253,7 +243,7 @@ namespace AntdUI
                 {
                     if (InvokeRequired)
                     {
-                        Invoke(new Action(() => IClose(isdispose)));
+                        Invoke(() => IClose(isdispose));
                         return;
                     }
                     if (switchClose) Close();
@@ -500,6 +490,20 @@ namespace AntdUI
 
         #endregion
 
+        #region 委托
+
+#if NET40 || NET46 || NET48
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public IAsyncResult BeginInvoke(Action method) => BeginInvoke(method, null);
+
+        public void Invoke(Action method) => _ = Invoke(method, null);
+        public T Invoke<T>(Func<T> method) => (T)Invoke(method, null);
+
+#endif
+
+        #endregion
+
         /// <summary>
         /// 逐帧渲染
         /// </summary>
@@ -514,66 +518,77 @@ namespace AntdUI
 
             ConcurrentQueue<M?> Queue = new ConcurrentQueue<M?>();
             ManualResetEvent Event = new ManualResetEvent(false);
+
             /// <summary>
             /// 渲染
             /// </summary>
-            public void Set()
+            public void Set(bool fore)
             {
-                if (isDispose) return;
+                if (fore)
+                {
+                    if (isDispose) return;
+                }
+                else
+                {
+                    if (isDispose || Rendering) return;
+                }
                 Queue.Enqueue(null);
                 Event.SetWait();
             }
+
             /// <summary>
             /// 渲染
             /// </summary>
             public void Set(byte alpha, Bitmap bmp)
             {
-                if (isDispose) return;
+                if (isDispose || Rendering)
+                {
+                    bmp.Dispose();
+                    return;
+                }
                 Queue.Enqueue(new M(alpha, bmp));
                 Event.SetWait();
             }
+
             /// <summary>
             /// 渲染
             /// </summary>
             public void Set(byte alpha, Bitmap bmp, Rectangle rect)
             {
-                if (isDispose) return;
+                if (isDispose || Rendering)
+                {
+                    bmp.Dispose();
+                    return;
+                }
                 Queue.Enqueue(new M(alpha, bmp, rect));
                 Event.SetWait();
             }
 
+            bool Rendering = false;
             void LongTask()
             {
                 while (true)
                 {
                     if (Event.Wait()) return;
-                    int count = 0;
                     while (Queue.TryDequeue(out var cmd))
                     {
                         if (call.CanRender(out var handle))
                         {
+                            Rendering = true;
                             if (cmd == null)
                             {
-                                count++;
-                                if (count > 2)
-                                {
-                                    count = 0;
-                                    if (call.Render(handle)) Set();
-                                }
+                                if (call.Render(handle)) Set(true);
                             }
                             else if (cmd.rect.HasValue)
                             {
                                 using (cmd.bmp)
                                 {
-                                    if (call.Render(handle, cmd.alpha, cmd.bmp, cmd.rect.Value)) Set();
+                                    if (call.Render(handle, cmd.alpha, cmd.bmp, cmd.rect.Value)) Set(true);
                                 }
                             }
-                            else if (call.Render(handle, cmd.alpha, cmd.bmp)) Set();
+                            else if (call.Render(handle, cmd.alpha, cmd.bmp)) Set(true);
+                            Rendering = false;
                         }
-                    }
-                    if (count > 0 && call.CanRender(out var handle2))
-                    {
-                        if (call.Render(handle2)) Set();
                     }
                     if (isDispose) return;
                     if (Event.ResetWait()) return;
