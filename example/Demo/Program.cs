@@ -37,6 +37,7 @@ namespace Demo
             if (lang.StartsWith("en")) AntdUI.Localization.Provider = new Localizer();
             AntdUI.Config.TextRenderingHighQuality = true;
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+            AntdUI.Config.SetEmptyImageSvg(Properties.Resources.icon_empty, Properties.Resources.icon_empty_dark);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             if (command == "m") Application.Run(new Main());
             else if (command == "color") Application.Run(new Colors());

@@ -106,6 +106,15 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 144 137&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-911.000000, -2996.000000)&quot;&gt;&lt;g id=&quot;Calendar&quot; transform=&quot;translate(911.000000, 2996.000000)&quot;&gt;&lt;path d=&quot;M5.1277704,-1.1140022e-15 L138.87223,2.07168062e-16 C140.655267,-1.2037061e-16 141.30184,0.185651222 141.953691,0.534265408 C142.605543,0.882879593 143.11712,1.39445674 143.465735,2.04630859 C143.814349,2.69816044 144,3 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Calendar {
+            get {
+                return ResourceManager.GetString("Calendar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 180 90&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-164.000000, -3257.000000)&quot; fill-rule=&quot;nonzero&quot;&gt;&lt;g id=&quot;Carousel&quot; transform=&quot;translate(164.000000, 3257.000000)&quot;&gt;&lt;path d=&quot;M6,0 L174,0 C177.313708,-6.08718376e-16 180,2.6862915 180,6 L180,84 C180,87.3137085 177.313708,90 174,90 L6,90 C2.6862915,90 -4.82366169e-16,87.3137085 0,84 L0,6 C-4.05812251e-16,2.6862915 2.6862915,- [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Carousel {

@@ -131,6 +131,24 @@ namespace Demo.Properties {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 64 41&quot;&gt;&lt;g transform=&quot;translate(0 1)&quot; fill=&quot;none&quot;&gt;&lt;ellipse fill=&quot;#f5f5f5&quot; cx=&quot;32&quot; cy=&quot;33&quot; rx=&quot;32&quot; ry=&quot;7&quot;&gt;&lt;/ellipse&gt;&lt;g stroke=&quot;#d9d9d9&quot;&gt;&lt;path d=&quot;M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string icon_empty {
+            get {
+                return ResourceManager.GetString("icon_empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 64 41&quot;&gt;&lt;g transform=&quot;translate(0 1)&quot; fill=&quot;none&quot;&gt;&lt;ellipse fill=&quot;#272727&quot; cx=&quot;32&quot; cy=&quot;33&quot; rx=&quot;32&quot; ry=&quot;7&quot;&gt;&lt;/ellipse&gt;&lt;g stroke=&quot;#3e3e3e&quot;&gt;&lt;path d=&quot;M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string icon_empty_dark {
+            get {
+                return ResourceManager.GetString("icon_empty_dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 1024 1024&quot;&gt;&lt;path d=&quot;M923 283.6c-13.4-31.1-32.6-58.9-56.9-82.8-24.3-23.8-52.5-42.4-84-55.5-32.5-13.5-66.9-20.3-102.4-20.3-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5-24.4 23.9-43.5 51.7-56.9 82.8-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string icon_like {

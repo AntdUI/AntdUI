@@ -139,6 +139,12 @@
   <data name="bg7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bg\bg7.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icon_empty" xml:space="preserve">
+    <value>&lt;svg viewBox="0 0 64 41"&gt;&lt;g transform="translate(0 1)" fill="none"&gt;&lt;ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"&gt;&lt;/ellipse&gt;&lt;g stroke="#d9d9d9"&gt;&lt;path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"&gt;&lt;/path&gt;&lt;path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#fafafa"&gt;&lt;/path&gt;&lt;/g&gt;&lt;/g&gt;&lt;/svg&gt;</value>
+  </data>
+  <data name="icon_empty_dark" xml:space="preserve">
+    <value>&lt;svg viewBox="0 0 64 41"&gt;&lt;g transform="translate(0 1)" fill="none"&gt;&lt;ellipse fill="#272727" cx="32" cy="33" rx="32" ry="7"&gt;&lt;/ellipse&gt;&lt;g stroke="#3e3e3e"&gt;&lt;path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"&gt;&lt;/path&gt;&lt;path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#1d1d1d"&gt;&lt;/path&gt;&lt;/g&gt;&lt;/g&gt;&lt;/svg&gt;</value>
+  </data>
   <data name="icon_like" xml:space="preserve">
     <value>&lt;svg viewBox="0 0 1024 1024"&gt;&lt;path d="M923 283.6c-13.4-31.1-32.6-58.9-56.9-82.8-24.3-23.8-52.5-42.4-84-55.5-32.5-13.5-66.9-20.3-102.4-20.3-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5-24.4 23.9-43.5 51.7-56.9 82.8-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3 56-51.7 101.1-102.7 133.9-151.6 20.7-30.9 37-61.5 48.2-91 13.5-35.3 20.3-70 20.3-103.3 0.1-35.3-7-69.6-20.9-101.9z"&gt;&lt;/path&gt;&lt;/svg&gt;</value>
   </data>

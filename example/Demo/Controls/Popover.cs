@@ -38,7 +38,7 @@ namespace Demo.Controls
 
         private void button2_Click(object sender, EventArgs e)
         {
-            AntdUI.Popover.open(button2, new Button(form) { Size = new Size(400, 300) });
+            AntdUI.Popover.open(new AntdUI.Popover.Config(button2, new Button(form) { Size = new Size(800, 300) }) { });
         }
 
         private void buttonTL_Click(object sender, EventArgs e)
