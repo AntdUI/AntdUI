@@ -25,13 +25,15 @@ namespace AntdUI
 {
     partial class Table
     {
+        #region 鼠标
+
         #region 鼠标按下
 
-        CELL? cellMouseDown;
         int shift_index = -1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             cellMouseDown = null;
+            btnMouseDown = null;
             if (ClipboardCopy) Focus();
             subForm?.IClose();
             subForm = null;
@@ -75,9 +77,8 @@ namespace AntdUI
                                 }
                             }
                         }
-                        cell.MouseDown = e.Clicks > 1 ? 2 : 1;
-                        cellMouseDown = cell;
-                        if (cell.MouseDown == 1 && cell.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
+                        cellMouseDown = new DownCellTMP<CELL>(it, cell, i_row, i_cel, e.Clicks > 1);
+                        if (!cellMouseDown.doubleClick && cell.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
                         {
                             if (e.Button == MouseButtons.Left && cell.CONTAIN_REAL(r_x, r_y))
                             {
@@ -115,29 +116,52 @@ namespace AntdUI
                             Invalidate();
                             return;
                         }
-                        MouseDownRow(e, it.cells[i_cel], r_x, r_y);
+                        MouseDownRow(e, it, it.cells[i_cel], r_x, r_y, i_row, i_cel);
                     }
                 }
             }
             else shift_index = -1;
         }
 
-        void MouseDownRow(MouseEventArgs e, CELL cell, int x, int y)
+        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c)
         {
-            cellMouseDown = cell;
-            cell.MouseDown = e.Clicks > 1 ? 2 : 1;
-            if (cell is Template template && e.Button == MouseButtons.Left)
+            cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, e.Clicks > 1);
+            if (cell is Template template)
             {
-                foreach (var item in template.Value)
+                if (e.Button == MouseButtons.Left)
                 {
-                    if (item is CellLink btn_template)
+                    foreach (var item in template.Value)
                     {
-                        if (btn_template.Enabled)
+                        if (item is CellLink btn_template)
                         {
-                            if (btn_template.Rect.Contains(x, y))
+                            if (btn_template.Enabled)
                             {
-                                btn_template.ExtraMouseDown = true;
-                                return;
+                                if (btn_template.Rect.Contains(x, y))
+                                {
+                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, i_r, i_c, cellMouseDown.doubleClick);
+                                    btn_template.ExtraMouseDown = true;
+                                    CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, e));
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (CellButtonDown == null) return;
+                    foreach (var item in template.Value)
+                    {
+                        if (item is CellLink btn_template)
+                        {
+                            if (btn_template.Enabled)
+                            {
+                                if (btn_template.Rect.Contains(x, y))
+                                {
+                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, i_r, i_c, cellMouseDown.doubleClick);
+                                    CellButtonDown(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, e));
+                                    return;
+                                }
                             }
                         }
                     }
@@ -152,6 +176,10 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            var cellMDown = cellMouseDown;
+            var btnMDown = btnMouseDown;
+            cellMouseDown = null;
+            btnMouseDown = null;
             if (moveheaders.Length > 0)
             {
                 foreach (var item in moveheaders)
@@ -259,213 +287,209 @@ namespace AntdUI
                 if (rows == null) return;
                 if (OnTouchUp())
                 {
-                    if (cellMouseDown == null) return;
-                    for (int i_row = 0; i_row < rows.Length; i_row++)
-                    {
-                        var it = rows[i_row];
-                        for (int i_col = 0; i_col < it.cells.Length; i_col++)
-                        {
-                            if (MouseUpRow(rows, it, it.cells[i_col], e, i_row, i_col)) return;
-                        }
-                    }
+                    if (cellMDown == null) return;
+                    MouseUpRow(rows, cellMDown, btnMDown, e);
                 }
-            }
-            cellMouseDown = null;
-        }
-
-        bool MouseUpRow(RowTemplate[] rows, RowTemplate it, CELL cell, MouseEventArgs e, int i_r, int i_c)
-        {
-            if (cellMouseDown == cell && cell.MouseDown > 0)
-            {
-                var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
-                if (cel_sel == null || (i_r != i_row || i_c != i_cel)) cell.MouseDown = 0;
                 else
                 {
-                    if (selectedIndex.Length == 1) SelectedIndex = i_r;
-                    if (e.Button == MouseButtons.Left)
+                    if (btnMDown == null) return;
+                    if (btnMDown.cell.ExtraMouseDown)
                     {
-                        if (cell is TCellCheck checkCell)
+                        CellButtonUp?.Invoke(this, new TableButtonEventArgs(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, e));
+                        btnMDown.cell.ExtraMouseDown = false;
+                    }
+                }
+            }
+        }
+
+        void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
+        {
+            var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+            if (cel_sel == null || (it.i_row != i_row || it.i_cel != i_cel))
+            {
+                MouseUpBtn(it, btn, e, r_x, r_y);
+                return;
+            }
+            else
+            {
+                if (selectedIndex.Length == 1) SelectedIndex = it.i_row;
+                if (MouseUpBtn(it, btn, e, r_x, r_y)) return;
+                if (e.Button == MouseButtons.Left)
+                {
+                    if (it.cell is TCellCheck checkCell)
+                    {
+                        if (checkCell.CONTAIN_REAL(r_x, r_y))
                         {
-                            if (checkCell.CONTAIN_REAL(r_x, r_y))
+                            if (checkCell.COLUMN is ColumnCheck columnCheck && columnCheck.Call != null)
                             {
-                                if (checkCell.COLUMN is ColumnCheck columnCheck && columnCheck.Call != null)
+                                var value = columnCheck.Call(!checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel);
+                                if (checkCell.Checked != value)
                                 {
-                                    var value = columnCheck.Call(!checkCell.Checked, it.RECORD, i_r, i_c);
-                                    if (checkCell.Checked != value)
-                                    {
-                                        checkCell.Checked = value;
-                                        SetValue(cell, checkCell.Checked);
-                                        CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
-                                    }
-                                }
-                                else if (checkCell.AutoCheck)
-                                {
-                                    checkCell.Checked = !checkCell.Checked;
-                                    SetValue(cell, checkCell.Checked);
-                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.RECORD, i_r, i_c));
+                                    checkCell.Checked = value;
+                                    SetValue(it.cell, checkCell.Checked);
+                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel));
                                 }
                             }
-                        }
-                        else if (cell is TCellRadio radioCell)
-                        {
-                            if (radioCell.CONTAIN_REAL(r_x, r_y) && !radioCell.Checked)
+                            else if (checkCell.AutoCheck)
                             {
-                                bool isok = false;
-                                if (radioCell.COLUMN is ColumnRadio columnRadio && columnRadio.Call != null)
+                                checkCell.Checked = !checkCell.Checked;
+                                SetValue(it.cell, checkCell.Checked);
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel));
+                            }
+                        }
+                    }
+                    else if (it.cell is TCellRadio radioCell)
+                    {
+                        if (radioCell.CONTAIN_REAL(r_x, r_y) && !radioCell.Checked)
+                        {
+                            bool isok = false;
+                            if (radioCell.COLUMN is ColumnRadio columnRadio && columnRadio.Call != null)
+                            {
+                                var value = columnRadio.Call(true, it.row.RECORD, it.i_row, it.i_cel);
+                                if (value) isok = true;
+                            }
+                            else if (radioCell.AutoCheck) isok = true;
+                            if (isok)
+                            {
+                                for (int i = 0; i < rows.Length; i++)
                                 {
-                                    var value = columnRadio.Call(true, it.RECORD, i_r, i_c);
-                                    if (value) isok = true;
-                                }
-                                else if (radioCell.AutoCheck) isok = true;
-                                if (isok)
-                                {
-                                    for (int i = 0; i < rows.Length; i++)
+                                    if (i != it.i_row)
                                     {
-                                        if (i != i_r)
+                                        var cell_selno = rows[i].cells[it.i_cel];
+                                        if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
                                         {
-                                            var cell_selno = rows[i].cells[i_c];
-                                            if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
-                                            {
-                                                radioCell2.Checked = false;
-                                                SetValue(cell_selno, false);
-                                            }
+                                            radioCell2.Checked = false;
+                                            SetValue(cell_selno, false);
                                         }
                                     }
-                                    radioCell.Checked = true;
-                                    SetValue(cell, radioCell.Checked);
-                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.RECORD, i_r, i_c));
                                 }
+                                radioCell.Checked = true;
+                                SetValue(it.cell, radioCell.Checked);
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.row.RECORD, it.i_row, it.i_cel));
                             }
                         }
-                        else if (cell is TCellSwitch switchCell)
+                    }
+                    else if (it.cell is TCellSwitch switchCell)
+                    {
+                        if (switchCell.CONTAIN_REAL(r_x, r_y) && !switchCell.Loading)
                         {
-                            if (switchCell.CONTAIN_REAL(r_x, r_y) && !switchCell.Loading)
+                            if (switchCell.COLUMN is ColumnSwitch columnSwitch && columnSwitch.Call != null)
                             {
-                                if (switchCell.COLUMN is ColumnSwitch columnSwitch && columnSwitch.Call != null)
+                                switchCell.Loading = true;
+                                ITask.Run(() =>
                                 {
-                                    switchCell.Loading = true;
-                                    ITask.Run(() =>
-                                    {
-                                        var value = columnSwitch.Call(!switchCell.Checked, it.RECORD, i_r, i_c);
-                                        if (switchCell.Checked == value) return;
-                                        switchCell.Checked = value;
-                                        SetValue(cell, value);
-                                    }).ContinueWith(action =>
-                                    {
-                                        switchCell.Loading = false;
-                                    });
-                                }
-                                else if (switchCell.AutoCheck)
+                                    var value = columnSwitch.Call(!switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel);
+                                    if (switchCell.Checked == value) return;
+                                    switchCell.Checked = value;
+                                    SetValue(it.cell, value);
+                                }).ContinueWith(action =>
                                 {
-                                    switchCell.Checked = !switchCell.Checked;
-                                    SetValue(cell, switchCell.Checked);
-                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(switchCell.Checked, it.RECORD, i_r, i_c));
-                                }
+                                    switchCell.Loading = false;
+                                });
+                            }
+                            else if (switchCell.AutoCheck)
+                            {
+                                switchCell.Checked = !switchCell.Checked;
+                                SetValue(it.cell, switchCell.Checked);
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel));
                             }
                         }
-                        else if (it.IsColumn && cell.COLUMN.SortOrder && cell is TCellColumn col)
+                    }
+                    else if (it.row.IsColumn && it.cell.COLUMN.SortOrder && it.cell is TCellColumn col)
+                    {
+                        //点击排序
+                        SortMode sortMode = SortMode.NONE;
+                        if (col.rect_up.Contains(r_x, r_y)) sortMode = SortMode.ASC;
+                        else if (col.rect_down.Contains(r_x, r_y)) sortMode = SortMode.DESC;
+                        else
                         {
-                            //点击排序
-                            SortMode sortMode = SortMode.NONE;
-                            if (col.rect_up.Contains(r_x, r_y)) sortMode = SortMode.ASC;
-                            else if (col.rect_down.Contains(r_x, r_y)) sortMode = SortMode.DESC;
+                            sortMode = col.COLUMN.SortMode + 1;
+                            if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
+                        }
+                        if (col.COLUMN.SetSortMode(sortMode))
+                        {
+                            foreach (var item in it.row.cells)
+                            {
+                                if (item.COLUMN.SortOrder && item.INDEX != it.i_cel) item.COLUMN.SetSortMode(SortMode.NONE);
+                            }
+                            var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
+                            if (result) Invalidate();
                             else
                             {
-                                sortMode = col.COLUMN.SortMode + 1;
-                                if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
-                            }
-                            if (col.COLUMN.SetSortMode(sortMode))
-                            {
-                                foreach (var item in it.cells)
+                                Invalidate();
+                                switch (sortMode)
                                 {
-                                    if (item.COLUMN.SortOrder && item.INDEX != i_c) item.COLUMN.SetSortMode(SortMode.NONE);
+                                    case SortMode.ASC:
+                                        SortDataASC(col.COLUMN.Key);
+                                        break;
+                                    case SortMode.DESC:
+                                        SortDataDESC(col.COLUMN.Key);
+                                        break;
+                                    case SortMode.NONE:
+                                    default:
+                                        SortData = null;
+                                        break;
                                 }
-                                var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
-                                if (result) Invalidate();
-                                else
-                                {
-                                    Invalidate();
-                                    switch (sortMode)
-                                    {
-                                        case SortMode.ASC:
-                                            SortDataASC(col.COLUMN.Key);
-                                            break;
-                                        case SortMode.DESC:
-                                            SortDataDESC(col.COLUMN.Key);
-                                            break;
-                                        case SortMode.NONE:
-                                        default:
-                                            SortData = null;
-                                            break;
-                                    }
-                                    LoadLayout();
-                                    SortRows?.Invoke(this, new IntEventArgs(i_c));
-                                }
-                            }
-                        }
-                        else if (cell is Template template)
-                        {
-                            foreach (var item in template.Value)
-                            {
-                                if (item is CellLink btn)
-                                {
-                                    if (btn.ExtraMouseDown)
-                                    {
-                                        if (btn.Rect.Contains(r_x, r_y))
-                                        {
-                                            btn.Click();
-                                            CellButtonClick?.Invoke(this, new TableButtonEventArgs(btn, it.RECORD, i_r, i_c, e));
-                                        }
-                                        btn.ExtraMouseDown = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    bool doubleClick = cell.MouseDown == 2;
-                    cell.MouseDown = 0;
-                    bool enterEdit = false;
-                    if (doubleClick)
-                    {
-                        CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
-                        if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
-                    }
-                    else
-                    {
-                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
-                        if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
-                    }
-                    if (enterEdit)
-                    {
-                        EditModeClose();
-                        if (CanEditMode(it, cel_sel))
-                        {
-                            int val = ScrollLine(i_row, rows);
-                            OnEditMode(it, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
-                        }
-                    }
-                    else
-                    {
-                        if (cell is Template template)
-                        {
-                            foreach (var item in template.Value)
-                            {
-                                if (item.DropDownItems != null && item.DropDownItems.Count > 0 && item.Rect.Contains(r_x, r_y))
-                                {
-                                    subForm?.IClose();
-                                    subForm = null;
-                                    var rect = item.Rect;
-                                    rect.Offset(-offset_xi, -offset_y);
-                                    subForm = new LayeredFormSelectDown(this, item, rect, item.DropDownItems);
-                                    subForm.Show(this);
-                                    return true;
-                                }
+                                LoadLayout();
+                                SortRows?.Invoke(this, new IntEventArgs(it.i_cel));
                             }
                         }
                     }
                 }
+                bool enterEdit = false;
+                if (it.doubleClick)
+                {
+                    CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
+                    if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
+                }
+                else
+                {
+                    CellClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
+                    if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
+                }
+                if (enterEdit)
+                {
+                    EditModeClose();
+                    if (CanEditMode(it.row, cel_sel))
+                    {
+                        int val = ScrollLine(i_row, rows);
+                        OnEditMode(it.row, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
+                    }
+                }
+                else
+                {
+                    if (it.cell is Template template)
+                    {
+                        foreach (var item in template.Value)
+                        {
+                            if (item.DropDownItems != null && item.DropDownItems.Count > 0 && item.Rect.Contains(r_x, r_y))
+                            {
+                                subForm?.IClose();
+                                subForm = null;
+                                var rect = item.Rect;
+                                rect.Offset(-offset_xi, -offset_y);
+                                subForm = new LayeredFormSelectDown(this, item, rect, item.DropDownItems);
+                                subForm.Show(this);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, int r_x, int r_y)
+        {
+            if (btn == null) return false;
+            btn.cell.ExtraMouseDown = false;
+            if (e.Button == MouseButtons.Left && btn.cell.Rect.Contains(r_x, r_y))
+            {
+                btn.cell.Click();
+                var arge = new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, e);
+                CellButtonUp?.Invoke(this, arge);
+                CellButtonClick?.Invoke(this, arge);
                 return true;
             }
+            CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, e));
             return false;
         }
         LayeredFormSelectDown? subForm = null;
@@ -981,6 +1005,27 @@ namespace AntdUI
             }
             r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
             return null;
+        }
+
+        #endregion
+
+        DownCellTMP<CELL>? cellMouseDown;
+        DownCellTMP<CellLink>? btnMouseDown;
+        class DownCellTMP<T>
+        {
+            public DownCellTMP(RowTemplate _row, T _cell, int _i_row, int _i_cel, bool _doubleClick)
+            {
+                row = _row;
+                cell = _cell;
+                i_row = _i_row;
+                i_cel = _i_cel;
+                doubleClick = _doubleClick;
+            }
+            public bool doubleClick { get; set; }
+            public T cell { get; set; }
+            public RowTemplate row { get; set; }
+            public int i_row { get; set; }
+            public int i_cel { get; set; }
         }
 
         #endregion

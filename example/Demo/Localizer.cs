@@ -578,6 +578,14 @@ namespace Demo
                 case "VirtualPanel.checkbox1":
                     return "Waterfall";
 
+                //Calendar ----------------------------
+                case "Calendar.Text":
+                    return "Calendar";
+                case "Calendar.Description":
+                    return "A container that displays data in calendar form.";
+                case "Calendar.divider1":
+                    return "Basic";
+
                 #endregion
 
                 default:

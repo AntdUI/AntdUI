@@ -78,6 +78,7 @@ namespace AntdUI
                 enableDir.Clear();
                 CellRanges = null;
                 dataSource = value;
+                dataTypeBindingList = value is IBindingList;
                 SortData = null;
                 ScrollBar.Clear();
                 ExtractHeaderFixed();
@@ -919,6 +920,27 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 获取区域
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <param name="column">列</param>
+        public Rectangle CellRectangle(int row, int column)
+        {
+            if (rows != null)
+            {
+                try
+                {
+                    var _row = rows[row];
+                    var cel = _row.cells[column];
+                    CellContains(rows, false, 0, 0, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out _);
+                    return new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
+                }
+                catch { }
+            }
+            return Rectangle.Empty;
+        }
+
+        /// <summary>
         /// 导出表格数据
         /// </summary>
         /// <param name="enableRender">启用插槽</param>
@@ -1544,6 +1566,11 @@ namespace AntdUI
             Width = value;
             return this;
         }
+
+        /// <summary>
+        /// 宽度（像素）
+        /// </summary>
+        public int WidthPixel { get; internal set; }
 
         /// <summary>
         /// 列最大宽度

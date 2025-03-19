@@ -49,16 +49,22 @@ namespace Demo.Controls
             header1 = new AntdUI.PageHeader();
             label1 = new AntdUI.Label();
             input1 = new AntdUI.Input();
+            tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             gridPanel1 = new AntdUI.GridPanel();
+            button12 = new AntdUI.Button();
+            button11 = new AntdUI.Button();
+            button10 = new AntdUI.Button();
+            button9 = new AntdUI.Button();
+            button8 = new AntdUI.Button();
+            button7 = new AntdUI.Button();
             button6 = new AntdUI.Button();
             button5 = new AntdUI.Button();
             button4 = new AntdUI.Button();
             button3 = new AntdUI.Button();
             button2 = new AntdUI.Button();
             button1 = new AntdUI.Button();
-            tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            gridPanel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
+            gridPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
@@ -90,85 +96,16 @@ namespace Demo.Controls
             // 
             input1.Dock = System.Windows.Forms.DockStyle.Fill;
             input1.LocalizationPrefixText = "GridPanel.Prefix";
-            input1.Location = new System.Drawing.Point(3, 3);
+            input1.Location = new System.Drawing.Point(0, 0);
+            input1.Margin = new System.Windows.Forms.Padding(0);
             input1.Multiline = true;
             input1.Name = "input1";
             input1.PrefixText = "Span属性";
-            input1.Size = new System.Drawing.Size(494, 60);
+            input1.Size = new System.Drawing.Size(500, 66);
             input1.SuffixText = "";
             input1.TabIndex = 0;
-            input1.Text = "10% 20%;20% 20%;30% 50%;-50% 10% 10%";
+            input1.Text = "100%;25% 25% 25% 25%;33.33% 33.33% 33.33%;50% 50%;66.66% 33.33%;-20% 20% 18% 21% 21%";
             input1.TextChanged += input1_TextChanged;
-            // 
-            // gridPanel1
-            // 
-            gridPanel1.Controls.Add(button6);
-            gridPanel1.Controls.Add(button5);
-            gridPanel1.Controls.Add(button4);
-            gridPanel1.Controls.Add(button3);
-            gridPanel1.Controls.Add(button2);
-            gridPanel1.Controls.Add(button1);
-            gridPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            gridPanel1.Location = new System.Drawing.Point(0, 141);
-            gridPanel1.Name = "gridPanel1";
-            gridPanel1.Size = new System.Drawing.Size(1000, 659);
-            gridPanel1.Span = "10% 20%;20% 20%;30% 50%";
-            gridPanel1.TabIndex = 2;
-            gridPanel1.Text = "gridPanel1";
-            // 
-            // button6
-            // 
-            button6.Location = new System.Drawing.Point(303, 441);
-            button6.Name = "button6";
-            button6.Size = new System.Drawing.Size(494, 213);
-            button6.TabIndex = 5;
-            button6.Text = "Button6";
-            button6.Type = AntdUI.TTypeMini.Primary;
-            // 
-            // button5
-            // 
-            button5.Location = new System.Drawing.Point(3, 441);
-            button5.Name = "button5";
-            button5.Size = new System.Drawing.Size(294, 213);
-            button5.TabIndex = 4;
-            button5.Text = "Button5";
-            button5.Type = AntdUI.TTypeMini.Primary;
-            // 
-            // button4
-            // 
-            button4.Location = new System.Drawing.Point(203, 222);
-            button4.Name = "button4";
-            button4.Size = new System.Drawing.Size(194, 213);
-            button4.TabIndex = 3;
-            button4.Text = "Button4";
-            button4.Type = AntdUI.TTypeMini.Primary;
-            // 
-            // button3
-            // 
-            button3.Location = new System.Drawing.Point(3, 222);
-            button3.Name = "button3";
-            button3.Size = new System.Drawing.Size(194, 213);
-            button3.TabIndex = 2;
-            button3.Text = "Button3";
-            button3.Type = AntdUI.TTypeMini.Primary;
-            // 
-            // button2
-            // 
-            button2.Location = new System.Drawing.Point(103, 3);
-            button2.Name = "button2";
-            button2.Size = new System.Drawing.Size(194, 213);
-            button2.TabIndex = 1;
-            button2.Text = "Button2";
-            button2.Type = AntdUI.TTypeMini.Primary;
-            // 
-            // button1
-            // 
-            button1.Location = new System.Drawing.Point(3, 3);
-            button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(94, 213);
-            button1.TabIndex = 0;
-            button1.Text = "Button1";
-            button1.Type = AntdUI.TTypeMini.Primary;
             // 
             // tableLayoutPanel1
             // 
@@ -185,6 +122,173 @@ namespace Demo.Controls
             tableLayoutPanel1.Size = new System.Drawing.Size(1000, 66);
             tableLayoutPanel1.TabIndex = 1;
             // 
+            // gridPanel1
+            // 
+            gridPanel1.Controls.Add(button12);
+            gridPanel1.Controls.Add(button11);
+            gridPanel1.Controls.Add(button10);
+            gridPanel1.Controls.Add(button9);
+            gridPanel1.Controls.Add(button8);
+            gridPanel1.Controls.Add(button7);
+            gridPanel1.Controls.Add(button6);
+            gridPanel1.Controls.Add(button5);
+            gridPanel1.Controls.Add(button4);
+            gridPanel1.Controls.Add(button3);
+            gridPanel1.Controls.Add(button2);
+            gridPanel1.Controls.Add(button1);
+            gridPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            gridPanel1.Font = new System.Drawing.Font("Microsoft YaHei UI", 22F);
+            gridPanel1.Location = new System.Drawing.Point(0, 141);
+            gridPanel1.Name = "gridPanel1";
+            gridPanel1.Size = new System.Drawing.Size(1000, 659);
+            gridPanel1.Span = "100%;25% 25% 25% 25%;33.33% 33.33% 33.33%;50% 50%;66.66% 33.33%;-20% 20% 18% 21% 21%";
+            gridPanel1.TabIndex = 3;
+            gridPanel1.Paint += gridPanel1_Paint;
+            // 
+            // button12
+            // 
+            button12.Ghost = true;
+            button12.Location = new System.Drawing.Point(667, 523);
+            button12.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button12.Name = "button12";
+            button12.Radius = 0;
+            button12.Size = new System.Drawing.Size(333, 134);
+            button12.TabIndex = 12;
+            button12.Text = "33.33%";
+            button12.WaveSize = 0;
+            // 
+            // button11
+            // 
+            button11.Location = new System.Drawing.Point(0, 523);
+            button11.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button11.Name = "button11";
+            button11.Radius = 0;
+            button11.Size = new System.Drawing.Size(667, 134);
+            button11.TabIndex = 11;
+            button11.Text = "66.66%";
+            button11.Type = AntdUI.TTypeMini.Primary;
+            button11.WaveSize = 0;
+            // 
+            // button10
+            // 
+            button10.Ghost = true;
+            button10.Location = new System.Drawing.Point(500, 385);
+            button10.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button10.Name = "button10";
+            button10.Radius = 0;
+            button10.Size = new System.Drawing.Size(500, 134);
+            button10.TabIndex = 10;
+            button10.Text = "50%";
+            button10.WaveSize = 0;
+            // 
+            // button9
+            // 
+            button9.Location = new System.Drawing.Point(0, 385);
+            button9.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button9.Name = "button9";
+            button9.Radius = 0;
+            button9.Size = new System.Drawing.Size(500, 134);
+            button9.TabIndex = 9;
+            button9.Text = "50%";
+            button9.Type = AntdUI.TTypeMini.Primary;
+            button9.WaveSize = 0;
+            // 
+            // button8
+            // 
+            button8.Location = new System.Drawing.Point(666, 266);
+            button8.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button8.Name = "button8";
+            button8.Radius = 0;
+            button8.Size = new System.Drawing.Size(333, 115);
+            button8.TabIndex = 8;
+            button8.Text = "33.33%";
+            button8.Type = AntdUI.TTypeMini.Primary;
+            button8.WaveSize = 0;
+            // 
+            // button7
+            // 
+            button7.Ghost = true;
+            button7.Location = new System.Drawing.Point(333, 266);
+            button7.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button7.Name = "button7";
+            button7.Radius = 0;
+            button7.Size = new System.Drawing.Size(333, 115);
+            button7.TabIndex = 7;
+            button7.Text = "33.33%";
+            button7.WaveSize = 0;
+            // 
+            // button6
+            // 
+            button6.Location = new System.Drawing.Point(0, 266);
+            button6.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button6.Name = "button6";
+            button6.Radius = 0;
+            button6.Size = new System.Drawing.Size(333, 115);
+            button6.TabIndex = 6;
+            button6.Text = "33.33%";
+            button6.Type = AntdUI.TTypeMini.Primary;
+            button6.WaveSize = 0;
+            // 
+            // button5
+            // 
+            button5.Ghost = true;
+            button5.Location = new System.Drawing.Point(750, 134);
+            button5.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button5.Name = "button5";
+            button5.Radius = 0;
+            button5.Size = new System.Drawing.Size(250, 128);
+            button5.TabIndex = 5;
+            button5.Text = "25%";
+            button5.WaveSize = 0;
+            // 
+            // button4
+            // 
+            button4.Location = new System.Drawing.Point(500, 134);
+            button4.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button4.Name = "button4";
+            button4.Radius = 0;
+            button4.Size = new System.Drawing.Size(250, 128);
+            button4.TabIndex = 4;
+            button4.Text = "25%";
+            button4.Type = AntdUI.TTypeMini.Primary;
+            button4.WaveSize = 0;
+            // 
+            // button3
+            // 
+            button3.Ghost = true;
+            button3.Location = new System.Drawing.Point(250, 134);
+            button3.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button3.Name = "button3";
+            button3.Radius = 0;
+            button3.Size = new System.Drawing.Size(250, 128);
+            button3.TabIndex = 3;
+            button3.Text = "25%";
+            button3.WaveSize = 0;
+            // 
+            // button2
+            // 
+            button2.Location = new System.Drawing.Point(0, 134);
+            button2.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button2.Name = "button2";
+            button2.Radius = 0;
+            button2.Size = new System.Drawing.Size(250, 128);
+            button2.TabIndex = 2;
+            button2.Text = "25%";
+            button2.Type = AntdUI.TTypeMini.Primary;
+            button2.WaveSize = 0;
+            // 
+            // button1
+            // 
+            button1.Location = new System.Drawing.Point(0, 2);
+            button1.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            button1.Name = "button1";
+            button1.Radius = 0;
+            button1.Size = new System.Drawing.Size(1000, 128);
+            button1.TabIndex = 1;
+            button1.Text = "100%";
+            button1.Type = AntdUI.TTypeMini.Primary;
+            button1.WaveSize = 0;
+            // 
             // GridPanel
             // 
             Controls.Add(gridPanel1);
@@ -192,8 +296,8 @@ namespace Demo.Controls
             Controls.Add(header1);
             Name = "GridPanel";
             Size = new System.Drawing.Size(1000, 800);
-            gridPanel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
+            gridPanel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -203,12 +307,18 @@ namespace Demo.Controls
         private AntdUI.Input input1;
         private AntdUI.Label label1;
         private AntdUI.GridPanel gridPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private AntdUI.Button button12;
+        private AntdUI.Button button11;
+        private AntdUI.Button button10;
+        private AntdUI.Button button9;
+        private AntdUI.Button button8;
+        private AntdUI.Button button7;
+        private AntdUI.Button button6;
+        private AntdUI.Button button5;
         private AntdUI.Button button4;
         private AntdUI.Button button3;
         private AntdUI.Button button2;
         private AntdUI.Button button1;
-        private AntdUI.Button button6;
-        private AntdUI.Button button5;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }

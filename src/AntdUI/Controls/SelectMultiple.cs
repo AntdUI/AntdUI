@@ -228,8 +228,7 @@ namespace AntdUI
                 SelectedValue = new object[0];
             }
             base.OnClearValue();
-
-            SetCaretPostion();
+            CalculateRect();
             Invalidate();
             subForm?.ClearValues();
         }
@@ -653,7 +652,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                BeginInvoke(new Action(() => ShowLayeredForm(list)));
+                BeginInvoke(() => ShowLayeredForm(list));
                 return;
             }
             Expand = true;

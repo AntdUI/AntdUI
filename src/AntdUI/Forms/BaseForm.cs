@@ -41,7 +41,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() => SetCursor(val)));
+                Invoke(() => SetCursor(val));
                 return;
             }
             Cursor = val ? Cursors.Hand : DefaultCursor;
@@ -310,7 +310,7 @@ namespace AntdUI
         public bool EnableHitTest { get; set; } = true;
         internal HitTestValues HitTest(Point point)
         {
-            if (EnableHitTest)
+            if (Window.CanHandMessage && EnableHitTest)
             {
                 float htSize = 8F * Config.Dpi, htSize2 = htSize * 2;
                 GetWindowRect(Handle, out var lpRect);
@@ -387,6 +387,20 @@ namespace AntdUI
             }
             return base.ProcessDialogKey(keyData);
         }
+
+        #endregion
+
+        #region 委托
+
+#if NET40 || NET46 || NET48
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public IAsyncResult BeginInvoke(Action method) => BeginInvoke(method, null);
+
+        public void Invoke(Action method) => _ = Invoke(method, null);
+        public T Invoke<T>(Func<T> method) => (T)Invoke(method, null);
+
+#endif
 
         #endregion
     }

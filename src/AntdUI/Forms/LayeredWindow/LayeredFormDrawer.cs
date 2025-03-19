@@ -32,6 +32,7 @@ namespace AntdUI
         int padding = 24;
         ILayeredForm? formMask = null;
         public bool isclose = false;
+        internal bool topMost = false;
         public LayeredFormDrawer(Drawer.Config _config, ILayeredForm mask) : this(_config)
         {
             formMask = mask;
@@ -47,7 +48,7 @@ namespace AntdUI
         public LayeredFormDrawer(Drawer.Config _config)
         {
             config = _config;
-            config.Form.SetTopMost(Handle);
+            topMost = config.Form.SetTopMost(Handle);
             Font = config.Form.Font;
             padding = (int)Math.Round(config.Padding * Config.Dpi);
             Padding = new Padding(padding);
@@ -339,7 +340,7 @@ namespace AntdUI
                     return true;
                 }, 10, t, () =>
                 {
-                    if (IsHandleCreated) BeginInvoke(new Action(ShowContent));
+                    if (IsHandleCreated) BeginInvoke(ShowContent);
                     SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
                     task_start = null;
                 }, sleep);
@@ -552,13 +553,10 @@ namespace AntdUI
         }
         void SetAnimateValue(int x, int y, int w, int h, byte _alpha)
         {
-            if (TargetRect.X != x || TargetRect.Y != y || TargetRect.Width != w || TargetRect.Height != h || alpha != _alpha)
-            {
-                SetLocation(x, y);
-                SetSize(w, h);
-                alpha = _alpha;
-                Print();
-            }
+            SetLocation(x, y);
+            SetSize(w, h);
+            alpha = _alpha;
+            Print(true);
         }
 
         #endregion
@@ -668,7 +666,7 @@ namespace AntdUI
                 case TAlignMini.Top:
                     if (Config.ShadowEnabled)
                     {
-                        if (shadow_temp == null || shadow_temp.Width != end_W)
+                        if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || shadow_temp.Width != end_W)
                         {
                             shadow_temp?.Dispose();
                             using (var path = new Rectangle(rect.X, rect.Y + 20, end_W, 40).RoundPath(FrmRadius))
@@ -686,7 +684,7 @@ namespace AntdUI
                 case TAlignMini.Bottom:
                     if (Config.ShadowEnabled)
                     {
-                        if (shadow_temp == null || shadow_temp.Width != end_W)
+                        if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || shadow_temp.Width != end_W)
                         {
                             shadow_temp?.Dispose();
                             using (var path = new Rectangle(rect.X, rect.Y + 20, end_W, 40).RoundPath(FrmRadius))
@@ -704,7 +702,7 @@ namespace AntdUI
                 case TAlignMini.Left:
                     if (Config.ShadowEnabled)
                     {
-                        if (shadow_temp == null || shadow_temp.Height != end_H)
+                        if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || shadow_temp.Height != end_H)
                         {
                             shadow_temp?.Dispose();
                             using (var path = new Rectangle(rect.X + 20, rect.Y, 40, end_H).RoundPath(FrmRadius))
@@ -723,7 +721,7 @@ namespace AntdUI
                 default:
                     if (Config.ShadowEnabled)
                     {
-                        if (shadow_temp == null || shadow_temp.Height != end_H)
+                        if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || shadow_temp.Height != end_H)
                         {
                             shadow_temp?.Dispose();
                             using (var path = new Rectangle(rect.X + 20, rect.Y, 40, end_H).RoundPath(FrmRadius))

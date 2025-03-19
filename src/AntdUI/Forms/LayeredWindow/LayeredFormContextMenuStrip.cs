@@ -434,7 +434,7 @@ namespace AntdUI
             var path = rect_read.RoundPath(radius);
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
+                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);

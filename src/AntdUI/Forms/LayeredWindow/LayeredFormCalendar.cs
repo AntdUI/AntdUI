@@ -866,7 +866,7 @@ namespace AntdUI
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null)
+                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
                 {
                     shadow_temp?.Dispose();
                     using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))

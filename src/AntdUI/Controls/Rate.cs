@@ -294,10 +294,7 @@ namespace AntdUI
             {
                 if (InvokeRequired)
                 {
-                    Invoke(new Action(() =>
-                    {
-                        Width = list[list.Count - 1].rect.Right;
-                    }));
+                    Invoke(() => Width = list[list.Count - 1].rect.Right);
                 }
                 else Width = list[list.Count - 1].rect.Right;
             }

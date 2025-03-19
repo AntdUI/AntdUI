@@ -896,12 +896,6 @@ namespace AntdUI
             foreach (var it in items) IUSelect(it);
         }
 
-        /// <summary>
-        /// 取消全部选择
-        /// </summary>
-        [Obsolete("use USelect")]
-        public void IUSelect() => USelect();
-
         #region 集合操作
 
         /// <summary>

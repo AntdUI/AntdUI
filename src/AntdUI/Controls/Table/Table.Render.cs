@@ -730,7 +730,14 @@ namespace AntdUI
                         g.Fill(brush, rect_show);
                     }
                 }
-                g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                if (radius > 0)
+                {
+                    using (var path = Helper.RoundPath(rect_Fixed, radius, true, false, false, !visibleHeader))
+                    {
+                        g.Fill(Colour.BgBase.Get("Table"), path);
+                    }
+                }
+                else g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
 
                 #endregion
 
@@ -783,7 +790,7 @@ namespace AntdUI
                         showFixedColumnR = true;
                         int w = last.RECT.Right - first.RECT.Left;
 
-                        var rect_Fixed = new Rectangle(rect.Right - w, rect.Y, last.RECT.Right, last.RECT.Bottom);
+                        var rect_Fixed = new Rectangle(rect.Right - w, rect.Y, last.RECT.Width, last.RECT.Bottom);
 
                         #region 绘制阴影
 
@@ -795,7 +802,14 @@ namespace AntdUI
                                 g.Fill(brush, rect_show);
                             }
                         }
-                        g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                        if (radius > 0)
+                        {
+                            using (var path = Helper.RoundPath(rect_Fixed, radius, false, true, !visibleHeader, false))
+                            {
+                                g.Fill(Colour.BgBase.Get("Table"), path);
+                            }
+                        }
+                        else g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
 
                         #endregion
 
@@ -1192,16 +1206,36 @@ namespace AntdUI
                     rect.Offset(0, offset);
                     rect.Height -= offset;
                 }
-                if (EmptyImage == null) g.String(emptytext, Font, brush, rect, StringFormat(ColumnAlign.Center));
-                else
+
+                if (Config.EmptyImageSvg != null)
                 {
-                    int gap = (int)(_gap * Config.Dpi);
+                    var size = g.MeasureString(emptytext, Font);
+                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
+
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
+                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+
+                    using (var _bmp = SvgExtend.SvgToBmp(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0]))
+                    {
+                        if (_bmp == null)
+                        {
+                            g.String(emptytext, Font, brush, rect, StringFormat(ColumnAlign.Center));
+                            return;
+                        }
+                        else g.Image(_bmp, rect_img);
+                    }
+                    g.String(emptytext, Font, brush, rect_font, StringFormat(ColumnAlign.Center));
+                }
+                else if (EmptyImage != null)
+                {
+                    int gap = (int)(8 * Config.Dpi);
                     var size = g.MeasureString(emptytext, Font);
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
                         rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                     g.Image(EmptyImage, rect_img);
                     g.String(emptytext, Font, brush, rect_font, StringFormat(ColumnAlign.Center));
                 }
+                else g.String(emptytext, Font, brush, rect, StringFormat(ColumnAlign.Center));
             }
         }
 

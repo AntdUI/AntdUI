@@ -206,7 +206,7 @@ namespace AntdUI
                         {
                             bool old = parent.ScrollBar.Show;
                             parent.ScrollBar.SetVrSize(val);
-                            if (old != parent.ScrollBar.Show) parent.BeginInvoke(new Action(parent.IOnSizeChanged));
+                            if (old != parent.ScrollBar.Show) parent.BeginInvoke(parent.IOnSizeChanged);
                         }
                     }
                 }

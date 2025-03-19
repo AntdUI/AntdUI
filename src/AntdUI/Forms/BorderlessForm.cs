@@ -162,7 +162,7 @@ namespace AntdUI
             set
             {
                 if (base.ShowInTaskbar == value) return;
-                if (InvokeRequired) { Invoke(new Action(() => base.ShowInTaskbar = value)); }
+                if (InvokeRequired) { Invoke(() => base.ShowInTaskbar = value); }
                 else base.ShowInTaskbar = value;
                 oldmargin = 0;
                 DwmArea();
@@ -248,11 +248,11 @@ namespace AntdUI
                     break;
                 case WindowMessage.WM_MOUSEMOVE:
                 case WindowMessage.WM_NCMOUSEMOVE:
-                    if (!is_resizable && ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
+                    if (!is_resizable && Window.CanHandMessage && ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
                     break;
                 case WindowMessage.WM_LBUTTONDOWN:
                 case WindowMessage.WM_NCLBUTTONDOWN:
-                    if (!is_resizable && ReadMessage) ResizableMouseDown();
+                    if (!is_resizable && Window.CanHandMessage && ReadMessage) ResizableMouseDown();
                     break;
             }
             base.WndProc(ref m);
@@ -412,11 +412,11 @@ namespace AntdUI
                             if ((Math.Abs(mousePosition.X - mouseOffset.X) >= 6 || Math.Abs(mousePosition.Y - mouseOffset.Y) >= 6))
                             {
                                 handmax = true;
-                                Invoke(new Action(() =>
+                                Invoke(() =>
                                 {
                                     WindowState = FormWindowState.Normal;
                                     isMax = false;
-                                }));
+                                });
                                 return;
                             }
                         }

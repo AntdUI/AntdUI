@@ -69,14 +69,24 @@ namespace AntdUI
             if (config.Form == null || config.Form.WindowState == FormWindowState.Minimized || !config.Form.Visible)
             {
                 config.Mask = config.MaskClosable = false;
-                return new LayeredFormModal(config).ShowDialog();
+                var dialogResultN = DialogResult.None;
+                ModalCount++;
+                dialogResultN = new LayeredFormModal(config).ShowDialog();
+                ModalCount--;
+                return dialogResultN;
             }
             if (!config.Form.IsHandleCreated) config.Mask = config.MaskClosable = false;
             if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<DialogResult>(() => open(config)));
             var frm = new LayeredFormModal(config);
-            if (config.Mask) return frm.ShowDialog(config.Form.FormMask(frm));
-            else return frm.ShowDialog();
+            var dialogResult = DialogResult.None;
+            ModalCount++;
+            if (config.Mask) dialogResult = frm.ShowDialog(config.Form.FormMask(frm));
+            else dialogResult = frm.ShowDialog();
+            ModalCount--;
+            return dialogResult;
         }
+
+        public static int ModalCount { get; private set; }
 
         #region 配置
 
@@ -420,10 +430,7 @@ namespace AntdUI
             public void Close()
             {
                 if (Layered == null) return;
-                Layered.BeginInvoke(new Action(() =>
-                {
-                    Layered?.Close();
-                }));
+                Layered.BeginInvoke(() => Layered?.Close());
             }
         }
 

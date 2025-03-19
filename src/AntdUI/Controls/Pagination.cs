@@ -33,7 +33,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Current")]
     [DefaultEvent("ValueChanged")]
-    public class Pagination : IControl
+    public class Pagination : IControl, IEventListener
     {
         #region 属性
 
@@ -521,7 +521,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(InputSizeChangerDispose));
+                Invoke(InputSizeChangerDispose);
                 return;
             }
             input_SizeChanger?.Dispose();
@@ -711,10 +711,7 @@ namespace AntdUI
                 }
                 if (InvokeRequired)
                 {
-                    Invoke(new Action(() =>
-                    {
-                        Controls.Add(input_SizeChanger);
-                    }));
+                    Invoke(() => Controls.Add(input_SizeChanger));
                 }
                 else Controls.Add(input_SizeChanger);
                 input_SizeChanger.KeyPress += Input_SizeChanger_KeyPress;
@@ -727,18 +724,18 @@ namespace AntdUI
                     string tips = Localization.Get("ItemsPerPage", "条/页");
                     var placeholder = pageSize.ToString() + " " + tips;
                     int width = GetSizeChangerWidth(placeholder);
-                    if (InvokeRequired)
-                    {
-                        Invoke(new Action(() =>
-                        {
-                            input_SizeChanger.Width = width;
-                        }));
-                    }
-                    else input_SizeChanger.Width = width;
+                    if (InvokeRequired) Invoke(() => SetSizeChanger(input_SizeChanger, width, placeholder));
+                    else SetSizeChanger(input_SizeChanger, width, placeholder);
                     return width;
                 }
                 return input_SizeChanger.Width;
             }
+        }
+
+        void SetSizeChanger(Input input_SizeChanger, int width, string placeholder)
+        {
+            input_SizeChanger.PlaceholderText = placeholder;
+            input_SizeChanger.Width = width;
         }
 
         int GetSizeChangerWidth(string placeholder)
@@ -826,6 +823,30 @@ namespace AntdUI
             public bool enabled { get; set; }
             public int prog { get; set; }
             public bool hover { get; set; }
+        }
+
+        #endregion
+
+        #region 语言变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    if (showSizeChanger)
+                    {
+                        ButtonLayout();
+                        Invalidate();
+                    }
+                    break;
+            }
         }
 
         #endregion

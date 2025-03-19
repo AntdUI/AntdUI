@@ -419,7 +419,7 @@ namespace AntdUI
             if (shadow > 0)
             {
                 int shadow = (int)(Shadow * Config.Dpi), shadowOffsetX = (int)(ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(ShadowOffsetY * Config.Dpi);
-                if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
+                if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height, shadowColor ?? Colour.TextBase.Get("Panel"), shadow);

@@ -28,35 +28,35 @@ namespace AntdUI
         public ITaskOpacity(ILayeredFormOpacityDown _control)
         {
             control = _control;
-            action = new Action(() =>
+            action = () =>
             {
                 if (_control.RunAnimation) return;
                 _control.Print();
-            });
+            };
         }
         public ITaskOpacity(ILayeredForm _control)
         {
             control = _control;
-            action = new Action(() =>
+            action = () =>
             {
                 _control.Print();
-            });
+            };
         }
         public ITaskOpacity(Form _control)
         {
             control = _control;
-            action = new Action(() =>
+            action = () =>
             {
                 _control.Invalidate();
-            });
+            };
         }
         public ITaskOpacity(IControl _control)
         {
             control = _control;
-            action = new Action(() =>
+            action = () =>
             {
                 _control.Invalidate();
-            });
+            };
         }
 
         ITask? Thread = null;

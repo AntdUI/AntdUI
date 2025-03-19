@@ -23,6 +23,7 @@ namespace SVGView
         public Main()
         {
             InitializeComponent();
+            input1.MaxLength = int.MaxValue;
         }
 
         private void button1_Click(object sender, MouseEventArgs e)

@@ -339,8 +339,7 @@ namespace AntdUI
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        using (var brush = new SolidBrush(Color.FromArgb(180, Colour.Text.Get("Menu", Theme))))
-                        { g.String(emptytext, Font, brush, rect_read, s_f); }
+                        g.String(emptytext, Font, Color.FromArgb(180, Colour.Text.Get("Menu", Theme)), rect_read, s_f);
                     }
                     else
                     {
@@ -488,7 +487,7 @@ namespace AntdUI
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null)
+                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
                 {
                     shadow_temp?.Dispose();
                     using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))

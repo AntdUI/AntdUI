@@ -1149,15 +1149,6 @@ namespace AntdUI
             IUSelect(items);
         }
 
-        /// <summary>
-        /// 取消全部选择
-        /// </summary>
-        [Obsolete("use USelect")]
-        public void IUSelect()
-        {
-            if (items == null) return;
-            IUSelect(items);
-        }
         void IUSelect(MenuItemCollection items)
         {
             foreach (var it in items) IUSelect(it);

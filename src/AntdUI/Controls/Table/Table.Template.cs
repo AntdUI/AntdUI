@@ -882,11 +882,6 @@ namespace AntdUI
             /// </summary>
             public int MinWidth { get; set; }
 
-            /// <summary>
-            /// 鼠标按下
-            /// </summary>
-            public int MouseDown { get; set; }
-
             internal int offsetx = 0, offsety = 0;
             public bool CONTAIN(int x, int y) => RECT.Contains(x - offsetx, y - offsety);
             public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x - offsetx, y - offsety);

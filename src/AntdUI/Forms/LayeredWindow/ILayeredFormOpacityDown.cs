@@ -54,7 +54,7 @@ namespace AntdUI
                         alpha = 255;
                         AnimateHeight = -1;
                         RunAnimation = false;
-                        Print();
+                        Print(true);
                         LoadOK();
                     });
                 }
@@ -73,7 +73,7 @@ namespace AntdUI
                         alpha = 255;
                         AnimateHeight = -1;
                         RunAnimation = false;
-                        Print();
+                        Print(true);
                         LoadOK();
                     });
                 }
@@ -82,7 +82,7 @@ namespace AntdUI
             {
                 alpha = 255;
                 RunAnimation = false;
-                Print();
+                Print(true);
                 LoadOK();
             }
             base.OnLoad(e);
@@ -108,13 +108,16 @@ namespace AntdUI
                 if (height == 0) return;
                 try
                 {
-                    if (bmp_tmp == null) bmp_tmp = PrintBit();
-                    if (bmp_tmp == null) return;
                     var rect = new Rectangle(TargetRect.X, y, TargetRect.Width, height);
                     var bmp = new Bitmap(rect.Width, rect.Height);
                     using (var g = Graphics.FromImage(bmp))
                     {
-                        g.DrawImage(bmp_tmp, 0, 0, rect.Width, rect.Height);
+                        if (bmp_tmp == null) bmp_tmp = PrintBit();
+                        if (bmp_tmp == null) return;
+                        lock (bmp_tmp)
+                        {
+                            g.DrawImage(bmp_tmp, 0, 0, rect.Width, rect.Height);
+                        }
                     }
                     Print(bmp, rect);
                 }
@@ -132,13 +135,16 @@ namespace AntdUI
                 if (height == 0) return;
                 try
                 {
-                    if (bmp_tmp == null) bmp_tmp = PrintBit();
-                    if (bmp_tmp == null) return;
                     var rect = new Rectangle(TargetRect.X, TargetRect.Y, TargetRect.Width, height);
                     var bmp = new Bitmap(rect.Width, rect.Height);
                     using (var g = Graphics.FromImage(bmp))
                     {
-                        g.DrawImage(bmp_tmp, 0, 0, rect.Width, rect.Height);
+                        if (bmp_tmp == null) bmp_tmp = PrintBit();
+                        if (bmp_tmp == null) return;
+                        lock (bmp_tmp)
+                        {
+                            g.DrawImage(bmp_tmp, 0, 0, rect.Width, rect.Height);
+                        }
                     }
                     Print(bmp, rect);
                 }

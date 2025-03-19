@@ -34,7 +34,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Date")]
     [DefaultEvent("DateChanged")]
-    public class Calendar : IControl
+    public class Calendar : IControl, IEventListener
     {
         public Calendar()
         {
@@ -167,7 +167,7 @@ namespace AntdUI
         /// 控件当前日期
         /// </summary>
         [Description("控件当前日期"), Category("数据")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime Value
         {
             get => _value;
@@ -1054,6 +1054,12 @@ namespace AntdUI
 
         protected override void OnSizeChanged(EventArgs e)
         {
+            LoadLayout();
+            base.OnSizeChanged(e);
+        }
+
+        void LoadLayout()
+        {
             float dpi = Config.Dpi;
 
             var rect = ReadRectangle;
@@ -1199,8 +1205,6 @@ namespace AntdUI
             }
 
             #endregion
-
-            base.OnSizeChanged(e);
         }
 
         #endregion
@@ -1209,6 +1213,56 @@ namespace AntdUI
 
         [Description("日期 改变时发生"), Category("行为")]
         public event DateTimeEventHandler? DateChanged;
+
+        #endregion
+
+        #region 语言变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    CultureID = Localization.Get("ID", "zh-CN");
+                    Culture = new CultureInfo(CultureID);
+                    button_text = Localization.Get("ToDay", "今天");
+                    YDR = CultureID.StartsWith("en");
+                    if (YDR)
+                    {
+                        YearFormat = "yyyy";
+                        MonthFormat = "MMM";
+                        MondayButton = "Mon";
+                        TuesdayButton = "Tue";
+                        WednesdayButton = "Wed";
+                        ThursdayButton = "Thu";
+                        FridayButton = "Fri";
+                        SaturdayButton = "Sat";
+                        SundayButton = "Sun";
+                        s_f_L = Helper.SF(lr: StringAlignment.Near); s_f_R = Helper.SF(lr: StringAlignment.Far);
+                    }
+                    else
+                    {
+                        YearFormat = "yyyy年";
+                        MonthFormat = "MM月";
+                        MondayButton = "一";
+                        TuesdayButton = "二";
+                        WednesdayButton = "三";
+                        ThursdayButton = "四";
+                        FridayButton = "五";
+                        SaturdayButton = "六";
+                        SundayButton = "日";
+                        s_f_L = Helper.SF(lr: StringAlignment.Far); s_f_R = Helper.SF(lr: StringAlignment.Near);
+                    }
+                    LoadLayout();
+                    break;
+            }
+        }
 
         #endregion
 

@@ -111,6 +111,7 @@ namespace Demo.Controls
             // 
             // panel1
             // 
+            panel1.Back = Color.Transparent;
             panel1.Controls.Add(checkAddressLineBreak);
             panel1.Controls.Add(checkVisibleHeader);
             panel1.Controls.Add(checkEnableHeaderResizing);

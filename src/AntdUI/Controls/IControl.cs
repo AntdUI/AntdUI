@@ -77,7 +77,7 @@ namespace AntdUI
             get => base.Visible;
             set
             {
-                if (InvokeRequired) Invoke(new Action(() => base.Visible = value));
+                if (InvokeRequired) Invoke(() => base.Visible = value);
                 else base.Visible = value;
             }
         }
@@ -91,7 +91,7 @@ namespace AntdUI
             get => base.Enabled;
             set
             {
-                if (InvokeRequired) Invoke(new Action(() => base.Enabled = value));
+                if (InvokeRequired) Invoke(() => base.Enabled = value);
                 else base.Enabled = value;
             }
         }
@@ -257,7 +257,7 @@ namespace AntdUI
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(IOnSizeChanged));
+                Invoke(IOnSizeChanged);
                 return;
             }
             OnSizeChanged(EventArgs.Empty);
@@ -322,29 +322,34 @@ namespace AntdUI
                     SetCursor(DefaultCursor);
                     break;
             }
-            SetWindow(flag);
+            Window.CanHandMessage = flag;
         }
         void SetCursor(Cursor cursor)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() => SetCursor(cursor)));
+                Invoke(() => SetCursor(cursor));
                 return;
             }
             Cursor = cursor;
         }
 
-        bool setwindow = false;
-        void SetWindow(bool flag)
-        {
-            if (setwindow == flag) return;
-            setwindow = flag;
-            var form = Parent.FindPARENT();
-            if (form is BaseForm baseForm) baseForm.EnableHitTest = setwindow;
-        }
-
         [Description("悬停光标"), Category("光标"), DefaultValue(typeof(Cursor), "Hand")]
         public virtual Cursor HandCursor { get; set; } = Cursors.Hand;
+
+        #endregion
+
+        #region 委托
+
+#if NET40 || NET46 || NET48
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public IAsyncResult BeginInvoke(Action method) => BeginInvoke(method, null);
+
+        public void Invoke(Action method) => _ = Invoke(method, null);
+        public T Invoke<T>(Func<T> method) => (T)Invoke(method, null);
+
+#endif
 
         #endregion
 
@@ -614,7 +619,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            SetWindow(true);
+            Window.CanHandMessage = true;
             fileDrop?.Dispose();
             base.Dispose(disposing);
         }

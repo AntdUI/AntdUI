@@ -45,9 +45,9 @@ namespace AntdUI
             {
                 var dpi = Config.Dpi;
 
-                int sp = (int)Math.Round(8F * dpi), padding = (int)Math.Round(16 * dpi), padding2 = padding * 2;
-                Padding = new Padding(padding);
-
+                int sp = (int)Math.Round(config.Gap * dpi), paddingx = 10 + (int)(config.Padding.Width * dpi),
+                paddingy = 10 + (int)(config.Padding.Height * dpi), paddingx2 = paddingx * 2, paddingy2 = paddingy * 2;
+                Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
                 if (config.Content is Control control)
                 {
                     control.Parent = this;
@@ -60,7 +60,7 @@ namespace AntdUI
                     if (_config.Title == null)
                     {
                         h = control.Height;
-                        rectContent = new Rectangle(padding, padding, w, control.Height);
+                        rectContent = new Rectangle(paddingx, paddingy, w, control.Height);
                     }
                     else
                     {
@@ -68,7 +68,7 @@ namespace AntdUI
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, w);
                             h = sizeTitle.Height + sp + control.Height;
-                            rectTitle = new Rectangle(padding, padding, w, sizeTitle.Height + sp);
+                            rectTitle = new Rectangle(paddingx, paddingy, w, sizeTitle.Height + sp);
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
                         }
                     }
@@ -76,7 +76,7 @@ namespace AntdUI
                     Helper.DpiAuto(Config.Dpi, control);
                     control.Size = new Size(tempContent.Width, tempContent.Height);
                     control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
-                    SetSize(w + padding2, h + padding2);
+                    SetSize(w + paddingx2, h + paddingy2);
                 }
                 else if (config.Content is IList<Popover.TextRow> list)
                 {
@@ -91,7 +91,7 @@ namespace AntdUI
                             if (txt.Call != null) hasmouse = true;
                             var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font);
                             int txt_w = sizeContent.Width + (int)(txt.Gap * dpi);
-                            _texts.Add(new int[] { padding + has_x, padding, txt_w });
+                            _texts.Add(new int[] { paddingx + has_x, paddingy, txt_w });
                             if (max_h < sizeContent.Height) max_h = sizeContent.Height;
                             has_x += txt_w;
                         }
@@ -102,8 +102,8 @@ namespace AntdUI
                             texts.Add(new InRect(list[i], new Rectangle(txt[0], txt[1], txt[2], max_h)));
                         }
                         rectsContent = texts.ToArray();
-                        rectContent = new Rectangle(padding, padding, has_x, max_h);
-                        SetSize(has_x + padding2, max_h + padding2);
+                        rectContent = new Rectangle(paddingx, paddingy, has_x, max_h);
+                        SetSize(has_x + paddingx2, max_h + paddingy2);
                     }
                     else
                     {
@@ -118,7 +118,7 @@ namespace AntdUI
                                 if (txt.Call != null) hasmouse = true;
                                 var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font);
                                 int txt_w = sizeContent.Width + (int)(txt.Gap * dpi);
-                                _texts.Add(new int[] { padding + has_x, padding + sizeTitle.Height + sp, txt_w });
+                                _texts.Add(new int[] { paddingx + has_x, paddingy + sizeTitle.Height + sp, txt_w });
                                 if (max_h < sizeContent.Height) max_h = sizeContent.Height;
                                 has_x += txt_w;
                             }
@@ -132,10 +132,10 @@ namespace AntdUI
 
                             int w = has_x > sizeTitle.Width ? has_x : sizeTitle.Width, h = sizeTitle.Height + sp + max_h;
 
-                            rectTitle = new Rectangle(padding, padding, w, sizeTitle.Height + sp);
+                            rectTitle = new Rectangle(paddingx, paddingy, w, sizeTitle.Height + sp);
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, w, max_h);
 
-                            SetSize(w + padding2, h + padding2);
+                            SetSize(w + paddingx2, h + paddingy2);
                         }
                     }
                 }
@@ -148,8 +148,8 @@ namespace AntdUI
                     {
                         var sizeContent = g.MeasureString(content, Font);
                         int w = sizeContent.Width, h = sizeContent.Height;
-                        rectContent = new Rectangle(padding, padding, w, h);
-                        SetSize(w + padding2, h + padding2);
+                        rectContent = new Rectangle(paddingx, paddingy, w, h);
+                        SetSize(w + paddingx2, h + paddingy2);
                     }
                     else
                     {
@@ -158,10 +158,10 @@ namespace AntdUI
                             Size sizeTitle = g.MeasureString(config.Title, fontTitle), sizeContent = g.MeasureString(content, Font);
                             int w = sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width, h = sizeTitle.Height + sp + sizeContent.Height;
 
-                            rectTitle = new Rectangle(padding, padding, w, sizeTitle.Height + sp);
+                            rectTitle = new Rectangle(paddingx, paddingy, w, sizeTitle.Height + sp);
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
 
-                            SetSize(w + padding2, h + padding2);
+                            SetSize(w + paddingx2, h + paddingy2);
                         }
                     }
                 }
@@ -186,10 +186,7 @@ namespace AntdUI
             {
                 if (config.Content is Control control)
                 {
-                    BeginInvoke(new Action(() =>
-                    {
-                        LoadContent(control);
-                    }));
+                    BeginInvoke(() => LoadContent(control));
                 }
                 else base.LoadOK();
             }
@@ -334,7 +331,7 @@ namespace AntdUI
             var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
+                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);

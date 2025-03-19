@@ -976,16 +976,35 @@ namespace AntdUI
             using (var fore = new SolidBrush(Colour.Text.Get("VirtualPanel")))
             {
                 string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
-                if (EmptyImage == null) g.String(emptytext, Font, fore, rect, stringCenter);
-                else
+                if (Config.EmptyImageSvg != null)
                 {
-                    int _gap = (int)(gap * Config.Dpi);
+                    var size = g.MeasureString(emptytext, Font);
+                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
+
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
+                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+
+                    using (var _bmp = SvgExtend.GetImgExtend(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0], rect_img, Style.Db.Text))
+                    {
+                        if (_bmp == null)
+                        {
+                            g.String(emptytext, Font, fore, rect, stringCenter);
+                            return;
+                        }
+                        else g.Image(_bmp, rect_img);
+                    }
+                    g.String(emptytext, Font, fore, rect_font, stringCenter);
+                }
+                else if (EmptyImage != null)
+                {
+                    int gap = (int)(8 * Config.Dpi);
                     var size = g.MeasureString(emptytext, Font);
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
-                        rect_font = new Rectangle(rect.X, rect_img.Bottom + _gap, rect.Width, size.Height);
+                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                     g.Image(EmptyImage, rect_img);
                     g.String(emptytext, Font, fore, rect_font, stringCenter);
                 }
+                else g.String(emptytext, Font, fore, rect, stringCenter);
             }
         }
 
@@ -1043,11 +1062,11 @@ namespace AntdUI
 
         void IBlurBar(Control BlurBar, Bitmap? bmp)
         {
-            Invoke(new Action(() =>
+            Invoke(() =>
             {
                 BlurBar.BackgroundImage?.Dispose();
                 BlurBar.BackgroundImage = bmp;
-            }));
+            });
         }
 
         protected override void Dispose(bool disposing)

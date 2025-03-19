@@ -189,5 +189,19 @@ namespace AntdUI
         {
             foreach (var it in families) CorrectionTextRendering.Set(it);
         }
+
+        #region 空白图
+
+        public static float EmptyImageRatio = 2.98F;
+        internal static string[]? EmptyImageSvg;
+        /// <summary>
+        /// 设置空白图片
+        /// </summary>
+        /// <param name="light">浅色</param>
+        /// <param name="dark">深色</param>
+        public static void SetEmptyImageSvg(string light, string dark) => EmptyImageSvg = new string[] { light, dark };
+        public static void ClearEmptyImageSvg() => EmptyImageSvg = null;
+
+        #endregion
     }
 }
