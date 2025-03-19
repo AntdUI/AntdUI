@@ -248,11 +248,11 @@ namespace AntdUI
                     break;
                 case WindowMessage.WM_MOUSEMOVE:
                 case WindowMessage.WM_NCMOUSEMOVE:
-                    if (!is_resizable && ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
+                    if (!is_resizable && Window.CanHandMessage && ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
                     break;
                 case WindowMessage.WM_LBUTTONDOWN:
                 case WindowMessage.WM_NCLBUTTONDOWN:
-                    if (!is_resizable && ReadMessage) ResizableMouseDown();
+                    if (!is_resizable && Window.CanHandMessage && ReadMessage) ResizableMouseDown();
                     break;
             }
             base.WndProc(ref m);

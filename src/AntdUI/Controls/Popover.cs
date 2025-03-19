@@ -171,6 +171,16 @@ namespace AntdUI
             public int Radius { get; set; } = 6;
 
             /// <summary>
+            /// 边距
+            /// </summary>
+            public Size Padding { get; set; } = new Size(14, 12);
+
+            /// <summary>
+            /// 间距
+            /// </summary>
+            public int Gap { get; set; } = 4;
+
+            /// <summary>
             /// 箭头大小
             /// </summary>
             public float ArrowSize { get; set; } = 8F;

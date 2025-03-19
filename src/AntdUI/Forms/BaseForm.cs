@@ -310,7 +310,7 @@ namespace AntdUI
         public bool EnableHitTest { get; set; } = true;
         internal HitTestValues HitTest(Point point)
         {
-            if (EnableHitTest)
+            if (Window.CanHandMessage && EnableHitTest)
             {
                 float htSize = 8F * Config.Dpi, htSize2 = htSize * 2;
                 GetWindowRect(Handle, out var lpRect);

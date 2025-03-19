@@ -93,6 +93,18 @@ namespace AntdUI
         public event ClickButtonEventHandler? CellButtonClick;
 
         /// <summary>
+        /// 按下按钮时发生
+        /// </summary>
+        [Description("按下按钮时发生"), Category("行为")]
+        public event ClickButtonEventHandler? CellButtonDown;
+
+        /// <summary>
+        /// 放下按钮时发生
+        /// </summary>
+        [Description("放下按钮时发生"), Category("行为")]
+        public event ClickButtonEventHandler? CellButtonUp;
+
+        /// <summary>
         /// 双击时发生
         /// </summary>
         [Description("双击时发生"), Category("行为")]

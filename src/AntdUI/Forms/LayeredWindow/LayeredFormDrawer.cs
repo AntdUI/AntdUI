@@ -32,6 +32,7 @@ namespace AntdUI
         int padding = 24;
         ILayeredForm? formMask = null;
         public bool isclose = false;
+        internal bool topMost = false;
         public LayeredFormDrawer(Drawer.Config _config, ILayeredForm mask) : this(_config)
         {
             formMask = mask;
@@ -47,7 +48,7 @@ namespace AntdUI
         public LayeredFormDrawer(Drawer.Config _config)
         {
             config = _config;
-            config.Form.SetTopMost(Handle);
+            topMost = config.Form.SetTopMost(Handle);
             Font = config.Form.Font;
             padding = (int)Math.Round(config.Padding * Config.Dpi);
             Padding = new Padding(padding);

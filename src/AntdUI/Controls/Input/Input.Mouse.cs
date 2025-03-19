@@ -74,10 +74,11 @@ namespace AntdUI
 
                 if (ScrollYShow && autoscroll && ScrollHover)
                 {
-                    float y = (e.Y - ScrollSliderFull / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
+                    float y = (e.Y - ScrollSliderFull / 2F) / (ScrollRect.Height - ScrollSliderFull), VrValue = ScrollYMax + Height;
                     ScrollY = (int)(y * VrValue);
                     ScrollYDown = true;
                     SetCursor(false);
+                    Window.CanHandMessage = false;
                     return;
                 }
                 mDownMove = false;
@@ -115,8 +116,9 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (ScrollYDown)
             {
-                float y = (e.Y - ScrollSliderFull / 2F) / ScrollRect.Height, VrValue = ScrollYMax + ScrollRect.Height;
+                float y = (e.Y - ScrollSliderFull / 2F) / (ScrollRect.Height - ScrollSliderFull), VrValue = ScrollYMax + ScrollRect.Height;
                 ScrollY = (int)(y * VrValue);
+                Window.CanHandMessage = false;
                 return;
             }
             else if (mDown && cache_font != null)
@@ -177,6 +179,7 @@ namespace AntdUI
             base.OnMouseUp(e);
             bool md = mDown;
             mDown = false;
+            if (ScrollYDown) Window.CanHandMessage = true;
             ScrollYDown = false;
             if (is_clear_down)
             {

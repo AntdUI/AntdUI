@@ -322,7 +322,7 @@ namespace AntdUI
                     SetCursor(DefaultCursor);
                     break;
             }
-            SetWindow(flag);
+            Window.CanHandMessage = flag;
         }
         void SetCursor(Cursor cursor)
         {
@@ -332,15 +332,6 @@ namespace AntdUI
                 return;
             }
             Cursor = cursor;
-        }
-
-        bool setwindow = false;
-        void SetWindow(bool flag)
-        {
-            if (setwindow == flag) return;
-            setwindow = flag;
-            var form = Parent.FindPARENT();
-            if (form is BaseForm baseForm) baseForm.EnableHitTest = setwindow;
         }
 
         [Description("悬停光标"), Category("光标"), DefaultValue(typeof(Cursor), "Hand")]
@@ -628,7 +619,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            SetWindow(true);
+            Window.CanHandMessage = true;
             fileDrop?.Dispose();
             base.Dispose(disposing);
         }

@@ -963,8 +963,7 @@ namespace AntdUI
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        using (var brush = new SolidBrush(Color.FromArgb(180, Colour.Text.Get(keyid))))
-                        { g.String(emptytext, Font, brush, rect_read, s_f); }
+                        g.String(emptytext, Font, Color.FromArgb(180, Colour.Text.Get(keyid)), rect_read, s_f);
                     }
                     else
                     {
