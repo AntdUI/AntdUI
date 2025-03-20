@@ -790,7 +790,7 @@ namespace AntdUI
                         showFixedColumnR = true;
                         int w = last.RECT.Right - first.RECT.Left;
 
-                        var rect_Fixed = new Rectangle(rect.Right - w, rect.Y, last.RECT.Width, last.RECT.Bottom);
+                        var rect_Fixed = new Rectangle(rect.Right - w, rect.Y, w, last.RECT.Bottom);
 
                         #region 绘制阴影
 

@@ -775,6 +775,8 @@ namespace AntdUI
             {
                 if (text == value) return;
                 base.Text = text = value;
+                if (PARENT == null) return;
+                if (PARENT.IsHandleCreated) PARENT.LoadLayout();
             }
         }
 
