@@ -1523,7 +1523,7 @@ namespace AntdUI
                 case EventType.LANG:
                     LoadLayout(false);
                     break;
-                }
+            }
         }
 
         #endregion

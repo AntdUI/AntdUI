@@ -111,6 +111,11 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 大小
+        /// </summary>
+        public Size? Size { get; set; }
+
         public override string ToString() => (_value * 100F) + "%";
     }
 }

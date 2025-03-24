@@ -768,6 +768,9 @@ namespace AntdUI.Core
         public void SetClip(Rectangle rect) => g.SetClip(rect);
         public void SetClip(RectangleF rect) => g.SetClip(rect);
         public void SetClip(GraphicsPath path) => g.SetClip(path);
+        public void SetClip(Rectangle rect, CombineMode combineMode) => g.SetClip(rect, combineMode);
+        public void SetClip(RectangleF rect, CombineMode combineMode) => g.SetClip(rect, combineMode);
+        public void SetClip(GraphicsPath path, CombineMode combineMode) => g.SetClip(path, combineMode);
         public void ResetClip() => g.ResetClip();
         public void ResetTransform() => g.ResetTransform();
         public void TranslateTransform(float dx, float dy) => g.TranslateTransform(dx, dy);

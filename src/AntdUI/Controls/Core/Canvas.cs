@@ -159,6 +159,9 @@ namespace AntdUI
         void SetClip(Rectangle rect);
         void SetClip(RectangleF rect);
         void SetClip(GraphicsPath path);
+        void SetClip(Rectangle rect, CombineMode combineMode);
+        void SetClip(RectangleF rect, CombineMode combineMode);
+        void SetClip(GraphicsPath path, CombineMode combineMode);
         void ResetClip();
         void ResetTransform();
         void TranslateTransform(float dx, float dy);
