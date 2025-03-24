@@ -137,6 +137,26 @@ namespace AntdUI
                 Dispose();
             });
         }
+        public ITask(Control control, Func<bool> action, int sleep = 0)
+        {
+            IsRun = true;
+            task = Run(() =>
+            {
+                if (sleep > 0) Thread.Sleep(sleep);
+                while (true)
+                {
+                    if (token.Wait(control)) return;
+                    else
+                    {
+                        if (action()) { }
+                        else return;
+                    }
+                }
+            }).ContinueWith(action =>
+            {
+                Dispose();
+            });
+        }
 
         /// <summary>
         /// 循环任务

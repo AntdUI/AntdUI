@@ -112,7 +112,6 @@ namespace Demo.Controls
             collapseItem1.Size = new Size(702, 48);
             collapseItem1.TabIndex = 0;
             collapseItem1.Text = "This is panel header 1";
-            collapseItem1.Click += collapseItem1_Click;
             // 
             // label1
             // 

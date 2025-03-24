@@ -52,26 +52,26 @@ namespace AntdUI
 
         #region Image
 
-        void Image(Image image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, GraphicsUnit srcUnit, ImageAttributes? imageAttr);
+        bool Image(Image image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, GraphicsUnit srcUnit, ImageAttributes? imageAttr);
 
-        void Image(Image image, float x, float y, float w, float h);
-        void Image(Image image, int x, int y, int w, int h);
-        void Icon(Icon icon, Rectangle rect);
+        bool Image(Image image, float x, float y, float w, float h);
+        bool Image(Image image, int x, int y, int w, int h);
+        bool Icon(Icon icon, Rectangle rect);
 
-        void Image(Image image, Rectangle rect);
-        void Image(Image image, RectangleF rect);
-        void Image(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit);
-        void Image(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit srcUnit);
+        bool Image(Image image, Rectangle rect);
+        bool Image(Image image, RectangleF rect);
+        bool Image(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit);
+        bool Image(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit srcUnit);
 
         #region 图片透明度
 
-        void Image(Image bmp, Rectangle rect, float opacity);
+        bool Image(Image bmp, Rectangle rect, float opacity);
 
         #endregion
 
-        void Image(RectangleF rect, Image image, TFit fit, float radius, bool round);
-        void Image(RectangleF rect, Image image, TFit fit, float radius, TShape shape);
-        void Image(RectangleF rect, Image image, TFit fit);
+        bool Image(RectangleF rect, Image image, TFit fit, float radius, bool round);
+        bool Image(RectangleF rect, Image image, TFit fit, float radius, TShape shape);
+        bool Image(RectangleF rect, Image image, TFit fit);
 
         #endregion
 
@@ -159,6 +159,9 @@ namespace AntdUI
         void SetClip(Rectangle rect);
         void SetClip(RectangleF rect);
         void SetClip(GraphicsPath path);
+        void SetClip(Rectangle rect, CombineMode combineMode);
+        void SetClip(RectangleF rect, CombineMode combineMode);
+        void SetClip(GraphicsPath path, CombineMode combineMode);
         void ResetClip();
         void ResetTransform();
         void TranslateTransform(float dx, float dy);

@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -16,17 +16,24 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.Windows.Forms;
-
-namespace Demo.Controls
+namespace AntdUI
 {
-    public partial class Collapse : UserControl
+    /// <summary>
+    /// 模式
+    /// </summary>
+    public enum TDatePicker
     {
-        Form form;
-        public Collapse(Form _form)
-        {
-            form = _form;
-            InitializeComponent();
-        }
+        /// <summary>
+        /// 日
+        /// </summary>
+        Date,
+        /// <summary>
+        /// 月
+        /// </summary>
+        Month,
+        /// <summary>
+        /// 年
+        /// </summary>
+        Year,
     }
 }

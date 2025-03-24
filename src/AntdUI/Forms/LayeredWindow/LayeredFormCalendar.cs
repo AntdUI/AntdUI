@@ -29,7 +29,8 @@ namespace AntdUI
     {
         DateTime? minDate, maxDate;
         bool ValueTimeHorizontal = false;
-        public LayeredFormCalendar(DatePicker _control, Rectangle rect_read, DateTime? date, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
+        TDatePicker datePicker = TDatePicker.Date;
+        public LayeredFormCalendar(DatePicker _control, Rectangle rect_read, DateTime? date, TDatePicker _datepicker, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
         {
             _control.Parent.SetTopMost(Handle);
             control = _control;
@@ -53,6 +54,7 @@ namespace AntdUI
             scrollY_h = new ScrollY(this);
             scrollY_m = new ScrollY(this);
             scrollY_s = new ScrollY(this);
+            datePicker = _datepicker;
 
             Culture = new CultureInfo(CultureID);
             YDR = CultureID.StartsWith("en");
@@ -477,10 +479,19 @@ namespace AntdUI
 
                 #endregion
 
-                if (showType == 1 && calendar_month != null) PrintMonth(g, rect_read, calendar_month);
-                else if (showType == 2 && calendar_year != null) PrintYear(g, rect_read, calendar_year);
-                else if (calendar_day != null) PrintDay(g, rect_read, calendar_day);
-
+                if (showType == null)
+                {
+                    if (datePicker == TDatePicker.Month && calendar_month != null) PrintMonth(g, rect_read, calendar_month);
+                    else if (datePicker == TDatePicker.Year && calendar_year != null) PrintYear(g, rect_read, calendar_year);
+                    else if (calendar_day != null) PrintDay(g, rect_read, calendar_day);
+                    showType = datePicker;
+                }
+                else
+                {
+                    if (showType == TDatePicker.Month && calendar_month != null) PrintMonth(g, rect_read, calendar_month);
+                    else if (showType == TDatePicker.Year && calendar_year != null) PrintYear(g, rect_read, calendar_year);
+                    else if (calendar_day != null) PrintDay(g, rect_read, calendar_day);
+                }
             }
             return original_bmp;
         }
@@ -915,7 +926,7 @@ namespace AntdUI
                  _hover_buttonok = (showType == 0 && ShowTime && rect_buttonok.Contains(e.X, e.Y));
 
                 bool _hover_year = false, _hover_month = false;
-                if (showType != 2)
+                if (showType != TDatePicker.Year)
                 {
                     _hover_year = showType == 0 ? rect_year.Contains(e.X, e.Y) : rect_year2.Contains(e.X, e.Y);
                     _hover_month = rect_month.Contains(e.X, e.Y);
@@ -942,7 +953,7 @@ namespace AntdUI
                 if (hover_lefts.Switch || hover_left.Switch || hover_rights.Switch || hover_right.Switch || hover_year.Switch || hover_month.Switch || hover_button.Switch || hover_buttonok.Switch) hand++;
                 else
                 {
-                    if (showType == 1)
+                    if (showType == TDatePicker.Month)
                     {
                         if (calendar_month != null)
                         {
@@ -955,7 +966,7 @@ namespace AntdUI
                             }
                         }
                     }
-                    else if (showType == 2)
+                    else if (showType == TDatePicker.Year)
                     {
                         if (calendar_year != null)
                         {
@@ -1055,7 +1066,7 @@ namespace AntdUI
             base.OnMouseLeave(e);
         }
 
-        int showType = 0;
+        TDatePicker? showType = null;
 
         void CSize()
         {
@@ -1098,7 +1109,7 @@ namespace AntdUI
                 {
                     if (hover_lefts.Enable)
                     {
-                        if (showType == 2) Date = _Date.AddYears(-10);
+                        if (showType == TDatePicker.Year) Date = _Date.AddYears(-10);
                         else Date = _Date.AddYears(-1);
                         Print();
                     }
@@ -1108,13 +1119,13 @@ namespace AntdUI
                 {
                     if (hover_rights.Enable)
                     {
-                        if (showType == 2) Date = _Date.AddYears(10);
+                        if (showType == TDatePicker.Year) Date = _Date.AddYears(10);
                         else Date = _Date.AddYears(1);
                         Print();
                     }
                     return;
                 }
-                else if (showType == 0 && rect_left.Contains(e.X, e.Y))
+                else if (showType == TDatePicker.Date && rect_left.Contains(e.X, e.Y))
                 {
                     if (hover_left.Enable)
                     {
@@ -1123,7 +1134,7 @@ namespace AntdUI
                     }
                     return;
                 }
-                else if (showType == 0 && rect_right.Contains(e.X, e.Y))
+                else if (showType == TDatePicker.Date && rect_right.Contains(e.X, e.Y))
                 {
                     if (hover_right.Enable)
                     {
@@ -1132,14 +1143,14 @@ namespace AntdUI
                     }
                     return;
                 }
-                else if ((showType == 0 && rect_year.Contains(e.X, e.Y)) || (showType != 0 && rect_year2.Contains(e.X, e.Y)))
+                else if ((showType == TDatePicker.Date && rect_year.Contains(e.X, e.Y)) || (showType != 0 && rect_year2.Contains(e.X, e.Y)))
                 {
-                    showType = 2;
+                    showType = TDatePicker.Year;
                     if (ShowTime || left_buttons != null) CSize();
                     Print();
                     return;
                 }
-                else if (showType == 0 && rect_button.Contains(e.X, e.Y))
+                else if (showType == TDatePicker.Date && rect_button.Contains(e.X, e.Y))
                 {
                     SelDate = Date = DateNow = DateTime.Now;
                     action(SelDate.Value);
@@ -1151,7 +1162,7 @@ namespace AntdUI
                     else IClose();
                     return;
                 }
-                else if (showType == 0 && ShowTime && rect_buttonok.Contains(e.X, e.Y))
+                else if (showType == TDatePicker.Date && ShowTime && rect_buttonok.Contains(e.X, e.Y))
                 {
                     if (SelDate.HasValue)
                     {
@@ -1162,14 +1173,14 @@ namespace AntdUI
                 }
                 else if (rect_month.Contains(e.X, e.Y))
                 {
-                    showType = 1;
+                    showType = TDatePicker.Month;
                     if (ShowTime || left_buttons != null) CSize();
                     Print();
                     return;
                 }
                 else
                 {
-                    if (showType == 1)
+                    if (showType == TDatePicker.Month)
                     {
                         if (calendar_month != null)
                         {
@@ -1178,7 +1189,17 @@ namespace AntdUI
                                 if (it.enable && it.rect.Contains(e.X, e.Y))
                                 {
                                     Date = it.date;
-                                    showType = 0;
+                                    if (datePicker < showType)
+                                    {
+                                        showType = TDatePicker.Date;
+                                    }
+                                    else
+                                    {
+                                        SelDate = it.date;
+                                        action(SelDate.Value);
+                                        IClose();
+                                        return;
+                                    }
                                     if (ShowTime || left_buttons != null) CSize();
                                     Print();
                                     return;
@@ -1186,7 +1207,7 @@ namespace AntdUI
                             }
                         }
                     }
-                    else if (showType == 2)
+                    else if (showType == TDatePicker.Year)
                     {
                         if (calendar_year != null)
                         {
@@ -1195,7 +1216,17 @@ namespace AntdUI
                                 if (it.enable && it.rect.Contains(e.X, e.Y))
                                 {
                                     Date = it.date;
-                                    showType = 1;
+                                    if (datePicker < showType)
+                                    {
+                                        showType = TDatePicker.Month;
+                                    }
+                                    else
+                                    {
+                                        SelDate = it.date;
+                                        action(SelDate.Value);
+                                        IClose();
+                                        return;
+                                    }
                                     if (ShowTime || left_buttons != null) CSize();
                                     Print();
                                     return;
@@ -1327,12 +1358,12 @@ namespace AntdUI
         {
             if (e.Delta > 0)
             {
-                if (showType == 1)
+                if (showType == TDatePicker.Month)
                 {
                     if (hover_lefts.Enable) Date = _Date.AddYears(-1);
                     else return;
                 }
-                else if (showType == 2)
+                else if (showType == TDatePicker.Year)
                 {
                     if (hover_lefts.Enable) Date = _Date.AddYears(-10);
                     else return;
@@ -1346,12 +1377,12 @@ namespace AntdUI
             }
             else
             {
-                if (showType == 1)
+                if (showType == TDatePicker.Month)
                 {
                     if (hover_rights.Enable) Date = _Date.AddYears(1);
                     else return;
                 }
-                else if (showType == 2)
+                else if (showType == TDatePicker.Year)
                 {
                     if (hover_rights.Enable) Date = _Date.AddYears(10);
                     else return;

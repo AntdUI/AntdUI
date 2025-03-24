@@ -307,13 +307,13 @@ namespace AntdUI
             var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
             if (cel_sel == null || (it.i_row != i_row || it.i_cel != i_cel))
             {
-                MouseUpBtn(it, btn, e, r_x, r_y);
+                MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y);
                 return;
             }
             else
             {
                 if (selectedIndex.Length == 1) SelectedIndex = it.i_row;
-                if (MouseUpBtn(it, btn, e, r_x, r_y)) return;
+                if (MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y)) return;
                 if (e.Button == MouseButtons.Left)
                 {
                     if (it.cell is TCellCheck checkCell)
@@ -456,34 +456,26 @@ namespace AntdUI
                         OnEditMode(it.row, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
                     }
                 }
-                else
-                {
-                    if (it.cell is Template template)
-                    {
-                        foreach (var item in template.Value)
-                        {
-                            if (item.DropDownItems != null && item.DropDownItems.Count > 0 && item.Rect.Contains(r_x, r_y))
-                            {
-                                subForm?.IClose();
-                                subForm = null;
-                                var rect = item.Rect;
-                                rect.Offset(-offset_xi, -offset_y);
-                                subForm = new LayeredFormSelectDown(this, item, rect, item.DropDownItems);
-                                subForm.Show(this);
-                                return;
-                            }
-                        }
-                    }
-                }
             }
         }
-        bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, int r_x, int r_y)
+        bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, int r_x, int r_y, int offset_xi, int offset_y)
         {
             if (btn == null) return false;
             btn.cell.ExtraMouseDown = false;
             if (e.Button == MouseButtons.Left && btn.cell.Rect.Contains(r_x, r_y))
             {
                 btn.cell.Click();
+
+                if (btn.cell.DropDownItems != null && btn.cell.DropDownItems.Count > 0)
+                {
+                    subForm?.IClose();
+                    subForm = null;
+                    var rect = btn.cell.Rect;
+                    rect.Offset(-offset_xi, -offset_y);
+                    subForm = new LayeredFormSelectDown(this, btn.cell, rect, btn.cell.DropDownItems);
+                    subForm.Show(this);
+                }
+
                 var arge = new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, e);
                 CellButtonUp?.Invoke(this, arge);
                 CellButtonClick?.Invoke(this, arge);

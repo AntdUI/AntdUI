@@ -34,7 +34,7 @@ namespace AntdUI
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Pages")]
     [Designer(typeof(TabControlDesigner))]
-    public partial class Tabs : IControl
+    public partial class Tabs : IControl, IEventListener
     {
         public Tabs() { style = SetType(type); }
 
@@ -447,6 +447,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+            this.AddListener();
             LoadLayout(false);
             showok = true;
             ShowPage(_select);
@@ -1510,6 +1511,20 @@ namespace AntdUI
         /// </summary>
         [Description("关闭页面前发生"), Category("行为")]
         public event ClosingPageEventHandler? ClosingPage;
+
+        #endregion
+
+        #region 本地化
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    LoadLayout(false);
+                    break;
+            }
+        }
 
         #endregion
     }

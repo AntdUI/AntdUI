@@ -1,5 +1,32 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `1.9.6` 2025-03-20
+
+- ➕ Dropdown ItemClick
+- ✍️ Table 右侧 Fixed 重影
+- ✍️ Table Cell DropDown 无法触发
+- ✍️ Tabs 适配语言切换
+- ✍️ Collapse 修改 Text 刷新
+
+### `1.9.5` 2025-03-19
+
+- ➕ Table CellButtonDown CellButtonUp
+- ➕ Config EmptyImageSvg
+- ➕ Popover Padding
+- ➕ Table CellRectangle 方法
+- ➕ Table Column WidthPixel
+- ✍️ Drawer 父容器置顶后内部下拉被遮挡
+- ✍️ Input 滚动条交互错位
+- ✍️ Calendar 语言切换
+- ✍️ Table 编辑模式中弹出 Modal 无遮罩
+- ✍️ Pagination ShowSizeChanger 切换语言水印文本不变
+- ✍️ Table 浮动列圆角
+- ✍️ Table BindingList 多次触发布局
+- ✍️ Dropdown 联动 SelectedValue
+- ✍️ SelectMultiple 清空后水印错位
+- ✍️ Splitter 去除设计器限制拖动
+- ✍️ 优化渲染并发
+
 ### `1.9.4` 2025-03-14
 
 - ➕ Tabs DragOrder 拖动顺序

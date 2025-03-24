@@ -1,5 +1,32 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `1.9.6` 2025-03-20
+
+- ➕ Dropdown ItemClick
+- ✍️ Fixed ghosting on the right side of the table
+- ✍️ Table Cell DropDown cannot be triggered
+- ✍️ Tabs adaptation language switching
+- ✍️ Collapse, modify Text, refresh
+
+### `1.9.5` 2025-03-19
+
+- ➕ Table CellButtonDown CellButtonUp
+- ➕ Config EmptyImageSvg
+- ➕ Popover Padding
+- ➕ Table CellRectangle method
+- ➕ Table Column WidthPixel
+- ✍️ Drawer's parent container is covered when pulled down internally after being placed on top
+- ✍️ Input scrollbar interaction misalignment
+- ✍️ Calendar language switching
+- ✍️ Pop up Modal without mask in Table editing mode
+- ✍️ Pagination ShowSizeChanger Switch Language Watermark Text Unchanged
+- ✍️ Table Floating Column Rounds
+- ✍️ Table Binding List triggers layout multiple times
+- ✍️ Dropdown linkage SelectedValue
+- ✍️ SelectMultiple: watermark misalignment after clearing
+- ✍️ Split removes designer restrictions on dragging
+- ✍️ Optimize rendering concurrency
+
 ### `1.9.4` 2025-03-14
 
 - ➕ Tabs DragOrder Drag Order

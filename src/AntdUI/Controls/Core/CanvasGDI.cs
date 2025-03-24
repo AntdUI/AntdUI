@@ -204,114 +204,127 @@ namespace AntdUI.Core
 
         #region Image
 
-        public void Image(Image image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, GraphicsUnit srcUnit, ImageAttributes? imageAttr)
+        public bool Image(Image image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, GraphicsUnit srcUnit, ImageAttributes? imageAttr)
         {
             try
             {
                 lock (image)
                 {
                     g.DrawImage(image, destRect, srcX, srcY, srcWidth, srcHeight, srcUnit, imageAttr, null);
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
 
-        public void Image(Image image, float x, float y, float w, float h)
+        public bool Image(Image image, float x, float y, float w, float h)
         {
             try
             {
                 lock (image)
                 {
                     g.DrawImage(image, x, y, w, h);
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
 
-        public void Image(Image image, int x, int y, int w, int h)
+        public bool Image(Image image, int x, int y, int w, int h)
         {
             try
             {
                 lock (image)
                 {
                     g.DrawImage(image, x, y, w, h);
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
 
-        public void Icon(Icon icon, Rectangle rect)
+        public bool Icon(Icon icon, Rectangle rect)
         {
             try
             {
                 lock (icon)
                 {
                     g.DrawIcon(icon, rect);
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
 
-        public void Image(Image image, Rectangle rect)
+        public bool Image(Image image, Rectangle rect)
         {
             try
             {
                 lock (image)
                 {
                     g.DrawImage(image, rect);
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
-        public void Image(Image image, RectangleF rect)
+        public bool Image(Image image, RectangleF rect)
         {
             try
             {
                 lock (image)
                 {
                     g.DrawImage(image, rect);
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
-        public void Image(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit)
+        public bool Image(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit)
         {
             try
             {
                 lock (image)
                 {
-
                     g.DrawImage(image, destRect, srcRect, srcUnit);
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
-        public void Image(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit srcUnit)
+        public bool Image(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit srcUnit)
         {
             try
             {
                 lock (image)
                 {
-
                     g.DrawImage(image, destRect, srcRect, srcUnit);
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
 
         #region 图片透明度
 
-        public void Image(Image bmp, Rectangle rect, float opacity)
+        public bool Image(Image bmp, Rectangle rect, float opacity)
         {
             try
             {
                 lock (bmp)
                 {
-
                     if (opacity >= 1F)
                     {
                         g.DrawImage(bmp, rect);
-                        return;
+                        return true;
                     }
                     using (var attributes = new ImageAttributes())
                     {
@@ -319,32 +332,40 @@ namespace AntdUI.Core
                         attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
                         g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
                     }
+                    return true;
                 }
             }
             catch { }
+            return false;
         }
 
         #endregion
 
-        public void Image(RectangleF rect, Image image, TFit fit)
+        public bool Image(RectangleF rect, Image image, TFit fit)
         {
-            switch (fit)
+            try
             {
-                case TFit.Fill:
-                    g.DrawImage(image, rect);
-                    break;
-                case TFit.None:
-                    g.DrawImage(image, new RectangleF(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2, image.Width, image.Height));
-                    break;
-                case TFit.Contain:
-                    PaintImgContain(this, image, rect);
-                    break;
-                case TFit.Cover:
-                    PaintImgCover(this, image, rect);
-                    break;
+                switch (fit)
+                {
+                    case TFit.Fill:
+                        g.DrawImage(image, rect);
+                        break;
+                    case TFit.None:
+                        g.DrawImage(image, new RectangleF(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2, image.Width, image.Height));
+                        break;
+                    case TFit.Contain:
+                        PaintImgContain(this, image, rect);
+                        break;
+                    case TFit.Cover:
+                        PaintImgCover(this, image, rect);
+                        break;
+                }
+                return true;
             }
+            catch { }
+            return false;
         }
-        public void Image(RectangleF rect, Image image, TFit fit, float radius, bool round)
+        public bool Image(RectangleF rect, Image image, TFit fit, float radius, bool round)
         {
             try
             {
@@ -371,10 +392,12 @@ namespace AntdUI.Core
                     }
                 }
                 else PaintImg(this, rect, image, fit);
+                return true;
             }
             catch { }
+            return false;
         }
-        public void Image(RectangleF rect, Image image, TFit fit, float radius, TShape shape)
+        public bool Image(RectangleF rect, Image image, TFit fit, float radius, TShape shape)
         {
             try
             {
@@ -401,27 +424,35 @@ namespace AntdUI.Core
                     }
                 }
                 else PaintImg(this, rect, image, fit);
+                return true;
             }
             catch { }
+            return false;
         }
 
-        static void PaintImg(Canvas g, RectangleF rect, Image image, TFit fit)
+        static bool PaintImg(Canvas g, RectangleF rect, Image image, TFit fit)
         {
-            switch (fit)
+            try
             {
-                case TFit.Fill:
-                    g.Image(image, rect);
-                    break;
-                case TFit.None:
-                    g.Image(image, new RectangleF(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2, image.Width, image.Height));
-                    break;
-                case TFit.Contain:
-                    PaintImgContain(g, image, rect);
-                    break;
-                case TFit.Cover:
-                    PaintImgCover(g, image, rect);
-                    break;
+                switch (fit)
+                {
+                    case TFit.Fill:
+                        g.Image(image, rect);
+                        break;
+                    case TFit.None:
+                        g.Image(image, new RectangleF(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2, image.Width, image.Height));
+                        break;
+                    case TFit.Contain:
+                        PaintImgContain(g, image, rect);
+                        break;
+                    case TFit.Cover:
+                        PaintImgCover(g, image, rect);
+                        break;
+                }
+                return true;
             }
+            catch { }
+            return false;
         }
         static void PaintImgCover(Canvas g, Image image, RectangleF rect)
         {
@@ -737,6 +768,9 @@ namespace AntdUI.Core
         public void SetClip(Rectangle rect) => g.SetClip(rect);
         public void SetClip(RectangleF rect) => g.SetClip(rect);
         public void SetClip(GraphicsPath path) => g.SetClip(path);
+        public void SetClip(Rectangle rect, CombineMode combineMode) => g.SetClip(rect, combineMode);
+        public void SetClip(RectangleF rect, CombineMode combineMode) => g.SetClip(rect, combineMode);
+        public void SetClip(GraphicsPath path, CombineMode combineMode) => g.SetClip(path, combineMode);
         public void ResetClip() => g.ResetClip();
         public void ResetTransform() => g.ResetTransform();
         public void TranslateTransform(float dx, float dy) => g.TranslateTransform(dx, dy);

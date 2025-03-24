@@ -65,14 +65,13 @@ namespace AntdUI
             using (var brush_split = new SolidBrush(borderColor ?? Colour.BorderColor.Get("Table")))
             {
                 var shows = new List<StyleRow>(rows.Length);
+                GraphicsPath? clipath = null;
                 if (visibleHeader)
                 {
                     if (_radius > 0)
                     {
-                        using (var path = Helper.RoundPath(rect_divider, _radius, true, true, false, false))
-                        {
-                            g.SetClip(path);
-                        }
+                        clipath = Helper.RoundPath(rect_divider, _radius, true, true, false, false);
+                        g.SetClip(clipath);
                     }
                     if (fixedHeader)
                     {
@@ -172,10 +171,8 @@ namespace AntdUI
                 {
                     if (_radius > 0)
                     {
-                        using (var path = Helper.RoundPath(rect_divider, _radius))
-                        {
-                            g.SetClip(path);
-                        }
+                        clipath = Helper.RoundPath(rect_divider, _radius);
+                        g.SetClip(clipath);
                     }
                     rows[0].SHOW = false;
                     int showIndex = 0;
@@ -233,28 +230,11 @@ namespace AntdUI
                 if (bordered)
                 {
                     var splitsize = dividerHs.Length > 0 ? dividerHs[0].Width : (int)Config.Dpi;
-                    if (_radius > 0)
-                    {
-                        using (var pen = new Pen(brush_split.Color, splitsize))
-                        {
-                            if (visibleHeader)
-                            {
-                                using (var path = Helper.RoundPath(rect_divider, _radius, true, true, false, false))
-                                {
-                                    g.Draw(pen, path);
-                                }
-                            }
-                            else
-                            {
-                                using (var path = Helper.RoundPath(rect_divider, _radius))
-                                {
-                                    g.Draw(pen, path);
-                                }
-                            }
-                        }
-                    }
-                    else g.Draw(brush_split.Color, splitsize, rect_divider);
+                    if (clipath == null) g.Draw(brush_split.Color, splitsize, rect_divider);
+                    else g.Draw(brush_split.Color, splitsize, clipath);
                 }
+
+                clipath?.Dispose();
             }
         }
 
@@ -669,12 +649,12 @@ namespace AntdUI
                 }
                 else if (it is Template template)
                 {
-                    g.SetClip(it.RECT);
+                    g.SetClip(it.RECT, CombineMode.Intersect);
                     foreach (var item in template.Value) item.Paint(g, Font, enable, fore);
                 }
                 else if (it is TCellText text)
                 {
-                    g.SetClip(it.RECT);
+                    g.SetClip(it.RECT, CombineMode.Intersect);
                     g.String(text.value, Font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
                 }
                 if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table"), it.RECT);
@@ -718,13 +698,15 @@ namespace AntdUI
             {
                 showFixedColumnL = true;
                 var last = shows[shows.Count - 1].row.cells[fixedColumnL[fixedColumnL.Count - 1]];
-                var rect_Fixed = new Rectangle(rect.X, rect.Y, last.RECT.Right, last.RECT.Bottom);
+                var rect_Fixed = new Rectangle(rect.X, rect.Y, last.RECT.Right, rect.Height);
+
+                GraphicsPath? clipath = null;
 
                 #region 绘制阴影
 
                 if (_gap > 0)
                 {
-                    var rect_show = new Rectangle(rect.X + last.RECT.Right - _gap, rect.Y, _gap * 2, last.RECT.Bottom);
+                    var rect_show = new Rectangle(rect.X + last.RECT.Right - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
                     using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table"), Color.Transparent, 0F))
                     {
                         g.Fill(brush, rect_show);
@@ -732,16 +714,18 @@ namespace AntdUI
                 }
                 if (radius > 0)
                 {
-                    using (var path = Helper.RoundPath(rect_Fixed, radius, true, false, false, !visibleHeader))
-                    {
-                        g.Fill(Colour.BgBase.Get("Table"), path);
-                    }
+                    clipath = Helper.RoundPath(rect_Fixed, radius, true, false, false, !visibleHeader);
+                    g.Fill(Colour.BgBase.Get("Table"), clipath);
+                    g.SetClip(clipath);
                 }
-                else g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                else
+                {
+                    g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                    g.SetClip(rect_Fixed);
+                }
 
                 #endregion
 
-                g.SetClip(rect_Fixed);
                 g.TranslateTransform(0, -sy);
                 foreach (var row in shows)
                 {
@@ -757,6 +741,7 @@ namespace AntdUI
                         PaintBg(g, row.row);
                     }
                 }
+
                 foreach (var row in shows)
                 {
                     foreach (int fixedIndex in fixedColumnL)
@@ -771,8 +756,11 @@ namespace AntdUI
                     PaintTableBgHeader(g, rows[0], radius);
                     PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
                 }
+                else g.TranslateTransform(0, bordered ? 0 : -sy);
                 if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.Fill(brush_split, divider);
+                g.ResetTransform();
                 g.ResetClip();
+                clipath?.Dispose();
             }
             else showFixedColumnL = false;
         }
@@ -790,13 +778,15 @@ namespace AntdUI
                         showFixedColumnR = true;
                         int w = last.RECT.Right - first.RECT.Left;
 
-                        var rect_Fixed = new Rectangle(rect.Right - w, rect.Y, last.RECT.Width, last.RECT.Bottom);
+                        var rect_Fixed = new Rectangle(rect.Right - w, rect.Y, w, rect.Height);
+
+                        GraphicsPath? clipath = null;
 
                         #region 绘制阴影
 
                         if (_gap > 0)
                         {
-                            var rect_show = new Rectangle(rect.Right - w - _gap, rect.Y, _gap * 2, last.RECT.Bottom);
+                            var rect_show = new Rectangle(rect.Right - w - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table"), 0F))
                             {
                                 g.Fill(brush, rect_show);
@@ -804,16 +794,18 @@ namespace AntdUI
                         }
                         if (radius > 0)
                         {
-                            using (var path = Helper.RoundPath(rect_Fixed, radius, false, true, !visibleHeader, false))
-                            {
-                                g.Fill(Colour.BgBase.Get("Table"), path);
-                            }
+                            clipath = Helper.RoundPath(rect_Fixed, radius, false, true, !visibleHeader, false);
+                            g.Fill(Colour.BgBase.Get("Table"), clipath);
+                            g.SetClip(clipath);
                         }
-                        else g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                        else
+                        {
+                            g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                            g.SetClip(rect_Fixed);
+                        }
 
                         #endregion
 
-                        g.SetClip(rect_Fixed);
                         g.TranslateTransform(0, -sy);
                         foreach (var row in shows)
                         {
@@ -854,13 +846,18 @@ namespace AntdUI
                             PaintTableBgHeader(g, rows[0], radius);
                             g.TranslateTransform(-sFixedR, 0);
                             PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
+                            g.ResetTransform();
+                            g.TranslateTransform(-sFixedR, 0);
                         }
-                        g.ResetTransform();
-                        g.TranslateTransform(-sFixedR, 0);
+                        else
+                        {
+                            g.ResetTransform();
+                            g.TranslateTransform(-sFixedR, bordered ? 0 : -sy);
+                        }
                         if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.Fill(brush_split, divider);
-
                         g.ResetTransform();
                         g.ResetClip();
+                        clipath?.Dispose();
                     }
                     else showFixedColumnR = false;
                 }

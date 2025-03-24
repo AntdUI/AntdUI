@@ -130,6 +130,24 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; }
 
+        public TDatePicker picker = TDatePicker.Date;
+        /// <summary>
+        /// 设置选择器类型
+        /// </summary>
+        [Description("设置选择器类型"), Category("外观"), DefaultValue(TDatePicker.Date)]
+        public TDatePicker Picker
+        {
+            get => picker;
+            set
+            {
+                if (picker == value) return;
+                picker = value;
+                if (picker == TDatePicker.Month) Format = "yyyy-MM";
+                else if (picker == TDatePicker.Year) Format = "yyyy";
+                else Format = "yyyy-MM-dd";
+            }
+        }
+
         protected override void OnHandleCreated(EventArgs e)
         {
             SetText(_value);
@@ -201,7 +219,7 @@ namespace AntdUI
                 {
                     if (subForm == null)
                     {
-                        subForm = new LayeredFormCalendar(this, ReadRectangle, _value, date =>
+                        subForm = new LayeredFormCalendar(this, ReadRectangle, _value, Picker, date =>
                         {
                             Value = date;
                         }, btn =>

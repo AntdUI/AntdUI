@@ -451,6 +451,38 @@ namespace AntdUI
         int count = 0;
 
         #endregion
+
+        public object[] ToArray() => list ?? new object[0];
+
+        public T[] ToArray<T>()
+        {
+            if (list == null || list.Length == 0) return new T[0];
+            var result = new List<T>(count);
+            foreach (var it in list)
+            {
+                if (it is T t) result.Add(t);
+            }
+            return result.ToArray();
+        }
+
+        public List<object> ToList()
+        {
+            if (list == null || list.Length == 0) return new List<object>(0);
+            var result = new List<object>(count);
+            result.AddRange(list);
+            return result;
+        }
+
+        public List<T> ToList<T>()
+        {
+            if (list == null || list.Length == 0) return new List<T>(0);
+            var result = new List<T>(count);
+            foreach (var it in list)
+            {
+                if (it is T t) result.Add(t);
+            }
+            return result;
+        }
     }
 
     [Obsolete("use BindingList")]

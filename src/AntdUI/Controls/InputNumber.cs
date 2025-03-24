@@ -109,6 +109,22 @@ namespace AntdUI
             }
         }
 
+        bool wheelModifyEnabled = true;
+        /// <summary>
+        /// 鼠标滚轮修改值
+        /// </summary>
+        [Description("鼠标滚轮修改值"), Category("交互"), DefaultValue(true)]
+        public bool WheelModifyEnabled
+        {
+            get => wheelModifyEnabled;
+            set
+            {
+                if (wheelModifyEnabled == value) return;
+                wheelModifyEnabled = value;
+                Invalidate();
+            }
+        }
+
         int decimalPlaces = 0;
         /// <summary>
         /// 显示的小数点位数
@@ -428,7 +444,7 @@ namespace AntdUI
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            if (ReadOnly) return;
+            if (ReadOnly || !wheelModifyEnabled) return;
             if (e.Delta > 0) Value = currentValue + Increment;
             else Value = currentValue - Increment;
         }
