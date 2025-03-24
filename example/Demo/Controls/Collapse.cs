@@ -28,10 +28,5 @@ namespace Demo.Controls
             form = _form;
             InitializeComponent();
         }
-
-        private void collapseItem1_Click(object sender, System.EventArgs e)
-        {
-
-        }
     }
 }

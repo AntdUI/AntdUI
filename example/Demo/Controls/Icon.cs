@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Demo.Controls
 {
-    public partial class Icon : UserControl
+    public partial class Icon : UserControl, AntdUI.IEventListener
     {
         Form form;
         public Icon(Form _form)
@@ -192,7 +192,7 @@ namespace Demo.Controls
             public VItem(string key, string value) { Tag = Key = key; Value = value; }
 
             StringFormat s_f = AntdUI.Helper.SF_NoWrap();
-            Bitmap bmp = null, bmp_ac = null;
+            internal Bitmap bmp = null, bmp_ac = null;
             public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
@@ -275,6 +275,33 @@ namespace Demo.Controls
                 }
                 vpanel.PauseLayout = false;
             }));
+        }
+
+        #endregion
+
+        #region 语言变化
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            AntdUI.EventHub.AddListener(this);
+        }
+
+        public void HandleEvent(AntdUI.EventType id, object tag)
+        {
+            switch (id)
+            {
+                case AntdUI.EventType.THEME:
+                    foreach (var it in vpanel.Items)
+                    {
+                        if (it is VItem item)
+                        {
+                            item.bmp?.Dispose();
+                            item.bmp = null;
+                        }
+                    }
+                    break;
+            }
         }
 
         #endregion
