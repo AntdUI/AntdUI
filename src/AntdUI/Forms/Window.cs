@@ -104,12 +104,14 @@ namespace AntdUI
 
         #endregion
 
+        bool rmax = false;
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             SetTheme();
             DisableProcessWindowsGhosting();
-            if (FormBorderStyle != FormBorderStyle.None && WindowState != FormWindowState.Maximized)
+            if (WindowState == FormWindowState.Maximized) rmax = true;
+            if (FormBorderStyle != FormBorderStyle.None && !rmax)
             {
                 sizeInit = base.ClientSize;
                 SetSize(sizeInit.Value);
@@ -534,7 +536,16 @@ namespace AntdUI
         protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
         {
             if (DesignMode) base.SetBoundsCore(x, y, width, height, specified);
-            else if (WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
+            else if (WindowState == FormWindowState.Normal && sizeNormal.HasValue)
+            {
+                if (rmax)
+                {
+                    rmax = false;
+                    base.SetBoundsCore(x, y, width, height, specified);
+                    return;
+                }
+                base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
+            }
             else base.SetBoundsCore(x, y, width, height, specified);
         }
 

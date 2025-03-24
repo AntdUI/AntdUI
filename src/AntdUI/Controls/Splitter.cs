@@ -433,7 +433,11 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (_collapsePanel == ADCollapsePanel.None) return;
+            if (_collapsePanel == ADCollapsePanel.None)
+            {
+                base.OnMouseMove(e);
+                return;
+            }
 
             //如果鼠标的左键没有按下，重置鼠标状态
             if (e.Button != MouseButtons.Left) _MouseState = null;
@@ -507,8 +511,12 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (_collapsePanel == ADCollapsePanel.None)
+            {
+                base.OnMouseUp(e);
+                return;
+            }
             if (Lazy) base.OnMouseUp(e);
-            if (_collapsePanel == ADCollapsePanel.None) return;
             Invalidate();
             if (_MouseState == true && e.Button == MouseButtons.Left && ArrowRect(SplitterRectangle).Contains(e.Location))
             {

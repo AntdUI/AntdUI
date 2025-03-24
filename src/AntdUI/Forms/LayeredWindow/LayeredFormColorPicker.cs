@@ -328,8 +328,7 @@ namespace AntdUI
             ValueHue = hsv.HSVToColor();
 
             action(Value);
-            bmp_colors?.Dispose();
-            bmp_colors = null;
+            colors_mouse = null;
             bmp_hue?.Dispose();
             bmp_hue = null;
             bmp_alpha?.Dispose();
@@ -388,9 +387,9 @@ namespace AntdUI
                 if (rect_colors_big.Contains(e.Location))
                 {
                     //顶部渐变色卡
-                    if (bmp_colors_mouse != null)
+                    if (colors_mouse != null)
                     {
-                        var value = GetColors(e.X, e.Y, bmp_colors_mouse);
+                        var value = GetColors(e.X, e.Y, colors_mouse);
 
                         color_alpha = Value = Color.FromArgb(Value.A, value);
                         ValueNAlpha = Color.FromArgb(255, Value);
@@ -417,8 +416,7 @@ namespace AntdUI
                         color_alpha = Value = Color.FromArgb(Value.A, hsv_value.HSVToColor());
                         ValueNAlpha = Color.FromArgb(255, Value);
                         SetValue();
-                        bmp_colors?.Dispose();
-                        bmp_colors = null;
+                        colors_mouse = null;
                         bmp_alpha?.Dispose();
                         bmp_alpha = null;
                         Print(true);
@@ -475,9 +473,9 @@ namespace AntdUI
                 }
             }
             if (count > 0) Print();
-            if (down_colors && bmp_colors_mouse != null)
+            if (down_colors && colors_mouse != null)
             {
-                var value = GetColors(e.X, e.Y, bmp_colors_mouse);
+                var value = GetColors(e.X, e.Y, colors_mouse);
 
                 color_alpha = Value = Color.FromArgb(Value.A, value);
                 ValueNAlpha = Color.FromArgb(255, Value);
@@ -499,8 +497,7 @@ namespace AntdUI
                 color_alpha = Value = Color.FromArgb(Value.A, hsv_value.HSVToColor());
                 ValueNAlpha = Color.FromArgb(255, Value);
                 SetValue();
-                bmp_colors?.Dispose();
-                bmp_colors = null;
+                colors_mouse = null;
                 bmp_alpha?.Dispose();
                 bmp_alpha = null;
                 Print(true);
@@ -592,16 +589,15 @@ namespace AntdUI
 
                     #region 调色板
 
-                    if (bmp_colors == null)
+                    using (var bmp = new Bitmap(rect_colors.Width, rect_colors.Height))
                     {
-                        bmp_colors = new Bitmap(rect_colors.Width, rect_colors.Height);
-                        using (var g2 = Graphics.FromImage(bmp_colors).High())
+                        using (var g2 = Graphics.FromImage(bmp).High())
                         {
-                            PaintColors(g2, new Rectangle(0, 0, bmp_colors.Width, bmp_colors.Height));
+                            PaintColors(g2, new Rectangle(0, 0, bmp.Width, bmp.Height));
                         }
-                        bmp_colors_mouse = GetColorsPoint(bmp_colors);
+                        if (colors_mouse == null) colors_mouse = GetColorsPoint(bmp);
+                        g.Image(bmp, rect_colors);
                     }
-                    g.Image(bmp_colors, rect_colors);
                     using (var path = rect_colors.RoundPath(Radius))
                     {
                         path.AddRectangle(new Rectangle(rect_colors.X - 1, rect_colors.Y - 1, rect_colors.Width + 2, rect_colors.Height + 2));
@@ -741,8 +737,7 @@ namespace AntdUI
         Point point_colors = Point.Empty;
         Rectangle rect_colors_big;
         Rectangle rect_colors;
-        Bitmap? bmp_colors = null;
-        Dictionary<string, Color>? bmp_colors_mouse = null;
+        Dictionary<string, Color>? colors_mouse = null;
         void PaintColors(Canvas g, Rectangle rect)
         {
             using (var brush = new SolidBrush(ValueHue))
