@@ -101,6 +101,7 @@ namespace Demo.Controls
             // splitter1
             // 
             splitter1.Dock = DockStyle.Fill;
+            splitter1.Lazy = false;
             splitter1.Location = new Point(3, 3);
             splitter1.Name = "splitter1";
             // 
@@ -112,8 +113,9 @@ namespace Demo.Controls
             // 
             splitter1.Panel2.Controls.Add(label2);
             splitter1.Size = new Size(610, 249);
-            splitter1.SplitterDistance = 290;
-            splitter1.SplitterWidth = 2;
+            splitter1.SplitterDistance = 218;
+            splitter1.SplitterSize = 50;
+            splitter1.SplitterWidth = 8;
             splitter1.TabIndex = 1;
             // 
             // label1
@@ -121,7 +123,7 @@ namespace Demo.Controls
             label1.Dock = DockStyle.Fill;
             label1.Location = new Point(0, 0);
             label1.Name = "label1";
-            label1.Size = new Size(290, 249);
+            label1.Size = new Size(218, 249);
             label1.TabIndex = 0;
             label1.Text = "First";
             label1.TextAlign = ContentAlignment.MiddleCenter;
@@ -131,7 +133,7 @@ namespace Demo.Controls
             label2.Dock = DockStyle.Fill;
             label2.Location = new Point(0, 0);
             label2.Name = "label2";
-            label2.Size = new Size(318, 249);
+            label2.Size = new Size(384, 249);
             label2.TabIndex = 0;
             label2.Text = "Second";
             label2.TextAlign = ContentAlignment.MiddleCenter;
@@ -153,7 +155,7 @@ namespace Demo.Controls
             splitter2.Panel2.Controls.Add(label4);
             splitter2.Panel2MinSize = 0;
             splitter2.Size = new Size(610, 250);
-            splitter2.SplitterDistance = 290;
+            splitter2.SplitterDistance = 273;
             splitter2.SplitterSize = 80;
             splitter2.SplitterWidth = 10;
             splitter2.TabIndex = 2;
@@ -163,7 +165,7 @@ namespace Demo.Controls
             label3.Dock = DockStyle.Fill;
             label3.Location = new Point(0, 0);
             label3.Name = "label3";
-            label3.Size = new Size(290, 250);
+            label3.Size = new Size(273, 250);
             label3.TabIndex = 0;
             label3.Text = "First";
             label3.TextAlign = ContentAlignment.MiddleCenter;
@@ -173,7 +175,7 @@ namespace Demo.Controls
             label4.Dock = DockStyle.Fill;
             label4.Location = new Point(0, 0);
             label4.Name = "label4";
-            label4.Size = new Size(310, 250);
+            label4.Size = new Size(327, 250);
             label4.TabIndex = 0;
             label4.Text = "Second";
             label4.TextAlign = ContentAlignment.MiddleCenter;
