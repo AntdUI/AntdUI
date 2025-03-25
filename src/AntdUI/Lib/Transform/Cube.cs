@@ -246,7 +246,7 @@ namespace AntdUI
                         while (++x < rect.Width)
                         {
                             var srcPt = new Point(x, y);
-                            srcPt.Offset(rect.Location);
+                            srcPt.Offset(rect.X, rect.Y);
 
                             if ((!Vector.IsCCW(srcPt, vertex[0], vertex[1])) && (!Vector.IsCCW(srcPt, vertex[1], vertex[2])) && (!Vector.IsCCW(srcPt, vertex[2], vertex[3])) && (!Vector.IsCCW(srcPt, vertex[3], vertex[0])))
                             {

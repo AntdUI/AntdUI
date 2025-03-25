@@ -1,5 +1,18 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `1.9.7` 2025-03-25
+
+- ➕ InputNumber WheelModifyEnabled 交互属性
+- ➕ Table CellProgress Size
+- ➕ BaseCollection ToArray ToList
+- ➕ Button 过度闪烁动画
+- ➕ DatePicker 选择器类型属性
+- ✍️ Splitter Lazy 不生效
+- ✍️ Table 圆角被覆盖
+- ✍️ ColorPicker 并发问题
+- ✍️ Window 默认最大化抽搐
+- ✍️ Splitter 无法拖动
+
 ### `1.9.6` 2025-03-20
 
 - ➕ Dropdown ItemClick

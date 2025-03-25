@@ -312,7 +312,6 @@ namespace AntdUI
                     g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get("Splitter"), points);
                     SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get("Splitter"));
                 }
-
             }
         }
 
@@ -406,11 +405,6 @@ namespace AntdUI
         Point initialMousePoint;
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            //if (_collapsePanel == ADCollapsePanel.None)
-            //{
-            //    base.OnMouseDown(e);
-            //    return;
-            //}
             Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
             if (_collapsePanel != ADCollapsePanel.None && rect_arrow.Contains(e.Location)) _MouseState = true;//点位在箭头矩形内
             else if (!SplitPanelState) _MouseState = null;
@@ -425,7 +419,6 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            //if (_collapsePanel == ADCollapsePanel.None) return;
             SetCursor(CursorType.Default);
             m_bIsArrowRegion = false;
             Invalidate();
@@ -433,12 +426,6 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            //if (_collapsePanel == ADCollapsePanel.None)
-            //{
-            //    base.OnMouseMove(e);
-            //    return;
-            //}
-
             //如果鼠标的左键没有按下，重置鼠标状态
             if (e.Button != MouseButtons.Left) _MouseState = null;
             //鼠标在Arrow矩形里，并且不是在拖动
@@ -466,7 +453,7 @@ namespace AntdUI
             if (_MouseState == false && !IsSplitterFixed)
             {
                 SetCursor(Orientation == Orientation.Horizontal ? CursorType.HSplit : CursorType.VSplit);
-                if(!Lazy)
+                if (!Lazy)
                 {
                     SplitMove(e.X, e.Y);
                     initialMousePoint = e.Location;
