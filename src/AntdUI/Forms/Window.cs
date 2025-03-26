@@ -119,7 +119,6 @@ namespace AntdUI
             HandMessage();
             DwmArea();
             eNonclient = false;
-            rNonclient = !OS.Win10;
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
@@ -136,12 +135,18 @@ namespace AntdUI
             MaximumSize = max;
         }
 
-        bool eNonclient = true, rNonclient = true;
+        protected override void OnLoad(EventArgs e)
+        {
+            SetWindowPos(Handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_FRAMECHANGED);
+            base.OnLoad(e);
+        }
+
+        bool eNonclient = true;
         private void InvalidateNonclient()
         {
             if (eNonclient) return;
             UpdateWindow(Handle);
-            if (rNonclient) SetWindowPos(Handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_FRAMECHANGED | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOCOPYBITS | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOREPOSITION | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOZORDER);
+            SetWindowPos(Handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_FRAMECHANGED | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOCOPYBITS | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOREPOSITION | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOZORDER);
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
