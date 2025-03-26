@@ -312,7 +312,6 @@ namespace AntdUI
                     g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get("Splitter"), points);
                     SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get("Splitter"));
                 }
-
             }
         }
 
@@ -406,13 +405,8 @@ namespace AntdUI
         Point initialMousePoint;
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (_collapsePanel == ADCollapsePanel.None)
-            {
-                base.OnMouseDown(e);
-                return;
-            }
             Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
-            if (rect_arrow.Contains(e.Location)) _MouseState = true;//点位在箭头矩形内
+            if (_collapsePanel != ADCollapsePanel.None && rect_arrow.Contains(e.Location)) _MouseState = true;//点位在箭头矩形内
             else if (!SplitPanelState) _MouseState = null;
             else if (rect.Contains(e.Location))
             {
@@ -425,7 +419,6 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            if (_collapsePanel == ADCollapsePanel.None) return;
             SetCursor(CursorType.Default);
             m_bIsArrowRegion = false;
             Invalidate();
@@ -433,17 +426,11 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (_collapsePanel == ADCollapsePanel.None)
-            {
-                base.OnMouseMove(e);
-                return;
-            }
-
             //如果鼠标的左键没有按下，重置鼠标状态
             if (e.Button != MouseButtons.Left) _MouseState = null;
             //鼠标在Arrow矩形里，并且不是在拖动
             Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
-            if (rect_arrow.Contains(e.Location) && _MouseState != false)
+            if (_collapsePanel != ADCollapsePanel.None && rect_arrow.Contains(e.Location) && _MouseState != false)
             {
                 SetCursor(CursorType.Hand);
                 m_bIsArrowRegion = true;
@@ -463,14 +450,18 @@ namespace AntdUI
                 return;
             }
             //正在拖动分隔栏
-            if (_MouseState == false && !IsSplitterFixed) SetCursor(Orientation == Orientation.Horizontal ? CursorType.HSplit : CursorType.VSplit);
-            else SetCursor(CursorType.Default);
-            if (Lazy) base.OnMouseMove(e);
-            else
+            if (_MouseState == false && !IsSplitterFixed)
             {
-                SplitMove(e.X, e.Y);
-                initialMousePoint = e.Location;
+                SetCursor(Orientation == Orientation.Horizontal ? CursorType.HSplit : CursorType.VSplit);
+                if (!Lazy)
+                {
+                    SplitMove(e.X, e.Y);
+                    initialMousePoint = e.Location;
+                    return;
+                }
             }
+            else SetCursor(CursorType.Default);
+            base.OnMouseMove(e);
         }
 
         private void SplitMove(int x, int y)
@@ -511,14 +502,14 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (_collapsePanel == ADCollapsePanel.None)
-            {
-                base.OnMouseUp(e);
-                return;
-            }
+            //if (_collapsePanel == ADCollapsePanel.None)
+            //{
+            //    base.OnMouseUp(e);
+            //    return;
+            //}
             if (Lazy) base.OnMouseUp(e);
             Invalidate();
-            if (_MouseState == true && e.Button == MouseButtons.Left && ArrowRect(SplitterRectangle).Contains(e.Location))
+            if (_collapsePanel != ADCollapsePanel.None && _MouseState == true && e.Button == MouseButtons.Left && ArrowRect(SplitterRectangle).Contains(e.Location))
             {
                 SplitPanelState = !_splitPanelState;
                 SplitPanelStateChanged?.Invoke(this, new BoolEventArgs(SplitPanelState));

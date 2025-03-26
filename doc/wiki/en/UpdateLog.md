@@ -1,5 +1,18 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `1.9.7` 2025-03-25
+
+- ➕ InputNumber WheelModifierEnabled interaction property
+- ➕ Table CellProgress Size
+- ➕ BaseCollection ToArray ToList
+- ➕ Button excessive flashing animation
+- ➕ DatePicker selector type property
+- ✍️ Split Lazy is not effective
+- ✍️ The rounded corners of the table are covered
+- ✍️ ColorPicker concurrency issue
+- ✍️ Window default maximizes twitching
+- ✍️ Spliter cannot be dragged
+
 ### `1.9.6` 2025-03-20
 
 - ➕ Dropdown ItemClick

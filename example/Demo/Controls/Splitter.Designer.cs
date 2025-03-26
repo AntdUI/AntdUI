@@ -101,6 +101,7 @@ namespace Demo.Controls
             // splitter1
             // 
             splitter1.Dock = DockStyle.Fill;
+            splitter1.Lazy = false;
             splitter1.Location = new Point(3, 3);
             splitter1.Name = "splitter1";
             // 
