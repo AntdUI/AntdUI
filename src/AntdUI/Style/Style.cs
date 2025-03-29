@@ -628,20 +628,28 @@ namespace AntdUI
             return Color.FromArgb((int)Math.Round(255F * a), (int)Math.Round(255F * r), (int)Math.Round(255F * g), (int)Math.Round(255F * b));
         }
 
-        /// <summary>
-        /// 颜色：16进制转成RGB
-        /// </summary>
-        /// <param name="hex">设置16进制颜色 [返回RGB]</param>
-        /// <returns></returns>
-        public static Color ToColor(this string hex)
+        public static Color ToColor(this string? str)
         {
+            if (str == null) return Color.Black;
             try
             {
-                if (hex != null && hex.Length > 5)
+                if (str.StartsWith("rgba"))
                 {
-                    if (hex.StartsWith("#")) hex = hex.Substring(1);
-                    if (hex.Length == 6) return Color.FromArgb(hex.Substring(0, 2).HexToInt(), hex.Substring(2, 2).HexToInt(), hex.Substring(4, 2).HexToInt());
-                    else if (hex.Length == 8) return Color.FromArgb(hex.Substring(6, 2).HexToInt(), hex.Substring(0, 2).HexToInt(), hex.Substring(2, 2).HexToInt(), hex.Substring(4, 2).HexToInt());
+                    str = str.Substring(4).Trim().TrimStart('(').TrimEnd(')');
+                    var arr = str.Split(new string[] { " , ", ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+                    if (arr.Length == 4 && int.TryParse(arr[0], out int r) && int.TryParse(arr[1], out int g) && int.TryParse(arr[2], out int b) && float.TryParse(arr[3], out float a)) return rgba(r, g, b, a);
+                }
+                else if (str.StartsWith("rgb"))
+                {
+                    str = str.Substring(3).Trim().TrimStart('(').TrimEnd(')');
+                    var arr = str.Split(new string[] { " , ", ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+                    if (arr.Length == 3 && int.TryParse(arr[0], out int r) && int.TryParse(arr[1], out int g) && int.TryParse(arr[2], out int b)) return Color.FromArgb(r, g, b);
+                }
+                else if (str.Length > 5)
+                {
+                    if (str.StartsWith("#")) str = str.Substring(1);
+                    if (str.Length == 6) return Color.FromArgb(str.Substring(0, 2).HexToInt(), str.Substring(2, 2).HexToInt(), str.Substring(4, 2).HexToInt());
+                    else if (str.Length == 8) return Color.FromArgb(str.Substring(6, 2).HexToInt(), str.Substring(0, 2).HexToInt(), str.Substring(2, 2).HexToInt(), str.Substring(4, 2).HexToInt());
                 }
             }
             catch
@@ -660,10 +668,7 @@ namespace AntdUI
             return string.Format("{0:X2}{1:X2}{2:X2}{3:X2}", color.R, color.G, color.B, color.A);
         }
 
-        static int HexToInt(this string str)
-        {
-            return int.Parse(str, System.Globalization.NumberStyles.AllowHexSpecifier);
-        }
+        static int HexToInt(this string str) => int.Parse(str, System.Globalization.NumberStyles.AllowHexSpecifier);
 
         #endregion
 

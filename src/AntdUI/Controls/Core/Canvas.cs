@@ -56,6 +56,7 @@ namespace AntdUI
 
         bool Image(Image image, float x, float y, float w, float h);
         bool Image(Image image, int x, int y, int w, int h);
+        bool Image(Image image, int x, int y);
         bool Icon(Icon icon, Rectangle rect);
 
         bool Image(Image image, Rectangle rect);

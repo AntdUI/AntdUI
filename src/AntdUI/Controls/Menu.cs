@@ -233,21 +233,11 @@ namespace AntdUI
         [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
         public TooltipConfig? TooltipConfig { get; set; }
 
-        bool mouseRightCtrl = true;
         /// <summary>
         /// 鼠标右键控制
         /// </summary>
         [Description("鼠标右键控制"), Category("交互"), DefaultValue(true)]
-        public bool MouseRightCtrl
-        {
-            get => mouseRightCtrl;
-            set
-            {
-                if (mouseRightCtrl == value) return;
-                mouseRightCtrl = value;
-                Invalidate();
-            }
-        }
+        public bool MouseRightCtrl { get; set; } = true;
 
         #region 集合操作
 

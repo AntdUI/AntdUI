@@ -440,7 +440,7 @@ namespace AntdUI
 
     public class TableBeginEditInputStyleEventArgs : ITableEventArgs
     {
-        public TableBeginEditInputStyleEventArgs(object? value, object? record, int rowIndex, int columnIndex, ref Input input) : base(record, rowIndex, columnIndex)
+        public TableBeginEditInputStyleEventArgs(object? value, object? record, int rowIndex, int columnIndex, Input input) : base(record, rowIndex, columnIndex)
         {
             Value = value;
             Input = input;
@@ -450,10 +450,81 @@ namespace AntdUI
         /// 数值
         /// </summary>
         public object? Value { get; private set; }
+
         /// <summary>
         /// 文本框
         /// </summary>
         public Input Input { get; private set; }
+
+        internal Action<TableEndEditEventArgs>? Call { get; set; }
+
+        public InputNumber Set(InputNumber input, Action<Result<InputNumber>>? call = null)
+        {
+            SetInput(input);
+            if (call == null) return input;
+            Call = e => call(new Result<InputNumber>(input, e));
+            return input;
+        }
+
+        public Select Set(Select input, Action<Result<Select>>? call = null)
+        {
+            SetInput(input);
+            if (call == null) return input;
+            Call = e => call(new Result<Select>(input, e));
+            return input;
+        }
+
+        public SelectMultiple Set(SelectMultiple input, Action<Result<SelectMultiple>>? call = null)
+        {
+            SetInput(input);
+            if (call == null) return input;
+            Call = e => call(new Result<SelectMultiple>(input, e));
+            return input;
+        }
+
+        public DatePicker Set(DatePicker input, Action<Result<DatePicker>>? call = null)
+        {
+            SetInput(input);
+            if (call == null) return input;
+            Call = e => call(new Result<DatePicker>(input, e));
+            return input;
+        }
+
+        public DatePickerRange Set(DatePickerRange input, Action<Result<DatePickerRange>>? call = null)
+        {
+            SetInput(input);
+            if (call == null) return input;
+            Call = e => call(new Result<DatePickerRange>(input, e));
+            return input;
+        }
+
+        public TimePicker Set(TimePicker input, Action<Result<TimePicker>>? call = null)
+        {
+            SetInput(input);
+            if (call == null) return input;
+            Call = e => call(new Result<TimePicker>(input, e));
+            return input;
+        }
+
+        void SetInput(Input input)
+        {
+            var point = Input.Location;
+            var size = Input.Size;
+            Input.Dispose();
+            input.Location = point;
+            input.Size = size;
+            Input = input;
+        }
+
+        public class Result<T> : ITableEventArgs
+        {
+            public Result(T input, TableEndEditEventArgs e) : base(e.Record, e.RowIndex, e.ColumnIndex)
+            {
+                Input = input;
+            }
+
+            public T Input { get; private set; }
+        }
     }
 
     public class TableEndEditEventArgs : ITableEventArgs

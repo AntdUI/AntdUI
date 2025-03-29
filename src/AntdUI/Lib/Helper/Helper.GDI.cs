@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -211,14 +212,107 @@ namespace AntdUI
         {
             if (code != null)
             {
-                var arr = code.Split(',');
+                var arr = BrushEx(code);
                 if (arr.Length > 1)
                 {
-                    if (arr.Length > 2 && float.TryParse(arr[0], out float deg)) return new LinearGradientBrush(rect, arr[1].Trim().ToColor(), arr[2].Trim().ToColor(), 270 + deg);
-                    else return new LinearGradientBrush(rect, arr[0].Trim().ToColor(), arr[1].Trim().ToColor(), 270F);
+                    if (arr.Length > 2 && float.TryParse(arr[0], out float deg)) return BrushEx(rect, deg, arr, code.Contains("%"), 1);
+                    else if (arr.Length > 2 && arr[0].EndsWith("deg") && float.TryParse(arr[0].Substring(0, arr[0].Length - 3), out float deg2)) return BrushEx(rect, deg2, arr, code.Contains("%"), 1);
+                    else return BrushEx(rect, 0, arr, code.Contains("%"));
                 }
             }
             return new SolidBrush(def);
+        }
+
+        static string[] BrushEx(string code)
+        {
+            var arr = code.Split(new string[] { " , ", ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+            if (arr.Length > 1)
+            {
+                if (code.Contains("rgb") && code.Contains("("))
+                {
+                    List<string> list = new List<string>(arr.Length), tmp = new List<string>(arr.Length);
+                    foreach (var it in arr)
+                    {
+                        if (it.StartsWith("rgb") && it.Contains("(")) tmp.Add(it);
+                        else if (tmp.Count > 1 && it.Contains(")"))
+                        {
+                            tmp.Add(it);
+                            list.Add(string.Join(",", tmp));
+                            tmp.Clear();
+                        }
+                        else if (tmp.Count > 0) tmp.Add(it);
+                        else list.Add(it);
+                    }
+                    return list.ToArray();
+                }
+                return arr;
+            }
+            return new string[0];
+        }
+
+        static LinearGradientBrush BrushEx(Rectangle rect, float deg, string[] arr, bool _in, int start = 0)
+        {
+            if (arr.Length > (2 + start))
+            {
+                int len = arr.Length - start;
+                var colors = new List<Color>(len);
+                var positions = new List<float>(len);
+                for (int i = start; i < arr.Length; i++)
+                {
+                    var arr2 = arr[i].Split(' ');
+                    colors.Add(arr2[0].ToColor());
+                    if (arr2.Length > 1 && float.TryParse(arr2[1].TrimEnd('%'), out var result)) positions.Add(result / 100F);
+                    else if (i == start) positions.Add(0F);
+                    else if (i == arr.Length - 1) positions.Add(1F);
+                }
+                if (positions.Count != colors.Count)
+                {
+                    positions.Clear();
+                    var tmp = 100F / colors.Count / 100F;
+                    positions.Add(0F);
+                    var use = tmp;
+                    for (int i = 1; i < colors.Count - 1; i++)
+                    {
+                        positions.Add(use);
+                        use += tmp;
+                    }
+                    positions.Add(1F);
+                }
+                return new LinearGradientBrush(rect, Color.Transparent, Color.Transparent, 270 + deg)
+                {
+                    InterpolationColors = new ColorBlend(colors.Count)
+                    {
+                        Colors = colors.ToArray(),
+                        Positions = positions.ToArray()
+                    }
+                };
+            }
+            else if (_in)
+            {
+                int len = arr.Length - start;
+                var colors = new List<Color>(len);
+                float position = -1;
+                for (int i = start; i < arr.Length; i++)
+                {
+                    var arr2 = arr[i].Split(' ');
+                    colors.Add(arr2[0].ToColor());
+                    if (arr2.Length > 1 && float.TryParse(arr2[1].TrimEnd('%'), out var result)) position = result / 100F;
+                }
+                if (position > -1)
+                {
+                    colors.Add(colors[colors.Count - 1]);
+                    return new LinearGradientBrush(rect, colors[0], colors[colors.Count - 1], 270 + deg)
+                    {
+                        InterpolationColors = new ColorBlend(colors.Count)
+                        {
+                            Colors = colors.ToArray(),
+                            Positions = new float[] { 0, position, 1 }
+                        }
+                    };
+                }
+                return new LinearGradientBrush(rect, colors[0], colors[colors.Count - 1], 270 + deg);
+            }
+            else return new LinearGradientBrush(rect, arr[start].Trim().ToColor(), arr[start + 1].Trim().ToColor(), 270 + deg);
         }
 
         /// <summary>
