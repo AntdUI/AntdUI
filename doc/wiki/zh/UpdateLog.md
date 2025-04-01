@@ -1,5 +1,16 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `1.9.8` 2025-03-29
+
+- ➕ 渐变色 支持 多组颜色以及百分比
+- ➕ Table CellBeginEditInputStyle 控件覆盖
+- ➕ Menu 交互属性 MouseRightCtrl
+- ➕ Input AnimationBlink
+- ✍️ Spin TopLevel 多窗口嵌套异常
+- ✍️ Table CellEndEdit 未修改也触发
+- ✍️ Window 闪原生标题
+- ✍️ 动画速率过快
+
 ### `1.9.7` 2025-03-25
 
 - ➕ InputNumber WheelModifyEnabled 交互属性

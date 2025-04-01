@@ -1,5 +1,16 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `1.9.8` 2025-03-29
+
+- ➕ Gradient colors support multiple sets of colors and percentages
+- ➕ Table CellBeginEditInputStyle control override
+- ➕ Menu interaction attribute MouseRightCtrl
+- ➕ Input AnimationBlink
+- ✍️ Spin TopLevel multi window nesting exception
+- ✍️ Table CellEndEdit triggered without modification
+- ✍️ Window Flash Native Title
+- ✍️ The animation speed is too fast
+
 ### `1.9.7` 2025-03-25
 
 - ➕ InputNumber WheelModifierEnabled interaction property
