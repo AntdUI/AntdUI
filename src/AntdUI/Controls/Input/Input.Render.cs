@@ -399,7 +399,7 @@ namespace AntdUI
                 }
                 else ScrollX = ScrollY = 0;
             }
-            ITask.Run(() => { ScrollTo(r); });
+            ITask.Run(() => ScrollTo(r));
         }
         void ScrollTo(Rectangle r)
         {
@@ -407,23 +407,16 @@ namespace AntdUI
             {
                 int tosize = CaretInfo.Height;
                 int count = 0;
-                var oldy = new List<int>(2);
                 while (true)
                 {
                     int y = CaretInfo.Y - scrolly;
-                    oldy.Add(y);
-                    if (oldy.Count > 1)
-                    {
-                        if (oldy.Contains(y)) return;
-                        else oldy.Clear();
-                    }
                     if (y < rect_text.Y)
                     {
                         int value = ScrollY - tosize;
                         ScrollY = value;
                         if (ScrollY != value) return;
                         count++;
-                        if (count < 4) System.Threading.Thread.Sleep(50);
+                        SleepGear(count);
                     }
                     else if (y + CaretInfo.Height > rect_text.Height)
                     {
@@ -431,7 +424,7 @@ namespace AntdUI
                         ScrollY = value;
                         if (ScrollY != value) return;
                         count++;
-                        if (count < 4) System.Threading.Thread.Sleep(50);
+                        SleepGear(count);
                     }
                     else return;
                 }
@@ -440,23 +433,16 @@ namespace AntdUI
             {
                 int tosize = r.Width;
                 int count = 0;
-                var oldx = new List<int>(2);
                 while (true)
                 {
                     int x = CaretInfo.X - scrollx;
-                    oldx.Add(x);
-                    if (oldx.Count > 1)
-                    {
-                        if (oldx.Contains(x)) return;
-                        else oldx.Clear();
-                    }
                     if (x < rect_text.X)
                     {
                         int value = ScrollX - tosize;
                         ScrollX = value;
                         if (ScrollX != value) return;
                         count++;
-                        if (count < 5) System.Threading.Thread.Sleep(50);
+                        SleepGear(count);
                     }
                     else if (x + CaretInfo.Width > rect_text.Width)
                     {
@@ -464,13 +450,20 @@ namespace AntdUI
                         ScrollX = value;
                         if (ScrollX != value) return;
                         count++;
-                        if (count < 5) System.Threading.Thread.Sleep(50);
+                        SleepGear(count);
                     }
                     else return;
                 }
-
             }
             else ScrollX = ScrollY = 0;
+        }
+
+        void SleepGear(int count)
+        {
+            if (count > 7) System.Threading.Thread.Sleep(1);
+            else if (count > 5) System.Threading.Thread.Sleep(10);
+            else if (count > 3) System.Threading.Thread.Sleep(30);
+            else System.Threading.Thread.Sleep(50);
         }
 
         #endregion

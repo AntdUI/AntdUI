@@ -130,6 +130,7 @@ namespace AntdUI
                 if (index > selectionStart) selectionStartTemp = selectionStart;
                 else selectionStartTemp = index;
                 SetCaretPostion(index);
+                if (ScrollYShow) Window.CanHandMessage = false;
             }
             else
             {
@@ -179,7 +180,7 @@ namespace AntdUI
             base.OnMouseUp(e);
             bool md = mDown;
             mDown = false;
-            if (ScrollYDown) Window.CanHandMessage = true;
+            Window.CanHandMessage = true;
             ScrollYDown = false;
             if (is_clear_down)
             {
@@ -207,7 +208,7 @@ namespace AntdUI
                 else if (index > selectionStart)
                 {
                     SelectionLength = Math.Abs(index - selectionStart);
-                    SetSelectionStart(selectionStart);
+                    SetCaretPostion(selectionStart + selectionLength);
                 }
                 else
                 {

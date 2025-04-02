@@ -563,23 +563,28 @@ namespace AntdUI
         public override string Text
         {
             get => this.GetLangIN(LocalizationText, _text);
-            set
+            set => SetText(value);
+        }
+
+        void SetText(string value, bool changed = true)
+        {
+            if (value is null) value = "";
+            if (_text == value) return;
+            _text = value;
+            isempty = string.IsNullOrEmpty(_text);
+            FixFontWidth();
+            OnAllowClear();
+            if (isempty)
             {
-                if (value is null) value = "";
-                if (_text == value) return;
-                _text = value;
-                isempty = string.IsNullOrEmpty(_text);
-                FixFontWidth();
-                OnAllowClear();
-                if (isempty)
-                {
-                    if (selectionStart > 0) SelectionStart = 0;
-                }
-                else if (cache_font != null)
-                {
-                    if (selectionStart > cache_font.Length) SelectionStart = cache_font.Length;
-                }
-                Invalidate();
+                if (selectionStart > 0) SelectionStart = 0;
+            }
+            else if (cache_font != null)
+            {
+                if (selectionStart > cache_font.Length) SelectionStart = cache_font.Length;
+            }
+            Invalidate();
+            if (changed)
+            {
                 OnTextChanged(EventArgs.Empty);
                 OnPropertyChanged(nameof(Text));
             }
@@ -1056,7 +1061,7 @@ namespace AntdUI
                     if (text.Length == 0) return;
                 }
                 AddHistoryRecord();
-                Text = text;
+                SetText(text, false);
             }
             else
             {
@@ -1075,7 +1080,7 @@ namespace AntdUI
                         if (it.i < start || it.i >= end_temp) texts.Add(it.text);
                     }
                     texts.Insert(start, text);
-                    Text = string.Join("", texts);
+                    SetText(string.Join("", texts), false);
                     SelectionLength = 0;
                     offset = start;
                 }
@@ -1096,7 +1101,7 @@ namespace AntdUI
                         CaretInfo.Place = true;
                     }
                     texts.Insert(start + 1, text);
-                    Text = string.Join("", texts);
+                    SetText(string.Join("", texts), false);
                     if (CaretInfo.FirstRet)
                     {
                         CaretInfo.Place = true;
@@ -1111,7 +1116,11 @@ namespace AntdUI
                 len++;
                 return true;
             });
+            SpeedScrollTo = true;
             SetSelectionStart(offset + len);
+            OnTextChanged(EventArgs.Empty);
+            OnPropertyChanged(nameof(Text));
+            SpeedScrollTo = false;
         }
 
         string? GetSelectionText()

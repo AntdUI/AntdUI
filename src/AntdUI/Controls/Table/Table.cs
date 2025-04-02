@@ -580,6 +580,7 @@ namespace AntdUI
             {
                 if (value == -1) return false;
             }
+            if (string.Join("", selectedIndex) == value.ToString()) return false;
             selectedIndex = new int[1] { value };
             return true;
         }
