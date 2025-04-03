@@ -113,7 +113,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**ContextMenuStrip**](doc/wiki/en/Control/ContextMenuStrip.md) | ✅ | ❎ |
 ➡️| **Image3D** | ✅ | ❎ |
 
-### 🐿️ Donation 🥣💲🐖👚
+### 🐿️ Donation
 ![Payment](doc/pre/Payment.png)
 
 ### 🎨 Screenshot
