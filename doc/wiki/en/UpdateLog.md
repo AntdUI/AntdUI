@@ -1,5 +1,16 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `1.9.9` 2025-04-03
+
+- ➕ More delicate animation enables configuration
+- ✍️ Input SelectionStart
+- ✍️ Table SelectIndexChanged triggered multiple times
+- ✍️ Progress width 0 abnormal
+- ✍️ ContextMenuStrip interaction
+- ✍️ Spin TopLevel multi window nesting exception
+- ✍️ Add Input to Active GC
+- ✍️ Input Mouse Interaction
+
 ### `1.9.8` 2025-03-29
 
 - ➕ Gradient colors support multiple sets of colors and percentages

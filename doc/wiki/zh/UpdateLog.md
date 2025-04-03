@@ -1,5 +1,16 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `1.9.9` 2025-04-03
+
+- ➕ 更细腻的 动画使能 配置
+- ✍️ Input SelectionStart
+- ✍️ Table SelectIndexChanged 多次触发
+- ✍️ Progress 宽度0异常
+- ✍️ ContextMenuStrip 交互
+- ✍️ Spin TopLevel 多窗口嵌套异常
+- ✍️ Input 加入主动GC
+- ✍️ Input 鼠标交互
+
 ### `1.9.8` 2025-03-29
 
 - ➕ 渐变色 支持 多组颜色以及百分比
