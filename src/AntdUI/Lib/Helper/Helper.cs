@@ -59,7 +59,7 @@ namespace AntdUI
                 else if (control.Parent != null) return FindPARENT(control.Parent);
                 return formd;
             }
-            else if (control is Form form) return form;
+            else if (control is Form form) return form.ParentForm ?? form;
             else if (control.Parent != null) return FindPARENT(control.Parent);
             return null;
         }

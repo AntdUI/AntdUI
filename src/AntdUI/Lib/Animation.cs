@@ -31,10 +31,7 @@ namespace AntdUI
         /// <param name="interval">动画间隔</param>
         /// <param name="lastTime">动画时长（ms）</param>
         /// <returns>动画总帧数</returns>
-        public static int TotalFrames(int interval, int lastTime)
-        {
-            return lastTime % interval > 0 ? lastTime / interval + 1 : lastTime / interval;
-        }
+        public static int TotalFrames(int interval, int lastTime) => lastTime % interval > 0 ? lastTime / interval + 1 : lastTime / interval;
 
         /// <summary>
         /// 执行动画
@@ -44,10 +41,7 @@ namespace AntdUI
         /// <param name="maxValue">最大值</param>
         /// <param name="type">动画类型</param>
         /// <returns>当前数值</returns>
-        public static float Animate(double currentFrames, double totalFrames, float maxValue, AnimationType type)
-        {
-            return Animate(currentFrames / totalFrames, maxValue, type);
-        }
+        public static float Animate(double currentFrames, double totalFrames, float maxValue, AnimationType type) => Animate(currentFrames / totalFrames, maxValue, type);
 
         /// <summary>
         /// 执行动画
@@ -56,14 +50,8 @@ namespace AntdUI
         /// <param name="maxValue">最大值</param>
         /// <param name="type">动画类型</param>
         /// <returns>当前数值</returns>
-        public static float Animate(double progress, float maxValue, AnimationType type)
-        {
-            return (float)(maxValue * type.CalculateValue(progress));
-        }
-        public static double Animate(double progress, double maxValue, AnimationType type)
-        {
-            return maxValue * type.CalculateValue(progress);
-        }
+        public static float Animate(double progress, float maxValue, AnimationType type) => (float)(maxValue * type.CalculateValue(progress));
+        public static double Animate(double progress, double maxValue, AnimationType type) => maxValue * type.CalculateValue(progress);
 
         internal static double CalculateValue(this AnimationType type, double v)
         {

@@ -4,11 +4,11 @@
 
 <h1>AntdUI</h1>
 
-[![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=for-the-badge&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![NuGet](https://img.shields.io/nuget/v/AntdUI.svg?style=for-the-badge&label=AntdUI&logo=nuget)](https://www.nuget.org/packages/AntdUI)
-[![Download](https://img.shields.io/nuget/dt/antdui?style=for-the-badge)](https://www.nuget.org/packages/AntdUI)
-[![QQGroup](https://img.shields.io/badge/QQ群-328884096-f74658?style=for-the-badge&logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
-[![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
+[![NuGet](https://img.shields.io/nuget/v/AntdUI.svg?style=flat-square&label=AntdUI&logo=nuget)](https://www.nuget.org/packages/AntdUI)
+[![QQGroup](https://img.shields.io/badge/QQ群-328884096-f74658?style=flat-square&logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
+[![Download](https://img.shields.io/nuget/dt/antdui?style=flat-square)](https://www.nuget.org/packages/AntdUI)
+[![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
+[![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0)
 
 中文・[English](README.md)・[文档](doc/wiki/zh/Home.md)・[演示](https://gitee.com/mubaiyanghua/antdui-demo)
 

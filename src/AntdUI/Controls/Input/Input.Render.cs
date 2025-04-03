@@ -100,6 +100,7 @@ namespace AntdUI
                         if (AnimationHover) g.Draw(_border.BlendColors(AnimationHoverValue, _borderHover), borWidth, path);
                         else if (ExtraMouseDown) g.Draw(_borderActive, borWidth, path);
                         else if (ExtraMouseHover) g.Draw(_borderHover, borWidth, path);
+                        else if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, borWidth, path);
                         else g.Draw(_border, borWidth, path);
                     }
                 }

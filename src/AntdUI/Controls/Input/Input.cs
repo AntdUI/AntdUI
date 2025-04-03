@@ -1693,11 +1693,99 @@ namespace AntdUI
 
         #endregion
 
+        #region 闪烁动画
+
+        Color? colorBlink;
+        ITask? ThreadAnimateBlink = null;
+        /// <summary>
+        /// 闪烁动画状态
+        /// </summary>
+        public bool AnimationBlinkState = false;
+
+        /// <summary>
+        /// 开始闪烁动画
+        /// </summary>
+        /// <param name="interval">动画间隔时长（毫秒）</param>
+        /// <param name="colors">色彩值</param>
+        public void AnimationBlink(int interval, params Color[] colors)
+        {
+            ThreadAnimateBlink?.Dispose();
+            if (colors.Length > 1)
+            {
+                AnimationBlinkState = true;
+                int index = 0, len = colors.Length;
+                ThreadAnimateBlink = new ITask(this, () =>
+                {
+                    colorBlink = colors[index];
+                    index++;
+                    if (index > len - 1) index = 0;
+                    Invalidate();
+                    return AnimationBlinkState;
+                }, interval, Invalidate);
+            }
+        }
+
+        /// <summary>
+        /// 开始闪烁动画（颜色过度动画）
+        /// </summary>
+        /// <param name="interval">动画间隔时长（毫秒）</param>
+        /// <param name="colors">色彩值</param>
+        public void AnimationBlinkTransition(int interval, params Color[] colors) => AnimationBlinkTransition(interval, 10, AnimationType.Liner, colors);
+
+        /// <summary>
+        /// 开始闪烁动画（颜色过度动画）
+        /// </summary>
+        /// <param name="interval">动画间隔时长（毫秒）</param>
+        /// <param name="transition_interval">过度动画间隔时长（毫秒）</param>
+        /// <param name="animationType">过度动画类型</param>
+        /// <param name="colors">色彩值</param>
+        public void AnimationBlinkTransition(int interval, int transition_interval, AnimationType animationType, params Color[] colors)
+        {
+            ThreadAnimateBlink?.Dispose();
+            if (colors.Length > 1 && interval > transition_interval)
+            {
+                AnimationBlinkState = true;
+                int index = 0, len = colors.Length;
+                Color tmp = colors[index];
+                index++;
+                if (index > len - 1) index = 0;
+                var t = Animation.TotalFrames(transition_interval, interval);
+                ThreadAnimateBlink = new ITask(this, () =>
+                {
+                    Color start = tmp, end = colors[index];
+                    index++;
+                    if (index > len - 1) index = 0;
+                    tmp = end;
+                    new ITask(i =>
+                    {
+                        var prog = Animation.Animate(i, t, 1F, animationType);
+                        colorBlink = start.BlendColors(Helper.ToColorN(prog, end));
+                        Invalidate();
+                        return AnimationBlinkState;
+                    }, transition_interval, t, () =>
+                    {
+                        colorBlink = end;
+                        Invalidate();
+                    }).Wait();
+                    return AnimationBlinkState;
+                });
+            }
+        }
+
+        public void StopAnimationBlink()
+        {
+            AnimationBlinkState = false;
+            ThreadAnimateBlink?.Dispose();
+        }
+
+        #endregion
+
         protected override void Dispose(bool disposing)
         {
             ThreadFocus?.Dispose();
             ThreadHover?.Dispose();
             CaretInfo.Dispose();
+            ThreadAnimateBlink?.Dispose();
             base.Dispose(disposing);
         }
         ITask? ThreadHover = null;

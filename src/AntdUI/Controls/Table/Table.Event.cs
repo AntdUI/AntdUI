@@ -128,6 +128,11 @@ namespace AntdUI
         public delegate bool EndEditEventHandler(object sender, TableEndEditEventArgs e);
 
         /// <summary>
+        /// 编辑后事件
+        /// </summary>
+        public delegate void EndEditCompleteEventHandler(object sender, ITableEventArgs e);
+
+        /// <summary>
         /// 编辑前发生
         /// </summary>
         [Description("编辑前发生"), Category("行为")]
@@ -149,7 +154,7 @@ namespace AntdUI
         /// 编辑完成后发生
         /// </summary>
         [Description("编辑完成后发生"), Category("行为")]
-        public event EventHandler? CellEditComplete;
+        public event EndEditCompleteEventHandler? CellEditComplete;
 
         #endregion
 

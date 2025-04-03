@@ -246,6 +246,20 @@ namespace AntdUI.Core
             return false;
         }
 
+        public bool Image(Image image, int x, int y)
+        {
+            try
+            {
+                lock (image)
+                {
+                    g.DrawImage(image, x, y);
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+
         public bool Icon(Icon icon, Rectangle rect)
         {
             try

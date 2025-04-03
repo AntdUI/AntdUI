@@ -4,10 +4,10 @@
 
 <h1>AntdUI</h1>
 
-[![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=for-the-badge&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![NuGet](https://img.shields.io/nuget/v/AntdUI.svg?style=for-the-badge&label=AntdUI&logo=nuget)](https://www.nuget.org/packages/AntdUI)
-[![Download](https://img.shields.io/nuget/dt/antdui?style=for-the-badge)](https://www.nuget.org/packages/AntdUI)
-[![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
+[![NuGet](https://img.shields.io/nuget/v/AntdUI.svg?style=flat-square&label=AntdUI&logo=nuget)](https://www.nuget.org/packages/AntdUI)
+[![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
+[![Download](https://img.shields.io/nuget/dt/antdui?style=flat-square)](https://www.nuget.org/packages/AntdUI)
+[![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0)
 
 [中文](README-zh.md)・English・[Document](doc/wiki/en/Home.md)・[Demo](https://gitee.com/mubaiyanghua/antdui-demo)
 

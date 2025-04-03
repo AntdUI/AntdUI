@@ -233,6 +233,12 @@ namespace AntdUI
         [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
         public TooltipConfig? TooltipConfig { get; set; }
 
+        /// <summary>
+        /// 鼠标右键控制
+        /// </summary>
+        [Description("鼠标右键控制"), Category("交互"), DefaultValue(true)]
+        public bool MouseRightCtrl { get; set; } = true;
+
         #region 集合操作
 
         public void SelectIndex(int i1, bool focus = true)
@@ -874,6 +880,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
             if (ScrollBar.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
@@ -887,6 +894,7 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
             if (ScrollBar.MouseUp() && OnTouchUp())
             {
                 if (items == null || items.Count == 0 || MDown == null) return;
