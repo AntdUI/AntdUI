@@ -78,7 +78,6 @@ namespace Demo.Controls
             tree1.Name = "tree1";
             tree1.Size = new Size(328, 328);
             tree1.TabIndex = 18;
-            tree1.Text = "menu1";
             // 
             // tree2
             // 
@@ -89,7 +88,6 @@ namespace Demo.Controls
             tree2.Name = "tree2";
             tree2.Size = new Size(412, 328);
             tree2.TabIndex = 19;
-            tree2.Text = "menu1";
             // 
             // Tree
             // 
