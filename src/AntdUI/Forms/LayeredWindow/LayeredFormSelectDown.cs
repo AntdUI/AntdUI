@@ -35,6 +35,7 @@ namespace AntdUI
         List<ObjectItem> Items;
         ObjectItemSearch[]? ItemsSearch;
         string keyid;
+        public override string name => keyid;
         public LayeredFormSelectDown(Select control, IList<object> items, string filtertext)
         {
             keyid = "Select";

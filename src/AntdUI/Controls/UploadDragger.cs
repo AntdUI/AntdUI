@@ -491,7 +491,7 @@ namespace AntdUI
                 _mouseHover = value;
                 if (Enabled)
                 {
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(UploadDragger)))
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

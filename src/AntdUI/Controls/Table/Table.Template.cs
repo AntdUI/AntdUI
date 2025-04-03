@@ -90,7 +90,7 @@ namespace AntdUI
                     hover = value;
                     if (SHOW && (PARENT.RowHoverBg ?? Colour.FillSecondary.Get("Table")).A > 0)
                     {
-                        if (Config.Animation)
+                        if (Config.HasAnimation(nameof(Table)))
                         {
                             ThreadHover?.Dispose();
                             AnimationHover = true;
@@ -218,7 +218,7 @@ namespace AntdUI
                 ThreadCheck?.Dispose();
                 if (ROW.SHOW && PARENT.IsHandleCreated)
                 {
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Table)))
                     {
                         AnimationCheck = true;
                         if (_checked)
@@ -326,7 +326,7 @@ namespace AntdUI
                 ThreadCheck?.Dispose();
                 if (ROW.SHOW && PARENT.IsHandleCreated)
                 {
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Table)))
                     {
                         AnimationCheck = true;
                         if (_checked)
@@ -433,7 +433,7 @@ namespace AntdUI
                 ThreadCheck?.Dispose();
                 if (ROW.SHOW && PARENT.IsHandleCreated)
                 {
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Table)))
                     {
                         AnimationCheck = true;
                         if (_checked)
@@ -488,7 +488,7 @@ namespace AntdUI
                 {
                     if (_mouseHover == value) return;
                     _mouseHover = value;
-                    if (ROW.SHOW && PARENT.IsHandleCreated && Config.Animation)
+                    if (ROW.SHOW && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Table)))
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
@@ -641,7 +641,7 @@ namespace AntdUI
                     if (hover == value) return;
                     hover = value;
 
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Table)))
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

@@ -319,6 +319,8 @@ namespace AntdUI
             }
         }
 
+        public override string name => nameof(ColorPicker);
+
         void ChangeColor(Color color, bool a = false)
         {
             color_alpha = Value = color;

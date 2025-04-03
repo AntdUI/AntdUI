@@ -318,7 +318,7 @@ namespace AntdUI
             {
                 SetSize(RenderMeasure(g, shadow_size));
             });
-            close_button = new ITaskOpacity(this);
+            close_button = new ITaskOpacity(name, this);
         }
 
         protected override void Dispose(bool disposing)
@@ -329,6 +329,7 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
+        public override string name => nameof(Notification);
         internal override TAlignFrom Align => config.Align;
         internal override bool ActiveAnimation => false;
 

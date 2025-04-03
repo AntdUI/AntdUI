@@ -48,6 +48,8 @@ namespace AntdUI
             }
         }
 
+        public override string name => "Mask";
+
         protected override void OnLoad(EventArgs e)
         {
             if (form is Window window)

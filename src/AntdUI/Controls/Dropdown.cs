@@ -154,7 +154,7 @@ namespace AntdUI
             {
                 if (expand == value) return;
                 expand = value;
-                if (ShowArrow && Config.Animation)
+                if (ShowArrow && Config.HasAnimation(nameof(Dropdown)))
                 {
                     ThreadExpand?.Dispose();
                     var t = Animation.TotalFrames(10, 100);

@@ -457,7 +457,7 @@ namespace AntdUI
                 _mouseHover = value;
                 if (Enabled && ShadowOpacityAnimation && shadow > 0 && shadowOpacityHover > 0 && shadowOpacityHover > shadowOpacity)
                 {
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Panel)))
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

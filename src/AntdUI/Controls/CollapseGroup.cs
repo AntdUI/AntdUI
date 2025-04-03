@@ -632,7 +632,7 @@ namespace AntdUI
                 expand = value;
                 if (items != null && items.Count > 0)
                 {
-                    if (PARENT != null && PARENT.IsHandleCreated && Config.Animation)
+                    if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(CollapseGroup)))
                     {
                         ThreadExpand?.Dispose();
                         float oldval = -1;
@@ -930,7 +930,7 @@ namespace AntdUI
             {
                 if (hover == value) return;
                 hover = value;
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(CollapseGroup)))
                 {
                     ThreadHover?.Dispose();
                     AnimationHover = true;

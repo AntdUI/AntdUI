@@ -215,9 +215,10 @@ namespace AntdUI
         RectangleF rect_button, rect_button_up, rect_button_bottom;
         public InputNumber()
         {
-            hover_button = new ITaskOpacity(this);
-            hover_button_up = new ITaskOpacity(this);
-            hover_button_bottom = new ITaskOpacity(this);
+            var key = nameof(InputNumber);
+            hover_button = new ITaskOpacity(key, this);
+            hover_button_up = new ITaskOpacity(key, this);
+            hover_button_bottom = new ITaskOpacity(key, this);
         }
 
         protected override void Dispose(bool disposing)

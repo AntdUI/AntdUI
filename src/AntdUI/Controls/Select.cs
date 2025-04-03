@@ -433,7 +433,7 @@ namespace AntdUI
             {
                 if (expand == value) return;
                 expand = value;
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(AntdUI.Select)))
                 {
                     ThreadExpand?.Dispose();
                     var t = Animation.TotalFrames(10, 100);

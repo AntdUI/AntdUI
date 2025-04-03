@@ -363,6 +363,8 @@ namespace AntdUI
             }
         }
 
+        public override string name => nameof(Spin);
+
         GraphicsPath? gpath = null;
         int Radius = 0, Bor = 0;
         bool HasBor = false;

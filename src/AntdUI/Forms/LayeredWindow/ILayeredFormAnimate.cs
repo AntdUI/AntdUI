@@ -30,6 +30,7 @@ namespace AntdUI
         internal static Dictionary<string, List<ILayeredFormAnimate>> list = new Dictionary<string, List<ILayeredFormAnimate>>();
 
         internal string key = "";
+        public abstract string name { get; }
         internal virtual TAlignFrom Align => TAlignFrom.TR;
         internal virtual bool ActiveAnimation => true;
 
@@ -199,7 +200,7 @@ namespace AntdUI
         Bitmap? bmp_tmp = null;
         public void PlayAnimation()
         {
-            if (Config.Animation)
+            if (Config.HasAnimation(name))
             {
                 var t = Animation.TotalFrames(10, 200);
                 task_start = new ITask(start_X == end_X ? i =>
@@ -385,9 +386,9 @@ namespace AntdUI
                 }
                 else if (d is ILayeredFormAnimate formAnimate)
                 {
-                    if (Config.Animation) formAnimate.StopAnimation().Wait();
+                    if (Config.HasAnimation(formAnimate.name)) formAnimate.StopAnimation().Wait();
                     formAnimate.IClose(true);
-                    Close(formAnimate.Align, formAnimate.key);
+                    Close(formAnimate.Align, formAnimate.key, formAnimate.name);
                     if (queue_cache.TryDequeue(out var d_cache)) Hand(d_cache);
                 }
             }
@@ -464,7 +465,7 @@ namespace AntdUI
             return false;
         }
 
-        static void Close(TAlignFrom align, string key)
+        static void Close(TAlignFrom align, string key, string name)
         {
             try
             {
@@ -473,20 +474,20 @@ namespace AntdUI
                     case TAlignFrom.Bottom:
                     case TAlignFrom.BL:
                     case TAlignFrom.BR:
-                        CloseB(key);
+                        CloseB(key, name);
                         break;
                     case TAlignFrom.Top:
                     case TAlignFrom.TL:
                     case TAlignFrom.TR:
                     default:
-                        CloseT(key);
+                        CloseT(key, name);
                         break;
                 }
             }
             catch { }
         }
 
-        static void CloseT(string key)
+        static void CloseT(string key, string name)
         {
             var arr = key.Split('|');
             int y = int.Parse(arr[2]);
@@ -502,7 +503,7 @@ namespace AntdUI
             }
             if (dir.Count > 0)
             {
-                if (Config.Animation)
+                if (Config.HasAnimation(name))
                 {
                     var t = Animation.TotalFrames(10, 200);
                     new ITask(i =>
@@ -537,7 +538,7 @@ namespace AntdUI
                 }
             }
         }
-        static void CloseB(string key)
+        static void CloseB(string key, string name)
         {
             var arr = key.Split('|');
             int b = int.Parse(arr[4]);
@@ -553,7 +554,7 @@ namespace AntdUI
             }
             if (dir.Count > 0)
             {
-                if (Config.Animation)
+                if (Config.HasAnimation(name))
                 {
                     var t = Animation.TotalFrames(10, 200);
                     new ITask(i =>

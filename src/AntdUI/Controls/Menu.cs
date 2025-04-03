@@ -1457,7 +1457,7 @@ namespace AntdUI
                             }
                         }
                     }
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Menu)))
                     {
                         ThreadExpand?.Dispose();
                         float oldval = -1;
@@ -1576,7 +1576,7 @@ namespace AntdUI
             {
                 if (hover == value) return;
                 hover = value;
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(Menu)))
                 {
                     ThreadHover?.Dispose();
                     AnimationHover = true;

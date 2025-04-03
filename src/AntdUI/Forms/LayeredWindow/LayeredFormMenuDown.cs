@@ -70,6 +70,8 @@ namespace AntdUI
             Init(control, rect_read, items);
         }
 
+        public override string name => nameof(Menu);
+
         public ILayeredForm? SubForm() => subForm;
         LayeredFormMenuDown? subForm = null;
         void Init(Control control, Rectangle rect_read, MenuItemCollection items)

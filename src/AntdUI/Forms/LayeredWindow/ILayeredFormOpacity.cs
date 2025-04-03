@@ -28,7 +28,7 @@ namespace AntdUI
         public byte maxalpha = 240;
         protected override void OnLoad(EventArgs e)
         {
-            if (Config.Animation)
+            if (Config.HasAnimation(name))
             {
                 var t = Animation.TotalFrames(10, 80);
                 task_start = new ITask((i) =>
@@ -69,6 +69,8 @@ namespace AntdUI
 
         #endregion
 
+        public abstract string name { get; }
+
         /// <summary>
         /// 是否正在加载
         /// </summary>
@@ -94,7 +96,7 @@ namespace AntdUI
             if (!ok_end)
             {
                 e.Cancel = true;
-                if (Config.Animation)
+                if (Config.HasAnimation(name))
                 {
                     if (!run_end)
                     {

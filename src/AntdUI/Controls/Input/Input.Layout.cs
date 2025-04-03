@@ -114,6 +114,7 @@ namespace AntdUI
                     }
                     CaretInfo.Height = font_height;
                     CalculateRect();
+                    GC.Collect();
                 });
             }
             else
@@ -123,6 +124,7 @@ namespace AntdUI
                     ScrollX = ScrollY = 0;
                     cache_font = null;
                     CalculateRect();
+                    GC.Collect();
                 }
                 else
                 {
@@ -209,6 +211,7 @@ namespace AntdUI
                         cache_font = font_widths.ToArray();
                         CaretInfo.Height = font_height;
                         CalculateRect();
+                        GC.Collect();
                     });
                 }
             }
@@ -250,6 +253,8 @@ namespace AntdUI
             RectAuto(rect, sps, sps2);
             if (cache_font == null)
             {
+                ScrollXShow = ScrollYShow = false;
+                scrollx = scrolly = ScrollXMin = ScrollXMax = ScrollYMax = 0;
                 if (LineBreakNumber.Count > 0) LineBreakNumber.Clear();
                 if (ModeRange)
                 {
@@ -320,6 +325,7 @@ namespace AntdUI
                     isempty = true;
                     _text = "";
                     cache_font = null;
+                    GC.Collect();
                     return;
                 }
                 var last = cache_font[cache_font.Length - 1];

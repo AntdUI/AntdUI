@@ -56,6 +56,8 @@ namespace AntdUI
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
 
+        public override string name => nameof(AntdUI.Select);
+
         public void Rload(List<object> value)
         {
             selectedValue = new List<object>(value.Count);

@@ -464,7 +464,7 @@ namespace AntdUI
                 {
                     RectangleF OldValue = oldTab.Rect_Line, NewValue = newTab.Rect_Line;
                     if (AnimationBarValue.Height == 0) AnimationBarValue = OldValue;
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Tabs)))
                     {
                         if (owner.alignment == TabAlignment.Left || owner.alignment == TabAlignment.Right)
                         {
@@ -1303,7 +1303,7 @@ namespace AntdUI
                     int i = 0;
                     foreach (var item in rects)
                     {
-                        if (item.hover_close == null) item.hover_close = new ITaskOpacity(owner);
+                        if (item.hover_close == null) item.hover_close = new ITaskOpacity(nameof(Tabs), owner);
                         if (i == owner.hover_i)
                         {
                             item.hover_close.MaxValue = Colour.Text.Get("Tabs").A - Colour.TextQuaternary.Get("Tabs").A;
@@ -2169,7 +2169,7 @@ namespace AntdUI
                     int i = 0;
                     foreach (var item in rects)
                     {
-                        if (item.hover_close == null) item.hover_close = new ITaskOpacity(owner);
+                        if (item.hover_close == null) item.hover_close = new ITaskOpacity(nameof(Tabs), owner);
                         if (i == owner.hover_i)
                         {
                             item.hover_close.MaxValue = Colour.Text.Get("Tabs").A - Colour.TextQuaternary.Get("Tabs").A;

@@ -36,7 +36,7 @@ namespace AntdUI
         float radius = 0;
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config)
         {
-            PARENT = _config.Control;
+            PARENT = this;
             if (_config.TopMost)
             {
                 Helper.SetTopMost(Handle);
@@ -185,6 +185,8 @@ namespace AntdUI
             scrollY = new ScrollY(this);
             Init(point);
         }
+
+        public override string name => nameof(AntdUI.ContextMenuStrip);
 
         void Init(Point point)
         {
@@ -449,6 +451,7 @@ namespace AntdUI
         #region 鼠标
 
         int select_index = -1;
+        InRect? MDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (scrollY.MouseDown(e.Location))
@@ -464,7 +467,7 @@ namespace AntdUI
                         if (it.Tag != null && it.Tag.Enabled && it.Rect.Contains(e.X, e.Y + y))
                         {
                             select_index = i;
-                            it.Down = true;
+                            MDown = it;
                             base.OnMouseDown(e);
                             return;
                         }
@@ -479,84 +482,54 @@ namespace AntdUI
             if (scrollY.MouseUp(e.Location) && OnTouchUp())
             {
                 int y = scrollY.Show ? (int)scrollY.Value : 0;
-                foreach (var it in rectsContent)
-                {
-                    if (it.Down)
-                    {
-                        if (it.Rect.Contains(e.X, e.Y + y))
-                        {
-                            if (it.Tag != null)
-                            {
-                                if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
-                                {
-                                    IClose();
-                                    LayeredFormContextMenuStrip item = this;
-                                    while (item.PARENT is LayeredFormContextMenuStrip form && item.PARENT != form)
-                                    {
-                                        form.IClose();
-                                        item = form;
-                                    }
-                                    resetEvent = new ManualResetEvent(false);
-                                    ITask.Run(() =>
-                                    {
-                                        if (Config.Animation && resetEvent.Wait(false)) return;
-                                        if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
-                                        config.Control.BeginInvoke(new Action(() =>
-                                        {
-                                            config.Call(it.Tag);
-                                        }));
-                                    });
-                                }
-                            }
-                        }
-                        it.Down = false;
-                        return;
-                    }
-                }
+                if (MDown == null) return;
+                var it = MDown;
+                MDown = null;
+                if (it.Rect.Contains(e.X, e.Y + y)) ClickItem(it);
             }
             base.OnMouseUp(e);
         }
 
         bool ClickItem(InRect it)
         {
-            if (it.Tag != null)
+            if (it.Tag == null) return false;
+            if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
             {
-                if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
+                IClose();
+                CloseSub();
+                resetEvent = new ManualResetEvent(false);
+                ITask.Run(() =>
                 {
-                    IClose();
-                    LayeredFormContextMenuStrip item = this;
-                    while (item.PARENT is LayeredFormContextMenuStrip form)
-                    {
-                        form.IClose();
-                        item = form;
-                    }
-                    resetEvent = new ManualResetEvent(false);
-                    ITask.Run(() =>
-                    {
-                        if (resetEvent.Wait(false)) return;
-                        if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
-                        config.Control.BeginInvoke(new Action(() =>
-                        {
-                            config.Call(it.Tag);
-                        }));
-                    });
+                    if (resetEvent.Wait(false)) return;
+                    if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
+                    config.Control.BeginInvoke(new Action(() => config.Call(it.Tag)));
+                });
+            }
+            else
+            {
+                if (subForm == null)
+                {
+                    subForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20 - (scrollY.Show ? (int)scrollY.Value : 0)), it.Tag.Sub);
+                    subForm.Show(this);
                 }
                 else
                 {
-                    if (subForm == null)
-                    {
-                        subForm = new LayeredFormContextMenuStrip(config, this, new Point(TargetRect.X + (it.Rect.X + it.Rect.Width) - 20, TargetRect.Y + it.Rect.Y - 20 - (scrollY.Show ? (int)scrollY.Value : 0)), it.Tag.Sub);
-                        subForm.Show(this);
-                    }
-                    else
-                    {
-                        subForm?.IClose();
-                        subForm = null;
-                    }
+                    subForm?.IClose();
+                    subForm = null;
                 }
-                return true;
             }
-            return false;
+            return true;
+        }
+
+        void CloseSub()
+        {
+            LayeredFormContextMenuStrip item = this;
+            while (item.PARENT is LayeredFormContextMenuStrip form)
+            {
+                if (item == form) return;
+                form.IClose();
+                item = form;
+            }
         }
 
         void FocusItem(InRect it)
@@ -655,7 +628,6 @@ namespace AntdUI
             }
             public ContextMenuStripItem? Tag { get; set; }
             public bool Hover { get; set; }
-            public bool Down { get; set; }
             public Rectangle RectT { get; set; }
             public Rectangle RectIcon { get; set; }
             public Rectangle RectCheck { get; set; }

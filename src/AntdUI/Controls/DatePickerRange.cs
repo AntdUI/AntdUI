@@ -570,7 +570,7 @@ namespace AntdUI
             if (StartEndFocusedTmp == temp) return;
             StartEndFocusedTmp = temp;
 
-            if (Config.Animation && (s || e))
+            if (Config.HasAnimation(nameof(DatePicker)) && (s || e))
             {
                 RectangleF NewValue;
                 if (s) NewValue = rect_d_l;

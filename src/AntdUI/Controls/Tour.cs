@@ -250,6 +250,8 @@ namespace AntdUI
             }
         }
 
+        public override string name => nameof(Tour);
+
         Rectangle? current_rect;
 
         protected override void OnLoad(EventArgs e)
@@ -391,7 +393,7 @@ namespace AntdUI
                 temp = null;
                 task_start?.Dispose();
                 task_start = null;
-                if (Config.Animation && current_rect.HasValue)
+                if (Config.HasAnimation(name) && current_rect.HasValue)
                 {
                     config.PopoverCall?.Invoke(new Tour.Popover(this, this, index));
                     Rectangle old = current_rect.Value, current = rect.Value;

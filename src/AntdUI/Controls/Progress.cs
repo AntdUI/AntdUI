@@ -271,7 +271,7 @@ namespace AntdUI
                 _value = value;
                 ThreadValue?.Dispose();
                 ThreadValue = null;
-                if (Config.Animation && IsHandleCreated && Animation > 0)
+                if (Config.HasAnimation(nameof(Progress)) && IsHandleCreated && Animation > 0)
                 {
                     var t = AntdUI.Animation.TotalFrames(10, Animation);
                     if (_value > _value_show)
@@ -808,7 +808,7 @@ namespace AntdUI
                     rect.Y = rect.Y + (rect.Height - pro_h) / 2;
                     rect.Height = pro_h;
                     rect.Width -= size_font_w;
-                    PaintProgress(g, _radius, rect, _back, color);
+                    if (rect.Width > 0) PaintProgress(g, _radius, rect, _back, color);
 
                     using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Progress")))
                     {
@@ -826,7 +826,7 @@ namespace AntdUI
                 rect.Y = rect.Y + (rect.Height - pro_h) / 2;
                 rect.Height = pro_h;
                 rect.Width -= size_font_w;
-                PaintProgress(g, _radius, rect, _back, color);
+                if (rect.Width > 0) PaintProgress(g, _radius, rect, _back, color);
                 g.PaintIcons(state, new Rectangle(rect_rext.Right - ico_size, rect_rext.Y + (rect_rext.Height - ico_size) / 2, ico_size, ico_size), "Progress");
             }
         }

@@ -264,6 +264,8 @@ namespace AntdUI
             else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
         }
 
+        public override string name => nameof(Tooltip);
+
         public void SetText(Rectangle rect, string text)
         {
             Text = text;
