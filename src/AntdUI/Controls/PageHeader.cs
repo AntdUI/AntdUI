@@ -411,7 +411,7 @@ namespace AntdUI
             {
                 if (showback == value) return;
                 showback = value;
-                if (Config.Animation && IsHandleCreated)
+                if (Config.HasAnimation(nameof(PageHeader)) && IsHandleCreated)
                 {
                     ThreadBack?.Dispose();
                     AnimationBack = true;
@@ -1152,7 +1152,15 @@ namespace AntdUI
 
         ITask? ThreadBack = null;
         ITaskOpacity hove_back, hove_close, hove_full, hove_max, hove_min;
-        public PageHeader() { hove_back = new ITaskOpacity(this); hove_close = new ITaskOpacity(this); hove_full = new ITaskOpacity(this); hove_max = new ITaskOpacity(this); hove_min = new ITaskOpacity(this); }
+        public PageHeader()
+        {
+            var key = nameof(PageHeader);
+            hove_back = new ITaskOpacity(key, this);
+            hove_close = new ITaskOpacity(key, this);
+            hove_full = new ITaskOpacity(key, this);
+            hove_max = new ITaskOpacity(key, this);
+            hove_min = new ITaskOpacity(key, this);
+        }
 
         #endregion
 

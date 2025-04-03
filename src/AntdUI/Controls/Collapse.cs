@@ -700,7 +700,7 @@ namespace AntdUI
                 expand = value;
                 PARENT?.OnExpandChanged(this, expand);
                 if (value) PARENT?.UniqueOne(this);
-                if (PARENT != null && PARENT.IsHandleCreated && Config.Animation)
+                if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse)))
                 {
                     Location = new Point(-Width, -Height);
                     ThreadExpand?.Dispose();

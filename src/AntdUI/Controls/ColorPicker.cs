@@ -626,7 +626,7 @@ namespace AntdUI
             {
                 if (_mouseDown == value) return;
                 _mouseDown = value;
-                if (Config.Animation && WaveSize > 0)
+                if (Config.HasAnimation(nameof(ColorPicker)) && WaveSize > 0)
                 {
                     ThreadFocus?.Dispose();
                     AnimationFocus = true;
@@ -677,7 +677,7 @@ namespace AntdUI
                 _mouseHover = value;
                 if (Enabled)
                 {
-                    if (Config.Animation && !ExtraMouseDown)
+                    if (Config.HasAnimation(nameof(ColorPicker)) && !ExtraMouseDown)
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

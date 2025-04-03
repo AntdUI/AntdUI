@@ -521,7 +521,7 @@ namespace AntdUI
         public Tag()
         {
             base.BackColor = Color.Transparent;
-            hover_close = new ITaskOpacity(this);
+            hover_close = new ITaskOpacity(nameof(AntdUI.Tag), this);
         }
 
         RectangleF rect_close;

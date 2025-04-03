@@ -36,7 +36,7 @@ namespace AntdUI
         public bool RunAnimation = true;
         protected override void OnLoad(EventArgs e)
         {
-            if (Config.Animation)
+            if (Config.HasAnimation(name))
             {
                 var t = Animation.TotalFrames(10, 100);
                 if (Inverted)
@@ -154,6 +154,7 @@ namespace AntdUI
 
         #endregion
 
+        public abstract string name { get; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public override bool CanLoadMessage { get; set; }
@@ -165,7 +166,7 @@ namespace AntdUI
             if (!ok_end)
             {
                 e.Cancel = true;
-                if (Config.Animation)
+                if (Config.HasAnimation(name))
                 {
                     if (!run_end)
                     {

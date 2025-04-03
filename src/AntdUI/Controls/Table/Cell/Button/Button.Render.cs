@@ -90,7 +90,7 @@ namespace AntdUI
                     }
 
                     if (BackHover.HasValue) _back_hover = BackHover.Value;
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Table)))
                     {
                         if (IconHoverAnimation > 0 && HasIcon && (IconHoverSvg != null || IconHover != null))
                         {
@@ -174,7 +174,7 @@ namespace AntdUI
 
         internal override void Click()
         {
-            if (_mouseDown && Config.Animation)
+            if (_mouseDown && Config.HasAnimation(nameof(Table)))
             {
                 ThreadClick?.Dispose();
                 AnimationClickValue = 0;

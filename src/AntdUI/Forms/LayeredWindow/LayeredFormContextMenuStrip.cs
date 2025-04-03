@@ -186,6 +186,8 @@ namespace AntdUI
             Init(point);
         }
 
+        public override string name => nameof(AntdUI.ContextMenuStrip);
+
         void Init(Point point)
         {
             var screen = Screen.FromPoint(point).WorkingArea;

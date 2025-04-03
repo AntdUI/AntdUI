@@ -76,6 +76,8 @@ namespace AntdUI
             btns = btnwiths.ToArray();
         }
 
+        public override string name => nameof(Preview);
+
         int PageSize = 0;
 
         protected override void OnLoad(EventArgs e)

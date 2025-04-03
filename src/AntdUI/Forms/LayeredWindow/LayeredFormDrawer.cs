@@ -323,7 +323,7 @@ namespace AntdUI
         bool run_end = false, ok_end = false;
         protected override void OnLoad(EventArgs e)
         {
-            if (Config.Animation)
+            if (Config.HasAnimation(nameof(Drawer)))
             {
                 var t = Animation.TotalFrames(10, 100);
                 int sleep = config.Mask ? 200 : 0;
@@ -580,7 +580,7 @@ namespace AntdUI
                 config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
                 if (form != null) form.Location = new Point(-form.Width * 2, -form.Height * 2);
                 e.Cancel = true;
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(Drawer)))
                 {
                     if (!run_end)
                     {

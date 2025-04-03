@@ -1239,7 +1239,7 @@ namespace AntdUI
                 expand = value;
                 if (items != null && items.Count > 0)
                 {
-                    if (PARENT != null && PARENT.IsHandleCreated && Config.Animation)
+                    if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Tree)))
                     {
                         ThreadExpand?.Dispose();
                         float oldval = -1;
@@ -1358,7 +1358,7 @@ namespace AntdUI
         {
             ThreadCheck?.Dispose();
             ThreadCheck = null;
-            if (PARENT != null && PARENT.IsHandleCreated && (PARENTITEM == null || PARENTITEM.expand) && show && Config.Animation)
+            if (PARENT != null && PARENT.IsHandleCreated && (PARENTITEM == null || PARENTITEM.expand) && show && Config.HasAnimation(nameof(Tree)))
             {
                 AnimationCheck = true;
                 if (_checked)
@@ -1469,7 +1469,7 @@ namespace AntdUI
                 if (hover == value) return;
                 hover = value;
                 PARENT?.OnNodeMouseMove(this, value);
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(Tree)))
                 {
                     ThreadHover?.Dispose();
                     AnimationHover = true;

@@ -180,6 +180,8 @@ namespace AntdUI
             }
         }
 
+        public override string name => nameof(Popover);
+
         public override void LoadOK()
         {
             if (IsHandleCreated)

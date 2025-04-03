@@ -177,7 +177,7 @@ namespace AntdUI
             {
                 if (hoverY == value) return;
                 hoverY = value;
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(ScrollBar)))
                 {
                     ThreadHoverY?.Dispose();
                     AnimationHoverY = true;
@@ -289,7 +289,7 @@ namespace AntdUI
             {
                 if (hoverX == value) return;
                 hoverX = value;
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(ScrollBar)))
                 {
                     ThreadHoverX?.Dispose();
                     AnimationHoverX = true;

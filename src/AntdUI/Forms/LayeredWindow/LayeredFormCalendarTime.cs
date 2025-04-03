@@ -37,9 +37,8 @@ namespace AntdUI
             scrollY_h = new ScrollY(this);
             scrollY_m = new ScrollY(this);
             scrollY_s = new ScrollY(this);
-
-            hover_button = new ITaskOpacity(this);
-            hover_buttonok = new ITaskOpacity(this);
+            hover_button = new ITaskOpacity(name, this);
+            hover_buttonok = new ITaskOpacity(name, this);
 
             #region 数据
 
@@ -119,6 +118,8 @@ namespace AntdUI
             rect_buttonok = new Rectangle(rect_button.Right, rect_button.Top, rect_button.Width, rect_button.Height);
             CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
         }
+
+        public override string name => nameof(TimePicker);
 
         void ScrollYTime()
         {

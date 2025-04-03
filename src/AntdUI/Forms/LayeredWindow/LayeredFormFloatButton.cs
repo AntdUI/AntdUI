@@ -77,6 +77,9 @@ namespace AntdUI
             config.Form.LocationChanged += Form_LSChanged;
             config.Form.SizeChanged += Form_LSChanged;
         }
+
+        public override string name => nameof(FloatButton);
+
         private void Notify_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (sender == null || e.PropertyName == null) return;

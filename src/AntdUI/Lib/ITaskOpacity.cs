@@ -23,10 +23,12 @@ namespace AntdUI
 {
     public class ITaskOpacity : IDisposable
     {
+        string key;
         Control control;
         Action action;
-        public ITaskOpacity(ILayeredFormOpacityDown _control)
+        public ITaskOpacity(string k, ILayeredFormOpacityDown _control)
         {
+            key = k;
             control = _control;
             action = () =>
             {
@@ -34,24 +36,27 @@ namespace AntdUI
                 _control.Print();
             };
         }
-        public ITaskOpacity(ILayeredForm _control)
+        public ITaskOpacity(string k, ILayeredForm _control)
         {
+            key = k;
             control = _control;
             action = () =>
             {
                 _control.Print();
             };
         }
-        public ITaskOpacity(Form _control)
+        public ITaskOpacity(string k, Form _control)
         {
+            key = k;
             control = _control;
             action = () =>
             {
                 _control.Invalidate();
             };
         }
-        public ITaskOpacity(IControl _control)
+        public ITaskOpacity(string k, IControl _control)
         {
+            key = k;
             control = _control;
             action = () =>
             {
@@ -82,7 +87,7 @@ namespace AntdUI
                 if (value && !enable) value = false;
                 if (_switch == value) return;
                 _switch = value;
-                if (Config.Animation)
+                if (Config.HasAnimation(key))
                 {
                     Thread?.Dispose();
                     Animation = true;

@@ -105,7 +105,7 @@ namespace AntdUI
                 {
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
-                    if (processing && Config.Animation)
+                    if (processing && Config.HasAnimation(nameof(Table)))
                     {
                         if (ThreadState == null)
                         {

@@ -341,7 +341,7 @@ namespace AntdUI
                 active = _active;
                 hover = _hover;
                 half = _half;
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(Rate)))
                 {
                     ThreadActive?.Dispose();
                     AnimationActive = true;

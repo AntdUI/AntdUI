@@ -48,6 +48,8 @@ namespace AntdUI
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items, filtertext);
         }
 
+        public override string name => nameof(AntdUI.Select);
+
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
         void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)

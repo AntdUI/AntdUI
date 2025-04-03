@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace AntdUI
@@ -62,10 +63,57 @@ namespace AntdUI
 
         #endregion
 
+        #region 动画使能
+
         /// <summary>
         /// 动画使能
         /// </summary>
         public static bool Animation { get; set; } = true;
+
+        internal static List<string>? AnimationData;
+
+        /// <summary>
+        /// 启用动画
+        /// </summary>
+        public static void EnableAnimation(params string[] controls)
+        {
+            if (AnimationData == null) return;
+            foreach (var it in controls) AnimationData.Remove(it);
+        }
+
+        /// <summary>
+        /// 禁用动画
+        /// </summary>
+        public static void DisableAnimation(params string[] controls)
+        {
+            if (AnimationData == null) AnimationData = new List<string>(controls);
+            else
+            {
+                foreach (var it in controls)
+                {
+                    if (AnimationData.Contains(it)) continue;
+                    AnimationData.Add(it);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 清除动画数据
+        /// </summary>
+        public static void ClearAnimationData() => AnimationData = null;
+
+        public static bool HasAnimation(string control)
+        {
+            if (Animation)
+            {
+                if (AnimationData == null) return true;
+                if (AnimationData.Contains(control)) return false;
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
 
         /// <summary>
         /// 触屏使能

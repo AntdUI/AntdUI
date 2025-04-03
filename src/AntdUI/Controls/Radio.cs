@@ -130,7 +130,7 @@ namespace AntdUI
                 if (_checked == value) return;
                 _checked = value;
                 ThreadCheck?.Dispose();
-                if (IsHandleCreated && Config.Animation)
+                if (IsHandleCreated && Config.HasAnimation(nameof(Radio)))
                 {
                     AnimationCheck = true;
                     if (value)
@@ -354,7 +354,7 @@ namespace AntdUI
                 SetCursor(value && enabled);
                 if (enabled)
                 {
-                    if (Config.Animation)
+                    if (Config.HasAnimation(nameof(Radio)))
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

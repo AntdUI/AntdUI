@@ -40,14 +40,14 @@ namespace AntdUI
             PARENT = _control;
             action = _action;
             action_btns = _action_btns;
-            hover_lefts = new ITaskOpacity(this);
-            hover_left = new ITaskOpacity(this);
-            hover_rights = new ITaskOpacity(this);
-            hover_right = new ITaskOpacity(this);
-            hover_year = new ITaskOpacity(this);
-            hover_month = new ITaskOpacity(this);
-            hover_button = new ITaskOpacity(this);
-            hover_buttonok = new ITaskOpacity(this);
+            hover_lefts = new ITaskOpacity(name, this);
+            hover_left = new ITaskOpacity(name, this);
+            hover_rights = new ITaskOpacity(name, this);
+            hover_right = new ITaskOpacity(name, this);
+            hover_year = new ITaskOpacity(name, this);
+            hover_month = new ITaskOpacity(name, this);
+            hover_button = new ITaskOpacity(name, this);
+            hover_buttonok = new ITaskOpacity(name, this);
             scrollY_left = new ScrollY(this);
             scrollY_h = new ScrollY(this);
             scrollY_m = new ScrollY(this);
@@ -144,6 +144,8 @@ namespace AntdUI
             rect_buttonok = new Rectangle(t_x + 10 + t_one_width, rect_button.Y, t_time_w, t_button);
             CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
         }
+
+        public override string name => nameof(DatePicker);
 
         #region 属性
 

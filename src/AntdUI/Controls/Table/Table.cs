@@ -1243,7 +1243,7 @@ namespace AntdUI
             ThreadCheck?.Dispose();
             if (PARENT != null && PARENT.IsHandleCreated)
             {
-                if (Config.Animation)
+                if (Config.HasAnimation(nameof(Table)))
                 {
                     AnimationCheck = true;
                     if (_checked)

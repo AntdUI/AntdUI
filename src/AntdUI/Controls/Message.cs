@@ -274,6 +274,7 @@ namespace AntdUI
             });
         }
 
+        public override string name => nameof(Message);
         internal override TAlignFrom Align => config.Align;
         internal override bool ActiveAnimation => false;
 
