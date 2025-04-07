@@ -16,23 +16,23 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.Collections.Concurrent;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
     public static class EventHub
     {
-        static ConcurrentDictionary<WeakReference, WeakReference> dic = new ConcurrentDictionary<WeakReference, WeakReference>();
+        static ConcurrentDictionary<int, WeakReference> dic = new ConcurrentDictionary<int, WeakReference>();
 
-        public static void AddListener(this Control control)
+        public static void AddListener(this IEventListener listener)
         {
-            WeakReference w = new WeakReference(control);
-            if (control is IEventListener listener && dic.TryAdd(w, new WeakReference(listener)))
+            var id = listener.GetHashCode();
+            if (dic.TryAdd(id, new WeakReference(listener)))
             {
-                control.Disposed += (s, e) =>
+                listener.Disposed += (s, e) =>
                 {
-                    dic.TryRemove(w, out _);
+                    dic.TryRemove(id, out _);
                 };
             }
         }
@@ -41,15 +41,8 @@ namespace AntdUI
         {
             foreach (var item in dic)
             {
-                if (!item.Value.IsAlive)
-                {
-                    dic.TryRemove(item.Key, out _);
-                }
-                else
-                {
-                    IEventListener? listener = item.Value.Target as IEventListener;
-                    if (listener != null) listener.HandleEvent(id, tag);
-                }
+                if (item.Value.IsAlive && item.Value.Target is IEventListener listener) listener.HandleEvent(id, tag);
+                else dic.TryRemove(item.Key, out _);
             }
         }
     }
@@ -60,6 +53,10 @@ namespace AntdUI
     public interface IEventListener
     {
         void HandleEvent(EventType id, object? tag);
+
+        int GetHashCode();
+
+        event EventHandler? Disposed;
     }
 
     public enum EventType

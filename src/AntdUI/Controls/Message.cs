@@ -268,10 +268,7 @@ namespace AntdUI
             else if (Config.Font != null) Font = Config.Font;
             else Font = config.Form.Font;
             Icon = config.Form.Icon;
-            Helper.GDI(g =>
-            {
-                SetSize(RenderMeasure(g, shadow_size));
-            });
+            Helper.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
         }
 
         public override string name => nameof(Message);
@@ -306,11 +303,14 @@ namespace AntdUI
                             return;
                         }
                     };
+                    var tmp = DateTime.Now;
                     try
                     {
                         config.Call(config);
                     }
                     catch { }
+                    var time = DateTime.Now - tmp;
+                    if (time.TotalSeconds < 1) Thread.Sleep(1000 - (int)(time.TotalMilliseconds));
                     loading = false;
                     ThreadLoading?.Dispose();
                     if (IRefresh())
@@ -337,11 +337,8 @@ namespace AntdUI
             var oldw = TargetRect.Width;
             if (IsHandleCreated)
             {
-                Helper.GDI(g =>
-                {
-                    SetSize(RenderMeasure(g, shadow_size));
-                });
                 DisposeAnimation();
+                Helper.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
                 SetPositionCenter(oldw);
                 return false;
             }
@@ -415,8 +412,7 @@ namespace AntdUI
             int shadow2 = shadow * 2;
             float dpi = Config.Dpi;
             var size = g.MeasureString(config.Text, Font, 10000, s_f_left);
-            int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi),
-                sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
+            int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
             if (loading)
             {
                 int icon_size = (int)(size.Height * .86F);
