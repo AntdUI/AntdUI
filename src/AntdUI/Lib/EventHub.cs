@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -23,22 +23,34 @@ namespace AntdUI
 {
     public static class EventHub
     {
-        static ConcurrentDictionary<Control, IEventListener> dic = new ConcurrentDictionary<Control, IEventListener>();
+        static ConcurrentDictionary<WeakReference, WeakReference> dic = new ConcurrentDictionary<WeakReference, WeakReference>();
 
         public static void AddListener(this Control control)
         {
-            if (control is IEventListener listener && dic.TryAdd(control, listener))
+            WeakReference w = new WeakReference(control);
+            if (control is IEventListener listener && dic.TryAdd(w, new WeakReference(listener)))
             {
                 control.Disposed += (s, e) =>
                 {
-                    dic.TryRemove(control, out _);
+                    dic.TryRemove(w, out _);
                 };
             }
         }
 
         public static void Dispatch(EventType id, object? tag = null)
         {
-            foreach (var item in dic) item.Value.HandleEvent(id, tag);
+            foreach (var item in dic)
+            {
+                if (!item.Value.IsAlive)
+                {
+                    dic.TryRemove(item.Key, out _);
+                }
+                else
+                {
+                    IEventListener? listener = item.Value.Target as IEventListener;
+                    if (listener != null) listener.HandleEvent(id, tag);
+                }
+            }
         }
     }
 
