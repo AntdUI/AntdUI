@@ -88,6 +88,23 @@ namespace AntdUI
             }
         }
 
+        object? summary = null;
+        /// <summary>
+        /// 总结栏
+        /// </summary>
+        [Browsable(false), Description("总结栏"), Category("数据"), DefaultValue(null)]
+        public object? Summary
+        {
+            get => summary;
+            set
+            {
+                summary = value;
+                ExtractData();
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(Summary));
+            }
+        }
+
         /// <summary>
         /// 获取指定行的数据
         /// </summary>
