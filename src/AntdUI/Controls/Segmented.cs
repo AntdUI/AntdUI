@@ -694,7 +694,7 @@ namespace AntdUI
                             if (i == _hover)
                             {
                                 var color_hover = ForeHover ?? Colour.HoverColor.Get("Segmented");
-                                PaintImg(g, it, color_hover, it.IconHoverSvg ?? it.IconSvg, it.IconHover ?? it.Icon);
+                                if (PaintImg(g, it, color_hover, it.IconHoverSvg ?? it.IconSvg, it.IconHover ?? it.Icon)) PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
                                 g.String(it.Text, Font, color_hover, it.RectText, s_f);
                             }
                             else
