@@ -87,7 +87,7 @@
 ➡️| [**Popover** 气泡卡片](doc/wiki/zh/Control/Popover.md) | ✅ | ❎ |
 ➡️| [**Segmented** 分段控制器](doc/wiki/zh/Control/Segmented.md) | ✅ | ✅ |
 ➡️| [**Table** 表格](doc/wiki/zh/Control/Table.md) | ✅ | ❎ |
-➡️| [**Tabs** 标签页](doc/wiki/zh/Control/Tabs.md) | ✅ | ❎ |
+➡️| [**Tabs** 标签页](doc/wiki/zh/Control/Tabs.md) | ✅ | ✅ |
 ➡️| [**Tag** 标签](doc/wiki/zh/Control/Tag.md) | ✅ | ❎ |
 ➡️| [**Timeline** 时间轴](doc/wiki/zh/Control/Timeline.md) | ❎ | ❎ |
 ➡️| [**Tooltip** 文字提示](doc/wiki/zh/Control/Tooltip.md) | ✅ | ❎ |
