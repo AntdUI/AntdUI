@@ -582,12 +582,15 @@ namespace AntdUI
             if (_tabMenuVisible)
             {
                 int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
-                foreach (var item in items)
+                foreach (var it in items)
                 {
-                    if (item.Visible && item.Contains(x, y))
+                    if (it.Visible && it.Contains(x, y))
                     {
-                        pageDown = item;
-                        Invalidate();
+                        if (it.Enabled)
+                        {
+                            pageDown = it;
+                            Invalidate();
+                        }
                         return;
                     }
                     i++;
@@ -649,13 +652,17 @@ namespace AntdUI
                 return;
             }
             int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
-            foreach (var item in items)
+            foreach (var it in items)
             {
-                if (item.Visible && item.Contains(x, y))
+                if (it.Visible && it.Contains(x, y))
                 {
-                    SetCursor(true);
-                    Hover_i = i;
-                    style.MouseMove(x, y);
+                    if (it.Enabled)
+                    {
+                        SetCursor(true);
+                        Hover_i = i;
+                        style.MouseMove(x, y);
+                    }
+                    else SetCursor(false);
                     return;
                 }
                 i++;
@@ -689,19 +696,19 @@ namespace AntdUI
                     Invalidate();
                 }
                 int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
-                foreach (var item in items)
+                foreach (var it in items)
                 {
-                    if (item == _pageDown)
+                    if (it == _pageDown)
                     {
-                        if (item.Contains(x, y))
+                        if (it.Contains(x, y))
                         {
-                            if (style.MouseClick(item, i, x, y)) return;
+                            if (style.MouseClick(it, i, x, y)) return;
                             if (TabClick == null)
                             {
                                 SelectedIndex = i;
                                 return;
                             }
-                            var args = new TabsItemEventArgs(item, i, style, e);
+                            var args = new TabsItemEventArgs(it, i, style, e);
                             TabClick(this, args);
                             if (args.Cancel) return;
                             SelectedIndex = i;

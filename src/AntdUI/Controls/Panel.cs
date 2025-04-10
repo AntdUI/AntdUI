@@ -184,11 +184,25 @@ namespace AntdUI
             }
         }
 
+        bool shadowOpacityAnimation = false;
         /// <summary>
         /// 阴影透明度动画使能
         /// </summary>
         [Description("阴影透明度动画使能"), Category("阴影"), DefaultValue(false)]
-        public bool ShadowOpacityAnimation { get; set; }
+        public bool ShadowOpacityAnimation
+        {
+            get => shadowOpacityAnimation;
+            set
+            {
+                if (shadowOpacityAnimation == value) return;
+                shadowOpacityAnimation = value;
+                if (shadowOpacityAnimation)
+                {
+                    if (IsHandleCreated) Application.AddMessageFilter(this);
+                }
+                else Application.RemoveMessageFilter(this);
+            }
+        }
 
         float shadowOpacityHover = 0.3F;
         /// <summary>
@@ -504,7 +518,7 @@ namespace AntdUI
         {
             ThreadHover?.Dispose();
             ThreadHover = null;
-            Application.RemoveMessageFilter(this);
+            ShadowOpacityAnimation = false;
             shadow_temp?.Dispose();
             shadow_temp = null;
             base.Dispose(disposing);
@@ -545,8 +559,8 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            Application.AddMessageFilter(this);
             this.AddListener();
+            if (ShadowOpacityAnimation) Application.AddMessageFilter(this);
         }
 
         #region 主题变化

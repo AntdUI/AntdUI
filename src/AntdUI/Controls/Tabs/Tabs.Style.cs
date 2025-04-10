@@ -409,12 +409,24 @@ namespace AntdUI
 
             void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
             {
-                if (page.HasIcon)
+                if (page.Enabled)
                 {
-                    if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                    else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                    if (page.HasIcon)
+                    {
+                        if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
+                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                    }
+                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
-                g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
+                else
+                {
+                    if (page.HasIcon)
+                    {
+                        if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
+                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs"));
+                    }
+                    g.String(page.Text, owner.Font, Colour.TextQuaternary.Get("Tabs"), rects.Rect_Text, owner.s_c);
+                }
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
             void PaintBar(Canvas g, RectangleF rect, SolidBrush brush)
@@ -1243,19 +1255,38 @@ namespace AntdUI
 
             void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
             {
-                if (page.HasIcon)
+                if (page.Enabled)
                 {
-                    if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                    else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                    if (page.HasIcon)
+                    {
+                        if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
+                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                    }
+                    if (closable)
+                    {
+                        if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                        else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get("Tabs").A, Colour.Text.Get("Tabs")));
+                        else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get("Tabs"));
+                        else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                    }
+                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
-                if (closable)
+                else
                 {
-                    if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
-                    else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get("Tabs").A, Colour.Text.Get("Tabs")));
-                    else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get("Tabs"));
-                    else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                    if (page.HasIcon)
+                    {
+                        if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
+                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs"));
+                    }
+                    if (closable)
+                    {
+                        if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                        else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get("Tabs").A, Colour.Text.Get("Tabs")));
+                        else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get("Tabs"));
+                        else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                    }
+                    g.String(page.Text, owner.Font, Colour.TextQuaternary.Get("Tabs"), rects.Rect_Text, owner.s_c);
                 }
-                g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
 
@@ -2112,19 +2143,38 @@ namespace AntdUI
 
             void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush, bool closshow = false)
             {
-                if (page.HasIcon)
+                if (page.Enabled)
                 {
-                    if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                    else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                    if (page.HasIcon)
+                    {
+                        if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
+                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                    }
+                    if (closable != CloseType.none && closshow)
+                    {
+                        if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                        else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get("Tabs").A, Colour.Text.Get("Tabs")));
+                        else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get("Tabs"));
+                        else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                    }
+                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
-                if (closable != CloseType.none && closshow)
+                else
                 {
-                    if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
-                    else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get("Tabs").A, Colour.Text.Get("Tabs")));
-                    else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get("Tabs"));
-                    else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                    if (page.HasIcon)
+                    {
+                        if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
+                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs"));
+                    }
+                    if (closable != CloseType.none && closshow)
+                    {
+                        if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                        else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get("Tabs").A, Colour.Text.Get("Tabs")));
+                        else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get("Tabs"));
+                        else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get("Tabs"));
+                    }
+                    g.String(page.Text, owner.Font, Colour.TextQuaternary.Get("Tabs"), rects.Rect_Text, owner.s_c);
                 }
-                g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
 
