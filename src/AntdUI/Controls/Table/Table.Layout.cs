@@ -79,7 +79,7 @@ namespace AntdUI
                 ThreadState = null;
                 if (visibleHeader && emptyHeader && columns != null && columns.Count > 0)
                 {
-                    var _rows = LayoutDesign(new TempTable(new TempiColumn[0], new IRow[0]), out var _columns, out _, out var col_width, out int KeyTreeINDEX);
+                    var _rows = LayoutDesign(new TempTable(new TempiColumn[0], new IRow[0], null), out var _columns, out _, out var col_width, out int KeyTreeINDEX);
                     rows = LayoutDesign(rect, _rows, _columns, col_width, KeyTreeINDEX, out int x, out int y, out bool is_exceed);
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     return rect;
@@ -206,12 +206,25 @@ namespace AntdUI
                     if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.i, row.record), row, _columns, KeyTree, KeyTreeINDEX, 0, true);
                 });
             }
-
+            if (dataTmp.summary != null)
+            {
+                foreach (var row in dataTmp.summary)
+                {
+                    var cells = new List<CELL>(_columns.Count);
+                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
+                    if (cells.Count > 0)
+                    {
+                        var tmp = AddRows(ref _rows, cells.ToArray(), row.i, row.record);
+                        tmp.Type = RowType.Summary;
+                    }
+                }
+            }
             Columns = _columns;
             Processing = processing > 0;
             ColWidth = col_width;
             KeyTreeIndex = KeyTreeINDEX;
             dataOne = false;
+
             return _rows;
         }
 
@@ -803,7 +816,7 @@ namespace AntdUI
         {
             var row = new RowTemplate(this, cells, -1, record)
             {
-                IsColumn = true
+                Type = RowType.Column
             };
             for (int i = 0; i < row.cells.Length; i++)
             {
@@ -815,8 +828,12 @@ namespace AntdUI
                         int t_count = rows.Count, check_count = 0;
                         for (int row_i = 0; row_i < rows.Count; row_i++)
                         {
-                            var cell = rows[row_i].cells[i];
-                            if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                            if (rows[row_i].Type == RowType.Summary) t_count--;
+                            else
+                            {
+                                var cell = rows[row_i].cells[i];
+                                if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                            }
                         }
                         if (t_count == check_count) checkColumn.CheckState = System.Windows.Forms.CheckState.Checked;
                         else if (check_count > 0) checkColumn.CheckState = System.Windows.Forms.CheckState.Indeterminate;
@@ -983,8 +1000,12 @@ namespace AntdUI
                     for (int row_i = 1; row_i < rows.Length; row_i++)
                     {
                         var it = rows[row_i];
-                        var cell = it.cells[cel_i];
-                        if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                        if (it.Type == RowType.Summary) t_count--;
+                        else
+                        {
+                            var cell = it.cells[cel_i];
+                            if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                        }
                     }
                     if (t_count == check_count) checkColumn.CheckState = System.Windows.Forms.CheckState.Checked;
                     else if (check_count > 0) checkColumn.CheckState = System.Windows.Forms.CheckState.Indeterminate;
@@ -1017,6 +1038,7 @@ namespace AntdUI
             for (int i_row = 1; i_row < rows.Length; i_row++)
             {
                 var item = rows[i_row].cells[i_cel];
+                if (item.ROW.Type == RowType.Summary) continue;
                 if (item is TCellCheck checkCell)
                 {
                     count++;

@@ -391,7 +391,7 @@ namespace AntdUI
                     _borderHover = BorderHover ?? Colour.PrimaryHover.Get("ColorPicker"),
                 _borderActive = BorderActive ?? Colour.Primary.Get("ColorPicker");
                 PaintClick(g, path, rect, _borderActive, _radius);
-                int size_color = (int)(rect_read.Height * 0.75F);
+                int size_color = (int)(rect_read.Height * .75F);
                 if (Enabled)
                 {
                     if (hasFocus && WaveSize > 0)
@@ -418,7 +418,7 @@ namespace AntdUI
                     g.Fill(Colour.FillTertiary.Get("ColorPicker"), path);
                     if (borderWidth > 0) g.Draw(_border, borderWidth * Config.Dpi, path);
                 }
-                var r = _radius * 0.75F;
+                var r = _radius * .75F;
                 if (showText)
                 {
                     int gap = (rect_read.Height - size_color) / 2;
@@ -449,8 +449,8 @@ namespace AntdUI
                 }
                 else
                 {
-                    int size_colorw = (int)(rect_read.Width * 0.75F);
-                    var rect_color = new Rectangle(rect_read.X + (rect_read.Width - size_colorw) / 2, rect_read.Y + (rect_read.Height - size_color) / 2, size_colorw, size_color);
+                    int size_colorw = (int)(rect_read.Width * .75F);
+                    var rect_color = new RectangleF(rect_read.X + (rect_read.Width - size_colorw) / 2F, rect_read.Y + (rect_read.Height - size_color) / 2F, size_colorw, size_color);
                     PaintValue(g, r, rect_color);
                 }
             }
@@ -458,7 +458,7 @@ namespace AntdUI
             base.OnPaint(e);
         }
 
-        void PaintValue(Canvas g, float r, Rectangle rect_color)
+        void PaintValue(Canvas g, float r, RectangleF rect_color)
         {
             using (var path = rect_color.RoundPath(r))
             {
@@ -468,7 +468,7 @@ namespace AntdUI
                     g.SetClip(path);
                     using (var pen = new Pen(Color.FromArgb(245, 34, 45), rect_color.Height * .12F))
                     {
-                        g.DrawLine(pen, new Point(rect_color.X, rect_color.Bottom), new Point(rect_color.Right, rect_color.Y));
+                        g.DrawLine(pen, new PointF(rect_color.X, rect_color.Bottom), new PointF(rect_color.Right, rect_color.Y));
                     }
                     g.ResetClip();
                     g.Draw(Colour.Split.Get("ColorPicker"), Config.Dpi, path);
@@ -482,13 +482,13 @@ namespace AntdUI
         }
 
         Bitmap? bmp_alpha = null;
-        void PaintAlpha(Canvas g, float radius, Rectangle rect)
+        void PaintAlpha(Canvas g, float radius, RectangleF rect)
         {
             if (bmp_alpha == null || bmp_alpha.Width != rect.Width || bmp_alpha.Height != rect.Height)
             {
                 bmp_alpha?.Dispose();
-                bmp_alpha = new Bitmap(rect.Width, rect.Height);
-                using (var tmp = new Bitmap(rect.Width, rect.Height))
+                bmp_alpha = new Bitmap((int)rect.Width, (int)rect.Height);
+                using (var tmp = new Bitmap(bmp_alpha.Width, bmp_alpha.Height))
                 {
                     using (var g2 = Graphics.FromImage(tmp).High())
                     {
@@ -496,26 +496,26 @@ namespace AntdUI
                     }
                     using (var g2 = Graphics.FromImage(bmp_alpha).High())
                     {
-                        g2.Image(new Rectangle(0, 0, rect.Width, rect.Height), tmp, TFit.Fill, radius, false);
+                        g2.Image(new Rectangle(0, 0, bmp_alpha.Width, bmp_alpha.Height), tmp, TFit.Fill, radius, false);
                     }
                 }
             }
             g.Image(bmp_alpha, rect);
         }
 
-        void PaintAlpha(Canvas g, Rectangle rect)
+        void PaintAlpha(Canvas g, RectangleF rect)
         {
-            int u_y = 0, size = rect.Height / 4;
+            float u_y = 0, size = rect.Height / 4;
             bool ad = false;
             using (var brush = new SolidBrush(Colour.FillSecondary.Get("ColorPicker")))
             {
                 while (u_y < rect.Height)
                 {
-                    int u_x = 0;
+                    float u_x = 0;
                     bool adsub = ad;
                     while (u_x < rect.Width)
                     {
-                        if (adsub) g.Fill(brush, new Rectangle(u_x, u_y, size, size));
+                        if (adsub) g.Fill(brush, new RectangleF(u_x, u_y, size, size));
                         u_x += size;
                         adsub = !adsub;
                     }

@@ -73,7 +73,13 @@ namespace AntdUI
             /// </summary>
             public int Height { get; set; }
 
-            internal bool IsColumn = false;
+            /// <summary>
+            /// 表类型
+            /// </summary>
+            public RowType Type { get; set; }
+
+            public bool IsColumn => Type == RowType.Column;
+            public bool IsOther => Type == RowType.None || Type == RowType.Summary;
 
             #region 悬浮状态
 
@@ -168,6 +174,19 @@ namespace AntdUI
             internal int ExpandDepth { get; set; }
             internal int KeyTreeINDEX { get; set; } = -1;
             internal Rectangle RectExpand;
+        }
+
+        internal enum RowType
+        {
+            None,
+            /// <summary>
+            /// 表头
+            /// </summary>
+            Column,
+            /// <summary>
+            /// 总结栏
+            /// </summary>
+            Summary
         }
 
         #region 单元格

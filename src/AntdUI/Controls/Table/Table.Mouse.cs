@@ -932,6 +932,7 @@ namespace AntdUI
                         }
                     }
                 }
+                else if (it.Type == RowType.Summary) continue;
                 else if (it.Contains(ex, py, sethover))
                 {
                     var hasi = new List<int>();

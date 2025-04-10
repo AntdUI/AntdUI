@@ -169,7 +169,7 @@ namespace AntdUI
                 SetLocationX(x);
                 start_X = end_X = x;
             }
-            Print();
+            Print(true);
         }
         internal void SetPositionY(int y)
         {

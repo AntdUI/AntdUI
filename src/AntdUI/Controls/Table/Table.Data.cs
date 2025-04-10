@@ -65,7 +65,8 @@ namespace AntdUI
                             if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
                         }
                     }
-                    dataTmp = new TempTable(columns.ToArray(), rows.ToArray());
+                    var _columns = columns.ToArray();
+                    dataTmp = new TempTable(_columns, rows.ToArray(), ExtractSummary(_columns));
                 }
             }
             else if (dataSource is IList list)
@@ -73,8 +74,44 @@ namespace AntdUI
                 var columns = new TempiColumn[0];
                 var rows = new List<IRow>(list.Count + 1);
                 for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);
-                dataTmp = new TempTable(columns, rows.ToArray());
+                dataTmp = new TempTable(columns, rows.ToArray(), ExtractSummary(columns));
             }
+        }
+
+        IRow[]? ExtractSummary(TempiColumn[] columns)
+        {
+            if (summary == null) return null;
+            else if (summary is DataTable table)
+            {
+                if (table.Columns.Count > 0 && table.Rows.Count > 0)
+                {
+                    var rows = new List<IRow>(table.Rows.Count);
+                    for (int i = 0; i < table.Rows.Count; i++)
+                    {
+                        var row = table.Rows[i];
+                        if (row != null)
+                        {
+                            var cells = new Dictionary<string, object?>(columns.Length);
+                            foreach (var it in columns) cells.Add(it.key, row[it.key]);
+                            if (cells.Count > 0) rows.Add(new IRow(i, row, cells));
+                        }
+                    }
+                    return rows.ToArray();
+                }
+            }
+            else if (summary is IList list)
+            {
+                var rows = new List<IRow>(list.Count);
+                for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);
+                return rows.ToArray();
+            }
+            else
+            {
+                var rows = new List<IRow>(1);
+                GetRowAuto(ref rows, summary, 0, ref columns);
+                if (rows.Count > 0) return rows.ToArray();
+            }
+            return null;
         }
 
         #region AntList
@@ -168,7 +205,7 @@ namespace AntdUI
             var columns = new TempiColumn[0];
             var rows = new List<IRow>(list.Count + 1);
             for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);
-            dataTmp = new TempTable(columns, rows.ToArray());
+            dataTmp = new TempTable(columns, rows.ToArray(), ExtractSummary(columns));
             LoadLayout();
             Invalidate();
         }
@@ -374,10 +411,11 @@ namespace AntdUI
 
         class TempTable
         {
-            public TempTable(TempiColumn[] _columns, IRow[] _rows)
+            public TempTable(TempiColumn[] _columns, IRow[] _rows, IRow[]? _summary)
             {
                 columns = _columns;
                 rows = _rows;
+                summary = _summary;
             }
             /// <summary>
             /// 表头 - 列
@@ -387,6 +425,10 @@ namespace AntdUI
             /// 数据 - 行
             /// </summary>
             public IRow[] rows { get; set; }
+            /// <summary>
+            /// 数据 - 行
+            /// </summary>
+            public IRow[]? summary { get; set; }
         }
 
         class TempiColumn
