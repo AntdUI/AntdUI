@@ -115,7 +115,7 @@ namespace AntdUI
 
                         g.ResetClip();
 
-                        PaintTableBgHeader(g, rows[0], _radius);
+                        PaintTableBgHeader(g, rows[0], _radius, sx);
 
                         g.TranslateTransform(-sx, 0);
 
@@ -160,7 +160,7 @@ namespace AntdUI
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows)
                         {
-                            if (it.row.IsColumn) PaintTableBgHeader(g, it.row, _radius);
+                            if (it.row.IsColumn) PaintTableBgHeader(g, it.row, _radius, sx);
                             else PaintBg(g, it.row);
                         }
 
@@ -263,8 +263,9 @@ namespace AntdUI
 
         #region 表头
 
-        void PaintTableBgHeader(Canvas g, RowTemplate row, float radius)
+        void PaintTableBgHeader(Canvas g, RowTemplate row, float radius, int sx)
         {
+            var save = g.Save();
             using (var brush = new SolidBrush(columnback ?? Colour.TagDefaultBg.Get("Table")))
             {
                 if (radius > 0)
@@ -272,20 +273,25 @@ namespace AntdUI
                     using (var path = Helper.RoundPath(row.RECT, radius, true, true, false, false))
                     {
                         g.Fill(brush, path);
+                        g.SetClip(path, CombineMode.Intersect);
+                        g.TranslateTransform(-sx, 0);
+                        foreach (var cel in row.cells)
+                        {
+                            if (cel.COLUMN.ColStyle != null && cel.COLUMN.ColStyle.BackColor.HasValue) g.Fill(cel.COLUMN.ColStyle.BackColor.Value, cel.RECT);
+                        }
                     }
                 }
-                else g.Fill(brush, row.RECT);
-            }
-            foreach (var cel in row.cells)
-            {
-                if (cel.COLUMN.ColStyle != null && cel.COLUMN.ColStyle.BackColor.HasValue)
+                else
                 {
-                    using (var brush = new SolidBrush(cel.COLUMN.ColStyle.BackColor.Value))
+                    g.Fill(brush, row.RECT);
+                    g.TranslateTransform(-sx, 0);
+                    foreach (var cel in row.cells)
                     {
-                        g.Fill(brush, cel.RECT);
+                        if (cel.COLUMN.ColStyle != null && cel.COLUMN.ColStyle.BackColor.HasValue) g.Fill(cel.COLUMN.ColStyle.BackColor.Value, cel.RECT);
                     }
                 }
             }
+            g.Restore(save);
         }
         void PaintTableHeader(Canvas g, RowTemplate row, SolidBrush fore, Font column_font, float radius)
         {
@@ -690,6 +696,7 @@ namespace AntdUI
                         PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
                     }
                 }
+                CellPaint?.Invoke(this, new TablePaintEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex));
             }
             catch { }
             g.Restore(state);
@@ -754,7 +761,7 @@ namespace AntdUI
                 {
                     if (row.row.IsColumn)
                     {
-                        PaintTableBgHeader(g, row.row, radius);
+                        PaintTableBgHeader(g, row.row, radius, sx);
                         PaintTableHeader(g, row.row, forecolumn, column_font, radius);
                     }
                     else
@@ -776,7 +783,7 @@ namespace AntdUI
                 g.ResetTransform();
                 if (fixedHeader)
                 {
-                    PaintTableBgHeader(g, rows[0], radius);
+                    PaintTableBgHeader(g, rows[0], radius, sx);
                     PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
                 }
                 else g.TranslateTransform(0, bordered ? 0 : -sy);
@@ -834,7 +841,7 @@ namespace AntdUI
                         {
                             if (row.row.IsColumn)
                             {
-                                PaintTableBgHeader(g, row.row, radius);
+                                PaintTableBgHeader(g, row.row, radius, sx);
                                 g.ResetTransform();
                                 g.TranslateTransform(-sFixedR, -sy);
                                 PaintTableHeader(g, row.row, forecolumn, column_font, radius);
@@ -866,7 +873,7 @@ namespace AntdUI
                         g.ResetTransform();
                         if (fixedHeader)
                         {
-                            PaintTableBgHeader(g, rows[0], radius);
+                            PaintTableBgHeader(g, rows[0], radius, sx);
                             g.TranslateTransform(-sFixedR, 0);
                             PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
                             g.ResetTransform();

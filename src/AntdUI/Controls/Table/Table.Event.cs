@@ -128,6 +128,11 @@ namespace AntdUI
         public delegate bool EndEditEventHandler(object sender, TableEndEditEventArgs e);
 
         /// <summary>
+        /// 绘制单元格时发生
+        /// </summary>
+        public delegate void CellPaintEventHandler(object sender, TablePaintEventArgs e);
+
+        /// <summary>
         /// 编辑后事件
         /// </summary>
         public delegate void EndEditCompleteEventHandler(object sender, ITableEventArgs e);
@@ -143,6 +148,12 @@ namespace AntdUI
         /// </summary>
         [Description("编辑前文本框样式发生"), Category("行为")]
         public event BeginEditInputStyleEventHandler? CellBeginEditInputStyle;
+
+        /// <summary>
+        /// 绘制单元格时发生
+        /// </summary>
+        [Description("绘制单元格时发生"), Category("行为")]
+        public event CellPaintEventHandler? CellPaint;
 
         /// <summary>
         /// 编辑后发生

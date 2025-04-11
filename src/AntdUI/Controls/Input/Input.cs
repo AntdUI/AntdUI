@@ -1032,6 +1032,88 @@ namespace AntdUI
             SelectionLength = length;
         }
 
+        TextStyle[]? styles;
+        /// <summary>
+        /// 样式
+        /// </summary>
+        /// <param name="start">第一个字符的位置</param>
+        /// <param name="length">字符长度</param>
+        /// <param name="font">字体</param>
+        /// <param name="fore">文本颜色</param>
+        /// <param name="back">背景颜色</param>
+        public void SetStyle(int start, int length, Font? font = null, Color? fore = null, Color? back = null)
+        {
+            var data = new TextStyle(start, length, font, fore, back);
+            if (styles == null) styles = new TextStyle[] { data };
+            else
+            {
+                var tmp = new List<TextStyle>(styles.Length + 1);
+                tmp.AddRange(styles);
+                tmp.Add(data);
+                styles = tmp.ToArray();
+            }
+            if (SetStyle(data)) Invalidate();
+        }
+
+        void SetStyle()
+        {
+            if (styles == null) return;
+            foreach (var it in styles) SetStyle(it);
+        }
+        bool SetStyle(TextStyle style)
+        {
+            if (cache_font == null) return false;
+            int len = style.Start + style.Length;
+            if (style.Start < 0 || len > cache_font.Length) return false;
+            for (int i = style.Start; i < len; i++)
+            {
+                var it = cache_font[i];
+                it.font = style.Font;
+                it.fore = style.Fore;
+                it.back = style.Back;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 清空样式
+        /// </summary>
+        public void ClearStyle()
+        {
+            styles = null;
+            Invalidate();
+        }
+
+        public class TextStyle
+        {
+            public TextStyle(int start, int length, Font? font, Color? fore, Color? back)
+            {
+                Start = start;
+                Length = length;
+                Font = font;
+                Fore = fore;
+                Back = back;
+            }
+
+            public int Start { get; set; }
+            public int Length { get; set; }
+
+            /// <summary>
+            /// 字体
+            /// </summary>
+            public Font? Font { get; set; }
+
+            /// <summary>
+            /// 文本颜色
+            /// </summary>
+            public Color? Fore { get; set; }
+
+            /// <summary>
+            /// 背景色
+            /// </summary>
+            public Color? Back { get; set; }
+        }
+
         /// <summary>
         /// 选择所有文本
         /// </summary>

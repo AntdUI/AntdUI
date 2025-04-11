@@ -111,6 +111,7 @@ namespace AntdUI
                         }
                         for (int i = 0; i < font_widths.Count; i++) { font_widths[i].i = i; }
                         cache_font = font_widths.ToArray();
+                        SetStyle();
                     }
                     CaretInfo.Height = font_height;
                     CalculateRect();
@@ -209,6 +210,7 @@ namespace AntdUI
                         }
                         for (int i = 0; i < font_widths.Count; i++) { font_widths[i].i = i; }
                         cache_font = font_widths.ToArray();
+                        SetStyle();
                         CaretInfo.Height = font_height;
                         CalculateRect();
                         GC.Collect();
@@ -235,6 +237,25 @@ namespace AntdUI
             public bool emoji { get; set; }
             public int width { get; set; }
             internal bool show { get; set; }
+
+            #region 样式
+
+            /// <summary>
+            /// 字体
+            /// </summary>
+            public Font? font { get; set; }
+
+            /// <summary>
+            /// 文本颜色
+            /// </summary>
+            public Color? fore { get; set; }
+
+            /// <summary>
+            /// 背景色
+            /// </summary>
+            public Color? back { get; set; }
+
+            #endregion
 
             public override string ToString() => text;
         }
