@@ -156,6 +156,23 @@ namespace AntdUI
             }
         }
 
+        int _gapTree = 12;
+        /// <summary>
+        /// 树间距
+        /// </summary>
+        [Description("树间距"), Category("外观"), DefaultValue(12)]
+        public int GapTree
+        {
+            get => _gapTree;
+            set
+            {
+                if (_gapTree == value) return;
+                _gapTree = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(GapTree));
+            }
+        }
+
         bool fixedHeader = true;
         /// <summary>
         /// 固定表头
@@ -1250,6 +1267,11 @@ namespace AntdUI
         /// 点击时自动改变选中状态
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+        public Column SetAutoCheck(bool value = false)
+        {
+            AutoCheck = value;
+            return this;
+        }
 
         void OnCheck()
         {
@@ -1338,6 +1360,11 @@ namespace AntdUI
         /// 点击时自动改变选中状态
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+        public Column SetAutoCheck(bool value = false)
+        {
+            AutoCheck = value;
+            return this;
+        }
 
         public Func<bool, object?, int, int, bool>? Call { get; set; }
 
@@ -1371,6 +1398,11 @@ namespace AntdUI
         /// 点击时自动改变选中状态
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+        public Column SetAutoCheck(bool value = false)
+        {
+            AutoCheck = value;
+            return this;
+        }
 
         public Func<bool, object?, int, int, bool>? Call { get; set; }
 

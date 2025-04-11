@@ -187,11 +187,39 @@ namespace AntdUI
         [Description("常规缩进"), Category("外观"), DefaultValue(false)]
         public bool Indent { get; set; }
 
+        bool unique = false;
         /// <summary>
         /// 只保持一个子菜单的展开
         /// </summary>
         [Description("只保持一个子菜单的展开"), Category("外观"), DefaultValue(false)]
-        public bool Unique { get; set; }
+        public bool Unique
+        {
+            get => unique;
+            set
+            {
+                if (unique == value) return;
+                unique = value;
+                if (unique) UniqueHand(items);
+            }
+        }
+
+        void UniqueHand(MenuItemCollection? items)
+        {
+            if (items == null) return;
+            foreach (var item in items)
+            {
+                if (item.Expand)
+                {
+                    UniqueHand(item.Sub);
+                    foreach (var it in items)
+                    {
+                        if (item == it) continue;
+                        it.Expand = false;
+                    }
+                    return;
+                }
+            }
+        }
 
         /// <summary>
         /// 显示子菜单背景

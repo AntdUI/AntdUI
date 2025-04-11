@@ -418,7 +418,7 @@ namespace AntdUI
                         count++;
                         SleepGear(count);
                     }
-                    else if (y + CaretInfo.Height > rect_text.Height)
+                    else if (y + CaretInfo.Height > rect_text.Bottom)
                     {
                         int value = ScrollY + tosize;
                         ScrollY = value;
@@ -444,7 +444,7 @@ namespace AntdUI
                         count++;
                         SleepGear(count);
                     }
-                    else if (x + CaretInfo.Width > rect_text.Width)
+                    else if (x + CaretInfo.Width > rect_text.Right)
                     {
                         int value = ScrollX + tosize;
                         ScrollX = value;
