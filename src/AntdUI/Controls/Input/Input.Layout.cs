@@ -307,7 +307,7 @@ namespace AntdUI
                             it.ret = true;
                             it.line = line;
                             line++;
-                            if (usex == 0 && usey == 0) it.rect2 = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
+                            it.rect2 = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
                             if (retindex > 0) _retnot.Add(rectText.Y + usey - lineHeight);
                             usey += lineHeight;
                             usex = 0;

@@ -1518,7 +1518,7 @@ namespace AntdUI
                             // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
                             int currentMinDistance = Math.Abs(x - (it.rect.X + it.rect.Width / 2));
                             // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
-                            if (currentMinDistance < minDistance)
+                            if (currentMinDistance < minDistance || (result != null && result.ret))
                             {
                                 minDistance = currentMinDistance;
                                 result = it;
@@ -1541,7 +1541,7 @@ namespace AntdUI
                 // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
                 int currentMinDistance = Math.Abs(y - (it.rect.Y + it.rect.Height / 2));
                 // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
-                if (currentMinDistance < minDistance)
+                if (currentMinDistance < minDistance || (currentMinDistance == minDistance && result != null && result.ret))
                 {
                     two = false;
                     minDistance = currentMinDistance;

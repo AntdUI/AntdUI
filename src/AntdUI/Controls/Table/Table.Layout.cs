@@ -784,13 +784,9 @@ namespace AntdUI
                     if (value is bool check) value_check = check;
                     AddRows(ref cells, new TCellSwitch(this, columnSwitch, prop, ov, value_check));
                 }
-                else if (column.GetType().IsSubclassOf(typeof(TemplateColumn)))
-                {
-                    var tc = (TemplateColumn)column;
-                    AddRows(ref cells, tc.CreateCell(this, tc, prop, ov, ref processing, value));
-                }
                 else if (value is IList<ICell> icells) AddRows(ref cells, new Template(this, column, prop, ov, ref processing, icells));
                 else if (value is ICell icell) AddRows(ref cells, new Template(this, column, prop, ov, ref processing, new ICell[] { icell }));
+                else if (column is TemplateColumn tc) AddRows(ref cells, tc.CreateCell(this, tc, prop, ov, ref processing, value));
                 else cells.Add(new TCellText(this, column, prop, ov, value.ToString()));
             }
             if (ov is INotifyPropertyChanged notify)

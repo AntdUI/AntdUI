@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Common;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
@@ -1413,7 +1412,6 @@ namespace AntdUI
         public new Func<object?, object, int, object?>? Render { get; }
     }
 
-
     public class TemplateColumn : Column
     {
         /// <summary>
@@ -1423,17 +1421,10 @@ namespace AntdUI
         /// <param name="title">显示文字</param>
         public TemplateColumn(string key, string title) : base(key, title) { }
 
-        internal virtual Table.Template CreateCell(Table table, TemplateColumn column, PropertyDescriptor? prop, object? ov, ref int processing, object value)
-        {
-            var cell = GetCellValue(value);
-            return new Table.Template(table, column, prop, ov, ref processing, new ICell[] { cell });
-        }
+        internal virtual Table.Template CreateCell(Table table, TemplateColumn column, PropertyDescriptor? prop, object? ov, ref int processing, object value) =>
+            new Table.Template(table, column, prop, ov, ref processing, new ICell[] { GetCellValue(value) });
 
-
-        public virtual ICell GetCellValue(object value)
-        {
-            return new CellText(value?.ToString());
-        }
+        public virtual ICell GetCellValue(object? value) => new CellText(value?.ToString() ?? string.Empty);
     }
 
     /// <summary>
