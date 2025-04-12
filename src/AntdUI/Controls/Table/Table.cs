@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
@@ -1410,6 +1411,29 @@ namespace AntdUI
         /// 插槽
         /// </summary>
         public new Func<object?, object, int, object?>? Render { get; }
+    }
+
+
+    public class TemplateColumn : Column
+    {
+        /// <summary>
+        /// 表头
+        /// </summary>
+        /// <param name="key">绑定名称</param>
+        /// <param name="title">显示文字</param>
+        public TemplateColumn(string key, string title) : base(key, title) { }
+
+        internal virtual Table.Template CreateCell(Table table, TemplateColumn column, PropertyDescriptor? prop, object? ov, ref int processing, object value)
+        {
+            var cell = GetCellValue(value);
+            return new Table.Template(table, column, prop, ov, ref processing, new ICell[] { cell });
+        }
+
+
+        public virtual ICell GetCellValue(object value)
+        {
+            return new CellText(value?.ToString());
+        }
     }
 
     /// <summary>
