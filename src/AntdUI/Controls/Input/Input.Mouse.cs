@@ -130,7 +130,7 @@ namespace AntdUI
                 if (index > selectionStart) selectionStartTemp = selectionStart;
                 else selectionStartTemp = index;
                 SetCaretPostion(index);
-                if (ScrollYShow) Window.CanHandMessage = false;
+                Window.CanHandMessage = false;
             }
             else
             {

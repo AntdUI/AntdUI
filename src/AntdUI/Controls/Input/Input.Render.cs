@@ -192,44 +192,7 @@ namespace AntdUI
             if (multiline) g.SetClip(rect_text);
             else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
             else g.SetClip(new Rectangle(rect_text.X, 0, rect_text.Width, Height));
-            if (cache_font != null)
-            {
-                g.TranslateTransform(-ScrollX, -ScrollY);
-                PaintTextSelected(g, cache_font);
-                using (var fore = new SolidBrush(_fore))
-                {
-                    if (HasEmoji)
-                    {
-                        using (var font = new Font(EmojiFont, Font.Size))
-                        {
-                            foreach (var it in cache_font)
-                            {
-                                it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
-                                if (it.show)
-                                {
-                                    if (IsPassWord) g.String(PassWordChar, Font, fore, it.rect, sf_font);
-                                    else if (it.emoji) g.String(it.text, font, fore, it.rect, sf_font);
-                                    else g.String(it.text, Font, fore, it.rect, sf_font);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var it in cache_font)
-                        {
-                            it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
-                            if (it.show)
-                            {
-                                if (it.ret) continue;
-                                if (IsPassWord) g.String(PassWordChar, Font, fore, it.rect, sf_font);
-                                else g.String(it.text, Font, fore, it.rect, sf_font);
-                            }
-                        }
-                    }
-                }
-                g.ResetTransform();
-            }
+            if (cache_font != null) PaintText(g, _fore, w, h, cache_font);
             else if (PlaceholderText != null && ShowPlaceholder)
             {
                 using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Colour.TextQuaternary.Get("Input")))
@@ -252,6 +215,68 @@ namespace AntdUI
                 g.ResetTransform();
                 g.ResetClip();
             }
+        }
+        void PaintText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
+        {
+            g.TranslateTransform(-ScrollX, -ScrollY);
+            if (ScrollYShow)
+            {
+                var tmp = new List<CacheFont>(cache_font.Length);
+                foreach (var it in cache_font)
+                {
+                    it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
+                    if (it.show) tmp.Add(it);
+                }
+                PaintText(g, _fore, cache_font, tmp);
+            }
+            else if (ScrollXShow)
+            {
+                var tmp = new List<CacheFont>(cache_font.Length);
+                foreach (var it in cache_font)
+                {
+                    it.show = it.rect.X > ScrollX - it.rect.Width && it.rect.Right < ScrollX + w + it.rect.Width;
+                    if (it.show) tmp.Add(it);
+                }
+                PaintText(g, _fore, cache_font, tmp);
+            }
+            else PaintText(g, _fore, cache_font, cache_font);
+            g.ResetTransform();
+        }
+        void PaintText(Canvas g, Color _fore, CacheFont[] cache_font, IList<CacheFont> tmp)
+        {
+            if (styles != null)
+            {
+                foreach (var it in tmp)
+                {
+                    if (it.back.HasValue) g.Fill(it.back.Value, it.rect);
+                }
+            }
+            PaintTextSelected(g, cache_font);
+            using (var fore = new SolidBrush(_fore))
+            {
+                if (HasEmoji)
+                {
+                    using (var font = new Font(EmojiFont, Font.Size))
+                    {
+                        foreach (var it in tmp)
+                        {
+                            if (IsPassWord) String(g, PassWordChar, Font, it, fore);
+                            else if (it.emoji) String(g, it.text, font, it, fore);
+                            else String(g, it.text, Font, it, fore);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var it in tmp)
+                    {
+                        if (it.ret) continue;
+                        if (IsPassWord) String(g, PassWordChar, Font, it, fore);
+                        else String(g, it.text, Font, it, fore);
+                    }
+                }
+            }
+            g.ResetTransform();
         }
         void PaintTextSelected(Canvas g, CacheFont[] cache_font)
         {
@@ -280,6 +305,12 @@ namespace AntdUI
                 }
                 catch { }
             }
+        }
+
+        void String(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
+        {
+            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect, sf_font);
+            else g.String(text, cache.font ?? font, brush, cache.rect, sf_font);
         }
 
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }
@@ -418,7 +449,7 @@ namespace AntdUI
                         count++;
                         SleepGear(count);
                     }
-                    else if (y + CaretInfo.Height > rect_text.Height)
+                    else if (y + CaretInfo.Height > rect_text.Bottom)
                     {
                         int value = ScrollY + tosize;
                         ScrollY = value;
@@ -444,7 +475,7 @@ namespace AntdUI
                         count++;
                         SleepGear(count);
                     }
-                    else if (x + CaretInfo.Width > rect_text.Width)
+                    else if (x + CaretInfo.Width > rect_text.Right)
                     {
                         int value = ScrollX + tosize;
                         ScrollX = value;

@@ -880,6 +880,7 @@ namespace AntdUI
                 {
                     selectItem = item;
                     it.Select = true;
+                    OnSelectChanged(it, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                     return true;
                 }
                 if (Select(it.items, item)) return true;

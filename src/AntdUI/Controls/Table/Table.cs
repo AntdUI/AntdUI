@@ -156,6 +156,23 @@ namespace AntdUI
             }
         }
 
+        int _gapTree = 12;
+        /// <summary>
+        /// 树间距
+        /// </summary>
+        [Description("树间距"), Category("外观"), DefaultValue(12)]
+        public int GapTree
+        {
+            get => _gapTree;
+            set
+            {
+                if (_gapTree == value) return;
+                _gapTree = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(GapTree));
+            }
+        }
+
         bool fixedHeader = true;
         /// <summary>
         /// 固定表头
@@ -1250,6 +1267,11 @@ namespace AntdUI
         /// 点击时自动改变选中状态
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+        public Column SetAutoCheck(bool value = false)
+        {
+            AutoCheck = value;
+            return this;
+        }
 
         void OnCheck()
         {
@@ -1338,6 +1360,11 @@ namespace AntdUI
         /// 点击时自动改变选中状态
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+        public Column SetAutoCheck(bool value = false)
+        {
+            AutoCheck = value;
+            return this;
+        }
 
         public Func<bool, object?, int, int, bool>? Call { get; set; }
 
@@ -1371,6 +1398,11 @@ namespace AntdUI
         /// 点击时自动改变选中状态
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+        public Column SetAutoCheck(bool value = false)
+        {
+            AutoCheck = value;
+            return this;
+        }
 
         public Func<bool, object?, int, int, bool>? Call { get; set; }
 
@@ -1378,6 +1410,21 @@ namespace AntdUI
         /// 插槽
         /// </summary>
         public new Func<object?, object, int, object?>? Render { get; }
+    }
+
+    public class TemplateColumn : Column
+    {
+        /// <summary>
+        /// 表头
+        /// </summary>
+        /// <param name="key">绑定名称</param>
+        /// <param name="title">显示文字</param>
+        public TemplateColumn(string key, string title) : base(key, title) { }
+
+        internal virtual Table.Template CreateCell(Table table, TemplateColumn column, PropertyDescriptor? prop, object? ov, ref int processing, object value) =>
+            new Table.Template(table, column, prop, ov, ref processing, new ICell[] { GetCellValue(value) });
+
+        public virtual ICell GetCellValue(object? value) => new CellText(value?.ToString() ?? string.Empty);
     }
 
     /// <summary>

@@ -218,9 +218,14 @@ namespace AntdUI
                 {
                     DisposeAnimation();
                     SetAnimateValue(end_X, end_Y, 240);
+                    Print(true);
                 });
             }
-            else SetAnimateValue(end_X, end_Y, 240);
+            else
+            {
+                SetAnimateValue(end_X, end_Y, 240);
+                Print(true);
+            }
         }
 
         #endregion

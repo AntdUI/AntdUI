@@ -795,7 +795,6 @@ namespace AntdUI
 
         CELL? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
         {
-            mode = 0;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
             foreach (RowTemplate it in rows)
@@ -804,200 +803,169 @@ namespace AntdUI
                 {
                     if (fixedHeader)
                     {
-                        if (it.CONTAINS(ex, ey))
+                        if (CellContainsFixed(it, ex, ey, sx, sy, px, py, out var tmp))
                         {
                             mode = 2;
-                            var hasi = new List<int>();
-                            if (showFixedColumnL && fixedColumnL != null)
-                            {
-                                foreach (var i in fixedColumnL)
-                                {
-                                    hasi.Add(i);
-                                    var cel = it.cells[i];
-                                    if (cel.CONTAIN(ex, ey))
-                                    {
-                                        r_x = ex;
-                                        r_y = ey;
+                            r_x = tmp!.r_x;
+                            r_y = tmp.r_y;
+                            offset_x = tmp.offset_x;
+                            offset_xi = tmp.offset_xi;
+                            offset_y = tmp.offset_y;
 
-                                        offset_x = offset_xi = 0;
-                                        offset_y = sy;
-
-                                        i_row = it.INDEX;
-                                        i_cel = i;
-                                        return cel;
-                                    }
-                                }
-                            }
-                            if (showFixedColumnR && fixedColumnR != null)
-                            {
-                                foreach (var i in fixedColumnR)
-                                {
-                                    hasi.Add(i);
-                                    var cel = it.cells[i];
-                                    if (cel.CONTAIN(ex + sFixedR, ey))
-                                    {
-                                        r_x = ex + sFixedR;
-                                        r_y = ey;
-
-                                        offset_x = -sFixedR;
-                                        offset_xi = sFixedR;
-                                        offset_y = sy;
-
-                                        i_row = it.INDEX;
-                                        i_cel = i;
-                                        return cel;
-                                    }
-                                }
-                            }
-                            for (int i = 0; i < it.cells.Length; i++)
-                            {
-                                if (hasi.Contains(i)) continue;
-                                var cel = it.cells[i];
-                                if (cel.CONTAIN(px, ey))
-                                {
-                                    r_x = px;
-                                    r_y = ey;
-
-                                    offset_x = offset_xi = sx;
-                                    offset_y = sy;
-
-                                    i_row = it.INDEX;
-                                    i_cel = i;
-                                    return cel;
-                                }
-                            }
+                            i_row = tmp.i_row;
+                            i_cel = tmp.i_cel;
+                            return tmp.cell;
                         }
                     }
                     else if (it.CONTAINS(ex, py))
                     {
-                        mode = 1;
-                        var hasi = new List<int>();
-                        if (showFixedColumnL && fixedColumnL != null)
+                        if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                         {
-                            foreach (var i in fixedColumnL)
-                            {
-                                hasi.Add(i);
-                                var cel = it.cells[i];
-                                if (cel.CONTAIN(ex, py))
-                                {
-                                    r_x = ex;
-                                    r_y = py;
+                            mode = 1;
+                            r_x = tmp!.r_x;
+                            r_y = tmp.r_y;
+                            offset_x = tmp.offset_x;
+                            offset_xi = tmp.offset_xi;
+                            offset_y = tmp.offset_y;
 
-                                    offset_x = offset_xi = 0;
-                                    offset_y = sy;
-
-                                    i_row = it.INDEX;
-                                    i_cel = i;
-                                    return cel;
-                                }
-                            }
-                        }
-                        if (showFixedColumnR && fixedColumnR != null)
-                        {
-                            foreach (var i in fixedColumnR)
-                            {
-                                hasi.Add(i);
-                                var cel = it.cells[i];
-                                if (cel.CONTAIN(ex + sFixedR, py))
-                                {
-                                    r_x = ex + sFixedR;
-                                    r_y = py;
-
-                                    offset_x = -sFixedR;
-                                    offset_xi = sFixedR;
-                                    offset_y = sy;
-
-                                    i_row = it.INDEX;
-                                    i_cel = i;
-                                    return cel;
-                                }
-                            }
-                        }
-                        for (int i = 0; i < it.cells.Length; i++)
-                        {
-                            if (hasi.Contains(i)) continue;
-                            var cel = it.cells[i];
-                            if (cel.CONTAIN(px, py))
-                            {
-                                r_x = px;
-                                r_y = py;
-
-                                offset_x = offset_xi = sx;
-                                offset_y = sy;
-
-                                i_row = it.INDEX;
-                                i_cel = i;
-                                return cel;
-                            }
+                            i_row = tmp.i_row;
+                            i_cel = tmp.i_cel;
+                            return tmp.cell;
                         }
                     }
                 }
                 else if (it.Type == RowType.Summary) continue;
                 else if (it.Contains(ex, py, sethover))
                 {
-                    var hasi = new List<int>();
-                    if (showFixedColumnL && fixedColumnL != null)
+                    if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                     {
-                        foreach (var i in fixedColumnL)
-                        {
-                            hasi.Add(i);
-                            var cel = it.cells[i];
-                            if (cel.CONTAIN(ex, py))
-                            {
-                                r_x = ex;
-                                r_y = py;
+                        mode = 0;
+                        r_x = tmp!.r_x;
+                        r_y = tmp.r_y;
+                        offset_x = tmp.offset_x;
+                        offset_xi = tmp.offset_xi;
+                        offset_y = tmp.offset_y;
 
-                                offset_x = offset_xi = 0;
-                                offset_y = sy;
-
-                                i_row = it.INDEX;
-                                i_cel = i;
-                                return cel;
-                            }
-                        }
-                    }
-                    if (showFixedColumnR && fixedColumnR != null)
-                    {
-                        foreach (var i in fixedColumnR)
-                        {
-                            hasi.Add(i);
-                            var cel = it.cells[i];
-                            if (cel.CONTAIN(ex + sFixedR, py))
-                            {
-                                r_x = ex + sFixedR;
-                                r_y = py;
-
-                                offset_x = -sFixedR;
-                                offset_xi = sFixedR;
-                                offset_y = sy;
-
-                                i_row = it.INDEX;
-                                i_cel = i;
-                                return cel;
-                            }
-                        }
-                    }
-                    for (int i = 0; i < it.cells.Length; i++)
-                    {
-                        if (hasi.Contains(i)) continue;
-                        var cel = it.cells[i];
-                        if (cel.CONTAIN(px, py))
-                        {
-                            r_x = px;
-                            r_y = py;
-
-                            offset_x = offset_xi = sx;
-                            offset_y = sy;
-
-                            i_row = it.INDEX;
-                            i_cel = i;
-                            return cel;
-                        }
+                        i_row = tmp.i_row;
+                        i_cel = tmp.i_cel;
+                        return tmp.cell;
                     }
                 }
             }
+            mode = 0;
             r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
             return null;
+        }
+
+        bool CellContainsFixed(RowTemplate it, int ex, int ey, int sx, int sy, int px, int py, out ContainCellTMP? cell)
+        {
+            var hasi = new List<int>();
+            if (showFixedColumnL && fixedColumnL != null)
+            {
+                foreach (var i in fixedColumnL)
+                {
+                    hasi.Add(i);
+                    var cel = it.cells[i];
+                    if (cel.CONTAIN(ex, ey))
+                    {
+                        cell = new ContainCellTMP(cel, ex, ey, 0, 0, sy, it.INDEX, i);
+                        return true;
+                    }
+                }
+            }
+            if (showFixedColumnR && fixedColumnR != null)
+            {
+                foreach (var i in fixedColumnR)
+                {
+                    hasi.Add(i);
+                    var cel = it.cells[i];
+                    if (cel.CONTAIN(ex + sFixedR, ey))
+                    {
+                        cell = new ContainCellTMP(cel, ex + sFixedR, ey, -sFixedR, sFixedR, sy, it.INDEX, i);
+                        return true;
+                    }
+                }
+            }
+            for (int i = 0; i < it.cells.Length; i++)
+            {
+                if (hasi.Contains(i)) continue;
+                var cel = it.cells[i];
+                if (cel.CONTAIN(px, ey))
+                {
+                    cell = new ContainCellTMP(cel, px, ey, sx, sx, sy, it.INDEX, i);
+                    return true;
+                }
+            }
+            cell = null;
+            return false;
+        }
+
+        bool CellContains(RowTemplate it, int ex, int ey, int sx, int sy, int px, int py, out ContainCellTMP? cell)
+        {
+            var hasi = new List<int>();
+            if (showFixedColumnL && fixedColumnL != null)
+            {
+                foreach (var i in fixedColumnL)
+                {
+                    hasi.Add(i);
+                    var cel = it.cells[i];
+                    if (cel.CONTAIN(ex, py))
+                    {
+                        cell = new ContainCellTMP(cel, ex, py, 0, 0, sy, it.INDEX, i);
+                        return true;
+                    }
+                }
+            }
+            if (showFixedColumnR && fixedColumnR != null)
+            {
+                foreach (var i in fixedColumnR)
+                {
+                    hasi.Add(i);
+                    var cel = it.cells[i];
+                    if (cel.CONTAIN(ex + sFixedR, py))
+                    {
+                        cell = new ContainCellTMP(cel, ex + sFixedR, py, -sFixedR, sFixedR, sy, it.INDEX, i);
+                        return true;
+                    }
+                }
+            }
+            for (int i = 0; i < it.cells.Length; i++)
+            {
+                if (hasi.Contains(i)) continue;
+                var cel = it.cells[i];
+                if (cel.CONTAIN(px, py))
+                {
+                    cell = new ContainCellTMP(cel, px, py, sx, sx, sy, it.INDEX, i);
+                    return true;
+                }
+            }
+            cell = null;
+            return false;
+        }
+
+        class ContainCellTMP
+        {
+            public ContainCellTMP(CELL _cell, int _r_x, int _r_y, int _offset_x, int _offset_xi, int _offset_y, int _i_row, int _i_cel)
+            {
+                cell = _cell;
+                r_x = _r_x;
+                r_y = _r_y;
+                offset_x = _offset_x;
+                offset_xi = _offset_xi;
+                offset_y = _offset_y;
+                i_row = _i_row;
+                i_cel = _i_cel;
+            }
+
+            public CELL cell { get; set; }
+
+            public int r_x { get; set; }
+            public int r_y { get; set; }
+            public int offset_x { get; set; }
+            public int offset_xi { get; set; }
+            public int offset_y { get; set; }
+            public int i_row { get; set; }
+            public int i_cel { get; set; }
         }
 
         #endregion

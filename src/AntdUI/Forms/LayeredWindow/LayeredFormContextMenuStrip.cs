@@ -495,15 +495,37 @@ namespace AntdUI
             if (it.Tag == null) return false;
             if (it.Tag.Sub == null || it.Tag.Sub.Length == 0)
             {
-                IClose();
-                CloseSub();
-                resetEvent = new ManualResetEvent(false);
-                ITask.Run(() =>
+                if (Config.HasAnimation(name))
                 {
-                    if (resetEvent.Wait(false)) return;
-                    if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
-                    config.Control.BeginInvoke(new Action(() => config.Call(it.Tag)));
-                });
+                    IClose();
+                    CloseSub();
+                    resetEvent = new ManualResetEvent(false);
+                    ITask.Run(() =>
+                    {
+                        if (resetEvent.Wait(false)) return;
+                        if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
+                        config.Control.BeginInvoke(new Action(() => config.Call(it.Tag)));
+                    });
+                }
+                else
+                {
+                    if (config.CallSleep > 0)
+                    {
+                        IClose();
+                        CloseSub();
+                        ITask.Run(() =>
+                        {
+                            Thread.Sleep(config.CallSleep);
+                            config.Control.BeginInvoke(new Action(() => config.Call(it.Tag)));
+                        });
+                    }
+                    else
+                    {
+                        IClose();
+                        CloseSub();
+                        config.Call(it.Tag);
+                    }
+                }
             }
             else
             {

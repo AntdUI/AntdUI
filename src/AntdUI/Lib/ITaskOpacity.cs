@@ -147,9 +147,6 @@ namespace AntdUI
         public int MaxValue { get; set; } = 255;
         public int Value { get; private set; }
         public bool Animation { get; private set; }
-        public void Dispose()
-        {
-            Thread?.Dispose();
-        }
+        public void Dispose() => Thread?.Dispose();
     }
 }

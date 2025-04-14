@@ -565,6 +565,49 @@ namespace AntdUI
         public int RowIndex { get; private set; }
     }
 
+    public class TablePaintEventArgs : EventArgs
+    {
+        public TablePaintEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index)
+        {
+            g = canvas;
+            Rect = rect;
+            RectReal = rectreal;
+            Record = record;
+            RowIndex = rowIndex;
+            Index = index;
+        }
+
+        /// <summary>
+        /// 画板
+        /// </summary>
+        public Canvas g { get; private set; }
+
+        /// <summary>
+        /// 区域
+        /// </summary>
+        public Rectangle Rect { get; private set; }
+
+        /// <summary>
+        /// 真实区域
+        /// </summary>
+        public Rectangle RectReal { get; private set; }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+
+        /// <summary>
+        /// 序号
+        /// </summary>
+        public int Index { get; private set; }
+
+        /// <summary>
+        /// 行序号
+        /// </summary>
+        public int RowIndex { get; private set; }
+    }
+
     public class TableSortModeEventArgs : EventArgs
     {
         public TableSortModeEventArgs(SortMode sortMode, Column column)

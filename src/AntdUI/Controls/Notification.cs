@@ -314,10 +314,7 @@ namespace AntdUI
             else Font = config.Form.Font;
             font_title = config.FontTitle ?? new Font(Font.FontFamily, Font.Size * 1.14F, config.FontStyleTitle ?? Font.Style);
             Icon = config.Form.Icon;
-            Helper.GDI(g =>
-            {
-                SetSize(RenderMeasure(g, shadow_size));
-            });
+            Helper.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
             close_button = new ITaskOpacity(name, this);
         }
 
