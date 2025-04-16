@@ -308,6 +308,7 @@ namespace AntdUI
                     ScrollBar.OnInvalidate = null;
                     call(old_text == input.Text, input.Text);
                     inEditMode = false;
+                    Focus();
                     if (Modal.ModalCount > 0)
                     {
                         ITask.Run(() =>

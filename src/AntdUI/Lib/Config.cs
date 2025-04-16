@@ -186,6 +186,11 @@ namespace AntdUI
         /// </summary>
         public static int ScrollMinSizeY { get; set; } = 30;
 
+        /// <summary>
+        /// 滚动条的像素步长
+        /// </summary>
+        public static int ScrollStep { get; set; } = 80;
+
         #endregion
 
         #region DPI

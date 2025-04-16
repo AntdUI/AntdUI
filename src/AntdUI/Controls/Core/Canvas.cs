@@ -141,10 +141,16 @@ namespace AntdUI
         void DrawPie(Color color, float width, Rectangle rect, float startAngle, float sweepAngle);
         void DrawPie(Color color, float width, RectangleF rect, float startAngle, float sweepAngle);
 
+        void DrawLine(Color color, float width, Point points, Point points2);
+        void DrawLine(Color color, float width, PointF points, PointF points2);
+        void DrawLine(Color color, float width, int x, int y, int x2, int y2);
+        void DrawLine(Color color, float width, float x, float y, float x2, float y2);
+
         void DrawLine(Pen pen, Point points, Point points2);
         void DrawLine(Pen pen, PointF points, PointF points2);
         void DrawLine(Pen pen, int x, int y, int x2, int y2);
         void DrawLine(Pen pen, float x, float y, float x2, float y2);
+
         void DrawLines(Color color, float width, Point[] points);
         void DrawLines(Color color, float width, PointF[] points);
 

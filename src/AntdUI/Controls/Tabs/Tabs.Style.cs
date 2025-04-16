@@ -597,10 +597,12 @@ namespace AntdUI
             public void SelectedIndexChanged(int i, int old) => SetRect(old, i);
             public void Dispose() => ThreadBar?.Dispose();
 
-            public void MouseWheel(int delta)
+            public void MouseWheel(int Delta)
             {
                 if (owner != null && owner.scroll_show)
                 {
+                    if (Delta == 0) return;
+                    int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
                     switch (owner.Alignment)
                     {
                         case TabAlignment.Left:
@@ -1357,10 +1359,12 @@ namespace AntdUI
                     }
                 }
             }
-            public void MouseWheel(int delta)
+            public void MouseWheel(int Delta)
             {
                 if (owner != null && owner.scroll_show)
                 {
+                    if (Delta == 0) return;
+                    int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
                     switch (owner.Alignment)
                     {
                         case TabAlignment.Left:
@@ -2245,10 +2249,12 @@ namespace AntdUI
                 }
             }
 
-            public void MouseWheel(int delta)
+            public void MouseWheel(int Delta)
             {
                 if (owner != null && owner.scroll_show)
                 {
+                    if (Delta == 0) return;
+                    int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
                     switch (owner.Alignment)
                     {
                         case TabAlignment.Left:

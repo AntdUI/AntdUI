@@ -54,6 +54,7 @@ namespace AntdUI
         {
             if (IsHandleCreated)
             {
+                if (pauseLayout) return false;
                 var rect = ClientRectangle;
                 if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
                 else show_oldrect = null;
@@ -1070,7 +1071,7 @@ namespace AntdUI
             {
                 if (cel.VALUE is AntItem arow) arow.value = value;
             }
-            else cel.PROPERTY.SetValue(cel.VALUE, Convert.ChangeType(value, cel.PROPERTY.PropertyType));
+            else cel.PROPERTY.SetValue(cel.VALUE, value);
         }
 
         bool RowISelect(RowTemplate row)

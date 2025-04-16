@@ -222,10 +222,7 @@ namespace AntdUI
             var point = control.PointToScreen(Point.Empty);
             var screen = Screen.FromPoint(point).WorkingArea;
             maxWidth = screen.Width;
-            Helper.GDI(g =>
-            {
-                SetSize(this.RenderMeasure(g, maxWidth, out multiline));
-            });
+            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline)));
             if (component is Tooltip.Config config)
             {
                 if (config.Offset is RectangleF rectf) SetLocation(ArrowAlign.AlignPoint(new Rectangle(point.X + (int)rectf.X, point.Y + (int)rectf.Y, (int)rectf.Width, (int)rectf.Height), TargetRect.Width, TargetRect.Height));

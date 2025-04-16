@@ -281,11 +281,12 @@ namespace AntdUI
             return true;
         }
 
-        public bool MouseWheel(int delta)
+        public bool MouseWheel(int Delta)
         {
-            if (Show && delta != 0)
+            if (Show && Delta != 0)
             {
-                Value -= delta;//120
+                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+                Value -= delta;
                 return true;
             }
             return false;

@@ -517,9 +517,10 @@ namespace AntdUI
         public static GraphicsPath RoundPath(this RectangleF rect, float radius, bool TL, bool TR, bool BR, bool BL)
         {
             var path = new GraphicsPath();
-            if (radius <= 0F) path.AddRectangle(rect);
-            else
+            if (radius > 0)
             {
+                radius = Math.Min(radius, Math.Min(rect.Width, rect.Height) / 2);
+
                 float diameter = radius * 2F;
                 var arc = new RectangleF(rect.X, rect.Y, diameter, diameter);
 
@@ -544,6 +545,7 @@ namespace AntdUI
 
                 path.CloseFigure();
             }
+            else path.AddRectangle(rect);
             return path;
         }
 
@@ -611,11 +613,7 @@ namespace AntdUI
                     arc.Y = rect.Bottom - diameter;
                     path.AddArc(arc, 0, 180);
                 }
-                else
-                {
-                    // Circle
-                    path.AddEllipse(rect);
-                }
+                else path.AddEllipse(rect);// Circle
             }
             else path.AddEllipse(rect);
             path.CloseFigure();

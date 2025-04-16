@@ -832,6 +832,12 @@ namespace AntdUI
         [Description("文本最大长度"), Category("行为"), DefaultValue(32767)]
         public int MaxLength { get; set; } = 32767;
 
+        /// <summary>
+        /// 形态
+        /// </summary>
+        [Description("形态"), Category("外观"), DefaultValue(TVariant.Outlined)]
+        public TVariant Variant { get; set; }
+
         #region 密码框
 
         bool IsPassWord = false;
@@ -970,10 +976,7 @@ namespace AntdUI
         /// <summary>
         /// 取消全部选中
         /// </summary>
-        public void DeselectAll()
-        {
-            SelectionLength = 0;
-        }
+        public void DeselectAll() => SelectionLength = 0;
 
         /// <summary>
         /// 撤消
@@ -1205,7 +1208,35 @@ namespace AntdUI
             SpeedScrollTo = false;
         }
 
-        string? GetSelectionText()
+        /// <summary>
+        /// 获取设置当前选中文本
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Description("获取设置当前选中文本"), Category("数据"), DefaultValue(null)]
+        public virtual string? SelectedText
+        {
+            get => GetSelectionText();
+            set
+            {
+                if (value == null || string.IsNullOrEmpty(value)) SelectionLength = 0;
+                else
+                {
+                    int index = _text.IndexOf(value);
+                    if (index > -1)
+                    {
+                        SelectionLength = value.Length;
+                        SelectionStart = index;
+                        Invalidate();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取当前选中文本
+        /// </summary>
+        public string? GetSelectionText()
         {
             if (cache_font == null) return null;
             else
