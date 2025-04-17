@@ -88,6 +88,22 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 75 74&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
+        ///  &lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;
+        ///    &lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-945.000000, -4572.000000)&quot;&gt;
+        ///      &lt;g id=&quot;编组-3&quot; transform=&quot;translate(945.000000, 4572.000000)&quot;&gt;
+        ///        &lt;!-- 60% Green --&gt;
+        ///        &lt;g id=&quot;Bar-Green&quot; transform=&quot;translate(0, 10)&quot;&gt;
+        ///          &lt;rect id=&quot;Bg&quot; fill=&quot;#e0e0e0&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;50&quot; height=&quot;8&quot; rx=&quot;4&quot;&gt;&lt;/rect&gt;
+        ///      [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Battery {
+            get {
+                return ResourceManager.GetString("Battery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 149 22&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版&quot; transform=&quot;translate(-546.000000, -1162.000000)&quot;&gt;&lt;g id=&quot;Breadcrumb&quot; transform=&quot;translate(546.000000, 1162.000000)&quot;&gt;&lt;rect id=&quot;矩形复制-48&quot; fill=&quot;#F5F5F5&quot; fill-rule=&quot;nonzero&quot; x=&quot;0&quot; y=&quot;6&quot; width=&quot;32&quot; height=&quot;10&quot;&gt;&lt;/rect&gt;&lt;rect id=&quot;矩形复制-49&quot; fill=&quot;#F5F5F5&quot; fill-rule=&quot;nonzero&quot; x=&quot;59&quot; y=&quot;6&quot; width=&quot;32&quot; height=&quot;10&quot;&gt;&lt;/rect&gt;&lt;rect id=&quot;矩形复制-50&quot; fill=&quot;#1677FF&quot; x=&quot;1 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Breadcrumb {
@@ -147,6 +163,15 @@ namespace Demo {
         internal static string ColorPicker {
             get {
                 return ResourceManager.GetString("ColorPicker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg t=&quot;1744710281622&quot; class=&quot;icon&quot; viewBox=&quot;0 0 1024 1024&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; p-id=&quot;5854&quot; width=&quot;64&quot; height=&quot;64&quot;&gt;&lt;path d=&quot;M870.4 51.2H153.6a102.4 102.4 0 0 0-102.4 102.4v716.8a102.4 102.4 0 0 0 102.4 102.4h716.8a102.4 102.4 0 0 0 102.4-102.4V153.6a102.4 102.4 0 0 0-102.4-102.4z m51.2 768a102.4 102.4 0 0 1-102.4 102.4H204.8a102.4 102.4 0 0 1-102.4-102.4V204.8a102.4 102.4 0 0 1 102.4-102.4h614.4a102.4 102.4 0 0 1 102.4 102.4v614.4zM358.4 307.2h460.8V256H358.4v51.2z m0 204.8h460. [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string ContextMenuStrip {
+            get {
+                return ResourceManager.GetString("ContextMenuStrip", resourceCulture);
             }
         }
         
@@ -367,11 +392,29 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg t=&quot;1744710055284&quot; class=&quot;icon&quot; viewBox=&quot;0 0 1024 1024&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; p-id=&quot;2678&quot; width=&quot;64&quot; height=&quot;64&quot;&gt;&lt;path d=&quot;M102 409.542c-10.237 0-20.474-3.905-28.284-11.716-15.621-15.621-15.621-40.947 0-56.568 59.201-59.201 128.208-105.043 205.103-136.254C353.087 174.86 431.541 159.576 512 159.576c80.46 0 158.913 15.284 233.182 45.428 76.896 31.21 145.902 77.053 205.103 136.254 15.621 15.621 15.621 40.948 0 56.568-15.621 15.622-40.947 15.621-56.568 0C791.667 295.777 656.104 239 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Singal {
+            get {
+                return ResourceManager.GetString("Singal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 150 14&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版&quot; transform=&quot;translate(-1270.000000, -2228.000000)&quot;&gt;&lt;g id=&quot;Silder&quot; transform=&quot;translate(1270.000000, 2228.000000)&quot;&gt;&lt;rect id=&quot;Rectangle-20&quot; fill-opacity=&quot;0.04&quot; fill=&quot;#000000&quot; x=&quot;0&quot; y=&quot;5&quot; width=&quot;150&quot; height=&quot;4&quot; rx=&quot;2&quot;&gt;&lt;/rect&gt;&lt;path d=&quot;M1,7 C1,5.8954305 1.89453347,5 3.00606883,5 L73.9939312,5 C75.1018524,5 76,5.88772964 76,7 L76,7 C76,8.1045695 75.10 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Slider {
             get {
                 return ResourceManager.GetString("Slider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg t=&quot;1744710126425&quot; class=&quot;icon&quot; viewBox=&quot;0 0 1024 1024&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; p-id=&quot;3903&quot; width=&quot;64&quot; height=&quot;64&quot;&gt;&lt;path d=&quot;M512 977.92c-257.024 0-465.92-208.896-465.92-465.92S254.976 46.08 512 46.08v119.296c-191.488 0-347.136 155.648-347.136 347.136s155.648 347.136 347.136 347.136 347.136-155.648 347.136-347.136H977.92c0 256.512-208.896 465.408-465.92 465.408z&quot; fill=&quot;#1296db&quot; p-id=&quot;3904&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M512 150.528C312.32 150.528 150.528 312.32 150.528 512S312.32 873.472 512 8 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Spin {
+            get {
+                return ResourceManager.GetString("Spin", resourceCulture);
             }
         }
         
