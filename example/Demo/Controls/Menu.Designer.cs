@@ -136,7 +136,7 @@ namespace Demo.Controls
             divider1.Orientation = AntdUI.TOrientation.Left;
             divider1.Size = new Size(1300, 28);
             divider1.TabIndex = 1;
-            divider1.Text = "顶部导航\r\n";
+            divider1.Text = "顶部导航";
             // 
             // menu1
             // 
@@ -181,7 +181,7 @@ namespace Demo.Controls
             divider2.Orientation = AntdUI.TOrientation.Left;
             divider2.Size = new Size(650, 28);
             divider2.TabIndex = 3;
-            divider2.Text = "内嵌菜单\r\n";
+            divider2.Text = "内嵌菜单";
             // 
             // menu2
             // 
@@ -381,7 +381,7 @@ namespace Demo.Controls
             divider3.Orientation = AntdUI.TOrientation.Left;
             divider3.Size = new Size(650, 28);
             divider3.TabIndex = 3;
-            divider3.Text = "垂直菜单\r\n";
+            divider3.Text = "垂直菜单";
             // 
             // Menu
             // 

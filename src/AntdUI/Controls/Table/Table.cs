@@ -78,7 +78,6 @@ namespace AntdUI
                 enableDir.Clear();
                 CellRanges = null;
                 dataSource = value;
-                dataTypeBindingList = value is IBindingList;
                 SortData = null;
                 ScrollBar.Clear();
                 ExtractHeaderFixed();
@@ -687,6 +686,20 @@ namespace AntdUI
 
         #endregion
 
+        bool pauseLayout = false;
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        public bool PauseLayout
+        {
+            get => pauseLayout;
+            set
+            {
+                if (pauseLayout == value) return;
+                pauseLayout = value;
+                if (!value && LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(PauseLayout));
+            }
+        }
+
         #endregion
 
         #region 初始化
@@ -896,6 +909,16 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置排序序号
+        /// </summary>
+        /// <param name="data">序号数据</param>
+        public void SetSortIndex(int[]? data)
+        {
+            SortData = data;
+            if (LoadLayout()) Invalidate();
+        }
+
+        /// <summary>
         /// 获取排序数据
         /// </summary>
         public object[] SortList()
@@ -928,6 +951,16 @@ namespace AntdUI
                 return list;
             }
             else return SortHeader;
+        }
+
+        /// <summary>
+        /// 设置表头排序序号
+        /// </summary>
+        /// <param name="data">序号数据</param>
+        public void SetSortColumnsIndex(int[]? data)
+        {
+            SortHeader = data;
+            if (LoadLayout()) Invalidate();
         }
 
         /// <summary>

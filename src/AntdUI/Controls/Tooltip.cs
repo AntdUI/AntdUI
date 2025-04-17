@@ -222,10 +222,7 @@ namespace AntdUI
             var point = control.PointToScreen(Point.Empty);
             var screen = Screen.FromPoint(point).WorkingArea;
             maxWidth = screen.Width;
-            Helper.GDI(g =>
-            {
-                SetSize(this.RenderMeasure(g, maxWidth, out multiline));
-            });
+            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline)));
             if (component is Tooltip.Config config)
             {
                 if (config.Offset is RectangleF rectf) SetLocation(ArrowAlign.AlignPoint(new Rectangle(point.X + (int)rectf.X, point.Y + (int)rectf.Y, (int)rectf.Width, (int)rectf.Height), TargetRect.Width, TargetRect.Height));
@@ -236,7 +233,7 @@ namespace AntdUI
             control.LostFocus += Control_LostFocus;
             control.MouseLeave += Control_LostFocus;
             if (component.ArrowAlign == TAlign.Left || component.ArrowAlign == TAlign.Right || component.ArrowAlign == TAlign.RB || component.ArrowAlign == TAlign.RT || component.ArrowAlign == TAlign.LT || component.ArrowAlign == TAlign.LB) return;
-            if (TargetRect.X < 0) SetLocationX(0);
+            if (TargetRect.X < screen.X) SetLocationX(screen.X);
             else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
         }
         public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component)
@@ -260,7 +257,7 @@ namespace AntdUI
             });
             SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
             if (component.ArrowAlign == TAlign.Left || component.ArrowAlign == TAlign.Right || component.ArrowAlign == TAlign.RB || component.ArrowAlign == TAlign.RT || component.ArrowAlign == TAlign.LT || component.ArrowAlign == TAlign.LB) return;
-            if (TargetRect.X < 0) SetLocationX(0);
+            if (TargetRect.X < screen.X) SetLocationX(screen.X);
             else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
         }
 

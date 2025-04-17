@@ -59,7 +59,7 @@ namespace Demo.Controls
                 for (int i = 0; i < 100; i++)
                 {
                     Thread.Sleep(10);
-                    config.Text = "加载中 " + (i + 1) + "%";
+                    config.Text = AntdUI.Localization.Get("Loading", "加载中") + " " + (i + 1) + "%";
                     config.Refresh();
                 }
                 Thread.Sleep(1000);

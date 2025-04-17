@@ -1000,9 +1000,9 @@ namespace AntdUI
         internal bool Show { get; set; }
         internal Rectangle rect { get; set; }
 
-        internal bool Contains(Point point, int x, int y)
+        internal bool Contains(int x, int y, int sx, int sy)
         {
-            if (rect.Contains(point.X + x, point.Y + y))
+            if (rect.Contains(x + sx, y + sy))
             {
                 Hover = true;
                 return true;

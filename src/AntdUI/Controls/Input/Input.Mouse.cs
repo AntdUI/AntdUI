@@ -171,7 +171,12 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (ScrollYShow && autoscroll && e.Delta != 0) ScrollY -= e.Delta;
+            if (ScrollYShow && autoscroll)
+            {
+                if (e.Delta == 0) return;
+                int delta = e.Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+                ScrollY -= delta;
+            }
             base.OnMouseWheel(e);
         }
 
@@ -184,7 +189,11 @@ namespace AntdUI
             ScrollYDown = false;
             if (is_clear_down)
             {
-                if (rect_r.Contains(e.Location)) OnClearValue();
+                if (rect_r.Contains(e.Location))
+                {
+                    OnClearValue();
+                    ClearClick?.Invoke(this, e);
+                }
                 is_clear_down = false;
                 return;
             }
@@ -417,6 +426,9 @@ namespace AntdUI
         #endregion
 
         #region 事件
+
+        [Description("清空 点击时发生"), Category("行为")]
+        public event MouseEventHandler? ClearClick = null;
 
         [Description("前缀 点击时发生"), Category("行为")]
         public event MouseEventHandler? PrefixClick = null;

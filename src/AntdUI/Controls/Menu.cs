@@ -520,29 +520,41 @@ namespace AntdUI
         /// </summary>
         public int CollapsedWidth => collapsedWidth;
 
+        bool scroll_show = false, hover_r = false;
+        Rectangle rect_r, rect_r_ico;
         internal void ChangeList()
         {
             var _rect = ClientRectangle;
             if (_rect.Width == 0 || _rect.Height == 0 || pauseLayout || items == null || items.Count == 0) return;
             var rect = _rect.PaddingRect(Padding);
-            int y = 0;
+            int x = 0, y = 0;
             int icon_count = 0;
             Helper.GDI(g =>
             {
-                var lists = items;
                 var size = g.MeasureString(Config.NullText, Font);
                 int icon_size = (int)Math.Ceiling(size.Height * iconratio), gap = icon_size / 2, gapI = gap / 2, gapy = Gap == null ? gapI : (int)(Gap * Config.Dpi), height = size.Height + gap * 2;
-                if (mode == TMenuMode.Horizontal) ChangeListHorizontal(rect, g, lists, 0, icon_size, gap, gapI);
+                if (mode == TMenuMode.Horizontal)
+                {
+                    ChangeListHorizontal(rect, g, items, ref x, icon_size, gap, gapI);
+                    scroll_show = x > rect.Width;
+                    if (scroll_show)
+                    {
+                        rect_r = new Rectangle(rect.Right - rect.Height, rect.Y, rect.Height, rect.Height);
+                        int ico_size = (int)(rect_r.Height * .6F), ico_xy = (rect_r.Height - ico_size) / 2;
+                        rect_r_ico = new Rectangle(rect_r.X + ico_xy, rect_r.Y + ico_xy, ico_size, ico_size);
+                    }
+                }
                 else
                 {
+                    scroll_show = false;
                     collapseWidth = icon_size * 2 + gap + gapI + Padding.Horizontal;
-                    collapsedWidth = ChangeList(rect, g, null, lists, ref y, ref icon_count, height, icon_size, gap, gapy, 0) + Padding.Horizontal;
+                    collapsedWidth = ChangeList(rect, g, null, items, ref y, ref icon_count, height, icon_size, gap, gapy, 0) + Padding.Horizontal;
                     if (AutoCollapse)
                     {
                         if (icon_count > 0) collapsed = collapsedWidth >= _rect.Width;
                         else collapsed = false;
                     }
-                    if (collapsed) ChangeUTitle(lists);
+                    if (collapsed) ChangeUTitle(items);
                 }
             });
             ScrollBar.SetVrSize(y);
@@ -594,7 +606,7 @@ namespace AntdUI
             }
             return collapsedWidth;
         }
-        void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, int x, int icon_size, int gap, int gapI)
+        void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int gap, int gapI)
         {
             foreach (var it in items)
             {
@@ -632,6 +644,7 @@ namespace AntdUI
                 return;
             }
             var g = e.Graphics.High();
+            if (scroll_show) g.SetClip(new Rectangle(rect.X, rect.Y, rect_r.Right - rect_r.Height, rect.Height));
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
             Color scroll_color = Colour.TextBase.Get("Menu", theme), color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get("Menu", theme), back_hover, back_active;
@@ -654,6 +667,18 @@ namespace AntdUI
                 PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
             g.ResetTransform();
+            if (scroll_show)
+            {
+                g.ResetClip();
+                if (hover_r)
+                {
+                    using (var path = Helper.RoundPath(rect_r, _radius))
+                    {
+                        g.Fill(back_hover, path);
+                    }
+                }
+                SvgExtend.GetImgExtend(g, "EllipsisOutlined", rect_r_ico, color_fore);
+            }
             ScrollBar.Paint(g, scroll_color);
             this.PaintBadge(g);
             base.OnPaint(e);
@@ -912,10 +937,14 @@ namespace AntdUI
             if (ScrollBar.MouseDown(e.Location))
             {
                 if (items == null || items.Count == 0) return;
+                if (scroll_show)
+                {
+                    if (rect_r.Contains(e.X, e.Y)) return;
+                }
                 OnTouchDown(e.X, e.Y);
                 foreach (var it in items)
                 {
-                    if (IMouseDown(items, it, e.Location)) return;
+                    if (IMouseDown(items, it, e.X, e.Y)) return;
                 }
             }
         }
@@ -929,17 +958,17 @@ namespace AntdUI
                 foreach (var it in items)
                 {
                     var list = new List<MenuItem> { it };
-                    if (IMouseUp(items, it, list, e.Location, MDown)) return;
+                    if (IMouseUp(items, it, list, e.X, e.Y, MDown)) return;
                 }
             }
         }
 
-        bool IMouseDown(MenuItemCollection items, MenuItem item, Point point)
+        bool IMouseDown(MenuItemCollection items, MenuItem item, int x, int y)
         {
             if (item.Visible)
             {
                 bool can = item.CanExpand;
-                if (item.Enabled && item.Contains(point, 0, ScrollBar.Value, out _))
+                if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
                 {
                     MDown = item;
                     return true;
@@ -948,21 +977,21 @@ namespace AntdUI
                 {
                     foreach (var sub in item.Sub)
                     {
-                        if (IMouseDown(items, sub, point)) return true;
+                        if (IMouseDown(items, sub, x, y)) return true;
                     }
                 }
             }
             return false;
         }
 
-        bool IMouseUp(MenuItemCollection items, MenuItem item, List<MenuItem> list, Point point, MenuItem MDown)
+        bool IMouseUp(MenuItemCollection items, MenuItem item, List<MenuItem> list, int x, int y, MenuItem MDown)
         {
             if (item.Visible)
             {
                 bool can = item.CanExpand;
                 if (MDown == item)
                 {
-                    if (item.Enabled && item.Contains(point, 0, ScrollBar.Value, out _))
+                    if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
                     {
                         if (can)
                         {
@@ -1002,7 +1031,7 @@ namespace AntdUI
                         var list_ = new List<MenuItem>(list.Count + 1);
                         list_.AddRange(list);
                         list_.Add(sub);
-                        if (IMouseUp(items, sub, list_, point, MDown)) return true;
+                        if (IMouseUp(items, sub, list_, x, y, MDown)) return true;
                     }
                 }
             }
@@ -1019,6 +1048,38 @@ namespace AntdUI
                 {
                     if (items == null || items.Count == 0) return;
                     int count = 0, hand = 0;
+                    if (scroll_show)
+                    {
+                        if (rect_r.Contains(e.X, e.Y))
+                        {
+                            if (!hover_r)
+                            {
+                                hover_r = true;
+                                Invalidate();
+                                tooltipForm?.Close();
+                                tooltipForm = null;
+                                subForm?.Close();
+                                subForm = null;
+                                var list = new List<MenuItem>(items.Count);
+                                foreach (var it in items)
+                                {
+                                    if (it.Rect.X > (rect_r.X - it.Rect.Width)) list.Add(it);
+                                }
+                                var _rect = RectangleToScreen(ClientRectangle);
+                                var rect = new Rectangle(_rect.X + rect_r.X, _rect.Y + rect_r.Y, rect_r.Width, rect_r.Height);
+                                subForm = new LayeredFormMenuDown(this, radius, rect, list);
+                                subForm.Show(this);
+                            }
+                            foreach (var it in items) it.Hover = false;
+                            SetCursor(true);
+                            return;
+                        }
+                        else
+                        {
+                            if (hover_r) count++;
+                            hover_r = false;
+                        }
+                    }
                     if (collapsed)
                     {
                         int i = 0, hoveindex = -1;
@@ -1026,7 +1087,7 @@ namespace AntdUI
                         {
                             if (it.show)
                             {
-                                if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
+                                if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
                                 {
                                     hoveindex = i;
                                     hand++;
@@ -1074,7 +1135,7 @@ namespace AntdUI
                     }
                     else if (mode == TMenuMode.Inline)
                     {
-                        foreach (var it in items) IMouseMove(it, e.Location, ref count, ref hand);
+                        foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
                     }
                     else
                     {
@@ -1083,7 +1144,7 @@ namespace AntdUI
                         {
                             if (it.show)
                             {
-                                if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
+                                if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
                                 {
                                     hoveindex = i;
                                     hand++;
@@ -1123,16 +1184,16 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(MenuItem it, Point point, ref int count, ref int hand)
+        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
         {
             if (it.show)
             {
-                if (it.Contains(point, 0, ScrollBar.Value, out var change))
+                if (it.Contains(x, y, 0, ScrollBar.Value, out var change))
                 {
                     hand++;
                 }
                 if (change) count++;
-                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, point, ref count, ref hand);
+                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, x, y, ref count, ref hand);
             }
         }
 
@@ -1694,9 +1755,9 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle arr_rect { get; set; }
 
-        internal bool Contains(Point point, int x, int y, out bool change)
+        internal bool Contains(int x, int y, int sx, int sy, out bool change)
         {
-            if (rect.Contains(point.X + x, point.Y + y))
+            if (rect.Contains(x + sx, y + sy))
             {
                 change = SetHover(true);
                 return true;

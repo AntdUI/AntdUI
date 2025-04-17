@@ -171,18 +171,18 @@ namespace Demo.Controls
                     OkText = "删除"
                 }) == DialogResult.OK)
                 {
-                    table1.Spin("正在加载中...", config =>
+                    table1.Spin(AntdUI.Localization.Get("Loading2", "正在加载中..."), config =>
                     {
                         System.Threading.Thread.Sleep(1000);
                         for (int i = 0; i < 101; i++)
                         {
                             config.Value = i / 100F;
-                            config.Text = "处理中 " + i + "%";
+                            config.Text = AntdUI.Localization.Get("Processing", "处理中") + " " + i + "%";
                             System.Threading.Thread.Sleep(20);
                         }
                         System.Threading.Thread.Sleep(1000);
                         config.Value = null;
-                        config.Text = "请耐心等候...";
+                        config.Text = AntdUI.Localization.Get("PleaseWait", "请耐心等候...");
                         System.Threading.Thread.Sleep(2000);
                     }, () =>
                     {
@@ -227,6 +227,13 @@ namespace Demo.Controls
         }
 
         #endregion
+
+        public class TestColumn : AntdUI.TemplateColumn
+        {
+            public TestColumn(string id, string title) : base(id, title) { }
+            public override AntdUI.ICell GetCellValue(object value) => new AntdUI.CellTag(value.ToString(), AntdUI.TTypeMini.Success);
+        }
+
 
         public class TestClass : AntdUI.NotifyProperty
         {

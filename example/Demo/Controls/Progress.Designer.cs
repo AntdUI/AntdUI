@@ -337,7 +337,7 @@ namespace Demo.Controls
             divider5.Orientation = AntdUI.TOrientation.Left;
             divider5.Size = new Size(368, 28);
             divider5.TabIndex = 21;
-            divider5.Text = "步骤进度条\r\n";
+            divider5.Text = "步骤进度条";
             // 
             // tableLayoutPanel2
             // 

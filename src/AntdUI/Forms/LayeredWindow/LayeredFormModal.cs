@@ -205,11 +205,8 @@ namespace AntdUI
                         w = control.Width + paddingx * 2;
                         wp = control.Width;
                         Controls.Add(control);
-                        control.Disposed += (a, b) =>
-                        {
-                            Close();
-                        };
-                        if (_config.Icon == TType.None)
+                        control.Disposed += (a, b) => Close();
+                        if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
                             if (config.Title == null && !config.CloseIcon)
                             {
@@ -257,7 +254,7 @@ namespace AntdUI
                     {
                         rtext = true;
                         var texts = new List<Rectangle>(list.Count);
-                        if (_config.Icon == TType.None)
+                        if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
                             rectTitle = new Rectangle(paddingx, paddingy, wp, sizeTitle.Height + gap);
@@ -311,7 +308,7 @@ namespace AntdUI
                     {
                         rtext = true;
                         var content = config.Content.ToString();
-                        if (_config.Icon == TType.None)
+                        if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
                             Size sizeTitle = g.MeasureString(config.Title, fontTitle, wp), sizeContent = g.MeasureString(content, Font, wp);
                             int h = sizeTitle.Height + gap + sizeContent.Height + butt_h;
@@ -425,7 +422,8 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
-            if (config.Icon != TType.None) g.PaintIcons(config.Icon, rectIcon, "Modal");
+            if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rectIcon);
+            else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rectIcon, "Modal");
             if (config.CloseIcon)
             {
                 if (close_button.Animation)

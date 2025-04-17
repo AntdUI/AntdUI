@@ -27,7 +27,6 @@ namespace AntdUI
     partial class Table
     {
         TempTable? dataTmp = null;
-        bool dataTypeBindingList = false;
         bool dataOne = true;
         void ExtractData()
         {
@@ -48,6 +47,17 @@ namespace AntdUI
                 ScrollBar.ValueX = ScrollBar.ValueY = 0;
                 return;
             }
+            if (dataSource is BindingSource bindingSource)
+            {
+                bindingSource.ListChanged -= Binding_ListChanged;
+                bindingSource.ListChanged += Binding_ListChanged;
+                ExtractData(bindingSource.DataSource);
+            }
+            else ExtractData(dataSource);
+        }
+
+        void ExtractData(object? dataSource)
+        {
             if (dataSource is DataTable table)
             {
                 if (table.Columns.Count > 0 && table.Rows.Count > 0)
@@ -121,7 +131,6 @@ namespace AntdUI
             dataOne = true;
             if (list == null) return;
             dataSource = list;
-            dataTypeBindingList = false;
             list.action = (code, obj) =>
             {
                 if (dataTmp != null)
@@ -358,7 +367,7 @@ namespace AntdUI
             var columns = new List<TempiColumn>(list.Count);
             foreach (PropertyDescriptor it in list)
             {
-                columns.Add(new TempiColumn(index, it.Name)); index++;
+                columns.Add(new TempiColumn(index, it.DisplayName ?? it.Name)); index++;
                 cells.Add(it.Name, it);
             }
             _columns = columns.ToArray();

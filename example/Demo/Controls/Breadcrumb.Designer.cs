@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using AntdUI;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -50,13 +49,13 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            BreadcrumbItem breadcrumbItem1 = new BreadcrumbItem();
-            BreadcrumbItem breadcrumbItem2 = new BreadcrumbItem();
-            BreadcrumbItem breadcrumbItem3 = new BreadcrumbItem();
-            BreadcrumbItem breadcrumbItem4 = new BreadcrumbItem();
-            BreadcrumbItem breadcrumbItem5 = new BreadcrumbItem();
-            BreadcrumbItem breadcrumbItem6 = new BreadcrumbItem();
-            BreadcrumbItem breadcrumbItem7 = new BreadcrumbItem();
+            AntdUI.BreadcrumbItem breadcrumbItem1 = new AntdUI.BreadcrumbItem();
+            AntdUI.BreadcrumbItem breadcrumbItem2 = new AntdUI.BreadcrumbItem();
+            AntdUI.BreadcrumbItem breadcrumbItem3 = new AntdUI.BreadcrumbItem();
+            AntdUI.BreadcrumbItem breadcrumbItem4 = new AntdUI.BreadcrumbItem();
+            AntdUI.BreadcrumbItem breadcrumbItem5 = new AntdUI.BreadcrumbItem();
+            AntdUI.BreadcrumbItem breadcrumbItem6 = new AntdUI.BreadcrumbItem();
+            AntdUI.BreadcrumbItem breadcrumbItem7 = new AntdUI.BreadcrumbItem();
             header1 = new AntdUI.PageHeader();
             breadcrumb1 = new AntdUI.Breadcrumb();
             breadcrumb2 = new AntdUI.Breadcrumb();

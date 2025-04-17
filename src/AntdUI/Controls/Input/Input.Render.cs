@@ -97,11 +97,22 @@ namespace AntdUI
                     if (borderWidth > 0)
                     {
                         var borWidth = borderWidth * Config.Dpi;
-                        if (AnimationHover) g.Draw(_border.BlendColors(AnimationHoverValue, _borderHover), borWidth, path);
-                        else if (ExtraMouseDown) g.Draw(_borderActive, borWidth, path);
-                        else if (ExtraMouseHover) g.Draw(_borderHover, borWidth, path);
-                        else if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, borWidth, path);
-                        else g.Draw(_border, borWidth, path);
+                        if (Variant == TVariant.Underlined)
+                        {
+                            if (AnimationHover) g.DrawLine(_border.BlendColors(AnimationHoverValue, _borderHover), borWidth, rect_read.X, rect_read.Bottom, rect_read.Right, rect_read.Bottom);
+                            else if (ExtraMouseDown) g.DrawLine(_borderActive, borWidth, rect_read.X, rect_read.Bottom, rect_read.Right, rect_read.Bottom);
+                            else if (ExtraMouseHover) g.DrawLine(_borderHover, borWidth, rect_read.X, rect_read.Bottom, rect_read.Right, rect_read.Bottom);
+                            else if (AnimationBlinkState && colorBlink.HasValue) g.DrawLine(colorBlink.Value, borWidth, rect_read.X, rect_read.Bottom, rect_read.Right, rect_read.Bottom);
+                            else g.DrawLine(_border, borWidth, rect_read.X, rect_read.Bottom, rect_read.Right, rect_read.Bottom);
+                        }
+                        else
+                        {
+                            if (AnimationHover) g.Draw(_border.BlendColors(AnimationHoverValue, _borderHover), borWidth, path);
+                            else if (ExtraMouseDown) g.Draw(_borderActive, borWidth, path);
+                            else if (ExtraMouseHover) g.Draw(_borderHover, borWidth, path);
+                            else if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, borWidth, path);
+                            else g.Draw(_border, borWidth, path);
+                        }
                     }
                 }
                 else

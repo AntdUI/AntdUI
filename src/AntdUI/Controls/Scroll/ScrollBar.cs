@@ -127,6 +127,7 @@ namespace AntdUI
                 showY = value;
                 Invalidate(null);
                 ChangeSize?.Invoke();
+                ShowYChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -148,6 +149,7 @@ namespace AntdUI
                 if (valueY == value) return;
                 valueY = value;
                 Invalidate(null);
+                ValueYChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -239,6 +241,7 @@ namespace AntdUI
                 showX = value;
                 Invalidate(null);
                 ChangeSize?.Invoke();
+                ShowXChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -260,6 +263,7 @@ namespace AntdUI
                 if (valueX == value) return;
                 valueX = value;
                 Invalidate(null);
+                ValueXChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -327,12 +331,9 @@ namespace AntdUI
             }
         }
 
-        public void Clear()
-        {
-            valueX = valueY = 0;
-        }
-
         #endregion
+
+        public void Clear() => valueX = valueY = 0;
 
         #region 布局
 
@@ -788,10 +789,12 @@ namespace AntdUI
         }
 
 
-        public bool MouseWheelX(int delta)
+        public bool MouseWheelX(int Delta)
         {
-            if (EnabledX && ShowX && delta != 0)
+            if (Delta == 0) return false;
+            if (EnabledX && ShowX)
             {
+                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
                 int value = ValueX - delta;
                 ValueX = value;
                 if (ValueX != value) return false;
@@ -800,10 +803,12 @@ namespace AntdUI
             return false;
         }
 
-        public bool MouseWheelY(int delta)
+        public bool MouseWheelY(int Delta)
         {
-            if (EnabledY && ShowY && delta != 0)
+            if (Delta == 0) return false;
+            if (EnabledY && ShowY)
             {
+                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
                 int value = ValueY - delta;
                 ValueY = value;
                 if (ValueY != value) return false;
@@ -811,19 +816,18 @@ namespace AntdUI
             }
             return false;
         }
-        public bool MouseWheel(int delta)
+        public bool MouseWheel(int Delta)
         {
+            if (Delta == 0) return false;
+            int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
             if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift && EnabledX && ShowX)
             {
-                if (delta != 0)
-                {
-                    ValueX -= delta;
-                    return true;
-                }
+                ValueX -= delta;
+                return true;
             }
             else if (EnabledY)
             {
-                if (ShowY && delta != 0)
+                if (ShowY)
                 {
                     ValueY -= delta;
                     return true;
@@ -831,7 +835,7 @@ namespace AntdUI
             }
             else if (EnabledX)
             {
-                if (ShowX && delta != 0)
+                if (ShowX)
                 {
                     ValueX -= delta;
                     return true;
@@ -931,6 +935,15 @@ namespace AntdUI
         ITask? ThreadHoverX = null;
         float AnimationHoverXValue = 0F;
         bool AnimationHoverX = false;
+
+        #endregion
+
+        #region 事件
+
+        public event EventHandler? ShowYChanged;
+        public event EventHandler? ShowXChanged;
+        public event EventHandler? ValueYChanged;
+        public event EventHandler? ValueXChanged;
 
         #endregion
 

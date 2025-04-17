@@ -62,6 +62,8 @@ namespace Demo
                     return "Data Display";
                 case "Feedback":
                     return "Feedback";
+                case "Other":
+                    return "Other";
 
                 case "Setting":
                     return "Setting";
@@ -586,7 +588,72 @@ namespace Demo
                 case "Calendar.divider1":
                     return "Basic";
 
+                //ContextMenuStrip ----------------------------
+                case "ContextMenuStrip.Text":
+                    return "ContextMenuStrip";
+                case "ContextMenuStrip.Description":
+                    return "Right click on the current page at will";
+
+                //Battery ----------------------------
+                case "Battery.Text":
+                    return "Battery";
+                case "Battery.Description":
+                    return "Display device battery level.";
+                case "Battery.Add":
+                    return "Power up";
+                case "Battery.Subtract":
+                    return "Reduce";
+                case "Battery.divider1":
+                    return "Basic";
+                case "Battery.divider2":
+                    return "No text";
+                case "Battery.divider3":
+                    return "Point size";
+
+                //Signal ----------------------------
+                case "Signal.Text":
+                    return "Signal";
+                case "Signal.Description":
+                    return "Display device signals.";
+                case "Signal.Add":
+                    return "Add";
+                case "Signal.Subtract":
+                    return "Subtract";
+                case "Signal.divider1":
+                    return "Basic";
+                case "Signal.divider2":
+                    return "Line style";
+                case "Signal.divider3":
+                    return "Loading";
+
+                //Spin ----------------------------
+                case "Spin.Text":
+                    return "Spin";
+                case "Spin.Description":
+                    return "Used for the loading status of a page or a block.";
+                case "Spin.divider1":
+                    return "Direct use";
+                case "Spin.divider2":
+                    return "Display Text";
+                case "Spin.divider3":
+                    return "Basic";
+                case "Spin.btnPanel":
+                    return "Current container";
+                case "Spin.btnControl":
+                    return "Control above";
+                case "Spin.btnWindow":
+                    return "Entire window";
+
                 #endregion
+
+                case "Loading":
+                    return "LOADING";
+                case "Processing":
+                    return "Processing";
+                case "Loading2":
+                    return "Loading in progress...";
+                case "PleaseWait":
+                    return "Please be patient and wait";
 
                 default:
                     System.Diagnostics.Debug.WriteLine(key);

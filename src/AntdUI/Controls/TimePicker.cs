@@ -132,7 +132,9 @@ namespace AntdUI
         /// <summary>
         /// 展开下拉菜单
         /// </summary>
-        bool ExpandDrop
+        [Browsable(false)]
+        [Description("展开下拉菜单"), Category("行为"), DefaultValue(false)]
+        public bool ExpandDrop
         {
             get => expandDrop;
             set

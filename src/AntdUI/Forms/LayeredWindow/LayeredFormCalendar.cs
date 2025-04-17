@@ -997,7 +997,7 @@ namespace AntdUI
                         {
                             foreach (var it in left_buttons)
                             {
-                                if (it.Contains(e.Location, 0, scrollY_left.Value, out var change)) hand++;
+                                if (it.Contains(e.X, e.Y, 0, scrollY_left.Value, out var change)) hand++;
                                 if (change) count++;
                             }
                         }
@@ -1008,16 +1008,16 @@ namespace AntdUI
                                 switch (it.x)
                                 {
                                     case 1:
-                                        if (it.Contains(e.Location, 0, scrollY_m.Value, out var change1)) hand++;
+                                        if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out var change1)) hand++;
                                         if (change1) count++;
                                         break;
                                     case 2:
-                                        if (it.Contains(e.Location, 0, scrollY_s.Value, out var change2)) hand++;
+                                        if (it.Contains(e.X, e.Y, 0, scrollY_s.Value, out var change2)) hand++;
                                         if (change2) count++;
                                         break;
                                     case 0:
                                     default:
-                                        if (it.Contains(e.Location, 0, scrollY_h.Value, out var change0)) hand++;
+                                        if (it.Contains(e.X, e.Y, 0, scrollY_h.Value, out var change0)) hand++;
                                         if (change0) count++;
                                         break;
                                 }
@@ -1268,7 +1268,7 @@ namespace AntdUI
                         {
                             foreach (var it in left_buttons)
                             {
-                                if (it.Contains(e.Location, 0, scrollY_left.Value, out _))
+                                if (it.Contains(e.X, e.Y, 0, scrollY_left.Value, out _))
                                 {
                                     action_btns(it.Tag);
                                     IClose();
@@ -1284,7 +1284,7 @@ namespace AntdUI
                                 switch (it.x)
                                 {
                                     case 1:
-                                        if (it.Contains(e.Location, 0, scrollY_m.Value, out _))
+                                        if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out _))
                                         {
                                             if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, SelDate.Value.Hour, it.t, SelDate.Value.Second);
                                             if (ValueTimeHorizontal && SelDate.HasValue) ScrollYTime(calendar_time, SelDate.Value);
@@ -1293,7 +1293,7 @@ namespace AntdUI
                                         }
                                         break;
                                     case 2:
-                                        if (it.Contains(e.Location, 0, scrollY_s.Value, out _))
+                                        if (it.Contains(e.X, e.Y, 0, scrollY_s.Value, out _))
                                         {
                                             if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, SelDate.Value.Hour, SelDate.Value.Minute, it.t);
                                             if (ValueTimeHorizontal && SelDate.HasValue) ScrollYTime(calendar_time, SelDate.Value);
@@ -1303,7 +1303,7 @@ namespace AntdUI
                                         break;
                                     case 0:
                                     default:
-                                        if (it.Contains(e.Location, 0, scrollY_h.Value, out _))
+                                        if (it.Contains(e.X, e.Y, 0, scrollY_h.Value, out _))
                                         {
                                             if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, it.t, SelDate.Value.Minute, SelDate.Value.Second);
                                             if (ValueTimeHorizontal && SelDate.HasValue) ScrollYTime(calendar_time, SelDate.Value);
@@ -1494,9 +1494,9 @@ namespace AntdUI
         public Rectangle rect { get; set; }
         public Rectangle rect_read { get; set; }
 
-        internal bool Contains(Point point, float x, float y, out bool change)
+        internal bool Contains(int x, int y, float sx, float sy, out bool change)
         {
-            if (rect.Contains(point.X + (int)x, point.Y + (int)y))
+            if (rect.Contains(x + (int)sx, y + (int)sy))
             {
                 change = SetHover(true);
                 return true;
@@ -1541,9 +1541,9 @@ namespace AntdUI
         public Rectangle rect_read { get; set; }
         public Rectangle rect_text { get; set; }
 
-        internal bool Contains(Point point, float x, float y, out bool change)
+        internal bool Contains(int x, int y, float sx, float sy, out bool change)
         {
-            if (rect.Contains(point.X + (int)x, point.Y + (int)y))
+            if (rect.Contains(x + (int)sx, y + (int)sy))
             {
                 change = SetHover(true);
                 return true;

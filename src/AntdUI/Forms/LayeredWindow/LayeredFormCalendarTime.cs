@@ -306,16 +306,16 @@ namespace AntdUI
                         switch (it.x)
                         {
                             case 1:
-                                if (it.Contains(e.Location, 0, scrollY_m.Value, out var change1)) hand++;
+                                if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out var change1)) hand++;
                                 if (change1) count++;
                                 break;
                             case 2:
-                                if (it.Contains(e.Location, 0, scrollY_s.Value, out var change2)) hand++;
+                                if (it.Contains(e.X, e.Y, 0, scrollY_s.Value, out var change2)) hand++;
                                 if (change2) count++;
                                 break;
                             case 0:
                             default:
-                                if (it.Contains(e.Location, 0, scrollY_h.Value, out var change0)) hand++;
+                                if (it.Contains(e.X, e.Y, 0, scrollY_h.Value, out var change0)) hand++;
                                 if (change0) count++;
                                 break;
                         }
@@ -369,7 +369,7 @@ namespace AntdUI
                     switch (it.x)
                     {
                         case 1:
-                            if (it.Contains(e.Location, 0, scrollY_m.Value, out _))
+                            if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out _))
                             {
                                 SelDate = new TimeSpan(SelDate.Hours, it.t, SelDate.Seconds);
                                 if (ValueTimeHorizontal) ScrollYTime();
@@ -378,7 +378,7 @@ namespace AntdUI
                             }
                             break;
                         case 2:
-                            if (it.Contains(e.Location, 0, scrollY_s.Value, out _))
+                            if (it.Contains(e.X, e.Y, 0, scrollY_s.Value, out _))
                             {
                                 SelDate = new TimeSpan(SelDate.Hours, SelDate.Minutes, it.t);
                                 if (ValueTimeHorizontal) ScrollYTime();
@@ -388,7 +388,7 @@ namespace AntdUI
                             break;
                         case 0:
                         default:
-                            if (it.Contains(e.Location, 0, scrollY_h.Value, out _))
+                            if (it.Contains(e.X, e.Y, 0, scrollY_h.Value, out _))
                             {
                                 SelDate = new TimeSpan(it.t, SelDate.Minutes, SelDate.Seconds);
                                 if (ValueTimeHorizontal) ScrollYTime();

@@ -426,7 +426,12 @@ namespace AntdUI
         ITask? ThreadExpand = null;
         float ArrowProg = -1F;
         bool expand = false;
-        bool Expand
+        /// <summary>
+        /// 箭头是否展开(UI)
+        /// </summary>
+        [Browsable(false)]
+        [Description("箭头是否展开(UI)"), Category("外观"), DefaultValue(false)]
+        public bool Expand
         {
             get => expand;
             set
@@ -478,7 +483,9 @@ namespace AntdUI
         /// <summary>
         /// 展开下拉菜单
         /// </summary>
-        bool ExpandDrop
+        [Browsable(false)]
+        [Description("展开下拉菜单"), Category("行为"), DefaultValue(false)]
+        public bool ExpandDrop
         {
             get => expandDrop;
             set
@@ -1138,9 +1145,9 @@ namespace AntdUI
             }
             return change;
         }
-        internal bool Contains(Point point, int x, int y, out bool change)
+        internal bool Contains(int x, int y, int sx, int sy, out bool change)
         {
-            if (ID > -1 && Rect.Contains(point.X + x, point.Y + y))
+            if (ID > -1 && Rect.Contains(x + sx, y + sy))
             {
                 change = SetHover(true);
                 return true;
