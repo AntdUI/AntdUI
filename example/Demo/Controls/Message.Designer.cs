@@ -162,7 +162,7 @@ namespace Demo.Controls
             divider2.Orientation = AntdUI.TOrientation.Left;
             divider2.Size = new Size(543, 28);
             divider2.TabIndex = 3;
-            divider2.Text = "加载中\r\n";
+            divider2.Text = "加载中";
             // 
             // panel2
             // 

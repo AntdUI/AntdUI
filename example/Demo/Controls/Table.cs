@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using AntdUI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -36,7 +35,7 @@ namespace Demo.Controls
 
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
-                new TestColumn("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
@@ -172,18 +171,18 @@ namespace Demo.Controls
                     OkText = "删除"
                 }) == DialogResult.OK)
                 {
-                    table1.Spin("正在加载中...", config =>
+                    table1.Spin(AntdUI.Localization.Get("Loading2", "正在加载中..."), config =>
                     {
                         System.Threading.Thread.Sleep(1000);
                         for (int i = 0; i < 101; i++)
                         {
                             config.Value = i / 100F;
-                            config.Text = "处理中 " + i + "%";
+                            config.Text = AntdUI.Localization.Get("Processing", "处理中") + " " + i + "%";
                             System.Threading.Thread.Sleep(20);
                         }
                         System.Threading.Thread.Sleep(1000);
                         config.Value = null;
-                        config.Text = "请耐心等候...";
+                        config.Text = AntdUI.Localization.Get("PleaseWait", "请耐心等候...");
                         System.Threading.Thread.Sleep(2000);
                     }, () =>
                     {
@@ -232,12 +231,7 @@ namespace Demo.Controls
         public class TestColumn : AntdUI.TemplateColumn
         {
             public TestColumn(string id, string title) : base(id, title) { }
-            public override ICell GetCellValue(object value)
-            {
-                var tagcell = new AntdUI.CellTag(value.ToString(), AntdUI.TTypeMini.Success);
-
-                return tagcell;
-            }
+            public override AntdUI.ICell GetCellValue(object value) => new AntdUI.CellTag(value.ToString(), AntdUI.TTypeMini.Success);
         }
 
 

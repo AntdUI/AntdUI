@@ -1,5 +1,27 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `1.9.10` 2025-04-12
+
+- ➕ Table Summary Column
+- ➕ Table TemplateColumn
+- ➕ Table CellPaint
+- ➕ Table GapTree
+- ➕ Input SetStyle
+- ➕ Tabs TabPage Disable Effect
+- ✍️ Table header background misalignment
+- ✍️ Table preset column width
+- ✍️ Table Tree misalignment
+- ✍️ Tree actively selects triggering events
+- ✍️ Input: Select multiple parking spaces in the selected location
+- ✍️ Input cursor jumps around
+- ✍️ Menu Enable Unique Unprocessed Multiple Unfolding
+- ✍️ Panel ShadowOpacityAnimation controls Message Filter
+- ✍️ ContextMenuStrip cannot be clicked without animation
+- ✍️ Segmented Item Colorless IconSvg
+- ✍️ ColorPicker offset at 100% scaling
+- ✍️ Message animation lost
+- ✍️ EventHub memory leak
+
 ### `1.9.9` 2025-04-03
 
 - ➕ More delicate animation enables configuration

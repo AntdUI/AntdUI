@@ -143,7 +143,7 @@ namespace Demo.Controls
             divider3.Orientation = AntdUI.TOrientation.Left;
             divider3.Size = new Size(614, 28);
             divider3.TabIndex = 0;
-            divider3.Text = "轮播的公告\r\n";
+            divider3.Text = "轮播的公告";
             // 
             // panel3
             // 
@@ -316,7 +316,7 @@ namespace Demo.Controls
             divider1.Orientation = AntdUI.TOrientation.Left;
             divider1.Size = new Size(614, 28);
             divider1.TabIndex = 0;
-            divider1.Text = "四种样式\r\n";
+            divider1.Text = "四种样式";
             // 
             // Alert
             // 

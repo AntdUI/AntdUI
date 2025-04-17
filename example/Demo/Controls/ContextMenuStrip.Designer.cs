@@ -46,7 +46,11 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             header1 = new AntdUI.PageHeader();
+            button1 = new AntdUI.Button();
+            notifyIcon1 = new System.Windows.Forms.NotifyIcon(components);
+            button2 = new AntdUI.Button();
             SuspendLayout();
             // 
             // header1
@@ -54,30 +58,61 @@ namespace Demo.Controls
             header1.Description = "任意点击当前页面的右键";
             header1.Dock = System.Windows.Forms.DockStyle.Top;
             header1.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F);
-            header1.LocalizationDescription = "Button.Description";
-            header1.LocalizationText = "Button.Text";
+            header1.LocalizationDescription = "ContextMenuStrip.Description";
+            header1.LocalizationText = "ContextMenuStrip.Text";
             header1.Location = new System.Drawing.Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
-            header1.Size = new System.Drawing.Size(935, 74);
+            header1.Size = new System.Drawing.Size(596, 74);
             header1.TabIndex = 1;
-            header1.Text = "鼠标右键操作";
+            header1.Text = "ContextMenuStrip 右键菜单";
             header1.UseTitleFont = true;
+            // 
+            // button1
+            // 
+            button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button1.Location = new System.Drawing.Point(14, 93);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(60, 41);
+            button1.TabIndex = 2;
+            button1.Text = "Click";
+            button1.Type = AntdUI.TTypeMini.Primary;
+            button1.MouseClick += button1_MouseClick;
+            // 
+            // notifyIcon1
+            // 
+            notifyIcon1.Text = "AntdUI - Demo";
+            notifyIcon1.BalloonTipClicked += notifyIcon1_BalloonTipClicked;
+            notifyIcon1.MouseDown += notifyIcon1_MouseDown;
+            // 
+            // button2
+            // 
+            button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            button2.Location = new System.Drawing.Point(100, 93);
+            button2.Name = "button2";
+            button2.Size = new System.Drawing.Size(94, 41);
+            button2.TabIndex = 2;
+            button2.Text = "NotifyIcon";
+            button2.Type = AntdUI.TTypeMini.Primary;
+            button2.Click += button2_Click;
             // 
             // ContextMenuStrip
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(button2);
+            Controls.Add(button1);
             Controls.Add(header1);
             Name = "ContextMenuStrip";
-            Size = new System.Drawing.Size(935, 749);
-            Load += ContextMenuStrip_Load;
+            Size = new System.Drawing.Size(596, 445);
             MouseClick += ContextMenuStrip_MouseClick;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private AntdUI.PageHeader header1;
+        private AntdUI.Button button1;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private AntdUI.Button button2;
     }
 }

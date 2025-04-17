@@ -1,5 +1,27 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `1.9.10` 2025-04-12
+
+- ➕ Table Summary 总结栏
+- ➕ Table TemplateColumn
+- ➕ Table CellPaint
+- ➕ Table GapTree
+- ➕ Input SetStyle
+- ➕ Tabs TabPage 禁用效果
+- ✍️ Table 表头背景错位
+- ✍️ Table 预设列宽
+- ✍️ Table Tree 错位
+- ✍️ Tree 主动选中触发事件
+- ✍️ Input 选中位置多回车位
+- ✍️ Input 光标乱跳
+- ✍️ Menu 启用 Unique 未处理多处展开
+- ✍️ Panel ShadowOpacityAnimation 控制 MessageFilter
+- ✍️ ContextMenuStrip 无动画无法点击
+- ✍️ SegmentedItem 无色IconSvg
+- ✍️ ColorPicker 在 100% 缩放下偏移
+- ✍️ Message 动画丢失
+- ✍️ EventHub 内存泄漏
+
 ### `1.9.9` 2025-04-03
 
 - ➕ 更细腻的 动画使能 配置
