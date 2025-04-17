@@ -1114,6 +1114,8 @@ namespace AntdUI
         void PaintMergeCells(Canvas g, RowTemplate[] rows, int sx, int sy, Color split_color, SolidBrush fore, SolidBrush foreEnable)
         {
             if (CellRanges == null || CellRanges.Length == 0) return;
+            var state = g.Save();
+            if (visibleHeader && fixedHeader) g.SetClip(new Rectangle(rect_read.X, rect_read.Y + rows[0].Height, rect_read.Width, rect_read.Height));
             g.TranslateTransform(-sx, -sy);
             int sps = dividerHs.Length > 0 ? dividerHs[0].Width : (int)Config.Dpi;
             var sps2 = sps / 2F;
@@ -1124,8 +1126,7 @@ namespace AntdUI
                     PaintMergeCells(g, rows, bg, split_color, fore, foreEnable, sps, sps2, it);
                 }
             }
-            g.ResetClip();
-            g.ResetTransform();
+            g.Restore(state);
         }
 
         void PaintMergeCells(Canvas g, RowTemplate[] rows, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, float sps2, CellRange range)

@@ -222,6 +222,28 @@ namespace AntdUI
             /// </summary>
             public TType Icon { get; set; }
 
+            public IconInfo? IconCustom { get; set; }
+
+            public Config SetIcon(TType icon = TType.Success)
+            {
+                IconCustom = null;
+                Icon = icon;
+                return this;
+            }
+
+            public Config SetIcon(string svg) => SetIcon(new IconInfo(svg));
+            public Config SetIcon(string svg, Color? fill) => SetIcon(new IconInfo(svg, fill));
+            public Config SetIcon(string svg, Color back, bool round) => SetIcon(new IconInfo(svg) { Back = back, Round = round });
+            public Config SetIcon(string svg, Color back, int radius) => SetIcon(new IconInfo(svg) { Back = back, Radius = radius });
+            public Config SetIcon(string svg, Color? fill, Color back, bool round) => SetIcon(new IconInfo(svg, fill) { Back = back, Round = round });
+            public Config SetIcon(string svg, Color? fill, Color back, int radius) => SetIcon(new IconInfo(svg, fill) { Back = back, Radius = radius });
+
+            public Config SetIcon(IconInfo iconInfo)
+            {
+                IconCustom = iconInfo;
+                return this;
+            }
+
             /// <summary>
             /// 字体
             /// </summary>
@@ -360,7 +382,8 @@ namespace AntdUI
                 {
                     g.Fill(Colour.BgElevated.Get("Notification"), path);
                 }
-                if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Notification");
+                if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
+                else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Notification");
 
                 if (config.CloseIcon)
                 {
@@ -439,7 +462,7 @@ namespace AntdUI
             var size_desc = g.MeasureString(config.Text, Font, t_max_width);
             int width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
             int max_width = width_desc > width_title ? width_desc : width_title;
-            if (config.Icon == TType.None)
+            if (config.Icon == TType.None && config.IconCustom == null)
             {
                 rect_title = new Rectangle(shadow + paddingx, shadow + paddingy, max_width, size_title.Height);
 

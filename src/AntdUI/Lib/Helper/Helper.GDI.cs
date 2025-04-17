@@ -623,6 +623,30 @@ namespace AntdUI
 
         #region 图标渲染
 
+        internal static void PaintIcons(this Canvas g, IconInfo icon, Rectangle rect)
+        {
+            if (icon.Back.HasValue)
+            {
+                using (var brush = new SolidBrush(icon.Back.Value))
+                {
+                    int offset = icon.Offset * 2;
+                    var rectreal = new Rectangle(rect.X + icon.Offset, rect.Y + icon.Offset, rect.Width - offset, rect.Height - offset);
+                    if (icon.Round) g.FillEllipse(brush, rectreal);
+                    else
+                    {
+                        using (var path = rectreal.RoundPath(icon.Radius))
+                        {
+                            g.Fill(brush, path);
+                        }
+                    }
+                }
+            }
+            using (var bmp = SvgExtend.GetImgExtend(icon.Svg, rect, icon.Fill))
+            {
+                if (bmp == null) return;
+                g.Image(bmp, rect);
+            }
+        }
         internal static void PaintIcons(this Canvas g, TType icon, Rectangle rect, string keyid)
         {
             switch (icon)

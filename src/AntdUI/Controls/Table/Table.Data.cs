@@ -354,7 +354,7 @@ namespace AntdUI
             else
             {
                 var cells = new Dictionary<string, object?>(len);
-                foreach (PropertyDescriptor it in TypeDescriptor.GetProperties(row)) cells.Add(it.DisplayName ?? it.Name, it);
+                foreach (PropertyDescriptor it in TypeDescriptor.GetProperties(row)) cells.Add(it.Name, it);
                 return cells;
             }
         }
@@ -368,7 +368,7 @@ namespace AntdUI
             foreach (PropertyDescriptor it in list)
             {
                 columns.Add(new TempiColumn(index, it.DisplayName ?? it.Name)); index++;
-                cells.Add(it.DisplayName ?? it.Name, it);
+                cells.Add(it.Name, it);
             }
             _columns = columns.ToArray();
             return cells;

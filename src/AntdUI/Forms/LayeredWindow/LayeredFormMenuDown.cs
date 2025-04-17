@@ -32,7 +32,7 @@ namespace AntdUI
         Color? backColor, BackHover, BackActive, foreColor, ForeActive;
 
         ScrollY? scrollY;
-        public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, MenuItemCollection items)
+        public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, IList<MenuItem> items)
         {
             MessageCloseMouseLeave = true;
             Theme = control.Theme;
@@ -74,7 +74,7 @@ namespace AntdUI
 
         public ILayeredForm? SubForm() => subForm;
         LayeredFormMenuDown? subForm = null;
-        void Init(Control control, Rectangle rect_read, MenuItemCollection items)
+        void Init(Control control, Rectangle rect_read, IList<MenuItem> items)
         {
             int y = 10, w = rect_read.Width;
             OMenuItem? oMenuItem = null;

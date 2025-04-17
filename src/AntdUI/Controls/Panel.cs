@@ -261,6 +261,23 @@ namespace AntdUI
             }
         }
 
+        string? backExtend = null;
+        /// <summary>
+        /// 背景渐变色
+        /// </summary>
+        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        public string? BackExtend
+        {
+            get => backExtend;
+            set
+            {
+                if (backExtend == value) return;
+                backExtend = value;
+                Invalidate();
+                OnPropertyChanged(nameof(BackExtend));
+            }
+        }
+
         Image? backImage = null;
         /// <summary>
         /// 背景图片
@@ -405,16 +422,16 @@ namespace AntdUI
                 var g = e.Graphics.High();
                 var rect_read = ReadRectangle;
                 float _radius = radius * Config.Dpi;
-                using (var brush = new SolidBrush(back ?? Colour.BgContainer.Get("Panel")))
+                using (var path = DrawShadow(g, _radius, rect, rect_read))
                 {
-                    using (var path = DrawShadow(g, _radius, rect, rect_read))
+                    using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get("Panel")))
                     {
                         g.Fill(brush, path);
-                        if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-                        if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get("Panel"), borderWidth * Config.Dpi, borderStyle, path);
                     }
-                    if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
+                    if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
+                    if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get("Panel"), borderWidth * Config.Dpi, borderStyle, path);
                 }
+                if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get("Panel"), ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
                 this.PaintBadge(g);
                 base.OnPaint(e);
             }

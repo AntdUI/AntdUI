@@ -184,6 +184,28 @@ namespace AntdUI
             /// </summary>
             public TType Icon { get; set; }
 
+            public IconInfo? IconCustom { get; set; }
+
+            public Config SetIcon(TType icon = TType.Success)
+            {
+                IconCustom = null;
+                Icon = icon;
+                return this;
+            }
+
+            public Config SetIcon(string svg) => SetIcon(new IconInfo(svg));
+            public Config SetIcon(string svg, Color? fill) => SetIcon(new IconInfo(svg, fill));
+            public Config SetIcon(string svg, Color back, bool round) => SetIcon(new IconInfo(svg) { Back = back, Round = round });
+            public Config SetIcon(string svg, Color back, int radius) => SetIcon(new IconInfo(svg) { Back = back, Radius = radius });
+            public Config SetIcon(string svg, Color? fill, Color back, bool round) => SetIcon(new IconInfo(svg, fill) { Back = back, Round = round });
+            public Config SetIcon(string svg, Color? fill, Color back, int radius) => SetIcon(new IconInfo(svg, fill) { Back = back, Radius = radius });
+
+            public Config SetIcon(IconInfo iconInfo)
+            {
+                IconCustom = iconInfo;
+                return this;
+            }
+
             /// <summary>
             /// 加载回调
             /// </summary>
@@ -252,6 +274,45 @@ namespace AntdUI
             internal Action? refresh;
             public void Refresh() => refresh?.Invoke();
         }
+    }
+
+    public class IconInfo
+    {
+        public IconInfo(string svg) { Svg = svg; }
+        public IconInfo(string svg, Color? fill)
+        {
+            Svg = svg;
+            Fill = fill;
+        }
+
+        /// <summary>
+        /// SVG
+        /// </summary>
+        public string Svg { get; set; }
+
+        /// <summary>
+        /// 填充颜色
+        /// </summary>
+        public Color? Fill { get; set; }
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        public Color? Back { get; set; }
+
+        /// <summary>
+        /// 背景圆角
+        /// </summary>
+        public float Radius { get; set; }
+
+        /// <summary>
+        /// 背景是否圆角
+        /// </summary>
+        public bool Round { get; set; }
+
+        /// <summary>
+        /// 与背景偏移量
+        /// </summary>
+        public int Offset { get; set; } = 1;
     }
 
     internal class MessageFrm : ILayeredFormAnimate
@@ -375,6 +436,7 @@ namespace AntdUI
                         g.DrawArc(pen, rect_loading, AnimationLoadingValue, 100);
                     }
                 }
+                else if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Message");
                 using (var brush = new SolidBrush(Colour.TextBase.Get("Message")))
                 {
@@ -424,7 +486,7 @@ namespace AntdUI
 
                 return new Size(size.Width + icon_size + sp + paddingx * 2 + shadow2, height + shadow2);
             }
-            else if (config.Icon == TType.None)
+            else if (config.Icon == TType.None && config.IconCustom == null)
             {
                 rect_txt = new Rectangle(shadow + paddingx, shadow, size.Width, height);
                 return new Size(size.Width + paddingx * 2 + shadow2, height + shadow2);
