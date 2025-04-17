@@ -151,10 +151,7 @@ namespace AntdUI
                         else return;
                     }
                 }
-            }).ContinueWith(action =>
-            {
-                Dispose();
-            });
+            }).ContinueWith(action => Dispose());
         }
 
         /// <summary>

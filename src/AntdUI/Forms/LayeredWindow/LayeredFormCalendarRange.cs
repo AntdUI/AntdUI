@@ -462,7 +462,7 @@ namespace AntdUI
                         {
                             foreach (var it in left_buttons)
                             {
-                                if (it.Contains(e.Location, 0, scrollY_left.Value, out var change)) hand++;
+                                if (it.Contains(e.X, e.Y, 0, scrollY_left.Value, out var change)) hand++;
                                 if (change) count++;
                             }
                         }
@@ -699,7 +699,7 @@ namespace AntdUI
                         {
                             foreach (var it in left_buttons)
                             {
-                                if (it.Contains(e.Location, 0, scrollY_left.Value, out _))
+                                if (it.Contains(e.X, e.Y, 0, scrollY_left.Value, out _))
                                 {
                                     action_btns(it.Tag);
                                     IClose();

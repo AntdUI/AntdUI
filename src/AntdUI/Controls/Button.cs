@@ -1944,7 +1944,7 @@ namespace AntdUI
             if (back.HasValue) Back = back.Value;
             if (BackHover.HasValue) backHover = BackHover.Value;
             if (BackActive.HasValue) backActive = BackActive.Value;
-            if (AnimationBlinkState && colorBlink.HasValue) back = colorBlink.Value;
+            if (AnimationBlinkState && colorBlink.HasValue) Back = colorBlink.Value;
             if (loading && LoadingValue > -1) Back = Color.FromArgb(165, Back);
         }
 

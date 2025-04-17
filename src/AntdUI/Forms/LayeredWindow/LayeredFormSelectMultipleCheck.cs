@@ -530,7 +530,7 @@ namespace AntdUI
                 if (RunAnimation) return;
                 foreach (var it in Items)
                 {
-                    if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.Location, 0, (int)scrollY.Value, out _))
+                    if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.X, e.Y, 0, (int)scrollY.Value, out _))
                     {
                         OnClick(it);
                         return;
@@ -658,7 +658,7 @@ namespace AntdUI
                     var it = Items[i];
                     if (it.Enable)
                     {
-                        if (it.Contains(e.Location, 0, (int)scrollY.Value, out var change)) hoveindex = i;
+                        if (it.Contains(e.X, e.Y, 0, (int)scrollY.Value, out var change)) hoveindex = i;
                         if (change) count++;
                     }
                 }

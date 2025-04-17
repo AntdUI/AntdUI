@@ -1138,9 +1138,9 @@ namespace AntdUI
             }
             return change;
         }
-        internal bool Contains(Point point, int x, int y, out bool change)
+        internal bool Contains(int x, int y, int sx, int sy, out bool change)
         {
-            if (ID > -1 && Rect.Contains(point.X + x, point.Y + y))
+            if (ID > -1 && Rect.Contains(x + sx, y + sy))
             {
                 change = SetHover(true);
                 return true;
