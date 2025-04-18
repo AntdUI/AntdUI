@@ -94,7 +94,7 @@ namespace AntdUI
                 {
                     if (hover == value) return;
                     hover = value;
-                    if (SHOW && (PARENT.RowHoverBg ?? Colour.FillSecondary.Get("Table")).A > 0)
+                    if (SHOW && (PARENT.RowHoverBg ?? Colour.FillSecondary.Get("Table", PARENT.ColorScheme)).A > 0)
                     {
                         if (Config.HasAnimation(nameof(Table)))
                         {

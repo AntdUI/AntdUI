@@ -96,6 +96,31 @@ namespace AntdUI
             }
         }
 
+        #region 主题
+
+        TAMode colorScheme = TAMode.Auto;
+        /// <summary>
+        /// 色彩模式
+        /// </summary>
+        [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
+        public TAMode ColorScheme
+        {
+            get => colorScheme;
+            set
+            {
+                if (colorScheme == value) return;
+                colorScheme = value;
+                OnColorSchemeChanged(EventArgs.Empty);
+                if (IsHandleCreated) Invalidate();
+                OnPropertyChanged(nameof(ColorScheme));
+            }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        protected virtual void OnColorSchemeChanged(EventArgs e) { }
+
+        #endregion
+
         #region 徽标
 
         string? badge = null;

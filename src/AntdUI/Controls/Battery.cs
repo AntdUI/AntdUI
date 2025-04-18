@@ -215,7 +215,7 @@ namespace AntdUI
                     }
                     if (ShowText)
                     {
-                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Battery")))
+                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Battery", ColorScheme)))
                         {
                             g.String("100%", Font, brush, rect, c);
                         }
@@ -223,7 +223,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    using (var brush = new SolidBrush(back ?? Colour.FillSecondary.Get("Battery")))
+                    using (var brush = new SolidBrush(back ?? Colour.FillSecondary.Get("Battery", ColorScheme)))
                     {
                         g.Fill(brush, path_pain);
                         if (dotsize > 0)
@@ -255,7 +255,7 @@ namespace AntdUI
                     }
                     if (ShowText)
                     {
-                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Battery")))
+                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Battery", ColorScheme)))
                         {
                             g.String(_value + "%", Font, brush, rect, c);
                         }

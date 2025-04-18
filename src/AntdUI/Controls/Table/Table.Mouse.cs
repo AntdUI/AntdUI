@@ -61,6 +61,7 @@ namespace AntdUI
                         else SelectedIndex = i_row;
                     }
                     shift_index = i_row;
+                    if (dataSource is BindingSource bindingSource) bindingSource.Position = i_row - 1;
                     var it = rows[i_row];
                     if (mode > 0)
                     {

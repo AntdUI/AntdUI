@@ -406,7 +406,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var pen = new Pen(Colour.TextQuaternary.Get("Select"), 2F))
+                using (var pen = new Pen(Colour.TextQuaternary.Get("Select", ColorScheme), 2F))
                 {
                     pen.StartCap = pen.EndCap = LineCap.Round;
                     g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));

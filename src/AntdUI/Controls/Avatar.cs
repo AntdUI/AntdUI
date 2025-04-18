@@ -405,19 +405,19 @@ namespace AntdUI
             {
                 using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))
                 {
-                    if (bmp == null) g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar"), rect, stringCenter);
+                    if (bmp == null) g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
                     else g.Image(rect, bmp, imageFit, _radius, round);
                 }
             }
-            else g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar"), rect, stringCenter);
+            else g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
             if (loading)
             {
                 var bor6 = 6F * Config.Dpi;
                 int loading_size = (int)(40 * Config.Dpi);
                 var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
-                g.DrawEllipse(Color.FromArgb(220, Colour.PrimaryColor.Get("Avatar")), bor6, rect_loading);
-                using (var penpro = new Pen(Colour.Primary.Get("Avatar"), bor6))
+                g.DrawEllipse(Color.FromArgb(220, Colour.PrimaryColor.Get("Avatar", ColorScheme)), bor6, rect_loading);
+                using (var penpro = new Pen(Colour.Primary.Get("Avatar", ColorScheme), bor6))
                 {
                     g.DrawArc(penpro, rect_loading, -90, 360F * _value);
                 }

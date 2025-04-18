@@ -304,13 +304,13 @@ namespace AntdUI
                 //绘制箭头
                 if (m_bIsArrowRegion)
                 {
-                    g.FillPolygon(ArrawBackHover ?? Colour.Primary.Get("Splitter"), points);
-                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get("Splitter"));
+                    g.FillPolygon(ArrawBackHover ?? Colour.Primary.Get("Splitter", TAMode.Auto), points);
+                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get("Splitter", TAMode.Auto));
                 }
                 else
                 {
-                    g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get("Splitter"), points);
-                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get("Splitter"));
+                    g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get("Splitter", TAMode.Auto), points);
+                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get("Splitter", TAMode.Auto));
                 }
             }
         }

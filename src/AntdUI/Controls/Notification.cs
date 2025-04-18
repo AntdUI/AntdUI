@@ -383,7 +383,7 @@ namespace AntdUI
                     g.Fill(Colour.BgElevated.Get("Notification"), path);
                 }
                 if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
-                else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Notification");
+                else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Notification", TAMode.Auto);
 
                 if (config.CloseIcon)
                 {
@@ -517,7 +517,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Colour.FillSecondary.Get("Notification").A;
+                close_button.MaxValue = Colour.FillSecondary.Get("Notification", TAMode.Auto).A;
                 close_button.Switch = rect_close.Contains(e.Location);
                 SetCursor(close_button.Switch);
                 if (close_button.Switch)

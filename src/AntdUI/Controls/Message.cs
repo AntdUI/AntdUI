@@ -437,7 +437,7 @@ namespace AntdUI
                     }
                 }
                 else if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
-                else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Message");
+                else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Message", TAMode.Auto);
                 using (var brush = new SolidBrush(Colour.TextBase.Get("Message")))
                 {
                     g.String(config.Text, Font, brush, rect_txt, s_f_left);

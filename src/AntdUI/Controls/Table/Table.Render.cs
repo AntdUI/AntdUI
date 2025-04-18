@@ -59,10 +59,10 @@ namespace AntdUI
         {
             float _radius = radius * Config.Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            using (var brush_fore = new SolidBrush(fore ?? Colour.Text.Get("Table")))
-            using (var brush_foreEnable = new SolidBrush(fore ?? Colour.TextQuaternary.Get("Table")))
-            using (var brush_forecolumn = new SolidBrush(columnfore ?? fore ?? Colour.Text.Get("Table")))
-            using (var brush_split = new SolidBrush(borderColor ?? Colour.BorderColor.Get("Table")))
+            using (var brush_fore = new SolidBrush(fore ?? Colour.Text.Get("Table", ColorScheme)))
+            using (var brush_foreEnable = new SolidBrush(fore ?? Colour.TextQuaternary.Get("Table", ColorScheme)))
+            using (var brush_forecolumn = new SolidBrush(columnfore ?? fore ?? Colour.Text.Get("Table", ColorScheme)))
+            using (var brush_split = new SolidBrush(borderColor ?? Colour.BorderColor.Get("Table", ColorScheme)))
             {
                 List<StyleRow> shows = new List<StyleRow>(rows.Length), summarys = new List<StyleRow>(1);
                 GraphicsPath? clipath = null;
@@ -266,7 +266,7 @@ namespace AntdUI
         void PaintTableBgHeader(Canvas g, RowTemplate row, float radius, int sx)
         {
             var save = g.Save();
-            using (var brush = new SolidBrush(columnback ?? Colour.TagDefaultBg.Get("Table")))
+            using (var brush = new SolidBrush(columnback ?? Colour.TagDefaultBg.Get("Table", ColorScheme)))
             {
                 if (radius > 0)
                 {
@@ -301,8 +301,8 @@ namespace AntdUI
                 {
                     if (column.COLUMN.SortOrder)
                     {
-                        g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
-                        g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
+                        g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
+                        g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                     }
                     if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
                     else
@@ -322,7 +322,7 @@ namespace AntdUI
                 {
                     if (dragHeader.i == column.INDEX)
                     {
-                        using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table")))
+                        using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table", ColorScheme)))
                         {
                             if (radius > 0)
                             {
@@ -347,7 +347,7 @@ namespace AntdUI
                     }
                     if (dragHeader.im == column.INDEX)
                     {
-                        using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table")))
+                        using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
                         {
                             int sp = (int)(2 * Config.Dpi);
                             if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
@@ -384,8 +384,8 @@ namespace AntdUI
                     }
                     if (column.COLUMN.SortOrder)
                     {
-                        g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
-                        g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table") : Colour.TextQuaternary.Get("Table"));
+                        g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
+                        g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                     }
                     if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
                     else
@@ -409,7 +409,7 @@ namespace AntdUI
                 {
                     if (dragHeader.i == column.INDEX)
                     {
-                        using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table")))
+                        using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table", ColorScheme)))
                         {
                             if (radius > 0)
                             {
@@ -434,7 +434,7 @@ namespace AntdUI
                     }
                     if (dragHeader.im == column.INDEX)
                     {
-                        using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table")))
+                        using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
                         {
                             int sp = (int)(2 * Config.Dpi);
                             if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
@@ -524,8 +524,8 @@ namespace AntdUI
             if (row.style != null && row.style.BackColor.HasValue) g.Fill(row.style.BackColor.Value, row.row.RECT);
             if (selectedIndex.Contains(row.row.INDEX) || row.row.Select)
             {
-                g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get("Table"), row.row.RECT);
-                if (selectedIndex.Contains(row.row.INDEX) && row.row.Select) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table")), row.row.RECT);
+                g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get("Table", ColorScheme), row.row.RECT);
+                if (selectedIndex.Contains(row.row.INDEX) && row.row.Select) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table", ColorScheme)), row.row.RECT);
             }
         }
         void PaintBgRowFrontStyle(Canvas g, StyleRow row)
@@ -543,10 +543,10 @@ namespace AntdUI
         {
             if (dragBody != null)
             {
-                if (dragBody.i == row.INDEX) g.Fill(Colour.FillSecondary.Get("Table"), row.RECT);
+                if (dragBody.i == row.INDEX) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), row.RECT);
                 else if (dragBody.im == row.INDEX)
                 {
-                    using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table")))
+                    using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
                     {
                         int sp = (int)(2 * Config.Dpi);
                         if (dragBody.last) g.Fill(brush_split, new Rectangle(row.RECT.X, row.RECT.Bottom - sp, row.RECT.Width, sp * 2));
@@ -556,8 +556,8 @@ namespace AntdUI
             }
             else
             {
-                if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get("Table")), row.RECT);
-                else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table"), row.RECT);
+                if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get("Table", ColorScheme)), row.RECT);
+                else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table", ColorScheme), row.RECT);
             }
         }
 
@@ -659,7 +659,7 @@ namespace AntdUI
                 {
                     if (sort.AnimationHover)
                     {
-                        using (var brush = new SolidBrush(Helper.ToColorN(sort.AnimationHoverValue, Colour.FillTertiary.Get("Table"))))
+                        using (var brush = new SolidBrush(Helper.ToColorN(sort.AnimationHoverValue, Colour.FillTertiary.Get("Table", ColorScheme))))
                         {
                             using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
                             {
@@ -671,7 +671,7 @@ namespace AntdUI
                     {
                         using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
                         {
-                            g.Fill(Colour.FillTertiary.Get("Table"), path_sort);
+                            g.Fill(Colour.FillTertiary.Get("Table", ColorScheme), path_sort);
                         }
                     }
                     SvgExtend.GetImgExtend(g, "HolderOutlined", sort.RECT_ICO, fore.Color);
@@ -686,13 +686,13 @@ namespace AntdUI
                     g.SetClip(it.RECT, CombineMode.Intersect);
                     g.String(text.value, Font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
                 }
-                if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table"), it.RECT);
+                if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
                 if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
                 {
                     using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
                     {
-                        g.Fill(Colour.BgBase.Get("Table"), path_check);
-                        g.Draw(Colour.BorderColor.Get("Table"), check_border, path_check);
+                        g.Fill(Colour.BgBase.Get("Table", ColorScheme), path_check);
+                        g.Draw(Colour.BorderColor.Get("Table", ColorScheme), check_border, path_check);
                         PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
                     }
                 }
@@ -737,7 +737,7 @@ namespace AntdUI
                 if (_gap > 0)
                 {
                     var rect_show = new Rectangle(rect.X + last.RECT.Right - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
-                    using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table"), Color.Transparent, 0F))
+                    using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table", ColorScheme), Color.Transparent, 0F))
                     {
                         g.Fill(brush, rect_show);
                     }
@@ -745,12 +745,12 @@ namespace AntdUI
                 if (radius > 0)
                 {
                     clipath = Helper.RoundPath(rect_Fixed, radius, true, false, false, !visibleHeader);
-                    g.Fill(Colour.BgBase.Get("Table"), clipath);
+                    g.Fill(Colour.BgBase.Get("Table", ColorScheme), clipath);
                     g.SetClip(clipath);
                 }
                 else
                 {
-                    g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                    g.Fill(Colour.BgBase.Get("Table", ColorScheme), rect_Fixed);
                     g.SetClip(rect_Fixed);
                 }
 
@@ -817,7 +817,7 @@ namespace AntdUI
                         if (_gap > 0)
                         {
                             var rect_show = new Rectangle(rect.Right - w - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
-                            using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table"), 0F))
+                            using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 0F))
                             {
                                 g.Fill(brush, rect_show);
                             }
@@ -825,12 +825,12 @@ namespace AntdUI
                         if (radius > 0)
                         {
                             clipath = Helper.RoundPath(rect_Fixed, radius, false, true, !visibleHeader, false);
-                            g.Fill(Colour.BgBase.Get("Table"), clipath);
+                            g.Fill(Colour.BgBase.Get("Table", ColorScheme), clipath);
                             g.SetClip(clipath);
                         }
                         else
                         {
-                            g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                            g.Fill(Colour.BgBase.Get("Table", ColorScheme), rect_Fixed);
                             g.SetClip(rect_Fixed);
                         }
 
@@ -916,7 +916,7 @@ namespace AntdUI
                         if (_gap > 0)
                         {
                             var rect_show = new Rectangle(rect_Fixed.X, rect.Bottom - h - _gap - scrollBar, rect_Fixed.Width, _gap * 2);
-                            using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table"), 90F))
+                            using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 90F))
                             {
                                 g.Fill(brush, rect_show);
                             }
@@ -924,12 +924,12 @@ namespace AntdUI
                         if (radius > 0 && !visibleHeader)
                         {
                             clipath = Helper.RoundPath(rect_Fixed, radius, false, false, true, true);
-                            g.Fill(Colour.BgBase.Get("Table"), clipath);
+                            g.Fill(Colour.BgBase.Get("Table", ColorScheme), clipath);
                             g.SetClip(clipath);
                         }
                         else
                         {
-                            g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                            g.Fill(Colour.BgBase.Get("Table", ColorScheme), rect_Fixed);
                             g.SetClip(rect_Fixed);
                         }
 
@@ -991,7 +991,7 @@ namespace AntdUI
                     if (_gap > 0)
                     {
                         var rect_show = new Rectangle(rect.X + last.RECT.Right - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
-                        using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table"), Color.Transparent, 0F))
+                        using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table", ColorScheme), Color.Transparent, 0F))
                         {
                             g.Fill(brush, rect_show);
                         }
@@ -1000,12 +1000,12 @@ namespace AntdUI
                     {
                         clipath = Helper.RoundPath(rect_Fixed, radius, true, false, false, !visibleHeader);
                         g.SetClip(clipath, CombineMode.Intersect);
-                        g.Fill(Colour.BgBase.Get("Table"), clipath);
+                        g.Fill(Colour.BgBase.Get("Table", ColorScheme), clipath);
                     }
                     else
                     {
                         g.SetClip(rect_Fixed, CombineMode.Intersect);
-                        g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                        g.Fill(Colour.BgBase.Get("Table", ColorScheme), rect_Fixed);
                     }
 
                     #endregion
@@ -1056,7 +1056,7 @@ namespace AntdUI
                         if (_gap > 0)
                         {
                             var rect_show = new Rectangle(rect.Right - w - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
-                            using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table"), 0F))
+                            using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 0F))
                             {
                                 g.Fill(brush, rect_show);
                             }
@@ -1065,12 +1065,12 @@ namespace AntdUI
                         {
                             clipath = Helper.RoundPath(rect_Fixed, radius, false, true, !visibleHeader, false);
                             g.SetClip(clipath, CombineMode.Intersect);
-                            g.Fill(Colour.BgBase.Get("Table"), clipath);
+                            g.Fill(Colour.BgBase.Get("Table", ColorScheme), clipath);
                         }
                         else
                         {
                             g.SetClip(rect_Fixed, CombineMode.Intersect);
-                            g.Fill(Colour.BgBase.Get("Table"), rect_Fixed);
+                            g.Fill(Colour.BgBase.Get("Table", ColorScheme), rect_Fixed);
                         }
 
                         #endregion
@@ -1119,7 +1119,7 @@ namespace AntdUI
             g.TranslateTransform(-sx, -sy);
             int sps = dividerHs.Length > 0 ? dividerHs[0].Width : (int)Config.Dpi;
             var sps2 = sps / 2F;
-            using (var bg = new SolidBrush(Colour.BgBase.Get("Table")))
+            using (var bg = new SolidBrush(Colour.BgBase.Get("Table", ColorScheme)))
             {
                 foreach (var it in CellRanges)
                 {
@@ -1170,8 +1170,8 @@ namespace AntdUI
             var state = g.Save();
             var rect = RectMergeCells(first, last, out bool fz);
             g.Fill(bg, rect);
-            if (first.ROW.AnimationHover) g.Fill(Helper.ToColorN(first.ROW.AnimationHoverValue, Colour.FillSecondary.Get("Table")), rect);
-            else if (first.ROW.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table"), rect);
+            if (first.ROW.AnimationHover) g.Fill(Helper.ToColorN(first.ROW.AnimationHoverValue, Colour.FillSecondary.Get("Table", ColorScheme)), rect);
+            else if (first.ROW.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table", ColorScheme), rect);
             g.Draw(split_color, sps, new RectangleF(rect.X + sps2, rect.Y + sps2, rect.Width, rect.Height));
 
             #region 绘制内容
@@ -1210,49 +1210,49 @@ namespace AntdUI
             {
                 if (columnCheck.AnimationCheck)
                 {
-                    g.Fill(Colour.BgBase.Get("Checkbox"), path_check);
+                    g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path_check);
                     var alpha = 255 * columnCheck.AnimationCheckValue;
                     if (columnCheck.CheckState == CheckState.Indeterminate || (columnCheck.checkStateOld == CheckState.Indeterminate && !columnCheck.Checked))
                     {
-                        g.Draw(Colour.BorderColor.Get("Checkbox"), check_border, path_check);
-                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox")), PaintBlock(check.RECT_REAL));
+                        g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), check_border, path_check);
+                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", ColorScheme)), PaintBlock(check.RECT_REAL));
                     }
                     else
                     {
-                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox")), path_check);
-                        using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox")), check_border * 2))
+                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", ColorScheme)), path_check);
+                        using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox", ColorScheme)), check_border * 2))
                         {
                             g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                         }
                         if (columnCheck.Checked)
                         {
                             float max = check.RECT_REAL.Height + check.RECT_REAL.Height * columnCheck.AnimationCheckValue, alpha2 = 100 * (1F - columnCheck.AnimationCheckValue);
-                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox"))))
+                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox", ColorScheme))))
                             {
                                 g.FillEllipse(brush, new RectangleF(check.RECT_REAL.X + (check.RECT_REAL.Width - max) / 2F, check.RECT_REAL.Y + (check.RECT_REAL.Height - max) / 2F, max, max));
                             }
                         }
-                        g.Draw(Colour.Primary.Get("Checkbox"), check_border, path_check);
+                        g.Draw(Colour.Primary.Get("Checkbox", ColorScheme), check_border, path_check);
                     }
                 }
                 else if (columnCheck.CheckState == CheckState.Indeterminate)
                 {
-                    g.Fill(Colour.BgBase.Get("Checkbox"), path_check);
-                    g.Draw(Colour.BorderColor.Get("Checkbox"), check_border, path_check);
-                    g.Fill(Colour.Primary.Get("Checkbox"), PaintBlock(check.RECT_REAL));
+                    g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path_check);
+                    g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), check_border, path_check);
+                    g.Fill(Colour.Primary.Get("Checkbox", ColorScheme), PaintBlock(check.RECT_REAL));
                 }
                 else if (columnCheck.Checked)
                 {
-                    g.Fill(Colour.Primary.Get("Checkbox"), path_check);
-                    using (var brush = new Pen(Colour.BgBase.Get("Checkbox"), check_border * 2))
+                    g.Fill(Colour.Primary.Get("Checkbox", ColorScheme), path_check);
+                    using (var brush = new Pen(Colour.BgBase.Get("Checkbox", ColorScheme), check_border * 2))
                     {
                         g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                     }
                 }
                 else
                 {
-                    g.Fill(Colour.BgBase.Get("Checkbox"), path_check);
-                    g.Draw(Colour.BorderColor.Get("Checkbox"), check_border, path_check);
+                    g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path_check);
+                    g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), check_border, path_check);
                 }
             }
         }
@@ -1264,12 +1264,12 @@ namespace AntdUI
                 {
                     if (check.AnimationCheck)
                     {
-                        g.Fill(Colour.BgBase.Get("Checkbox"), path);
+                        g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path);
 
                         var alpha = 255 * check.AnimationCheckValue;
 
-                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox")), path);
-                        using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox")), check_border * 2))
+                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", ColorScheme)), path);
+                        using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox", ColorScheme)), check_border * 2))
                         {
                             g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                         }
@@ -1277,32 +1277,32 @@ namespace AntdUI
                         if (check.Checked)
                         {
                             float max = check.RECT_REAL.Height + check.RECT_REAL.Height * check.AnimationCheckValue, alpha2 = 100 * (1F - check.AnimationCheckValue);
-                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox"))))
+                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox", ColorScheme))))
                             {
                                 g.FillEllipse(brush, new RectangleF(check.RECT_REAL.X + (check.RECT_REAL.Width - max) / 2F, check.RECT_REAL.Y + (check.RECT_REAL.Height - max) / 2F, max, max));
                             }
                         }
-                        g.Draw(Colour.Primary.Get("Checkbox"), check_border, path);
+                        g.Draw(Colour.Primary.Get("Checkbox", ColorScheme), check_border, path);
                     }
                     else if (check.Checked)
                     {
-                        g.Fill(Colour.Primary.Get("Checkbox"), path);
-                        using (var brush = new Pen(Colour.BgBase.Get("Checkbox"), check_border * 2))
+                        g.Fill(Colour.Primary.Get("Checkbox", ColorScheme), path);
+                        using (var brush = new Pen(Colour.BgBase.Get("Checkbox", ColorScheme), check_border * 2))
                         {
                             g.DrawLines(brush, PaintArrow(check.RECT_REAL));
                         }
                     }
                     else
                     {
-                        g.Fill(Colour.BgBase.Get("Checkbox"), path);
-                        g.Draw(Colour.BorderColor.Get("Checkbox"), check_border, path);
+                        g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path);
+                        g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), check_border, path);
                     }
                 }
                 else
                 {
-                    g.Fill(Colour.FillQuaternary.Get("Checkbox"), path);
-                    if (check.Checked) g.DrawLines(Colour.TextQuaternary.Get("Checkbox"), check_border * 2, PaintArrow(check.RECT_REAL));
-                    g.Draw(Colour.BorderColorDisable.Get("Checkbox"), check_border, path);
+                    g.Fill(Colour.FillQuaternary.Get("Checkbox", ColorScheme), path);
+                    if (check.Checked) g.DrawLines(Colour.TextQuaternary.Get("Checkbox", ColorScheme), check_border * 2, PaintArrow(check.RECT_REAL));
+                    g.Draw(Colour.BorderColorDisable.Get("Checkbox", ColorScheme), check_border, path);
                 }
             }
         }
@@ -1316,7 +1316,7 @@ namespace AntdUI
             var dot_size = radio.RECT_REAL.Height;
             if (enable)
             {
-                g.FillEllipse(Colour.BgBase.Get("Radio"), radio.RECT_REAL);
+                g.FillEllipse(Colour.BgBase.Get("Radio", ColorScheme), radio.RECT_REAL);
                 if (radio.AnimationCheck)
                 {
                     float dot = dot_size * 0.3F;
@@ -1325,32 +1325,32 @@ namespace AntdUI
                         float dot_ant = dot_size - dot * radio.AnimationCheckValue, dot_ant2 = dot_ant / 2F, alpha = 255 * radio.AnimationCheckValue;
                         path.AddEllipse(radio.RECT_REAL);
                         path.AddEllipse(new RectangleF(radio.RECT_REAL.X + dot_ant2, radio.RECT_REAL.Y + dot_ant2, radio.RECT_REAL.Width - dot_ant, radio.RECT_REAL.Height - dot_ant));
-                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Radio")), path);
+                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Radio", ColorScheme)), path);
                     }
                     if (radio.Checked)
                     {
                         float max = radio.RECT_REAL.Height + radio.RECT_REAL.Height * radio.AnimationCheckValue, alpha2 = 100 * (1F - radio.AnimationCheckValue);
-                        g.FillEllipse(Helper.ToColor(alpha2, Colour.Primary.Get("Radio")), new RectangleF(radio.RECT_REAL.X + (radio.RECT_REAL.Width - max) / 2F, radio.RECT_REAL.Y + (radio.RECT_REAL.Height - max) / 2F, max, max));
+                        g.FillEllipse(Helper.ToColor(alpha2, Colour.Primary.Get("Radio", ColorScheme)), new RectangleF(radio.RECT_REAL.X + (radio.RECT_REAL.Width - max) / 2F, radio.RECT_REAL.Y + (radio.RECT_REAL.Height - max) / 2F, max, max));
                     }
-                    g.DrawEllipse(Colour.Primary.Get("Radio"), check_border, radio.RECT_REAL);
+                    g.DrawEllipse(Colour.Primary.Get("Radio", ColorScheme), check_border, radio.RECT_REAL);
                 }
                 else if (radio.Checked)
                 {
                     float dot = dot_size * 0.3F, dot2 = dot / 2F;
-                    g.DrawEllipse(Color.FromArgb(250, Colour.Primary.Get("Radio")), dot, new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
-                    g.DrawEllipse(Colour.Primary.Get("Radio"), check_border, radio.RECT_REAL);
+                    g.DrawEllipse(Color.FromArgb(250, Colour.Primary.Get("Radio", ColorScheme)), dot, new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
+                    g.DrawEllipse(Colour.Primary.Get("Radio", ColorScheme), check_border, radio.RECT_REAL);
                 }
-                else g.DrawEllipse(Colour.BorderColor.Get("Radio"), check_border, radio.RECT_REAL);
+                else g.DrawEllipse(Colour.BorderColor.Get("Radio", ColorScheme), check_border, radio.RECT_REAL);
             }
             else
             {
-                g.FillEllipse(Colour.FillQuaternary.Get("Radio"), radio.RECT_REAL);
+                g.FillEllipse(Colour.FillQuaternary.Get("Radio", ColorScheme), radio.RECT_REAL);
                 if (radio.Checked)
                 {
                     float dot = dot_size / 2F, dot2 = dot / 2F;
-                    g.FillEllipse(Colour.TextQuaternary.Get("Radio"), new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
+                    g.FillEllipse(Colour.TextQuaternary.Get("Radio", ColorScheme), new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
                 }
-                g.DrawEllipse(Colour.BorderColorDisable.Get("Radio"), check_border, radio.RECT_REAL);
+                g.DrawEllipse(Colour.BorderColorDisable.Get("Radio", ColorScheme), check_border, radio.RECT_REAL);
             }
         }
 
@@ -1360,10 +1360,10 @@ namespace AntdUI
 
         void PaintSwitch(Canvas g, TCellSwitch _switch, bool enable)
         {
-            var color = Colour.Primary.Get("Switch");
+            var color = Colour.Primary.Get("Switch", ColorScheme);
             using (var path = _switch.RECT_REAL.RoundPath(_switch.RECT_REAL.Height))
             {
-                using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch")))
+                using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch", ColorScheme)))
                 {
                     g.Fill(brush, path);
                     if (_switch.AnimationHover) g.Fill(Helper.ToColorN(_switch.AnimationHoverValue, brush.Color), path);
@@ -1375,16 +1375,16 @@ namespace AntdUI
                     var alpha = 255 * _switch.AnimationCheckValue;
                     g.Fill(Helper.ToColor(alpha, color), path);
                     var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap + (_switch.RECT_REAL.Width - _switch.RECT_REAL.Height) * _switch.AnimationCheckValue, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
                 }
                 else if (_switch.Checked)
                 {
-                    var colorhover = Colour.PrimaryHover.Get("Switch");
+                    var colorhover = Colour.PrimaryHover.Get("Switch", ColorScheme);
                     g.Fill(color, path);
                     if (_switch.AnimationHover) g.Fill(Helper.ToColorN(_switch.AnimationHoverValue, colorhover), path);
                     else if (_switch.ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap + _switch.RECT_REAL.Width - _switch.RECT_REAL.Height, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
                     if (_switch.Loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -1399,7 +1399,7 @@ namespace AntdUI
                 else
                 {
                     var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch") : Color.FromArgb(200, Colour.BgBase.Get("Switch")), dot_rect);
+                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
                     if (_switch.Loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -1436,7 +1436,7 @@ namespace AntdUI
         void PaintEmpty(Canvas g, Rectangle rect, int offset)
         {
             string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
-            using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Table")))
+            using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Table", ColorScheme)))
             {
                 if (offset > 0)
                 {
