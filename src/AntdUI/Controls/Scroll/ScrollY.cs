@@ -25,37 +25,27 @@ namespace AntdUI
     public class ScrollY
     {
         IControl? control;
+        TAMode ColorScheme = TAMode.Auto;
 
         public ScrollY(IControl _control)
         {
-            Invalidate = () =>
-            {
-                _control.Invalidate();
-            };
+            ColorScheme = _control.ColorScheme;
+            Invalidate = () => _control.Invalidate();
             control = _control;
         }
 
         public ScrollY(FlowLayoutPanel _control)
         {
             SIZE = SystemInformation.VerticalScrollBarWidth;
-            Invalidate = () =>
-            {
-                _control.Invalidate(Rect);
-            };
+            Invalidate = () => _control.Invalidate(Rect);
         }
         public ScrollY(Control _control)
         {
-            Invalidate = () =>
-            {
-                _control.Invalidate();
-            };
+            Invalidate = () => _control.Invalidate();
         }
         public ScrollY(ILayeredForm _form)
         {
-            Invalidate = () =>
-            {
-                _form.Print();
-            };
+            Invalidate = () => _form.Print();
             Gap = Back = false;
         }
 
@@ -155,7 +145,7 @@ namespace AntdUI
         /// 渲染滚动条竖
         /// </summary>
         /// <param name="g"></param>
-        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get("ScrollBar"));
+        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get("ScrollBar", ColorScheme));
         public virtual void Paint(Canvas g, Color baseColor)
         {
             if (Show)
@@ -286,6 +276,16 @@ namespace AntdUI
             if (Show && Delta != 0)
             {
                 int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+                Value -= delta;
+                return true;
+            }
+            return false;
+        }
+
+        internal bool MouseWheelCore(int delta)
+        {
+            if (Show && delta != 0)
+            {
                 Value -= delta;
                 return true;
             }

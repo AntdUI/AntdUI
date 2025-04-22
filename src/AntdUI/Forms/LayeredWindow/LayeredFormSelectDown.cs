@@ -36,9 +36,11 @@ namespace AntdUI
         ObjectItemSearch[]? ItemsSearch;
         string keyid;
         public override string name => keyid;
+        TAMode ColorScheme;
         public LayeredFormSelectDown(Select control, IList<object> items, string filtertext)
         {
             keyid = "Select";
+            ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             ClickEnd = control.ClickEnd;
@@ -56,6 +58,7 @@ namespace AntdUI
         public LayeredFormSelectDown(Dropdown control, int radius, IList<object> items)
         {
             keyid = "Dropdown";
+            ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             ClickEnd = control.ClickEnd;
@@ -73,6 +76,7 @@ namespace AntdUI
         public LayeredFormSelectDown(Tabs control, int radius, IList<object> items, object? sValue, Rectangle rect_ctls)
         {
             keyid = "Tabs";
+            ColorScheme = control.ColorScheme;
             MessageCloseMouseLeave = true;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -106,6 +110,7 @@ namespace AntdUI
         public LayeredFormSelectDown(Table control, ICell cell, Rectangle rect, IList<object> items)
         {
             keyid = "Table";
+            ColorScheme = control.ColorScheme;
             Tag = cell;
             MessageCloseMouseLeave = true;
             control.Parent.SetTopMost(Handle);
@@ -125,6 +130,7 @@ namespace AntdUI
         public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
         {
             keyid = "Select";
+            ColorScheme = control.ColorScheme;
             ClickEnd = control.ClickEnd;
             selectedValue = control.SelectedValue;
             scrollY = new ScrollY(this);
@@ -135,6 +141,7 @@ namespace AntdUI
         public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
         {
             keyid = "Dropdown";
+            ColorScheme = control.ColorScheme;
             ClickEnd = control.ClickEnd;
             scrollY = new ScrollY(this);
             DPadding = control.DropDownPadding;
@@ -956,7 +963,7 @@ namespace AntdUI
                 using (var path = rect_read.RoundPath(Radius))
                 {
                     DrawShadow(g, rect);
-                    using (var brush = new SolidBrush(Colour.BgElevated.Get(keyid)))
+                    using (var brush = new SolidBrush(Colour.BgElevated.Get(keyid, ColorScheme)))
                     {
                         g.Fill(brush, path);
                         if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
@@ -964,17 +971,17 @@ namespace AntdUI
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        g.String(emptytext, Font, Color.FromArgb(180, Colour.Text.Get(keyid)), rect_read, s_f);
+                        g.String(emptytext, Font, Color.FromArgb(180, Colour.Text.Get(keyid, ColorScheme)), rect_read, s_f);
                     }
                     else
                     {
                         g.SetClip(path);
                         g.TranslateTransform(0, -scrollY.Value);
-                        using (var brush = new SolidBrush(Colour.Text.Get(keyid)))
-                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(keyid)))
-                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(keyid)))
-                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(keyid)))
-                        using (var brush_split = new SolidBrush(Colour.Split.Get(keyid)))
+                        using (var brush = new SolidBrush(Colour.Text.Get(keyid, ColorScheme)))
+                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(keyid, ColorScheme)))
+                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
+                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(keyid, ColorScheme)))
+                        using (var brush_split = new SolidBrush(Colour.Split.Get(keyid, ColorScheme)))
                         {
                             ForEach(it =>
                             {
@@ -998,7 +1005,7 @@ namespace AntdUI
             {
                 using (var path = it.Rect.RoundPath(Radius))
                 {
-                    g.Fill(Colour.PrimaryBg.Get(keyid), path);
+                    g.Fill(Colour.PrimaryBg.Get(keyid, ColorScheme), path);
                 }
                 if (it.SubText != null)
                 {
@@ -1027,24 +1034,24 @@ namespace AntdUI
             }
             if (it.Online.HasValue)
             {
-                Color color = it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(keyid) : Colour.Error.Get(keyid));
-                using (var brush_online = new SolidBrush(it.Enable ? color : Color.FromArgb(Colour.TextQuaternary.Get(keyid).A, color)))
+                Color color = it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(keyid, ColorScheme) : Colour.Error.Get(keyid, ColorScheme));
+                using (var brush_online = new SolidBrush(it.Enable ? color : Color.FromArgb(Colour.TextQuaternary.Get(keyid, ColorScheme).A, color)))
                 {
                     g.FillEllipse(brush_online, it.RectOnline);
                 }
             }
-            if (it.has_sub) DrawArrow(g, it, Colour.TextBase.Get(keyid));
+            if (it.has_sub) DrawArrow(g, it, Colour.TextBase.Get(keyid, ColorScheme));
             else if (CloseIcon)
             {
                 if (it.HoverClose)
                 {
                     using (var path = it.RectClose.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        g.Fill(Colour.FillSecondary.Get(keyid), path);
+                        g.Fill(Colour.FillSecondary.Get(keyid, ColorScheme), path);
                     }
-                    g.PaintIconClose(it.RectCloseIcon, Colour.Text.Get(keyid));
+                    g.PaintIconClose(it.RectCloseIcon, Colour.Text.Get(keyid, ColorScheme));
                 }
-                else g.PaintIconClose(it.RectCloseIcon, Colour.TextTertiary.Get(keyid));
+                else g.PaintIconClose(it.RectCloseIcon, Colour.TextTertiary.Get(keyid, ColorScheme));
             }
         }
 
@@ -1054,27 +1061,27 @@ namespace AntdUI
             {
                 if (it.Enable)
                 {
-                    using (var fore = new SolidBrush(Colour.TextBase.Get(keyid)))
+                    using (var fore = new SolidBrush(Colour.TextBase.Get(keyid, ColorScheme)))
                     {
                         g.String(it.Text, font, fore, it.RectText, stringFormatLeft);
                     }
                 }
                 else
                 {
-                    using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid)))
+                    using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
                     {
                         g.String(it.Text, font, fore, it.RectText, stringFormatLeft);
                     }
                 }
             }
-            DrawIcon(g, it, Colour.TextBase.Get(keyid));
+            DrawIcon(g, it, Colour.TextBase.Get(keyid, ColorScheme));
         }
         void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush)
         {
             if (it.Enable) g.String(it.Text, Font, brush, it.RectText, stringFormatLeft);
             else
             {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid)))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
                 {
                     g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }
@@ -1145,7 +1152,7 @@ namespace AntdUI
             scrollY.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
-        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheel(value);
+        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheelCore(value);
 
         #endregion
     }

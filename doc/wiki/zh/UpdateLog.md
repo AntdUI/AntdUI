@@ -1,5 +1,30 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `1.9.11` 2025-04-18
+
+- ➕ 单独 ColorScheme
+- ➕ Modal DefaultFocus
+- ➕ Tabs EnableSwitch
+- ➕ Menu Horizontal 新增超出显示
+- ➕ Panel BackExtend
+- ➕ Message Modal Notication 自定义图标
+- ➕ Menu Horizontal 超出显示
+- ➕ Table 适配 BindingSource
+- ➕ Table column support display name
+- ➕ Input Variant 形态
+- ➕ Input ClearClick 事件
+- ➕ ScrollBar 补充事件
+- ✍️ Table BindingSource 第一行外刷新问题
+- ✍️ Table 合并单元格覆盖表头
+- ✍️ Table 不同类型反射Set
+- ✍️ Table 移动异常
+- ✍️ Table Binding 不刷新
+- ✍️ Table 编辑模式消失焦点异常
+- ✍️ Notification 渲染问题
+- ✍️ Button AnimationBlink 覆盖背景
+- ✍️ Input 圆角问题
+- ✍️ Tooltip 多屏弹窗位置异常
+
 ### `1.9.10` 2025-04-12
 
 - ➕ Table Summary 总结栏

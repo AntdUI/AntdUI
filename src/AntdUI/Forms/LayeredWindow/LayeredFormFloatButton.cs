@@ -321,7 +321,7 @@ namespace AntdUI
                             else if (it.Icon != null) g.Image(it.Icon, it.rect_icon);
                             else g.String(it.Text, Font, fore, it.rect_read, stringCenter);
                         }
-                        it.PaintBadge(Font, it.rect_read, g);
+                        it.PaintBadge(Font, it.rect_read, g, TAMode.Auto);
                     }
                 }
             }

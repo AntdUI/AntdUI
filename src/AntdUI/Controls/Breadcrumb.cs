@@ -231,8 +231,8 @@ namespace AntdUI
             }
             var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
-            using (var brush = new SolidBrush(fore ?? Colour.TextSecondary.Get("Breadcrumb")))
-            using (var brush_active = new SolidBrush(ForeActive ?? Colour.Text.Get("Breadcrumb")))
+            using (var brush = new SolidBrush(fore ?? Colour.TextSecondary.Get("Breadcrumb", ColorScheme)))
+            using (var brush_active = new SolidBrush(ForeActive ?? Colour.Text.Get("Breadcrumb", ColorScheme)))
             {
                 foreach (var it in hs) g.String("/", Font, brush, it, s_f);
                 for (int i = 0; i < items.Count; i++)
@@ -251,7 +251,7 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(_radius))
                             {
-                                g.Fill(Colour.FillSecondary.Get("Breadcrumb"), path);
+                                g.Fill(Colour.FillSecondary.Get("Breadcrumb", ColorScheme), path);
                             }
                             PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
                             g.String(it.Text, Font, brush_active, it.RectText, s_f);

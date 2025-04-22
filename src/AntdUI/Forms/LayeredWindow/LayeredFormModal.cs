@@ -364,7 +364,18 @@ namespace AntdUI
             base.OnLoad(e);
             IsLoad = false;
             LoadCompleted?.Invoke();
-            if (config.Content is Control control) control.ControlEvent();
+            if (config.Content is Control control)
+            {
+                control.ControlEvent();
+                if (config.DefaultFocus)
+                {
+                    ITask.Run(() => System.Threading.Thread.Sleep(100), () =>
+                    {
+                        if (IsDisposed) return;
+                        BeginInvoke(() => control.Focus());
+                    });
+                }
+            }
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
         }
 
@@ -423,7 +434,7 @@ namespace AntdUI
         {
             var g = e.Graphics.High();
             if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rectIcon);
-            else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rectIcon, "Modal");
+            else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rectIcon, "Modal", TAMode.Auto);
             if (config.CloseIcon)
             {
                 if (close_button.Animation)

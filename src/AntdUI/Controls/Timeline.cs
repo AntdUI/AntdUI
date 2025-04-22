@@ -190,15 +190,15 @@ namespace AntdUI
             }
             var g = e.Graphics.High();
             g.TranslateTransform(0, -ScrollBar.Value);
-            Color color_fore = fore ?? Colour.Text.Get("Timeline");
-            using (var brush_split = new SolidBrush(Colour.Split.Get("Timeline")))
+            Color color_fore = fore ?? Colour.Text.Get("Timeline", ColorScheme);
+            using (var brush_split = new SolidBrush(Colour.Split.Get("Timeline", ColorScheme)))
             {
                 foreach (var it in splits) g.Fill(brush_split, it);
             }
             var font_Description = FontDescription ?? Font;
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get("Timeline")))
-            using (var brush_dotback = new SolidBrush(Colour.BgBase.Get("Timeline")))
+            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get("Timeline", ColorScheme)))
+            using (var brush_dotback = new SolidBrush(Colour.BgBase.Get("Timeline", ColorScheme)))
             {
                 foreach (var it in items)
                 {
@@ -215,23 +215,23 @@ namespace AntdUI
                                 switch (it.Type)
                                 {
                                     case TTypeMini.Error:
-                                        fill = Colour.Error.Get("Timeline");
+                                        fill = Colour.Error.Get("Timeline", ColorScheme);
                                         break;
                                     case TTypeMini.Success:
-                                        fill = Colour.Success.Get("Timeline");
+                                        fill = Colour.Success.Get("Timeline", ColorScheme);
                                         break;
                                     case TTypeMini.Info:
-                                        fill = Colour.Info.Get("Timeline");
+                                        fill = Colour.Info.Get("Timeline", ColorScheme);
                                         break;
                                     case TTypeMini.Warn:
-                                        fill = Colour.Warning.Get("Timeline");
+                                        fill = Colour.Warning.Get("Timeline", ColorScheme);
                                         break;
                                     case TTypeMini.Default:
-                                        fill = Colour.TextQuaternary.Get("Timeline");
+                                        fill = Colour.TextQuaternary.Get("Timeline", ColorScheme);
                                         break;
                                     case TTypeMini.Primary:
                                     default:
-                                        fill = Colour.Primary.Get("Timeline");
+                                        fill = Colour.Primary.Get("Timeline", ColorScheme);
                                         break;
                                 }
                             }
@@ -309,8 +309,8 @@ namespace AntdUI
             base.OnLeave(e);
             ScrollBar.Leave();
         }
-        protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelX(value);
-        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelY(value);
+        protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelXCore(value);
+        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
 
         #endregion
 

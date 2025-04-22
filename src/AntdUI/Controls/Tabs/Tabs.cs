@@ -144,6 +144,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 切换使能
+        /// </summary>
+        [Description("切换使能"), Category("行为"), DefaultValue(true)]
+        public bool EnableSwitch { get; set; } = true;
+
         Color? scrollback;
         /// <summary>
         /// 滚动条颜色
@@ -520,8 +526,8 @@ namespace AntdUI
         {
             if (page.Badge != null)
             {
-                var color = page.BadgeBack ?? Colour.Error.Get("Tabs");
-                using (var brush_fore = new SolidBrush(Colour.ErrorColor.Get("Tabs")))
+                var color = page.BadgeBack ?? Colour.Error.Get("Tabs", ColorScheme);
+                using (var brush_fore = new SolidBrush(Colour.ErrorColor.Get("Tabs", ColorScheme)))
                 {
                     using (var font = new Font(Font.FontFamily, Font.Size * page.BadgeSize))
                     {
@@ -579,7 +585,7 @@ namespace AntdUI
             offsetx = offsety = 0;
             base.OnMouseDown(e);
             if (items == null || MouseDownPre(e.X, e.Y)) return;
-            if (_tabMenuVisible)
+            if (_tabMenuVisible && EnableSwitch)
             {
                 int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
                 foreach (var it in items)
@@ -656,7 +662,7 @@ namespace AntdUI
             {
                 if (it.Visible && it.Contains(x, y))
                 {
-                    if (it.Enabled)
+                    if (it.Enabled && EnableSwitch)
                     {
                         SetCursor(true);
                         Hover_i = i;
@@ -1198,10 +1204,10 @@ namespace AntdUI
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
                         int size = (int)(last.Height * .6F);
-                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs")))
-                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs")))
+                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs", ColorScheme)))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs", ColorScheme)))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs", ColorScheme), 2F * Config.Dpi))
                         {
                             if (scroll_y > 0)
                             {
@@ -1246,10 +1252,10 @@ namespace AntdUI
                     if (scroll_x > 0 || scroll_max != scroll_x)
                     {
                         int size = (int)(last.Height * .6F);
-                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs")))
-                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs")))
+                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs", ColorScheme)))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs", ColorScheme)))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs", ColorScheme), 2F * Config.Dpi))
                         {
                             if (scroll_x > 0)
                             {
@@ -1301,10 +1307,10 @@ namespace AntdUI
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
                         int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
-                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs")))
-                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs")))
+                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs", ColorScheme)))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs", ColorScheme)))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs", ColorScheme), 2F * Config.Dpi))
                         {
                             if (scroll_y > 0)
                             {
@@ -1383,10 +1389,10 @@ namespace AntdUI
                     if (scroll_x > 0 || scroll_max != scroll_x)
                     {
                         int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
-                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs")))
-                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs")))
+                        using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get("Tabs", ColorScheme)))
+                        using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get("Tabs", ColorScheme)))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs"), 2F * Config.Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get("Tabs", ColorScheme), 2F * Config.Dpi))
                         {
                             if (scroll_x > 0)
                             {

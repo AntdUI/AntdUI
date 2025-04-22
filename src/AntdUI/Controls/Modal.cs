@@ -327,6 +327,11 @@ namespace AntdUI
             public bool CloseIcon { get; set; }
 
             /// <summary>
+            /// 默认是否焦点
+            /// </summary>
+            public bool DefaultFocus { get; set; }
+
+            /// <summary>
             /// 取消按钮字体
             /// </summary>
             public Font? CancelFont { get; set; }

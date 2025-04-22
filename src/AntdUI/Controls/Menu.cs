@@ -110,21 +110,14 @@ namespace AntdUI
             }
         }
 
-        TAMode theme = TAMode.Auto;
         /// <summary>
         /// 色彩模式
         /// </summary>
-        [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
+        [Obsolete("use ColorScheme"), Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
         public TAMode Theme
         {
-            get => theme;
-            set
-            {
-                if (theme == value) return;
-                theme = value;
-                Invalidate();
-                OnPropertyChanged(nameof(Theme));
-            }
+            get => ColorScheme;
+            set => ColorScheme = value;
         }
 
         /// <summary>
@@ -647,22 +640,22 @@ namespace AntdUI
             if (scroll_show) g.SetClip(new Rectangle(rect.X, rect.Y, rect_r.Right - rect_r.Height, rect.Height));
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
-            Color scroll_color = Colour.TextBase.Get("Menu", theme), color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get("Menu", theme), back_hover, back_active;
-            if (Config.IsDark || theme == TAMode.Dark)
+            Color scroll_color = Colour.TextBase.Get("Menu", ColorScheme), color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get("Menu", ColorScheme), back_hover, back_active;
+            if (Config.IsDark || ColorScheme == TAMode.Dark)
             {
-                color_fore = fore ?? Colour.Text.Get("Menu", theme);
-                back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get("Menu", theme);
-                back_active = BackActive ?? Colour.Primary.Get("Menu", theme);
+                color_fore = fore ?? Colour.Text.Get("Menu", ColorScheme);
+                back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get("Menu", ColorScheme);
+                back_active = BackActive ?? Colour.Primary.Get("Menu", ColorScheme);
             }
             else
             {
-                color_fore = fore ?? Colour.TextBase.Get("Menu", theme);
-                color_fore_active = ForeActive ?? Colour.Primary.Get("Menu", theme);
-                back_hover = BackHover ?? Colour.FillSecondary.Get("Menu", theme);
-                back_active = BackActive ?? Colour.PrimaryBg.Get("Menu", theme);
+                color_fore = fore ?? Colour.TextBase.Get("Menu", ColorScheme);
+                color_fore_active = ForeActive ?? Colour.Primary.Get("Menu", ColorScheme);
+                back_hover = BackHover ?? Colour.FillSecondary.Get("Menu", ColorScheme);
+                back_active = BackActive ?? Colour.PrimaryBg.Get("Menu", ColorScheme);
             }
             float _radius = radius * Config.Dpi;
-            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu", theme)))
+            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu", ColorScheme)))
             {
                 PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
@@ -736,7 +729,7 @@ namespace AntdUI
         {
             if (it.Enabled)
             {
-                if (Config.IsDark || theme == TAMode.Dark)
+                if (Config.IsDark || ColorScheme == TAMode.Dark)
                 {
                     if (it.Select)
                     {
@@ -780,7 +773,7 @@ namespace AntdUI
         {
             if (it.Enabled)
             {
-                if (Config.IsDark || theme == TAMode.Dark)
+                if (Config.IsDark || ColorScheme == TAMode.Dark)
                 {
                     if (it.Select)
                     {
@@ -1219,8 +1212,8 @@ namespace AntdUI
             ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
-        protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelX(value);
-        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelY(value);
+        protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelXCore(value);
+        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
 
         void ILeave()
         {

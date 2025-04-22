@@ -32,8 +32,10 @@ namespace AntdUI
         int r_w = 0;
         List<ObjectItem> Items;
         ObjectItemSearch[]? ItemsSearch;
+        TAMode ColorScheme;
         public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, IList<object> items, string filtertext)
         {
+            ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             scrollY = new ScrollY(this);
@@ -581,7 +583,7 @@ namespace AntdUI
                 using (var path = rect_read.RoundPath(Radius))
                 {
                     DrawShadow(g, rect);
-                    using (var brush = new SolidBrush(Colour.BgElevated.Get("Select")))
+                    using (var brush = new SolidBrush(Colour.BgElevated.Get("Select", ColorScheme)))
                     {
                         g.Fill(brush, path);
                         if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
@@ -589,17 +591,17 @@ namespace AntdUI
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        g.String(emptytext, Font, Color.FromArgb(180, Colour.Text.Get("Select")), rect_read, s_f);
+                        g.String(emptytext, Font, Color.FromArgb(180, Colour.Text.Get("Select", ColorScheme)), rect_read, s_f);
                     }
                     else
                     {
                         g.SetClip(path);
                         g.TranslateTransform(0, -scrollY.Value);
-                        using (var brush = new SolidBrush(Colour.Text.Get("Select")))
-                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get("Select")))
-                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get("Select")))
-                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get("Select")))
-                        using (var brush_split = new SolidBrush(Colour.Split.Get("Select")))
+                        using (var brush = new SolidBrush(Colour.Text.Get("Select", ColorScheme)))
+                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get("Select", ColorScheme)))
+                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
+                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get("Select", ColorScheme)))
+                        using (var brush_split = new SolidBrush(Colour.Split.Get("Select", ColorScheme)))
                         {
                             if (Radius > 0)
                             {
@@ -681,7 +683,7 @@ namespace AntdUI
             {
                 using (var path = it.Rect.RoundPath(Radius, TL, TR, BR, BL))
                 {
-                    g.Fill(Colour.PrimaryBg.Get("Select"), path);
+                    g.Fill(Colour.PrimaryBg.Get("Select", ColorScheme), path);
                 }
                 if (it.SubText != null)
                 {
@@ -690,10 +692,10 @@ namespace AntdUI
                     g.String(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
                 DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select"), .46F);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select", ColorScheme), .46F);
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select") : Colour.Error.Get("Select"))))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
@@ -727,7 +729,7 @@ namespace AntdUI
                 }
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select") : Colour.Error.Get("Select"))))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
@@ -739,12 +741,12 @@ namespace AntdUI
             if (it.ID == -1) g.Fill(brush_split, it.Rect);
             else if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag))
             {
-                using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get("Select")))
+                using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get("Select", ColorScheme)))
                 {
                     g.Fill(brush_back, it.Rect);
                 }
                 DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select"), .46F);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select", ColorScheme), .46F);
             }
             else
             {
@@ -753,7 +755,7 @@ namespace AntdUI
             }
             if (it.Online.HasValue)
             {
-                using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select") : Colour.Error.Get("Select"))))
+                using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
                 {
                     g.FillEllipse(brush_online, it.RectOnline);
                 }
@@ -764,26 +766,26 @@ namespace AntdUI
         {
             if (it.Enable)
             {
-                using (var fore = new SolidBrush(Colour.TextBase.Get("Select")))
+                using (var fore = new SolidBrush(Colour.TextBase.Get("Select", ColorScheme)))
                 {
                     g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }
             }
             else
             {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select")))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
                 {
                     g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }
             }
-            DrawIcon(g, it, Colour.TextBase.Get("Select"));
+            DrawIcon(g, it, Colour.TextBase.Get("Select", ColorScheme));
         }
         void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush)
         {
             if (it.Enable) g.String(it.Text, Font, brush, it.RectText, stringFormatLeft);
             else
             {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select")))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
                 {
                     g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }
@@ -864,7 +866,7 @@ namespace AntdUI
             scrollY.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
-        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheel(value);
+        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheelCore(value);
 
         #endregion
     }

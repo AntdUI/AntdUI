@@ -33,6 +33,7 @@ namespace AntdUI
 
         public ScrollBar(FlowPanel control, bool enabledY = true, bool enabledX = false)
         {
+            ColorScheme = control.ColorScheme;
             OnInvalidate = ChangeSize = () => control.IOnSizeChanged();
             Invalidate = rect => OnInvalidate?.Invoke();
             EnabledX = enabledX;
@@ -41,6 +42,7 @@ namespace AntdUI
         }
         public ScrollBar(StackPanel control)
         {
+            ColorScheme = control.ColorScheme;
             OnInvalidate = ChangeSize = () => control.IOnSizeChanged();
             Invalidate = rect => OnInvalidate?.Invoke();
             if (control.Vertical) EnabledY = true;
@@ -50,8 +52,10 @@ namespace AntdUI
 
         #endregion
 
+        TAMode ColorScheme;
         public ScrollBar(IControl control, bool enabledY = true, bool enabledX = false, int radius = 0, bool radiusy = false)
         {
+            ColorScheme = control.ColorScheme;
             Radius = radius;
             RB = radiusy;
             Invalidate = rect =>
@@ -63,15 +67,6 @@ namespace AntdUI
             ChangeSize = () => control.IOnSizeChanged();
             EnabledX = enabledX;
             EnabledY = enabledY;
-            Init();
-        }
-
-        public ScrollBar(Action change, Action<Rectangle?> invalidate, bool enabledY = true, bool enabledX = false)
-        {
-            EnabledX = enabledX;
-            EnabledY = enabledY;
-            ChangeSize = change;
-            Invalidate = invalidate;
             Init();
         }
 
@@ -411,7 +406,7 @@ namespace AntdUI
 
         #region 渲染
 
-        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get("ScrollBar"));
+        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get("ScrollBar", ColorScheme));
         public virtual void Paint(Canvas g, Color baseColor)
         {
             if (Config.ScrollBarHide)
@@ -788,6 +783,7 @@ namespace AntdUI
             return true;
         }
 
+        #region 滚动
 
         public bool MouseWheelX(int Delta)
         {
@@ -802,7 +798,6 @@ namespace AntdUI
             }
             return false;
         }
-
         public bool MouseWheelY(int Delta)
         {
             if (Delta == 0) return false;
@@ -843,6 +838,33 @@ namespace AntdUI
             }
             return false;
         }
+
+        internal bool MouseWheelXCore(int delta)
+        {
+            if (delta == 0) return false;
+            if (EnabledX && ShowX)
+            {
+                int value = ValueX - delta;
+                ValueX = value;
+                if (ValueX != value) return false;
+                return true;
+            }
+            return false;
+        }
+        internal bool MouseWheelYCore(int delta)
+        {
+            if (delta == 0) return false;
+            if (EnabledY && ShowY)
+            {
+                int value = ValueY - delta;
+                ValueY = value;
+                if (ValueY != value) return false;
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
 
         public void Leave() => HoverX = HoverY = false;
 

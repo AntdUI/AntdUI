@@ -36,22 +36,14 @@ namespace AntdUI
     {
         #region 属性
 
-        TAMode mode = TAMode.Auto;
         /// <summary>
         /// 色彩模式
         /// </summary>
-        [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
+        [Obsolete("use ColorScheme"), Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
         public TAMode Mode
         {
-            get => mode;
-            set
-            {
-                if (mode == value) return;
-                mode = value;
-                DisposeBmp();
-                Invalidate();
-                OnPropertyChanged(nameof(Mode));
-            }
+            get => ColorScheme;
+            set => ColorScheme = value;
         }
 
         string? text = null;
@@ -703,8 +695,8 @@ namespace AntdUI
 
             #region 显示颜色
 
-            Color fore = Colour.Text.Get("PageHeader", mode), forebase = Colour.TextBase.Get("PageHeader", mode), foreSecondary = Colour.TextSecondary.Get("PageHeader", mode),
-                fillsecondary = Colour.FillSecondary.Get("PageHeader", mode);
+            Color fore = Colour.Text.Get("PageHeader", ColorScheme), forebase = Colour.TextBase.Get("PageHeader", ColorScheme), foreSecondary = Colour.TextSecondary.Get("PageHeader", ColorScheme),
+                fillsecondary = Colour.FillSecondary.Get("PageHeader", ColorScheme);
             if (useSystemStyleColor) forebase = ForeColor;
 
             #endregion
@@ -721,7 +713,7 @@ namespace AntdUI
             if (showDivider)
             {
                 int thickness = (int)(dividerthickness * Config.Dpi), margin = (int)(dividerMargin * Config.Dpi);
-                using (var brush = dividerColor.Brush(Colour.Split.Get("PageHeader")))
+                using (var brush = dividerColor.Brush(Colour.Split.Get("PageHeader", ColorScheme)))
                 {
                     g.Fill(brush, new Rectangle(rect_.X + margin, rect_.Bottom - thickness, rect_.Width - margin * 2, thickness));
                 }
@@ -846,7 +838,7 @@ namespace AntdUI
             {
                 icon_size = sHeight;
                 var rect_icon = new Rectangle(rect.X + u_x + _gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                using (var pen = new Pen(Colour.Fill.Get("PageHeader"), sHeight * .14F))
+                using (var pen = new Pen(Colour.Fill.Get("PageHeader", ColorScheme), sHeight * .14F))
                 using (var brush = new Pen(Color.FromArgb(170, fore), pen.Width))
                 {
                     g.DrawEllipse(pen, rect_icon);
@@ -892,18 +884,18 @@ namespace AntdUI
             var rect_close_icon = new Rectangle(rect_close.X + btn_x, rect_close.Y + btn_y, btn_size, btn_size);
             if (hove_close.Down)
             {
-                g.Fill(Colour.ErrorActive.Get("PageHeader"), rect_close);
+                g.Fill(Colour.ErrorActive.Get("PageHeader", ColorScheme), rect_close);
                 PrintCloseHover(g, rect_close_icon);
             }
             else if (hove_close.Animation)
             {
-                g.Fill(Helper.ToColor(hove_close.Value, Colour.Error.Get("PageHeader")), rect_close);
+                g.Fill(Helper.ToColor(hove_close.Value, Colour.Error.Get("PageHeader", ColorScheme)), rect_close);
                 PrintClose(g, fore, rect_close_icon);
-                g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Colour.ErrorColor.Get("PageHeader")));
+                g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Colour.ErrorColor.Get("PageHeader", ColorScheme)));
             }
             else if (hove_close.Switch)
             {
-                g.Fill(Colour.Error.Get("PageHeader"), rect_close);
+                g.Fill(Colour.Error.Get("PageHeader", ColorScheme), rect_close);
                 PrintCloseHover(g, rect_close_icon);
             }
             else PrintClose(g, fore, rect_close_icon);
@@ -952,14 +944,14 @@ namespace AntdUI
         void PrintBackHover(Canvas g, Color color, Rectangle rect_icon)
         {
             PrintBack(g, color, rect_icon);
-            g.GetImgExtend("ArrowLeftOutlined", rect_icon, Helper.ToColor(hove_back.Value, Colour.Primary.Get("PageHeader")));
+            g.GetImgExtend("ArrowLeftOutlined", rect_icon, Helper.ToColor(hove_back.Value, Colour.Primary.Get("PageHeader", ColorScheme)));
         }
         void PrintBackHover(Canvas g, Rectangle rect_icon)
         {
             if (temp_back_hover == null || temp_back_hover.Width != rect_icon.Width)
             {
                 temp_back_hover?.Dispose();
-                temp_back_hover = SvgExtend.GetImgExtend("ArrowLeftOutlined", rect_icon, Colour.Primary.Get("PageHeader"));
+                temp_back_hover = SvgExtend.GetImgExtend("ArrowLeftOutlined", rect_icon, Colour.Primary.Get("PageHeader", ColorScheme));
             }
             if (temp_back_hover != null) g.Image(temp_back_hover, rect_icon);
         }
@@ -968,7 +960,7 @@ namespace AntdUI
             if (temp_back_down == null || temp_back_down.Width != rect_icon.Width)
             {
                 temp_back_down?.Dispose();
-                temp_back_down = SvgExtend.GetImgExtend("ArrowLeftOutlined", rect_icon, Colour.PrimaryActive.Get("PageHeader"));
+                temp_back_down = SvgExtend.GetImgExtend("ArrowLeftOutlined", rect_icon, Colour.PrimaryActive.Get("PageHeader", ColorScheme));
             }
             if (temp_back_down != null) g.Image(temp_back_down, rect_icon);
         }
@@ -986,7 +978,7 @@ namespace AntdUI
             if (temp_close_hover == null || temp_close_hover.Width != rect_icon.Width)
             {
                 temp_close_hover?.Dispose();
-                temp_close_hover = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_icon, Colour.ErrorColor.Get("PageHeader"));
+                temp_close_hover = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_icon, Colour.ErrorColor.Get("PageHeader", ColorScheme));
             }
             if (temp_close_hover != null) g.Image(temp_close_hover, rect_icon);
         }
@@ -1093,6 +1085,12 @@ namespace AntdUI
             SizeChange();
         }
 
+        protected override void OnColorSchemeChanged(EventArgs e)
+        {
+            DisposeBmp();
+            base.OnColorSchemeChanged(e);
+        }
+
         void SizeChange()
         {
             if (setsize)
@@ -1174,7 +1172,7 @@ namespace AntdUI
                 bool _close = rect_close.Contains(e.X, e.Y), _full = fullBox && rect_full.Contains(e.X, e.Y), _max = maximizeBox && rect_max.Contains(e.X, e.Y), _min = minimizeBox && rect_min.Contains(e.X, e.Y);
                 if (_close != hove_close.Switch || _full != hove_full.Switch || _max != hove_max.Switch || _min != hove_min.Switch)
                 {
-                    var fillsecondary = Colour.FillSecondary.Get("PageHeader", mode);
+                    var fillsecondary = Colour.FillSecondary.Get("PageHeader", ColorScheme);
                     hove_max.MaxValue = hove_min.MaxValue = hove_full.MaxValue = fillsecondary.A;
                     hove_close.Switch = _close;
                     hove_full.Switch = _full;

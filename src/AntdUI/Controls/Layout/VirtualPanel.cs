@@ -973,7 +973,7 @@ namespace AntdUI
         StringFormat stringCenter = Helper.SF_NoWrap();
         void PaintEmpty(Canvas g, Rectangle rect)
         {
-            using (var fore = new SolidBrush(Colour.Text.Get("VirtualPanel")))
+            using (var fore = new SolidBrush(Colour.Text.Get("VirtualPanel", ColorScheme)))
             {
                 string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
                 if (Config.EmptyImageSvg != null)
@@ -1114,7 +1114,7 @@ namespace AntdUI
                         int shadow = (int)(Shadow * Config.Dpi);
                         using (var path = new Rectangle(shadow, shadow, it.RECT.Width, it.RECT.Height).RoundPath(radius, shadowAlign, radiusAlign))
                         {
-                            shadow_dir_tmp.Add(id, path.PaintShadow(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Colour.TextBase.Get("VirtualPanel"), shadow));
+                            shadow_dir_tmp.Add(id, path.PaintShadow(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Colour.TextBase.Get("VirtualPanel", ColorScheme), shadow));
                         }
                     }
                     if (shadow_dir_tmp.TryGetValue(id, out var shadow_temp))
@@ -1295,8 +1295,8 @@ namespace AntdUI
             ScrollBar.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
-        protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelX(value);
-        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelY(value);
+        protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelXCore(value);
+        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
 
         #endregion
     }

@@ -332,12 +332,12 @@ namespace AntdUI
             }
             var g = e.Graphics.High();
             float r = radius * Config.Dpi;
-            using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get("Collapse")))
-            using (var brush = new SolidBrush(headerBg ?? Colour.FillQuaternary.Get("Collapse")))
+            using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get("Collapse", ColorScheme)))
+            using (var brush = new SolidBrush(headerBg ?? Colour.FillQuaternary.Get("Collapse", ColorScheme)))
             {
                 if (borderWidth > 0)
                 {
-                    using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get("Collapse"), borderWidth * Config.Dpi))
+                    using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get("Collapse", ColorScheme), borderWidth * Config.Dpi))
                     using (var pen_arr = new Pen(forebrush.Color, 1.2F * Config.Dpi))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;

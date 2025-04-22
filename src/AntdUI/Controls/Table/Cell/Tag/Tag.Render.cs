@@ -34,35 +34,35 @@ namespace AntdUI
                 switch (Type)
                 {
                     case TTypeMini.Default:
-                        _back = Colour.TagDefaultBg.Get("Tag");
-                        _fore = Colour.TagDefaultColor.Get("Tag");
-                        _bor = Colour.DefaultBorder.Get("Tag");
+                        _back = Colour.TagDefaultBg.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _fore = Colour.TagDefaultColor.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _bor = Colour.DefaultBorder.Get("Tag", PARENT.PARENT.ColorScheme);
                         break;
                     case TTypeMini.Error:
-                        _back = Colour.ErrorBg.Get("Tag");
-                        _fore = Colour.Error.Get("Tag");
-                        _bor = Colour.ErrorBorder.Get("Tag");
+                        _back = Colour.ErrorBg.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _fore = Colour.Error.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _bor = Colour.ErrorBorder.Get("Tag", PARENT.PARENT.ColorScheme);
                         break;
                     case TTypeMini.Success:
-                        _back = Colour.SuccessBg.Get("Tag");
-                        _fore = Colour.Success.Get("Tag");
-                        _bor = Colour.SuccessBorder.Get("Tag");
+                        _back = Colour.SuccessBg.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _fore = Colour.Success.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _bor = Colour.SuccessBorder.Get("Tag", PARENT.PARENT.ColorScheme);
                         break;
                     case TTypeMini.Info:
-                        _back = Colour.InfoBg.Get("Tag");
-                        _fore = Colour.Info.Get("Tag");
-                        _bor = Colour.InfoBorder.Get("Tag");
+                        _back = Colour.InfoBg.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _fore = Colour.Info.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _bor = Colour.InfoBorder.Get("Tag", PARENT.PARENT.ColorScheme);
                         break;
                     case TTypeMini.Warn:
-                        _back = Colour.WarningBg.Get("Tag");
-                        _fore = Colour.Warning.Get("Tag");
-                        _bor = Colour.WarningBorder.Get("Tag");
+                        _back = Colour.WarningBg.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _fore = Colour.Warning.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _bor = Colour.WarningBorder.Get("Tag", PARENT.PARENT.ColorScheme);
                         break;
                     case TTypeMini.Primary:
                     default:
-                        _back = Colour.PrimaryBg.Get("Tag");
-                        _fore = Colour.Primary.Get("Tag");
-                        _bor = Colour.Primary.Get("Tag");
+                        _back = Colour.PrimaryBg.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _fore = Colour.Primary.Get("Tag", PARENT.PARENT.ColorScheme);
+                        _bor = Colour.Primary.Get("Tag", PARENT.PARENT.ColorScheme);
                         break;
                 }
 
