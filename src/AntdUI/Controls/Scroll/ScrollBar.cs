@@ -783,6 +783,7 @@ namespace AntdUI
             return true;
         }
 
+        #region 滚动
 
         public bool MouseWheelX(int Delta)
         {
@@ -797,7 +798,6 @@ namespace AntdUI
             }
             return false;
         }
-
         public bool MouseWheelY(int Delta)
         {
             if (Delta == 0) return false;
@@ -838,6 +838,33 @@ namespace AntdUI
             }
             return false;
         }
+
+        internal bool MouseWheelXCore(int delta)
+        {
+            if (delta == 0) return false;
+            if (EnabledX && ShowX)
+            {
+                int value = ValueX - delta;
+                ValueX = value;
+                if (ValueX != value) return false;
+                return true;
+            }
+            return false;
+        }
+        internal bool MouseWheelYCore(int delta)
+        {
+            if (delta == 0) return false;
+            if (EnabledY && ShowY)
+            {
+                int value = ValueY - delta;
+                ValueY = value;
+                if (ValueY != value) return false;
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
 
         public void Leave() => HoverX = HoverY = false;
 

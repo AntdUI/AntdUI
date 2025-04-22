@@ -866,7 +866,7 @@ namespace AntdUI
             scrollY.MouseWheel(e.Delta);
             base.OnMouseWheel(e);
         }
-        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheel(value);
+        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheelCore(value);
 
         #endregion
     }

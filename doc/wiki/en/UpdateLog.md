@@ -1,5 +1,30 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `1.9.11` 2025-04-18
+
+- ➕ Separate ColorScheme
+- ➕ Modal DefaultFocus
+- ➕ Tabs EnableSwitch
+- ➕ Menu Horizontal added beyond display
+- ➕ Panel BackExtend
+- ➕ Custom icon for Message Modal Notation
+- ➕ Menu Horizontal Out of Display
+- ➕ Table adaptation Binding Source
+- ➕ Table column support display name
+- ➕ Input Variant Form
+- ➕ Input ClearClick Event
+- ➕ ScrollBar supplementary event
+- ✍️ Table Binding Source refresh issue outside the first row
+- ✍️ Merge cells to overwrite the table header
+- ✍️ Table Different types of reflection sets
+- ✍️ Table movement exception
+- ✍️ Table Binding does not refresh
+- ✍️ Table editing mode disappears with abnormal focus
+- ✍️ Notification rendering issue
+- ✍️ Button AnimationBlink overlay background
+- ✍️ Input rounded corner issue
+- ✍️ Abnormal position of multiple screen pop ups in Tooltip
+
 ### `1.9.10` 2025-04-12
 
 - ➕ Table Summary Column

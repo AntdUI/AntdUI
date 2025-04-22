@@ -282,6 +282,16 @@ namespace AntdUI
             return false;
         }
 
+        internal bool MouseWheelCore(int delta)
+        {
+            if (Show && delta != 0)
+            {
+                Value -= delta;
+                return true;
+            }
+            return false;
+        }
+
         public void Leave() => Hover = false;
     }
 }
