@@ -1259,7 +1259,7 @@ namespace AntdUI
         {
             if (AutoSize)
             {
-                if (InvokeRequired) return ITask.Invoke(this, new Func<bool>(BeforeAutoSize));
+                if (InvokeRequired) return ITask.Invoke(this, BeforeAutoSize);
                 if (Vertical)
                 {
                     int height = Rect.Height;

@@ -190,7 +190,19 @@ namespace AntdUI
 
         RenderResult Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
         {
-            if (InvokeRequired) return ITask.Invoke(this, () => Win32.SetBits(bmp, rect, handle, alpha));
+            if (InvokeRequired)
+            {
+                try
+                {
+                    if (IsDisposed || Disposing) return RenderResult.Skip; // Or handle grace
+#if NET40 || NET46 || NET48
+                    return (RenderResult)Invoke(() => Win32.SetBits(bmp, rect, handle, alpha));
+#else
+                    return Invoke(() => Win32.SetBits(bmp, rect, handle, alpha));
+#endif
+                }
+                catch { }
+            }
             return Win32.SetBits(bmp, rect, handle, alpha);
         }
 

@@ -210,7 +210,7 @@ namespace AntdUI
         static SpinForm open_core(Control control, bool InvokeRequired, Form? parent, Config config)
         {
             SpinForm frm;
-            if (InvokeRequired) return ITask.Invoke(control, new Func<SpinForm>(() => open_core(control, false, parent, config)));
+            if (InvokeRequired) return ITask.Invoke(control, new Func<SpinForm>(() => open_core(control, false, parent, config)))!;
             frm = new SpinForm(control, parent, config);
             frm.Show(control);
             return frm;
@@ -351,7 +351,7 @@ namespace AntdUI
                 SetSize(form.Size);
                 SetLocation(form.Location);
                 if (_config.Radius.HasValue) Radius = _config.Radius.Value;
-                else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
+                else if (_control is IControl icontrol) RenderRegion = () => icontrol.RenderRegion;
                 else HasBor = form.FormFrame(out Radius, out Bor);
             }
             else
@@ -359,13 +359,14 @@ namespace AntdUI
                 SetSize(_control.Size);
                 SetLocation(_control.PointToScreen(Point.Empty));
                 if (_config.Radius.HasValue) Radius = _config.Radius.Value;
-                else if (_control is IControl icontrol) gpath = icontrol.RenderRegion;
+                else if (_control is IControl icontrol) RenderRegion = () => icontrol.RenderRegion;
             }
         }
 
+
         public override string name => nameof(Spin);
 
-        GraphicsPath? gpath = null;
+        Func<GraphicsPath>? RenderRegion;
         int Radius = 0, Bor = 0;
         bool HasBor = false;
 
@@ -396,11 +397,6 @@ namespace AntdUI
             {
                 SetLocation(control.PointToScreen(Point.Empty));
                 SetSize(control.Size);
-                if (!config.Radius.HasValue && control is IControl icontrol)
-                {
-                    gpath?.Dispose();
-                    gpath = icontrol.RenderRegion;
-                }
             }
         }
 
@@ -415,15 +411,24 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get("Spin"), .8F)))
                 {
-                    if (gpath != null) g.Fill(brush, gpath);
-                    else if (Radius > 0)
+                    if (RenderRegion == null)
                     {
-                        using (var path = rect.RoundPath(Radius))
+                        if (Radius > 0)
+                        {
+                            using (var path = rect.RoundPath(Radius))
+                            {
+                                g.Fill(brush, path);
+                            }
+                        }
+                        else g.Fill(brush, rect);
+                    }
+                    else
+                    {
+                        using (var path = RenderRegion())
                         {
                             g.Fill(brush, path);
                         }
                     }
-                    else g.Fill(brush, rect);
                 }
                 spin_core.Paint(g, rect, config, this);
             }
@@ -440,7 +445,6 @@ namespace AntdUI
                 parent.LocationChanged -= Parent_LocationChanged;
                 parent.SizeChanged -= Parent_SizeChanged;
             }
-            gpath?.Dispose();
             base.Dispose(disposing);
             if (control == null) return;
         }

@@ -127,6 +127,7 @@ namespace AntdUI
             Init(control, cell.DropDownPlacement, cell.DropDownArrow, true, rect, items, "");
         }
 
+        LayeredFormSelectDown? lay;
         public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
         {
             keyid = "Select";
@@ -148,9 +149,23 @@ namespace AntdUI
             Items = new List<ObjectItem>(items.Count);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
+        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
+        {
+            keyid = "Table";
+            Tag = cell;
+            ColorScheme = control.ColorScheme;
+            ClickEnd = cell.DropDownClickEnd;
+            scrollY = new ScrollY(this);
+            selectedValue = cell.DropDownValue;
+            Radius = (int)(cell.DropDownRadius ?? control.Radius * Config.Dpi);
+            DPadding = cell.DropDownPadding;
+            Items = new List<ObjectItem>(items.Count);
+            InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
+        }
 
         void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, Rectangle rect_read, IList<object> items, int sel)
         {
+            lay = control;
             parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
@@ -831,6 +846,7 @@ namespace AntdUI
                 OnCall(it);
                 down = false;
                 IClose();
+                CloseSub();
                 return true;
             }
             else
@@ -872,6 +888,22 @@ namespace AntdUI
             {
                 subForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
                 subForm.Show(this);
+            }
+            else if (PARENT is Table table && Tag is ICell cell)
+            {
+                subForm = new LayeredFormSelectDown(table, cell, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
+                subForm.Show(this);
+            }
+        }
+
+        void CloseSub()
+        {
+            LayeredFormSelectDown item = this;
+            while (item.lay is LayeredFormSelectDown form)
+            {
+                if (item == form) return;
+                form.IClose();
+                item = form;
             }
         }
 

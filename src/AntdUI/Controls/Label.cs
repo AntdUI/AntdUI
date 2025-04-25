@@ -742,7 +742,7 @@ namespace AntdUI
         bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
-            if (InvokeRequired) return ITask.Invoke(this, new Func<bool>(BeforeAutoSize));
+            if (InvokeRequired) return ITask.Invoke(this, BeforeAutoSize);
             var PS = PSize;
             switch (autoSize)
             {
