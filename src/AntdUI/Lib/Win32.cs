@@ -173,6 +173,7 @@ namespace AntdUI
         public const int DLGC_WANTALLKEYS = 0x0004;
         public const int DLGC_WANTARROWS = 0x0001;
         public const int DLGC_WANTCHARS = 0x0080;
+        public const int DLGC_WANTTAB = 0x0001;
 
         public const int WM_IME_REQUEST = 0x0288;
         public const int WM_IME_COMPOSITION = 0x010F;
