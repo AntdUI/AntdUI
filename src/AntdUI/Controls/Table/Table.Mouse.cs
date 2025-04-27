@@ -306,11 +306,7 @@ namespace AntdUI
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
             var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
-            if (cel_sel == null || (it.i_row != i_row || it.i_cel != i_cel))
-            {
-                MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y);
-                return;
-            }
+            if (cel_sel == null || (it.i_row != i_row || it.i_cel != i_cel)) MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y);
             else
             {
                 if (selectedIndex.Length == 1) SelectedIndex = it.i_row;

@@ -40,9 +40,10 @@ namespace AntdUI
         public VirtualPanel()
         {
             ScrollBar = new ScrollBar(this);
-            invalidate = it =>
+            invalidate = (it, rect) =>
             {
-                Invalidate(new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height));
+                if (rect.HasValue) Invalidate(new Rectangle(it.RECT.X + rect.Value.X - ScrollBar.ValueX, it.RECT.Y + rect.Value.Y - ScrollBar.ValueY, rect.Value.Width, rect.Value.Height));
+                else Invalidate(new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height));
             };
             new Thread(LongTask)
             {
@@ -441,7 +442,7 @@ namespace AntdUI
         }
 
         internal int CellCount = -1;
-        Action<VirtualItem> invalidate;
+        Action<VirtualItem, Rectangle?> invalidate;
         void HandLayout(List<VirtualItem> items)
         {
             var _rect = ClientRectangle;
@@ -1346,7 +1347,8 @@ namespace AntdUI
         public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
         public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }
 
-        public void Invalidate() => invalidate?.Invoke(this);
+        public void Invalidate() => invalidate?.Invoke(this, null);
+        public void Invalidate(Rectangle rect) => invalidate?.Invoke(this, rect);
 
         /// <summary>
         /// 是否显示
@@ -1371,7 +1373,7 @@ namespace AntdUI
             RECT.Y = y;
         }
 
-        internal Action<VirtualItem>? invalidate;
+        internal Action<VirtualItem, Rectangle?>? invalidate;
         internal int WIDTH;
         internal int HEIGHT;
     }

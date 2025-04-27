@@ -183,9 +183,10 @@ namespace AntdUI
         {
             if (items == null) return;
             var selecteds = new List<object>(items.Count);
-            foreach (object it in items)
+            foreach (var it in items)
             {
                 if (it is DividerSelectItem) { }
+                else if (it is SelectItem item) selecteds.Add(item.Tag);
                 else selecteds.Add(it);
             }
             if (selectedValue.SequenceEqual(selecteds)) return;
