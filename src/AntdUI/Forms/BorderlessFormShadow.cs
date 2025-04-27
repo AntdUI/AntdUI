@@ -151,7 +151,6 @@ namespace AntdUI
                         if (bmp == null) return;
                         Win32.SetBits(bmp, shadow_rect, Handle, 255);
                     }
-                    GC.Collect();
                 }
                 catch { }
             }

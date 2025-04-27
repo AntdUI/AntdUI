@@ -24,14 +24,19 @@ namespace AntdUI
 {
     partial class Input
     {
-        public void IProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData) => ProcessCmdKey(ref msg, keyData);
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
             bool result = base.ProcessCmdKey(ref msg, keyData);
-            if (OnVerifyKeyboard(keyData))
+            if (AcceptsTab && multiline && keyData == Keys.Tab) return true;
+            return result;
+        }
+
+        public bool HandKeyBoard(Keys key)
+        {
+            if (OnVerifyKeyboard(key))
             {
-                switch (keyData)
+                switch (key)
                 {
                     case Keys.Back:
                         return ProcessShortcutKeys(ShortcutKeys.Back);
@@ -93,7 +98,96 @@ namespace AntdUI
                         return ProcessShortcutKeys(ShortcutKeys.PageDown);
                 }
             }
-            return result;
+            return false;
+        }
+        bool HandKeyDown(Keys key)
+        {
+            if (OnVerifyKeyboard(key))
+            {
+                switch (key)
+                {
+                    case Keys.Back:
+                        return ProcessShortcutKeys(ShortcutKeys.Back);
+                    case Keys.Delete:
+                        return ProcessShortcutKeys(ShortcutKeys.Delete);
+
+                    case Keys.Enter:
+                        return ProcessShortcutKeys(ShortcutKeys.Enter);
+                    case Keys.Control | Keys.A:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlA);
+                    case Keys.Control | Keys.C:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlC);
+                    case Keys.Control | Keys.X:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlX);
+                    case Keys.Control | Keys.V:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlV);
+                    case Keys.Control | Keys.Z:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlZ);
+                    case Keys.Control | Keys.Y:
+                        return ProcessShortcutKeys(ShortcutKeys.ControlY);
+
+                    case Keys.Left:
+                        return ProcessShortcutKeys(ShortcutKeys.Left);
+                    case Keys.Left | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.LeftShift);
+                    case Keys.Up:
+                        return ProcessShortcutKeys(ShortcutKeys.Up);
+                    case Keys.Up | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.UpShift);
+                    case Keys.Right:
+                        return ProcessShortcutKeys(ShortcutKeys.Right);
+                    case Keys.Right | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.RightShift);
+                    case Keys.Down:
+                        return ProcessShortcutKeys(ShortcutKeys.Down);
+                    case Keys.Down | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.DownShift);
+                    case Keys.Home:
+                        return ProcessShortcutKeys(ShortcutKeys.Home);
+                    case Keys.Home | Keys.Control:
+                        return ProcessShortcutKeys(ShortcutKeys.HomeControl);
+                    case Keys.Home | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.HomeShift);
+                    case Keys.Home | Keys.Control | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.HomeControlShift);
+                    case Keys.End:
+                        return ProcessShortcutKeys(ShortcutKeys.End);
+                    case Keys.End | Keys.Control:
+                        return ProcessShortcutKeys(ShortcutKeys.EndControl);
+                    case Keys.End | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.EndShift);
+                    case Keys.End | Keys.Control | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.EndControlShift);
+                    case Keys.PageUp:
+                        return ProcessShortcutKeys(ShortcutKeys.PageUp);
+                    case Keys.PageDown:
+                        return ProcessShortcutKeys(ShortcutKeys.PageDown);
+                }
+            }
+            return false;
+        }
+        bool HandKeyUp(Keys key)
+        {
+            if (OnVerifyKeyboard(key) && key == Keys.Tab) return ProcessShortcutKeys(ShortcutKeys.Tab);
+            return false;
+        }
+
+        Keys GetKeyBoard(int code)
+        {
+            Keys keyData = (Keys)code;
+            bool Control = ModifierKeys.HasFlag(Keys.Control), Shift = ModifierKeys.HasFlag(Keys.Shift);
+            if (Control && Shift) return keyData | Keys.Control | Keys.Shift;
+            else if (Control)
+            {
+                if (keyData == Keys.Control) return keyData;
+                return keyData | Keys.Control;
+            }
+            else if (Shift)
+            {
+                if (keyData == Keys.Shift) return keyData;
+                return keyData | Keys.Shift;
+            }
+            return keyData;
         }
 
         internal void IKeyPress(char keyChar)
@@ -373,6 +467,7 @@ namespace AntdUI
             }
             else if (selectionStart > 0)
             {
+                AddHistoryRecord();
                 int start = selectionStart - 1;
                 if (start == 0) CaretInfo.FirstRet = true;
                 var texts = new List<string>(cache_font.Length);

@@ -17,10 +17,8 @@
 // QQ: 17379620
 
 using System;
-using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -40,11 +38,10 @@ namespace AntdUI
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
-            actionRender = (handle, alpha, bmp, rect) => Win32.SetBits(bmp, rect, handle, alpha);
             actionLoadMessage = LoadMessage;
             actionCursor = val => SetCursor(val);
-            renderQueue = new RenderQueue(this);
         }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual bool ShowLeft { get; set; } = false;
 
@@ -53,8 +50,6 @@ namespace AntdUI
             handle = Handle;
             base.OnHandleCreated(e);
         }
-
-        RenderQueue renderQueue;
 
         public Control? PARENT = null;
         public Func<Keys, bool>? KeyCall = null;
@@ -82,10 +77,10 @@ namespace AntdUI
         bool FunRun = true;
         protected override void Dispose(bool disposing)
         {
+            handle = null;
             FunRun = false;
             Application.RemoveMessageFilter(this);
             base.Dispose(disposing);
-            renderQueue.Dispose();
         }
 
         public virtual bool UFocus => true;
@@ -101,8 +96,6 @@ namespace AntdUI
             han = IntPtr.Zero;
             return false;
         }
-
-        public bool CanRender() => handle.HasValue && FunRun;
 
         #region 渲染坐标
 
@@ -164,40 +157,53 @@ namespace AntdUI
 
         #endregion
 
-        public void Print(bool fore = false) => renderQueue.Set(fore);
-        public void Print(Bitmap bmp) => renderQueue.Set(alpha, bmp);
-        public void Print(Bitmap bmp, Rectangle rect) => renderQueue.Set(alpha, bmp, rect);
-
-        bool Render(IntPtr handle)
+        public RenderResult Print(bool fore = false)
         {
-            try
+            if (CanRender(out var handle))
             {
-                using (var bmp = PrintBit())
+                try
                 {
-                    if (bmp == null) return false;
-                    return Render(handle, bmp);
+                    using (var bmp = PrintBit())
+                    {
+                        if (bmp == null) return RenderResult.Skip;
+                        return Render(handle, alpha, bmp, target_rect);
+                    }
                 }
+                catch { }
+                return RenderResult.Error;
             }
-            catch { }
-            return true;
+            else return RenderResult.Skip;
+        }
+        public RenderResult Print(Bitmap bmp)
+        {
+            if (CanRender(out var handle)) return Render(handle, alpha, bmp, target_rect);
+            else return RenderResult.Skip;
+        }
+        public RenderResult Print(Bitmap bmp, Rectangle rect)
+        {
+            using (bmp)
+            {
+                if (CanRender(out var handle)) return Render(handle, alpha, bmp, rect);
+                else return RenderResult.Skip;
+            }
         }
 
-        Action<IntPtr, byte, Bitmap, Rectangle> actionRender;
-        bool Render(IntPtr handle, Bitmap bmp) => Render(handle, alpha, bmp, target_rect);
-        bool Render(IntPtr handle, byte alpha, Bitmap bmp) => Render(handle, alpha, bmp, target_rect);
-        bool Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
+        RenderResult Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
         {
-            try
+            if (InvokeRequired)
             {
-                if (InvokeRequired)
+                try
                 {
-                    if (CanRender()) Invoke(actionRender, handle, alpha, bmp, rect);
-                    return false;
+                    if (IsDisposed || Disposing) return RenderResult.Skip; // Or handle grace
+#if NET40 || NET46 || NET48
+                    return (RenderResult)Invoke(() => Win32.SetBits(bmp, rect, handle, alpha));
+#else
+                    return Invoke(() => Win32.SetBits(bmp, rect, handle, alpha));
+#endif
                 }
-                else actionRender(handle, alpha, bmp, rect);
+                catch { }
             }
-            catch { }
-            return true;
+            return Win32.SetBits(bmp, rect, handle, alpha);
         }
 
         Action<bool> actionCursor;
@@ -237,25 +243,22 @@ namespace AntdUI
         bool switchClose = true, switchDispose = true;
         public void IClose(bool isdispose = false)
         {
-            if (IsHandleCreated)
+            try
             {
-                try
+                if (InvokeRequired)
                 {
-                    if (InvokeRequired)
-                    {
-                        Invoke(() => IClose(isdispose));
-                        return;
-                    }
-                    if (switchClose) Close();
-                    switchClose = false;
-                    if (isdispose)
-                    {
-                        if (switchDispose) Dispose();
-                        switchDispose = false;
-                    }
+                    Invoke(() => IClose(isdispose));
+                    return;
                 }
-                catch { }
+                if (switchClose) Close();
+                switchClose = false;
+                if (isdispose)
+                {
+                    if (switchDispose) Dispose();
+                    switchDispose = false;
+                }
             }
+            catch { }
         }
 
         /// <summary>
@@ -503,130 +506,6 @@ namespace AntdUI
 #endif
 
         #endregion
-
-        /// <summary>
-        /// 逐帧渲染
-        /// </summary>
-        class RenderQueue : IDisposable
-        {
-            ILayeredForm call;
-            public RenderQueue(ILayeredForm it)
-            {
-                call = it;
-                new Thread(LongTask) { IsBackground = true }.Start();
-            }
-
-            ConcurrentQueue<M?> Queue = new ConcurrentQueue<M?>();
-            ManualResetEvent Event = new ManualResetEvent(false);
-
-            /// <summary>
-            /// 渲染
-            /// </summary>
-            public void Set(bool fore)
-            {
-                if (fore)
-                {
-                    if (isDispose) return;
-                }
-                else
-                {
-                    if (isDispose || Rendering) return;
-                }
-                Queue.Enqueue(null);
-                Event.SetWait();
-            }
-
-            /// <summary>
-            /// 渲染
-            /// </summary>
-            public void Set(byte alpha, Bitmap bmp)
-            {
-                if (isDispose || Rendering)
-                {
-                    bmp.Dispose();
-                    return;
-                }
-                Queue.Enqueue(new M(alpha, bmp));
-                Event.SetWait();
-            }
-
-            /// <summary>
-            /// 渲染
-            /// </summary>
-            public void Set(byte alpha, Bitmap bmp, Rectangle rect)
-            {
-                if (isDispose || Rendering)
-                {
-                    bmp.Dispose();
-                    return;
-                }
-                Queue.Enqueue(new M(alpha, bmp, rect));
-                Event.SetWait();
-            }
-
-            bool Rendering = false;
-            void LongTask()
-            {
-                while (true)
-                {
-                    if (Event.Wait()) return;
-                    while (Queue.TryDequeue(out var cmd))
-                    {
-                        if (call.CanRender(out var handle))
-                        {
-                            Rendering = true;
-                            if (cmd == null)
-                            {
-                                if (call.Render(handle)) Set(true);
-                            }
-                            else if (cmd.rect.HasValue)
-                            {
-                                using (cmd.bmp)
-                                {
-                                    if (call.Render(handle, cmd.alpha, cmd.bmp, cmd.rect.Value)) Set(true);
-                                }
-                            }
-                            else if (call.Render(handle, cmd.alpha, cmd.bmp)) Set(true);
-                            Rendering = false;
-                        }
-                    }
-                    if (isDispose) return;
-                    if (Event.ResetWait()) return;
-                }
-            }
-
-            bool isDispose = false;
-            public void Dispose()
-            {
-                if (isDispose) return;
-                isDispose = true;
-#if NET40 || NET45 || NET46 || NET48
-                while (Queue.TryDequeue(out _)) { }
-#else
-                Queue.Clear();
-#endif
-                Event.WaitDispose();
-                GC.SuppressFinalize(this);
-            }
-
-            public class M
-            {
-                public M(byte a, Bitmap b)
-                {
-                    bmp = b;
-                    alpha = a;
-                }
-                public M(byte a, Bitmap b, Rectangle r)
-                {
-                    bmp = b;
-                    alpha = a;
-                    rect = r;
-                }
-                public byte alpha { get; private set; }
-                public Bitmap bmp { get; private set; }
-                public Rectangle? rect { get; private set; }
-            }
-        }
     }
 
     public interface SubLayeredForm

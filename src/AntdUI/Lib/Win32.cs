@@ -44,9 +44,9 @@ namespace AntdUI
 
         #endregion
 
-        public static void SetBits(Bitmap? bmp, Rectangle rect, IntPtr intPtr, byte a = 255)
+        public static RenderResult SetBits(Bitmap? bmp, Rectangle rect, IntPtr intPtr, byte a = 255)
         {
-            if (bmp == null || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare) return;
+            if (bmp == null || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare) return RenderResult.Invalid;
             IntPtr hBitmap = bmp.GetHbitmap(Color.FromArgb(0)), oldBits = SelectObject(memDc, hBitmap);
             try
             {
@@ -62,6 +62,7 @@ namespace AntdUI
                 var topSize = new Win32Size(rect.Width, rect.Height);
                 UpdateLayeredWindow(intPtr, screenDC, ref topLoc, ref topSize, memDc, ref srcLoc, 0, ref blendFunc, ULW_ALPHA);
             }
+            catch { return RenderResult.Error; }
             finally
             {
                 if (hBitmap != IntPtr.Zero)
@@ -70,6 +71,7 @@ namespace AntdUI
                     DeleteObject(hBitmap);
                 }
             }
+            return RenderResult.OK;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -171,6 +173,7 @@ namespace AntdUI
         public const int DLGC_WANTALLKEYS = 0x0004;
         public const int DLGC_WANTARROWS = 0x0001;
         public const int DLGC_WANTCHARS = 0x0080;
+        public const int DLGC_WANTTAB = 0x0001;
 
         public const int WM_IME_REQUEST = 0x0288;
         public const int WM_IME_COMPOSITION = 0x010F;
@@ -339,5 +342,25 @@ namespace AntdUI
         extern static IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
 
         #endregion
+    }
+
+    public enum RenderResult
+    {
+        /// <summary>
+        /// 成功
+        /// </summary>
+        OK,
+        /// <summary>
+        /// 异常
+        /// </summary>
+        Error,
+        /// <summary>
+        /// 跳过
+        /// </summary>
+        Skip,
+        /// <summary>
+        /// 图片无效
+        /// </summary>
+        Invalid
     }
 }

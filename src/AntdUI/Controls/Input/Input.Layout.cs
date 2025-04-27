@@ -115,7 +115,6 @@ namespace AntdUI
                     }
                     CaretInfo.Height = font_height;
                     CalculateRect();
-                    GC.Collect();
                 });
             }
             else
@@ -125,7 +124,6 @@ namespace AntdUI
                     ScrollX = ScrollY = 0;
                     cache_font = null;
                     CalculateRect();
-                    GC.Collect();
                 }
                 else
                 {
@@ -213,7 +211,6 @@ namespace AntdUI
                         SetStyle();
                         CaretInfo.Height = font_height;
                         CalculateRect();
-                        GC.Collect();
                     });
                 }
             }
@@ -346,7 +343,6 @@ namespace AntdUI
                     isempty = true;
                     _text = "";
                     cache_font = null;
-                    GC.Collect();
                     return;
                 }
                 var last = cache_font[cache_font.Length - 1];

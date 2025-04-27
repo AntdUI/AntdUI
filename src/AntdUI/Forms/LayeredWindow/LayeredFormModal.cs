@@ -51,8 +51,12 @@ namespace AntdUI
             int butt_h = (int)Math.Round(config.BtnHeight * Config.Dpi);
             BackColor = Colour.BgElevated.Get("Modal");
             Size = new Size(416, 122 + butt_h);
-            if (config.Form == null) { if (config.Font != null) Font = config.Font; }
-            else Font = config.Font ?? config.Form.Font;
+            if (config.Form == null)
+            {
+                if (config.Font != null) Font = config.Font;
+                else if (Config.Font != null) Font = Config.Font;
+            }
+            else Font = config.Font ?? Config.Font ?? config.Form.Font;
             ForeColor = Colour.TextBase.Get("Modal");
             ShowInTaskbar = false;
             if (config.Form == null) StartPosition = FormStartPosition.CenterScreen;

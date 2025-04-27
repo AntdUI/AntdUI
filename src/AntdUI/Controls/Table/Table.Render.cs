@@ -761,12 +761,13 @@ namespace AntdUI
                 {
                     if (row.row.IsColumn)
                     {
-                        PaintTableBgHeader(g, row.row, radius, sx);
+                        PaintTableBgHeader(g, row.row, radius, 0);
                         PaintTableHeader(g, row.row, forecolumn, column_font, radius);
                     }
                     else
                     {
                         PaintBgRowFront(g, row);
+                        PaintBgRowFrontStyle(g, row);
                         PaintBgRowItem(g, row.row);
                         PaintBg(g, row.row);
                     }
@@ -783,7 +784,7 @@ namespace AntdUI
                 g.ResetTransform();
                 if (fixedHeader)
                 {
-                    PaintTableBgHeader(g, rows[0], radius, sx);
+                    PaintTableBgHeader(g, rows[0], radius, 0);
                     PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
                 }
                 else g.TranslateTransform(0, bordered ? 0 : -sy);
@@ -836,21 +837,23 @@ namespace AntdUI
 
                         #endregion
 
-                        g.TranslateTransform(0, -sy);
+                        g.TranslateTransform(-sFixedR, -sy);
                         foreach (var row in shows)
                         {
                             if (row.row.IsColumn)
                             {
-                                PaintTableBgHeader(g, row.row, radius, sx);
+                                g.ResetTransform();
+                                g.TranslateTransform(0, -sy);
+                                PaintTableBgHeader(g, row.row, radius, sFixedR);
                                 g.ResetTransform();
                                 g.TranslateTransform(-sFixedR, -sy);
                                 PaintTableHeader(g, row.row, forecolumn, column_font, radius);
-                                g.ResetTransform();
-                                g.TranslateTransform(0, -sy);
                             }
                             else
                             {
                                 PaintBgRowFront(g, row);
+                                PaintBgRowFrontStyle(g, row);
+                                PaintBgRowItem(g, row.row);
                                 PaintBg(g, row.row);
                             }
                         }
@@ -873,7 +876,7 @@ namespace AntdUI
                         g.ResetTransform();
                         if (fixedHeader)
                         {
-                            PaintTableBgHeader(g, rows[0], radius, sx);
+                            PaintTableBgHeader(g, rows[0], radius, sFixedR);
                             g.TranslateTransform(-sFixedR, 0);
                             PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
                             g.ResetTransform();

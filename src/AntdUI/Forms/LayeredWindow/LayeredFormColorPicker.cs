@@ -950,7 +950,7 @@ namespace AntdUI
         {
             foreach (var input in inputs)
             {
-                if (input.input.Focused) input.input.IProcessCmdKey(ref msg, keyData);
+                if (input.input.Focused) input.input.HandKeyBoard(keyData);
             }
         }
 

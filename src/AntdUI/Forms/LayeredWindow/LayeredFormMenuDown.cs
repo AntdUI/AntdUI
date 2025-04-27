@@ -76,7 +76,7 @@ namespace AntdUI
         LayeredFormMenuDown? subForm = null;
         void Init(Control control, Rectangle rect_read, IList<MenuItem> items)
         {
-            int y = 10, w = rect_read.Width;
+            int y = 10, w = rect_read.Width, count = 0;
             OMenuItem? oMenuItem = null;
             Helper.GDI(g =>
             {
@@ -92,13 +92,16 @@ namespace AntdUI
                 bool ui_icon = false, ui_arrow = false;
                 foreach (var it in items)
                 {
-                    if (it.Text != null)
+                    if (it.Visible)
                     {
-                        var size2 = g.MeasureString(it.Text, Font);
-                        if (size2.Width > b_w) b_w = size2.Width;
+                        if (it.Text != null)
+                        {
+                            var size2 = g.MeasureString(it.Text, Font);
+                            if (size2.Width > b_w) b_w = size2.Width;
+                        }
+                        if (it.HasIcon) ui_icon = true;
+                        if (it.CanExpand) ui_arrow = true;
                     }
-                    if (it.HasIcon) ui_icon = true;
-                    if (it.CanExpand) ui_arrow = true;
                 }
                 if (ui_icon)
                 {
@@ -112,13 +115,17 @@ namespace AntdUI
 
                 foreach (var it in items)
                 {
-                    Rectangle rect = new Rectangle(10 + gap, y, w - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
-                    var item = new OMenuItem(it, rect, gap_y, rect_text);
-                    Items.Add(item);
-                    if (it.Select) oMenuItem = item;
-                    y += item_height;
+                    if (it.Visible)
+                    {
+                        Rectangle rect = new Rectangle(10 + gap, y, w - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
+                        var item = new OMenuItem(it, rect, gap_y, rect_text);
+                        Items.Add(item);
+                        if (it.Select) oMenuItem = item;
+                        y += item_height;
+                        count++;
+                    }
                 }
-                var vr = item_height * items.Count;
+                var vr = item_height * count;
                 y = 10 + gap_y2 + vr;
             });
             int h = y + 10;

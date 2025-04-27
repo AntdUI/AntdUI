@@ -1329,6 +1329,12 @@ namespace AntdUI
                     break;
                 //case 0x0286:
                 //    break;
+                case 0x100://WM_KEYDOWN
+                    if (HandKeyDown(GetKeyBoard(m.WParam.ToInt32()))) return;
+                    break;
+                case 0x101://WM_KEYUP
+                    if (HandKeyUp(GetKeyBoard(m.WParam.ToInt32()))) return;
+                    break;
                 case Win32.WM_IME_STARTCOMPOSITION:
                     m_hIMC = Win32.ImmGetContext(Handle);
                     OnImeStartPrivate(m_hIMC);
@@ -1367,6 +1373,9 @@ namespace AntdUI
                     else m.Result = Win32.DLGC_WANTARROWS | Win32.DLGC_WANTCHARS;
 #endif
                     break;
+                case 0x0028:
+                    // 拦截焦点切换消息
+                    return;
             }
             base.WndProc(ref m);
         }

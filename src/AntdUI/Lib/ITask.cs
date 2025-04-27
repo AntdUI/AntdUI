@@ -297,8 +297,9 @@ namespace AntdUI
 #endif
         }
 
-        public static T Invoke<T>(Control control, Func<T> method)
+        public static T? Invoke<T>(Control control, Func<T> method)
         {
+            if (control.IsDisposed || control.Disposing) return default;
 #if NET40 || NET46 || NET48
             return (T)control.Invoke(method);
 #else

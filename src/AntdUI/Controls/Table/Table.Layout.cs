@@ -1044,6 +1044,8 @@ namespace AntdUI
         {
             if (rows == null) return;
             int count = 0, nocount = 0;
+            bool old = pauseLayout;
+            pauseLayout = true;
             for (int i_row = 1; i_row < rows.Length; i_row++)
             {
                 var item = rows[i_row].cells[i_cel];
@@ -1060,6 +1062,7 @@ namespace AntdUI
                     else nocount++;
                 }
             }
+            pauseLayout = old;
             if (count > 0 && nocount == count) columnCheck.Checked = value;
         }
 

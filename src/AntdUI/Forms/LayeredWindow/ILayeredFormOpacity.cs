@@ -30,13 +30,30 @@ namespace AntdUI
         {
             if (Config.HasAnimation(name))
             {
-                var t = Animation.TotalFrames(10, 80);
-                task_start = new ITask((i) =>
+                if (this is SpinForm)
                 {
-                    var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                    SetAnimateValue((byte)(maxalpha * val));
-                    return true;
-                }, 10, t, IStart);
+                    var t = Animation.TotalFrames(10, 80);
+                    task_start = new ITask((i) =>
+                    {
+                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                        alpha = (byte)(maxalpha * val);
+                        return true;
+                    }, 10, t, () =>
+                    {
+                        alpha = maxalpha;
+                        LoadOK();
+                    });
+                }
+                else
+                {
+                    var t = Animation.TotalFrames(10, 80);
+                    task_start = new ITask((i) =>
+                    {
+                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                        SetAnimateValue((byte)(maxalpha * val));
+                        return true;
+                    }, 10, t, IStart);
+                }
             }
             else IStart();
             base.OnLoad(e);
@@ -61,7 +78,7 @@ namespace AntdUI
                 {
                     if (bmp_tmp == null) bmp_tmp = PrintBit();
                     if (bmp_tmp == null) return;
-                    Print(bmp_tmp);
+                    if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
                 }
                 catch { }
             }
