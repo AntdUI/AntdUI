@@ -1081,10 +1081,19 @@ namespace AntdUI
         /// <summary>
         /// 清空样式
         /// </summary>
-        public void ClearStyle()
+        public void ClearStyle(bool r = true)
         {
+            if (styles == null) return;
             styles = null;
-            Invalidate();
+            if (cache_font == null) return;
+            for (int i = 0; i < cache_font.Length; i++)
+            {
+                var it = cache_font[i];
+                it.font = null;
+                it.fore = null;
+                it.back = null;
+            }
+            if (r) Invalidate();
         }
 
         public class TextStyle
