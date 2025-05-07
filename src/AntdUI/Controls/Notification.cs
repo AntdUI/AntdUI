@@ -297,7 +297,7 @@ namespace AntdUI
             /// <summary>
             /// 弹出在窗口
             /// </summary>
-            public bool ShowInWindow { get; set; }
+            public bool? ShowInWindow { get; set; }
         }
 
         public class ConfigLink
@@ -354,7 +354,7 @@ namespace AntdUI
 
         public bool IInit()
         {
-            if (SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByNotification)) return true;
+            if (SetPosition(config.Form, config.ShowInWindow ?? Config.ShowInWindowByNotification)) return true;
             if (config.AutoClose > 0)
             {
                 ITask.Run(() =>

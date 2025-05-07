@@ -194,7 +194,7 @@ namespace AntdUI
             {
                 try
                 {
-                    if (IsDisposed || Disposing) return RenderResult.Skip; // Or handle grace
+                    if (IsDisposed || Disposing) return RenderResult.Skip;
 #if NET40 || NET46 || NET48
                     return (RenderResult)Invoke(() => Win32.SetBits(bmp, rect, handle, alpha));
 #else

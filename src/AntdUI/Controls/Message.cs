@@ -232,6 +232,11 @@ namespace AntdUI
             public bool ClickClose { get; set; } = true;
 
             /// <summary>
+            /// 是否置顶
+            /// </summary>
+            public bool TopMost { get; set; }
+
+            /// <summary>
             /// 方向
             /// </summary>
             public TAlignFrom Align { get; set; } = TAlignFrom.Top;
@@ -244,7 +249,7 @@ namespace AntdUI
             /// <summary>
             /// 弹出在窗口
             /// </summary>
-            public bool ShowInWindow { get; set; }
+            public bool? ShowInWindow { get; set; }
 
             public void OK(string text)
             {
@@ -322,7 +327,8 @@ namespace AntdUI
         public MessageFrm(Message.Config _config)
         {
             config = _config;
-            config.Form.SetTopMost(Handle);
+            if (config.TopMost) Helper.SetTopMost(Handle);
+            else config.Form.SetTopMost(Handle);
             shadow_size = (int)(shadow_size * Config.Dpi);
             loading = _config.Call != null;
             if (config.Font != null) Font = config.Font;
@@ -341,7 +347,7 @@ namespace AntdUI
         ITask? ThreadLoading = null;
         public bool IInit()
         {
-            if (SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByMessage)) return true;
+            if (SetPosition(config.Form, config.ShowInWindow ?? Config.ShowInWindowByMessage)) return true;
             if (loading)
             {
                 ThreadLoading = new ITask(this, i =>

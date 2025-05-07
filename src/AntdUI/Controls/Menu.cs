@@ -1249,6 +1249,38 @@ namespace AntdUI
             if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IUSelect(sub);
         }
 
+        public MenuItem? HitTest(int x, int y)
+        {
+            if (items == null || items.Count == 0) return null;
+
+            foreach (var it in items)
+            {
+                if (IHitTest(x, y, it, out var md)) return md;
+            }
+            return null;
+        }
+        bool IHitTest(int x, int y, MenuItem item, out MenuItem? mdown)
+        {
+            if (item.Visible)
+            {
+                bool can = item.CanExpand;
+                if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
+                {
+                    mdown = item;
+                    return true;
+                }
+                if (can && item.Expand && !collapsed)
+                {
+                    foreach (var sub in item.Sub)
+                    {
+                        if (IHitTest(x, y, sub, out mdown)) return true;
+                    }
+                }
+            }
+            mdown = null;
+            return false;
+        }
+
         #endregion
 
         #region 子窗口

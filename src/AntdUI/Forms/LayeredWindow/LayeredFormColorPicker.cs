@@ -159,6 +159,7 @@ namespace AntdUI
 
                         var input_r = new InputNumber
                         {
+                            TabStop = false,
                             ShowControl = false,
                             PrefixText = "R",
                             Location = rect_r.Location,
@@ -173,6 +174,7 @@ namespace AntdUI
 
                         var input_g = new InputNumber
                         {
+                            TabStop = false,
                             ShowControl = false,
                             PrefixText = "G",
                             Location = rect_g.Location,
@@ -187,6 +189,7 @@ namespace AntdUI
 
                         var input_b = new InputNumber
                         {
+                            TabStop = false,
                             ShowControl = false,
                             PrefixText = "B",
                             Location = rect_b.Location,
@@ -203,11 +206,10 @@ namespace AntdUI
                             new InputRect(input_g, rect_g, wsize, wsize2),
                             new InputRect(input_b, rect_b, wsize, wsize2)
                         };
-
                         input_r.TakePaint = input_g.TakePaint = input_b.TakePaint = () =>
                         {
                             if (RunAnimation) return;
-                            Print(true);
+                            Print();
                         };
                         Controls.Add(input_r);
                         Controls.Add(input_g);
@@ -223,6 +225,7 @@ namespace AntdUI
 
                         var input_r = new InputNumber
                         {
+                            TabStop = false,
                             ShowControl = false,
                             PrefixText = "R",
                             Location = rect_r.Location,
@@ -237,6 +240,7 @@ namespace AntdUI
 
                         var input_g = new InputNumber
                         {
+                            TabStop = false,
                             ShowControl = false,
                             PrefixText = "G",
                             Location = rect_g.Location,
@@ -251,6 +255,7 @@ namespace AntdUI
 
                         var input_b = new InputNumber
                         {
+                            TabStop = false,
                             ShowControl = false,
                             PrefixText = "B",
                             Location = rect_b.Location,
@@ -265,6 +270,7 @@ namespace AntdUI
 
                         var input_a = new InputNumber
                         {
+                            TabStop = false,
                             ShowControl = false,
                             SuffixText = "%",
                             Location = rect_a.Location,
@@ -283,11 +289,10 @@ namespace AntdUI
                             new InputRect(input_b, rect_b, wsize, wsize2),
                             new InputRect(input_a, rect_a, wsize, wsize2)
                         };
-
                         input_r.TakePaint = input_g.TakePaint = input_b.TakePaint = input_a.TakePaint = () =>
                         {
                             if (RunAnimation) return;
-                            Print(true);
+                            Print();
                         };
                         Controls.Add(input_r);
                         Controls.Add(input_g);

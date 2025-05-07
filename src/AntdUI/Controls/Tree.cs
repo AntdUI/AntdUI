@@ -216,8 +216,9 @@ namespace AntdUI
             get => selectItem;
             set
             {
+                if (selectItem == value) return;
                 selectItem = value;
-                if (value == null) USelect();
+                if (value == null) USelect(false);
                 else Select(value);
             }
         }
@@ -286,23 +287,23 @@ namespace AntdUI
             NodeMouseMove(this, new TreeHoverEventArgs(item, item.Rect("Text", sx, sy), hover));
         }
 
-        internal void OnSelectChanged(TreeItem item, MouseEventArgs args)
+        internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args)
         {
             if (SelectChanged == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            SelectChanged(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
+            SelectChanged(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), type, args));
         }
-        internal void OnNodeMouseClick(TreeItem item, MouseEventArgs args)
+        internal void OnNodeMouseClick(TreeItem item, TreeCType type, MouseEventArgs args)
         {
             if (NodeMouseClick == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
+            NodeMouseClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), type, args));
         }
-        internal void OnNodeMouseDoubleClick(TreeItem item, MouseEventArgs args)
+        internal void OnNodeMouseDoubleClick(TreeItem item, TreeCType type, MouseEventArgs args)
         {
             if (NodeMouseDoubleClick == null) return;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), args));
+            NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), type, args));
         }
         internal void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
 
@@ -651,7 +652,7 @@ namespace AntdUI
         }
         bool IMouseDown(MouseEventArgs e, TreeItem item)
         {
-            int down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
+            var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
             if (down > 0)
             {
                 MDown = item;
@@ -674,12 +675,12 @@ namespace AntdUI
             bool can = item.CanExpand;
             if (MDown == item)
             {
-                int down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
+                var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
                 if (down > 0)
                 {
                     if (e.Button == MouseButtons.Left)
                     {
-                        if (down == 3 && item.Enabled)
+                        if (down == TreeCType.Check && item.Enabled)
                         {
                             item.Checked = !item.Checked;
                             if (CheckStrictly)
@@ -688,7 +689,7 @@ namespace AntdUI
                                 SetCheckStrictly(item.PARENTITEM);
                             }
                         }
-                        else if (down == 2 && can) item.Expand = !item.Expand;
+                        else if (down == TreeCType.Arrow && can) item.Expand = !item.Expand;
                         else
                         {
                             if (doubleClick && can) item.Expand = !item.Expand;
@@ -716,19 +717,19 @@ namespace AntdUI
                                     if (_multiple)
                                     {
                                         _multiple = false;
-                                        if (item.Select) USelect();
+                                        if (item.Select) USelect(false);
                                         item.Select = true;
                                     }
                                     else item.Select = true;
                                 }
                                 shift_index = item;
-                                OnSelectChanged(item, e);
+                                OnSelectChanged(item, down, e);
                                 Invalidate();
                             }
                         }
                     }
-                    if (doubleClick) OnNodeMouseDoubleClick(item, e);
-                    else OnNodeMouseClick(item, e);
+                    if (doubleClick) OnNodeMouseDoubleClick(item, down, e);
+                    else OnNodeMouseClick(item, down, e);
                 }
                 return true;
             }
@@ -850,16 +851,16 @@ namespace AntdUI
         }
         void ILeave(TreeItem item, ref int count)
         {
-            selectItem = null;
             if (item.Hover) count++;
             item.Hover = false;
-            if (item.items != null)
-                foreach (var sub in item.items) ILeave(sub, ref count);
+            if (item.items == null) return;
+            foreach (var sub in item.items) ILeave(sub, ref count);
         }
         void IUSelect(TreeItem item)
         {
             item.Select = false;
-            if (item.items != null) foreach (var sub in item.items) IUSelect(sub);
+            if (item.items == null) return;
+            foreach (var sub in item.items) IUSelect(sub);
         }
 
         #endregion
@@ -880,7 +881,7 @@ namespace AntdUI
                 {
                     selectItem = item;
                     it.Select = true;
-                    OnSelectChanged(it, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+                    OnSelectChanged(it, TreeCType.None, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                     return true;
                 }
                 if (Select(it.items, item)) return true;
@@ -891,8 +892,9 @@ namespace AntdUI
         /// <summary>
         /// 取消全部选择
         /// </summary>
-        public void USelect()
+        public void USelect(bool clear = true)
         {
+            if (clear) selectItem = null;
             if (items == null || items.Count == 0) return;
             foreach (var it in items) IUSelect(it);
         }
@@ -1021,6 +1023,39 @@ namespace AntdUI
         #endregion
 
         #endregion
+
+        public TreeItem? HitTest(int x, int y, out TreeCType type)
+        {
+            if (items == null || items.Count == 0)
+            {
+                type = TreeCType.None;
+                return null;
+            }
+            foreach (var it in items)
+            {
+                if (IHitTest(x, y, it, out var md, out type)) return md;
+            }
+            type = TreeCType.None;
+            return null;
+        }
+        bool IHitTest(int x, int y, TreeItem item, out TreeItem? mdown, out TreeCType down)
+        {
+            down = item.Contains(x, y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
+            if (down > 0)
+            {
+                mdown = item;
+                return true;
+            }
+            if (item.CanExpand && item.Expand)
+            {
+                foreach (var sub in item.Sub)
+                {
+                    if (IHitTest(x, y, sub, out mdown, out down)) return true;
+                }
+            }
+            mdown = null;
+            return false;
+        }
 
         #endregion
 
@@ -1516,7 +1551,11 @@ namespace AntdUI
             set
             {
                 if (select == value) return;
-                if (value) PARENT?.USelect();
+                if (value && PARENT != null)
+                {
+                    PARENT.USelect(false);
+                    PARENT.SelectItem = this;
+                }
                 select = value;
                 Invalidate();
             }
@@ -1601,28 +1640,28 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle arrow_rect { get; set; }
 
-        internal int Contains(int x, int y, int sx, int sy, bool checkable, bool blockNode)
+        internal TreeCType Contains(int x, int y, int sx, int sy, bool checkable, bool blockNode)
         {
             if (visible && enabled)
             {
                 if (arrow_rect.Contains(x + sx, y + sy) && CanExpand)
                 {
                     Hover = rect.Contains(arrow_rect);
-                    return 2;
+                    return TreeCType.Arrow;
                 }
                 else if (checkable && check_rect.Contains(x + sx, y + sy))
                 {
                     Hover = rect.Contains(arrow_rect);
-                    return 3;
+                    return TreeCType.Check;
                 }
                 else if (rect.Contains(x + sx, y + sy) || ico_rect.Contains(x + sx, y + sy))
                 {
                     Hover = true;
-                    return 1;
+                    return TreeCType.Item;
                 }
             }
             Hover = false;
-            return 0;
+            return TreeCType.None;
         }
 
         internal float AnimationHoverValue = 0;

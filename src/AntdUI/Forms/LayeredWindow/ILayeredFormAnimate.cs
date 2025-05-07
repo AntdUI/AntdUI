@@ -247,10 +247,7 @@ namespace AntdUI
                 var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                 SetAnimateValueX(end_X - (int)((end_X - start_X) * val), (byte)(240 * (1F - val)));
                 return true;
-            }, 10, t, () =>
-            {
-                DisposeAnimation();
-            });
+            }, 10, t, DisposeAnimation);
         }
         public void DisposeAnimation()
         {
@@ -459,7 +456,11 @@ namespace AntdUI
                         from.Dispose();
                         ishand = true;
                     }
-                    else from.Show(config.Form);
+                    else
+                    {
+                        if (config.TopMost) from.Show();
+                        else from.Show(config.Form);
+                    }
                 }));
                 if (ishand)
                 {

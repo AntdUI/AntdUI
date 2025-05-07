@@ -744,8 +744,13 @@ namespace AntdUI
 
     public class TreeSelectEventArgs : VMEventArgs<TreeItem>
     {
-        public TreeSelectEventArgs(TreeItem item, Rectangle rect, MouseEventArgs e) : base(item, e) { Rect = rect; }
+        public TreeSelectEventArgs(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs e) : base(item, e)
+        {
+            Rect = rect;
+            Type = type;
+        }
         public Rectangle Rect { get; private set; }
+        public TreeCType Type { get; private set; }
     }
 
     public delegate void TreeSelectEventHandler(object sender, TreeSelectEventArgs e);

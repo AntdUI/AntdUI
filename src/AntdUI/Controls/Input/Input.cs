@@ -1447,6 +1447,11 @@ namespace AntdUI
         /// </summary>
         int GetCaretPostion(int x, int y)
         {
+            if (TakePaint != null)
+            {
+                x += Left;
+                y += Top;
+            }
             CaretInfo.Place = false;
             if (cache_font == null) return 0;
             else

@@ -1165,6 +1165,47 @@ namespace AntdUI
 
         #endregion
 
+        public CELL? HitTest(int x, int y)
+        {
+            if (rows == null) return null;
+            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out _, out _, out _);
+            return cell;
+        }
+
+        public CELL? HitTest(int x, int y, out int i_row, out int i_cel)
+        {
+            if (rows == null)
+            {
+                i_row = i_cel = 0;
+                return null;
+            }
+            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out i_row, out i_cel, out _);
+            return cell;
+        }
+
+        public CELL? HitTest(int x, int y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel)
+        {
+            if (rows == null)
+            {
+                r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
+                return null;
+            }
+            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _);
+            return cell;
+        }
+
+        public CELL? HitTest(int x, int y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
+        {
+            if (rows == null)
+            {
+                mode = 0;
+                r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
+                return null;
+            }
+            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out mode);
+            return cell;
+        }
+
         #endregion
 
         #region 合并单元格
