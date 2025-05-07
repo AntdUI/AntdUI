@@ -266,7 +266,7 @@ namespace AntdUI
         List<int> LineBreakNumber = new List<int>(0);
         internal void CalculateRect()
         {
-            var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight) : ReadRectangle;
+            var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight) : ReadRectangle;
             int sps = (int)(CaretInfo.Height * .4F), sps2 = sps * 2;
             RectAuto(rect, sps, sps2);
             if (cache_font == null)

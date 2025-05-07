@@ -44,7 +44,7 @@ namespace AntdUI
             if (_rect.Width > 0 && _rect.Height > 0)
             {
                 var g = e.Graphics.High();
-                Rectangle rect = _rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
+                Rectangle rect = _rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight);
                 IPaint(g, rect, rect_read);
                 this.PaintBadge(g);
                 base.OnPaint(e);
@@ -355,7 +355,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight);
 
         public override GraphicsPath RenderRegion
         {
@@ -367,12 +367,28 @@ namespace AntdUI
             }
         }
 
-        internal GraphicsPath Path(RectangleF rect_read, float _radius)
+        internal GraphicsPath Path(RectangleF rect, float radius)
         {
-            if (JoinLeft && JoinRight) return rect_read.RoundPath(0);
-            else if (JoinRight) return rect_read.RoundPath(_radius, true, false, false, true);
-            else if (JoinLeft) return rect_read.RoundPath(_radius, false, true, true, false);
-            return rect_read.RoundPath(_radius);
+            switch (joinMode)
+            {
+                case TJoinMode.Left:
+                    return rect.RoundPath(radius, true, false, false, true);
+                case TJoinMode.Right:
+                    return rect.RoundPath(radius, false, true, true, false);
+                case TJoinMode.LR:
+                case TJoinMode.TB:
+                    return rect.RoundPath(0);
+                case TJoinMode.Top:
+                    return rect.RoundPath(radius, true, true, false, false);
+                case TJoinMode.Buttom:
+                    return rect.RoundPath(radius, false, false, true, true);
+                case TJoinMode.None:
+                default:
+                    if (JoinLeft && JoinRight) return rect.RoundPath(0);
+                    else if (JoinLeft) return rect.RoundPath(radius, false, true, true, false);
+                    else if (JoinRight) return rect.RoundPath(radius, true, false, false, true);
+                    return rect.RoundPath(radius);
+            }
         }
 
         #endregion

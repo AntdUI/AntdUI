@@ -128,6 +128,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 间距缩进
+        /// </summary>
+        [Description("间距缩进"), Category("外观"), DefaultValue(null)]
+        public int? GapIndent { get; set; }
+
         bool round = false;
         /// <summary>
         /// 圆角样式
@@ -326,8 +332,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                int icon_size = (int)(size.Height * iconratio), gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
-
+                int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Config.Dpi) : icon_size, gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
                 check_radius = icon_size * .2F;
                 if (CheckStrictly && has && items[0].PARENT == null && items[0].PARENTITEM == null)
                 {
@@ -343,7 +348,7 @@ namespace AntdUI
                         else item.CheckState = CheckState.Unchecked;
                     }
                 }
-                ChangeList(g, rect, null, items, has, ref x, ref y, height, icon_size, gap, gapI, 0, true);
+                ChangeList(g, rect, null, items, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
             });
             ScrollBar.SetVrSize(x, y);
             ScrollBar.SizeChange(rect);
@@ -369,13 +374,13 @@ namespace AntdUI
             }
         }
 
-        void ChangeList(Canvas g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int icon_size, int gap, int gapI, int depth, bool expand)
+        void ChangeList(Canvas g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int depth_gap, int icon_size, int gap, int gapI, int depth, bool expand)
         {
             foreach (var it in items)
             {
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
-                it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), icon_size, gap);
+                it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
                 if (expand)
                 {
                     if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
@@ -387,7 +392,7 @@ namespace AntdUI
                     if (it.CanExpand)
                     {
                         int y_item = y;
-                        ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
+                        ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
                         it.SubY = y_item - gapI / 2;
                         it.SubHeight = y - y_item;
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
@@ -1574,10 +1579,10 @@ namespace AntdUI
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TreeItem? PARENTITEM { get; set; }
 
-        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int icon_size, int gap)
+        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
             Depth = depth;
-            int x = _rect.X + gap + (icon_size * depth), y = _rect.Y + (_rect.Height - icon_size) / 2;
+            int x = _rect.X + gap + (depth_gap * depth), y = _rect.Y + (_rect.Height - icon_size) / 2;
             if (has_sub)
             {
                 arrow_rect = new Rectangle(x, y, icon_size, icon_size);
