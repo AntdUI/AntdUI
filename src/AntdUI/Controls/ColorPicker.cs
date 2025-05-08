@@ -563,7 +563,7 @@ namespace AntdUI
                     return rect.RoundPath(0);
                 case TJoinMode.Top:
                     return rect.RoundPath(radius, true, true, false, false);
-                case TJoinMode.Buttom:
+                case TJoinMode.Bottom:
                     return rect.RoundPath(radius, false, false, true, true);
                 case TJoinMode.None:
                 default:

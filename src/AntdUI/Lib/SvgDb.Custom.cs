@@ -32,6 +32,9 @@ namespace AntdUI
                 Custom.Add(s.Substring(0, i), s.Substring(i + 1));
             }
         }
+
         public static Dictionary<string, string> Custom;
+
+        public static Dictionary<string, string> Emoji = new Dictionary<string, string>(0);
     }
 }

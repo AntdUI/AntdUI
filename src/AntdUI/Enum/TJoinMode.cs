@@ -25,7 +25,7 @@ namespace AntdUI
         Right = 2,
         LR = 3,
         Top = 4,
-        Buttom = 5,
+        Bottom = 5,
         TB = 6
     }
 }

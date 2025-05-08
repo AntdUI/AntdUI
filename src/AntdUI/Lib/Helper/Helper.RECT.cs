@@ -385,7 +385,7 @@ namespace AntdUI
 
                 case TJoinMode.Top:
                     return new Rectangle(rect.X + pr, rect.Height - (rect.Height - pr), rect.Width - pr2, rect.Height - pr);
-                case TJoinMode.Buttom:
+                case TJoinMode.Bottom:
                     return new Rectangle(rect.X + pr, rect.Y, rect.Width - pr2, rect.Height - pr);
                 case TJoinMode.TB:
                     return new Rectangle(rect.X + pr, rect.Y, rect.Width - pr2, rect.Height);

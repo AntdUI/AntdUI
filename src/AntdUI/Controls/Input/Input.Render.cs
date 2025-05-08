@@ -272,7 +272,11 @@ namespace AntdUI
                         foreach (var it in tmp)
                         {
                             if (IsPassWord) String(g, PassWordChar, Font, it, fore);
-                            else if (it.emoji) String(g, it.text, font, it, fore);
+                            else if (it.emoji)
+                            {
+                                if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) SvgExtend.GetImgExtend(g, svg, it.rect, fore.Color);
+                                else StringEmoji(g, it.text, font, it, fore);
+                            }
                             else String(g, it.text, Font, it, fore);
                         }
                     }
@@ -322,6 +326,13 @@ namespace AntdUI
         {
             if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect, sf_font);
             else g.String(text, cache.font ?? font, brush, cache.rect, sf_font);
+        }
+
+        void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
+        {
+            var rect = new Rectangle(cache.rect.X - 20, cache.rect.Y - 20, cache.rect.Width + 40, cache.rect.Height + 40);
+            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, rect, sf_font);
+            else g.String(text, cache.font ?? font, brush, rect, sf_font);
         }
 
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }
@@ -380,7 +391,7 @@ namespace AntdUI
                     return rect.RoundPath(0);
                 case TJoinMode.Top:
                     return rect.RoundPath(radius, true, true, false, false);
-                case TJoinMode.Buttom:
+                case TJoinMode.Bottom:
                     return rect.RoundPath(radius, false, false, true, true);
                 case TJoinMode.None:
                 default:

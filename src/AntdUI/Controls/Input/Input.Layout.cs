@@ -65,7 +65,7 @@ namespace AntdUI
                             GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
                             {
                                 string txt = str.Substring(nStart, nLen);
-                                if (nType == 18)
+                                if (nType == 18 || nType == 4)
                                 {
                                     HasEmoji = true;
                                     font_widths.Add(new CacheFont(txt, true, 0));
@@ -99,12 +99,7 @@ namespace AntdUI
                                 {
                                     foreach (var it in font_widths)
                                     {
-                                        if (it.emoji)
-                                        {
-                                            var sizefont = g.MeasureString(it.text, font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                            it.width = sizefont.Width;
-                                        }
+                                        if (it.emoji) it.width = font_height;
                                     }
                                 }
                             }
@@ -153,7 +148,7 @@ namespace AntdUI
                             GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
                             {
                                 string txt = str.Substring(nStart, nLen);
-                                if (nType == 18)
+                                if (nType == 18 || nType == 4)
                                 {
                                     HasEmoji = true;
                                     font_widths.Add(new CacheFont(txt, true, 0));
@@ -196,12 +191,7 @@ namespace AntdUI
                                 {
                                     foreach (var it in font_widths)
                                     {
-                                        if (it.emoji)
-                                        {
-                                            var sizefont = g.MeasureString(it.text, font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                            it.width = sizefont.Width;
-                                        }
+                                        if (it.emoji) it.width = font_height;
                                     }
                                 }
                             }
