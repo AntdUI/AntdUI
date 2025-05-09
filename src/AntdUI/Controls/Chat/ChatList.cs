@@ -113,7 +113,7 @@ namespace AntdUI.Chat
             float sy = ScrollBar.Value, radius = Config.Dpi * 8F;
             g.TranslateTransform(0, -sy);
 
-            foreach (IChatItem it in items) PaintItem(g, it, rect, sy, radius);
+            foreach (var it in items) PaintItem(g, it, rect, sy, radius);
 
             g.ResetTransform();
             ScrollBar.Paint(g);
@@ -191,7 +191,11 @@ namespace AntdUI.Chat
                         switch (it.type)
                         {
                             case GraphemeSplitter.STRE_TYPE.STR:
-                                if (it.emoji) g.String(it.text, font, fore, it.rect, m_sf);
+                                if (it.emoji)
+                                {
+                                    if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) SvgExtend.GetImgExtend(g, svg, it.rect, fore.Color);
+                                    else g.String(it.text, font, fore, new Rectangle(it.rect.X - 20, it.rect.Y - 20, it.rect.Width + 40, it.rect.Height + 40), m_sf);
+                                }
                                 else g.String(it.text, Font, fore, it.rect, m_sf);
                                 break;
                             case GraphemeSplitter.STRE_TYPE.SVG:

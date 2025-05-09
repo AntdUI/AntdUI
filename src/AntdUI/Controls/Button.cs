@@ -1488,7 +1488,7 @@ namespace AntdUI
                 }
             }
             bool has_loading = loading && LoadingValue > -1;
-            var font_size = g.MeasureString(text ?? Config.NullText, Font);
+            var font_size = g.MeasureText(text ?? Config.NullText, Font);
             if (text == null)
             {
                 //没有文字
@@ -1563,7 +1563,7 @@ namespace AntdUI
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
                     PaintTextAlign(rect_read, ref rect_text);
                 }
-                g.String(text, Font, color, rect_text, stringFormat);
+                g.DrawText(text, Font, color, rect_text, stringFormat);
             }
         }
 
@@ -2162,7 +2162,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
+                    var font_size = g.MeasureText(Text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
                     if (Shape == TShape.Circle || string.IsNullOrEmpty(Text))
                     {

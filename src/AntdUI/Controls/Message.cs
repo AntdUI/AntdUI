@@ -446,7 +446,7 @@ namespace AntdUI
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Message", TAMode.Auto);
                 using (var brush = new SolidBrush(Colour.TextBase.Get("Message")))
                 {
-                    g.String(config.Text, Font, brush, rect_txt, s_f_left);
+                    g.DrawText(config.Text, Font, brush, rect_txt, s_f_left);
                 }
             }
             return original_bmp;
@@ -479,7 +479,7 @@ namespace AntdUI
         {
             int shadow2 = shadow * 2;
             float dpi = Config.Dpi;
-            var size = g.MeasureString(config.Text, Font, 10000, s_f_left);
+            var size = g.MeasureText(config.Text, Font, 10000, s_f_left);
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
             if (loading)
             {

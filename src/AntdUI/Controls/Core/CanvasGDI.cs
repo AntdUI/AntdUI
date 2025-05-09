@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -198,6 +199,436 @@ namespace AntdUI.Core
                 default:
                     return font.Size * (g.DpiY / 72);
             }
+        }
+
+        #endregion
+
+        #region MeasureText
+
+        public Size MeasureText(string? text, Font font)
+        {
+            if (SvgDb.Emoji.Count == 0 || text == null) return g.MeasureString(text, font).Size();
+            else
+            {
+                var txts = new List<TMPChar>(text.Length);
+                int tmp = 0;
+                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                {
+                    string txt = str.Substring(nStart, nLen);
+                    if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    {
+                        txts.Add(new TMPChar(txt, true));
+                        tmp++;
+                    }
+                    else txts.Add(new TMPChar(txt, false));
+                    return true;
+                });
+                if (tmp > 0)
+                {
+                    using (var sf_font = Helper.SF_MEASURE_FONT())
+                    {
+                        var sizeO = g.MeasureString(Config.NullText, font, 0, sf_font).Size();
+                        int h = sizeO.Height;
+                        foreach (var it in txts)
+                        {
+                            if (it.emoji) it.w = sizeO.Height;
+                            else
+                            {
+                                var size = g.MeasureString(it.txt, font, 0, sf_font).Size();
+                                it.w = size.Width;
+                                if (h > size.Height) h = size.Height;
+                            }
+                        }
+                        int w = 0;
+                        foreach (var it in txts)
+                        {
+                            if (it.emoji) w += h;
+                            else w += it.w;
+                        }
+                        return new Size(w, h);
+                    }
+                }
+                else return g.MeasureString(text, font).Size();
+            }
+        }
+        public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, null);
+        public Size MeasureText(string? text, Font font, int width, StringFormat? format)
+        {
+            if (SvgDb.Emoji.Count == 0 || text == null) return g.MeasureString(text, font, width, format).Size();
+            else
+            {
+                var txts = new List<TMPChar>(text.Length);
+                int tmp = 0;
+                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                {
+                    string txt = str.Substring(nStart, nLen);
+                    if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    {
+                        txts.Add(new TMPChar(txt, true));
+                        tmp++;
+                    }
+                    else txts.Add(new TMPChar(txt, false));
+                    return true;
+                });
+                if (tmp > 0)
+                {
+                    using (var sf_font = Helper.SF_MEASURE_FONT(format))
+                    {
+                        var sizeO = g.MeasureString(Config.NullText, font, 0, sf_font).Size();
+                        int h = sizeO.Height;
+                        foreach (var it in txts)
+                        {
+                            if (it.emoji) it.w = sizeO.Height;
+                            else
+                            {
+                                var size = MeasureString(it.txt, font, width, sf_font);
+                                it.w = size.Width;
+                                if (h > size.Height) h = size.Height;
+                            }
+                        }
+                        if (h != sizeO.Height)
+                        {
+                            foreach (var it in txts)
+                            {
+                                if (it.emoji) it.w = h;
+                            }
+                        }
+                        return MeasureText(txts, width, h);
+                    }
+                }
+                else return g.MeasureString(text, font, width, format).Size();
+            }
+        }
+
+        Size MeasureText(List<TMPChar> txts, int width, int height)
+        {
+            int w = 0, x = 0, h = height;
+
+            for (int i = 0; i < txts.Count; i++)
+            {
+                var it = txts[i];
+
+                if (it.emoji)
+                {
+                    x += it.w;
+                    if (x + DrawTextNextChar(txts, i + 1) > width)
+                    {
+                        x = 0;
+                        h += height;
+                    }
+                    else w += it.w;
+                }
+                else
+                {
+                    x += it.w;
+                    if (x + DrawTextNextChar(txts, i + 1) > width)
+                    {
+                        x = 0;
+                        h += height;
+                    }
+                    else w += it.w;
+                }
+            }
+            if (w > width) w = width;
+            return new Size(w, h);
+        }
+
+        internal class TMPChar
+        {
+            public TMPChar(string t, bool e)
+            {
+                txt = t;
+                emoji = e;
+            }
+            public string txt { get; set; }
+            public bool emoji { get; set; }
+            public int w { get; set; }
+        }
+
+        #endregion
+
+        #region DrawText
+
+        public void DrawText(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                DrawText(text, font, brush, rect, format);
+            }
+        }
+
+        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null)
+        {
+            if (text == null) return;
+            CorrectionTextRendering.CORE(font, text, ref rect);
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    if (SvgDb.Emoji.Count == 0) path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, format);
+                    else
+                    {
+                        var txts = new List<TMPChar>(text.Length);
+                        int tmp = 0;
+                        GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                        {
+                            string txt = str.Substring(nStart, nLen);
+                            if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                            {
+                                txts.Add(new TMPChar(txt, true));
+                                tmp++;
+                            }
+                            else txts.Add(new TMPChar(txt, false));
+                            return true;
+                        });
+                        if (tmp > 0)
+                        {
+                            float fontsize = StringPathFontSize(font);
+                            using (var sf_font = Helper.SF_MEASURE_FONT())
+                            {
+                                var sizeO = MeasureString(Config.NullText, font, rect.Width, sf_font);
+                                int h = sizeO.Height;
+                                foreach (var it in txts)
+                                {
+                                    if (it.emoji) it.w = sizeO.Height;
+                                    else
+                                    {
+                                        var size = MeasureString(it.txt, font, rect.Width, sf_font);
+                                        it.w = size.Width;
+                                        if (h > size.Height) h = size.Height;
+                                    }
+                                }
+                                if (h != sizeO.Height)
+                                {
+                                    foreach (var it in txts)
+                                    {
+                                        if (it.emoji) it.w = h;
+                                    }
+                                }
+                                var sizeT = MeasureText(txts, rect.Width, h);
+                                if (format == null)
+                                {
+                                    int x = rect.X, y = rect.Y;
+                                    int ox = x;
+
+                                    for (int i = 0; i < txts.Count; i++)
+                                    {
+                                        var it = txts[i];
+                                        if (it.emoji)
+                                        {
+                                            var svg = SvgDb.Emoji[it.txt];
+                                            var rect_ico = new Rectangle(x, y, sizeO.Height, sizeO.Height);
+                                            if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
+                                            else SvgExtend.GetImgExtend(this, svg, rect_ico);
+                                            x += it.w;
+                                            if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                            {
+                                                x = ox;
+                                                y += it.w;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x, y, it.w, h), sf_font);
+                                            x += it.w;
+                                            if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                            {
+                                                x = ox;
+                                                y += h;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    bool wrap = format.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
+                                    int x, y;
+                                    if (format.Alignment == StringAlignment.Far) x = rect.Right - sizeT.Width;
+                                    else if (format.Alignment == StringAlignment.Center) x = rect.X + (rect.Width - sizeT.Width) / 2;
+                                    else x = rect.X;
+
+                                    if (format.LineAlignment == StringAlignment.Center) y = rect.Y + (rect.Height - sizeT.Height) / 2;
+                                    else if (format.LineAlignment == StringAlignment.Far) y = rect.Bottom - sizeT.Height;
+                                    else y = rect.Y;
+
+                                    int ox = x;
+
+                                    for (int i = 0; i < txts.Count; i++)
+                                    {
+                                        var it = txts[i];
+                                        if (it.emoji)
+                                        {
+                                            var svg = SvgDb.Emoji[it.txt];
+                                            var rect_ico = new Rectangle(x, y, sizeO.Height, sizeO.Height);
+                                            if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
+                                            else SvgExtend.GetImgExtend(this, svg, rect_ico);
+                                            x += it.w;
+                                            if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                            {
+                                                if (wrap)
+                                                {
+                                                    Fill(brush, path);
+                                                    return;
+                                                }
+                                                x = ox;
+                                                y += it.w;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x, y, it.w, h), sf_font);
+                                            x += it.w;
+                                            if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                            {
+                                                if (wrap)
+                                                {
+                                                    Fill(brush, path);
+                                                    return;
+                                                }
+                                                x = ox;
+                                                y += h;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, format);
+                    }
+                    Fill(brush, path);
+                }
+            }
+            else
+            {
+                if (SvgDb.Emoji.Count == 0) g.DrawString(text, font, brush, rect, format);
+                else
+                {
+                    var txts = new List<TMPChar>(text.Length);
+                    int tmp = 0;
+                    GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                    {
+                        string txt = str.Substring(nStart, nLen);
+                        if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                        {
+                            txts.Add(new TMPChar(txt, true));
+                            tmp++;
+                        }
+                        else txts.Add(new TMPChar(txt, false));
+                        return true;
+                    });
+                    if (tmp > 0)
+                    {
+                        float fontsize = StringPathFontSize(font);
+                        using (var sf_font = Helper.SF_MEASURE_FONT())
+                        {
+                            var sizeO = MeasureString(Config.NullText, font, rect.Width, sf_font);
+                            int h = sizeO.Height;
+                            foreach (var it in txts)
+                            {
+                                if (it.emoji) it.w = sizeO.Height;
+                                else
+                                {
+                                    var size = MeasureString(it.txt, font, rect.Width, sf_font);
+                                    it.w = size.Width;
+                                    if (h > size.Height) h = size.Height;
+                                }
+                            }
+                            if (h != sizeO.Height)
+                            {
+                                foreach (var it in txts)
+                                {
+                                    if (it.emoji) it.w = h;
+                                }
+                            }
+                            var sizeT = MeasureText(txts, rect.Width, h);
+                            if (format == null)
+                            {
+                                int x = rect.X, y = rect.Y;
+                                int ox = x;
+
+                                for (int i = 0; i < txts.Count; i++)
+                                {
+                                    var it = txts[i];
+                                    if (it.emoji)
+                                    {
+                                        var svg = SvgDb.Emoji[it.txt];
+                                        var rect_ico = new Rectangle(x, y, sizeO.Height, sizeO.Height);
+                                        if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
+                                        else SvgExtend.GetImgExtend(this, svg, rect_ico);
+                                        x += it.w;
+                                        if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                        {
+                                            x = ox;
+                                            y += it.w;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        g.DrawString(it.txt, font, brush, new Rectangle(x, y, it.w, h), sf_font);
+                                        x += it.w;
+                                        if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                        {
+                                            x = ox;
+                                            y += h;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                bool wrap = format.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
+                                int x, y;
+                                if (format.Alignment == StringAlignment.Far) x = rect.Right - sizeT.Width;
+                                else if (format.Alignment == StringAlignment.Center) x = rect.X + (rect.Width - sizeT.Width) / 2;
+                                else x = rect.X;
+
+                                if (format.LineAlignment == StringAlignment.Center) y = rect.Y + (rect.Height - sizeT.Height) / 2;
+                                else if (format.LineAlignment == StringAlignment.Far) y = rect.Bottom - sizeT.Height;
+                                else y = rect.Y;
+
+                                int ox = x;
+
+                                for (int i = 0; i < txts.Count; i++)
+                                {
+                                    var it = txts[i];
+                                    if (it.emoji)
+                                    {
+                                        var svg = SvgDb.Emoji[it.txt];
+                                        var rect_ico = new Rectangle(x, y, sizeO.Height, sizeO.Height);
+                                        if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
+                                        else SvgExtend.GetImgExtend(this, svg, rect_ico);
+                                        x += it.w;
+                                        if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                        {
+                                            if (wrap) return;
+                                            x = ox;
+                                            y += it.w;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        g.DrawString(it.txt, font, brush, new Rectangle(x, y, it.w, h), sf_font);
+                                        x += it.w;
+                                        if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                        {
+                                            if (wrap) return;
+                                            x = ox;
+                                            y += h;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else g.DrawString(text, font, brush, rect, format);
+                }
+            }
+        }
+
+        int DrawTextNextChar(List<TMPChar> txts, int i)
+        {
+            if (txts.Count > i) return txts[i].w;
+            return 0;
         }
 
         #endregion

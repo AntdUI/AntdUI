@@ -563,11 +563,11 @@ namespace AntdUI
                 color = item.Fore.Value;
                 using (var brush = new SolidBrush(color))
                 {
-                    g.String(item.Text, Font, brush, item.txt_rect, s_c);
+                    g.DrawText(item.Text, Font, brush, item.txt_rect, s_c);
                 }
             }
-            else g.String(item.Text, Font, fore, item.txt_rect, s_c);
-            if (item.SubTitle != null) g.String(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
+            else g.DrawText(item.Text, Font, fore, item.txt_rect, s_c);
+            if (item.SubTitle != null) g.DrawText(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
             if (item.Icon != null) g.Image(item.Icon, item.ico_rect);
             if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
         }
@@ -1601,7 +1601,7 @@ namespace AntdUI
                 x += icon_size + gap;
             }
 
-            var size = g.MeasureString(Text, font);
+            var size = g.MeasureText(Text, font);
             int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _rect.Y + (_rect.Height - txt_h) / 2;
 
             if (subTitle == null)
@@ -1621,7 +1621,7 @@ namespace AntdUI
             }
             else
             {
-                var sizesub = g.MeasureString(SubTitle, font);
+                var sizesub = g.MeasureText(SubTitle, font);
                 if (blockNode)
                 {
                     int rw = _rect.Width - x - gap;

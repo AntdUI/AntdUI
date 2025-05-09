@@ -208,7 +208,7 @@ namespace AntdUI
             {
                 using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Colour.TextQuaternary.Get("Input", ColorScheme)))
                 {
-                    g.String(PlaceholderText, Font, fore, rect_text, sf_placeholder);
+                    g.DrawText(PlaceholderText, Font, fore, rect_text, sf_placeholder);
                 }
             }
             g.ResetClip();

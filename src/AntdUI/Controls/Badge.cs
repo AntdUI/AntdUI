@@ -217,7 +217,7 @@ namespace AntdUI
             }
             else
             {
-                var size = g.MeasureString(Text, Font);
+                var size = g.MeasureText(Text, Font);
                 int dot_size = (int)(size.Height * dotratio), _gap = (int)(gap * Config.Dpi);
                 using (var brush = new SolidBrush(GetColor(fill, state)))
                 {
@@ -231,7 +231,7 @@ namespace AntdUI
                 }
                 using (var brush = fore.Brush(Colour.Text.Get("Badge", ColorScheme), Colour.TextQuaternary.Get("Badge", ColorScheme), Enabled))
                 {
-                    g.String(Text, Font, brush, new Rectangle(rect.X + _gap + size.Height, rect.Y, rect.Width - size.Height, rect.Height), s_f);
+                    g.DrawText(Text, Font, brush, new Rectangle(rect.X + _gap + size.Height, rect.Y, rect.Width - size.Height, rect.Height), s_f);
                 }
             }
             this.PaintBadge(g);
@@ -330,7 +330,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var font_size = g.MeasureString(Text ?? Config.NullText, Font);
+                        var font_size = g.MeasureText(Text ?? Config.NullText, Font);
                         font_size.Width += font_size.Height;
                         return font_size;
                     }

@@ -397,7 +397,7 @@ namespace AntdUI
 
         internal void PaintText(Canvas g, string? text, Color color, Rectangle rect_read)
         {
-            var font_size = g.MeasureString(text ?? Config.NullText, Font);
+            var font_size = g.MeasureText(text ?? Config.NullText, Font);
             if (text == null)
             {
                 if (PaintImageNoText(g, color, font_size, rect_read))
@@ -427,7 +427,7 @@ namespace AntdUI
                 PaintImage(g, color, rect.l);
                 using (var brush = new SolidBrush(color))
                 {
-                    g.String(text, Font, brush, rect.text, stringFormat);
+                    g.DrawText(text, Font, brush, rect.text, stringFormat);
                 }
             }
         }
@@ -610,7 +610,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
+                    var font_size = g.MeasureText(Text ?? Config.NullText, Font);
                     int count = 0;
                     if (HasImage) count++;
                     if (closeIcon) count++;

@@ -405,11 +405,11 @@ namespace AntdUI
             {
                 using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))
                 {
-                    if (bmp == null) g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
+                    if (bmp == null) g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
                     else g.Image(rect, bmp, imageFit, _radius, round);
                 }
             }
-            else g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
+            else g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
             if (loading)
             {

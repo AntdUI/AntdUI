@@ -303,14 +303,14 @@ namespace AntdUI
         public void Paint(Canvas g, Rectangle rect, Spin.Config config, Control control)
         {
             var font = config.Font ?? control.Font;
-            if (prog_size == 0) prog_size = g.MeasureString(config.Text ?? Config.NullText, font).Height;
+            if (prog_size == 0) prog_size = g.MeasureText(config.Text ?? Config.NullText, font).Height;
             int rprog_size = (int)(prog_size * 1.6F), size = (int)(prog_size * .2F), size2 = rprog_size / 2;
             var rect_prog = new Rectangle(rect.X + (rect.Width - rprog_size) / 2, rect.Y + (rect.Height - rprog_size) / 2, rprog_size, rprog_size);
             if (config.Text != null)
             {
                 var y = rect_prog.Bottom;
                 rect_prog.Offset(0, -size2);
-                g.String(config.Text, font, config.Fore ?? Colour.Primary.Get("Spin"), new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
+                g.DrawText(config.Text, font, config.Fore ?? Colour.Primary.Get("Spin"), new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
             }
             g.DrawEllipse(Colour.Fill.Get("Spin"), size, rect_prog);
             using (var brush = new Pen(config.Color ?? Colour.Primary.Get("Spin"), size))

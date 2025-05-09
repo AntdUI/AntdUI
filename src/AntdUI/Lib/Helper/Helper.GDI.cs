@@ -80,6 +80,25 @@ namespace AntdUI
             return sf;
         }
 
+        public static StringFormat SF_MEASURE_FONT(StringFormat? format)
+        {
+            if (format == null)
+            {
+                var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+                return sf;
+            }
+            else
+            {
+                var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                sf.FormatFlags = format.FormatFlags;
+                sf.Trimming = format.Trimming;
+                sf.HotkeyPrefix = format.HotkeyPrefix;
+                sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+                return sf;
+            }
+        }
+
         /// <summary>
         /// 文本布局
         /// </summary>

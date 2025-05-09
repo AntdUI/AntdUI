@@ -225,7 +225,7 @@ namespace AntdUI
                     if (it is ContextMenuStripItem item)
                     {
                         if (!has_subtext && item.SubText != null) has_subtext = true;
-                        var size = g.MeasureString(item.Text + item.SubText, Font);
+                        var size = g.MeasureText(item.Text + item.SubText, Font);
                         int w = size.Width, hc = size.Height, h = hc + sp;
                         if (has_sub == 0 && (item.Sub != null && item.Sub.Length > 0)) has_sub = hc;
                         if (has_icon == 0 && (item.Icon != null || item.IconSvg != null)) has_icon = (int)(hc * 0.68F);
@@ -340,15 +340,15 @@ namespace AntdUI
                                 }
                                 if (it.Tag.Enabled)
                                 {
-                                    g.String(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
+                                    g.DrawText(it.Tag.SubText, FontSub, brushSecondary, it.RectT, stringRight);
                                     if (it.Tag.Fore.HasValue)
                                     {
                                         using (var brush_fore = new SolidBrush(it.Tag.Fore.Value))
                                         {
-                                            g.String(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
+                                            g.DrawText(it.Tag.Text, Font, brush_fore, it.RectT, stringLeft);
                                         }
                                     }
-                                    else g.String(it.Tag.Text, Font, brush, it.RectT, stringLeft);
+                                    else g.DrawText(it.Tag.Text, Font, brush, it.RectT, stringLeft);
 
                                     if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {
@@ -376,8 +376,8 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    g.String(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
-                                    g.String(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
+                                    g.DrawText(it.Tag.SubText, FontSub, brushEnabled, it.RectT, stringRight);
+                                    g.DrawText(it.Tag.Text, Font, brushEnabled, it.RectT, stringLeft);
 
                                     if (it.Tag.Sub != null && it.Tag.Sub.Length > 0)
                                     {

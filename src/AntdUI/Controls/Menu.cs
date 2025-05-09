@@ -565,7 +565,7 @@ namespace AntdUI
                 it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
-                    int size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
+                    int size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + gapy;
                     if (mode == TMenuMode.Inline && it.CanExpand)
@@ -605,8 +605,8 @@ namespace AntdUI
             {
                 it.PARENT = this;
                 int size;
-                if (it.HasIcon) size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size;
-                else size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 2;
+                if (it.HasIcon) size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size;
+                else size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 2;
                 it.SetRectNoArr(0, new Rectangle(rect.X + x, rect.Y, size, rect.Height), icon_size, gap);
                 if (it.Visible) x += size;
             }
@@ -854,7 +854,7 @@ namespace AntdUI
         {
             using (var brush = new SolidBrush(fore))
             {
-                g.String(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }
@@ -881,7 +881,7 @@ namespace AntdUI
             }
             using (var brush = new SolidBrush(fore))
             {
-                g.String(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }

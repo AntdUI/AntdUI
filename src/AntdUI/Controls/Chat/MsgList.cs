@@ -132,7 +132,7 @@ namespace AntdUI.Chat
             using (var font_text = new Font(Font.FontFamily, Font.Size * .9F))
             using (var font_time = new Font(Font.FontFamily, Font.Size * .82F))
             {
-                foreach (MsgItem it in items) PaintItem(g, it, rect, sy, font_text, font_time, radius);
+                foreach (var it in items) PaintItem(g, it, rect, sy, font_text, font_time, radius);
             }
 
             g.ResetTransform();

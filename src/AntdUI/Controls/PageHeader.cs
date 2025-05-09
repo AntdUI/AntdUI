@@ -708,7 +708,7 @@ namespace AntdUI
                     IPaint(g, rect_, rect, g.MeasureString(Config.NullText, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
                 }
             }
-            else IPaint(g, rect_, rect, g.MeasureString(Text ?? Config.NullText, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
+            else IPaint(g, rect_, rect, g.MeasureText(Text ?? Config.NullText, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
             this.PaintBadge(g);
             if (showDivider)
             {
@@ -738,11 +738,11 @@ namespace AntdUI
             using (var brush = new SolidBrush(forebase))
             {
                 int size_w = size.Width;
-                if (fontTitle == null) g.String(Text, Font, brush, rect_real, stringLeft);
+                if (fontTitle == null) g.DrawText(Text, Font, brush, rect_real, stringLeft);
                 else
                 {
-                    var sizeTitle = g.MeasureString(Text, fontTitle);
-                    g.String(Text, fontTitle, brush, rect_real, stringLeft);
+                    var sizeTitle = g.MeasureText(Text, fontTitle);
+                    g.DrawText(Text, fontTitle, brush, rect_real, stringLeft);
                     size_w = sizeTitle.Width;
                 }
                 rl += size_w;
@@ -751,19 +751,19 @@ namespace AntdUI
                     int desc_t_w = size_w + (int)(subGap * Config.Dpi);
                     using (var brushsub = new SolidBrush(foreSecondary))
                     {
-                        if (UseSubCenter) g.String(SubText, descFont ?? Font, brushsub, rect, stringCenter);
+                        if (UseSubCenter) g.DrawText(SubText, descFont ?? Font, brushsub, rect, stringCenter);
                         else
                         {
-                            g.String(SubText, descFont ?? Font, brushsub, new Rectangle(rect_real.X + desc_t_w, rect_real.Y, rect_real.Width - desc_t_w, rect_real.Height), stringLeft);
-                            if (useLeftMargin) rl = u_x + desc_t_w + g.MeasureString(SubText, descFont ?? Font).Width;
+                            g.DrawText(SubText, descFont ?? Font, brushsub, new Rectangle(rect_real.X + desc_t_w, rect_real.Y, rect_real.Width - desc_t_w, rect_real.Height), stringLeft);
+                            if (useLeftMargin) rl = u_x + desc_t_w + g.MeasureText(SubText, descFont ?? Font).Width;
                         }
-                        if (showDescription) g.String(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft);
+                        if (showDescription) g.DrawText(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft);
                     }
                 }
                 else if (showDescription)
                 {
                     using (var brushsub = new SolidBrush(foreSecondary))
-                    { g.String(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft); }
+                    { g.DrawText(Description, Font, brushsub, new Rectangle(rect_real.X, rect_real.Bottom, rect_real.Width, heightDescription), stringLeft); }
                 }
             }
             hasl = rl;
@@ -773,12 +773,12 @@ namespace AntdUI
         public Rectangle GetTitleRect(Canvas g)
         {
             var rect = ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
-            var size = g.MeasureString(Text ?? Config.NullText, Font);
+            var size = g.MeasureText(Text ?? Config.NullText, Font);
             if (UseTitleFont)
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
-                    var sizeTitle = g.MeasureString(Text, fontTitle);
+                    var sizeTitle = g.MeasureText(Text, fontTitle);
                     rect.X += IPaintS(g, rect, size.Height, iconratio ?? 1.36F) / 2;
                     return new Rectangle(rect.X, rect.Y + (rect.Height - sizeTitle.Height) / 2, sizeTitle.Width, sizeTitle.Height);
                 }

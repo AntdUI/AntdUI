@@ -430,7 +430,7 @@ namespace AntdUI
             if (!string.IsNullOrEmpty(text))
             {
                 Rectangle rec;
-                var font_size = g.MeasureString(text, Font);
+                var font_size = g.MeasureText(text, Font);
                 bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
@@ -473,7 +473,7 @@ namespace AntdUI
 
                 using (var brush = colorExtend.BrushEx(rec, color))
                 {
-                    g.String(text, Font, brush, rec, stringFormat);
+                    g.DrawText(text, Font, brush, rec, stringFormat);
                 }
             }
         }
@@ -484,7 +484,7 @@ namespace AntdUI
             if (has_prefixText)
             {
                 var prefix = Prefix;
-                var font_size_prefix = g.MeasureString(prefix, Font);
+                var font_size_prefix = g.MeasureText(prefix, Font);
                 int x = rect_read.X - font_size_prefix.Width, w = font_size_prefix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 if (Highlight)
@@ -492,7 +492,7 @@ namespace AntdUI
                     hx = font_size_prefix.Width;
                     rect_l.X = 0;
                 }
-                g.String(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                g.DrawText(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
             }
             else if (has_prefix)
             {
@@ -510,9 +510,9 @@ namespace AntdUI
             if (has_suffixText)
             {
                 var suffix = Suffix;
-                var font_size_suffix = g.MeasureString(suffix, Font);
+                var font_size_suffix = g.MeasureText(suffix, Font);
                 int x = rect_read.X + hx + font_size.Width, w = font_size_suffix.Width;
-                g.String(suffix, Font, SuffixColor ?? color, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
+                g.DrawText(suffix, Font, SuffixColor ?? color, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
             }
             else if (has_suffix)
             {
@@ -530,7 +530,7 @@ namespace AntdUI
             if (has_suffixText)
             {
                 var suffix = Suffix;
-                var font_size_suffix = g.MeasureString(suffix, Font);
+                var font_size_suffix = g.MeasureText(suffix, Font);
                 int x = rect_read.Right, w = font_size_suffix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
                 if (Highlight)
@@ -538,7 +538,7 @@ namespace AntdUI
                     hr = font_size_suffix.Width;
                     rect_l.X = rect_read.Right - hr;
                 }
-                g.String(suffix, Font, SuffixColor ?? color, rect_l, stringCNoWrap);
+                g.DrawText(suffix, Font, SuffixColor ?? color, rect_l, stringCNoWrap);
             }
             else if (has_suffix)
             {
@@ -556,10 +556,10 @@ namespace AntdUI
             if (has_prefixText)
             {
                 var prefix = Prefix;
-                var font_size_prefix = g.MeasureString(prefix, Font);
+                var font_size_prefix = g.MeasureText(prefix, Font);
                 int x = rect_read.Right - hr - font_size.Width - font_size_prefix.Width, w = font_size_prefix.Width;
                 var rect_l = RecFixAuto(x, w, rect_read, font_size);
-                g.String(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                g.DrawText(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
             }
             else if (has_prefix)
             {
@@ -577,9 +577,9 @@ namespace AntdUI
             if (has_prefixText)
             {
                 var prefix = Prefix;
-                var font_size_prefix = g.MeasureString(prefix, Font);
+                var font_size_prefix = g.MeasureText(prefix, Font);
                 var rect_l = RecFixAuto(cex - font_size_prefix.Width, font_size_prefix.Width, rect_read, font_size);
-                g.String(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                g.DrawText(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
             }
             else if (has_prefix)
             {
@@ -591,8 +591,8 @@ namespace AntdUI
             if (has_suffixText)
             {
                 var suffix = Suffix;
-                var font_size_suffix = g.MeasureString(suffix, Font);
-                g.String(suffix, Font, SuffixColor ?? color, RecFixAuto(cex + font_size.Width, font_size_suffix.Width, rect_read, font_size), stringCNoWrap);
+                var font_size_suffix = g.MeasureText(suffix, Font);
+                g.DrawText(suffix, Font, SuffixColor ?? color, RecFixAuto(cex + font_size.Width, font_size_suffix.Width, rect_read, font_size), stringCNoWrap);
             }
             else if (has_suffix)
             {
@@ -709,7 +709,7 @@ namespace AntdUI
                 bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
+                    var font_size = g.MeasureText(Text ?? Config.NullText, Font);
                     if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
@@ -717,13 +717,13 @@ namespace AntdUI
                         if (has_prefix) add += font_size.Height;
                         else if (has_prefixText)
                         {
-                            var font_size_prefix = g.MeasureString(Prefix, Font).Width;
+                            var font_size_prefix = g.MeasureText(Prefix, Font).Width;
                             add += font_size_prefix;
                         }
                         if (has_suffix) add += font_size.Height;
                         else if (has_suffixText)
                         {
-                            var font_size_suffix = g.MeasureString(Suffix, Font).Width;
+                            var font_size_suffix = g.MeasureText(Suffix, Font).Width;
                             add += font_size_suffix;
                         }
                         return new Size((int)Math.Ceiling(font_size.Width + add), font_size.Height);

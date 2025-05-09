@@ -193,7 +193,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var size = g.MeasureString(it.Text, Font);
+                        var size = g.MeasureText(it.Text, Font);
                         if (it.HasIcon)
                         {
                             int imgw = imgsize + sp2;
@@ -234,7 +234,7 @@ namespace AntdUI
             using (var brush = new SolidBrush(fore ?? Colour.TextSecondary.Get("Breadcrumb", ColorScheme)))
             using (var brush_active = new SolidBrush(ForeActive ?? Colour.Text.Get("Breadcrumb", ColorScheme)))
             {
-                foreach (var it in hs) g.String("/", Font, brush, it, s_f);
+                foreach (var it in hs) g.DrawText("/", Font, brush, it, s_f);
                 for (int i = 0; i < items.Count; i++)
                 {
                     var it = items[i];
@@ -243,7 +243,7 @@ namespace AntdUI
                     {
                         //最后一个
                         PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                        g.String(it.Text, Font, brush_active, it.RectText, s_f);
+                        g.DrawText(it.Text, Font, brush_active, it.RectText, s_f);
                     }
                     else
                     {
@@ -254,12 +254,12 @@ namespace AntdUI
                                 g.Fill(Colour.FillSecondary.Get("Breadcrumb", ColorScheme), path);
                             }
                             PaintImg(g, it, brush_active.Color, it.IconSvg, it.Icon);
-                            g.String(it.Text, Font, brush_active, it.RectText, s_f);
+                            g.DrawText(it.Text, Font, brush_active, it.RectText, s_f);
                         }
                         else
                         {
                             PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                            g.String(it.Text, Font, brush, it.RectText, s_f);
+                            g.DrawText(it.Text, Font, brush, it.RectText, s_f);
                         }
                     }
                 }
