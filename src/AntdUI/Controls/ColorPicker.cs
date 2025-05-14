@@ -323,11 +323,30 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(true)]
         public bool DropDownArrow { get; set; } = true;
 
+        #region 组合
+
+        TJoinMode joinMode = TJoinMode.None;
+        /// <summary>
+        /// 组合模式
+        /// </summary>
+        [Description("组合模式"), Category("外观"), DefaultValue(TJoinMode.None)]
+        public TJoinMode JoinMode
+        {
+            get => joinMode;
+            set
+            {
+                if (joinMode == value) return;
+                joinMode = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(JoinMode));
+            }
+        }
+
         bool joinLeft = false;
         /// <summary>
         /// 连接左边
         /// </summary>
-        [Description("连接左边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category("外观"), DefaultValue(false)]
         public bool JoinLeft
         {
             get => joinLeft;
@@ -336,6 +355,7 @@ namespace AntdUI
                 if (joinLeft == value) return;
                 joinLeft = value;
                 if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(JoinLeft));
             }
         }
 
@@ -343,7 +363,7 @@ namespace AntdUI
         /// <summary>
         /// 连接右边
         /// </summary>
-        [Description("连接右边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category("外观"), DefaultValue(false)]
         public bool JoinRight
         {
             get => joinRight;
@@ -352,8 +372,11 @@ namespace AntdUI
                 if (joinRight == value) return;
                 joinRight = value;
                 if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(JoinRight));
             }
         }
+
+        #endregion
 
         #endregion
 
@@ -527,12 +550,28 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal GraphicsPath Path(Rectangle rect_read, float _radius)
+        internal GraphicsPath Path(Rectangle rect, float radius)
         {
-            if (JoinLeft && JoinRight) return rect_read.RoundPath(0);
-            else if (JoinRight) return rect_read.RoundPath(_radius, true, false, false, true);
-            else if (JoinLeft) return rect_read.RoundPath(_radius, false, true, true, false);
-            return rect_read.RoundPath(_radius);
+            switch (joinMode)
+            {
+                case TJoinMode.Left:
+                    return rect.RoundPath(radius, true, false, false, true);
+                case TJoinMode.Right:
+                    return rect.RoundPath(radius, false, true, true, false);
+                case TJoinMode.LR:
+                case TJoinMode.TB:
+                    return rect.RoundPath(0);
+                case TJoinMode.Top:
+                    return rect.RoundPath(radius, true, true, false, false);
+                case TJoinMode.Bottom:
+                    return rect.RoundPath(radius, false, false, true, true);
+                case TJoinMode.None:
+                default:
+                    if (joinLeft && joinRight) return rect.RoundPath(0);
+                    else if (joinRight) return rect.RoundPath(radius, true, false, false, true);
+                    else if (joinLeft) return rect.RoundPath(radius, false, true, true, false);
+                    return rect.RoundPath(radius);
+            }
         }
 
         #region 点击动画
@@ -564,7 +603,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, joinLeft, joinRight);
 
         public override GraphicsPath RenderRegion
         {

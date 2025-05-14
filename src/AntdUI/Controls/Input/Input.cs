@@ -193,6 +193,7 @@ namespace AntdUI
             {
                 if (borderWidth == value) return;
                 borderWidth = value;
+                CalculateRect();
                 Invalidate();
                 OnPropertyChanged(nameof(BorderWidth));
             }
@@ -486,17 +487,39 @@ namespace AntdUI
 
         #endregion
 
+        #region 组合
+
+        TJoinMode joinMode = TJoinMode.None;
+        /// <summary>
+        /// 组合模式
+        /// </summary>
+        [Description("组合模式"), Category("外观"), DefaultValue(TJoinMode.None)]
+        public TJoinMode JoinMode
+        {
+            get => joinMode;
+            set
+            {
+                if (joinMode == value) return;
+                joinMode = value;
+                CalculateRect();
+                Invalidate();
+                OnPropertyChanged(nameof(JoinMode));
+            }
+        }
+
         /// <summary>
         /// 连接左边
         /// </summary>
-        [Description("连接左边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category("外观"), DefaultValue(false)]
         public bool JoinLeft { get; set; }
 
         /// <summary>
         /// 连接右边
         /// </summary>
-        [Description("连接右边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category("外观"), DefaultValue(false)]
         public bool JoinRight { get; set; }
+
+        #endregion
 
         bool allowclear = false, is_clear = false, is_clear_down = false;
         bool is_prefix_down = false, is_suffix_down = false;
@@ -1081,10 +1104,19 @@ namespace AntdUI
         /// <summary>
         /// 清空样式
         /// </summary>
-        public void ClearStyle()
+        public void ClearStyle(bool r = true)
         {
+            if (styles == null) return;
             styles = null;
-            Invalidate();
+            if (cache_font == null) return;
+            for (int i = 0; i < cache_font.Length; i++)
+            {
+                var it = cache_font[i];
+                it.font = null;
+                it.fore = null;
+                it.back = null;
+            }
+            if (r) Invalidate();
         }
 
         public class TextStyle
@@ -1438,6 +1470,11 @@ namespace AntdUI
         /// </summary>
         int GetCaretPostion(int x, int y)
         {
+            if (TakePaint != null)
+            {
+                x += Left;
+                y += Top;
+            }
             CaretInfo.Place = false;
             if (cache_font == null) return 0;
             else

@@ -38,6 +38,7 @@ namespace Demo
             AntdUI.Config.TextRenderingHighQuality = true;
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             AntdUI.Config.SetEmptyImageSvg(Properties.Resources.icon_empty, Properties.Resources.icon_empty_dark);
+            AntdUI.SvgDb.Emoji = AntdUI.FluentFlat.Emoji;
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             if (command == "m") Application.Run(new Main());
             else if (command == "color") Application.Run(new Colors());

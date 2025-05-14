@@ -240,14 +240,14 @@ namespace AntdUI
             }
             else
             {
-                var font_size = g.MeasureString(Text, Font);
+                var font_size = g.MeasureText(Text, Font);
                 rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
                 bool right = rightToLeft == RightToLeft.Yes;
                 PaintChecked(g, rect, enabled, icon_rect, right);
                 if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
                 using (var brush = new SolidBrush(enabled ? (fore ?? Colour.Text.Get("Radio", ColorScheme)) : Colour.TextQuaternary.Get("Radio", ColorScheme)))
                 {
-                    g.String(Text, Font, brush, text_rect, stringFormat);
+                    g.DrawText(Text, Font, brush, text_rect, stringFormat);
                 }
             }
             this.PaintBadge(g);
@@ -492,7 +492,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var font_size = g.MeasureString(Text, Font);
+                        var font_size = g.MeasureText(Text, Font);
                         return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
                     }
                 });

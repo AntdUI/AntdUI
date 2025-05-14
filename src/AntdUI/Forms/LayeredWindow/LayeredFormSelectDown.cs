@@ -438,7 +438,7 @@ namespace AntdUI
             if (obj is SelectItem it)
             {
                 string text = it.Text + it.SubText;
-                var size = g.MeasureString(text, Font);
+                var size = g.MeasureText(text, Font);
                 if (size.Width > btext) btext = size.Width;
                 if (it.Online > -1) ui_online = true;
                 if (it.Icon != null) ui_icon = true;
@@ -456,7 +456,7 @@ namespace AntdUI
             {
                 var text = obj.ToString();
                 if (text == null) return;
-                var size = g.MeasureString(text, Font);
+                var size = g.MeasureText(text, Font);
                 if (size.Width > btext) btext = size.Width;
             }
         }
@@ -1003,7 +1003,7 @@ namespace AntdUI
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        g.String(emptytext, Font, Color.FromArgb(180, Colour.Text.Get(keyid, ColorScheme)), rect_read, s_f);
+                        g.DrawText(emptytext, Font, Color.FromArgb(180, Colour.Text.Get(keyid, ColorScheme)), rect_read, s_f);
                     }
                     else
                     {
@@ -1032,7 +1032,7 @@ namespace AntdUI
         void DrawItem(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
         {
             if (it.ID == -1) g.Fill(brush_split, it.Rect);
-            else if (it.Group) g.String(it.Text, Font, brush_fore, it.RectText, stringFormatLeft);
+            else if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, stringFormatLeft);
             else if (selectedValue == it.Val || it.Val is SelectItem item && item.Tag == selectedValue)
             {
                 using (var path = it.Rect.RoundPath(Radius))
@@ -1041,9 +1041,9 @@ namespace AntdUI
                 }
                 if (it.SubText != null)
                 {
-                    var size = g.MeasureString(it.Text, Font);
+                    var size = g.MeasureText(it.Text, Font);
                     var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                    g.String(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
+                    g.DrawText(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
                 DrawTextIconSelect(g, it);
             }
@@ -1058,9 +1058,9 @@ namespace AntdUI
                 }
                 if (it.SubText != null)
                 {
-                    var size = g.MeasureString(it.Text, Font);
+                    var size = g.MeasureText(it.Text, Font);
                     var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                    g.String(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
+                    g.DrawText(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
                 }
                 DrawTextIcon(g, it, brush);
             }
@@ -1095,14 +1095,14 @@ namespace AntdUI
                 {
                     using (var fore = new SolidBrush(Colour.TextBase.Get(keyid, ColorScheme)))
                     {
-                        g.String(it.Text, font, fore, it.RectText, stringFormatLeft);
+                        g.DrawText(it.Text, font, fore, it.RectText, stringFormatLeft);
                     }
                 }
                 else
                 {
                     using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
                     {
-                        g.String(it.Text, font, fore, it.RectText, stringFormatLeft);
+                        g.DrawText(it.Text, font, fore, it.RectText, stringFormatLeft);
                     }
                 }
             }
@@ -1110,12 +1110,12 @@ namespace AntdUI
         }
         void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush)
         {
-            if (it.Enable) g.String(it.Text, Font, brush, it.RectText, stringFormatLeft);
+            if (it.Enable) g.DrawText(it.Text, Font, brush, it.RectText, stringFormatLeft);
             else
             {
                 using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
                 {
-                    g.String(it.Text, Font, fore, it.RectText, stringFormatLeft);
+                    g.DrawText(it.Text, Font, fore, it.RectText, stringFormatLeft);
                 }
             }
             DrawIcon(g, it, brush.Color);

@@ -35,8 +35,8 @@ namespace AntdUI
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, IList<MenuItem> items)
         {
             MessageCloseMouseLeave = true;
-            Theme = control.Theme;
-            isdark = Config.IsDark || control.Theme == TAMode.Dark;
+            Theme = control.ColorScheme;
+            isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             select_x = 0;
@@ -53,8 +53,8 @@ namespace AntdUI
 
         public LayeredFormMenuDown(Menu parent, int sx, LayeredFormMenuDown control, float radius, Rectangle rect_read, MenuItemCollection items)
         {
-            Theme = parent.Theme;
-            isdark = Config.IsDark || parent.Theme == TAMode.Dark;
+            Theme = parent.ColorScheme;
+            isdark = Config.IsDark || parent.ColorScheme == TAMode.Dark;
             parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
@@ -96,7 +96,7 @@ namespace AntdUI
                     {
                         if (it.Text != null)
                         {
-                            var size2 = g.MeasureString(it.Text, Font);
+                            var size2 = g.MeasureText(it.Text, Font);
                             if (size2.Width > b_w) b_w = size2.Width;
                         }
                         if (it.HasIcon) ui_icon = true;
@@ -348,7 +348,7 @@ namespace AntdUI
                     if (nodata)
                     {
                         string emptytext = Localization.Get("NoData", "暂无数据");
-                        g.String(emptytext, Font, Color.FromArgb(180, Colour.Text.Get("Menu", Theme)), rect_read, s_f);
+                        g.DrawText(emptytext, Font, Color.FromArgb(180, Colour.Text.Get("Menu", Theme)), rect_read, s_f);
                     }
                     else
                     {
@@ -397,7 +397,7 @@ namespace AntdUI
                         }
                         using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", Theme)))
                         {
-                            g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                            g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                         }
                         PaintIcon(g, it, brush.Color);
                     }
@@ -410,7 +410,7 @@ namespace AntdUI
                                 g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", Theme), path);
                             }
                         }
-                        g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                        g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
                         PaintIcon(g, it, brush.Color);
                     }
                 }
@@ -424,7 +424,7 @@ namespace AntdUI
                         }
                         using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", Theme)))
                         {
-                            g.String(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                            g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
                         }
                     }
                     else
@@ -436,7 +436,7 @@ namespace AntdUI
                                 g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", Theme), path);
                             }
                         }
-                        g.String(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                        g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
                     }
                     PaintIcon(g, it, brush.Color);
                 }
@@ -462,7 +462,7 @@ namespace AntdUI
                 }
                 using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Menu", Theme)))
                 {
-                    g.String(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, stringFormatLeft);
+                    g.DrawText(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, stringFormatLeft);
                 }
                 PaintIcon(g, it, brush.Color);
             }

@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\AntdUI.EmojiFluentFlat\AntdUI.EmojiFluentFlat.csproj" />
     <ProjectReference Include="..\..\src\AntdUI\AntdUI.csproj" />
   </ItemGroup>
 

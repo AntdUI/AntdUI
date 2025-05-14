@@ -837,14 +837,14 @@ namespace AntdUI
 
                         #endregion
 
-                        g.TranslateTransform(-sFixedR, -sy);
                         foreach (var row in shows)
                         {
+                            g.ResetTransform();
+                            g.TranslateTransform(0, -sy);
                             if (row.row.IsColumn)
                             {
-                                g.ResetTransform();
-                                g.TranslateTransform(0, -sy);
                                 PaintTableBgHeader(g, row.row, radius, sFixedR);
+
                                 g.ResetTransform();
                                 g.TranslateTransform(-sFixedR, -sy);
                                 PaintTableHeader(g, row.row, forecolumn, column_font, radius);
@@ -852,6 +852,10 @@ namespace AntdUI
                             else
                             {
                                 PaintBgRowFront(g, row);
+
+                                g.ResetTransform();
+                                g.TranslateTransform(-sFixedR, -sy);
+
                                 PaintBgRowFrontStyle(g, row);
                                 PaintBgRowItem(g, row.row);
                                 PaintBg(g, row.row);

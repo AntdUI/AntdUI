@@ -44,7 +44,7 @@ namespace AntdUI
             if (_rect.Width > 0 && _rect.Height > 0)
             {
                 var g = e.Graphics.High();
-                Rectangle rect = _rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
+                Rectangle rect = _rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight);
                 IPaint(g, rect, rect_read);
                 this.PaintBadge(g);
                 base.OnPaint(e);
@@ -208,7 +208,7 @@ namespace AntdUI
             {
                 using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Colour.TextQuaternary.Get("Input", ColorScheme)))
                 {
-                    g.String(PlaceholderText, Font, fore, rect_text, sf_placeholder);
+                    g.DrawText(PlaceholderText, Font, fore, rect_text, sf_placeholder);
                 }
             }
             g.ResetClip();
@@ -272,7 +272,11 @@ namespace AntdUI
                         foreach (var it in tmp)
                         {
                             if (IsPassWord) String(g, PassWordChar, Font, it, fore);
-                            else if (it.emoji) String(g, it.text, font, it, fore);
+                            else if (it.emoji)
+                            {
+                                if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) SvgExtend.GetImgExtend(g, svg, it.rect, fore.Color);
+                                else StringEmoji(g, it.text, font, it, fore);
+                            }
                             else String(g, it.text, Font, it, fore);
                         }
                     }
@@ -324,6 +328,13 @@ namespace AntdUI
             else g.String(text, cache.font ?? font, brush, cache.rect, sf_font);
         }
 
+        void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
+        {
+            var rect = new Rectangle(cache.rect.X - 20, cache.rect.Y - 20, cache.rect.Width + 40, cache.rect.Height + 40);
+            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, rect, sf_font);
+            else g.String(text, cache.font ?? font, brush, rect, sf_font);
+        }
+
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }
 
         protected virtual void PaintOtherBor(Canvas g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive) { }
@@ -355,7 +366,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight);
 
         public override GraphicsPath RenderRegion
         {
@@ -367,12 +378,28 @@ namespace AntdUI
             }
         }
 
-        internal GraphicsPath Path(RectangleF rect_read, float _radius)
+        internal GraphicsPath Path(RectangleF rect, float radius)
         {
-            if (JoinLeft && JoinRight) return rect_read.RoundPath(0);
-            else if (JoinRight) return rect_read.RoundPath(_radius, true, false, false, true);
-            else if (JoinLeft) return rect_read.RoundPath(_radius, false, true, true, false);
-            return rect_read.RoundPath(_radius);
+            switch (joinMode)
+            {
+                case TJoinMode.Left:
+                    return rect.RoundPath(radius, true, false, false, true);
+                case TJoinMode.Right:
+                    return rect.RoundPath(radius, false, true, true, false);
+                case TJoinMode.LR:
+                case TJoinMode.TB:
+                    return rect.RoundPath(0);
+                case TJoinMode.Top:
+                    return rect.RoundPath(radius, true, true, false, false);
+                case TJoinMode.Bottom:
+                    return rect.RoundPath(radius, false, false, true, true);
+                case TJoinMode.None:
+                default:
+                    if (JoinLeft && JoinRight) return rect.RoundPath(0);
+                    else if (JoinLeft) return rect.RoundPath(radius, false, true, true, false);
+                    else if (JoinRight) return rect.RoundPath(radius, true, false, false, true);
+                    return rect.RoundPath(radius);
+            }
         }
 
         #endregion

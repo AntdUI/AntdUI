@@ -50,6 +50,21 @@ namespace AntdUI
 
         #endregion
 
+        #region MeasureText
+
+        Size MeasureText(string? text, Font font);
+        Size MeasureText(string? text, Font font, int width);
+        Size MeasureText(string? text, Font font, int width, StringFormat? format);
+
+        #endregion
+
+        #region DrawText
+
+        void DrawText(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null);
+        void DrawText(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null);
+
+        #endregion
+
         #region Image
 
         bool Image(Image image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, GraphicsUnit srcUnit, ImageAttributes? imageAttr);

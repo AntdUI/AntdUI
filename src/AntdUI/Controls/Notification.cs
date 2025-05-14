@@ -297,7 +297,7 @@ namespace AntdUI
             /// <summary>
             /// 弹出在窗口
             /// </summary>
-            public bool ShowInWindow { get; set; }
+            public bool? ShowInWindow { get; set; }
         }
 
         public class ConfigLink
@@ -354,7 +354,7 @@ namespace AntdUI
 
         public bool IInit()
         {
-            if (SetPosition(config.Form, config.ShowInWindow || Config.ShowInWindowByNotification)) return true;
+            if (SetPosition(config.Form, config.ShowInWindow ?? Config.ShowInWindowByNotification)) return true;
             if (config.AutoClose > 0)
             {
                 ITask.Run(() =>
@@ -407,14 +407,14 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(Colour.TextBase.Get("Notification")))
                 {
-                    g.String(config.Title, font_title, brush, rect_title, s_f_left);
-                    g.String(config.Text, Font, brush, rect_txt, s_f_left_left);
+                    g.DrawText(config.Title, font_title, brush, rect_title, s_f_left);
+                    g.DrawText(config.Text, Font, brush, rect_txt, s_f_left_left);
                 }
                 if (config.Link != null)
                 {
                     using (var pen = new Pen(Colour.Primary.Get("Notification"), Config.Dpi))
                     {
-                        g.String(config.Link.Text, Font, Colour.Primary.Get("Notification"), rect_link_text, s_f);
+                        g.DrawText(config.Link.Text, Font, Colour.Primary.Get("Notification"), rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
                     }
                 }
@@ -451,7 +451,7 @@ namespace AntdUI
             int shadow2 = shadow * 2;
             float dpi = Config.Dpi;
 
-            var size_title = g.MeasureString(config.Title, font_title, 10000, s_f_left);
+            var size_title = g.MeasureText(config.Title, font_title, 10000, s_f_left);
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), t_max_width = (int)Math.Ceiling(360 * dpi);
             int sp = (int)(8 * dpi), close_size = (int)Math.Ceiling(22F * dpi);
             if (size_title.Width > t_max_width)
@@ -459,7 +459,7 @@ namespace AntdUI
                 t_max_width = size_title.Width;
                 if (config.CloseIcon) t_max_width += close_size + sp;
             }
-            var size_desc = g.MeasureString(config.Text, Font, t_max_width);
+            var size_desc = g.MeasureText(config.Text, Font, t_max_width);
             int width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
             int max_width = width_desc > width_title ? width_desc : width_title;
             if (config.Icon == TType.None && config.IconCustom == null)
@@ -476,7 +476,7 @@ namespace AntdUI
 
                 if (config.Link != null)
                 {
-                    var size_link = g.MeasureString(config.Link.Text, Font, 10000, s_f);
+                    var size_link = g.MeasureText(config.Link.Text, Font, 10000, s_f);
                     rect_link_text = new Rectangle(rect_title.X, rect_txt.Bottom + sp, size_link.Width, size_link.Height);
                     rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
                     h += size_link.Height + sp;
@@ -499,7 +499,7 @@ namespace AntdUI
 
                 if (config.Link != null)
                 {
-                    var size_link = g.MeasureString(config.Link.Text, Font, 10000, s_f);
+                    var size_link = g.MeasureText(config.Link.Text, Font, 10000, s_f);
                     rect_link_text = new Rectangle(rect_title.X, rect_txt.Bottom + sp, size_link.Width, size_link.Height);
                     rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
                     h += size_link.Height + sp;

@@ -56,7 +56,6 @@ namespace AntdUI
             }
             PageSize = config.ContentCount;
 
-            //优化为使用List集合，去掉转换的代码
             int len = 8;
             if (config.Btns != null && config.Btns.Length > 0) len += config.Btns.Length;
             var btnwiths = new List<PreBtns>(len)
@@ -391,7 +390,7 @@ namespace AntdUI
                 if (Tag is Preview.ImageTextContent content && content.Text != null)
                 {
                     // 测量文本大小
-                    var size = g.MeasureString(content.Text, content.Font ?? Font);
+                    var size = g.MeasureText(content.Text, content.Font ?? Font);
                     using (var brush = new SolidBrush(content.ForeColor ?? Style.Db.Text))
                     using (var format = new StringFormat())
                     {
@@ -403,7 +402,7 @@ namespace AntdUI
                             format.FormatFlags = StringFormatFlags.LineLimit;
                             format.Trimming = StringTrimming.Word;
                             // 重新测量换行后的文本所需区域
-                            size = g.MeasureString(content.Text, content.Font ?? Font, TargetRect.Width, format);
+                            size = g.MeasureText(content.Text, content.Font ?? Font, TargetRect.Width, format);
 
                             //重新测量后重新赋值矩形高度
                             height = Math.Min(size.Height, TargetRect.Height);
@@ -454,7 +453,7 @@ namespace AntdUI
 
                         format.LineAlignment = StringAlignment.Far;
 
-                        g.String(content.Text, content.Font ?? Font, brush, textRect, format);
+                        g.DrawText(content.Text, content.Font ?? Font, brush, textRect, format);
                     }
                 }
             }

@@ -178,19 +178,19 @@ namespace AntdUI
                         foreach (StepsItem it in items)
                         {
                             it.PARENT = this;
-                            it.TitleSize = g.MeasureString(it.Title, Font);
+                            it.TitleSize = g.MeasureText(it.Title, Font);
                             int ico_size = (int)(it.TitleSize.Height * 1.6F);
                             it.pen_w = it.TitleSize.Height * 0.136F;
                             int width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
 
                             if (it.showSub)
                             {
-                                it.SubTitleSize = g.MeasureString(it.SubTitle, Font);
+                                it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
                                 height_one += it.SubTitleSize.Height;
                             }
                             if (it.showDescription)
                             {
-                                it.DescriptionSize = g.MeasureString(it.Description, font_description);
+                                it.DescriptionSize = g.MeasureText(it.Description, font_description);
                                 width_ex = it.DescriptionSize.Width;
                             }
 
@@ -274,9 +274,9 @@ namespace AntdUI
 
                 #region 计算
 
-                it.TitleSize = g.MeasureString(it.Title, Font);
-                if (it.showSub) it.SubTitleSize = g.MeasureString(it.SubTitle, Font);
-                if (it.showDescription) it.DescriptionSize = g.MeasureString(it.Description, font_description);
+                it.TitleSize = g.MeasureText(it.Title, Font);
+                if (it.showSub) it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
+                if (it.showDescription) it.DescriptionSize = g.MeasureText(it.Description, font_description);
 
                 int icon_size = it.IconSize ?? (int)(it.TitleSize.Height * 1.6F);
                 int width_top = it.TitleSize.Width + (it.showSub ? it.SubTitleSize.Width : 0), width_buttom = (it.showDescription ? it.DescriptionSize.Width : 0);
@@ -343,32 +343,32 @@ namespace AntdUI
                             switch (status)
                             {
                                 case TStepState.Finish:
-                                    g.String(it.Title, Font, brush_fore, it.title_rect, stringLeft);
-                                    g.String(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
-                                    g.String(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                                    g.DrawText(it.Title, Font, brush_fore, it.title_rect, stringLeft);
+                                    g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
+                                    g.DrawText(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
                                     ccolor = brush_primary.Color;
                                     break;
                                 case TStepState.Wait:
-                                    g.String(it.Title, Font, brush_fore2, it.title_rect, stringLeft);
-                                    g.String(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
-                                    g.String(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                                    g.DrawText(it.Title, Font, brush_fore2, it.title_rect, stringLeft);
+                                    g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
+                                    g.DrawText(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
                                     ccolor = brush_fore2.Color;
                                     break;
                                 case TStepState.Error:
                                     using (var brush_error = new SolidBrush(Colour.Error.Get("Steps", ColorScheme)))
                                     {
-                                        g.String(it.Title, Font, brush_error, it.title_rect, stringLeft);
-                                        g.String(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
-                                        g.String(it.Description, font_description, brush_error, it.description_rect, stringLeft);
+                                        g.DrawText(it.Title, Font, brush_error, it.title_rect, stringLeft);
+                                        g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
+                                        g.DrawText(it.Description, font_description, brush_error, it.description_rect, stringLeft);
                                         ccolor = brush_error.Color;
                                     }
                                     break;
                                 case TStepState.Process:
                                 default:
 
-                                    g.String(it.Title, Font, brush_fore, it.title_rect, stringLeft);
-                                    g.String(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
-                                    g.String(it.Description, font_description, brush_fore, it.description_rect, stringLeft);
+                                    g.DrawText(it.Title, Font, brush_fore, it.title_rect, stringLeft);
+                                    g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
+                                    g.DrawText(it.Description, font_description, brush_fore, it.description_rect, stringLeft);
 
                                     ccolor = brush_fore.Color;
                                     break;
@@ -377,17 +377,17 @@ namespace AntdUI
                         else if (i < current)
                         {
                             //过
-                            g.String(it.Title, Font, brush_fore, it.title_rect, stringLeft);
-                            g.String(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
-                            g.String(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                            g.DrawText(it.Title, Font, brush_fore, it.title_rect, stringLeft);
+                            g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
+                            g.DrawText(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
                             ccolor = brush_fore.Color;
                         }
                         else
                         {
                             //未
-                            g.String(it.Title, Font, brush_fore2, it.title_rect, stringLeft);
-                            g.String(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
-                            g.String(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                            g.DrawText(it.Title, Font, brush_fore2, it.title_rect, stringLeft);
+                            g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
+                            g.DrawText(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
                             ccolor = brush_fore2.Color;
                         }
 
@@ -402,7 +402,7 @@ namespace AntdUI
                                         break;
                                     case TStepState.Wait:
                                         g.FillEllipse(brush_bg2, it.ico_rect);
-                                        g.String((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
+                                        g.DrawText((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
                                         break;
                                     case TStepState.Error:
                                         g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Colour.ErrorColor.Get("Steps", ColorScheme), Colour.Error.Get("Steps", ColorScheme));
@@ -410,7 +410,7 @@ namespace AntdUI
                                     case TStepState.Process:
                                     default:
                                         g.FillEllipse(brush_primary, it.ico_rect);
-                                        g.String((i + 1).ToString(), font_description, brush_primary_fore, it.ico_rect, stringCenter);
+                                        g.DrawText((i + 1).ToString(), font_description, brush_primary_fore, it.ico_rect, stringCenter);
                                         break;
                                 }
                             }
@@ -418,7 +418,7 @@ namespace AntdUI
                             else
                             {
                                 g.FillEllipse(brush_bg2, it.ico_rect);
-                                g.String((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
+                                g.DrawText((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
                             }
                         }
                     }

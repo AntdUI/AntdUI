@@ -398,11 +398,11 @@ namespace AntdUI
                 }
             }
 
-            TAlignFrom badgeAlign = TAlignFrom.TR;
+            TAlign badgeAlign = TAlign.TR;
             /// <summary>
             /// 徽标方向
             /// </summary>
-            public TAlignFrom BadgeAlign
+            public TAlign BadgeAlign
             {
                 get => badgeAlign;
                 set

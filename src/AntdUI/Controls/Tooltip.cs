@@ -437,13 +437,13 @@ namespace AntdUI
         {
             multiline = core.Text.Contains("\n");
             int padding = (int)Math.Ceiling(20 * Config.Dpi);
-            var font_size = g.MeasureString(core.Text, core.Font);
+            var font_size = g.MeasureText(core.Text, core.Font);
             if (core.CustomWidth.HasValue)
             {
                 int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);
                 if (font_size.Width > width)
                 {
-                    font_size = g.MeasureString(core.Text, core.Font, width);
+                    font_size = g.MeasureText(core.Text, core.Font, width);
                     multiline = true;
                 }
             }
@@ -452,7 +452,7 @@ namespace AntdUI
                 int width = maxWidth.Value - padding;
                 if (font_size.Width > width)
                 {
-                    font_size = g.MeasureString(core.Text, core.Font, width);
+                    font_size = g.MeasureText(core.Text, core.Font, width);
                     multiline = true;
                 }
             }
@@ -511,8 +511,8 @@ namespace AntdUI
 
         static void RenderText(ITooltip core, Canvas g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
         {
-            if (multiline) g.String(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
-            else g.String(core.Text, core.Font, Brushes.White, rect, s_c);
+            if (multiline) g.DrawText(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
+            else g.DrawText(core.Text, core.Font, Brushes.White, rect, s_c);
         }
 
         static void DrawShadow(this ITooltip core, Canvas _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)

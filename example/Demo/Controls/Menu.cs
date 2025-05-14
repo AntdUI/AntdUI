@@ -36,13 +36,13 @@ namespace Demo.Controls
         {
             if (e.Value)
             {
-                menu2.Theme = AntdUI.TAMode.Dark;
+                menu2.ColorScheme = AntdUI.TAMode.Dark;
                 if (AntdUI.Config.IsDark) menu2.BackColor = BackColor;
                 else menu2.BackColor = Color.FromArgb(0, 21, 41);
             }
             else
             {
-                menu2.Theme = AntdUI.TAMode.Light;
+                menu2.ColorScheme = AntdUI.TAMode.Light;
                 if (AntdUI.Config.IsDark) menu2.BackColor = Color.White;
                 else menu2.BackColor = BackColor;
             }
@@ -53,13 +53,13 @@ namespace Demo.Controls
         {
             if (e.Value)
             {
-                menu3.Theme = AntdUI.TAMode.Dark;
+                menu3.ColorScheme = AntdUI.TAMode.Dark;
                 if (AntdUI.Config.IsDark) menu3.BackColor = BackColor;
                 else menu3.BackColor = Color.FromArgb(0, 21, 41);
             }
             else
             {
-                menu3.Theme = AntdUI.TAMode.Light;
+                menu3.ColorScheme = AntdUI.TAMode.Light;
                 if (AntdUI.Config.IsDark) menu3.BackColor = Color.White;
                 else menu3.BackColor = BackColor;
             }

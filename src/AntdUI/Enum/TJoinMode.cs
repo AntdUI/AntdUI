@@ -16,25 +16,16 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.Collections.Generic;
-
 namespace AntdUI
 {
-    partial class SvgDb
+    public enum TJoinMode
     {
-        static SvgDb()
-        {
-            var datas = Properties.Resources.Custom.Split('|');
-            Custom = new Dictionary<string, string>(datas.Length);
-            foreach (string s in datas)
-            {
-                var i = s.IndexOf(":");
-                Custom.Add(s.Substring(0, i), s.Substring(i + 1));
-            }
-        }
-
-        public static Dictionary<string, string> Custom;
-
-        public static Dictionary<string, string> Emoji = new Dictionary<string, string>(0);
+        None = 0,
+        Left = 1,
+        Right = 2,
+        LR = 3,
+        Top = 4,
+        Bottom = 5,
+        TB = 6
     }
 }

@@ -28,7 +28,7 @@ namespace AntdUI
         /// <summary>
         /// 行数据
         /// </summary>
-        internal class RowTemplate
+        internal class RowTemplate : IROW
         {
             Table PARENT;
             public RowTemplate(Table table, CELL[] cell, int i, object? value)
@@ -176,7 +176,53 @@ namespace AntdUI
             internal Rectangle RectExpand;
         }
 
-        internal enum RowType
+        public interface IROW
+        {
+            /// <summary>
+            /// 行区域
+            /// </summary>
+            Rectangle RECT { get; }
+
+            /// <summary>
+            /// 原始行数据
+            /// </summary>
+            object? RECORD { get; }
+
+            /// <summary>
+            /// 使能
+            /// </summary>
+            bool ENABLE { get; }
+
+            int INDEX { get; }
+
+            int INDEX_REAL { get; }
+
+            /// <summary>
+            /// 列数据
+            /// </summary>
+            CELL[] cells { get; }
+
+            /// <summary>
+            /// 行高度
+            /// </summary>
+            int Height { get; }
+
+            /// <summary>
+            /// 表类型
+            /// </summary>
+            RowType Type { get; }
+
+            bool IsColumn { get; }
+            bool IsOther { get; }
+
+            bool Select { get; }
+
+            bool CanExpand { get; }
+
+            bool Expand { get; }
+        }
+
+        public enum RowType
         {
             None,
             /// <summary>
@@ -881,6 +927,11 @@ namespace AntdUI
                     return _ROW;
                 }
             }
+
+            /// <summary>
+            /// 行
+            /// </summary>
+            public IROW Row => ROW;
 
             internal void SetROW(RowTemplate row) => _ROW = row;
 

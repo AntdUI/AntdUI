@@ -33,9 +33,12 @@ namespace ChatUI
                 chatList.AddToBottom(new AntdUI.Chat.TextChatItem("阿威十八式 🙌🖖🤘👋", Properties.Resources.aduskin, "AduSkin"));
                 Thread.Sleep(700);
 
+                chatList.AddToBottom(new AntdUI.Chat.TextChatItem("完美主义 🥣💲🐖👚", Properties.Resources.av1, "Tom") { Me = true });
+                Thread.Sleep(700);
+
                 if (File.Exists("../../../../../doc/pre/banner.png") && File.Exists("../../../../../src/logo.png"))
                 {
-                    chatList.AddToBottom(new AntdUI.Chat.TextChatItem("Winform UI library use Ant Design 5.0\n" + "data:image/png;base64," + Convert.ToBase64String(File.ReadAllBytes("../../../../../doc/pre/banner.png")), (Bitmap)Image.FromFile("../../../../../src/logo.png"), "AntdUI"));
+                    chatList.AddToBottom(new AntdUI.Chat.TextChatItem("🦄 Winform UI library use Ant Design 5.0\n" + "data:image/png;base64," + Convert.ToBase64String(File.ReadAllBytes("../../../../../doc/pre/banner.png")), (Bitmap)Image.FromFile("../../../../../src/logo.png"), "AntdUI"));
                     Thread.Sleep(700);
                 }
 

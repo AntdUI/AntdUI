@@ -43,7 +43,7 @@ namespace AntdUI
         public new bool AllowClear
         {
             get => false;
-            set { base.AllowClear = false; }
+            set => base.AllowClear = false;
         }
 
         decimal? minimum = null, maximum = null;
@@ -339,7 +339,18 @@ namespace AntdUI
 
         protected override void ChangeMouseHover(bool Hover, bool Focus)
         {
-            hover_button.Switch = showcontrol && !ReadOnly && (Hover || Focus);
+            if (showcontrol && !ReadOnly)
+            {
+                if (TextAlign == HorizontalAlignment.Right)
+                {
+                    bool old = hover_button.Switch;
+                    hover_button.Switch = (Hover || Focus);
+                    if (old == hover_button.Switch) return;
+                    UR = hover_button.Switch ? (int)rect_button.Width : 0;
+                    CalculateRect();
+                }
+                else hover_button.Switch = (Hover || Focus);
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -361,11 +372,7 @@ namespace AntdUI
                     SetCursor(true);
                     return;
                 }
-                else
-                {
-                    hover_button_up.Switch = hover_button_bottom.Switch = false;
-                    SetCursor(false);
-                }
+                else hover_button_up.Switch = hover_button_bottom.Switch = false;
             }
             base.OnMouseMove(e);
         }

@@ -16,25 +16,22 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.Collections.Generic;
-
 namespace AntdUI
 {
-    partial class SvgDb
+    public enum TreeCType
     {
-        static SvgDb()
-        {
-            var datas = Properties.Resources.Custom.Split('|');
-            Custom = new Dictionary<string, string>(datas.Length);
-            foreach (string s in datas)
-            {
-                var i = s.IndexOf(":");
-                Custom.Add(s.Substring(0, i), s.Substring(i + 1));
-            }
-        }
-
-        public static Dictionary<string, string> Custom;
-
-        public static Dictionary<string, string> Emoji = new Dictionary<string, string>(0);
+        None = 0,
+        /// <summary>
+        /// 项目
+        /// </summary>
+        Item = 1,
+        /// <summary>
+        /// 箭头
+        /// </summary>
+        Arrow = 2,
+        /// <summary>
+        /// 复选框
+        /// </summary>
+        Check = 3
     }
 }

@@ -678,13 +678,13 @@ namespace AntdUI
                         {
                             var color_active = foreactive ?? Colour.Text.Get("Segmented", ColorScheme);
                             if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
-                            g.String(it.Text, Font, color_active, it.RectText, s_f);
+                            g.DrawText(it.Text, Font, color_active, it.RectText, s_f);
                         }
                         else
                         {
                             var color_active = Colour.TextQuaternary.Get("Segmented", ColorScheme);
                             if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
-                            g.String(it.Text, Font, color_active, it.RectText, s_f);
+                            g.DrawText(it.Text, Font, color_active, it.RectText, s_f);
                         }
                     }
                     else
@@ -695,18 +695,18 @@ namespace AntdUI
                             {
                                 var color_hover = ForeHover ?? Colour.HoverColor.Get("Segmented", ColorScheme);
                                 if (PaintImg(g, it, color_hover, it.IconHoverSvg ?? it.IconSvg, it.IconHover ?? it.Icon)) PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
-                                g.String(it.Text, Font, color_hover, it.RectText, s_f);
+                                g.DrawText(it.Text, Font, color_hover, it.RectText, s_f);
                             }
                             else
                             {
                                 PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                                g.String(it.Text, Font, brush, it.RectText, s_f);
+                                g.DrawText(it.Text, Font, brush, it.RectText, s_f);
                             }
                         }
                         else
                         {
                             PaintImg(g, it, brushDisable.Color, it.IconSvg, it.Icon);
-                            g.String(it.Text, Font, brushDisable, it.RectText, s_f);
+                            g.DrawText(it.Text, Font, brushDisable, it.RectText, s_f);
                         }
                     }
                     it.PaintBadge(Font, it.Rect, g, ColorScheme);
@@ -1006,7 +1006,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_t + gap2, rect.Height), imgsize_t);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font);
+                                        var size = g.MeasureText(it.Text, Font);
                                         it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, size.Height, sp);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -1020,7 +1020,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_b + gap2, rect.Height), imgsize_b);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font);
+                                        var size = g.MeasureText(it.Text, Font);
                                         it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, size.Height, sp);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -1034,7 +1034,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_l + gap2, rect.Height), imgsize_l);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font);
+                                        var size = g.MeasureText(it.Text, Font);
                                         it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_l + sp + gap2, rect.Height), imgsize_l, sp, gap);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -1048,7 +1048,7 @@ namespace AntdUI
                                     if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, imgsize_r + gap2, rect.Height), imgsize_r);
                                     else
                                     {
-                                        var size = g.MeasureString(it.Text, Font);
+                                        var size = g.MeasureText(it.Text, Font);
                                         it.SetRectRight(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_r + sp + gap2, rect.Height), imgsize_r, sp, gap);
                                     }
                                     x += it.Rect.Width + _igap;
@@ -1058,7 +1058,7 @@ namespace AntdUI
                                 foreach (var it in items)
                                 {
                                     it.PARENT = this;
-                                    var size = g.MeasureString(it.Text, Font);
+                                    var size = g.MeasureText(it.Text, Font);
                                     it.SetRectNone(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height));
                                     x += it.Rect.Width + _igap;
                                 }
@@ -1466,7 +1466,7 @@ namespace AntdUI
             {
                 if (multiLine)
                 {
-                    int text_heigth_new = g.MeasureString(Text, font).Height;
+                    int text_heigth_new = g.MeasureText(Text, font).Height;
                     if (text_heigth_new > text_heigth)
                     {
                         rect.Height += text_heigth_new - text_heigth;
@@ -1487,7 +1487,7 @@ namespace AntdUI
             {
                 if (multiLine)
                 {
-                    int text_heigth_new = g.MeasureString(Text, font).Height;
+                    int text_heigth_new = g.MeasureText(Text, font).Height;
                     if (text_heigth_new > text_heigth) text_heigth = text_heigth_new;
                 }
                 int y = (rect.Height - (imgsize + text_heigth + gap)) / 2;
@@ -1519,7 +1519,7 @@ namespace AntdUI
             {
                 if (multiLine)
                 {
-                    int text_heigth_new = g.MeasureString(Text, font).Height;
+                    int text_heigth_new = g.MeasureText(Text, font).Height;
                     if (text_heigth_new > text_heigth)
                     {
                         rect.Height += text_heigth_new - text_heigth;
@@ -1540,7 +1540,7 @@ namespace AntdUI
             {
                 if (multiLine)
                 {
-                    int text_heigth_new = g.MeasureString(Text, font).Height;
+                    int text_heigth_new = g.MeasureText(Text, font).Height;
                     if (text_heigth_new > text_heigth) text_heigth = text_heigth_new;
                 }
                 int y = (rect.Height - (imgsize + text_heigth + gap)) / 2;
@@ -1616,11 +1616,11 @@ namespace AntdUI
             }
         }
 
-        TAlignFrom badgeAlign = TAlignFrom.TR;
+        TAlign badgeAlign = TAlign.TR;
         /// <summary>
         /// 徽标方向
         /// </summary>
-        public TAlignFrom BadgeAlign
+        public TAlign BadgeAlign
         {
             get => badgeAlign;
             set

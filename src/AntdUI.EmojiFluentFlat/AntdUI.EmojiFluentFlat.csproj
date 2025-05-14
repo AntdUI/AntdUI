@@ -8,21 +8,17 @@
 		<Authors>Tom</Authors>
 		<Company>Tom</Company>
 		<Copyright>Copyright © Tom 2021-2025</Copyright>
-		<Product>AntdUI</Product>
-		<AssemblyTitle>Ant Design Winform UI</AssemblyTitle>
-		<Description>Winform UI library use Ant Design 5.0</Description>
+		<Product>AntdUI.EmojiFluentFlat</Product>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Version>2.0.0</Version>
+		<Version>2025.1.31.0</Version>
 		<Description>👚 基于 Ant Design 设计语言的 Winform 界面库</Description>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<LangVersion>9.0</LangVersion>
-		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<RepositoryUrl>https://gitee.com/AntdUI/AntdUI</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>AntdUI;Winform;WinformUI;AntDesign;UI;Control;Ant;界面库;控件;</PackageTags>
-		<PackageIcon>logo.png</PackageIcon>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTags>AntdUI;Emoji;Fluent;Winform;WinformUI;AntDesign;UI;Control;Ant;界面库;控件;</PackageTags>
+		<PackageIcon>logo_fluentFlat.png</PackageIcon>
 		<PackageProjectUrl>https://gitee.com/AntdUI</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -34,34 +30,26 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net40' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net48'">
-		<Reference Include="System.Design" />
-	</ItemGroup>
-
 	<ItemGroup>
-		<None Include="../logo.png">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-		<None Include="../../README.md">
+		<None Include="../logo_fluentFlat.png">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Properties\Resources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
+	  <Compile Update="Properties\Resources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Resources.resx</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Properties\Resources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
+	  <EmbeddedResource Update="Properties\Resources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 </Project>

@@ -556,16 +556,18 @@ namespace AntdUI
 
         int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapy, int depth)
         {
-            int collapsedWidth = 0;
+            int collapsedWidth = 0, i = 0;
             foreach (var it in items)
             {
+                it.Index = i;
+                i++;
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
                 if (it.HasIcon) icon_count++;
                 it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
-                    int size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
+                    int size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + gapy;
                     if (mode == TMenuMode.Inline && it.CanExpand)
@@ -601,12 +603,15 @@ namespace AntdUI
         }
         void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int gap, int gapI)
         {
+            int i = 0;
             foreach (var it in items)
             {
+                it.Index = i;
+                i++;
                 it.PARENT = this;
                 int size;
-                if (it.HasIcon) size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size;
-                else size = g.MeasureString(it.Text, it.Font ?? Font).Width + gap * 2;
+                if (it.HasIcon) size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size;
+                else size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 2;
                 it.SetRectNoArr(0, new Rectangle(rect.X + x, rect.Y, size, rect.Height), icon_size, gap);
                 if (it.Visible) x += size;
             }
@@ -723,6 +728,7 @@ namespace AntdUI
         {
             if (collapsed) PaintItemMini(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
             else PaintItem(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+            it.PaintBadge(Font, it.rect, g, ColorScheme);
         }
 
         void PaintItemMini(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
@@ -854,7 +860,7 @@ namespace AntdUI
         {
             using (var brush = new SolidBrush(fore))
             {
-                g.String(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }
@@ -881,7 +887,7 @@ namespace AntdUI
             }
             using (var brush = new SolidBrush(fore))
             {
-                g.String(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
             }
             PaintIcon(g, it, fore);
         }
@@ -1249,6 +1255,38 @@ namespace AntdUI
             if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IUSelect(sub);
         }
 
+        public MenuItem? HitTest(int x, int y)
+        {
+            if (items == null || items.Count == 0) return null;
+
+            foreach (var it in items)
+            {
+                if (IHitTest(x, y, it, out var md)) return md;
+            }
+            return null;
+        }
+        bool IHitTest(int x, int y, MenuItem item, out MenuItem? mdown)
+        {
+            if (item.Visible)
+            {
+                bool can = item.CanExpand;
+                if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
+                {
+                    mdown = item;
+                    return true;
+                }
+                if (can && item.Expand && !collapsed)
+                {
+                    foreach (var sub in item.Sub)
+                    {
+                        if (IHitTest(x, y, sub, out mdown)) return true;
+                    }
+                }
+            }
+            mdown = null;
+            return false;
+        }
+
         #endregion
 
         #region 子窗口
@@ -1345,7 +1383,7 @@ namespace AntdUI
         }
     }
 
-    public class MenuItem
+    public class MenuItem : BadgeConfig
     {
         public MenuItem() { }
         public MenuItem(string text)
@@ -1362,6 +1400,11 @@ namespace AntdUI
             Text = text;
             IconSvg = icon_svg;
         }
+
+        /// <summary>
+        /// 序号
+        /// </summary>
+        public int Index { get; internal set; }
 
         /// <summary>
         /// ID
@@ -1625,6 +1668,119 @@ namespace AntdUI
                 int y = PARENT.ScrollBar.Value;
                 if (y != 0F) return new Rectangle(rect.X, rect.Y - y, rect.Width, rect.Height);
                 return rect;
+            }
+        }
+
+        #endregion
+
+        #region 徽标
+
+        string? badge = null;
+        [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
+        public string? Badge
+        {
+            get => badge;
+            set
+            {
+                if (badge == value) return;
+                badge = value;
+                Invalidate();
+            }
+        }
+
+        string? badgeSvg = null;
+        [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
+        public string? BadgeSvg
+        {
+            get => badgeSvg;
+            set
+            {
+                if (badgeSvg == value) return;
+                badgeSvg = value;
+                Invalidate();
+            }
+        }
+
+        TAlign badgeAlign = TAlign.Right;
+        [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.Right)]
+        public TAlign BadgeAlign
+        {
+            get => badgeAlign;
+            set
+            {
+                if (badgeAlign == value) return;
+                badgeAlign = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        float badgeSize = .6F;
+        [Description("徽标比例"), Category("徽标"), DefaultValue(.6F)]
+        public float BadgeSize
+        {
+            get => badgeSize;
+            set
+            {
+                if (badgeSize == value) return;
+                badgeSize = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        bool badgeMode = false;
+        [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
+        public bool BadgeMode
+        {
+            get => badgeMode;
+            set
+            {
+                if (badgeMode == value) return;
+                badgeMode = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        Color? badgeback = null;
+        [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeBack
+        {
+            get => badgeback;
+            set
+            {
+                if (badgeback == value) return;
+                badgeback = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        int badgeOffsetX = 1, badgeOffsetY = 1;
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        [Description("徽标偏移X"), Category("徽标"), DefaultValue(1)]
+        public int BadgeOffsetX
+        {
+            get => badgeOffsetX;
+            set
+            {
+                if (badgeOffsetX == value) return;
+                badgeOffsetX = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        [Description("徽标偏移Y"), Category("徽标"), DefaultValue(1)]
+        public int BadgeOffsetY
+        {
+            get => badgeOffsetY;
+            set
+            {
+                if (badgeOffsetY == value) return;
+                badgeOffsetY = value;
+                if (badge != null || badgeSvg != null) Invalidate();
             }
         }
 

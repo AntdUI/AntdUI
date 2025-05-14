@@ -141,44 +141,65 @@ namespace AntdUI
             {
                 if (image == value) return;
                 image = value;
-                if (value != null && PlayGIF)
-                {
-                    var fd = new FrameDimension(value.FrameDimensionsList[0]);
-                    int count = value.GetFrameCount(fd);
-                    if (count > 1) PlayGif(value, fd, count);
-                    else Invalidate();
-                }
-                else Invalidate();
+                if (IsHandleCreated) LoadGif();
                 OnPropertyChanged(nameof(Image));
             }
         }
 
+        #region GIF
+
+        bool playGIF = true;
         /// <summary>
         /// 播放GIF
         /// </summary>
         [Description("播放GIF"), Category("行为"), DefaultValue(true)]
-        public bool PlayGIF { get; set; } = true;
+        public bool PlayGIF
+        {
+            get => playGIF;
+            set
+            {
+                if (playGIF == value) return;
+                playGIF = value;
+                if (IsHandleCreated) LoadGif();
+            }
+        }
+        void LoadGif()
+        {
+            if (image == null) return;
+            if (playGIF)
+            {
+                var fd = new FrameDimension(image.FrameDimensionsList[0]);
+                int count = image.GetFrameCount(fd);
+                if (count > 1) PlayGif(image, fd, count);
+                else Invalidate();
+            }
+        }
 
         void PlayGif(Image value, FrameDimension fd, int count)
         {
-            int[] delays = GifDelays(value, count);
             ITask.Run(() =>
             {
-                while (image == value)
+                int[] delays = GifDelays(value, count);
+                while (PlayGIF && image == value)
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        if (image == value)
+                        if (PlayGIF && image == value)
                         {
                             lock (_lock) { value.SelectActiveFrame(fd, i); }
                             Invalidate();
                             Thread.Sleep(delays[i]);
                         }
-                        else return;
+                        else
+                        {
+                            value.SelectActiveFrame(fd, 0);
+                            return;
+                        }
                     }
                 }
-            });
+            }, Invalidate);
         }
+
         object _lock = new object();
         int[] GifDelays(Image value, int count)
         {
@@ -198,6 +219,14 @@ namespace AntdUI
             for (int i = 0; i < delaysd.Length; i++) delaysd[i] = 100;
             return delaysd;
         }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            LoadGif();
+        }
+
+        #endregion
 
         string? imageSvg = null;
         /// <summary>
@@ -405,11 +434,11 @@ namespace AntdUI
             {
                 using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))
                 {
-                    if (bmp == null) g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
+                    if (bmp == null) g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
                     else g.Image(rect, bmp, imageFit, _radius, round);
                 }
             }
-            else g.String(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
+            else g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
             if (loading)
             {

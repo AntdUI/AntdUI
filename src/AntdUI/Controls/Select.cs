@@ -275,6 +275,8 @@ namespace AntdUI
             selectedIndexX = 0;
             if (items == null || items.Count == 0) ChangeValueNULL();
             else ChangeValue(i, items[i]);
+            OnPropertyChanged(nameof(SelectedIndex));
+            OnPropertyChanged(nameof(SelectedValue));
             ExpandDrop = false;
             select_x = 0;
             subForm = null;
@@ -284,6 +286,8 @@ namespace AntdUI
         internal void DropDownChange(int x, int y, object value)
         {
             ChangeValue(x, y, value);
+            OnPropertyChanged(nameof(SelectedIndex));
+            OnPropertyChanged(nameof(SelectedValue));
             ExpandDrop = false;
             select_x = 0;
             subForm = null;

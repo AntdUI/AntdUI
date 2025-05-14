@@ -858,38 +858,41 @@ namespace AntdUI
 
         string? OGetValue(TempTable data_temp, int i_r, string key)
         {
-            var value = data_temp.rows[i_r].cells[key];
-            if (value is AntItem item)
+            if (data_temp.rows[i_r].cells.TryGetValue(key, out var value))
             {
-                var val = item.value;
-                if (val is IList<ICell> icells)
+                if (value is AntItem item)
                 {
-                    var vals = new List<string>(icells.Count);
-                    foreach (var cell in icells)
+                    var val = item.value;
+                    if (val is IList<ICell> icells)
                     {
-                        var str = cell.ToString();
-                        if (!string.IsNullOrEmpty(str)) vals.Add(str);
+                        var vals = new List<string>(icells.Count);
+                        foreach (var cell in icells)
+                        {
+                            var str = cell.ToString();
+                            if (!string.IsNullOrEmpty(str)) vals.Add(str);
+                        }
+                        return string.Join(" ", vals);
                     }
-                    return string.Join(" ", vals);
+                    else return val?.ToString();
                 }
-                else return val?.ToString();
-            }
-            else if (value is PropertyDescriptor prop)
-            {
-                var val = prop.GetValue(data_temp.rows[i_r].record);
-                if (val is IList<ICell> icells)
+                else if (value is PropertyDescriptor prop)
                 {
-                    var vals = new List<string>(icells.Count);
-                    foreach (var cell in icells)
+                    var val = prop.GetValue(data_temp.rows[i_r].record);
+                    if (val is IList<ICell> icells)
                     {
-                        var str = cell.ToString();
-                        if (!string.IsNullOrEmpty(str)) vals.Add(str);
+                        var vals = new List<string>(icells.Count);
+                        foreach (var cell in icells)
+                        {
+                            var str = cell.ToString();
+                            if (!string.IsNullOrEmpty(str)) vals.Add(str);
+                        }
+                        return string.Join(" ", vals);
                     }
-                    return string.Join(" ", vals);
+                    else return val?.ToString();
                 }
-                else return val?.ToString();
+                else return value?.ToString();
             }
-            else return value?.ToString();
+            return null;
         }
 
         object? OGetValue(object? ov, object record, out PropertyDescriptor? property, out object? value)
@@ -1071,6 +1074,12 @@ namespace AntdUI
             if (cel.PROPERTY == null)
             {
                 if (cel.VALUE is AntItem arow) arow.value = value;
+                else if (cel.ROW.RECORD is System.Data.DataRow datarow)
+                {
+                    datarow[cel.INDEX] = cel.VALUE = value;
+                    if (dataTmp == null) return;
+                    dataTmp.rows[cel.ROW.INDEX - 1].SetValue(cel.INDEX, value);
+                }
             }
             else cel.PROPERTY.SetValue(cel.VALUE, value);
         }

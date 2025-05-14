@@ -65,7 +65,7 @@ namespace AntdUI
                             GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
                             {
                                 string txt = str.Substring(nStart, nLen);
-                                if (nType == 18)
+                                if (nType == 18 || nType == 4)
                                 {
                                     HasEmoji = true;
                                     font_widths.Add(new CacheFont(txt, true, 0));
@@ -99,12 +99,7 @@ namespace AntdUI
                                 {
                                     foreach (var it in font_widths)
                                     {
-                                        if (it.emoji)
-                                        {
-                                            var sizefont = g.MeasureString(it.text, font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                            it.width = sizefont.Width;
-                                        }
+                                        if (it.emoji) it.width = font_height;
                                     }
                                 }
                             }
@@ -153,7 +148,7 @@ namespace AntdUI
                             GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
                             {
                                 string txt = str.Substring(nStart, nLen);
-                                if (nType == 18)
+                                if (nType == 18 || nType == 4)
                                 {
                                     HasEmoji = true;
                                     font_widths.Add(new CacheFont(txt, true, 0));
@@ -196,12 +191,7 @@ namespace AntdUI
                                 {
                                     foreach (var it in font_widths)
                                     {
-                                        if (it.emoji)
-                                        {
-                                            var sizefont = g.MeasureString(it.text, font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                            it.width = sizefont.Width;
-                                        }
+                                        if (it.emoji) it.width = font_height;
                                     }
                                 }
                             }
@@ -215,7 +205,6 @@ namespace AntdUI
                 }
             }
         }
-
 
         internal class CacheFont
         {
@@ -263,11 +252,13 @@ namespace AntdUI
         internal Rectangle rect_d_ico, rect_d_l, rect_d_r;
 
         internal Rectangle? RECTDIV = null;
+        internal int UR = 0;
         List<int> LineBreakNumber = new List<int>(0);
         internal void CalculateRect()
         {
-            var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, JoinLeft, JoinRight) : ReadRectangle;
+            var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight) : ReadRectangle;
             int sps = (int)(CaretInfo.Height * .4F), sps2 = sps * 2;
+            rect.Width -= UR;
             RectAuto(rect, sps, sps2);
             if (cache_font == null)
             {

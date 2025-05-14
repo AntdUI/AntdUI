@@ -221,7 +221,7 @@ namespace AntdUI
                             }
                             else
                             {
-                                var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                                var sizeTitle = g.MeasureText(config.Title, fontTitle, wp);
 
                                 int h = sizeTitle.Height + gap + control.Height + butt_h;
 
@@ -235,7 +235,7 @@ namespace AntdUI
                             var sizeT = g.MeasureString(Config.NullText, fontTitle);
                             int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            var sizeTitle = g.MeasureText(config.Title, fontTitle, wp);
                             int h = sizeTitle.Height + gap + control.Height + butt_h;
 
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
@@ -260,13 +260,13 @@ namespace AntdUI
                         var texts = new List<Rectangle>(list.Count);
                         if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            var sizeTitle = g.MeasureText(config.Title, fontTitle, wp);
                             rectTitle = new Rectangle(paddingx, paddingy, wp, sizeTitle.Height + gap);
 
                             int has_y = paddingy + sizeTitle.Height + gap, h_temp = 0;
                             foreach (var txt in list)
                             {
-                                var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font, wp);
+                                var sizeContent = g.MeasureText(txt.Text, txt.Font ?? Font, wp);
                                 int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
                                 texts.Add(new Rectangle(rectTitle.X, has_y, wp, txt_h));
                                 has_y += txt_h;
@@ -282,14 +282,14 @@ namespace AntdUI
                             var sizeT = g.MeasureString(Config.NullText, fontTitle);
                             int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, wp);
+                            var sizeTitle = g.MeasureText(config.Title, fontTitle, wp);
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
                             rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);
 
                             int has_y = paddingy + sizeTitle.Height + gap, h_temp = 0;
                             foreach (var txt in list)
                             {
-                                var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font, wp);
+                                var sizeContent = g.MeasureText(txt.Text, txt.Font ?? Font, wp);
                                 int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
                                 texts.Add(new Rectangle(rectTitle.X, has_y, wp, txt_h));
                                 has_y += txt_h;
@@ -314,7 +314,7 @@ namespace AntdUI
                         var content = config.Content.ToString();
                         if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
-                            Size sizeTitle = g.MeasureString(config.Title, fontTitle, wp), sizeContent = g.MeasureString(content, Font, wp);
+                            Size sizeTitle = g.MeasureText(config.Title, fontTitle, wp), sizeContent = g.MeasureText(content, Font, wp);
                             int h = sizeTitle.Height + gap + sizeContent.Height + butt_h;
 
                             rectTitle = new Rectangle(paddingx, paddingy, wp, sizeTitle.Height + gap);
@@ -327,7 +327,7 @@ namespace AntdUI
                             var sizeT = g.MeasureString(Config.NullText, fontTitle);
                             int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F);
                             wp -= icon_size + icon_size_x;
-                            Size sizeTitle = g.MeasureString(config.Title, fontTitle, wp), sizeContent = g.MeasureString(content, Font, wp);
+                            Size sizeTitle = g.MeasureText(config.Title, fontTitle, wp), sizeContent = g.MeasureText(content, Font, wp);
                             int h = sizeTitle.Height + gap + sizeContent.Height + butt_h;
 
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp, sizeTitle.Height + gap);
@@ -463,7 +463,7 @@ namespace AntdUI
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
-                    g.String(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                    g.DrawText(config.Title, fontTitle, brush, rectTitle, stringLeft);
                 }
                 if (rtext)
                 {
@@ -476,13 +476,13 @@ namespace AntdUI
                             {
                                 using (var fore = new SolidBrush(txt.Fore.Value))
                                 {
-                                    g.String(txt.Text, txt.Font ?? Font, fore, rectsContent[i], stringLeft);
+                                    g.DrawText(txt.Text, txt.Font ?? Font, fore, rectsContent[i], stringLeft);
                                 }
                             }
-                            else g.String(txt.Text, txt.Font ?? Font, brush, rectsContent[i], stringLeft);
+                            else g.DrawText(txt.Text, txt.Font ?? Font, brush, rectsContent[i], stringLeft);
                         }
                     }
-                    else g.String(config.Content.ToString(), Font, brush, rectContent, stringTL);
+                    else g.DrawText(config.Content.ToString(), Font, brush, rectContent, stringTL);
                 }
             }
         }

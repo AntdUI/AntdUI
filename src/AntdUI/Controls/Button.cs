@@ -865,11 +865,30 @@ namespace AntdUI
 
         #endregion
 
+        #region 组合
+
+        TJoinMode joinMode = TJoinMode.None;
+        /// <summary>
+        /// 组合模式
+        /// </summary>
+        [Description("组合模式"), Category("外观"), DefaultValue(TJoinMode.None)]
+        public TJoinMode JoinMode
+        {
+            get => joinMode;
+            set
+            {
+                if (joinMode == value) return;
+                joinMode = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(JoinMode));
+            }
+        }
+
         bool joinLeft = false;
         /// <summary>
         /// 连接左边
         /// </summary>
-        [Description("连接左边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category("外观"), DefaultValue(false)]
         public bool JoinLeft
         {
             get => joinLeft;
@@ -886,7 +905,7 @@ namespace AntdUI
         /// <summary>
         /// 连接右边
         /// </summary>
-        [Description("连接右边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category("外观"), DefaultValue(false)]
         public bool JoinRight
         {
             get => joinRight;
@@ -899,6 +918,7 @@ namespace AntdUI
             }
         }
 
+        #endregion
 
         ITask? ThreadHover = null;
         ITask? ThreadIconHover = null;
@@ -1468,7 +1488,7 @@ namespace AntdUI
                 }
             }
             bool has_loading = loading && LoadingValue > -1;
-            var font_size = g.MeasureString(text ?? Config.NullText, Font);
+            var font_size = g.MeasureText(text ?? Config.NullText, Font);
             if (text == null)
             {
                 //没有文字
@@ -1543,7 +1563,7 @@ namespace AntdUI
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
                     PaintTextAlign(rect_read, ref rect_text);
                 }
-                g.String(text, Font, color, rect_text, stringFormat);
+                g.DrawText(text, Font, color, rect_text, stringFormat);
             }
         }
 
@@ -1842,10 +1862,26 @@ namespace AntdUI
                 path.AddEllipse(rect);
                 return path;
             }
-            if (joinLeft && joinRight) return rect.RoundPath(0);
-            else if (joinRight) return rect.RoundPath(radius, true, false, false, true);
-            else if (joinLeft) return rect.RoundPath(radius, false, true, true, false);
-            return rect.RoundPath(radius);
+            switch (joinMode)
+            {
+                case TJoinMode.Left:
+                    return rect.RoundPath(radius, true, false, false, true);
+                case TJoinMode.Right:
+                    return rect.RoundPath(radius, false, true, true, false);
+                case TJoinMode.LR:
+                case TJoinMode.TB:
+                    return rect.RoundPath(0);
+                case TJoinMode.Top:
+                    return rect.RoundPath(radius, true, true, false, false);
+                case TJoinMode.Bottom:
+                    return rect.RoundPath(radius, false, false, true, true);
+                case TJoinMode.None:
+                default:
+                    if (joinLeft && joinRight) return rect.RoundPath(0);
+                    else if (joinRight) return rect.RoundPath(radius, true, false, false, true);
+                    else if (joinLeft) return rect.RoundPath(radius, false, true, true, false);
+                    return rect.RoundPath(radius);
+            }
         }
 
         #endregion
@@ -1986,7 +2022,7 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, shape, joinLeft, joinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, shape, joinMode, joinLeft, joinRight);
 
         public override GraphicsPath RenderRegion
         {
@@ -2126,7 +2162,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureString(Text ?? Config.NullText, Font);
+                    var font_size = g.MeasureText(Text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
                     if (Shape == TShape.Circle || string.IsNullOrEmpty(Text))
                     {
@@ -2136,7 +2172,8 @@ namespace AntdUI
                     else
                     {
                         int m = wave * 2;
-                        if (joinLeft || joinRight) m = 0;
+                        if (joinMode > 0) m = 0;
+                        else if (joinLeft || joinRight) m = 0;
                         bool has_icon = (loading && LoadingValue > -1) || HasIcon;
                         if (has_icon || showArrow)
                         {

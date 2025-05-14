@@ -194,6 +194,14 @@ namespace AntdUI
         [Description("行排序时发生"), Category("行为")]
         public event IntEventHandler? SortRows;
 
+        /// <summary>
+        /// 树行排序时发生
+        /// </summary>
+        [Description("树行排序时发生"), Category("行为")]
+        public event SortTreeEventHandler? SortRowsTree;
+
+        public delegate void SortTreeEventHandler(object sender, TableSortTreeEventArgs e);
+
         public delegate bool SortModeEventHandler(object sender, TableSortModeEventArgs e);
 
         /// <summary>

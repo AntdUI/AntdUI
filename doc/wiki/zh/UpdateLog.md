@@ -1,5 +1,44 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.0-beta2` 2025-05-14 🥣💲🐖👚
+
+- ➕ Select 补全 PropertyChanged
+- ➕ Table 树行排序事件
+- ➕ Table HitTest
+- ➕ Message TopMost
+- ➕ Tree HitTest
+- ➕ Tree 事件 交互标志
+- ➕ Tree GapIndent
+- ➕ Tree Index序号
+- ➕ Menu 项徽标
+- ➕ Menu HitTest
+- ➕ Menu Index序号
+- ➕ Button JoinMode
+- ➕ Input JoinMode
+- ➕ ColorPicker JoinMode
+- ✍️ Input ClearStyle 修复未生效
+- ✍️ ColorPicker RGB 模式 Input 坐标异常
+- ✍️ Table 浮动列背景
+- ✍️ Table DataTable 编辑模式设置值
+- ✍️ Table 插槽列排序
+- ✍️ InputNumber 修复 TextAlign.Right
+- ✍️ Avatar PlayGIF 设置无效
+
+### `1.9.12` 2025-04-27
+
+- ➕ Table 多级下拉
+- ➕ VirtualPanel 指定容器内区域渲染
+- ✍️ SelectMultiple SelectAllItems 无法取消
+- ✍️ Menu 子菜单 Visible 无效
+- ✍️ Table 固定列 颜色不生效
+- ✍️ Input 在WPS/Addin键盘失效
+- ✍️ Spin 渲染抽搐
+- ✍️ Table LostFocusClearSelection 异常
+- ✍️ 移除 渲染队列
+- ✍️ 移除 Input 主动GC
+- ✍️ Table 多数据全选卡顿
+- ✍️ Modal 默认字体
+
 ### `1.9.11` 2025-04-18
 
 - ➕ 单独 ColorScheme

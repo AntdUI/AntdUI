@@ -626,6 +626,29 @@ namespace AntdUI
         /// </summary>
         public Column Column { get; private set; }
     }
+
+    public class TableSortTreeEventArgs : EventArgs
+    {
+        public TableSortTreeEventArgs(object? record, int[] sort, int from, int to)
+        {
+            Record = record;
+            Sort = sort;
+            From = from;
+            To = to;
+        }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+
+        public int[] Sort { get; private set; }
+
+        public int From { get; private set; }
+
+        public int To { get; private set; }
+    }
+
     public class TableExpandEventArgs : EventArgs
     {
         public TableExpandEventArgs(object? record, bool expand)
@@ -744,8 +767,13 @@ namespace AntdUI
 
     public class TreeSelectEventArgs : VMEventArgs<TreeItem>
     {
-        public TreeSelectEventArgs(TreeItem item, Rectangle rect, MouseEventArgs e) : base(item, e) { Rect = rect; }
+        public TreeSelectEventArgs(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs e) : base(item, e)
+        {
+            Rect = rect;
+            Type = type;
+        }
         public Rectangle Rect { get; private set; }
+        public TreeCType Type { get; private set; }
     }
 
     public delegate void TreeSelectEventHandler(object sender, TreeSelectEventArgs e);

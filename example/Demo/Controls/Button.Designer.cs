@@ -191,7 +191,7 @@ namespace Demo.Controls
             btng3.BackColor = Color.FromArgb(217, 217, 217);
             btng3.BorderWidth = 2F;
             btng3.Dock = DockStyle.Left;
-            btng3.JoinLeft = true;
+            btng3.JoinMode = AntdUI.TJoinMode.Right;
             btng3.Location = new Point(264, 22);
             btng3.Margin = new Padding(0);
             btng3.Name = "btng3";
@@ -206,8 +206,7 @@ namespace Demo.Controls
             btng2.BackColor = Color.FromArgb(217, 217, 217);
             btng2.BorderWidth = 2F;
             btng2.Dock = DockStyle.Left;
-            btng2.JoinLeft = true;
-            btng2.JoinRight = true;
+            btng2.JoinMode = AntdUI.TJoinMode.LR;
             btng2.Location = new Point(143, 22);
             btng2.Margin = new Padding(0);
             btng2.Name = "btng2";
@@ -222,7 +221,7 @@ namespace Demo.Controls
             btng1.BackColor = Color.FromArgb(217, 217, 217);
             btng1.BorderWidth = 2F;
             btng1.Dock = DockStyle.Left;
-            btng1.JoinRight = true;
+            btng1.JoinMode = AntdUI.TJoinMode.Left;
             btng1.Location = new Point(22, 22);
             btng1.Margin = new Padding(0);
             btng1.Name = "btng1";
@@ -247,7 +246,7 @@ namespace Demo.Controls
             button41.BackColor = Color.FromArgb(17, 24, 39);
             button41.BackHover = Color.FromArgb(17, 24, 39);
             button41.Dock = DockStyle.Fill;
-            button41.JoinLeft = true;
+            button41.JoinMode = AntdUI.TJoinMode.Right;
             button41.Location = new Point(50, 0);
             button41.Name = "button41";
             button41.Radius = 4;
@@ -264,7 +263,7 @@ namespace Demo.Controls
             button40.BackHover = Color.FromArgb(147, 51, 234);
             button40.Dock = DockStyle.Left;
             button40.IconSvg = "SearchOutlined";
-            button40.JoinRight = true;
+            button40.JoinMode = AntdUI.TJoinMode.Left;
             button40.Location = new Point(0, 0);
             button40.Name = "button40";
             button40.Radius = 4;

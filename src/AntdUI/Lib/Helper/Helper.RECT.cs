@@ -345,7 +345,7 @@ namespace AntdUI
         /// <param name="shape">形状</param>
         /// <param name="joinLeft">连接左边</param>
         /// <param name="joinRight">连接右边</param>
-        public static Rectangle ReadRect(this Rectangle rect, float size, TShape shape, bool joinLeft, bool joinRight)
+        public static Rectangle ReadRect(this Rectangle rect, float size, TShape shape, TJoinMode joinMode, bool joinLeft, bool joinRight)
         {
             if (shape == TShape.Circle)
             {
@@ -361,7 +361,7 @@ namespace AntdUI
                     return new Rectangle(rect.X + pr, rect.Y + (rect.Height - w) / 2, w, w);
                 }
             }
-            return ReadRect(rect, size, joinLeft, joinRight);
+            return ReadRect(rect, size, joinMode, joinLeft, joinRight);
         }
 
         /// <summary>
@@ -371,25 +371,31 @@ namespace AntdUI
         /// <param name="size">动画区域</param>
         /// <param name="joinLeft">连接左边</param>
         /// <param name="joinRight">连接右边</param>
-        public static Rectangle ReadRect(this Rectangle rect, float size, bool joinLeft, bool joinRight)
+        public static Rectangle ReadRect(this Rectangle rect, float size, TJoinMode joinMode, bool joinLeft, bool joinRight)
         {
             int pr = (int)Math.Ceiling(size), pr2 = pr * 2;
-            if (joinLeft && joinRight) return new Rectangle(rect.X, rect.Y + pr, rect.Width, rect.Height - pr2);
-            else if (joinLeft)
+            switch (joinMode)
             {
-                var r = new Rectangle(rect.X, rect.Y + pr, rect.Width - pr, rect.Height - pr2);
-                rect.X = -pr;
-                rect.Width += pr;
-                return r;
+                case TJoinMode.Left:
+                    return new Rectangle(rect.Width - (rect.Width - pr), rect.Y + pr, rect.Width - pr, rect.Height - pr2);
+                case TJoinMode.Right:
+                    return new Rectangle(rect.X, rect.Y + pr, rect.Width - pr, rect.Height - pr2);
+                case TJoinMode.LR:
+                    return new Rectangle(rect.X, rect.Y + pr, rect.Width, rect.Height - pr2);
+
+                case TJoinMode.Top:
+                    return new Rectangle(rect.X + pr, rect.Height - (rect.Height - pr), rect.Width - pr2, rect.Height - pr);
+                case TJoinMode.Bottom:
+                    return new Rectangle(rect.X + pr, rect.Y, rect.Width - pr2, rect.Height - pr);
+                case TJoinMode.TB:
+                    return new Rectangle(rect.X + pr, rect.Y, rect.Width - pr2, rect.Height);
+                case TJoinMode.None:
+                default:
+                    if (joinLeft && joinRight) return new Rectangle(rect.X, rect.Y + pr, rect.Width, rect.Height - pr2);
+                    else if (joinLeft) return new Rectangle(rect.X, rect.Y + pr, rect.Width - pr, rect.Height - pr2);
+                    else if (joinRight) return new Rectangle(rect.Width - (rect.Width - pr), rect.Y + pr, rect.Width - pr, rect.Height - pr2);
+                    return new Rectangle(rect.X + pr, rect.Y + pr, rect.Width - pr2, rect.Height - pr2);
             }
-            else if (joinRight)
-            {
-                var r = new Rectangle(rect.Width - (rect.Width - pr), rect.Y + pr, rect.Width - pr, rect.Height - pr2);
-                rect.X = 0;
-                rect.Width += pr;
-                return r;
-            }
-            return new Rectangle(rect.X + pr, rect.Y + pr, rect.Width - pr2, rect.Height - pr2);
         }
 
         #endregion

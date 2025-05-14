@@ -374,24 +374,24 @@ namespace AntdUI
                         var rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height);
                         using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger", ColorScheme)))
                         {
-                            g.String(Text, Font, brush, rect_text, s_f);
+                            g.DrawText(Text, Font, brush, rect_text, s_f);
                         }
                     }
                     else
                     {
                         using (var font_desc = new Font(Font.FontFamily, Font.Size * .875F))
                         {
-                            var size_desc = g.MeasureString(TextDesc, font_desc, rect.Width - gap2);
+                            var size_desc = g.MeasureText(TextDesc, font_desc, rect.Width - gap2);
                             int th = sp + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
                             Rectangle rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
                             using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger", ColorScheme)))
                             {
-                                g.String(Text, Font, brush, rect_text, s_f);
+                                g.DrawText(Text, Font, brush, rect_text, s_f);
                             }
                             using (var brush = new SolidBrush(Colour.TextTertiary.Get("UploadDragger", ColorScheme)))
                             {
-                                g.String(TextDesc, font_desc, brush, rect_desc, s_f);
+                                g.DrawText(TextDesc, font_desc, brush, rect_desc, s_f);
                             }
                         }
                     }
@@ -407,14 +407,14 @@ namespace AntdUI
                         if (icon != null) g.Image(icon, rect_icon);
                         using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger", ColorScheme)))
                         {
-                            g.String(Text, Font, brush, rect_text, s_f);
+                            g.DrawText(Text, Font, brush, rect_text, s_f);
                         }
                     }
                     else
                     {
                         using (var font_desc = new Font(Font.FontFamily, Font.Size * .875F))
                         {
-                            var size_desc = g.MeasureString(TextDesc, font_desc, rect.Width - gap2);
+                            var size_desc = g.MeasureText(TextDesc, font_desc, rect.Width - gap2);
                             int th = sp + gap + icon_size + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
                             Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                                 rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height),
@@ -423,11 +423,11 @@ namespace AntdUI
                             if (icon != null) g.Image(icon, rect_icon);
                             using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger", ColorScheme)))
                             {
-                                g.String(Text, Font, brush, rect_text, s_f);
+                                g.DrawText(Text, Font, brush, rect_text, s_f);
                             }
                             using (var brush = new SolidBrush(Colour.TextTertiary.Get("UploadDragger", ColorScheme)))
                             {
-                                g.String(TextDesc, font_desc, brush, rect_desc, s_f);
+                                g.DrawText(TextDesc, font_desc, brush, rect_desc, s_f);
                             }
                         }
                     }
