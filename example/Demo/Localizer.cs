@@ -265,12 +265,33 @@ namespace Demo
                 case "Input.divider1":
                     return "Basic";
                 case "Input.divider2":
+                    return "Pre / Post tab";
+                case "Input.divider3":
+                    return "Variant";
+                case "Input.divider4":
+                    return "Multiline";
+                case "Input.divider5":
+                    return "Password";
+                case "Input.divider6":
                     return "Combination";
+                case "Input.Code":
+                    return "Please enter verification code";
+                case "Input.Tao":
+                    return "Tao, I like it";
+                case "Input.input2":
+                case "Input.input14":
+                    return "Clear button";
                 case "Input.input3":
-                    return "Enter your username";
-                case "Input.input7":
-                case "Input.input8":
-                case "Input.input9":
+                    return "Round";
+                case "Input.input4":
+                    return "Bold border";
+                case "Input.input5":
+                    return "Please input something";
+                case "Input.input13":
+                    return "Enter your password";
+                case "Input.input10":
+                case "Input.input18":
+                case "Input.input19":
                     return "input search text";
 
                 //InputNumber ----------------------------

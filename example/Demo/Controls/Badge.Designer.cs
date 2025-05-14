@@ -294,7 +294,7 @@ namespace Demo.Controls
             // 
             button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button3.Badge = " ";
-            button3.BadgeAlign = AntdUI.TAlignFrom.TL;
+            button3.BadgeAlign = AntdUI.TAlign.TL;
             button3.BadgeBack = Color.Green;
             button3.BadgeSize = 0.8F;
             button3.BadgeSvg = "CheckSquareFilled";

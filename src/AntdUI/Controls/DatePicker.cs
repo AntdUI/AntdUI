@@ -367,7 +367,7 @@ namespace AntdUI
         /// <summary>
         /// 徽标方向
         /// </summary>
-        public TAlignFrom Align { get; set; } = TAlignFrom.TR;
+        public TAlign Align { get; set; } = TAlign.TR;
 
         /// <summary>
         /// 徽标比例

@@ -168,11 +168,8 @@ namespace AntdUI.Svg
                             break;
                         case UnitRenderingType.Other:
                             // Calculate a percentage value of the normalized viewBox diagonal length. 
-                            if (owner.OwnerDocument != null && owner.OwnerDocument.ViewBox != null && owner.OwnerDocument.ViewBox.Width != 0 && owner.OwnerDocument.ViewBox.Height != 0)
-                            {
-                                _deviceValue = (float)(Math.Sqrt(Math.Pow(owner.OwnerDocument.ViewBox.Width, 2) + Math.Pow(owner.OwnerDocument.ViewBox.Height, 2)) / Math.Sqrt(2) * value / 100.0);
-                            }
-                            else _deviceValue = (float)(Math.Sqrt(Math.Pow(size.Width, 2) + Math.Pow(size.Height, 2)) / Math.Sqrt(2) * value / 100.0);
+                            if (owner == null || owner.OwnerDocument == null || owner.OwnerDocument.ViewBox == null || owner.OwnerDocument.ViewBox.Width == 0 || owner.OwnerDocument.ViewBox.Height == 0) _deviceValue = (float)(Math.Sqrt(Math.Pow(size.Width, 2) + Math.Pow(size.Height, 2)) / Math.Sqrt(2) * value / 100.0);
+                            else _deviceValue = (float)(Math.Sqrt(Math.Pow(owner.OwnerDocument.ViewBox.Width, 2) + Math.Pow(owner.OwnerDocument.ViewBox.Height, 2)) / Math.Sqrt(2) * value / 100.0);
                             break;
                     }
                     break;

@@ -32,13 +32,48 @@ namespace Demo.Controls
 
         private void Btn(object sender, EventArgs e)
         {
-            AntdUI.Button btn = (AntdUI.Button)sender;
-            btn.Loading = true;
-            AntdUI.ITask.Run(() =>
+            if (sender is AntdUI.Button btn)
             {
-                System.Threading.Thread.Sleep(2000);
-                btn.Loading = false;
-            });
+                btn.Loading = true;
+                AntdUI.ITask.Run(() =>
+                {
+                    System.Threading.Thread.Sleep(2000);
+                    btn.Loading = false;
+                });
+            }
+        }
+
+        private void CodeTextChanged(object sender, EventArgs e)
+        {
+            if (sender is AntdUI.Input input)
+            {
+                if (!string.IsNullOrWhiteSpace(input.Text))
+                {
+                    var find = tableLayoutPanel1.Controls.Find("ic" + (input.TabIndex + 1), false);
+                    if (find.Length == 1 && find[0] is AntdUI.Input input_next)
+                    {
+                        input_next.Text = "";
+                        input_next.Focus();
+                    }
+                }
+                else
+                {
+                }
+            }
+        }
+
+        private void CodeKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 8 && sender is AntdUI.Input input && input.Text.Length == 0)
+            {
+                //Back
+                var find = tableLayoutPanel1.Controls.Find("ic" + (input.TabIndex - 1), false);
+                if (find.Length == 1 && find[0] is AntdUI.Input input_next)
+                {
+                    input_next.Text = "";
+                    input_next.Focus();
+                }
+            }
         }
     }
 }

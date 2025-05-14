@@ -149,9 +149,9 @@ namespace AntdUI
             }
         }
 
-        TAlignFrom badgeAlign = TAlignFrom.TR;
-        [Description("徽标方向"), Category("徽标"), DefaultValue(TAlignFrom.TR)]
-        public TAlignFrom BadgeAlign
+        TAlign badgeAlign = TAlign.TR;
+        [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.TR)]
+        public TAlign BadgeAlign
         {
             get => badgeAlign;
             set
@@ -685,7 +685,7 @@ namespace AntdUI
         /// <summary>
         /// 徽标方向
         /// </summary>
-        TAlignFrom BadgeAlign { get; set; }
+        TAlign BadgeAlign { get; set; }
 
         /// <summary>
         /// 徽标大小

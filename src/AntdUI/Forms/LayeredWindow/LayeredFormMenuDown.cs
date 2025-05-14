@@ -35,8 +35,8 @@ namespace AntdUI
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, IList<MenuItem> items)
         {
             MessageCloseMouseLeave = true;
-            Theme = control.Theme;
-            isdark = Config.IsDark || control.Theme == TAMode.Dark;
+            Theme = control.ColorScheme;
+            isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             select_x = 0;
@@ -53,8 +53,8 @@ namespace AntdUI
 
         public LayeredFormMenuDown(Menu parent, int sx, LayeredFormMenuDown control, float radius, Rectangle rect_read, MenuItemCollection items)
         {
-            Theme = parent.Theme;
-            isdark = Config.IsDark || parent.Theme == TAMode.Dark;
+            Theme = parent.ColorScheme;
+            isdark = Config.IsDark || parent.ColorScheme == TAMode.Dark;
             parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;

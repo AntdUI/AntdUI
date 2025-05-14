@@ -196,17 +196,8 @@ namespace AntdUI.Svg
         {
             get
             {
-                if (this is SvgDocument)
-                {
-                    return this as SvgDocument;
-                }
-                else
-                {
-                    if (Parent != null)
-                        return Parent.OwnerDocument;
-                    else
-                        return null;
-                }
+                if (this is SvgDocument svgDocument) return svgDocument;
+                else return Parent?.OwnerDocument;
             }
         }
 

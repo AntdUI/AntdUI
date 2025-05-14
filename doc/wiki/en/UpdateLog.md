@@ -1,5 +1,44 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.0-beta2` 2025-05-14 🥣💲🐖👚
+
+- ➕ Select to complete the Property Change
+- ➕ Table Row Sorting Event
+- ➕ Table HitTest
+- ➕ Message TopMost
+- ➕ Tree HitTest
+- ➕ Tree event interaction flag
+- ➕ Tree GapIndent
+- ➕ Tree Index Number
+- ➕ Menu item logo
+- ➕ Menu HitTest
+- ➕ Menu Index Number
+- ➕ Button JoinMode
+- ➕ Input JoinMode
+- ➕ ColorPicker JoinMode
+- ✍️ Input ClearStyle fix not effective
+- ✍️ ColorPicker RGB mode Input coordinate exception
+- ✍️ Table Floating Column Background
+- ✍️ Table Tableau Editing Mode Settings
+- ✍️ Table Slot Column Sorting
+- ✍️ InputNumber fixes TextAlign. Right
+- ✍️ Avatar PlayGIF settings are invalid
+
+### `1.9.12` 2025-04-27
+
+- ➕ Multi level dropdown table
+- ➕ VirtualPanel specifies the rendering of the region within the container
+- ✍️ SelectMultiple SelectAllItems cannot be cancelled
+- ✍️ Menu submenu Visible is invalid
+- ✍️ Table fixed column color does not take effect
+- ✍️ Input failed on WPS/Addin keyboard
+- ✍️ Spin rendering twitching
+- ✍️ Table LostFocusClearSelection exception
+- ✍️ Remove rendering queue
+- ✍️ Remove Input Active GC
+- ✍️ Table: Multiple data all select stuttering
+- ✍️ Modal default font
+
 ### `1.9.11` 2025-04-18
 
 - ➕ Separate ColorScheme

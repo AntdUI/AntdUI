@@ -180,7 +180,7 @@ namespace Demo.Controls
             select7.AllowClear = true;
             select7.Dock = DockStyle.Fill;
             select7.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
-            select7.JoinRight = true;
+            select7.JoinMode = AntdUI.TJoinMode.Left;
             select7.LocalizationPlaceholderText = "Select.{id}";
             select7.Location = new Point(0, 0);
             select7.Name = "select7";
@@ -192,7 +192,7 @@ namespace Demo.Controls
             // 
             button1.Dock = DockStyle.Right;
             button1.IconSvg = "SearchOutlined";
-            button1.JoinLeft = true;
+            button1.JoinMode = AntdUI.TJoinMode.Right;
             button1.Location = new Point(170, 0);
             button1.Name = "button1";
             button1.Size = new Size(50, 46);
@@ -214,7 +214,7 @@ namespace Demo.Controls
             select6.AllowClear = true;
             select6.Dock = DockStyle.Fill;
             select6.Items.AddRange(new object[] { "Lucy", "Tom", "AduSkin", "WangLi", "HUAWEI", "XIAOMI" });
-            select6.JoinRight = true;
+            select6.JoinMode = AntdUI.TJoinMode.Left;
             select6.LocalizationPlaceholderText = "Select.{id}";
             select6.Location = new Point(0, 0);
             select6.Name = "select6";
@@ -226,7 +226,7 @@ namespace Demo.Controls
             // 
             button4.Dock = DockStyle.Right;
             button4.IconSvg = "SearchOutlined";
-            button4.JoinLeft = true;
+            button4.JoinMode = AntdUI.TJoinMode.Right;
             button4.Location = new Point(170, 0);
             button4.Name = "button4";
             button4.Size = new Size(50, 46);
