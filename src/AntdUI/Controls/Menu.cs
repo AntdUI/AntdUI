@@ -556,9 +556,11 @@ namespace AntdUI
 
         int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int gapy, int depth)
         {
-            int collapsedWidth = 0;
+            int collapsedWidth = 0, i = 0;
             foreach (var it in items)
             {
+                it.Index = i;
+                i++;
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
                 if (it.HasIcon) icon_count++;
@@ -601,8 +603,11 @@ namespace AntdUI
         }
         void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int gap, int gapI)
         {
+            int i = 0;
             foreach (var it in items)
             {
+                it.Index = i;
+                i++;
                 it.PARENT = this;
                 int size;
                 if (it.HasIcon) size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 3 + icon_size;
@@ -1394,6 +1399,11 @@ namespace AntdUI
             Text = text;
             IconSvg = icon_svg;
         }
+
+        /// <summary>
+        /// 序号
+        /// </summary>
+        public int Index { get; internal set; }
 
         /// <summary>
         /// ID

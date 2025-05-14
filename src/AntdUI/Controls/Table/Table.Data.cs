@@ -528,6 +528,21 @@ namespace AntdUI
                     return null;
                 }
             }
+
+            public void SetValue(int index, object? value)
+            {
+                if (cells == null) return;
+                int i = 0;
+                foreach (var item in cells)
+                {
+                    if (i == index)
+                    {
+                        cells[item.Key] = value;
+                        return;
+                    }
+                    i++;
+                }
+            }
         }
     }
 }

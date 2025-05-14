@@ -256,24 +256,53 @@ namespace AntdUI
                         if (dragBody.im == it.INDEX) { it.hover = true; dim = it.INDEX_REAL; }
                         if (dragBody.i == it.INDEX) di = it.INDEX_REAL;
                     }
-                    SetIndex(dragBody.im);
-                    foreach (var it in rows)
+                    if (dim == di)
                     {
-                        int index = it.INDEX_REAL;
-                        if (index > -1)
+                        object? record = null;
+                        int from = dragBody.i, to = dragBody.im, count = 0;
+                        foreach (var it in rows)
                         {
-                            if (index == dim)
+                            if (it.INDEX_REAL == di)
                             {
-                                if (dragBody.last) sortData.Add(index);
-                                if (sortData.Contains(di)) sortData.Remove(di);
-                                sortData.Add(di);
+                                if (record == null)
+                                {
+                                    record = it.RECORD;
+                                    from -= it.INDEX + 1;
+                                    to -= it.INDEX + 1;
+                                }
+                                else count++;
                             }
-                            if (!sortData.Contains(index)) sortData.Add(index);
                         }
+                        var d = new int[count];
+                        for (int i = 0; i < count; i++)
+                        {
+                            if (i == from) d[i] = to;
+                            else if (i == to) d[i] = from;
+                            else d[i] = i;
+                        }
+                        SortRowsTree?.Invoke(this, new TableSortTreeEventArgs(record, d, from, to));
                     }
-                    SortData = sortData.ToArray();
-                    LoadLayout();
-                    SortRows?.Invoke(this, new IntEventArgs(-1));
+                    else
+                    {
+                        SetIndex(dragBody.im);
+                        foreach (var it in rows)
+                        {
+                            int index = it.INDEX_REAL;
+                            if (index > -1)
+                            {
+                                if (index == dim)
+                                {
+                                    if (dragBody.last) sortData.Add(index);
+                                    if (sortData.Contains(di)) sortData.Remove(di);
+                                    sortData.Add(di);
+                                }
+                                if (!sortData.Contains(index)) sortData.Add(index);
+                            }
+                        }
+                        SortData = sortData.ToArray();
+                        LoadLayout();
+                        SortRows?.Invoke(this, new IntEventArgs(-1));
+                    }
                 }
                 dragBody = null;
                 if (hand)
@@ -417,10 +446,10 @@ namespace AntdUI
                                 switch (sortMode)
                                 {
                                     case SortMode.ASC:
-                                        SortDataASC(col.COLUMN.Key);
+                                        SortDataASC(col.COLUMN);
                                         break;
                                     case SortMode.DESC:
-                                        SortDataDESC(col.COLUMN.Key);
+                                        SortDataDESC(col.COLUMN);
                                         break;
                                     case SortMode.NONE:
                                     default:
@@ -995,30 +1024,38 @@ namespace AntdUI
 
         int[]? SortHeader = null;
         int[]? SortData = null;
-        List<SortModel> SortDatas(string key)
+        List<SortModel> SortDatas(Column column)
         {
             if (dataTmp == null) return new List<SortModel>(0);
             var list = new List<SortModel>(dataTmp.rows.Length);
-            for (int i_r = 0; i_r < dataTmp.rows.Length; i_r++)
+            if (dataTmp.rows[0].cells.ContainsKey(column.Key))
             {
-                var value = OGetValue(dataTmp, i_r, key);
-                list.Add(new SortModel(i_r, value?.ToString()));
+                for (int i_r = 0; i_r < dataTmp.rows.Length; i_r++) list.Add(new SortModel(i_r, OGetValue(dataTmp, i_r, column.Key)?.ToString()));
+            }
+            else if (column.Render == null) return list;
+            else
+            {
+                for (int i_r = 0; i_r < dataTmp.rows.Length; i_r++)
+                {
+                    var obj = column.Render(null, dataTmp.rows[i_r].record, i_r);
+                    list.Add(new SortModel(i_r, obj?.ToString()));
+                }
             }
             return list;
         }
 
-        void SortDataASC(string key)
+        void SortDataASC(Column column)
         {
-            var list = SortDatas(key);
+            var list = SortDatas(column);
             if (CustomSort == null) list.Sort((x, y) => FilesNameComparerClass.Compare(x.v, y.v));
             else list.Sort((x, y) => CustomSort(x.v, y.v));
             var SortTmp = new List<int>(list.Count);
             foreach (var it in list) SortTmp.Add(it.i);
             SortData = SortTmp.ToArray();
         }
-        void SortDataDESC(string key)
+        void SortDataDESC(Column column)
         {
-            var list = SortDatas(key);
+            var list = SortDatas(column);
             if (CustomSort == null) list.Sort((y, x) => FilesNameComparerClass.Compare(x.v, y.v));
             else list.Sort((y, x) => CustomSort(x.v, y.v));
             var SortTmp = new List<int>(list.Count);

@@ -376,8 +376,11 @@ namespace AntdUI
 
         void ChangeList(Canvas g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int depth_gap, int icon_size, int gap, int gapI, int depth, bool expand)
         {
+            int i = 0;
             foreach (var it in items)
             {
+                it.Index = i;
+                i++;
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
                 it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
@@ -1116,6 +1119,11 @@ namespace AntdUI
             Text = text;
             Icon = icon;
         }
+
+        /// <summary>
+        /// 序号
+        /// </summary>
+        public int Index { get; internal set; }
 
         /// <summary>
         /// ID
