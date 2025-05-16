@@ -125,6 +125,12 @@ namespace AntdUI
         public bool ValueTimeHorizontal { get; set; }
 
         /// <summary>
+        /// 显示今天
+        /// </summary>
+        [Description("显示今天"), Category("外观"), DefaultValue(true)]
+        public bool ShowButtonToDay { get; set; } = true;
+
+        /// <summary>
         /// 下拉箭头是否显示
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
