@@ -790,6 +790,18 @@ namespace AntdUI
             base.OnMouseClick(e);
         }
 
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && Trigger == Trigger.DoubleClick)
+            {
+                init = false;
+                ImeMode = ImeMode.Disable;
+                Focus();
+                ClickDown();
+            }
+            base.OnMouseDoubleClick(e);
+        }
+
         void ClickDown()
         {
             ExtraMouseDown = true;

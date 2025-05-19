@@ -1,6 +1,6 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
-### `2.0.0-beta2` 2025-05-14 🥣💲🐖👚
+### `2.0.0` 2025-05-19 🥣💲🐖👚
 
 - ➕ Select to complete the Property Change
 - ➕ Table Row Sorting Event
@@ -16,7 +16,12 @@
 - ➕ Button JoinMode
 - ➕ Input JoinMode
 - ➕ ColorPicker JoinMode
+- ➕ ColorPicker Double Click Dropdown Interaction
+- ➕ DatePicker ShowButtonToDay
+- ➕ TimePicker ShowButtonNow
+- ➕ TimePicker adaptation time, minutes, and seconds are displayed separately
 - ✍️ Input ClearStyle fix not effective
+- ✍️ Input direction message
 - ✍️ ColorPicker RGB mode Input coordinate exception
 - ✍️ Table Floating Column Background
 - ✍️ Table Tableau Editing Mode Settings

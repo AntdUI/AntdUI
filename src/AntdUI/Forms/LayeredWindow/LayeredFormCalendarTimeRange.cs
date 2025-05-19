@@ -220,9 +220,9 @@ namespace AntdUI
                 if (calendar_time == null)
                 {
                     calendar_time = new List<CalendarT>(24 + 120);
-                    for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(0, i, i));
-                    for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(1, i, i));
-                    for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(2, i, i));
+                    for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(0, 0, i, i));
+                    for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(1, 1, i, i));
+                    for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(2, 2, i, i));
                 }
 
                 #endregion
@@ -905,7 +905,7 @@ namespace AntdUI
                             {
                                 if (ETime.HasValue)
                                 {
-                                    switch (it.x)
+                                    switch (it.rx)
                                     {
                                         case 0:
                                             if (it.t == ETime.Value.Hour) g.Fill(brush_bg, path);
@@ -920,7 +920,7 @@ namespace AntdUI
                                 }
                                 else if (STime.HasValue)
                                 {
-                                    switch (it.x)
+                                    switch (it.rx)
                                     {
                                         case 0:
                                             if (it.t == STime.Value.Hour) g.Fill(brush_bg, path);
@@ -935,7 +935,7 @@ namespace AntdUI
                                 }
                                 else if (SelTime != null && SelTime.Length > 0)
                                 {
-                                    switch (it.x)
+                                    switch (it.rx)
                                     {
                                         case 0:
                                             if (it.t == SelTime[0].Hour) g.Fill(brush_bg, path);
@@ -1173,7 +1173,7 @@ namespace AntdUI
                         {
                             foreach (var it in calendar_time)
                             {
-                                switch (it.x)
+                                switch (it.rx)
                                 {
                                     case 1:
                                         if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out var change1)) hand++;
@@ -1466,7 +1466,7 @@ namespace AntdUI
                         {
                             foreach (var it in calendar_time)
                             {
-                                switch (it.x)
+                                switch (it.rx)
                                 {
                                     case 1:
                                         if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out _))
@@ -1673,9 +1673,9 @@ namespace AntdUI
 
         void ScrollYTime(List<CalendarT> calendar_time, DateTime d)
         {
-            CalendarT? find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour),
-                find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute),
-                find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
+            CalendarT? find_h = calendar_time.Find(a => a.rx == 0 && a.t == d.Hour),
+                find_m = calendar_time.Find(a => a.rx == 1 && a.t == d.Minute),
+                find_s = calendar_time.Find(a => a.rx == 2 && a.t == d.Second);
 
             int start = 4;
             if (find_h != null) scrollY_h.Value = find_h.rect.Y - start;

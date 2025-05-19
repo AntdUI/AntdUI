@@ -28,7 +28,7 @@ namespace AntdUI
     public class LayeredFormCalendar : ILayeredFormOpacityDown
     {
         DateTime? minDate, maxDate;
-        bool ValueTimeHorizontal = false;
+        bool ValueTimeHorizontal = false, ShowButtonToDay = true;
         TDatePicker datePicker = TDatePicker.Date;
         TAMode ColorScheme;
         public LayeredFormCalendar(DatePicker _control, Rectangle rect_read, DateTime? date, TDatePicker _datepicker, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
@@ -43,6 +43,7 @@ namespace AntdUI
             action = _action;
             action_btns = _action_btns;
             ShowTime = _control.ShowTime;
+            ShowButtonToDay = _control.ShowButtonToDay;
             ValueTimeHorizontal = _control.ValueTimeHorizontal;
             hover_lefts = new ITaskOpacity(name, this);
             hover_left = new ITaskOpacity(name, this);
@@ -88,7 +89,11 @@ namespace AntdUI
                 }
                 t_x = left_button;
             }
-            if (ShowTime) { t_width = t_x + t_one_width + t_time * 3; button_text = Localization.Get("Now", "此刻"); }
+            if (ShowTime)
+            {
+                t_width = t_x + t_one_width + t_time * 3;
+                button_text = Localization.Get("Now", "此刻");
+            }
             else t_width = t_x + t_one_width;
 
             rect_lefts = new Rectangle(t_x + 10, 10, t_top, t_top);
@@ -139,7 +144,7 @@ namespace AntdUI
             var point = _control.PointToScreen(Point.Empty);
             int r_w = t_width + 20, r_h;
             if (calendar_day == null) r_h = 348 + 20;
-            else r_h = (t_top + t_button) + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
+            else r_h = (t_top + (ShowButtonToDay ? t_button : 0)) + (12 * 2) + (int)Math.Ceiling((calendar_day[calendar_day.Count - 1].y + 2) * (t_one_width - 16) / 7F) + 20;
 
             SetSize(r_w, r_h);
             rect_button = new Rectangle(t_x + 10 + (t_one_width - year_width) / 2, r_h - t_button - (20 - 8), year_width, t_button);
@@ -214,9 +219,9 @@ namespace AntdUI
                 if (ShowTime && calendar_time == null)
                 {
                     calendar_time = new List<CalendarT>(24 + 120);
-                    for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(0, i, i));
-                    for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(1, i, i));
-                    for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(2, i, i));
+                    for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(0, 0, i, i));
+                    for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(1, 1, i, i));
+                    for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(2, 2, i, i));
                 }
 
                 #endregion
@@ -653,7 +658,8 @@ namespace AntdUI
             using (var brush_split = new SolidBrush(Colour.Split.Get("DatePicker", ColorScheme)))
             {
                 g.Fill(brush_split, new Rectangle(t_x + rect_read.X, rect_read.Y + t_top, t_one_width, 1));
-                g.Fill(brush_split, new Rectangle(t_x + rect_read.X, rect_button.Y, rect_read.Width - t_x, 1));
+                if (ShowButtonToDay) g.Fill(brush_split, new Rectangle(t_x + rect_read.X, rect_button.Y, rect_read.Width - t_x, 1));
+                else g.Fill(brush_split, new Rectangle(t_x + rect_read.X + t_one_width, rect_button.Y, rect_read.Width - t_x - t_one_width, 1));
                 if (ShowTime) g.Fill(brush_split, new Rectangle(t_x + rect_read.X + t_one_width, rect_read.Y, 1, rect_read.Height));
                 if (left_buttons != null) g.Fill(brush_split, new Rectangle(t_x + rect_read.X, rect_read.Y, 1, rect_read.Height));
             }
@@ -818,7 +824,7 @@ namespace AntdUI
                                 bool hashover = false;
                                 if (SelDate.HasValue)
                                 {
-                                    switch (it.x)
+                                    switch (it.rx)
                                     {
                                         case 0:
                                             if (it.t == SelDate.Value.Hour) hashover = true;
@@ -852,10 +858,13 @@ namespace AntdUI
                         else g.String(OKButton, Font, brush_active, rect_buttonok, s_f);
                     }
                 }
-                if (hover_button.Animation) g.String(button_text, Font, brush_active.Color.BlendColors(hover_button.Value, Colour.PrimaryActive.Get("DatePicker", ColorScheme)), rect_button, s_f);
 
-                else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get("DatePicker", ColorScheme), rect_button, s_f);
-                else g.String(button_text, Font, brush_active, rect_button, s_f);
+                if (ShowButtonToDay)
+                {
+                    if (hover_button.Animation) g.String(button_text, Font, brush_active.Color.BlendColors(hover_button.Value, Colour.PrimaryActive.Get("DatePicker", ColorScheme)), rect_button, s_f);
+                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get("DatePicker", ColorScheme), rect_button, s_f);
+                    else g.String(button_text, Font, brush_active, rect_button, s_f);
+                }
 
                 if (badge_list.Count > 0)
                 {
@@ -926,7 +935,7 @@ namespace AntdUI
                  _hover_rights = rect_rights.Contains(e.X, e.Y),
                  _hover_left = (showType == 0 && rect_left.Contains(e.X, e.Y)),
                  _hover_right = (showType == 0 && rect_right.Contains(e.X, e.Y)),
-                 _hover_button = (showType == 0 && rect_button.Contains(e.X, e.Y)),
+                 _hover_button = (showType == 0 && ShowButtonToDay && rect_button.Contains(e.X, e.Y)),
                  _hover_buttonok = (showType == 0 && ShowTime && rect_buttonok.Contains(e.X, e.Y));
 
                 bool _hover_year = false, _hover_month = false;
@@ -1007,7 +1016,7 @@ namespace AntdUI
                         {
                             foreach (var it in calendar_time)
                             {
-                                switch (it.x)
+                                switch (it.rx)
                                 {
                                     case 1:
                                         if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out var change1)) hand++;
@@ -1154,7 +1163,7 @@ namespace AntdUI
                     Print();
                     return;
                 }
-                else if (showType == TDatePicker.Date && rect_button.Contains(e.X, e.Y))
+                else if (showType == TDatePicker.Date && ShowButtonToDay && rect_button.Contains(e.X, e.Y))
                 {
                     SelDate = Date = DateNow = DateTime.Now;
                     action(SelDate.Value);
@@ -1283,7 +1292,7 @@ namespace AntdUI
                         {
                             foreach (var it in calendar_time)
                             {
-                                switch (it.x)
+                                switch (it.rx)
                                 {
                                     case 1:
                                         if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out _))
@@ -1404,9 +1413,9 @@ namespace AntdUI
 
         void ScrollYTime(List<CalendarT> calendar_time, DateTime d)
         {
-            CalendarT? find_h = calendar_time.Find(a => a.x == 0 && a.t == d.Hour),
-                find_m = calendar_time.Find(a => a.x == 1 && a.t == d.Minute),
-                find_s = calendar_time.Find(a => a.x == 2 && a.t == d.Second);
+            CalendarT? find_h = calendar_time.Find(a => a.rx == 0 && a.t == d.Hour),
+                find_m = calendar_time.Find(a => a.rx == 1 && a.t == d.Minute),
+                find_s = calendar_time.Find(a => a.rx == 2 && a.t == d.Second);
 
             int start = 4;
             if (find_h != null) scrollY_h.Value = find_h.rect.Y - start;
@@ -1484,9 +1493,10 @@ namespace AntdUI
     }
     internal class CalendarT
     {
-        public CalendarT(int _x, int _y, int _t)
+        public CalendarT(int _x, int _rx, int _y, int _t)
         {
             x = _x;
+            rx = _rx;
             y = _y;
             t = _t;
             v = _t.ToString().PadLeft(2, '0');
@@ -1526,6 +1536,7 @@ namespace AntdUI
         }
 
         public int x { get; set; }
+        public int rx { get; set; }
         public int y { get; set; }
         public int t { get; set; }
         public string v { get; set; }

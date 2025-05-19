@@ -203,6 +203,16 @@ namespace AntdUI
             base.OnMouseClick(e);
         }
 
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            if (Trigger == Trigger.DoubleClick)
+            {
+                ClickDown();
+                return;
+            }
+            base.OnMouseDoubleClick(e);
+        }
+
         protected override void OnMouseEnter(EventArgs e)
         {
             if (Trigger == Trigger.Hover && subForm == null) ClickDown();

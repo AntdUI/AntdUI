@@ -1,6 +1,6 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
-### `2.0.0-beta2` 2025-05-14 🥣💲🐖👚
+### `2.0.0` 2025-05-19 🥣💲🐖👚
 
 - ➕ Select 补全 PropertyChanged
 - ➕ Table 树行排序事件
@@ -16,7 +16,12 @@
 - ➕ Button JoinMode
 - ➕ Input JoinMode
 - ➕ ColorPicker JoinMode
+- ➕ ColorPicker 双击下拉交互
+- ➕ DatePicker ShowButtonToDay
+- ➕ TimePicker ShowButtonNow
+- ➕ TimePicker 适配时分秒单独显示
 - ✍️ Input ClearStyle 修复未生效
+- ✍️ Input 方向消息
 - ✍️ ColorPicker RGB 模式 Input 坐标异常
 - ✍️ Table 浮动列背景
 - ✍️ Table DataTable 编辑模式设置值

@@ -77,6 +77,12 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; }
 
+        /// <summary>
+        /// 显示此刻
+        /// </summary>
+        [Description("显示此刻"), Category("外观"), DefaultValue(true)]
+        public bool ShowButtonNow { get; set; } = true;
+
         protected override void OnHandleCreated(EventArgs e)
         {
             Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
