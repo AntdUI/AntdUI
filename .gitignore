@@ -19,3 +19,4 @@ bin-release/
 # Projects
 /.vs
 /packages
+*.snk
