@@ -30,6 +30,10 @@ namespace AntdUI
         /// <summary>
         /// 悬浮
         /// </summary>
-        Hover
+        Hover,
+        /// <summary>
+        /// 双击
+        /// </summary>
+        DoubleClick
     }
 }
