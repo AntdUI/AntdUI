@@ -81,7 +81,7 @@ namespace AntdUI
 
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
-            var size = g.MeasureString(Text, font);
+            var size = g.MeasureString(Text, font, 0, PARENT.PARENT.sf);
             return new Size(size.Width + gap2, size.Height + gap);
         }
 

@@ -27,6 +27,7 @@ namespace AntdUI
 {
     partial class Table
     {
+        internal StringFormat sf = Helper.SF_MEASURE_FONT();
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();
@@ -736,7 +737,8 @@ namespace AntdUI
 
                 if (_gap > 0)
                 {
-                    var rect_show = new Rectangle(rect.X + last.RECT.Right - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
+                    int gap = (int)(_gap * Config.Dpi);
+                    var rect_show = new Rectangle(rect.X + last.RECT.Right - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                     using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table", ColorScheme), Color.Transparent, 0F))
                     {
                         g.Fill(brush, rect_show);
@@ -817,7 +819,8 @@ namespace AntdUI
 
                         if (_gap > 0)
                         {
-                            var rect_show = new Rectangle(rect.Right - w - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
+                            int gap = (int)(_gap * Config.Dpi);
+                            var rect_show = new Rectangle(rect.Right - w - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 0F))
                             {
                                 g.Fill(brush, rect_show);
@@ -922,7 +925,8 @@ namespace AntdUI
 
                         if (_gap > 0)
                         {
-                            var rect_show = new Rectangle(rect_Fixed.X, rect.Bottom - h - _gap - scrollBar, rect_Fixed.Width, _gap * 2);
+                            int gap = (int)(_gap * Config.Dpi);
+                            var rect_show = new Rectangle(rect_Fixed.X, rect.Bottom - h - gap - scrollBar, rect_Fixed.Width, gap * 2);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 90F))
                             {
                                 g.Fill(brush, rect_show);
@@ -997,7 +1001,8 @@ namespace AntdUI
 
                     if (_gap > 0)
                     {
-                        var rect_show = new Rectangle(rect.X + last.RECT.Right - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
+                        int gap = (int)(_gap * Config.Dpi);
+                        var rect_show = new Rectangle(rect.X + last.RECT.Right - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                         using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table", ColorScheme), Color.Transparent, 0F))
                         {
                             g.Fill(brush, rect_show);
@@ -1062,7 +1067,8 @@ namespace AntdUI
 
                         if (_gap > 0)
                         {
-                            var rect_show = new Rectangle(rect.Right - w - _gap, rect_Fixed.Y, _gap * 2, rect_Fixed.Height);
+                            int gap = (int)(_gap * Config.Dpi);
+                            var rect_show = new Rectangle(rect.Right - w - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 0F))
                             {
                                 g.Fill(brush, rect_show);

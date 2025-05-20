@@ -171,92 +171,103 @@ namespace AntdUI
                 using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                 {
                     int gap2 = gap * 2;
+                    int i = 0, ri = 0, count = 0;
+                    foreach (var it in items)
+                    {
+                        it.PARENT = this;
+                        if (it.Visible) count++;
+                    }
                     if (vertical)
                     {
-                        int t_height_one = rect.Height / items.Count;
-                        int i = 0;
-                        foreach (StepsItem it in items)
+                        int t_height_one = rect.Height / count, iod = 0;
+                        foreach (var it in items)
                         {
-                            it.PARENT = this;
-                            it.TitleSize = g.MeasureText(it.Title, Font);
-                            int ico_size = (int)(it.TitleSize.Height * 1.6F);
-                            it.pen_w = it.TitleSize.Height * 0.136F;
-                            int width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
-
-                            if (it.showSub)
+                            if (it.Visible)
                             {
-                                it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
-                                height_one += it.SubTitleSize.Height;
-                            }
-                            if (it.showDescription)
-                            {
-                                it.DescriptionSize = g.MeasureText(it.Description, font_description);
-                                width_ex = it.DescriptionSize.Width;
-                            }
+                                it.TitleSize = g.MeasureText(it.Title, Font);
+                                int ico_size = (int)(it.TitleSize.Height * 1.6F);
+                                it.pen_w = it.TitleSize.Height * 0.136F;
+                                int width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
 
-                            int centery = rect.Y + t_height_one * i + t_height_one / 2;//居中X
-                            it.title_rect = new Rectangle(rect.X + gap + ico_size, centery - height_one / 2, it.TitleSize.Width, height_one);
-                            int read_y = it.title_rect.Y - gap - ico_size;
-
-                            it.ico_rect = new Rectangle(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2, ico_size, ico_size);
-
-                            int tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
-
-                            if (it.showSub)
-                            {
-                                it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
-                                tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
-                                tmp_max_wr = it.subtitle_rect.Right;
-                            }
-                            if (it.showDescription)
-                            {
-                                it.description_rect = new Rectangle(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
-                                if (it.description_rect.Width > tmp_max_width)
+                                if (it.showSub)
                                 {
-                                    tmp_max_width = it.description_rect.Width;
-                                    tmp_max_wr = it.description_rect.Right;
+                                    it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
+                                    height_one += it.SubTitleSize.Height;
                                 }
-                                tmp_max_height += it.DescriptionSize.Height;
-                            }
-                            it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
+                                if (it.showDescription)
+                                {
+                                    it.DescriptionSize = g.MeasureText(it.Description, font_description);
+                                    width_ex = it.DescriptionSize.Width;
+                                }
 
-                            if (i > 0)
-                            {
-                                var old = items[i - 1];
-                                if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + gap, split, it.ico_rect.Y - old.ico_rect.Bottom - gap2));
+                                int centery = rect.Y + t_height_one * i + t_height_one / 2;//居中X
+                                it.title_rect = new Rectangle(rect.X + gap + ico_size, centery - height_one / 2, it.TitleSize.Width, height_one);
+                                int read_y = it.title_rect.Y - gap - ico_size;
+
+                                it.ico_rect = new Rectangle(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2, ico_size, ico_size);
+
+                                int tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
+
+                                if (it.showSub)
+                                {
+                                    it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
+                                    tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
+                                    tmp_max_wr = it.subtitle_rect.Right;
+                                }
+                                if (it.showDescription)
+                                {
+                                    it.description_rect = new Rectangle(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+                                    if (it.description_rect.Width > tmp_max_width)
+                                    {
+                                        tmp_max_width = it.description_rect.Width;
+                                        tmp_max_wr = it.description_rect.Right;
+                                    }
+                                    tmp_max_height += it.DescriptionSize.Height;
+                                }
+                                it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
+
+                                if (ri > 0)
+                                {
+                                    var old = items[iod];
+                                    if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + gap, split, it.ico_rect.Y - old.ico_rect.Bottom - gap2));
+                                }
+                                i++;
+                                iod = ri;
                             }
-                            i++;
+                            ri++;
                         }
                     }
                     else
                     {
                         //横向
                         int read_width = MaxHeight(g, font_description, gap, out var maxHeight);
-                        int i = 0;
-                        int count = items.Count;
                         int sp = (rect.Width - read_width) / count, spline = sp - gap;
                         int has_x = rect.X + sp / 2;
                         count -= 1;
-                        foreach (StepsItem it in items)
+                        foreach (var it in items)
                         {
-                            int icon_size = it.IconSize ?? (int)(it.TitleSize.Height * 1.6F);
-                            int y = rect.Y + (rect.Height - maxHeight) / 2;
-                            it.ico_rect = new Rectangle(has_x, y + (it.TitleSize.Height - icon_size) / 2, icon_size, icon_size);
-                            it.title_rect = new Rectangle(it.ico_rect.Right + gap, y, it.TitleSize.Width, it.TitleSize.Height);
-
-                            int tmp_max_height = it.ico_rect.Height;
-                            if (it.showSub) it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
-
-                            if (it.showDescription)
+                            if (it.Visible)
                             {
-                                it.description_rect = new Rectangle(it.title_rect.X, it.title_rect.Bottom + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
-                                tmp_max_height += it.DescriptionSize.Height;
-                            }
+                                int icon_size = it.IconSize ?? (int)(it.TitleSize.Height * 1.6F);
+                                int y = rect.Y + (rect.Height - maxHeight) / 2;
+                                it.ico_rect = new Rectangle(has_x, y + (it.TitleSize.Height - icon_size) / 2, icon_size, icon_size);
+                                it.title_rect = new Rectangle(it.ico_rect.Right + gap, y, it.TitleSize.Width, it.TitleSize.Height);
 
-                            it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, it.ReadWidth + gap2, tmp_max_height + gap2);
-                            if (spline > 0 && i != count) _splits.Add(new RectangleF(it.rect.Right - gap, it.ico_rect.Y + (it.ico_rect.Height - split) / 2F, spline, split));
-                            has_x += it.ReadWidth + sp;
-                            i++;
+                                int tmp_max_height = it.ico_rect.Height;
+                                if (it.showSub) it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
+
+                                if (it.showDescription)
+                                {
+                                    it.description_rect = new Rectangle(it.title_rect.X, it.title_rect.Bottom + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+                                    tmp_max_height += it.DescriptionSize.Height;
+                                }
+
+                                it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, it.ReadWidth + gap2, tmp_max_height + gap2);
+                                if (spline > 0 && i < count) _splits.Add(new RectangleF(it.rect.Right - gap, it.ico_rect.Y + (it.ico_rect.Height - split) / 2F, spline, split));
+                                has_x += it.ReadWidth + sp;
+                                i++;
+                            }
+                            ri++;
                         }
                     }
                 }
@@ -268,27 +279,28 @@ namespace AntdUI
         int MaxHeight(Canvas g, Font font_description, int gap, out int height)
         {
             int w = 0, temp_t = 0, temp = 0;
-            foreach (StepsItem it in Items)
+            foreach (var it in Items)
             {
-                it.PARENT = this;
+                if (it.Visible)
+                {
+                    #region 计算
 
-                #region 计算
+                    it.TitleSize = g.MeasureText(it.Title, Font);
+                    if (it.showSub) it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
+                    if (it.showDescription) it.DescriptionSize = g.MeasureText(it.Description, font_description);
 
-                it.TitleSize = g.MeasureText(it.Title, Font);
-                if (it.showSub) it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
-                if (it.showDescription) it.DescriptionSize = g.MeasureText(it.Description, font_description);
+                    int icon_size = it.IconSize ?? (int)(it.TitleSize.Height * 1.6F);
+                    int width_top = it.TitleSize.Width + (it.showSub ? it.SubTitleSize.Width : 0), width_buttom = (it.showDescription ? it.DescriptionSize.Width : 0);
 
-                int icon_size = it.IconSize ?? (int)(it.TitleSize.Height * 1.6F);
-                int width_top = it.TitleSize.Width + (it.showSub ? it.SubTitleSize.Width : 0), width_buttom = (it.showDescription ? it.DescriptionSize.Width : 0);
+                    it.ReadWidth = icon_size + gap + (width_top > width_buttom ? width_top : width_buttom);
 
-                it.ReadWidth = icon_size + gap + (width_top > width_buttom ? width_top : width_buttom);
+                    #endregion
 
-                #endregion
-
-                it.pen_w = it.TitleSize.Height * 0.136F;
-                w += it.ReadWidth;
-                if (temp_t == 0) temp_t = it.TitleSize.Height;
-                if (temp == 0 && it.showDescription) temp = it.DescriptionSize.Height + gap / 2;
+                    it.pen_w = it.TitleSize.Height * 0.136F;
+                    w += it.ReadWidth;
+                    if (temp_t == 0) temp_t = it.TitleSize.Height;
+                    if (temp == 0 && it.showDescription) temp = it.DescriptionSize.Height + gap / 2;
+                }
             }
             height = temp_t + temp;
             return w;
@@ -333,7 +345,7 @@ namespace AntdUI
                     }
                 }
                 int i = 0;
-                foreach (StepsItem it in items)
+                foreach (var it in items)
                 {
                     if (it.Visible)
                     {
@@ -421,8 +433,8 @@ namespace AntdUI
                                 g.DrawText((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
                             }
                         }
+                        i++;
                     }
-                    i++;
                 }
             }
             this.PaintBadge(g);
@@ -453,16 +465,12 @@ namespace AntdUI
         {
             base.OnMouseClick(e);
             if (items == null || items.Count == 0 || ItemClick == null) return;
-            for (int i = 0; i < items.Count; i++)
+            foreach (var it in items)
             {
-                var it = items[i];
-                if (it != null)
+                if (it.Visible && it.rect.Contains(e.Location))
                 {
-                    if (it.rect.Contains(e.Location))
-                    {
-                        ItemClick(this, new StepsItemEventArgs(it, e));
-                        return;
-                    }
+                    ItemClick(this, new StepsItemEventArgs(it, e));
+                    return;
                 }
             }
         }
@@ -471,16 +479,12 @@ namespace AntdUI
         {
             base.OnMouseMove(e);
             if (items == null || items.Count == 0 || ItemClick == null) return;
-            for (int i = 0; i < items.Count; i++)
+            foreach (var it in items)
             {
-                var it = items[i];
-                if (it != null)
+                if (it.Visible && it.rect.Contains(e.Location))
                 {
-                    if (it.rect.Contains(e.Location))
-                    {
-                        SetCursor(true);
-                        return;
-                    }
+                    SetCursor(true);
+                    return;
                 }
             }
             SetCursor(false);

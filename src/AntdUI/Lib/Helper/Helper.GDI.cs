@@ -996,23 +996,19 @@ namespace AntdUI
         {
             if (range > 1)
             {
-                using (UnsafeBitmap unsafeBitmap = new UnsafeBitmap(bmp, true))
+                using (var unsafeBitmap = new UnsafeBitmap(bmp, true))
                 {
-                    BlurHorizontal(unsafeBitmap, range, rect);
-                    BlurVertical(unsafeBitmap, range, rect);
-                    BlurHorizontal(unsafeBitmap, range, rect);
-                    BlurVertical(unsafeBitmap, range, rect);
+                    int halfRange = range / 2;
+                    BlurHorizontal(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
+                    BlurVertical(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
+                    BlurHorizontal(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
+                    BlurVertical(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
                 }
             }
         }
 
-        private static void BlurHorizontal(UnsafeBitmap unsafeBitmap, int range, Rectangle rect)
+        static void BlurHorizontal(UnsafeBitmap unsafeBitmap, int halfRange, int left, int top, int right, int bottom)
         {
-            int left = rect.X;
-            int top = rect.Y;
-            int right = rect.Right;
-            int bottom = rect.Bottom;
-            int halfRange = range / 2;
             ColorBgra[] newColors = new ColorBgra[unsafeBitmap.Width];
 
             for (int y = top; y < bottom; y++)
@@ -1057,26 +1053,15 @@ namespace AntdUI
                         hits++;
                     }
 
-                    if (x >= left)
-                    {
-                        newColors[x] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
-                    }
+                    if (x >= left) newColors[x] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
                 }
 
-                for (int x = left; x < right; x++)
-                {
-                    unsafeBitmap.SetPixel(x, y, newColors[x]);
-                }
+                for (int x = left; x < right; x++) unsafeBitmap.SetPixel(x, y, newColors[x]);
             }
         }
 
-        private static void BlurVertical(UnsafeBitmap unsafeBitmap, int range, Rectangle rect)
+        static void BlurVertical(UnsafeBitmap unsafeBitmap, int halfRange, int left, int top, int right, int bottom)
         {
-            int left = rect.X;
-            int top = rect.Y;
-            int right = rect.Right;
-            int bottom = rect.Bottom;
-            int halfRange = range / 2;
             ColorBgra[] newColors = new ColorBgra[unsafeBitmap.Height];
 
             for (int x = left; x < right; x++)
@@ -1121,16 +1106,10 @@ namespace AntdUI
                         hits++;
                     }
 
-                    if (y >= top)
-                    {
-                        newColors[y] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
-                    }
+                    if (y >= top) newColors[y] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
                 }
 
-                for (int y = top; y < bottom; y++)
-                {
-                    unsafeBitmap.SetPixel(x, y, newColors[y]);
-                }
+                for (int y = top; y < bottom; y++) unsafeBitmap.SetPixel(x, y, newColors[y]);
             }
         }
 

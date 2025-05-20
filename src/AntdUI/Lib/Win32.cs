@@ -44,7 +44,7 @@ namespace AntdUI
 
         #endregion
 
-        public static RenderResult SetBits(Bitmap? bmp, Rectangle rect, IntPtr intPtr, byte a = 255)
+        public static RenderResult SetBits(Bitmap? bmp, Rectangle rect, IntPtr intPtr, byte alpha = 255)
         {
             if (bmp == null || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare) return RenderResult.Invalid;
             IntPtr hBitmap = bmp.GetHbitmap(Color.FromArgb(0)), oldBits = SelectObject(memDc, hBitmap);
@@ -54,7 +54,7 @@ namespace AntdUI
                 var blendFunc = new BLENDFUNCTION
                 {
                     BlendOp = AC_SRC_OVER,
-                    SourceConstantAlpha = a,
+                    SourceConstantAlpha = alpha,
                     AlphaFormat = AC_SRC_ALPHA,
                     BlendFlags = 0
                 };
@@ -75,7 +75,7 @@ namespace AntdUI
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct Win32Size
+        ref struct Win32Size
         {
             public int cx, cy;
             public Win32Size(int x, int y)
@@ -86,13 +86,13 @@ namespace AntdUI
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct Win32Point
+        ref struct Win32Point
         {
             public int x, y;
-            public Win32Point(int x, int y)
+            public Win32Point(int _x, int _y)
             {
-                this.x = x;
-                this.y = y;
+                x = _x;
+                y = _y;
             }
         }
 
