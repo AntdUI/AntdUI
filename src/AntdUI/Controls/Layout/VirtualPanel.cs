@@ -939,7 +939,7 @@ namespace AntdUI
         {
             if (items == null || items.Count == 0 || isEmpty)
             {
-                if (Empty) PaintEmpty(e.Graphics.High(), ClientRectangle);
+                if (Empty) e.Graphics.High().PaintEmpty(ClientRectangle, Font, Colour.Text.Get("VirtualPanel", ColorScheme), EmptyText, EmptyImage);
                 base.OnPaint(e);
                 return;
             }
@@ -969,44 +969,6 @@ namespace AntdUI
             ScrollBar.Paint(g);
             if (Config.HasAnimation(nameof(VirtualPanel)) && BlurBar != null) _event.SetWait();
             base.OnPaint(e);
-        }
-
-        StringFormat stringCenter = Helper.SF_NoWrap();
-        void PaintEmpty(Canvas g, Rectangle rect)
-        {
-            using (var fore = new SolidBrush(Colour.Text.Get("VirtualPanel", ColorScheme)))
-            {
-                string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
-                if (Config.EmptyImageSvg != null)
-                {
-                    var size = g.MeasureString(emptytext, Font);
-                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
-
-                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
-                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
-
-                    using (var _bmp = SvgExtend.GetImgExtend(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0], rect_img, Style.Db.Text))
-                    {
-                        if (_bmp == null)
-                        {
-                            g.String(emptytext, Font, fore, rect, stringCenter);
-                            return;
-                        }
-                        else g.Image(_bmp, rect_img);
-                    }
-                    g.String(emptytext, Font, fore, rect_font, stringCenter);
-                }
-                else if (EmptyImage != null)
-                {
-                    int gap = (int)(8 * Config.Dpi);
-                    var size = g.MeasureString(emptytext, Font);
-                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
-                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
-                    g.Image(EmptyImage, rect_img);
-                    g.String(emptytext, Font, fore, rect_font, stringCenter);
-                }
-                else g.String(emptytext, Font, fore, rect, stringCenter);
-            }
         }
 
         #region 模糊标题

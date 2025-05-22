@@ -128,6 +128,12 @@ namespace AntdUI
         [Description("间距"), Category("外观"), DefaultValue(2)]
         public int Gap { get; set; } = 2;
 
+        /// <summary>
+        /// 为空依旧下拉
+        /// </summary>
+        [Description("为空依旧下拉"), Category("外观"), DefaultValue(false)]
+        public bool Empty { get; set; }
+
         #region 数据
 
         BaseCollection? items;
@@ -635,8 +641,12 @@ namespace AntdUI
                 {
                     if (ReadOnly || items == null || items.Count == 0)
                     {
-                        subForm?.IClose();
-                        expandDrop = false;
+                        if (Empty && subForm == null) ShowLayeredForm(new List<object>(0));
+                        else
+                        {
+                            subForm?.IClose();
+                            expandDrop = false;
+                        }
                     }
                     else
                     {

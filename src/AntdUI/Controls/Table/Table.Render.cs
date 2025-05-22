@@ -1446,48 +1446,7 @@ namespace AntdUI
 
         #endregion
 
-        void PaintEmpty(Canvas g, Rectangle rect, int offset)
-        {
-            string emptytext = EmptyText ?? Localization.Get("NoData", "暂无数据");
-            using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Table", ColorScheme)))
-            {
-                if (offset > 0)
-                {
-                    rect.Offset(0, offset);
-                    rect.Height -= offset;
-                }
-
-                if (Config.EmptyImageSvg != null)
-                {
-                    var size = g.MeasureString(emptytext, Font);
-                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
-
-                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
-                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
-
-                    using (var _bmp = SvgExtend.SvgToBmp(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0]))
-                    {
-                        if (_bmp == null)
-                        {
-                            g.String(emptytext, Font, brush, rect, StringFormat(ColumnAlign.Center));
-                            return;
-                        }
-                        else g.Image(_bmp, rect_img);
-                    }
-                    g.String(emptytext, Font, brush, rect_font, StringFormat(ColumnAlign.Center));
-                }
-                else if (EmptyImage != null)
-                {
-                    int gap = (int)(8 * Config.Dpi);
-                    var size = g.MeasureString(emptytext, Font);
-                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - EmptyImage.Width) / 2, rect.Y + (rect.Height - EmptyImage.Height) / 2 - size.Height, EmptyImage.Width, EmptyImage.Height),
-                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
-                    g.Image(EmptyImage, rect_img);
-                    g.String(emptytext, Font, brush, rect_font, StringFormat(ColumnAlign.Center));
-                }
-                else g.String(emptytext, Font, brush, rect, StringFormat(ColumnAlign.Center));
-            }
-        }
+        void PaintEmpty(Canvas g, Rectangle rect, int offset) => g.PaintEmpty(rect, Font, fore ?? Colour.Text.Get("Table", ColorScheme), EmptyText, EmptyImage, offset, StringFormat(ColumnAlign.Center));
 
         public static StringFormat StringFormat(Column column, bool isColumn) =>
           isColumn ? StringFormat(column.ColAlign ?? column.Align, LineBreak: column.ColBreak) : StringFormat(column);

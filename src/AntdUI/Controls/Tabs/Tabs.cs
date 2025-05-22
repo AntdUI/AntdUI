@@ -880,10 +880,6 @@ namespace AntdUI
                             {
                                 subForm = null;
                             };
-                            subForm.MouseEnter += (a, b) =>
-                            {
-                                if (a is LayeredFormSelectDown form) form.tag1 = false;
-                            };
                             subForm.MouseLeave += (a, b) =>
                             {
                                 if (a is LayeredFormSelectDown form) form.IClose();

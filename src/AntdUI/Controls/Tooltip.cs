@@ -369,6 +369,7 @@ namespace AntdUI
         #endregion
 
         readonly Dictionary<Control, string> dic = new Dictionary<Control, string>();
+
         [Description("设置是否提示"), DefaultValue(null)]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         [Localizable(true)]

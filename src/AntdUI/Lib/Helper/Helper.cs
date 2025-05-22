@@ -50,17 +50,21 @@ namespace AntdUI
             return Color.FromArgb(alpha, color);
         }
 
-        public static Form? FindPARENT(this Control? control)
+        public static Form? FindPARENT(this Control? control, bool mdi = false)
         {
             if (control == null) return null;
             if (control is DoubleBufferForm formd)
             {
                 if (control.Tag is Form form) return form;
-                else if (control.Parent != null) return FindPARENT(control.Parent);
+                else if (control.Parent != null) return FindPARENT(control.Parent, mdi);
                 return formd;
             }
-            else if (control is Form form) return form.ParentForm ?? form;
-            else if (control.Parent != null) return FindPARENT(control.Parent);
+            else if (control is Form form)
+            {
+                if (mdi) return form;
+                return form.ParentForm ?? form;
+            }
+            else if (control.Parent != null) return FindPARENT(control.Parent, mdi);
             return null;
         }
         public static bool SetTopMost(this Control? control, IntPtr hand)

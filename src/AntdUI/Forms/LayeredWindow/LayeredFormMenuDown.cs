@@ -333,7 +333,6 @@ namespace AntdUI
 
         #endregion
 
-        readonly StringFormat s_f = Helper.SF_NoWrap();
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
@@ -345,11 +344,7 @@ namespace AntdUI
                 {
                     DrawShadow(g, rect);
                     g.Fill(backColor ?? Colour.BgElevated.Get("Menu", Theme), path);
-                    if (nodata)
-                    {
-                        string emptytext = Localization.Get("NoData", "暂无数据");
-                        g.DrawText(emptytext, Font, Color.FromArgb(180, Colour.Text.Get("Menu", Theme)), rect_read, s_f);
-                    }
+                    if (nodata) g.PaintEmpty(rect_read, Font, Color.FromArgb(180, Colour.Text.Get("Menu", Theme)));
                     else
                     {
                         g.SetClip(rect_read);

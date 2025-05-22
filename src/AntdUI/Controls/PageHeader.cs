@@ -88,6 +88,12 @@ namespace AntdUI
         [Description("副标题居中"), Category("外观"), DefaultValue(false)]
         public bool UseSubCenter { get; set; }
 
+        /// <summary>
+        /// 是否作用与自己的父窗口
+        /// </summary>
+        [Description("是否作用与自己的父窗口"), Category("外观"), DefaultValue(false)]
+        public bool MDI { get; set; }
+
         bool useLeftMargin = true;
         /// <summary>
         /// 使用左边边距
@@ -240,7 +246,7 @@ namespace AntdUI
         }
         void HandCancelButton(bool value)
         {
-            var form = Parent.FindPARENT();
+            var form = Parent.FindPARENT(MDI);
             if (form is BaseForm formb)
             {
                 if (value)
@@ -866,7 +872,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var form = Parent.FindPARENT();
+                        var form = Parent.FindPARENT(MDI);
                         if (form != null && form.Icon != null)
                         {
                             g.Icon(form.Icon, rect_icon);
@@ -1127,7 +1133,7 @@ namespace AntdUI
             hasr = rr;
             if (DragMove)
             {
-                var form = Parent.FindPARENT();
+                var form = Parent.FindPARENT(MDI);
                 if (form != null)
                 {
                     if (form is LayeredFormDrawer) return;
@@ -1209,7 +1215,7 @@ namespace AntdUI
                 }
                 if (DragMove)
                 {
-                    var form = Parent.FindPARENT();
+                    var form = Parent.FindPARENT(MDI);
                     if (form != null)
                     {
                         if (form is LayeredFormDrawer || form is LayeredFormPopover) return;
@@ -1253,10 +1259,10 @@ namespace AntdUI
         {
             if (showButton)
             {
-                if (hove_close.Down && rect_close.Contains(e.X, e.Y)) Parent.FindPARENT()?.Close();
+                if (hove_close.Down && rect_close.Contains(e.X, e.Y)) Parent.FindPARENT(MDI)?.Close();
                 else if (hove_full.Down && rect_full.Contains(e.X, e.Y))
                 {
-                    var form = Parent.FindPARENT();
+                    var form = Parent.FindPARENT(MDI);
                     if (form != null)
                     {
                         if (form is LayeredFormDrawer) return;
@@ -1280,7 +1286,7 @@ namespace AntdUI
                 }
                 else if (hove_max.Down && rect_max.Contains(e.X, e.Y))
                 {
-                    var form = Parent.FindPARENT();
+                    var form = Parent.FindPARENT(MDI);
                     if (form != null)
                     {
                         if (form is LayeredFormDrawer) return;
@@ -1302,7 +1308,7 @@ namespace AntdUI
                 }
                 else if (hove_min.Down && rect_min.Contains(e.X, e.Y))
                 {
-                    var form = Parent.FindPARENT();
+                    var form = Parent.FindPARENT(MDI);
                     if (form != null)
                     {
                         if (form is LayeredFormDrawer) return;
@@ -1365,7 +1371,7 @@ namespace AntdUI
                 {
                     case Keys.Escape:
                         if (showback && BackClick != null) BackClick(this, EventArgs.Empty);
-                        else Parent.FindPARENT()?.Close();
+                        else Parent.FindPARENT(MDI)?.Close();
                         return true;
                 }
             }

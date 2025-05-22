@@ -984,6 +984,55 @@ namespace AntdUI
 
         #endregion
 
+        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text = null, Image? image=null, int offset = 0)
+        {
+            using (var sc = SF_NoWrap())
+            {
+                PaintEmpty(g, rect, font, fore, text, image, offset, sc);
+            }
+        }
+
+        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text, Image? image, int offset, StringFormat sf)
+        {
+            using (var brush = new SolidBrush(fore))
+            {
+                if (offset > 0)
+                {
+                    rect.Offset(0, offset);
+                    rect.Height -= offset;
+                }
+                string emptytext = text ?? Localization.Get("NoData", "暂无数据");
+                if (Config.EmptyImageSvg != null)
+                {
+                    var size = g.MeasureString(emptytext, font);
+                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
+
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
+                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+
+                    using (var _bmp = SvgExtend.GetImgExtend(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0], rect_img, fore))
+                    {
+                        if (_bmp == null)
+                        {
+                            g.String(emptytext, font, brush, rect, sf);
+                            return;
+                        }
+                        else g.Image(_bmp, rect_img);
+                    }
+                    g.String(emptytext, font, brush, rect_font, sf);
+                }
+                else if (image != null)
+                {
+                    int gap = (int)(8 * Config.Dpi);
+                    var size = g.MeasureString(emptytext, font);
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2 - size.Height, image.Width, image.Height), rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+                    g.Image(image, rect_img);
+                    g.String(emptytext, font, brush, rect_font, sf);
+                }
+                else g.String(emptytext, font, brush, rect, sf);
+            }
+        }
+
         #region 图像处理
 
         #region 模糊
