@@ -341,15 +341,11 @@ namespace AntdUI
         {
             if (showcontrol && !ReadOnly)
             {
-                if (TextAlign == HorizontalAlignment.Right)
-                {
-                    bool old = hover_button.Switch;
-                    hover_button.Switch = (Hover || Focus);
-                    if (old == hover_button.Switch) return;
-                    UR = hover_button.Switch ? (int)rect_button.Width : 0;
-                    CalculateRect();
-                }
-                else hover_button.Switch = (Hover || Focus);
+                bool old = hover_button.Switch;
+                hover_button.Switch = (Hover || Focus);
+                if (old == hover_button.Switch) return;
+                UR = hover_button.Switch ? (int)rect_button.Width : 0;
+                CalculateRect();
             }
         }
 

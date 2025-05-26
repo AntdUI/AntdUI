@@ -984,7 +984,7 @@ namespace AntdUI
 
         #endregion
 
-        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text = null, Image? image=null, int offset = 0)
+        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text = null, Image? image = null, int offset = 0)
         {
             using (var sc = SF_NoWrap())
             {

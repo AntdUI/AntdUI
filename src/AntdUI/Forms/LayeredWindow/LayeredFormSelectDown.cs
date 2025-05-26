@@ -621,7 +621,7 @@ namespace AntdUI
         #region 鼠标
 
         internal int select_x = 0;
-        int hoveindex = -1,hoveindexold = -1;
+        int hoveindex = -1, hoveindexold = -1;
         bool down = false;
         protected override void OnMouseDown(MouseEventArgs e)
         {
