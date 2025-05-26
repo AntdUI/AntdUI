@@ -44,6 +44,7 @@ PageHeader 页头 👚
 **FullBox** | 是否显示全屏按钮 | bool | false |
 **DragMove** | 是否可以拖动位置 | bool | true |
 **CloseSize** | 关闭按钮大小 | int | 48 |
+**MDI** 🔴 | 是否仅对父窗口生效 | bool | false |
 ||||
 **UseSystemStyleColor** | 使用系统颜色 | bool | false |
 **CancelButton** | 点击退出关闭 | bool | false |

@@ -103,7 +103,46 @@ Input 输入框 👚
 :--|:--|:--|:--|
 **PrefixClick** | 前缀 点击时发生 | void | MouseEventArgs e |
 **SuffixClick** | 后缀 点击时发生 | void | MouseEventArgs e |
+**ClearClick** 🔴 | 清空 点击时发生 | void | MouseEventArgs e |
+**VerifyChar** 🔴 | 验证字符时发生 | void | char Char `输入字符`,string? ReplaceText `替换文本`, bool Result `验证结果`  |
+**VerifyKeyboard** 🔴 | 验证键盘时发生 | void | Keys KeyData, bool Result `验证结果` |
 
+### Input 拦截字符串
+
+> 不是通过 `KeyPress` 而是 `VerifyChar` 或重写 `Verify`
+
+> 下面是模仿 [InputNumber](#inputnumber) 实现仅数字输入
+
+``` csharp
+private void Input1_VerifyChar(object sender, AntdUI.InputVerifyCharEventArgs e)
+{
+    NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+    string decimalSeparator = numberFormatInfo.NumberDecimalSeparator,
+        groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
+    string keyInput = e.Char.ToString();
+    if (char.IsDigit(e.Char))
+    {
+        e.Result = true; // 数字可以
+    }
+    else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
+    {
+        e.Result = true; // 小数分隔符可以
+    }
+    else if (e.Char == '\b')
+    {
+        e.Result = true; // Backspace键可以
+    }
+    else if (e.Char == '。')
+    {
+        e.ReplaceText = ".";
+        e.Result = true; // 中文句号替换为英文句号
+    }
+    else
+    {
+        e.Result = false;
+    }
+}
+```
 
 ***
 

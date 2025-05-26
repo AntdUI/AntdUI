@@ -1,5 +1,22 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.1` 2025-05-26
+
+- ➕ Label IconGap
+- ➕ NoticeOverflowClose
+- ➕ Message/Notification MaxCount
+- ➕ Select option to enrich style attributes
+- ➕ Dropdown/Select Empty
+- ➕ PageHeader MDI
+- ➕ Table SetSortList
+- ➕ Select/Dropdown/Table DropDownTextAlign
+- ✍️ Lable centered layout
+- ✍️ InputNumber suffix occlusion
+- ✍️ Unified rendering for empty space
+- ✍️ Internal Alignment of Table Container
+- ✍️ Mask border alignment window
+- ✍️ Steps item hidden
+
 ### `2.0.0` 2025-05-19 🥣💲🐖👚
 
 - ➕ Select to complete the Property Change

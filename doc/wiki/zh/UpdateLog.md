@@ -1,5 +1,22 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.1` 2025-05-26
+
+- ➕ Label IconGap
+- ➕ NoticeOverflowClose
+- ➕ Message/Notification MaxCount
+- ➕ Select 项丰富样式属性
+- ➕ Dropdown/Select Empty
+- ➕ PageHeader MDI
+- ➕ Table SetSortList
+- ➕ Select/Dropdown/Table DropDownTextAlign
+- ✍️ Lable 居中布局
+- ✍️ InputNumber 后缀遮挡
+- ✍️ 统一为空渲染
+- ✍️ Table 容器内部对齐
+- ✍️ 蒙版 边框对齐窗口
+- ✍️ Steps 项隐藏
+
 ### `2.0.0` 2025-05-19 🥣💲🐖👚
 
 - ➕ Select 补全 PropertyChanged
