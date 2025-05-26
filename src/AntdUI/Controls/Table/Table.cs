@@ -948,6 +948,37 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置排序数据
+        /// </summary>
+        public void SetSortList(object[]? data)
+        {
+            if (data == null)
+            {
+                SortData = null;
+                if (LoadLayout()) Invalidate();
+                return;
+            }
+            if (dataTmp == null) return;
+            var list = new List<int>(dataTmp.rows.Length);
+            foreach (var it in data)
+            {
+                int index = SetSortList(it, dataTmp.rows);
+                if (index > -1) list.Add(index);
+            }
+            SortData = list.ToArray();
+            if (LoadLayout()) Invalidate();
+        }
+
+        int SetSortList(object it, IRow[] rows)
+        {
+            for (int i = 0; i < rows.Length; i++)
+            {
+                if (rows[i].record == it) return i;
+            }
+            return -1;
+        }
+
+        /// <summary>
         /// 获取表头排序序号
         /// </summary>
         public int[] SortColumnsIndex()

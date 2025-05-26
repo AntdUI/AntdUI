@@ -95,8 +95,9 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        StringFormat stringCNoWrap = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap },
-            stringFormat = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
+        StringFormat stringCNoWrap = Helper.SF_NoWrap(),
+            stringFormat = Helper.SF(lr: StringAlignment.Near),
+            sf = Helper.SF_MEASURE_FONT();
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>
         /// 文本位置
@@ -166,6 +167,24 @@ namespace AntdUI
                 IOnSizeChanged();
                 Invalidate();
                 OnPropertyChanged(nameof(IconRatio));
+            }
+        }
+
+        int iconGap = 0;
+        /// <summary>
+        /// 图标与文本间隔
+        /// </summary>
+        [Description("图标与文本间隔"), Category("外观"), DefaultValue(0)]
+        public int IconGap
+        {
+            get => iconGap;
+            set
+            {
+                if (iconGap == value) return;
+                iconGap = value;
+                IOnSizeChanged();
+                Invalidate();
+                OnPropertyChanged(nameof(IconGap));
             }
         }
 
@@ -430,7 +449,7 @@ namespace AntdUI
             if (!string.IsNullOrEmpty(text))
             {
                 Rectangle rec;
-                var font_size = g.MeasureText(text, Font);
+                var font_size = g.MeasureText(text, Font, 0, sf);
                 bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
@@ -480,127 +499,298 @@ namespace AntdUI
 
         Rectangle PaintTextLeft(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
-            int hx = 0;
-            if (has_prefixText)
-            {
-                var prefix = Prefix;
-                var font_size_prefix = g.MeasureText(prefix, Font);
-                int x = rect_read.X - font_size_prefix.Width, w = font_size_prefix.Width;
-                var rect_l = RecFixAuto(x, w, rect_read, font_size);
-                if (Highlight)
-                {
-                    hx = font_size_prefix.Width;
-                    rect_l.X = 0;
-                }
-                g.DrawText(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
-            }
-            else if (has_prefix)
-            {
-                int icon_size = (int)(font_size.Height * iconratio);
-                int x = rect_read.X - icon_size, w = icon_size;
-                var rect_l = RecFixAuto(x, w, rect_read, font_size);
-                if (Highlight)
-                {
-                    hx = icon_size;
-                    rect_l.X = 0;
-                }
-                g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
-            }
+            int gap = (int)(iconGap * Config.Dpi);
+            int text_width = font_size.Width;
+            int xOffset = rect_read.X;
 
-            if (has_suffixText)
+            if (Highlight)
             {
-                var suffix = Suffix;
-                var font_size_suffix = g.MeasureText(suffix, Font);
-                int x = rect_read.X + hx + font_size.Width, w = font_size_suffix.Width;
-                g.DrawText(suffix, Font, SuffixColor ?? color, RecFixAuto(x, w, rect_read, font_size), stringCNoWrap);
+                // 处理前缀
+                if (has_prefix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    var rect_l = RecFixAuto(xOffset, icon_size, rect_read, font_size);
+                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                    xOffset += icon_size + gap;
+                }
+                else if (has_prefixText)
+                {
+                    var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
+                    var rect_l = RecFixAuto(xOffset, font_size_prefix.Width, rect_read, font_size);
+                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                    xOffset += font_size_prefix.Width + gap;
+                }
+
+                // 计算可用宽度
+                int availableWidth = rect_read.Width;
+                if (has_suffix || has_suffixText) availableWidth -= gap; // 为后缀留出间隙
+
+                if (has_suffix) availableWidth -= (int)(font_size.Height * iconratio);
+                else if (has_suffixText) availableWidth -= g.MeasureText(Suffix, Font, 0, stringCNoWrap).Width;
+
+                if (text_width > availableWidth) text_width = availableWidth;
+
+                Rectangle textRect = new Rectangle(xOffset, rect_read.Y, text_width, rect_read.Height);
+
+                // 处理后缀
+                if (has_suffix || has_suffixText)
+                {
+                    int suffixX = xOffset + text_width + gap;
+
+                    if (has_suffix)
+                    {
+                        int icon_size = (int)(font_size.Height * iconratio);
+                        var rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
+                        g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                    }
+                    else if (has_suffixText)
+                    {
+                        var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
+                        var rect_r = RecFixAuto(suffixX, font_size_suffix.Width, rect_read, font_size);
+                        g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                    }
+                }
+
+                return textRect;
             }
-            else if (has_suffix)
+            else
             {
-                int icon_size = (int)(font_size.Height * iconratio);
-                int x = rect_read.X + hx + font_size.Width, w = icon_size;
-                var rect_r = RecFixAuto(x, w, rect_read, font_size);
-                g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                // Highlight 为 false 时，文本左对齐，但仍需渲染前后缀
+                if (text_width > rect_read.Width) text_width = rect_read.Width;
+
+                Rectangle textRect = new Rectangle(xOffset, rect_read.Y, text_width, rect_read.Height);
+
+                // 渲染前缀（位置在文本左侧）
+                if (has_prefix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    Rectangle rect_l = RecFixAuto(xOffset - icon_size - gap, icon_size, rect_read, font_size);
+                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                }
+                else if (has_prefixText)
+                {
+                    var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
+                    Rectangle rect_l = RecFixAuto(xOffset - font_size_prefix.Width - gap, font_size_prefix.Width, rect_read, font_size);
+                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                }
+
+                // 渲染后缀（位置在文本右侧）
+                if (has_suffix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    Rectangle rect_r = RecFixAuto(xOffset + text_width + gap, icon_size, rect_read, font_size);
+                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                }
+                else if (has_suffixText)
+                {
+                    var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
+                    Rectangle rect_r = RecFixAuto(xOffset + text_width + gap, font_size_suffix.Width, rect_read, font_size);
+                    g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                }
+
+                return textRect;
             }
-            if (hx > 0) return new Rectangle(rect_read.X + hx, rect_read.Y, rect_read.Width - hx, rect_read.Height);
-            return rect_read;
         }
         Rectangle PaintTextRight(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
-            int hr = 0;
-            if (has_suffixText)
-            {
-                var suffix = Suffix;
-                var font_size_suffix = g.MeasureText(suffix, Font);
-                int x = rect_read.Right, w = font_size_suffix.Width;
-                var rect_l = RecFixAuto(x, w, rect_read, font_size);
-                if (Highlight)
-                {
-                    hr = font_size_suffix.Width;
-                    rect_l.X = rect_read.Right - hr;
-                }
-                g.DrawText(suffix, Font, SuffixColor ?? color, rect_l, stringCNoWrap);
-            }
-            else if (has_suffix)
-            {
-                int icon_size = (int)(font_size.Height * iconratio);
-                int x = rect_read.Right, w = icon_size;
-                var rect_r = RecFixAuto(x, w, rect_read, font_size);
-                if (Highlight)
-                {
-                    hr = icon_size;
-                    rect_r.X = rect_read.Right - icon_size;
-                }
-                g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
-            }
+            int gap = (int)(iconGap * Config.Dpi);
+            int text_width = font_size.Width;
+            int rightEdge = rect_read.Right;
 
-            if (has_prefixText)
+            if (Highlight)
             {
-                var prefix = Prefix;
-                var font_size_prefix = g.MeasureText(prefix, Font);
-                int x = rect_read.Right - hr - font_size.Width - font_size_prefix.Width, w = font_size_prefix.Width;
-                var rect_l = RecFixAuto(x, w, rect_read, font_size);
-                g.DrawText(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                // 处理后缀
+                if (has_suffix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    int suffixX = rightEdge - icon_size;
+                    var rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
+                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                    rightEdge -= icon_size + gap;
+                }
+                else if (has_suffixText)
+                {
+                    var suffix = Suffix;
+                    var font_size_suffix = g.MeasureText(suffix, Font, 0, stringCNoWrap);
+                    int suffixX = rightEdge - font_size_suffix.Width;
+                    var rect_r = RecFixAuto(suffixX, font_size_suffix.Width, rect_read, font_size);
+                    g.DrawText(suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                    rightEdge -= font_size_suffix.Width + gap;
+                }
+
+                // 计算可用宽度
+                int availableWidth = rightEdge - rect_read.X;
+                if (has_prefix || has_prefixText) availableWidth -= gap; // 为前缀留出间隙
+
+                if (has_prefix) availableWidth -= (int)(font_size.Height * iconratio);
+                else if (has_prefixText) availableWidth -= g.MeasureText(Prefix, Font, 0, stringCNoWrap).Width;
+
+                if (text_width > availableWidth) text_width = availableWidth;
+
+                int textX = rightEdge - text_width;
+                Rectangle textRect = new Rectangle(textX, rect_read.Y, text_width, rect_read.Height);
+
+                // 处理前缀
+                if (has_prefix || has_prefixText)
+                {
+                    int prefixX = textX - gap;
+
+                    if (has_prefix)
+                    {
+                        int icon_size = (int)(font_size.Height * iconratio);
+                        prefixX -= icon_size;
+                        var rect_l = RecFixAuto(prefixX, icon_size, rect_read, font_size);
+                        g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                    }
+                    else if (has_prefixText)
+                    {
+                        var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
+                        prefixX -= font_size_prefix.Width;
+                        var rect_l = RecFixAuto(prefixX, font_size_prefix.Width, rect_read, font_size);
+                        g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                    }
+                }
+
+                return textRect;
             }
-            else if (has_prefix)
+            else
             {
-                int icon_size = (int)(font_size.Height * iconratio);
-                int x = rect_read.Right - hr - font_size.Width - icon_size, w = icon_size;
-                var rect_l = RecFixAuto(x, w, rect_read, font_size);
-                g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                // Highlight 为 false 时，文本右对齐，但仍需渲染前后缀
+                if (text_width > rect_read.Width) text_width = rect_read.Width;
+
+                int textX = rect_read.Right - text_width;
+                Rectangle textRect = new Rectangle(textX, rect_read.Y, text_width, rect_read.Height);
+
+                // 渲染前缀（位置在文本左侧）
+                if (has_prefix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    Rectangle rect_l = RecFixAuto(textX - icon_size - gap, icon_size, rect_read, font_size);
+                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                }
+                else if (has_prefixText)
+                {
+                    var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
+                    Rectangle rect_l = RecFixAuto(textX - font_size_prefix.Width - gap, font_size_prefix.Width, rect_read, font_size);
+                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                }
+
+                // 渲染后缀（位置在文本右侧）
+                if (has_suffix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    Rectangle rect_r = RecFixAuto(textX + text_width + gap, icon_size, rect_read, font_size);
+                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                }
+                else if (has_suffixText)
+                {
+                    var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
+                    Rectangle rect_r = RecFixAuto(textX + text_width + gap, font_size_suffix.Width, rect_read, font_size);
+                    g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                }
+
+                return textRect;
             }
-            if (hr > 0) return new Rectangle(rect_read.X, rect_read.Y, rect_read.Width - hr, rect_read.Height);
-            return rect_read;
         }
         Rectangle PaintTextCenter(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
-            int cex = rect_read.X + (rect_read.Width - font_size.Width) / 2;
-            if (has_prefixText)
-            {
-                var prefix = Prefix;
-                var font_size_prefix = g.MeasureText(prefix, Font);
-                var rect_l = RecFixAuto(cex - font_size_prefix.Width, font_size_prefix.Width, rect_read, font_size);
-                g.DrawText(prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
-            }
-            else if (has_prefix)
-            {
-                int icon_size = (int)(font_size.Height * iconratio);
-                var rect_l = RecFixAuto(cex - icon_size, icon_size, rect_read, font_size);
-                g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
-            }
+            int gap = (int)(iconGap * Config.Dpi);
+            int text_width = font_size.Width;
 
-            if (has_suffixText)
+            if (Highlight)
             {
-                var suffix = Suffix;
-                var font_size_suffix = g.MeasureText(suffix, Font);
-                g.DrawText(suffix, Font, SuffixColor ?? color, RecFixAuto(cex + font_size.Width, font_size_suffix.Width, rect_read, font_size), stringCNoWrap);
+                // 计算前缀宽度
+                int prefixWidth = 0;
+                if (has_prefix) prefixWidth = (int)(font_size.Height * iconratio) + gap;
+                else if (has_prefixText) prefixWidth = g.MeasureText(Prefix, Font, 0, stringCNoWrap).Width + gap;
+
+                // 计算后缀宽度
+                int suffixWidth = 0;
+                if (has_suffix) suffixWidth = (int)(font_size.Height * iconratio) + gap;
+
+                else if (has_suffixText) suffixWidth = g.MeasureText(Suffix, Font, 0, stringCNoWrap).Width + gap;
+
+                // 计算总宽度
+                int totalWidth = text_width + prefixWidth + suffixWidth;
+                int cex = rect_read.X + (rect_read.Width - totalWidth) / 2;
+
+                // 绘制前缀
+                if (has_prefix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    Rectangle rect_l = RecFixAuto(cex, icon_size, rect_read, font_size);
+                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                    cex += icon_size + gap;
+                }
+                else if (has_prefixText)
+                {
+                    var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
+                    Rectangle rect_l = RecFixAuto(cex, font_size_prefix.Width, rect_read, font_size);
+                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                    cex += font_size_prefix.Width + gap;
+                }
+
+                // 调整文本宽度以适应可用空间
+                int availableWidth = rect_read.Width - prefixWidth - suffixWidth;
+                if (text_width > availableWidth) text_width = availableWidth;
+
+                Rectangle textRect = new Rectangle(cex, rect_read.Y, text_width, rect_read.Height);
+
+                // 绘制后缀
+                if (has_suffix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    int suffixX = cex + text_width + gap;
+                    Rectangle rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
+                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                }
+                else if (has_suffixText)
+                {
+                    var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
+                    int suffixX = cex + text_width + gap;
+                    Rectangle rect_r = RecFixAuto(suffixX, font_size_suffix.Width, rect_read, font_size);
+                    g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                }
+
+                return textRect;
             }
-            else if (has_suffix)
+            else
             {
-                int icon_size = (int)(font_size.Height * iconratio);
-                var rect_r = RecFixAuto(cex + font_size.Width, icon_size, rect_read, font_size);
-                g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                // Highlight 为 false 时，文本居中，但仍需渲染前后缀
+                if (text_width > rect_read.Width) text_width = rect_read.Width;
+
+                int cex = rect_read.X + (rect_read.Width - text_width) / 2;
+
+                // 渲染前缀（位置相对于文本）
+                if (has_prefix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    Rectangle rect_l = RecFixAuto(cex - icon_size - gap, icon_size, rect_read, font_size);
+                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                }
+                else if (has_prefixText)
+                {
+                    var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
+                    Rectangle rect_l = RecFixAuto(cex - font_size_prefix.Width - gap, font_size_prefix.Width, rect_read, font_size);
+                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                }
+
+                // 渲染后缀（位置相对于文本）
+                if (has_suffix)
+                {
+                    int icon_size = (int)(font_size.Height * iconratio);
+                    Rectangle rect_r = RecFixAuto(cex + text_width + gap, icon_size, rect_read, font_size);
+                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                }
+                else if (has_suffixText)
+                {
+                    var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
+                    Rectangle rect_r = RecFixAuto(cex + text_width + gap, font_size_suffix.Width, rect_read, font_size);
+                    g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                }
+
+                return new Rectangle(cex, rect_read.Y, text_width, rect_read.Height);
             }
-            return rect_read;
         }
 
         Rectangle RecFixAuto(int x, int w, Rectangle rect_read, Size font_size)
@@ -709,7 +899,7 @@ namespace AntdUI
                 bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureText(Text ?? Config.NullText, Font);
+                    var font_size = g.MeasureText(Text ?? Config.NullText, Font, 0, sf);
                     if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
@@ -717,13 +907,13 @@ namespace AntdUI
                         if (has_prefix) add += font_size.Height;
                         else if (has_prefixText)
                         {
-                            var font_size_prefix = g.MeasureText(Prefix, Font).Width;
+                            var font_size_prefix = g.MeasureText(Prefix, Font, 0, sf).Width;
                             add += font_size_prefix;
                         }
                         if (has_suffix) add += font_size.Height;
                         else if (has_suffixText)
                         {
-                            var font_size_suffix = g.MeasureText(Suffix, Font).Width;
+                            var font_size_suffix = g.MeasureText(Suffix, Font, 0, sf).Width;
                             add += font_size_suffix;
                         }
                         return new Size((int)Math.Ceiling(font_size.Width + add), font_size.Height);

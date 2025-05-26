@@ -123,10 +123,22 @@ namespace AntdUI
         public Size DropDownPadding { get; set; } = new Size(12, 5);
 
         /// <summary>
+        /// 下拉文本方向
+        /// </summary>
+        [Description("下拉文本方向"), Category("外观"), DefaultValue(TAlign.Left)]
+        public TAlign DropDownTextAlign { get; set; } = TAlign.Left;
+
+        /// <summary>
         /// 间距
         /// </summary>
         [Description("间距"), Category("外观"), DefaultValue(2)]
         public int Gap { get; set; } = 2;
+
+        /// <summary>
+        /// 为空依旧下拉
+        /// </summary>
+        [Description("为空依旧下拉"), Category("外观"), DefaultValue(false)]
+        public bool Empty { get; set; }
 
         #region 数据
 
@@ -635,8 +647,12 @@ namespace AntdUI
                 {
                     if (ReadOnly || items == null || items.Count == 0)
                     {
-                        subForm?.IClose();
-                        expandDrop = false;
+                        if (Empty && subForm == null) ShowLayeredForm(new List<object>(0));
+                        else
+                        {
+                            subForm?.IClose();
+                            expandDrop = false;
+                        }
                     }
                     else
                     {

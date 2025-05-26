@@ -336,7 +336,7 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font);
+                var size = g.MeasureString(Config.NullText, font, 0, PARENT.sf);
                 MinWidth = size.Width;
                 return size;
             }
@@ -444,7 +444,7 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font);
+                var size = g.MeasureString(Config.NullText, font, 0, PARENT.sf);
                 MinWidth = size.Width;
                 return size;
             }
@@ -651,7 +651,7 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font);
+                var size = g.MeasureString(Config.NullText, font, 0, PARENT.sf);
                 MinWidth = size.Width;
                 return size;
             }
@@ -686,7 +686,7 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font);
+                var size = g.MeasureString(Config.NullText, font, 0, PARENT.sf);
                 MinWidth = size.Width;
                 return size;
             }
@@ -814,7 +814,7 @@ namespace AntdUI
                         }
                     }
                 }
-                var size = g.MeasureString(value, font);
+                var size = g.MeasureString(value, font, 0, PARENT.sf);
                 MinWidth = size.Width;
                 return new Size(size.Width + gap2, size.Height);
             }
@@ -870,7 +870,7 @@ namespace AntdUI
                         }
                     }
                 }
-                var size = g.MeasureString(value, font);
+                var size = g.MeasureString(value, font, 0, PARENT.sf);
                 SortWidth = COLUMN.SortOrder ? (int)(size.Height * 0.8F) : 0;
                 MinWidth = size.Width + gap2 + SortWidth;
 
@@ -984,11 +984,10 @@ namespace AntdUI
             /// </summary>
             public IList<ICell> Value { get; set; }
 
-            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int _gap, int _gap2)
+            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = RECT_REAL = _rect;
-                int rx = _rect.X + ox;
-                int gap = _gap / 2, gap2 = _gap;
+                int rx = _rect.X + ox, sp = gap / 2;
                 int use_x;
                 switch (COLUMN.Align)
                 {
@@ -1009,25 +1008,25 @@ namespace AntdUI
                     var it = Value[i];
                     var size = SIZES[i];
                     it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, maxwidth, gap, gap2);
-                    use_x += size.Width + gap;
-                    maxwidth -= size.Width + gap2;
+                    int w = size.Width + sp;
+                    use_x += w;
+                    maxwidth -= w;
                 }
             }
 
             Size[] SIZES = new Size[0];
-            public override Size GetSize(Canvas g, Font font, int width, int _gap, int _gap2)
+            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                int gap = _gap / 2, gap2 = _gap;
-                int w = 0, h = 0;
+                int w = 0, h = 0, sp = gap / 2;
                 var sizes = new List<Size>(Value.Count);
                 foreach (var it in Value)
                 {
                     var size = it.GetSize(g, font, gap, gap2);
                     sizes.Add(size);
-                    w += size.Width + gap;
+                    w += size.Width + sp;
                     if (h < size.Height) h = size.Height;
                 }
-                MinWidth = w + gap;
+                MinWidth = w + gap + sp;
                 SIZES = sizes.ToArray();
                 return new Size(MinWidth, h);
             }

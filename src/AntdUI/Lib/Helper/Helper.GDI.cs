@@ -32,6 +32,37 @@ namespace AntdUI
         /// <summary>
         /// 文本布局
         /// </summary>
+        public static StringFormat SF(TAlign align)
+        {
+            switch (align)
+            {
+                case TAlign.Left:
+                    return SF(tb: StringAlignment.Center, lr: StringAlignment.Near);
+                case TAlign.TL:
+                case TAlign.LT:
+                    return SF(tb: StringAlignment.Near, lr: StringAlignment.Near);
+                case TAlign.Top:
+                    return SF(tb: StringAlignment.Near, lr: StringAlignment.Center);
+                case TAlign.TR:
+                case TAlign.RT:
+                    return SF(tb: StringAlignment.Near, lr: StringAlignment.Far);
+                case TAlign.Right:
+                    return SF(tb: StringAlignment.Center, lr: StringAlignment.Far);
+                case TAlign.BR:
+                case TAlign.RB:
+                    return SF(tb: StringAlignment.Far, lr: StringAlignment.Far);
+                case TAlign.Bottom:
+                    return SF(tb: StringAlignment.Far, lr: StringAlignment.Center);
+                case TAlign.BL:
+                case TAlign.LB:
+                    return SF(tb: StringAlignment.Far, lr: StringAlignment.Near);
+                default: return SF();
+            }
+        }
+
+        /// <summary>
+        /// 文本布局
+        /// </summary>
         /// <param name="tb">垂直（上下）</param>
         /// <param name="lr">水平（前后）</param>
         public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
@@ -984,6 +1015,55 @@ namespace AntdUI
 
         #endregion
 
+        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text = null, Image? image = null, int offset = 0)
+        {
+            using (var sc = SF_NoWrap())
+            {
+                PaintEmpty(g, rect, font, fore, text, image, offset, sc);
+            }
+        }
+
+        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text, Image? image, int offset, StringFormat sf)
+        {
+            using (var brush = new SolidBrush(fore))
+            {
+                if (offset > 0)
+                {
+                    rect.Offset(0, offset);
+                    rect.Height -= offset;
+                }
+                string emptytext = text ?? Localization.Get("NoData", "暂无数据");
+                if (Config.EmptyImageSvg != null)
+                {
+                    var size = g.MeasureString(emptytext, font);
+                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
+
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
+                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+
+                    using (var _bmp = SvgExtend.GetImgExtend(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0], rect_img, fore))
+                    {
+                        if (_bmp == null)
+                        {
+                            g.String(emptytext, font, brush, rect, sf);
+                            return;
+                        }
+                        else g.Image(_bmp, rect_img);
+                    }
+                    g.String(emptytext, font, brush, rect_font, sf);
+                }
+                else if (image != null)
+                {
+                    int gap = (int)(8 * Config.Dpi);
+                    var size = g.MeasureString(emptytext, font);
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2 - size.Height, image.Width, image.Height), rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+                    g.Image(image, rect_img);
+                    g.String(emptytext, font, brush, rect_font, sf);
+                }
+                else g.String(emptytext, font, brush, rect, sf);
+            }
+        }
+
         #region 图像处理
 
         #region 模糊
@@ -996,23 +1076,19 @@ namespace AntdUI
         {
             if (range > 1)
             {
-                using (UnsafeBitmap unsafeBitmap = new UnsafeBitmap(bmp, true))
+                using (var unsafeBitmap = new UnsafeBitmap(bmp, true))
                 {
-                    BlurHorizontal(unsafeBitmap, range, rect);
-                    BlurVertical(unsafeBitmap, range, rect);
-                    BlurHorizontal(unsafeBitmap, range, rect);
-                    BlurVertical(unsafeBitmap, range, rect);
+                    int halfRange = range / 2;
+                    BlurHorizontal(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
+                    BlurVertical(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
+                    BlurHorizontal(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
+                    BlurVertical(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
                 }
             }
         }
 
-        private static void BlurHorizontal(UnsafeBitmap unsafeBitmap, int range, Rectangle rect)
+        static void BlurHorizontal(UnsafeBitmap unsafeBitmap, int halfRange, int left, int top, int right, int bottom)
         {
-            int left = rect.X;
-            int top = rect.Y;
-            int right = rect.Right;
-            int bottom = rect.Bottom;
-            int halfRange = range / 2;
             ColorBgra[] newColors = new ColorBgra[unsafeBitmap.Width];
 
             for (int y = top; y < bottom; y++)
@@ -1057,26 +1133,15 @@ namespace AntdUI
                         hits++;
                     }
 
-                    if (x >= left)
-                    {
-                        newColors[x] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
-                    }
+                    if (x >= left) newColors[x] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
                 }
 
-                for (int x = left; x < right; x++)
-                {
-                    unsafeBitmap.SetPixel(x, y, newColors[x]);
-                }
+                for (int x = left; x < right; x++) unsafeBitmap.SetPixel(x, y, newColors[x]);
             }
         }
 
-        private static void BlurVertical(UnsafeBitmap unsafeBitmap, int range, Rectangle rect)
+        static void BlurVertical(UnsafeBitmap unsafeBitmap, int halfRange, int left, int top, int right, int bottom)
         {
-            int left = rect.X;
-            int top = rect.Y;
-            int right = rect.Right;
-            int bottom = rect.Bottom;
-            int halfRange = range / 2;
             ColorBgra[] newColors = new ColorBgra[unsafeBitmap.Height];
 
             for (int x = left; x < right; x++)
@@ -1121,16 +1186,10 @@ namespace AntdUI
                         hits++;
                     }
 
-                    if (y >= top)
-                    {
-                        newColors[y] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
-                    }
+                    if (y >= top) newColors[y] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
                 }
 
-                for (int y = top; y < bottom; y++)
-                {
-                    unsafeBitmap.SetPixel(x, y, newColors[y]);
-                }
+                for (int y = top; y < bottom; y++) unsafeBitmap.SetPixel(x, y, newColors[y]);
             }
         }
 

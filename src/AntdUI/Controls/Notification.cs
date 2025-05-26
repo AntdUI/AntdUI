@@ -31,6 +31,11 @@ namespace AntdUI
     public static class Notification
     {
         /// <summary>
+        /// 最大显示数量
+        /// </summary>
+        public static int? MaxCount { get; set; }
+
+        /// <summary>
         /// 成功通知
         /// </summary>
         /// <param name="form">窗口</param>

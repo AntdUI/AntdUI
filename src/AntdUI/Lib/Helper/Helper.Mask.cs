@@ -91,15 +91,22 @@ namespace AntdUI
             {
                 if (form is BorderlessForm borderless)
                 {
-                    Radius = (int)(borderless.Radius * Config.Dpi);
+                    if (borderless.UseDwm)
+                    {
+                        if (OS.Win11) Radius = (int)System.Math.Round(8 * Config.Dpi); //Win11
+                        return false;
+                    }
+                    else Radius = (int)(borderless.Radius * Config.Dpi);
                     return false;
                 }
                 else
                 {
                     if (form.FormBorderStyle == FormBorderStyle.None) return false;
-                    if (OS.Win11) Radius = (int)(8 * Config.Dpi); //Win11
+                    if (OS.Win11) Radius = (int)System.Math.Round(8 * Config.Dpi); //Win11
                     if (form is Window || form is FormNoBar) return false;//无边框处理
-                    Padd = (int)(3 * Config.Dpi);
+                    var rect = new Vanara.PInvoke.RECT();
+                    Vanara.PInvoke.User32.AdjustWindowRectEx(ref rect, Vanara.PInvoke.User32.WindowStyles.WS_OVERLAPPEDWINDOW | Vanara.PInvoke.User32.WindowStyles.WS_CLIPCHILDREN, false, Vanara.PInvoke.User32.WindowStylesEx.WS_EX_CONTROLPARENT | Vanara.PInvoke.User32.WindowStylesEx.WS_EX_APPWINDOW);
+                    Padd = rect.bottom;
                     return true;
                 }
             }

@@ -93,6 +93,12 @@ namespace AntdUI
         public Size DropDownPadding { get; set; } = new Size(12, 5);
 
         /// <summary>
+        /// 下拉文本方向
+        /// </summary>
+        [Description("下拉文本方向"), Category("外观"), DefaultValue(TAlign.Left)]
+        public TAlign DropDownTextAlign { get; set; } = TAlign.Left;
+
+        /// <summary>
         /// 点击到最里层（无节点才能点击）
         /// </summary>
         [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
@@ -109,6 +115,12 @@ namespace AntdUI
         /// </summary>
         [Description("是否显示关闭图标"), Category("行为"), DefaultValue(false)]
         public bool CloseIcon { get; set; }
+
+        /// <summary>
+        /// 为空依旧下拉
+        /// </summary>
+        [Description("为空依旧下拉"), Category("外观"), DefaultValue(false)]
+        public bool Empty { get; set; }
 
         #region 数据
 
@@ -500,8 +512,12 @@ namespace AntdUI
                 {
                     if (ReadOnly || items == null || items.Count == 0)
                     {
-                        subForm?.IClose();
-                        expandDrop = false;
+                        if (Empty && subForm == null) ShowLayeredForm(new List<object>(0));
+                        else
+                        {
+                            subForm?.IClose();
+                            expandDrop = false;
+                        }
                     }
                     else
                     {
@@ -642,7 +658,9 @@ namespace AntdUI
         /// 在线自定义颜色
         /// </summary>
         public Color? OnlineCustom { get; set; }
+
         public Image? Icon { get; set; }
+
         public string? IconSvg { get; set; }
 
         string _text;
@@ -686,6 +704,30 @@ namespace AntdUI
         public IList<object>? Sub { get; set; }
 
         public object Tag { get; set; }
+
+        #region 标签
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        public Color? Fore { get; set; }
+
+        /// <summary>
+        /// 子文字颜色
+        /// </summary>
+        public Color? ForeSub { get; set; }
+
+        /// <summary>
+        /// 激活背景颜色
+        /// </summary>
+        public Color? BackActive { get; set; }
+
+        /// <summary>
+        /// 激活背景渐变色
+        /// </summary>
+        public string? BackActiveExtend { get; set; }
+
+        #endregion
 
         #region 标签
 
@@ -752,9 +794,9 @@ namespace AntdUI
         public ObjectItem Value { get; set; }
     }
 
-    internal class ObjectItem
+    internal class ObjectItem : SelectItem
     {
-        public ObjectItem(object _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        public ObjectItem(object _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2) : base(_val)
         {
             Show = true;
             Val = _val;
@@ -769,7 +811,7 @@ namespace AntdUI
             };
         }
 
-        public ObjectItem(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        public ObjectItem(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2) : base(_val)
         {
             Show = Group = true;
             Val = _val;
@@ -784,11 +826,14 @@ namespace AntdUI
             };
         }
 
-        public ObjectItem(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        public ObjectItem(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2) : this(_val)
         {
-            Sub = _val.Sub;
-            if (Sub != null && Sub.Count > 0) has_sub = true;
-            Show = true;
+            ID = _i;
+            SetRect(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
+        }
+
+        public ObjectItem(SelectItem _val) : base(_val)
+        {
             Val = _val;
             Online = _val.Online;
             OnlineCustom = _val.OnlineCustom;
@@ -797,17 +842,26 @@ namespace AntdUI
             Text = _val.Text;
             SubText = _val.SubText;
             Enable = _val.Enable;
-            ID = _i;
-            SetRect(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
+            Sub = _val.Sub;
+            if (Sub != null && Sub.Count > 0) has_sub = true;
+            Tag = _val.Tag;
+            TagBack = _val.TagBack;
+            TagBackExtend = _val.TagBackExtend;
+            TagFore = _val.TagFore;
+            Fore = _val.Fore;
+            ForeSub = _val.ForeSub;
+            BackActive = _val.BackActive;
+            BackActiveExtend = _val.BackActiveExtend;
             string pinyin = _val.Text + _val.SubText;
             PY = new string[] {
                 pinyin.ToLower(),
                 Pinyin.GetPinyin(pinyin).ToLower(),
                 Pinyin.GetInitials(pinyin).ToLower()
             };
+            Show = true;
         }
 
-        public ObjectItem(Rectangle rect)
+        public ObjectItem(Rectangle rect) : base(-1)
         {
             ID = -1;
             Rect = rect;
@@ -816,28 +870,7 @@ namespace AntdUI
         }
         public object Val { get; set; }
 
-        /// <summary>
-        /// 是否启用
-        /// </summary>
-        public bool Enable { get; set; } = true;
-
-        /// <summary>
-        /// 子选项
-        /// </summary>
-        public IList<object>? Sub { get; set; }
         internal bool has_sub { get; set; }
-
-        /// <summary>
-        /// 在线状态
-        /// </summary>
-        public int? Online { get; set; }
-        /// <summary>
-        /// 在线自定义颜色
-        /// </summary>
-        public Color? OnlineCustom { get; set; }
-
-        public Image? Icon { get; set; }
-        public string? IconSvg { get; set; }
 
         /// <summary>
         /// 是否包含图标
@@ -847,8 +880,6 @@ namespace AntdUI
         public Rectangle RectIcon { get; set; }
         public Rectangle RectOnline { get; set; }
 
-        public string? SubText { get; set; }
-        public string Text { get; set; }
         string[] PY { get; set; }
         public int Contains(string val, out bool select)
         {
@@ -975,9 +1006,9 @@ namespace AntdUI
         public Rectangle RectText { get; set; }
     }
 
-    internal class ObjectItemCheck
+    internal class ObjectItemCheck : SelectItem
     {
-        public ObjectItemCheck(object _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        public ObjectItemCheck(object _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2) : base(_val)
         {
             Show = true;
             Val = _val;
@@ -992,7 +1023,7 @@ namespace AntdUI
             };
         }
 
-        public ObjectItemCheck(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        public ObjectItemCheck(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2) : base(_val)
         {
             Show = Group = true;
             Val = _val;
@@ -1007,7 +1038,7 @@ namespace AntdUI
             };
         }
 
-        public ObjectItemCheck(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
+        public ObjectItemCheck(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2) : this(_val)
         {
             Sub = _val.Sub;
             if (Sub != null && Sub.Count > 0) has_sub = true;
@@ -1030,37 +1061,46 @@ namespace AntdUI
             };
         }
 
-        public ObjectItemCheck(Rectangle rect)
+        public ObjectItemCheck(SelectItem _val) : base(_val)
+        {
+            Val = _val;
+            Online = _val.Online;
+            OnlineCustom = _val.OnlineCustom;
+            Icon = _val.Icon;
+            IconSvg = _val.IconSvg;
+            Text = _val.Text;
+            SubText = _val.SubText;
+            Enable = _val.Enable;
+            Sub = _val.Sub;
+            if (Sub != null && Sub.Count > 0) has_sub = true;
+            Tag = _val.Tag;
+            TagBack = _val.TagBack;
+            TagBackExtend = _val.TagBackExtend;
+            TagFore = _val.TagFore;
+            Fore = _val.Fore;
+            ForeSub = _val.ForeSub;
+            BackActive = _val.BackActive;
+            BackActiveExtend = _val.BackActiveExtend;
+            string pinyin = _val.Text + _val.SubText;
+            PY = new string[] {
+                pinyin.ToLower(),
+                Pinyin.GetPinyin(pinyin).ToLower(),
+                Pinyin.GetInitials(pinyin).ToLower()
+            };
+            Show = true;
+        }
+
+        public ObjectItemCheck(Rectangle rect) : base(-1)
         {
             ID = -1;
             Rect = rect;
             Show = true;
             PY = new string[0];
         }
+
         public object Val { get; set; }
 
-        /// <summary>
-        /// 是否启用
-        /// </summary>
-        public bool Enable { get; set; } = true;
-
-        /// <summary>
-        /// 子选项
-        /// </summary>
-        public IList<object>? Sub { get; set; }
         internal bool has_sub { get; set; }
-
-        /// <summary>
-        /// 在线状态
-        /// </summary>
-        public int? Online { get; set; }
-        /// <summary>
-        /// 在线自定义颜色
-        /// </summary>
-        public Color? OnlineCustom { get; set; }
-
-        public Image? Icon { get; set; }
-        public string? IconSvg { get; set; }
 
         /// <summary>
         /// 是否包含图标
@@ -1071,8 +1111,6 @@ namespace AntdUI
         public Rectangle RectOnline { get; set; }
         public Rectangle RectCheck { get; set; }
 
-        public string? SubText { get; set; }
-        public string Text { get; set; }
         string[] PY { get; set; }
         public bool Contains(string val)
         {

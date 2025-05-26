@@ -25,6 +25,8 @@ namespace AntdUI
 {
     internal class LayeredFormMenuDown : ILayeredFormOpacityDown, SubLayeredForm
     {
+        #region 初始化
+
         internal float Radius = 0;
         TAMode Theme;
         bool isdark = false;
@@ -232,7 +234,6 @@ namespace AntdUI
             SetSize(w, h);
         }
 
-        StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
         public void FocusItem(OMenuItem it, bool print = true)
         {
             if (it.SetHover(true))
@@ -247,93 +248,11 @@ namespace AntdUI
         /// </summary>
         bool nodata = false;
 
-        #region 鼠标
-
-        internal int select_x = 0;
-        int hoveindex = -1;
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (RunAnimation) return;
-            int y = (scrollY != null && scrollY.Show) ? (int)scrollY.Value : 0;
-            foreach (var it in Items)
-            {
-                if (it.Show && it.Val.Enabled && it.Contains(e.X, e.Y + y, out _))
-                {
-                    if (OnClick(it)) return;
-                }
-            }
-            base.OnMouseUp(e);
-        }
-
-        bool OnClick(OMenuItem it)
-        {
-            if (it.Sub == null || it.Sub.Count == 0)
-            {
-                if (PARENT is Menu menu) menu.DropDownChange(it.Val);
-                IClose();
-                return true;
-            }
-            else
-            {
-                if (subForm == null) OpenDown(it);
-                else
-                {
-                    subForm?.IClose();
-                    subForm = null;
-                }
-            }
-            return false;
-        }
-
-        void OpenDown(OMenuItem it)
-        {
-            if (PARENT is Menu menu)
-            {
-                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, new Rectangle(it.Rect.X, it.Rect.Y - 0, it.Rect.Width, it.Rect.Height), it.Sub);
-                subForm.Show(this);
-            }
-        }
-
-        int hoveindexold = -1;
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (RunAnimation) return;
-            base.OnMouseMove(e);
-            hoveindex = -1;
-            int y = (scrollY != null && scrollY.Show) ? (int)scrollY.Value : 0;
-            int count = 0;
-            for (int i = 0; i < Items.Count; i++)
-            {
-                var it = Items[i];
-                if (it.Show && it.Val.Enabled)
-                {
-                    if (it.Contains(e.X, e.Y + y, out var change)) hoveindex = i;
-                    if (change) count++;
-                }
-            }
-            if (count > 0) Print();
-            if (hoveindexold == hoveindex) return;
-            hoveindexold = hoveindex;
-            subForm?.IClose();
-            subForm = null;
-            if (hoveindex > -1)
-            {
-                if (PARENT is Menu menu) menu.select_x = select_x;
-                var it = Items[hoveindex];
-                if (it.Sub != null && it.Sub.Count > 0 && PARENT != null) OpenDown(it);
-            }
-        }
-
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            scrollY?.MouseWheel(e.Delta);
-            base.OnMouseWheel(e);
-        }
-
         #endregion
 
-        readonly StringFormat s_f = Helper.SF_NoWrap();
+        #region 渲染
+
+        StringFormat sf = Helper.SF(lr: StringAlignment.Near);
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
@@ -345,11 +264,7 @@ namespace AntdUI
                 {
                     DrawShadow(g, rect);
                     g.Fill(backColor ?? Colour.BgElevated.Get("Menu", Theme), path);
-                    if (nodata)
-                    {
-                        string emptytext = Localization.Get("NoData", "暂无数据");
-                        g.DrawText(emptytext, Font, Color.FromArgb(180, Colour.Text.Get("Menu", Theme)), rect_read, s_f);
-                    }
+                    if (nodata) g.PaintEmpty(rect_read, Font, Color.FromArgb(180, Colour.Text.Get("Menu", Theme)));
                     else
                     {
                         g.SetClip(rect_read);
@@ -397,7 +312,7 @@ namespace AntdUI
                         }
                         using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", Theme)))
                         {
-                            g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                            g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, sf);
                         }
                         PaintIcon(g, it, brush.Color);
                     }
@@ -410,7 +325,7 @@ namespace AntdUI
                                 g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", Theme), path);
                             }
                         }
-                        g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                        g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, sf);
                         PaintIcon(g, it, brush.Color);
                     }
                 }
@@ -424,7 +339,7 @@ namespace AntdUI
                         }
                         using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", Theme)))
                         {
-                            g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, stringFormatLeft);
+                            g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, sf);
                         }
                     }
                     else
@@ -436,7 +351,7 @@ namespace AntdUI
                                 g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", Theme), path);
                             }
                         }
-                        g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, stringFormatLeft);
+                        g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, sf);
                     }
                     PaintIcon(g, it, brush.Color);
                 }
@@ -462,7 +377,7 @@ namespace AntdUI
                 }
                 using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Menu", Theme)))
                 {
-                    g.DrawText(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, stringFormatLeft);
+                    g.DrawText(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, sf);
                 }
                 PaintIcon(g, it, brush.Color);
             }
@@ -507,6 +422,92 @@ namespace AntdUI
                 g.Image(shadow_temp, rect, 0.2F);
             }
         }
+
+        #endregion
+
+        #region 鼠标
+
+        internal int select_x = 0;
+        int hoveindex = -1, hoveindexold = -1;
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (RunAnimation) return;
+            int y = (scrollY != null && scrollY.Show) ? (int)scrollY.Value : 0;
+            foreach (var it in Items)
+            {
+                if (it.Show && it.Val.Enabled && it.Contains(e.X, e.Y + y, out _))
+                {
+                    if (OnClick(it)) return;
+                }
+            }
+            base.OnMouseUp(e);
+        }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (RunAnimation) return;
+            base.OnMouseMove(e);
+            hoveindex = -1;
+            int y = (scrollY != null && scrollY.Show) ? (int)scrollY.Value : 0;
+            int count = 0;
+            for (int i = 0; i < Items.Count; i++)
+            {
+                var it = Items[i];
+                if (it.Show && it.Val.Enabled)
+                {
+                    if (it.Contains(e.X, e.Y + y, out var change)) hoveindex = i;
+                    if (change) count++;
+                }
+            }
+            if (count > 0) Print();
+            if (hoveindexold == hoveindex) return;
+            hoveindexold = hoveindex;
+            subForm?.IClose();
+            subForm = null;
+            if (hoveindex > -1)
+            {
+                if (PARENT is Menu menu) menu.select_x = select_x;
+                var it = Items[hoveindex];
+                if (it.Sub != null && it.Sub.Count > 0 && PARENT != null) OpenDown(it);
+            }
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            scrollY?.MouseWheel(e.Delta);
+            base.OnMouseWheel(e);
+        }
+
+        bool OnClick(OMenuItem it)
+        {
+            if (it.Sub == null || it.Sub.Count == 0)
+            {
+                if (PARENT is Menu menu) menu.DropDownChange(it.Val);
+                IClose();
+                return true;
+            }
+            else
+            {
+                if (subForm == null) OpenDown(it);
+                else
+                {
+                    subForm?.IClose();
+                    subForm = null;
+                }
+            }
+            return false;
+        }
+
+        void OpenDown(OMenuItem it)
+        {
+            if (PARENT is Menu menu)
+            {
+                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, new Rectangle(it.Rect.X, it.Rect.Y - 0, it.Rect.Width, it.Rect.Height), it.Sub);
+                subForm.Show(this);
+            }
+        }
+
+        #endregion
 
         #region 列模型
 

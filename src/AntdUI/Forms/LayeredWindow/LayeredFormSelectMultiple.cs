@@ -25,6 +25,19 @@ namespace AntdUI
 {
     internal class LayeredFormSelectMultiple : ISelectMultiple
     {
+        #region 变量
+
+        /// <summary>
+        /// 是否显示暂无数据
+        /// </summary>
+        bool nodata = false;
+
+        internal ScrollY scrollY;
+
+        #endregion
+
+        #region 初始化
+
         int MaxCount = 4, MaxChoiceCount = 4;
         Size DPadding;
         internal float Radius = 0;
@@ -33,6 +46,7 @@ namespace AntdUI
         List<ObjectItem> Items;
         ObjectItemSearch[]? ItemsSearch;
         TAMode ColorScheme;
+        TAlign DropDownTextAlign = TAlign.Left;
         public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, IList<object> items, string filtertext)
         {
             ColorScheme = control.ColorScheme;
@@ -46,6 +60,8 @@ namespace AntdUI
             selectedValue.AddRange(control.SelectedValue);
             Radius = (int)(control.radius * Config.Dpi);
             DPadding = control.DropDownPadding;
+            DropDownTextAlign = control.DropDownTextAlign;
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, rect_read, items, filtertext);
         }
@@ -58,48 +74,60 @@ namespace AntdUI
         {
             int y = 10, w = rect_read.Width;
             r_w = w;
-
-            Helper.GDI(g =>
-            {
-                var size = g.MeasureString(Config.NullText, Font);
-                int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
-                gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
-                text_height = size.Height, item_height = text_height + gap_y2;
-                y += gap;
-                if (ListAutoWidth)
-                {
-                    int b_w = size.Width + gap_x2;
-                    bool ui_online = false, ui_icon = false, ui_arrow = false;
-                    foreach (var obj in items) InitReadList(g, obj, ref b_w, ref ui_online, ref ui_icon, ref ui_arrow);
-                    if (ui_icon || ui_online)
-                    {
-                        if (ui_icon && ui_online) b_w += text_height + gap_y2;
-                        else if (ui_icon) b_w += text_height;
-                        else b_w += gap_y;
-                    }
-                    w = r_w = b_w + gap_x2 + gap2 + gap_y2;
-                }
-                else stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter;
-                stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
-
-                int selY = -1;
-                int item_count = 0, divider_count = 0;
-                for (int i = 0; i < items.Count; i++) ReadList(items[i], i, w, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref selY);
-                var vr = (item_height * item_count) + (gap_y * divider_count);
-                if (Items.Count > MaxCount)
-                {
-                    y = 10 + gap2 + (item_height * MaxCount);
-                    scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
-                    scrollY.Show = true;
-                    scrollY.SetVrSize(vr, scrollY.Rect.Height);
-                    if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap_y);
-                }
-                else y = 10 + gap2 + vr;
-            });
-
             int r_h;
-            if (filtertext == null || string.IsNullOrEmpty(filtertext)) r_h = y + 10;
-            else r_h = TextChangeCore(filtertext);
+            if (items.Count > 0)
+            {
+                Helper.GDI(g =>
+                {
+                    var size = g.MeasureString(Config.NullText, Font);
+                    int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
+                    gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
+                    text_height = size.Height, item_height = text_height + gap_y2;
+                    y += gap;
+                    if (ListAutoWidth)
+                    {
+                        int b_w = size.Width + gap_x2;
+                        bool ui_online = false, ui_icon = false, ui_arrow = false;
+                        foreach (var obj in items) InitReadList(g, obj, ref b_w, ref ui_online, ref ui_icon, ref ui_arrow);
+                        if (ui_icon || ui_online)
+                        {
+                            if (ui_icon && ui_online) b_w += text_height + gap_y2;
+                            else if (ui_icon) b_w += text_height;
+                            else b_w += gap_y;
+                        }
+                        w = r_w = b_w + gap_x2 + gap2 + gap_y2;
+                    }
+                    else sf.Trimming = StringTrimming.EllipsisCharacter;
+                    sf.FormatFlags = StringFormatFlags.NoWrap;
+
+                    int selY = -1;
+                    int item_count = 0, divider_count = 0;
+                    for (int i = 0; i < items.Count; i++) ReadList(items[i], i, w, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref selY);
+                    var vr = (item_height * item_count) + (gap_y * divider_count);
+                    if (Items.Count > MaxCount)
+                    {
+                        y = 10 + gap2 + (item_height * MaxCount);
+                        scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
+                        scrollY.Show = true;
+                        scrollY.SetVrSize(vr, scrollY.Rect.Height);
+                        if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap_y);
+                    }
+                    else y = 10 + gap2 + vr;
+                });
+                if (filtertext == null || string.IsNullOrEmpty(filtertext)) r_h = y + 10;
+                else r_h = TextChangeCore(filtertext);
+            }
+            else
+            {
+                nodata = true;
+                if (ListAutoWidth) r_w = w = (int)(136 * Config.Dpi);
+                else
+                {
+                    int er = (int)(136 * Config.Dpi);
+                    if (w < er) r_w = w = er;
+                }
+                r_h = (int)(100 * Config.Dpi);
+            }
             SetSize(w + 20, r_h);
             var point = control.PointToScreen(Point.Empty);
             MyPoint(point, control, Placement, ShowArrow, rect_read);
@@ -155,6 +183,397 @@ namespace AntdUI
         }
 
         void MyPoint(Point point, Control control, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(point, Placement, ShowArrow, 10, r_w + 20, TargetRect.Height, rect_read, ref Inverted, ref ArrowAlign);
+
+        void MyPoint(SelectMultiple control) => MyPoint(control.PointToScreen(Point.Empty), control, control.Placement, control.DropDownArrow, control.ReadRectangle);
+
+        #endregion
+
+        #region 渲染
+
+        StringFormat sf;
+        public override Bitmap PrintBit()
+        {
+            var rect = TargetRectXY;
+            var rect_read = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20);
+            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(original_bmp).High())
+            {
+                using (var path = rect_read.RoundPath(Radius))
+                {
+                    DrawShadow(g, rect);
+                    using (var brush = new SolidBrush(Colour.BgElevated.Get("Select", ColorScheme)))
+                    {
+                        g.Fill(brush, path);
+                        if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
+                    }
+                    if (nodata) g.PaintEmpty(rect_read, Font, Color.FromArgb(180, Colour.Text.Get("Select", ColorScheme)));
+                    else
+                    {
+                        g.SetClip(path);
+                        g.TranslateTransform(0, -scrollY.Value);
+                        using (var brush = new SolidBrush(Colour.Text.Get("Select", ColorScheme)))
+                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get("Select", ColorScheme)))
+                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
+                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get("Select", ColorScheme)))
+                        using (var brush_split = new SolidBrush(Colour.Split.Get("Select", ColorScheme)))
+                        {
+                            if (Radius > 0)
+                            {
+                                int oldsel = -1;
+                                for (int i = 0; i < Items.Count; i++)
+                                {
+                                    var it = Items[i];
+                                    if (it.Show)
+                                    {
+                                        //判断下一个是不是连续的
+                                        if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag))
+                                        {
+                                            if (it.Group)
+                                            {
+                                                DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
+                                                oldsel = -1;
+                                            }
+                                            else
+                                            {
+                                                bool isn = IFNextSelect(i + 1);
+                                                if (oldsel == -1)
+                                                {
+                                                    if (isn)
+                                                    {
+                                                        oldsel = i;
+                                                        DrawItemSelect(g, brush_sub, brush_split, it, true, true, false, false);
+                                                    }
+                                                    else DrawItemSelect(g, brush_sub, brush_split, it, true, true, true, true);
+                                                }
+                                                else
+                                                {
+                                                    if (isn) DrawItemSelect(g, brush_sub, brush_split, it, false, false, false, false);
+                                                    else DrawItemSelect(g, brush_sub, brush_split, it, false, false, true, true);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
+                                            oldsel = -1;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var it in Items)
+                                {
+                                    if (it.Show) DrawItemR(g, brush, brush_back_hover, brush_split, it);
+                                }
+                            }
+                        }
+                        g.ResetTransform();
+                        g.ResetClip();
+                        scrollY.Paint(g);
+                    }
+                }
+            }
+            return original_bmp;
+        }
+        bool IFNextSelect(int start)
+        {
+            for (int i = start; i < Items.Count; i++)
+            {
+                var it = Items[i];
+                if (it != null && it.Show)
+                {
+                    if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag)) return true;
+                    else return false;
+                }
+            }
+            return false;
+        }
+
+        void DrawItemSelect(Canvas g, SolidBrush subbrush, SolidBrush brush_split, ObjectItem it, bool TL, bool TR, bool BR, bool BL)
+        {
+            if (it.ID == -1) g.Fill(brush_split, it.Rect);
+            else
+            {
+                using (var path = it.Rect.RoundPath(Radius, TL, TR, BR, BL))
+                {
+                    using (var brush = it.BackActiveExtend.BrushEx(it.Rect, it.BackActive ?? Colour.PrimaryBg.Get("Select", ColorScheme)))
+                    {
+                        g.Fill(brush, path);
+                    }
+                }
+                if (it.SubText != null)
+                {
+                    var size = g.MeasureText(it.Text, Font);
+                    var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                    g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
+                }
+                DrawTextIconSelect(g, it);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select", ColorScheme), .46F);
+                if (it.Online.HasValue)
+                {
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
+                    {
+                        g.FillEllipse(brush_online, it.RectOnline);
+                    }
+                }
+            }
+        }
+
+        void DrawItem(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
+        {
+            if (it.ID == -1) g.Fill(brush_split, it.Rect);
+            else if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
+            else
+            {
+                if (it.SubText != null)
+                {
+                    var size = g.MeasureText(it.Text, Font);
+                    var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                    if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, sf);
+                    else g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
+                }
+                if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) DrawTextIcon(g, it, subbrush, null);
+                else
+                {
+                    if (it.Hover)
+                    {
+                        using (var path = it.Rect.RoundPath(Radius))
+                        {
+                            g.Fill(brush_back_hover, path);
+                        }
+                    }
+                    DrawTextIcon(g, it, brush, it.Fore);
+                }
+                if (it.Online.HasValue)
+                {
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
+                    {
+                        g.FillEllipse(brush_online, it.RectOnline);
+                    }
+                }
+            }
+        }
+        void DrawItemR(Canvas g, SolidBrush brush, SolidBrush brush_back_hover, SolidBrush brush_split, ObjectItem it)
+        {
+            if (it.ID == -1) g.Fill(brush_split, it.Rect);
+            else if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag))
+            {
+                using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get("Select", ColorScheme)))
+                {
+                    g.Fill(brush_back, it.Rect);
+                }
+                DrawTextIconSelect(g, it);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select", ColorScheme), .46F);
+            }
+            else
+            {
+                if (it.Hover) g.Fill(brush_back_hover, it.Rect);
+                DrawTextIcon(g, it, brush, it.Fore);
+            }
+            if (it.Online.HasValue)
+            {
+                using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
+                {
+                    g.FillEllipse(brush_online, it.RectOnline);
+                }
+            }
+        }
+
+        void DrawTextIconSelect(Canvas g, ObjectItem it)
+        {
+            if (it.Enable)
+            {
+                using (var fore = new SolidBrush(Colour.TextBase.Get("Select", ColorScheme)))
+                {
+                    g.DrawText(it.Text, Font, fore, it.RectText, sf);
+                }
+            }
+            else
+            {
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
+                {
+                    g.DrawText(it.Text, Font, fore, it.RectText, sf);
+                }
+            }
+            DrawIcon(g, it, Colour.TextBase.Get("Select", ColorScheme));
+        }
+        void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush, Color? color)
+        {
+            if (it.Enable)
+            {
+                if (color.HasValue) g.DrawText(it.Text, Font, color.Value, it.RectText, sf);
+                else g.DrawText(it.Text, Font, brush, it.RectText, sf);
+            }
+            else
+            {
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
+                {
+                    g.DrawText(it.Text, Font, fore, it.RectText, sf);
+                }
+            }
+            DrawIcon(g, it, color ?? brush.Color);
+        }
+        void DrawIcon(Canvas g, ObjectItem it, Color color)
+        {
+            if (it.IconSvg != null)
+            {
+                using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
+                {
+                    if (bmp != null)
+                    {
+                        if (it.Enable) g.Image(bmp, it.RectIcon);
+                        else g.Image(bmp, it.RectIcon, 0.25F);
+                        return;
+                    }
+                }
+            }
+            if (it.Icon != null)
+            {
+                if (it.Enable) g.Image(it.Icon, it.RectIcon);
+                else g.Image(it.Icon, it.RectIcon, 0.25F);
+            }
+        }
+
+        Bitmap? shadow_temp = null;
+        /// <summary>
+        /// 绘制阴影
+        /// </summary>
+        /// <param name="g">GDI</param>
+        /// <param name="rect">客户区域</param>
+        void DrawShadow(Canvas g, Rectangle rect)
+        {
+            if (Config.ShadowEnabled)
+            {
+                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
+                {
+                    shadow_temp?.Dispose();
+                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
+                    {
+                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
+                    }
+                }
+                g.Image(shadow_temp, rect, 0.2F);
+            }
+        }
+
+        #endregion
+
+        #region 鼠标
+
+        int hoveindex = -1;
+        bool down = false;
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (scrollY.MouseDown(e.Location))
+            {
+                OnTouchDown(e.X, e.Y);
+                down = true;
+            }
+            base.OnMouseDown(e);
+        }
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (scrollY.MouseUp(e.Location) && OnTouchUp() && down)
+            {
+                if (RunAnimation) return;
+                int sy = (int)scrollY.Value;
+                foreach (var it in Items)
+                {
+                    if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.X, e.Y, 0, sy, out _))
+                    {
+                        OnClick(it);
+                        return;
+                    }
+                }
+            }
+            down = false;
+            base.OnMouseUp(e);
+        }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (RunAnimation) return;
+            hoveindex = -1;
+            if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
+            {
+                int count = 0, sy = (int)scrollY.Value;
+                for (int i = 0; i < Items.Count; i++)
+                {
+                    var it = Items[i];
+                    if (it.Enable)
+                    {
+                        if (it.Contains(e.X, e.Y, 0, sy, out var change)) hoveindex = i;
+                        if (change) count++;
+                    }
+                }
+                if (count > 0) Print();
+            }
+            base.OnMouseMove(e);
+        }
+
+        void OnClick(ObjectItem it)
+        {
+            if (it.Group && it.Val is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
+            {
+                int count = 0;
+                foreach (var item in group.Sub)
+                {
+                    var value = ReadValue(item);
+                    if (selectedValue.Contains(value))
+                    {
+                        count++;
+                        break;
+                    }
+                }
+                if (count > 0)
+                {
+                    foreach (var item in group.Sub)
+                    {
+                        var value = ReadValue(item);
+                        if (selectedValue.Contains(value)) selectedValue.Remove(value);
+                    }
+                }
+                else
+                {
+                    foreach (var item in group.Sub)
+                    {
+                        var value = ReadValue(item);
+                        if (!selectedValue.Contains(value)) selectedValue.Add(value);
+                    }
+                }
+            }
+            else if (selectedValue.Contains(ReadValue(it.Val))) selectedValue.Remove(ReadValue(it.Val));
+            else
+            {
+                if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) return;
+                selectedValue.Add(ReadValue(it.Val));
+            }
+            if (PARENT is SelectMultiple select) select.SelectedValue = selectedValue.ToArray();
+            down = false;
+            Print();
+        }
+
+        object ReadValue(object obj)
+        {
+            if (obj is SelectItem it) return it.Tag;
+            return obj;
+        }
+
+        #region 滚动条
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (RunAnimation) return;
+            scrollY.MouseWheel(e.Delta);
+            base.OnMouseWheel(e);
+        }
+        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheelCore(value);
+
+        #endregion
+
+        #endregion
+
+        #region 布局
 
         /// <summary>
         /// 计算坐标
@@ -237,7 +656,6 @@ namespace AntdUI
             }
         }
 
-        StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
         public void FocusItem(ObjectItem item)
         {
             if (item.SetHover(true))
@@ -247,7 +665,28 @@ namespace AntdUI
             }
         }
 
-        internal bool tag1 = true;
+        #endregion
+
+        #region 方法
+
+        public override void SetValues(object[] value)
+        {
+            selectedValue = new List<object>(value.Length);
+            selectedValue.AddRange(value);
+            Print();
+        }
+        public override void SetValues(List<object> value)
+        {
+            selectedValue = value;
+            Print();
+        }
+        public override void ClearValues()
+        {
+            selectedValue = new List<object>(0);
+            Print();
+        }
+
+        #endregion
 
         #region 筛选
 
@@ -315,7 +754,7 @@ namespace AntdUI
                 int height;
                 if (nodata)
                 {
-                    height = 80;
+                    height = (int)(100 * Config.Dpi);
                     SetSizeH(height);
                 }
                 else
@@ -404,7 +843,7 @@ namespace AntdUI
                 }
                 nodata = showcount == 0;
             }
-            if (nodata) return 80;
+            if (nodata) return (int)(100 * Config.Dpi);
             else
             {
                 scrollY.val = 0;
@@ -456,417 +895,6 @@ namespace AntdUI
                 foreach (var it in ItemsSearch) action(it.Value);
             }
         }
-
-        void MyPoint(SelectMultiple control) => MyPoint(control.PointToScreen(Point.Empty), control, control.Placement, control.DropDownArrow, control.ReadRectangle);
-
-        #endregion
-
-        /// <summary>
-        /// 是否显示暂无数据
-        /// </summary>
-        bool nodata = false;
-
-        internal ScrollY scrollY;
-
-        #region 鼠标
-
-        int hoveindex = -1;
-        bool down = false;
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (scrollY.MouseDown(e.Location))
-            {
-                OnTouchDown(e.X, e.Y);
-                down = true;
-            }
-            base.OnMouseDown(e);
-        }
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (scrollY.MouseUp(e.Location) && OnTouchUp() && down)
-            {
-                if (RunAnimation) return;
-                int sy = (int)scrollY.Value;
-                foreach (var it in Items)
-                {
-                    if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.X, e.Y, 0, sy, out _))
-                    {
-                        OnClick(it);
-                        return;
-                    }
-                }
-            }
-            down = false;
-            base.OnMouseUp(e);
-        }
-        void OnClick(ObjectItem it)
-        {
-            if (it.Group && it.Val is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
-            {
-                int count = 0;
-                foreach (var item in group.Sub)
-                {
-                    var value = ReadValue(item);
-                    if (selectedValue.Contains(value))
-                    {
-                        count++;
-                        break;
-                    }
-                }
-                if (count > 0)
-                {
-                    foreach (var item in group.Sub)
-                    {
-                        var value = ReadValue(item);
-                        if (selectedValue.Contains(value)) selectedValue.Remove(value);
-                    }
-                }
-                else
-                {
-                    foreach (var item in group.Sub)
-                    {
-                        var value = ReadValue(item);
-                        if (!selectedValue.Contains(value)) selectedValue.Add(value);
-                    }
-                }
-            }
-            else if (selectedValue.Contains(ReadValue(it.Val))) selectedValue.Remove(ReadValue(it.Val));
-            else
-            {
-                if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) return;
-                selectedValue.Add(ReadValue(it.Val));
-            }
-            if (PARENT is SelectMultiple select) select.SelectedValue = selectedValue.ToArray();
-            down = false;
-            Print();
-        }
-
-        object ReadValue(object obj)
-        {
-            if (obj is SelectItem it) return it.Tag;
-            return obj;
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (RunAnimation) return;
-            hoveindex = -1;
-            if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
-            {
-                int count = 0, sy = (int)scrollY.Value;
-                for (int i = 0; i < Items.Count; i++)
-                {
-                    var it = Items[i];
-                    if (it.Enable)
-                    {
-                        if (it.Contains(e.X, e.Y, 0, sy, out var change)) hoveindex = i;
-                        if (change) count++;
-                    }
-                }
-                if (count > 0) Print();
-            }
-            base.OnMouseMove(e);
-        }
-
-        #endregion
-
-        #region 渲染
-
-        readonly StringFormat s_f = Helper.SF_NoWrap();
-        public override Bitmap PrintBit()
-        {
-            var rect = TargetRectXY;
-            var rect_read = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20);
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
-            {
-                using (var path = rect_read.RoundPath(Radius))
-                {
-                    DrawShadow(g, rect);
-                    using (var brush = new SolidBrush(Colour.BgElevated.Get("Select", ColorScheme)))
-                    {
-                        g.Fill(brush, path);
-                        if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
-                    }
-                    if (nodata)
-                    {
-                        string emptytext = Localization.Get("NoData", "暂无数据");
-                        g.DrawText(emptytext, Font, Color.FromArgb(180, Colour.Text.Get("Select", ColorScheme)), rect_read, s_f);
-                    }
-                    else
-                    {
-                        g.SetClip(path);
-                        g.TranslateTransform(0, -scrollY.Value);
-                        using (var brush = new SolidBrush(Colour.Text.Get("Select", ColorScheme)))
-                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get("Select", ColorScheme)))
-                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
-                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get("Select", ColorScheme)))
-                        using (var brush_split = new SolidBrush(Colour.Split.Get("Select", ColorScheme)))
-                        {
-                            if (Radius > 0)
-                            {
-                                int oldsel = -1;
-                                for (int i = 0; i < Items.Count; i++)
-                                {
-                                    var it = Items[i];
-                                    if (it != null && it.Show)
-                                    {
-                                        //判断下一个是不是连续的
-                                        if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag))
-                                        {
-                                            if (it.Group)
-                                            {
-                                                DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                                                oldsel = -1;
-                                            }
-                                            else
-                                            {
-                                                bool isn = IFNextSelect(i + 1);
-                                                if (oldsel == -1)
-                                                {
-                                                    if (isn)
-                                                    {
-                                                        oldsel = i;
-                                                        DrawItemSelect(g, brush, brush_sub, brush_split, it, true, true, false, false);
-                                                    }
-                                                    else DrawItemSelect(g, brush, brush_sub, brush_split, it, true, true, true, true);
-                                                }
-                                                else
-                                                {
-                                                    if (isn) DrawItemSelect(g, brush, brush_sub, brush_split, it, false, false, false, false);
-                                                    else DrawItemSelect(g, brush, brush_sub, brush_split, it, false, false, true, true);
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                                            oldsel = -1;
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                foreach (var it in Items)
-                                {
-                                    if (it.Show) DrawItemR(g, brush, brush_back_hover, brush_split, it);
-                                }
-                            }
-                        }
-                        g.ResetTransform();
-                        g.ResetClip();
-                        scrollY.Paint(g);
-                    }
-                }
-            }
-            return original_bmp;
-        }
-        bool IFNextSelect(int start)
-        {
-            for (int i = start; i < Items.Count; i++)
-            {
-                var it = Items[i];
-                if (it != null && it.Show)
-                {
-                    if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag)) return true;
-                    else return false;
-                }
-            }
-            return false;
-        }
-
-        void DrawItemSelect(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_split, ObjectItem it, bool TL, bool TR, bool BR, bool BL)
-        {
-            if (it.ID == -1) g.Fill(brush_split, it.Rect);
-            else
-            {
-                using (var path = it.Rect.RoundPath(Radius, TL, TR, BR, BL))
-                {
-                    g.Fill(Colour.PrimaryBg.Get("Select", ColorScheme), path);
-                }
-                if (it.SubText != null)
-                {
-                    var size = g.MeasureText(it.Text, Font);
-                    var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                    g.DrawText(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
-                }
-                DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select", ColorScheme), .46F);
-                if (it.Online.HasValue)
-                {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
-                    {
-                        g.FillEllipse(brush_online, it.RectOnline);
-                    }
-                }
-            }
-        }
-
-        void DrawItem(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
-        {
-            if (it.ID == -1) g.Fill(brush_split, it.Rect);
-            else if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, stringFormatLeft);
-            else
-            {
-                if (it.SubText != null)
-                {
-                    var size = g.MeasureText(it.Text, Font);
-                    var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                    g.DrawText(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
-                }
-                if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) DrawTextIcon(g, it, subbrush);
-                else
-                {
-                    if (it.Hover)
-                    {
-                        using (var path = it.Rect.RoundPath(Radius))
-                        {
-                            g.Fill(brush_back_hover, path);
-                        }
-                    }
-                    DrawTextIcon(g, it, brush);
-                }
-                if (it.Online.HasValue)
-                {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
-                    {
-                        g.FillEllipse(brush_online, it.RectOnline);
-                    }
-                }
-            }
-        }
-        void DrawItemR(Canvas g, SolidBrush brush, SolidBrush brush_back_hover, SolidBrush brush_split, ObjectItem it)
-        {
-            if (it.ID == -1) g.Fill(brush_split, it.Rect);
-            else if (selectedValue.Contains(it.Val) || it.Val is SelectItem item && selectedValue.Contains(item.Tag))
-            {
-                using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get("Select", ColorScheme)))
-                {
-                    g.Fill(brush_back, it.Rect);
-                }
-                DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get("Select", ColorScheme), .46F);
-            }
-            else
-            {
-                if (it.Hover) g.Fill(brush_back_hover, it.Rect);
-                DrawTextIcon(g, it, brush);
-            }
-            if (it.Online.HasValue)
-            {
-                using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get("Select", ColorScheme) : Colour.Error.Get("Select", ColorScheme))))
-                {
-                    g.FillEllipse(brush_online, it.RectOnline);
-                }
-            }
-        }
-
-        void DrawTextIconSelect(Canvas g, ObjectItem it)
-        {
-            if (it.Enable)
-            {
-                using (var fore = new SolidBrush(Colour.TextBase.Get("Select", ColorScheme)))
-                {
-                    g.DrawText(it.Text, Font, fore, it.RectText, stringFormatLeft);
-                }
-            }
-            else
-            {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
-                {
-                    g.DrawText(it.Text, Font, fore, it.RectText, stringFormatLeft);
-                }
-            }
-            DrawIcon(g, it, Colour.TextBase.Get("Select", ColorScheme));
-        }
-        void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush)
-        {
-            if (it.Enable) g.DrawText(it.Text, Font, brush, it.RectText, stringFormatLeft);
-            else
-            {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
-                {
-                    g.DrawText(it.Text, Font, fore, it.RectText, stringFormatLeft);
-                }
-            }
-            DrawIcon(g, it, brush.Color);
-        }
-        void DrawIcon(Canvas g, ObjectItem it, Color color)
-        {
-            if (it.IconSvg != null)
-            {
-                using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
-                {
-                    if (bmp != null)
-                    {
-                        if (it.Enable) g.Image(bmp, it.RectIcon);
-                        else g.Image(bmp, it.RectIcon, 0.25F);
-                        return;
-                    }
-                }
-            }
-            if (it.Icon != null)
-            {
-                if (it.Enable) g.Image(it.Icon, it.RectIcon);
-                else g.Image(it.Icon, it.RectIcon, 0.25F);
-            }
-        }
-
-        Bitmap? shadow_temp = null;
-        /// <summary>
-        /// 绘制阴影
-        /// </summary>
-        /// <param name="g">GDI</param>
-        /// <param name="rect">客户区域</param>
-        void DrawShadow(Canvas g, Rectangle rect)
-        {
-            if (Config.ShadowEnabled)
-            {
-                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
-                {
-                    shadow_temp?.Dispose();
-                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
-                    {
-                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
-                    }
-                }
-                g.Image(shadow_temp, rect, 0.2F);
-            }
-        }
-
-        #endregion
-
-        #region 方法
-
-        public override void SetValues(object[] value)
-        {
-            selectedValue = new List<object>(value.Length);
-            selectedValue.AddRange(value);
-            Print();
-        }
-        public override void SetValues(List<object> value)
-        {
-            selectedValue = value;
-            Print();
-        }
-        public override void ClearValues()
-        {
-            selectedValue = new List<object>(0);
-            Print();
-        }
-
-        #endregion
-
-        #region 滚动条
-
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            if (RunAnimation) return;
-            scrollY.MouseWheel(e.Delta);
-            base.OnMouseWheel(e);
-        }
-        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheelCore(value);
 
         #endregion
     }

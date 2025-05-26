@@ -79,10 +79,22 @@ namespace AntdUI
         public Size DropDownPadding { get; set; } = new Size(12, 5);
 
         /// <summary>
+        /// 下拉文本方向
+        /// </summary>
+        [Description("下拉文本方向"), Category("外观"), DefaultValue(TAlign.Left)]
+        public TAlign DropDownTextAlign { get; set; } = TAlign.Left;
+
+        /// <summary>
         /// 点击到最里层（无节点才能点击）
         /// </summary>
         [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
         public bool ClickEnd { get; set; }
+
+        /// <summary>
+        /// 为空依旧下拉
+        /// </summary>
+        [Description("为空依旧下拉"), Category("外观"), DefaultValue(false)]
+        public bool Empty { get; set; }
 
         #region 数据
 
@@ -228,15 +240,17 @@ namespace AntdUI
         internal int select_x = 0;
         void ClickDown()
         {
-            if (items != null && items.Count > 0)
+            if (items != null && items.Count > 0 || Empty)
             {
                 if (subForm == null)
                 {
-                    var objs = new List<object>(items.Count);
-                    foreach (var it in items)
+                    List<object> objs;
+                    if (items != null && items.Count > 0)
                     {
-                        objs.Add(it);
+                        objs = new List<object>(items.Count);
+                        foreach (var it in items) objs.Add(it);
                     }
+                    else objs = new List<object>(0);
                     Expand = true;
                     subForm = new LayeredFormSelectDown(this, Radius, objs);
                     subForm.Disposed += (a, b) =>

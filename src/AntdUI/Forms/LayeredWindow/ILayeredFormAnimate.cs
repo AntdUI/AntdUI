@@ -96,6 +96,31 @@ namespace AntdUI
 
         bool TopY(Rectangle workingArea, out int result)
         {
+            switch (name)
+            {
+                case nameof(Notification):
+                    if (Notification.MaxCount.HasValue)
+                    {
+                        if (list.TryGetValue(key, out var count) && count.Count + 1 > Notification.MaxCount.Value)
+                        {
+                            if (Config.NoticeOverflowClose) count[0].CloseMe();
+                            result = 0;
+                            return true;
+                        }
+                    }
+                    break;
+                case nameof(Message):
+                    if (Message.MaxCount.HasValue)
+                    {
+                        if (list.TryGetValue(key, out var count) && count.Count + 1 > Message.MaxCount.Value)
+                        {
+                            if (Config.NoticeOverflowClose) count[0].CloseMe();
+                            result = 0;
+                            return true;
+                        }
+                    }
+                    break;
+            }
             int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
             var y = TopYCore(workingArea, offset);
             if (y < workingArea.Bottom - TargetRect.Height)
@@ -105,6 +130,7 @@ namespace AntdUI
             }
             else
             {
+                if (Config.NoticeOverflowClose && list.TryGetValue(key, out var count) && count.Count > 0) count[0].CloseMe();
                 result = 0;
                 return true;
             }
@@ -125,6 +151,31 @@ namespace AntdUI
         }
         bool BottomY(Rectangle workingArea, out int result)
         {
+            switch (name)
+            {
+                case nameof(Notification):
+                    if (Notification.MaxCount.HasValue)
+                    {
+                        if (list.TryGetValue(key, out var count) && count.Count + 1 > Notification.MaxCount.Value)
+                        {
+                            if (Config.NoticeOverflowClose) count[0].CloseMe();
+                            result = 0;
+                            return true;
+                        }
+                    }
+                    break;
+                case nameof(Message):
+                    if (Message.MaxCount.HasValue)
+                    {
+                        if (list.TryGetValue(key, out var count) && count.Count + 1 > Message.MaxCount.Value)
+                        {
+                            if (Config.NoticeOverflowClose) count[0].CloseMe();
+                            result = 0;
+                            return true;
+                        }
+                    }
+                    break;
+            }
             int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
             var y = BottomYCore(workingArea, offset) - TargetRect.Height;
             if (y >= 0)
@@ -134,6 +185,7 @@ namespace AntdUI
             }
             else
             {
+                if (Config.NoticeOverflowClose && list.TryGetValue(key, out var count) && count.Count > 0) count[0].CloseMe();
                 result = 0;
                 return true;
             }
